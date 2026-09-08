@@ -1,5 +1,6 @@
 import { thinkingLikeAnEngineer } from "./thinking-like-an-engineer";
 import { systemsThinking } from "./systems-thinking";
+import { tradeOffs } from "./trade-offs";
 import type { LearningPath } from "./learning-path";
 
 export const engineeringFoundations: LearningPath = {
@@ -8,5 +9,6 @@ export const engineeringFoundations: LearningPath = {
     lessons: [
         thinkingLikeAnEngineer,
         systemsThinking,
+        tradeOffs,
     ],
 };
