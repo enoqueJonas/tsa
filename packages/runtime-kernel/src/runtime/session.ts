@@ -5,6 +5,7 @@ import type { LearningPath, Lesson } from "../paths";
 export interface LearningProgress {
     currentActivityId: string;
     completedActivityIds: string[];
+    reflectionResponses?: Record<string, string>;
 }
 
 export interface LearningSession {
@@ -14,7 +15,10 @@ export interface LearningSession {
     completedActivityIds(): string[];
     unlockedLessonIds(): string[];
     unlockedActivityIds(): string[];
-    completeCurrentActivity(): void;
+    reflectionResponse(activityId: string): string;
+    setReflectionResponse(activityId: string, response: string): boolean;
+    canCompleteCurrentActivity(): boolean;
+    completeCurrentActivity(): boolean;
     hasNext(): boolean;
     next(): void;
     goToActivity(activityId: string): boolean;
@@ -26,6 +30,7 @@ export function createLearningSession(): LearningSession {
     let lessonIndex = 0;
     let activityIndex = 0;
     const completedActivityIds = new Set<string>();
+    const reflectionResponses = new Map<string, string>();
 
     function findActivity(activityId: string) {
         for (
@@ -42,6 +47,7 @@ export function createLearningSession(): LearningSession {
                 return {
                     lessonIndex: nextLessonIndex,
                     activityIndex: nextActivityIndex,
+                    activity: lesson.activities[nextActivityIndex],
                 };
             }
         }
@@ -105,6 +111,14 @@ export function createLearningSession(): LearningSession {
         return unlockedActivityIds;
     }
 
+    function canCompleteActivity(activity: Activity) {
+        if (activity.content.type !== "reflection") {
+            return true;
+        }
+
+        return (reflectionResponses.get(activity.id) ?? "").trim().length > 0;
+    }
+
     return {
         currentPath() {
             return engineeringFoundations;
@@ -131,10 +145,34 @@ export function createLearningSession(): LearningSession {
             return getUnlockedActivityIds();
         },
 
+        reflectionResponse(activityId: string) {
+            return reflectionResponses.get(activityId) ?? "";
+        },
+
+        setReflectionResponse(activityId: string, response: string) {
+            const location = findActivity(activityId);
+
+            if (!location || location.activity.content.type !== "reflection") {
+                return false;
+            }
+
+            reflectionResponses.set(activityId, response);
+            return true;
+        },
+
+        canCompleteCurrentActivity() {
+            return canCompleteActivity(this.currentActivity());
+        },
+
         completeCurrentActivity() {
-            const lesson = engineeringFoundations.lessons[lessonIndex];
-            const activity = lesson.activities[activityIndex];
+            const activity = this.currentActivity();
+
+            if (!canCompleteActivity(activity)) {
+                return false;
+            }
+
             completedActivityIds.add(activity.id);
+            return true;
         },
 
         hasNext() {
@@ -183,14 +221,35 @@ export function createLearningSession(): LearningSession {
             return {
                 currentActivityId: this.currentActivity().id,
                 completedActivityIds: Array.from(completedActivityIds),
+                reflectionResponses: Object.fromEntries(reflectionResponses),
             };
         },
 
         restoreProgress(progress: LearningProgress) {
             completedActivityIds.clear();
+            reflectionResponses.clear();
+
+            for (const [activityId, response] of Object.entries(
+                progress.reflectionResponses ?? {}
+            )) {
+                const location = findActivity(activityId);
+
+                if (
+                    location?.activity.content.type === "reflection" &&
+                    typeof response === "string"
+                ) {
+                    reflectionResponses.set(activityId, response);
+                }
+            }
 
             for (const activityId of progress.completedActivityIds) {
-                if (findActivity(activityId)) {
+                const location = findActivity(activityId);
+
+                if (!location) {
+                    continue;
+                }
+
+                if (canCompleteActivity(location.activity)) {
                     completedActivityIds.add(activityId);
                 }
             }
