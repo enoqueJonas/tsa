@@ -156,7 +156,10 @@ export function LearningExperience() {
                     </p>
 
                     {activity.content.type === "reading" && (
-                        <ReadingContent body={activity.content.body} />
+                        <ReadingContent
+                            body={activity.content.body}
+                            resources={activity.content.resources}
+                        />
                     )}
 
                     {activity.content.type === "reflection" && (
