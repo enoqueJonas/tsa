@@ -9,6 +9,7 @@ interface CurriculumSidebarProps {
     currentLesson: Lesson;
     currentActivity: Activity;
     completedActivityIds: string[];
+    unlockedLessonIds: string[];
     onSelectActivity(activityId: string): void;
 }
 
@@ -17,6 +18,7 @@ export function CurriculumSidebar({
     currentLesson,
     currentActivity,
     completedActivityIds,
+    unlockedLessonIds,
     onSelectActivity,
 }: CurriculumSidebarProps) {
     return (
@@ -28,18 +30,29 @@ export function CurriculumSidebar({
             <div className="mt-6 space-y-8">
                 {path.lessons.map((lesson) => {
                     const isCurrentLesson = lesson.id === currentLesson.id;
+                    const isUnlocked = unlockedLessonIds.includes(lesson.id);
 
                     return (
                         <section key={lesson.id}>
-                            <h2
-                                className={
-                                    isCurrentLesson
-                                        ? "text-lg font-semibold text-zinc-900"
-                                        : "text-lg font-semibold text-zinc-500"
-                                }
-                            >
-                                {lesson.title}
-                            </h2>
+                            <div className="flex items-center justify-between gap-3">
+                                <h2
+                                    className={
+                                        isCurrentLesson
+                                            ? "text-lg font-semibold text-zinc-900"
+                                            : isUnlocked
+                                              ? "text-lg font-semibold text-zinc-500"
+                                              : "text-lg font-semibold text-zinc-400"
+                                    }
+                                >
+                                    {lesson.title}
+                                </h2>
+
+                                {!isUnlocked && (
+                                    <span className="text-xs font-medium uppercase tracking-wide text-zinc-400">
+                                        Locked
+                                    </span>
+                                )}
+                            </div>
 
                             <div className="mt-3 space-y-2">
                                 {lesson.activities.map((activity) => {
@@ -52,21 +65,26 @@ export function CurriculumSidebar({
                                         <button
                                             key={activity.id}
                                             type="button"
+                                            disabled={!isUnlocked}
                                             onClick={() =>
                                                 onSelectActivity(activity.id)
                                             }
                                             className={
-                                                isCurrent
-                                                    ? "block w-full rounded-lg bg-zinc-900 px-4 py-3 text-left text-sm text-white"
-                                                    : "block w-full rounded-lg px-4 py-3 text-left text-sm text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
+                                                !isUnlocked
+                                                    ? "block w-full cursor-not-allowed rounded-lg px-4 py-3 text-left text-sm text-zinc-300"
+                                                    : isCurrent
+                                                      ? "block w-full rounded-lg bg-zinc-900 px-4 py-3 text-left text-sm text-white"
+                                                      : "block w-full rounded-lg px-4 py-3 text-left text-sm text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
                                             }
                                         >
                                             <span className="mr-2">
-                                                {isCompleted
-                                                    ? "✓"
-                                                    : isCurrent
-                                                      ? "●"
-                                                      : "○"}
+                                                {!isUnlocked
+                                                    ? "—"
+                                                    : isCompleted
+                                                      ? "✓"
+                                                      : isCurrent
+                                                        ? "●"
+                                                        : "○"}
                                             </span>
                                             {activity.title}
                                         </button>
