@@ -3,11 +3,13 @@ import type { Activity, Lesson } from "@tsa/runtime-kernel";
 interface CurriculumSidebarProps {
     lesson: Lesson;
     currentActivity: Activity;
+    onSelectActivity(activityId: string): void;
 }
 
 export function CurriculumSidebar({
     lesson,
     currentActivity,
+    onSelectActivity,
 }: CurriculumSidebarProps) {
     return (
         <aside className="border-r border-zinc-200 pr-8">
@@ -24,19 +26,21 @@ export function CurriculumSidebar({
                     const isCurrent = activity.id === currentActivity.id;
 
                     return (
-                        <div
+                        <button
                             key={activity.id}
+                            type="button"
+                            onClick={() => onSelectActivity(activity.id)}
                             className={
                                 isCurrent
-                                    ? "rounded-lg bg-zinc-900 px-4 py-3 text-sm text-white"
-                                    : "px-4 py-3 text-sm text-zinc-500"
+                                    ? "block w-full rounded-lg bg-zinc-900 px-4 py-3 text-left text-sm text-white"
+                                    : "block w-full rounded-lg px-4 py-3 text-left text-sm text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
                             }
                         >
                             <span className="mr-2">
                                 {isCurrent ? "●" : "○"}
                             </span>
                             {activity.title}
-                        </div>
+                        </button>
                     );
                 })}
             </div>
