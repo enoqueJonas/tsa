@@ -13,6 +13,7 @@ export interface LearningSession {
     currentActivity(): Activity;
     completedActivityIds(): string[];
     unlockedLessonIds(): string[];
+    unlockedActivityIds(): string[];
     completeCurrentActivity(): void;
     hasNext(): boolean;
     next(): void;
@@ -74,6 +75,36 @@ export function createLearningSession(): LearningSession {
         return unlockedLessonIds;
     }
 
+    function getUnlockedActivityIds() {
+        const unlockedLessonIds = new Set(getUnlockedLessonIds());
+        const unlockedActivityIds: string[] = [];
+
+        for (const lesson of engineeringFoundations.lessons) {
+            if (!unlockedLessonIds.has(lesson.id)) {
+                continue;
+            }
+
+            for (let index = 0; index < lesson.activities.length; index++) {
+                const activity = lesson.activities[index];
+
+                if (index === 0) {
+                    unlockedActivityIds.push(activity.id);
+                    continue;
+                }
+
+                const previousActivity = lesson.activities[index - 1];
+
+                if (!completedActivityIds.has(previousActivity.id)) {
+                    break;
+                }
+
+                unlockedActivityIds.push(activity.id);
+            }
+        }
+
+        return unlockedActivityIds;
+    }
+
     return {
         currentPath() {
             return engineeringFoundations;
@@ -94,6 +125,10 @@ export function createLearningSession(): LearningSession {
 
         unlockedLessonIds() {
             return getUnlockedLessonIds();
+        },
+
+        unlockedActivityIds() {
+            return getUnlockedActivityIds();
         },
 
         completeCurrentActivity() {
@@ -135,9 +170,7 @@ export function createLearningSession(): LearningSession {
                 return false;
             }
 
-            const targetLesson = engineeringFoundations.lessons[location.lessonIndex];
-
-            if (!getUnlockedLessonIds().includes(targetLesson.id)) {
+            if (!getUnlockedActivityIds().includes(activityId)) {
                 return false;
             }
 
@@ -168,9 +201,7 @@ export function createLearningSession(): LearningSession {
                 return;
             }
 
-            const targetLesson = engineeringFoundations.lessons[location.lessonIndex];
-
-            if (!getUnlockedLessonIds().includes(targetLesson.id)) {
+            if (!getUnlockedActivityIds().includes(progress.currentActivityId)) {
                 return;
             }
 
