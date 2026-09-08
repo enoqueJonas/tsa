@@ -5,6 +5,7 @@ import type { Lesson } from "../paths";
 export interface LearningSession {
     currentLesson(): Lesson;
     currentActivity(): Activity;
+    hasNext(): boolean;
     next(): void;
 }
 
@@ -20,6 +21,18 @@ export function createLearningSession(): LearningSession {
         currentActivity() {
             const lesson = engineeringFoundations.lessons[lessonIndex];
             return lesson.activities[activityIndex];
+        },
+
+        hasNext() {
+            const lesson = engineeringFoundations.lessons[lessonIndex];
+
+            const hasNextActivity =
+                activityIndex < lesson.activities.length - 1;
+
+            const hasNextLesson =
+                lessonIndex < engineeringFoundations.lessons.length - 1;
+
+            return hasNextActivity || hasNextLesson;
         },
 
         next() {
