@@ -174,6 +174,7 @@ export function LearningExperience() {
                             instructions={activity.content.instructions}
                             deliverables={activity.content.deliverables}
                             completionCriteria={activity.content.completionCriteria}
+                            resources={activity.content.resources}
                         />
                     )}
 
