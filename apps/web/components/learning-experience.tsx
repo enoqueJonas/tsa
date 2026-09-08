@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createRuntime } from "@tsa/runtime-kernel";
 
 import { CurriculumSidebar } from "./curriculum-sidebar";
@@ -10,6 +10,7 @@ import {
 } from "./content";
 
 const runtime = createRuntime();
+const PROGRESS_STORAGE_KEY = "tsa:engineering-foundations:progress";
 
 export function LearningExperience() {
     const [session] = useState(() => runtime.start());
@@ -38,6 +39,30 @@ export function LearningExperience() {
         setCompletedActivityIds(session.completedActivityIds());
     }
 
+    function persistProgress() {
+        window.localStorage.setItem(
+            PROGRESS_STORAGE_KEY,
+            JSON.stringify(session.progress())
+        );
+    }
+
+    useEffect(() => {
+        const savedProgress = window.localStorage.getItem(
+            PROGRESS_STORAGE_KEY
+        );
+
+        if (!savedProgress) {
+            return;
+        }
+
+        try {
+            session.restoreProgress(JSON.parse(savedProgress));
+            syncFromSession();
+        } catch {
+            window.localStorage.removeItem(PROGRESS_STORAGE_KEY);
+        }
+    }, [session]);
+
     function handlePrimaryAction() {
         const currentActivityId = session.currentActivity().id;
         const isCurrentCompleted = session
@@ -53,6 +78,7 @@ export function LearningExperience() {
         }
 
         syncFromSession();
+        persistProgress();
     }
 
     function handleSelectActivity(activityId: string) {
@@ -63,6 +89,7 @@ export function LearningExperience() {
         }
 
         syncFromSession();
+        persistProgress();
     }
 
     const isCurrentCompleted = completedActivityIds.includes(activity.id);
