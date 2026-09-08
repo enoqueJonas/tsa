@@ -7,6 +7,7 @@ export interface LearningSession {
     currentActivity(): Activity;
     hasNext(): boolean;
     next(): void;
+    goToActivity(activityId: string): boolean;
 }
 
 export function createLearningSession(): LearningSession {
@@ -47,6 +48,23 @@ export function createLearningSession(): LearningSession {
                 lessonIndex++;
                 activityIndex = 0;
             }
+        },
+
+        goToActivity(activityId: string) {
+            for (let nextLessonIndex = 0; nextLessonIndex < engineeringFoundations.lessons.length; nextLessonIndex++) {
+                const lesson = engineeringFoundations.lessons[nextLessonIndex];
+                const nextActivityIndex = lesson.activities.findIndex(
+                    (activity) => activity.id === activityId
+                );
+
+                if (nextActivityIndex !== -1) {
+                    lessonIndex = nextLessonIndex;
+                    activityIndex = nextActivityIndex;
+                    return true;
+                }
+            }
+
+            return false;
         },
     };
 }
