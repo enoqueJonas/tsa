@@ -4,6 +4,10 @@ interface PracticalContentProps {
     instructions: string[];
     deliverables: string[];
     completionCriteria: string[];
+    resources?: Array<{
+        title: string;
+        url: string;
+    }>;
 }
 
 export function PracticalContent({
@@ -12,6 +16,7 @@ export function PracticalContent({
     instructions,
     deliverables,
     completionCriteria,
+    resources = [],
 }: PracticalContentProps) {
     return (
         <div className="mt-8 space-y-8 text-base leading-7 text-zinc-700">
@@ -66,6 +71,28 @@ export function PracticalContent({
                     ))}
                 </ul>
             </section>
+
+            {resources.length > 0 && (
+                <section>
+                    <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                        Additional resources
+                    </h3>
+                    <ul className="mt-3 space-y-2">
+                        {resources.map((resource) => (
+                            <li key={resource.url}>
+                                <a
+                                    href={resource.url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="font-medium text-blue-600 underline underline-offset-4"
+                                >
+                                    {resource.title}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
         </div>
     );
 }
