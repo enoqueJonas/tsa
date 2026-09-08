@@ -1,8 +1,9 @@
 import { engineeringFoundations } from "../paths";
 import type { Activity } from "../activities";
-import type { Lesson } from "../paths";
+import type { LearningPath, Lesson } from "../paths";
 
 export interface LearningSession {
+    currentPath(): LearningPath;
     currentLesson(): Lesson;
     currentActivity(): Activity;
     completedActivityIds(): string[];
@@ -18,6 +19,10 @@ export function createLearningSession(): LearningSession {
     const completedActivityIds = new Set<string>();
 
     return {
+        currentPath() {
+            return engineeringFoundations;
+        },
+
         currentLesson() {
             return engineeringFoundations.lessons[lessonIndex];
         },
