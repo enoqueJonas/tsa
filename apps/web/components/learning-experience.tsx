@@ -32,11 +32,16 @@ export function LearningExperience() {
         session.completedActivityIds()
     );
 
+    const [unlockedLessonIds, setUnlockedLessonIds] = useState(
+        session.unlockedLessonIds()
+    );
+
     function syncFromSession() {
         setLesson(session.currentLesson());
         setActivity(session.currentActivity());
         setHasNext(session.hasNext());
         setCompletedActivityIds(session.completedActivityIds());
+        setUnlockedLessonIds(session.unlockedLessonIds());
     }
 
     function persistProgress() {
@@ -114,6 +119,7 @@ export function LearningExperience() {
                 currentLesson={lesson}
                 currentActivity={activity}
                 completedActivityIds={completedActivityIds}
+                unlockedLessonIds={unlockedLessonIds}
                 onSelectActivity={handleSelectActivity}
             />
 

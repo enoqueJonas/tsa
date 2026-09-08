@@ -12,6 +12,7 @@ export interface LearningSession {
     currentLesson(): Lesson;
     currentActivity(): Activity;
     completedActivityIds(): string[];
+    unlockedLessonIds(): string[];
     completeCurrentActivity(): void;
     hasNext(): boolean;
     next(): void;
@@ -47,6 +48,32 @@ export function createLearningSession(): LearningSession {
         return null;
     }
 
+    function getUnlockedLessonIds() {
+        const unlockedLessonIds: string[] = [];
+
+        for (let index = 0; index < engineeringFoundations.lessons.length; index++) {
+            const lesson = engineeringFoundations.lessons[index];
+
+            if (index === 0) {
+                unlockedLessonIds.push(lesson.id);
+                continue;
+            }
+
+            const previousLesson = engineeringFoundations.lessons[index - 1];
+            const previousLessonComplete = previousLesson.activities.every(
+                (activity) => completedActivityIds.has(activity.id)
+            );
+
+            if (!previousLessonComplete) {
+                break;
+            }
+
+            unlockedLessonIds.push(lesson.id);
+        }
+
+        return unlockedLessonIds;
+    }
+
     return {
         currentPath() {
             return engineeringFoundations;
@@ -63,6 +90,10 @@ export function createLearningSession(): LearningSession {
 
         completedActivityIds() {
             return Array.from(completedActivityIds);
+        },
+
+        unlockedLessonIds() {
+            return getUnlockedLessonIds();
         },
 
         completeCurrentActivity() {
@@ -104,6 +135,12 @@ export function createLearningSession(): LearningSession {
                 return false;
             }
 
+            const targetLesson = engineeringFoundations.lessons[location.lessonIndex];
+
+            if (!getUnlockedLessonIds().includes(targetLesson.id)) {
+                return false;
+            }
+
             lessonIndex = location.lessonIndex;
             activityIndex = location.activityIndex;
             return true;
@@ -117,13 +154,6 @@ export function createLearningSession(): LearningSession {
         },
 
         restoreProgress(progress: LearningProgress) {
-            const location = findActivity(progress.currentActivityId);
-
-            if (location) {
-                lessonIndex = location.lessonIndex;
-                activityIndex = location.activityIndex;
-            }
-
             completedActivityIds.clear();
 
             for (const activityId of progress.completedActivityIds) {
@@ -131,6 +161,21 @@ export function createLearningSession(): LearningSession {
                     completedActivityIds.add(activityId);
                 }
             }
+
+            const location = findActivity(progress.currentActivityId);
+
+            if (!location) {
+                return;
+            }
+
+            const targetLesson = engineeringFoundations.lessons[location.lessonIndex];
+
+            if (!getUnlockedLessonIds().includes(targetLesson.id)) {
+                return;
+            }
+
+            lessonIndex = location.lessonIndex;
+            activityIndex = location.activityIndex;
         },
     };
 }
