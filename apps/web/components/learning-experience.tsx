@@ -22,10 +22,19 @@ export function LearningExperience() {
         session.currentActivity()
     );
 
+    const [hasNext, setHasNext] = useState(
+        session.hasNext()
+    );
+
     function handleNext() {
+        if (!session.hasNext()) {
+            return;
+        }
+
         session.next();
         setLesson(session.currentLesson());
         setActivity(session.currentActivity());
+        setHasNext(session.hasNext());
     }
 
     return (
@@ -57,9 +66,14 @@ export function LearningExperience() {
 
                     <button
                         onClick={handleNext}
-                        className="rounded-xl bg-black px-6 py-3 text-white transition hover:bg-zinc-800"
+                        disabled={!hasNext}
+                        className={
+                            hasNext
+                                ? "rounded-xl bg-black px-6 py-3 text-white transition hover:bg-zinc-800"
+                                : "cursor-not-allowed rounded-xl bg-zinc-200 px-6 py-3 text-zinc-500"
+                        }
                     >
-                        Next
+                        {hasNext ? "Next" : "Lesson complete"}
                     </button>
                 </div>
             </div>
