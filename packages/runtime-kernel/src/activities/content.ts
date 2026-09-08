@@ -8,6 +8,16 @@ export interface ReflectionContent {
     prompt: string;
 }
 
+export interface PracticalContent {
+    type: "practical";
+    objective: string;
+    scenario: string;
+    instructions: string[];
+    deliverables: string[];
+    completionCriteria: string[];
+}
+
 export type ActivityContent =
     | ReadingContent
-    | ReflectionContent;
+    | ReflectionContent
+    | PracticalContent;
