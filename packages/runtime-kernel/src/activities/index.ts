@@ -5,3 +5,6 @@ export * from "./systems-thinking-brief";
 export * from "./systems-thinking-reflection";
 export * from "./trade-offs-brief";
 export * from "./trade-offs-reflection";
+export * from "./debugging-brief";
+export * from "./debugging-investigation";
+export * from "./debugging-reflection";

@@ -5,6 +5,7 @@ import { createRuntime } from "@tsa/runtime-kernel";
 
 import { CurriculumSidebar } from "./curriculum-sidebar";
 import {
+    PracticalContent,
     ReadingContent,
     ReflectionContent,
 } from "./content";
@@ -16,34 +17,21 @@ export function LearningExperience() {
     const [session] = useState(() => runtime.start());
     const path = session.currentPath();
 
-    const [lesson, setLesson] = useState(
-        session.currentLesson()
-    );
-
-    const [activity, setActivity] = useState(
-        session.currentActivity()
-    );
-
-    const [hasNext, setHasNext] = useState(
-        session.hasNext()
-    );
-
+    const [lesson, setLesson] = useState(session.currentLesson());
+    const [activity, setActivity] = useState(session.currentActivity());
+    const [hasNext, setHasNext] = useState(session.hasNext());
     const [completedActivityIds, setCompletedActivityIds] = useState(
         session.completedActivityIds()
     );
-
     const [unlockedLessonIds, setUnlockedLessonIds] = useState(
         session.unlockedLessonIds()
     );
-
     const [unlockedActivityIds, setUnlockedActivityIds] = useState(
         session.unlockedActivityIds()
     );
-
     const [reflectionResponse, setReflectionResponse] = useState(
         session.reflectionResponse(session.currentActivity().id)
     );
-
     const [canCompleteCurrentActivity, setCanCompleteCurrentActivity] = useState(
         session.canCompleteCurrentActivity()
     );
@@ -69,9 +57,7 @@ export function LearningExperience() {
     }
 
     useEffect(() => {
-        const savedProgress = window.localStorage.getItem(
-            PROGRESS_STORAGE_KEY
-        );
+        const savedProgress = window.localStorage.getItem(PROGRESS_STORAGE_KEY);
 
         if (!savedProgress) {
             return;
@@ -178,6 +164,17 @@ export function LearningExperience() {
                             prompt={activity.content.prompt}
                             value={reflectionResponse}
                             onChange={handleReflectionChange}
+                        />
+                    )}
+
+                    {activity.content.type === "practical" && (
+                        <PracticalContent
+                            objective={activity.content.objective}
+                            scenario={activity.content.scenario}
+                            instructions={activity.content.instructions}
+                            deliverables={activity.content.deliverables}
+                            completionCriteria={activity.content.completionCriteria}
+                            resources={activity.content.resources}
                         />
                     )}
 
