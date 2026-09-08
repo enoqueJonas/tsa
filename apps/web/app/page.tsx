@@ -1,11 +1,9 @@
-import { createRuntime } from "@tsa/runtime-kernel";
 import { LearningExperience } from "../components/learning-experience";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-zinc-50">
       <div className="mx-auto max-w-4xl px-8 py-20">
-
         <p className="text-sm uppercase tracking-[0.25em] text-blue-600">
           Technical Stewardship Academy
         </p>
@@ -19,7 +17,6 @@ export default function Home() {
         </p>
 
         <LearningExperience />
-
       </div>
     </main>
   );
