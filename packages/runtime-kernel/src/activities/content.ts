@@ -6,6 +6,7 @@ export interface LearningResource {
 export interface ReadingContent {
     type: "reading";
     body: string;
+    resources?: LearningResource[];
 }
 
 export interface ReflectionContent {
