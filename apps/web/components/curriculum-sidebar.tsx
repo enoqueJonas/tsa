@@ -10,6 +10,7 @@ interface CurriculumSidebarProps {
     currentActivity: Activity;
     completedActivityIds: string[];
     unlockedLessonIds: string[];
+    unlockedActivityIds: string[];
     onSelectActivity(activityId: string): void;
 }
 
@@ -19,6 +20,7 @@ export function CurriculumSidebar({
     currentActivity,
     completedActivityIds,
     unlockedLessonIds,
+    unlockedActivityIds,
     onSelectActivity,
 }: CurriculumSidebarProps) {
     return (
@@ -60,17 +62,19 @@ export function CurriculumSidebar({
                                         activity.id === currentActivity.id;
                                     const isCompleted =
                                         completedActivityIds.includes(activity.id);
+                                    const isActivityUnlocked =
+                                        unlockedActivityIds.includes(activity.id);
 
                                     return (
                                         <button
                                             key={activity.id}
                                             type="button"
-                                            disabled={!isUnlocked}
+                                            disabled={!isActivityUnlocked}
                                             onClick={() =>
                                                 onSelectActivity(activity.id)
                                             }
                                             className={
-                                                !isUnlocked
+                                                !isActivityUnlocked
                                                     ? "block w-full cursor-not-allowed rounded-lg px-4 py-3 text-left text-sm text-zinc-300"
                                                     : isCurrent
                                                       ? "block w-full rounded-lg bg-zinc-900 px-4 py-3 text-left text-sm text-white"
@@ -78,7 +82,7 @@ export function CurriculumSidebar({
                                             }
                                         >
                                             <span className="mr-2">
-                                                {!isUnlocked
+                                                {!isActivityUnlocked
                                                     ? "—"
                                                     : isCompleted
                                                       ? "✓"
