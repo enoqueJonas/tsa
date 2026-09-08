@@ -26,18 +26,31 @@ export function LearningExperience() {
         session.hasNext()
     );
 
+    const [completedActivityIds, setCompletedActivityIds] = useState(
+        session.completedActivityIds()
+    );
+
     function syncFromSession() {
         setLesson(session.currentLesson());
         setActivity(session.currentActivity());
         setHasNext(session.hasNext());
+        setCompletedActivityIds(session.completedActivityIds());
     }
 
-    function handleNext() {
-        if (!session.hasNext()) {
-            return;
+    function handlePrimaryAction() {
+        const currentActivityId = session.currentActivity().id;
+        const isCurrentCompleted = session
+            .completedActivityIds()
+            .includes(currentActivityId);
+
+        if (!isCurrentCompleted) {
+            session.completeCurrentActivity();
         }
 
-        session.next();
+        if (session.hasNext()) {
+            session.next();
+        }
+
         syncFromSession();
     }
 
@@ -51,11 +64,15 @@ export function LearningExperience() {
         syncFromSession();
     }
 
+    const isCurrentCompleted = completedActivityIds.includes(activity.id);
+    const isFinished = !hasNext && isCurrentCompleted;
+
     return (
         <div className="mt-16 grid gap-10 lg:grid-cols-[240px_1fr]">
             <CurriculumSidebar
                 lesson={lesson}
                 currentActivity={activity}
+                completedActivityIds={completedActivityIds}
                 onSelectActivity={handleSelectActivity}
             />
 
@@ -80,15 +97,19 @@ export function LearningExperience() {
                     </span>
 
                     <button
-                        onClick={handleNext}
-                        disabled={!hasNext}
+                        onClick={handlePrimaryAction}
+                        disabled={isFinished}
                         className={
-                            hasNext
-                                ? "rounded-xl bg-black px-6 py-3 text-white transition hover:bg-zinc-800"
-                                : "cursor-not-allowed rounded-xl bg-zinc-200 px-6 py-3 text-zinc-500"
+                            isFinished
+                                ? "cursor-not-allowed rounded-xl bg-zinc-200 px-6 py-3 text-zinc-500"
+                                : "rounded-xl bg-black px-6 py-3 text-white transition hover:bg-zinc-800"
                         }
                     >
-                        {hasNext ? "Next" : "Lesson complete"}
+                        {hasNext
+                            ? "Next"
+                            : isFinished
+                              ? "Lesson complete"
+                              : "Complete lesson"}
                     </button>
                 </div>
             </div>

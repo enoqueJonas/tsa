@@ -3,12 +3,14 @@ import type { Activity, Lesson } from "@tsa/runtime-kernel";
 interface CurriculumSidebarProps {
     lesson: Lesson;
     currentActivity: Activity;
+    completedActivityIds: string[];
     onSelectActivity(activityId: string): void;
 }
 
 export function CurriculumSidebar({
     lesson,
     currentActivity,
+    completedActivityIds,
     onSelectActivity,
 }: CurriculumSidebarProps) {
     return (
@@ -24,6 +26,7 @@ export function CurriculumSidebar({
             <div className="mt-6 space-y-2">
                 {lesson.activities.map((activity) => {
                     const isCurrent = activity.id === currentActivity.id;
+                    const isCompleted = completedActivityIds.includes(activity.id);
 
                     return (
                         <button
@@ -37,7 +40,7 @@ export function CurriculumSidebar({
                             }
                         >
                             <span className="mr-2">
-                                {isCurrent ? "●" : "○"}
+                                {isCompleted ? "✓" : isCurrent ? "●" : "○"}
                             </span>
                             {activity.title}
                         </button>
