@@ -40,13 +40,25 @@ export function LearningExperience() {
         session.unlockedActivityIds()
     );
 
+    const [reflectionResponse, setReflectionResponse] = useState(
+        session.reflectionResponse(session.currentActivity().id)
+    );
+
+    const [canCompleteCurrentActivity, setCanCompleteCurrentActivity] = useState(
+        session.canCompleteCurrentActivity()
+    );
+
     function syncFromSession() {
+        const currentActivity = session.currentActivity();
+
         setLesson(session.currentLesson());
-        setActivity(session.currentActivity());
+        setActivity(currentActivity);
         setHasNext(session.hasNext());
         setCompletedActivityIds(session.completedActivityIds());
         setUnlockedLessonIds(session.unlockedLessonIds());
         setUnlockedActivityIds(session.unlockedActivityIds());
+        setReflectionResponse(session.reflectionResponse(currentActivity.id));
+        setCanCompleteCurrentActivity(session.canCompleteCurrentActivity());
     }
 
     function persistProgress() {
@@ -80,7 +92,11 @@ export function LearningExperience() {
             .includes(currentActivityId);
 
         if (!isCurrentCompleted) {
-            session.completeCurrentActivity();
+            const didComplete = session.completeCurrentActivity();
+
+            if (!didComplete) {
+                return;
+            }
         }
 
         if (session.hasNext()) {
@@ -102,10 +118,24 @@ export function LearningExperience() {
         persistProgress();
     }
 
+    function handleReflectionChange(value: string) {
+        const didUpdate = session.setReflectionResponse(activity.id, value);
+
+        if (!didUpdate) {
+            return;
+        }
+
+        setReflectionResponse(value);
+        setCanCompleteCurrentActivity(session.canCompleteCurrentActivity());
+        persistProgress();
+    }
+
     const isCurrentCompleted = completedActivityIds.includes(activity.id);
     const isFinished = !hasNext && isCurrentCompleted;
     const isLastActivityInLesson =
         lesson.activities[lesson.activities.length - 1]?.id === activity.id;
+    const isPrimaryActionDisabled =
+        isFinished || (!isCurrentCompleted && !canCompleteCurrentActivity);
 
     let primaryActionLabel = "Next";
 
@@ -139,26 +169,38 @@ export function LearningExperience() {
                         {activity.title}
                     </p>
 
-                    <div className="mt-8 text-3xl leading-relaxed">
-                        {activity.content.type === "reading" && (
-                            <ReadingContent body={activity.content.body} />
-                        )}
+                    {activity.content.type === "reading" && (
+                        <ReadingContent body={activity.content.body} />
+                    )}
 
-                        {activity.content.type === "reflection" && (
-                            <ReflectionContent prompt={activity.content.prompt} />
-                        )}
-                    </div>
+                    {activity.content.type === "reflection" && (
+                        <ReflectionContent
+                            prompt={activity.content.prompt}
+                            value={reflectionResponse}
+                            onChange={handleReflectionChange}
+                        />
+                    )}
 
-                    <div className="mt-10 flex items-center justify-between">
-                        <span className="text-sm text-zinc-500">
-                            {activity.estimatedMinutes} min
-                        </span>
+                    <div className="mt-10 flex items-center justify-between gap-6">
+                        <div>
+                            <span className="text-sm text-zinc-500">
+                                {activity.estimatedMinutes} min
+                            </span>
+
+                            {activity.content.type === "reflection" &&
+                                !isCurrentCompleted &&
+                                !canCompleteCurrentActivity && (
+                                    <p className="mt-1 text-sm text-zinc-500">
+                                        Write a reflection to continue.
+                                    </p>
+                                )}
+                        </div>
 
                         <button
                             onClick={handlePrimaryAction}
-                            disabled={isFinished}
+                            disabled={isPrimaryActionDisabled}
                             className={
-                                isFinished
+                                isPrimaryActionDisabled
                                     ? "cursor-not-allowed rounded-xl bg-zinc-200 px-6 py-3 text-zinc-500"
                                     : "rounded-xl bg-black px-6 py-3 text-white transition hover:bg-zinc-800"
                             }
