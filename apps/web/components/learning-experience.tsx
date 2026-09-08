@@ -26,15 +26,29 @@ export function LearningExperience() {
         session.hasNext()
     );
 
+    function syncFromSession() {
+        setLesson(session.currentLesson());
+        setActivity(session.currentActivity());
+        setHasNext(session.hasNext());
+    }
+
     function handleNext() {
         if (!session.hasNext()) {
             return;
         }
 
         session.next();
-        setLesson(session.currentLesson());
-        setActivity(session.currentActivity());
-        setHasNext(session.hasNext());
+        syncFromSession();
+    }
+
+    function handleSelectActivity(activityId: string) {
+        const didNavigate = session.goToActivity(activityId);
+
+        if (!didNavigate) {
+            return;
+        }
+
+        syncFromSession();
     }
 
     return (
@@ -42,6 +56,7 @@ export function LearningExperience() {
             <CurriculumSidebar
                 lesson={lesson}
                 currentActivity={activity}
+                onSelectActivity={handleSelectActivity}
             />
 
             <div className="rounded-2xl border bg-white p-10 shadow-sm">
