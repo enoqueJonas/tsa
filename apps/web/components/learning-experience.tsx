@@ -22,10 +22,33 @@ export function LearningExperience() {
         session.currentActivity()
     );
 
-    function handleNext() {
-        session.next();
+    const [hasNext, setHasNext] = useState(
+        session.hasNext()
+    );
+
+    function syncFromSession() {
         setLesson(session.currentLesson());
         setActivity(session.currentActivity());
+        setHasNext(session.hasNext());
+    }
+
+    function handleNext() {
+        if (!session.hasNext()) {
+            return;
+        }
+
+        session.next();
+        syncFromSession();
+    }
+
+    function handleSelectActivity(activityId: string) {
+        const didNavigate = session.goToActivity(activityId);
+
+        if (!didNavigate) {
+            return;
+        }
+
+        syncFromSession();
     }
 
     return (
@@ -33,6 +56,7 @@ export function LearningExperience() {
             <CurriculumSidebar
                 lesson={lesson}
                 currentActivity={activity}
+                onSelectActivity={handleSelectActivity}
             />
 
             <div className="rounded-2xl border bg-white p-10 shadow-sm">
@@ -57,9 +81,14 @@ export function LearningExperience() {
 
                     <button
                         onClick={handleNext}
-                        className="rounded-xl bg-black px-6 py-3 text-white transition hover:bg-zinc-800"
+                        disabled={!hasNext}
+                        className={
+                            hasNext
+                                ? "rounded-xl bg-black px-6 py-3 text-white transition hover:bg-zinc-800"
+                                : "cursor-not-allowed rounded-xl bg-zinc-200 px-6 py-3 text-zinc-500"
+                        }
                     >
-                        Next
+                        {hasNext ? "Next" : "Lesson complete"}
                     </button>
                 </div>
             </div>
