@@ -1,3 +1,8 @@
+export interface LearningResource {
+    title: string;
+    url: string;
+}
+
 export interface ReadingContent {
     type: "reading";
     body: string;
@@ -15,6 +20,7 @@ export interface PracticalContent {
     instructions: string[];
     deliverables: string[];
     completionCriteria: string[];
+    resources?: LearningResource[];
 }
 
 export type ActivityContent =
