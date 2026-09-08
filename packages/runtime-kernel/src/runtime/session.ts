@@ -2,6 +2,11 @@ import { engineeringFoundations } from "../paths";
 import type { Activity } from "../activities";
 import type { LearningPath, Lesson } from "../paths";
 
+export interface LearningProgress {
+    currentActivityId: string;
+    completedActivityIds: string[];
+}
+
 export interface LearningSession {
     currentPath(): LearningPath;
     currentLesson(): Lesson;
@@ -11,12 +16,36 @@ export interface LearningSession {
     hasNext(): boolean;
     next(): void;
     goToActivity(activityId: string): boolean;
+    progress(): LearningProgress;
+    restoreProgress(progress: LearningProgress): void;
 }
 
 export function createLearningSession(): LearningSession {
     let lessonIndex = 0;
     let activityIndex = 0;
     const completedActivityIds = new Set<string>();
+
+    function findActivity(activityId: string) {
+        for (
+            let nextLessonIndex = 0;
+            nextLessonIndex < engineeringFoundations.lessons.length;
+            nextLessonIndex++
+        ) {
+            const lesson = engineeringFoundations.lessons[nextLessonIndex];
+            const nextActivityIndex = lesson.activities.findIndex(
+                (activity) => activity.id === activityId
+            );
+
+            if (nextActivityIndex !== -1) {
+                return {
+                    lessonIndex: nextLessonIndex,
+                    activityIndex: nextActivityIndex,
+                };
+            }
+        }
+
+        return null;
+    }
 
     return {
         currentPath() {
@@ -69,24 +98,39 @@ export function createLearningSession(): LearningSession {
         },
 
         goToActivity(activityId: string) {
-            for (
-                let nextLessonIndex = 0;
-                nextLessonIndex < engineeringFoundations.lessons.length;
-                nextLessonIndex++
-            ) {
-                const lesson = engineeringFoundations.lessons[nextLessonIndex];
-                const nextActivityIndex = lesson.activities.findIndex(
-                    (activity) => activity.id === activityId
-                );
+            const location = findActivity(activityId);
 
-                if (nextActivityIndex !== -1) {
-                    lessonIndex = nextLessonIndex;
-                    activityIndex = nextActivityIndex;
-                    return true;
-                }
+            if (!location) {
+                return false;
             }
 
-            return false;
+            lessonIndex = location.lessonIndex;
+            activityIndex = location.activityIndex;
+            return true;
+        },
+
+        progress() {
+            return {
+                currentActivityId: this.currentActivity().id,
+                completedActivityIds: Array.from(completedActivityIds),
+            };
+        },
+
+        restoreProgress(progress: LearningProgress) {
+            const location = findActivity(progress.currentActivityId);
+
+            if (location) {
+                lessonIndex = location.lessonIndex;
+                activityIndex = location.activityIndex;
+            }
+
+            completedActivityIds.clear();
+
+            for (const activityId of progress.completedActivityIds) {
+                if (findActivity(activityId)) {
+                    completedActivityIds.add(activityId);
+                }
+            }
         },
     };
 }
