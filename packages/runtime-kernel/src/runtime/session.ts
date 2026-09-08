@@ -5,6 +5,8 @@ import type { Lesson } from "../paths";
 export interface LearningSession {
     currentLesson(): Lesson;
     currentActivity(): Activity;
+    completedActivityIds(): string[];
+    completeCurrentActivity(): void;
     hasNext(): boolean;
     next(): void;
     goToActivity(activityId: string): boolean;
@@ -13,6 +15,7 @@ export interface LearningSession {
 export function createLearningSession(): LearningSession {
     let lessonIndex = 0;
     let activityIndex = 0;
+    const completedActivityIds = new Set<string>();
 
     return {
         currentLesson() {
@@ -22,6 +25,16 @@ export function createLearningSession(): LearningSession {
         currentActivity() {
             const lesson = engineeringFoundations.lessons[lessonIndex];
             return lesson.activities[activityIndex];
+        },
+
+        completedActivityIds() {
+            return Array.from(completedActivityIds);
+        },
+
+        completeCurrentActivity() {
+            const lesson = engineeringFoundations.lessons[lessonIndex];
+            const activity = lesson.activities[activityIndex];
+            completedActivityIds.add(activity.id);
         },
 
         hasNext() {
@@ -51,7 +64,11 @@ export function createLearningSession(): LearningSession {
         },
 
         goToActivity(activityId: string) {
-            for (let nextLessonIndex = 0; nextLessonIndex < engineeringFoundations.lessons.length; nextLessonIndex++) {
+            for (
+                let nextLessonIndex = 0;
+                nextLessonIndex < engineeringFoundations.lessons.length;
+                nextLessonIndex++
+            ) {
                 const lesson = engineeringFoundations.lessons[nextLessonIndex];
                 const nextActivityIndex = lesson.activities.findIndex(
                     (activity) => activity.id === activityId
