@@ -1,16 +1,17 @@
+import type { LearningPath } from "./paths";
 import {
     createLearningSession,
     type LearningSession,
 } from "./runtime/session";
 
 export interface Runtime {
-    start(): LearningSession;
+    start(path?: LearningPath): LearningSession;
 }
 
 export function createRuntime(): Runtime {
     return {
-        start() {
-            return createLearningSession();
+        start(path) {
+            return createLearningSession(path);
         },
     };
 }
