@@ -15,7 +15,7 @@ export interface ReadingContent {
     type: "reading";
     body: string;
     resources?: LearningResource[];
-    blocks?: LessonBlock[];
+    blocks?: LessonBlock[] | undefined;
 }
 
 export interface ReflectionContent {
