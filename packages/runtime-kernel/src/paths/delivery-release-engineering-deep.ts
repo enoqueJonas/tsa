@@ -1,6 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { releaseEngineeringLab } from "./delivery-release-engineering-lab-deep";
+import { releaseEngineeringReviewLesson } from "./delivery-release-engineering-review-deep";
 
 const semver: LearningResource = { title: "Semantic Versioning", url: "https://semver.org/" };
 const twelveFactor: LearningResource = { title: "The Twelve-Factor App — Build, release, run", url: "https://12factor.net/build-release-run" };
@@ -9,22 +10,10 @@ const dora: LearningResource = { title: "DORA — Software delivery performance"
 const sre: LearningResource = { title: "Google SRE Book — Release Engineering", url: "https://sre.google/sre-book/release-engineering/" };
 
 function reading(id: string, title: string, intro: string, blocks: LessonBlock[], resources: LearningResource[]): Lesson {
-    return {
-        id: `release-engineering-${id}`,
-        title,
-        activities: [
-            {
-                id: `release-engineering-${id}-001`,
-                title,
-                estimatedMinutes: 45,
-                content: { type: "reading", body: intro, blocks: [{ type: "paragraph", text: intro }, ...blocks, { type: "callout", tone: "steward", title: "Steward release checkpoint", body: "Use Steward's actual CI, Nexus artifact identities, homelab deployment and release evidence. A release claim is valid only when another engineer can trace it to immutable artifacts and observed runtime evidence." }, { type: "resources", title: "Continue learning", resources }] },
-            },
-            {
-                id: `release-engineering-${id}-002`, title: `Apply: ${title}`, estimatedMinutes: 45,
-                content: { type: "practical", objective: `Apply ${title} to Steward's delivery platform.`, scenario: "Steward already has CI, containerized delivery, Nexus-managed artifacts and a reproducible deployment path. Turn those capabilities into a controlled release process rather than adding another isolated tool.", instructions: ["Start from one real Steward source revision and identify the exact package and image artifacts produced from it.", "Define the release decision, evidence and owner relevant to this lesson.", "Exercise both the expected path and one failure, rejection or recovery path.", "Record evidence in a form another engineer could use without relying on your memory."], deliverables: ["Release-process evidence", "Immutable artifact identities", "Short engineering decision record"], completionCriteria: ["The source-to-release chain is traceable.", "A failed or rejected path is visible rather than silently bypassed.", "The learner can distinguish release state from deployment state."] },
-            },
-        ],
-    };
+    return { id: `release-engineering-${id}`, title, activities: [
+        { id: `release-engineering-${id}-001`, title, estimatedMinutes: 45, content: { type: "reading", body: intro, blocks: [{ type: "paragraph", text: intro }, ...blocks, { type: "callout", tone: "steward", title: "Steward release checkpoint", body: "Use Steward's actual CI, Nexus artifact identities, homelab deployment and release evidence. A release claim is valid only when another engineer can trace it to immutable artifacts and observed runtime evidence." }, { type: "resources", title: "Continue learning", resources }] } },
+        { id: `release-engineering-${id}-002`, title: `Apply: ${title}`, estimatedMinutes: 45, content: { type: "practical", objective: `Apply ${title} to Steward's delivery platform.`, scenario: "Steward already has CI, containerized delivery, Nexus-managed artifacts and a reproducible deployment path. Turn those capabilities into a controlled release process rather than adding another isolated tool.", instructions: ["Start from one real Steward source revision and identify the exact package and image artifacts produced from it.", "Define the release decision, evidence and owner relevant to this lesson.", "Exercise both the expected path and one failure, rejection or recovery path.", "Record evidence in a form another engineer could use without relying on your memory."], deliverables: ["Release-process evidence", "Immutable artifact identities", "Short engineering decision record"], completionCriteria: ["The source-to-release chain is traceable.", "A failed or rejected path is visible rather than silently bypassed.", "The learner can distinguish release state from deployment state."] } },
+    ] };
 }
 
 const coreReleaseLessons: Lesson[] = [
@@ -67,4 +56,4 @@ const coreReleaseLessons: Lesson[] = [
     ], [sre, githubReleases]),
 ];
 
-export const releaseEngineeringDeepLessons: Lesson[] = [...coreReleaseLessons, releaseEngineeringLab];
+export const releaseEngineeringDeepLessons: Lesson[] = [...coreReleaseLessons, releaseEngineeringLab, releaseEngineeringReviewLesson];
