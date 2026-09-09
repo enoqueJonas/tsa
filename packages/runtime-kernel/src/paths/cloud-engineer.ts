@@ -1,4 +1,5 @@
 import type { Activity } from "../activities";
+import { cloudAndHostingModelsDeepLessons } from "./cloud-hosting-models-deep";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
 
@@ -45,15 +46,11 @@ function path(id: string, title: string, titles: string[]): LearningPath {
     return { id, title, lessons: titles.map((title) => lesson(id, title)) };
 }
 
-export const cloudAndHostingModels = path("cloud-and-hosting-models", "Cloud and Hosting Models", [
-    "On-premises, Colocation, VPS and Cloud",
-    "IaaS, PaaS and SaaS",
-    "Regions, Zones and Availability Concepts",
-    "Shared Responsibility",
-    "Elasticity and Consumption Models",
-    "Cloud Cost Awareness",
-    "Lab: Compare Homelab, VPS and Managed Cloud Hosting",
-]);
+export const cloudAndHostingModels: LearningPath = {
+    id: "cloud-and-hosting-models",
+    title: "Cloud and Hosting Models",
+    lessons: cloudAndHostingModelsDeepLessons,
+};
 
 export const vpsOperations: LearningPath = {
     id: "vps-operations",
