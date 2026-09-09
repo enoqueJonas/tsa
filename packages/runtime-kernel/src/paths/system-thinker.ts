@@ -1,6 +1,7 @@
 import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
+import { requirementsAndProblemFramingDeepLessons } from "./system-thinker-requirements-deep";
 
 function slug(value: string) {
     return value
@@ -53,19 +54,7 @@ function path(id: string, title: string, lessons: Lesson[]): LearningPath {
 export const requirementsAndProblemFraming = path(
     "requirements-and-problem-framing",
     "Requirements and Problem Framing",
-    [
-        lesson("requirements-and-problem-framing", "From Requests to Problems"),
-        lesson("requirements-and-problem-framing", "Stakeholders and Actors"),
-        lesson("requirements-and-problem-framing", "Functional Requirements"),
-        lesson("requirements-and-problem-framing", "Quality Requirements"),
-        lesson("requirements-and-problem-framing", "Constraints and Assumptions"),
-        lesson("requirements-and-problem-framing", "Acceptance and Evidence"),
-        lesson(
-            "requirements-and-problem-framing",
-            "Lab: Reframe Steward API Requirements",
-            "Turn the current Steward API feature set into a concise problem statement, stakeholder map, functional requirements, quality requirements, constraints and evidence-based acceptance criteria."
-        ),
-    ]
+    requirementsAndProblemFramingDeepLessons
 );
 
 export const systemBoundariesAndContext = path(
