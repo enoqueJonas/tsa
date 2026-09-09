@@ -1,6 +1,7 @@
 import type { Activity } from "../activities";
 import { automationAndShellDeepLessons } from "./delivery-automation-shell-deep";
 import { containersAndDockerDeepLessons } from "./delivery-containers-docker-deep";
+import { continuousDeliveryDeploymentDeepLessons } from "./delivery-continuous-delivery-deep";
 import { continuousIntegrationDeepLessons } from "./delivery-continuous-integration-deep";
 import { softwareDeliveryFoundationsDeepLessons } from "./delivery-software-foundations-deep";
 import { artifactDependencySupplyChainManagement } from "./internal-dependency-management";
@@ -52,20 +53,7 @@ export const softwareDeliveryFoundations = path("software-delivery-foundations",
 export const automationAndShell = path("automation-and-shell", "Automation and Shell", automationAndShellDeepLessons);
 export const containersAndDocker = path("containers-and-docker", "Containers and Docker", containersAndDockerDeepLessons);
 export const continuousIntegration = path("continuous-integration", "Continuous Integration", continuousIntegrationDeepLessons);
-
-export const continuousDeliveryDeployment = path("continuous-delivery-deployment", "Continuous Delivery and Deployment", [
-    lesson("continuous-delivery-deployment", "CI versus Continuous Delivery versus Continuous Deployment"),
-    lesson("continuous-delivery-deployment", "Environment Management"),
-    lesson("continuous-delivery-deployment", "Deployment Automation"),
-    lesson("continuous-delivery-deployment", "Release Approvals"),
-    lesson("continuous-delivery-deployment", "Database Migrations During Deployment"),
-    lesson("continuous-delivery-deployment", "Rollback"),
-    lesson("continuous-delivery-deployment", "Rolling Deployments"),
-    lesson("continuous-delivery-deployment", "Blue-Green Deployments"),
-    lesson("continuous-delivery-deployment", "Canary Deployment Concepts"),
-    lesson("continuous-delivery-deployment", "Feature Flag Concepts"),
-    lesson("continuous-delivery-deployment", "Lab: Automate Steward API Deployment and Rollback", "Automate deployment of a versioned Steward API artifact to learner-managed infrastructure and prove a safe rollback path, including migration considerations."),
-]);
+export const continuousDeliveryDeployment = path("continuous-delivery-deployment", "Continuous Delivery and Deployment", continuousDeliveryDeploymentDeepLessons);
 
 export const configurationManagement = path("configuration-management", "Configuration Management", [
     lesson("configuration-management", "Configuration Drift"),
