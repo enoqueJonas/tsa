@@ -1,61 +1,19 @@
-import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
-import type { Lesson } from "./lesson";
 import { programmingWithPythonRichLessons } from "./builder-python-rich";
 import { webAndApiFoundationsDeepLessons } from "./builder-web-api-deep";
 import { djangoAndApiRichLessons } from "./builder-django-rich";
 import { relationalDataAndPostgresqlDeepLessons } from "./builder-postgresql-deep";
 import { identityAuthenticationAuthorizationDeepLessons } from "./builder-identity-auth-deep";
+import { softwareCraftDeepLessons } from "./builder-software-craft-deep";
 
-function slug(value: string) {
-    return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-}
-
-function lesson(pathId: string, title: string, focus?: string): Lesson {
-    const lessonId = `${pathId}-${slug(title)}`;
-    const activity: Activity = {
-        id: `${lessonId}-001`,
-        title,
-        estimatedMinutes: title.startsWith("Lab:") ? 45 : 12,
-        content: title.startsWith("Lab:")
-            ? {
-                  type: "practical",
-                  objective: focus ?? `Apply ${title.replace("Lab: ", "")} in the evolving Steward API work.`,
-                  scenario: "Use the current Steward API codebase or a focused local experiment. Preserve useful work so later Builder modules can build on it.",
-                  instructions: ["Define the behavior or technical question you need to prove.", "Implement or investigate the smallest useful version.", "Exercise the result with realistic inputs, including at least one failure or edge case.", "Record what you observed and what the next module can rely on."],
-                  deliverables: ["Working implementation or experiment", "Short evidence note"],
-                  completionCriteria: ["The result can be demonstrated rather than only described.", "At least one non-happy-path behavior is considered.", "The learner can explain why the implementation behaves as observed."],
-              }
-            : {
-                  type: "reading",
-                  body: focus ?? `This breadth lesson establishes the role of ${title} in building the Steward API. The deep-authoring phase will expand it with full TSA teaching, examples, researched resources, exercises and knowledge checks.`,
-              },
-    };
-    return { id: lessonId, title, activities: [activity] };
-}
-
-function path(id: string, title: string, lessons: Lesson[]): LearningPath { return { id, title, lessons }; }
+function path(id: string, title: string, lessons: LearningPath["lessons"]): LearningPath { return { id, title, lessons }; }
 
 export const programmingWithPython = path("programming-with-python", "Programming with Python", programmingWithPythonRichLessons);
 export const webAndApiFoundations = path("web-and-api-foundations", "Web and API Foundations", webAndApiFoundationsDeepLessons);
 export const djangoAndApiEngineering = path("django-and-api-engineering", "Django and API Engineering", djangoAndApiRichLessons);
 export const relationalDataAndPostgresql = path("relational-data-and-postgresql", "Relational Data and PostgreSQL", relationalDataAndPostgresqlDeepLessons);
 export const identityAuthenticationAuthorization = path("identity-authentication-authorization", "Identity, Authentication and Authorization", identityAuthenticationAuthorizationDeepLessons);
-
-export const softwareCraft = path("software-craft", "Software Craft", [
-    lesson("software-craft", "Git as an Engineering Tool"),
-    lesson("software-craft", "Branching and Collaboration"),
-    lesson("software-craft", "Readable Code"),
-    lesson("software-craft", "Separation of Concerns"),
-    lesson("software-craft", "Refactoring"),
-    lesson("software-craft", "Managing Dependencies"),
-    lesson("software-craft", "Configuration"),
-    lesson("software-craft", "Useful Logging"),
-    lesson("software-craft", "Technical Documentation"),
-    lesson("software-craft", "Designing Errors"),
-    lesson("software-craft", "Performance Awareness"),
-    lesson("software-craft", "Lab: Refine Steward API for Review", "Refactor and document Steward API so another engineer can understand its service-registry domain, configure it, run it and review it without undocumented local knowledge."),
-]);
+export const softwareCraft = path("software-craft", "Software Craft", softwareCraftDeepLessons);
 
 export const stewardApiV1 = path("steward-api-v1", "Builder Milestone", [
     {
