@@ -21,6 +21,7 @@ export interface ReadingContent {
 export interface ReflectionContent {
     type: "reflection";
     prompt: string;
+    minimumCharacters?: number | undefined;
 }
 
 export interface PracticalContent {
