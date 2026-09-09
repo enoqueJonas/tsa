@@ -46,13 +46,29 @@ export function createLearningSession(
     const completedActivityIds = new Set<string>();
     const reflectionResponses = new Map<string, string>();
 
+    function lessonAt(index: number): Lesson {
+        const lesson = activePath.lessons[index];
+        if (!lesson) {
+            throw new Error(`Invalid lesson index ${index} for path "${activePath.id}".`);
+        }
+        return lesson;
+    }
+
+    function activityAt(lesson: Lesson, index: number): Activity {
+        const activity = lesson.activities[index];
+        if (!activity) {
+            throw new Error(`Invalid activity index ${index} for lesson "${lesson.id}".`);
+        }
+        return activity;
+    }
+
     function findActivity(activityId: string) {
         for (
             let nextLessonIndex = 0;
             nextLessonIndex < activePath.lessons.length;
             nextLessonIndex++
         ) {
-            const lesson = activePath.lessons[nextLessonIndex];
+            const lesson = lessonAt(nextLessonIndex);
             const nextActivityIndex = lesson.activities.findIndex(
                 (activity) => activity.id === activityId
             );
@@ -61,7 +77,7 @@ export function createLearningSession(
                 return {
                     lessonIndex: nextLessonIndex,
                     activityIndex: nextActivityIndex,
-                    activity: lesson.activities[nextActivityIndex],
+                    activity: activityAt(lesson, nextActivityIndex),
                 };
             }
         }
@@ -73,14 +89,14 @@ export function createLearningSession(
         const unlockedLessonIds: string[] = [];
 
         for (let index = 0; index < activePath.lessons.length; index++) {
-            const lesson = activePath.lessons[index];
+            const lesson = lessonAt(index);
 
             if (index === 0) {
                 unlockedLessonIds.push(lesson.id);
                 continue;
             }
 
-            const previousLesson = activePath.lessons[index - 1];
+            const previousLesson = lessonAt(index - 1);
             const previousLessonComplete = previousLesson.activities.every(
                 (activity) => completedActivityIds.has(activity.id)
             );
@@ -105,14 +121,14 @@ export function createLearningSession(
             }
 
             for (let index = 0; index < lesson.activities.length; index++) {
-                const activity = lesson.activities[index];
+                const activity = activityAt(lesson, index);
 
                 if (index === 0) {
                     unlockedActivityIds.push(activity.id);
                     continue;
                 }
 
-                const previousActivity = lesson.activities[index - 1];
+                const previousActivity = activityAt(lesson, index - 1);
 
                 if (!completedActivityIds.has(previousActivity.id)) {
                     break;
@@ -139,12 +155,12 @@ export function createLearningSession(
         },
 
         currentLesson() {
-            return activePath.lessons[lessonIndex];
+            return lessonAt(lessonIndex);
         },
 
         currentActivity() {
-            const lesson = activePath.lessons[lessonIndex];
-            return lesson.activities[activityIndex];
+            const lesson = lessonAt(lessonIndex);
+            return activityAt(lesson, activityIndex);
         },
 
         completedActivityIds() {
@@ -190,7 +206,7 @@ export function createLearningSession(
         },
 
         hasNext() {
-            const lesson = activePath.lessons[lessonIndex];
+            const lesson = lessonAt(lessonIndex);
             const hasNextActivity = activityIndex < lesson.activities.length - 1;
             const hasNextLesson = lessonIndex < activePath.lessons.length - 1;
 
@@ -198,7 +214,7 @@ export function createLearningSession(
         },
 
         next() {
-            const lesson = activePath.lessons[lessonIndex];
+            const lesson = lessonAt(lessonIndex);
 
             if (activityIndex < lesson.activities.length - 1) {
                 activityIndex++;
@@ -241,7 +257,8 @@ export function createLearningSession(
                 const location = findActivity(activityId);
 
                 if (
-                    location?.activity.content.type === "reflection" &&
+                    location &&
+                    location.activity.content.type === "reflection" &&
                     typeof response === "string"
                 ) {
                     reflectionResponses.set(activityId, response);

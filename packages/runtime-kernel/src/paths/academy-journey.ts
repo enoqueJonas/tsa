@@ -8,6 +8,7 @@ import { reliabilityEngineerPaths } from "./reliability-engineer";
 import { architectPaths } from "./architect";
 import { technicalStewardPaths } from "./technical-steward";
 import { professionalEngineerPaths } from "./professional-engineer";
+import { programmingWithPythonDeepLessons } from "./builder-python-deep";
 import {
     extractStewardCommonLesson,
     reusableInternalPackageLesson,
@@ -19,6 +20,9 @@ import type { LearningJourney } from "./learning-journey";
 import type { LearningPath } from "./learning-path";
 
 function extendBuilderPath(path: LearningPath): LearningPath {
+    if (path.id === "programming-with-python") {
+        return { ...path, lessons: programmingWithPythonDeepLessons };
+    }
     if (path.id === "software-craft") {
         const labIndex = path.lessons.findIndex((lesson) => lesson.title === "Lab: Refine Steward API for Review");
         const insertionIndex = labIndex === -1 ? path.lessons.length : labIndex;
