@@ -1,5 +1,6 @@
 import type { Lesson } from "./lesson";
-import { plannedPath } from "./planned-path";
+import type { LearningPath } from "./learning-path";
+import { artifactDependencySupplyChainDeepLessons } from "./delivery-artifact-supply-chain-deep";
 
 export const reusableInternalPackageLesson: Lesson = {
     id: "software-craft-internal-package-design",
@@ -55,34 +56,8 @@ export const extractStewardCommonLesson: Lesson = {
     ],
 };
 
-export const artifactDependencySupplyChainManagement = plannedPath(
-    "artifact-and-supply-chain",
-    "Artifact, Dependency and Supply-Chain Management",
-    [
-        "Why Organizations Use Internal Artifact Repositories",
-        "Package Registries versus Artifact Repositories",
-        "Public and Private Dependencies",
-        "Repository Manager Architecture",
-        "Hosted, Proxy and Group Repositories",
-        "Python and PyPI Package Distribution",
-        "npm Package Distribution",
-        "Container Registries",
-        "Deploying Nexus Repository in the Homelab",
-        "Repository Authentication and Permissions",
-        "Publishing Internal Python Packages",
-        "Consuming Internal Packages with pip",
-        "Publishing Internal npm Packages",
-        "Consuming Internal Packages with npm and pnpm",
-        "Publishing Steward Container Images Internally",
-        "Proxying and Caching Public Dependencies",
-        "Internal Package Versioning",
-        "Prerelease, Snapshot and Release Concepts",
-        "Artifact Retention and Cleanup",
-        "Dependency Provenance",
-        "SBOM Fundamentals",
-        "Signing and Provenance Concepts",
-        "Dependency, Package and Image Scanning",
-        "Lab: Build the Steward Internal Artifact Repository",
-        "Lab: Publish and Consume steward-common through CI",
-    ]
-);
+export const artifactDependencySupplyChainManagement: LearningPath = {
+    id: "artifact-and-supply-chain",
+    title: "Artifact, Dependency and Supply-Chain Management",
+    lessons: artifactDependencySupplyChainDeepLessons,
+};
