@@ -1,6 +1,7 @@
 import { systemThinkerPaths } from "./system-thinker";
 import { platformBuilderPaths } from "./platform-builder";
 import { deliveryEngineerPaths } from "./delivery-engineer";
+import { cloudEngineerPaths } from "./cloud-engineer";
 import {
     extractStewardCommonLesson,
     reusableInternalPackageLesson,
@@ -35,26 +36,14 @@ function extendBuilderPath(path: LearningPath): LearningPath {
             lessons: path.lessons.map((lesson) => ({
                 ...lesson,
                 activities: lesson.activities.map((activity) => {
-                    if (activity.content.type !== "practical") {
-                        return activity;
-                    }
-
+                    if (activity.content.type !== "practical") return activity;
                     return {
                         ...activity,
                         content: {
                             ...activity.content,
-                            instructions: [
-                                ...activity.content.instructions,
-                                "Where a genuinely reusable concern exists, package it as steward-common with an explicit public API and semantic version rather than copying shared source between consumers.",
-                            ],
-                            deliverables: [
-                                ...activity.content.deliverables,
-                                "Internal steward-common package and local consumption evidence when justified by the domain",
-                            ],
-                            completionCriteria: [
-                                ...activity.content.completionCriteria,
-                                "Any extracted internal package has a defensible reuse boundary; no shared library is created merely to satisfy the curriculum.",
-                            ],
+                            instructions: [...activity.content.instructions, "Where a genuinely reusable concern exists, package it as steward-common with an explicit public API and semantic version rather than copying shared source between consumers."],
+                            deliverables: [...activity.content.deliverables, "Internal steward-common package and local consumption evidence when justified by the domain"],
+                            completionCriteria: [...activity.content.completionCriteria, "Any extracted internal package has a defensible reuse boundary; no shared library is created merely to satisfy the curriculum."],
                         },
                     };
                 }),
@@ -68,22 +57,11 @@ function extendBuilderPath(path: LearningPath): LearningPath {
 export const technicalStewardshipJourney: LearningJourney = {
     ...plannedTechnicalStewardshipJourney,
     schools: plannedTechnicalStewardshipJourney.schools.map((school) => {
-        if (school.id === "builder") {
-            return { ...school, paths: school.paths.map(extendBuilderPath) };
-        }
-
-        if (school.id === "system-thinker") {
-            return { ...school, paths: systemThinkerPaths };
-        }
-
-        if (school.id === "platform-builder") {
-            return { ...school, paths: platformBuilderPaths };
-        }
-
-        if (school.id === "delivery-engineer") {
-            return { ...school, paths: deliveryEngineerPaths };
-        }
-
+        if (school.id === "builder") return { ...school, paths: school.paths.map(extendBuilderPath) };
+        if (school.id === "system-thinker") return { ...school, paths: systemThinkerPaths };
+        if (school.id === "platform-builder") return { ...school, paths: platformBuilderPaths };
+        if (school.id === "delivery-engineer") return { ...school, paths: deliveryEngineerPaths };
+        if (school.id === "cloud-engineer") return { ...school, paths: cloudEngineerPaths };
         return school;
     }),
 };
