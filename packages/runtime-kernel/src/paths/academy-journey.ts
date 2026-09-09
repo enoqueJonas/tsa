@@ -1,4 +1,5 @@
 import { systemThinkerPaths } from "./system-thinker";
+import { platformBuilderPaths } from "./platform-builder";
 import {
     artifactDependencySupplyChainManagement,
     extractStewardCommonLesson,
@@ -68,17 +69,15 @@ export const technicalStewardshipJourney: LearningJourney = {
     ...plannedTechnicalStewardshipJourney,
     schools: plannedTechnicalStewardshipJourney.schools.map((school) => {
         if (school.id === "builder") {
-            return {
-                ...school,
-                paths: school.paths.map(extendBuilderPath),
-            };
+            return { ...school, paths: school.paths.map(extendBuilderPath) };
         }
 
         if (school.id === "system-thinker") {
-            return {
-                ...school,
-                paths: systemThinkerPaths,
-            };
+            return { ...school, paths: systemThinkerPaths };
+        }
+
+        if (school.id === "platform-builder") {
+            return { ...school, paths: platformBuilderPaths };
         }
 
         if (school.id === "delivery-engineer") {
