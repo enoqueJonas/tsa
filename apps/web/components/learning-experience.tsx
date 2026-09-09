@@ -2,234 +2,30 @@
 
 import { useEffect, useState } from "react";
 import { createRuntime, type LearningPath } from "@tsa/runtime-kernel";
-
 import { CurriculumSidebar } from "./curriculum-sidebar";
-import {
-    PracticalContent,
-    ReadingContent,
-    ReflectionContent,
-} from "./content";
-
+import { PracticalContent, ReadingContent, ReflectionContent } from "./content";
 const runtime = createRuntime();
-
-interface LearningExperienceProps {
-    path: LearningPath;
-    onExit: () => void;
-}
-
+interface LearningExperienceProps { path: LearningPath; onExit: () => void; }
 export function LearningExperience({ path, onExit }: LearningExperienceProps) {
-    const [session] = useState(() => runtime.start(path));
-    const activePath = session.currentPath();
-    const progressStorageKey = `tsa:${activePath.id}:progress`;
-
-    const [lesson, setLesson] = useState(session.currentLesson());
-    const [activity, setActivity] = useState(session.currentActivity());
-    const [hasNext, setHasNext] = useState(session.hasNext());
-    const [completedActivityIds, setCompletedActivityIds] = useState(
-        session.completedActivityIds()
-    );
-    const [unlockedLessonIds, setUnlockedLessonIds] = useState(
-        session.unlockedLessonIds()
-    );
-    const [unlockedActivityIds, setUnlockedActivityIds] = useState(
-        session.unlockedActivityIds()
-    );
-    const [reflectionResponse, setReflectionResponse] = useState(
-        session.reflectionResponse(session.currentActivity().id)
-    );
-    const [canCompleteCurrentActivity, setCanCompleteCurrentActivity] = useState(
-        session.canCompleteCurrentActivity()
-    );
-
-    function syncFromSession() {
-        const currentActivity = session.currentActivity();
-
-        setLesson(session.currentLesson());
-        setActivity(currentActivity);
-        setHasNext(session.hasNext());
-        setCompletedActivityIds(session.completedActivityIds());
-        setUnlockedLessonIds(session.unlockedLessonIds());
-        setUnlockedActivityIds(session.unlockedActivityIds());
-        setReflectionResponse(session.reflectionResponse(currentActivity.id));
-        setCanCompleteCurrentActivity(session.canCompleteCurrentActivity());
-    }
-
-    function persistProgress() {
-        window.localStorage.setItem(
-            progressStorageKey,
-            JSON.stringify(session.progress())
-        );
-    }
-
-    useEffect(() => {
-        const savedProgress = window.localStorage.getItem(progressStorageKey);
-
-        if (!savedProgress) {
-            return;
-        }
-
-        try {
-            session.restoreProgress(JSON.parse(savedProgress));
-            syncFromSession();
-        } catch {
-            window.localStorage.removeItem(progressStorageKey);
-        }
-    }, [progressStorageKey, session]);
-
-    function handlePrimaryAction() {
-        const currentActivityId = session.currentActivity().id;
-        const isCurrentCompleted = session
-            .completedActivityIds()
-            .includes(currentActivityId);
-
-        if (!isCurrentCompleted && !session.completeCurrentActivity()) {
-            return;
-        }
-
-        if (session.hasNext()) {
-            session.next();
-        }
-
-        syncFromSession();
-        persistProgress();
-    }
-
-    function handleSelectActivity(activityId: string) {
-        if (!session.goToActivity(activityId)) {
-            return;
-        }
-
-        syncFromSession();
-        persistProgress();
-    }
-
-    function handleReflectionChange(value: string) {
-        if (!session.setReflectionResponse(activity.id, value)) {
-            return;
-        }
-
-        setReflectionResponse(value);
-        setCanCompleteCurrentActivity(session.canCompleteCurrentActivity());
-        persistProgress();
-    }
-
-    const isCurrentCompleted = completedActivityIds.includes(activity.id);
-    const isFinished = !hasNext && isCurrentCompleted;
-    const isLastActivityInLesson =
-        lesson.activities[lesson.activities.length - 1]?.id === activity.id;
-    const isPrimaryActionDisabled =
-        isFinished || (!isCurrentCompleted && !canCompleteCurrentActivity);
-
-    let primaryActionLabel = "Next";
-
-    if (isFinished) {
-        primaryActionLabel = "Path complete";
-    } else if (!hasNext) {
-        primaryActionLabel = "Complete path";
-    } else if (isLastActivityInLesson) {
-        primaryActionLabel = "Next lesson";
-    }
-
-    return (
-        <div className="mt-12">
-            <div className="flex flex-wrap items-end justify-between gap-6 border-b border-zinc-200 pb-8">
-                <div>
-                    <button
-                        type="button"
-                        onClick={onExit}
-                        className="text-sm font-medium text-blue-600 hover:text-blue-700"
-                    >
-                        ← Back to journey
-                    </button>
-                    <p className="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
-                        Module
-                    </p>
-                    <h2 className="mt-2 text-4xl font-bold tracking-tight text-zinc-950">
-                        {activePath.title}
-                    </h2>
-                </div>
-                <p className="text-sm text-zinc-500">
-                    {activePath.lessons.length} authored lessons
-                </p>
-            </div>
-
-            <div className="mt-10 grid gap-10 lg:grid-cols-[280px_1fr]">
-                <CurriculumSidebar
-                    path={activePath}
-                    currentLesson={lesson}
-                    currentActivity={activity}
-                    completedActivityIds={completedActivityIds}
-                    unlockedLessonIds={unlockedLessonIds}
-                    unlockedActivityIds={unlockedActivityIds}
-                    onSelectActivity={handleSelectActivity}
-                />
-
-                <div>
-                    <p className="mb-4 text-sm font-medium text-zinc-500">
-                        {lesson.title}
-                    </p>
-
-                    <div className="rounded-2xl border bg-white p-10 shadow-sm">
-                        <p className="text-xs uppercase tracking-[0.25em] text-zinc-500">
-                            {activity.title}
-                        </p>
-
-                        {activity.content.type === "reading" && (
-                            <ReadingContent
-                                body={activity.content.body}
-                                resources={activity.content.resources}
-                            />
-                        )}
-
-                        {activity.content.type === "reflection" && (
-                            <ReflectionContent
-                                prompt={activity.content.prompt}
-                                value={reflectionResponse}
-                                onChange={handleReflectionChange}
-                            />
-                        )}
-
-                        {activity.content.type === "practical" && (
-                            <PracticalContent
-                                objective={activity.content.objective}
-                                scenario={activity.content.scenario}
-                                instructions={activity.content.instructions}
-                                deliverables={activity.content.deliverables}
-                                completionCriteria={activity.content.completionCriteria}
-                                resources={activity.content.resources}
-                            />
-                        )}
-
-                        <div className="mt-10 flex items-center justify-between gap-6">
-                            <div>
-                                <span className="text-sm text-zinc-500">
-                                    {activity.estimatedMinutes} min
-                                </span>
-
-                                {activity.content.type === "reflection" &&
-                                    !isCurrentCompleted &&
-                                    !canCompleteCurrentActivity && (
-                                        <p className="mt-1 text-sm text-zinc-500">
-                                            Write a reflection to continue.
-                                        </p>
-                                    )}
-                            </div>
-
-                            <button
-                                onClick={handlePrimaryAction}
-                                disabled={isPrimaryActionDisabled}
-                                className={
-                                    isPrimaryActionDisabled
-                                        ? "cursor-not-allowed rounded-xl bg-zinc-200 px-6 py-3 text-zinc-500"
-                                        : "rounded-xl bg-black px-6 py-3 text-white transition hover:bg-zinc-800"
-                                }
-                            >
-                                {primaryActionLabel}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+ const [session] = useState(() => runtime.start(path)); const activePath=session.currentPath(); const progressStorageKey=`tsa:${activePath.id}:progress`;
+ const [lesson,setLesson]=useState(session.currentLesson()); const [activity,setActivity]=useState(session.currentActivity()); const [hasNext,setHasNext]=useState(session.hasNext()); const [completedActivityIds,setCompletedActivityIds]=useState(session.completedActivityIds()); const [unlockedLessonIds,setUnlockedLessonIds]=useState(session.unlockedLessonIds()); const [unlockedActivityIds,setUnlockedActivityIds]=useState(session.unlockedActivityIds()); const [reflectionResponse,setReflectionResponse]=useState(session.reflectionResponse(session.currentActivity().id)); const [canCompleteCurrentActivity,setCanCompleteCurrentActivity]=useState(session.canCompleteCurrentActivity());
+ function sync(){const a=session.currentActivity();setLesson(session.currentLesson());setActivity(a);setHasNext(session.hasNext());setCompletedActivityIds(session.completedActivityIds());setUnlockedLessonIds(session.unlockedLessonIds());setUnlockedActivityIds(session.unlockedActivityIds());setReflectionResponse(session.reflectionResponse(a.id));setCanCompleteCurrentActivity(session.canCompleteCurrentActivity());}
+ function persist(){window.localStorage.setItem(progressStorageKey,JSON.stringify(session.progress()));}
+ useEffect(()=>{const saved=window.localStorage.getItem(progressStorageKey);if(!saved)return;try{session.restoreProgress(JSON.parse(saved));sync();}catch{window.localStorage.removeItem(progressStorageKey);}},[progressStorageKey,session]);
+ function primary(){const id=session.currentActivity().id;const done=session.completedActivityIds().includes(id);if(!done&&!session.completeCurrentActivity())return;if(session.hasNext())session.next();sync();persist();}
+ function select(id:string){if(!session.goToActivity(id))return;sync();persist();}
+ function reflection(value:string){if(!session.setReflectionResponse(activity.id,value))return;setReflectionResponse(value);setCanCompleteCurrentActivity(session.canCompleteCurrentActivity());persist();}
+ const done=completedActivityIds.includes(activity.id), finished=!hasNext&&done, last=lesson.activities[lesson.activities.length-1]?.id===activity.id, disabled=finished||(!done&&!canCompleteCurrentActivity); let label="Next";if(finished)label="Path complete";else if(!hasNext)label="Complete path";else if(last)label="Next lesson";
+ const reading=activity.content.type==="reading"; const headings=reading&&activity.content.blocks ? activity.content.blocks.filter((b)=>b.type==="heading"&&b.level!==3) : [];
+ return <div className="mt-8">
+  <div className="flex flex-wrap items-end justify-between gap-6 border-b border-zinc-200 pb-6"><div><button onClick={onExit} className="text-sm font-medium text-blue-700 hover:text-blue-900">← Back to journey</button><p className="mt-4 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">{activePath.title}</p><h2 className="mt-1 text-3xl font-bold tracking-tight text-zinc-950">{lesson.title}</h2></div><p className="text-sm text-zinc-500">{activity.estimatedMinutes} min</p></div>
+  <div className={`mt-8 grid gap-10 ${reading&&headings.length ? "xl:grid-cols-[270px_minmax(0,780px)_220px]" : "lg:grid-cols-[280px_1fr]"}`}>
+   <CurriculumSidebar path={activePath} currentLesson={lesson} currentActivity={activity} completedActivityIds={completedActivityIds} unlockedLessonIds={unlockedLessonIds} unlockedActivityIds={unlockedActivityIds} onSelectActivity={select}/>
+   <main className="min-w-0 pb-20">
+    {reading ? <><p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">Lesson</p><h1 className="mt-3 text-4xl font-bold tracking-tight text-zinc-950">{activity.title.replace(/: Concepts and Mental Model$/,"")}</h1><ReadingContent body={activity.content.body} resources={activity.content.resources} blocks={activity.content.blocks}/></> : <div className="rounded-2xl border bg-white p-10 shadow-sm">{activity.content.type==="reflection"&&<ReflectionContent prompt={activity.content.prompt} value={reflectionResponse} onChange={reflection}/>} {activity.content.type==="practical"&&<PracticalContent objective={activity.content.objective} scenario={activity.content.scenario} instructions={activity.content.instructions} deliverables={activity.content.deliverables} completionCriteria={activity.content.completionCriteria} resources={activity.content.resources}/>}</div>}
+    <div className="mt-12 flex items-center justify-between border-t border-zinc-200 pt-6"><span className="text-sm text-zinc-500">{done?"Completed":`${activity.estimatedMinutes} min`}</span><button onClick={primary} disabled={disabled} className={disabled?"cursor-not-allowed rounded-lg bg-zinc-200 px-6 py-3 text-zinc-500":"rounded-lg bg-zinc-950 px-6 py-3 text-white hover:bg-zinc-800"}>{label}</button></div>
+   </main>
+   {reading&&headings.length>0&&<aside className="hidden xl:block"><div className="sticky top-8 border-l border-zinc-200 pl-5"><p className="mb-4 font-semibold text-zinc-950">Lesson contents</p><nav className="space-y-3 text-sm text-zinc-600">{headings.map((h)=><a key={h.type==="heading"?h.id:""} href={h.type==="heading"?`#${h.id}`:"#"} className="block hover:text-zinc-950">{h.type==="heading"?h.text:""}</a>)}</nav></div></aside>}
+  </div>
+ </div>;
 }
