@@ -36,6 +36,7 @@ See [Technical Stewardship Journey](./technical-stewardship-journey.md) for the 
 Some engineering capabilities deliberately begin in one school and mature across several later schools. They are recorded separately when reducing them to a single module would lose that progression.
 
 - [Internal Dependency and Artifact Management](./internal-dependency-management.md) — Builder creates a genuinely reusable internal package; Delivery Engineer builds the private artifact/package platform and CI publication flow; later schools secure, test, observe, architect and govern the dependency ecosystem.
+- [Curriculum Breadth Audit](./breadth-audit.md) — records the transition from Build Wide to Build Deep, the curriculum-wide continuity review, deep-authoring watch items and the lesson/milestone evidence standards.
 
 ## Learning model
 
@@ -56,6 +57,10 @@ Lessons and exercises may have different resources. Resources are attached where
 
 ## Build-wide-then-deep rule
 
-TSA is currently being built wide before being built deep. We first establish the complete journey, schools, modules, planned lessons, labs, milestones, and progression. We then return to the beginning and write the full researched lessons and exercises.
+**Build Wide is complete.** All 12 schools now have runnable curriculum breadth, including modules, lessons, labs and milestones.
+
+TSA is entering **Build Deep**. Deep authoring starts from Engineering Apprentice and proceeds in journey order, adding TSA-authored teaching, researched resources, worked examples, exercises, knowledge checks and stronger completion evidence while preserving the coherent cross-school progression.
+
+The breadth audit is the guardrail for this phase. Significant structural changes remain allowed when research or implementation evidence exposes a genuine missing prerequisite, weak sequence or capability gap, but deep authoring should not casually reopen the curriculum breadth.
 
 The curriculum specification is a living document. Significant changes should be intentional and committed to the repository so the academy plan is never dependent on chat history.
