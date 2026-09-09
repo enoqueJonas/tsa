@@ -4,6 +4,7 @@ import type { Lesson } from "./lesson";
 import { requirementsAndProblemFramingDeepLessons } from "./system-thinker-requirements-deep";
 import { systemBoundariesAndContextDeepLessons } from "./system-thinker-boundaries-deep";
 import { modelingSoftwareSystemsDeepLessons } from "./system-thinker-modeling-deep";
+import { componentsAndDependenciesDeepLessons } from "./system-thinker-components-dependencies-deep";
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -34,14 +35,7 @@ function path(id: string, title: string, lessons: Lesson[]): LearningPath { retu
 export const requirementsAndProblemFraming = path("requirements-and-problem-framing", "Requirements and Problem Framing", requirementsAndProblemFramingDeepLessons);
 export const systemBoundariesAndContext = path("system-boundaries-and-context", "System Boundaries and Context", systemBoundariesAndContextDeepLessons);
 export const modelingSoftwareSystems = path("modeling-software-systems", "Modeling Software Systems", modelingSoftwareSystemsDeepLessons);
-
-export const componentsAndDependencies = path("components-and-dependencies", "Components and Dependencies", [
-    lesson("components-and-dependencies", "Components and Responsibilities"),
-    lesson("components-and-dependencies", "Coupling and Cohesion Foundations"),
-    lesson("components-and-dependencies", "Dependency Direction"),
-    lesson("components-and-dependencies", "Internal and External Dependencies"),
-    lesson("components-and-dependencies", "Lab: Map Steward API Dependencies", "Map Steward API responsibilities and dependencies, then identify one place where coupling, responsibility or dependency direction deserves discussion."),
-]);
+export const componentsAndDependencies = path("components-and-dependencies", "Components and Dependencies", componentsAndDependenciesDeepLessons);
 
 export const dataFlowAndIntegration = path("data-flow-and-integration", "Data Flow and Integration", [
     lesson("data-flow-and-integration", "Following Data Through a System"),
