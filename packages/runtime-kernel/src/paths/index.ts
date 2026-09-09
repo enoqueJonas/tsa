@@ -14,6 +14,7 @@ export * from "./cloud-engineer";
 export * from "./quality-steward";
 export * from "./security-steward";
 export * from "./reliability-engineer";
+export * from "./architect";
 export * from "./internal-dependency-management";
 export * from "./thinking-like-an-engineer";
 export * from "./systems-thinking";
