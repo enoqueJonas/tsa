@@ -6,6 +6,7 @@ import { qualityStewardPaths } from "./quality-steward";
 import { securityStewardPaths } from "./security-steward";
 import { reliabilityEngineerPaths } from "./reliability-engineer";
 import { architectPaths } from "./architect";
+import { technicalStewardPaths } from "./technical-steward";
 import {
     extractStewardCommonLesson,
     reusableInternalPackageLesson,
@@ -18,9 +19,7 @@ import type { LearningPath } from "./learning-path";
 
 function extendBuilderPath(path: LearningPath): LearningPath {
     if (path.id === "software-craft") {
-        const labIndex = path.lessons.findIndex(
-            (lesson) => lesson.title === "Lab: Refine Steward API for Review"
-        );
+        const labIndex = path.lessons.findIndex((lesson) => lesson.title === "Lab: Refine Steward API for Review");
         const insertionIndex = labIndex === -1 ? path.lessons.length : labIndex;
         return { ...path, lessons: [...path.lessons.slice(0, insertionIndex), reusableInternalPackageLesson, extractStewardCommonLesson, ...path.lessons.slice(insertionIndex)] };
     }
@@ -45,6 +44,7 @@ export const technicalStewardshipJourney: LearningJourney = {
         if (school.id === "security-steward") return { ...school, paths: securityStewardPaths };
         if (school.id === "reliability-engineer") return { ...school, paths: reliabilityEngineerPaths };
         if (school.id === "architect") return { ...school, paths: architectPaths };
+        if (school.id === "technical-steward") return { ...school, paths: technicalStewardPaths };
         return school;
     }),
 };

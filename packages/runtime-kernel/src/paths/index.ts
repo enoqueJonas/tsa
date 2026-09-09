@@ -15,6 +15,7 @@ export * from "./quality-steward";
 export * from "./security-steward";
 export * from "./reliability-engineer";
 export * from "./architect";
+export * from "./technical-steward";
 export * from "./internal-dependency-management";
 export * from "./thinking-like-an-engineer";
 export * from "./systems-thinking";
