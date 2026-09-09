@@ -31,6 +31,12 @@ The primary continuing project is **Steward API**. It begins as a serious locall
 
 See [Technical Stewardship Journey](./technical-stewardship-journey.md) for the curriculum-wide specification.
 
+## Cross-journey capability specifications
+
+Some engineering capabilities deliberately begin in one school and mature across several later schools. They are recorded separately when reducing them to a single module would lose that progression.
+
+- [Internal Dependency and Artifact Management](./internal-dependency-management.md) — Builder creates a genuinely reusable internal package; Delivery Engineer builds the private artifact/package platform and CI publication flow; later schools secure, test, observe, architect and govern the dependency ecosystem.
+
 ## Learning model
 
 Each school may contain:
