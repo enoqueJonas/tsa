@@ -1,6 +1,5 @@
-import { engineeringFoundations } from "../paths";
 import type { Activity } from "../activities";
-import type { LearningPath, Lesson } from "../paths";
+import { engineeringFoundations, type LearningPath, type Lesson } from "../paths";
 
 export interface LearningProgress {
     currentActivityId: string;
@@ -26,7 +25,22 @@ export interface LearningSession {
     restoreProgress(progress: LearningProgress): void;
 }
 
-export function createLearningSession(): LearningSession {
+export function createLearningSession(
+    path: LearningPath = engineeringFoundations
+): LearningSession {
+    const authoredLessons = path.lessons.filter(
+        (lesson) => lesson.activities.length > 0
+    );
+
+    if (authoredLessons.length === 0) {
+        throw new Error(`Learning path "${path.id}" has no authored lessons.`);
+    }
+
+    const activePath: LearningPath = {
+        ...path,
+        lessons: authoredLessons,
+    };
+
     let lessonIndex = 0;
     let activityIndex = 0;
     const completedActivityIds = new Set<string>();
@@ -35,10 +49,10 @@ export function createLearningSession(): LearningSession {
     function findActivity(activityId: string) {
         for (
             let nextLessonIndex = 0;
-            nextLessonIndex < engineeringFoundations.lessons.length;
+            nextLessonIndex < activePath.lessons.length;
             nextLessonIndex++
         ) {
-            const lesson = engineeringFoundations.lessons[nextLessonIndex];
+            const lesson = activePath.lessons[nextLessonIndex];
             const nextActivityIndex = lesson.activities.findIndex(
                 (activity) => activity.id === activityId
             );
@@ -58,15 +72,15 @@ export function createLearningSession(): LearningSession {
     function getUnlockedLessonIds() {
         const unlockedLessonIds: string[] = [];
 
-        for (let index = 0; index < engineeringFoundations.lessons.length; index++) {
-            const lesson = engineeringFoundations.lessons[index];
+        for (let index = 0; index < activePath.lessons.length; index++) {
+            const lesson = activePath.lessons[index];
 
             if (index === 0) {
                 unlockedLessonIds.push(lesson.id);
                 continue;
             }
 
-            const previousLesson = engineeringFoundations.lessons[index - 1];
+            const previousLesson = activePath.lessons[index - 1];
             const previousLessonComplete = previousLesson.activities.every(
                 (activity) => completedActivityIds.has(activity.id)
             );
@@ -85,7 +99,7 @@ export function createLearningSession(): LearningSession {
         const unlockedLessonIds = new Set(getUnlockedLessonIds());
         const unlockedActivityIds: string[] = [];
 
-        for (const lesson of engineeringFoundations.lessons) {
+        for (const lesson of activePath.lessons) {
             if (!unlockedLessonIds.has(lesson.id)) {
                 continue;
             }
@@ -121,15 +135,15 @@ export function createLearningSession(): LearningSession {
 
     return {
         currentPath() {
-            return engineeringFoundations;
+            return activePath;
         },
 
         currentLesson() {
-            return engineeringFoundations.lessons[lessonIndex];
+            return activePath.lessons[lessonIndex];
         },
 
         currentActivity() {
-            const lesson = engineeringFoundations.lessons[lessonIndex];
+            const lesson = activePath.lessons[lessonIndex];
             return lesson.activities[activityIndex];
         },
 
@@ -176,26 +190,22 @@ export function createLearningSession(): LearningSession {
         },
 
         hasNext() {
-            const lesson = engineeringFoundations.lessons[lessonIndex];
-
-            const hasNextActivity =
-                activityIndex < lesson.activities.length - 1;
-
-            const hasNextLesson =
-                lessonIndex < engineeringFoundations.lessons.length - 1;
+            const lesson = activePath.lessons[lessonIndex];
+            const hasNextActivity = activityIndex < lesson.activities.length - 1;
+            const hasNextLesson = lessonIndex < activePath.lessons.length - 1;
 
             return hasNextActivity || hasNextLesson;
         },
 
         next() {
-            const lesson = engineeringFoundations.lessons[lessonIndex];
+            const lesson = activePath.lessons[lessonIndex];
 
             if (activityIndex < lesson.activities.length - 1) {
                 activityIndex++;
                 return;
             }
 
-            if (lessonIndex < engineeringFoundations.lessons.length - 1) {
+            if (lessonIndex < activePath.lessons.length - 1) {
                 lessonIndex++;
                 activityIndex = 0;
             }
@@ -204,11 +214,7 @@ export function createLearningSession(): LearningSession {
         goToActivity(activityId: string) {
             const location = findActivity(activityId);
 
-            if (!location) {
-                return false;
-            }
-
-            if (!getUnlockedActivityIds().includes(activityId)) {
+            if (!location || !getUnlockedActivityIds().includes(activityId)) {
                 return false;
             }
 
@@ -245,22 +251,17 @@ export function createLearningSession(): LearningSession {
             for (const activityId of progress.completedActivityIds) {
                 const location = findActivity(activityId);
 
-                if (!location) {
-                    continue;
-                }
-
-                if (canCompleteActivity(location.activity)) {
+                if (location && canCompleteActivity(location.activity)) {
                     completedActivityIds.add(activityId);
                 }
             }
 
             const location = findActivity(progress.currentActivityId);
 
-            if (!location) {
-                return;
-            }
-
-            if (!getUnlockedActivityIds().includes(progress.currentActivityId)) {
+            if (
+                !location ||
+                !getUnlockedActivityIds().includes(progress.currentActivityId)
+            ) {
                 return;
             }
 

@@ -7,11 +7,19 @@ import {
   type School,
 } from "@tsa/runtime-kernel";
 
+import { LearningExperience } from "./learning-experience";
+
 function authoredLessonCount(path: LearningPath) {
   return path.lessons.filter((lesson) => lesson.activities.length > 0).length;
 }
 
-function ModuleCard({ path }: { path: LearningPath }) {
+function ModuleCard({
+  path,
+  onStart,
+}: {
+  path: LearningPath;
+  onStart: (path: LearningPath) => void;
+}) {
   const authored = authoredLessonCount(path);
   const available = authored > 0;
 
@@ -66,9 +74,22 @@ function ModuleCard({ path }: { path: LearningPath }) {
         })}
       </div>
 
-      <p className="mt-5 text-sm text-zinc-500">
-        {path.lessons.length} lessons · {authored} authored
-      </p>
+      <div className="mt-5 flex items-center justify-between gap-4 border-t border-zinc-100 pt-5">
+        <p className="text-sm text-zinc-500">
+          {path.lessons.length} lessons · {authored} authored
+        </p>
+        {available ? (
+          <button
+            type="button"
+            onClick={() => onStart(path)}
+            className="rounded-lg bg-zinc-950 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800"
+          >
+            Continue module
+          </button>
+        ) : (
+          <span className="text-sm text-zinc-400">Not yet available</span>
+        )}
+      </div>
     </article>
   );
 }
@@ -98,11 +119,7 @@ function SchoolNavigation({
       }
     >
       <span className="block text-sm font-semibold">{school.title}</span>
-      <span
-        className={
-          selected ? "mt-1 block text-xs text-zinc-400" : "mt-1 block text-xs text-zinc-400"
-        }
-      >
+      <span className="mt-1 block text-xs text-zinc-400">
         {school.paths.length} modules · {lessonCount} lessons
       </span>
     </button>
@@ -114,9 +131,20 @@ export function AcademyBrowser() {
   const [selectedSchoolId, setSelectedSchoolId] = useState(
     journey.schools[0]?.id ?? ""
   );
+  const [activePath, setActivePath] = useState<LearningPath | null>(null);
   const selectedSchool =
     journey.schools.find((school) => school.id === selectedSchoolId) ??
     journey.schools[0];
+
+  if (activePath) {
+    return (
+      <LearningExperience
+        key={activePath.id}
+        path={activePath}
+        onExit={() => setActivePath(null)}
+      />
+    );
+  }
 
   if (!selectedSchool) {
     return null;
@@ -165,7 +193,7 @@ export function AcademyBrowser() {
 
         <div className="mt-8 grid gap-6 xl:grid-cols-2">
           {selectedSchool.paths.map((path) => (
-            <ModuleCard key={path.id} path={path} />
+            <ModuleCard key={path.id} path={path} onStart={setActivePath} />
           ))}
         </div>
       </section>
