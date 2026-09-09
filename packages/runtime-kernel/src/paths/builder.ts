@@ -3,6 +3,7 @@ import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
 import { programmingWithPythonRichLessons } from "./builder-python-rich";
 import { webAndApiFoundationsDeepLessons } from "./builder-web-api-deep";
+import { djangoAndApiRichLessons } from "./builder-django-rich";
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -35,24 +36,7 @@ function path(id: string, title: string, lessons: Lesson[]): LearningPath { retu
 
 export const programmingWithPython = path("programming-with-python", "Programming with Python", programmingWithPythonRichLessons);
 export const webAndApiFoundations = path("web-and-api-foundations", "Web and API Foundations", webAndApiFoundationsDeepLessons);
-
-export const djangoAndApiEngineering = path("django-and-api-engineering", "Django and API Engineering", [
-    lesson("django-and-api-engineering", "Django Foundations"),
-    lesson("django-and-api-engineering", "Django REST Framework"),
-    lesson("django-and-api-engineering", "Projects, Applications and Boundaries"),
-    lesson("django-and-api-engineering", "Models and Domain Data"),
-    lesson("django-and-api-engineering", "Serializers and Representation"),
-    lesson("django-and-api-engineering", "Views, ViewSets and Routing"),
-    lesson("django-and-api-engineering", "Validation and Business Rules"),
-    lesson("django-and-api-engineering", "API Error Handling"),
-    lesson("django-and-api-engineering", "Filtering, Searching and Ordering"),
-    lesson("django-and-api-engineering", "Pagination"),
-    lesson("django-and-api-engineering", "API Versioning"),
-    lesson("django-and-api-engineering", "OpenAPI and Swagger Documentation"),
-    lesson("django-and-api-engineering", "Configuration and Environments"),
-    lesson("django-and-api-engineering", "Application Logging"),
-    lesson("django-and-api-engineering", "Lab: Steward API Skeleton", "Create the Steward service-registry API with Teams, Services, ownership and at least one meaningful relationship. Add initial endpoints, validation, configuration, logging and generated API documentation."),
-]);
+export const djangoAndApiEngineering = path("django-and-api-engineering", "Django and API Engineering", djangoAndApiRichLessons);
 
 export const relationalDataAndPostgresql = path("relational-data-and-postgresql", "Relational Data and PostgreSQL", [
     lesson("relational-data-and-postgresql", "The Relational Model"),
