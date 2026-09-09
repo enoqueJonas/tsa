@@ -7,6 +7,7 @@ import { modelingSoftwareSystemsDeepLessons } from "./system-thinker-modeling-de
 import { componentsAndDependenciesDeepLessons } from "./system-thinker-components-dependencies-deep";
 import { dataFlowAndIntegrationDeepLessons } from "./system-thinker-data-flow-deep";
 import { failureModesDeepLessons } from "./system-thinker-failure-modes-deep";
+import { architectureDecisionsAndTradeOffsDeepLessons } from "./system-thinker-architecture-decisions-deep";
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -40,11 +41,7 @@ export const modelingSoftwareSystems = path("modeling-software-systems", "Modeli
 export const componentsAndDependencies = path("components-and-dependencies", "Components and Dependencies", componentsAndDependenciesDeepLessons);
 export const dataFlowAndIntegration = path("data-flow-and-integration", "Data Flow and Integration", dataFlowAndIntegrationDeepLessons);
 export const failureModes = path("failure-modes", "Failure Modes", failureModesDeepLessons);
-
-export const architectureDecisionsAndTradeOffs = path("architecture-decisions", "Architecture Decisions and Trade-offs", [
-    lesson("architecture-decisions", "Architecture Characteristics Introduction"), lesson("architecture-decisions", "Decision Drivers"), lesson("architecture-decisions", "Architecture Decision Records"), lesson("architecture-decisions", "Evaluating Trade-offs"),
-    lesson("architecture-decisions", "Lab: Write Steward API ADRs", "Write at least two ADRs for real Steward API decisions, including context, alternatives, consequences and conditions that could justify revisiting the choice."),
-]);
+export const architectureDecisionsAndTradeOffs = path("architecture-decisions", "Architecture Decisions and Trade-offs", architectureDecisionsAndTradeOffsDeepLessons);
 
 export const stewardApiSystemDesignPortfolio = path("steward-api-system-design-portfolio", "System Thinker Milestone", [
     lesson("steward-api-system-design-portfolio", "Milestone: Steward API System Design Portfolio", "Produce a reviewable system-design portfolio for Steward API v1 containing problem framing, stakeholders, functional and quality requirements, context and boundary views, component/dependency models, data-flow views, lifecycle/state thinking, failure-mode analysis, architecture characteristics and ADRs. The portfolio must show reasoning and trade-offs, not decorative diagrams."),
