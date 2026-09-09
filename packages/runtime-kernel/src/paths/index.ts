@@ -2,6 +2,7 @@ export * from "./lesson";
 export * from "./learning-path";
 export * from "./school";
 export * from "./learning-journey";
+export * from "./planned-path";
 export * from "./technical-stewardship-journey";
 export * from "./engineering-foundations";
 export * from "./thinking-like-an-engineer";
