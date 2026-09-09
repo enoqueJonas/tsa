@@ -4,6 +4,7 @@ import type { Lesson } from "./lesson";
 import { programmingWithPythonRichLessons } from "./builder-python-rich";
 import { webAndApiFoundationsDeepLessons } from "./builder-web-api-deep";
 import { djangoAndApiRichLessons } from "./builder-django-rich";
+import { relationalDataAndPostgresqlDeepLessons } from "./builder-postgresql-deep";
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -37,30 +38,7 @@ function path(id: string, title: string, lessons: Lesson[]): LearningPath { retu
 export const programmingWithPython = path("programming-with-python", "Programming with Python", programmingWithPythonRichLessons);
 export const webAndApiFoundations = path("web-and-api-foundations", "Web and API Foundations", webAndApiFoundationsDeepLessons);
 export const djangoAndApiEngineering = path("django-and-api-engineering", "Django and API Engineering", djangoAndApiRichLessons);
-
-export const relationalDataAndPostgresql = path("relational-data-and-postgresql", "Relational Data and PostgreSQL", [
-    lesson("relational-data-and-postgresql", "The Relational Model"),
-    lesson("relational-data-and-postgresql", "SQL SELECT, INSERT, UPDATE and DELETE"),
-    lesson("relational-data-and-postgresql", "Filtering and Ordering Queries"),
-    lesson("relational-data-and-postgresql", "Aggregation, GROUP BY and HAVING"),
-    lesson("relational-data-and-postgresql", "INNER, LEFT and RIGHT JOINs", "JOINs are a core Builder capability: reason across Teams, Services, Environments and ServiceDependencies and choose join semantics intentionally rather than relying only on ORM convenience."),
-    lesson("relational-data-and-postgresql", "Subqueries"),
-    lesson("relational-data-and-postgresql", "Common Table Expressions"),
-    lesson("relational-data-and-postgresql", "Transactions and ACID"),
-    lesson("relational-data-and-postgresql", "Constraints, Keys and Relationships"),
-    lesson("relational-data-and-postgresql", "Schema Design"),
-    lesson("relational-data-and-postgresql", "Normalization and Denormalization Trade-offs"),
-    lesson("relational-data-and-postgresql", "Indexes"),
-    lesson("relational-data-and-postgresql", "Query Plans and EXPLAIN"),
-    lesson("relational-data-and-postgresql", "Query Performance"),
-    lesson("relational-data-and-postgresql", "PostgreSQL in Practice"),
-    lesson("relational-data-and-postgresql", "Django ORM"),
-    lesson("relational-data-and-postgresql", "ORM versus SQL"),
-    lesson("relational-data-and-postgresql", "The N+1 Query Problem"),
-    lesson("relational-data-and-postgresql", "Database Migrations"),
-    lesson("relational-data-and-postgresql", "Concurrency Fundamentals"),
-    lesson("relational-data-and-postgresql", "Lab: Persist and Query Steward API Data", "Model Teams, Memberships, Services, Environments, dependencies and reviews in PostgreSQL. Prove non-trivial service-registry questions using joins, aggregation and query-plan inspection in addition to ORM access."),
-]);
+export const relationalDataAndPostgresql = path("relational-data-and-postgresql", "Relational Data and PostgreSQL", relationalDataAndPostgresqlDeepLessons);
 
 export const identityAuthenticationAuthorization = path("identity-authentication-authorization", "Identity, Authentication and Authorization", [
     lesson("identity-authentication-authorization", "Identity in Software Systems"),
