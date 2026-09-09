@@ -5,6 +5,7 @@ import { cloudEngineerPaths } from "./cloud-engineer";
 import { qualityStewardPaths } from "./quality-steward";
 import { securityStewardPaths } from "./security-steward";
 import { reliabilityEngineerPaths } from "./reliability-engineer";
+import { architectPaths } from "./architect";
 import {
     extractStewardCommonLesson,
     reusableInternalPackageLesson,
@@ -21,38 +22,14 @@ function extendBuilderPath(path: LearningPath): LearningPath {
             (lesson) => lesson.title === "Lab: Refine Steward API for Review"
         );
         const insertionIndex = labIndex === -1 ? path.lessons.length : labIndex;
-        return {
-            ...path,
-            lessons: [
-                ...path.lessons.slice(0, insertionIndex),
-                reusableInternalPackageLesson,
-                extractStewardCommonLesson,
-                ...path.lessons.slice(insertionIndex),
-            ],
-        };
+        return { ...path, lessons: [...path.lessons.slice(0, insertionIndex), reusableInternalPackageLesson, extractStewardCommonLesson, ...path.lessons.slice(insertionIndex)] };
     }
-
     if (path.id === "steward-api-v1") {
-        return {
-            ...path,
-            lessons: path.lessons.map((lesson) => ({
-                ...lesson,
-                activities: lesson.activities.map((activity) => {
-                    if (activity.content.type !== "practical") return activity;
-                    return {
-                        ...activity,
-                        content: {
-                            ...activity.content,
-                            instructions: [...activity.content.instructions, "Where a genuinely reusable concern exists, package it as steward-common with an explicit public API and semantic version rather than copying shared source between consumers."],
-                            deliverables: [...activity.content.deliverables, "Internal steward-common package and local consumption evidence when justified by the domain"],
-                            completionCriteria: [...activity.content.completionCriteria, "Any extracted internal package has a defensible reuse boundary; no shared library is created merely to satisfy the curriculum."],
-                        },
-                    };
-                }),
-            })),
-        };
+        return { ...path, lessons: path.lessons.map((lesson) => ({ ...lesson, activities: lesson.activities.map((activity) => {
+            if (activity.content.type !== "practical") return activity;
+            return { ...activity, content: { ...activity.content, instructions: [...activity.content.instructions, "Where a genuinely reusable concern exists, package it as steward-common with an explicit public API and semantic version rather than copying shared source between consumers."], deliverables: [...activity.content.deliverables, "Internal steward-common package and local consumption evidence when justified by the domain"], completionCriteria: [...activity.content.completionCriteria, "Any extracted internal package has a defensible reuse boundary; no shared library is created merely to satisfy the curriculum."] } };
+        }) })) };
     }
-
     return path;
 }
 
@@ -67,6 +44,7 @@ export const technicalStewardshipJourney: LearningJourney = {
         if (school.id === "quality-steward") return { ...school, paths: qualityStewardPaths };
         if (school.id === "security-steward") return { ...school, paths: securityStewardPaths };
         if (school.id === "reliability-engineer") return { ...school, paths: reliabilityEngineerPaths };
+        if (school.id === "architect") return { ...school, paths: architectPaths };
         return school;
     }),
 };
