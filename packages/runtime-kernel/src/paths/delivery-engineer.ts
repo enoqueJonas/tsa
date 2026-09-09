@@ -3,6 +3,7 @@ import { automationAndShellDeepLessons } from "./delivery-automation-shell-deep"
 import { configurationManagementDeepLessons } from "./delivery-configuration-management-deep";
 import { containersAndDockerDeepLessons } from "./delivery-containers-docker-deep";
 import { continuousDeliveryDeploymentDeepLessons } from "./delivery-continuous-delivery-deep";
+import { deliveryEngineerMilestoneDeepLessons } from "./delivery-engineer-milestone-deep";
 import { continuousIntegrationDeepLessons } from "./delivery-continuous-integration-deep";
 import { releaseEngineeringDeepLessons } from "./delivery-release-engineering-deep";
 import { softwareDeliveryFoundationsDeepLessons } from "./delivery-software-foundations-deep";
@@ -58,10 +59,7 @@ export const continuousIntegration = path("continuous-integration", "Continuous 
 export const continuousDeliveryDeployment = path("continuous-delivery-deployment", "Continuous Delivery and Deployment", continuousDeliveryDeploymentDeepLessons);
 export const configurationManagement = path("configuration-management", "Configuration Management", configurationManagementDeepLessons);
 export const releaseEngineering = path("release-engineering", "Release Engineering", releaseEngineeringDeepLessons);
-
-export const stewardDeliveryPlatform = path("steward-delivery-platform", "Delivery Engineer Milestone", [
-    lesson("steward-delivery-platform", "Milestone: Steward Delivery Platform", "Build a commit-to-deployment delivery platform for Steward API that produces versioned application and internal dependency artifacts, publishes them to the internal repository, runs automated checks, promotes releases through deliberate gates, configures infrastructure reproducibly and demonstrates deployment plus rollback with reviewable evidence."),
-]);
+export const stewardDeliveryPlatform = path("steward-delivery-platform", "Delivery Engineer Milestone", deliveryEngineerMilestoneDeepLessons);
 
 export const deliveryEngineerPaths: LearningPath[] = [
     softwareDeliveryFoundations,
