@@ -1,5 +1,6 @@
 import type { Activity } from "../activities";
 import { cloudAndHostingModelsDeepLessons } from "./cloud-hosting-models-deep";
+import { internetNetworkingDeepLessons } from "./cloud-internet-networking-deep";
 import { vpsOperationsDeepLessons } from "./cloud-vps-operations-deep";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
@@ -62,20 +63,7 @@ export const vpsOperations: LearningPath = {
 export const internetNetworking: LearningPath = {
     id: "internet-networking",
     title: "Internet Networking",
-    lessons: [
-        "Public and Private Addressing",
-        "Internet Routing Concepts",
-        "Domains and DNS Records",
-        "DNS Resolution and Troubleshooting",
-        "TLS Certificates and Certificate Authorities",
-        "HTTPS and TLS Termination",
-        "Reverse Proxies",
-        "Ingress Concepts",
-        "Internet-facing Firewalls",
-        "Exposure, Attack Surface and Administrative Boundaries",
-    ].map((title) => lesson("internet-networking", title)).concat([
-        lesson("internet-networking", "Lab: Publish Steward API with DNS and TLS", "Expose Steward API through a domain name and HTTPS, terminate TLS deliberately, restrict unnecessary network access and prove the complete external request path from DNS resolution to application response."),
-    ]),
+    lessons: internetNetworkingDeepLessons,
 };
 
 export const cloudBuildingBlocks = path("cloud-building-blocks", "Cloud Building Blocks", [
