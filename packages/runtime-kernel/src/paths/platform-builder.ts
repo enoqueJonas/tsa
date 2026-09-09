@@ -1,6 +1,7 @@
 import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
+import { budgetHomelabDeepLessons } from "./platform-builder-budget-homelab-deep";
 import { computerAndOsFoundationsDeepLessons } from "./platform-builder-computer-os-deep";
 import { linuxAdministrationDeepLessons } from "./platform-builder-linux-administration-deep";
 import { networkingFoundationsDeepLessons } from "./platform-builder-networking-deep";
@@ -53,26 +54,7 @@ export const computerAndOsFoundations = path("computer-and-os-foundations", "Com
 export const linuxAdministration = path("linux-administration", "Linux Administration", linuxAdministrationDeepLessons);
 export const networkingFoundations = path("networking-foundations", "Networking Foundations", networkingFoundationsDeepLessons);
 export const virtualization = path("virtualization", "Virtualization", virtualizationDeepLessons);
-
-export const budgetHomelab = path("budget-homelab", "Building the Budget Homelab", [
-    lesson("budget-homelab", "Designing a Learning Homelab"),
-    lesson("budget-homelab", "Choosing Budget Hardware"),
-    lesson("budget-homelab", "CPU, RAM, Storage and NIC Trade-offs"),
-    lesson("budget-homelab", "Power, Noise and Reliability"),
-    lesson("budget-homelab", "Ethernet Switches and Cabling"),
-    lesson("budget-homelab", "Designing the Home Network Topology"),
-    lesson("budget-homelab", "Static Addressing"),
-    lesson("budget-homelab", "Multiple Hosts and VMs"),
-    lesson("budget-homelab", "Remote Administration"),
-    lesson("budget-homelab", "Local Firewalling"),
-    lesson("budget-homelab", "Local DNS Concepts"),
-    lesson("budget-homelab", "Reverse Proxies"),
-    lesson("budget-homelab", "Storage and Backups"),
-    lesson("budget-homelab", "Safe Exposure and Isolation"),
-    lesson("budget-homelab", "VLAN Concepts"),
-    lesson("budget-homelab", "Planning Capacity for Internal Platform Services", "Reserve realistic compute, memory, storage and network capacity for future internal services such as CI runners, Nexus Repository, monitoring and security tooling without installing them prematurely."),
-    lesson("budget-homelab", "Lab: Move Steward API into the Homelab", "Move Steward API from the laptop-only VM environment onto budget learner-owned hardware connected through a physical switch, document addressing/topology and prove remote administration and service recovery."),
-]);
+export const budgetHomelab = path("budget-homelab", "Building the Budget Homelab", budgetHomelabDeepLessons);
 
 export const stewardHomelabV1 = path("steward-homelab-v1", "Platform Builder Milestone", [
     lesson("steward-homelab-v1", "Milestone: Steward Homelab v1", "Deliver a documented learner-managed homelab where Steward API runs as a Linux service on physical or virtualized budget infrastructure. Include topology, addressing, switching, SSH, permissions, service management, firewalling, DNS/reverse-proxy approach, backups, recovery evidence and capacity reserved for later internal platform services such as Nexus and CI runners."),
