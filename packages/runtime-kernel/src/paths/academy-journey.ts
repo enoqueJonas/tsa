@@ -4,6 +4,7 @@ import { deliveryEngineerPaths } from "./delivery-engineer";
 import { cloudEngineerPaths } from "./cloud-engineer";
 import { qualityStewardPaths } from "./quality-steward";
 import { securityStewardPaths } from "./security-steward";
+import { reliabilityEngineerPaths } from "./reliability-engineer";
 import {
     extractStewardCommonLesson,
     reusableInternalPackageLesson,
@@ -65,6 +66,7 @@ export const technicalStewardshipJourney: LearningJourney = {
         if (school.id === "cloud-engineer") return { ...school, paths: cloudEngineerPaths };
         if (school.id === "quality-steward") return { ...school, paths: qualityStewardPaths };
         if (school.id === "security-steward") return { ...school, paths: securityStewardPaths };
+        if (school.id === "reliability-engineer") return { ...school, paths: reliabilityEngineerPaths };
         return school;
     }),
 };
