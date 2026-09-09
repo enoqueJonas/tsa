@@ -2,6 +2,7 @@ import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
 import { requirementsAndProblemFramingDeepLessons } from "./system-thinker-requirements-deep";
+import { systemBoundariesAndContextDeepLessons } from "./system-thinker-boundaries-deep";
 
 function slug(value: string) {
     return value
@@ -60,17 +61,7 @@ export const requirementsAndProblemFraming = path(
 export const systemBoundariesAndContext = path(
     "system-boundaries-and-context",
     "System Boundaries and Context",
-    [
-        lesson("system-boundaries-and-context", "System Context"),
-        lesson("system-boundaries-and-context", "Actors and External Systems"),
-        lesson("system-boundaries-and-context", "Defining System Boundaries"),
-        lesson("system-boundaries-and-context", "Trust and Ownership Boundaries"),
-        lesson(
-            "system-boundaries-and-context",
-            "Lab: Draw the Steward API Context",
-            "Create a context view that shows Steward API, its human actors, external systems, ownership boundaries and important trust boundaries without leaking into implementation-level detail."
-        ),
-    ]
+    systemBoundariesAndContextDeepLessons
 );
 
 export const modelingSoftwareSystems = path(
