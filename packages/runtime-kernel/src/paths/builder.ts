@@ -1,6 +1,7 @@
 import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
+import { programmingWithPythonDeepLessons } from "./builder-python-deep";
 
 function slug(value: string) {
     return value
@@ -48,21 +49,11 @@ function path(id: string, title: string, lessons: Lesson[]): LearningPath {
     return { id, title, lessons };
 }
 
-export const programmingWithPython = path("programming-with-python", "Programming with Python", [
-    lesson("programming-with-python", "Setting Up a Python Engineering Environment"),
-    lesson("programming-with-python", "Python Syntax, Values and Types"),
-    lesson("programming-with-python", "Control Flow"),
-    lesson("programming-with-python", "Functions and Scope"),
-    lesson("programming-with-python", "Collections and Data Structures"),
-    lesson("programming-with-python", "Modules and Packages"),
-    lesson("programming-with-python", "Errors, Exceptions and Defensive Programming"),
-    lesson("programming-with-python", "Object-Oriented Programming"),
-    lesson("programming-with-python", "Comprehensions, Iterators and Pythonic Tools"),
-    lesson("programming-with-python", "Type Hints and Static Feedback"),
-    lesson("programming-with-python", "Virtual Environments and Dependency Management"),
-    lesson("programming-with-python", "Debugging Python Programs"),
-    lesson("programming-with-python", "Lab: Build a Small Python Service Core", "Build a small Python domain/service core that will become the conceptual starting point for Steward API rather than a disposable syntax exercise."),
-]);
+export const programmingWithPython = path(
+    "programming-with-python",
+    "Programming with Python",
+    programmingWithPythonDeepLessons
+);
 
 export const webAndApiFoundations = path("web-and-api-foundations", "Web and API Foundations", [
     lesson("web-and-api-foundations", "How the Web Works"),
