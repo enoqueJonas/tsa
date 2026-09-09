@@ -8,6 +8,7 @@ export * from "./engineering-foundations";
 export * from "./engineering-apprentice-lessons";
 export * from "./builder";
 export * from "./system-thinker";
+export * from "./platform-builder";
 export * from "./internal-dependency-management";
 export * from "./thinking-like-an-engineer";
 export * from "./systems-thinking";
