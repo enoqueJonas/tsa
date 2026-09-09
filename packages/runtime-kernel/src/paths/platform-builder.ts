@@ -1,6 +1,7 @@
 import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
+import { computerAndOsFoundationsDeepLessons } from "./platform-builder-computer-os-deep";
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -45,14 +46,7 @@ function path(id: string, title: string, lessons: Lesson[]): LearningPath {
     return { id, title, lessons };
 }
 
-export const computerAndOsFoundations = path("computer-and-os-foundations", "Computer and Operating-System Foundations", [
-    lesson("computer-and-os-foundations", "CPU, Memory, Storage and I/O"),
-    lesson("computer-and-os-foundations", "What an Operating System Does"),
-    lesson("computer-and-os-foundations", "Kernel Space and User Space"),
-    lesson("computer-and-os-foundations", "Processes and Threads"),
-    lesson("computer-and-os-foundations", "Filesystems"),
-    lesson("computer-and-os-foundations", "Lab: Inspect the Machine Beneath Steward API", "Inspect CPU, memory, processes, filesystem and I/O on the machine that runs Steward API and connect those observations to application behavior."),
-]);
+export const computerAndOsFoundations = path("computer-and-os-foundations", "Computer and Operating-System Foundations", computerAndOsFoundationsDeepLessons);
 
 export const linuxAdministration = path("linux-administration", "Linux Administration", [
     lesson("linux-administration", "Installing Ubuntu Server"),
