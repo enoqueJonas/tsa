@@ -1,6 +1,7 @@
 import type { Activity } from "../activities";
 import { automationAndShellDeepLessons } from "./delivery-automation-shell-deep";
 import { containersAndDockerDeepLessons } from "./delivery-containers-docker-deep";
+import { continuousIntegrationDeepLessons } from "./delivery-continuous-integration-deep";
 import { softwareDeliveryFoundationsDeepLessons } from "./delivery-software-foundations-deep";
 import { artifactDependencySupplyChainManagement } from "./internal-dependency-management";
 import type { LearningPath } from "./learning-path";
@@ -50,23 +51,7 @@ function path(id: string, title: string, lessons: Lesson[]): LearningPath {
 export const softwareDeliveryFoundations = path("software-delivery-foundations", "Software Delivery Foundations", softwareDeliveryFoundationsDeepLessons);
 export const automationAndShell = path("automation-and-shell", "Automation and Shell", automationAndShellDeepLessons);
 export const containersAndDocker = path("containers-and-docker", "Containers and Docker", containersAndDockerDeepLessons);
-
-export const continuousIntegration = path("continuous-integration", "Continuous Integration", [
-    lesson("continuous-integration", "CI Pipeline Architecture"),
-    lesson("continuous-integration", "Jobs, Stages and Dependencies"),
-    lesson("continuous-integration", "Runners and Agents"),
-    lesson("continuous-integration", "GitHub Actions and Jenkins"),
-    lesson("continuous-integration", "Self-hosted Runners"),
-    lesson("continuous-integration", "Caching"),
-    lesson("continuous-integration", "Pipeline Artifacts"),
-    lesson("continuous-integration", "Secrets and Variables"),
-    lesson("continuous-integration", "Parallelism"),
-    lesson("continuous-integration", "Automated Checks"),
-    lesson("continuous-integration", "Test Stages"),
-    lesson("continuous-integration", "Quality Gates"),
-    lesson("continuous-integration", "Building Containers in CI"),
-    lesson("continuous-integration", "Lab: Run Steward CI from the Homelab", "Install a self-hosted runner or agent in the homelab and build a multi-stage pipeline that checks source, runs tests, builds the Steward API image and preserves evidence/artifacts."),
-]);
+export const continuousIntegration = path("continuous-integration", "Continuous Integration", continuousIntegrationDeepLessons);
 
 export const continuousDeliveryDeployment = path("continuous-delivery-deployment", "Continuous Delivery and Deployment", [
     lesson("continuous-delivery-deployment", "CI versus Continuous Delivery versus Continuous Deployment"),
