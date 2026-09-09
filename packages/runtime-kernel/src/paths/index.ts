@@ -7,6 +7,7 @@ export * from "./academy-journey";
 export * from "./engineering-foundations";
 export * from "./engineering-apprentice-lessons";
 export * from "./builder";
+export * from "./builder-python-deep";
 export * from "./system-thinker";
 export * from "./platform-builder";
 export * from "./delivery-engineer";
