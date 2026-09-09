@@ -2,6 +2,7 @@ import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
 import { programmingWithPythonRichLessons } from "./builder-python-rich";
+import { webAndApiFoundationsDeepLessons } from "./builder-web-api-deep";
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -33,18 +34,7 @@ function lesson(pathId: string, title: string, focus?: string): Lesson {
 function path(id: string, title: string, lessons: Lesson[]): LearningPath { return { id, title, lessons }; }
 
 export const programmingWithPython = path("programming-with-python", "Programming with Python", programmingWithPythonRichLessons);
-
-export const webAndApiFoundations = path("web-and-api-foundations", "Web and API Foundations", [
-    lesson("web-and-api-foundations", "How the Web Works"),
-    lesson("web-and-api-foundations", "Client-Server Architecture"),
-    lesson("web-and-api-foundations", "HTTP Requests and Responses"),
-    lesson("web-and-api-foundations", "Methods, Headers and Status Codes"),
-    lesson("web-and-api-foundations", "JSON and Content Types"),
-    lesson("web-and-api-foundations", "REST Principles and Trade-offs"),
-    lesson("web-and-api-foundations", "Modeling Resources and API Contracts"),
-    lesson("web-and-api-foundations", "Errors and Status Design"),
-    lesson("web-and-api-foundations", "Lab: Explore APIs with curl and Postman", "Inspect real HTTP exchanges with curl and Postman and explain requests, responses, headers, status codes and failure behavior."),
-]);
+export const webAndApiFoundations = path("web-and-api-foundations", "Web and API Foundations", webAndApiFoundationsDeepLessons);
 
 export const djangoAndApiEngineering = path("django-and-api-engineering", "Django and API Engineering", [
     lesson("django-and-api-engineering", "Django Foundations"),
