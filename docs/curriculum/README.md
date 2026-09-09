@@ -6,7 +6,7 @@ This directory is the durable curriculum specification for TSA.
 
 TSA is one continuous engineering apprenticeship, not a collection of disconnected tutorials. The learner builds and evolves real systems across the journey. Each school builds on capabilities and infrastructure created previously.
 
-The primary continuing project is **Steward API**. It begins as a serious locally running backend and progressively becomes designed, hosted, delivered, tested, secured, observed, operated, governed, and evolved.
+The primary continuing project is **Steward**, an internal Engineering Service Registry and Technology Stewardship platform. Its canonical product/domain definition lives in [Steward — Product and Domain Definition](../product/steward.md). It begins as a serious locally running backend and progressively becomes designed, hosted, delivered, tested, secured, observed, operated, architected, governed and evolved.
 
 ## Engineering values
 
@@ -43,9 +43,10 @@ Some engineering capabilities deliberately begin in one school and mature across
 Each school may contain:
 
 - modules
-- full lessons
+- full publication-quality lessons
 - curated required and additional resources
-- practice labs on the TSA platform
+- worked examples and code examples where appropriate
+- first-class practice labs on the TSA platform
 - exercises and investigations
 - knowledge checks and reflections
 - handbook entries
@@ -55,12 +56,48 @@ Each school may contain:
 
 Lessons and exercises may have different resources. Resources are attached where they are useful; the same resource should not be duplicated mechanically between lesson and exercise.
 
+## Deep lesson standard
+
+A deep-authored TSA lesson is a technical learning document, not a large paragraph inside an activity card. Where the subject warrants it, lessons should use structured sections, clear typography, headings, lists, examples, syntax-highlighted code blocks, callouts, diagrams or tables, assignments, curated resources and knowledge checks.
+
+TSA-authored teaching must be sufficient to teach the concept. External documentation, books, articles and videos reinforce or extend the lesson rather than becoming a substitute for the curriculum itself.
+
+A strong lesson normally contains the relevant subset of:
+
+```text
+Introduction / why this matters
+Learning outcomes
+Concept sections
+Mental models
+Worked examples
+Code / command / query examples
+Steward connection where natural
+Common mistakes / warnings
+Required or supporting resources
+Assignment / engineering practice
+Evidence expectations
+Knowledge check / reflection
+```
+
+Not every lesson needs every block. Structure follows the learning objective rather than a mechanical template.
+
 ## Build-wide-then-deep rule
 
-**Build Wide is complete.** All 12 schools now have runnable curriculum breadth, including modules, lessons, labs and milestones.
+**Build Wide is complete.** All 12 schools have runnable curriculum breadth, including modules, lessons, labs and milestones.
 
-TSA is entering **Build Deep**. Deep authoring starts from Engineering Apprentice and proceeds in journey order, adding TSA-authored teaching, researched resources, worked examples, exercises, knowledge checks and stronger completion evidence while preserving the coherent cross-school progression.
+TSA is now in **Build Deep**. The reference rich-lesson renderer and the first publication-style lesson were prototyped during Builder work specifically so the academy could validate the experience before multiplying it across hundreds of lessons.
 
-The breadth audit is the guardrail for this phase. Significant structural changes remain allowed when research or implementation evidence exposes a genuine missing prerequisite, weak sequence or capability gap, but deep authoring should not casually reopen the curriculum breadth.
+The deep-authoring execution order is now locked as:
+
+```text
+1. Deep-author every Engineering Apprentice lesson to the publication-quality standard
+2. Deep-author Builder, module by module, while building Steward API v1
+3. Deep-author System Thinker
+4. Deep-author each remaining school in journey order
+```
+
+This means the temporary Builder prototype is a design reference, not permission to skip ahead. Once the lesson experience is accepted, authoring returns to Engineering Apprentice and proceeds sequentially through the academy.
+
+The breadth audit remains the guardrail. Significant structural changes are allowed when research or implementation evidence exposes a genuine missing prerequisite, weak sequence or capability gap, but deep authoring should not casually reopen curriculum breadth.
 
 The curriculum specification is a living document. Significant changes should be intentional and committed to the repository so the academy plan is never dependent on chat history.
