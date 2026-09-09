@@ -5,6 +5,7 @@ import { programmingWithPythonRichLessons } from "./builder-python-rich";
 import { webAndApiFoundationsDeepLessons } from "./builder-web-api-deep";
 import { djangoAndApiRichLessons } from "./builder-django-rich";
 import { relationalDataAndPostgresqlDeepLessons } from "./builder-postgresql-deep";
+import { identityAuthenticationAuthorizationDeepLessons } from "./builder-identity-auth-deep";
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -39,21 +40,7 @@ export const programmingWithPython = path("programming-with-python", "Programmin
 export const webAndApiFoundations = path("web-and-api-foundations", "Web and API Foundations", webAndApiFoundationsDeepLessons);
 export const djangoAndApiEngineering = path("django-and-api-engineering", "Django and API Engineering", djangoAndApiRichLessons);
 export const relationalDataAndPostgresql = path("relational-data-and-postgresql", "Relational Data and PostgreSQL", relationalDataAndPostgresqlDeepLessons);
-
-export const identityAuthenticationAuthorization = path("identity-authentication-authorization", "Identity, Authentication and Authorization", [
-    lesson("identity-authentication-authorization", "Identity in Software Systems"),
-    lesson("identity-authentication-authorization", "Authentication versus Authorization"),
-    lesson("identity-authentication-authorization", "Password Storage and Hashing"),
-    lesson("identity-authentication-authorization", "JWT Structure and Lifecycle"),
-    lesson("identity-authentication-authorization", "Access and Refresh Tokens"),
-    lesson("identity-authentication-authorization", "Expiration and Token Rotation"),
-    lesson("identity-authentication-authorization", "Authentication Flows"),
-    lesson("identity-authentication-authorization", "Roles and Permissions"),
-    lesson("identity-authentication-authorization", "Object-Level Authorization"),
-    lesson("identity-authentication-authorization", "Ownership and Access Rules"),
-    lesson("identity-authentication-authorization", "Common Authentication and Authorization Mistakes"),
-    lesson("identity-authentication-authorization", "Lab: Secure Steward API", "Implement JWT authentication plus Team membership, ownership and object-level authorization. Verify that users cannot modify services owned by teams for which they lack the required role."),
-]);
+export const identityAuthenticationAuthorization = path("identity-authentication-authorization", "Identity, Authentication and Authorization", identityAuthenticationAuthorizationDeepLessons);
 
 export const softwareCraft = path("software-craft", "Software Craft", [
     lesson("software-craft", "Git as an Engineering Tool"),

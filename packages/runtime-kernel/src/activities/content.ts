@@ -6,7 +6,7 @@ export interface LearningResource {
 export type LessonBlock =
     | { type: "heading"; id: string; text: string; level?: 2 | 3 }
     | { type: "paragraph"; text: string }
-    | { type: "code"; language: string; code: string; caption?: string }
+    | { type: "code"; language: string; code: string; caption?: string | undefined }
     | { type: "list"; items: string[]; ordered?: boolean }
     | { type: "callout"; tone: "note" | "warning" | "steward"; title: string; body: string }
     | { type: "resources"; title?: string; resources: LearningResource[] };
