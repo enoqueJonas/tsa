@@ -1,7 +1,7 @@
 import { systemThinkerPaths } from "./system-thinker";
 import { platformBuilderPaths } from "./platform-builder";
+import { deliveryEngineerPaths } from "./delivery-engineer";
 import {
-    artifactDependencySupplyChainManagement,
     extractStewardCommonLesson,
     reusableInternalPackageLesson,
 } from "./internal-dependency-management";
@@ -81,14 +81,7 @@ export const technicalStewardshipJourney: LearningJourney = {
         }
 
         if (school.id === "delivery-engineer") {
-            return {
-                ...school,
-                paths: school.paths.map((path) =>
-                    path.id === "artifact-and-supply-chain"
-                        ? artifactDependencySupplyChainManagement
-                        : path
-                ),
-            };
+            return { ...school, paths: deliveryEngineerPaths };
         }
 
         return school;
