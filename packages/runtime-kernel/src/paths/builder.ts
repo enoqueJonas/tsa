@@ -1,8 +1,7 @@
 import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
-import { programmingWithPythonDeepLessons } from "./builder-python-deep";
-import { stewardValuesAndTypesLesson } from "./steward-values-types-lesson";
+import { programmingWithPythonRichLessons } from "./builder-python-rich";
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -33,11 +32,7 @@ function lesson(pathId: string, title: string, focus?: string): Lesson {
 
 function path(id: string, title: string, lessons: Lesson[]): LearningPath { return { id, title, lessons }; }
 
-const stewardPythonLessons = programmingWithPythonDeepLessons.map((pythonLesson) =>
-    pythonLesson.id === stewardValuesAndTypesLesson.id ? stewardValuesAndTypesLesson : pythonLesson
-);
-
-export const programmingWithPython = path("programming-with-python", "Programming with Python", stewardPythonLessons);
+export const programmingWithPython = path("programming-with-python", "Programming with Python", programmingWithPythonRichLessons);
 
 export const webAndApiFoundations = path("web-and-api-foundations", "Web and API Foundations", [
     lesson("web-and-api-foundations", "How the Web Works"),
