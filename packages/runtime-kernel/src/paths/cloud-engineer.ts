@@ -1,6 +1,7 @@
 import type { Activity } from "../activities";
 import { cloudAndHostingModelsDeepLessons } from "./cloud-hosting-models-deep";
 import { cloudBuildingBlocksDeepLessons } from "./cloud-building-blocks-deep";
+import { infrastructureAsCodeDeepLessons } from "./cloud-infrastructure-as-code-deep";
 import { internetNetworkingDeepLessons } from "./cloud-internet-networking-deep";
 import { vpsOperationsDeepLessons } from "./cloud-vps-operations-deep";
 import type { LearningPath } from "./learning-path";
@@ -49,12 +50,7 @@ export const cloudAndHostingModels: LearningPath = { id: "cloud-and-hosting-mode
 export const vpsOperations: LearningPath = { id: "vps-operations", title: "VPS Operations", lessons: vpsOperationsDeepLessons };
 export const internetNetworking: LearningPath = { id: "internet-networking", title: "Internet Networking", lessons: internetNetworkingDeepLessons };
 export const cloudBuildingBlocks: LearningPath = { id: "cloud-building-blocks", title: "Cloud Building Blocks", lessons: cloudBuildingBlocksDeepLessons };
-
-export const infrastructureAsCode: LearningPath = {
-    id: "infrastructure-as-code",
-    title: "Infrastructure as Code",
-    lessons: ["Why Infrastructure as Code", "Declarative Infrastructure", "Terraform and OpenTofu Fundamentals", "Providers and Resources", "State", "Variables and Outputs", "Dependencies", "Modules Concepts", "Plan and Apply Lifecycle", "Drift", "Remote State Concepts", "Secrets and Sensitive Values", "Destroy and Resource Lifecycle"].map((title) => lesson("infrastructure-as-code", title)).concat([lesson("infrastructure-as-code", "Lab: Define Steward Infrastructure as Code", "Represent the remote Steward infrastructure with Terraform or OpenTofu, review the plan before applying it, verify the resulting environment and demonstrate controlled change rather than manual console-only provisioning.")]),
-};
+export const infrastructureAsCode: LearningPath = { id: "infrastructure-as-code", title: "Infrastructure as Code", lessons: infrastructureAsCodeDeepLessons };
 
 export const cloudArchitectureAndCost: LearningPath = {
     id: "cloud-architecture-and-cost",
