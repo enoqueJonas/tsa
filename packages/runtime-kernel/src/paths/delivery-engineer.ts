@@ -1,5 +1,6 @@
 import type { Activity } from "../activities";
 import { automationAndShellDeepLessons } from "./delivery-automation-shell-deep";
+import { configurationManagementDeepLessons } from "./delivery-configuration-management-deep";
 import { containersAndDockerDeepLessons } from "./delivery-containers-docker-deep";
 import { continuousDeliveryDeploymentDeepLessons } from "./delivery-continuous-delivery-deep";
 import { continuousIntegrationDeepLessons } from "./delivery-continuous-integration-deep";
@@ -54,16 +55,7 @@ export const automationAndShell = path("automation-and-shell", "Automation and S
 export const containersAndDocker = path("containers-and-docker", "Containers and Docker", containersAndDockerDeepLessons);
 export const continuousIntegration = path("continuous-integration", "Continuous Integration", continuousIntegrationDeepLessons);
 export const continuousDeliveryDeployment = path("continuous-delivery-deployment", "Continuous Delivery and Deployment", continuousDeliveryDeploymentDeepLessons);
-
-export const configurationManagement = path("configuration-management", "Configuration Management", [
-    lesson("configuration-management", "Configuration Drift"),
-    lesson("configuration-management", "Desired State and Idempotency"),
-    lesson("configuration-management", "Ansible Fundamentals"),
-    lesson("configuration-management", "Inventories"),
-    lesson("configuration-management", "Playbooks"),
-    lesson("configuration-management", "Roles Concepts"),
-    lesson("configuration-management", "Lab: Automate Steward Servers with Ansible", "Use Ansible to reproduce important Steward server configuration from declared state and demonstrate that rerunning automation is safe and convergent."),
-]);
+export const configurationManagement = path("configuration-management", "Configuration Management", configurationManagementDeepLessons);
 
 export const releaseEngineering = path("release-engineering", "Release Engineering", [
     lesson("release-engineering", "Release Candidates"),
