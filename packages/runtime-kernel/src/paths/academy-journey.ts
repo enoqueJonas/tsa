@@ -3,6 +3,7 @@ import { platformBuilderPaths } from "./platform-builder";
 import { deliveryEngineerPaths } from "./delivery-engineer";
 import { cloudEngineerPaths } from "./cloud-engineer";
 import { qualityStewardPaths } from "./quality-steward";
+import { securityStewardPaths } from "./security-steward";
 import {
     extractStewardCommonLesson,
     reusableInternalPackageLesson,
@@ -19,7 +20,6 @@ function extendBuilderPath(path: LearningPath): LearningPath {
             (lesson) => lesson.title === "Lab: Refine Steward API for Review"
         );
         const insertionIndex = labIndex === -1 ? path.lessons.length : labIndex;
-
         return {
             ...path,
             lessons: [
@@ -64,6 +64,7 @@ export const technicalStewardshipJourney: LearningJourney = {
         if (school.id === "delivery-engineer") return { ...school, paths: deliveryEngineerPaths };
         if (school.id === "cloud-engineer") return { ...school, paths: cloudEngineerPaths };
         if (school.id === "quality-steward") return { ...school, paths: qualityStewardPaths };
+        if (school.id === "security-steward") return { ...school, paths: securityStewardPaths };
         return school;
     }),
 };
