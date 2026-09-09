@@ -5,6 +5,7 @@ import { requirementsAndProblemFramingDeepLessons } from "./system-thinker-requi
 import { systemBoundariesAndContextDeepLessons } from "./system-thinker-boundaries-deep";
 import { modelingSoftwareSystemsDeepLessons } from "./system-thinker-modeling-deep";
 import { componentsAndDependenciesDeepLessons } from "./system-thinker-components-dependencies-deep";
+import { dataFlowAndIntegrationDeepLessons } from "./system-thinker-data-flow-deep";
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -36,14 +37,7 @@ export const requirementsAndProblemFraming = path("requirements-and-problem-fram
 export const systemBoundariesAndContext = path("system-boundaries-and-context", "System Boundaries and Context", systemBoundariesAndContextDeepLessons);
 export const modelingSoftwareSystems = path("modeling-software-systems", "Modeling Software Systems", modelingSoftwareSystemsDeepLessons);
 export const componentsAndDependencies = path("components-and-dependencies", "Components and Dependencies", componentsAndDependenciesDeepLessons);
-
-export const dataFlowAndIntegration = path("data-flow-and-integration", "Data Flow and Integration", [
-    lesson("data-flow-and-integration", "Following Data Through a System"),
-    lesson("data-flow-and-integration", "Synchronous and Asynchronous Boundaries"),
-    lesson("data-flow-and-integration", "Integration Contracts"),
-    lesson("data-flow-and-integration", "Failure Across Integrations"),
-    lesson("data-flow-and-integration", "Lab: Model Steward API Data Flows", "Trace important Steward API data from entry to persistence and external boundaries, including validation, authorization, state changes and at least one integration-failure path."),
-]);
+export const dataFlowAndIntegration = path("data-flow-and-integration", "Data Flow and Integration", dataFlowAndIntegrationDeepLessons);
 
 export const failureModes = path("failure-modes", "Failure Modes", [
     lesson("failure-modes", "Thinking in Failure Modes"), lesson("failure-modes", "Dependency Failure"), lesson("failure-modes", "Invalid and Partial State"), lesson("failure-modes", "Resource Exhaustion"), lesson("failure-modes", "Human and Operational Failure"),
