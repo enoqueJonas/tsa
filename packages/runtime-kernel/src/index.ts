@@ -1,3 +1,3 @@
 export * from "./create-runtime";
-export * from "./activities/engineering-foundations";
+export * from "./activities";
 export * from "./paths";
