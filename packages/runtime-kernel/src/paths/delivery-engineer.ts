@@ -4,6 +4,7 @@ import { configurationManagementDeepLessons } from "./delivery-configuration-man
 import { containersAndDockerDeepLessons } from "./delivery-containers-docker-deep";
 import { continuousDeliveryDeploymentDeepLessons } from "./delivery-continuous-delivery-deep";
 import { continuousIntegrationDeepLessons } from "./delivery-continuous-integration-deep";
+import { releaseEngineeringDeepLessons } from "./delivery-release-engineering-deep";
 import { softwareDeliveryFoundationsDeepLessons } from "./delivery-software-foundations-deep";
 import { artifactDependencySupplyChainManagement } from "./internal-dependency-management";
 import type { LearningPath } from "./learning-path";
@@ -56,15 +57,7 @@ export const containersAndDocker = path("containers-and-docker", "Containers and
 export const continuousIntegration = path("continuous-integration", "Continuous Integration", continuousIntegrationDeepLessons);
 export const continuousDeliveryDeployment = path("continuous-delivery-deployment", "Continuous Delivery and Deployment", continuousDeliveryDeploymentDeepLessons);
 export const configurationManagement = path("configuration-management", "Configuration Management", configurationManagementDeepLessons);
-
-export const releaseEngineering = path("release-engineering", "Release Engineering", [
-    lesson("release-engineering", "Release Candidates"),
-    lesson("release-engineering", "Promotion and Gates"),
-    lesson("release-engineering", "Deployment Evidence"),
-    lesson("release-engineering", "Release Observability"),
-    lesson("release-engineering", "Release Failure Handling"),
-    lesson("release-engineering", "Release Runbooks"),
-]);
+export const releaseEngineering = path("release-engineering", "Release Engineering", releaseEngineeringDeepLessons);
 
 export const stewardDeliveryPlatform = path("steward-delivery-platform", "Delivery Engineer Milestone", [
     lesson("steward-delivery-platform", "Milestone: Steward Delivery Platform", "Build a commit-to-deployment delivery platform for Steward API that produces versioned application and internal dependency artifacts, publishes them to the internal repository, runs automated checks, promotes releases through deliberate gates, configures infrastructure reproducibly and demonstrates deployment plus rollback with reviewable evidence."),
