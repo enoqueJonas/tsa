@@ -2,6 +2,7 @@ import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
 import { computerAndOsFoundationsDeepLessons } from "./platform-builder-computer-os-deep";
+import { linuxAdministrationDeepLessons } from "./platform-builder-linux-administration-deep";
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -47,23 +48,7 @@ function path(id: string, title: string, lessons: Lesson[]): LearningPath {
 }
 
 export const computerAndOsFoundations = path("computer-and-os-foundations", "Computer and Operating-System Foundations", computerAndOsFoundationsDeepLessons);
-
-export const linuxAdministration = path("linux-administration", "Linux Administration", [
-    lesson("linux-administration", "Installing Ubuntu Server"),
-    lesson("linux-administration", "Shell Navigation and Command Fluency"),
-    lesson("linux-administration", "Files and Directories"),
-    lesson("linux-administration", "Users and Groups"),
-    lesson("linux-administration", "Linux Permissions"),
-    lesson("linux-administration", "Package Management"),
-    lesson("linux-administration", "Processes and Signals"),
-    lesson("linux-administration", "systemd and Services"),
-    lesson("linux-administration", "Environment and Configuration"),
-    lesson("linux-administration", "Logs and journalctl"),
-    lesson("linux-administration", "Scheduled Tasks"),
-    lesson("linux-administration", "Storage and Mounts"),
-    lesson("linux-administration", "SSH and Key Authentication"),
-    lesson("linux-administration", "Lab: Operate Steward API as a Linux Service", "Install and operate Steward API and PostgreSQL on Ubuntu Server, manage the application through systemd, inspect logs, restart behavior and permissions, and recover from a deliberate service failure."),
-]);
+export const linuxAdministration = path("linux-administration", "Linux Administration", linuxAdministrationDeepLessons);
 
 export const networkingFoundations = path("networking-foundations", "Networking Foundations", [
     lesson("networking-foundations", "Networking Mental Models: OSI and TCP/IP"),
