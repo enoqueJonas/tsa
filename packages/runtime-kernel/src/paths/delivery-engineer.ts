@@ -1,4 +1,5 @@
 import type { Activity } from "../activities";
+import { automationAndShellDeepLessons } from "./delivery-automation-shell-deep";
 import { softwareDeliveryFoundationsDeepLessons } from "./delivery-software-foundations-deep";
 import { artifactDependencySupplyChainManagement } from "./internal-dependency-management";
 import type { LearningPath } from "./learning-path";
@@ -46,16 +47,7 @@ function path(id: string, title: string, lessons: Lesson[]): LearningPath {
 }
 
 export const softwareDeliveryFoundations = path("software-delivery-foundations", "Software Delivery Foundations", softwareDeliveryFoundationsDeepLessons);
-
-export const automationAndShell = path("automation-and-shell", "Automation and Shell", [
-    lesson("automation-and-shell", "Shell Scripting for Engineers"),
-    lesson("automation-and-shell", "Pipes, Exit Codes and Failure"),
-    lesson("automation-and-shell", "Environment Variables"),
-    lesson("automation-and-shell", "Repeatable Automation Scripts"),
-    lesson("automation-and-shell", "Make and Task Automation"),
-    lesson("automation-and-shell", "Idempotency Concepts"),
-    lesson("automation-and-shell", "Lab: Automate Steward Developer and Operator Tasks", "Replace repeated Steward setup, build and operational commands with small reliable scripts or task targets that fail visibly and can be rerun safely."),
-]);
+export const automationAndShell = path("automation-and-shell", "Automation and Shell", automationAndShellDeepLessons);
 
 export const containersAndDocker = path("containers-and-docker", "Containers and Docker", [
     lesson("containers-and-docker", "Containers versus Virtual Machines"),
