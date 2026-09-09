@@ -2,6 +2,7 @@ import { systemThinkerPaths } from "./system-thinker";
 import { platformBuilderPaths } from "./platform-builder";
 import { deliveryEngineerPaths } from "./delivery-engineer";
 import { cloudEngineerPaths } from "./cloud-engineer";
+import { qualityStewardPaths } from "./quality-steward";
 import {
     extractStewardCommonLesson,
     reusableInternalPackageLesson,
@@ -62,6 +63,7 @@ export const technicalStewardshipJourney: LearningJourney = {
         if (school.id === "platform-builder") return { ...school, paths: platformBuilderPaths };
         if (school.id === "delivery-engineer") return { ...school, paths: deliveryEngineerPaths };
         if (school.id === "cloud-engineer") return { ...school, paths: cloudEngineerPaths };
+        if (school.id === "quality-steward") return { ...school, paths: qualityStewardPaths };
         return school;
     }),
 };
