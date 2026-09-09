@@ -1,5 +1,6 @@
 import type { Activity } from "../activities";
 import { automationAndShellDeepLessons } from "./delivery-automation-shell-deep";
+import { containersAndDockerDeepLessons } from "./delivery-containers-docker-deep";
 import { softwareDeliveryFoundationsDeepLessons } from "./delivery-software-foundations-deep";
 import { artifactDependencySupplyChainManagement } from "./internal-dependency-management";
 import type { LearningPath } from "./learning-path";
@@ -48,25 +49,7 @@ function path(id: string, title: string, lessons: Lesson[]): LearningPath {
 
 export const softwareDeliveryFoundations = path("software-delivery-foundations", "Software Delivery Foundations", softwareDeliveryFoundationsDeepLessons);
 export const automationAndShell = path("automation-and-shell", "Automation and Shell", automationAndShellDeepLessons);
-
-export const containersAndDocker = path("containers-and-docker", "Containers and Docker", [
-    lesson("containers-and-docker", "Containers versus Virtual Machines"),
-    lesson("containers-and-docker", "Namespaces and cgroups Concepts"),
-    lesson("containers-and-docker", "Docker Architecture"),
-    lesson("containers-and-docker", "Images and Layers"),
-    lesson("containers-and-docker", "Writing Dockerfiles"),
-    lesson("containers-and-docker", "Build Context"),
-    lesson("containers-and-docker", "Multi-stage Builds"),
-    lesson("containers-and-docker", "Volumes"),
-    lesson("containers-and-docker", "Container Networking"),
-    lesson("containers-and-docker", "Docker Compose"),
-    lesson("containers-and-docker", "Health Checks"),
-    lesson("containers-and-docker", "Container Registries"),
-    lesson("containers-and-docker", "Image Tags and Versioning"),
-    lesson("containers-and-docker", "Image Optimization"),
-    lesson("containers-and-docker", "Container Debugging"),
-    lesson("containers-and-docker", "Lab: Containerize Steward API", "Build a production-oriented Steward API image, compose its dependencies, add health checks, version the image and prove the service can be rebuilt from a clean environment."),
-]);
+export const containersAndDocker = path("containers-and-docker", "Containers and Docker", containersAndDockerDeepLessons);
 
 export const continuousIntegration = path("continuous-integration", "Continuous Integration", [
     lesson("continuous-integration", "CI Pipeline Architecture"),
