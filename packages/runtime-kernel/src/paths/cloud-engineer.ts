@@ -1,5 +1,6 @@
 import type { Activity } from "../activities";
 import { cloudAndHostingModelsDeepLessons } from "./cloud-hosting-models-deep";
+import { vpsOperationsDeepLessons } from "./cloud-vps-operations-deep";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
 
@@ -55,18 +56,7 @@ export const cloudAndHostingModels: LearningPath = {
 export const vpsOperations: LearningPath = {
     id: "vps-operations",
     title: "VPS Operations",
-    lessons: [
-        "Choosing a Budget VPS",
-        "Provisioning a Server",
-        "Public IP Addressing",
-        "Securing SSH Access",
-        "Provider Firewalls and Security Controls",
-        "OS Lifecycle and Patching",
-        "Remote Recovery Concepts",
-        "Backups and Snapshots",
-    ].map((title) => lesson("vps-operations", title)).concat([
-        lesson("vps-operations", "Lab: Provision the Steward VPS", "Provision a budget-conscious remote Linux server, harden administrative access, configure provider and host firewall boundaries, and deploy the versioned Steward API through the existing delivery process."),
-    ]),
+    lessons: vpsOperationsDeepLessons,
 };
 
 export const internetNetworking: LearningPath = {
