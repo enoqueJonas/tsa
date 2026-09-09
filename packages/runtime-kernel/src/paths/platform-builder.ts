@@ -3,6 +3,7 @@ import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
 import { computerAndOsFoundationsDeepLessons } from "./platform-builder-computer-os-deep";
 import { linuxAdministrationDeepLessons } from "./platform-builder-linux-administration-deep";
+import { networkingFoundationsDeepLessons } from "./platform-builder-networking-deep";
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -49,24 +50,7 @@ function path(id: string, title: string, lessons: Lesson[]): LearningPath {
 
 export const computerAndOsFoundations = path("computer-and-os-foundations", "Computer and Operating-System Foundations", computerAndOsFoundationsDeepLessons);
 export const linuxAdministration = path("linux-administration", "Linux Administration", linuxAdministrationDeepLessons);
-
-export const networkingFoundations = path("networking-foundations", "Networking Foundations", [
-    lesson("networking-foundations", "Networking Mental Models: OSI and TCP/IP"),
-    lesson("networking-foundations", "Ethernet and Switching"),
-    lesson("networking-foundations", "IP Addressing"),
-    lesson("networking-foundations", "Subnetting"),
-    lesson("networking-foundations", "ARP"),
-    lesson("networking-foundations", "TCP and UDP"),
-    lesson("networking-foundations", "Ports and Sockets"),
-    lesson("networking-foundations", "Routing"),
-    lesson("networking-foundations", "DHCP"),
-    lesson("networking-foundations", "DNS"),
-    lesson("networking-foundations", "NAT"),
-    lesson("networking-foundations", "Firewalls"),
-    lesson("networking-foundations", "HTTP and TLS from the Network Perspective"),
-    lesson("networking-foundations", "Network Troubleshooting Tools"),
-    lesson("networking-foundations", "Lab: Diagnose a Broken Service Path", "Break one part of the path between a client and Steward API, then use tools such as ip, ss, ping, traceroute, dig, curl and firewall inspection to localize and explain the failure."),
-]);
+export const networkingFoundations = path("networking-foundations", "Networking Foundations", networkingFoundationsDeepLessons);
 
 export const virtualization = path("virtualization", "Virtualization", [
     lesson("virtualization", "Virtual Machines and Hypervisors"),
