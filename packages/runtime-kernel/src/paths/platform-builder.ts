@@ -4,6 +4,7 @@ import type { Lesson } from "./lesson";
 import { computerAndOsFoundationsDeepLessons } from "./platform-builder-computer-os-deep";
 import { linuxAdministrationDeepLessons } from "./platform-builder-linux-administration-deep";
 import { networkingFoundationsDeepLessons } from "./platform-builder-networking-deep";
+import { virtualizationDeepLessons } from "./platform-builder-virtualization-deep";
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -51,14 +52,7 @@ function path(id: string, title: string, lessons: Lesson[]): LearningPath {
 export const computerAndOsFoundations = path("computer-and-os-foundations", "Computer and Operating-System Foundations", computerAndOsFoundationsDeepLessons);
 export const linuxAdministration = path("linux-administration", "Linux Administration", linuxAdministrationDeepLessons);
 export const networkingFoundations = path("networking-foundations", "Networking Foundations", networkingFoundationsDeepLessons);
-
-export const virtualization = path("virtualization", "Virtualization", [
-    lesson("virtualization", "Virtual Machines and Hypervisors"),
-    lesson("virtualization", "VM CPU, Memory and Storage"),
-    lesson("virtualization", "Virtual Networking Modes"),
-    lesson("virtualization", "Snapshots and Recovery"),
-    lesson("virtualization", "Lab: Build an Ubuntu Server VM", "Create the first dedicated Ubuntu Server VM for TSA, configure networking and SSH, install the application stack and prove that Steward API can be operated independently of the development environment."),
-]);
+export const virtualization = path("virtualization", "Virtualization", virtualizationDeepLessons);
 
 export const budgetHomelab = path("budget-homelab", "Building the Budget Homelab", [
     lesson("budget-homelab", "Designing a Learning Homelab"),
