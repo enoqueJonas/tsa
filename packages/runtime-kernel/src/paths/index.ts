@@ -5,6 +5,8 @@ export * from "./learning-journey";
 export * from "./planned-path";
 export * from "./technical-stewardship-journey";
 export * from "./engineering-foundations";
+export * from "./engineering-apprentice-lessons";
+export * from "./builder";
 export * from "./thinking-like-an-engineer";
 export * from "./systems-thinking";
 export * from "./trade-offs";
