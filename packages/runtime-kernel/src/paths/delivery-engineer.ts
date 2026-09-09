@@ -1,4 +1,5 @@
 import type { Activity } from "../activities";
+import { softwareDeliveryFoundationsDeepLessons } from "./delivery-software-foundations-deep";
 import { artifactDependencySupplyChainManagement } from "./internal-dependency-management";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
@@ -44,16 +45,7 @@ function path(id: string, title: string, lessons: Lesson[]): LearningPath {
     return { id, title, lessons };
 }
 
-export const softwareDeliveryFoundations = path("software-delivery-foundations", "Software Delivery Foundations", [
-    lesson("software-delivery-foundations", "The Source-to-Production Lifecycle"),
-    lesson("software-delivery-foundations", "Git Workflows"),
-    lesson("software-delivery-foundations", "Pull Requests and Reviews"),
-    lesson("software-delivery-foundations", "Semantic Versioning"),
-    lesson("software-delivery-foundations", "Conventional Commits"),
-    lesson("software-delivery-foundations", "Release Notes and Changelogs"),
-    lesson("software-delivery-foundations", "Build Artifacts"),
-    lesson("software-delivery-foundations", "Environment Promotion"),
-]);
+export const softwareDeliveryFoundations = path("software-delivery-foundations", "Software Delivery Foundations", softwareDeliveryFoundationsDeepLessons);
 
 export const automationAndShell = path("automation-and-shell", "Automation and Shell", [
     lesson("automation-and-shell", "Shell Scripting for Engineers"),
