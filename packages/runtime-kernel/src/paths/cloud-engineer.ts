@@ -1,4 +1,5 @@
 import type { Activity } from "../activities";
+import { cloudArchitectureAndCostDeepLessons } from "./cloud-architecture-cost-deep";
 import { cloudAndHostingModelsDeepLessons } from "./cloud-hosting-models-deep";
 import { cloudBuildingBlocksDeepLessons } from "./cloud-building-blocks-deep";
 import { infrastructureAsCodeDeepLessons } from "./cloud-infrastructure-as-code-deep";
@@ -51,12 +52,7 @@ export const vpsOperations: LearningPath = { id: "vps-operations", title: "VPS O
 export const internetNetworking: LearningPath = { id: "internet-networking", title: "Internet Networking", lessons: internetNetworkingDeepLessons };
 export const cloudBuildingBlocks: LearningPath = { id: "cloud-building-blocks", title: "Cloud Building Blocks", lessons: cloudBuildingBlocksDeepLessons };
 export const infrastructureAsCode: LearningPath = { id: "infrastructure-as-code", title: "Infrastructure as Code", lessons: infrastructureAsCodeDeepLessons };
-
-export const cloudArchitectureAndCost: LearningPath = {
-    id: "cloud-architecture-and-cost",
-    title: "Cloud Architecture and Cost",
-    lessons: ["Availability in Cloud Environments", "Scalability and Capacity", "Security Boundaries", "Backup and Recovery", "Failure Domains", "Cost Estimation", "Cost Controls and Budgets", "Resource Right-sizing", "Managed vs Self-managed Trade-offs", "Homelab, VPS and Cloud Hybrid Trade-offs", "Lab: Review the Steward Internet Architecture"].map((title) => lesson("cloud-architecture-and-cost", title)),
-};
+export const cloudArchitectureAndCost: LearningPath = { id: "cloud-architecture-and-cost", title: "Cloud Architecture and Cost", lessons: cloudArchitectureAndCostDeepLessons };
 
 export const stewardInternetEnvironment: LearningPath = {
     id: "steward-internet-environment",
