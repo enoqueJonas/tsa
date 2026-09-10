@@ -2,6 +2,7 @@ import type { Activity } from "../activities";
 import { cloudArchitectureAndCostDeepLessons } from "./cloud-architecture-cost-deep";
 import { cloudAndHostingModelsDeepLessons } from "./cloud-hosting-models-deep";
 import { cloudBuildingBlocksDeepLessons } from "./cloud-building-blocks-deep";
+import { cloudEngineerMilestoneDeepLessons } from "./cloud-engineer-milestone-deep";
 import { infrastructureAsCodeDeepLessons } from "./cloud-infrastructure-as-code-deep";
 import { internetNetworkingDeepLessons } from "./cloud-internet-networking-deep";
 import { vpsOperationsDeepLessons } from "./cloud-vps-operations-deep";
@@ -53,11 +54,6 @@ export const internetNetworking: LearningPath = { id: "internet-networking", tit
 export const cloudBuildingBlocks: LearningPath = { id: "cloud-building-blocks", title: "Cloud Building Blocks", lessons: cloudBuildingBlocksDeepLessons };
 export const infrastructureAsCode: LearningPath = { id: "infrastructure-as-code", title: "Infrastructure as Code", lessons: infrastructureAsCodeDeepLessons };
 export const cloudArchitectureAndCost: LearningPath = { id: "cloud-architecture-and-cost", title: "Cloud Architecture and Cost", lessons: cloudArchitectureAndCostDeepLessons };
-
-export const stewardInternetEnvironment: LearningPath = {
-    id: "steward-internet-environment",
-    title: "Cloud Engineer Milestone",
-    lessons: [lesson("steward-internet-environment", "Milestone: Steward Internet Environment", "Deliver an internet-accessible Steward environment from versioned artifacts using a budget-conscious VPS/cloud design, DNS and TLS, restricted administrative access, reproducible Infrastructure as Code, documented secrets and identity boundaries, backup/recovery thinking, deployment verification and an explicit monthly cost model. Compare the resulting remote environment with Steward Homelab v1 and justify what remains self-managed versus provider-managed.")],
-};
+export const stewardInternetEnvironment: LearningPath = { id: "steward-internet-environment", title: "Cloud Engineer Milestone", lessons: cloudEngineerMilestoneDeepLessons };
 
 export const cloudEngineerPaths: LearningPath[] = [cloudAndHostingModels, vpsOperations, internetNetworking, cloudBuildingBlocks, infrastructureAsCode, cloudArchitectureAndCost, stewardInternetEnvironment];
