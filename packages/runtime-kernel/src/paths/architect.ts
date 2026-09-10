@@ -3,6 +3,7 @@ import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
 import { architectureEvaluationAndGovernanceDeepLessons } from "./architect-evaluation-governance-deep";
 import { architectureFundamentalsDeepLessons } from "./architect-architecture-fundamentals-deep";
+import { architectMilestoneDeepLessons } from "./architect-milestone-deep";
 import { architecturalStylesDeepLessons } from "./architect-architectural-styles-deep";
 import { dataArchitectureDeepLessons } from "./architect-data-architecture-deep";
 import { domainModelingDeepLessons } from "./architect-domain-modeling-deep";
@@ -34,6 +35,6 @@ export const integrationAndMessaging: LearningPath = { id: "integration-and-mess
 export const scalabilityAndDistributedSystems: LearningPath = { id: "scalability-and-distributed-systems", title: "Scalability and Distributed Systems", lessons: scalabilityAndDistributedSystemsDeepLessons };
 export const resilienceArchitecture: LearningPath = { id: "resilience-architecture", title: "Resilience Architecture", lessons: resilienceArchitectureDeepLessons };
 export const architectureEvaluationAndGovernance: LearningPath = { id: "architecture-evaluation-and-governance", title: "Architecture Evaluation and Governance", lessons: architectureEvaluationAndGovernanceDeepLessons };
-export const stewardArchitectureEvolution: LearningPath = { id: "steward-architecture-evolution", title: "Architect Milestone", lessons: [lesson("steward-architecture-evolution", "Milestone: Steward Architecture Evolution", "Produce and defend an architecture evolution proposal for Steward based on accumulated evidence from development, delivery, cloud, quality, security and reliability work. Deliver current and target architecture views, architecture drivers, quality-attribute scenarios, significant ADRs, data/integration/dependency analysis, shared-package evaluation, scalability/resilience reasoning and a sequenced evolution plan. Implement at least one justified architectural improvement, but do not introduce microservices, messaging, extra databases or other distributed complexity merely to demonstrate them. A well-defended decision to retain the modular monolith or existing package boundaries is a valid architectural outcome.")] };
+export const stewardArchitectureEvolution: LearningPath = { id: "steward-architecture-evolution", title: "Architect Milestone", lessons: architectMilestoneDeepLessons };
 
 export const architectPaths: LearningPath[] = [architectureFundamentals, modularity, architecturalStyles, domainModeling, dataArchitecture, integrationAndMessaging, scalabilityAndDistributedSystems, resilienceArchitecture, architectureEvaluationAndGovernance, stewardArchitectureEvolution];
