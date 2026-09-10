@@ -7,6 +7,7 @@ import { observabilityDeepLessons } from "./reliability-observability-deep";
 import { performanceAndCapacityDeepLessons } from "./reliability-performance-capacity-deep";
 import { productionLoggingDeepLessons } from "./reliability-production-logging-deep";
 import { reliabilityAndSreDeepLessons } from "./reliability-sre-foundations-deep";
+import { resilienceAndDistributedFailureDeepLessons } from "./reliability-resilience-distributed-failure-deep";
 import { serviceLevelEngineeringDeepLessons } from "./reliability-service-level-engineering-deep";
 
 function slug(value: string) {
@@ -42,7 +43,7 @@ export const metricsPrometheusGrafana: LearningPath = { id: "metrics-prometheus-
 export const serviceLevelEngineering: LearningPath = { id: "service-level-engineering", title: "Service Level Engineering", lessons: serviceLevelEngineeringDeepLessons };
 export const alertingAndOnCall: LearningPath = { id: "alerting-and-on-call", title: "Alerting and On-call", lessons: alertingAndOnCallDeepLessons };
 export const performanceAndCapacity: LearningPath = { id: "performance-and-capacity", title: "Performance and Capacity", lessons: performanceAndCapacityDeepLessons };
-export const resilienceAndDistributedFailure = path("resilience-and-distributed-failure", "Resilience and Distributed Failure", ["Timeouts", "Retries", "Exponential Backoff and Jitter", "Circuit Breakers", "Idempotency", "Partial Failure", "Dependency Failure", "Cascading Failure", "Queues and Backpressure", "Graceful Degradation", "Retry Storms and Amplification", "Dependency Availability Budgets", "Lab: Harden Steward Against Dependency Failure"]);
+export const resilienceAndDistributedFailure: LearningPath = { id: "resilience-and-distributed-failure", title: "Resilience and Distributed Failure", lessons: resilienceAndDistributedFailureDeepLessons };
 
 export const dataProtectionAndDisasterRecovery: LearningPath = {
     id: "data-protection-and-disaster-recovery", title: "Data Protection and Disaster Recovery",
