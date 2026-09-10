@@ -1,6 +1,7 @@
 import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
+import { technicalLeadershipDeepLessons } from "./technical-steward-technical-leadership-deep";
 
 function slug(value: string) { return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 function lesson(pathId: string, title: string, focus?: string): Lesson {
@@ -37,16 +38,11 @@ function lesson(pathId: string, title: string, focus?: string): Lesson {
 }
 function path(id: string, title: string, titles: string[]): LearningPath { return { id, title, lessons: titles.map((title) => lesson(id, title)) }; }
 
-export const technicalLeadership = path("technical-leadership", "Technical Leadership", [
-    "Technical Ownership",
-    "Influence Without Authority",
-    "Decision-making",
-    "Technical Communication",
-    "Mentoring",
-    "Engineering Reviews",
-    "Escalation and Responsible Challenge",
-    "Lab: Lead a Steward Technical Review",
-]);
+export const technicalLeadership: LearningPath = {
+    id: "technical-leadership",
+    title: "Technical Leadership",
+    lessons: technicalLeadershipDeepLessons,
+};
 
 export const engineeringGovernance = path("engineering-governance", "Engineering Governance", [
     "Governance vs Management",
