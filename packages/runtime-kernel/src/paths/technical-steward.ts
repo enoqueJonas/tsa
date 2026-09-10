@@ -3,6 +3,7 @@ import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
 import { engineeringGovernanceDeepLessons } from "./technical-steward-engineering-governance-deep";
 import { technicalLeadershipDeepLessons } from "./technical-steward-technical-leadership-deep";
+import { technologyGovernanceDeepLessons } from "./technical-steward-technology-governance-deep";
 
 function slug(value: string) { return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 function lesson(pathId: string, title: string, focus?: string): Lesson {
@@ -51,19 +52,11 @@ export const engineeringGovernance: LearningPath = {
     lessons: engineeringGovernanceDeepLessons,
 };
 
-export const technologyGovernance = path("technology-governance", "IT and Technology Governance", [
-    "Business and Technology Alignment",
-    "Value Delivery",
-    "Resource Stewardship",
-    "Performance Oversight",
-    "Governance Structures",
-    "COBIT Concepts",
-    "ITIL and Service-management Concepts",
-    "ISO Management-system Concepts",
-    "NIST Framework Landscape",
-    "Using Frameworks Without Checklist Thinking",
-    "Lab: Map Steward Governance Responsibilities",
-]);
+export const technologyGovernance: LearningPath = {
+    id: "technology-governance",
+    title: "IT and Technology Governance",
+    lessons: technologyGovernanceDeepLessons,
+};
 
 export const technologyRisk = path("technology-risk", "Technology Risk", [
     "Risk Identification",
