@@ -6,6 +6,7 @@ import { changeServiceGovernanceDeepLessons } from "./technical-steward-change-s
 import { controlsComplianceAssuranceDeepLessons } from "./technical-steward-controls-compliance-assurance-deep";
 import { engineeringGovernanceDeepLessons } from "./technical-steward-engineering-governance-deep";
 import { securityDataGovernanceDeepLessons } from "./technical-steward-security-data-governance-deep";
+import { technicalDebtHealthDeepLessons } from "./technical-steward-technical-debt-health-deep";
 import { technicalLeadershipDeepLessons } from "./technical-steward-technical-leadership-deep";
 import { thirdPartyLifecycleRiskDeepLessons } from "./technical-steward-third-party-lifecycle-risk-deep";
 import { technologyGovernanceDeepLessons } from "./technical-steward-technology-governance-deep";
@@ -41,8 +42,8 @@ export const architectureGovernance: LearningPath = { id: "architecture-governan
 export const securityDataGovernance: LearningPath = { id: "security-data-governance", title: "Security and Data Governance", lessons: securityDataGovernanceDeepLessons };
 export const changeServiceGovernance: LearningPath = { id: "change-service-governance", title: "Change and Service Governance", lessons: changeServiceGovernanceDeepLessons };
 export const thirdPartyLifecycleRisk: LearningPath = { id: "third-party-lifecycle-risk", title: "Third-party and Technology Lifecycle Risk", lessons: thirdPartyLifecycleRiskDeepLessons };
+export const technicalDebtHealth: LearningPath = { id: "technical-debt-health", title: "Technical Debt and Engineering Health", lessons: technicalDebtHealthDeepLessons };
 
-export const technicalDebtHealth = path("technical-debt-health", "Technical Debt and Engineering Health", ["Identifying Technical Debt", "Measuring and Communicating Debt", "Prioritization", "Engineering Health Metrics", "KPI vs KRI", "Sustainable Remediation", "Debt Ownership and Review Cadence", "Balancing Feature Delivery and Engineering Health", "Lab: Build the Steward Engineering Health Review"]);
 export const handbookAndStandards = path("handbook-and-standards", "Engineering Handbook and Standards", ["Writing Usable Standards", "Runbooks and Playbooks", "Decision Records", "Review Checklists", "Knowledge Stewardship", "Standards Ownership and Versioning", "Exception and Waiver Records", "Keeping the Handbook Alive", "Lab: Build the Steward Engineering Handbook"]);
 export const technicalStewardshipReview: LearningPath = { id: "technical-stewardship-review", title: "Technical Steward Milestone", lessons: [lesson("technical-stewardship-review", "Milestone: Technical Stewardship Review", "Conduct and defend a full stewardship review of the mature Steward service. Produce a technology risk register, control set and evidence, architecture/security/change governance decisions, service ownership model, third-party and internal dependency policy, lifecycle decisions for steward-common/tsa-test-core/Nexus/cloud dependencies, engineering health view, handbook/standards package, exception handling model and prioritized improvement roadmap. Demonstrate that governance supports accountable engineering decisions rather than replacing engineering judgment with bureaucracy.")] };
 
