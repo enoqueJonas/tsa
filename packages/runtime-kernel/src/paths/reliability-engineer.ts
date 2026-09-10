@@ -1,6 +1,7 @@
 import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
+import { alertingAndOnCallDeepLessons } from "./reliability-alerting-on-call-deep";
 import { metricsPrometheusGrafanaDeepLessons } from "./reliability-metrics-prometheus-grafana-deep";
 import { observabilityDeepLessons } from "./reliability-observability-deep";
 import { productionLoggingDeepLessons } from "./reliability-production-logging-deep";
@@ -38,8 +39,7 @@ export const observability: LearningPath = { id: "observability", title: "Observ
 export const productionLogging: LearningPath = { id: "logging", title: "Production Logging", lessons: productionLoggingDeepLessons };
 export const metricsPrometheusGrafana: LearningPath = { id: "metrics-prometheus-grafana", title: "Metrics, Prometheus and Grafana", lessons: metricsPrometheusGrafanaDeepLessons };
 export const serviceLevelEngineering: LearningPath = { id: "service-level-engineering", title: "Service Level Engineering", lessons: serviceLevelEngineeringDeepLessons };
-
-export const alertingAndOnCall = path("alerting-and-on-call", "Alerting and On-call", ["Symptoms vs Causes", "Actionable Alerts", "Alert Fatigue", "Severity", "Escalation", "Alert Routing Concepts", "Runbooks", "On-call Handover and Context", "Lab: Build Steward Alerts and Runbooks"]);
+export const alertingAndOnCall: LearningPath = { id: "alerting-and-on-call", title: "Alerting and On-call", lessons: alertingAndOnCallDeepLessons };
 export const performanceAndCapacity = path("performance-and-capacity", "Performance and Capacity", ["Latency and Throughput", "Saturation", "Bottlenecks", "Load and Stress Testing", "Capacity Planning", "Resource Utilization", "Database and Application Bottlenecks", "Performance Baselines", "Queueing and Contention Concepts", "Storage Growth and Artifact Capacity", "Lab: Establish Steward Capacity Baselines"]);
 export const resilienceAndDistributedFailure = path("resilience-and-distributed-failure", "Resilience and Distributed Failure", ["Timeouts", "Retries", "Exponential Backoff and Jitter", "Circuit Breakers", "Idempotency", "Partial Failure", "Dependency Failure", "Cascading Failure", "Queues and Backpressure", "Graceful Degradation", "Retry Storms and Amplification", "Dependency Availability Budgets", "Lab: Harden Steward Against Dependency Failure"]);
 
