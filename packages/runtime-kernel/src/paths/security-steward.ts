@@ -1,5 +1,6 @@
 import type { Activity } from "../activities";
 import { securityFoundationsDeepLessons } from "./security-foundations-deep";
+import { threatModelingDeepLessons } from "./security-threat-modeling-deep";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
 
@@ -55,19 +56,7 @@ export const securityFoundations: LearningPath = {
 export const threatModeling: LearningPath = {
     id: "threat-modeling",
     title: "Threat Modeling",
-    lessons: [
-        "Assets and Actors",
-        "Data and Control Flows",
-        "Trust Boundaries",
-        "Threat Identification",
-        "STRIDE-style Thinking",
-        "Abuse Cases",
-        "Threat Prioritization",
-        "Mitigations and Security Requirements",
-        "Threat Models as Living Engineering Artifacts",
-    ].map((title) => lesson("threat-modeling", title)).concat([
-        lesson("threat-modeling", "Lab: Threat-model Steward API", "Build a reviewable threat model for the Steward ecosystem, including the internet-facing API, authentication flows, PostgreSQL, CI/CD, Nexus/internal repositories, steward-common, tsa-test-core, test automation, administrator access and external trust boundaries."),
-    ]),
+    lessons: threatModelingDeepLessons,
 };
 
 export const webAndApiThreats = path("web-and-api-threats", "Web and API Threats", [
