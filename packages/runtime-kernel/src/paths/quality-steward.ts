@@ -1,5 +1,6 @@
 import type { Activity } from "../activities";
 import { qualityEngineeringDeepLessons } from "./quality-engineering-deep";
+import { testAnalysisAndDesignDeepLessons } from "./quality-test-analysis-design-deep";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
 
@@ -19,7 +20,7 @@ function lesson(pathId: string, title: string, focus?: string): Lesson {
 function path(id: string, title: string, titles: string[]): LearningPath { return { id, title, lessons: titles.map((title) => lesson(id, title)) }; }
 
 export const qualityEngineering: LearningPath = { id: "quality-engineering", title: "Quality Engineering", lessons: qualityEngineeringDeepLessons };
-export const testAnalysisAndDesign = path("test-analysis-and-design", "Test Analysis and Design", ["Requirements Analysis for Testing", "Equivalence Partitioning", "Boundary Value Analysis", "Decision Tables", "State Transition Testing", "Pairwise and Combinatorial Concepts", "Exploratory Testing", "Negative Testing", "Traceability", "Lab: Design Risk-based Steward Test Coverage"]);
+export const testAnalysisAndDesign: LearningPath = { id: "test-analysis-and-design", title: "Test Analysis and Design", lessons: testAnalysisAndDesignDeepLessons };
 export const unitAndComponentTesting = path("unit-and-component-testing", "Unit and Component Testing", ["Designing Unit Tests", "Isolation", "Test Doubles", "Mocks, Stubs and Fakes", "Coverage and Its Limitations", "Component Boundaries", "Fast Feedback and Maintainability", "Lab: Strengthen Steward Component Tests"]);
 export const apiAndIntegrationTesting = path("api-and-integration-testing", "API and Integration Testing", ["API Test Design", "Authentication and Authorization Testing", "Schema and Contract Validation", "Database Assertions", "Integration Boundaries", "Contract Testing Concepts", "Mocking and Service Virtualization", "Internal Package Compatibility", "Data Setup and Cleanup", "Lab: Test Steward API End-to-End at the Service Layer"]);
 
