@@ -2,6 +2,7 @@ import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
 import { capstoneProblemDiscoveryDeepLessons } from "./professional-engineer-capstone-problem-discovery-deep";
+import { capstoneEngineeringProposalDeepLessons } from "./professional-engineer-capstone-engineering-proposal-deep";
 
 function slug(value: string) { return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 
@@ -50,23 +51,11 @@ export const capstoneProblemDiscovery: LearningPath = {
     lessons: capstoneProblemDiscoveryDeepLessons,
 };
 
-export const capstoneEngineeringProposal = path("capstone-engineering-proposal", "Capstone Engineering Proposal", [
-    "System Context and Boundaries",
-    "Domain and Data Model Proposal",
-    "Architecture Proposal",
-    "Infrastructure and Hosting Proposal",
-    "Delivery Plan",
-    "Quality Strategy",
-    "Security Strategy",
-    "Reliability Strategy",
-    "Operational Model",
-    "Cost Model",
-    "Governance Approach",
-    "Dependency and Internal Platform Decisions",
-    "Implementation Milestones",
-    "Architecture and Risk Review",
-    "Lab: Defend the Capstone Engineering Proposal",
-]);
+export const capstoneEngineeringProposal: LearningPath = {
+    id: "capstone-engineering-proposal",
+    title: "Capstone Engineering Proposal",
+    lessons: capstoneEngineeringProposalDeepLessons,
+};
 
 export const capstoneIndependentBuild: LearningPath = {
     id: "capstone-independent-build",
