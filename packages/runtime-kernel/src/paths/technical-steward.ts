@@ -5,6 +5,7 @@ import { architectureGovernanceDeepLessons } from "./technical-steward-architect
 import { changeServiceGovernanceDeepLessons } from "./technical-steward-change-service-governance-deep";
 import { controlsComplianceAssuranceDeepLessons } from "./technical-steward-controls-compliance-assurance-deep";
 import { engineeringGovernanceDeepLessons } from "./technical-steward-engineering-governance-deep";
+import { handbookAndStandardsDeepLessons } from "./technical-steward-handbook-standards-deep";
 import { securityDataGovernanceDeepLessons } from "./technical-steward-security-data-governance-deep";
 import { technicalDebtHealthDeepLessons } from "./technical-steward-technical-debt-health-deep";
 import { technicalLeadershipDeepLessons } from "./technical-steward-technical-leadership-deep";
@@ -31,7 +32,6 @@ function lesson(pathId: string, title: string, focus?: string): Lesson {
     };
     return { id: lessonId, title, activities: [activity] };
 }
-function path(id: string, title: string, titles: string[]): LearningPath { return { id, title, lessons: titles.map((title) => lesson(id, title)) }; }
 
 export const technicalLeadership: LearningPath = { id: "technical-leadership", title: "Technical Leadership", lessons: technicalLeadershipDeepLessons };
 export const engineeringGovernance: LearningPath = { id: "engineering-governance", title: "Engineering Governance", lessons: engineeringGovernanceDeepLessons };
@@ -43,8 +43,7 @@ export const securityDataGovernance: LearningPath = { id: "security-data-governa
 export const changeServiceGovernance: LearningPath = { id: "change-service-governance", title: "Change and Service Governance", lessons: changeServiceGovernanceDeepLessons };
 export const thirdPartyLifecycleRisk: LearningPath = { id: "third-party-lifecycle-risk", title: "Third-party and Technology Lifecycle Risk", lessons: thirdPartyLifecycleRiskDeepLessons };
 export const technicalDebtHealth: LearningPath = { id: "technical-debt-health", title: "Technical Debt and Engineering Health", lessons: technicalDebtHealthDeepLessons };
-
-export const handbookAndStandards = path("handbook-and-standards", "Engineering Handbook and Standards", ["Writing Usable Standards", "Runbooks and Playbooks", "Decision Records", "Review Checklists", "Knowledge Stewardship", "Standards Ownership and Versioning", "Exception and Waiver Records", "Keeping the Handbook Alive", "Lab: Build the Steward Engineering Handbook"]);
+export const handbookAndStandards: LearningPath = { id: "handbook-and-standards", title: "Engineering Handbook and Standards", lessons: handbookAndStandardsDeepLessons };
 export const technicalStewardshipReview: LearningPath = { id: "technical-stewardship-review", title: "Technical Steward Milestone", lessons: [lesson("technical-stewardship-review", "Milestone: Technical Stewardship Review", "Conduct and defend a full stewardship review of the mature Steward service. Produce a technology risk register, control set and evidence, architecture/security/change governance decisions, service ownership model, third-party and internal dependency policy, lifecycle decisions for steward-common/tsa-test-core/Nexus/cloud dependencies, engineering health view, handbook/standards package, exception handling model and prioritized improvement roadmap. Demonstrate that governance supports accountable engineering decisions rather than replacing engineering judgment with bureaucracy.")] };
 
 export const technicalStewardPaths: LearningPath[] = [technicalLeadership, engineeringGovernance, technologyGovernance, technologyRisk, controlsComplianceAssurance, architectureGovernance, securityDataGovernance, changeServiceGovernance, thirdPartyLifecycleRisk, technicalDebtHealth, handbookAndStandards, technicalStewardshipReview];
