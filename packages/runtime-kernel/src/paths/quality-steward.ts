@@ -2,6 +2,7 @@ import type { Activity } from "../activities";
 import { apiAndIntegrationTestingDeepLessons } from "./quality-api-integration-testing-deep";
 import { automationFrameworkEngineeringDeepLessons } from "./quality-automation-framework-engineering-deep";
 import { browserAndEnvironmentTestingDeepLessons } from "./quality-browser-environment-testing-deep";
+import { qualityInContainersAndCiDeepLessons } from "./quality-containers-ci-deep";
 import { nonFunctionalQualityDeepLessons } from "./quality-non-functional-deep";
 import { qualityEngineeringDeepLessons } from "./quality-engineering-deep";
 import { testAnalysisAndDesignDeepLessons } from "./quality-test-analysis-design-deep";
@@ -22,7 +23,6 @@ function lesson(pathId: string, title: string, focus?: string): Lesson {
     } : { type: "reading", body: focus ?? `This breadth lesson establishes ${title} as a quality-engineering capability for Steward. Deep authoring will add detailed TSA teaching, examples, researched resources, exercises and knowledge checks.` } };
     return { id: lessonId, title, activities: [activity] };
 }
-function path(id: string, title: string, titles: string[]): LearningPath { return { id, title, lessons: titles.map((title) => lesson(id, title)) }; }
 
 export const qualityEngineering: LearningPath = { id: "quality-engineering", title: "Quality Engineering", lessons: qualityEngineeringDeepLessons };
 export const testAnalysisAndDesign: LearningPath = { id: "test-analysis-and-design", title: "Test Analysis and Design", lessons: testAnalysisAndDesignDeepLessons };
@@ -31,7 +31,7 @@ export const apiAndIntegrationTesting: LearningPath = { id: "api-and-integration
 export const automationFrameworkEngineering: LearningPath = { id: "automation-framework-engineering", title: "Automation Framework Engineering", lessons: automationFrameworkEngineeringDeepLessons };
 export const browserAndEnvironmentTesting: LearningPath = { id: "browser-and-environment-testing", title: "Browser and Environment Testing", lessons: browserAndEnvironmentTestingDeepLessons };
 export const nonFunctionalQuality: LearningPath = { id: "non-functional-quality", title: "Non-functional Quality", lessons: nonFunctionalQualityDeepLessons };
-export const qualityInContainersAndCi = path("quality-in-containers-and-ci", "Quality in Containers and CI", ["Test Containers and Environments", "Dockerized Test Dependencies", "Ephemeral Environment Concepts", "Test Pipeline Stages", "Parallelization", "Reports and Artifacts", "Quality Gates", "Test Selection", "Failure Triage", "Flaky-test Containment", "Internal Test Package Publishing and Compatibility in CI", "Lab: Build the Steward Quality Pipeline"]);
+export const qualityInContainersAndCi: LearningPath = { id: "quality-in-containers-and-ci", title: "Quality in Containers and CI", lessons: qualityInContainersAndCiDeepLessons };
 
 export const stewardQualityPlatform: LearningPath = { id: "steward-quality-platform", title: "Quality Steward Milestone", lessons: [lesson("steward-quality-platform", "Milestone: Steward Quality Platform", "Deliver a maintainable quality-engineering system around Steward: documented quality strategy, risk-based coverage, unit/component checks, service-layer API and integration tests, a structured Playwright/pytest automation framework, environment-aware execution, selected non-functional baselines, internal-package compatibility checks, diagnostic reporting and CI quality gates that influence release decisions. Where a legitimate reuse boundary has been demonstrated, tsa-test-core must be versioned and published to the internal repository and Steward tests must consume it as a normal internal dependency; domain-specific test code must remain in the Steward project.")] };
 
