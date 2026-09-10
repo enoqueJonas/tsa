@@ -1,6 +1,7 @@
 import type { Activity } from "../activities";
 import { securityFoundationsDeepLessons } from "./security-foundations-deep";
 import { threatModelingDeepLessons } from "./security-threat-modeling-deep";
+import { webAndApiThreatsDeepLessons } from "./security-web-api-threats-deep";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
 
@@ -59,27 +60,11 @@ export const threatModeling: LearningPath = {
     lessons: threatModelingDeepLessons,
 };
 
-export const webAndApiThreats = path("web-and-api-threats", "Web and API Threats", [
-    "Injection and SQL Injection",
-    "Cross-site Scripting",
-    "Cross-site Request Forgery",
-    "Broken Authentication",
-    "Broken Authorization and IDOR",
-    "Server-side Request Forgery",
-    "Path Traversal",
-    "File Upload Risks",
-    "Command Injection",
-    "Insecure Deserialization Concepts",
-    "Security Misconfiguration",
-    "Sensitive Data and Secrets",
-    "API Abuse and Rate Limiting",
-    "Token and Session Attacks",
-    "Cryptographic Failures",
-    "Vulnerable Dependencies",
-    "Security Logging and Monitoring Failures",
-    "Mass Assignment and Excessive Data Exposure",
-    "Lab: Assess Steward Web and API Attack Paths",
-]);
+export const webAndApiThreats: LearningPath = {
+    id: "web-and-api-threats",
+    title: "Web and API Threats",
+    lessons: webAndApiThreatsDeepLessons,
+};
 
 export const vulnerabilityLaboratory: LearningPath = {
     id: "vulnerability-laboratory",
