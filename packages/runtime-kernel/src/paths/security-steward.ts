@@ -1,4 +1,5 @@
 import type { Activity } from "../activities";
+import { applicationSecurityDeepLessons } from "./security-application-deep";
 import { containerAndDeliverySecurityDeepLessons } from "./security-container-delivery-deep";
 import { securityFoundationsDeepLessons } from "./security-foundations-deep";
 import { linuxAndNetworkSecurityDeepLessons } from "./security-linux-network-deep";
@@ -86,21 +87,7 @@ export const containerAndDeliverySecurity: LearningPath = {
 export const applicationSecurity: LearningPath = {
     id: "application-security",
     title: "Application Security",
-    lessons: [
-        "Secure Authentication",
-        "Authorization Design and Testing",
-        "Input Validation",
-        "Secure Error Handling",
-        "Secrets Management",
-        "Security Headers and Configuration",
-        "Security Logging",
-        "Rate Limiting and Abuse Resistance",
-        "Data Protection",
-        "Security-focused Code Review",
-        "Abuse Cases and Negative Security Requirements",
-        "Security Regression Testing",
-        "Lab: Harden Steward API",
-    ].map((title) => lesson("application-security", title)),
+    lessons: applicationSecurityDeepLessons,
 };
 
 export const stewardSecurityAssessment: LearningPath = {
