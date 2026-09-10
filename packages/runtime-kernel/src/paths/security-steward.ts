@@ -1,6 +1,7 @@
 import type { Activity } from "../activities";
 import { securityFoundationsDeepLessons } from "./security-foundations-deep";
 import { threatModelingDeepLessons } from "./security-threat-modeling-deep";
+import { vulnerabilityLaboratoryDeepLessons } from "./security-vulnerability-laboratory-deep";
 import { webAndApiThreatsDeepLessons } from "./security-web-api-threats-deep";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
@@ -69,21 +70,7 @@ export const webAndApiThreats: LearningPath = {
 export const vulnerabilityLaboratory: LearningPath = {
     id: "vulnerability-laboratory",
     title: "Practical Vulnerability Laboratory",
-    lessons: [
-        "Designing an Isolated Security Lab",
-        "Safe Lab Networking",
-        "Vulnerable Applications and Intentional Weaknesses",
-        "Observing Vulnerable Behavior",
-        "Reproducing Representative Attacks Safely",
-        "Using Proxies and Request Inspection",
-        "Capturing Security Evidence",
-        "From Finding to Reproduction Steps",
-        "Implementing Mitigations",
-        "Retesting Fixes",
-        "Writing Security Findings",
-    ].map((title) => lesson("vulnerability-laboratory", title)).concat([
-        lesson("vulnerability-laboratory", "Lab: Reproduce and Fix Steward Vulnerabilities", "Use an isolated learner-controlled Steward security environment to reproduce a small set of representative vulnerabilities, document evidence, implement mitigations and prove the fixes through retesting. Do not target systems outside the lab."),
-    ]),
+    lessons: vulnerabilityLaboratoryDeepLessons,
 };
 
 export const linuxAndNetworkSecurity = path("linux-and-network-security", "Linux and Network Security", [
