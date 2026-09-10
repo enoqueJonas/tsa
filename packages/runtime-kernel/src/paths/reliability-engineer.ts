@@ -1,6 +1,7 @@
 import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
+import { observabilityDeepLessons } from "./reliability-observability-deep";
 import { reliabilityAndSreDeepLessons } from "./reliability-sre-foundations-deep";
 
 function slug(value: string) {
@@ -30,8 +31,7 @@ function path(id: string, title: string, titles: string[]): LearningPath {
 }
 
 export const reliabilityAndSre: LearningPath = { id: "reliability-and-sre", title: "Reliability and SRE Foundations", lessons: reliabilityAndSreDeepLessons };
-
-export const observability = path("observability", "Observability", ["Observability vs Monitoring", "Logs, Metrics and Traces", "Telemetry Design", "Correlation and Context", "Instrumentation", "OpenTelemetry Concepts", "Golden Signals and Service Questions", "Telemetry Cost and Noise", "Lab: Design Steward Observability"]);
+export const observability: LearningPath = { id: "observability", title: "Observability", lessons: observabilityDeepLessons };
 export const productionLogging = path("logging", "Production Logging", ["Structured Logs", "Log Levels", "Correlation IDs", "Request and Trace Context", "Centralized Logging", "Useful vs Noisy Logs", "Privacy and Security in Logs", "Log Retention Concepts", "Lab: Build a Steward Diagnostic Logging Path"]);
 
 export const metricsPrometheusGrafana: LearningPath = {
