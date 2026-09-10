@@ -1,6 +1,7 @@
 import type { Activity } from "../activities";
 import { apiAndIntegrationTestingDeepLessons } from "./quality-api-integration-testing-deep";
 import { automationFrameworkEngineeringDeepLessons } from "./quality-automation-framework-engineering-deep";
+import { browserAndEnvironmentTestingDeepLessons } from "./quality-browser-environment-testing-deep";
 import { qualityEngineeringDeepLessons } from "./quality-engineering-deep";
 import { testAnalysisAndDesignDeepLessons } from "./quality-test-analysis-design-deep";
 import { unitAndComponentTestingDeepLessons } from "./quality-unit-component-testing-deep";
@@ -27,8 +28,7 @@ export const testAnalysisAndDesign: LearningPath = { id: "test-analysis-and-desi
 export const unitAndComponentTesting: LearningPath = { id: "unit-and-component-testing", title: "Unit and Component Testing", lessons: unitAndComponentTestingDeepLessons };
 export const apiAndIntegrationTesting: LearningPath = { id: "api-and-integration-testing", title: "API and Integration Testing", lessons: apiAndIntegrationTestingDeepLessons };
 export const automationFrameworkEngineering: LearningPath = { id: "automation-framework-engineering", title: "Automation Framework Engineering", lessons: automationFrameworkEngineeringDeepLessons };
-
-export const browserAndEnvironmentTesting = path("browser-and-environment-testing", "Browser and Environment Testing", ["Browser Differences", "Responsive Testing", "Cross-browser Testing", "BrowserStack or Equivalent", "Local vs Remote Execution", "Environment Parity and Configuration Risk", "Lab: Run Steward Tests Across Environments"]);
+export const browserAndEnvironmentTesting: LearningPath = { id: "browser-and-environment-testing", title: "Browser and Environment Testing", lessons: browserAndEnvironmentTestingDeepLessons };
 export const nonFunctionalQuality = path("non-functional-quality", "Non-functional Quality", ["Performance Testing", "Load, Stress, Spike and Endurance", "Accessibility Fundamentals", "Compatibility Testing", "Reliability-oriented Testing", "Data Integrity and Concurrency Testing", "Lab: Establish Steward Non-functional Baselines"]);
 export const qualityInContainersAndCi = path("quality-in-containers-and-ci", "Quality in Containers and CI", ["Test Containers and Environments", "Dockerized Test Dependencies", "Ephemeral Environment Concepts", "Test Pipeline Stages", "Parallelization", "Reports and Artifacts", "Quality Gates", "Test Selection", "Failure Triage", "Flaky-test Containment", "Internal Test Package Publishing and Compatibility in CI", "Lab: Build the Steward Quality Pipeline"]);
 
