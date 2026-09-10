@@ -2,6 +2,7 @@ import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
 import { architectureFundamentalsDeepLessons } from "./architect-architecture-fundamentals-deep";
+import { modularityDeepLessons } from "./architect-modularity-deep";
 
 function slug(value: string) { return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 function lesson(pathId: string, title: string, focus?: string): Lesson {
@@ -19,7 +20,7 @@ function lesson(pathId: string, title: string, focus?: string): Lesson {
 function path(id: string, title: string, titles: string[]): LearningPath { return { id, title, lessons: titles.map((title) => lesson(id, title)) }; }
 
 export const architectureFundamentals: LearningPath = { id: "architecture-fundamentals", title: "Architecture Fundamentals", lessons: architectureFundamentalsDeepLessons };
-export const modularity = path("modularity", "Modularity", ["Modules and Boundaries", "Coupling and Cohesion Revisited", "Dependency Direction", "Encapsulation at System Scale", "Shared Libraries and Coupling", "Package Ownership and Change Impact", "Modular Monoliths", "When a Service Boundary Is Justified", "Distributed Monoliths", "Lab: Evaluate Steward Module and Package Boundaries"]);
+export const modularity: LearningPath = { id: "modularity", title: "Modularity", lessons: modularityDeepLessons };
 export const architecturalStyles = path("architectural-styles", "Architectural Styles", ["Layered Architecture", "Hexagonal and Ports-and-Adapters Thinking", "Modular Monolith", "Service-oriented Architecture", "Microservices", "Event-driven Architecture", "Serverless Concepts", "Choosing Styles from Drivers", "The Cost of Distribution", "Lab: Challenge the Steward Architectural Style"]);
 export const domainModeling = path("domain-modeling", "Domain Modeling", ["Domain Models and Business Language", "Bounded Context Concepts", "Entities, Value Objects and Aggregates", "Invariants and Transaction Boundaries", "Context Mapping Concepts", "Domain Services", "Avoiding Anemic and Over-engineered Models", "Lab: Revisit the Steward Domain Model"]);
 export const dataArchitecture = path("data-architecture", "Data Architecture", ["Data Ownership", "Schema Boundaries", "Transactional Consistency", "Data Duplication and Derived Views", "Caching", "Read Models", "Database-per-service Trade-offs", "Data Migration and Evolution", "Audit and Historical Data", "Lab: Evaluate Steward Data Architecture"]);
