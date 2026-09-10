@@ -1,5 +1,6 @@
 import type { Activity } from "../activities";
 import { securityFoundationsDeepLessons } from "./security-foundations-deep";
+import { linuxAndNetworkSecurityDeepLessons } from "./security-linux-network-deep";
 import { threatModelingDeepLessons } from "./security-threat-modeling-deep";
 import { vulnerabilityLaboratoryDeepLessons } from "./security-vulnerability-laboratory-deep";
 import { webAndApiThreatsDeepLessons } from "./security-web-api-threats-deep";
@@ -45,10 +46,6 @@ function lesson(pathId: string, title: string, focus?: string): Lesson {
     return { id: lessonId, title, activities: [activity] };
 }
 
-function path(id: string, title: string, titles: string[]): LearningPath {
-    return { id, title, lessons: titles.map((title) => lesson(id, title)) };
-}
-
 export const securityFoundations: LearningPath = {
     id: "security-foundations",
     title: "Security Foundations",
@@ -73,20 +70,11 @@ export const vulnerabilityLaboratory: LearningPath = {
     lessons: vulnerabilityLaboratoryDeepLessons,
 };
 
-export const linuxAndNetworkSecurity = path("linux-and-network-security", "Linux and Network Security", [
-    "Users, Groups and Permissions",
-    "Privilege and sudo",
-    "SSH Hardening",
-    "Host Firewalls",
-    "Service Exposure",
-    "Patching and Vulnerability Windows",
-    "File and Secret Permissions",
-    "Security Logging and Auditing",
-    "Network Segmentation Concepts",
-    "Administrative Network Boundaries",
-    "TLS Configuration and Certificate Hygiene",
-    "Lab: Harden the Steward Hosts and Network Path",
-]);
+export const linuxAndNetworkSecurity: LearningPath = {
+    id: "linux-and-network-security",
+    title: "Linux and Network Security",
+    lessons: linuxAndNetworkSecurityDeepLessons,
+};
 
 export const containerAndDeliverySecurity: LearningPath = {
     id: "container-and-delivery-security",
