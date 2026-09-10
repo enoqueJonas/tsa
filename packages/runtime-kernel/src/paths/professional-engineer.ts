@@ -1,6 +1,7 @@
 import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
+import { capstoneProblemDiscoveryDeepLessons } from "./professional-engineer-capstone-problem-discovery-deep";
 
 function slug(value: string) { return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 
@@ -43,19 +44,11 @@ function path(id: string, title: string, titles: string[]): LearningPath {
     return { id, title, lessons: titles.map((title) => lesson(id, title)) };
 }
 
-export const capstoneProblemDiscovery = path("capstone-problem-discovery", "Capstone Problem Discovery", [
-    "Choosing a Substantial Problem",
-    "Stakeholder Discovery",
-    "Problem Framing",
-    "Requirements",
-    "Constraints",
-    "Working with Ambiguity",
-    "Quality Attributes",
-    "Risk",
-    "Success Measures and Evidence",
-    "Scope and Non-goals",
-    "Lab: Produce the Capstone Discovery Brief",
-]);
+export const capstoneProblemDiscovery: LearningPath = {
+    id: "capstone-problem-discovery",
+    title: "Capstone Problem Discovery",
+    lessons: capstoneProblemDiscoveryDeepLessons,
+};
 
 export const capstoneEngineeringProposal = path("capstone-engineering-proposal", "Capstone Engineering Proposal", [
     "System Context and Boundaries",
