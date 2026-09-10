@@ -4,6 +4,7 @@ import type { Lesson } from "./lesson";
 import { alertingAndOnCallDeepLessons } from "./reliability-alerting-on-call-deep";
 import { metricsPrometheusGrafanaDeepLessons } from "./reliability-metrics-prometheus-grafana-deep";
 import { observabilityDeepLessons } from "./reliability-observability-deep";
+import { performanceAndCapacityDeepLessons } from "./reliability-performance-capacity-deep";
 import { productionLoggingDeepLessons } from "./reliability-production-logging-deep";
 import { reliabilityAndSreDeepLessons } from "./reliability-sre-foundations-deep";
 import { serviceLevelEngineeringDeepLessons } from "./reliability-service-level-engineering-deep";
@@ -40,7 +41,7 @@ export const productionLogging: LearningPath = { id: "logging", title: "Producti
 export const metricsPrometheusGrafana: LearningPath = { id: "metrics-prometheus-grafana", title: "Metrics, Prometheus and Grafana", lessons: metricsPrometheusGrafanaDeepLessons };
 export const serviceLevelEngineering: LearningPath = { id: "service-level-engineering", title: "Service Level Engineering", lessons: serviceLevelEngineeringDeepLessons };
 export const alertingAndOnCall: LearningPath = { id: "alerting-and-on-call", title: "Alerting and On-call", lessons: alertingAndOnCallDeepLessons };
-export const performanceAndCapacity = path("performance-and-capacity", "Performance and Capacity", ["Latency and Throughput", "Saturation", "Bottlenecks", "Load and Stress Testing", "Capacity Planning", "Resource Utilization", "Database and Application Bottlenecks", "Performance Baselines", "Queueing and Contention Concepts", "Storage Growth and Artifact Capacity", "Lab: Establish Steward Capacity Baselines"]);
+export const performanceAndCapacity: LearningPath = { id: "performance-and-capacity", title: "Performance and Capacity", lessons: performanceAndCapacityDeepLessons };
 export const resilienceAndDistributedFailure = path("resilience-and-distributed-failure", "Resilience and Distributed Failure", ["Timeouts", "Retries", "Exponential Backoff and Jitter", "Circuit Breakers", "Idempotency", "Partial Failure", "Dependency Failure", "Cascading Failure", "Queues and Backpressure", "Graceful Degradation", "Retry Storms and Amplification", "Dependency Availability Budgets", "Lab: Harden Steward Against Dependency Failure"]);
 
 export const dataProtectionAndDisasterRecovery: LearningPath = {
