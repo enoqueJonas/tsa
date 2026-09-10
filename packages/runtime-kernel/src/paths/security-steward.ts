@@ -1,4 +1,5 @@
 import type { Activity } from "../activities";
+import { containerAndDeliverySecurityDeepLessons } from "./security-container-delivery-deep";
 import { securityFoundationsDeepLessons } from "./security-foundations-deep";
 import { linuxAndNetworkSecurityDeepLessons } from "./security-linux-network-deep";
 import { threatModelingDeepLessons } from "./security-threat-modeling-deep";
@@ -79,29 +80,7 @@ export const linuxAndNetworkSecurity: LearningPath = {
 export const containerAndDeliverySecurity: LearningPath = {
     id: "container-and-delivery-security",
     title: "Container and Delivery Security",
-    lessons: [
-        "Container Attack Surface",
-        "Minimal and Trusted Base Images",
-        "Image Scanning",
-        "Container Runtime Permissions",
-        "Secrets in Delivery",
-        "CI/CD Identities and Least Privilege",
-        "Protected Environments and Approval Boundaries",
-        "Dependency Scanning",
-        "SAST and DAST Concepts",
-        "Software Supply-chain Security",
-        "Dependency Confusion",
-        "Typosquatting and Malicious Packages",
-        "Internal Repository Trust Boundaries",
-        "Package Provenance and Integrity",
-        "SBOMs as Security Evidence",
-        "Signing and Verification Concepts",
-        "Security Gates and Exceptions",
-        "Protecting Internal Publishing Credentials",
-        "Securing steward-common and tsa-test-core Consumption",
-    ].map((title) => lesson("container-and-delivery-security", title)).concat([
-        lesson("container-and-delivery-security", "Lab: Harden the Steward Software Supply Chain", "Assess the path from source to internal package/image publication and deployment. Apply least privilege to CI and repository credentials, scan internal and external dependencies, examine dependency-confusion risk, produce provenance/SBOM evidence where supported, and verify that Steward and its tests resolve approved steward-common and tsa-test-core versions from intended repositories."),
-    ]),
+    lessons: containerAndDeliverySecurityDeepLessons,
 };
 
 export const applicationSecurity: LearningPath = {
