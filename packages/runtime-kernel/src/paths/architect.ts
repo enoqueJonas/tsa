@@ -3,6 +3,7 @@ import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
 import { architectureFundamentalsDeepLessons } from "./architect-architecture-fundamentals-deep";
 import { architecturalStylesDeepLessons } from "./architect-architectural-styles-deep";
+import { dataArchitectureDeepLessons } from "./architect-data-architecture-deep";
 import { domainModelingDeepLessons } from "./architect-domain-modeling-deep";
 import { modularityDeepLessons } from "./architect-modularity-deep";
 
@@ -25,7 +26,7 @@ export const architectureFundamentals: LearningPath = { id: "architecture-fundam
 export const modularity: LearningPath = { id: "modularity", title: "Modularity", lessons: modularityDeepLessons };
 export const architecturalStyles: LearningPath = { id: "architectural-styles", title: "Architectural Styles", lessons: architecturalStylesDeepLessons };
 export const domainModeling: LearningPath = { id: "domain-modeling", title: "Domain Modeling", lessons: domainModelingDeepLessons };
-export const dataArchitecture = path("data-architecture", "Data Architecture", ["Data Ownership", "Schema Boundaries", "Transactional Consistency", "Data Duplication and Derived Views", "Caching", "Read Models", "Database-per-service Trade-offs", "Data Migration and Evolution", "Audit and Historical Data", "Lab: Evaluate Steward Data Architecture"]);
+export const dataArchitecture: LearningPath = { id: "data-architecture", title: "Data Architecture", lessons: dataArchitectureDeepLessons };
 export const integrationAndMessaging = path("integration-and-messaging", "Integration and Messaging", ["Integration Styles", "Synchronous APIs", "Asynchronous Messaging", "Queues and Publish-Subscribe", "Events and Commands", "Delivery Semantics", "Idempotency", "Schema and Contract Evolution", "Integration Failure and Backpressure", "When Not to Add a Message Broker", "Lab: Evaluate Steward Integration Boundaries"]);
 export const scalabilityAndDistributedSystems = path("scalability-and-distributed-systems", "Scalability and Distributed Systems", ["Scaling Up and Scaling Out", "Stateless Services", "Load Distribution", "Caching and Contention", "Replication Concepts", "Partitioning Concepts", "Consistency and Availability Trade-offs", "Distributed Coordination", "Distributed Transactions and Sagas Concepts", "Capacity vs Architectural Complexity", "Lab: Model Steward Growth Scenarios"]);
 export const resilienceArchitecture = path("resilience-architecture", "Resilience Architecture", ["Designing for Failure", "Timeouts", "Retries and Retry Storms", "Circuit Breakers", "Bulkheads", "Graceful Degradation", "Dependency Isolation", "Redundancy and Failure Domains", "Recovery Objectives as Architecture Drivers", "Lab: Evolve a Steward Failure Path"]);
