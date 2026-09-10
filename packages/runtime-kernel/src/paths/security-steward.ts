@@ -1,4 +1,5 @@
 import type { Activity } from "../activities";
+import { securityFoundationsDeepLessons } from "./security-foundations-deep";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
 
@@ -45,17 +46,11 @@ function path(id: string, title: string, titles: string[]): LearningPath {
     return { id, title, lessons: titles.map((title) => lesson(id, title)) };
 }
 
-export const securityFoundations = path("security-foundations", "Security Foundations", [
-    "Confidentiality, Integrity and Availability",
-    "Assets, Threats, Vulnerabilities and Risk",
-    "Attack Surface",
-    "Least Privilege",
-    "Defense in Depth",
-    "Trust Boundaries",
-    "Security Controls: Preventive, Detective and Corrective",
-    "Risk Treatment and Residual Risk",
-    "Lab: Map Steward Security Assets and Attack Surface",
-]);
+export const securityFoundations: LearningPath = {
+    id: "security-foundations",
+    title: "Security Foundations",
+    lessons: securityFoundationsDeepLessons,
+};
 
 export const threatModeling: LearningPath = {
     id: "threat-modeling",
