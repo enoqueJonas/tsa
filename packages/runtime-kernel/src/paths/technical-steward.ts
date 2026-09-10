@@ -1,6 +1,7 @@
 import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
+import { engineeringGovernanceDeepLessons } from "./technical-steward-engineering-governance-deep";
 import { technicalLeadershipDeepLessons } from "./technical-steward-technical-leadership-deep";
 
 function slug(value: string) { return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
@@ -44,16 +45,11 @@ export const technicalLeadership: LearningPath = {
     lessons: technicalLeadershipDeepLessons,
 };
 
-export const engineeringGovernance = path("engineering-governance", "Engineering Governance", [
-    "Governance vs Management",
-    "Decision Rights",
-    "Accountability",
-    "Policies, Standards, Procedures and Guidelines",
-    "Exceptions",
-    "Evidence and Review Cadence",
-    "Governance Without Bureaucracy",
-    "Lab: Design the Steward Engineering Governance Model",
-]);
+export const engineeringGovernance: LearningPath = {
+    id: "engineering-governance",
+    title: "Engineering Governance",
+    lessons: engineeringGovernanceDeepLessons,
+};
 
 export const technologyGovernance = path("technology-governance", "IT and Technology Governance", [
     "Business and Technology Alignment",
