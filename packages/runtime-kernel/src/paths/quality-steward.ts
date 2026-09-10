@@ -5,6 +5,7 @@ import { browserAndEnvironmentTestingDeepLessons } from "./quality-browser-envir
 import { qualityInContainersAndCiDeepLessons } from "./quality-containers-ci-deep";
 import { nonFunctionalQualityDeepLessons } from "./quality-non-functional-deep";
 import { qualityEngineeringDeepLessons } from "./quality-engineering-deep";
+import { qualityStewardMilestoneDeepLessons } from "./quality-steward-milestone-deep";
 import { testAnalysisAndDesignDeepLessons } from "./quality-test-analysis-design-deep";
 import { unitAndComponentTestingDeepLessons } from "./quality-unit-component-testing-deep";
 import type { LearningPath } from "./learning-path";
@@ -32,7 +33,6 @@ export const automationFrameworkEngineering: LearningPath = { id: "automation-fr
 export const browserAndEnvironmentTesting: LearningPath = { id: "browser-and-environment-testing", title: "Browser and Environment Testing", lessons: browserAndEnvironmentTestingDeepLessons };
 export const nonFunctionalQuality: LearningPath = { id: "non-functional-quality", title: "Non-functional Quality", lessons: nonFunctionalQualityDeepLessons };
 export const qualityInContainersAndCi: LearningPath = { id: "quality-in-containers-and-ci", title: "Quality in Containers and CI", lessons: qualityInContainersAndCiDeepLessons };
-
-export const stewardQualityPlatform: LearningPath = { id: "steward-quality-platform", title: "Quality Steward Milestone", lessons: [lesson("steward-quality-platform", "Milestone: Steward Quality Platform", "Deliver a maintainable quality-engineering system around Steward: documented quality strategy, risk-based coverage, unit/component checks, service-layer API and integration tests, a structured Playwright/pytest automation framework, environment-aware execution, selected non-functional baselines, internal-package compatibility checks, diagnostic reporting and CI quality gates that influence release decisions. Where a legitimate reuse boundary has been demonstrated, tsa-test-core must be versioned and published to the internal repository and Steward tests must consume it as a normal internal dependency; domain-specific test code must remain in the Steward project.")] };
+export const stewardQualityPlatform: LearningPath = { id: "steward-quality-platform", title: "Quality Steward Milestone", lessons: qualityStewardMilestoneDeepLessons };
 
 export const qualityStewardPaths: LearningPath[] = [qualityEngineering, testAnalysisAndDesign, unitAndComponentTesting, apiAndIntegrationTesting, automationFrameworkEngineering, browserAndEnvironmentTesting, nonFunctionalQuality, qualityInContainersAndCi, stewardQualityPlatform];
