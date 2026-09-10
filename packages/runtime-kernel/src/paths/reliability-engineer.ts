@@ -5,6 +5,7 @@ import { metricsPrometheusGrafanaDeepLessons } from "./reliability-metrics-prome
 import { observabilityDeepLessons } from "./reliability-observability-deep";
 import { productionLoggingDeepLessons } from "./reliability-production-logging-deep";
 import { reliabilityAndSreDeepLessons } from "./reliability-sre-foundations-deep";
+import { serviceLevelEngineeringDeepLessons } from "./reliability-service-level-engineering-deep";
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -36,11 +37,7 @@ export const reliabilityAndSre: LearningPath = { id: "reliability-and-sre", titl
 export const observability: LearningPath = { id: "observability", title: "Observability", lessons: observabilityDeepLessons };
 export const productionLogging: LearningPath = { id: "logging", title: "Production Logging", lessons: productionLoggingDeepLessons };
 export const metricsPrometheusGrafana: LearningPath = { id: "metrics-prometheus-grafana", title: "Metrics, Prometheus and Grafana", lessons: metricsPrometheusGrafanaDeepLessons };
-
-export const serviceLevelEngineering: LearningPath = {
-    id: "service-level-engineering", title: "Service Level Engineering",
-    lessons: ["SLIs", "SLOs", "SLAs", "Error Budgets", "User-visible Reliability", "Choosing Good Indicators", "Windowing and Measurement Concepts", "Reliability Targets and Trade-offs", "Error Budgets and Release Decisions"].map((title) => lesson("service-level-engineering", title)).concat([lesson("service-level-engineering", "Lab: Define Steward SLOs", "Define a small set of defensible Steward SLIs and SLOs based on user-visible behavior, implement measurements for them, and explain how error-budget consumption would influence release or reliability work.")]),
-};
+export const serviceLevelEngineering: LearningPath = { id: "service-level-engineering", title: "Service Level Engineering", lessons: serviceLevelEngineeringDeepLessons };
 
 export const alertingAndOnCall = path("alerting-and-on-call", "Alerting and On-call", ["Symptoms vs Causes", "Actionable Alerts", "Alert Fatigue", "Severity", "Escalation", "Alert Routing Concepts", "Runbooks", "On-call Handover and Context", "Lab: Build Steward Alerts and Runbooks"]);
 export const performanceAndCapacity = path("performance-and-capacity", "Performance and Capacity", ["Latency and Throughput", "Saturation", "Bottlenecks", "Load and Stress Testing", "Capacity Planning", "Resource Utilization", "Database and Application Bottlenecks", "Performance Baselines", "Queueing and Contention Concepts", "Storage Growth and Artifact Capacity", "Lab: Establish Steward Capacity Baselines"]);
