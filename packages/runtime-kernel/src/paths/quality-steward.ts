@@ -1,5 +1,6 @@
 import type { Activity } from "../activities";
 import { apiAndIntegrationTestingDeepLessons } from "./quality-api-integration-testing-deep";
+import { automationFrameworkEngineeringDeepLessons } from "./quality-automation-framework-engineering-deep";
 import { qualityEngineeringDeepLessons } from "./quality-engineering-deep";
 import { testAnalysisAndDesignDeepLessons } from "./quality-test-analysis-design-deep";
 import { unitAndComponentTestingDeepLessons } from "./quality-unit-component-testing-deep";
@@ -25,20 +26,7 @@ export const qualityEngineering: LearningPath = { id: "quality-engineering", tit
 export const testAnalysisAndDesign: LearningPath = { id: "test-analysis-and-design", title: "Test Analysis and Design", lessons: testAnalysisAndDesignDeepLessons };
 export const unitAndComponentTesting: LearningPath = { id: "unit-and-component-testing", title: "Unit and Component Testing", lessons: unitAndComponentTestingDeepLessons };
 export const apiAndIntegrationTesting: LearningPath = { id: "api-and-integration-testing", title: "API and Integration Testing", lessons: apiAndIntegrationTestingDeepLessons };
-
-export const automationFrameworkEngineering: LearningPath = {
-    id: "automation-framework-engineering", title: "Automation Framework Engineering", lessons: [
-        "What Makes an Automation Framework", "Framework Architecture", "Playwright with Python", "pytest Fundamentals", "Configuration", "Fixtures", "Test Data", "API Clients", "Page Objects and UI Abstractions", "Helpers and Utilities", "Assertions", "Markers and Tags", "Parameterization", "Automation Logging", "Reports", "Screenshots, Traces and Video", "Parallel Execution", "Retries and Flaky-test Risk", "Framework Maintainability",
-    ].map((title) => lesson("automation-framework-engineering", title)).concat([
-        lesson("automation-framework-engineering", "Lab: Build the Steward Automation Framework"),
-        lesson("automation-framework-engineering", "Reusable Testing Infrastructure vs Domain Test Code", "Learn to distinguish generic framework infrastructure that can serve multiple test projects from Steward-specific clients, page objects, workflows and business assertions that should remain close to the Steward tests."),
-        lesson("automation-framework-engineering", "Designing Public APIs for Test Libraries"),
-        lesson("automation-framework-engineering", "Reusable pytest Fixtures and Plugins"),
-        lesson("automation-framework-engineering", "Versioning Shared Test Infrastructure"),
-        lesson("automation-framework-engineering", "Lab: Extract tsa-test-core", "After the Steward framework exists, identify a proven reuse boundary and extract only genuinely generic capabilities such as configuration loading, HTTP foundations, common assertions, logging, evidence/reporting helpers or reusable pytest fixtures into a versioned internal Python package named tsa-test-core. Keep Steward domain behavior in the Steward automation repository."),
-        lesson("automation-framework-engineering", "Lab: Publish and Consume tsa-test-core", "Build and version tsa-test-core, publish it through the internal PyPI repository established in Delivery Engineer, make the Steward automation project consume an approved version, and prove that no source copying or local-path dependency is required."),
-    ]),
-};
+export const automationFrameworkEngineering: LearningPath = { id: "automation-framework-engineering", title: "Automation Framework Engineering", lessons: automationFrameworkEngineeringDeepLessons };
 
 export const browserAndEnvironmentTesting = path("browser-and-environment-testing", "Browser and Environment Testing", ["Browser Differences", "Responsive Testing", "Cross-browser Testing", "BrowserStack or Equivalent", "Local vs Remote Execution", "Environment Parity and Configuration Risk", "Lab: Run Steward Tests Across Environments"]);
 export const nonFunctionalQuality = path("non-functional-quality", "Non-functional Quality", ["Performance Testing", "Load, Stress, Spike and Endurance", "Accessibility Fundamentals", "Compatibility Testing", "Reliability-oriented Testing", "Data Integrity and Concurrency Testing", "Lab: Establish Steward Non-functional Baselines"]);
