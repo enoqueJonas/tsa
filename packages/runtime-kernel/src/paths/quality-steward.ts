@@ -1,4 +1,5 @@
 import type { Activity } from "../activities";
+import { apiAndIntegrationTestingDeepLessons } from "./quality-api-integration-testing-deep";
 import { qualityEngineeringDeepLessons } from "./quality-engineering-deep";
 import { testAnalysisAndDesignDeepLessons } from "./quality-test-analysis-design-deep";
 import { unitAndComponentTestingDeepLessons } from "./quality-unit-component-testing-deep";
@@ -23,7 +24,7 @@ function path(id: string, title: string, titles: string[]): LearningPath { retur
 export const qualityEngineering: LearningPath = { id: "quality-engineering", title: "Quality Engineering", lessons: qualityEngineeringDeepLessons };
 export const testAnalysisAndDesign: LearningPath = { id: "test-analysis-and-design", title: "Test Analysis and Design", lessons: testAnalysisAndDesignDeepLessons };
 export const unitAndComponentTesting: LearningPath = { id: "unit-and-component-testing", title: "Unit and Component Testing", lessons: unitAndComponentTestingDeepLessons };
-export const apiAndIntegrationTesting = path("api-and-integration-testing", "API and Integration Testing", ["API Test Design", "Authentication and Authorization Testing", "Schema and Contract Validation", "Database Assertions", "Integration Boundaries", "Contract Testing Concepts", "Mocking and Service Virtualization", "Internal Package Compatibility", "Data Setup and Cleanup", "Lab: Test Steward API End-to-End at the Service Layer"]);
+export const apiAndIntegrationTesting: LearningPath = { id: "api-and-integration-testing", title: "API and Integration Testing", lessons: apiAndIntegrationTestingDeepLessons };
 
 export const automationFrameworkEngineering: LearningPath = {
     id: "automation-framework-engineering", title: "Automation Framework Engineering", lessons: [
