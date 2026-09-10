@@ -101,7 +101,7 @@ const specs: Spec[] = [
         steward: ["Steward homelab hosts should expose SSH only where administration requires it, with named users and auditable keys.", "Changing sshd settings is operationally sensitive: a secure configuration that strands the operator is still a failed engineering change."],
         practice: ["Capture the current SSH authentication and root-login settings.", "Establish and verify key-based access.", "Apply one justified sshd hardening change.", "Open a new session before closing the old one and document recovery access."],
         reflection: "Why should SSH hardening be treated as both a security change and a reliability change?",
-        warning: "Never disable the current authentication path until an independent replacement path has been verified from a separate session or console."],
+        warning: "Never disable the current authentication path until an independent replacement path has been verified from a separate session or console.",
     },
     {
         id: "host-firewalls",
