@@ -4,6 +4,7 @@ import type { Lesson } from "./lesson";
 import { architectureGovernanceDeepLessons } from "./technical-steward-architecture-governance-deep";
 import { controlsComplianceAssuranceDeepLessons } from "./technical-steward-controls-compliance-assurance-deep";
 import { engineeringGovernanceDeepLessons } from "./technical-steward-engineering-governance-deep";
+import { securityDataGovernanceDeepLessons } from "./technical-steward-security-data-governance-deep";
 import { technicalLeadershipDeepLessons } from "./technical-steward-technical-leadership-deep";
 import { technologyGovernanceDeepLessons } from "./technical-steward-technology-governance-deep";
 import { technologyRiskDeepLessons } from "./technical-steward-technology-risk-deep";
@@ -35,8 +36,8 @@ export const technologyGovernance: LearningPath = { id: "technology-governance",
 export const technologyRisk: LearningPath = { id: "technology-risk", title: "Technology Risk", lessons: technologyRiskDeepLessons };
 export const controlsComplianceAssurance: LearningPath = { id: "controls-compliance-assurance", title: "Controls, Compliance and Assurance", lessons: controlsComplianceAssuranceDeepLessons };
 export const architectureGovernance: LearningPath = { id: "architecture-governance", title: "Architecture Governance", lessons: architectureGovernanceDeepLessons };
+export const securityDataGovernance: LearningPath = { id: "security-data-governance", title: "Security and Data Governance", lessons: securityDataGovernanceDeepLessons };
 
-export const securityDataGovernance = path("security-data-governance", "Security and Data Governance", ["Security Governance", "Roles and Accountability", "Policy Hierarchy", "Data Ownership", "Data Classification", "Retention and Privacy Concepts", "Access Governance", "Security Exceptions and Risk Acceptance", "Lab: Define Steward Security and Data Accountability"]);
 export const changeServiceGovernance = path("change-service-governance", "Change and Service Governance", ["Change Risk", "Change Controls", "Release Governance", "Service Ownership", "Incident, Problem and Change", "Operational Readiness", "Emergency Change", "Evidence-based Release Approval", "Lab: Govern a Steward Production Change"]);
 export const thirdPartyLifecycleRisk: LearningPath = { id: "third-party-lifecycle-risk", title: "Third-party and Technology Lifecycle Risk", lessons: ["Vendor Assessment", "Dependency Risk", "SaaS and Cloud Risk", "End-of-life Technology", "Exit and Continuity Planning", "Internal Software Product Ownership", "Approved Dependency Sources", "Internal Package Version and Support Policy", "Repository Retention and Lifecycle", "Dependency Exceptions", "Supply-chain Ownership and Provenance Requirements", "Lab: Govern steward-common and tsa-test-core"].map((title) => lesson("third-party-lifecycle-risk", title)) };
 export const technicalDebtHealth = path("technical-debt-health", "Technical Debt and Engineering Health", ["Identifying Technical Debt", "Measuring and Communicating Debt", "Prioritization", "Engineering Health Metrics", "KPI vs KRI", "Sustainable Remediation", "Debt Ownership and Review Cadence", "Balancing Feature Delivery and Engineering Health", "Lab: Build the Steward Engineering Health Review"]);
