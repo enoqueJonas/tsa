@@ -1,6 +1,7 @@
 import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
+import { controlsComplianceAssuranceDeepLessons } from "./technical-steward-controls-compliance-assurance-deep";
 import { engineeringGovernanceDeepLessons } from "./technical-steward-engineering-governance-deep";
 import { technicalLeadershipDeepLessons } from "./technical-steward-technical-leadership-deep";
 import { technologyGovernanceDeepLessons } from "./technical-steward-technology-governance-deep";
@@ -31,8 +32,8 @@ export const technicalLeadership: LearningPath = { id: "technical-leadership", t
 export const engineeringGovernance: LearningPath = { id: "engineering-governance", title: "Engineering Governance", lessons: engineeringGovernanceDeepLessons };
 export const technologyGovernance: LearningPath = { id: "technology-governance", title: "IT and Technology Governance", lessons: technologyGovernanceDeepLessons };
 export const technologyRisk: LearningPath = { id: "technology-risk", title: "Technology Risk", lessons: technologyRiskDeepLessons };
+export const controlsComplianceAssurance: LearningPath = { id: "controls-compliance-assurance", title: "Controls, Compliance and Assurance", lessons: controlsComplianceAssuranceDeepLessons };
 
-export const controlsComplianceAssurance = path("controls-compliance-assurance", "Controls, Compliance and Assurance", ["Preventive, Detective and Corrective Controls", "Control Objectives", "Control Design", "Control Effectiveness", "Evidence", "Control Testing", "Compliance vs Security", "Audit Fundamentals", "Findings and Remediation", "Designing Proportionate Controls", "Lab: Test Steward Engineering Controls"]);
 export const architectureGovernance = path("architecture-governance", "Architecture Governance", ["Architecture Principles", "Technology Standards", "Technology Selection", "Architecture Reviews", "Architecture Exceptions", "Technology Lifecycle", "Architecture Decision Ownership", "Standards vs Context-specific Decisions", "Lab: Govern a Steward Architecture Exception"]);
 export const securityDataGovernance = path("security-data-governance", "Security and Data Governance", ["Security Governance", "Roles and Accountability", "Policy Hierarchy", "Data Ownership", "Data Classification", "Retention and Privacy Concepts", "Access Governance", "Security Exceptions and Risk Acceptance", "Lab: Define Steward Security and Data Accountability"]);
 export const changeServiceGovernance = path("change-service-governance", "Change and Service Governance", ["Change Risk", "Change Controls", "Release Governance", "Service Ownership", "Incident, Problem and Change", "Operational Readiness", "Emergency Change", "Evidence-based Release Approval", "Lab: Govern a Steward Production Change"]);
