@@ -1,6 +1,7 @@
 import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
+import { metricsPrometheusGrafanaDeepLessons } from "./reliability-metrics-prometheus-grafana-deep";
 import { observabilityDeepLessons } from "./reliability-observability-deep";
 import { productionLoggingDeepLessons } from "./reliability-production-logging-deep";
 import { reliabilityAndSreDeepLessons } from "./reliability-sre-foundations-deep";
@@ -34,14 +35,7 @@ function path(id: string, title: string, titles: string[]): LearningPath {
 export const reliabilityAndSre: LearningPath = { id: "reliability-and-sre", title: "Reliability and SRE Foundations", lessons: reliabilityAndSreDeepLessons };
 export const observability: LearningPath = { id: "observability", title: "Observability", lessons: observabilityDeepLessons };
 export const productionLogging: LearningPath = { id: "logging", title: "Production Logging", lessons: productionLoggingDeepLessons };
-
-export const metricsPrometheusGrafana: LearningPath = {
-    id: "metrics-prometheus-grafana", title: "Metrics, Prometheus and Grafana",
-    lessons: ["Metrics Mental Models", "Counters, Gauges and Histograms", "Application and Infrastructure Metrics", "Prometheus Architecture", "Exporters", "Service Discovery Concepts", "PromQL", "Recording Rules Concepts", "Grafana", "Dashboard Design", "Dashboard Anti-patterns", "Nexus and Internal Platform Metrics", "CI and Delivery Metrics"].map((title) => lesson("metrics-prometheus-grafana", title)).concat([
-        lesson("metrics-prometheus-grafana", "Lab: Instrument Steward API", "Instrument Steward API and supporting infrastructure with meaningful metrics, scrape them with Prometheus and build Grafana views that answer concrete operational questions about traffic, errors, latency, saturation and dependency health."),
-        lesson("metrics-prometheus-grafana", "Lab: Observe the Internal Artifact Platform", "Add operational visibility for the internal Nexus/artifact service, including availability, storage growth and publish/download failure evidence because delivery and quality pipelines now depend on it."),
-    ]),
-};
+export const metricsPrometheusGrafana: LearningPath = { id: "metrics-prometheus-grafana", title: "Metrics, Prometheus and Grafana", lessons: metricsPrometheusGrafanaDeepLessons };
 
 export const serviceLevelEngineering: LearningPath = {
     id: "service-level-engineering", title: "Service Level Engineering",
