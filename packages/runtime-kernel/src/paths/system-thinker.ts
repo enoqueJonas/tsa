@@ -6,6 +6,7 @@ import { systemBoundariesAndContextDeepLessons } from "./system-thinker-boundari
 import { modelingSoftwareSystemsDeepLessons } from "./system-thinker-modeling-deep";
 import { componentsAndDependenciesDeepLessons } from "./system-thinker-components-dependencies-deep";
 import { dataFlowAndIntegrationDeepLessons } from "./system-thinker-data-flow-deep";
+import { distributedStateAndMessagingDeepLessons } from "./system-thinker-distributed-state-messaging-deep";
 import { failureModesDeepLessons } from "./system-thinker-failure-modes-deep";
 import { architectureDecisionsAndTradeOffsDeepLessons } from "./system-thinker-architecture-decisions-deep";
 import { stewardApiSystemDesignPortfolioDeep } from "./system-thinker-milestone-deep";
@@ -41,8 +42,9 @@ export const systemBoundariesAndContext = path("system-boundaries-and-context", 
 export const modelingSoftwareSystems = path("modeling-software-systems", "Modeling Software Systems", modelingSoftwareSystemsDeepLessons);
 export const componentsAndDependencies = path("components-and-dependencies", "Components and Dependencies", componentsAndDependenciesDeepLessons);
 export const dataFlowAndIntegration = path("data-flow-and-integration", "Data Flow and Integration", dataFlowAndIntegrationDeepLessons);
+export const distributedStateAndMessaging = path("distributed-state-and-messaging", "Distributed State and Messaging", distributedStateAndMessagingDeepLessons);
 export const failureModes = path("failure-modes", "Failure Modes", failureModesDeepLessons);
 export const architectureDecisionsAndTradeOffs = path("architecture-decisions", "Architecture Decisions and Trade-offs", architectureDecisionsAndTradeOffsDeepLessons);
 export const stewardApiSystemDesignPortfolio = stewardApiSystemDesignPortfolioDeep;
 
-export const systemThinkerPaths: LearningPath[] = [requirementsAndProblemFraming, systemBoundariesAndContext, modelingSoftwareSystems, componentsAndDependencies, dataFlowAndIntegration, failureModes, architectureDecisionsAndTradeOffs, stewardApiSystemDesignPortfolio];
+export const systemThinkerPaths: LearningPath[] = [requirementsAndProblemFraming, systemBoundariesAndContext, modelingSoftwareSystems, componentsAndDependencies, dataFlowAndIntegration, distributedStateAndMessaging, failureModes, architectureDecisionsAndTradeOffs, stewardApiSystemDesignPortfolio];
