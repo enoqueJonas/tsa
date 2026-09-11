@@ -36,6 +36,7 @@ See [Technical Stewardship Journey](./technical-stewardship-journey.md) for the 
 Some engineering capabilities deliberately begin in one school and mature across several later schools. They are recorded separately when reducing them to a single module would lose that progression.
 
 - [Internal Dependency and Artifact Management](./internal-dependency-management.md) — Builder creates a genuinely reusable internal package; Delivery Engineer builds the private artifact/package platform and CI publication flow; later schools secure, test, observe, architect and govern the dependency ecosystem.
+- [Enterprise Capability Progression](./enterprise-capability-progression.md) — defines the budget-conscious enterprise reference stack and the cross-school progression for Rocky Linux, Ansible, OpenTofu/Terraform concepts, Jenkins, Redis, RabbitMQ/Kafka comparison, Kong, Keycloak, Kubernetes/OpenShift, Argo CD, secrets management, database operations and the way Steward must evolve only when a real engineering need justifies new infrastructure.
 - [Curriculum Breadth Audit](./breadth-audit.md) — records the transition from Build Wide to Build Deep, the curriculum-wide continuity review, deep-authoring watch items and the lesson/milestone evidence standards.
 - [Curriculum Content Quality Standard](./content-quality-standard.md) — defines the post-Build-Deep quality pass, including rich/thin/scaffolded classification, capability-specific practice, guided-to-independent progression, failure exploration and evidence expectations.
 
