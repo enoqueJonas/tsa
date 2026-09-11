@@ -1,7 +1,7 @@
 import type { Activity } from "../activities";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
-import { requirementsAndProblemFramingDeepLessons } from "./system-thinker-requirements-deep";
+import { requirementsAndProblemFramingQualityLessons } from "./system-thinker-requirements-quality";
 import { systemBoundariesAndContextDeepLessons } from "./system-thinker-boundaries-deep";
 import { modelingSoftwareSystemsDeepLessons } from "./system-thinker-modeling-deep";
 import { componentsAndDependenciesDeepLessons } from "./system-thinker-components-dependencies-deep";
@@ -37,7 +37,7 @@ function lesson(pathId: string, title: string, focus?: string): Lesson {
 
 function path(id: string, title: string, lessons: Lesson[]): LearningPath { return { id, title, lessons }; }
 
-export const requirementsAndProblemFraming = path("requirements-and-problem-framing", "Requirements and Problem Framing", requirementsAndProblemFramingDeepLessons);
+export const requirementsAndProblemFraming = path("requirements-and-problem-framing", "Requirements and Problem Framing", requirementsAndProblemFramingQualityLessons);
 export const systemBoundariesAndContext = path("system-boundaries-and-context", "System Boundaries and Context", systemBoundariesAndContextDeepLessons);
 export const modelingSoftwareSystems = path("modeling-software-systems", "Modeling Software Systems", modelingSoftwareSystemsDeepLessons);
 export const componentsAndDependencies = path("components-and-dependencies", "Components and Dependencies", componentsAndDependenciesDeepLessons);
