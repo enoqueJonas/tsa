@@ -1,6 +1,6 @@
 import type { Activity } from "../activities";
 import { cloudArchitectureAndCostDeepLessons } from "./cloud-architecture-cost-deep";
-import { cloudAndHostingModelsDeepLessons } from "./cloud-hosting-models-deep";
+import { cloudAndHostingModelsQualityLessons } from "./cloud-hosting-models-quality";
 import { cloudBuildingBlocksDeepLessons } from "./cloud-building-blocks-deep";
 import { cloudEngineerMilestoneDeepLessons } from "./cloud-engineer-milestone-deep";
 import { infrastructureAsCodeDeepLessons } from "./cloud-infrastructure-as-code-deep";
@@ -48,7 +48,7 @@ function lesson(pathId: string, title: string, focus?: string): Lesson {
     return { id: lessonId, title, activities: [activity] };
 }
 
-export const cloudAndHostingModels: LearningPath = { id: "cloud-and-hosting-models", title: "Cloud and Hosting Models", lessons: cloudAndHostingModelsDeepLessons };
+export const cloudAndHostingModels: LearningPath = { id: "cloud-and-hosting-models", title: "Cloud and Hosting Models", lessons: cloudAndHostingModelsQualityLessons };
 export const vpsOperations: LearningPath = { id: "vps-operations", title: "VPS Operations", lessons: vpsOperationsDeepLessons };
 export const internetNetworking: LearningPath = { id: "internet-networking", title: "Internet Networking", lessons: internetNetworkingDeepLessons };
 export const cloudBuildingBlocks: LearningPath = { id: "cloud-building-blocks", title: "Cloud Building Blocks", lessons: cloudBuildingBlocksDeepLessons };
