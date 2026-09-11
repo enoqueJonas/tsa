@@ -4,7 +4,7 @@ import { configurationManagementDeepLessons } from "./delivery-configuration-man
 import { containersAndDockerQualityLessons } from "./delivery-containers-docker-quality";
 import { continuousDeliveryDeploymentDeepLessons } from "./delivery-continuous-delivery-deep";
 import { deliveryEngineerMilestoneDeepLessons } from "./delivery-engineer-milestone-deep";
-import { continuousIntegrationDeepLessons } from "./delivery-continuous-integration-deep";
+import { continuousIntegrationQualityLessons } from "./delivery-continuous-integration-quality";
 import { releaseEngineeringDeepLessons } from "./delivery-release-engineering-deep";
 import { softwareDeliveryFoundationsQualityLessons } from "./delivery-software-foundations-quality";
 import { artifactDependencySupplyChainManagement } from "./internal-dependency-management";
@@ -55,7 +55,7 @@ function path(id: string, title: string, lessons: Lesson[]): LearningPath {
 export const softwareDeliveryFoundations = path("software-delivery-foundations", "Software Delivery Foundations", softwareDeliveryFoundationsQualityLessons);
 export const automationAndShell = path("automation-and-shell", "Automation and Shell", automationAndShellDeepLessons);
 export const containersAndDocker = path("containers-and-docker", "Containers and Docker", containersAndDockerQualityLessons);
-export const continuousIntegration = path("continuous-integration", "Continuous Integration", continuousIntegrationDeepLessons);
+export const continuousIntegration = path("continuous-integration", "Continuous Integration", continuousIntegrationQualityLessons);
 export const continuousDeliveryDeployment = path("continuous-delivery-deployment", "Continuous Delivery and Deployment", continuousDeliveryDeploymentDeepLessons);
 export const configurationManagement = path("configuration-management", "Configuration Management", configurationManagementDeepLessons);
 export const releaseEngineering = path("release-engineering", "Release Engineering", releaseEngineeringDeepLessons);
