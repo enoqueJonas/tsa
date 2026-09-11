@@ -4,7 +4,7 @@ import type { Lesson } from "./lesson";
 import { requirementsAndProblemFramingQualityLessons } from "./system-thinker-requirements-quality";
 import { systemBoundariesAndContextQualityLessons } from "./system-thinker-boundaries-quality";
 import { modelingSoftwareSystemsQualityLessons } from "./system-thinker-modeling-quality";
-import { componentsAndDependenciesDeepLessons } from "./system-thinker-components-dependencies-deep";
+import { componentsAndDependenciesQualityLessons } from "./system-thinker-components-quality";
 import { dataFlowAndIntegrationDeepLessons } from "./system-thinker-data-flow-deep";
 import { distributedStateAndMessagingDeepLessons } from "./system-thinker-distributed-state-messaging-deep";
 import { failureModesDeepLessons } from "./system-thinker-failure-modes-deep";
@@ -40,7 +40,7 @@ function path(id: string, title: string, lessons: Lesson[]): LearningPath { retu
 export const requirementsAndProblemFraming = path("requirements-and-problem-framing", "Requirements and Problem Framing", requirementsAndProblemFramingQualityLessons);
 export const systemBoundariesAndContext = path("system-boundaries-and-context", "System Boundaries and Context", systemBoundariesAndContextQualityLessons);
 export const modelingSoftwareSystems = path("modeling-software-systems", "Modeling Software Systems", modelingSoftwareSystemsQualityLessons);
-export const componentsAndDependencies = path("components-and-dependencies", "Components and Dependencies", componentsAndDependenciesDeepLessons);
+export const componentsAndDependencies = path("components-and-dependencies", "Components and Dependencies", componentsAndDependenciesQualityLessons);
 export const dataFlowAndIntegration = path("data-flow-and-integration", "Data Flow and Integration", dataFlowAndIntegrationDeepLessons);
 export const distributedStateAndMessaging = path("distributed-state-and-messaging", "Distributed State and Messaging", distributedStateAndMessagingDeepLessons);
 export const failureModes = path("failure-modes", "Failure Modes", failureModesDeepLessons);
