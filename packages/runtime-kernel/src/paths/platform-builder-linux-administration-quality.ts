@@ -1,15 +1,51 @@
-import type { PracticalContent } from "../activities/content";
+import type { LearningResource, LessonBlock, PracticalContent } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { linuxAdministrationDeepLessons } from "./platform-builder-linux-administration-deep";
 
+const rockyDocs: LearningResource = { title: "Rocky Linux documentation", url: "https://docs.rockylinux.org/" };
+const rhelDocs: LearningResource = { title: "Red Hat Enterprise Linux documentation", url: "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/" };
+const selinuxDocs: LearningResource = { title: "RHEL — Using SELinux", url: "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/using_selinux/" };
+const firewalldDocs: LearningResource = { title: "RHEL — Configuring firewalls and packet filters", url: "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_firewalls_and_packet_filters/" };
+
+function replaceRockyStrings(value: string): string {
+    return value
+        .replaceAll("Installing Ubuntu Server", "Installing Rocky Linux")
+        .replaceAll("Ubuntu Server", "Rocky Linux")
+        .replaceAll("Ubuntu host", "Rocky Linux host")
+        .replaceAll("Ubuntu", "Rocky Linux")
+        .replaceAll("sudo apt update", "sudo dnf check-update")
+        .replaceAll("apt policy postgresql", "dnf info postgresql-server")
+        .replaceAll("dpkg -l | grep -E 'python|postgresql'", "rpm -qa | grep -E 'python|postgresql'")
+        .replaceAll("apt show <package>", "dnf info <package>")
+        .replaceAll("apt update", "dnf check-update")
+        .replaceAll("apt upgrade", "dnf upgrade")
+        .replaceAll("apt workflow", "DNF/RPM workflow")
+        .replaceAll("apt coordinates", "DNF coordinates")
+        .replaceAll("apt to query, install, update and remove packages", "DNF and RPM tooling to query, install, update and remove packages")
+        .replaceAll("the package manager", "DNF/RPM tooling")
+        .replaceAll("https://documentation.ubuntu.com/server/how-to/software/package-management/", "https://docs.rockylinux.org/guides/package_management/dnf_package_manager/")
+        .replaceAll("https://documentation.ubuntu.com/server/", "https://docs.rockylinux.org/")
+        .replaceAll("Ubuntu package management", "Rocky Linux package management")
+        .replaceAll("Ubuntu Server documentation", "Rocky Linux documentation");
+}
+
+function rockyize<T>(value: T): T {
+    if (typeof value === "string") return replaceRockyStrings(value) as T;
+    if (Array.isArray(value)) return value.map((item) => rockyize(item)) as T;
+    if (value && typeof value === "object") {
+        return Object.fromEntries(Object.entries(value as Record<string, unknown>).map(([key, item]) => [key, rockyize(item)])) as T;
+    }
+    return value;
+}
+
 const practices: Record<string, PracticalContent> = {
-    "Installing Ubuntu Server": {
+    "Installing Rocky Linux": {
         type: "practical",
-        objective: "Produce a reproducible first-boot baseline for the Ubuntu Server host that will operate Steward.",
-        scenario: "A second engineer must be able to understand what host was created, which installation decisions matter and what changed after the clean baseline.",
-        instructions: ["Record OS release, kernel, hostname and architecture.", "Map disks, filesystems and mounts and note any deliberate installation choices.", "Record network addresses, default route and administrator access path.", "Verify a non-root administrative account can use sudo.", "Capture a pre-Steward package and service baseline.", "Write a rebuild note that separates installation decisions from later application configuration."],
-        deliverables: ["First-boot host baseline", "Installation decision record", "Short rebuild checklist"],
-        completionCriteria: ["Another engineer can identify the exact host baseline.", "Installation choices with operational consequences are explicit.", "The baseline is captured before substantial Steward customization."],
+        objective: "Produce a reproducible first-boot baseline for the Rocky Linux host that will operate Steward and identify the RHEL-family conventions introduced by the platform.",
+        scenario: "A second engineer must be able to rebuild the host, identify its RHEL-compatible administration model and distinguish clean-install state from later Steward configuration.",
+        instructions: ["Record Rocky Linux release, kernel, hostname and architecture.", "Map disks, filesystems and mounts and note deliberate installation choices.", "Record network addresses, default route and administrator access path.", "Verify a non-root administrative account can use sudo and record the default SELinux mode and firewalld state.", "Capture a pre-Steward RPM package and systemd service baseline.", "Write a rebuild note that separates installation decisions from later application configuration and names the equivalent RHEL concepts where relevant."],
+        deliverables: ["Rocky Linux first-boot baseline", "RHEL-family convention note", "Installation decision record", "Short rebuild checklist"],
+        completionCriteria: ["Another engineer can identify the exact host baseline.", "SELinux and firewalld state are captured before customization.", "Installation choices with operational consequences are explicit.", "No RHEL subscription is required to complete the exercise."],
     },
     "Shell Navigation and Command Fluency": {
         type: "practical",
@@ -41,15 +77,15 @@ const practices: Record<string, PracticalContent> = {
         scenario: "A Steward path works for the administrator but fails for the service account. A blanket chmod 777 would hide the real boundary instead of fixing it.",
         instructions: ["Choose a safe test path needed by the Steward service.", "Inspect every parent path with namei/stat and identify the exact failing permission check.", "Predict the access result before changing anything.", "Apply the narrowest chown/chgrp/chmod change that satisfies the requirement.", "Retest as the service identity and confirm unrelated users did not gain unnecessary access.", "Record why a broader permission change was rejected."],
         deliverables: ["Permission failure trace", "Before/after ownership and mode evidence", "Least-privilege decision note"],
-        completionCriteria: ["The exact failing boundary is identified.", "The fix changes no more access than required.", "The learner can explain owner, group, other and directory traversal semantics involved."],
+        completionCriteria: ["The exact failing Unix permission boundary is identified.", "The fix changes no more access than required.", "The learner does not assume Unix mode bits are the only access-control layer on a RHEL-family host."],
     },
     "Package Management": {
         type: "practical",
-        objective: "Treat one Steward host package installation or update as controlled, traceable operational change.",
-        scenario: "A required host dependency must be installed or updated without turning the server into an undocumented collection of manually downloaded binaries.",
-        instructions: ["Identify one OS-level package Steward or its operation genuinely needs.", "Inspect candidate version, repository origin and currently installed state before change.", "Explain what apt update changes and what it does not change.", "Install or update the package through the package manager.", "Capture the final installed version and provenance.", "Run a small Steward verification and state the rollback/recovery path if the package change caused a regression."],
-        deliverables: ["Package change record", "Version/provenance evidence", "Post-change Steward verification"],
-        completionCriteria: ["The package need is explicit.", "Version and origin are known before or after the change.", "The change includes service verification rather than assuming package success means application success."],
+        objective: "Treat one Steward host package installation or update as controlled, traceable DNF/RPM change.",
+        scenario: "A required host dependency must be installed or updated without turning the server into an undocumented collection of manually downloaded binaries or untracked repositories.",
+        instructions: ["Identify one OS-level package Steward or its operation genuinely needs.", "Use dnf info/repolist and rpm queries to inspect candidate version, repository origin and installed state before change.", "Explain the difference between repository metadata refresh/checking and applying package upgrades.", "Install or update the package through DNF.", "Capture the final RPM version, architecture and provenance.", "Run a small Steward verification and state the rollback/recovery path if the package change caused a regression."],
+        deliverables: ["DNF/RPM package change record", "Version/provenance evidence", "Post-change Steward verification"],
+        completionCriteria: ["The package need is explicit.", "Version and repository origin are known.", "The learner can relate Rocky's package workflow to RHEL-family operations.", "Package-manager success is followed by application verification."],
     },
     "Processes and Signals": {
         type: "practical",
@@ -69,7 +105,7 @@ const practices: Record<string, PracticalContent> = {
     },
     "Environment and Configuration": {
         type: "practical",
-        objective: "Move Steward configuration into a controlled service-owned runtime configuration path without exposing secrets as evidence.",
+        objective: "Move Steward configuration into a controlled runtime configuration path without exposing secrets as evidence.",
         scenario: "Steward starts from the developer's shell because exported variables exist there, but the same service fails under systemd and configuration provenance is unclear.",
         instructions: ["Classify settings as code defaults, environment-specific configuration or secrets.", "Create a controlled configuration location with deliberate ownership and mode bits.", "Configure systemd to load the environment without embedding secret values in the unit.", "Restart Steward and prove configuration through non-secret behavior or metadata.", "Confirm the configuration file is not world-readable and is excluded from source control.", "Record one configuration-drift risk and how an operator would detect it."],
         deliverables: ["Configuration ownership map", "Protected runtime configuration evidence", "Non-secret verification and drift note"],
@@ -79,7 +115,7 @@ const practices: Record<string, PracticalContent> = {
         type: "practical",
         objective: "Reconstruct one controlled Steward failure as a time-bounded operational timeline using journal and host evidence.",
         scenario: "A failed request and service restart occurred close together. Dumping all logs produces noise; the task is to determine what happened and in which order.",
-        instructions: ["Introduce one safe configuration or restart failure with a known start time.", "Query journalctl by unit and a narrow time window.", "Separate application messages from systemd lifecycle events.", "Correlate the journal with one additional host observation such as process, permission or socket state.", "Write a timestamped failure -> detection -> intervention -> recovery sequence.", "Restore Steward and verify recovery through a real request."],
+        instructions: ["Introduce one safe configuration or restart failure with a known start time.", "Query journalctl by unit and a narrow time window.", "Separate application messages from systemd lifecycle events.", "Correlate the journal with one additional host observation such as process, permission, SELinux or socket state.", "Write a timestamped failure -> detection -> intervention -> recovery sequence.", "Restore Steward and verify recovery through a real request."],
         deliverables: ["Focused journal evidence", "Failure/recovery timeline", "Cross-check from a second host signal"],
         completionCriteria: ["The investigation is scoped by a question and time window.", "Logs are corroborated rather than treated as self-sufficient truth.", "Recovery is proven at application level."],
     },
@@ -109,7 +145,69 @@ const practices: Record<string, PracticalContent> = {
     },
 };
 
-export const linuxAdministrationQualityLessons: Lesson[] = linuxAdministrationDeepLessons.map((lesson) => {
+function supplementalLesson(
+    id: string,
+    title: string,
+    body: string,
+    blocks: LessonBlock[],
+    practical: PracticalContent,
+): Lesson {
+    return {
+        id,
+        title,
+        activities: [
+            { id: `${id}-reading`, title, estimatedMinutes: 40, content: { type: "reading", body, blocks } },
+            { id: `${id}-practice`, title: `${title}: Host Practice`, estimatedMinutes: 60, content: practical },
+            { id: `${id}-check`, title: `${title}: Knowledge Check`, estimatedMinutes: 10, content: { type: "reflection", prompt: `Explain the control boundary introduced by ${title}. Describe one failure symptom, the evidence you would gather before changing state, and the narrowest safe correction.` } },
+        ],
+    };
+}
+
+const selinuxLesson = supplementalLesson(
+    "linux-administration-selinux",
+    "SELinux Foundations and Troubleshooting",
+    "RHEL-family systems add mandatory access control through SELinux. Unix owner/group/mode bits may permit an action while SELinux policy still denies it, so disabling SELinux is not a valid default troubleshooting technique.",
+    [
+        { type: "paragraph", text: "Treat SELinux as a second authorization layer with labels, domains and policy. Start from enforcement state and denial evidence, not from the assumption that SELinux is the problem." },
+        { type: "heading", id: "observe-before-changing", text: "Observe before changing policy", level: 2 },
+        { type: "code", language: "bash", code: "getenforce\nsestatus\nls -Z /opt/steward /etc/steward\nps -eZ | grep -E 'gunicorn|python'\nsudo ausearch -m AVC -ts recent", caption: "Inspect enforcement, labels and AVC denials before changing anything." },
+        { type: "paragraph", text: "If a custom Steward path or network action is denied, determine whether the path has the wrong context, the service is operating outside its expected domain, or a narrowly justified policy adjustment is required. Prefer restorecon/semanage and correct labeling over setenforce 0." },
+        { type: "callout", tone: "warning", title: "Do not solve SELinux by disabling it", body: "Permissive mode may be used briefly as a controlled diagnostic comparison, but the lab is complete only when Steward operates correctly with enforcing mode restored." },
+        { type: "resources", title: "Required and supporting reading", resources: [selinuxDocs, rockyDocs, rhelDocs] },
+    ],
+    {
+        type: "practical",
+        objective: "Diagnose one controlled Steward access failure through both Unix permissions and SELinux evidence, then restore correct operation with enforcing mode retained.",
+        scenario: "The Steward service has Unix permission to access a path, but a RHEL-family mandatory-access-control rule still blocks it.",
+        instructions: ["Confirm enforcing mode and capture current labels for the service process and target path.", "Create or use a safe controlled labeling mismatch that produces a denial.", "Capture the AVC denial and explain which subject, target and operation were denied.", "Correct the label or narrowly justified policy configuration using RHEL-family tooling.", "Run restorecon where appropriate and retest Steward.", "Prove the final service works while SELinux remains enforcing."],
+        deliverables: ["SELinux state/label evidence", "AVC denial explanation", "Corrected label/policy evidence", "Final enforcing-mode verification"],
+        completionCriteria: ["SELinux is distinguished from Unix mode-bit permissions.", "A denial is diagnosed from evidence rather than guessed.", "The final solution does not depend on disabling SELinux."],
+    },
+);
+
+const firewalldLesson = supplementalLesson(
+    "linux-administration-firewalld",
+    "firewalld and Host Network Policy",
+    "Rocky Linux uses firewalld as the standard dynamic host-firewall interface. A healthy listening service should not automatically be reachable from every network; host policy should expose only the ports and sources justified by the current Steward topology.",
+    [
+        { type: "paragraph", text: "Separate three questions: is the process listening, does routing reach the host, and does host firewall policy permit the flow? firewalld zones provide a practical way to express trust boundaries around interfaces and sources." },
+        { type: "heading", id: "evidence", text: "Inspect effective policy", level: 2 },
+        { type: "code", language: "bash", code: "sudo firewall-cmd --state\nsudo firewall-cmd --get-active-zones\nsudo firewall-cmd --list-all\nss -ltnp\nsudo firewall-cmd --list-services --list-ports", caption: "Compare listening sockets with effective host-firewall exposure." },
+        { type: "paragraph", text: "Open a service or port only where the topology requires it, verify both runtime and permanent configuration, and test from an allowed and a disallowed source when the lab environment permits." },
+        { type: "callout", tone: "steward", title: "Networking handoff", body: "This lesson establishes host-level policy. Networking Foundations later adds subnet, routing, NAT, VPN and broader segmentation reasoning so private administration and public application traffic can follow different paths." },
+        { type: "resources", title: "Required and supporting reading", resources: [firewalldDocs, rockyDocs, rhelDocs] },
+    ],
+    {
+        type: "practical",
+        objective: "Expose only the Steward port required for the current lab while keeping administrative access deliberately scoped.",
+        scenario: "Steward listens correctly, but the host must not become an unrestricted set of open ports merely to make the demo work.",
+        instructions: ["Record active firewalld zones, interfaces and current services/ports.", "Record Steward and SSH listening sockets with ss.", "Add the narrowest runtime rule needed for Steward reachability and test it from the intended client.", "Make the rule persistent only after the runtime test succeeds.", "Demonstrate one port or service that remains unreachable by design.", "Document which later network/VPN boundary should carry administrative traffic rather than exposing it publicly."],
+        deliverables: ["Before/after firewalld evidence", "Allowed Steward reachability test", "Denied/unexposed service evidence", "Public-vs-private access note"],
+        completionCriteria: ["Listening state is not confused with firewall permission.", "Only justified ports/services are opened.", "Runtime and persistent policy are distinguished.", "The design anticipates a later VPN/private-management boundary."],
+    },
+);
+
+const rockyLessons = rockyize(linuxAdministrationDeepLessons).map((lesson) => {
     const practical = practices[lesson.title];
     if (!practical) return lesson;
 
@@ -119,4 +217,42 @@ export const linuxAdministrationQualityLessons: Lesson[] = linuxAdministrationDe
             activity.content.type === "practical" ? { ...activity, content: practical } : activity,
         ),
     };
+});
+
+export const linuxAdministrationQualityLessons: Lesson[] = rockyLessons.flatMap((lesson) => {
+    if (lesson.title === "Linux Permissions") return [lesson, selinuxLesson];
+    if (lesson.title === "SSH and Key Authentication") return [firewalldLesson, lesson];
+    if (lesson.title !== "Lab: Operate Steward API as a Linux Service") return [lesson];
+
+    return [{
+        ...lesson,
+        title: "Lab: Operate Steward API as a Rocky Linux Service",
+        activities: lesson.activities.map((activity) => {
+            if (activity.content.type === "reading") {
+                return {
+                    ...activity,
+                    content: rockyize({
+                        ...activity.content,
+                        body: `${activity.content.body} The final host must keep SELinux enforcing and use firewalld to expose only justified network access.`,
+                    }),
+                };
+            }
+            if (activity.content.type === "practical") {
+                return {
+                    ...activity,
+                    content: {
+                        ...rockyize(activity.content),
+                        instructions: [
+                            ...rockyize(activity.content.instructions),
+                            "Prove SELinux remains enforcing; diagnose and correct any policy/label issue rather than disabling it.",
+                            "Configure firewalld so Steward is reachable only through the justified service path while unnecessary ports remain closed.",
+                        ],
+                        deliverables: [...rockyize(activity.content.deliverables), "SELinux enforcing evidence", "firewalld exposure evidence"],
+                        completionCriteria: [...rockyize(activity.content.completionCriteria), "Steward operates with SELinux enforcing.", "Host firewall policy exposes only justified services."],
+                    },
+                };
+            }
+            return rockyize(activity);
+        }),
+    }];
 });
