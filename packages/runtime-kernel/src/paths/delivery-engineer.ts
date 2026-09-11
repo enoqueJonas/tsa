@@ -5,7 +5,7 @@ import { containersAndDockerQualityLessons } from "./delivery-containers-docker-
 import { continuousDeliveryDeploymentQualityLessons } from "./delivery-continuous-delivery-quality";
 import { deliveryEngineerMilestoneDeepLessons } from "./delivery-engineer-milestone-deep";
 import { continuousIntegrationQualityLessons } from "./delivery-continuous-integration-quality";
-import { releaseEngineeringDeepLessons } from "./delivery-release-engineering-deep";
+import { releaseEngineeringQualityLessons } from "./delivery-release-engineering-quality";
 import { softwareDeliveryFoundationsQualityLessons } from "./delivery-software-foundations-quality";
 import { artifactDependencySupplyChainManagement } from "./internal-dependency-management";
 import type { LearningPath } from "./learning-path";
@@ -58,7 +58,7 @@ export const containersAndDocker = path("containers-and-docker", "Containers and
 export const continuousIntegration = path("continuous-integration", "Continuous Integration", continuousIntegrationQualityLessons);
 export const continuousDeliveryDeployment = path("continuous-delivery-deployment", "Continuous Delivery and Deployment", continuousDeliveryDeploymentQualityLessons);
 export const configurationManagement = path("configuration-management", "Configuration Management", configurationManagementQualityLessons);
-export const releaseEngineering = path("release-engineering", "Release Engineering", releaseEngineeringDeepLessons);
+export const releaseEngineering = path("release-engineering", "Release Engineering", releaseEngineeringQualityLessons);
 export const stewardDeliveryPlatform = path("steward-delivery-platform", "Delivery Engineer Milestone", deliveryEngineerMilestoneDeepLessons);
 
 export const deliveryEngineerPaths: LearningPath[] = [
