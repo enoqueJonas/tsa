@@ -4,7 +4,7 @@ import { webAndApiFoundationsQualityLessons } from "./builder-web-api-quality";
 import { djangoAndApiQualityLessons } from "./builder-django-quality";
 import { relationalDataAndPostgresqlQualityLessons } from "./builder-postgresql-quality";
 import { identityAuthenticationAuthorizationDeepLessons } from "./builder-identity-auth-deep";
-import { softwareCraftDeepLessons } from "./builder-software-craft-deep";
+import { softwareCraftQualityLessons } from "./builder-software-craft-quality";
 import { stewardApiV1Deep } from "./builder-milestone-deep";
 
 function path(id: string, title: string, lessons: LearningPath["lessons"]): LearningPath { return { id, title, lessons }; }
@@ -14,7 +14,7 @@ export const webAndApiFoundations = path("web-and-api-foundations", "Web and API
 export const djangoAndApiEngineering = path("django-and-api-engineering", "Django and API Engineering", djangoAndApiQualityLessons);
 export const relationalDataAndPostgresql = path("relational-data-and-postgresql", "Relational Data and PostgreSQL", relationalDataAndPostgresqlQualityLessons);
 export const identityAuthenticationAuthorization = path("identity-authentication-authorization", "Identity, Authentication and Authorization", identityAuthenticationAuthorizationDeepLessons);
-export const softwareCraft = path("software-craft", "Software Craft", softwareCraftDeepLessons);
+export const softwareCraft = path("software-craft", "Software Craft", softwareCraftQualityLessons);
 export const stewardApiV1 = stewardApiV1Deep;
 
 export const builderPaths: LearningPath[] = [programmingWithPython, webAndApiFoundations, djangoAndApiEngineering, relationalDataAndPostgresql, identityAuthenticationAuthorization, softwareCraft, stewardApiV1];
