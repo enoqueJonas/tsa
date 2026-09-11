@@ -1,6 +1,6 @@
 import type { Lesson } from "./lesson";
 import type { LearningPath } from "./learning-path";
-import { artifactDependencySupplyChainDeepLessons } from "./delivery-artifact-supply-chain-deep";
+import { artifactDependencySupplyChainQualityLessons } from "./delivery-artifact-supply-chain-quality";
 
 export const reusableInternalPackageLesson: Lesson = {
     id: "software-craft-internal-package-design",
@@ -59,5 +59,5 @@ export const extractStewardCommonLesson: Lesson = {
 export const artifactDependencySupplyChainManagement: LearningPath = {
     id: "artifact-and-supply-chain",
     title: "Artifact, Dependency and Supply-Chain Management",
-    lessons: artifactDependencySupplyChainDeepLessons,
+    lessons: artifactDependencySupplyChainQualityLessons,
 };
