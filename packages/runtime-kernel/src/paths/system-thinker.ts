@@ -8,7 +8,7 @@ import { componentsAndDependenciesQualityLessons } from "./system-thinker-compon
 import { dataFlowAndIntegrationQualityLessons } from "./system-thinker-data-flow-quality";
 import { distributedStateAndMessagingDeepLessons } from "./system-thinker-distributed-state-messaging-deep";
 import { failureModesQualityLessons } from "./system-thinker-failure-quality";
-import { architectureDecisionsAndTradeOffsDeepLessons } from "./system-thinker-architecture-decisions-deep";
+import { architectureDecisionsAndTradeOffsQualityLessons } from "./system-thinker-architecture-decisions-quality";
 import { stewardApiSystemDesignPortfolioDeep } from "./system-thinker-milestone-deep";
 
 function slug(value: string) {
@@ -44,7 +44,7 @@ export const componentsAndDependencies = path("components-and-dependencies", "Co
 export const dataFlowAndIntegration = path("data-flow-and-integration", "Data Flow and Integration", dataFlowAndIntegrationQualityLessons);
 export const distributedStateAndMessaging = path("distributed-state-and-messaging", "Distributed State and Messaging", distributedStateAndMessagingDeepLessons);
 export const failureModes = path("failure-modes", "Failure Modes", failureModesQualityLessons);
-export const architectureDecisionsAndTradeOffs = path("architecture-decisions", "Architecture Decisions and Trade-offs", architectureDecisionsAndTradeOffsDeepLessons);
+export const architectureDecisionsAndTradeOffs = path("architecture-decisions", "Architecture Decisions and Trade-offs", architectureDecisionsAndTradeOffsQualityLessons);
 export const stewardApiSystemDesignPortfolio = stewardApiSystemDesignPortfolioDeep;
 
 export const systemThinkerPaths: LearningPath[] = [requirementsAndProblemFraming, systemBoundariesAndContext, modelingSoftwareSystems, componentsAndDependencies, dataFlowAndIntegration, distributedStateAndMessaging, failureModes, architectureDecisionsAndTradeOffs, stewardApiSystemDesignPortfolio];
