@@ -2,7 +2,7 @@ import type { Activity } from "../activities";
 import { automationAndShellDeepLessons } from "./delivery-automation-shell-deep";
 import { configurationManagementDeepLessons } from "./delivery-configuration-management-deep";
 import { containersAndDockerQualityLessons } from "./delivery-containers-docker-quality";
-import { continuousDeliveryDeploymentDeepLessons } from "./delivery-continuous-delivery-deep";
+import { continuousDeliveryDeploymentQualityLessons } from "./delivery-continuous-delivery-quality";
 import { deliveryEngineerMilestoneDeepLessons } from "./delivery-engineer-milestone-deep";
 import { continuousIntegrationQualityLessons } from "./delivery-continuous-integration-quality";
 import { releaseEngineeringDeepLessons } from "./delivery-release-engineering-deep";
@@ -56,7 +56,7 @@ export const softwareDeliveryFoundations = path("software-delivery-foundations",
 export const automationAndShell = path("automation-and-shell", "Automation and Shell", automationAndShellDeepLessons);
 export const containersAndDocker = path("containers-and-docker", "Containers and Docker", containersAndDockerQualityLessons);
 export const continuousIntegration = path("continuous-integration", "Continuous Integration", continuousIntegrationQualityLessons);
-export const continuousDeliveryDeployment = path("continuous-delivery-deployment", "Continuous Delivery and Deployment", continuousDeliveryDeploymentDeepLessons);
+export const continuousDeliveryDeployment = path("continuous-delivery-deployment", "Continuous Delivery and Deployment", continuousDeliveryDeploymentQualityLessons);
 export const configurationManagement = path("configuration-management", "Configuration Management", configurationManagementDeepLessons);
 export const releaseEngineering = path("release-engineering", "Release Engineering", releaseEngineeringDeepLessons);
 export const stewardDeliveryPlatform = path("steward-delivery-platform", "Delivery Engineer Milestone", deliveryEngineerMilestoneDeepLessons);
