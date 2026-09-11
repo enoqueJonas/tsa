@@ -1,7 +1,7 @@
 import type { Activity } from "../activities";
 import { automationAndShellDeepLessons } from "./delivery-automation-shell-deep";
 import { configurationManagementDeepLessons } from "./delivery-configuration-management-deep";
-import { containersAndDockerDeepLessons } from "./delivery-containers-docker-deep";
+import { containersAndDockerQualityLessons } from "./delivery-containers-docker-quality";
 import { continuousDeliveryDeploymentDeepLessons } from "./delivery-continuous-delivery-deep";
 import { deliveryEngineerMilestoneDeepLessons } from "./delivery-engineer-milestone-deep";
 import { continuousIntegrationDeepLessons } from "./delivery-continuous-integration-deep";
@@ -54,7 +54,7 @@ function path(id: string, title: string, lessons: Lesson[]): LearningPath {
 
 export const softwareDeliveryFoundations = path("software-delivery-foundations", "Software Delivery Foundations", softwareDeliveryFoundationsQualityLessons);
 export const automationAndShell = path("automation-and-shell", "Automation and Shell", automationAndShellDeepLessons);
-export const containersAndDocker = path("containers-and-docker", "Containers and Docker", containersAndDockerDeepLessons);
+export const containersAndDocker = path("containers-and-docker", "Containers and Docker", containersAndDockerQualityLessons);
 export const continuousIntegration = path("continuous-integration", "Continuous Integration", continuousIntegrationDeepLessons);
 export const continuousDeliveryDeployment = path("continuous-delivery-deployment", "Continuous Delivery and Deployment", continuousDeliveryDeploymentDeepLessons);
 export const configurationManagement = path("configuration-management", "Configuration Management", configurationManagementDeepLessons);
