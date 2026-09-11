@@ -1,28 +1,28 @@
 # TSA Curriculum Breadth Audit
 
-This audit marks the transition from **Build Wide** to **Build Deep**. All 12 planned schools are now represented by runnable curriculum breadth. The purpose of this review is to check sequencing, milestone continuity, prerequisite placement, lab progression, cross-journey capability development and areas that need special care during deep authoring.
+This audit originally marked the transition from **Build Wide** to **Build Deep**. All 12 planned schools were represented by runnable curriculum breadth, and the review checked sequencing, milestone continuity, prerequisite placement, lab progression, cross-journey capability development and areas requiring special care during deep authoring.
 
-## Outcome
+## Current status
 
-The curriculum is structurally strong enough to move into deep authoring. No missing school, broken journey transition or major prerequisite inversion was identified that requires reopening the breadth phase.
+The audit's structural conclusion held through implementation: no missing school, broken journey transition or major prerequisite inversion required reopening Build Wide.
 
-The next phase should therefore be:
+**Build Wide is complete and Build Deep is now complete across all 12 schools.** The curriculum has moved into the separate **Content Quality** phase described in [Curriculum Content Quality Standard](./content-quality-standard.md).
+
+The journey therefore now reads:
 
 ```text
 Complete curriculum breadth
         ↓
 Curriculum-wide audit
         ↓
-Deep-author Engineering Apprentice
+Deep-author all 12 schools
         ↓
-Deep-author Builder
+Content-quality audit and repair
         ↓
-Continue school by school
-        ↓
-Periodic cross-journey review
+Learner validation and continued iteration
 ```
 
-Deep authoring should improve lesson quality without casually changing the established journey. Structural changes remain allowed when research or implementation evidence exposes a genuine flaw.
+Content Quality should improve the learning experience without casually changing the established journey. Structural changes remain allowed when curriculum review, implementation evidence or learner evidence exposes a genuine flaw.
 
 ## Journey continuity
 
@@ -123,42 +123,37 @@ The Architect school correctly avoids treating microservices as a graduation bad
 
 Technical Steward is positioned after hands-on engineering. This prevents governance from becoming detached theory. Controls, standards, policies and review mechanisms should always point back to systems and risks the learner has actually encountered.
 
-## Deep-authoring watch items
+## Deep-authoring watch items retained for quality review
 
-These do not block the journey, but they need deliberate treatment when lessons are authored in depth.
+These items originated during the pre-deep-authoring audit. Deep content now exists, but they remain useful review questions during Content Quality and learner validation.
 
 ### Browser-testing target
 
-Quality Steward includes page objects, cross-browser testing and browser execution while the continuing core project is primarily the Steward API. Deep authoring must define a credible browser surface before those lessons are reached. Acceptable options include a small genuine Steward web client or another real browser-facing Steward surface. Do not create a fake UI solely to justify Selenium/Playwright concepts.
-
-Decision gate before deep-authoring the browser-testing module:
-- if Steward has a meaningful browser client by that point, use it;
-- if not, introduce the minimum useful user-facing client only if it improves the product and learning journey;
-- otherwise narrow browser-specific exercises and keep API/service-layer testing primary.
+Quality Steward includes page objects, cross-browser testing and browser execution while the continuing core project is primarily the Steward API. Content review should ensure any browser surface used is a credible product surface rather than a fake UI introduced solely to justify Selenium/Playwright concepts.
 
 ### Performance-tool selection
 
-The breadth teaches performance concepts without prematurely locking the learner into one tool. During deep authoring, select a primary practical tool only after comparing fit for the Python/HTTP ecosystem, CI execution, observability integration and learning cost. k6, Locust or equivalent can be evaluated then.
+Performance practice should continue to justify its primary tool by fit for the Python/HTTP ecosystem, CI execution, observability integration and learning cost rather than treating a tool as the learning objective.
 
 ### Distributed-systems examples
 
-Architect and Reliability teach queues, backpressure, replication, partitioning, eventual consistency and distributed failure. These concepts need hands-on evidence without forcing Steward to become unnecessarily distributed. Use controlled experiments, architectural katas, optional components or justified evolution rather than artificial production complexity.
+Architect and Reliability teach queues, backpressure, replication, partitioning, eventual consistency and distributed failure. Hands-on evidence should not force Steward to become unnecessarily distributed. Controlled experiments, architectural katas, optional components or justified evolution remain preferable to artificial production complexity.
 
 ### Tracing depth
 
-Reliability currently covers traces and OpenTelemetry concepts. Deep authoring should decide whether the operational lab warrants a real tracing backend such as Tempo, Jaeger or an equivalent. Add one only when it helps answer useful diagnostic questions beyond logs and metrics.
+Tracing practice should use a real backend only when it helps answer useful diagnostic questions beyond logs and metrics. Tool deployment is not itself evidence that the learner understands tracing.
 
 ### Security laboratory isolation
 
-Every offensive-security exercise must remain learner-controlled and isolated. Deep lessons should pair vulnerability reproduction with mitigation, retesting and evidence. Avoid exercises that depend on external/public targets.
+Every offensive-security exercise must remain learner-controlled and isolated. Lessons should pair vulnerability reproduction with mitigation, retesting and evidence. Avoid exercises that depend on external/public targets.
 
 ### Governance frameworks
 
-COBIT, ITIL, ISO and NIST should be used as sources of concepts and comparison points, not converted into certification-objective memorization. Deep lessons must show how framework ideas solve concrete accountability, control, risk and service-management problems.
+COBIT, ITIL, ISO and NIST should remain sources of concepts and comparison points rather than certification-objective memorization. Lessons should show how framework ideas solve concrete accountability, control, risk and service-management problems.
 
 ## Duplication that is intentional
 
-Some concepts recur because the learner's responsibility changes over time. Deep authoring should reference prior knowledge rather than reteach from zero.
+Some concepts recur because the learner's responsibility changes over time. Content Quality should reference prior knowledge rather than reteach from zero.
 
 Examples:
 - coupling/cohesion: Builder/System Thinker → Architect at system scale;
@@ -172,7 +167,7 @@ The rule is **spiral depth, not duplicate lessons**. Each recurrence should answ
 
 ## Lab progression standard
 
-During deep authoring, every major lab should state:
+Every major lab should state:
 1. prerequisite artifacts from previous work;
 2. the engineering question being answered;
 3. the system/environment being changed or observed;
@@ -180,36 +175,17 @@ During deep authoring, every major lab should state:
 5. completion criteria;
 6. what should be preserved for later schools.
 
-Labs should modify the same continuing system whenever that is pedagogically sound. Disposable toy labs are acceptable only for isolated concepts, dangerous experiments or situations where changing Steward would create artificial architecture.
+Labs should modify the same continuing system whenever that is pedagogically sound. Disposable toy labs are acceptable for isolated concepts, dangerous experiments or situations where changing Steward would create artificial architecture.
 
 ## Milestone evidence standard
 
-Every milestone should eventually produce reviewable artifacts in four categories:
+Every milestone should produce reviewable artifacts in four categories:
 - **working system evidence** — code, configuration, deployment or executable tests;
 - **engineering reasoning** — decisions, alternatives and trade-offs;
 - **operational evidence** — logs, test reports, metrics, screenshots, traces or recovery results where relevant;
 - **portfolio communication** — concise documentation another engineer can understand and review.
 
 Completion should not be based on lesson count alone.
-
-## Deep-authoring order
-
-Author deeply in journey order because later lessons should reference established TSA terminology and prior artifacts:
-
-1. Engineering Apprentice
-2. Builder
-3. System Thinker
-4. Platform Builder
-5. Delivery Engineer
-6. Cloud Engineer
-7. Quality Steward
-8. Security Steward
-9. Reliability Engineer
-10. Architect
-11. Technical Steward
-12. Professional Engineer
-
-Do not deep-author all schools in parallel. Finish a coherent school, review its effect on later prerequisites, then move forward.
 
 ## Definition of a deep TSA lesson
 
@@ -227,8 +203,10 @@ A deep lesson should normally include:
 
 Resources should be independently selected for lessons and exercises. Do not mechanically duplicate the same links everywhere.
 
+Deep authorship establishes the material. It does not by itself prove that the learner experience is rich. The Content Quality standard adds a second question: whether explanation, practice, failure exploration, evidence and review are actually appropriate to the capability being learned.
+
 ## Decision
 
-**Build Wide is complete.**
+**Build Wide: complete. Build Deep: complete.**
 
-The curriculum should now enter **Build Deep**, beginning with Engineering Apprentice and using this audit as a guardrail. The next major curriculum change should therefore deepen existing lessons rather than add another school or broad module unless new research exposes a genuine missing prerequisite or capability.
+The breadth audit remains a structural guardrail, but the active curriculum phase is now **Content Quality**. The first targeted repair begins with Builder → Programming with Python, followed by evidence-based reassessment of the remaining Builder modules.
