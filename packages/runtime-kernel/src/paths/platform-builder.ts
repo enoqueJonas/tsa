@@ -1,6 +1,6 @@
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
-import { budgetHomelabDeepLessons } from "./platform-builder-budget-homelab-deep";
+import { budgetHomelabQualityLessons } from "./platform-builder-budget-homelab-quality";
 import { computerAndOsFoundationsQualityLessons } from "./platform-builder-computer-os-quality";
 import { linuxAdministrationQualityLessons } from "./platform-builder-linux-administration-quality";
 import { stewardHomelabV1DeepLessons } from "./platform-builder-milestone-deep";
@@ -15,7 +15,7 @@ export const computerAndOsFoundations = path("computer-and-os-foundations", "Com
 export const linuxAdministration = path("linux-administration", "Linux Administration", linuxAdministrationQualityLessons);
 export const networkingFoundations = path("networking-foundations", "Networking Foundations", networkingFoundationsQualityLessons);
 export const virtualization = path("virtualization", "Virtualization", virtualizationQualityLessons);
-export const budgetHomelab = path("budget-homelab", "Building the Budget Homelab", budgetHomelabDeepLessons);
+export const budgetHomelab = path("budget-homelab", "Building the Budget Homelab", budgetHomelabQualityLessons);
 export const stewardHomelabV1 = path("steward-homelab-v1", "Platform Builder Milestone", stewardHomelabV1DeepLessons);
 
 export const platformBuilderPaths: LearningPath[] = [
