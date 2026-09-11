@@ -37,8 +37,11 @@ Some engineering capabilities deliberately begin in one school and mature across
 
 - [Internal Dependency and Artifact Management](./internal-dependency-management.md) — Builder creates a genuinely reusable internal package; Delivery Engineer builds the private artifact/package platform and CI publication flow; later schools secure, test, observe, architect and govern the dependency ecosystem.
 - [Enterprise Capability Progression](./enterprise-capability-progression.md) — defines the budget-conscious enterprise reference stack and the cross-school progression for Rocky Linux, Ansible, OpenTofu/Terraform concepts, Jenkins, Redis, RabbitMQ/Kafka comparison, Kong, Keycloak, Kubernetes/OpenShift, Argo CD, secrets management, database operations and the way Steward must evolve only when a real engineering need justifies new infrastructure.
+- [Network Access and Exposure Progression](./network-access-and-exposure-progression.md) — defines the public application path, private service path and VPN/private management path across Platform Builder, Delivery Engineer, Cloud Engineer, Security Steward and Reliability Engineer, including learner-owned homelab exposure through a controlled public edge.
 - [Curriculum Breadth Audit](./breadth-audit.md) — records the transition from Build Wide to Build Deep, the curriculum-wide continuity review, deep-authoring watch items and the lesson/milestone evidence standards.
 - [Curriculum Content Quality Standard](./content-quality-standard.md) — defines the post-Build-Deep quality pass, including rich/thin/scaffolded classification, capability-specific practice, guided-to-independent progression, failure exploration and evidence expectations.
+
+When an older module summary in `technical-stewardship-journey.md` conflicts with a later cross-journey capability specification, the newer capability specification is authoritative until the summary is synchronized. Runtime learner-facing paths must follow the authoritative capability specifications rather than preserve stale tool choices.
 
 ## Learning model
 
