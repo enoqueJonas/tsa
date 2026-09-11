@@ -149,6 +149,16 @@ export function LearningExperience({
                 blocks={readingContent.blocks}
               />
             </>
+          ) : activity.content.type === "practical" ? (
+            <PracticalContent
+              title={activity.title}
+              objective={activity.content.objective}
+              scenario={activity.content.scenario}
+              instructions={activity.content.instructions}
+              deliverables={activity.content.deliverables}
+              completionCriteria={activity.content.completionCriteria}
+              resources={activity.content.resources}
+            />
           ) : (
             <div className="rounded-2xl border border-zinc-200 bg-white p-10 shadow-sm">
               {activity.content.type === "reflection" && (
@@ -156,16 +166,6 @@ export function LearningExperience({
                   prompt={activity.content.prompt}
                   value={reflectionResponse}
                   onChange={reflection}
-                />
-              )}
-              {activity.content.type === "practical" && (
-                <PracticalContent
-                  objective={activity.content.objective}
-                  scenario={activity.content.scenario}
-                  instructions={activity.content.instructions}
-                  deliverables={activity.content.deliverables}
-                  completionCriteria={activity.content.completionCriteria}
-                  resources={activity.content.resources}
                 />
               )}
             </div>
