@@ -4,18 +4,27 @@ import { useEffect, useState } from "react";
 import { createRuntime, type LearningPath } from "@tsa/runtime-kernel";
 import { CurriculumSidebar } from "./curriculum-sidebar";
 import { PracticalContent, ReadingContent, ReflectionContent } from "./content";
+import { useAcademyProgress } from "./academy-progress-provider";
 
 const runtime = createRuntime();
 
 interface LearningExperienceProps {
   path: LearningPath;
+  initialActivityId?: string;
   onExit: () => void;
+  onActivityChange?: (activityId: string) => void;
 }
 
-export function LearningExperience({ path, onExit }: LearningExperienceProps) {
+export function LearningExperience({
+  path,
+  initialActivityId,
+  onExit,
+  onActivityChange,
+}: LearningExperienceProps) {
+  const { ready, progressForPath, savePathProgress } = useAcademyProgress();
   const [session] = useState(() => runtime.start(path));
   const activePath = session.currentPath();
-  const progressStorageKey = `tsa:${activePath.id}:progress`;
+  const [restored, setRestored] = useState(false);
 
   const [lesson, setLesson] = useState(session.currentLesson());
   const [activity, setActivity] = useState(session.currentActivity());
@@ -36,37 +45,45 @@ export function LearningExperience({ path, onExit }: LearningExperienceProps) {
     setUnlockedActivityIds(session.unlockedActivityIds());
     setReflectionResponse(session.reflectionResponse(currentActivity.id));
     setCanCompleteCurrentActivity(session.canCompleteCurrentActivity());
+    return currentActivity;
   }
 
   function persist() {
-    window.localStorage.setItem(progressStorageKey, JSON.stringify(session.progress()));
+    void savePathProgress(activePath, session.progress());
   }
 
   useEffect(() => {
-    const saved = window.localStorage.getItem(progressStorageKey);
-    if (!saved) return;
+    if (!ready || restored) return;
 
-    try {
-      session.restoreProgress(JSON.parse(saved));
-      sync();
-    } catch {
-      window.localStorage.removeItem(progressStorageKey);
+    const saved = progressForPath(activePath.id);
+    if (saved) {
+      session.restoreProgress(saved);
     }
-  }, [progressStorageKey, session]);
+
+    if (initialActivityId) {
+      session.goToActivity(initialActivityId);
+    }
+
+    const current = sync();
+    setRestored(true);
+    onActivityChange?.(current.id);
+  }, [activePath.id, initialActivityId, onActivityChange, progressForPath, ready, restored, session]);
 
   function primary() {
     const id = session.currentActivity().id;
     const done = session.completedActivityIds().includes(id);
     if (!done && !session.completeCurrentActivity()) return;
     if (session.hasNext()) session.next();
-    sync();
+    const current = sync();
     persist();
+    onActivityChange?.(current.id);
   }
 
   function select(id: string) {
     if (!session.goToActivity(id)) return;
-    sync();
+    const current = sync();
     persist();
+    onActivityChange?.(current.id);
   }
 
   function reflection(value: string) {
@@ -74,6 +91,10 @@ export function LearningExperience({ path, onExit }: LearningExperienceProps) {
     setReflectionResponse(value);
     setCanCompleteCurrentActivity(session.canCompleteCurrentActivity());
     persist();
+  }
+
+  if (!ready || !restored) {
+    return <div className="mt-12 text-sm text-zinc-500">Loading your progress…</div>;
   }
 
   const done = completedActivityIds.includes(activity.id);
@@ -129,7 +150,7 @@ export function LearningExperience({ path, onExit }: LearningExperienceProps) {
               />
             </>
           ) : (
-            <div className="rounded-2xl border bg-white p-10 shadow-sm">
+            <div className="rounded-2xl border border-zinc-200 bg-white p-10 shadow-sm">
               {activity.content.type === "reflection" && (
                 <ReflectionContent
                   prompt={activity.content.prompt}
