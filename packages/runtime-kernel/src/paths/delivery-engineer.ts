@@ -6,7 +6,7 @@ import { continuousDeliveryDeploymentDeepLessons } from "./delivery-continuous-d
 import { deliveryEngineerMilestoneDeepLessons } from "./delivery-engineer-milestone-deep";
 import { continuousIntegrationDeepLessons } from "./delivery-continuous-integration-deep";
 import { releaseEngineeringDeepLessons } from "./delivery-release-engineering-deep";
-import { softwareDeliveryFoundationsDeepLessons } from "./delivery-software-foundations-deep";
+import { softwareDeliveryFoundationsQualityLessons } from "./delivery-software-foundations-quality";
 import { artifactDependencySupplyChainManagement } from "./internal-dependency-management";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
@@ -52,7 +52,7 @@ function path(id: string, title: string, lessons: Lesson[]): LearningPath {
     return { id, title, lessons };
 }
 
-export const softwareDeliveryFoundations = path("software-delivery-foundations", "Software Delivery Foundations", softwareDeliveryFoundationsDeepLessons);
+export const softwareDeliveryFoundations = path("software-delivery-foundations", "Software Delivery Foundations", softwareDeliveryFoundationsQualityLessons);
 export const automationAndShell = path("automation-and-shell", "Automation and Shell", automationAndShellDeepLessons);
 export const containersAndDocker = path("containers-and-docker", "Containers and Docker", containersAndDockerDeepLessons);
 export const continuousIntegration = path("continuous-integration", "Continuous Integration", continuousIntegrationDeepLessons);
