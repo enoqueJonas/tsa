@@ -1,11 +1,10 @@
 services:
   - type: web
     name: tsa-academy
-    runtime: node
-    plan: free
+    runtime: static
     branch: master
     buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
-    startCommand: pnpm --filter web exec next start -H 0.0.0.0 -p $PORT
+    staticPublishPath: apps/web/out
     envVars:
       - key: NODE_VERSION
         value: 20.19.5
