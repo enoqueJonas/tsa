@@ -15,7 +15,7 @@ import {
   type LearningProgress,
 } from "@tsa/runtime-kernel";
 import {
-  clearAllPathProgress,
+  clearAllAcademyData,
   getAllPathProgress,
   isPathComplete,
   migrateLegacyLocalStorage,
@@ -94,7 +94,7 @@ export function AcademyProgressProvider({ children }: { children: ReactNode }) {
   );
 
   const resetAcademyProgress = useCallback(async () => {
-    await clearAllPathProgress();
+    await clearAllAcademyData();
     setRecords({});
   }, []);
 
