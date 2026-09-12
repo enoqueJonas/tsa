@@ -69,6 +69,10 @@ export function putPathProgress(record: PathProgressRecord) {
   return withStore<IDBValidKey>("readwrite", (store) => store.put(record));
 }
 
+export function clearAllPathProgress() {
+  return withStore<undefined>("readwrite", (store) => store.clear());
+}
+
 export function pathActivityIds(path: LearningPath) {
   return path.lessons.flatMap((lesson) => lesson.activities.map((activity) => activity.id));
 }
