@@ -6,14 +6,15 @@ import { AcademyBrowser } from "./academy-browser";
 import { AcademyDashboard } from "./academy-dashboard";
 import { AcademyDataControls } from "./academy-data-controls";
 import { AcademyProgressProvider } from "./academy-progress-provider";
+import { AssessmentCenter } from "./assessment-center";
 import { ProjectMilestoneTracker } from "./project-milestone-tracker";
 
-type View = "dashboard" | "curriculum" | "projects";
+type View = "dashboard" | "curriculum" | "projects" | "assessments";
 
 function currentView(): View {
   if (typeof window === "undefined") return "dashboard";
   const value = new URLSearchParams(window.location.search).get("view");
-  if (value === "curriculum" || value === "projects") return value;
+  if (value === "curriculum" || value === "projects" || value === "assessments") return value;
   return "dashboard";
 }
 
@@ -59,6 +60,7 @@ function AcademyAppContent() {
             <button type="button" onClick={() => navigate("dashboard")} className={navClass("dashboard")}>Dashboard</button>
             <button type="button" onClick={() => navigate("curriculum")} className={navClass("curriculum")}>Curriculum</button>
             <button type="button" onClick={() => navigate("projects")} className={navClass("projects")}>Projects</button>
+            <button type="button" onClick={() => navigate("assessments")} className={navClass("assessments")}>Assessments</button>
           </nav>
         </div>
       </header>
@@ -76,8 +78,10 @@ function AcademyAppContent() {
           </>
         ) : view === "curriculum" ? (
           <AcademyBrowser />
-        ) : (
+        ) : view === "projects" ? (
           <ProjectMilestoneTracker />
+        ) : (
+          <AssessmentCenter />
         )}
       </div>
     </main>
