@@ -1,11 +1,13 @@
 import type { LearningPath, LearningProgress } from "@tsa/runtime-kernel";
 
 const DATABASE_NAME = "tsa-academy";
-const DATABASE_VERSION = 2;
+const DATABASE_VERSION = 3;
 const PATH_PROGRESS_STORE = "path-progress";
 const ACTIVITY_EVIDENCE_STORE = "activity-evidence";
+const PROJECT_TRACKING_STORE = "project-tracking";
 export const PROGRESS_SCHEMA_VERSION = 1;
 export const EVIDENCE_SCHEMA_VERSION = 1;
+export const PROJECT_SCHEMA_VERSION = 1;
 
 export interface PathProgressRecord extends LearningProgress {
   schemaVersion: typeof PROGRESS_SCHEMA_VERSION;
@@ -22,6 +24,20 @@ export interface ActivityEvidenceRecord {
   notes: string;
   links: string[];
   outcome: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type ProjectStatus = "not-started" | "active" | "blocked" | "ready-for-review" | "completed";
+
+export interface ProjectTrackingRecord {
+  schemaVersion: typeof PROJECT_SCHEMA_VERSION;
+  pathId: string;
+  status: ProjectStatus;
+  objective: string;
+  decisions: string;
+  blocker: string;
+  completionNotes: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -46,6 +62,11 @@ function openDatabase(): Promise<IDBDatabase> {
       if (!database.objectStoreNames.contains(ACTIVITY_EVIDENCE_STORE)) {
         const store = database.createObjectStore(ACTIVITY_EVIDENCE_STORE, { keyPath: "activityId" });
         store.createIndex("pathId", "pathId", { unique: false });
+        store.createIndex("updatedAt", "updatedAt", { unique: false });
+      }
+      if (!database.objectStoreNames.contains(PROJECT_TRACKING_STORE)) {
+        const store = database.createObjectStore(PROJECT_TRACKING_STORE, { keyPath: "pathId" });
+        store.createIndex("status", "status", { unique: false });
         store.createIndex("updatedAt", "updatedAt", { unique: false });
       }
     };
@@ -108,8 +129,24 @@ export function clearAllActivityEvidence() {
   return withStore<undefined>(ACTIVITY_EVIDENCE_STORE, "readwrite", (store) => store.clear());
 }
 
+export function getProjectTracking(pathId: string) {
+  return withStore<ProjectTrackingRecord | undefined>(PROJECT_TRACKING_STORE, "readonly", (store) => store.get(pathId));
+}
+
+export function getAllProjectTracking() {
+  return withStore<ProjectTrackingRecord[]>(PROJECT_TRACKING_STORE, "readonly", (store) => store.getAll());
+}
+
+export function putProjectTracking(record: ProjectTrackingRecord) {
+  return withStore<IDBValidKey>(PROJECT_TRACKING_STORE, "readwrite", (store) => store.put(record));
+}
+
+export function clearAllProjectTracking() {
+  return withStore<undefined>(PROJECT_TRACKING_STORE, "readwrite", (store) => store.clear());
+}
+
 export async function clearAllAcademyData() {
-  await Promise.all([clearAllPathProgress(), clearAllActivityEvidence()]);
+  await Promise.all([clearAllPathProgress(), clearAllActivityEvidence(), clearAllProjectTracking()]);
 }
 
 export function pathActivityIds(path: LearningPath) {
