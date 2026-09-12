@@ -1,15 +1,17 @@
 import type { LearningPath, LearningProgress } from "@tsa/runtime-kernel";
 
 const DATABASE_NAME = "tsa-academy";
-const DATABASE_VERSION = 4;
+const DATABASE_VERSION = 5;
 const PATH_PROGRESS_STORE = "path-progress";
 const ACTIVITY_EVIDENCE_STORE = "activity-evidence";
 const PROJECT_TRACKING_STORE = "project-tracking";
 const ASSESSMENT_STORE = "assessment-gates";
+const DAILY_SNAPSHOT_STORE = "daily-snapshots";
 export const PROGRESS_SCHEMA_VERSION = 1;
 export const EVIDENCE_SCHEMA_VERSION = 1;
 export const PROJECT_SCHEMA_VERSION = 1;
 export const ASSESSMENT_SCHEMA_VERSION = 1;
+export const SNAPSHOT_SCHEMA_VERSION = 1;
 
 export interface PathProgressRecord extends LearningProgress {
   schemaVersion: typeof PROGRESS_SCHEMA_VERSION;
@@ -54,6 +56,13 @@ export interface AssessmentGateRecord {
   updatedAt: string;
 }
 
+export interface DailySnapshotRecord {
+  schemaVersion: typeof SNAPSHOT_SCHEMA_VERSION;
+  dateKey: string;
+  createdAt: string;
+  backup: unknown;
+}
+
 function isBrowser() {
   return typeof window !== "undefined" && "indexedDB" in window;
 }
@@ -85,6 +94,10 @@ function openDatabase(): Promise<IDBDatabase> {
         const store = database.createObjectStore(ASSESSMENT_STORE, { keyPath: "pathId" });
         store.createIndex("ready", "ready", { unique: false });
         store.createIndex("updatedAt", "updatedAt", { unique: false });
+      }
+      if (!database.objectStoreNames.contains(DAILY_SNAPSHOT_STORE)) {
+        const store = database.createObjectStore(DAILY_SNAPSHOT_STORE, { keyPath: "dateKey" });
+        store.createIndex("createdAt", "createdAt", { unique: false });
       }
     };
 
@@ -178,12 +191,39 @@ export function clearAllAssessmentGates() {
   return withStore<undefined>(ASSESSMENT_STORE, "readwrite", (store) => store.clear());
 }
 
+export function getDailySnapshot(dateKey: string) {
+  return withStore<DailySnapshotRecord | undefined>(DAILY_SNAPSHOT_STORE, "readonly", (store) => store.get(dateKey));
+}
+
+export function getAllDailySnapshots() {
+  return withStore<DailySnapshotRecord[]>(DAILY_SNAPSHOT_STORE, "readonly", (store) => store.getAll());
+}
+
+export function putDailySnapshot(record: DailySnapshotRecord) {
+  return withStore<IDBValidKey>(DAILY_SNAPSHOT_STORE, "readwrite", (store) => store.put(record));
+}
+
+export function deleteDailySnapshot(dateKey: string) {
+  return withStore<undefined>(DAILY_SNAPSHOT_STORE, "readwrite", (store) => store.delete(dateKey));
+}
+
+export function clearAllDailySnapshots() {
+  return withStore<undefined>(DAILY_SNAPSHOT_STORE, "readwrite", (store) => store.clear());
+}
+
 export async function clearAllAcademyData() {
   await Promise.all([
     clearAllPathProgress(),
     clearAllActivityEvidence(),
     clearAllProjectTracking(),
     clearAllAssessmentGates(),
+  ]);
+}
+
+export async function clearAllAcademyStorage() {
+  await Promise.all([
+    clearAllAcademyData(),
+    clearAllDailySnapshots(),
   ]);
 }
 

@@ -6,6 +6,7 @@ import { AcademyBrowser } from "./academy-browser";
 import { AcademyDashboard } from "./academy-dashboard";
 import { AcademyDashboardInsights } from "./academy-dashboard-insights";
 import { AcademyDataControls } from "./academy-data-controls";
+import { AcademyDailySnapshotRunner } from "./academy-daily-snapshot-runner";
 import { AcademyProgressProvider } from "./academy-progress-provider";
 import { AssessmentCenter } from "./assessment-center";
 import { EvidencePortfolio } from "./evidence-portfolio";
@@ -53,6 +54,7 @@ function AcademyAppContent() {
 
   return (
     <main className="min-h-screen bg-zinc-50 text-zinc-950">
+      <AcademyDailySnapshotRunner />
       <header className="border-b border-zinc-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-[1760px] items-center justify-between gap-6 px-5 py-4 sm:px-8 lg:px-10">
           <button type="button" onClick={() => navigate("dashboard")} className="text-left">
