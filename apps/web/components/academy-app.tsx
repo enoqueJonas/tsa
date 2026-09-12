@@ -7,14 +7,15 @@ import { AcademyDashboard } from "./academy-dashboard";
 import { AcademyDataControls } from "./academy-data-controls";
 import { AcademyProgressProvider } from "./academy-progress-provider";
 import { AssessmentCenter } from "./assessment-center";
+import { LearningHistory } from "./learning-history";
 import { ProjectMilestoneTracker } from "./project-milestone-tracker";
 
-type View = "dashboard" | "curriculum" | "projects" | "assessments";
+type View = "dashboard" | "curriculum" | "projects" | "assessments" | "history";
 
 function currentView(): View {
   if (typeof window === "undefined") return "dashboard";
   const value = new URLSearchParams(window.location.search).get("view");
-  if (value === "curriculum" || value === "projects" || value === "assessments") return value;
+  if (value === "curriculum" || value === "projects" || value === "assessments" || value === "history") return value;
   return "dashboard";
 }
 
@@ -56,11 +57,12 @@ function AcademyAppContent() {
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-blue-700">TSA</p>
             <p className="mt-0.5 text-sm font-semibold text-zinc-950">Technical Stewardship Academy</p>
           </button>
-          <nav className="flex items-center gap-1 rounded-xl bg-zinc-100 p-1">
+          <nav className="flex flex-wrap items-center gap-1 rounded-xl bg-zinc-100 p-1">
             <button type="button" onClick={() => navigate("dashboard")} className={navClass("dashboard")}>Dashboard</button>
             <button type="button" onClick={() => navigate("curriculum")} className={navClass("curriculum")}>Curriculum</button>
             <button type="button" onClick={() => navigate("projects")} className={navClass("projects")}>Projects</button>
             <button type="button" onClick={() => navigate("assessments")} className={navClass("assessments")}>Assessments</button>
+            <button type="button" onClick={() => navigate("history")} className={navClass("history")}>History</button>
           </nav>
         </div>
       </header>
@@ -80,8 +82,10 @@ function AcademyAppContent() {
           <AcademyBrowser />
         ) : view === "projects" ? (
           <ProjectMilestoneTracker />
-        ) : (
+        ) : view === "assessments" ? (
           <AssessmentCenter />
+        ) : (
+          <LearningHistory />
         )}
       </div>
     </main>
