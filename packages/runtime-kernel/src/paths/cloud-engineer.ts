@@ -1,7 +1,7 @@
 import type { Activity } from "../activities";
 import { cloudArchitectureAndCostDeepLessons } from "./cloud-architecture-cost-deep";
 import { cloudAndHostingModelsQualityLessons } from "./cloud-hosting-models-quality";
-import { cloudBuildingBlocksDeepLessons } from "./cloud-building-blocks-deep";
+import { cloudBuildingBlocksQualityLessons } from "./cloud-building-blocks-quality";
 import { cloudEngineerMilestoneDeepLessons } from "./cloud-engineer-milestone-deep";
 import { infrastructureAsCodeDeepLessons } from "./cloud-infrastructure-as-code-deep";
 import { internetNetworkingQualityLessons } from "./cloud-internet-networking-quality";
@@ -51,7 +51,7 @@ function lesson(pathId: string, title: string, focus?: string): Lesson {
 export const cloudAndHostingModels: LearningPath = { id: "cloud-and-hosting-models", title: "Cloud and Hosting Models", lessons: cloudAndHostingModelsQualityLessons };
 export const vpsOperations: LearningPath = { id: "vps-operations", title: "VPS Operations", lessons: vpsOperationsQualityLessons };
 export const internetNetworking: LearningPath = { id: "internet-networking", title: "Internet Networking", lessons: internetNetworkingQualityLessons };
-export const cloudBuildingBlocks: LearningPath = { id: "cloud-building-blocks", title: "Cloud Building Blocks", lessons: cloudBuildingBlocksDeepLessons };
+export const cloudBuildingBlocks: LearningPath = { id: "cloud-building-blocks", title: "Cloud Building Blocks", lessons: cloudBuildingBlocksQualityLessons };
 export const infrastructureAsCode: LearningPath = { id: "infrastructure-as-code", title: "Infrastructure as Code", lessons: infrastructureAsCodeDeepLessons };
 export const cloudArchitectureAndCost: LearningPath = { id: "cloud-architecture-and-cost", title: "Cloud Architecture and Cost", lessons: cloudArchitectureAndCostDeepLessons };
 export const stewardInternetEnvironment: LearningPath = { id: "steward-internet-environment", title: "Cloud Engineer Milestone", lessons: cloudEngineerMilestoneDeepLessons };
