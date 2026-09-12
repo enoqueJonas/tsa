@@ -1,6 +1,7 @@
 import { applicationSecurityDeepLessons } from "./security-application-deep";
 import { containerAndDeliverySecurityDeepLessons } from "./security-container-delivery-deep";
 import { securityFoundationsDeepLessons } from "./security-foundations-deep";
+import { securityIdentitySecretsDeepLessons } from "./security-identity-secrets-deep";
 import { linuxAndNetworkSecurityDeepLessons } from "./security-linux-network-deep";
 import { stewardSecurityAssessmentDeepLessons } from "./security-steward-milestone-deep";
 import { threatModelingDeepLessons } from "./security-threat-modeling-deep";
@@ -44,6 +45,12 @@ export const containerAndDeliverySecurity: LearningPath = {
     lessons: containerAndDeliverySecurityDeepLessons,
 };
 
+export const identityAndSecretsSecurity: LearningPath = {
+    id: "identity-and-secrets-security",
+    title: "Identity and Secrets Security",
+    lessons: securityIdentitySecretsDeepLessons,
+};
+
 export const applicationSecurity: LearningPath = {
     id: "application-security",
     title: "Application Security",
@@ -63,6 +70,7 @@ export const securityStewardPaths: LearningPath[] = [
     vulnerabilityLaboratory,
     linuxAndNetworkSecurity,
     containerAndDeliverySecurity,
+    identityAndSecretsSecurity,
     applicationSecurity,
     stewardSecurityAssessment,
 ];
