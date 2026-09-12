@@ -10,6 +10,8 @@ import {
   type ProjectTrackingRecord,
 } from "../lib/progress-storage";
 
+const PAGE_SIZE = 5;
+
 const statusLabels: Record<ProjectStatus, string> = {
   "not-started": "Not started",
   active: "Active",
@@ -30,6 +32,7 @@ export function ProjectMilestoneTracker() {
   const entries = useMemo(() => projectPaths(), []);
   const [records, setRecords] = useState<Record<string, ProjectTrackingRecord>>({});
   const [selectedPathId, setSelectedPathId] = useState(entries[0]?.path.id ?? "");
+  const [page, setPage] = useState(0);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -38,8 +41,20 @@ export function ProjectMilestoneTracker() {
       .finally(() => setReady(true));
   }, []);
 
+  const pageCount = Math.max(1, Math.ceil(entries.length / PAGE_SIZE));
+  const pageStart = page * PAGE_SIZE;
+  const pageEntries = entries.slice(pageStart, pageStart + PAGE_SIZE);
+  const rangeEnd = Math.min(pageStart + PAGE_SIZE, entries.length);
+
   const selected = entries.find(({ path }) => path.id === selectedPathId);
   const record = selected ? records[selected.path.id] : undefined;
+
+  function goToPage(nextPage: number) {
+    const boundedPage = Math.min(Math.max(nextPage, 0), pageCount - 1);
+    const firstEntry = entries[boundedPage * PAGE_SIZE];
+    setPage(boundedPage);
+    if (firstEntry) setSelectedPathId(firstEntry.path.id);
+  }
 
   async function patch(values: Partial<Omit<ProjectTrackingRecord, "schemaVersion" | "pathId" | "createdAt" | "updatedAt">>) {
     if (!selected) return;
@@ -81,9 +96,9 @@ export function ProjectMilestoneTracker() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
-        <aside className="rounded-2xl border border-zinc-200 bg-white p-4">
+        <aside className="self-start rounded-2xl border border-zinc-200 bg-white p-4">
           <div className="space-y-1">
-            {entries.map(({ school, path }) => {
+            {pageEntries.map(({ school, path }) => {
               const status = records[path.id]?.status ?? "not-started";
               return (
                 <button key={path.id} type="button" onClick={() => setSelectedPathId(path.id)} className={selectedPathId === path.id ? "w-full rounded-xl bg-zinc-950 px-4 py-3 text-left text-white" : "w-full rounded-xl px-4 py-3 text-left hover:bg-zinc-50"}>
@@ -93,6 +108,17 @@ export function ProjectMilestoneTracker() {
                 </button>
               );
             })}
+          </div>
+
+          <div className="mt-4 border-t border-zinc-100 pt-4">
+            <div className="flex items-center justify-between text-xs text-zinc-500">
+              <span>{entries.length === 0 ? "0" : `${pageStart + 1}–${rangeEnd}`} of {entries.length}</span>
+              <span>Page {page + 1} of {pageCount}</span>
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <button type="button" onClick={() => goToPage(page - 1)} disabled={page === 0} className="rounded-lg border border-zinc-200 px-3 py-2 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:text-zinc-300 disabled:hover:bg-white">Previous</button>
+              <button type="button" onClick={() => goToPage(page + 1)} disabled={page >= pageCount - 1} className="rounded-lg border border-zinc-200 px-3 py-2 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:text-zinc-300 disabled:hover:bg-white">Next</button>
+            </div>
           </div>
         </aside>
 
