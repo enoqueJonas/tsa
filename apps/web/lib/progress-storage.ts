@@ -1,13 +1,15 @@
 import type { LearningPath, LearningProgress } from "@tsa/runtime-kernel";
 
 const DATABASE_NAME = "tsa-academy";
-const DATABASE_VERSION = 3;
+const DATABASE_VERSION = 4;
 const PATH_PROGRESS_STORE = "path-progress";
 const ACTIVITY_EVIDENCE_STORE = "activity-evidence";
 const PROJECT_TRACKING_STORE = "project-tracking";
+const ASSESSMENT_STORE = "assessment-gates";
 export const PROGRESS_SCHEMA_VERSION = 1;
 export const EVIDENCE_SCHEMA_VERSION = 1;
 export const PROJECT_SCHEMA_VERSION = 1;
+export const ASSESSMENT_SCHEMA_VERSION = 1;
 
 export interface PathProgressRecord extends LearningProgress {
   schemaVersion: typeof PROGRESS_SCHEMA_VERSION;
@@ -42,6 +44,16 @@ export interface ProjectTrackingRecord {
   updatedAt: string;
 }
 
+export interface AssessmentGateRecord {
+  schemaVersion: typeof ASSESSMENT_SCHEMA_VERSION;
+  pathId: string;
+  satisfiedCriteria: string[];
+  reviewerNotes: string;
+  ready: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 function isBrowser() {
   return typeof window !== "undefined" && "indexedDB" in window;
 }
@@ -67,6 +79,11 @@ function openDatabase(): Promise<IDBDatabase> {
       if (!database.objectStoreNames.contains(PROJECT_TRACKING_STORE)) {
         const store = database.createObjectStore(PROJECT_TRACKING_STORE, { keyPath: "pathId" });
         store.createIndex("status", "status", { unique: false });
+        store.createIndex("updatedAt", "updatedAt", { unique: false });
+      }
+      if (!database.objectStoreNames.contains(ASSESSMENT_STORE)) {
+        const store = database.createObjectStore(ASSESSMENT_STORE, { keyPath: "pathId" });
+        store.createIndex("ready", "ready", { unique: false });
         store.createIndex("updatedAt", "updatedAt", { unique: false });
       }
     };
@@ -145,8 +162,29 @@ export function clearAllProjectTracking() {
   return withStore<undefined>(PROJECT_TRACKING_STORE, "readwrite", (store) => store.clear());
 }
 
+export function getAssessmentGate(pathId: string) {
+  return withStore<AssessmentGateRecord | undefined>(ASSESSMENT_STORE, "readonly", (store) => store.get(pathId));
+}
+
+export function getAllAssessmentGates() {
+  return withStore<AssessmentGateRecord[]>(ASSESSMENT_STORE, "readonly", (store) => store.getAll());
+}
+
+export function putAssessmentGate(record: AssessmentGateRecord) {
+  return withStore<IDBValidKey>(ASSESSMENT_STORE, "readwrite", (store) => store.put(record));
+}
+
+export function clearAllAssessmentGates() {
+  return withStore<undefined>(ASSESSMENT_STORE, "readwrite", (store) => store.clear());
+}
+
 export async function clearAllAcademyData() {
-  await Promise.all([clearAllPathProgress(), clearAllActivityEvidence(), clearAllProjectTracking()]);
+  await Promise.all([
+    clearAllPathProgress(),
+    clearAllActivityEvidence(),
+    clearAllProjectTracking(),
+    clearAllAssessmentGates(),
+  ]);
 }
 
 export function pathActivityIds(path: LearningPath) {
