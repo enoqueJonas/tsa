@@ -1,6 +1,7 @@
 import { apiAndIntegrationTestingDeepLessons } from "./quality-api-integration-testing-deep";
 import { automationFrameworkEngineeringDeepLessons } from "./quality-automation-framework-engineering-deep";
 import { browserAndEnvironmentTestingDeepLessons } from "./quality-browser-environment-testing-deep";
+import { browserSurfaceDecisionLesson } from "./quality-browser-surface-decision";
 import { qualityInContainersAndCiDeepLessons } from "./quality-containers-ci-deep";
 import { nonFunctionalQualityDeepLessons } from "./quality-non-functional-deep";
 import { qualityEngineeringDeepLessons } from "./quality-engineering-deep";
@@ -42,7 +43,7 @@ export const automationFrameworkEngineering: LearningPath = {
 export const browserAndEnvironmentTesting: LearningPath = {
     id: "browser-and-environment-testing",
     title: "Browser and Environment Testing",
-    lessons: browserAndEnvironmentTestingDeepLessons,
+    lessons: [browserSurfaceDecisionLesson, ...browserAndEnvironmentTestingDeepLessons],
 };
 
 export const nonFunctionalQuality: LearningPath = {
