@@ -2,6 +2,7 @@ import { apiAndIntegrationTestingDeepLessons } from "./quality-api-integration-t
 import { automationFrameworkEngineeringDeepLessons } from "./quality-automation-framework-engineering-deep";
 import { browserAndEnvironmentTestingDeepLessons } from "./quality-browser-environment-testing-deep";
 import { browserSurfaceDecisionLesson } from "./quality-browser-surface-decision";
+import { performanceToolDecisionLesson } from "./quality-performance-tool-decision";
 import { qualityInContainersAndCiDeepLessons } from "./quality-containers-ci-deep";
 import { nonFunctionalQualityDeepLessons } from "./quality-non-functional-deep";
 import { qualityEngineeringDeepLessons } from "./quality-engineering-deep";
@@ -49,7 +50,7 @@ export const browserAndEnvironmentTesting: LearningPath = {
 export const nonFunctionalQuality: LearningPath = {
     id: "non-functional-quality",
     title: "Non-functional Quality",
-    lessons: nonFunctionalQualityDeepLessons,
+    lessons: [performanceToolDecisionLesson, ...nonFunctionalQualityDeepLessons],
 };
 
 export const qualityInContainersAndCi: LearningPath = {
