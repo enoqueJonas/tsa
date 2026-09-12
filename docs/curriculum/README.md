@@ -40,6 +40,7 @@ Some engineering capabilities deliberately begin in one school and mature across
 - [Network Access and Exposure Progression](./network-access-and-exposure-progression.md) — defines the public application path, private service path and VPN/private management path across Platform Builder, Delivery Engineer, Cloud Engineer, Security Steward and Reliability Engineer, including learner-owned homelab exposure through a controlled public edge.
 - [Curriculum Breadth Audit](./breadth-audit.md) — records the transition from Build Wide to Build Deep, the curriculum-wide continuity review, deep-authoring watch items and the lesson/milestone evidence standards.
 - [Curriculum Content Quality Standard](./content-quality-standard.md) — defines the post-Build-Deep quality pass, including rich/thin/scaffolded classification, capability-specific practice, guided-to-independent progression, failure exploration and evidence expectations.
+- [Content Quality and Enterprise Alignment Audit](./content-quality-audit.md) — records the completed first curriculum-wide Content Quality baseline pass, enterprise-capability coverage, closure of the original breadth-audit watch items and the remaining evidence-driven maintenance model.
 
 When an older module summary in `technical-stewardship-journey.md` conflicts with a later cross-journey capability specification, the newer capability specification is authoritative until the summary is synchronized. Runtime learner-facing paths must follow the authoritative capability specifications rather than preserve stale tool choices.
 
@@ -88,11 +89,11 @@ Not every lesson needs every block. Structure follows the learning objective rat
 
 ## Curriculum phase
 
-**Build Wide is complete. Build Deep is complete. All 12 schools are fully deep-authored.**
+**Build Wide is complete. Build Deep is complete. The first Content Quality and Enterprise Alignment baseline pass is complete.**
 
-The academy is now in **Content Quality**. This phase reviews the learner experience inside the authored curriculum and repairs material that is technically correct but too thin, repetitive, overly templated or insufficiently experiential.
+The academy now moves into an **evidence-driven maintenance and product-development phase**. Curriculum changes should be triggered by learner evidence, technical correction, real Steward evolution or a newly demonstrated capability gap rather than by a desire to add more modules or more tools.
 
-The distinction matters:
+The progression is now:
 
 ```text
 Build Wide
@@ -101,14 +102,16 @@ Build Wide
 Build Deep
     replace scaffolding with authored curriculum
         ↓
-Content Quality
-    test the quality of the learning experience itself
+Content Quality + Enterprise Alignment
+    improve the learning experience and enterprise capability progression
+        ↓
+Evidence-driven maintenance
+    repair only where learner/system evidence exposes a real gap
+        +
+TSA platform development
+    improve accounts, progress, evidence, review and learner workflows
 ```
 
-A deep-authored lesson is not automatically a finished lesson. Deep structure can still contain generic practice, uneven explanation or evidence requirements that do not match the capability being taught.
+The [Curriculum Content Quality Standard](./content-quality-standard.md) remains the guardrail for future lesson changes. The [Content Quality and Enterprise Alignment Audit](./content-quality-audit.md) records the baseline completion state and the decisions that closed the original watch items.
 
-The [Curriculum Content Quality Standard](./content-quality-standard.md) is the guardrail for this phase. Repairs should be surgical: preserve strong lessons, identify exact weaknesses, deepen only what needs deeper teaching, and replace generic practice where it prevents distinct engineering capabilities from feeling distinct.
-
-The first Content Quality pass begins in **Builder → Programming with Python**, based on the initial Builder audit. The remaining Builder modules will then be reassessed individually rather than rewritten wholesale.
-
-The curriculum specification is a living document. Significant changes should be intentional and committed to the repository so the academy plan is never dependent on chat history.
+The curriculum specification remains a living document. Significant changes should be intentional and committed to the repository so the academy plan is never dependent on chat history.
