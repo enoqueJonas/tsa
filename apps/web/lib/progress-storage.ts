@@ -1,9 +1,11 @@
 import type { LearningPath, LearningProgress } from "@tsa/runtime-kernel";
 
 const DATABASE_NAME = "tsa-academy";
-const DATABASE_VERSION = 1;
+const DATABASE_VERSION = 2;
 const PATH_PROGRESS_STORE = "path-progress";
+const ACTIVITY_EVIDENCE_STORE = "activity-evidence";
 export const PROGRESS_SCHEMA_VERSION = 1;
+export const EVIDENCE_SCHEMA_VERSION = 1;
 
 export interface PathProgressRecord extends LearningProgress {
   schemaVersion: typeof PROGRESS_SCHEMA_VERSION;
@@ -11,6 +13,17 @@ export interface PathProgressRecord extends LearningProgress {
   startedAt: string;
   updatedAt: string;
   completedAt?: string;
+}
+
+export interface ActivityEvidenceRecord {
+  schemaVersion: typeof EVIDENCE_SCHEMA_VERSION;
+  activityId: string;
+  pathId: string;
+  notes: string;
+  links: string[];
+  outcome: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 function isBrowser() {
@@ -30,6 +43,11 @@ function openDatabase(): Promise<IDBDatabase> {
       if (!database.objectStoreNames.contains(PATH_PROGRESS_STORE)) {
         database.createObjectStore(PATH_PROGRESS_STORE, { keyPath: "pathId" });
       }
+      if (!database.objectStoreNames.contains(ACTIVITY_EVIDENCE_STORE)) {
+        const store = database.createObjectStore(ACTIVITY_EVIDENCE_STORE, { keyPath: "activityId" });
+        store.createIndex("pathId", "pathId", { unique: false });
+        store.createIndex("updatedAt", "updatedAt", { unique: false });
+      }
     };
 
     request.onsuccess = () => resolve(request.result);
@@ -38,39 +56,60 @@ function openDatabase(): Promise<IDBDatabase> {
 }
 
 async function withStore<T>(
+  storeName: string,
   mode: IDBTransactionMode,
   operation: (store: IDBObjectStore) => IDBRequest<T>
 ): Promise<T> {
   const database = await openDatabase();
 
   return new Promise((resolve, reject) => {
-    const transaction = database.transaction(PATH_PROGRESS_STORE, mode);
-    const request = operation(transaction.objectStore(PATH_PROGRESS_STORE));
+    const transaction = database.transaction(storeName, mode);
+    const request = operation(transaction.objectStore(storeName));
 
     request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error ?? new Error("TSA progress storage operation failed."));
+    request.onerror = () => reject(request.error ?? new Error("TSA storage operation failed."));
     transaction.oncomplete = () => database.close();
     transaction.onerror = () => {
       database.close();
-      reject(transaction.error ?? new Error("TSA progress storage transaction failed."));
+      reject(transaction.error ?? new Error("TSA storage transaction failed."));
     };
   });
 }
 
 export function getPathProgress(pathId: string) {
-  return withStore<PathProgressRecord | undefined>("readonly", (store) => store.get(pathId));
+  return withStore<PathProgressRecord | undefined>(PATH_PROGRESS_STORE, "readonly", (store) => store.get(pathId));
 }
 
 export function getAllPathProgress() {
-  return withStore<PathProgressRecord[]>("readonly", (store) => store.getAll());
+  return withStore<PathProgressRecord[]>(PATH_PROGRESS_STORE, "readonly", (store) => store.getAll());
 }
 
 export function putPathProgress(record: PathProgressRecord) {
-  return withStore<IDBValidKey>("readwrite", (store) => store.put(record));
+  return withStore<IDBValidKey>(PATH_PROGRESS_STORE, "readwrite", (store) => store.put(record));
 }
 
 export function clearAllPathProgress() {
-  return withStore<undefined>("readwrite", (store) => store.clear());
+  return withStore<undefined>(PATH_PROGRESS_STORE, "readwrite", (store) => store.clear());
+}
+
+export function getActivityEvidence(activityId: string) {
+  return withStore<ActivityEvidenceRecord | undefined>(ACTIVITY_EVIDENCE_STORE, "readonly", (store) => store.get(activityId));
+}
+
+export function getAllActivityEvidence() {
+  return withStore<ActivityEvidenceRecord[]>(ACTIVITY_EVIDENCE_STORE, "readonly", (store) => store.getAll());
+}
+
+export function putActivityEvidence(record: ActivityEvidenceRecord) {
+  return withStore<IDBValidKey>(ACTIVITY_EVIDENCE_STORE, "readwrite", (store) => store.put(record));
+}
+
+export function clearAllActivityEvidence() {
+  return withStore<undefined>(ACTIVITY_EVIDENCE_STORE, "readwrite", (store) => store.clear());
+}
+
+export async function clearAllAcademyData() {
+  await Promise.all([clearAllPathProgress(), clearAllActivityEvidence()]);
 }
 
 export function pathActivityIds(path: LearningPath) {
