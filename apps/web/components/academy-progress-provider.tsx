@@ -15,6 +15,7 @@ import {
   type LearningProgress,
 } from "@tsa/runtime-kernel";
 import {
+  clearAllPathProgress,
   getAllPathProgress,
   isPathComplete,
   migrateLegacyLocalStorage,
@@ -34,6 +35,7 @@ interface AcademyProgressContextValue {
   pathStatus(path: LearningPath): PathStatus;
   pathPercent(path: LearningPath): number;
   savePathProgress(path: LearningPath, progress: LearningProgress): Promise<void>;
+  resetAcademyProgress(): Promise<void>;
   lastVisited(): PathProgressRecord | undefined;
 }
 
@@ -91,6 +93,11 @@ export function AcademyProgressProvider({ children }: { children: ReactNode }) {
     [records]
   );
 
+  const resetAcademyProgress = useCallback(async () => {
+    await clearAllPathProgress();
+    setRecords({});
+  }, []);
+
   const value = useMemo<AcademyProgressContextValue>(() => ({
     ready,
     records,
@@ -109,10 +116,11 @@ export function AcademyProgressProvider({ children }: { children: ReactNode }) {
       return Math.min(100, Math.round((completed / total) * 100));
     },
     savePathProgress,
+    resetAcademyProgress,
     lastVisited() {
       return Object.values(records).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))[0];
     },
-  }), [ready, records, savePathProgress]);
+  }), [ready, records, resetAcademyProgress, savePathProgress]);
 
   return <AcademyProgressContext.Provider value={value}>{children}</AcademyProgressContext.Provider>;
 }
