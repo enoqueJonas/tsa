@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { technicalStewardshipJourney, type LearningPath, type School } from "@tsa/runtime-kernel";
 import { AcademyBrowser } from "./academy-browser";
 import { AcademyDashboard } from "./academy-dashboard";
+import { AcademyDashboardInsights } from "./academy-dashboard-insights";
 import { AcademyDataControls } from "./academy-data-controls";
 import { AcademyProgressProvider } from "./academy-progress-provider";
 import { AssessmentCenter } from "./assessment-center";
@@ -78,6 +79,13 @@ function AcademyAppContent() {
               <p className="mt-4 max-w-3xl text-lg leading-8 text-zinc-600">Continue where you stopped, understand how far you have travelled, and keep the full Technical Stewardship journey visible.</p>
             </div>
             <AcademyDashboard onOpenCurriculum={() => navigate("curriculum")} onOpenPath={openPath} />
+            <AcademyDashboardInsights
+              onOpenPath={openPath}
+              onOpenProjects={() => navigate("projects")}
+              onOpenAssessments={() => navigate("assessments")}
+              onOpenPortfolio={() => navigate("portfolio")}
+              onOpenHistory={() => navigate("history")}
+            />
             <AcademyDataControls />
           </>
         ) : view === "curriculum" ? (
