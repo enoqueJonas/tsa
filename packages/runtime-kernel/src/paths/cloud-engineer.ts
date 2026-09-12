@@ -1,5 +1,5 @@
 import type { Activity } from "../activities";
-import { cloudArchitectureAndCostDeepLessons } from "./cloud-architecture-cost-deep";
+import { cloudArchitectureAndCostQualityLessons } from "./cloud-architecture-cost-quality";
 import { cloudAndHostingModelsQualityLessons } from "./cloud-hosting-models-quality";
 import { cloudBuildingBlocksQualityLessons } from "./cloud-building-blocks-quality";
 import { cloudEngineerMilestoneDeepLessons } from "./cloud-engineer-milestone-deep";
@@ -53,7 +53,7 @@ export const vpsOperations: LearningPath = { id: "vps-operations", title: "VPS O
 export const internetNetworking: LearningPath = { id: "internet-networking", title: "Internet Networking", lessons: internetNetworkingQualityLessons };
 export const cloudBuildingBlocks: LearningPath = { id: "cloud-building-blocks", title: "Cloud Building Blocks", lessons: cloudBuildingBlocksQualityLessons };
 export const infrastructureAsCode: LearningPath = { id: "infrastructure-as-code", title: "Infrastructure as Code", lessons: infrastructureAsCodeQualityLessons };
-export const cloudArchitectureAndCost: LearningPath = { id: "cloud-architecture-and-cost", title: "Cloud Architecture and Cost", lessons: cloudArchitectureAndCostDeepLessons };
+export const cloudArchitectureAndCost: LearningPath = { id: "cloud-architecture-and-cost", title: "Cloud Architecture and Cost", lessons: cloudArchitectureAndCostQualityLessons };
 export const stewardInternetEnvironment: LearningPath = { id: "steward-internet-environment", title: "Cloud Engineer Milestone", lessons: cloudEngineerMilestoneDeepLessons };
 
 export const cloudEngineerPaths: LearningPath[] = [cloudAndHostingModels, vpsOperations, internetNetworking, cloudBuildingBlocks, infrastructureAsCode, cloudArchitectureAndCost, stewardInternetEnvironment];
