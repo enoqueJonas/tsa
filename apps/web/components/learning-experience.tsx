@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createRuntime, type LearningPath } from "@tsa/runtime-kernel";
+import { ActivityEvidencePanel } from "./activity-evidence-panel";
 import { CurriculumSidebar } from "./curriculum-sidebar";
 import { PracticalContent, ReadingContent, ReflectionContent } from "./content";
 import { useAcademyProgress } from "./academy-progress-provider";
@@ -150,15 +151,22 @@ export function LearningExperience({
               />
             </>
           ) : activity.content.type === "practical" ? (
-            <PracticalContent
-              title={activity.title}
-              objective={activity.content.objective}
-              scenario={activity.content.scenario}
-              instructions={activity.content.instructions}
-              deliverables={activity.content.deliverables}
-              completionCriteria={activity.content.completionCriteria}
-              resources={activity.content.resources}
-            />
+            <>
+              <PracticalContent
+                title={activity.title}
+                objective={activity.content.objective}
+                scenario={activity.content.scenario}
+                instructions={activity.content.instructions}
+                deliverables={activity.content.deliverables}
+                completionCriteria={activity.content.completionCriteria}
+                resources={activity.content.resources}
+              />
+              <ActivityEvidencePanel
+                activityId={activity.id}
+                pathId={activePath.id}
+                deliverables={activity.content.deliverables}
+              />
+            </>
           ) : (
             <div className="rounded-2xl border border-zinc-200 bg-white p-10 shadow-sm">
               {activity.content.type === "reflection" && (
