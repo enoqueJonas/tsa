@@ -1,6 +1,7 @@
 import type { LearningPath } from "./learning-path";
 import { alertingAndOnCallDeepLessons } from "./reliability-alerting-on-call-deep";
 import { centralLoggingDecisionLesson } from "./reliability-central-logging-decision";
+import { databaseStewardshipDeepLessons } from "./reliability-database-stewardship-deep";
 import { dataProtectionAndDisasterRecoveryDeepLessons } from "./reliability-data-protection-disaster-recovery-deep";
 import { faultInjectionDeepLessons } from "./reliability-fault-injection-deep";
 import { incidentManagementDeepLessons } from "./reliability-incident-management-deep";
@@ -50,6 +51,12 @@ export const alertingAndOnCall: LearningPath = {
     lessons: alertingAndOnCallDeepLessons,
 };
 
+export const databaseStewardship: LearningPath = {
+    id: "database-stewardship",
+    title: "Database Stewardship",
+    lessons: databaseStewardshipDeepLessons,
+};
+
 export const performanceAndCapacity: LearningPath = {
     id: "performance-and-capacity",
     title: "Performance and Capacity",
@@ -93,6 +100,7 @@ export const reliabilityEngineerPaths: LearningPath[] = [
     metricsPrometheusGrafana,
     serviceLevelEngineering,
     alertingAndOnCall,
+    databaseStewardship,
     performanceAndCapacity,
     resilienceAndDistributedFailure,
     dataProtectionAndDisasterRecovery,
