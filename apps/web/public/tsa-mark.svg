@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Technical Stewardship Academy</title>
+  <desc id="desc">A shield, engineering gear, learning cap, rising sun, and forward path.</desc>
+  <defs>
+    <linearGradient id="navy" x1="24" y1="18" x2="100" y2="106" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0b4a78"/>
+      <stop offset="1" stop-color="#06264b"/>
+    </linearGradient>
+  </defs>
+  <path fill="#93a4b5" d="M17 55h10a39 39 0 0 0 3 10l-7 7 8 13 10-4a42 42 0 0 0 8 7l-2 11 14 5 5-10a39 39 0 0 0 11 0l5 10 14-5-2-11a42 42 0 0 0 8-7l10 4 8-13-7-7a39 39 0 0 0 3-10h10V42h-12a42 42 0 0 0-4-9l7-8-10-10-9 7a41 41 0 0 0-9-4L86 7H42l-3 11a41 41 0 0 0-9 4l-9-7-10 10 7 8a42 42 0 0 0-4 9H2v13h15Z"/>
+  <path fill="url(#navy)" d="M64 18 28 33v30c0 24 14 42 36 52 22-10 36-28 36-52V33L64 18Z"/>
+  <path fill="#fff" fill-opacity=".12" d="M64 27 37 38v23c0 17 9 31 27 41 18-10 27-24 27-41V38L64 27Z"/>
+  <path fill="#06264b" d="m16 29 48-20 48 20-48 20-48-20Z"/>
+  <path fill="#0b4a78" d="m27 34 37 15 37-15v11L64 60 27 45V34Z"/>
+  <path fill="#06264b" d="M106 31h5v26h-5z"/>
+  <circle cx="108.5" cy="61" r="5" fill="#06264b"/>
+  <path fill="#e5ad28" d="M46 62a18 18 0 0 1 36 0H46Z"/>
+  <path fill="#f4c94c" d="M50 61a14 14 0 0 1 28 0H50Z"/>
+  <path fill="#fff" d="M34 72c14-8 25-8 35-2 7 4 9 9 7 15-3 8-12 16-21 22l-9-8c10-7 17-13 19-18 1-2 0-4-3-6-7-4-15-3-28 4v-7Z"/>
+  <path fill="#fff" d="M68 68c12 5 19 13 21 24l-13 12c1-12-3-22-14-31l6-5Z"/>
+</svg>

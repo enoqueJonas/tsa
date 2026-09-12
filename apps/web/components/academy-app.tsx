@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { technicalStewardshipJourney, type LearningPath, type School } from "@tsa/runtime-kernel";
 import { AcademyBrowser } from "./academy-browser";
@@ -56,10 +57,13 @@ function AcademyAppContent() {
     <main className="min-h-screen bg-zinc-50 text-zinc-950">
       <AcademyDailySnapshotRunner />
       <header className="border-b border-zinc-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-[1760px] items-center justify-between gap-6 px-5 py-4 sm:px-8 lg:px-10">
-          <button type="button" onClick={() => navigate("dashboard")} className="text-left">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-blue-700">TSA</p>
-            <p className="mt-0.5 text-sm font-semibold text-zinc-950">Technical Stewardship Academy</p>
+        <div className="mx-auto flex max-w-[1760px] items-center justify-between gap-6 px-5 py-3 sm:px-8 lg:px-10">
+          <button type="button" onClick={() => navigate("dashboard")} className="flex items-center gap-3 text-left" aria-label="Technical Stewardship Academy dashboard">
+            <Image src="/tsa-mark.svg" alt="" width={46} height={46} priority className="h-11 w-11 shrink-0" />
+            <span>
+              <span className="block text-xs font-semibold uppercase tracking-[0.22em] text-blue-700">TSA</span>
+              <span className="mt-0.5 block text-sm font-semibold text-zinc-950">Technical Stewardship Academy</span>
+            </span>
           </button>
           <nav className="flex flex-wrap items-center gap-1 rounded-xl bg-zinc-100 p-1">
             <button type="button" onClick={() => navigate("dashboard")} className={navClass("dashboard")}>Dashboard</button>
