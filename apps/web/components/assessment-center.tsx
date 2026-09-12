@@ -9,6 +9,8 @@ import {
   type AssessmentGateRecord,
 } from "../lib/progress-storage";
 
+const PAGE_SIZE = 5;
+
 function assessablePaths() {
   return technicalStewardshipJourney.schools.flatMap((school) =>
     school.paths
@@ -26,6 +28,7 @@ export function AssessmentCenter() {
   const entries = useMemo(() => assessablePaths(), []);
   const [records, setRecords] = useState<Record<string, AssessmentGateRecord>>({});
   const [selectedPathId, setSelectedPathId] = useState(entries[0]?.path.id ?? "");
+  const [page, setPage] = useState(0);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -34,9 +37,21 @@ export function AssessmentCenter() {
       .finally(() => setReady(true));
   }, []);
 
+  const pageCount = Math.max(1, Math.ceil(entries.length / PAGE_SIZE));
+  const pageStart = page * PAGE_SIZE;
+  const pageEntries = entries.slice(pageStart, pageStart + PAGE_SIZE);
+  const rangeEnd = Math.min(pageStart + PAGE_SIZE, entries.length);
+
   const selected = entries.find(({ path }) => path.id === selectedPathId);
   const current = selected ? records[selected.path.id] : undefined;
   const satisfied = new Set(current?.satisfiedCriteria ?? []);
+
+  function goToPage(nextPage: number) {
+    const boundedPage = Math.min(Math.max(nextPage, 0), pageCount - 1);
+    const firstEntry = entries[boundedPage * PAGE_SIZE];
+    setPage(boundedPage);
+    if (firstEntry) setSelectedPathId(firstEntry.path.id);
+  }
 
   async function save(satisfiedCriteria: string[], reviewerNotes = current?.reviewerNotes ?? "") {
     if (!selected) return;
@@ -73,12 +88,23 @@ export function AssessmentCenter() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
-        <aside className="rounded-2xl border border-zinc-200 bg-white p-4">
-          <div className="space-y-1">{entries.map(({ school, path, criteria }) => {
+        <aside className="self-start rounded-2xl border border-zinc-200 bg-white p-4">
+          <div className="space-y-1">{pageEntries.map(({ school, path, criteria }) => {
             const record = records[path.id];
             const complete = record?.ready ?? false;
             return <button key={path.id} type="button" onClick={() => setSelectedPathId(path.id)} className={selectedPathId === path.id ? "w-full rounded-xl bg-zinc-950 px-4 py-3 text-left text-white" : "w-full rounded-xl px-4 py-3 text-left hover:bg-zinc-50"}><p className="text-xs opacity-60">{school.title}</p><p className="mt-1 text-sm font-semibold">{path.title}</p><p className="mt-1 text-xs opacity-60">{complete ? "Ready" : `${record?.satisfiedCriteria.length ?? 0}/${criteria.length} criteria`}</p></button>;
           })}</div>
+
+          <div className="mt-4 border-t border-zinc-100 pt-4">
+            <div className="flex items-center justify-between text-xs text-zinc-500">
+              <span>{entries.length === 0 ? "0" : `${pageStart + 1}–${rangeEnd}`} of {entries.length}</span>
+              <span>Page {page + 1} of {pageCount}</span>
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <button type="button" onClick={() => goToPage(page - 1)} disabled={page === 0} className="rounded-lg border border-zinc-200 px-3 py-2 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:text-zinc-300 disabled:hover:bg-white">Previous</button>
+              <button type="button" onClick={() => goToPage(page + 1)} disabled={page >= pageCount - 1} className="rounded-lg border border-zinc-200 px-3 py-2 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:text-zinc-300 disabled:hover:bg-white">Next</button>
+            </div>
+          </div>
         </aside>
 
         {selected && <article className="rounded-2xl border border-zinc-200 bg-white p-7">
