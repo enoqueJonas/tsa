@@ -7,15 +7,16 @@ import { AcademyDashboard } from "./academy-dashboard";
 import { AcademyDataControls } from "./academy-data-controls";
 import { AcademyProgressProvider } from "./academy-progress-provider";
 import { AssessmentCenter } from "./assessment-center";
+import { EvidencePortfolio } from "./evidence-portfolio";
 import { LearningHistory } from "./learning-history";
 import { ProjectMilestoneTracker } from "./project-milestone-tracker";
 
-type View = "dashboard" | "curriculum" | "projects" | "assessments" | "history";
+type View = "dashboard" | "curriculum" | "projects" | "assessments" | "history" | "portfolio";
 
 function currentView(): View {
   if (typeof window === "undefined") return "dashboard";
   const value = new URLSearchParams(window.location.search).get("view");
-  if (value === "curriculum" || value === "projects" || value === "assessments" || value === "history") return value;
+  if (value === "curriculum" || value === "projects" || value === "assessments" || value === "history" || value === "portfolio") return value;
   return "dashboard";
 }
 
@@ -62,6 +63,7 @@ function AcademyAppContent() {
             <button type="button" onClick={() => navigate("curriculum")} className={navClass("curriculum")}>Curriculum</button>
             <button type="button" onClick={() => navigate("projects")} className={navClass("projects")}>Projects</button>
             <button type="button" onClick={() => navigate("assessments")} className={navClass("assessments")}>Assessments</button>
+            <button type="button" onClick={() => navigate("portfolio")} className={navClass("portfolio")}>Portfolio</button>
             <button type="button" onClick={() => navigate("history")} className={navClass("history")}>History</button>
           </nav>
         </div>
@@ -84,6 +86,8 @@ function AcademyAppContent() {
           <ProjectMilestoneTracker />
         ) : view === "assessments" ? (
           <AssessmentCenter />
+        ) : view === "portfolio" ? (
+          <EvidencePortfolio />
         ) : (
           <LearningHistory />
         )}

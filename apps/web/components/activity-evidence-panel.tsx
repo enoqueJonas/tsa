@@ -5,7 +5,11 @@ import {
   EVIDENCE_SCHEMA_VERSION,
   getActivityEvidence,
   putActivityEvidence,
+  type ActivityEvidenceRecord,
 } from "../lib/progress-storage";
+
+type SubmissionStatus = "draft" | "ready" | "accepted";
+type EvidenceWithStatus = ActivityEvidenceRecord & { submissionStatus?: SubmissionStatus };
 
 interface ActivityEvidencePanelProps {
   activityId: string;
@@ -17,6 +21,7 @@ export function ActivityEvidencePanel({ activityId, pathId, deliverables }: Acti
   const [notes, setNotes] = useState("");
   const [linksText, setLinksText] = useState("");
   const [outcome, setOutcome] = useState("");
+  const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>("draft");
   const [loaded, setLoaded] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -28,9 +33,11 @@ export function ActivityEvidencePanel({ activityId, pathId, deliverables }: Acti
     getActivityEvidence(activityId)
       .then((record) => {
         if (cancelled) return;
-        setNotes(record?.notes ?? "");
-        setLinksText(record?.links.join("\n") ?? "");
-        setOutcome(record?.outcome ?? "");
+        const stored = record as EvidenceWithStatus | undefined;
+        setNotes(stored?.notes ?? "");
+        setLinksText(stored?.links.join("\n") ?? "");
+        setOutcome(stored?.outcome ?? "");
+        setSubmissionStatus(stored?.submissionStatus ?? "draft");
         setLoaded(true);
       })
       .catch(() => {
@@ -43,23 +50,26 @@ export function ActivityEvidencePanel({ activityId, pathId, deliverables }: Acti
   }, [activityId]);
 
   async function save() {
-    const previous = await getActivityEvidence(activityId);
+    const previous = await getActivityEvidence(activityId) as EvidenceWithStatus | undefined;
     const now = new Date().toISOString();
     const links = linksText
       .split("\n")
       .map((value) => value.trim())
       .filter(Boolean);
 
-    await putActivityEvidence({
+    const record: EvidenceWithStatus = {
       schemaVersion: EVIDENCE_SCHEMA_VERSION,
       activityId,
       pathId,
       notes: notes.trim(),
       links,
       outcome: outcome.trim(),
+      submissionStatus,
       createdAt: previous?.createdAt ?? now,
       updatedAt: now,
-    });
+    };
+
+    await putActivityEvidence(record);
     setSaved(true);
   }
 
@@ -90,6 +100,19 @@ export function ActivityEvidencePanel({ activityId, pathId, deliverables }: Acti
       )}
 
       <div className="mt-6 grid gap-5">
+        <label className="grid gap-2 text-sm font-medium text-zinc-800">
+          Submission state
+          <select
+            value={submissionStatus}
+            onChange={(event) => { setSubmissionStatus(event.target.value as SubmissionStatus); setSaved(false); }}
+            className="rounded-xl border border-zinc-300 bg-white px-4 py-3 font-normal"
+          >
+            <option value="draft">Draft — evidence still being assembled</option>
+            <option value="ready">Ready — prepared for self-assessment/review</option>
+            <option value="accepted">Accepted — evidence satisfies the activity</option>
+          </select>
+        </label>
+
         <label className="grid gap-2 text-sm font-medium text-zinc-800">
           Evidence notes
           <textarea
