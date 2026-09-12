@@ -1,5 +1,6 @@
 import type { LearningPath } from "./learning-path";
 import { alertingAndOnCallDeepLessons } from "./reliability-alerting-on-call-deep";
+import { centralLoggingDecisionLesson } from "./reliability-central-logging-decision";
 import { dataProtectionAndDisasterRecoveryDeepLessons } from "./reliability-data-protection-disaster-recovery-deep";
 import { faultInjectionDeepLessons } from "./reliability-fault-injection-deep";
 import { incidentManagementDeepLessons } from "./reliability-incident-management-deep";
@@ -28,7 +29,7 @@ export const observability: LearningPath = {
 export const productionLogging: LearningPath = {
     id: "logging",
     title: "Production Logging",
-    lessons: productionLoggingDeepLessons,
+    lessons: [...productionLoggingDeepLessons, centralLoggingDecisionLesson],
 };
 
 export const metricsPrometheusGrafana: LearningPath = {
