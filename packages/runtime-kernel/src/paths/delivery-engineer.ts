@@ -4,6 +4,7 @@ import { containersAndDockerQualityLessons } from "./delivery-containers-docker-
 import { continuousDeliveryDeploymentQualityLessons } from "./delivery-continuous-delivery-quality";
 import { continuousIntegrationQualityLessons } from "./delivery-continuous-integration-quality";
 import { deliveryEngineerMilestoneDeepLessons } from "./delivery-engineer-milestone-deep";
+import { deliveryMigrationExerciseDeepLessons } from "./delivery-migration-exercises-deep";
 import { releaseEngineeringQualityLessons } from "./delivery-release-engineering-quality";
 import { softwareDeliveryFoundationsQualityLessons } from "./delivery-software-foundations-quality";
 import { artifactDependencySupplyChainManagement } from "./internal-dependency-management";
@@ -33,6 +34,11 @@ export const configurationManagement = path(
     configurationManagementQualityLessons,
 );
 export const releaseEngineering = path("release-engineering", "Release Engineering", releaseEngineeringQualityLessons);
+export const deliveryPlatformMigration = path(
+    "delivery-platform-migration",
+    "CI Platform Migration Exercise",
+    deliveryMigrationExerciseDeepLessons,
+);
 export const stewardDeliveryPlatform = path(
     "steward-delivery-platform",
     "Delivery Engineer Milestone",
@@ -48,5 +54,6 @@ export const deliveryEngineerPaths: LearningPath[] = [
     configurationManagement,
     artifactDependencySupplyChainManagement,
     releaseEngineering,
+    deliveryPlatformMigration,
     stewardDeliveryPlatform,
 ];
