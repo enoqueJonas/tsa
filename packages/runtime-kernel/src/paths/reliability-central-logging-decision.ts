@@ -7,43 +7,47 @@ export const centralLoggingDecisionLesson: Lesson = {
         {
             id: "production-logging-centralized-stack-decision-001",
             title: "Compare Centralized Logging Implementations",
-            estimatedMinutes: 45,
+            estimatedMinutes: 60,
             content: {
                 type: "practical",
-                objective: "Choose one primary centralized logging implementation for Steward while understanding the trade-offs of credible alternatives.",
-                scenario: "The enterprise progression requires a real centralized logging capability, not a catalogue of products. Steward now spans application, gateway, database, messaging, CI/deployment and platform components, so the learner needs one operationally credible log path that remains feasible on learner-owned infrastructure.",
+                objective: "Compare credible centralized logging stacks and justify Graylog as TSA's primary Steward implementation without duplicating the logging capability.",
+                scenario: "The enterprise progression now requires a real centralized logging capability. Steward spans application, gateway, database, messaging, CI/deployment and platform components, so operators need one searchable operational log path. TSA selects Graylog as the primary implementation to provide hands-on experience with ingestion, parsing/pipelines, streams/search, retention and access control. Loki and OpenSearch/ELK-style stacks remain important alternatives to compare, not second permanent log platforms.",
                 instructions: [
-                    "Define the log sources Steward must centralize first: application, Kong, containers/platform, selected infrastructure and background workers.",
-                    "Define the investigation workflows the logging stack must support, including correlation by request or trace identifier, time-bounded search, component filtering and incident evidence retention.",
-                    "Compare Loki, OpenSearch/ELK-style stacks and at least one lighter alternative against ingestion model, indexing/storage cost, query model, Grafana integration, resource requirements, retention controls and homelab/VPS feasibility.",
-                    "Choose one primary TSA implementation and document why the strongest alternative is not also mandatory.",
+                    "Define the log sources Steward must centralize first: application, workers/messaging, Kong, containers/platform and selected infrastructure/delivery sources.",
+                    "Define the investigation workflows the stack must support, including correlation by request or trace identifier, time-bounded search, component filtering and incident evidence retention.",
+                    "Compare Graylog, Loki and OpenSearch/ELK-style approaches against ingestion model, parsing/indexing model, query/search workflow, storage/resource cost, retention controls, access control, Grafana integration and learner-owned infrastructure feasibility.",
+                    "Explain why Graylog is TSA's primary implementation for the current learning objective and identify the strongest trade-offs against Loki and OpenSearch/ELK.",
+                    "Document why Graylog and Prometheus/Grafana are not duplicate systems: Graylog owns centralized logs; Prometheus owns metrics; Grafana is the primary metrics/observability dashboard layer.",
                     "Define retention, access and redaction expectations so centralization does not turn secrets or personal data into a larger risk.",
-                    "Record the conditions that would justify changing the selected stack later.",
+                    "Record measurable conditions that could justify migrating from Graylog later, including how a migration would avoid permanent dual logging stacks."
                 ],
                 deliverables: [
                     "Log-source and investigation requirements",
-                    "Logging-stack comparison",
-                    "Primary implementation decision record",
-                    "Retention/redaction guardrails",
-                    "Revisit criteria",
+                    "Graylog/Loki/OpenSearch comparison",
+                    "Graylog primary-implementation decision record",
+                    "Graylog vs Prometheus/Grafana responsibility map",
+                    "Retention/redaction/access guardrails",
+                    "Migration/revisit criteria"
                 ],
                 completionCriteria: [
-                    "The choice is driven by investigation needs and operating cost.",
-                    "One primary implementation is selected rather than requiring multiple equivalent stacks.",
+                    "Graylog is selected as the primary Steward centralized logging implementation for TSA.",
+                    "Loki and OpenSearch/ELK are understood as alternatives rather than additional mandatory production stacks.",
+                    "Graylog and Prometheus/Grafana responsibilities are explicitly distinct.",
                     "Security/privacy implications of centralized logs are explicit.",
                     "The design remains feasible within TSA's learner-owned infrastructure guardrail.",
-                ],
-            },
+                    "Future replacement criteria are evidence-based and would lead to migration rather than permanent duplication."
+                ]
+            }
         },
         {
             id: "production-logging-centralized-stack-decision-002",
-            title: "Defend the Logging Stack",
-            estimatedMinutes: 15,
+            title: "Defend Graylog as the Logging Platform",
+            estimatedMinutes: 20,
             content: {
                 type: "reflection",
-                prompt: "Defend the selected Steward centralized logging stack. Which investigation requirements mattered most, what trade-offs ruled out the strongest alternative, how will retention/redaction be controlled, and what future evidence would justify changing the stack?",
-                minimumCharacters: 250,
-            },
-        },
-    ],
+                prompt: "Defend Graylog as TSA's primary Steward centralized logging platform. What does it teach that is valuable for the Academy? What did Loki and OpenSearch/ELK do better or differently? Why does choosing Graylog not remove Prometheus or Grafana? What should Graylog own, what should Prometheus own, and what should Grafana own? Finally, what future evidence would justify replacing Graylog and how would you migrate without maintaining two permanent log platforms?",
+                minimumCharacters: 400
+            }
+        }
+    ]
 };
