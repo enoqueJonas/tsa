@@ -1,5 +1,6 @@
 import { applicationSecurityDeepLessons } from "./security-application-deep";
 import { containerAndDeliverySecurityDeepLessons } from "./security-container-delivery-deep";
+import { enterpriseDirectoryFederationDeepLessons } from "./security-enterprise-directory-federation-deep";
 import { securityFoundationsDeepLessons } from "./security-foundations-deep";
 import { securityIdentitySecretsDeepLessons } from "./security-identity-secrets-deep";
 import { linuxAndNetworkSecurityDeepLessons } from "./security-linux-network-deep";
@@ -51,6 +52,12 @@ export const identityAndSecretsSecurity: LearningPath = {
     lessons: securityIdentitySecretsDeepLessons,
 };
 
+export const enterpriseDirectoryFederation: LearningPath = {
+    id: "enterprise-directory-federation",
+    title: "Enterprise Directory Federation",
+    lessons: enterpriseDirectoryFederationDeepLessons,
+};
+
 export const applicationSecurity: LearningPath = {
     id: "application-security",
     title: "Application Security",
@@ -71,6 +78,7 @@ export const securityStewardPaths: LearningPath[] = [
     linuxAndNetworkSecurity,
     containerAndDeliverySecurity,
     identityAndSecretsSecurity,
+    enterpriseDirectoryFederation,
     applicationSecurity,
     stewardSecurityAssessment,
 ];
