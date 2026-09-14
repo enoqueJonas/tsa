@@ -2,42 +2,44 @@
 
 ## Purpose
 
-This document defines how the **Steward API** grows throughout the Technical Stewardship Academy and, equally importantly, what the learner is expected to understand before each expansion.
+This document defines how the **Steward API** grows throughout the Technical Stewardship Academy and what the learner must understand before each expansion.
 
-The goal is not to hand the learner an enterprise system to copy. The goal is to evolve one credible product slowly enough that each new concern is understandable, testable and justified by the concepts already learned.
+The goal is not to hand the learner an enterprise system to copy. Steward evolves through credible engineering pressures so each new concern is understandable, testable and connected to a reason.
 
-The canonical domain definition remains [`steward.md`](./steward.md). This document is the implementation and learning progression for that product.
+The canonical domain definition remains [`steward.md`](./steward.md). Requirement quality is governed by [`steward-requirement-authoring-standard.md`](./steward-requirement-authoring-standard.md).
 
 ## Learning contract
 
-The Steward API follows five rules throughout TSA:
+1. **The learner implements the system.** TSA supplies requirements, constraints, acceptance criteria and review questions, not a finished solution.
+2. **Concepts precede implementation.** A technology is introduced only after the learner has enough foundation to reason about it.
+3. **Scenario-forced learning, not tool-forced architecture.** TSA may deliberately evolve Steward into a credible situation in which a selected enterprise technology solves a real requirement. The scenario creates the pressure; the tool does not invent its own justification.
+4. **One primary implementation per capability by default.** TSA does not permanently accumulate two CI systems, two brokers, two GitOps controllers or two API gateways merely for exposure.
+5. **Alternatives are still learned.** Competing technologies are normally compared through architecture analysis, bounded experiments or documentation rather than duplicated production implementations.
+6. **Migration/replacement is a first-class learning exercise.** When migration itself is the objective, TSA may require a temporary old-and-new coexistence, cutover, rollback and decommissioning exercise. Duplication must have an explicit migration purpose and end state.
+7. **Learning implementation does not imply product permanence.** A technology deliberately implemented for learning may later be retained, simplified, replaced or removed when later evidence warrants it.
+8. **The learner must explain the system end-to-end.** Domain, data flow, failure behaviour, ownership and trade-offs must remain understandable as the system grows.
 
-1. **The learner implements the system.** TSA provides requirements, constraints, acceptance criteria, architecture questions and review criteria; it does not turn the project into a copy-and-paste tutorial.
-2. **Capabilities are introduced only after their concepts are taught.** Authentication, containers, CI/CD, observability, governance and other concerns must not appear simply because they are common in enterprise systems.
-3. **Every addition must solve a real product or engineering problem.** No technology is added merely to put it on a CV.
-4. **The learner must be able to explain the current system end-to-end.** If a capability cannot be explained in terms of domain, data flow, failure behaviour and trade-offs, the system has grown too quickly.
-5. **Architecture may change when evidence justifies it.** The initial architecture is not sacred. Premature complexity is not a graduation requirement.
+## Technology introduction pattern
+
+A major technology exercise should normally follow this sequence:
+
+1. Establish the current simpler baseline.
+2. Introduce a credible new organizational, scale, reliability, security or delivery pressure.
+3. State the required outcome and constraints without pretending the technology is free.
+4. Compare at least one credible alternative or the option to retain the current state.
+5. Select TSA's primary implementation technology for the capability and explain the learning objective.
+6. Implement a bounded vertical slice.
+7. Break it deliberately and investigate its new failure modes.
+8. Preserve evidence and record what responsibility the technology adds.
+9. Later reassess whether it should remain in Steward.
+
+This permits TSA to guarantee meaningful hands-on exposure while still teaching architectural judgment.
 
 ## Product destination
 
-Steward is an internal Engineering Service Registry and Technology Stewardship platform.
-
-At maturity, it should help an engineering organization answer questions such as:
-
-- What technical systems and services do we own?
-- Which team and technical owner are accountable for each one?
-- What does a service depend on, and what depends on it?
-- Where does it run and what lifecycle state is it in?
-- What architecture decisions affect it?
-- What technical risks, debt, exceptions and controls exist?
-- Is the service healthy, supportable and compliant with engineering standards?
-- When was it last reviewed, and what actions remain open?
-
-The final product direction is intentionally broad enough to support enterprise engineering concerns, but the learner reaches it through small, understandable versions.
+Steward is an internal Engineering Service Registry and Technology Stewardship platform. At maturity it should help an engineering organization understand service ownership, dependencies, environments, architecture decisions, risks, controls, technical debt, operational health and review history.
 
 ## Core domain
-
-The initial domain remains deliberately compact:
 
 ```text
 User
@@ -57,7 +59,7 @@ User
             └── ServiceReview
 ```
 
-Later schools may add concepts such as TechnicalOwner, ArchitectureDecision, TechnologyRisk, Control, Exception, TechnicalDebtItem, OperationalObjective and IncidentReference, but only when those concepts have a genuine place in the curriculum and product.
+Later schools may add TechnicalOwner, ArchitectureDecision, TechnologyRisk, Control, Exception, TechnicalDebtItem, OperationalObjective and IncidentReference when the product scenario calls for them.
 
 ## Version progression
 
@@ -65,361 +67,183 @@ Later schools may add concepts such as TechnicalOwner, ArchitectureDecision, Tec
 
 **School:** Engineering Apprentice / transition into Builder
 
-No production application is required yet. The learner should understand the problem before implementing it.
+Understand service ownership, users/teams/memberships, directional dependencies and domain rules before production framework code.
 
-The learner should be able to explain:
-
-- what a technical service is in the Steward domain;
-- why ownership matters;
-- the difference between a User, Team and Membership;
-- why Team ownership is different from individual technical accountability;
-- why a service dependency is directional;
-- which rules belong to the domain rather than the HTTP layer.
-
-**Exit condition:** the learner can describe the first product version without referring to framework code.
-
----
+**Exit condition:** describe the first product version without referring to framework code.
 
 ### Steward v1 — Useful relational API
 
 **School:** Builder
 
-This is the first real implementation.
+Build the first real Steward API using the curriculum's Python/Django/DRF/PostgreSQL constraints. Capabilities include users, teams, memberships, services, environments, dependencies, lightweight reviews, authentication, ownership authorization, relational queries, deliberate API failures, tests and API documentation.
 
-#### Capabilities
+Important product rules are explicit; the learner owns the relational design, rule placement, endpoint/resource organization, transaction reasoning and implementation structure.
 
-- users;
-- teams;
-- team memberships;
-- services;
-- environments;
-- service dependencies;
-- lightweight service reviews;
-- authentication;
-- authorization based on membership and ownership;
-- filtering and relational queries;
-- PostgreSQL persistence;
-- REST API behaviour;
-- validation and useful error responses;
-- automated unit/API tests;
-- API documentation.
+**Deliberately excluded:** Redis, brokers, Kubernetes, microservices, centralized observability, SSO infrastructure and advanced governance.
 
-#### Example product stories
+**Exit condition:** draw the data model, trace requests end-to-end, explain business rules and diagnose failures without copied code.
 
-- Register a technical service and assign it to an owning team.
-- Add development, UAT and production environments to a service.
-- Record that Payments API depends on Authentication Service.
-- Prevent a service from depending on itself.
-- Prevent duplicate dependencies.
-- Prevent unauthorized users from changing another team's service.
-- List high-criticality production services owned by a team.
-- Record an engineering review without overwriting previous review history.
-
-#### What is deliberately excluded
-
-- microservices;
-- Redis;
-- message brokers;
-- Kubernetes;
-- advanced governance workflows;
-- centralized logging platforms;
-- SSO/OIDC infrastructure;
-- complex event-driven architecture;
-- a large frontend application.
-
-#### Learner must be able to explain
-
-- the database relationships and constraints;
-- where business rules are enforced and why;
-- serializer/request validation versus domain validation;
-- authentication versus authorization;
-- object-level authorization;
-- transaction boundaries for multi-record changes;
-- HTTP status choices;
-- why each endpoint exists;
-- important ORM queries and their SQL consequences;
-- how the tests prove important rules rather than merely increase coverage.
-
-**Exit condition:** the learner can draw the v1 data model, trace a request from HTTP to database and back, explain the main business rules, and debug a failing request without relying on copied code.
-
----
-
-### Steward v1.1 — System model and explicit decisions
+### Steward v1.1 — System model plus deliberate distributed-pressure labs
 
 **School:** System Thinker
 
-The goal is not feature growth. The existing system becomes something the learner can reason about structurally.
+First model the existing v1: context, actors, boundaries, responsibilities, data flows, failure modes, coupling and ADRs.
 
-#### Work introduced
+Then TSA deliberately introduces two bounded pressures after the simpler system is understood:
 
-- system context diagram;
-- actors and external dependencies;
-- component and responsibility boundaries;
-- request/data-flow diagrams;
-- failure-mode analysis;
-- explicit architecture decision records;
-- data ownership decisions;
-- dependency analysis;
-- identification of coupling and accidental complexity.
+- a repeatedly queried catalogue path remains expensive after query/pagination/index work, creating a shared read-caching requirement;
+- post-commit lifecycle side effects must survive slow/unavailable consumers without delaying the authoritative HTTP transaction, creating an asynchronous-delivery requirement.
 
-Possible product changes are allowed only when the analysis reveals a real design problem.
+TSA uses **Redis as the primary cache implementation** and **RabbitMQ as the primary broker implementation** so the learner gains hands-on experience with cache authority/staleness/invalidation and queue routing/acknowledgement/retry/idempotency/DLQ behavior. Alternatives such as database-only optimization or Kafka are compared but are not second permanent implementations.
 
-**Exit condition:** the learner can explain not only how Steward works, but why its boundaries and dependencies look the way they do.
+These are learning-driven scenarios with explicit engineering pressures. The learner must still prove the simpler fixes were considered and understand the new failure cost.
 
----
+**Exit condition:** explain the original architecture, the pressures that caused the distributed additions, their authority/failure boundaries, and the conditions under which either could later be removed.
 
 ### Steward v1.2 — Operable on a real machine
 
 **School:** Platform Builder
 
-Steward leaves the developer laptop abstraction and becomes software that must be operated.
+Operate the actual accumulated Steward topology on Linux: process/service management, permissions, configuration, networking/firewalling, database operations, backup/restore and troubleshooting. Redis/RabbitMQ are operated only because System Thinker has already created their explicit learning scenarios.
 
-#### Work introduced
+**Exit condition:** deploy, inspect, stop/start, recover and troubleshoot the system without treating the OS as invisible.
 
-- Linux runtime host;
-- process and service management;
-- filesystem and permission decisions;
-- environment configuration;
-- database operation basics;
-- network exposure and firewall reasoning;
-- backup and restore exercises;
-- operational troubleshooting using Linux tools.
-
-**Exit condition:** the learner can deploy, start, stop, inspect and troubleshoot Steward on a Linux host without treating the operating system as invisible infrastructure.
-
----
-
-### Steward v1.3 — Reproducible delivery
+### Steward v1.3 — Reproducible enterprise delivery
 
 **School:** Delivery Engineer
 
-#### Work introduced
+Introduce containerization, reproducible builds, automated tests/gates, release identity, deployment automation and rollback.
 
-- containerization;
-- reproducible builds;
-- CI quality gates;
-- automated tests in pipeline;
-- artifact/version management;
-- internal package/repository usage where justified;
-- deployment automation;
-- release/versioning strategy;
-- rollback reasoning.
+TSA deliberately creates a shared-artifact/supply-chain requirement and uses **Nexus as the primary private artifact/dependency repository**. CI needs a durable enterprise implementation, so **Jenkins is the primary CI system**. GitHub Actions is used for comparison, not a duplicate mandatory production pipeline.
 
-A private artifact platform such as Nexus becomes meaningful here because Steward now has a delivery and dependency-supply-chain problem to solve.
+A later bounded **CI migration exercise** may migrate a representative pipeline between Jenkins and an alternative CI platform. The learning objective is migration planning: semantic equivalence, credentials, artifacts, cutover, rollback, coexistence window and decommissioning—not operating two permanent CI systems.
 
-**Exit condition:** a fresh environment can build and deliver a known Steward version through a documented automated path.
+**Exit condition:** a fresh environment can build and deliver a known Steward version through a traceable automated path, and the learner understands the ownership added by Jenkins and Nexus.
 
----
-
-### Steward v1.4 — Internet-accessible environment
+### Steward v1.4 — Cloud and orchestrated runtime
 
 **School:** Cloud Engineer
 
-#### Work introduced
+First make Steward reproducible in a budget-conscious cloud environment using IaC, DNS/TLS, explicit network boundaries, storage/backup, configuration/secrets and cost controls.
 
-- infrastructure as code;
-- DNS;
-- TLS;
-- network/security boundaries;
-- managed versus self-managed infrastructure decisions;
-- persistent storage and backup strategy;
-- secrets/configuration handling appropriate to the current maturity;
-- explicit cost estimates and cost controls;
-- recovery from infrastructure replacement.
+Then the curriculum deliberately evolves the runtime pressure: Steward now has multiple deployable workloads (API plus justified workers), needs health-based replacement, controlled rolling releases, environment-independent configuration, service discovery, horizontal replica management and a declarative desired-state runtime. A single-host/container-compose operating model is no longer sufficient for the learning scenario.
 
-The goal is not to use every cloud service. The learner should know what is being paid for, what can fail, and how the application reaches the database and the internet.
+That pressure justifies **Kubernetes as the primary orchestration implementation**. The learner implements workloads, Services, probes, resources, configuration/secrets boundaries, RBAC and rollout/rollback behavior.
 
-**Exit condition:** Steward can be reproduced in a budget-conscious cloud environment from documented infrastructure and deployment definitions.
+TSA then includes a bounded **Kubernetes → OpenShift migration/platform-delta exercise**. OpenShift is not deployed beside Kubernetes forever. The learner identifies what remains standard Kubernetes, what OpenShift adds, migrates a representative Steward workload, validates security/routing/operability, plans rollback and records the decommission/retention decision.
 
----
+**Argo CD is the primary GitOps implementation** once declarative workload state exists. Alternative GitOps controllers are comparison subjects unless a migration exercise explicitly calls for them.
+
+**Exit condition:** reproduce and operate Steward through declarative infrastructure/workload definitions, explain why orchestration became useful, and distinguish Kubernetes concepts from OpenShift platform additions.
 
 ### Steward v2 — Quality as an engineered capability
 
 **School:** Quality Steward
 
-The application is now substantial enough to justify a dedicated quality strategy.
+Build a risk-based test portfolio around the now-distributed/deployed product: API integration, database/contract validation, authorization negatives, test data, containerized execution, CI reporting and performance investigation. A small Engineering Portal UI may be introduced through a real service-registry workflow, enabling browser automation without inventing a UI only for Playwright.
 
-#### Work introduced
-
-- risk-based test strategy;
-- test pyramid/portfolio decisions based on actual risks;
-- API integration suites;
-- database and contract validation;
-- negative-path and authorization testing;
-- test-data strategy;
-- containerized test execution;
-- CI quality reporting;
-- performance testing when justified by explicit behaviour;
-- a small Engineering Portal UI if a browser surface is useful to the product;
-- Playwright/browser automation only after that UI exists.
-
-The frontend must not be invented merely to create a Playwright exercise. It should expose useful service-registry workflows.
-
-**Exit condition:** the learner can explain what is tested, what is intentionally not tested at each layer, the risks covered, and the remaining blind spots.
-
----
+**Exit condition:** explain what each test layer protects and its remaining blind spots.
 
 ### Steward v2.1 — Security model and hardened boundaries
 
 **School:** Security Steward
 
-#### Work introduced
+Threat-model the actual accumulated system and harden identity, authorization, secrets, dependencies/artifacts, containers/platform, API abuse boundaries and audit-relevant events.
 
-- formal threat model;
-- stronger identity and session/token design;
-- object-level access-control testing;
-- secure secret handling;
-- dependency and artifact security;
-- container/runtime hardening;
-- secure headers and API protections where relevant;
-- abuse cases and rate-limiting decisions;
-- vulnerability-management workflow;
-- audit-relevant security events.
+TSA may deliberately introduce an organizational SSO/federated-identity requirement and use **Keycloak/OIDC as the primary identity implementation**. The scenario must explain why local application-managed authentication no longer satisfies the organization. Alternative IdPs are compared rather than simultaneously operated.
 
-OIDC/Keycloak may be introduced only when the identity problem justifies it. It is not mandatory merely because enterprise systems commonly use SSO.
+Likewise, an API-edge policy requirement may justify **Kong as the primary gateway** when centralized edge concerns genuinely exist. Steward retains domain authorization; the gateway must not become a duplicate business-policy engine.
 
-**Exit condition:** the learner can identify trust boundaries, articulate major threats, demonstrate important controls and explain residual risk.
-
----
+**Exit condition:** demonstrate important controls and residual risk across the real trust boundaries.
 
 ### Steward v2.2 — Measurable and recoverable service
 
 **School:** Reliability Engineer
 
-#### Work introduced
+Introduce structured/centralized logs, metrics, dashboards, useful tracing, SLIs/SLOs, actionable alerts, incident response, runbooks, capacity analysis, recovery objectives and controlled failure experiments.
 
-- structured production logs;
-- centralized logging platform;
-- application and infrastructure metrics;
-- dashboards;
-- tracing where useful;
-- SLIs and SLOs;
-- actionable alerts;
-- incident response;
-- runbooks;
-- capacity and performance analysis;
-- backup/recovery objectives;
-- fault-injection or controlled failure experiments;
-- post-incident learning.
+TSA creates realistic operational questions that justify the selected observability stack. **Prometheus/Grafana are the primary metrics/dashboard implementation**; the chosen centralized logging and tracing backends are each single primary implementations. Alternatives are compared, not accumulated.
 
-Prometheus/Grafana and the chosen logging/tracing technologies enter because the learner now has reliability questions to answer, not because observability tooling belongs on a checklist.
-
-**Exit condition:** the learner can detect, diagnose, communicate and recover from realistic Steward failures using evidence produced by the system.
-
----
+**Exit condition:** detect, diagnose, communicate and recover from realistic Steward failures using system evidence.
 
 ### Steward v3 — Architecture under evidence
 
 **School:** Architect
 
-This is a deliberate reassessment point.
+Reassess the accumulated architecture. By now TSA has intentionally created enough pressure to give the learner real enterprise components to judge. Ask whether Redis, RabbitMQ, Kubernetes/OpenShift, Argo CD, Kong, Keycloak, Jenkins, Nexus and observability components still earn their complexity.
 
-#### Questions to answer
+Architecture exercises may include **migration/replacement drills** where the educational objective is explicitly to move a capability safely: characterize current behavior, compare replacement, design compatibility, run bounded coexistence, cut over, prove rollback and decommission the superseded component.
 
-- Is the modular structure still appropriate?
-- Which boundaries are genuine domain boundaries versus folder boundaries?
-- Are synchronous integrations still appropriate?
-- Is any shared component becoming an independent platform capability?
-- Is the current database ownership model still sound?
-- Where are scalability limits actually visible?
-- Which resilience techniques are justified by observed failure modes?
-- Would messaging solve a demonstrated problem or merely introduce distributed complexity?
+A migration exercise must not leave both technologies as permanent architecture unless a separate requirement genuinely needs both.
 
-A modular monolith is a valid final answer. Microservices are permitted only when the learner can justify the operational and organizational cost.
+A modular monolith remains valid. Microservices are introduced only through a deliberate scenario with multiple independently deployable/owned capabilities and a defensible reason for separate lifecycle—not merely because Kubernetes exists.
 
-**Exit condition:** the learner produces architecture decisions grounded in accumulated product, delivery, quality, security and reliability evidence.
-
----
+**Exit condition:** produce evidence-grounded retain/simplify/replace/remove decisions and safely execute at least one bounded architecture/platform migration exercise.
 
 ### Steward v4 — Technology stewardship platform
 
 **School:** Technical Steward
 
-Only here does Steward expand strongly into governance.
+Expand strongly into architecture decisions, technology risks, controls/evidence, standards, temporary exceptions, technical debt, lifecycle governance, engineering-health reviews, ownership review and dependency lifecycle.
 
-#### Natural capabilities
+Review the **actual accumulated Steward ecosystem**, including technologies deliberately introduced for learning and any that were later migrated or removed. Historical implementation does not make a component permanently mandatory. Governance must preserve accountable ownership and also make removal/simplification possible.
 
-- architecture decisions linked to services;
-- technology risks and risk ownership;
-- engineering controls and evidence;
-- standards and policy checks;
-- temporary exceptions with owners and expiry dates;
-- technical debt registers;
-- service lifecycle governance;
-- engineering-health reviews;
-- ownership-review cadence;
-- third-party/dependency lifecycle concerns;
-- audit/history of important governance decisions.
-
-The learner should distinguish governance from bureaucracy. Every control, review or approval must protect a stated engineering, operational, security or regulatory objective.
-
-**Exit condition:** the learner can design governance that improves engineering outcomes while preserving clear accountability and proportionate controls.
-
----
+**Exit condition:** design governance that improves engineering outcomes and can defend technology lifecycle decisions without bureaucracy or tool permanence.
 
 ### Professional Engineer — Independence proof
 
-Steward remains a significant portfolio system and a source of architectural evidence, but the learner must **not** simply keep extending Steward for the capstone.
+Steward remains portfolio evidence, but the capstone is a second substantial system from a blank repository. This proves transfer rather than continued execution of curriculum-made decisions.
 
-The Professional Engineer stage requires a second substantial system from a blank repository. This proves that the learner can transfer the capabilities learned through Steward to a new domain without the curriculum already having made the core decisions.
+## Primary implementation and comparison map
 
-## Capability-to-school map
-
-| Capability | First introduced | Expected maturity later |
+| Capability | Primary Steward implementation | Alternative learning mode |
 | --- | --- | --- |
-| Domain model and business rules | Builder | Architect / Technical Steward |
-| PostgreSQL and relational modelling | Builder | Reliability / Architect |
-| REST API | Builder | Quality / Security |
-| Authentication and basic authorization | Builder | Security Steward |
-| Architecture decisions | System Thinker | Architect / Technical Steward |
-| Linux operation | Platform Builder | Reliability Engineer |
-| Containers | Delivery Engineer | Security / Reliability |
-| CI/CD | Delivery Engineer | Quality / Security |
-| Private artifact/dependency repository | Delivery Engineer | Security / Technical Steward |
-| Cloud/IaC/DNS/TLS | Cloud Engineer | Security / Reliability |
-| Browser UI | Quality Steward, if product-justified | Security / Reliability |
-| Test automation platform | Quality Steward | Delivery / Reliability |
-| Threat modelling and hardening | Security Steward | Technical Steward |
-| Metrics/logs/tracing | Reliability Engineer | Architect |
-| SLOs/alerts/incidents | Reliability Engineer | Technical Steward |
-| Distributed architecture | Architect, only if justified | Not mandatory |
-| Risks/controls/exceptions/debt governance | Technical Steward | Professional evidence |
+| Relational persistence | PostgreSQL | compare data models where relevant |
+| Shared read cache | Redis | database/query-only baseline; other caches conceptually |
+| Async broker | RabbitMQ | Kafka comparison / architecture exercise |
+| CI | Jenkins | GitHub Actions comparison; optional migration drill |
+| Artifact/dependency repository | Nexus | repository-manager comparison |
+| Container orchestration | Kubernetes | simpler host/Compose baseline |
+| Enterprise Kubernetes platform | OpenShift migration exercise | managed/vanilla Kubernetes comparison |
+| GitOps | Argo CD | alternative controller comparison |
+| Identity/SSO | Keycloak/OIDC when SSO scenario enters | other IdP comparison |
+| API gateway | Kong when edge-policy scenario enters | ingress/direct edge comparison |
+| Metrics/dashboards | Prometheus/Grafana | alternative observability comparison |
 
-## The anti-overwhelm gate
+This table defines curriculum exposure, not irreversible final architecture.
 
-Before TSA asks the learner to implement a new Steward capability, the curriculum should be able to answer all of the following:
+## Duplication rule
 
-1. What problem does this capability solve?
-2. Has the learner already studied the concepts needed to reason about it?
-3. Can the capability be introduced in a small vertical slice?
-4. What acceptance criteria prove it works?
-5. What failure cases should the learner investigate?
-6. What design decision should the learner make rather than be handed?
-7. What should remain deliberately out of scope?
-8. What evidence should the learner preserve in the TSA portfolio?
+Two technologies that substantially provide the same capability may coexist only when at least one of these is true:
 
-If those questions cannot be answered, the capability is not ready to enter the Steward project.
+- they serve materially different requirements;
+- a bounded comparison experiment requires temporary coexistence;
+- a migration/replacement exercise requires an explicit transition window.
+
+Every temporary duplication exercise must define its end state. "Keep both because we learned both" is not an acceptable architecture decision.
+
+## Anti-overwhelm gate
+
+Before a new Steward capability enters the project, TSA must answer:
+
+1. What problem or deliberately constructed learning scenario creates the need?
+2. Have prerequisite concepts already been taught?
+3. What simpler baseline exists and why is it now insufficient for this scenario?
+4. What is the primary technology and what capability does it own?
+5. Which alternatives will be compared rather than permanently implemented?
+6. Can it be introduced as a bounded vertical slice?
+7. What failure cases must be investigated?
+8. What design decisions remain with the learner?
+9. What is explicitly out of scope?
+10. What evidence proves understanding?
+11. If this is a migration, what are coexistence, rollback and decommission conditions?
 
 ## Definition of understanding
 
-The learner does **not** demonstrate understanding merely because the application runs.
-
-For each meaningful Steward milestone, the learner should increasingly be able to:
-
-- state the requirement in their own words;
-- draw or describe the relevant domain/system model;
-- explain the important implementation choices;
-- trace data through the system;
-- predict important failure modes;
-- diagnose a deliberately broken scenario;
-- explain the security and operational consequences;
-- defend a trade-off;
-- identify what they would improve with more time or evidence.
-
-This is the primary safeguard against TSA becoming a sequence of sophisticated code-generation exercises.
+Running software is insufficient. The learner must increasingly be able to state the requirement, model the relevant system, trace data, explain technology responsibility, reproduce failure, diagnose it, defend a trade-off, compare an alternative, and identify conditions for retention or removal.
 
 ## Curriculum authoring rule
 
-Any future TSA lesson or milestone that materially changes Steward must remain consistent with [`steward.md`](./steward.md) and this evolution map.
+Future Steward lessons and milestones must remain consistent with [`steward.md`](./steward.md), this evolution map and [`steward-requirement-authoring-standard.md`](./steward-requirement-authoring-standard.md).
 
-If a future lesson needs a capability earlier than this map allows, the curriculum should first explain why the prerequisite reasoning has changed. The roadmap should then be deliberately updated rather than silently bypassed.
+TSA may intentionally create requirements to guarantee practical exposure to important enterprise technologies. It must create the requirement **before** treating the technology as justified, and it must not turn exposure into permanent redundant architecture.
