@@ -6,6 +6,7 @@ import { modelingSoftwareSystemsQualityLessons } from "./system-thinker-modeling
 import { componentsAndDependenciesQualityLessons } from "./system-thinker-components-quality";
 import { dataFlowAndIntegrationQualityLessons } from "./system-thinker-data-flow-quality";
 import { distributedStateAndMessagingDeepLessons } from "./system-thinker-distributed-state-messaging-deep";
+import { enterpriseFileIntegrationDeepLessons } from "./system-thinker-enterprise-file-integration-deep";
 import { failureModesQualityLessons } from "./system-thinker-failure-quality";
 import { architectureDecisionsAndTradeOffsQualityLessons } from "./system-thinker-architecture-decisions-quality";
 import { stewardApiSystemDesignPortfolioDeep } from "./system-thinker-milestone-deep";
@@ -44,6 +45,11 @@ export const distributedStateAndMessaging = path(
     "Distributed State and Messaging",
     distributedStateAndMessagingDeepLessons,
 );
+export const enterpriseFileIntegration = path(
+    "enterprise-file-integration",
+    "Enterprise File and Batch Integration",
+    enterpriseFileIntegrationDeepLessons,
+);
 export const failureModes = path("failure-modes", "Failure Modes", failureModesQualityLessons);
 export const architectureDecisionsAndTradeOffs = path(
     "architecture-decisions",
@@ -59,6 +65,7 @@ export const systemThinkerPaths: LearningPath[] = [
     componentsAndDependencies,
     dataFlowAndIntegration,
     distributedStateAndMessaging,
+    enterpriseFileIntegration,
     failureModes,
     architectureDecisionsAndTradeOffs,
     stewardApiSystemDesignPortfolio,
