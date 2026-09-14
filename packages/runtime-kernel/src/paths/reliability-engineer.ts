@@ -7,6 +7,7 @@ import { faultInjectionDeepLessons } from "./reliability-fault-injection-deep";
 import { incidentManagementDeepLessons } from "./reliability-incident-management-deep";
 import { metricsPrometheusGrafanaDeepLessons } from "./reliability-metrics-prometheus-grafana-deep";
 import { observabilityDeepLessons } from "./reliability-observability-deep";
+import { observabilityStackIntegrationDeepLessons } from "./reliability-observability-stack-integration-deep";
 import { performanceAndCapacityDeepLessons } from "./reliability-performance-capacity-deep";
 import { productionLoggingDeepLessons } from "./reliability-production-logging-deep";
 import { reliabilityAndSreDeepLessons } from "./reliability-sre-foundations-deep";
@@ -37,6 +38,12 @@ export const metricsPrometheusGrafana: LearningPath = {
     id: "metrics-prometheus-grafana",
     title: "Metrics, Prometheus and Grafana",
     lessons: metricsPrometheusGrafanaDeepLessons,
+};
+
+export const observabilityStackIntegration: LearningPath = {
+    id: "observability-stack-integration",
+    title: "Observability Stack Integration",
+    lessons: observabilityStackIntegrationDeepLessons,
 };
 
 export const serviceLevelEngineering: LearningPath = {
@@ -98,6 +105,7 @@ export const reliabilityEngineerPaths: LearningPath[] = [
     observability,
     productionLogging,
     metricsPrometheusGrafana,
+    observabilityStackIntegration,
     serviceLevelEngineering,
     alertingAndOnCall,
     databaseStewardship,
