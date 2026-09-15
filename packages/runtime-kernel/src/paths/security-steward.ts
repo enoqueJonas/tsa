@@ -1,4 +1,5 @@
 import { applicationSecurityDeepLessons } from "./security-application-deep";
+import { artifactSigningVerificationDeepLessons } from "./security-artifact-signing-verification-deep";
 import { containerAndDeliverySecurityDeepLessons } from "./security-container-delivery-deep";
 import { enterpriseDirectoryFederationDeepLessons } from "./security-enterprise-directory-federation-deep";
 import { securityFoundationsDeepLessons } from "./security-foundations-deep";
@@ -18,6 +19,7 @@ export const webAndApiThreats: LearningPath = { id: "web-and-api-threats", title
 export const vulnerabilityLaboratory: LearningPath = { id: "vulnerability-laboratory", title: "Practical Vulnerability Laboratory", lessons: vulnerabilityLaboratoryDeepLessons };
 export const linuxAndNetworkSecurity: LearningPath = { id: "linux-and-network-security", title: "Linux and Network Security", lessons: linuxAndNetworkSecurityDeepLessons };
 export const containerAndDeliverySecurity: LearningPath = { id: "container-and-delivery-security", title: "Container and Delivery Security", lessons: containerAndDeliverySecurityDeepLessons };
+export const artifactSigningVerification: LearningPath = { id: "artifact-signing-verification", title: "Artifact Signing and Verification", lessons: artifactSigningVerificationDeepLessons };
 export const identityAndSecretsSecurity: LearningPath = { id: "identity-and-secrets-security", title: "Identity and Secrets Security", lessons: securityIdentitySecretsDeepLessons };
 export const vaultSecretsPlatform: LearningPath = { id: "vault-secrets-platform", title: "Vault and Dynamic Secrets", lessons: vaultImplementationDeepLessons };
 export const enterpriseDirectoryFederation: LearningPath = { id: "enterprise-directory-federation", title: "Enterprise Directory Federation", lessons: enterpriseDirectoryFederationDeepLessons };
@@ -32,6 +34,7 @@ export const securityStewardPaths: LearningPath[] = [
     vulnerabilityLaboratory,
     linuxAndNetworkSecurity,
     containerAndDeliverySecurity,
+    artifactSigningVerification,
     identityAndSecretsSecurity,
     vaultSecretsPlatform,
     enterpriseDirectoryFederation,
