@@ -4,6 +4,7 @@ import { enterpriseDirectoryFederationDeepLessons } from "./security-enterprise-
 import { securityFoundationsDeepLessons } from "./security-foundations-deep";
 import { securityIdentitySecretsDeepLessons } from "./security-identity-secrets-deep";
 import { linuxAndNetworkSecurityDeepLessons } from "./security-linux-network-deep";
+import { secureFileTransferMigrationDeepLessons } from "./security-secure-file-transfer-migration-deep";
 import { stewardSecurityAssessmentDeepLessons } from "./security-steward-milestone-deep";
 import { threatModelingDeepLessons } from "./security-threat-modeling-deep";
 import { vaultImplementationDeepLessons } from "./security-vault-implementation-deep";
@@ -20,6 +21,7 @@ export const containerAndDeliverySecurity: LearningPath = { id: "container-and-d
 export const identityAndSecretsSecurity: LearningPath = { id: "identity-and-secrets-security", title: "Identity and Secrets Security", lessons: securityIdentitySecretsDeepLessons };
 export const vaultSecretsPlatform: LearningPath = { id: "vault-secrets-platform", title: "Vault and Dynamic Secrets", lessons: vaultImplementationDeepLessons };
 export const enterpriseDirectoryFederation: LearningPath = { id: "enterprise-directory-federation", title: "Enterprise Directory Federation", lessons: enterpriseDirectoryFederationDeepLessons };
+export const secureFileTransferMigration: LearningPath = { id: "secure-file-transfer-migration", title: "FTP to SFTP Secure Transfer Migration", lessons: secureFileTransferMigrationDeepLessons };
 export const applicationSecurity: LearningPath = { id: "application-security", title: "Application Security", lessons: applicationSecurityDeepLessons };
 export const stewardSecurityAssessment: LearningPath = { id: "steward-security-assessment-and-hardening", title: "Security Steward Milestone", lessons: stewardSecurityAssessmentDeepLessons };
 
@@ -33,6 +35,7 @@ export const securityStewardPaths: LearningPath[] = [
     identityAndSecretsSecurity,
     vaultSecretsPlatform,
     enterpriseDirectoryFederation,
+    secureFileTransferMigration,
     applicationSecurity,
     stewardSecurityAssessment,
 ];
