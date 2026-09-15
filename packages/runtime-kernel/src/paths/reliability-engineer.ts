@@ -1,5 +1,6 @@
 import type { LearningPath } from "./learning-path";
 import { alertingAndOnCallDeepLessons } from "./reliability-alerting-on-call-deep";
+import { alertmanagerImplementationDeepLessons } from "./reliability-alertmanager-implementation-deep";
 import { centralLoggingDecisionLesson } from "./reliability-central-logging-decision";
 import { databaseStewardshipDeepLessons } from "./reliability-database-stewardship-deep";
 import { dataProtectionAndDisasterRecoveryDeepLessons } from "./reliability-data-protection-disaster-recovery-deep";
@@ -25,6 +26,7 @@ export const metricsPrometheusGrafana: LearningPath = { id: "metrics-prometheus-
 export const observabilityStackIntegration: LearningPath = { id: "observability-stack-integration", title: "Observability Stack Integration", lessons: observabilityStackIntegrationDeepLessons };
 export const serviceLevelEngineering: LearningPath = { id: "service-level-engineering", title: "Service Level Engineering", lessons: serviceLevelEngineeringDeepLessons };
 export const alertingAndOnCall: LearningPath = { id: "alerting-and-on-call", title: "Alerting and On-call", lessons: alertingAndOnCallDeepLessons };
+export const alertmanagerImplementation: LearningPath = { id: "alertmanager-implementation", title: "Prometheus Alertmanager Operations", lessons: alertmanagerImplementationDeepLessons };
 export const databaseStewardship: LearningPath = { id: "database-stewardship", title: "Database Stewardship", lessons: databaseStewardshipDeepLessons };
 export const performanceAndCapacity: LearningPath = { id: "performance-and-capacity", title: "Performance and Capacity", lessons: performanceAndCapacityDeepLessons };
 export const resilienceAndDistributedFailure: LearningPath = { id: "resilience-and-distributed-failure", title: "Resilience and Distributed Failure", lessons: resilienceAndDistributedFailureDeepLessons };
@@ -42,6 +44,7 @@ export const reliabilityEngineerPaths: LearningPath[] = [
     distributedTracing,
     serviceLevelEngineering,
     alertingAndOnCall,
+    alertmanagerImplementation,
     databaseStewardship,
     performanceAndCapacity,
     resilienceAndDistributedFailure,
