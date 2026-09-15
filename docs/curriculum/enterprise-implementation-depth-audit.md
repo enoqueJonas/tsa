@@ -28,27 +28,37 @@ One primary implementation remains the default for a capability. Alternatives ar
 
 ## Confirmed strong areas
 
-The audit currently considers the following areas materially hands-on already: PostgreSQL and relational data, Redis, RabbitMQ, Jenkins, Nexus, Docker, Kubernetes, OpenShift migration/platform delta, Argo CD, Kong, Keycloak/OIDC, Prometheus, Grafana, Graylog, and backup/disaster recovery.
+The audit currently considers the following areas materially hands-on already: PostgreSQL and relational data, Redis, RabbitMQ, Jenkins, Nexus, Docker, Kubernetes, OpenShift migration/platform delta, Argo CD, Kong, Keycloak/OIDC, Prometheus, Grafana, Graylog, backup/disaster recovery, enterprise file services and file-based integration, and LDAP-to-Keycloak workforce identity federation.
 
-These still participate in later architecture reassessment; being strong does not mean they must remain permanently in Steward.
+Quality automation already has strong framework, CI-stage, report/artifact and quality-gate foundations. The remediation below closes the remaining operational execution gap by making repository-triggered execution, scheduled regression and failure notification mandatory proof rather than implied behavior.
+
+These areas still participate in later architecture reassessment; being strong does not mean they must remain permanently in Steward.
+
+## Remediated: continuous and scheduled automated quality execution
+
+Quality Steward must operate automated testing as a feedback system rather than a collection of suites that a tester starts manually.
+
+Required implementation proof:
+
+- Jenkins starts a real quality run from the repository SCM integration on the agreed push and/or pull-request event;
+- change-triggered execution uses a deliberately fast, high-signal portfolio appropriate for merge feedback;
+- Jenkins also starts broader regression from a real cron schedule without manual intervention;
+- scheduled coverage is allowed to differ from push coverage for explicit risk/cost reasons;
+- every run records trigger type, commit/release identity, environment and selected evidence;
+- machine-readable results and useful human-readable reports are published and retained;
+- relevant failure diagnostics survive failed stages;
+- one real learner-owned notification channel receives an actionable failure alert;
+- a controlled deterministic test failure proves the pipeline becomes non-green, reports remain available and the notification is actually delivered;
+- recovery is demonstrated without deleting the historical failure evidence;
+- infrastructure/environment failure, flaky evidence and repeated alerts must not be converted into misleading green results or uncontrolled notification noise.
+
+Manual Build Now remains useful for investigation but cannot be used as evidence that SCM or scheduled automation works.
 
 ## Confirmed remediation areas
 
 ### Enterprise file services and file-based integration
 
-TSA must add a Steward-scoped enterprise integration scenario that requires hands-on experience with shared filesystems and managed file exchange.
-
-Required capability coverage:
-
-- **NFS** as the primary Linux shared-filesystem implementation;
-- **SMB/CIFS through Samba** as a bounded enterprise interoperability implementation;
-- **FTP** as a deliberately legacy/insecure integration that the learner must understand and operate in a controlled environment;
-- **SFTP** as the primary secure file-transfer implementation, with FTPS studied where useful;
-- file-based batch integration patterns: incoming, processing, processed, rejected and archive states; atomic handoff; incomplete files; duplicate/replay handling; checksums where justified; naming/version contracts; retention; permissions; capacity; and outage behavior.
-
-The exercises must remain inside Steward's product scope. A representative requirement is integration with a legacy governance/reporting system that cannot call Steward's REST API and therefore exchanges scheduled service-inventory or ownership files.
-
-A later security/migration exercise should replace a legacy FTP path with the selected secure transfer path and require cutover, rollback and decommission evidence.
+This remediation has been implemented through the Platform Builder enterprise file-services path and the Steward enterprise file-integration path. NFS is the primary shared-filesystem implementation, Samba/SMB is bounded interoperability exposure, and Steward operates a deliberately legacy FTP batch boundary. Secure FTP-to-SFTP migration remains a later Security Steward continuity exercise rather than a reason to remove the legacy learning pressure early.
 
 ### Object storage
 
@@ -58,23 +68,7 @@ The learner must demonstrate bucket/key design, access policy, lifecycle/retenti
 
 ### Enterprise directory services
 
-TSA must teach essential enterprise directory concepts without becoming a full Windows Server administration course.
-
-Required hands-on progression:
-
-- LDAP directory information tree, DN/RDN, entries, attributes, object classes and schema fundamentals;
-- organizational units/containers, people, groups and service/bind accounts;
-- bind/authentication and search filters;
-- LDIF and practical directory administration;
-- ACL/least-privilege reasoning;
-- TLS-protected directory access and certificate/trust troubleshooting;
-- a real LDAP directory service added to the TSA homelab;
-- Keycloak federation against the homelab directory;
-- Steward continues to consume OIDC from Keycloak rather than becoming unnecessarily coupled directly to LDAP;
-- mapping directory identity/group information into appropriate identity claims while Steward retains domain-specific authorization ownership;
-- controlled failures: directory unavailable, invalid bind account, group/user lifecycle change, broken search/base DN, and TLS/trust failure.
-
-Active Directory must be studied at the essential architecture level: domains, domain controllers, LDAP, Kerberos, users/groups, organizational units, DNS dependency and the relationship between AD and LDAP. A full Windows domain administration curriculum is out of scope unless a later exercise specifically justifies it.
+This remediation has been implemented. Platform Builder now operates a real LDAP homelab directory with secure bind/search and controlled failures, while Security Steward federates that directory into Keycloak and proves OIDC login into Steward. Active Directory/Kerberos/DNS relationships remain essential architecture knowledge rather than a full Windows Server administration detour.
 
 ### Distributed tracing
 
@@ -119,16 +113,21 @@ This audit does not justify adding technologies for name recognition. TSA should
 
 ## Remediation order
 
-Curriculum implementation should proceed in focused PRs:
+Completed focused remediations:
 
 1. enterprise file services and file-based Steward integration;
 2. LDAP/directory-services homelab and Keycloak/Steward federation;
-3. real object-storage implementation;
-4. mandatory distributed tracing implementation;
-5. mandatory Vault implementation;
-6. production schema-evolution exercise;
-7. progressive-delivery exercise;
-8. certificate-lifecycle operations;
-9. final cross-school continuity and redundancy audit.
+3. continuous and scheduled automated quality execution with failure feedback.
+
+Remaining focused remediations should proceed in this order:
+
+1. real object-storage implementation;
+2. mandatory distributed tracing implementation;
+3. mandatory Vault implementation;
+4. production schema-evolution exercise;
+5. progressive-delivery exercise;
+6. certificate-lifecycle operations;
+7. FTP-to-SFTP security migration and continuity check;
+8. final cross-school continuity and redundancy audit.
 
 Each remediation should update both the relevant curriculum modules and the Steward evolution/product documentation so the exercises remain one coherent product journey.
