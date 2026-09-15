@@ -36,10 +36,10 @@ export const stewardReliabilityProgram: LearningPath = { id: "steward-reliabilit
 export const reliabilityEngineerPaths: LearningPath[] = [
     reliabilityAndSre,
     observability,
-    distributedTracing,
     productionLogging,
     metricsPrometheusGrafana,
     observabilityStackIntegration,
+    distributedTracing,
     serviceLevelEngineering,
     alertingAndOnCall,
     databaseStewardship,
