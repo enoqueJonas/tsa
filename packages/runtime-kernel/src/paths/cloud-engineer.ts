@@ -3,6 +3,7 @@ import { cloudAndHostingModelsQualityLessons } from "./cloud-hosting-models-qual
 import { cloudBuildingBlocksQualityLessons } from "./cloud-building-blocks-quality";
 import { cloudEngineerMilestoneDeepLessons } from "./cloud-engineer-milestone-deep";
 import { cloudOrchestrationGitOpsDeepLessons } from "./cloud-orchestration-gitops-deep";
+import { objectStorageImplementationDeepLessons } from "./cloud-object-storage-implementation-deep";
 import { infrastructureAsCodeQualityLessons } from "./cloud-infrastructure-as-code-quality";
 import { internetNetworkingQualityLessons } from "./cloud-internet-networking-quality";
 import { vpsOperationsQualityLessons } from "./cloud-vps-operations-quality";
@@ -30,6 +31,12 @@ export const cloudBuildingBlocks: LearningPath = {
     id: "cloud-building-blocks",
     title: "Cloud Building Blocks",
     lessons: cloudBuildingBlocksQualityLessons,
+};
+
+export const objectStorageImplementation: LearningPath = {
+    id: "object-storage-implementation",
+    title: "S3-Compatible Object Storage",
+    lessons: objectStorageImplementationDeepLessons,
 };
 
 export const infrastructureAsCode: LearningPath = {
@@ -61,6 +68,7 @@ export const cloudEngineerPaths: LearningPath[] = [
     vpsOperations,
     internetNetworking,
     cloudBuildingBlocks,
+    objectStorageImplementation,
     infrastructureAsCode,
     cloudOrchestrationGitOps,
     cloudArchitectureAndCost,
