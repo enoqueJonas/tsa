@@ -1,6 +1,7 @@
 import { cloudArchitectureAndCostQualityLessons } from "./cloud-architecture-cost-quality";
 import { cloudAndHostingModelsQualityLessons } from "./cloud-hosting-models-quality";
 import { cloudBuildingBlocksQualityLessons } from "./cloud-building-blocks-quality";
+import { certificateLifecycleOperationsDeepLessons } from "./cloud-certificate-lifecycle-operations-deep";
 import { cloudEngineerMilestoneDeepLessons } from "./cloud-engineer-milestone-deep";
 import { cloudOrchestrationGitOpsDeepLessons } from "./cloud-orchestration-gitops-deep";
 import { progressiveDeliveryCanaryDeepLessons } from "./cloud-progressive-delivery-canary-deep";
@@ -13,6 +14,7 @@ import type { LearningPath } from "./learning-path";
 export const cloudAndHostingModels: LearningPath = { id: "cloud-and-hosting-models", title: "Cloud and Hosting Models", lessons: cloudAndHostingModelsQualityLessons };
 export const vpsOperations: LearningPath = { id: "vps-operations", title: "VPS Operations", lessons: vpsOperationsQualityLessons };
 export const internetNetworking: LearningPath = { id: "internet-networking", title: "Internet Networking", lessons: internetNetworkingQualityLessons };
+export const certificateLifecycleOperations: LearningPath = { id: "certificate-lifecycle-operations", title: "Certificate Lifecycle Operations", lessons: certificateLifecycleOperationsDeepLessons };
 export const cloudBuildingBlocks: LearningPath = { id: "cloud-building-blocks", title: "Cloud Building Blocks", lessons: cloudBuildingBlocksQualityLessons };
 export const objectStorageImplementation: LearningPath = { id: "object-storage-implementation", title: "S3-Compatible Object Storage", lessons: objectStorageImplementationDeepLessons };
 export const infrastructureAsCode: LearningPath = { id: "infrastructure-as-code", title: "Infrastructure as Code", lessons: infrastructureAsCodeQualityLessons };
@@ -25,6 +27,7 @@ export const cloudEngineerPaths: LearningPath[] = [
     cloudAndHostingModels,
     vpsOperations,
     internetNetworking,
+    certificateLifecycleOperations,
     cloudBuildingBlocks,
     objectStorageImplementation,
     infrastructureAsCode,
