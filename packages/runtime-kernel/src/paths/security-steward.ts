@@ -6,69 +6,22 @@ import { securityIdentitySecretsDeepLessons } from "./security-identity-secrets-
 import { linuxAndNetworkSecurityDeepLessons } from "./security-linux-network-deep";
 import { stewardSecurityAssessmentDeepLessons } from "./security-steward-milestone-deep";
 import { threatModelingDeepLessons } from "./security-threat-modeling-deep";
+import { vaultImplementationDeepLessons } from "./security-vault-implementation-deep";
 import { vulnerabilityLaboratoryDeepLessons } from "./security-vulnerability-laboratory-deep";
 import { webAndApiThreatsDeepLessons } from "./security-web-api-threats-deep";
 import type { LearningPath } from "./learning-path";
 
-export const securityFoundations: LearningPath = {
-    id: "security-foundations",
-    title: "Security Foundations",
-    lessons: securityFoundationsDeepLessons,
-};
-
-export const threatModeling: LearningPath = {
-    id: "threat-modeling",
-    title: "Threat Modeling",
-    lessons: threatModelingDeepLessons,
-};
-
-export const webAndApiThreats: LearningPath = {
-    id: "web-and-api-threats",
-    title: "Web and API Threats",
-    lessons: webAndApiThreatsDeepLessons,
-};
-
-export const vulnerabilityLaboratory: LearningPath = {
-    id: "vulnerability-laboratory",
-    title: "Practical Vulnerability Laboratory",
-    lessons: vulnerabilityLaboratoryDeepLessons,
-};
-
-export const linuxAndNetworkSecurity: LearningPath = {
-    id: "linux-and-network-security",
-    title: "Linux and Network Security",
-    lessons: linuxAndNetworkSecurityDeepLessons,
-};
-
-export const containerAndDeliverySecurity: LearningPath = {
-    id: "container-and-delivery-security",
-    title: "Container and Delivery Security",
-    lessons: containerAndDeliverySecurityDeepLessons,
-};
-
-export const identityAndSecretsSecurity: LearningPath = {
-    id: "identity-and-secrets-security",
-    title: "Identity and Secrets Security",
-    lessons: securityIdentitySecretsDeepLessons,
-};
-
-export const enterpriseDirectoryFederation: LearningPath = {
-    id: "enterprise-directory-federation",
-    title: "Enterprise Directory Federation",
-    lessons: enterpriseDirectoryFederationDeepLessons,
-};
-
-export const applicationSecurity: LearningPath = {
-    id: "application-security",
-    title: "Application Security",
-    lessons: applicationSecurityDeepLessons,
-};
-
-export const stewardSecurityAssessment: LearningPath = {
-    id: "steward-security-assessment-and-hardening",
-    title: "Security Steward Milestone",
-    lessons: stewardSecurityAssessmentDeepLessons,
-};
+export const securityFoundations: LearningPath = { id: "security-foundations", title: "Security Foundations", lessons: securityFoundationsDeepLessons };
+export const threatModeling: LearningPath = { id: "threat-modeling", title: "Threat Modeling", lessons: threatModelingDeepLessons };
+export const webAndApiThreats: LearningPath = { id: "web-and-api-threats", title: "Web and API Threats", lessons: webAndApiThreatsDeepLessons };
+export const vulnerabilityLaboratory: LearningPath = { id: "vulnerability-laboratory", title: "Practical Vulnerability Laboratory", lessons: vulnerabilityLaboratoryDeepLessons };
+export const linuxAndNetworkSecurity: LearningPath = { id: "linux-and-network-security", title: "Linux and Network Security", lessons: linuxAndNetworkSecurityDeepLessons };
+export const containerAndDeliverySecurity: LearningPath = { id: "container-and-delivery-security", title: "Container and Delivery Security", lessons: containerAndDeliverySecurityDeepLessons };
+export const identityAndSecretsSecurity: LearningPath = { id: "identity-and-secrets-security", title: "Identity and Secrets Security", lessons: securityIdentitySecretsDeepLessons };
+export const vaultSecretsPlatform: LearningPath = { id: "vault-secrets-platform", title: "Vault and Dynamic Secrets", lessons: vaultImplementationDeepLessons };
+export const enterpriseDirectoryFederation: LearningPath = { id: "enterprise-directory-federation", title: "Enterprise Directory Federation", lessons: enterpriseDirectoryFederationDeepLessons };
+export const applicationSecurity: LearningPath = { id: "application-security", title: "Application Security", lessons: applicationSecurityDeepLessons };
+export const stewardSecurityAssessment: LearningPath = { id: "steward-security-assessment-and-hardening", title: "Security Steward Milestone", lessons: stewardSecurityAssessmentDeepLessons };
 
 export const securityStewardPaths: LearningPath[] = [
     securityFoundations,
@@ -78,6 +31,7 @@ export const securityStewardPaths: LearningPath[] = [
     linuxAndNetworkSecurity,
     containerAndDeliverySecurity,
     identityAndSecretsSecurity,
+    vaultSecretsPlatform,
     enterpriseDirectoryFederation,
     applicationSecurity,
     stewardSecurityAssessment,
