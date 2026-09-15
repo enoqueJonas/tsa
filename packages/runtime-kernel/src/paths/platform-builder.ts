@@ -3,6 +3,7 @@ import type { Lesson } from "./lesson";
 import { budgetHomelabQualityLessons } from "./platform-builder-budget-homelab-quality";
 import { computerAndOsFoundationsQualityLessons } from "./platform-builder-computer-os-quality";
 import { enterpriseFileAndDirectoryServicesDeepLessons } from "./platform-builder-enterprise-file-directory-services-deep";
+import { enterpriseFileIntegrationDeepLessons } from "./system-thinker-enterprise-file-integration-deep";
 import { linuxAdministrationQualityLessons } from "./platform-builder-linux-administration-quality";
 import { stewardHomelabV1DeepLessons } from "./platform-builder-milestone-deep";
 import { networkingFoundationsQualityLessons } from "./platform-builder-networking-quality";
@@ -18,6 +19,7 @@ export const networkingFoundations = path("networking-foundations", "Networking 
 export const virtualization = path("virtualization", "Virtualization", virtualizationQualityLessons);
 export const budgetHomelab = path("budget-homelab", "Building the Budget Homelab", budgetHomelabQualityLessons);
 export const enterpriseInfrastructureServices = path("enterprise-infrastructure-services", "Enterprise File and Directory Services", enterpriseFileAndDirectoryServicesDeepLessons);
+export const enterpriseFileIntegration = path("enterprise-file-integration", "Enterprise File and Batch Integration", enterpriseFileIntegrationDeepLessons);
 export const stewardHomelabV1 = path("steward-homelab-v1", "Platform Builder Milestone", stewardHomelabV1DeepLessons);
 
 export const platformBuilderPaths: LearningPath[] = [
@@ -27,5 +29,6 @@ export const platformBuilderPaths: LearningPath[] = [
     virtualization,
     budgetHomelab,
     enterpriseInfrastructureServices,
+    enterpriseFileIntegration,
     stewardHomelabV1,
 ];
