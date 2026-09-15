@@ -4,6 +4,7 @@ import { browserAndEnvironmentTestingDeepLessons } from "./quality-browser-envir
 import { browserSurfaceDecisionLesson } from "./quality-browser-surface-decision";
 import { performanceToolDecisionLesson } from "./quality-performance-tool-decision";
 import { qualityInContainersAndCiDeepLessons } from "./quality-containers-ci-deep";
+import { continuousAndScheduledQualityExecutionDeepLessons } from "./quality-continuous-scheduled-execution-deep";
 import { nonFunctionalQualityDeepLessons } from "./quality-non-functional-deep";
 import { qualityEngineeringDeepLessons } from "./quality-engineering-deep";
 import { qualityStewardMilestoneDeepLessons } from "./quality-steward-milestone-deep";
@@ -59,6 +60,12 @@ export const qualityInContainersAndCi: LearningPath = {
     lessons: qualityInContainersAndCiDeepLessons,
 };
 
+export const continuousAndScheduledQualityExecution: LearningPath = {
+    id: "continuous-and-scheduled-quality-execution",
+    title: "Continuous and Scheduled Quality Execution",
+    lessons: continuousAndScheduledQualityExecutionDeepLessons,
+};
+
 export const stewardQualityPlatform: LearningPath = {
     id: "steward-quality-platform",
     title: "Quality Steward Milestone",
@@ -74,5 +81,6 @@ export const qualityStewardPaths: LearningPath[] = [
     browserAndEnvironmentTesting,
     nonFunctionalQuality,
     qualityInContainersAndCi,
+    continuousAndScheduledQualityExecution,
     stewardQualityPlatform,
 ];
