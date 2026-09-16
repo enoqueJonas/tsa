@@ -7,6 +7,7 @@ import { enterpriseFileIntegrationDeepLessons } from "./system-thinker-enterpris
 import { linuxAdministrationQualityLessons } from "./platform-builder-linux-administration-quality";
 import { stewardHomelabV1DeepLessons } from "./platform-builder-milestone-deep";
 import { networkingFoundationsQualityLessons } from "./platform-builder-networking-quality";
+import { packetTracerNetworkEngineeringDeepLessons } from "./platform-builder-packet-tracer-network-engineering-deep";
 import { virtualizationQualityLessons } from "./platform-builder-virtualization-quality";
 
 function path(id: string, title: string, lessons: Lesson[]): LearningPath {
@@ -16,6 +17,7 @@ function path(id: string, title: string, lessons: Lesson[]): LearningPath {
 export const computerAndOsFoundations = path("computer-and-os-foundations", "Computer and Operating-System Foundations", computerAndOsFoundationsQualityLessons);
 export const linuxAdministration = path("linux-administration", "Linux Administration", linuxAdministrationQualityLessons);
 export const networkingFoundations = path("networking-foundations", "Networking Foundations", networkingFoundationsQualityLessons);
+export const packetTracerNetworkEngineering = path("packet-tracer-network-engineering", "Network Engineering with Cisco Packet Tracer", packetTracerNetworkEngineeringDeepLessons);
 export const virtualization = path("virtualization", "Virtualization", virtualizationQualityLessons);
 export const budgetHomelab = path("budget-homelab", "Building the Budget Homelab", budgetHomelabQualityLessons);
 export const enterpriseInfrastructureServices = path("enterprise-infrastructure-services", "Enterprise File and Directory Services", enterpriseFileAndDirectoryServicesDeepLessons);
@@ -26,6 +28,7 @@ export const platformBuilderPaths: LearningPath[] = [
     computerAndOsFoundations,
     linuxAdministration,
     networkingFoundations,
+    packetTracerNetworkEngineering,
     virtualization,
     budgetHomelab,
     enterpriseInfrastructureServices,
