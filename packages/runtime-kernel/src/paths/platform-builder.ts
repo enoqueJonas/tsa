@@ -1,5 +1,6 @@
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
+import { bareMetalFoundationsDeepLessons } from "./platform-builder-bare-metal-foundations-deep";
 import { budgetHomelabQualityLessons } from "./platform-builder-budget-homelab-quality";
 import { computerAndOsFoundationsQualityLessons } from "./platform-builder-computer-os-quality";
 import { enterpriseFileAndDirectoryServicesDeepLessons } from "./platform-builder-enterprise-file-directory-services-deep";
@@ -19,6 +20,7 @@ export const linuxAdministration = path("linux-administration", "Linux Administr
 export const networkingFoundations = path("networking-foundations", "Networking Foundations", networkingFoundationsQualityLessons);
 export const packetTracerNetworkEngineering = path("packet-tracer-network-engineering", "Network Engineering with Cisco Packet Tracer", packetTracerNetworkEngineeringDeepLessons);
 export const virtualization = path("virtualization", "Virtualization", virtualizationQualityLessons);
+export const bareMetalFoundations = path("bare-metal-foundations", "Bare-Metal Platform Foundations", bareMetalFoundationsDeepLessons);
 export const budgetHomelab = path("budget-homelab", "Building the Budget Homelab", budgetHomelabQualityLessons);
 export const enterpriseInfrastructureServices = path("enterprise-infrastructure-services", "Enterprise File and Directory Services", enterpriseFileAndDirectoryServicesDeepLessons);
 export const enterpriseFileIntegration = path("enterprise-file-integration", "Enterprise File and Batch Integration", enterpriseFileIntegrationDeepLessons);
@@ -30,6 +32,7 @@ export const platformBuilderPaths: LearningPath[] = [
     networkingFoundations,
     packetTracerNetworkEngineering,
     virtualization,
+    bareMetalFoundations,
     budgetHomelab,
     enterpriseInfrastructureServices,
     enterpriseFileIntegration,
