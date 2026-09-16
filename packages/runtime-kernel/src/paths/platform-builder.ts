@@ -13,6 +13,7 @@ import { networkingFoundationsQualityLessons } from "./platform-builder-networki
 import { packetTracerNetworkEngineeringDeepLessons } from "./platform-builder-packet-tracer-network-engineering-deep";
 import { proxmoxHomelabDeepLessons } from "./platform-builder-proxmox-homelab-deep";
 import { virtualizationQualityLessons } from "./platform-builder-virtualization-quality";
+import { windowsPowerShellEnterpriseDeepLessons } from "./platform-builder-windows-powershell-enterprise-deep";
 
 function path(id: string, title: string, lessons: Lesson[]): LearningPath {
     return { id, title, lessons };
@@ -27,6 +28,7 @@ export const bareMetalFoundations = path("bare-metal-foundations", "Bare-Metal P
 export const proxmoxHomelab = path("proxmox-homelab-platform", "Proxmox VE Homelab Platform", proxmoxHomelabDeepLessons);
 export const enterpriseStorageNas = path("enterprise-storage-nas", "Enterprise Storage and NAS Operations", enterpriseStorageNasDeepLessons);
 export const coreInfrastructureServices = path("core-infrastructure-services", "Core Infrastructure Services: DNS, DHCP and Time", coreInfrastructureServicesDeepLessons);
+export const windowsPowerShellEnterprise = path("windows-powershell-enterprise", "Windows and PowerShell Mixed-Enterprise Operations", windowsPowerShellEnterpriseDeepLessons);
 export const budgetHomelab = path("budget-homelab", "Building the Budget Homelab", budgetHomelabQualityLessons);
 export const enterpriseInfrastructureServices = path("enterprise-infrastructure-services", "Enterprise File and Directory Services", enterpriseFileAndDirectoryServicesDeepLessons);
 export const enterpriseFileIntegration = path("enterprise-file-integration", "Enterprise File and Batch Integration", enterpriseFileIntegrationDeepLessons);
@@ -42,6 +44,7 @@ export const platformBuilderPaths: LearningPath[] = [
     proxmoxHomelab,
     enterpriseStorageNas,
     coreInfrastructureServices,
+    windowsPowerShellEnterprise,
     budgetHomelab,
     enterpriseInfrastructureServices,
     enterpriseFileIntegration,
