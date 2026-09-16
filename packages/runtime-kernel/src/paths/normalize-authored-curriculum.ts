@@ -1,15 +1,11 @@
 import type { Activity } from "../activities";
 import type { LearningJourney } from "./learning-journey";
 import type { LearningPath } from "./learning-path";
-import type { Lesson } from "./lesson";
+import type { AuthoredActivity, CompactActivity, Lesson } from "./lesson";
 
-export type CompactActivity = Record<string, unknown> & {
-    type: string;
-    title: string;
-};
+export type { AuthoredActivity, CompactActivity } from "./lesson";
 
-export type AuthoredActivity = Activity | CompactActivity;
-export type AuthoredLesson = Omit<Lesson, "activities"> & { activities: AuthoredActivity[] };
+export type AuthoredLesson = Lesson;
 export type AuthoredLearningPath = Omit<LearningPath, "lessons"> & { lessons: AuthoredLesson[] };
 export type AuthoredLearningJourney = Omit<LearningJourney, "schools"> & {
     schools: Array<Omit<LearningJourney["schools"][number], "paths"> & { paths: AuthoredLearningPath[] }>;
@@ -19,10 +15,18 @@ function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
+function isRuntimeActivity(input: AuthoredActivity): input is Activity {
+    return "id" in input
+        && typeof input.id === "string"
+        && "estimatedMinutes" in input
+        && typeof input.estimatedMinutes === "number"
+        && "content" in input
+        && typeof input.content === "object"
+        && input.content !== null;
+}
+
 function normalizeActivity(lessonId: string, input: AuthoredActivity, index: number): Activity {
-    if ("id" in input && typeof input.id === "string" && "estimatedMinutes" in input && typeof input.estimatedMinutes === "number" && "content" in input && input.content) {
-        return input as Activity;
-    }
+    if (isRuntimeActivity(input)) return input;
 
     const compact = input as CompactActivity;
     const title = compact.title || `Activity ${index + 1}`;
@@ -85,7 +89,7 @@ function normalizePath(path: AuthoredLearningPath): LearningPath {
         if (ids.has(lesson.id)) throw new Error(`Duplicate lesson id "${lesson.id}" in path "${path.id}".`);
         ids.add(lesson.id);
     }
-    return { ...path, lessons };
+    return { ...path, lessons: lessons as LearningPath["lessons"] };
 }
 
 export function normalizeJourney(journey: AuthoredLearningJourney): LearningJourney {
@@ -95,5 +99,5 @@ export function normalizeJourney(journey: AuthoredLearningJourney): LearningJour
             ...school,
             paths: school.paths.map(normalizePath),
         })),
-    };
+    } as LearningJourney;
 }
