@@ -10,71 +10,23 @@ import { modularityDeepLessons } from "./architect-modularity-deep";
 import { resilienceArchitectureDeepLessons } from "./architect-resilience-architecture-deep";
 import { scalabilityAndDistributedSystemsDeepLessons } from "./architect-scalability-distributed-systems-deep";
 
-export const architectureFundamentals: LearningPath = {
-    id: "architecture-fundamentals",
-    title: "Architecture Fundamentals",
-    lessons: architectureFundamentalsDeepLessons,
-};
+export const architectureFundamentals: LearningPath = { id: "architecture-fundamentals", title: "Architecture Fundamentals", lessons: architectureFundamentalsDeepLessons };
+export const modularity: LearningPath = { id: "modularity", title: "Modularity", lessons: modularityDeepLessons };
+export const architecturalStyles: LearningPath = { id: "architectural-styles", title: "Architectural Styles", lessons: architecturalStylesDeepLessons };
+export const domainModeling: LearningPath = { id: "domain-modeling", title: "Domain Modeling", lessons: domainModelingDeepLessons };
+export const dataArchitecture: LearningPath = { id: "data-architecture", title: "Data Architecture", lessons: dataArchitectureDeepLessons };
+export const integrationAndMessaging: LearningPath = { id: "integration-and-messaging", title: "Integration and Messaging", lessons: integrationAndMessagingDeepLessons };
+export const scalabilityAndDistributedSystems: LearningPath = { id: "scalability-and-distributed-systems", title: "Scalability and Distributed Systems", lessons: scalabilityAndDistributedSystemsDeepLessons };
+export const resilienceArchitecture: LearningPath = { id: "resilience-architecture", title: "Resilience Architecture", lessons: resilienceArchitectureDeepLessons };
+export const architectureEvaluationAndGovernance: LearningPath = { id: "architecture-evaluation-and-governance", title: "Architecture Evaluation and Governance", lessons: architectureEvaluationAndGovernanceDeepLessons };
+export const stewardArchitectureEvolution: LearningPath = { id: "steward-architecture-evolution", title: "Architect Milestone", lessons: architectMilestoneDeepLessons };
 
-export const modularity: LearningPath = {
-    id: "modularity",
-    title: "Modularity",
-    lessons: modularityDeepLessons,
-};
-
-export const architecturalStyles: LearningPath = {
-    id: "architectural-styles",
-    title: "Architectural Styles",
-    lessons: architecturalStylesDeepLessons,
-};
-
-export const domainModeling: LearningPath = {
-    id: "domain-modeling",
-    title: "Domain Modeling",
-    lessons: domainModelingDeepLessons,
-};
-
-export const dataArchitecture: LearningPath = {
-    id: "data-architecture",
-    title: "Data Architecture",
-    lessons: dataArchitectureDeepLessons,
-};
-
-export const integrationAndMessaging: LearningPath = {
-    id: "integration-and-messaging",
-    title: "Integration and Messaging",
-    lessons: integrationAndMessagingDeepLessons,
-};
-
-export const scalabilityAndDistributedSystems: LearningPath = {
-    id: "scalability-and-distributed-systems",
-    title: "Scalability and Distributed Systems",
-    lessons: scalabilityAndDistributedSystemsDeepLessons,
-};
-
-export const resilienceArchitecture: LearningPath = {
-    id: "resilience-architecture",
-    title: "Resilience Architecture",
-    lessons: resilienceArchitectureDeepLessons,
-};
-
-export const architectureEvaluationAndGovernance: LearningPath = {
-    id: "architecture-evaluation-and-governance",
-    title: "Architecture Evaluation and Governance",
-    lessons: architectureEvaluationAndGovernanceDeepLessons,
-};
-
-export const stewardArchitectureEvolution: LearningPath = {
-    id: "steward-architecture-evolution",
-    title: "Architect Milestone",
-    lessons: architectMilestoneDeepLessons,
-};
-
+// Understand the domain and its boundaries before selecting structural styles.
 export const architectPaths: LearningPath[] = [
     architectureFundamentals,
+    domainModeling,
     modularity,
     architecturalStyles,
-    domainModeling,
     dataArchitecture,
     integrationAndMessaging,
     scalabilityAndDistributedSystems,
