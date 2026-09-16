@@ -1,6 +1,6 @@
-import type { Lesson } from "./lesson";
+import type { AuthoredLesson } from "./normalize-authored-curriculum";
 
-export const osPatchingLifecycleDeepLessons: Lesson[] = [
+export const osPatchingLifecycleDeepLessons: AuthoredLesson[] = [
     {
         id: "os-patching-risk-model",
         title: "Patch Risk, Exposure and Change Windows",

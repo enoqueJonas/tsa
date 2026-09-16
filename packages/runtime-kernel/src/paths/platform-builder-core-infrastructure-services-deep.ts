@@ -1,6 +1,6 @@
-import type { Lesson } from "./lesson";
+import type { AuthoredLesson } from "./normalize-authored-curriculum";
 
-export const coreInfrastructureServicesDeepLessons: Lesson[] = [
+export const coreInfrastructureServicesDeepLessons: AuthoredLesson[] = [
     {
         id: "infra-services-boundary",
         title: "DNS, DHCP and Time as Infrastructure",

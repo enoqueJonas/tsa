@@ -1,6 +1,6 @@
-import type { Lesson } from "./lesson";
+import type { AuthoredLesson } from "./normalize-authored-curriculum";
 
-export const windowsPowerShellEnterpriseDeepLessons: Lesson[] = [
+export const windowsPowerShellEnterpriseDeepLessons: AuthoredLesson[] = [
     {
         id: "windows-enterprise-boundary",
         title: "Windows in a Linux-Primary Enterprise Platform",
