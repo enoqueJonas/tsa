@@ -1,0 +1,103 @@
+import type { Lesson } from "./lesson";
+
+export const proxmoxHomelabDeepLessons: Lesson[] = [
+    {
+        id: "proxmox-platform-boundary",
+        title: "From Virtual Machines to an Operated Hypervisor",
+        summary: "Turn the physical homelab host into an explicit virtualization platform and separate host, hypervisor, guest and application failure domains.",
+        objectives: [
+            "Explain what Proxmox VE owns versus firmware, guest Rocky Linux and Steward.",
+            "Design a minimal single-host topology that can grow without pretending to provide physical HA.",
+            "Define management, workload, storage and recovery boundaries before installation.",
+        ],
+        activities: [
+            { type: "reading", title: "Proxmox VE architecture", description: "Study KVM/QEMU, Linux bridges, storage abstractions and the management plane. Produce a responsibility map rather than a feature list." },
+            { type: "exercise", title: "Hypervisor architecture decision", description: "Draw physical host → Proxmox → bridges/storage → Rocky guests → Steward. Mark shared failure domains, management access and what remains deliberately outside the host." },
+        ],
+    },
+    {
+        id: "proxmox-install-secure",
+        title: "Install and Secure the Proxmox VE Host",
+        summary: "Perform a deliberate bare-metal installation using the readiness evidence established in Bare-Metal Platform Foundations.",
+        objectives: [
+            "Install Proxmox VE on the selected learner-owned x86-64 host.",
+            "Give the management plane a predictable address and name.",
+            "Apply updates and establish a safe administrative and local recovery path.",
+        ],
+        activities: [
+            { type: "practical", title: "Bare-metal Proxmox installation", objective: "Create a recoverable learner-operated hypervisor.", scenario: "The approved homelab host is ready to stop being a general-purpose machine and become infrastructure.", instructions: ["Preserve the Z6 hardware/firmware baseline and required data before destructive installation.", "Install the current supported Proxmox VE release from official installation media.", "Configure a stable management IP, gateway, DNS and hostname consistent with the TSA address plan.", "Apply supported package updates and record the running platform/kernel versions.", "Restrict management reachability to the intended LAN/private administration boundary and preserve local-console recovery.", "Record the exact reinstall/recovery prerequisites if the host disk is lost."], deliverables: ["Installation/version evidence", "Management-plane address and trust-boundary record", "Recovery prerequisites"], completionCriteria: ["The web/API/SSH management plane is reachable only through the intended administrative path.", "The learner can identify the physical host and Proxmox versions from evidence.", "Loss of remote administration does not eliminate the documented local recovery route."] },
+        ],
+    },
+    {
+        id: "proxmox-rocky-template",
+        title: "Rocky Linux Templates and VM Lifecycle",
+        summary: "Build repeatable Rocky Linux guests and operate their lifecycle without confusing cloning with configuration management.",
+        objectives: ["Create a reusable Rocky Linux VM baseline.", "Operate create/start/stop/clone/snapshot/delete lifecycle safely.", "Preserve unique machine identity after cloning."],
+        activities: [
+            { type: "practical", title: "Rocky Linux VM template", objective: "Provision repeatable enterprise-Linux guests from one maintained baseline.", scenario: "Steward and later platform services need VMs without manually reinstalling Rocky for every workload.", instructions: ["Create a Rocky Linux guest with appropriate virtual CPU, memory, disk and VirtIO devices.", "Patch and prepare it as a template without embedding learner secrets or duplicate host identity.", "Clone at least two guests and prove hostname, network identity and SSH host identity are unique.", "Start, stop and delete a disposable clone while preserving the template.", "Create a snapshot, change guest state, restore it, and document why this is not an independent backup."], deliverables: ["Template configuration", "Two unique clone identities", "Lifecycle and snapshot evidence"], completionCriteria: ["Guests are reproducible without copied secrets/identities.", "Lifecycle operations are evidenced.", "Snapshot and backup are explicitly distinguished."] },
+        ],
+    },
+    {
+        id: "proxmox-resource-operations",
+        title: "Compute Allocation, Pressure and Overcommit",
+        summary: "Allocate CPU and memory from measured demand and observe how guest promises map to finite host resources.",
+        objectives: ["Explain vCPU and memory allocation versus physical capacity.", "Use measured headroom instead of arbitrary VM sizing.", "Recognize contention and choose right-sizing before buying hardware."],
+        activities: [
+            { type: "practical", title: "Resource pressure lab", objective: "Observe resource contention at host and guest layers.", scenario: "Several VMs fit on paper, but the single host has finite RAM and CPU.", instructions: ["Record host CPU/RAM baseline and allocations for each VM.", "Create controlled CPU or memory pressure in a disposable guest.", "Observe the symptom from both Proxmox and inside the guest.", "Change allocation or workload and verify recovery.", "Define conservative overcommit/headroom rules for the current homelab."], deliverables: ["Allocation table", "Host-versus-guest pressure evidence", "Right-sizing/overcommit policy"], completionCriteria: ["Physical and virtual capacity are not conflated.", "A contention symptom is localized with evidence.", "The resulting policy fits actual hardware constraints."] },
+        ],
+    },
+    {
+        id: "proxmox-network-bridges-vlans",
+        title: "Bridges, VLANs and the Physical Network Boundary",
+        summary: "Transfer Packet Tracer switching knowledge into Proxmox virtual networking and the real managed-switch boundary.",
+        objectives: ["Explain a Linux bridge as a virtual Layer-2 boundary.", "Connect guest traffic to the correct physical network intentionally.", "Implement VLAN-aware networking when the physical equipment supports it."],
+        activities: [
+            { type: "practical", title: "Virtual-to-physical network lab", objective: "Make VM network placement explicit and diagnosable.", scenario: "Management and workload guests must traverse virtual and physical switching without creating an unexplained flat network.", instructions: ["Map physical NIC → Proxmox bridge → guest vNIC → switch port → VLAN/subnet.", "Keep Proxmox management reachability explicit and avoid casually bridging it to every workload network.", "Where managed switching is available, configure a VLAN-aware bridge and place a disposable guest on a selected VLAN; otherwise preserve an exact implementation plan for the later physical switch.", "Test allowed reachability and one intentionally denied/isolated path.", "Inject one wrong VLAN/bridge assignment and diagnose it using link, bridge, VLAN, route and guest evidence before fixing it."], deliverables: ["Virtual/physical L2 map", "Positive and negative reachability evidence", "Injected network-fault diagnosis"], completionCriteria: ["Every guest network path has a documented bridge and physical boundary.", "Packet Tracer concepts transfer to the real platform.", "The injected fault is localized rather than guessed."] },
+        ],
+    },
+    {
+        id: "proxmox-storage-boundary",
+        title: "Hypervisor Storage Pools and Virtual Disks",
+        summary: "Understand where VM disks live before the later NAS path introduces a separate storage service.",
+        objectives: ["Map Proxmox storage abstractions to physical devices.", "Distinguish hypervisor-local VM storage from guest filesystems and NAS storage.", "Measure capacity and identify the single-host storage failure domain."],
+        activities: [
+            { type: "practical", title: "VM disk mapping", objective: "Trace a guest virtual disk down to its physical storage boundary.", scenario: "A VM reports a disk, Proxmox reports a volume and the host owns finite physical storage; all three views must be reconciled.", instructions: ["Inventory Proxmox storage definitions and the physical device(s) beneath them.", "Create/attach a disposable virtual disk and inspect it from Proxmox and the Rocky guest.", "Record capacity at physical, Proxmox-pool and guest levels.", "Fill only a safe disposable guest volume enough to observe pressure without threatening the host.", "Document what loss of the physical storage device would affect and which later Z4/NAS responsibility is intentionally not solved here."], deliverables: ["Physical→pool→virtual-disk→guest map", "Capacity evidence", "Failure-domain statement"], completionCriteria: ["Storage layers are distinguishable.", "Guest free space is not treated as host free space.", "The lab does not prematurely turn Proxmox storage into the NAS or backup solution."] },
+        ],
+    },
+    {
+        id: "proxmox-backup-restore",
+        title: "VM Backup, Restore and Recovery Boundaries",
+        summary: "Prove that a VM can be recovered from an independent-enough backup and contrast that recovery with snapshots and application-aware data protection.",
+        objectives: ["Configure a bounded VM backup target.", "Perform and verify an actual restore.", "Explain what a VM-level backup cannot guarantee for application-consistent PostgreSQL recovery."],
+        activities: [
+            { type: "practical", title: "Backup and restore a VM", objective: "Recover a deleted/disposable guest from backup rather than trusting a successful backup job.", scenario: "A VM is lost. A snapshot on the same primary storage is not sufficient recovery evidence.", instructions: ["Choose the best available backup target outside the VM's primary virtual-disk path; document any remaining shared physical failure domain.", "Back up a disposable Rocky guest with identifiable test state.", "Delete or otherwise remove the disposable guest after verifying the backup artifact.", "Restore it and prove the expected state and network identity are correct.", "Compare snapshot, VM backup and later PostgreSQL/application-aware backup responsibilities."], deliverables: ["Backup configuration/evidence", "Restore proof", "Recovery-boundary comparison"], completionCriteria: ["A restore is actually performed.", "Shared failure domains are disclosed rather than hidden.", "VM backup is not claimed to replace database/data-protection engineering."] },
+        ],
+    },
+    {
+        id: "proxmox-failure-localization",
+        title: "Guest Failure versus Hypervisor Failure",
+        summary: "Diagnose incidents from the correct layer instead of treating every unavailable VM as an application problem.",
+        objectives: ["Differentiate guest, virtual-network, storage and host/platform failures.", "Preserve evidence before recovery actions.", "Use a recovery sequence with explicit blast radius."],
+        activities: [
+            { type: "practical", title: "Two-layer failure drill", objective: "Localize one guest-only fault and one platform-layer fault.", scenario: "Steward is unavailable, but the symptom alone does not reveal whether the application, guest or hypervisor owns the failure.", instructions: ["Create a guest-only failure such as stopping networking or the guest OS and record host evidence showing the hypervisor remains healthy.", "Recover and verify the service.", "Create a safe platform-layer failure such as disabling a disposable bridge attachment/storage availability for a test VM or stopping the VM from the host; do not corrupt the host deliberately.", "Use Proxmox tasks/logs/status plus guest evidence to identify the failed layer.", "Write a decision tree for application → guest → virtual network/storage → hypervisor → physical host diagnosis."], deliverables: ["Guest-failure timeline", "Platform-failure timeline", "Layered diagnostic decision tree"], completionCriteria: ["The two incidents are distinguished by evidence.", "Recovery actions match the failed layer.", "The exercise does not manufacture unsafe host corruption."] },
+        ],
+    },
+    {
+        id: "proxmox-host-maintenance",
+        title: "Host Maintenance, Upgrade and Single-Host Reality",
+        summary: "Operate maintenance on a platform whose guests all share one physical host and plan recovery without pretending a lab cluster is production HA.",
+        objectives: ["Plan guest shutdown/start order for host maintenance.", "Perform a bounded Proxmox update/reboot and verify platform and workload recovery.", "Understand migration, clustering and HA as capabilities without requiring unnecessary hardware."],
+        activities: [
+            { type: "practical", title: "Planned hypervisor maintenance", objective: "Execute one controlled host maintenance window end to end.", scenario: "The Proxmox host requires supported updates/reboot, making every resident workload part of one maintenance blast radius.", instructions: ["Inventory running guests and define shutdown/start dependencies.", "Capture pre-maintenance platform, backup and workload health evidence.", "Apply a bounded supported Proxmox update that requires or justifies a maintenance reboot when available; otherwise perform a planned reboot after current updates.", "Verify host version/kernel, bridges, storage, guests and Steward after restart.", "Record rollback/recovery options and what would happen if the host failed to boot.", "Compare live migration/cluster/HA concepts with the current single-host design and state the evidence that would justify a second Proxmox node."], deliverables: ["Maintenance plan", "Before/after evidence", "Single-host limitation and expansion decision"], completionCriteria: ["Maintenance is planned around workload dependencies.", "Post-reboot health is proven across platform and guest layers.", "Cluster/HA is not claimed without independent physical capacity."] },
+        ],
+    },
+    {
+        id: "proxmox-platform-reassessment",
+        title: "Reassess the Homelab Virtualization Architecture",
+        summary: "Decide what should remain virtualized, what may need an independent failure domain and what complexity is still unjustified.",
+        objectives: ["Place later TSA services by lifecycle and failure-domain needs.", "Prepare the storage/NAS decision without preselecting universal storage.", "Define measurable triggers for another host or dedicated storage."],
+        activities: [
+            { type: "exercise", title: "Platform architecture record", description: "Produce the post-Proxmox homelab architecture: physical host, management network, bridges/VLANs, Rocky template/VMs, local storage, backup target and reserved future services. Explicitly compare a virtual NAS on Proxmox with a physically independent NAS, identify the shared failure domain of the virtual option, and define the evidence/cost threshold that would justify dedicated storage or another compute host." },
+        ],
+    },
+];

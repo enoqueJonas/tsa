@@ -9,6 +9,7 @@ import { linuxAdministrationQualityLessons } from "./platform-builder-linux-admi
 import { stewardHomelabV1DeepLessons } from "./platform-builder-milestone-deep";
 import { networkingFoundationsQualityLessons } from "./platform-builder-networking-quality";
 import { packetTracerNetworkEngineeringDeepLessons } from "./platform-builder-packet-tracer-network-engineering-deep";
+import { proxmoxHomelabDeepLessons } from "./platform-builder-proxmox-homelab-deep";
 import { virtualizationQualityLessons } from "./platform-builder-virtualization-quality";
 
 function path(id: string, title: string, lessons: Lesson[]): LearningPath {
@@ -21,6 +22,7 @@ export const networkingFoundations = path("networking-foundations", "Networking 
 export const packetTracerNetworkEngineering = path("packet-tracer-network-engineering", "Network Engineering with Cisco Packet Tracer", packetTracerNetworkEngineeringDeepLessons);
 export const virtualization = path("virtualization", "Virtualization", virtualizationQualityLessons);
 export const bareMetalFoundations = path("bare-metal-foundations", "Bare-Metal Platform Foundations", bareMetalFoundationsDeepLessons);
+export const proxmoxHomelab = path("proxmox-homelab-platform", "Proxmox VE Homelab Platform", proxmoxHomelabDeepLessons);
 export const budgetHomelab = path("budget-homelab", "Building the Budget Homelab", budgetHomelabQualityLessons);
 export const enterpriseInfrastructureServices = path("enterprise-infrastructure-services", "Enterprise File and Directory Services", enterpriseFileAndDirectoryServicesDeepLessons);
 export const enterpriseFileIntegration = path("enterprise-file-integration", "Enterprise File and Batch Integration", enterpriseFileIntegrationDeepLessons);
@@ -33,6 +35,7 @@ export const platformBuilderPaths: LearningPath[] = [
     packetTracerNetworkEngineering,
     virtualization,
     bareMetalFoundations,
+    proxmoxHomelab,
     budgetHomelab,
     enterpriseInfrastructureServices,
     enterpriseFileIntegration,
