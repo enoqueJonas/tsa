@@ -3,40 +3,53 @@ import type { LearningJourney } from "./learning-journey";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
 
+export type CompactActivity = Record<string, unknown> & {
+    type: string;
+    title: string;
+};
+
+export type AuthoredActivity = Activity | CompactActivity;
+export type AuthoredLesson = Omit<Lesson, "activities"> & { activities: AuthoredActivity[] };
+export type AuthoredLearningPath = Omit<LearningPath, "lessons"> & { lessons: AuthoredLesson[] };
+export type AuthoredLearningJourney = Omit<LearningJourney, "schools"> & {
+    schools: Array<Omit<LearningJourney["schools"][number], "paths"> & { paths: AuthoredLearningPath[] }>;
+};
+
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
-function normalizeActivity(lessonId: string, input: any, index: number): Activity {
-    if (input && typeof input.id === "string" && typeof input.estimatedMinutes === "number" && input.content) {
+function normalizeActivity(lessonId: string, input: AuthoredActivity, index: number): Activity {
+    if ("id" in input && typeof input.id === "string" && "estimatedMinutes" in input && typeof input.estimatedMinutes === "number" && "content" in input && input.content) {
         return input as Activity;
     }
 
-    const title = typeof input?.title === "string" ? input.title : `Activity ${index + 1}`;
+    const compact = input as CompactActivity;
+    const title = compact.title || `Activity ${index + 1}`;
     const id = `${lessonId}-${slug(title) || `activity-${index + 1}`}`;
 
-    if (input?.type === "practical") {
+    if (compact.type === "practical") {
         return {
             id,
             title,
             estimatedMinutes: 120,
             content: {
                 type: "practical",
-                objective: input.objective ?? title,
-                scenario: input.scenario ?? "Apply this capability to the current TSA/Steward environment and preserve evidence of the result.",
-                instructions: Array.isArray(input.instructions) ? input.instructions : [],
-                deliverables: Array.isArray(input.deliverables) ? input.deliverables : ["Implementation evidence"],
-                completionCriteria: Array.isArray(input.completionCriteria) ? input.completionCriteria : ["The intended capability is demonstrated with evidence."],
+                objective: typeof compact.objective === "string" ? compact.objective : title,
+                scenario: typeof compact.scenario === "string" ? compact.scenario : "Apply this capability to the current TSA/Steward environment and preserve evidence of the result.",
+                instructions: Array.isArray(compact.instructions) ? compact.instructions.filter((item): item is string => typeof item === "string") : [],
+                deliverables: Array.isArray(compact.deliverables) ? compact.deliverables.filter((item): item is string => typeof item === "string") : ["Implementation evidence"],
+                completionCriteria: Array.isArray(compact.completionCriteria) ? compact.completionCriteria.filter((item): item is string => typeof item === "string") : ["The intended capability is demonstrated with evidence."],
             },
         };
     }
 
-    if (input?.type === "reading") {
+    if (compact.type === "reading") {
         return {
             id,
             title,
             estimatedMinutes: 30,
-            content: { type: "reading", body: input.description ?? title },
+            content: { type: "reading", body: typeof compact.description === "string" ? compact.description : title },
         };
     }
 
@@ -48,24 +61,24 @@ function normalizeActivity(lessonId: string, input: any, index: number): Activit
             type: "practical",
             objective: title,
             scenario: "Turn the engineering decision into an explicit, reviewable artifact before implementation continues.",
-            instructions: [input?.description ?? "Document the decision, assumptions, boundaries and evidence."],
+            instructions: [typeof compact.description === "string" ? compact.description : "Document the decision, assumptions, boundaries and evidence."],
             deliverables: [`${title} artifact`],
             completionCriteria: ["The artifact records the decision, boundaries and evidence clearly enough for later review."],
         },
     };
 }
 
-function normalizeLesson(lesson: Lesson): Lesson {
-    const activities = lesson.activities.map((activity: any, index: number) => normalizeActivity(lesson.id, activity, index));
+function normalizeLesson(lesson: AuthoredLesson): Lesson {
+    const activities = lesson.activities.map((activity, index) => normalizeActivity(lesson.id, activity, index));
     const ids = new Set<string>();
     for (const activity of activities) {
         if (ids.has(activity.id)) throw new Error(`Duplicate activity id "${activity.id}" in lesson "${lesson.id}".`);
         ids.add(activity.id);
     }
-    return { id: lesson.id, title: lesson.title, activities };
+    return { ...lesson, activities };
 }
 
-function normalizePath(path: LearningPath): LearningPath {
+function normalizePath(path: AuthoredLearningPath): LearningPath {
     const lessons = path.lessons.map(normalizeLesson);
     const ids = new Set<string>();
     for (const lesson of lessons) {
@@ -75,7 +88,7 @@ function normalizePath(path: LearningPath): LearningPath {
     return { ...path, lessons };
 }
 
-export function normalizeJourney(journey: LearningJourney): LearningJourney {
+export function normalizeJourney(journey: AuthoredLearningJourney): LearningJourney {
     return {
         ...journey,
         schools: journey.schools.map((school) => ({
