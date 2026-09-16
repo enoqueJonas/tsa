@@ -1,6 +1,6 @@
-import type { Lesson } from "./lesson";
+import type { AuthoredLesson } from "./normalize-authored-curriculum";
 
-export const enterpriseStorageNasDeepLessons: Lesson[] = [
+export const enterpriseStorageNasDeepLessons: AuthoredLesson[] = [
     {
         id: "storage-stack-model",
         title: "Model the Enterprise Storage Stack",
