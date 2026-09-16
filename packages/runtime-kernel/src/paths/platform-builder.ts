@@ -1,5 +1,4 @@
-import type { LearningPath } from "./learning-path";
-import type { Lesson } from "./lesson";
+import type { AuthoredLearningPath, AuthoredLesson } from "./normalize-authored-curriculum";
 import { bareMetalFoundationsDeepLessons } from "./platform-builder-bare-metal-foundations-deep";
 import { budgetHomelabQualityLessons } from "./platform-builder-budget-homelab-quality";
 import { computerAndOsFoundationsQualityLessons } from "./platform-builder-computer-os-quality";
@@ -17,7 +16,7 @@ import { proxmoxHomelabDeepLessons } from "./platform-builder-proxmox-homelab-de
 import { virtualizationQualityLessons } from "./platform-builder-virtualization-quality";
 import { windowsPowerShellEnterpriseDeepLessons } from "./platform-builder-windows-powershell-enterprise-deep";
 
-function path(id: string, title: string, lessons: Lesson[]): LearningPath { return { id, title, lessons }; }
+function path(id: string, title: string, lessons: AuthoredLesson[]): AuthoredLearningPath { return { id, title, lessons }; }
 
 export const computerAndOsFoundations = path("computer-and-os-foundations", "Computer and Operating-System Foundations", computerAndOsFoundationsQualityLessons);
 export const linuxAdministration = path("linux-administration", "Linux Administration", linuxAdministrationQualityLessons);
@@ -28,7 +27,7 @@ export const bareMetalFoundations = path("bare-metal-foundations", "Bare-Metal P
 export const proxmoxHomelab = path("proxmox-homelab-platform", "Proxmox VE Homelab Platform", proxmoxHomelabDeepLessons);
 export const enterpriseStorageNas = path("enterprise-storage-nas", "Enterprise Storage and NAS Operations", enterpriseStorageNasDeepLessons);
 export const coreInfrastructureServices = path("core-infrastructure-services", "Core Infrastructure Services: DNS, DHCP and Time", coreInfrastructureServicesDeepLessons);
-export const configurationManagement = path("configuration-management", "Configuration Management with Ansible", configurationManagementDeepLessons);
+export const platformConfigurationManagement = path("platform-configuration-management", "Configuration Management with Ansible", configurationManagementDeepLessons);
 export const osPatchingLifecycle = path("os-patching-lifecycle", "OS Patching and Lifecycle Operations", osPatchingLifecycleDeepLessons);
 export const windowsPowerShellEnterprise = path("windows-powershell-enterprise", "Windows and PowerShell Mixed-Enterprise Operations", windowsPowerShellEnterpriseDeepLessons);
 export const budgetHomelab = path("budget-homelab", "Building the Budget Homelab", budgetHomelabQualityLessons);
@@ -36,4 +35,4 @@ export const enterpriseInfrastructureServices = path("enterprise-infrastructure-
 export const enterpriseFileIntegration = path("enterprise-file-integration", "Enterprise File and Batch Integration", enterpriseFileIntegrationDeepLessons);
 export const stewardHomelabV1 = path("steward-homelab-v1", "Platform Builder Milestone", stewardHomelabV1DeepLessons);
 
-export const platformBuilderPaths: LearningPath[] = [computerAndOsFoundations, linuxAdministration, networkingFoundations, packetTracerNetworkEngineering, virtualization, bareMetalFoundations, proxmoxHomelab, enterpriseStorageNas, coreInfrastructureServices, configurationManagement, osPatchingLifecycle, windowsPowerShellEnterprise, budgetHomelab, enterpriseInfrastructureServices, enterpriseFileIntegration, stewardHomelabV1];
+export const platformBuilderPaths: AuthoredLearningPath[] = [computerAndOsFoundations, linuxAdministration, networkingFoundations, packetTracerNetworkEngineering, virtualization, bareMetalFoundations, proxmoxHomelab, enterpriseStorageNas, coreInfrastructureServices, platformConfigurationManagement, osPatchingLifecycle, windowsPowerShellEnterprise, budgetHomelab, enterpriseInfrastructureServices, enterpriseFileIntegration, stewardHomelabV1];
