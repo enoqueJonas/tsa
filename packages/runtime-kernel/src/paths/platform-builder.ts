@@ -13,6 +13,7 @@ import { networkingFoundationsQualityLessons } from "./platform-builder-networki
 import { osPatchingLifecycleDeepLessons } from "./platform-builder-os-patching-lifecycle-deep";
 import { packetTracerNetworkEngineeringDeepLessons } from "./platform-builder-packet-tracer-network-engineering-deep";
 import { proxmoxHomelabDeepLessons } from "./platform-builder-proxmox-homelab-deep";
+import { proxmoxImplementationMilestone } from "./platform-builder-proxmox-milestone";
 import { virtualizationQualityLessons } from "./platform-builder-virtualization-quality";
 import { windowsPowerShellEnterpriseDeepLessons } from "./platform-builder-windows-powershell-enterprise-deep";
 
@@ -25,7 +26,8 @@ export const packetTracerNetworkEngineering = path("packet-tracer-network-engine
 export const virtualization = path("virtualization", "Virtualization", virtualizationQualityLessons);
 export const bareMetalFoundations = path("bare-metal-foundations", "Bare-Metal Platform Foundations", bareMetalFoundationsDeepLessons);
 export const budgetHomelab = path("budget-homelab", "Building the Budget Homelab", budgetHomelabQualityLessons);
-export const proxmoxHomelab = path("proxmox-homelab-platform", "Proxmox VE Homelab Platform", proxmoxHomelabDeepLessons);
+const proxmoxLessons = [...proxmoxHomelabDeepLessons.slice(0, -1), proxmoxImplementationMilestone, ...proxmoxHomelabDeepLessons.slice(-1)];
+export const proxmoxHomelab = path("proxmox-homelab-platform", "Proxmox VE Homelab Platform", proxmoxLessons);
 export const enterpriseStorageNas = path("enterprise-storage-nas", "Enterprise Storage and NAS Operations", enterpriseStorageNasDeepLessons);
 export const coreInfrastructureServices = path("core-infrastructure-services", "Core Infrastructure Services: DNS, DHCP and Time", coreInfrastructureServicesDeepLessons);
 export const platformConfigurationManagement = path("platform-configuration-management", "Configuration Management with Ansible", configurationManagementDeepLessons);
