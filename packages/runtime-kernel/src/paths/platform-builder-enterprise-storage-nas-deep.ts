@@ -1,0 +1,81 @@
+import type { Lesson } from "./lesson";
+
+export const enterpriseStorageNasDeepLessons: Lesson[] = [
+    {
+        id: "storage-stack-model",
+        title: "Model the Enterprise Storage Stack",
+        summary: "Trace persistent data from physical or virtual block devices through redundancy, volume management, filesystems and network file service without collapsing distinct storage capabilities into one box.",
+        objectives: ["Distinguish block, file, object, artifact, relational and backup storage.", "Map device → redundancy → LVM → filesystem → mount → NFS/SMB consumer.", "Define the NAS role without making it universal TSA storage."],
+        activities: [{ type: "exercise", title: "Storage responsibility map", description: "Draw the planned NAS stack and separately place PostgreSQL relational data, S3-compatible object storage, Nexus artifacts, Proxmox VM storage and independent backups. For every boundary, record owner, failure effect and why NAS is or is not appropriate." }],
+    },
+    {
+        id: "block-device-inventory",
+        title: "Block Devices, Partitions and Destructive-Change Safety",
+        summary: "Learn to identify the exact storage device being changed before issuing commands that can destroy data.",
+        objectives: ["Inspect disks, partitions, identifiers and filesystem signatures.", "Use stable identifiers instead of relying blindly on device enumeration.", "Create a safe disposable storage lab."],
+        activities: [{ type: "practical", title: "Disposable-disk inventory lab", objective: "Build evidence-based confidence about which block device is safe to modify.", scenario: "A Rocky Linux NAS VM receives multiple virtual disks from Proxmox; one contains the OS and the others are disposable storage media.", instructions: ["Attach at least two disposable virtual disks to a dedicated Rocky Linux NAS VM.", "Use lsblk, blkid and related evidence to map guest devices back to their Proxmox virtual disks.", "Record model/size/serial or stable identifiers where exposed and identify the OS disk explicitly.", "Create a GPT partition on a disposable disk only after the map is reviewed.", "Reboot and verify the intended device/partition is still identifiable without assuming /dev/sdX ordering."], deliverables: ["Proxmox→guest block-device map", "Before/after partition evidence", "Destructive-change safety checklist"], completionCriteria: ["The OS disk is never used as the experiment target.", "Device identity is evidenced before modification.", "The mapping survives a guest lifecycle change."] }],
+    },
+    {
+        id: "lvm-operations",
+        title: "LVM: Physical Volumes, Volume Groups and Logical Volumes",
+        summary: "Build a growable block-storage layer and understand the abstraction LVM introduces between disks and filesystems.",
+        objectives: ["Create and inspect PVs, VGs and LVs.", "Reason about free extents and allocation.", "Extend storage without rebuilding the filesystem from scratch."],
+        activities: [{ type: "practical", title: "Build and expand an LVM stack", objective: "Create a real PV→VG→LV chain and expand it safely.", scenario: "The NAS file volume needs room to grow while keeping physical media and logical capacity separable.", instructions: ["Create an LVM PV on a disposable partition/disk and a clearly named VG.", "Create an LV smaller than the VG so free capacity remains visible.", "Capture pvs/vgs/lvs evidence and explain each layer.", "Add a second disposable disk/PV to the VG.", "Extend the LV while preserving existing test data.", "Record the recovery implications of losing each underlying PV."], deliverables: ["PV/VG/LV map", "Pre/post expansion evidence", "Underlying-device failure analysis"], completionCriteria: ["Existing data survives expansion.", "Unused VG capacity and LV capacity are distinguished.", "LVM is not described as redundancy or backup."] }],
+    },
+    {
+        id: "filesystem-mount-operations",
+        title: "Filesystems, Mounts and Persistent Identity",
+        summary: "Create, mount and operate a Linux filesystem with persistent boot configuration and explicit ownership.",
+        objectives: ["Create and inspect a suitable filesystem.", "Mount by stable identity and validate /etc/fstab safely.", "Diagnose filesystem-versus-mount-versus-permission failures."],
+        activities: [{ type: "practical", title: "Persistent NAS filesystem", objective: "Turn the LVM volume into a durable mounted filesystem.", scenario: "The LV exists, but clients cannot consume a block device directly as a shared file service.", instructions: ["Create an XFS filesystem on the lab LV unless a documented requirement justifies another supported filesystem.", "Record UUID, size and filesystem metadata.", "Mount it at a deliberate NAS data path and configure persistent mounting by UUID or another stable identifier.", "Validate fstab before reboot and then prove the mount returns after reboot.", "Create service ownership/permissions and test a permitted and denied local access path.", "Inject a safe wrong mount option or invalid test entry, diagnose it without making the VM unbootable, then recover."], deliverables: ["Filesystem/mount configuration", "Post-reboot mount evidence", "Permission and mount-fault evidence"], completionCriteria: ["The filesystem is mounted persistently by stable identity.", "Permissions are intentional.", "A mount configuration failure is diagnosed safely."] }],
+    },
+    {
+        id: "filesystem-capacity-inodes",
+        title: "Capacity, Inodes and Online Growth",
+        summary: "Operate both byte capacity and filesystem metadata capacity and recover from controlled exhaustion.",
+        objectives: ["Distinguish block, filesystem, byte and inode capacity.", "Expand an LV and filesystem in the correct order.", "Diagnose ENOSPC-style incidents from evidence."],
+        activities: [{ type: "practical", title: "Capacity incident and growth", objective: "Create a bounded capacity incident, recover and then grow the storage stack.", scenario: "A file service reports no space even though administrators need to determine which layer is actually exhausted.", instructions: ["Record df, df -i, LVM and underlying-device baselines.", "Use a small disposable filesystem/LV or bounded test data to approach byte-capacity exhaustion safely.", "Capture the application/shell symptom and identify the full layer from evidence.", "Remove test pressure and verify recovery.", "Extend the LV and then grow XFS using the correct filesystem operation; verify existing data.", "Create many small files on a deliberately small disposable filesystem if practical to demonstrate inode pressure, or document why XFS inode behavior makes a separate bounded filesystem preferable for this demonstration."], deliverables: ["Capacity-layer baseline", "Exhaustion/recovery evidence", "LV/filesystem growth proof", "Byte-versus-inode analysis"], completionCriteria: ["The host/OS disk is not endangered.", "Growth occurs at both required layers.", "Capacity and inode exhaustion are distinguished."] }],
+    },
+    {
+        id: "raid-redundancy",
+        title: "RAID, Degraded Operation and Rebuild",
+        summary: "Implement bounded disk redundancy and prove why redundancy improves availability but does not protect against deletion, corruption or site loss.",
+        objectives: ["Explain RAID 0/1/5/6/10 trade-offs at a stewardship level.", "Build a safe redundant array from disposable disks.", "Observe degraded state and rebuild after device replacement."],
+        activities: [{ type: "practical", title: "Software RAID failure drill", objective: "Operate a redundant array through a simulated disk failure.", scenario: "The NAS must tolerate one media failure, but the learner must see the degraded state rather than trusting a RAID diagram.", instructions: ["Use disposable virtual disks to create a small mdadm RAID1 lab array; do not use production/OS media.", "Place identifiable test data on the array through an appropriate LVM/filesystem arrangement and document the chosen layer ordering.", "Mark/remove one member safely and capture degraded-array evidence while proving data remains readable.", "Add a replacement disposable disk and observe rebuild/resynchronization to healthy state.", "Delete a test file after recovery and demonstrate that RAID does not restore it.", "Compare RAID1 with RAID5/6/10 capacity, write and failure trade-offs without requiring all variants to be built."], deliverables: ["RAID topology", "Healthy→degraded→rebuilt evidence", "Redundancy-versus-backup proof"], completionCriteria: ["A real degraded state is observed.", "A rebuild is completed and verified.", "RAID is never claimed as backup."] }],
+    },
+    {
+        id: "nfs-nas-service",
+        title: "Operate the NAS over NFS",
+        summary: "Expose the filesystem as a controlled Linux file service and consume it from another Rocky Linux host or VM.",
+        objectives: ["Configure NFS exports from explicit client/network policy.", "Mount and persist an NFS share on a separate consumer.", "Separate server filesystem permissions from network export policy."],
+        activities: [{ type: "practical", title: "NFS service integration", objective: "Make the NAS a real network dependency rather than a local filesystem exercise.", scenario: "A separate Rocky Linux workload VM needs shared file storage for a bounded Steward integration use case.", instructions: ["Install/configure the supported NFS server components on the NAS VM.", "Export a dedicated path only to the intended client/subnet and open only required firewalld service reachability.", "Mount the share from another Rocky VM and create/read representative data.", "Configure persistent client mounting with boot/network dependency behavior appropriate to the lab.", "Test access from an unintended client/source and prove it is denied where the lab topology permits.", "Restart the NAS service and reboot server/client to prove the intended lifecycle."], deliverables: ["NFS export/firewall configuration", "Remote mount and data evidence", "Negative-access proof", "Lifecycle evidence"], completionCriteria: ["NFS is consumed from another machine boundary.", "Export and filesystem permissions are both understood.", "The service survives intended restart/reboot lifecycle."] }],
+    },
+    {
+        id: "smb-interoperability",
+        title: "SMB Interoperability without a Second File Platform",
+        summary: "Provide bounded SMB access where mixed operating systems require it while keeping NFS as the primary Linux file-service implementation.",
+        objectives: ["Explain SMB/NFS protocol and identity differences.", "Configure one controlled Samba share.", "Avoid duplicate permanent storage authority."],
+        activities: [{ type: "practical", title: "Bounded Samba share", objective: "Prove Linux↔SMB interoperability on the same intentional NAS data boundary.", scenario: "A mixed-enterprise consumer requires SMB semantics, but TSA should not create an unrelated second storage island.", instructions: ["Create a dedicated Samba test share/path with explicit authentication and permissions.", "Access it from an available SMB client (Windows later may reuse this boundary; a Linux client is acceptable now).", "Verify a permitted operation and one denied operation.", "Capture server-side evidence for authentication/share access.", "Document differences between NFS export policy, SMB identity/session semantics and local filesystem ownership.", "State when SMB should be enabled versus left disabled."], deliverables: ["Samba configuration", "Positive/negative access evidence", "NFS-versus-SMB decision record"], completionCriteria: ["SMB is implemented as bounded interoperability.", "Permissions are not made world-writable to make the lab pass.", "One underlying storage authority remains explicit."] }],
+    },
+    {
+        id: "nas-monitoring-failures",
+        title: "Monitor and Break the NAS",
+        summary: "Operate the NAS as an infrastructure dependency by detecting capacity, service, mount, permission and device failures from the correct layer.",
+        objectives: ["Create a minimal storage/service health baseline.", "Diagnose multiple failure classes without guessing.", "Preserve client behavior and recovery evidence."],
+        activities: [{ type: "practical", title: "NAS incident drill", objective: "Diagnose four distinct storage incidents end to end.", scenario: "A client reports that shared storage is unavailable or unwritable; the same symptom can originate at several layers.", instructions: ["Record healthy evidence for block/RAID/LVM/filesystem capacity, mount state, NFS/SMB service and client reachability.", "Inject a safe NFS service outage and diagnose/recover it.", "Inject a client mount/configuration failure and diagnose/recover it.", "Change a test-path permission so an expected write fails; diagnose/recover without chmod 777.", "Use the bounded capacity/degraded-disk lab evidence to add capacity and device failure branches.", "Create a runbook decision tree: network → service → export/share → mount → permission → filesystem → LVM/RAID → physical/virtual device."], deliverables: ["Healthy baseline", "Incident timelines", "Layered NAS diagnostic runbook"], completionCriteria: ["At least service, mount and permission failures are executed.", "Evidence identifies the failed layer before recovery.", "Unsafe blanket-permission fixes are rejected."] }],
+    },
+    {
+        id: "nas-backup-restore",
+        title: "Independent Backup and Restore",
+        summary: "Protect NAS data from failures RAID cannot solve and prove recovery by restoring deleted data from a separate backup boundary.",
+        objectives: ["Choose a backup target with explicit failure-domain analysis.", "Restore data rather than trusting backup completion.", "Connect this bounded exercise to later Reliability data protection."],
+        activities: [{ type: "practical", title: "NAS data restore", objective: "Recover intentionally deleted data from backup.", scenario: "A user deletes a file successfully. RAID mirrors the deletion, so only a separate recovery copy can satisfy the incident.", instructions: ["Choose the best available backup destination outside the NAS data volume and document any remaining shared host/power/site failure domain.", "Back up a representative directory while preserving the metadata required by the scenario.", "Delete/change representative source data after backup.", "Restore to a safe path first, verify content/metadata, then complete the recovery decision.", "Record current RPO/RTO and what later offsite/3-2-1/application-aware work remains for Reliability Engineer."], deliverables: ["Backup boundary diagram", "Backup evidence", "Verified restore", "RPO/RTO and residual-risk note"], completionCriteria: ["Deletion is actually recovered.", "Backup and RAID have separate responsibilities.", "Shared failure domains are disclosed."] }],
+    },
+    {
+        id: "nas-architecture-reassessment",
+        title: "Reassess Virtual versus Physical NAS",
+        summary: "Use measured evidence to decide whether the NAS should remain a Proxmox VM or move to an independent physical storage system.",
+        objectives: ["Compare cost, performance, operational simplicity and failure domains.", "Identify the circular-dependency risk of storing hypervisor recovery only inside the same host.", "Keep each TSA storage technology within its proper capability boundary."],
+        activities: [{ type: "exercise", title: "NAS architecture decision record", description: "Compare the implemented virtual NAS with a realistic dedicated NAS option. Include disks, memory, NIC/network path, power, backup target, Proxmox-host dependency, recovery sequence, expected capacity and cost. Define measurable triggers for moving to physical independence. Finish with a storage authority matrix: PostgreSQL=relational, NAS=NFS/SMB files, S3-compatible service=objects, Nexus=artifacts, Proxmox storage=VM disks, backup storage=recovery copies." }],
+    },
+];
