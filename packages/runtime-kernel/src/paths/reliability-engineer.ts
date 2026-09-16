@@ -35,13 +35,14 @@ export const incidentManagement: LearningPath = { id: "incident-management", tit
 export const faultInjection: LearningPath = { id: "fault-injection", title: "Fault Injection and Reliability Experiments", lessons: faultInjectionDeepLessons };
 export const stewardReliabilityProgram: LearningPath = { id: "steward-reliability-program", title: "Reliability Engineer Milestone", lessons: stewardReliabilityProgramDeepLessons };
 
+// Each telemetry signal is implemented before the cross-signal integration path.
 export const reliabilityEngineerPaths: LearningPath[] = [
     reliabilityAndSre,
     observability,
     productionLogging,
     metricsPrometheusGrafana,
-    observabilityStackIntegration,
     distributedTracing,
+    observabilityStackIntegration,
     serviceLevelEngineering,
     alertingAndOnCall,
     alertmanagerImplementation,
