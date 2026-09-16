@@ -5,6 +5,7 @@ import { enterpriseDirectoryFederationDeepLessons } from "./security-enterprise-
 import { securityFoundationsDeepLessons } from "./security-foundations-deep";
 import { securityIdentitySecretsDeepLessons } from "./security-identity-secrets-deep";
 import { internalPkiMachineTrustDeepLessons } from "./security-internal-pki-machine-trust-deep";
+import { internalPkiImplementationMilestone } from "./security-internal-pki-milestone";
 import { linuxAndNetworkSecurityDeepLessons } from "./security-linux-network-deep";
 import { secureFileTransferMigrationDeepLessons } from "./security-secure-file-transfer-migration-deep";
 import { stewardSecurityAssessmentDeepLessons } from "./security-steward-milestone-deep";
@@ -25,7 +26,8 @@ export const containerAndDeliverySecurity = path("container-and-delivery-securit
 export const artifactSigningVerification = path("artifact-signing-verification", "Artifact Signing and Verification", artifactSigningVerificationDeepLessons);
 export const identityAndSecretsSecurity = path("identity-and-secrets-security", "Identity and Secrets Security", securityIdentitySecretsDeepLessons);
 export const vaultSecretsPlatform = path("vault-secrets-platform", "Vault and Dynamic Secrets", vaultImplementationDeepLessons);
-export const internalPkiMachineTrust = path("internal-pki-machine-trust", "Internal PKI and Machine Trust", internalPkiMachineTrustDeepLessons);
+const internalPkiLessons = [...internalPkiMachineTrustDeepLessons.slice(0, -1), internalPkiImplementationMilestone, ...internalPkiMachineTrustDeepLessons.slice(-1)];
+export const internalPkiMachineTrust = path("internal-pki-machine-trust", "Internal PKI and Machine Trust", internalPkiLessons);
 export const enterpriseDirectoryFederation = path("enterprise-directory-federation", "Enterprise Directory Federation", enterpriseDirectoryFederationDeepLessons);
 export const secureFileTransferMigration = path("secure-file-transfer-migration", "FTP to SFTP Secure Transfer Migration", secureFileTransferMigrationDeepLessons);
 export const applicationSecurity = path("application-security", "Application Security", applicationSecurityDeepLessons);
