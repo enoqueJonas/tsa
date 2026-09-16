@@ -17,4 +17,14 @@ export const identityAuthenticationAuthorization = path("identity-authentication
 export const softwareCraft = path("software-craft", "Software Craft", softwareCraftQualityLessons);
 export const stewardApiV1 = stewardApiV1Deep;
 
-export const builderPaths: LearningPath[] = [programmingWithPython, webAndApiFoundations, djangoAndApiEngineering, relationalDataAndPostgresql, identityAuthenticationAuthorization, softwareCraft, stewardApiV1];
+// Data modeling and SQL precede Django ORM/model engineering so the framework
+// is learned as an abstraction over understood relational behavior.
+export const builderPaths: LearningPath[] = [
+    programmingWithPython,
+    webAndApiFoundations,
+    relationalDataAndPostgresql,
+    djangoAndApiEngineering,
+    identityAuthenticationAuthorization,
+    softwareCraft,
+    stewardApiV1,
+];
