@@ -4,6 +4,7 @@ import { bareMetalFoundationsDeepLessons } from "./platform-builder-bare-metal-f
 import { budgetHomelabQualityLessons } from "./platform-builder-budget-homelab-quality";
 import { computerAndOsFoundationsQualityLessons } from "./platform-builder-computer-os-quality";
 import { enterpriseFileAndDirectoryServicesDeepLessons } from "./platform-builder-enterprise-file-directory-services-deep";
+import { enterpriseStorageNasDeepLessons } from "./platform-builder-enterprise-storage-nas-deep";
 import { enterpriseFileIntegrationDeepLessons } from "./system-thinker-enterprise-file-integration-deep";
 import { linuxAdministrationQualityLessons } from "./platform-builder-linux-administration-quality";
 import { stewardHomelabV1DeepLessons } from "./platform-builder-milestone-deep";
@@ -23,6 +24,7 @@ export const packetTracerNetworkEngineering = path("packet-tracer-network-engine
 export const virtualization = path("virtualization", "Virtualization", virtualizationQualityLessons);
 export const bareMetalFoundations = path("bare-metal-foundations", "Bare-Metal Platform Foundations", bareMetalFoundationsDeepLessons);
 export const proxmoxHomelab = path("proxmox-homelab-platform", "Proxmox VE Homelab Platform", proxmoxHomelabDeepLessons);
+export const enterpriseStorageNas = path("enterprise-storage-nas", "Enterprise Storage and NAS Operations", enterpriseStorageNasDeepLessons);
 export const budgetHomelab = path("budget-homelab", "Building the Budget Homelab", budgetHomelabQualityLessons);
 export const enterpriseInfrastructureServices = path("enterprise-infrastructure-services", "Enterprise File and Directory Services", enterpriseFileAndDirectoryServicesDeepLessons);
 export const enterpriseFileIntegration = path("enterprise-file-integration", "Enterprise File and Batch Integration", enterpriseFileIntegrationDeepLessons);
@@ -36,6 +38,7 @@ export const platformBuilderPaths: LearningPath[] = [
     virtualization,
     bareMetalFoundations,
     proxmoxHomelab,
+    enterpriseStorageNas,
     budgetHomelab,
     enterpriseInfrastructureServices,
     enterpriseFileIntegration,
