@@ -1,6 +1,6 @@
-import type { Lesson } from "./lesson";
+import type { AuthoredLesson } from "./normalize-authored-curriculum";
 
-export const internalPkiMachineTrustDeepLessons: Lesson[] = [
+export const internalPkiMachineTrustDeepLessons: AuthoredLesson[] = [
     {
         id: "pki-trust-model",
         title: "Model Internal PKI and Machine Trust",
