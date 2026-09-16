@@ -10,6 +10,7 @@ import { enterpriseFileIntegrationDeepLessons } from "./system-thinker-enterpris
 import { linuxAdministrationQualityLessons } from "./platform-builder-linux-administration-quality";
 import { stewardHomelabV1DeepLessons } from "./platform-builder-milestone-deep";
 import { networkingFoundationsQualityLessons } from "./platform-builder-networking-quality";
+import { osPatchingLifecycleDeepLessons } from "./platform-builder-os-patching-lifecycle-deep";
 import { packetTracerNetworkEngineeringDeepLessons } from "./platform-builder-packet-tracer-network-engineering-deep";
 import { proxmoxHomelabDeepLessons } from "./platform-builder-proxmox-homelab-deep";
 import { virtualizationQualityLessons } from "./platform-builder-virtualization-quality";
@@ -28,6 +29,7 @@ export const bareMetalFoundations = path("bare-metal-foundations", "Bare-Metal P
 export const proxmoxHomelab = path("proxmox-homelab-platform", "Proxmox VE Homelab Platform", proxmoxHomelabDeepLessons);
 export const enterpriseStorageNas = path("enterprise-storage-nas", "Enterprise Storage and NAS Operations", enterpriseStorageNasDeepLessons);
 export const coreInfrastructureServices = path("core-infrastructure-services", "Core Infrastructure Services: DNS, DHCP and Time", coreInfrastructureServicesDeepLessons);
+export const osPatchingLifecycle = path("os-patching-lifecycle", "OS Patching and Lifecycle Operations", osPatchingLifecycleDeepLessons);
 export const windowsPowerShellEnterprise = path("windows-powershell-enterprise", "Windows and PowerShell Mixed-Enterprise Operations", windowsPowerShellEnterpriseDeepLessons);
 export const budgetHomelab = path("budget-homelab", "Building the Budget Homelab", budgetHomelabQualityLessons);
 export const enterpriseInfrastructureServices = path("enterprise-infrastructure-services", "Enterprise File and Directory Services", enterpriseFileAndDirectoryServicesDeepLessons);
@@ -44,6 +46,7 @@ export const platformBuilderPaths: LearningPath[] = [
     proxmoxHomelab,
     enterpriseStorageNas,
     coreInfrastructureServices,
+    osPatchingLifecycle,
     windowsPowerShellEnterprise,
     budgetHomelab,
     enterpriseInfrastructureServices,
