@@ -24,15 +24,35 @@ export const networkingFoundations = path("networking-foundations", "Networking 
 export const packetTracerNetworkEngineering = path("packet-tracer-network-engineering", "Network Engineering with Cisco Packet Tracer", packetTracerNetworkEngineeringDeepLessons);
 export const virtualization = path("virtualization", "Virtualization", virtualizationQualityLessons);
 export const bareMetalFoundations = path("bare-metal-foundations", "Bare-Metal Platform Foundations", bareMetalFoundationsDeepLessons);
+export const budgetHomelab = path("budget-homelab", "Building the Budget Homelab", budgetHomelabQualityLessons);
 export const proxmoxHomelab = path("proxmox-homelab-platform", "Proxmox VE Homelab Platform", proxmoxHomelabDeepLessons);
 export const enterpriseStorageNas = path("enterprise-storage-nas", "Enterprise Storage and NAS Operations", enterpriseStorageNasDeepLessons);
 export const coreInfrastructureServices = path("core-infrastructure-services", "Core Infrastructure Services: DNS, DHCP and Time", coreInfrastructureServicesDeepLessons);
 export const platformConfigurationManagement = path("platform-configuration-management", "Configuration Management with Ansible", configurationManagementDeepLessons);
 export const osPatchingLifecycle = path("os-patching-lifecycle", "OS Patching and Lifecycle Operations", osPatchingLifecycleDeepLessons);
 export const windowsPowerShellEnterprise = path("windows-powershell-enterprise", "Windows and PowerShell Mixed-Enterprise Operations", windowsPowerShellEnterpriseDeepLessons);
-export const budgetHomelab = path("budget-homelab", "Building the Budget Homelab", budgetHomelabQualityLessons);
 export const enterpriseInfrastructureServices = path("enterprise-infrastructure-services", "Enterprise File and Directory Services", enterpriseFileAndDirectoryServicesDeepLessons);
 export const enterpriseFileIntegration = path("enterprise-file-integration", "Enterprise File and Batch Integration", enterpriseFileIntegrationDeepLessons);
 export const stewardHomelabV1 = path("steward-homelab-v1", "Platform Builder Milestone", stewardHomelabV1DeepLessons);
 
-export const platformBuilderPaths: AuthoredLearningPath[] = [computerAndOsFoundations, linuxAdministration, networkingFoundations, packetTracerNetworkEngineering, virtualization, bareMetalFoundations, proxmoxHomelab, enterpriseStorageNas, coreInfrastructureServices, platformConfigurationManagement, osPatchingLifecycle, windowsPowerShellEnterprise, budgetHomelab, enterpriseInfrastructureServices, enterpriseFileIntegration, stewardHomelabV1];
+// Dependency order is intentional: foundations and physical design precede the
+// concrete hypervisor; the resulting virtual platform then hosts storage and
+// infrastructure services before configuration/lifecycle and mixed-estate work.
+export const platformBuilderPaths: AuthoredLearningPath[] = [
+    computerAndOsFoundations,
+    linuxAdministration,
+    networkingFoundations,
+    packetTracerNetworkEngineering,
+    virtualization,
+    bareMetalFoundations,
+    budgetHomelab,
+    proxmoxHomelab,
+    enterpriseStorageNas,
+    coreInfrastructureServices,
+    platformConfigurationManagement,
+    osPatchingLifecycle,
+    windowsPowerShellEnterprise,
+    enterpriseInfrastructureServices,
+    enterpriseFileIntegration,
+    stewardHomelabV1,
+];
