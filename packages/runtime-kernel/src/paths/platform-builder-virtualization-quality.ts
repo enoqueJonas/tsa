@@ -2,36 +2,6 @@ import type { PracticalContent } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { virtualizationDeepLessons } from "./platform-builder-virtualization-deep";
 
-function alignToRocky<T>(value: T): T {
-    if (Array.isArray(value)) return value.map((item) => alignToRocky(item)) as T;
-
-    if (value && typeof value === "object") {
-        const record = value as Record<string, unknown>;
-        if (typeof record.url === "string" && record.url.includes("documentation.ubuntu.com")) {
-            return {
-                ...Object.fromEntries(Object.entries(record).map(([key, item]) => [key, alignToRocky(item)])),
-                title: "Rocky Linux documentation",
-                url: "https://docs.rockylinux.org/",
-            } as T;
-        }
-
-        return Object.fromEntries(
-            Object.entries(record).map(([key, item]) => [key, alignToRocky(item)]),
-        ) as T;
-    }
-
-    if (typeof value === "string") {
-        return value
-            .replaceAll("Ubuntu Server", "Rocky Linux")
-            .replaceAll("Ubuntu VM", "Rocky Linux VM")
-            .replaceAll("Ubuntu", "Rocky Linux") as T;
-    }
-
-    return value;
-}
-
-const rockyVirtualizationLessons = virtualizationDeepLessons.map((lesson) => alignToRocky(lesson));
-
 const practices: Record<string, PracticalContent> = {
     "Virtual Machines and Hypervisors": {
         type: "practical",
@@ -110,7 +80,7 @@ const practices: Record<string, PracticalContent> = {
     },
 };
 
-export const virtualizationQualityLessons: Lesson[] = rockyVirtualizationLessons.map((lesson) => {
+export const virtualizationQualityLessons: Lesson[] = virtualizationDeepLessons.map((lesson) => {
     const practical = practices[lesson.title];
     if (!practical) return lesson;
 
