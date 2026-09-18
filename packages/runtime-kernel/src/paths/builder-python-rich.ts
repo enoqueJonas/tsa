@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities";
 import type { Lesson } from "./lesson";
+import { stewardValuesAndTypesLesson } from "./steward-values-types-lesson";
 
 const pythonTutorial: LearningResource = { title: "Python Tutorial", url: "https://docs.python.org/3/tutorial/" };
 const pythonReference: LearningResource = { title: "Python Language Reference", url: "https://docs.python.org/3/reference/" };
@@ -67,11 +68,11 @@ const environment = lesson(
     35,
     [
         { type: "heading", id: "introduction", text: "Introduction" },
-        { type: "paragraph", text: "A Python project is influenced by several layers that beginners often collapse into one idea: the Python installation, the interpreter executable chosen by the shell, the virtual environment, installed distributions, and the dependency declaration used by the project. Reliable engineering starts by being able to prove which layer you are using." },
+        { type: "paragraph", text: "When Python says a package is missing even though you just installed it, the problem is often not Python at all—it is that you installed the package for a different interpreter. A working project sits on several layers: the Python installation, the executable your shell selects, the virtual environment, the packages installed there, and the project's dependency declaration. We will separate those layers now so you can tell exactly which one you are dealing with when something goes wrong." },
         { type: "heading", id: "outcomes", text: "Learning outcomes" },
         { type: "list", items: ["Explain the difference between a Python installation, interpreter and virtual environment.", "Inspect which executable your shell resolves.", "Create and activate a project-local virtual environment.", "Use python -m pip to keep installer/interpreter association explicit.", "Explain why environment isolation is not the same as dependency reproducibility."] },
         { type: "heading", id: "interpreter", text: "The interpreter is an executable" },
-        { type: "paragraph", text: "When you type python or python3, your shell searches PATH and selects an executable. On a development machine there may be several Python installations. Before debugging a mysterious package problem, first prove which interpreter is actually running." },
+        { type: "paragraph", text: "When you type python or python3, your shell does not magically find 'Python'. It walks through PATH until it finds a matching executable. Your laptop can easily have several of them. So when an import behaves strangely, resist the urge to reinstall the package first. Ask a simpler question: which Python am I actually running?" },
         { type: "code", language: "bash", caption: "Inspect the interpreter", code: "which python3\npython3 --version\npython3 -c 'import sys; print(sys.executable)'" },
         { type: "callout", tone: "warning", title: "Do not debug the wrong environment", body: "A package can be installed successfully and still be unavailable to your program if pip and python refer to different installations. Prefer python -m pip when you want the relationship to be explicit." },
         { type: "heading", id: "venv", text: "Virtual environments create isolation" },
@@ -122,7 +123,7 @@ const controlFlow = lesson(
     40,
     [
         { type: "heading", id: "introduction", text: "Control flow turns rules into behavior" },
-        { type: "paragraph", text: "A program becomes useful when it makes decisions and repeats work. if/elif/else, loops, break, continue and early return are not merely syntax; they shape how clearly domain rules are expressed and how many behavioral paths future tests must cover." },
+        { type: "paragraph", text: "Straight-line code can only do the same thing every time. Real Steward rules need choices: reject a retired service, skip an irrelevant record, stop once a match is found, or allow a valid promotion. Python gives us if/elif/else, loops, break, continue and early return for that job. The syntax is the easy part; the engineering question is whether another person can see the business decision in each branch." },
         { type: "heading", id: "conditions", text: "Condition ordering matters" },
         { type: "code", language: "python", caption: "Validate before changing lifecycle", code: "def can_promote_to_production(service):\n    if service[\"lifecycle\"] == \"retired\":\n        return False\n    if not service[\"technical_owner_id\"]:\n        return False\n    if \"production\" not in service[\"environments\"]:\n        return False\n    return True" },
         { type: "paragraph", text: "Each branch represents a meaningful behavioral path. Ordering can improve readability when rejection conditions are handled first and the successful path remains obvious." },
@@ -143,7 +144,7 @@ const functions = lesson(
     45,
     [
         { type: "heading", id: "introduction", text: "Functions create behavioral boundaries" },
-        { type: "paragraph", text: "A function is more than reusable syntax. It establishes an interface: inputs, outputs, side effects and failure behavior. Good functions give a name to one coherent responsibility and reduce the number of assumptions a caller must understand." },
+        { type: "paragraph", text: "Functions are often introduced as a way to avoid repeating code. That is useful, but it is not the main reason we care about them in Steward. A good function creates a small boundary: you can see what goes in, what comes back, what may change, and how it can fail. Give that boundary a clear name and callers no longer need to understand every line inside it." },
         { type: "heading", id: "contracts", text: "Inputs, outputs and contracts" },
         { type: "code", language: "python", caption: "A small domain function", code: "ALLOWED_LIFECYCLES = {\"development\", \"uat\", \"production\", \"retired\"}\n\ndef normalize_lifecycle(raw_value: str) -> str:\n    value = raw_value.strip().lower()\n    if value not in ALLOWED_LIFECYCLES:\n        raise ValueError(f\"unsupported lifecycle: {raw_value}\")\n    return value" },
         { type: "paragraph", text: "The caller can now reason about one operation: text enters, a normalized valid lifecycle returns, or an explicit failure occurs. The function hides implementation detail while preserving a meaningful contract." },
@@ -166,7 +167,7 @@ const collections = lesson(
     50,
     [
         { type: "heading", id: "introduction", text: "Data structures encode guarantees" },
-        { type: "paragraph", text: "Lists, tuples, dictionaries and sets all hold multiple values, but choosing among them communicates expectations about ordering, lookup, uniqueness and mutation. The right structure should make invalid states harder to express and common operations easy to understand." },
+        { type: "paragraph", text: "You could put almost every collection in a list and make the program work. The trouble starts when the data has rules a list does not express. Do duplicates matter? Do we look values up by key? Does order matter? Should the grouping change? Lists, tuples, dictionaries and sets answer those questions differently. Pick the structure that matches the guarantee you actually need." },
         { type: "heading", id: "list-tuple", text: "Lists and tuples" },
         { type: "code", language: "python", caption: "Ordered service history", code: "lifecycle_history = [\"development\", \"uat\", \"production\"]\nservice_coordinates = (\"payments-api\", \"production\")" },
         { type: "paragraph", text: "A list is appropriate for an ordered collection that may grow or change. A tuple communicates a fixed grouping, though immutability of the tuple does not recursively freeze mutable objects inside it." },
@@ -257,7 +258,7 @@ const comprehensions = lesson(
     45,
     [
         { type: "heading", id: "introduction", text: "Pythonic should still mean readable" },
-        { type: "paragraph", text: "Comprehensions, generator expressions, iterators and built-ins such as any, all, sorted, enumerate and zip can express common data operations clearly. Their value is not brevity alone; they should make intent easier to see." },
+        { type: "paragraph", text: "Python gives you several compact ways to process data: comprehensions, generators, iterators, and built-ins such as any, all and sorted. They can make code pleasantly direct, but shorter is not automatically clearer. We will use them where they make the operation easier to read and keep the ordinary loop when it tells the story better." },
         { type: "heading", id: "comprehensions", text: "Comprehensions for simple transformations" },
         { type: "code", language: "python", caption: "Critical production services", code: "critical_slugs = [\n    service[\"slug\"]\n    for service in services\n    if service[\"criticality\"] == \"critical\"\n    and service[\"lifecycle\"] == \"production\"\n]" },
         { type: "paragraph", text: "The expression is compact because the transformation and filter are simple. If it accumulates nested conditions, exceptions or side effects, an explicit loop is usually easier to debug." },
@@ -279,7 +280,7 @@ const typeHints = lesson(
     50,
     [
         { type: "heading", id: "introduction", text: "Type hints expose expectations" },
-        { type: "paragraph", text: "Python remains dynamically typed at runtime when you add annotations. Type hints instead provide machine-readable design information that editors, reviewers and static checkers can use before a path is executed." },
+        { type: "paragraph", text: "Adding a type hint does not turn Python into a statically typed runtime. Python will still execute the program dynamically. What annotations give us is an earlier conversation with our tools and reviewers: 'this function expects an integer here', 'this value may be None', 'this operation returns a list of strings'. A checker can then catch some mismatches before we happen to execute the troublesome path." },
         { type: "heading", id: "functions", text: "Annotate public boundaries" },
         { type: "code", language: "python", caption: "Typed service operation", code: "from collections.abc import Iterable\n\ndef critical_service_slugs(services: Iterable[dict[str, object]]) -> list[str]:\n    return [\n        str(service[\"slug\"])\n        for service in services\n        if service.get(\"criticality\") == \"critical\"\n    ]" },
         { type: "paragraph", text: "Annotations help but the example also reveals a weakness: dict[str, object] says little about the required keys. Later we can use dataclasses, TypedDict, domain objects and Django models when stronger structure is justified." },
@@ -301,7 +302,7 @@ const dependencies = lesson(
     50,
     [
         { type: "heading", id: "introduction", text: "Isolation and dependency declaration solve different problems" },
-        { type: "paragraph", text: "A virtual environment answers 'where are packages installed for this project?' A dependency declaration answers 'what does this project require?' Reproducible engineering needs both, plus a deliberate versioning strategy." },
+        { type: "paragraph", text: "A virtual environment and a dependency declaration solve two different problems. The environment gives this project an isolated place to install packages. The declaration tells another machine which packages the project actually needs. You usually want both. Otherwise you either have isolation with no recipe, or a recipe that is installed into an uncontrolled environment." },
         { type: "heading", id: "direct-transitive", text: "Direct vs transitive dependencies" },
         { type: "paragraph", text: "If Steward imports package A and A internally requires B, A is your direct dependency while B is transitive. Your project should express the dependencies it intentionally uses rather than copying the entire state of one laptop without understanding it." },
         { type: "heading", id: "constraints", text: "Version constraints are policy" },
@@ -323,7 +324,7 @@ const debugging = lesson(
     55,
     [
         { type: "heading", id: "introduction", text: "Debugging is evidence-driven investigation" },
-        { type: "paragraph", text: "Engineering Apprentice established the debugging mindset. Python now gives us concrete evidence sources: tracebacks, repr(), assertions, logging, breakpoints and the debugger. The goal is not to change code until the symptom disappears; it is to find the explanation that best fits the evidence." },
+        { type: "paragraph", text: "You already know the debugging rule: do not keep changing code until the symptom disappears. Python now gives us better evidence to work with—tracebacks, repr(), assertions, logging, breakpoints and pdb. We will use them to answer a specific question: where did the program first become wrong, rather than merely where did it finally crash?" },
         { type: "heading", id: "traceback", text: "Read the traceback as a call path" },
         { type: "code", language: "text", caption: "Simplified traceback", code: "Traceback (most recent call last):\n  File \"demo.py\", line 20, in <module>\n    promote(service)\n  File \"lifecycle.py\", line 14, in promote\n    owner_id = int(service[\"technical_owner_id\"])\nValueError: invalid literal for int() with base 10: 'unassigned'" },
         { type: "paragraph", text: "The last line shows where the exception surfaced, not necessarily where the invalid state originated. Walk upward through the call chain and ask where 'unassigned' first entered the system and which layer should have prevented it." },
@@ -393,7 +394,7 @@ const lab: Lesson = {
 
 export const programmingWithPythonRichLessons: Lesson[] = [
     environment,
-    valuesTypes,
+    stewardValuesAndTypesLesson,
     controlFlow,
     functions,
     collections,
