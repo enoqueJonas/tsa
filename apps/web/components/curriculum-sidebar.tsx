@@ -24,12 +24,12 @@ export function CurriculumSidebar({
     onSelectActivity,
 }: CurriculumSidebarProps) {
     return (
-        <aside className="border-r border-zinc-200 pr-8">
+        <aside className="self-start border-r border-zinc-200 pr-8 xl:sticky xl:top-8 xl:max-h-[calc(100vh-4rem)] xl:overflow-y-auto">
             <p className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
                 Curriculum
             </p>
 
-            <div className="mt-6 space-y-8">
+            <div className="mt-6 space-y-8 pb-8">
                 {path.lessons.map((lesson) => {
                     const isCurrentLesson = lesson.id === currentLesson.id;
                     const isUnlocked = unlockedLessonIds.includes(lesson.id);
