@@ -158,3 +158,12 @@ For executable code:
 - When a snippet intentionally produces no output, say so when that fact helps the learner understand what execution did.
 - When output is environment-dependent, label it as representative rather than inventing an exact machine-specific result.
 - A code example should make clear whether it is meant to be executed as-is, completed by the learner, or read as an illustrative fragment.
+
+
+### Do not pretend the curriculum project already exists
+
+Foundational lessons should teach the concept in natural, domain-neutral language such as "a program", "an application", "a service", or "a system" unless the learner has already built the relevant Steward capability.
+
+Steward is a continuing project, not a fictional product that the prose should pretend is already running. Use it when the learner is actually designing, building, integrating, testing, operating, or evolving a concrete Steward artifact. Do not force Steward names into basic language/syntax explanations merely to create continuity.
+
+A useful test: if replacing "Steward" with "a program" makes a foundational explanation sound more natural without losing meaning, prefer the neutral wording. Project continuity should come from real implementation milestones and exercises, not repeated branding inside every concept paragraph.
