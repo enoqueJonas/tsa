@@ -32,7 +32,7 @@ function Resources({ resources, title = "Resources" }: { resources: LearningReso
   );
 }
 
-function CodeBlock({ language, code, caption }: { language: string; code: string; caption?: string }) {
+function CodeBlock({ language, code, caption, output }: { language: string; code: string; caption?: string; output?: string }) {
   async function copyCode() {
     await navigator.clipboard.writeText(code);
   }
@@ -57,6 +57,16 @@ function CodeBlock({ language, code, caption }: { language: string; code: string
       >
         {code}
       </SyntaxHighlighter>
+      {output !== undefined && (
+        <div className="border-t border-slate-800 bg-slate-900">
+          <div className="px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+            Output
+          </div>
+          <pre className="overflow-x-auto px-5 pb-5 font-mono text-sm leading-6 text-slate-200">
+            <code>{output || "(no output)"}</code>
+          </pre>
+        </div>
+      )}
     </figure>
   );
 }
@@ -102,7 +112,7 @@ export function ReadingContent({ body, resources, blocks }: ReadingContentProps)
           );
         }
 
-        if (block.type === "code") return <CodeBlock key={index} language={block.language} code={block.code} caption={block.caption} />;
+        if (block.type === "code") return <CodeBlock key={index} language={block.language} code={block.code} caption={block.caption} output={block.output} />;
 
         if (block.type === "callout") {
           const styles = block.tone === "warning"
