@@ -140,3 +140,21 @@ The initial finding is deliberately surgical:
 - Programming with Python is the first repair target because its lesson depth is less consistent and its shared Engineering Practice wrapper makes distinct Python capabilities feel too similar.
 
 The repair sequence should therefore begin with Programming with Python, then reassess the remaining Builder modules based on actual content rather than rewriting them wholesale.
+
+
+## Teaching voice and executable examples
+
+TSA content should read like an experienced engineer teaching another engineer, not like generated reference prose.
+
+- Prefer concrete explanations, natural transitions, and direct examples over repeated abstract formulations such as "X establishes", "X represents", or "X is not merely Y".
+- Technical precision is never traded for casualness. Human voice means clearer reasoning, not reduced depth.
+- Explain why a learner should care before expanding the abstraction when the motivation is not already obvious.
+- Avoid repeating the same sentence rhythm across adjacent sections.
+- Keep domain language where it carries real meaning, but do not force Steward terminology into every sentence.
+
+For executable code:
+- When an example has deterministic observable output, include that output explicitly in the lesson block.
+- Do not hide expected terminal output inside source-code comments when a separate output panel can show it.
+- When a snippet intentionally produces no output, say so when that fact helps the learner understand what execution did.
+- When output is environment-dependent, label it as representative rather than inventing an exact machine-specific result.
+- A code example should make clear whether it is meant to be executed as-is, completed by the learner, or read as an illustrative fragment.
