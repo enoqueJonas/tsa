@@ -1151,3 +1151,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Risk — Lab: Build the Steward Technology Risk Register | NO VIDEO | — | — | Independent synthesis. |
 | Engineering Health — Identifying Technical Debt | OPTIONAL VIDEO | Ward Cunningham/technical-debt explanations and modern talks reviewed | No candidate promoted yet | Historical metaphor/context can help prevent debt from becoming a label for disliked code. |
 | Engineering Health — Measuring and Communicating Debt | NO VIDEO | — | — | Use actual consequence evidence. |
+| Engineering Health — Prioritization | NO VIDEO | — | — | Prioritize actual debt from harm/opportunity cost. |
