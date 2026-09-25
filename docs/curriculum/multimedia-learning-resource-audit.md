@@ -267,3 +267,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Linux — Shell Navigation and Command Fluency | NO VIDEO | — | — | Shell fluency comes from using the shell, not watching it. |
 | Linux — Files and Directories | NO VIDEO | — | — | Direct filesystem manipulation is primary. |
 | Linux — Users and Groups | OPTIONAL VIDEO | Linux identity explainers reviewed | No candidate promoted yet | A visual identity/group/UID model can reinforce the boundary. |
+| Linux — Linux Permissions | RECOMMENDED VIDEO | Linux permission demonstrations reviewed | No candidate promoted yet | rwx ownership/effective-access examples are useful to see before deliberately breaking permissions. |
