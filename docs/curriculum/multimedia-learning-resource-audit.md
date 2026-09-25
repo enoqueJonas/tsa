@@ -1021,3 +1021,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Domain — Bounded Context Concepts | RECOMMENDED VIDEO | Martin Fowler bounded-context material and DDD talks reviewed | No candidate promoted yet | Context boundaries and language shifts are strongly diagrammatic. |
 | Domain — Entities, Value Objects and Aggregates | RECOMMENDED VIDEO | DDD tactical-modeling talks reviewed | No candidate promoted yet | Worked object/aggregate examples help distinguish identity, value and consistency boundaries. |
 | Domain — Invariants and Transaction Boundaries | RECOMMENDED VIDEO | aggregate/invariant talks reviewed | No candidate promoted yet | A transaction-boundary walkthrough can connect domain rules to persistence. |
+| Domain — Context Mapping Concepts | RECOMMENDED VIDEO | DDD context-map talks reviewed | No candidate promoted yet | Relationships between contexts are inherently visual. |
