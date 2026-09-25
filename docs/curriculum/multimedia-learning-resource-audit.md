@@ -1052,3 +1052,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Resilience — Compare Resilience Options | OPTIONAL VIDEO | Circuit breaker/bulkhead/retry talks reviewed | No candidate promoted yet | Patterns can be demonstrated, but choice must follow the failure model. |
 | Resilience — Validate and Record the Evolution | NO VIDEO | — | — | Validation evidence. |
 | Architecture Governance — Prepare the Review | OPTIONAL VIDEO | ATAM/architecture-review material reviewed | No candidate promoted yet | A real review format can add context. |
+| Architecture Governance — Run the Review | RECOMMENDED VIDEO | Architecture review/ATAM workshop material reviewed | No candidate promoted yet | Seeing stakeholders challenge scenarios and trade-offs is valuable. |
