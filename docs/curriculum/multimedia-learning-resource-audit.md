@@ -505,3 +505,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Platform Builder — Milestone Review and Exit Criteria | NO VIDEO | — | — | Review gate. |
 | Platform Builder — Assemble the Platform Builder Evidence Pack | NO VIDEO | — | — | Evidence synthesis. |
 | Platform Builder — Platform Builder Exit Reflection | NO VIDEO | — | — | Reflection and readiness decision. |
+
+
+## Platform Builder — Core Services, Configuration and OS Lifecycle lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Core Services — DNS, DHCP and Time as Infrastructure | RECOMMENDED VIDEO | DNS/DHCP/NTP dependency explainers reviewed | Reuse prior DNS video for DNS only; no combined candidate promoted | A dependency map is useful, but avoid repeating full DNS instruction. |
