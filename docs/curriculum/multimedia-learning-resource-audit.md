@@ -867,3 +867,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | SLO — Lab: Define Steward SLOs | NO VIDEO | — | — | Independent SLO design. |
 | Alerting — Symptoms vs Causes | RECOMMENDED VIDEO | Google SRE alerting talks reviewed | No candidate promoted yet | Incident examples make symptom-based paging concrete. |
 | Alerting — Actionable Alerts | NO VIDEO | — | — | Design from actual operator action. |
+| Alerting — Alert Fatigue | OPTIONAL VIDEO | alert-fatigue talks reviewed | No candidate promoted yet | Real pager-noise stories add context. |
