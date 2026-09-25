@@ -603,3 +603,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Quality Engineering — Testability | RECOMMENDED VIDEO | Testability/observability design talks reviewed | No candidate promoted yet | Control/observe boundaries benefit from concrete demonstrations. |
 | Quality Engineering — Defect Evidence and Communication | NO VIDEO | — | — | Write evidence from actual failures. |
 | Quality Engineering — Lab: Write the Steward Quality Strategy | NO VIDEO | — | — | Synthesis lab. |
+| Test Design — Requirements Analysis for Testing | NO VIDEO | — | — | Interrogate real requirements. |
