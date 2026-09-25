@@ -751,3 +751,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Vulnerability Lab — Retesting Fixes | NO VIDEO | — | — | Retest actual fix and regression boundary. |
 | Vulnerability Lab — Writing Security Findings | OPTIONAL VIDEO | professional finding/report walkthroughs reviewed | No candidate promoted yet | A report review can reinforce impact/evidence/remediation structure. |
 | Linux/Network Security — Users, Groups and Permissions | NO VIDEO | — | — | Prior Linux lesson plus hardening exercise suffice. |
+| Linux/Network Security — Privilege and sudo | RECOMMENDED VIDEO | sudo/privilege-boundary demos reviewed | No candidate promoted yet | Effective privilege and escalation paths benefit from live evidence. |
