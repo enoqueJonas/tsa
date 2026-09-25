@@ -766,3 +766,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Linux/Network Security — Network Segmentation Concepts | RECOMMENDED VIDEO | segmentation/topology demos reviewed | No candidate promoted yet | Trust zones and permitted flows are visual. |
 | Linux/Network Security — Administrative Network Boundaries | RECOMMENDED VIDEO | management-plane isolation examples reviewed | No candidate promoted yet | Separate admin/data paths benefit from topology visualization. |
 | Linux/Network Security — TLS Configuration and Certificate Hygiene | RECOMMENDED VIDEO | TLS/certificate inspection demos reviewed | No candidate promoted yet | Seeing chain/hostname/protocol evidence is useful before hardening. |
+| Linux/Network Security — Lab: Harden the Steward Hosts and Network Path | NO VIDEO | — | — | Independent hardening lab. |
