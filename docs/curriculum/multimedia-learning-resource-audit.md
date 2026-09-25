@@ -1156,3 +1156,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Engineering Health — KPI vs KRI | OPTIONAL VIDEO | KPI/KRI governance explainers reviewed | No candidate promoted yet | A side-by-side worked example helps distinguish performance from exposure signals. |
 | Engineering Health — Sustainable Remediation | NO VIDEO | — | — | Choose remediation from actual recurring causes and verify the consequence changes. |
 | Engineering Health — Debt Ownership and Review Cadence | NO VIDEO | — | — | Ownership/cadence design is contextual governance work. |
+| Engineering Health — Balancing Feature Delivery and Engineering Health | OPTIONAL VIDEO | Engineering-investment practitioner talks reviewed | No candidate promoted yet | Real trade-off cases can add context without prescribing a universal capacity percentage. |
