@@ -1187,3 +1187,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Security/Data — Security Exceptions and Risk Acceptance | NO VIDEO | — | — | Use the actual risk/exception mechanism. |
 | Security/Data — Lab: Define Steward Security and Data Accountability | NO VIDEO | — | — | Independent governance synthesis. |
 | Change/Service — Classify and Prepare the Change | OPTIONAL VIDEO | ITIL/change-enablement practitioner material reviewed | No candidate promoted yet | A real change-classification example can add context without creating CAB theater. |
+| Change/Service — Make the Release Decision | RECOMMENDED VIDEO | production-readiness/change-risk review talks reviewed | No candidate promoted yet | Watching a risk/evidence-based go/no-go discussion can model the decision process. |
