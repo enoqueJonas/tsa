@@ -333,3 +333,87 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Homelab — VLAN Concepts | NO VIDEO | Packet Tracer VLAN lesson already covers this | Reuse earlier VLAN media only if review is needed | Avoid duplicate assignment. |
 | Homelab — Planning Capacity for Internal Platform Services | NO VIDEO | — | — | Use the learner's own hardware/workloads. |
 | Homelab — Lab: Move Steward API into the Homelab | NO VIDEO | — | — | Independent deployment lab. |
+
+
+## Platform Builder — Proxmox and Enterprise Storage lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Proxmox — From Virtual Machines to an Operated Hypervisor | RECOMMENDED VIDEO | Proxmox architecture/UI overviews reviewed | No candidate promoted yet | Seeing host, storage, bridge and guest ownership in one interface gives useful platform context. |
+| Proxmox — Install and Secure the Proxmox VE Host | OPTIONAL VIDEO | Proxmox install walkthroughs reviewed | No candidate promoted yet | A visual install can reduce setup friction, but official docs and the real installation remain primary. |
+| Proxmox — Rocky Linux Templates and VM Lifecycle | RECOMMENDED VIDEO | Proxmox template/cloud-init workflows reviewed | No candidate promoted yet | Template→clone→guest lifecycle is well suited to live demonstration. |
+| Proxmox — Compute Allocation, Pressure and Overcommit | RECOMMENDED VIDEO | Hypervisor resource-pressure demos reviewed | No candidate promoted yet | Host-versus-guest contention is easier to understand from live metrics. |
+| Proxmox — Bridges, VLANs and the Physical Network Boundary | RECOMMENDED VIDEO | Proxmox bridge/VLAN demos reviewed | No candidate promoted yet | Virtual-to-physical network mapping is strongly visual. |
+| Proxmox — Hypervisor Storage Pools and Virtual Disks | RECOMMENDED VIDEO | Proxmox storage model walkthroughs reviewed | No candidate promoted yet | Storage pools and virtual disks benefit from a host/guest boundary diagram. |
+| Proxmox — VM Backup, Restore and Recovery Boundaries | RECOMMENDED VIDEO | Proxmox backup/restore demos reviewed | No candidate promoted yet | A real restore is more instructive than backup configuration alone. |
+| Proxmox — Guest Failure versus Hypervisor Failure | NO VIDEO | — | — | The learner should inject and diagnose both failure classes directly. |
+| Proxmox — Host Maintenance, Upgrade and Single-Host Reality | OPTIONAL VIDEO | Proxmox maintenance/upgrade walkthroughs reviewed | No candidate promoted yet | Useful operational context, but actual maintenance evidence is primary. |
+| Proxmox — Reassess the Homelab Virtualization Architecture | NO VIDEO | — | — | Architecture reassessment must come from the learner's evidence. |
+| Storage — Model the Enterprise Storage Stack | RECOMMENDED VIDEO | Block/file/object storage explainers reviewed | No candidate promoted yet | The storage-layer distinctions are spatial/architectural and benefit from diagrams. |
+| Storage — Block Devices, Partitions and Destructive-Change Safety | RECOMMENDED VIDEO | Linux block-device/partition demos reviewed | No candidate promoted yet | A live lsblk/partition-table demonstration adds safety context. |
+| Storage — LVM: Physical Volumes, Volume Groups and Logical Volumes | RECOMMENDED VIDEO | LVM visual walkthroughs reviewed | No candidate promoted yet | PV→VG→LV abstraction and expansion are especially visual. |
+| Storage — Filesystems, Mounts and Persistent Identity | RECOMMENDED VIDEO | Filesystem/mount/UUID demos reviewed | No candidate promoted yet | Device identity and mount lifecycle benefit from a live reboot-safe example. |
+| Storage — Capacity, Inodes and Online Growth | RECOMMENDED VIDEO | Filesystem capacity/inode/growth demos reviewed | No candidate promoted yet | Seeing byte exhaustion versus inode exhaustion and online growth adds operational intuition. |
+| Storage — RAID, Degraded Operation and Rebuild | RECOMMENDED VIDEO | RAID/rebuild visual demonstrations reviewed | No candidate promoted yet | Healthy→degraded→replacement→rebuild is highly visual and failure-oriented. |
+| Storage — Operate the NAS over NFS | RECOMMENDED VIDEO | NFS server/client demos reviewed | No candidate promoted yet | Mount/export/network boundaries are useful to see once before independent operation. |
+| Storage — SMB Interoperability without a Second File Platform | OPTIONAL VIDEO | Samba interoperability demos reviewed | No candidate promoted yet | Useful for Windows/Linux boundary, but intentionally bounded. |
+| Storage — Monitor and Break the NAS | NO VIDEO | — | — | The learner must diagnose injected failures from evidence. |
+| Storage — Independent Backup and Restore | RECOMMENDED VIDEO | Restore/failure-domain material reviewed | No candidate promoted yet | A restore-focused demonstration reinforces that backup success is not recovery proof. |
+| Storage — Milestone: Build and Operate the Virtual NAS | NO VIDEO | — | — | Milestone synthesis. |
+| Storage — Reassess Virtual versus Physical NAS | NO VIDEO | — | — | Trade-off decision must use the learner's own constraints. |
+
+
+## Platform Builder — Core Services, Configuration and OS Lifecycle lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Core Services — DNS, DHCP and Time as Infrastructure | RECOMMENDED VIDEO | Infrastructure dependency diagrams reviewed | No candidate promoted yet | Seeing these shared services as dependencies of every workload reinforces platform thinking. |
+| Core Services — Operate Authoritative Homelab DNS | RECOMMENDED VIDEO | BIND authoritative-DNS demos reviewed | No candidate promoted yet | Zone/record/query behavior benefits from a live dig demonstration. |
+| Core Services — Break and Diagnose DNS | NO VIDEO | — | — | Independent failure diagnosis. |
+| Core Services — Operate DHCP Scopes and Reservations | RECOMMENDED VIDEO | DHCP server/reservation demos reviewed | No candidate promoted yet | Lease lifecycle and reservations are useful to observe live. |
+| Core Services — DHCP Exhaustion, Wrong Options and Relay | RECOMMENDED VIDEO | DHCP relay/failure demos reviewed | No candidate promoted yet | Relay and option propagation are topology-oriented. |
+| Core Services — Operate Time Synchronization with Chrony | RECOMMENDED VIDEO | Chrony/NTP demos reviewed | No candidate promoted yet | Source selection, offset and sync state benefit from live output. |
+| Core Services — Clock Skew as a Security and Observability Incident | RECOMMENDED VIDEO | Clock-skew/TLS/token/log-order demos reviewed | No candidate promoted yet | A visible before/after incident makes the cross-layer consequence concrete. |
+| Core Services — Integrate Core Services into the Homelab | NO VIDEO | — | — | Integration evidence is primary. |
+| Core Services — Reassess Availability and Ownership | NO VIDEO | — | — | Architecture reassessment. |
+| Config Mgmt — Desired State, Inventory and Idempotence | RECOMMENDED VIDEO | Ansible desired-state/idempotence demos reviewed | No candidate promoted yet | A first run versus no-change second run is a strong live demonstration. |
+| Config Mgmt — Reusable Rocky Baseline Role | RECOMMENDED VIDEO | Ansible role demonstrations reviewed | No candidate promoted yet | Role structure/variables/handlers benefit from a concise walkthrough. |
+| Config Mgmt — Configuration Drift Detection and Repair | RECOMMENDED VIDEO | Ansible drift demos reviewed | No candidate promoted yet | Observe→change→detect→repair is ideal for demonstration. |
+| Config Mgmt — Secrets, Failure and Safe Fleet Changes | OPTIONAL VIDEO | Ansible Vault/serial rollout demos reviewed | No candidate promoted yet | A safe rollout demonstration can help, but Vault ownership arrives later. |
+| Config Mgmt — Milestone: Build and Operate the Rocky Configuration Baseline | NO VIDEO | — | — | Milestone synthesis. |
+| Config Mgmt — Reassess Image, Ansible and Platform Ownership | NO VIDEO | — | — | Ownership decision must use accumulated evidence. |
+| OS Lifecycle — Patch Risk, Exposure and Change Windows | OPTIONAL VIDEO | Patch-management/change-window talks reviewed | No candidate promoted yet | A real maintenance scenario can add context. |
+| OS Lifecycle — Patch a Rocky Linux Workload Host | NO VIDEO | — | — | Actual DNF maintenance is the lesson. |
+| OS Lifecycle — Kernel Update and Controlled Reboot | RECOMMENDED VIDEO | Linux kernel update/reboot demos reviewed | No candidate promoted yet | Installed-versus-running kernel state and reboot verification are useful to see. |
+| OS Lifecycle — Patch Regression and Recovery | NO VIDEO | — | — | The learner must diagnose and recover a deterministic regression. |
+| OS Lifecycle — Patch Multiple Rocky Hosts with Ansible | NO VIDEO | Config-management media already considered | Reuse earlier Ansible material only if needed | Avoid duplicate media; execute the fleet rollout. |
+| OS Lifecycle — Patch Age and Lifecycle Visibility | OPTIONAL VIDEO | Patch-age dashboard examples reviewed | No candidate promoted yet | A dashboard example can help, but learner metrics are primary. |
+| OS Lifecycle — Separate Proxmox Host and Rocky Guest Lifecycles | NO VIDEO | — | — | Boundary reasoning from the actual homelab is primary. |
+| OS Lifecycle — Major OS Version Change Is a Migration | OPTIONAL VIDEO | RHEL/Rocky major-upgrade migration material reviewed | No candidate promoted yet | A migration narrative can reinforce why this is not routine patching. |
+| OS Lifecycle — Reassess the Patch Operating Model | NO VIDEO | — | — | ADR/runbook synthesis. |
+
+
+## Platform Builder — Windows, Enterprise Services and milestone lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Windows — Windows in a Linux-Primary Enterprise Platform | OPTIONAL VIDEO | Windows Server enterprise-role overviews reviewed | No candidate promoted yet | A visual estate map can orient the bounded Windows scope. |
+| Windows — Build and Baseline Windows Server | OPTIONAL VIDEO | Windows Server install/baseline walkthroughs reviewed | No candidate promoted yet | Useful setup support; actual baseline evidence is primary. |
+| Windows — PowerShell as an Administrative Interface | RECOMMENDED VIDEO | PowerShell object-pipeline demonstrations reviewed | No candidate promoted yet | Seeing objects flow through the pipeline corrects shell-as-text assumptions. |
+| Windows — Services, Processes and Event Logs | RECOMMENDED VIDEO | PowerShell/Event Viewer troubleshooting demos reviewed | No candidate promoted yet | Live investigation of service failure and event evidence adds value. |
+| Windows — NTFS and Share Permissions | RECOMMENDED VIDEO | NTFS/share effective-access demos reviewed | No candidate promoted yet | Layered share+NTFS permissions are much easier to understand visually. |
+| Windows — Remote Administration with PowerShell Remoting | RECOMMENDED VIDEO | WinRM/PowerShell remoting demos reviewed | No candidate promoted yet | Remote session/auth/network boundary is a useful live demonstration. |
+| Windows — Active Directory, DNS and Domain Identity | RECOMMENDED VIDEO | Microsoft AD DS/DNS architecture material reviewed | No candidate promoted yet | Domain controller, DNS SRV, users/groups/OUs and Kerberos relationships are highly visual. |
+| Windows — Domain Join and Group Policy | RECOMMENDED VIDEO | Domain join/GPO demos reviewed | No candidate promoted yet | Client→AD DNS→join→policy application is a strong live workflow. |
+| Windows — Linux–Windows Interoperability | RECOMMENDED VIDEO | SMB/DNS/LDAP interoperability demos reviewed | No candidate promoted yet | Cross-OS trust/name/file paths benefit from demonstration. |
+| Windows — Reassess Windows Operational Depth | NO VIDEO | — | — | Scope decision is evidence-based. |
+| Enterprise Services — Enterprise File Services: NFS and SMB | RECOMMENDED VIDEO | NFS/Samba server-client demos reviewed | No candidate promoted yet | Network filesystem authority/permissions/outage behavior are easier to see across two hosts. |
+| Enterprise Services — Enterprise Directory Services: LDAP | RECOMMENDED VIDEO | LDAP DIT/bind/search explainers reviewed | No candidate promoted yet | DN/RDN/tree/search-scope and bind flows are inherently visual. |
+| File Integration — File-Based Integration Contracts | NO VIDEO | — | — | The learner should design the contract and failure states. |
+| File Integration — Legacy FTP Integration | OPTIONAL VIDEO | FTP protocol/active-passive demos reviewed | No candidate promoted yet | Control/data-channel behavior can help explain legacy failure modes. |
+| File Integration — Batch File Processing Lifecycle | RECOMMENDED VIDEO | Batch handoff/atomic-rename workflow material reviewed | No candidate promoted yet | Producer→staging→rename→consumer→archive/reject is a useful lifecycle diagram. |
+| File Integration — Shared Filesystem versus Managed File Transfer | NO VIDEO | — | — | Architecture comparison is primary. |
+| File Integration — Secure File Transfer Readiness: SFTP and FTPS | RECOMMENDED VIDEO | SFTP/FTPS protocol comparisons reviewed | No candidate promoted yet | Visual protocol-stack comparison helps prevent SFTP/FTPS confusion. |
+| Platform Builder — Milestone Review and Exit Criteria | NO VIDEO | — | — | Milestone evidence review. |
+| Platform Builder — Assemble the Platform Builder Evidence Pack | NO VIDEO | — | — | Portfolio assembly. |
+| Platform Builder — Platform Builder Exit Reflection | NO VIDEO | — | — | Reflection and transfer check. |
