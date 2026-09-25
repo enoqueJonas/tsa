@@ -1142,3 +1142,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Risk — Risk Identification | OPTIONAL VIDEO | NIST/ISO risk-identification material reviewed | No candidate promoted yet | Worked risk statements can reinforce cause/event/consequence structure. |
 | Risk — Likelihood and Impact | OPTIONAL VIDEO | risk-matrix critique/material reviewed | No candidate promoted yet | Examples help show uncertainty and ordinal limitations. |
 | Risk — Inherent and Residual Risk | RECOMMENDED VIDEO | risk/control visual explainers reviewed | No candidate promoted yet | Before-controls→controls→residual exposure is well suited to a diagram. |
+| Risk — Risk Appetite and Tolerance | OPTIONAL VIDEO | enterprise-risk appetite/tolerance explainers reviewed | No candidate promoted yet | Examples can distinguish organizational boundaries from case-level assessment. |
