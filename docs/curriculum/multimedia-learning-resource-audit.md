@@ -824,3 +824,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Application Security — Data Protection | NO VIDEO | — | — | Apply classification/protection decisions. |
 | Application Security — Security-focused Code Review | OPTIONAL VIDEO | secure-code-review walkthroughs reviewed | No candidate promoted yet | Watching an expert reason through a diff can model review technique. |
 | Application Security — Abuse Cases and Negative Security Requirements | NO VIDEO | — | — | Write concrete abuse cases/negative requirements. |
+| Application Security — Security Regression Testing | NO VIDEO | — | — | Build automated regression evidence. |
