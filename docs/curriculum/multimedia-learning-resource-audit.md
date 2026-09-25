@@ -1124,3 +1124,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture Governance — Technology Standards | NO VIDEO | — | — | Write/test standards against Steward context. |
 | Architecture Governance — Technology Selection | NO VIDEO | — | — | Evidence-based selection. |
 | Architecture Governance — Architecture Reviews | OPTIONAL VIDEO | architecture-review facilitation talks reviewed | No candidate promoted yet | A real review can model challenge without centralizing decisions. |
+| Architecture Governance — Architecture Exceptions | NO VIDEO | — | — | Operate the actual exception model. |
