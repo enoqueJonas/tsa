@@ -663,3 +663,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Browser — Cross-browser Testing | RECOMMENDED VIDEO | Cross-browser matrix demos reviewed | No candidate promoted yet | Seeing the same behavior across engines adds value. |
 | Browser — BrowserStack or Equivalent | OPTIONAL VIDEO | BrowserStack platform demos reviewed | No candidate promoted yet | Useful provider orientation; local engines remain primary where sufficient. |
 | Browser — Local vs Remote Execution | OPTIONAL VIDEO | Remote browser-grid demos reviewed | No candidate promoted yet | Execution-location dependencies can be visualized. |
+| Browser — Environment Parity and Configuration Risk | NO VIDEO | — | — | Compare actual environments and diagnose drift. |
