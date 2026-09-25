@@ -1223,3 +1223,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Discovery — Problem Framing | NO VIDEO | Prior requirements/problem-framing material sufficient | — | Apply the established framing method independently. |
 | Discovery — Requirements | NO VIDEO | Prior System Thinker material sufficient | — | Transfer existing requirements capability. |
 | Discovery — Constraints | NO VIDEO | Prior System Thinker material sufficient | — | Identify real constraints. |
+| Discovery — Working with Ambiguity | NO VIDEO | — | — | Ambiguity is the condition the learner must handle, not a topic requiring another lecture. |
