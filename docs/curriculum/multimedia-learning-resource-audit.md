@@ -1265,3 +1265,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Readiness — Observability | NO VIDEO | Prior Reliability material sufficient | — | Validate actual telemetry coverage. |
 | Readiness — Security Assessment | NO VIDEO | Prior Security material sufficient | — | Assess the capstone. |
 | Readiness — Performance Evidence | NO VIDEO | — | — | Measure the real workload. |
+| Readiness — Reliability and Failure Testing | NO VIDEO | — | — | Inject failures and collect evidence. |
