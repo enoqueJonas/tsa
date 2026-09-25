@@ -1241,3 +1241,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Proposal — Cost Model | OPTIONAL VIDEO | FinOps/cost-model material reviewed | No new candidate promoted | Optional refresh only if the selected hosting model introduces unfamiliar billing dimensions. |
 | Proposal — Governance Approach | NO VIDEO | Prior Technical Steward material sufficient | — | Tailor governance to the capstone. |
 | Proposal — Dependency and Internal Platform Decisions | NO VIDEO | — | — | Choose reuse/build boundaries independently. |
+| Proposal — Implementation Milestones | NO VIDEO | — | — | Plan executable increments. |
