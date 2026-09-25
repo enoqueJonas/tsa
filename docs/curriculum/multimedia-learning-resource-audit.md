@@ -1227,3 +1227,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Discovery — Quality Attributes | NO VIDEO | Prior architecture material sufficient | — | Elicit measurable quality scenarios from the capstone. |
 | Discovery — Risk | NO VIDEO | Prior Technical Steward risk material sufficient | — | Apply the existing risk model. |
 | Discovery — Success Measures and Evidence | NO VIDEO | — | — | Define observable outcomes for the chosen problem. |
+| Discovery — Scope and Non-goals | NO VIDEO | — | — | Scope discipline is part of independent engineering. |
