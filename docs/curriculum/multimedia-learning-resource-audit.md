@@ -917,3 +917,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | DR — Configuration and Infrastructure Recovery | RECOMMENDED VIDEO | IaC/config recovery demos reviewed | No candidate promoted yet | Rebuild order/dependencies benefit from recovery diagram. |
 | DR — Recovery Evidence | NO VIDEO | — | — | Produce actual evidence. |
 | DR — Lab: Run a Steward Restore Drill | NO VIDEO | — | — | Independent recovery drill. |
+| Incident — Detection | RECOMMENDED VIDEO | incident detection walkthroughs reviewed | No candidate promoted yet | Signal→alert→incident transition is useful to see. |
