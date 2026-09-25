@@ -762,3 +762,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Linux/Network Security — Service Exposure | RECOMMENDED VIDEO | socket/exposure enumeration demos reviewed | No candidate promoted yet | Listening sockets→network reachability→attack surface is useful to see. |
 | Linux/Network Security — Patching and Vulnerability Windows | OPTIONAL VIDEO | Patch-window/risk explainers reviewed | No candidate promoted yet | Incident context can reinforce urgency; patch lifecycle was already taught. |
 | Linux/Network Security — File and Secret Permissions | NO VIDEO | — | — | Direct permission proof is primary. |
+| Linux/Network Security — Security Logging and Auditing | RECOMMENDED VIDEO | auditd/security-log demos reviewed | No candidate promoted yet | A live event→audit record investigation adds value. |
