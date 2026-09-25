@@ -666,3 +666,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Browser — Local vs Remote Execution | OPTIONAL VIDEO | Remote-browser architecture demos reviewed | No candidate promoted yet | Execution-location dependency differences can benefit from a diagram. |
 | Browser — Environment Parity and Configuration Risk | NO VIDEO | — | — | Compare actual environments and configuration. |
 | Browser — Lab: Run Steward Tests Across Environments | NO VIDEO | — | — | Independent environment lab. |
+| Non-functional — Decision Gate: Select the Steward Performance Tool | OPTIONAL VIDEO | k6/JMeter/Gatling demos reviewed | No candidate promoted yet | A short tool execution comparison can inform choice, but the gate must remain criteria-driven. |
