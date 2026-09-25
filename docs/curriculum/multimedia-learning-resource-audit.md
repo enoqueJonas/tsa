@@ -607,3 +607,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Test Design — Equivalence Partitioning | RECOMMENDED VIDEO | ISTQB-style partition demonstrations reviewed | No candidate promoted yet | Partitioning behavior is easy to reinforce with worked visual examples. |
 | Test Design — Boundary Value Analysis | RECOMMENDED VIDEO | Boundary-value demonstrations reviewed | No candidate promoted yet | Rule transitions benefit from a number-line/table visualization. |
 | Test Design — Decision Tables | RECOMMENDED VIDEO | Decision-table demonstrations reviewed | No candidate promoted yet | Condition/action combinations are inherently tabular/visual. |
+| Test Design — State Transition Testing | RECOMMENDED VIDEO | State-machine testing demos reviewed | No candidate promoted yet | States/events/invalid transitions are visual. |
