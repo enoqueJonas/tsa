@@ -1026,3 +1026,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Domain — Avoiding Anemic and Over-engineered Models | OPTIONAL VIDEO | DDD critique/refactoring talks reviewed | No candidate promoted yet | Contrasting examples can help, but context matters more than doctrine. |
 | Domain — Recover the Current Domain Model | NO VIDEO | — | — | Independent model recovery. |
 | Domain — Challenge and Refine the Model | NO VIDEO | — | — | Independent challenge. |
+| Domain — Validate and Record the Domain Decision | NO VIDEO | — | — | Decision evidence. |
