@@ -231,3 +231,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Messaging — When Distributed State Is Justified | NO VIDEO | — | — | The key skill is proving pressure before infrastructure. |
 | Messaging — Redis and the Cache-Aside Pattern | RECOMMENDED VIDEO | Redis — Cache-Aside Pattern | [Redis — Cache-Aside Pattern](https://www.youtube.com/watch?v=AJhTduDOVCs); whole short video | A concrete cache-aside flow is useful to see before implementing it; PostgreSQL remains source of truth in TSA. |
 | Messaging — Cache Invalidation, Staleness and Failure | RECOMMENDED VIDEO | Redis caching material reviewed | No additional candidate promoted yet | Read/write/cache timelines and stale-data windows are inherently visual. |
+| Messaging — RabbitMQ: Queues, Exchanges and Consumers | RECOMMENDED VIDEO | RabbitMQ official/tutorial material reviewed | No candidate promoted yet | Exchange→queue→consumer routing is much easier to understand visually. |
