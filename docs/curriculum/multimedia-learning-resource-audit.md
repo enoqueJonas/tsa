@@ -457,3 +457,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI — Jobs, Stages and Dependencies | RECOMMENDED VIDEO | Pipeline DAG/stage demos reviewed | No candidate promoted yet | Execution dependencies and fail-fast behavior benefit from a pipeline graph. |
 | CI — Runners and Agents | RECOMMENDED VIDEO | Jenkins agent/controller demos reviewed | No candidate promoted yet | Execution placement is easier to understand visually. |
 | CI — GitHub Actions and Jenkins | OPTIONAL VIDEO | Jenkins/GitHub Actions comparisons reviewed | No candidate promoted yet | Comparison is useful, but Jenkins remains primary and Actions bounded. |
+| CI — Self-hosted Runners | OPTIONAL VIDEO | Self-hosted agent setup demos reviewed | No candidate promoted yet | A setup demo can help with execution-boundary intuition. |
