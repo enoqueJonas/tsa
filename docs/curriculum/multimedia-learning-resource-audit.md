@@ -449,3 +449,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Containers — Container Networking | RECOMMENDED VIDEO | Docker bridge/DNS/port-publish demos reviewed | No candidate promoted yet | Network namespace/bridge/published-port flow is highly visual. |
 | Containers — Docker Compose | OPTIONAL VIDEO | Compose multi-service demos reviewed | No candidate promoted yet | Useful once, but learner should build the composition. |
 | Containers — Health Checks | NO VIDEO | — | — | Implement and break health behavior directly. |
+| Containers — Container Registries | RECOMMENDED VIDEO | Registry push/pull/tag flows reviewed | No candidate promoted yet | Image identity and registry movement are visual. |
