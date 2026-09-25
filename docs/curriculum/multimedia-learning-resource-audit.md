@@ -756,3 +756,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Vulnerability Lab — Writing Security Findings | NO VIDEO | — | — | Writing the finding is the exercise. |
 | Vulnerability Lab — Lab: Reproduce and Fix Steward Vulnerabilities | NO VIDEO | — | — | Independent security lab. |
 | Linux/Network Security — Users, Groups and Permissions | NO VIDEO | — | — | Apply prior Linux knowledge under security constraints. |
+| Linux/Network Security — Privilege and sudo | RECOMMENDED VIDEO | sudo/privilege-escalation demonstrations reviewed | No candidate promoted yet | Seeing command-specific privilege and failure cases reinforces least privilege. |
