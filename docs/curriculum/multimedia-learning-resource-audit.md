@@ -1207,3 +1207,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Handbook — Decision Records | NO VIDEO | ADR media already reviewed earlier | Reuse earlier ADR candidate only if needed | Avoid duplicate media; apply the established ADR discipline. |
 | Handbook — Review Checklists | NO VIDEO | — | — | Design the actual risk-sensitive checklist and automate machine-verifiable items. |
 | Handbook — Knowledge Stewardship | OPTIONAL VIDEO | documentation/knowledge-management engineering talks reviewed | No candidate promoted yet | Examples can show authoritative-source and ownership patterns. |
+| Handbook — Standards Ownership and Versioning | NO VIDEO | — | — | Define lifecycle metadata for actual standards. |
