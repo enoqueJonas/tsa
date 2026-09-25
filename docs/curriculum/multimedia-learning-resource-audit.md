@@ -814,3 +814,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | SFTP Migration — Decommission FTP and Prove the Security End State | NO VIDEO | — | — | Negative proof that FTP no longer works is primary. |
 | SFTP Migration — Defend the Secure Transfer Migration | NO VIDEO | — | — | Defence uses evidence. |
 | Application Security — Secure Authentication | NO VIDEO | — | — | Apply prior auth security to actual application. |
+| Application Security — Authorization Design and Testing | NO VIDEO | — | — | Authorization matrix and negative tests are primary. |
