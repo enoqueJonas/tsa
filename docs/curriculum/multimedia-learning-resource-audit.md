@@ -1022,3 +1022,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Modularity — Shared Libraries and Coupling | NO VIDEO | — | — | Analyze real change coupling. |
 | Modularity — Package Ownership and Change Impact | NO VIDEO | — | — | Ownership/change analysis is contextual. |
 | Modularity — Modular Monoliths | RECOMMENDED VIDEO | Modular-monolith talks reviewed | No candidate promoted yet | A concrete module/dependency architecture counters the false monolith=mud assumption. |
+| Modularity — When a Service Boundary Is Justified | RECOMMENDED VIDEO | Monolith-first/service-boundary talks reviewed | No candidate promoted yet | Extraction criteria and distribution costs benefit from practitioner examples. |
