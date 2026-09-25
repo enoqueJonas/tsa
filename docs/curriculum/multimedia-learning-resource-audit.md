@@ -560,3 +560,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Object Storage — Integrate Steward with Object Storage | NO VIDEO | — | — | Integration implementation is primary. |
 | Object Storage — Break Access, Capacity and Availability | NO VIDEO | — | — | Failure injection must be performed directly. |
 | Object Storage — Lifecycle, Versioning and Recovery | RECOMMENDED VIDEO | S3 versioning/lifecycle/restore demos reviewed | No candidate promoted yet | Object-version and lifecycle transitions are useful to visualize. |
+| Object Storage — Reassess the Storage Authority | NO VIDEO | — | — | Architecture decision from evidence. |
