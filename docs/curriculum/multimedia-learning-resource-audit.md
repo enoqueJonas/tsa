@@ -1123,3 +1123,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture Governance — Architecture Principles | OPTIONAL VIDEO | architecture-principles talks reviewed | No candidate promoted yet | Examples can show principle versus slogan. |
 | Architecture Governance — Technology Standards | NO VIDEO | — | — | Write/test standards against Steward context. |
 | Architecture Governance — Technology Selection | NO VIDEO | — | — | Evidence-based selection. |
+| Architecture Governance — Architecture Reviews | OPTIONAL VIDEO | architecture-review facilitation talks reviewed | No candidate promoted yet | A real review can model challenge without centralizing decisions. |
