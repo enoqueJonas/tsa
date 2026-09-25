@@ -521,3 +521,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | VPS — Choosing a Budget VPS | NO VIDEO | — | — | Provider choice changes; compare current constraints directly. |
 | VPS — Provisioning a Server | OPTIONAL VIDEO | VPS provisioning demos reviewed | No candidate promoted yet | A visual setup can reduce friction but should not tie TSA to one vendor UI. |
 | VPS — Public IP Addressing | NO VIDEO | — | — | Apply networking foundations. |
+| VPS — Securing SSH Access | NO VIDEO | Prior SSH lesson | — | Apply prior skill. |
