@@ -835,3 +835,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Logging — Privacy and Security in Logs | NO VIDEO | — | — | Inspect actual data exposure. |
 | Logging — Log Retention Concepts | OPTIONAL VIDEO | retention/index lifecycle demos reviewed | No candidate promoted yet | Storage lifecycle can benefit from visualization. |
 | Logging — Lab: Build a Steward Diagnostic Logging Path | NO VIDEO | — | — | Independent implementation lab. |
+| Metrics — Metrics Mental Models | RECOMMENDED VIDEO | Prometheus metric-type explainers reviewed | No candidate promoted yet | Time-series behavior is visual. |
