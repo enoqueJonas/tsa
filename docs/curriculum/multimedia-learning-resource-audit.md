@@ -497,3 +497,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Windows — Reassess Windows Operational Depth | NO VIDEO | — | — | Scope decision should be based on TSA's target role and implemented evidence. |
 | Enterprise Services — Enterprise File Services: NFS and SMB | RECOMMENDED VIDEO | NFS/Samba cross-platform demonstrations reviewed | No candidate promoted yet | A producer/consumer share plus permission boundary is useful to see before the practical. |
 | Enterprise Services — Enterprise Directory Services: LDAP | RECOMMENDED VIDEO | LDAP directory-tree/bind/search explainers reviewed | No candidate promoted yet | DN/RDN/tree/bind/search concepts benefit substantially from visual representation. |
+| File Integration — File-Based Integration Contracts | NO VIDEO | — | — | The learner should define naming/schema/completeness/idempotency contracts directly. |
