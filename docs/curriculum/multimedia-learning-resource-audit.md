@@ -1071,3 +1071,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Leadership — Lab: Lead a Steward Technical Review | NO VIDEO | — | — | Independent leadership lab. |
 | Engineering Governance — Governance vs Management | OPTIONAL VIDEO | Governance/management explainers reviewed | No candidate promoted yet | A concise distinction can orient the learner. |
 | Engineering Governance — Decision Rights | NO VIDEO | — | — | Decision-right mapping is contextual. |
+| Engineering Governance — Accountability | NO VIDEO | — | — | Accountability design is applied work. |
