@@ -595,3 +595,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Canary — Reassess Progressive Delivery | NO VIDEO | — | — | Decision from evidence. |
 | Architecture — Availability in Cloud Environments | RECOMMENDED VIDEO | Cloud failure-domain/HA explainers reviewed | No candidate promoted yet | Redundancy versus shared failure domains is visual. |
 | Architecture — Scalability and Capacity | RECOMMENDED VIDEO | Scaling/capacity architecture explainers reviewed | No candidate promoted yet | Demand/bottleneck/scaling choices benefit from diagrams. |
+| Architecture — Security Boundaries | RECOMMENDED VIDEO | Cloud trust-boundary architecture material reviewed | No candidate promoted yet | Public/operator/runtime/control-plane paths are spatial. |
