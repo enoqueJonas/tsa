@@ -526,3 +526,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | VPS — OS Lifecycle and Patching | NO VIDEO | Prior lifecycle path | — | Apply existing patch model. |
 | VPS — Remote Recovery Concepts | OPTIONAL VIDEO | Provider console/rescue-mode demos reviewed | No candidate promoted yet | Out-of-band recovery is useful to see once. |
 | VPS — Backups and Snapshots | OPTIONAL VIDEO | Provider snapshot/backup demos reviewed | No candidate promoted yet | Useful for provider boundary; preserve snapshot≠backup reasoning. |
+| Internet — Public and Private Addressing | NO VIDEO | Prior networking coverage | — | Apply prior model. |
