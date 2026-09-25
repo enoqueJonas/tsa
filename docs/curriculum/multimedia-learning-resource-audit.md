@@ -240,3 +240,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Messaging — RabbitMQ versus Kafka: Different Messaging Models | RECOMMENDED VIDEO | RabbitMQ/Kafka comparison material reviewed | No candidate promoted yet | Visualizing queue/routing versus partitioned durable-log models helps prevent false equivalence. |
 | Messaging — Lab: Evolve Steward with Redis and RabbitMQ | NO VIDEO | — | — | Independent integration lab. |
 | Failure — Thinking in Failure Modes | OPTIONAL VIDEO | SRE/failure-analysis talks reviewed | No candidate promoted yet | A worked failure-mode review can reinforce the method. |
+| Failure — Dependency Failure | RECOMMENDED VIDEO | Distributed-failure/cascading-failure talks reviewed | No candidate promoted yet | A dependency slowdown propagating through queues/retries is valuable to visualize. |
