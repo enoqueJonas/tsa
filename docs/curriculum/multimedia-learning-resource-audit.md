@@ -802,3 +802,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | PKI — Trust-Anchor Rotation and Failure Recovery | RECOMMENDED VIDEO | CA/intermediate rotation material reviewed | No candidate promoted yet | Overlapping trust and cutover are sequence-oriented. |
 | PKI — Milestone: Operate Steward Internal Machine Trust | NO VIDEO | — | — | Milestone synthesis. |
 | PKI — Reassess PKI Ownership with Vault | NO VIDEO | — | — | Ownership decision from evidence. |
+| Directory Federation — Directory Federation Architecture | RECOMMENDED VIDEO | Keycloak LDAP federation architecture demos reviewed | No candidate promoted yet | Directory→Keycloak→OIDC→application identity path is visual. |
