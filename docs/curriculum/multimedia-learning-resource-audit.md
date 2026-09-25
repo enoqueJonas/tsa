@@ -1766,3 +1766,29 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture/Cost — Homelab, VPS and Cloud Hybrid Trade-offs | NO VIDEO | — | — | Learner's actual architecture drives the decision. |
 | Architecture/Cost — Lab: Review the Steward Internet Architecture | NO VIDEO | — | — | Independent review. |
 | Cloud Engineer Milestone | NO VIDEO | — | — | Milestone/gates are synthesis and evidence. |
+
+
+## Quality Steward — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Quality Engineering — Quality vs Testing | OPTIONAL VIDEO | Modern testing/quality engineering talks reviewed | No candidate promoted yet | A strong talk can reinforce quality as a system property, but risk modeling is primary. |
+| Quality Engineering — Quality Risks | NO VIDEO | — | — | Build the actual risk model. |
+| Quality Engineering — Test Strategy | OPTIONAL VIDEO | Risk-based test strategy talks reviewed | No candidate promoted yet | A worked strategy review may help. |
+| Quality Engineering — Test Levels and Test Types | RECOMMENDED VIDEO | Test-pyramid/honeycomb boundary explainers reviewed | No candidate promoted yet | Boundary/feedback-cost visualization adds value. |
+| Quality Engineering — Risk-based Testing | NO VIDEO | — | — | Prioritization exercise is primary. |
+| Quality Engineering — Shift-left and Shift-right | RECOMMENDED VIDEO | Continuous testing/observability talks reviewed | No candidate promoted yet | Lifecycle placement is visual. |
+| Quality Engineering — Testability | RECOMMENDED VIDEO | Testability/design talks reviewed | No candidate promoted yet | Control/observe architecture examples add value. |
+| Quality Engineering — Defect Evidence and Communication | NO VIDEO | — | — | Actual evidence/report writing is primary. |
+| Quality Engineering — Establish the Quality Context | NO VIDEO | — | — | Practical. |
+| Quality Engineering — Design the Evidence Model | NO VIDEO | — | — | Practical. |
+| Quality Engineering — Define Quality Decision Rules | NO VIDEO | — | — | Practical. |
+| Quality Engineering — Quality Engineering Review | NO VIDEO | — | — | Review gate. |
+| Test Design — Requirements Analysis for Testing | NO VIDEO | — | — | Interrogate actual requirements. |
+| Test Design — Equivalence Partitioning | RECOMMENDED VIDEO | ISTQB technique demonstrations reviewed | No candidate promoted yet | Partition construction benefits from worked examples. |
+| Test Design — Boundary Value Analysis | RECOMMENDED VIDEO | ISTQB BVA worked examples reviewed | No candidate promoted yet | Visual number-line/rule transitions help. |
+| Test Design — Decision Tables | RECOMMENDED VIDEO | Decision-table worked examples reviewed | No candidate promoted yet | Conditions/actions matrix is well suited to demonstration. |
+| Test Design — State Transition Testing | RECOMMENDED VIDEO | State-machine testing demos reviewed | No candidate promoted yet | States/events/invalid transitions are visual. |
+| Test Design — Pairwise and Combinatorial Concepts | RECOMMENDED VIDEO | Pairwise generation demos reviewed | No candidate promoted yet | Combination reduction is clearer from a worked matrix. |
+| Test Design — Exploratory Testing | RECOMMENDED VIDEO | James Bach/Michael Bolton exploratory testing material reviewed | No candidate promoted yet | A real charter/session/debrief demonstration adds value. |
+| Test Design — Negative Testing | NO VIDEO | — | — | Design failure cases directly. |
