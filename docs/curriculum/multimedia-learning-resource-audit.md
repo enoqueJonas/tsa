@@ -462,3 +462,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI — Pipeline Artifacts | RECOMMENDED VIDEO | Artifact handoff demos reviewed | No candidate promoted yet | Stage-to-stage immutable artifact movement is visual. |
 | CI — Secrets and Variables | NO VIDEO | — | — | Configure safely; avoid normalizing secret exposure through tutorial copy-along. |
 | CI — Parallelism | OPTIONAL VIDEO | Parallel pipeline demos reviewed | No candidate promoted yet | A DAG/timeline can make speed-versus-contention trade-offs concrete. |
+| CI — Automated Checks | NO VIDEO | — | — | Implement the checks. |
