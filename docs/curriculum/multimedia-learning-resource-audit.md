@@ -1106,3 +1106,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architect Milestone — Challenge the Architecture with New Drivers | NO VIDEO | — | — | Independent scenario. |
 | Architect Milestone — Produce the Evolution Decision | NO VIDEO | — | — | Decision artifact. |
 | Architect Milestone — Defend Trade-offs and Reversal Triggers | NO VIDEO | — | — | Final defence. |
+
+
+## Technical Steward — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Governance — Governance vs Management | RECOMMENDED VIDEO | COBIT governance-vs-management explainers reviewed | No candidate promoted yet | A concise governance/management responsibility model can anchor the school. |
