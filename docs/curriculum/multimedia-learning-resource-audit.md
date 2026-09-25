@@ -1015,3 +1015,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Styles — Choosing Styles from Drivers | NO VIDEO | — | — | The learner must compare styles against actual drivers. |
 | Styles — The Cost of Distribution | RECOMMENDED VIDEO | distributed-systems/microservices failure talks reviewed | No candidate promoted yet | Latency, partial failure and operational multiplication benefit from concrete examples. |
 | Styles — Establish Current Style and Drivers | NO VIDEO | — | — | Independent baseline. |
+| Styles — Compare Credible Target Styles | NO VIDEO | — | — | Decision exercise. |
