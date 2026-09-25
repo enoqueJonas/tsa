@@ -895,3 +895,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Performance — Lab: Establish Steward Capacity Baselines | NO VIDEO | — | — | Independent measurement lab. |
 | Resilience — Timeouts | RECOMMENDED VIDEO | timeout/dependency demos reviewed | No candidate promoted yet | Caller wait/failure timeline is visual. |
 | Resilience — Retries | RECOMMENDED VIDEO | retry behavior demos reviewed | No candidate promoted yet | Repeated attempts and amplification are temporal. |
+| Resilience — Exponential Backoff and Jitter | RECOMMENDED VIDEO | AWS retry/backoff material reviewed | No candidate promoted yet | Retry schedules are best visualized on timelines. |
