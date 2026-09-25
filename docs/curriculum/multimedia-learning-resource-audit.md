@@ -282,3 +282,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Networking — IP Addressing | RECOMMENDED VIDEO | IP addressing explainers reviewed | No candidate promoted yet | Binary/prefix/address scope is easier with diagrams. |
 | Networking — Subnetting | RECOMMENDED VIDEO | Subnetting visual tutorials reviewed | No candidate promoted yet | Visual address partitioning complements calculation exercises. |
 | Networking — ARP | RECOMMENDED VIDEO | ARP packet-flow explainers reviewed | No candidate promoted yet | IP-to-MAC resolution is a short visual packet exchange. |
+| Networking — TCP and UDP | RECOMMENDED VIDEO | Transport-protocol animations reviewed | No candidate promoted yet | Handshake/reliability versus datagrams benefits from packet-flow visualization. |
