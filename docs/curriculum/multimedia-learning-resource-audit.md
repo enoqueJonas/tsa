@@ -1039,3 +1039,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architectural Styles — Establish Current Style and Drivers | NO VIDEO | — | — | Applied baseline. |
 | Architectural Styles — Compare Credible Target Styles | NO VIDEO | — | — | Applied comparison. |
 | Architectural Styles — Record Style Decision and Evolution Triggers | NO VIDEO | — | — | ADR/evolution artifact. |
+| Data Architecture — Establish the Data Architecture Baseline | NO VIDEO | — | — | Reconstruct actual ownership/flows. |
