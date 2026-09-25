@@ -935,3 +935,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Fault Injection — Process and Container Failure | RECOMMENDED VIDEO | Kubernetes/process kill demos reviewed | No candidate promoted yet | Failure/recovery behavior is live and visual. |
 | Fault Injection — Resource Exhaustion Concepts | RECOMMENDED VIDEO | CPU/memory/disk pressure demos reviewed | No candidate promoted yet | Resource graphs make failure onset concrete. |
 | Fault Injection — Network and Dependency Failure Simulation | RECOMMENDED VIDEO | latency/drop/dependency outage demos reviewed | No candidate promoted yet | Temporal failure behavior benefits from demonstration. |
+| Fault Injection — Database Failure Scenarios | RECOMMENDED VIDEO | database outage/lock demos reviewed | No candidate promoted yet | Failure propagation/recovery are visual. |
