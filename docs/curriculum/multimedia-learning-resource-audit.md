@@ -849,3 +849,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Metrics — Nexus and Internal Platform Metrics | OPTIONAL VIDEO | Nexus/Prometheus integration demos reviewed | No candidate promoted yet | Useful integration context. |
 | Metrics — CI and Delivery Metrics | OPTIONAL VIDEO | DORA/CI metrics dashboards reviewed | No candidate promoted yet | Graphs reinforce trend interpretation. |
 | Metrics — Lab: Instrument Steward API | NO VIDEO | — | — | Independent instrumentation lab. |
+| Metrics — Lab: Observe the Internal Artifact Platform | NO VIDEO | — | — | Independent platform observation lab. |
