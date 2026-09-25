@@ -911,3 +911,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Resilience — Circuit Breakers | RECOMMENDED VIDEO | circuit-breaker state-machine demos reviewed | No candidate promoted yet | Closed/open/half-open states are visual. |
 | Resilience — Idempotency | OPTIONAL VIDEO | duplicate-delivery demos reviewed | No candidate promoted yet | A duplicate effect demo can reinforce the concept. |
 | Resilience — Partial Failure | RECOMMENDED VIDEO | distributed-failure diagrams reviewed | No candidate promoted yet | Some components succeeding while others fail is system-level and visual. |
+| Resilience — Dependency Failure | RECOMMENDED VIDEO | dependency-outage demos reviewed | No candidate promoted yet | Failure propagation is valuable to visualize. |
