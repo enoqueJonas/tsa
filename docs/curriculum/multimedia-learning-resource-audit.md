@@ -589,3 +589,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Ansible — Milestone: Build and Operate the Rocky Configuration Baseline | NO VIDEO | — | — | Milestone must be independent. |
 | Ansible — Reassess Image, Ansible and Platform Ownership | NO VIDEO | — | — | Architecture ownership decision is evidence-driven. |
 | Patching — Patch Risk, Exposure and Change Windows | OPTIONAL VIDEO | Enterprise patch-management talks reviewed | No candidate promoted yet | Real change-window examples can add context, but the risk classification exercise is primary. |
+| Patching — Patch a Rocky Linux Workload Host | NO VIDEO | — | — | DNF maintenance and before/after verification should be performed directly. |
