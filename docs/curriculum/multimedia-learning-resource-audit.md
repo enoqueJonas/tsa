@@ -1222,3 +1222,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Discovery — Stakeholder Discovery | OPTIONAL VIDEO | Stakeholder-interview material reviewed | No candidate promoted; use only if interview technique needs refresh | A short interview demonstration can refresh technique, but the learner must conduct real discovery. |
 | Discovery — Problem Framing | NO VIDEO | Prior requirements/problem-framing material sufficient | — | Apply the established framing method independently. |
 | Discovery — Requirements | NO VIDEO | Prior System Thinker material sufficient | — | Transfer existing requirements capability. |
+| Discovery — Constraints | NO VIDEO | Prior System Thinker material sufficient | — | Identify real constraints. |
