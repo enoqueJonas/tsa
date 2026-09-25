@@ -442,3 +442,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | OS Lifecycle — Major OS Version Change Is a Migration | OPTIONAL VIDEO | Enterprise Linux major-upgrade/migration talks reviewed | No candidate promoted yet | A migration case study can add context without encouraging blind in-place upgrades. |
 | OS Lifecycle — Reassess the Patch Operating Model | NO VIDEO | — | — | Reassessment must use operational evidence. |
 | Windows — Windows in a Linux-Primary Enterprise Platform | OPTIONAL VIDEO | Mixed-estate Windows administration overviews reviewed | No candidate promoted yet | Useful orientation without turning TSA into Windows specialization. |
+| Windows — Build and Baseline Windows Server | OPTIONAL VIDEO | Windows Server install/baseline walkthroughs reviewed | No candidate promoted yet | A visual install can reduce setup friction. |
