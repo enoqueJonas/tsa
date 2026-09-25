@@ -1952,3 +1952,20 @@ A blog post may also be better than either a manual or a video. The resource mix
 | PKI — Trust-Anchor Rotation and Failure Recovery | RECOMMENDED VIDEO | CA rotation material reviewed | No candidate promoted yet | Trust-anchor overlap/cutover is visual. |
 | PKI — Reassess PKI Ownership with Vault | NO VIDEO | — | — | Architecture decision. |
 | Directory Federation — Directory Federation Architecture | RECOMMENDED VIDEO | LDAP→Keycloak→OIDC architecture demos reviewed | No candidate promoted yet | Identity source/federation/token boundary is visual. |
+| Directory Federation — Keycloak LDAP Federation | RECOMMENDED VIDEO | Keycloak LDAP federation demos reviewed | No candidate promoted yet | Live federation configuration and login adds value. |
+| Directory Federation — Federated Identity Lifecycle and Failure Modes | RECOMMENDED VIDEO | Federation outage/lifecycle material reviewed | No candidate promoted yet | Provision/deactivate/outage flows are visual. |
+| Directory Federation — Active Directory, LDAP and Kerberos Context | RECOMMENDED VIDEO | AD/Kerberos authentication-flow explainers reviewed | No candidate promoted yet | Protocol relationships are visual. |
+| SFTP Migration — FTP to SFTP Secure Transfer Migration | RECOMMENDED VIDEO | OpenSSH SFTP/key/host-key demos reviewed | No candidate promoted yet | Old/new coexistence, host-key verification and cutover are operational/visual. |
+| Application Security — Secure Authentication | NO VIDEO | — | — | Implement/review actual auth. |
+| Application Security — Authorization Design and Testing | NO VIDEO | — | — | Actual policy and negative tests. |
+| Application Security — Input Validation | NO VIDEO | — | — | Implement validation. |
+| Application Security — Secure Error Handling | NO VIDEO | — | — | Implement failure contract. |
+| Application Security — Secrets Management | NO VIDEO | — | — | Apply Vault/secret lifecycle. |
+| Application Security — Security Headers and Configuration | OPTIONAL VIDEO | Browser security-header demos reviewed | No candidate promoted yet | Header effect can be inspected visually. |
+| Application Security — Security Logging | NO VIDEO | — | — | Implement detection evidence. |
+| Application Security — Rate Limiting and Abuse Resistance | RECOMMENDED VIDEO | Rate-limit behavior demos reviewed | No candidate promoted yet | Traffic behavior is visual. |
+| Application Security — Data Protection | NO VIDEO | — | — | Apply concrete protection requirements. |
+| Application Security — Security-focused Code Review | OPTIONAL VIDEO | Secure code-review walkthroughs reviewed | No candidate promoted yet | A worked review can reinforce thinking. |
+| Application Security — Abuse Cases and Negative Security Requirements | NO VIDEO | — | — | Derive actual abuse cases. |
+| Application Security — Security Regression Testing | NO VIDEO | — | — | Automate actual regressions. |
+| Security Steward Milestone | NO VIDEO | — | — | Independent security assessment/hardening synthesis. |
