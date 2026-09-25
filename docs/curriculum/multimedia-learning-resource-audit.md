@@ -645,3 +645,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Assertions | NO VIDEO | — | — | Concrete false-positive/negative cases are stronger. |
 | Automation — Markers and Tags | NO VIDEO | — | — | Small pytest mechanism; docs and practice suffice. |
 | Automation — Parameterization | NO VIDEO | — | — | Small mechanism; executable examples suffice. |
+| Automation — Automation Logging | OPTIONAL VIDEO | Test-diagnostics demos reviewed | No candidate promoted yet | A before/after failure diagnosis can reinforce useful logging. |
