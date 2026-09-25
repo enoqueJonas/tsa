@@ -706,3 +706,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Foundations — Assets, Threats, Vulnerabilities and Risk | RECOMMENDED VIDEO | Threat/risk modeling explainers reviewed | No candidate promoted yet | Relationships among asset/threat/vulnerability/control are visual. |
 | Foundations — Attack Surface | RECOMMENDED VIDEO | Attack-surface mapping demos reviewed | No candidate promoted yet | A system diagram evolving into exposed entry points adds value. |
 | Foundations — Least Privilege | NO VIDEO | — | — | Apply privilege boundaries directly. |
+| Foundations — Defense in Depth | OPTIONAL VIDEO | Layered-control explainers reviewed | No candidate promoted yet | Layer visualization can reinforce independent controls. |
