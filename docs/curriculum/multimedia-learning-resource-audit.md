@@ -708,3 +708,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Configuration Drift Detection and Repair | RECOMMENDED VIDEO | Ansible drift/convergence demos reviewed | No candidate promoted yet | Healthy→manual drift→detected change→repaired state is ideal for visual demonstration. |
 | Secrets, Failure and Safe Fleet Changes | OPTIONAL VIDEO | Ansible secrets/fleet rollout material reviewed | No candidate promoted yet | A canary/failure demonstration can reinforce safe rollout, while Vault later owns deeper secrets management. |
 | Milestone: Build and Operate the Rocky Configuration Baseline | NO VIDEO | — | — | Independent synthesis milestone. |
+| Reassess Image, Ansible and Platform Ownership | NO VIDEO | — | — | The learner must define ownership boundaries from implemented evidence. |
