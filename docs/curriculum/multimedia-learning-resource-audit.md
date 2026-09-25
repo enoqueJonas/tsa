@@ -627,3 +627,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | API/Integration — Database Assertions | NO VIDEO | — | — | Transaction-aware assertions should be implemented directly. |
 | API/Integration — Integration Boundaries | RECOMMENDED VIDEO | Integration-test boundary diagrams reviewed | No candidate promoted yet | Real/virtual dependency boundaries are visual. |
 | API/Integration — Contract Testing Concepts | RECOMMENDED VIDEO | Pact consumer-driven contract demos reviewed | No candidate promoted yet | Provider/consumer expectation flow is best shown as a sequence. |
+| API/Integration — Mocking and Service Virtualization | RECOMMENDED VIDEO | Service-virtualization demos reviewed | No candidate promoted yet | Controlled simulated dependency behavior is useful to see. |
