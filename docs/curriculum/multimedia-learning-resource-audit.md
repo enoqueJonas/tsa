@@ -744,3 +744,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Vulnerability Lab — Safe Lab Networking | RECOMMENDED VIDEO | Virtual lab network demos reviewed | No candidate promoted yet | NAT/host-only/isolated boundaries are best shown topologically. |
 | Vulnerability Lab — Vulnerable Applications and Intentional Weaknesses | OPTIONAL VIDEO | OWASP Juice Shop/PortSwigger lab intros reviewed | No candidate promoted yet | Useful orientation to intentionally vulnerable targets. |
 | Vulnerability Lab — Observing Vulnerable Behavior | RECOMMENDED VIDEO | Burp/browser devtools observation demos reviewed | No candidate promoted yet | Live request/response inspection is valuable. |
+| Vulnerability Lab — Reproducing Representative Attacks Safely | REQUIRED WATCH | PortSwigger safe lab demonstrations reviewed | Use threat-specific safe lab demos selected above | Demonstration is part of safe reproduction learning. |
