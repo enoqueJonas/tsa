@@ -768,3 +768,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Identity/Secrets — Identity Planes and Trust Boundaries | RECOMMENDED VIDEO | identity-plane architecture talks reviewed | No candidate promoted yet | Human/workload/admin identities and trust boundaries are visual. |
 | Identity/Secrets — OAuth 2.0 and OpenID Connect Mental Model | RECOMMENDED VIDEO | OAuth/OIDC flow explainers reviewed | No candidate promoted yet | Browser/client/authorization-server/resource-server sequence is highly visual. |
 | Identity/Secrets — Keycloak Realms, Clients, Users and Roles | RECOMMENDED VIDEO | Keycloak official/community demos reviewed | No candidate promoted yet | UI plus token claims/role mapping benefits from demonstration. |
+| Identity/Secrets — Machine and Workload Identity | RECOMMENDED VIDEO | workload identity/mTLS talks reviewed | No candidate promoted yet | Machine identity lifecycle is conceptually difficult and visual. |
