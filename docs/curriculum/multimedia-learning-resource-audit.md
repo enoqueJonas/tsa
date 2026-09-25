@@ -1062,3 +1062,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
 | Leadership — Technical Ownership | OPTIONAL VIDEO | Staff/technical-leadership talks reviewed | No candidate promoted yet | A strong practitioner story can add context; ownership must still be exercised. |
+| Leadership — Influence Without Authority | RECOMMENDED VIDEO | Technical leadership/influence talks reviewed | No candidate promoted yet | Real examples of alignment without hierarchy add value. |
