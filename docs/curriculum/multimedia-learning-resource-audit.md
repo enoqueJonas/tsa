@@ -857,3 +857,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Tracing — Deploy Tempo and Instrument Steward | OPTIONAL VIDEO | Tempo deployment/instrumentation demos reviewed | No candidate promoted yet | Setup orientation can help; implementation remains primary. |
 | Tracing — Investigate Cross-Boundary Latency | RECOMMENDED VIDEO | trace waterfall/latency demos reviewed | No candidate promoted yet | Span waterfall makes latency attribution concrete. |
 | Tracing — Break the Tracing Pipeline | NO VIDEO | — | — | Failure injection is the exercise. |
+| Tracing — Defend the Tracing Architecture | NO VIDEO | — | — | Defence uses evidence. |
