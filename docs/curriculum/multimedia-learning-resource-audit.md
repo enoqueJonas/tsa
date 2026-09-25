@@ -908,3 +908,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Resilience — Lab: Harden Steward Against Dependency Failure | NO VIDEO | — | — | Independent resilience lab. |
 | DR — Backups | NO VIDEO | — | — | Implement actual backups. |
 | DR — Backup Integrity | NO VIDEO | — | — | Verify actual backup artifacts. |
+| DR — Restore Testing | RECOMMENDED VIDEO | restore drill demos reviewed | No candidate promoted yet | A restore workflow is useful to see before executing one. |
