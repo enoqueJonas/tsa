@@ -1090,3 +1090,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technology Governance — Lab: Map Steward Governance Responsibilities | NO VIDEO | — | — | Independent mapping lab. |
 | Technology Risk — Risk Identification | OPTIONAL VIDEO | Technology-risk workshops reviewed | No candidate promoted yet | A worked risk-identification session can add context. |
 | Technology Risk — Likelihood and Impact | NO VIDEO | — | — | Assessment calibration is best practiced on scenarios. |
+| Technology Risk — Inherent and Residual Risk | RECOMMENDED VIDEO | Risk/control walkthroughs reviewed | No candidate promoted yet | A before-controls/after-controls worked example can make residual risk concrete. |
