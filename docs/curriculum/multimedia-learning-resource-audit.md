@@ -1071,3 +1071,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Scale — Distributed Coordination | RECOMMENDED VIDEO | consensus/coordination visual explainers reviewed | No candidate promoted yet | Coordination under failure is difficult to learn from prose alone. |
 | Scale — Distributed Transactions and Sagas Concepts | RECOMMENDED VIDEO | saga/compensation talks reviewed | No candidate promoted yet | Multi-step transaction/compensation sequences are ideal for diagrams. |
 | Scale — Capacity vs Architectural Complexity | NO VIDEO | — | — | Compare measured pressure with complexity cost. |
+| Scale — Compare Scale and Distribution Options | NO VIDEO | — | — | Decision exercise. |
