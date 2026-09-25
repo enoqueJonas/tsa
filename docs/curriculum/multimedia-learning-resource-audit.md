@@ -543,3 +543,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Certificates — Monitor Expiry and Break Renewal Safely | NO VIDEO | — | — | Learner must inject and diagnose the failure. |
 | Cloud Blocks — Compute | NO VIDEO | — | — | Capacity decision uses actual workload evidence. |
 | Cloud Blocks — Object Storage | OPTIONAL VIDEO | Object-storage architecture explainers reviewed | No candidate promoted yet | Conceptual fit helps, but the dedicated S3 implementation path goes deeper. |
+| Cloud Blocks — Block Storage | OPTIONAL VIDEO | Cloud block-storage explainers reviewed | No candidate promoted yet | Attachment/lifetime boundary can benefit from a diagram. |
