@@ -2075,3 +2075,26 @@ A blog post may also be better than either a manual or a video. The resource mix
 | DR — Recovery Evidence | NO VIDEO | — | — | Capture actual evidence. |
 | DR — exercise/review | NO VIDEO | — | — | Independent recovery exercise. |
 | Incident — Detection | RECOMMENDED VIDEO | Incident-response simulations reviewed | No candidate promoted yet | Detection→triage transition is useful to watch. |
+| Incident — Triage | RECOMMENDED VIDEO | Incident-response simulations reviewed | No candidate promoted yet | Evidence prioritization benefits from a worked incident. |
+| Incident — Incident Roles | OPTIONAL VIDEO | Incident commander role demos reviewed | No candidate promoted yet | Team coordination is behavioral. |
+| Incident — Communication | RECOMMENDED VIDEO | Incident communication simulations reviewed | No candidate promoted yet | Status updates/stakeholder cadence are worth observing. |
+| Incident — Mitigation | RECOMMENDED VIDEO | Incident simulations reviewed | No candidate promoted yet | Stabilize-before-root-cause behavior is useful to see. |
+| Incident — Timeline Construction | NO VIDEO | — | — | Build actual timeline. |
+| Incident — Root Cause | NO VIDEO | — | — | Analyze evidence. |
+| Incident — Contributing Factors | NO VIDEO | — | — | Analyze system factors. |
+| Incident — Blameless Postmortems | RECOMMENDED VIDEO | Google SRE/postmortem talks reviewed | No candidate promoted yet | Good facilitation/language is useful to observe. |
+| Incident — Corrective Actions | NO VIDEO | — | — | Define actual actions. |
+| Incident — Learning from Near Misses | OPTIONAL VIDEO | Near-miss case studies reviewed | No candidate promoted yet | Stories add context. |
+| Incident — scenario/exercise | NO VIDEO | — | — | Independent simulation. |
+| Fault Injection — Hypothesis-driven Reliability Experiments | RECOMMENDED VIDEO | Chaos engineering talks reviewed | No candidate promoted yet | Hypothesis/blast-radius/steady-state flow benefits from practitioner examples. |
+| Fault Injection — Controlled Failure Injection | RECOMMENDED VIDEO | Chaos demos reviewed | No candidate promoted yet | Safe injection/recovery is operational. |
+| Fault Injection — Blast Radius and Safety | RECOMMENDED VIDEO | Chaos safety talks reviewed | No candidate promoted yet | Boundary design is visual. |
+| Fault Injection — Process and Container Failure | RECOMMENDED VIDEO | Pod/process kill demos reviewed | No candidate promoted yet | Live behavior adds value. |
+| Fault Injection — Resource Exhaustion Concepts | RECOMMENDED VIDEO | CPU/memory/disk exhaustion demos reviewed | No candidate promoted yet | Saturation onset is visual. |
+| Fault Injection — Network and Dependency Failure Simulation | RECOMMENDED VIDEO | Latency/packet-loss/dependency failure demos reviewed | No candidate promoted yet | Network degradation is visual. |
+| Fault Injection — Database Failure Scenarios | RECOMMENDED VIDEO | DB outage/lock demos reviewed | No candidate promoted yet | Operational failure. |
+| Fault Injection — Artifact Repository Failure Scenarios | OPTIONAL VIDEO | Repository outage demos reviewed | No candidate promoted yet | Useful but narrower. |
+| Fault Injection — Recovery Verification | NO VIDEO | — | — | Verify actual recovery. |
+| Fault Injection — Chaos Engineering Principles and Safety | RECOMMENDED VIDEO | Principles of Chaos talks reviewed | No candidate promoted yet | Practitioner framing adds value. |
+| Fault Injection — experiment lab | NO VIDEO | — | — | Independent experiment. |
+| Reliability Engineer Milestone | NO VIDEO | — | — | Independent reliability program synthesis. |
