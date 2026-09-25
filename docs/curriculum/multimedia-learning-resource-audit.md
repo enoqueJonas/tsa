@@ -1094,3 +1094,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Evaluation — Technology Selection | NO VIDEO | — | — | Evidence-based selection exercise. |
 | Evaluation — Build vs Buy | OPTIONAL VIDEO | build-vs-buy practitioner talks reviewed | No candidate promoted yet | Real lifecycle-cost cases add useful context. |
 | Evaluation — Architecture Debt | OPTIONAL VIDEO | architecture-debt talks reviewed | No candidate promoted yet | Case studies can show delayed architectural consequences. |
+| Evaluation — Architecture Governance without Bottlenecks | OPTIONAL VIDEO | architecture-governance/platform talks reviewed | No candidate promoted yet | Examples can show guardrails versus approval gates. |
