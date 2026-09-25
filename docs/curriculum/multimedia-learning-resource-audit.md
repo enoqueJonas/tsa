@@ -528,3 +528,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | VPS — Backups and Snapshots | OPTIONAL VIDEO | Provider snapshot/backup demos reviewed | No candidate promoted yet | Useful for provider boundary; preserve snapshot≠backup reasoning. |
 | Internet — Public and Private Addressing | NO VIDEO | Prior networking coverage | — | Apply prior model. |
 | Internet — Internet Routing Concepts | RECOMMENDED VIDEO | BGP/Internet routing visual explainers reviewed | No candidate promoted yet | Autonomous-system/path concepts benefit from visualization without becoming a BGP operator course. |
+| Internet — Domains and DNS Records | NO VIDEO | DNS media already selected | — | Avoid duplicate assignment. |
