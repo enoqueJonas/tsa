@@ -753,3 +753,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Linux/Network Security — Users, Groups and Permissions | NO VIDEO | — | — | Prior Linux lesson plus hardening exercise suffice. |
 | Linux/Network Security — Privilege and sudo | RECOMMENDED VIDEO | sudo/privilege-boundary demos reviewed | No candidate promoted yet | Effective privilege and escalation paths benefit from live evidence. |
 | Linux/Network Security — SSH Hardening | RECOMMENDED VIDEO | SSH hardening demos reviewed | No candidate promoted yet | Config→reload→positive/negative access proof is useful to see. |
+| Linux/Network Security — Host Firewalls | RECOMMENDED VIDEO | firewalld/nftables demos reviewed | No candidate promoted yet | Packet policy and negative testing are visual. |
