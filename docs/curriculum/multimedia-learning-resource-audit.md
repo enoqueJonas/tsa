@@ -477,3 +477,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CD — Canary Deployment Concepts | RECOMMENDED VIDEO | Canary traffic-shift demos reviewed | No candidate promoted yet | Progressive percentages and analysis gates benefit from animation. |
 | CD — Feature Flag Concepts | OPTIONAL VIDEO | Feature-flag rollout demos reviewed | No candidate promoted yet | Control-plane separation can help, but implementation is not central here. |
 | Config — Configuration Drift | RECOMMENDED VIDEO | Ansible drift media already reviewed | Reuse Platform Builder candidate only if needed | Avoid duplicate assignment unless Delivery framing adds something new. |
+| Config — Desired State and Idempotency | NO VIDEO | Prior Ansible lesson already covers this | — | Apply prior knowledge. |
