@@ -637,3 +637,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation Framework — pytest Fundamentals | OPTIONAL VIDEO | pytest demos reviewed | No candidate promoted yet | Useful tool orientation; tests themselves remain primary. |
 | Automation Framework — Configuration | NO VIDEO | — | — | Implement configuration directly. |
 | Automation Framework — Fixtures | RECOMMENDED VIDEO | pytest fixture lifecycle demos reviewed | No candidate promoted yet | Setup/teardown/scope/dependency behavior benefits from a visual run. |
+| Automation Framework — Test Data | NO VIDEO | — | — | Design actual test-data boundaries. |
