@@ -885,3 +885,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Alertmanager — From Firing Rule to Delivered Notification | RECOMMENDED VIDEO | Prometheus→Alertmanager notification demos reviewed | No candidate promoted yet | End-to-end signal path is visual. |
 | Alertmanager — Deploy and Route with Alertmanager | NO VIDEO | — | — | Implement actual routing. |
 | Alertmanager — Break Alert Delivery and Recover It | NO VIDEO | — | — | Failure drill. |
+| Alertmanager — Defend the Alerting Pipeline | NO VIDEO | — | — | Defence uses evidence. |
