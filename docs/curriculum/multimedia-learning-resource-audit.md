@@ -887,3 +887,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Performance — Bottlenecks | RECOMMENDED VIDEO | profiling/bottleneck demos reviewed | No candidate promoted yet | Resource evidence→bottleneck diagnosis is useful live. |
 | Performance — Load and Stress Testing | RECOMMENDED VIDEO | k6 load/stress demos reviewed | No candidate promoted yet | Traffic and response graphs are visual. |
 | Performance — Capacity Planning | OPTIONAL VIDEO | capacity planning talks reviewed | No candidate promoted yet | Worked forecasts can reinforce method. |
+| Performance — Resource Utilization | RECOMMENDED VIDEO | CPU/memory/I/O metric demos reviewed | No candidate promoted yet | Correlated resource graphs add intuition. |
