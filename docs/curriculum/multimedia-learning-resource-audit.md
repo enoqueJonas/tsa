@@ -573,3 +573,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Orchestration — Transfer Deployment Authority to Argo CD | NO VIDEO | — | — | Authority cutover must be performed and evidenced. |
 | Orchestration — Orchestration and GitOps Review | NO VIDEO | — | — | Review. |
 | Canary — Progressive Delivery with Canary Releases | RECOMMENDED VIDEO | Argo Rollouts/canary visual demos reviewed | No candidate promoted yet | Traffic percentages, analysis and promotion/abort are inherently visual. |
+| Canary — Design Steward's Canary Contract | NO VIDEO | — | — | Design from service risk and SLO evidence. |
