@@ -942,3 +942,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Fault Injection — Lab: Run a Steward Reliability Experiment | NO VIDEO | — | — | Independent experiment. |
 | Reliability Milestone — Milestone: Steward Reliability Program | NO VIDEO | — | — | Milestone synthesis. |
 | Reliability Milestone — Operate Steward Through a Reliability Review Scenario | NO VIDEO | — | — | Independent review scenario. |
+| Reliability Milestone — Defend the Reliability Posture | NO VIDEO | — | — | Final defence. |
