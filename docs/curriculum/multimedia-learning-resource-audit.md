@@ -693,3 +693,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Quality Milestone — Milestone: Steward Quality Platform | NO VIDEO | — | — | School milestone. |
 | Quality Milestone — Finalize the Steward Quality Strategy | NO VIDEO | — | — | Strategy synthesis. |
 | Quality Milestone — Prove the Automated Quality Portfolio | NO VIDEO | — | — | Evidence gate. |
+| Quality Milestone — Prove the Quality Pipeline | NO VIDEO | — | — | Evidence gate. |
