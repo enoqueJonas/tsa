@@ -1072,3 +1072,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Engineering Governance — Governance vs Management | OPTIONAL VIDEO | Governance/management explainers reviewed | No candidate promoted yet | A concise distinction can orient the learner. |
 | Engineering Governance — Decision Rights | NO VIDEO | — | — | Decision-right mapping is contextual. |
 | Engineering Governance — Accountability | NO VIDEO | — | — | Accountability design is applied work. |
+| Engineering Governance — Policies, Standards, Procedures and Guidelines | OPTIONAL VIDEO | Governance artifact hierarchy explainers reviewed | No candidate promoted yet | A worked hierarchy can clarify purpose without over-bureaucratizing. |
