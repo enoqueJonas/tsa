@@ -194,3 +194,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Requirements — From Requests to Problems | NO VIDEO | — | — | Problem reframing is best practiced on an ambiguous request. |
 | Requirements — Stakeholders and Actors | NO VIDEO | — | — | Stakeholder mapping is a reasoning exercise. |
 | Requirements — Functional Requirements | NO VIDEO | — | — | Writing testable behavior is the core practice. |
+| Requirements — Quality Requirements | OPTIONAL VIDEO | Quality-attribute scenario talks reviewed | No candidate promoted yet | A worked scenario can reinforce measurable quality attributes. |
