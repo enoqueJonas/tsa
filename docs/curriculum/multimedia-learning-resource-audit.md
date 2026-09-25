@@ -782,3 +782,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Identity/Secrets — Keycloak Realms, Clients, Users and Roles | RECOMMENDED VIDEO | Keycloak official/community demos reviewed | No candidate promoted yet | The admin UI and token claims are useful to see once. |
 | Identity/Secrets — Machine and Workload Identity | RECOMMENDED VIDEO | workload-identity/mTLS/OIDC talks reviewed | No candidate promoted yet | Non-human identity lifecycle benefits from architecture diagrams. |
 | Identity/Secrets — Secret Lifecycle: Create, Distribute, Rotate, Revoke | RECOMMENDED VIDEO | secret-lifecycle demonstrations reviewed | No candidate promoted yet | Rotation/revocation timelines add operational intuition. |
+| Identity/Secrets — Vault Concepts and Dynamic Secrets | RECOMMENDED VIDEO | HashiCorp Vault dynamic-secrets demos reviewed | No candidate promoted yet | Lease issuance/renewal/revocation is especially useful to see live. |
