@@ -795,3 +795,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Application Security — Secure Error Handling | NO VIDEO | — | — | Implement actual failure contract. |
 | Application Security — Secrets Management | NO VIDEO | — | — | Vault/secret lifecycle already covered. |
 | Application Security — Security Headers and Configuration | OPTIONAL VIDEO | browser security-header demos reviewed | No candidate promoted yet | Seeing CSP/HSTS/etc. in browser/network tools can reinforce effects. |
+| Application Security — Security Logging | NO VIDEO | — | — | Implement and inspect actual security events. |
