@@ -675,3 +675,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Non-functional — Data Integrity and Concurrency Testing | RECOMMENDED VIDEO | concurrency/race test demos reviewed | No candidate promoted yet | Two-session timelines and invariants are visual. |
 | Non-functional — Lab: Establish Steward Non-functional Baselines | NO VIDEO | — | — | Independent baseline lab. |
 | CI — Test Containers and Environments | RECOMMENDED VIDEO | Dockerized test-dependency demos reviewed | No candidate promoted yet | Test process→container dependency topology is visual. |
+| CI — Dockerized Test Dependencies | RECOMMENDED VIDEO | Testcontainers/Docker Compose test demos reviewed | No candidate promoted yet | Lifecycle and isolation benefit from live execution. |
