@@ -636,3 +636,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Playwright with Python | OPTIONAL VIDEO | Playwright Python demos reviewed | No candidate promoted yet | A concise API/UI trace demo can reduce tool friction. |
 | Automation — pytest Fundamentals | OPTIONAL VIDEO | pytest fixture/collection demos reviewed | No candidate promoted yet | Useful once, then practice. |
 | Automation — Configuration | NO VIDEO | — | — | Implement configuration directly. |
+| Automation — Fixtures | RECOMMENDED VIDEO | pytest fixture lifecycle demos reviewed | No candidate promoted yet | Scope/dependency/teardown behavior benefits from visualization. |
