@@ -598,3 +598,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Quality Engineering — Quality Risks | NO VIDEO | — | — | Build the live risk model directly. |
 | Quality Engineering — Test Strategy | OPTIONAL VIDEO | Risk-based test strategy talks reviewed | No candidate promoted yet | A worked strategy example can add context, but learner strategy is primary. |
 | Quality Engineering — Test Levels and Test Types | OPTIONAL VIDEO | ISTQB/test-level explainers reviewed | No candidate promoted yet | Boundary visualization can help, but avoid taxonomy memorization. |
+| Quality Engineering — Risk-based Testing | NO VIDEO | — | — | Prioritize the actual product risks. |
