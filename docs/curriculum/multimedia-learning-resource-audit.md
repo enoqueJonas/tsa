@@ -1602,3 +1602,21 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Platform Builder Milestone — Assemble the Platform Builder Evidence Pack | NO VIDEO | — | — | Milestone is synthesis of implemented platform evidence. |
 | Platform Builder Milestone — Milestone Review and Exit Criteria | NO VIDEO | — | — | Exit gate should assess capability, not introduce media. |
 | Platform Builder Milestone — Platform Builder Exit Reflection | NO VIDEO | — | — | Reflection should use the learner's own operational evidence. |
+
+
+## Delivery Engineer — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Foundations — The Source-to-Production Lifecycle | RECOMMENDED VIDEO | CI/CD lifecycle visual explainers reviewed | No candidate promoted yet | Commit→build→artifact→promotion→runtime is a sequence worth visualizing. |
+| Foundations — Git Workflows | OPTIONAL VIDEO | Git workflow animations reviewed | No candidate promoted yet | Can reinforce branch/review flow; learner's repository remains primary. |
+| Foundations — Pull Requests and Reviews | NO VIDEO | — | — | Actual review practice is the learning activity. |
+| Foundations — Semantic Versioning | NO VIDEO | — | — | Specification plus versioning exercises are sufficient. |
+| Foundations — Conventional Commits | NO VIDEO | — | — | Direct repository practice is sufficient. |
+| Foundations — Release Notes and Changelogs | NO VIDEO | — | — | Writing useful release communication is primary. |
+| Foundations — Build Artifacts | RECOMMENDED VIDEO | Artifact/repository pipeline explainers reviewed | No candidate promoted yet | Immutable artifact flow and provenance benefit from a diagram. |
+| Foundations — Environment Promotion | RECOMMENDED VIDEO | Build-once/promote-same-artifact material reviewed | No candidate promoted yet | Promotion versus rebuild is an important visual pipeline distinction. |
+| Automation — Shell Scripting | NO VIDEO | — | — | Write and run scripts directly. |
+| Automation — Pipes and Exit Codes | RECOMMENDED VIDEO | Unix pipeline/exit-status demos reviewed | No candidate promoted yet | Process composition and failure propagation are useful to see live. |
+| Automation — Environment | NO VIDEO | — | — | Inspect and control environment directly. |
+| Automation — Repeatable Automation | NO VIDEO | — | — | Re-run behavior must be demonstrated. |
