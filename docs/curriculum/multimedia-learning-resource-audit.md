@@ -830,3 +830,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Logging — Log Levels | NO VIDEO | — | — | Small policy concept; apply directly. |
 | Logging — Correlation IDs | RECOMMENDED VIDEO | correlation-ID demos reviewed | No candidate promoted yet | Following a request through multiple log events is visual. |
 | Logging — Request and Trace Context | RECOMMENDED VIDEO | OpenTelemetry context propagation demos reviewed | No candidate promoted yet | Context propagation is a sequence concept. |
+| Logging — Centralized Logging | RECOMMENDED VIDEO | Graylog centralized logging demos reviewed | No candidate promoted yet | Ship→index/search→investigate workflow benefits from demonstration. |
