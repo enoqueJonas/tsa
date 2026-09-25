@@ -470,3 +470,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CD — Environment Management | NO VIDEO | — | — | Implement environment ownership/promotion. |
 | CD — Deployment Automation | RECOMMENDED VIDEO | Deployment-pipeline demos reviewed | No candidate promoted yet | Live automated deploy+verification shows the contract. |
 | CD — Release Approvals | NO VIDEO | — | — | Approval semantics are process design. |
+| CD — Database Migrations During Deployment | RECOMMENDED VIDEO | Zero-downtime migration talks reviewed | No candidate promoted yet | Application/schema compatibility across deployment phases is a timeline problem. |
