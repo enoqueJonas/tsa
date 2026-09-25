@@ -1173,3 +1173,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Controls — Evidence | NO VIDEO | — | — | The learner must identify and preserve actual operating evidence. |
 | Controls — Control Testing | RECOMMENDED VIDEO | audit/control-testing walkthroughs reviewed | No candidate promoted yet | Sampling/reperformance/inspection are useful to see applied to a concrete control. |
 | Controls — Compliance vs Security | OPTIONAL VIDEO | security/compliance practitioner talks reviewed | No candidate promoted yet | Case studies help show why compliance evidence is not equivalent to security. |
+| Controls — Audit Fundamentals | OPTIONAL VIDEO | internal-audit lifecycle explainers reviewed | No candidate promoted yet | A concise audit lifecycle overview can orient scope/evidence/findings. |
