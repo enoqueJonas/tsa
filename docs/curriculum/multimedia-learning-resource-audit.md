@@ -1792,3 +1792,23 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Test Design — Pairwise and Combinatorial Concepts | RECOMMENDED VIDEO | Pairwise generation demos reviewed | No candidate promoted yet | Combination reduction is clearer from a worked matrix. |
 | Test Design — Exploratory Testing | RECOMMENDED VIDEO | James Bach/Michael Bolton exploratory testing material reviewed | No candidate promoted yet | A real charter/session/debrief demonstration adds value. |
 | Test Design — Negative Testing | NO VIDEO | — | — | Design failure cases directly. |
+| Test Design — Traceability | NO VIDEO | — | — | Build the risk→condition→evidence links. |
+| Test Design — Analyze the Domain | NO VIDEO | — | — | Practical. |
+| Test Design — Apply Formal Techniques | NO VIDEO | — | — | Practical. |
+| Test Design — Add Exploration and Negative Coverage | NO VIDEO | — | — | Practical. |
+| Test Design — Coverage Review | NO VIDEO | — | — | Review gate. |
+| Unit/Component — Designing Unit Tests | OPTIONAL VIDEO | Google testing/unit-test talks reviewed | No candidate promoted yet | A worked behavior-focused test can reinforce design. |
+| Unit/Component — Isolation | RECOMMENDED VIDEO | Test isolation/determinism demos reviewed | No candidate promoted yet | Controlling time/network/randomness benefits from examples. |
+| Unit/Component — Test Doubles | RECOMMENDED VIDEO | Martin Fowler mocks/stubs material and demos reviewed | No candidate promoted yet | Dummy/stub/fake/mock distinctions benefit from worked code. |
+| Unit/Component — Mocks, Stubs and Fakes | RECOMMENDED VIDEO | Mocking demos reviewed | No candidate promoted yet | Observable behavior versus interaction verification is easier with code. |
+| Unit/Component — Coverage and Its Limitations | OPTIONAL VIDEO | Coverage mutation-testing talks reviewed | No candidate promoted yet | A 100%-coverage-but-broken example can be powerful. |
+| Unit/Component — Component Boundaries | OPTIONAL VIDEO | Component-test architecture talks reviewed | No candidate promoted yet | Boundary selection can be reinforced visually. |
+| Unit/Component — Fast Feedback and Maintainability | NO VIDEO | — | — | Measure the real suite. |
+| Unit/Component — implementation/review labs | NO VIDEO | — | — | Independent testing evidence. |
+| API/Integration — API Test Design | NO VIDEO | — | — | Contract/risk model is primary. |
+| API/Integration — Authentication and Authorization Testing | RECOMMENDED VIDEO | OWASP authorization testing demos reviewed | No candidate promoted yet | Privilege matrix and broken access examples benefit from live requests. |
+| API/Integration — Schema and Contract Validation | OPTIONAL VIDEO | OpenAPI/Pact contract demos reviewed | No candidate promoted yet | Useful visualization; actual contract tests are primary. |
+| API/Integration — Database Assertions | NO VIDEO | — | — | Implement transaction-aware evidence. |
+| API/Integration — Integration Boundaries | NO VIDEO | — | — | Name/test actual boundary. |
+| API/Integration — Contract Testing Concepts | RECOMMENDED VIDEO | Pact contract-testing talks reviewed | No candidate promoted yet | Consumer/provider interaction and verification lifecycle are visual. |
+| API/Integration — Mocking and Service Virtualization | RECOMMENDED VIDEO | Service virtualization demos reviewed | No candidate promoted yet | Real vs simulated boundary is useful to see. |
