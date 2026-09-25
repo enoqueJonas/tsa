@@ -848,3 +848,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Metrics — Dashboard Anti-patterns | RECOMMENDED VIDEO | dashboard critique talks reviewed | No candidate promoted yet | Visual examples make anti-patterns obvious. |
 | Metrics — Nexus and Internal Platform Metrics | OPTIONAL VIDEO | Nexus/Prometheus integration demos reviewed | No candidate promoted yet | Useful integration context. |
 | Metrics — CI and Delivery Metrics | OPTIONAL VIDEO | DORA/CI metrics dashboards reviewed | No candidate promoted yet | Graphs reinforce trend interpretation. |
+| Metrics — Lab: Instrument Steward API | NO VIDEO | — | — | Independent instrumentation lab. |
