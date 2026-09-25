@@ -1719,3 +1719,18 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Cloud Blocks — Block Storage | OPTIONAL VIDEO | Cloud block-volume demos reviewed | No candidate promoted yet | Attachment/persistence boundary can be shown quickly. |
 | Cloud Blocks — Managed Databases | OPTIONAL VIDEO | Managed DB architecture material reviewed | No candidate promoted yet | Useful responsibility-boundary context. |
 | Cloud Blocks — Virtual Networks and Subnets | RECOMMENDED VIDEO | VPC/VNet topology animations reviewed | No candidate promoted yet | Cloud network topology is highly visual. |
+| Cloud Blocks — Routing and Gateways | RECOMMENDED VIDEO | Cloud route-table/gateway demos reviewed | No candidate promoted yet | Packet path through cloud constructs benefits from diagrams. |
+| Cloud Blocks — Load Balancers | RECOMMENDED VIDEO | Load-balancer traffic demos reviewed | No candidate promoted yet | Traffic distribution/health behavior is visual. |
+| Cloud Blocks — IAM | RECOMMENDED VIDEO | Cloud IAM principal/policy demos reviewed | No candidate promoted yet | Identity→policy→resource evaluation benefits from visual examples. |
+| Cloud Blocks — Secrets Management | OPTIONAL VIDEO | Managed-secret workflows reviewed | No candidate promoted yet | Later Security has deeper Vault coverage. |
+| Cloud Blocks — Cloud Monitoring | OPTIONAL VIDEO | Cloud monitoring demos reviewed | No candidate promoted yet | Later Reliability owns deeper observability. |
+| Cloud Blocks — Cloud Backup Services | OPTIONAL VIDEO | Cloud backup/restore demos reviewed | No candidate promoted yet | Restore/failure-domain view can help. |
+| Cloud Blocks — Managed Services versus Self-managed Infrastructure | NO VIDEO | — | — | Trade-off analysis is primary. |
+| Cloud Blocks — Lab: Map Steward Platform to Cloud Building Blocks | NO VIDEO | — | — | Independent mapping lab. |
+| Object Storage — S3-Compatible Object Storage for Steward | RECOMMENDED VIDEO | MinIO/S3 API demos reviewed | No candidate promoted yet | Bucket/key/API/lifecycle/versioning behavior benefits from a live demonstration. |
+| IaC — Why Infrastructure as Code | RECOMMENDED VIDEO | OpenTofu/Terraform workflow explainers reviewed | No candidate promoted yet | Desired infrastructure→plan→apply→state is a visual lifecycle. |
+| IaC — Declarative Infrastructure | OPTIONAL VIDEO | Declarative-vs-imperative examples reviewed | No candidate promoted yet | Short reinforcement only. |
+| IaC — Terraform and OpenTofu Fundamentals | RECOMMENDED VIDEO | OpenTofu/Terraform official tutorials reviewed | No candidate promoted yet | Seeing init/plan/apply once reduces tool friction. |
+| IaC — Providers and Resources | OPTIONAL VIDEO | Provider/resource demos reviewed | No candidate promoted yet | Useful but straightforward. |
+| IaC — State | RECOMMENDED VIDEO | Terraform/OpenTofu state explainers reviewed | No candidate promoted yet | Desired/config/real/state relationships are conceptually difficult and visual. |
+| IaC — Variables and Outputs | NO VIDEO | — | — | Direct implementation is enough. |
