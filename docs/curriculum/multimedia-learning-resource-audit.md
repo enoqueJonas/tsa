@@ -940,3 +940,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Fault Injection — Recovery Verification | NO VIDEO | — | — | Verify actual recovery. |
 | Fault Injection — Chaos Engineering Principles and Safety | OPTIONAL VIDEO | Principles of Chaos Engineering talks reviewed | No candidate promoted yet | Industry framing is useful reinforcement. |
 | Fault Injection — Lab: Run a Steward Reliability Experiment | NO VIDEO | — | — | Independent experiment. |
+| Reliability Milestone — Milestone: Steward Reliability Program | NO VIDEO | — | — | Milestone synthesis. |
