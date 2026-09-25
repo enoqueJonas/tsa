@@ -837,3 +837,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Logging — Lab: Build a Steward Diagnostic Logging Path | NO VIDEO | — | — | Independent implementation lab. |
 | Metrics — Metrics Mental Models | RECOMMENDED VIDEO | Prometheus metric-type explainers reviewed | No candidate promoted yet | Time-series behavior is visual. |
 | Metrics — Counters, Gauges and Histograms | RECOMMENDED VIDEO | Prometheus histogram demos reviewed | No candidate promoted yet | Histogram buckets/quantiles benefit from graphs. |
+| Metrics — Application and Infrastructure Metrics | OPTIONAL VIDEO | application/node exporter demos reviewed | No candidate promoted yet | Useful orientation. |
