@@ -577,3 +577,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Canary — Implement Argo Rollouts Canary Delivery | RECOMMENDED VIDEO | Argo Rollouts live demos reviewed | No candidate promoted yet | Seeing rollout steps and controller state is useful before independent implementation. |
 | Canary — Automate Analysis and Abort a Bad Canary | RECOMMENDED VIDEO | Argo Rollouts + Prometheus analysis demos reviewed | No candidate promoted yet | Metric gate→abort flow is a strong live demonstration. |
 | Canary — Reassess Progressive Delivery | NO VIDEO | — | — | Architecture reassessment. |
+| Architecture/Cost — Availability in Cloud Environments | RECOMMENDED VIDEO | Cloud failure-domain/HA diagrams reviewed | No candidate promoted yet | Availability topology is visual. |
