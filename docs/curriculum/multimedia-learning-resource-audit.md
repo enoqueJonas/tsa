@@ -1006,3 +1006,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture Fundamentals — Define Drivers and Quality Scenarios | NO VIDEO | — | — | Applied exercise. |
 | Architecture Fundamentals — Create the Architecture Baseline Record | NO VIDEO | — | — | Evidence artifact. |
 | Domain Modeling — Domain Models and Business Language | OPTIONAL VIDEO | DDD domain-modeling talks reviewed | No candidate promoted yet | A live domain-language modeling session can reinforce the distinction from framework models. |
+| Domain Modeling — Bounded Context Concepts | RECOMMENDED VIDEO | Martin Fowler / DDD bounded-context talks reviewed | No candidate promoted yet | Context boundaries and language shifts are strongly diagrammatic. |
