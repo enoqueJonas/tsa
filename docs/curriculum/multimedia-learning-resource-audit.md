@@ -1201,3 +1201,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Third-party — Repository Retention and Lifecycle | OPTIONAL VIDEO | artifact-repository lifecycle material reviewed | No candidate promoted yet | A lifecycle example can reinforce retention versus recoverability. |
 | Third-party — Dependency Exceptions | NO VIDEO | — | — | Operate the actual exception mechanism. |
 | Third-party — Supply-chain Ownership and Provenance Requirements | RECOMMENDED VIDEO | SLSA/software supply-chain provenance talks reviewed | No candidate promoted yet | Build→artifact→provenance→verification flow is visual and cross-cutting. |
+| Third-party — Lab: Govern steward-common and tsa-test-core | NO VIDEO | — | — | Independent product-governance exercise. |
