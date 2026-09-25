@@ -601,3 +601,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Quality Engineering — Risk-based Testing | NO VIDEO | — | — | Prioritization is a reasoning exercise. |
 | Quality Engineering — Shift-left and Shift-right | OPTIONAL VIDEO | Continuous testing lifecycle talks reviewed | No candidate promoted yet | A delivery-lifecycle diagram can help. |
 | Quality Engineering — Testability | RECOMMENDED VIDEO | Testability/observability design talks reviewed | No candidate promoted yet | Control/observe boundaries benefit from concrete demonstrations. |
+| Quality Engineering — Defect Evidence and Communication | NO VIDEO | — | — | Write evidence from actual failures. |
