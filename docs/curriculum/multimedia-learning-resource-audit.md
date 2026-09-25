@@ -1040,3 +1040,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Modularity — Challenge Module, Package and Service Options | NO VIDEO | — | — | Decision exercise. |
 | Modularity — Record and Enforce the Boundary Decision | NO VIDEO | — | — | Decision/evidence work. |
 | Data — Data Ownership | RECOMMENDED VIDEO | data ownership/microservice data talks reviewed | No candidate promoted yet | Ownership boundaries and cross-service data access benefit from diagrams. |
+| Data — Schema Boundaries | OPTIONAL VIDEO | schema-boundary talks reviewed | No candidate promoted yet | Visual examples can reinforce ownership, but actual schema analysis is primary. |
