@@ -916,3 +916,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | DR — Artifact Repository Backup and Restore | RECOMMENDED VIDEO | Nexus backup/restore demos reviewed | No candidate promoted yet | Platform-specific restore workflow is visual. |
 | DR — Configuration and Infrastructure Recovery | RECOMMENDED VIDEO | IaC/config recovery demos reviewed | No candidate promoted yet | Rebuild order/dependencies benefit from recovery diagram. |
 | DR — Recovery Evidence | NO VIDEO | — | — | Produce actual evidence. |
+| DR — Lab: Run a Steward Restore Drill | NO VIDEO | — | — | Independent recovery drill. |
