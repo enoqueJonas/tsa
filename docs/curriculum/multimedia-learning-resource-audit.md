@@ -459,3 +459,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | File Integration — Shared Filesystem versus Managed File Transfer | NO VIDEO | — | — | The lesson is a boundary/trade-off decision. |
 | File Integration — Secure File Transfer Readiness: SFTP and FTPS | RECOMMENDED VIDEO | SFTP versus FTPS protocol explainers reviewed | No candidate promoted yet | Seeing SSH-based SFTP versus TLS-based FTPS prevents a common conceptual mix-up. |
 | Platform Builder — Milestone Review and Exit Criteria | NO VIDEO | — | — | Milestone assessment. |
+| Platform Builder — Assemble the Platform Builder Evidence Pack | NO VIDEO | — | — | Evidence synthesis. |
