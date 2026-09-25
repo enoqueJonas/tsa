@@ -1012,3 +1012,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Domain Modeling — Context Mapping Concepts | RECOMMENDED VIDEO | DDD context-map demonstrations reviewed | No candidate promoted yet | Relationships between contexts are inherently visual. |
 | Domain Modeling — Domain Services | NO VIDEO | — | — | The concept is compact and best evaluated in the learner's model. |
 | Domain Modeling — Avoiding Anemic and Over-engineered Models | OPTIONAL VIDEO | DDD modeling critiques reviewed | No candidate promoted yet | A model critique can add perspective, but the learner's own model is primary. |
+| Domain Modeling — Recover the Current Domain Model | NO VIDEO | — | — | Independent exercise. |
