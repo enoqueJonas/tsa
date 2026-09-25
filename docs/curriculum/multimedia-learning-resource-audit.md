@@ -788,3 +788,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Identity/Secrets — Lab: Integrate Keycloak and Harden Steward Identity | NO VIDEO | — | — | Independent integration lab. |
 | Vault — Vault and Dynamic Secrets for Steward | RECOMMENDED VIDEO | HashiCorp Vault demos reviewed | No candidate promoted yet | Seeing dynamic credentials issued with TTL makes the model concrete. |
 | Vault — From Static Secrets to Leased Credentials | RECOMMENDED VIDEO | Vault database-secrets demos reviewed | No candidate promoted yet | Static→dynamic comparison and lease lifecycle are visual. |
+| Vault — Deploy and Initialize Vault Safely | OPTIONAL VIDEO | Vault initialization/unseal demos reviewed | No candidate promoted yet | UI/CLI orientation helps, but learner must understand recovery boundaries. |
