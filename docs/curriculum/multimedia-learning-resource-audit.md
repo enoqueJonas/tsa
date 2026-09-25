@@ -864,3 +864,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | SLO — Windowing and Measurement Concepts | RECOMMENDED VIDEO | rolling-window/burn-rate explainers reviewed | No candidate promoted yet | Window behavior benefits from time-series visualization. |
 | SLO — Reliability Targets and Trade-offs | NO VIDEO | — | — | Contextual decision. |
 | SLO — Error Budgets and Release Decisions | RECOMMENDED VIDEO | error-budget policy talks reviewed | No candidate promoted yet | A burn/release timeline makes policy concrete. |
+| SLO — Lab: Define Steward SLOs | NO VIDEO | — | — | Independent SLO design. |
