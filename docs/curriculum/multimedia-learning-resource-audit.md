@@ -1199,3 +1199,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Third-party — Approved Dependency Sources | NO VIDEO | — | — | Use the real Nexus/source policy. |
 | Third-party — Internal Package Version and Support Policy | NO VIDEO | — | — | Define the actual support contract. |
 | Third-party — Repository Retention and Lifecycle | OPTIONAL VIDEO | artifact-repository lifecycle material reviewed | No candidate promoted yet | A lifecycle example can reinforce retention versus recoverability. |
+| Third-party — Dependency Exceptions | NO VIDEO | — | — | Operate the actual exception mechanism. |
