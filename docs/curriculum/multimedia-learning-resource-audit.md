@@ -679,3 +679,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI Quality — Parallelization | RECOMMENDED VIDEO | Parallel CI test demos reviewed | No candidate promoted yet | Worker/shard execution and collision risks benefit from visualization. |
 | CI Quality — Reports and Artifacts | OPTIONAL VIDEO | CI report/artifact UI demos reviewed | No candidate promoted yet | Seeing persisted evidence can help. |
 | CI Quality — Quality Gates | RECOMMENDED VIDEO | Quality-gate pipeline demos reviewed | No candidate promoted yet | Signal→gate→promotion blocking is a visual decision flow. |
+| CI Quality — Test Selection | NO VIDEO | — | — | Select tests from risk/change evidence. |
