@@ -1064,3 +1064,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Scale — Scaling Up and Scaling Out | RECOMMENDED VIDEO | vertical/horizontal scaling diagrams reviewed | No candidate promoted yet | Resource placement and topology changes are visual. |
 | Scale — Stateless Services | OPTIONAL VIDEO | stateless scaling demos reviewed | No candidate promoted yet | A load-balanced instance example can reinforce the concept. |
 | Scale — Load Distribution | RECOMMENDED VIDEO | load-balancing algorithms/demos reviewed | No candidate promoted yet | Request distribution across instances is highly visual. |
+| Scale — Caching and Contention | OPTIONAL VIDEO | cache/contention talks reviewed | No candidate promoted yet | Useful if focused on architectural pressure rather than cache basics. |
