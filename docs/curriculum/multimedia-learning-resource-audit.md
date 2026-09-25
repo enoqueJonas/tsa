@@ -1271,3 +1271,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Readiness — Operational Ownership | NO VIDEO | — | — | Define actual ownership/escalation. |
 | Readiness — Risk and Control Evidence | NO VIDEO | Prior Technical Steward material sufficient | — | Assemble operating evidence. |
 | Readiness — Dependency and Supply-chain Readiness | NO VIDEO | — | — | Verify actual provenance/lifecycle/dependencies. |
+| Readiness — Cost and Capacity Review | NO VIDEO | — | — | Review measured/estimated capstone capacity and cost. |
