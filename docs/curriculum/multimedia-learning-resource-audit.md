@@ -463,3 +463,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Platform Builder — Exit Reflection | NO VIDEO | — | — | Reflection and transfer assessment. |
 | Core Infra — DNS, DHCP and Time as Infrastructure | RECOMMENDED VIDEO | Infrastructure dependency explainers reviewed | No candidate promoted yet | Seeing name/address/time as separate authorities helps prevent troubleshooting category errors. |
 | Core Infra — Operate Authoritative Homelab DNS | RECOMMENDED VIDEO | BIND authoritative DNS demos reviewed | No candidate promoted yet | Zone/record/query flow benefits from a live authoritative-server demonstration. |
+| Core Infra — Break and Diagnose DNS | NO VIDEO | — | — | The learner should diagnose wrong records, cache and outage directly. |
