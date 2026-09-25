@@ -695,3 +695,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | DHCP Exhaustion, Wrong Options and Relay | RECOMMENDED VIDEO | DHCP exhaustion/relay labs reviewed | No candidate promoted yet | Exhaustion and relay cross-subnet behavior are strongly visual and failure-oriented. |
 | Operate Time Synchronization with Chrony | OPTIONAL VIDEO | Chrony/NTP operational walkthroughs reviewed | No candidate promoted yet | A live chronyc demonstration can reduce tool friction, but the synchronization experiment is straightforward. |
 | Clock Skew as a Security and Observability Incident | RECOMMENDED VIDEO | Clock-skew/TLS/token/log-correlation material reviewed | No candidate promoted yet | A timeline makes the cross-system consequences of incorrect time substantially clearer. |
+| Integrate Core Services into the Homelab | NO VIDEO | — | — | This is an integration/cutover exercise using services already learned. |
