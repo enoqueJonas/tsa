@@ -1274,3 +1274,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Readiness — Cost and Capacity Review | NO VIDEO | — | — | Review measured/estimated capstone capacity and cost. |
 | Readiness — Release Decision | NO VIDEO | — | — | Make the evidence-based go/no-go decision. |
 | Readiness — Lab: Run the Capstone Production Readiness Review | NO VIDEO | — | — | Independent production-readiness review. |
+| Defence — Present the Problem and Outcomes | NO VIDEO | — | — | Defend the discovered problem and achieved outcomes. |
