@@ -792,3 +792,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Application Security — Secure Authentication | NO VIDEO | — | — | Apply prior identity/security knowledge directly. |
 | Application Security — Authorization Design and Testing | NO VIDEO | — | — | Design and prove actual authorization rules. |
 | Application Security — Input Validation | NO VIDEO | — | — | Implement boundary validation and negative cases. |
+| Application Security — Secure Error Handling | NO VIDEO | — | — | Implement actual failure contract. |
