@@ -1249,3 +1249,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Build — Model the Domain | NO VIDEO | — | — | Independent domain modeling. |
 | Build — Implement the System | NO VIDEO | — | — | Independent implementation. |
 | Build — Design and Evolve the Data | NO VIDEO | — | — | Independent data/schema evolution. |
+| Build — Build Infrastructure | NO VIDEO | — | — | Independent platform implementation. |
