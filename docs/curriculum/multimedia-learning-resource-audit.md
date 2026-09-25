@@ -422,3 +422,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Core Infrastructure — Break and Diagnose DNS | NO VIDEO | — | — | The learner should diagnose deliberately broken DNS from dig/service evidence. |
 | Core Infrastructure — Operate DHCP Scopes and Reservations | RECOMMENDED VIDEO | DHCP server/scope demonstrations reviewed | No candidate promoted yet | Scope, lease and reservation behavior is visual and operational. |
 | Core Infrastructure — DHCP Exhaustion, Wrong Options and Relay | RECOMMENDED VIDEO | DHCP relay/exhaustion demonstrations reviewed | No candidate promoted yet | Relay paths and lease-pool failure are easier to understand visually. |
+| Core Infrastructure — Operate Time Synchronization with Chrony | OPTIONAL VIDEO | chrony/NTP demonstrations reviewed | No candidate promoted yet | A short live chronyc demonstration can reduce setup friction; direct evidence remains primary. |
