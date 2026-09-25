@@ -505,3 +505,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Platform Builder — Milestone Review and Exit Criteria | NO VIDEO | — | — | Review gate. |
 | Platform Builder — Assemble the Platform Builder Evidence Pack | NO VIDEO | — | — | Evidence synthesis. |
 | Platform Builder — Platform Builder Exit Reflection | NO VIDEO | — | — | Reflection and readiness decision. |
+
+
+## Platform Builder — Core Infrastructure and Configuration Management lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Core Infrastructure — DNS, DHCP and Time as Infrastructure | RECOMMENDED VIDEO | Infrastructure dependency-flow explainers reviewed | No candidate promoted yet | Seeing name, address and time dependencies together helps establish the operating model. |
