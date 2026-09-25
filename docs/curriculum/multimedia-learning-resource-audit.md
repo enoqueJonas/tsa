@@ -613,3 +613,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Test Design — Negative Testing | NO VIDEO | — | — | Design failures against invariants directly. |
 | Test Design — Traceability | NO VIDEO | — | — | Build the actual risk→condition→evidence trace. |
 | Test Design — Lab: Design Risk-based Steward Test Coverage | NO VIDEO | — | — | Synthesis lab. |
+| Unit/Component — Designing Unit Tests | OPTIONAL VIDEO | Unit-testing design talks reviewed | No candidate promoted yet | A worked behavior-focused test can help. |
