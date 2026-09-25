@@ -529,3 +529,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Internet — Public and Private Addressing | NO VIDEO | Prior networking media covers this | — | Apply prior knowledge. |
 | Internet — Internet Routing Concepts | RECOMMENDED VIDEO | BGP/Internet routing visual explainers reviewed | No candidate promoted yet | Autonomous systems and route propagation are highly visual. |
 | Internet — Domains and DNS Records | RECOMMENDED VIDEO | DNS record/authoritative-zone explainers reviewed | No candidate promoted yet | Public delegation extends the earlier DNS model. |
+| Internet — DNS Resolution and Troubleshooting | NO VIDEO | Computerphile DNS already selected earlier | Reuse earlier video only if needed | Troubleshoot with dig rather than duplicate media. |
