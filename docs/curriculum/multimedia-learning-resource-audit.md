@@ -1832,3 +1832,23 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation Framework — Reports | OPTIONAL VIDEO | pytest/reporting demos reviewed | No candidate promoted yet | Seeing report artifact can help. |
 | Automation Framework — Screenshots, Traces and Video | RECOMMENDED VIDEO | Playwright trace viewer demos reviewed | No candidate promoted yet | This capability is inherently visual. |
 | Automation Framework — Parallel Execution | RECOMMENDED VIDEO | pytest-xdist/Playwright parallel demos reviewed | No candidate promoted yet | Worker timing/isolation benefits from visualization. |
+| Automation Framework — Retries and Flaky-test Risk | RECOMMENDED VIDEO | Flaky-test/retry demonstrations reviewed | No candidate promoted yet | Failure masking is clearer from repeated runs. |
+| Automation Framework — Framework Maintainability | NO VIDEO | — | — | Review real framework coupling. |
+| Automation Framework — reusable package lessons/labs/review | NO VIDEO | — | — | Independent extraction/versioning evidence. |
+| Browser — Browser Differences | RECOMMENDED VIDEO | Browser engine/rendering explainers reviewed | No candidate promoted yet | Engine differences are visual. |
+| Browser — Responsive Testing | RECOMMENDED VIDEO | Playwright responsive/device demos reviewed | No candidate promoted yet | Layout-state behavior is visual. |
+| Browser — Cross-browser Testing | RECOMMENDED VIDEO | Playwright cross-browser demos reviewed | No candidate promoted yet | Same claim across engines is useful to see. |
+| Browser — BrowserStack or Equivalent | OPTIONAL VIDEO | BrowserStack platform demos reviewed | No candidate promoted yet | Useful UI/infrastructure orientation. |
+| Browser — Local vs Remote Execution | OPTIONAL VIDEO | Remote-grid/cloud browser demos reviewed | No candidate promoted yet | Execution-boundary topology can help. |
+| Browser — Environment Parity and Configuration Risk | NO VIDEO | — | — | Compare actual environments. |
+| Browser — labs/review | NO VIDEO | — | — | Independent evidence. |
+| Non-functional — Performance Testing | RECOMMENDED VIDEO | Grafana k6 demos reviewed | No candidate promoted yet | Load→latency→throughput/error behavior is visual. |
+| Non-functional — Load, Stress, Spike and Endurance | RECOMMENDED VIDEO | k6 workload-shape demos reviewed | No candidate promoted yet | Traffic shapes over time are visual. |
+| Non-functional — Accessibility Fundamentals | RECOMMENDED VIDEO | W3C/accessibility assistive-tech demos reviewed | No candidate promoted yet | Seeing keyboard/screen-reader barriers adds essential human context. |
+| Non-functional — Compatibility Testing | OPTIONAL VIDEO | Compatibility demos reviewed | No candidate promoted yet | Can reinforce matrix thinking. |
+| Non-functional — Reliability-oriented Testing | RECOMMENDED VIDEO | Resilience/fault test demos reviewed | No candidate promoted yet | Degraded behavior is worth seeing. |
+| Non-functional — Data Integrity and Concurrency Testing | RECOMMENDED VIDEO | Concurrency race demos reviewed | No candidate promoted yet | Interleavings are visual. |
+| Non-functional — baseline labs | NO VIDEO | — | — | Measure actual system. |
+| Quality in Containers/CI — Test Containers and Environments | RECOMMENDED VIDEO | Containerized test-environment demos reviewed | No candidate promoted yet | Environment lifecycle is visual. |
+| Quality in Containers/CI — Dockerized Test Dependencies | RECOMMENDED VIDEO | Testcontainers/docker dependency demos reviewed | No candidate promoted yet | Dependency startup/isolation is useful to see. |
+| Quality in Containers/CI — Ephemeral Environment Concepts | RECOMMENDED VIDEO | Preview/ephemeral environment demos reviewed | No candidate promoted yet | Environment lifecycle/topology is visual. |
