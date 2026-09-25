@@ -167,3 +167,18 @@ Foundational lessons should teach the concept in natural, domain-neutral languag
 Steward is a continuing project, not a fictional product that the prose should pretend is already running. Use it when the learner is actually designing, building, integrating, testing, operating, or evolving a concrete Steward artifact. Do not force Steward names into basic language/syntax explanations merely to create continuity.
 
 A useful test: if replacing "Steward" with "a program" makes a foundational explanation sound more natural without losing meaning, prefer the neutral wording. Project continuity should come from real implementation milestones and exercises, not repeated branding inside every concept paragraph.
+
+
+### Targeted required reading
+
+A lesson must not send the learner to a large manual, specification, book, tutorial, or documentation root and simply label it "required reading".
+
+For every required or supporting resource:
+- state the exact chapter, section, heading, page range, RFC section, tutorial step, or documentation page that is relevant;
+- deep-link directly to that section or page whenever the source exposes a stable URL/anchor;
+- include a short `Read:` instruction so the learner knows where the assigned slice starts and ends even if the external site's anchors change;
+- explain why the assigned slice matters when the connection is not obvious;
+- do not assign an entire documentation set when a few sections satisfy the learning objective;
+- distinguish material that should be read now from reference material that is useful to keep nearby.
+
+Existing curriculum resources must be migrated to this standard school by school. Do not remove useful authoritative sources merely because they are large; narrow the assignment and deep-link to the relevant part instead.

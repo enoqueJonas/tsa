@@ -1,8 +1,8 @@
 import type { LearningResource, LessonBlock } from "../activities";
 import type { Lesson } from "./lesson";
 
-const pythonTutorial: LearningResource = { title: "Python Tutorial", url: "https://docs.python.org/3/tutorial/" };
-const pythonReference: LearningResource = { title: "Python Language Reference", url: "https://docs.python.org/3/reference/" };
+const pythonTutorial: LearningResource = { title: "Python Tutorial — An Informal Introduction to Python", url: "https://docs.python.org/3/tutorial/introduction.html", read: "Sections 3.1–3.2: Using Python as a Calculator and First Steps Towards Programming", purpose: "Focus on values, strings, lists and the first examples of Python program state; you do not need to read the full tutorial yet." };
+const pythonReference: LearningResource = { title: "Python Language Reference — Data model", url: "https://docs.python.org/3/reference/datamodel.html", read: "Section 3.1: Objects, values and types", purpose: "Use this as the precise reference for object identity, type and value. Read only this section for the lesson." };
 
 const blocks: LessonBlock[] = [
     { type: "heading", id: "introduction", text: "Introduction" },
