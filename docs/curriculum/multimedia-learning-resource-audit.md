@@ -485,3 +485,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Patching — Separate Proxmox Host and Rocky Guest Lifecycles | NO VIDEO | — | — | The maintenance-domain distinction should be reasoned from the learner's platform. |
 | Patching — Major OS Version Change Is a Migration | OPTIONAL VIDEO | Enterprise Linux major-upgrade/migration material reviewed | No candidate promoted yet | A migration case study can add context; TSA should not teach blind in-place upgrade recipes. |
 | Patching — Reassess the Patch Operating Model | NO VIDEO | — | — | Final operating-model decision is evidence-driven. |
+| Windows — Windows in a Linux-Primary Enterprise Platform | OPTIONAL VIDEO | Mixed-estate operations overviews reviewed | No candidate promoted yet | A visual estate/boundary overview can help without turning TSA into a Windows-specialist course. |
