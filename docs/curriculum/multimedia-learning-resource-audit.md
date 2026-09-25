@@ -1030,3 +1030,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architectural Styles — Layered Architecture | OPTIONAL VIDEO | Architecture-style comparisons reviewed | No candidate promoted yet | A layer/dependency diagram is useful but not required. |
 | Architectural Styles — Hexagonal and Ports-and-Adapters Thinking | RECOMMENDED VIDEO | Ports-and-adapters talks reviewed | No candidate promoted yet | Ports, adapters and dependency inversion are strongly visual. |
 | Architectural Styles — Modular Monolith | NO VIDEO | Prior modularity media applies | Reuse only if review is needed | Avoid duplicate assignment. |
+| Architectural Styles — Service-oriented Architecture | OPTIONAL VIDEO | SOA architecture talks reviewed | No candidate promoted yet | Useful historical/enterprise context. |
