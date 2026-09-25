@@ -904,3 +904,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Resilience — Queues and Backpressure | RECOMMENDED VIDEO | backpressure/queue demos reviewed | No candidate promoted yet | Queue depth and producer/consumer mismatch are visual. |
 | Resilience — Graceful Degradation | OPTIONAL VIDEO | degradation pattern demos reviewed | No candidate promoted yet | User-visible fallback examples can help. |
 | Resilience — Retry Storms and Amplification | RECOMMENDED VIDEO | retry-storm simulations reviewed | No candidate promoted yet | Amplification is best understood on timelines/graphs. |
+| Resilience — Dependency Availability Budgets | OPTIONAL VIDEO | availability composition explainers reviewed | No candidate promoted yet | Dependency math can benefit from diagrams. |
