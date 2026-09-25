@@ -578,3 +578,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Canary — Automate Analysis and Abort a Bad Canary | RECOMMENDED VIDEO | Argo Rollouts + Prometheus analysis demos reviewed | No candidate promoted yet | Metric gate→abort flow is a strong live demonstration. |
 | Canary — Reassess Progressive Delivery | NO VIDEO | — | — | Architecture reassessment. |
 | Architecture/Cost — Availability in Cloud Environments | RECOMMENDED VIDEO | Cloud failure-domain/HA diagrams reviewed | No candidate promoted yet | Availability topology is visual. |
+| Architecture/Cost — Scalability and Capacity | RECOMMENDED VIDEO | Scaling/bottleneck diagrams reviewed | No candidate promoted yet | Demand/capacity/bottleneck relationships benefit from graphs. |
