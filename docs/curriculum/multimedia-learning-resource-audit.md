@@ -455,3 +455,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Containers — Container Debugging | RECOMMENDED VIDEO | Docker troubleshooting demos reviewed | No candidate promoted yet | Live inspect/log/exec/network diagnosis is valuable. |
 | CI — CI Pipeline Architecture | RECOMMENDED VIDEO | Jenkins pipeline architecture demos reviewed | No candidate promoted yet | SCM trigger→agent→stages→artifacts/gates is visual. |
 | CI — Jobs, Stages and Dependencies | RECOMMENDED VIDEO | Pipeline DAG/stage demos reviewed | No candidate promoted yet | Execution dependencies and fail-fast behavior benefit from a pipeline graph. |
+| CI — Runners and Agents | RECOMMENDED VIDEO | Jenkins agent/controller demos reviewed | No candidate promoted yet | Execution placement is easier to understand visually. |
