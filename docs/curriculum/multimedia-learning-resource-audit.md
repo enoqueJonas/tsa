@@ -444,3 +444,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Containers — Images and Layers | RECOMMENDED VIDEO | Image-layer/cache demonstrations reviewed | No candidate promoted yet | Layer reuse and invalidation are best shown live. |
 | Containers — Writing Dockerfiles | NO VIDEO | — | — | Write/build/inspect directly. |
 | Containers — Build Context | OPTIONAL VIDEO | Docker build-context demos reviewed | No candidate promoted yet | A concise demo can expose accidental context size/secrets. |
+| Containers — Multi-stage Builds | RECOMMENDED VIDEO | Multi-stage build demos reviewed | No candidate promoted yet | Builder/runtime stage separation and image-size difference are visually useful. |
