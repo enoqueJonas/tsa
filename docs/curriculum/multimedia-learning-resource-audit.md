@@ -608,3 +608,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Cloud Milestone — Architecture and Exposure Gate | NO VIDEO | — | — | Evidence gate. |
 | Cloud Milestone — Reproducible Infrastructure Gate | NO VIDEO | — | — | Evidence gate. |
 | Cloud Milestone — Orchestration and GitOps Gate | NO VIDEO | — | — | Evidence gate. |
+| Cloud Milestone — Recovery, Cost and Handoff Gate | NO VIDEO | — | — | Evidence gate. |
