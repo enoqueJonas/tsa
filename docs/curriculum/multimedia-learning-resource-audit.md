@@ -287,3 +287,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Networking — Routing | RECOMMENDED VIDEO | Routing-table/next-hop demonstrations reviewed | No candidate promoted yet | Route selection is inherently path-oriented and visual. |
 | Networking — DHCP | RECOMMENDED VIDEO | DHCP DORA-flow animations reviewed | No candidate promoted yet | Discover/offer/request/ack sequence is ideal for animation. |
 | Networking — DNS | RECOMMENDED VIDEO | Computerphile — How DNS Works | [Computerphile — How DNS Works](https://www.youtube.com/watch?v=uOfonONtIuk); whole video | The hierarchy and recursive lookup flow match the lesson well. |
+| Networking — NAT | RECOMMENDED VIDEO | NAT/PAT packet-flow explainers reviewed | No candidate promoted yet | Address/port rewriting is easier to understand visually. |
