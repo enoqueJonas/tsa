@@ -737,3 +737,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Enterprise File Services: NFS and SMB | RECOMMENDED VIDEO | NFS/Samba operational demonstrations reviewed | No candidate promoted yet | Linux NFS versus SMB interoperability and identity semantics benefit from a live two-client demonstration. |
 | Enterprise Directory Services: LDAP | RECOMMENDED VIDEO | LDAP directory/bind/search demonstrations reviewed | No candidate promoted yet | DIT, DN/RDN, bind, base DN, filters and groups are substantially easier to understand visually. |
 | File Integration — File-Based Integration Contracts | NO VIDEO | — | — | Contract/ownership design is the learning objective. |
+| File Integration — Legacy FTP Integration | OPTIONAL VIDEO | FTP protocol/session demonstrations reviewed | No candidate promoted yet | Seeing control/data-channel behavior can add context, but FTP is deliberately legacy/bounded. |
