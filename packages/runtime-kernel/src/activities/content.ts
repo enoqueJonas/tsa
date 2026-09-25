@@ -5,6 +5,10 @@ export interface LearningResource {
     read?: string;
     /** Why this particular slice of the source matters for the lesson. */
     purpose?: string;
+    /** How the learner should consume the resource. Defaults to reading for legacy resources. */
+    kind?: "reading" | "video" | "interactive" | "reference";
+    /** Exact timestamp range for long-form video/audio, for example "12:40–27:15". */
+    watch?: string;
 }
 
 export type LessonBlock =
