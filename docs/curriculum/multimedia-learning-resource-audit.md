@@ -1020,3 +1020,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Modularity — Dependency Direction | OPTIONAL VIDEO | Dependency-rule architecture talks reviewed | No candidate promoted yet | Dependency arrows are visual, but this was introduced earlier. |
 | Modularity — Encapsulation at System Scale | NO VIDEO | — | — | Boundary enforcement is best inspected in system structure. |
 | Modularity — Shared Libraries and Coupling | NO VIDEO | — | — | Analyze real change coupling. |
+| Modularity — Package Ownership and Change Impact | NO VIDEO | — | — | Ownership/change analysis is contextual. |
