@@ -251,3 +251,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture Decisions — Evaluating Trade-offs | NO VIDEO | — | — | The learner must compare actual options and accepted downsides. |
 | Architecture Decisions — Lab: Write Steward API ADRs | NO VIDEO | — | — | Independent decision-record lab. |
 | Milestone: Steward API System Design Portfolio | NO VIDEO | — | — | System Thinker synthesis milestone. |
+
+
+## Platform Builder — Computer/OS, Linux and Networking lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Computer/OS — CPU, Memory, Storage and I/O | RECOMMENDED VIDEO | Computer architecture animations reviewed | No candidate promoted yet | CPU/memory/storage/I-O interactions benefit from visual data-flow explanation. |
