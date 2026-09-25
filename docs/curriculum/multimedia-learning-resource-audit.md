@@ -1219,3 +1219,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
 | Discovery — Choosing a Substantial Problem | NO VIDEO | Prior curriculum resources sufficient | — | Capstone begins by proving transfer; problem choice must come from evidence, not new instruction. |
+| Discovery — Stakeholder Discovery | OPTIONAL VIDEO | Stakeholder-interview material reviewed | No candidate promoted; use only if interview technique needs refresh | A short interview demonstration can refresh technique, but the learner must conduct real discovery. |
