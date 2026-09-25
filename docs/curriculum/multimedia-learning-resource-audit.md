@@ -421,3 +421,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Core Infrastructure — Operate Authoritative Homelab DNS | RECOMMENDED VIDEO | BIND authoritative-DNS demonstrations reviewed | No candidate promoted yet | Authoritative zones, recursion boundaries and record ownership are useful to see configured once. |
 | Core Infrastructure — Break and Diagnose DNS | NO VIDEO | — | — | The learner should diagnose deliberately broken DNS from dig/service evidence. |
 | Core Infrastructure — Operate DHCP Scopes and Reservations | RECOMMENDED VIDEO | DHCP server/scope demonstrations reviewed | No candidate promoted yet | Scope, lease and reservation behavior is visual and operational. |
+| Core Infrastructure — DHCP Exhaustion, Wrong Options and Relay | RECOMMENDED VIDEO | DHCP relay/exhaustion demonstrations reviewed | No candidate promoted yet | Relay paths and lease-pool failure are easier to understand visually. |
