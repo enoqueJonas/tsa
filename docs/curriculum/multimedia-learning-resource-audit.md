@@ -716,3 +716,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Threat Modeling — Threat Identification | RECOMMENDED VIDEO | OWASP threat-modeling sessions reviewed | No candidate promoted yet | A real identification session models the reasoning process. |
 | Threat Modeling — STRIDE-style Thinking | RECOMMENDED VIDEO | STRIDE walkthroughs reviewed | No candidate promoted yet | Applying categories to a diagram is better demonstrated than memorized. |
 | Threat Modeling — Abuse Cases | OPTIONAL VIDEO | Abuse-case workshops reviewed | No candidate promoted yet | A worked adversarial scenario can help. |
+| Threat Modeling — Threat Prioritization | NO VIDEO | — | — | Prioritize actual threats using impact/likelihood/evidence. |
