@@ -220,3 +220,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Data Flow — Failure Across Integrations | OPTIONAL VIDEO | Distributed-failure talks reviewed | No candidate promoted yet | A visual cascade can reinforce propagation. |
 | Data Flow — Lab: Model Steward API Data Flows | NO VIDEO | — | — | Independent synthesis lab. |
 | SOAP/XML — XML Documents, Namespaces and Parsing | OPTIONAL VIDEO | XML namespace explainers reviewed | No candidate promoted yet | Namespaces can benefit from a visual qualified-name example. |
+| SOAP/XML — XSD: Make the XML Contract Executable | OPTIONAL VIDEO | XSD walkthroughs reviewed | No candidate promoted yet | Schema validation can be demonstrated visually. |
