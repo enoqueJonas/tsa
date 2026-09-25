@@ -1088,3 +1088,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Evaluation — Architecture Decision Records | NO VIDEO | ADR media already audited earlier | Reuse earlier optional media if needed | Do not duplicate. |
 | Evaluation — Architecture Reviews | OPTIONAL VIDEO | architecture-review facilitation talks reviewed | No candidate promoted yet | A real review discussion can model challenge and evidence use. |
 | Evaluation — Scenario-based Architecture Evaluation | RECOMMENDED VIDEO | ATAM/SEI architecture-evaluation material reviewed | No candidate promoted yet | Scenario walkthroughs show how quality risks emerge from architectural choices. |
+| Evaluation — Fitness Functions | RECOMMENDED VIDEO | evolutionary-architecture fitness-function talks reviewed | No candidate promoted yet | Automated architecture constraints benefit from concrete demonstrations. |
