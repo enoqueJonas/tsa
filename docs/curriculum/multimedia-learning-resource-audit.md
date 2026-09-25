@@ -556,3 +556,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Object Storage — Defend the Storage Architecture | NO VIDEO | — | — | Architecture defence. |
 | IaC — Why Infrastructure as Code | OPTIONAL VIDEO | IaC state/change workflow explainers reviewed | No candidate promoted yet | Useful motivation, but the console-to-code audit is primary. |
 | IaC — Declarative Infrastructure | RECOMMENDED VIDEO | Declarative reconciliation demos reviewed | No candidate promoted yet | Desired versus actual state is a strong visual concept. |
+| IaC — Terraform and OpenTofu Fundamentals | RECOMMENDED VIDEO | OpenTofu/Terraform plan/apply demos reviewed | No candidate promoted yet | init→plan→apply→state workflow is useful to see once. |
