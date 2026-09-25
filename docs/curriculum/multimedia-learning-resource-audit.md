@@ -498,3 +498,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI Migration — Migration Brief: Move a Steward CI Workflow Safely | OPTIONAL VIDEO | CI migration case studies reviewed | No candidate promoted yet | A case study can provide context, but semantic mapping is primary. |
 | CI Migration — Execute a Bounded CI Migration | NO VIDEO | — | — | Independent migration exercise. |
 | CI Migration — Migration Review | NO VIDEO | — | — | Reflection. |
+| Delivery Milestone — Milestone Brief: Steward Delivery Platform | NO VIDEO | — | — | Milestone brief. |
