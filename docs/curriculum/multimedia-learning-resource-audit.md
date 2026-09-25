@@ -681,3 +681,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | File Integration — Secure File Transfer Readiness: SFTP and FTPS | RECOMMENDED VIDEO | SFTP/FTPS protocol comparisons reviewed | No candidate promoted yet | TLS-versus-SSH trust/authentication paths benefit from a visual comparison. |
 | Platform Builder — Milestone Review and Exit Criteria | NO VIDEO | — | — | Milestone review must use accumulated evidence. |
 | Platform Builder — Assemble the Platform Builder Evidence Pack | NO VIDEO | — | — | Portfolio assembly is learner work. |
+| Platform Builder — Platform Builder Exit Reflection | NO VIDEO | — | — | Reflection should come from the learner's actual platform decisions. |
