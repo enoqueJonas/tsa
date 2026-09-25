@@ -520,3 +520,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Hosting — Cloud Cost Awareness | OPTIONAL VIDEO | Cloud billing model explainers reviewed | No candidate promoted yet | Useful context; actual cost modeling is primary. |
 | VPS — Choosing a Budget VPS | NO VIDEO | — | — | Provider choice changes; compare current constraints directly. |
 | VPS — Provisioning a Server | OPTIONAL VIDEO | VPS provisioning demos reviewed | No candidate promoted yet | A visual setup can reduce friction but should not tie TSA to one vendor UI. |
+| VPS — Public IP Addressing | NO VIDEO | — | — | Apply networking foundations. |
