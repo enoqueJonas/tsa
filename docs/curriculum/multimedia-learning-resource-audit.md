@@ -2209,3 +2209,40 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Production Readiness | NO VIDEO | Readiness checklist/tutorial media intentionally excluded | — | The learner must inspect the actual capstone, exercise failure/recovery/security/performance evidence and make a release decision from demonstrated behavior. |
 | Engineering Defence | OPTIONAL VIDEO | Technical design-review and engineering-defence examples considered | No candidate promoted yet | Watching a strong technical review can help with panel dynamics, but the defence content and decisions must remain entirely the learner's own. |
 | Final Capstone Defence / Graduation Gate | NO VIDEO | — | — | This is the terminal assessment of transferable professional engineering judgment. |
+
+
+## Curriculum-wide audit closure
+
+**Status: COMPLETE — all 12 TSA schools have now been reviewed for multimedia fit.**
+
+Completed schools:
+1. Engineering Apprentice
+2. Builder
+3. System Thinker
+4. Platform Builder
+5. Delivery Engineer
+6. Cloud Engineer
+7. Quality Steward
+8. Security Steward
+9. Reliability Engineer
+10. Architect
+11. Technical Steward
+12. Professional Engineer
+
+The matrix is intentionally not a list of videos for every lesson. It records deliberate **NO VIDEO**, **OPTIONAL VIDEO**, **RECOMMENDED VIDEO**, and rare **REQUIRED WATCH** decisions based on whether motion, sequence, topology, UI behavior, live diagnosis, operational workflow, or practitioner discussion materially improves the lesson.
+
+### Next implementation pass
+
+The decision audit is now separate from resource insertion. The next pass should work through only OPTIONAL/RECOMMENDED/REQUIRED rows, lesson by lesson:
+
+1. verify the lesson objective against the current lesson content;
+2. research multiple credible free candidates;
+3. verify the candidate is still available and technically current enough for the lesson;
+4. choose the strongest candidate rather than the most popular one;
+5. identify an exact timestamp range for long material;
+6. use a timestamped deep link where possible;
+7. add a concise **Watch:** instruction and learner focus;
+8. retain authoritative documentation for exact/version-specific behavior;
+9. build after each coherent school/path batch.
+
+A matrix row saying **No candidate promoted yet** is deliberate: the audit confirmed that video would add value, but did not lower the quality bar by inserting the first plausible search result. Candidate selection remains a separate verification step.
