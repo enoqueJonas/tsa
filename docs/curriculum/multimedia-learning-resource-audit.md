@@ -946,3 +946,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Fault Injection — Blast Radius and Safety | NO VIDEO | — | — | Define actual safeguards before experiment. |
 | Fault Injection — Process and Container Failure | RECOMMENDED VIDEO | pod/process failure demos reviewed | No candidate promoted yet | Seeing restart/recovery behavior is useful. |
 | Fault Injection — Resource Exhaustion Concepts | RECOMMENDED VIDEO | CPU/memory/disk pressure demos reviewed | No candidate promoted yet | Failure onset under pressure is visual. |
+| Fault Injection — Network and Dependency Failure Simulation | RECOMMENDED VIDEO | latency/loss/dependency fault demos reviewed | No candidate promoted yet | Injected latency/loss and downstream effects are ideal for live demo. |
