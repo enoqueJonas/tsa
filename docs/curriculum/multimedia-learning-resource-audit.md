@@ -754,3 +754,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Vulnerability Lab — Implementing Mitigations | NO VIDEO | — | — | Fix the actual weakness. |
 | Vulnerability Lab — Retesting Fixes | NO VIDEO | — | — | Independent verification is primary. |
 | Vulnerability Lab — Writing Security Findings | NO VIDEO | — | — | Writing the finding is the exercise. |
+| Vulnerability Lab — Lab: Reproduce and Fix Steward Vulnerabilities | NO VIDEO | — | — | Independent security lab. |
