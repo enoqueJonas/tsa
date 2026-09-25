@@ -429,3 +429,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Foundations — Semantic Versioning | OPTIONAL VIDEO | SemVer explainers reviewed | No candidate promoted yet | A concise example can reinforce compatibility signaling, but the spec and release exercise are enough. |
 | Foundations — Conventional Commits | NO VIDEO | — | — | Convention is compact and practice-oriented. |
 | Foundations — Release Notes and Changelogs | NO VIDEO | — | — | Produce them from real changes. |
+| Foundations — Build Artifacts | RECOMMENDED VIDEO | Artifact/repository pipeline explainers reviewed | No candidate promoted yet | Immutable artifact flow and provenance benefit from a pipeline diagram. |
