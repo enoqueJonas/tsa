@@ -677,3 +677,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | File Integration — File-Based Integration Contracts | NO VIDEO | — | — | Contract design and atomicity rules are better expressed/tested directly. |
 | File Integration — Legacy FTP Integration | OPTIONAL VIDEO | FTP protocol/session demonstrations reviewed | No candidate promoted yet | A packet/session demonstration can provide legacy context, but implementation evidence is primary. |
 | File Integration — Batch File Processing Lifecycle | RECOMMENDED VIDEO | Batch file handoff/atomic rename patterns reviewed | No candidate promoted yet | Producer→landing→validation→processing→archive/reject lifecycle benefits from a state-flow visualization. |
+| File Integration — Shared Filesystem versus Managed File Transfer | NO VIDEO | — | — | This is an architecture choice based on authority, delivery and failure semantics. |
