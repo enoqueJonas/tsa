@@ -617,3 +617,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Unit/Component — Isolation | RECOMMENDED VIDEO | Isolation/nondeterminism demonstrations reviewed | No candidate promoted yet | Controlled dependencies are useful to see live. |
 | Unit/Component — Test Doubles | RECOMMENDED VIDEO | Mock/stub/fake explanations reviewed | No candidate promoted yet | Different double roles benefit from side-by-side examples. |
 | Unit/Component — Mocks, Stubs and Fakes | RECOMMENDED VIDEO | Same test-double candidates | No candidate promoted yet | Behavior versus interaction evidence is clearer in code demonstration. |
+| Unit/Component — Coverage and Its Limitations | RECOMMENDED VIDEO | Mutation/coverage demonstrations reviewed | No candidate promoted yet | High coverage with weak assertions is a powerful demonstration. |
