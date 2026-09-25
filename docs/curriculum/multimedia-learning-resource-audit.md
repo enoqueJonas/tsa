@@ -540,3 +540,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Certificates — Inspect the Served Certificate and Trust Chain | RECOMMENDED VIDEO | openssl/browser chain inspection demos reviewed | No candidate promoted yet | Seeing leaf/intermediate/root and SAN/hostname checks live adds value. |
 | Certificates — Automate Public Certificate Issuance | RECOMMENDED VIDEO | ACME challenge demos reviewed | No candidate promoted yet | Challenge-response and issuance automation are useful to see. |
 | Certificates — Prove Renewal and Runtime Reload | RECOMMENDED VIDEO | Certificate renewal/reload demos reviewed | No candidate promoted yet | A live renewal without stale served cert is strong operational evidence. |
+| Certificates — Monitor Expiry and Break Renewal Safely | NO VIDEO | — | — | Learner must inject and diagnose the failure. |
