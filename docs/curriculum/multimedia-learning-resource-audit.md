@@ -649,3 +649,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Configuration — Reassess Image, Ansible and Platform Ownership | NO VIDEO | — | — | Ownership boundaries require a contextual decision. |
 | Lifecycle — Patch Risk, Exposure and Change Windows | OPTIONAL VIDEO | Patch-management/change-window talks reviewed | No candidate promoted yet | Incident/change examples can add context, but risk classification is primary. |
 | Lifecycle — Patch a Rocky Linux Workload Host | NO VIDEO | — | — | Actual DNF maintenance and before/after workload evidence are the learning activity. |
+| Lifecycle — Kernel Update and Controlled Reboot | RECOMMENDED VIDEO | Linux kernel/reboot lifecycle demonstrations reviewed | No candidate promoted yet | Installed-versus-running kernel state and reboot transition benefit from live evidence. |
