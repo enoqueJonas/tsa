@@ -553,3 +553,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Object Storage — From Object-storage Design to Operation | NO VIDEO | — | — | Design should use the actual Steward need. |
 | Object Storage — Deploy and Secure the Object Store | OPTIONAL VIDEO | MinIO deployment demos reviewed | No candidate promoted yet | Setup support only; learner must own security decisions. |
 | Object Storage — Operate Lifecycle, Failure and Recovery | RECOMMENDED VIDEO | Object lifecycle/versioning/recovery demos reviewed | No candidate promoted yet | Lifecycle and version recovery are visual operational flows. |
+| Object Storage — Defend the Storage Architecture | NO VIDEO | — | — | Architecture defence. |
