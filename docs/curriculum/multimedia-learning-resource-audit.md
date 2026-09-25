@@ -746,3 +746,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Vulnerability Lab — Reproducing Representative Attacks Safely | RECOMMENDED VIDEO | safe lab exploit walkthroughs reviewed | No candidate promoted yet | A bounded demo models method/evidence. |
 | Vulnerability Lab — Using Proxies and Request Inspection | RECOMMENDED VIDEO | PortSwigger Burp Proxy tutorials reviewed | No candidate promoted yet | Intercept/modify/replay is inherently interactive. |
 | Vulnerability Lab — Capturing Security Evidence | OPTIONAL VIDEO | security evidence/report demos reviewed | No candidate promoted yet | Useful workflow context. |
+| Vulnerability Lab — From Finding to Reproduction Steps | NO VIDEO | — | — | Write reproducible steps from own evidence. |
