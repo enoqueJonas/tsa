@@ -1140,3 +1140,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technology Governance — Using Frameworks Without Checklist Thinking | NO VIDEO | — | — | The learner must tailor frameworks to actual governance problems. |
 | Technology Governance — Lab: Map Steward Governance Responsibilities | NO VIDEO | — | — | Independent governance mapping. |
 | Risk — Risk Identification | OPTIONAL VIDEO | NIST/ISO risk-identification material reviewed | No candidate promoted yet | Worked risk statements can reinforce cause/event/consequence structure. |
+| Risk — Likelihood and Impact | OPTIONAL VIDEO | risk-matrix critique/material reviewed | No candidate promoted yet | Examples help show uncertainty and ordinal limitations. |
