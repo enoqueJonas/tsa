@@ -662,3 +662,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Browser — Browser Differences | RECOMMENDED VIDEO | Browser-engine/rendering demos reviewed | No candidate promoted yet | Engine differences and reproducibility benefit from visual comparison. |
 | Browser — Responsive Testing | RECOMMENDED VIDEO | Playwright responsive/device emulation demos reviewed | No candidate promoted yet | Viewport/layout state is inherently visual. |
 | Browser — Cross-browser Testing | RECOMMENDED VIDEO | Playwright/BrowserStack cross-browser demos reviewed | No candidate promoted yet | Running the same claim across engines is useful to see. |
+| Browser — BrowserStack or Equivalent | OPTIONAL VIDEO | BrowserStack product demos reviewed | No candidate promoted yet | Provider UI can orient, but vendor-specific walkthroughs age quickly. |
