@@ -787,3 +787,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Directory Federation — Directory Federation Architecture | RECOMMENDED VIDEO | LDAP→Keycloak federation architecture demos reviewed | No candidate promoted yet | Identity source→federation→OIDC→application flow is visual. |
 | Directory Federation — Keycloak LDAP Federation | RECOMMENDED VIDEO | Keycloak LDAP federation demos reviewed | No candidate promoted yet | Live mapper/sync/login behavior is useful. |
 | Directory Federation — Federated Identity Lifecycle and Failure Modes | RECOMMENDED VIDEO | federation outage/lifecycle demos reviewed | No candidate promoted yet | Directory outage and lifecycle propagation are temporal. |
+| Directory Federation — Active Directory, LDAP and Kerberos Context | RECOMMENDED VIDEO | AD/LDAP/Kerberos architecture explainers reviewed | No candidate promoted yet | Protocol/service relationships benefit from diagrams. |
