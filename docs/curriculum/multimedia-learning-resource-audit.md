@@ -693,3 +693,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Scheduled Execution — Defend the Quality Execution Policy | NO VIDEO | — | — | Defence uses learner evidence. |
 | Quality Milestone — Quality Steward Milestone Readiness | NO VIDEO | — | — | Readiness review. |
 | Quality Milestone — Integrate the Quality Steward System | NO VIDEO | — | — | Integration work. |
+| Quality Milestone — Audit the Existing Evidence | NO VIDEO | — | — | Evidence audit. |
