@@ -846,3 +846,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Metrics — Grafana | RECOMMENDED VIDEO | Grafana dashboard demos reviewed | No candidate promoted yet | The tool is visual by nature. |
 | Metrics — Dashboard Design | RECOMMENDED VIDEO | Grafana dashboard-design talks reviewed | No candidate promoted yet | Good/bad dashboards are best compared visually. |
 | Metrics — Dashboard Anti-patterns | RECOMMENDED VIDEO | dashboard critique talks reviewed | No candidate promoted yet | Visual examples make anti-patterns obvious. |
+| Metrics — Nexus and Internal Platform Metrics | OPTIONAL VIDEO | Nexus/Prometheus integration demos reviewed | No candidate promoted yet | Useful integration context. |
