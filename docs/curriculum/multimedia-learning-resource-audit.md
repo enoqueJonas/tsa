@@ -550,3 +550,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Building Blocks — Load Balancers | RECOMMENDED VIDEO | Load-balancer traffic demos reviewed | No candidate promoted yet | Distribution/health-check behavior is strongly visual. |
 | Building Blocks — IAM | RECOMMENDED VIDEO | Cloud IAM principal/role/policy diagrams reviewed | No candidate promoted yet | Identity assumption and policy evaluation benefit from diagrams. |
 | Object Storage — S3-Compatible Object Storage for Steward | RECOMMENDED VIDEO | S3/MinIO architecture demos reviewed | No candidate promoted yet | Object API, bucket policy and persistence boundaries benefit from a visual model. |
+| Object Storage — From Object-storage Design to Operation | NO VIDEO | — | — | Design should use the actual Steward need. |
