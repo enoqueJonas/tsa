@@ -848,3 +848,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Metrics — Dashboard Design | RECOMMENDED VIDEO | dashboard-design talks reviewed | No candidate promoted yet | Good/bad dashboard comparisons are visual. |
 | Metrics — Dashboard Anti-patterns | RECOMMENDED VIDEO | dashboard anti-pattern reviews | No candidate promoted yet | Seeing misleading/noisy dashboards makes the critique concrete. |
 | Metrics — Nexus and Internal Platform Metrics | NO VIDEO | — | — | Instrument actual platform dependencies. |
+| Metrics — CI and Delivery Metrics | NO VIDEO | — | — | Choose metrics from actual delivery questions. |
