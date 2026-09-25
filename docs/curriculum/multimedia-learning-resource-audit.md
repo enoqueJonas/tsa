@@ -432,3 +432,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Configuration Management — Secrets, Failure and Safe Fleet Changes | OPTIONAL VIDEO | Ansible Vault/fleet rollout material reviewed | No candidate promoted yet | A visual rollout can reinforce blast-radius control, but later Vault coverage owns secrets deeply. |
 | Configuration Management — Milestone: Build and Operate the Rocky Configuration Baseline | NO VIDEO | — | — | Milestone synthesis. |
 | Configuration Management — Reassess Image, Ansible and Platform Ownership | NO VIDEO | — | — | Ownership boundaries require an architecture decision, not another tutorial. |
+| OS Lifecycle — Patch Risk, Exposure and Change Windows | OPTIONAL VIDEO | Patch-management/change-window talks reviewed | No candidate promoted yet | A real operational case can add context, but the learner's risk classification is primary. |
