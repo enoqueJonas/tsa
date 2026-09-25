@@ -518,3 +518,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Hosting — Shared Responsibility | RECOMMENDED VIDEO | Cloud shared-responsibility explainers reviewed | No candidate promoted yet | Provider/customer ownership boundary benefits from a layered diagram. |
 | Hosting — Elasticity and Consumption Models | OPTIONAL VIDEO | Elasticity/autoscaling demos reviewed | No candidate promoted yet | A demand/capacity timeline can help. |
 | Hosting — Cloud Cost Awareness | OPTIONAL VIDEO | Cloud billing model explainers reviewed | No candidate promoted yet | Useful context; actual cost modeling is primary. |
+| VPS — Choosing a Budget VPS | NO VIDEO | — | — | Provider choice changes; compare current constraints directly. |
