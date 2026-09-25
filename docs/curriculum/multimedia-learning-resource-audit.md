@@ -621,3 +621,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | File Integration — Shared Filesystem versus Managed File Transfer | OPTIONAL VIDEO | File-transfer architecture comparisons reviewed | No candidate promoted yet | A topology comparison can reinforce trust/ownership differences, but the decision exercise is primary. |
 | File Integration — Secure File Transfer Readiness: SFTP and FTPS | RECOMMENDED VIDEO | SFTP vs FTPS protocol/security explainers reviewed | No candidate promoted yet | Showing SSH-based SFTP versus TLS-based FTPS prevents the common mistake of treating them as variants of FTP. |
 | Milestone — Milestone Brief: Steward Homelab v1 | NO VIDEO | — | — | The brief consolidates existing work; no new teaching medium is needed. |
+| Milestone — Gate 1: Infrastructure and Topology Baseline | NO VIDEO | — | — | Gate evidence must come from the learner's running homelab. |
