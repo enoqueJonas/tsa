@@ -651,3 +651,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Parallel Execution | RECOMMENDED VIDEO | pytest-xdist/Playwright parallel demos reviewed | No candidate promoted yet | Worker scheduling and shared-state failures benefit from demonstration. |
 | Automation — Retries and Flaky-test Risk | RECOMMENDED VIDEO | Flaky-test/retry talks reviewed | No candidate promoted yet | A repeated intermittent failure makes masking risk concrete. |
 | Automation — Framework Maintainability | NO VIDEO | — | — | Refactor and evaluate the actual framework. |
+| Automation — Reusable Testing Infrastructure vs Domain Test Code | NO VIDEO | — | — | Boundary decision is contextual. |
