@@ -908,3 +908,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Resilience — Timeouts | RECOMMENDED VIDEO | timeout/failure-timeline demos reviewed | No candidate promoted yet | Bounded waiting is temporal. |
 | Resilience — Retries | RECOMMENDED VIDEO | retry failure demos reviewed | No candidate promoted yet | Retry behavior under transient failure is temporal. |
 | Resilience — Exponential Backoff and Jitter | RECOMMENDED VIDEO | AWS retry/backoff material reviewed | No candidate promoted yet | Request-wave desynchronization is best shown graphically. |
+| Resilience — Circuit Breakers | RECOMMENDED VIDEO | circuit-breaker state-machine demos reviewed | No candidate promoted yet | Closed/open/half-open states are visual. |
