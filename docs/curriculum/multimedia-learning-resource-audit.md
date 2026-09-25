@@ -625,3 +625,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | API/Integration — Authentication and Authorization Testing | RECOMMENDED VIDEO | Authorization-matrix/BOLA demonstrations reviewed | No candidate promoted yet | A broken-access example can make privilege boundaries concrete. |
 | API/Integration — Schema and Contract Validation | RECOMMENDED VIDEO | Contract-testing/Pact demonstrations reviewed | No candidate promoted yet | Provider/consumer expectation flow is visual. |
 | API/Integration — Database Assertions | NO VIDEO | — | — | Use persistence as supporting evidence directly. |
+| API/Integration — Integration Boundaries | NO VIDEO | — | — | Name and implement the boundary. |
