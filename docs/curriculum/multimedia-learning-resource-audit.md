@@ -400,3 +400,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Windows — Windows in a Linux-Primary Enterprise Platform | OPTIONAL VIDEO | Windows Server enterprise-role overviews reviewed | No candidate promoted yet | A visual estate map can orient the bounded Windows scope. |
 | Windows — Build and Baseline Windows Server | OPTIONAL VIDEO | Windows Server install/baseline walkthroughs reviewed | No candidate promoted yet | Useful setup support; actual baseline evidence is primary. |
 | Windows — PowerShell as an Administrative Interface | RECOMMENDED VIDEO | PowerShell object-pipeline demonstrations reviewed | No candidate promoted yet | Seeing objects flow through the pipeline corrects shell-as-text assumptions. |
+| Windows — Services, Processes and Event Logs | RECOMMENDED VIDEO | PowerShell/Event Viewer troubleshooting demos reviewed | No candidate promoted yet | Live investigation of service failure and event evidence adds value. |
