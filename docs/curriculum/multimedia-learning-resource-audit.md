@@ -679,3 +679,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI — Test Pipeline Stages | RECOMMENDED VIDEO | CI test-pipeline walkthroughs reviewed | No candidate promoted yet | Stage ordering and feedback latency are easier to see in a pipeline. |
 | CI — Parallelization | RECOMMENDED VIDEO | CI parallel test demos reviewed | No candidate promoted yet | Workers/shards/artifacts benefit from visualization. |
 | CI — Reports and Artifacts | OPTIONAL VIDEO | CI artifact/report demos reviewed | No candidate promoted yet | Seeing diagnostics consumed after a failure adds context. |
+| CI — Quality Gates | OPTIONAL VIDEO | quality-gate pipeline demos reviewed | No candidate promoted yet | Useful reinforcement; actual policy design is primary. |
