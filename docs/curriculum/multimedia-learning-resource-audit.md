@@ -1170,3 +1170,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Controls — Control Objectives | NO VIDEO | — | — | Write objectives against actual risks. |
 | Controls — Control Design | OPTIONAL VIDEO | control-design/audit examples reviewed | No candidate promoted yet | Worked design examples can reinforce owner/frequency/evidence/failure response. |
 | Controls — Control Effectiveness | RECOMMENDED VIDEO | control design-vs-operating-effectiveness material reviewed | No candidate promoted yet | Side-by-side evidence examples help distinguish intended design from operation. |
+| Controls — Evidence | NO VIDEO | — | — | The learner must identify and preserve actual operating evidence. |
