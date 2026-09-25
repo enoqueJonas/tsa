@@ -630,3 +630,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | API/Integration — Mocking and Service Virtualization | RECOMMENDED VIDEO | Service-virtualization demos reviewed | No candidate promoted yet | Real-versus-virtual boundary and failure simulation are visual. |
 | API/Integration — Internal Package Compatibility | NO VIDEO | — | — | Test package compatibility as consumed. |
 | API/Integration — Data Setup and Cleanup | NO VIDEO | — | — | Implement deterministic state ownership. |
+| API/Integration — Lab: Test Steward API End-to-End at the Service Layer | NO VIDEO | — | — | Independent lab. |
