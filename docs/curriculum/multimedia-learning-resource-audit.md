@@ -684,3 +684,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI Quality — Flaky-test Containment | RECOMMENDED VIDEO | Flake quarantine/diagnosis talks reviewed | No candidate promoted yet | Seeing intermittent evidence and containment workflow adds value. |
 | CI Quality — Internal Test Package Publishing and Compatibility in CI | NO VIDEO | — | — | Exercise actual package compatibility. |
 | Scheduled Quality — Continuous and Scheduled Quality Execution | RECOMMENDED VIDEO | Jenkins scheduled/SCM-trigger pipeline demos reviewed | No candidate promoted yet | SCM trigger versus cron regression and collision control benefit from a pipeline demonstration. |
+| Scheduled Quality — Wire Mandatory Continuous Checks | NO VIDEO | — | — | Implement real trigger/checks. |
