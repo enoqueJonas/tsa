@@ -784,3 +784,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Identity/Secrets — Secret Lifecycle: Create, Distribute, Rotate, Revoke | RECOMMENDED VIDEO | secret-lifecycle demonstrations reviewed | No candidate promoted yet | Rotation/revocation timelines add operational intuition. |
 | Identity/Secrets — Vault Concepts and Dynamic Secrets | RECOMMENDED VIDEO | HashiCorp Vault dynamic-secrets demos reviewed | No candidate promoted yet | Lease issuance/renewal/revocation is especially useful to see live. |
 | Identity/Secrets — Kong, Identity and API Policy | RECOMMENDED VIDEO | Kong/OIDC policy-flow demos reviewed | No candidate promoted yet | Gateway→IdP→API policy flow is visual. |
+| Identity/Secrets — Identity and Secrets Security Review | NO VIDEO | — | — | Review uses actual architecture/evidence. |
