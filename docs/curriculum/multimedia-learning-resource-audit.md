@@ -431,3 +431,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Configuration Management — Configuration Drift Detection and Repair | RECOMMENDED VIDEO | Ansible drift/remediation demos reviewed | No candidate promoted yet | A deliberate manual drift followed by detection/repair is worth seeing once. |
 | Configuration Management — Secrets, Failure and Safe Fleet Changes | OPTIONAL VIDEO | Ansible Vault/fleet rollout material reviewed | No candidate promoted yet | A visual rollout can reinforce blast-radius control, but later Vault coverage owns secrets deeply. |
 | Configuration Management — Milestone: Build and Operate the Rocky Configuration Baseline | NO VIDEO | — | — | Milestone synthesis. |
+| Configuration Management — Reassess Image, Ansible and Platform Ownership | NO VIDEO | — | — | Ownership boundaries require an architecture decision, not another tutorial. |
