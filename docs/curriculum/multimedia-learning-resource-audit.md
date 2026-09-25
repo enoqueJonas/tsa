@@ -726,3 +726,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | --- | --- | --- | --- | --- |
 | Windows in a Linux-Primary Enterprise Platform | OPTIONAL VIDEO | Mixed Linux/Windows enterprise operations material reviewed | No candidate promoted yet | A visual estate map can provide context, but responsibility boundaries are the main objective. |
 | Build and Baseline Windows Server | OPTIONAL VIDEO | Windows Server installation/baseline walkthroughs reviewed | No candidate promoted yet | Useful for setup friction; learner still produces their own baseline evidence. |
+| PowerShell as an Administrative Interface | RECOMMENDED VIDEO | Microsoft/PowerShell object-pipeline demonstrations reviewed | No candidate promoted yet | The object pipeline is meaningfully different from text-stream shells and benefits from live demonstration. |
