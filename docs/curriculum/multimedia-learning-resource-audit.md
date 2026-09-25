@@ -739,3 +739,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | File Integration — File-Based Integration Contracts | NO VIDEO | — | — | Contract/ownership design is the learning objective. |
 | File Integration — Legacy FTP Integration | OPTIONAL VIDEO | FTP protocol/session demonstrations reviewed | No candidate promoted yet | Seeing control/data-channel behavior can add context, but FTP is deliberately legacy/bounded. |
 | File Integration — Batch File Processing Lifecycle | RECOMMENDED VIDEO | Batch file handoff/atomic-rename processing examples reviewed | No candidate promoted yet | Producer→landing→validation→processing→archive/reject is well suited to a lifecycle diagram/demo. |
+| File Integration — Shared Filesystem versus Managed File Transfer | NO VIDEO | — | — | This is an architecture trade-off decision. |
