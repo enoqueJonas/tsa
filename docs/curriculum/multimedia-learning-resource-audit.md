@@ -487,3 +487,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Release — Deployment Evidence | NO VIDEO | — | — | Capture evidence from actual deployments. |
 | Release — Release Observability | OPTIONAL VIDEO | Release-marker/dashboard demos reviewed | No candidate promoted yet | Visual correlation of deploy markers and telemetry can help. |
 | Release — Release Failure Handling | RECOMMENDED VIDEO | Failed-release/rollback incident demos reviewed | No candidate promoted yet | Timeline of detection→decision→rollback/recovery is useful. |
+| Release — Release Runbooks | NO VIDEO | — | — | Write and execute the runbook. |
