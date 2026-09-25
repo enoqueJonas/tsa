@@ -718,3 +718,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Threat Modeling — STRIDE-style Thinking | RECOMMENDED VIDEO | Microsoft STRIDE material reviewed | No candidate promoted yet | Applying STRIDE to concrete flows benefits from a worked example. |
 | Threat Modeling — Abuse Cases | OPTIONAL VIDEO | Abuse-case examples reviewed | No candidate promoted yet | A worked attacker story can reinforce adversarial thinking. |
 | Threat Modeling — Threat Prioritization | NO VIDEO | — | — | Prioritize actual risks. |
+| Threat Modeling — Mitigations and Security Requirements | NO VIDEO | — | — | Translate identified threats into controls directly. |
