@@ -765,3 +765,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Supply Chain — Implement High-value Supply-chain Controls | RECOMMENDED VIDEO | SBOM/image-scan/signing demos reviewed | No candidate promoted yet | Seeing scan/sign/verify gates adds operational intuition. |
 | Supply Chain — Define Gates, Exceptions and Residual Risk | NO VIDEO | — | — | Policy decision should use actual evidence. |
 | Artifact Signing — Artifact Signing and Verification | RECOMMENDED VIDEO | Sigstore Cosign signing/verification demos reviewed | No candidate promoted yet | Keyless/key-based sign→verify→tamper-fail is ideal for live demonstration. |
+| Identity/Secrets — Identity Planes and Trust Boundaries | RECOMMENDED VIDEO | identity-plane architecture talks reviewed | No candidate promoted yet | Human/workload/admin identities and trust boundaries are visual. |
