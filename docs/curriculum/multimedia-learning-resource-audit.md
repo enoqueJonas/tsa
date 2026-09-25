@@ -574,3 +574,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Orchestration — Orchestration and GitOps Review | NO VIDEO | — | — | Review. |
 | Canary — Progressive Delivery with Canary Releases | RECOMMENDED VIDEO | Argo Rollouts/canary visual demos reviewed | No candidate promoted yet | Traffic percentages, analysis and promotion/abort are inherently visual. |
 | Canary — Design Steward's Canary Contract | NO VIDEO | — | — | Design from service risk and SLO evidence. |
+| Canary — Implement Argo Rollouts Canary Delivery | RECOMMENDED VIDEO | Argo Rollouts live demos reviewed | No candidate promoted yet | Seeing rollout steps and controller state is useful before independent implementation. |
