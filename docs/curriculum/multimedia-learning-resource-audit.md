@@ -924,3 +924,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | DR — RPO and RTO | RECOMMENDED VIDEO | RPO/RTO timeline explainers reviewed | No candidate promoted yet | Recovery-point/time objectives are inherently timeline-based. |
 | DR — Disaster Scenarios | OPTIONAL VIDEO | DR scenario talks reviewed | No candidate promoted yet | Real incident examples add context. |
 | DR — Recovery Procedures | NO VIDEO | — | — | Write/exercise actual procedure. |
+| DR — Database Recovery | RECOMMENDED VIDEO | PostgreSQL recovery demos reviewed | No candidate promoted yet | Recovery sequence and verification are useful to see. |
