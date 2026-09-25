@@ -586,3 +586,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | OpenShift — Routes, SCC Concepts and Operators | RECOMMENDED VIDEO | Red Hat route/SCC/operator demos reviewed | No candidate promoted yet | These OpenShift-specific mechanisms benefit from UI/CLI demonstration. |
 | GitOps — GitOps and Reconciliation | RECOMMENDED VIDEO | CNCF/Argo GitOps explainers reviewed | No candidate promoted yet | Git desired state→controller→cluster reconciliation is inherently visual. |
 | GitOps — Argo CD Applications, Sync and Drift | RECOMMENDED VIDEO | Argo CD official demos reviewed | No candidate promoted yet | UI/CLI sync and drift visibility are useful to see before operating it. |
+| Canary — Progressive Delivery with Canary Releases | RECOMMENDED VIDEO | Argo Rollouts canary demos reviewed | No candidate promoted yet | Traffic percentages, analysis and promotion/abort are strongly visual. |
