@@ -71,3 +71,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
 | Setting Up a Python Engineering Environment | NO VIDEO | No video promoted | — | The commands are short and the learner must inspect their own interpreter, PATH and virtual environment. Targeted venv/packaging docs plus the practical are more useful. |
+| Python Syntax, Values and Types | NO VIDEO | Previously reviewed | — | Executable examples and targeted Python documentation are sufficient; this intentionally remains video-free. |
