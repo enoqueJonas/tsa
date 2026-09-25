@@ -542,3 +542,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Certificates — Prove Renewal and Runtime Reload | RECOMMENDED VIDEO | Certificate renewal/reload demos reviewed | No candidate promoted yet | A live renewal without stale served cert is strong operational evidence. |
 | Certificates — Monitor Expiry and Break Renewal Safely | NO VIDEO | — | — | Learner must inject and diagnose the failure. |
 | Cloud Blocks — Compute | NO VIDEO | — | — | Capacity decision uses actual workload evidence. |
+| Cloud Blocks — Object Storage | OPTIONAL VIDEO | Object-storage architecture explainers reviewed | No candidate promoted yet | Conceptual fit helps, but the dedicated S3 implementation path goes deeper. |
