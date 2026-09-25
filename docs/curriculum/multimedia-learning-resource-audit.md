@@ -783,3 +783,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | PKI — Rotate Certificates without Changing Identity Semantics | RECOMMENDED VIDEO | certificate rotation demos reviewed | No candidate promoted yet | Old/new overlap and reload behavior benefit from timeline visualization. |
 | PKI — Revocation and Compromised Identity Response | RECOMMENDED VIDEO | CRL/OCSP/revocation demos reviewed | No candidate promoted yet | Compromise→revoke→validation-fail is demonstrable. |
 | PKI — Trust-Anchor Rotation and Failure Recovery | RECOMMENDED VIDEO | CA rotation/dual-trust material reviewed | No candidate promoted yet | Trust-anchor migration is a timeline/compatibility problem. |
+| PKI — Reassess PKI Ownership with Vault | NO VIDEO | — | — | Architecture decision from implemented evidence. |
