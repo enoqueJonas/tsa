@@ -2149,3 +2149,18 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Integration — Asynchronous Messaging | RECOMMENDED VIDEO | Messaging architecture talks reviewed | No candidate promoted yet | Temporal decoupling is visual. |
 | Integration — Queues and Pub/Sub | RECOMMENDED VIDEO | Queue/pubsub diagrams reviewed | No candidate promoted yet | Delivery topology is visual. |
 | Integration — Events and Commands | RECOMMENDED VIDEO | Event/command semantics talks reviewed | No candidate promoted yet | Worked message contracts help. |
+| Integration — Delivery Semantics | RECOMMENDED VIDEO | At-least-once/exactly-once talks reviewed | No candidate promoted yet | Duplicate/loss timelines are visual. |
+| Integration — Idempotency | OPTIONAL VIDEO | Idempotency examples reviewed | No candidate promoted yet | Useful reinforcement. |
+| Integration — Schema and Contract Evolution | RECOMMENDED VIDEO | Event schema evolution talks reviewed | No candidate promoted yet | Producer/consumer compatibility over time is visual. |
+| Integration — Failure and Backpressure | RECOMMENDED VIDEO | Backpressure/failure talks reviewed | No candidate promoted yet | Rate/failure propagation is visual. |
+| Integration — When Not to Add a Broker | NO VIDEO | — | — | Decision reasoning. |
+| Scale — Define Evidence-backed Growth Scenarios | NO VIDEO | — | — | Use actual evidence. |
+| Scale — Compare Scale and Distribution Options | RECOMMENDED VIDEO | Horizontal scaling/partitioning/cache architecture talks reviewed | No candidate promoted yet | Scale topology options are visual. |
+| Scale — Record the Growth Architecture Decision | NO VIDEO | — | — | Decision evidence. |
+| Resilience Architecture — Select and Model the Failure Path | RECOMMENDED VIDEO | Resilience pattern diagrams reviewed | No candidate promoted yet | Failure path is visual. |
+| Resilience Architecture — Compare Resilience Options | RECOMMENDED VIDEO | Timeout/retry/circuit-breaker/bulkhead architecture talks reviewed | No candidate promoted yet | Pattern interactions are visual. |
+| Resilience Architecture — Validate and Record the Evolution | NO VIDEO | — | — | Decision/evidence. |
+| Governance — Prepare the Review | OPTIONAL VIDEO | Architecture review facilitation talks reviewed | No candidate promoted yet | Seeing a good review can help. |
+| Governance — Run the Review | RECOMMENDED VIDEO | Architecture review/ATAM-style workshops reviewed | No candidate promoted yet | Facilitation and scenario questioning are behavioral skills. |
+| Governance — Turn Decisions into Guardrails | RECOMMENDED VIDEO | Architecture fitness/policy-as-code talks reviewed | No candidate promoted yet | Decision→automated guardrail flow is useful. |
+| Architect Milestone | NO VIDEO | — | — | Independent architecture evolution synthesis. |
