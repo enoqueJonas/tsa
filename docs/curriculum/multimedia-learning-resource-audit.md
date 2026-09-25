@@ -605,3 +605,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture — Homelab, VPS and Cloud Hybrid Trade-offs | NO VIDEO | — | — | Use the learner's real environments and constraints. |
 | Architecture — Lab: Review the Steward Internet Architecture | NO VIDEO | — | — | Synthesis review. |
 | Cloud Milestone — Cloud Engineer Milestone | NO VIDEO | — | — | School milestone. |
+| Cloud Milestone — Architecture and Exposure Gate | NO VIDEO | — | — | Evidence gate. |
