@@ -682,3 +682,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI — Quality Gates | OPTIONAL VIDEO | quality-gate pipeline demos reviewed | No candidate promoted yet | Useful reinforcement; actual policy design is primary. |
 | CI — Test Selection | NO VIDEO | — | — | Selection should be designed from suite risk/cost. |
 | CI — Failure Triage | RECOMMENDED VIDEO | CI failure-triage demos reviewed | No candidate promoted yet | A real red pipeline investigation is valuable. |
+| CI — Flaky-test Containment | RECOMMENDED VIDEO | flake quarantine/retry demos reviewed | No candidate promoted yet | Seeing quarantine versus masking clarifies the policy. |
