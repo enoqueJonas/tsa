@@ -1204,3 +1204,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Third-party — Lab: Govern steward-common and tsa-test-core | NO VIDEO | — | — | Independent product-governance exercise. |
 | Handbook — Writing Usable Standards | OPTIONAL VIDEO | engineering standards/paved-road talks reviewed | No candidate promoted yet | Industry examples can show outcome standards versus personal tool preferences. |
 | Handbook — Runbooks and Playbooks | RECOMMENDED VIDEO | SRE runbook/incident-playbook material reviewed | No candidate promoted yet | A worked operational procedure shows prerequisites, stop conditions, verification and escalation better than definitions alone. |
+| Handbook — Decision Records | NO VIDEO | ADR media already reviewed earlier | Reuse earlier ADR candidate only if needed | Avoid duplicate media; apply the established ADR discipline. |
