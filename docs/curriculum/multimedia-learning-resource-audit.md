@@ -632,3 +632,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | API/Integration — Data Setup and Cleanup | NO VIDEO | — | — | Implement deterministic state ownership. |
 | API/Integration — Lab: Test Steward API End-to-End at the Service Layer | NO VIDEO | — | — | Independent lab. |
 | Automation — What Makes an Automation Framework | OPTIONAL VIDEO | Framework architecture talks reviewed | No candidate promoted yet | Useful orientation; framework design work is primary. |
+| Automation — Framework Architecture | RECOMMENDED VIDEO | Test-framework architecture diagrams reviewed | No candidate promoted yet | Layering clients/fixtures/data/assertions/reporting is visual. |
