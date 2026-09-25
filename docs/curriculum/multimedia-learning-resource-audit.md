@@ -1067,3 +1067,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Scale — Caching and Contention | OPTIONAL VIDEO | cache/contention talks reviewed | No candidate promoted yet | Useful if focused on architectural pressure rather than cache basics. |
 | Scale — Replication Concepts | RECOMMENDED VIDEO | database replication animations reviewed | No candidate promoted yet | Primary/replica write/read/failure flows are visual. |
 | Scale — Partitioning Concepts | RECOMMENDED VIDEO | sharding/partitioning visual explainers reviewed | No candidate promoted yet | Key→partition placement and rebalance are spatial. |
+| Scale — Consistency and Availability Trade-offs | RECOMMENDED VIDEO | distributed consistency/CAP talks reviewed | No candidate promoted yet | Network partition scenarios need careful visual treatment; avoid slogan-only CAP videos. |
