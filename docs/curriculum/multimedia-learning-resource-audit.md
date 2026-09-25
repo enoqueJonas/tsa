@@ -1099,3 +1099,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technology Risk — Risk Ownership | NO VIDEO | — | — | Ownership must be assigned in the actual model. |
 | Technology Risk — Lab: Build the Steward Technology Risk Register | NO VIDEO | — | — | Independent risk lab. |
 | Controls — Preventive, Detective and Corrective Controls | RECOMMENDED VIDEO | Control-type case studies reviewed | No candidate promoted yet | A failure scenario mapped to preventive/detective/corrective controls is useful. |
+| Controls — Control Objectives | NO VIDEO | — | — | Objectives must be derived from risk. |
