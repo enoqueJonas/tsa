@@ -640,3 +640,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Core Infrastructure — Operate Time Synchronization with Chrony | OPTIONAL VIDEO | chrony/NTP demonstrations reviewed | No candidate promoted yet | A short chronyc tracking/sources demonstration can help, but the hands-on lab is straightforward. |
 | Core Infrastructure — Clock Skew as a Security and Observability Incident | RECOMMENDED VIDEO | NTP/clock-skew incident material reviewed | No candidate promoted yet | Seeing token/TLS/log-order effects on a shared timeline makes clock skew concrete. |
 | Core Infrastructure — Integrate Core Services into the Homelab | NO VIDEO | — | — | Integration evidence should come from the learner's environment. |
+| Core Infrastructure — Reassess Availability and Ownership | NO VIDEO | — | — | This is an architecture/operations decision from observed dependencies. |
