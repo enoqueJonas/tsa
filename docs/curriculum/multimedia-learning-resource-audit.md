@@ -649,3 +649,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation Framework — Screenshots, Traces and Video | RECOMMENDED VIDEO | Playwright Trace Viewer demos reviewed | No candidate promoted yet | This capability is explicitly visual; a Trace Viewer walkthrough is valuable. |
 | Automation Framework — Parallel Execution | RECOMMENDED VIDEO | pytest-xdist/parallel test demos reviewed | No candidate promoted yet | Worker scheduling and shared-state collisions benefit from live evidence. |
 | Automation Framework — Retries and Flaky-test Risk | RECOMMENDED VIDEO | Flaky-test diagnosis talks reviewed | No candidate promoted yet | Retry masking versus root-cause diagnosis is useful to demonstrate. |
+| Automation Framework — Framework Maintainability | NO VIDEO | — | — | Review/refactor actual framework. |
