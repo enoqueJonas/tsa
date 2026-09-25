@@ -481,3 +481,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Patching — Kernel Update and Controlled Reboot | RECOMMENDED VIDEO | Linux kernel update/reboot verification demos reviewed | No candidate promoted yet | Installed-versus-running kernel state is useful to see demonstrated once. |
 | Patching — Patch Regression and Recovery | NO VIDEO | — | — | The learner must reproduce, diagnose and recover a deterministic regression. |
 | Patching — Patch Multiple Rocky Hosts with Ansible | RECOMMENDED VIDEO | Ansible rolling patch demos reviewed | No candidate promoted yet | Canary-to-fleet sequencing is useful to visualize before execution. |
+| Patching — Patch Age and Lifecycle Visibility | OPTIONAL VIDEO | Patch-compliance dashboard demos reviewed | No candidate promoted yet | Dashboard examples can reinforce visibility without prescribing a new product. |
