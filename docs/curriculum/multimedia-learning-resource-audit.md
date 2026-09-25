@@ -492,3 +492,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Windows — NTFS and Share Permissions | RECOMMENDED VIDEO | NTFS/share effective-access demos reviewed | No candidate promoted yet | Layered permissions and effective access are easier to understand visually. |
 | Windows — Remote Administration with PowerShell Remoting | RECOMMENDED VIDEO | WinRM/PowerShell remoting demos reviewed | No candidate promoted yet | Control-path/authentication behavior benefits from live remote execution. |
 | Windows — Active Directory, DNS and Domain Identity | RECOMMENDED VIDEO | Microsoft/AD architecture explainers reviewed | No candidate promoted yet | Domain/DC/DNS/Kerberos relationships are strongly architectural and visual. |
+| Windows — Domain Join and Group Policy | RECOMMENDED VIDEO | Domain-join/GPO demonstrations reviewed | No candidate promoted yet | Seeing policy scope/application/result evidence adds value. |
