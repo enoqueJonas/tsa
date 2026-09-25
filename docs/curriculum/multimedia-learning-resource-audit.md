@@ -787,3 +787,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Identity/Secrets — Identity and Secrets Security Review | NO VIDEO | — | — | Review uses actual architecture/evidence. |
 | Identity/Secrets — Lab: Integrate Keycloak and Harden Steward Identity | NO VIDEO | — | — | Independent integration lab. |
 | Vault — Vault and Dynamic Secrets for Steward | RECOMMENDED VIDEO | HashiCorp Vault demos reviewed | No candidate promoted yet | Seeing dynamic credentials issued with TTL makes the model concrete. |
+| Vault — From Static Secrets to Leased Credentials | RECOMMENDED VIDEO | Vault database-secrets demos reviewed | No candidate promoted yet | Static→dynamic comparison and lease lifecycle are visual. |
