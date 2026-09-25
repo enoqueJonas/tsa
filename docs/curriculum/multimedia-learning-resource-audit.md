@@ -1032,3 +1032,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architectural Styles — Modular Monolith | NO VIDEO | Prior modularity media applies | Reuse only if review is needed | Avoid duplicate assignment. |
 | Architectural Styles — Service-oriented Architecture | OPTIONAL VIDEO | SOA architecture talks reviewed | No candidate promoted yet | Useful historical/enterprise context. |
 | Architectural Styles — Microservices | RECOMMENDED VIDEO | Martin Fowler / microservices talks reviewed | No candidate promoted yet | Distribution boundaries and operational cost deserve practitioner treatment. |
+| Architectural Styles — Event-driven Architecture | RECOMMENDED VIDEO | Event-driven architecture talks reviewed | No candidate promoted yet | Producer/broker/consumer and temporal decoupling are visual. |
