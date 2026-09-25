@@ -866,3 +866,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | SLO — SLOs | RECOMMENDED VIDEO | Google SRE SLO talks reviewed | No candidate promoted yet | Target/window reasoning benefits from worked examples. |
 | SLO — SLAs | OPTIONAL VIDEO | SLA/SLO explainers reviewed | No candidate promoted yet | Compact distinction; reinforcement only. |
 | SLO — Error Budgets | RECOMMENDED VIDEO | Google SRE error-budget talks reviewed | No candidate promoted yet | Budget burn and release trade-offs benefit from timeline visualization. |
+| SLO — User-visible Reliability | NO VIDEO | — | — | Select indicators from actual user journeys. |
