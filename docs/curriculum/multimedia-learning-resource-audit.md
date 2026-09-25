@@ -656,3 +656,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Lifecycle — Separate Proxmox Host and Rocky Guest Lifecycles | NO VIDEO | — | — | The important skill is distinguishing maintenance domains. |
 | Lifecycle — Major OS Version Change Is a Migration | OPTIONAL VIDEO | Enterprise Linux major-upgrade/rebuild discussions reviewed | No candidate promoted yet | A migration case study may reinforce why major version change differs from routine patching. |
 | Lifecycle — Reassess the Patch Operating Model | NO VIDEO | — | — | Reassessment uses the learner's own evidence. |
+
+
+## Platform Builder — Windows, Directory/File Services and File Integration lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Windows — Windows in a Linux-Primary Enterprise Platform | OPTIONAL VIDEO | Mixed-estate administration overviews reviewed | No candidate promoted yet | A brief enterprise-estate overview can provide context without turning TSA into Windows-specialist training. |
