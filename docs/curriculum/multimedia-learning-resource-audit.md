@@ -1175,3 +1175,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Controls — Compliance vs Security | OPTIONAL VIDEO | security/compliance practitioner talks reviewed | No candidate promoted yet | Case studies help show why compliance evidence is not equivalent to security. |
 | Controls — Audit Fundamentals | OPTIONAL VIDEO | internal-audit lifecycle explainers reviewed | No candidate promoted yet | A concise audit lifecycle overview can orient scope/evidence/findings. |
 | Controls — Findings and Remediation | NO VIDEO | — | — | Draft and track actual findings. |
+| Controls — Designing Proportionate Controls | NO VIDEO | — | — | Proportionality is a contextual design decision. |
