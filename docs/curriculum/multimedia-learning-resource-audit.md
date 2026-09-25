@@ -663,3 +663,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Browser — Responsive Testing | RECOMMENDED VIDEO | Playwright responsive/device emulation demos reviewed | No candidate promoted yet | Viewport/layout state is inherently visual. |
 | Browser — Cross-browser Testing | RECOMMENDED VIDEO | Playwright/BrowserStack cross-browser demos reviewed | No candidate promoted yet | Running the same claim across engines is useful to see. |
 | Browser — BrowserStack or Equivalent | OPTIONAL VIDEO | BrowserStack product demos reviewed | No candidate promoted yet | Provider UI can orient, but vendor-specific walkthroughs age quickly. |
+| Browser — Local vs Remote Execution | OPTIONAL VIDEO | Remote-browser architecture demos reviewed | No candidate promoted yet | Execution-location dependency differences can benefit from a diagram. |
