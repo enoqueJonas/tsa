@@ -1065,3 +1065,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Leadership — Influence Without Authority | RECOMMENDED VIDEO | Technical leadership/influence talks reviewed | No candidate promoted yet | Real examples of alignment without hierarchy add value. |
 | Leadership — Decision-making | NO VIDEO | — | — | Decision quality is demonstrated through actual decisions. |
 | Leadership — Technical Communication | OPTIONAL VIDEO | Engineering communication talks reviewed | No candidate promoted yet | A worked technical briefing can reinforce audience/context adaptation. |
+| Leadership — Mentoring | OPTIONAL VIDEO | Engineering mentoring talks reviewed | No candidate promoted yet | Observation of a good mentoring interaction can add value. |
