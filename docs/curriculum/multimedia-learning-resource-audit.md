@@ -576,3 +576,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | IaC — Destroy and Resource Lifecycle | OPTIONAL VIDEO | IaC lifecycle/prevent-destroy demos reviewed | No candidate promoted yet | Controlled lifecycle demo can reinforce destructive boundaries. |
 | IaC — Lab: Define Steward Infrastructure as Code | NO VIDEO | — | — | Independent synthesis lab. |
 | Kubernetes — Why Container Orchestration | RECOMMENDED VIDEO | CNCF/Kubernetes orchestration explainers reviewed | No candidate promoted yet | Desired replicas, scheduling and reconciliation are visual. |
+| Kubernetes — Kubernetes Cluster and Control Plane | RECOMMENDED VIDEO | Kubernetes official/control-plane explainers reviewed | No candidate promoted yet | API server, scheduler, controllers, etcd and nodes form a visual control loop. |
