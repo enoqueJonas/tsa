@@ -836,3 +836,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Logging — Log Retention Concepts | OPTIONAL VIDEO | retention/lifecycle explainers reviewed | No candidate promoted yet | Lifecycle visualization can help but policy is primary. |
 | Logging — Lab: Build a Steward Diagnostic Logging Path | NO VIDEO | — | — | Independent implementation lab. |
 | Logging — Decision Gate: Select the Steward Centralized Logging Stack | NO VIDEO | — | — | Decision from evidence. |
+| Metrics — Metrics Mental Models | RECOMMENDED VIDEO | Prometheus metric-model explainers reviewed | No candidate promoted yet | Time-series labels/samples are visual. |
