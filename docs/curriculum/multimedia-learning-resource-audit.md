@@ -590,3 +590,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Canary — Establish the Stable Baseline | NO VIDEO | — | — | Learner captures actual baseline. |
 | Canary — Define the Canary Rollout | RECOMMENDED VIDEO | Argo Rollouts step/analysis demos reviewed | No candidate promoted yet | 5→20→50→100 progression is useful to see once. |
 | Canary — Wire Prometheus Analysis | RECOMMENDED VIDEO | Argo Rollouts + Prometheus demos reviewed | No candidate promoted yet | Metric query→analysis result→rollout decision is a visual control loop. |
+| Canary — Inject a Defective Candidate and Abort | NO VIDEO | — | — | Learner must perform the failure drill. |
