@@ -907,3 +907,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Resilience — Dependency Availability Budgets | OPTIONAL VIDEO | availability composition explainers reviewed | No candidate promoted yet | Dependency math can benefit from diagrams. |
 | Resilience — Lab: Harden Steward Against Dependency Failure | NO VIDEO | — | — | Independent resilience lab. |
 | DR — Backups | NO VIDEO | — | — | Implement actual backups. |
+| DR — Backup Integrity | NO VIDEO | — | — | Verify actual backup artifacts. |
