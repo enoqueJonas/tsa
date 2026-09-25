@@ -743,3 +743,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — Security Logging and Monitoring Failures | OPTIONAL VIDEO | Detection-gap incident demos reviewed | No candidate promoted yet | A missed-versus-detected attack timeline can reinforce observability needs. |
 | Web/API — Mass Assignment and Excessive Data Exposure | RECOMMENDED VIDEO | API mass-assignment/data-exposure demos reviewed | No candidate promoted yet | Manipulating hidden/unintended fields is concrete and demonstrable. |
 | Web/API — Lab: Assess Steward Web and API Attack Paths | NO VIDEO | — | — | Independent threat-driven assessment lab. |
+| Vulnerability Lab — Designing an Isolated Security Lab | RECOMMENDED VIDEO | Isolated lab-network walkthroughs reviewed | No candidate promoted yet | Seeing host-only/NAT/isolated boundaries helps prevent unsafe exposure. |
