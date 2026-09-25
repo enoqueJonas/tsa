@@ -1101,3 +1101,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Evaluation — Prepare the Review | NO VIDEO | — | — | Review preparation. |
 | Evaluation — Run the Review | NO VIDEO | — | — | Interactive architecture review. |
 | Evaluation — Turn Decisions into Guardrails | NO VIDEO | — | — | Implement actual guardrails. |
+| Architect Milestone — Architecture Review and Evolution Decision | NO VIDEO | — | — | School synthesis milestone. |
