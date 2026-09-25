@@ -1866,3 +1866,29 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Continuous Execution — Implement Failure Alerts and Reports | RECOMMENDED VIDEO | Jenkins notification/report demos reviewed | No candidate promoted yet | End-to-end fail→alert→artifact flow is useful to see. |
 | Continuous Execution — Defend the Quality Execution Policy | NO VIDEO | — | — | Defence/reassessment. |
 | Quality Steward Milestone | NO VIDEO | — | — | Milestone is independent synthesis. |
+
+
+## Security Steward — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Foundations — Confidentiality, Integrity and Availability | OPTIONAL VIDEO | CIA/security-foundation explainers reviewed | No candidate promoted yet | Useful visual triad, but compact enough for text. |
+| Foundations — Assets, Threats, Vulnerabilities and Risk | RECOMMENDED VIDEO | Risk-chain explainers reviewed | No candidate promoted yet | Relationships benefit from a worked scenario. |
+| Foundations — Attack Surface | RECOMMENDED VIDEO | Attack-surface mapping demos reviewed | No candidate promoted yet | System exposure map is visual. |
+| Foundations — Least Privilege | NO VIDEO | — | — | Apply to actual identities/permissions. |
+| Foundations — Defense in Depth | RECOMMENDED VIDEO | Layered-control diagrams reviewed | No candidate promoted yet | Multiple independent controls are visual. |
+| Foundations — Trust Boundaries | RECOMMENDED VIDEO | Trust-boundary modeling demos reviewed | No candidate promoted yet | Boundary crossings are visual. |
+| Foundations — Security Controls: Preventive, Detective and Corrective | OPTIONAL VIDEO | Control-category examples reviewed | No candidate promoted yet | Worked incident/control chain may reinforce. |
+| Foundations — Risk Treatment and Residual Risk | NO VIDEO | — | — | Risk decision is primary. |
+| Threat Modeling — Assets and Actors | NO VIDEO | — | — | Model actual system. |
+| Threat Modeling — Data and Control Flows | RECOMMENDED VIDEO | Threat-modeling workshops reviewed | No candidate promoted yet | Flow diagrams are visual. |
+| Threat Modeling — Trust Boundaries | RECOMMENDED VIDEO | Threat-modeling workshops reviewed | No candidate promoted yet | Boundary crossing drives threat discovery. |
+| Threat Modeling — Threat Identification | RECOMMENDED VIDEO | OWASP threat-modeling demos reviewed | No candidate promoted yet | A worked session adds value. |
+| Threat Modeling — STRIDE-style Thinking | RECOMMENDED VIDEO | STRIDE worked examples reviewed | No candidate promoted yet | Applying categories to flows benefits from demonstration. |
+| Threat Modeling — Abuse Cases | OPTIONAL VIDEO | Abuse-case workshops reviewed | No candidate promoted yet | Can reinforce attacker-oriented thinking. |
+| Threat Modeling — Threat Prioritization | NO VIDEO | — | — | Prioritize actual threats. |
+| Threat Modeling — Mitigations and Security Requirements | NO VIDEO | — | — | Translate actual threats into requirements. |
+| Threat Modeling — Threat Models as Living Engineering Artifacts | OPTIONAL VIDEO | Threat-model maintenance talks reviewed | No candidate promoted yet | Useful team-process context. |
+| Web/API — Injection and SQL Injection | RECOMMENDED VIDEO | PortSwigger/OWASP SQLi demonstrations reviewed | No candidate promoted yet | Request→query manipulation is valuable to see safely. |
+| Web/API — Cross-site Scripting | RECOMMENDED VIDEO | PortSwigger XSS demonstrations reviewed | No candidate promoted yet | Browser execution/context is visual. |
+| Web/API — Cross-site Request Forgery | RECOMMENDED VIDEO | CSRF browser-flow demos reviewed | No candidate promoted yet | Victim browser/request flow is visual. |
