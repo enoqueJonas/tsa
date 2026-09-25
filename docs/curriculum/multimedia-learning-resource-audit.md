@@ -598,3 +598,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture — Security Boundaries | RECOMMENDED VIDEO | Cloud trust-boundary architecture material reviewed | No candidate promoted yet | Public/operator/runtime/control-plane paths are spatial. |
 | Architecture — Backup and Recovery | OPTIONAL VIDEO | Cloud recovery demos reviewed | No candidate promoted yet | Recovery sequence can help; actual restore evidence remains primary. |
 | Architecture — Failure Domains | RECOMMENDED VIDEO | Region/AZ/correlated-failure explainers reviewed | No candidate promoted yet | Correlation is easiest to see on topology. |
+| Architecture — Cost Estimation | OPTIONAL VIDEO | FinOps cost-model material reviewed | No candidate promoted yet | Can orient unit economics; learner model is primary. |
