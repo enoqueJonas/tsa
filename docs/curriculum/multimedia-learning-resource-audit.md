@@ -740,3 +740,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — Security Logging and Monitoring Failures | NO VIDEO | — | — | Prove evidence in actual system. |
 | Web/API — Mass Assignment and Excessive Data Exposure | RECOMMENDED VIDEO | API mass-assignment demos reviewed | No candidate promoted yet | Request fields→model mutation/response exposure is useful to see. |
 | Web/API — Lab: Assess Steward Web and API Attack Paths | NO VIDEO | — | — | Independent safe assessment. |
+| Vulnerability Lab — Designing an Isolated Security Lab | RECOMMENDED VIDEO | Isolated lab-network demonstrations reviewed | No candidate promoted yet | Network isolation and target/control paths are visual and safety-critical. |
