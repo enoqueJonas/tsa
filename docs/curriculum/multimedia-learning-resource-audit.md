@@ -886,3 +886,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Alertmanager — Deploy and Route with Alertmanager | NO VIDEO | — | — | Implement actual routing. |
 | Alertmanager — Break Alert Delivery and Recover It | NO VIDEO | — | — | Failure drill. |
 | Alertmanager — Defend the Alerting Pipeline | NO VIDEO | — | — | Defence uses evidence. |
+| Database — Database Roles and Least Privilege | NO VIDEO | — | — | Apply actual DB roles. |
