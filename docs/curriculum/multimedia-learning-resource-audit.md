@@ -1144,3 +1144,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Risk — Inherent and Residual Risk | RECOMMENDED VIDEO | risk/control visual explainers reviewed | No candidate promoted yet | Before-controls→controls→residual exposure is well suited to a diagram. |
 | Risk — Risk Appetite and Tolerance | OPTIONAL VIDEO | enterprise-risk appetite/tolerance explainers reviewed | No candidate promoted yet | Examples can distinguish organizational boundaries from case-level assessment. |
 | Risk — Risk Treatment | NO VIDEO | — | — | Choose actual avoid/reduce/transfer/accept treatments. |
+| Risk — Risk Acceptance | NO VIDEO | — | — | Decision authority and evidence are primary. |
