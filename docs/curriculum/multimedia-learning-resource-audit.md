@@ -739,3 +739,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — API Abuse and Rate Limiting | RECOMMENDED VIDEO | API abuse/rate-limit demonstrations reviewed | No candidate promoted yet | Request bursts, quotas and client-visible throttling are useful to see. |
 | Web/API — Token and Session Attacks | RECOMMENDED VIDEO | PortSwigger token/session labs reviewed | No candidate promoted yet | Replay/fixation/theft behavior is best understood from request flows. |
 | Web/API — Cryptographic Failures | OPTIONAL VIDEO | Crypto-failure explainers reviewed | No candidate promoted yet | Visual examples help, but TSA should avoid turning this into a cryptography lecture. |
+| Web/API — Vulnerable Dependencies | RECOMMENDED VIDEO | Dependency/SBOM vulnerability demos reviewed | No candidate promoted yet | Seeing a dependency finding traced to an exploitable path adds value. |
