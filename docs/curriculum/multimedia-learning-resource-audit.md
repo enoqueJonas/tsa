@@ -818,3 +818,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Application Security — Input Validation | NO VIDEO | — | — | Implement/retest actual validation. |
 | Application Security — Secure Error Handling | NO VIDEO | — | — | Implement and inspect actual failure responses. |
 | Application Security — Secrets Management | NO VIDEO | — | — | Vault/secret lifecycle already taught. |
+| Application Security — Security Headers and Configuration | OPTIONAL VIDEO | browser/header inspection demos reviewed | No candidate promoted yet | A browser/devtools demonstration can reinforce effect. |
