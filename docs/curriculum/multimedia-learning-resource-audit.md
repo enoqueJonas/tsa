@@ -756,3 +756,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Linux/Network Security — Host Firewalls | RECOMMENDED VIDEO | firewalld/nftables demos reviewed | No candidate promoted yet | Packet policy and negative testing are visual. |
 | Linux/Network Security — Service Exposure | RECOMMENDED VIDEO | socket/listener exposure demos reviewed | No candidate promoted yet | Listening interface/port→network reachability is concrete. |
 | Linux/Network Security — Patching and Vulnerability Windows | OPTIONAL VIDEO | patch-risk/vulnerability-window talks reviewed | No candidate promoted yet | Operational context useful; patching path already hands-on. |
+| Linux/Network Security — File and Secret Permissions | NO VIDEO | — | — | Inspect and prove actual permissions. |
