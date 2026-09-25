@@ -568,3 +568,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Orchestration — OpenShift as an Enterprise Application Platform | RECOMMENDED VIDEO | Red Hat OpenShift architecture demos reviewed | No candidate promoted yet | Shows the platform delta over Kubernetes without treating it as a new universe. |
 | Orchestration — OpenShift Routes, SCC Concepts and Operators | RECOMMENDED VIDEO | OpenShift Route/SCC/Operator demos reviewed | No candidate promoted yet | These platform-specific abstractions benefit from guided visual demonstration. |
 | Orchestration — GitOps and Reconciliation | RECOMMENDED VIDEO | Argo CD reconciliation demos reviewed | No candidate promoted yet | Git desired state→controller→cluster drift correction is inherently visual. |
+| Orchestration — Lab: Migrate Steward to OpenShift with Argo CD | NO VIDEO | — | — | Independent migration lab. |
