@@ -615,3 +615,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | --- | --- | --- | --- | --- |
 | Enterprise Services — Enterprise File Services: NFS and SMB | RECOMMENDED VIDEO | NFS/Samba cross-platform demonstrations reviewed | No candidate promoted yet | A producer/client/share demonstration makes identity, mount and protocol boundaries concrete. |
 | Enterprise Services — Enterprise Directory Services: LDAP | RECOMMENDED VIDEO | LDAP directory/tree/bind/search explainers reviewed | No candidate promoted yet | DN/RDN/tree/search/filter concepts are substantially easier to understand visually before operating a directory. |
+| File Integration — File-Based Integration Contracts | NO VIDEO | — | — | The learner must define a precise contract; passive media adds little. |
