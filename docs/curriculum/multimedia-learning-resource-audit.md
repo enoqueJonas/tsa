@@ -771,3 +771,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Identity/Secrets — Machine and Workload Identity | RECOMMENDED VIDEO | workload identity/mTLS talks reviewed | No candidate promoted yet | Machine identity lifecycle is conceptually difficult and visual. |
 | Identity/Secrets — Secret Lifecycle: Create, Distribute, Rotate, Revoke | RECOMMENDED VIDEO | secret-lifecycle/Vault demos reviewed | No candidate promoted yet | Lifecycle and exposure paths benefit from sequence diagrams. |
 | Identity/Secrets — Vault Concepts and Dynamic Secrets | RECOMMENDED VIDEO | HashiCorp Vault dynamic-database-secret demos reviewed | No candidate promoted yet | Lease→credential→expiry/revocation is ideal for live demonstration. |
+| Identity/Secrets — Kong, Identity and API Policy | RECOMMENDED VIDEO | Kong OIDC/policy flow demos reviewed | No candidate promoted yet | Edge→identity-provider→upstream policy flow is visual. |
