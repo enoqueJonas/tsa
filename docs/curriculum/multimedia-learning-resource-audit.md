@@ -1239,3 +1239,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Proposal — Reliability Strategy | NO VIDEO | Prior Reliability Engineer material sufficient | — | Select reliability mechanisms from actual failure modes/SLOs. |
 | Proposal — Operational Model | NO VIDEO | — | — | Define real ownership/support/operations. |
 | Proposal — Cost Model | OPTIONAL VIDEO | FinOps/cost-model material reviewed | No new candidate promoted | Optional refresh only if the selected hosting model introduces unfamiliar billing dimensions. |
+| Proposal — Governance Approach | NO VIDEO | Prior Technical Steward material sufficient | — | Tailor governance to the capstone. |
