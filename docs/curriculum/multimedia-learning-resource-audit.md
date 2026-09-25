@@ -1100,3 +1100,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technology Risk — Lab: Build the Steward Technology Risk Register | NO VIDEO | — | — | Independent risk lab. |
 | Controls — Preventive, Detective and Corrective Controls | RECOMMENDED VIDEO | Control-type case studies reviewed | No candidate promoted yet | A failure scenario mapped to preventive/detective/corrective controls is useful. |
 | Controls — Control Objectives | NO VIDEO | — | — | Objectives must be derived from risk. |
+| Controls — Control Design | OPTIONAL VIDEO | Control-design workshops reviewed | No candidate promoted yet | A worked design can add context. |
