@@ -275,3 +275,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Linux — Logs and journalctl | RECOMMENDED VIDEO | journalctl troubleshooting demos reviewed | No candidate promoted yet | A live evidence-driven log investigation adds value. |
 | Linux — Scheduled Tasks | OPTIONAL VIDEO | cron/systemd timer comparisons reviewed | No candidate promoted yet | A concise timer demonstration may help, but implementation is simple enough without required video. |
 | Linux — Storage and Mounts | RECOMMENDED VIDEO | Linux block-device/mount explainers reviewed | No candidate promoted yet | Device→partition→filesystem→mount is a visual stack. |
+| Linux — SSH and Key Authentication | RECOMMENDED VIDEO | SSH key/authentication explainers reviewed | No candidate promoted yet | The key exchange/authentication mental model benefits from visualization before configuration. |
