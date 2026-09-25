@@ -248,3 +248,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture Decisions — Architecture Characteristics Introduction | OPTIONAL VIDEO | Architecture quality-attribute talks reviewed | No candidate promoted yet | A scenario-based example can reinforce prioritization. |
 | Architecture Decisions — Decision Drivers | NO VIDEO | — | — | Drivers must be extracted from the actual decision context. |
 | Architecture Decisions — Architecture Decision Records | OPTIONAL VIDEO | ADR explainers already reviewed in Apprentice | Reuse short ADR candidate only if needed | The concept was introduced earlier; avoid duplicate media unless reinforcement is needed. |
+| Architecture Decisions — Evaluating Trade-offs | NO VIDEO | — | — | The learner must compare actual options and accepted downsides. |
