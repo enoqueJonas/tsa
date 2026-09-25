@@ -834,3 +834,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Logging — Useful vs Noisy Logs | NO VIDEO | — | — | Judge actual events against diagnostic questions. |
 | Logging — Privacy and Security in Logs | NO VIDEO | — | — | Review actual fields and leakage risk. |
 | Logging — Log Retention Concepts | OPTIONAL VIDEO | retention/lifecycle explainers reviewed | No candidate promoted yet | Lifecycle visualization can help but policy is primary. |
+| Logging — Lab: Build a Steward Diagnostic Logging Path | NO VIDEO | — | — | Independent implementation lab. |
