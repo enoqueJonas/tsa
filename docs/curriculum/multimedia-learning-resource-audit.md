@@ -813,3 +813,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | SFTP Migration — Run Bounded FTP and SFTP Coexistence | OPTIONAL VIDEO | migration/cutover demonstrations reviewed | No candidate promoted yet | A coexistence timeline can reinforce bounded migration. |
 | SFTP Migration — Decommission FTP and Prove the Security End State | NO VIDEO | — | — | Negative proof that FTP no longer works is primary. |
 | SFTP Migration — Defend the Secure Transfer Migration | NO VIDEO | — | — | Defence uses evidence. |
+| Application Security — Secure Authentication | NO VIDEO | — | — | Apply prior auth security to actual application. |
