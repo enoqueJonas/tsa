@@ -451,3 +451,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Containers — Health Checks | NO VIDEO | — | — | Implement and break health behavior directly. |
 | Containers — Container Registries | RECOMMENDED VIDEO | Registry push/pull/tag flows reviewed | No candidate promoted yet | Image identity and registry movement are visual. |
 | Containers — Image Tags and Versioning | NO VIDEO | — | — | Apply versioning rules to actual images. |
+| Containers — Image Optimization | OPTIONAL VIDEO | Docker image optimization demos reviewed | No candidate promoted yet | Before/after layer-size inspection can reinforce the evidence loop. |
