@@ -772,3 +772,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Supply Chain — Implement High-value Supply-chain Controls | OPTIONAL VIDEO | SBOM/scanning/signing demos reviewed | No candidate promoted yet | Specific controls may benefit from demos; implementation remains primary. |
 | Supply Chain — Define Gates, Exceptions and Residual Risk | NO VIDEO | — | — | Policy design and exception reasoning are primary. |
 | Artifact Trust — Artifact Signing and Verification | RECOMMENDED VIDEO | Sigstore/Cosign signing demos reviewed | No candidate promoted yet | Keyless/key-based signing and verification are command workflows worth seeing. |
+| Artifact Trust — From Provenance Evidence to Enforced Trust | RECOMMENDED VIDEO | Sigstore verification-policy talks reviewed | No candidate promoted yet | The distinction between evidence and enforced admission is architectural and visual. |
