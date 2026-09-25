@@ -250,3 +250,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture Decisions — Architecture Decision Records | OPTIONAL VIDEO | ADR explainers already reviewed in Apprentice | Reuse short ADR candidate only if needed | The concept was introduced earlier; avoid duplicate media unless reinforcement is needed. |
 | Architecture Decisions — Evaluating Trade-offs | NO VIDEO | — | — | The learner must compare actual options and accepted downsides. |
 | Architecture Decisions — Lab: Write Steward API ADRs | NO VIDEO | — | — | Independent decision-record lab. |
+| Milestone: Steward API System Design Portfolio | NO VIDEO | — | — | System Thinker synthesis milestone. |
