@@ -672,3 +672,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Non-functional — Compatibility Testing | OPTIONAL VIDEO | Compatibility matrix examples reviewed | No candidate promoted yet | Useful reinforcement; risk matrix remains primary. |
 | Non-functional — Reliability-oriented Testing | RECOMMENDED VIDEO | Fault-injection/reliability test demos reviewed | No candidate promoted yet | Failure injection and recovery behavior benefit from demonstration. |
 | Non-functional — Data Integrity and Concurrency Testing | RECOMMENDED VIDEO | Concurrent transaction/race demos reviewed | No candidate promoted yet | Interleaving is timeline-heavy and visual. |
+| CI Quality — Test Containers and Environments | RECOMMENDED VIDEO | Testcontainers/ephemeral test environment demos reviewed | No candidate promoted yet | Dependency lifecycle around tests is useful to see. |
