@@ -840,3 +840,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Metrics — Application and Infrastructure Metrics | OPTIONAL VIDEO | application/node exporter demos reviewed | No candidate promoted yet | Useful orientation. |
 | Metrics — Prometheus Architecture | RECOMMENDED VIDEO | Prometheus architecture demos reviewed | No candidate promoted yet | Targets→scrape→TSDB→query flow is visual. |
 | Metrics — Exporters | RECOMMENDED VIDEO | node_exporter demos reviewed | No candidate promoted yet | Exporter→scrape flow is useful to see. |
+| Metrics — Service Discovery Concepts | RECOMMENDED VIDEO | Prometheus service discovery demos reviewed | No candidate promoted yet | Dynamic target discovery benefits from visual flow. |
