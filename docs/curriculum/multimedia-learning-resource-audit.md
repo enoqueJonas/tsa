@@ -894,3 +894,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Database — Database Backup, Restore and Recovery Evidence | RECOMMENDED VIDEO | PostgreSQL backup/restore demos reviewed | No candidate promoted yet | Restore verification is worth seeing once. |
 | Database — Database Capacity and Health Review | NO VIDEO | — | — | Review actual database evidence. |
 | Database — Lab: Run the Steward Database Stewardship Review | NO VIDEO | — | — | Independent review lab. |
+| Performance — Latency and Throughput | RECOMMENDED VIDEO | latency/throughput visual explainers reviewed | No candidate promoted yet | Concurrent load and response-time relationships are visual. |
