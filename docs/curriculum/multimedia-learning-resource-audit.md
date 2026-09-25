@@ -931,3 +931,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Incident — Lab: Run a Steward Incident Exercise | NO VIDEO | — | — | Independent incident simulation. |
 | Fault Injection — Hypothesis-driven Reliability Experiments | RECOMMENDED VIDEO | chaos engineering experiment talks reviewed | No candidate promoted yet | Steady state→hypothesis→injection→observation is visual. |
 | Fault Injection — Controlled Failure Injection | RECOMMENDED VIDEO | chaos/fault injection demos reviewed | No candidate promoted yet | A bounded live injection models safe practice. |
+| Fault Injection — Blast Radius and Safety | RECOMMENDED VIDEO | chaos engineering safety talks reviewed | No candidate promoted yet | Scope/abort controls benefit from scenario diagrams. |
