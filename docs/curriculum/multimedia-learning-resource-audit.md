@@ -860,3 +860,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Tracing — Defend the Tracing Architecture | NO VIDEO | — | — | Defence uses evidence. |
 | Stack Integration — Observability Stack Integration: Graylog, Prometheus and Grafana | RECOMMENDED VIDEO | cross-signal observability demos reviewed | No candidate promoted yet | Signal ownership and navigation across tools are visual. |
 | Stack Integration — Implement the Steward Observability Stack | NO VIDEO | — | — | Independent integration work. |
+| Stack Integration — Run a Cross-Signal Incident Investigation | RECOMMENDED VIDEO | incident investigation demos reviewed | No candidate promoted yet | Logs→metrics→traces diagnostic workflow is ideal to watch once. |
