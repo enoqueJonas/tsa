@@ -1045,3 +1045,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Integration — Establish the Integration Baseline | NO VIDEO | — | — | Baseline reconstruction. |
 | Integration — Challenge Sync and Async Options | RECOMMENDED VIDEO | Sync/async/event architecture talks reviewed | No candidate promoted yet | Timing/coupling/failure differences are highly visual. |
 | Integration — Record and Govern the Integration Decision | NO VIDEO | — | — | Governance artifact. |
+| Scalability — Define Evidence-backed Growth Scenarios | NO VIDEO | — | — | Growth scenarios must be evidence-based. |
