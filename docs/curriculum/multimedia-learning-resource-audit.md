@@ -684,3 +684,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI — Failure Triage | RECOMMENDED VIDEO | CI failure-triage demos reviewed | No candidate promoted yet | A real red pipeline investigation is valuable. |
 | CI — Flaky-test Containment | RECOMMENDED VIDEO | flake quarantine/retry demos reviewed | No candidate promoted yet | Seeing quarantine versus masking clarifies the policy. |
 | CI — Internal Test Package Publishing and Compatibility in CI | NO VIDEO | — | — | Implement package lifecycle and compatibility directly. |
+| CI — Lab: Build the Steward Quality Pipeline | NO VIDEO | — | — | Independent pipeline lab. |
