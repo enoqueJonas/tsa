@@ -925,3 +925,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Incident — Timeline Construction | NO VIDEO | — | — | Build timeline from actual evidence. |
 | Incident — Root Cause | NO VIDEO | — | — | Reason from evidence rather than generic RCA. |
 | Incident — Contributing Factors | NO VIDEO | — | — | Analyze actual system/process factors. |
+| Incident — Blameless Postmortems | OPTIONAL VIDEO | Google SRE postmortem talks reviewed | No candidate promoted yet | Real postmortem facilitation adds context. |
