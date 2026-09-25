@@ -603,3 +603,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Windows — Services, Processes and Event Logs | RECOMMENDED VIDEO | PowerShell service/Event Viewer demos reviewed | No candidate promoted yet | Live administrative evidence is useful. |
 | Windows — NTFS and Share Permissions | RECOMMENDED VIDEO | Windows effective-access/share-permission demos reviewed | No candidate promoted yet | Share + NTFS effective access is easier to understand through positive/negative identities. |
 | Windows — Remote Administration with PowerShell Remoting | RECOMMENDED VIDEO | WinRM/PowerShell remoting demos reviewed | No candidate promoted yet | Authentication, network reachability and remote execution are best seen live. |
+| Windows — Active Directory, DNS and Domain Identity | RECOMMENDED VIDEO | Microsoft AD DS/DNS demonstrations reviewed | No candidate promoted yet | Domain, DC, DNS SRV, OU/user/group relationships are strongly visual. |
