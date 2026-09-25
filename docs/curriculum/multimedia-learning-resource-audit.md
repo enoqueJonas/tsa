@@ -600,3 +600,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Quality Engineering — Test Levels and Test Types | OPTIONAL VIDEO | Testing-pyramid/levels visualizations reviewed | No candidate promoted yet | A visual boundary map can reinforce level/type distinction. |
 | Quality Engineering — Risk-based Testing | NO VIDEO | — | — | Prioritization is a reasoning exercise. |
 | Quality Engineering — Shift-left and Shift-right | OPTIONAL VIDEO | Continuous testing lifecycle talks reviewed | No candidate promoted yet | A delivery-lifecycle diagram can help. |
+| Quality Engineering — Testability | RECOMMENDED VIDEO | Testability/observability design talks reviewed | No candidate promoted yet | Control/observe boundaries benefit from concrete demonstrations. |
