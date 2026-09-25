@@ -535,3 +535,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Internet — Reverse Proxies | NO VIDEO | Prior reverse-proxy slot exists | Reuse prior candidate if selected | Avoid duplicate teaching. |
 | Internet — Ingress Concepts | RECOMMENDED VIDEO | Ingress/edge-routing explainers reviewed | No candidate promoted yet | External traffic entering controlled internal paths is visual. |
 | Internet — Internet-facing Firewalls | NO VIDEO | Prior firewall concepts covered | — | Apply policy to public exposure. |
+| Internet — Exposure, Attack Surface and Administrative Boundaries | RECOMMENDED VIDEO | Attack-surface/trust-boundary explainers reviewed | No candidate promoted yet | A topology walkthrough makes exposed/admin paths concrete. |
