@@ -1229,3 +1229,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Discovery — Success Measures and Evidence | NO VIDEO | — | — | Define observable outcomes for the chosen problem. |
 | Discovery — Scope and Non-goals | NO VIDEO | — | — | Scope discipline is part of independent engineering. |
 | Discovery — Lab: Produce the Capstone Discovery Brief | NO VIDEO | — | — | Independent synthesis deliverable. |
+| Proposal — System Context and Boundaries | NO VIDEO | C4/system-context media already reviewed | Reuse prior C4 resource only for refresh | Capstone should demonstrate the modeling skill independently. |
