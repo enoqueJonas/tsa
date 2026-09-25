@@ -1087,3 +1087,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technology Governance — ISO Management-system Concepts | OPTIONAL VIDEO | ISO management-system explainers reviewed | No candidate promoted yet | A concise management-system overview can orient the learner. |
 | Technology Governance — NIST Framework Landscape | OPTIONAL VIDEO | NIST framework overview material reviewed | No candidate promoted yet | A landscape view clarifies where frameworks fit. |
 | Technology Governance — Using Frameworks Without Checklist Thinking | RECOMMENDED VIDEO | Governance/framework tailoring talks reviewed | No candidate promoted yet | Practitioner discussion helps counter cargo-cult compliance. |
+| Technology Governance — Lab: Map Steward Governance Responsibilities | NO VIDEO | — | — | Independent mapping lab. |
