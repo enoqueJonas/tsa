@@ -1055,3 +1055,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Integration — Synchronous APIs | NO VIDEO | HTTP/API media already covered earlier | Reuse earlier media only if review is needed | Avoid duplication. |
 | Integration — Asynchronous Messaging | NO VIDEO | RabbitMQ/messaging media already covered earlier | Reuse earlier media only if review is needed | Architect lesson should reason about choice, not reteach mechanics. |
 | Integration — Queues and Publish-Subscribe | RECOMMENDED VIDEO | queue/pub-sub architecture explainers reviewed | No candidate promoted yet | Fan-out and competing-consumer semantics are visual. |
+| Integration — Events and Commands | RECOMMENDED VIDEO | event-vs-command talks reviewed | No candidate promoted yet | Intent versus fact and coupling consequences benefit from examples. |
