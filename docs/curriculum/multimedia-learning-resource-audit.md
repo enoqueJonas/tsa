@@ -891,3 +891,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Database — Slow Queries and Query-plan Evidence | RECOMMENDED VIDEO | PostgreSQL EXPLAIN demos reviewed | No candidate promoted yet | Live plan interpretation adds value. |
 | Database — Locks, Blocking and Deadlocks | RECOMMENDED VIDEO | PostgreSQL lock/deadlock demos reviewed | No candidate promoted yet | Two-session blocking/deadlock is ideal for live demonstration. |
 | Database — Operationally Safe Database Migrations | OPTIONAL VIDEO | expand-contract migration talks reviewed | No candidate promoted yet | A production rollout timeline reinforces earlier migration work. |
+| Database — Database Backup, Restore and Recovery Evidence | RECOMMENDED VIDEO | PostgreSQL backup/restore demos reviewed | No candidate promoted yet | Restore verification is worth seeing once. |
