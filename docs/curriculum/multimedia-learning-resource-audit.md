@@ -933,3 +933,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Incident — Triage | RECOMMENDED VIDEO | SRE incident simulations reviewed | No candidate promoted yet | Live prioritization and hypothesis formation are valuable. |
 | Incident — Incident Roles | OPTIONAL VIDEO | incident-command talks reviewed | No candidate promoted yet | Real role handoffs add context. |
 | Incident — Communication | OPTIONAL VIDEO | incident-comms examples reviewed | No candidate promoted yet | Examples can model concise stakeholder updates. |
+| Incident — Mitigation | RECOMMENDED VIDEO | incident simulation/postmortem material reviewed | No candidate promoted yet | Mitigation under uncertainty benefits from a worked scenario. |
