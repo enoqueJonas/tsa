@@ -643,3 +643,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation Framework — Helpers and Utilities | NO VIDEO | — | — | Reuse boundary is code-driven. |
 | Automation Framework — Assertions | NO VIDEO | — | — | Write meaningful assertions directly. |
 | Automation Framework — Markers and Tags | NO VIDEO | — | — | Simple pytest mechanics. |
+| Automation Framework — Parameterization | OPTIONAL VIDEO | pytest parameterization demos reviewed | No candidate promoted yet | A short live example can reinforce data/behavior separation. |
