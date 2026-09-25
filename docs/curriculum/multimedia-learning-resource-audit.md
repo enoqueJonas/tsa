@@ -1280,3 +1280,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Defence — Present the Problem and Outcomes | NO VIDEO | — | — | The learner must present their own problem and demonstrated outcomes. |
 | Defence — Explain Trade-offs | NO VIDEO | — | — | Defend accepted consequences and alternatives. |
 | Defence — Present Engineering Evidence | NO VIDEO | — | — | Use the evidence portfolio. |
+| Defence — Defend Quality Decisions | NO VIDEO | — | — | Independent defence. |
