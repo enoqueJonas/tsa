@@ -717,3 +717,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Patch Age and Lifecycle Visibility | OPTIONAL VIDEO | Patch posture/dashboard examples reviewed | No candidate promoted yet | Dashboard examples can reinforce visibility, but later observability paths go deeper. |
 | Separate Proxmox Host and Rocky Guest Lifecycles | NO VIDEO | — | — | This is an ownership/maintenance-domain design exercise. |
 | Major OS Version Change Is a Migration | OPTIONAL VIDEO | Enterprise Linux major-upgrade/migration material reviewed | No candidate promoted yet | A migration case study can add context, but TSA deliberately treats this as architecture/change planning rather than copy-along upgrade. |
+| Reassess the Patch Operating Model | NO VIDEO | — | — | ADR/runbook synthesis. |
