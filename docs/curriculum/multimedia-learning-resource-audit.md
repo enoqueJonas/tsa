@@ -815,3 +815,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | SRE — SRE Principles | OPTIONAL VIDEO | Google SRE introductory talks reviewed | No candidate promoted yet | Useful context, but TSA implementation remains primary. |
 | SRE — Toil | OPTIONAL VIDEO | Google SRE toil talks reviewed | No candidate promoted yet | Real operational examples can clarify toil. |
 | SRE — Reliability and Risk Trade-offs | NO VIDEO | — | — | Make actual risk/reliability decisions. |
+| SRE — Reliability Ownership | NO VIDEO | — | — | Define ownership from the actual service. |
