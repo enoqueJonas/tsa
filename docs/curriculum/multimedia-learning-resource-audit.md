@@ -811,3 +811,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | --- | --- | --- | --- | --- |
 | SRE — Reliability as a Quality Attribute | OPTIONAL VIDEO | Google SRE talks reviewed | No candidate promoted yet | Industry framing can reinforce the quality/reliability boundary. |
 | SRE — Availability | RECOMMENDED VIDEO | availability/error-budget visual explainers reviewed | No candidate promoted yet | Downtime windows and availability math benefit from timelines. |
+| SRE — Failure and Recovery | RECOMMENDED VIDEO | recovery lifecycle demos reviewed | No candidate promoted yet | Failure→detect→mitigate→recover is temporal. |
