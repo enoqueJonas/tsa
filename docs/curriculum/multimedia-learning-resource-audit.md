@@ -995,3 +995,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
 | Fundamentals — What Software Architecture Is | OPTIONAL VIDEO | SEI/architecture overview talks reviewed | No candidate promoted yet | A strong practitioner explanation can reinforce architecture as consequential decisions rather than diagrams. |
+| Fundamentals — Architecture vs Design | NO VIDEO | — | — | The distinction is best applied to concrete decisions rather than memorized. |
