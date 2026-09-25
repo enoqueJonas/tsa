@@ -703,3 +703,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
 | Foundations — Confidentiality, Integrity and Availability | OPTIONAL VIDEO | CIA-triad visual explainers reviewed | No candidate promoted yet | A simple scenario animation can reinforce trade-offs, but the concept is compact. |
+| Foundations — Assets, Threats, Vulnerabilities and Risk | RECOMMENDED VIDEO | Threat/risk modeling explainers reviewed | No candidate promoted yet | Relationships among asset/threat/vulnerability/control are visual. |
