@@ -645,3 +645,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Markers and Tags | NO VIDEO | — | — | Apply suite selection. |
 | Automation — Parameterization | OPTIONAL VIDEO | pytest parameterization demos reviewed | No candidate promoted yet | Compact demonstration may help. |
 | Automation — Automation Logging | NO VIDEO | — | — | Add diagnostic evidence. |
+| Automation — Reports | OPTIONAL VIDEO | test-report examples reviewed | No candidate promoted yet | Visual report can show what useful failure evidence looks like. |
