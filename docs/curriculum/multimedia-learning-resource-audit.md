@@ -731,3 +731,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — Insecure Deserialization Concepts | RECOMMENDED VIDEO | Deserialization exploit explainers reviewed | No candidate promoted yet | Object reconstruction→unexpected behavior benefits from a worked demo. |
 | Web/API — Security Misconfiguration | OPTIONAL VIDEO | Misconfiguration demos reviewed | No candidate promoted yet | Useful examples, but actual configuration audit is primary. |
 | Web/API — Sensitive Data and Secrets | NO VIDEO | — | — | Inspect and protect actual data/secret paths. |
+| Web/API — API Abuse and Rate Limiting | RECOMMENDED VIDEO | rate-limit/abuse demos reviewed | No candidate promoted yet | Request bursts and throttling behavior are temporal/visual. |
