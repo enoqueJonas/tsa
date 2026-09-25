@@ -587,3 +587,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Ansible — Configuration Drift Detection and Repair | RECOMMENDED VIDEO | Ansible check/diff/drift demos reviewed | No candidate promoted yet | A deliberate drift exposed before convergence is a strong visual operational example. |
 | Ansible — Secrets, Failure and Safe Fleet Changes | RECOMMENDED VIDEO | Ansible serial/canary/failure demos reviewed | No candidate promoted yet | Canary containment and halted rollout are valuable to see as execution behavior. |
 | Ansible — Milestone: Build and Operate the Rocky Configuration Baseline | NO VIDEO | — | — | Milestone must be independent. |
+| Ansible — Reassess Image, Ansible and Platform Ownership | NO VIDEO | — | — | Architecture ownership decision is evidence-driven. |
