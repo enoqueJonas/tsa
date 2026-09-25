@@ -921,3 +921,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | DR — Backups | NO VIDEO | — | — | Implement actual backup policy. |
 | DR — Backup Integrity | NO VIDEO | — | — | Verify actual backup artifacts. |
 | DR — Restore Testing | RECOMMENDED VIDEO | restore-drill demonstrations reviewed | No candidate promoted yet | A complete restore workflow is worth seeing before running one. |
+| DR — RPO and RTO | RECOMMENDED VIDEO | RPO/RTO timeline explainers reviewed | No candidate promoted yet | Recovery-point/time objectives are inherently timeline-based. |
