@@ -798,3 +798,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Application Security — Security Logging | NO VIDEO | — | — | Implement and inspect actual security events. |
 | Application Security — Rate Limiting and Abuse Resistance | RECOMMENDED VIDEO | rate-limit load/abuse demos reviewed | No candidate promoted yet | Burst→throttle/reject behavior is temporal. |
 | Application Security — Data Protection | NO VIDEO | — | — | Apply classification/encryption/access boundaries directly. |
+| Application Security — Security-focused Code Review | OPTIONAL VIDEO | secure code-review walkthroughs reviewed | No candidate promoted yet | Watching an expert trace untrusted input can model review method. |
