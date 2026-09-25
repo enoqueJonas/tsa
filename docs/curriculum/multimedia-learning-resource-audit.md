@@ -479,3 +479,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Config — Configuration Drift | RECOMMENDED VIDEO | Ansible drift media already reviewed | Reuse Platform Builder candidate only if needed | Avoid duplicate assignment unless Delivery framing adds something new. |
 | Config — Desired State and Idempotency | NO VIDEO | Prior Ansible lesson already covers this | — | Apply prior knowledge. |
 | Config — Ansible Fundamentals | NO VIDEO | Prior Ansible path already implemented | — | Delivery uses the existing tool rather than reteaching it. |
+| Config — Inventories | NO VIDEO | — | — | Use actual environments. |
