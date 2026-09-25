@@ -1892,3 +1892,23 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — Injection and SQL Injection | RECOMMENDED VIDEO | PortSwigger/OWASP SQLi demonstrations reviewed | No candidate promoted yet | Request→query manipulation is valuable to see safely. |
 | Web/API — Cross-site Scripting | RECOMMENDED VIDEO | PortSwigger XSS demonstrations reviewed | No candidate promoted yet | Browser execution/context is visual. |
 | Web/API — Cross-site Request Forgery | RECOMMENDED VIDEO | CSRF browser-flow demos reviewed | No candidate promoted yet | Victim browser/request flow is visual. |
+| Web/API — Broken Authentication | RECOMMENDED VIDEO | Auth failure demos reviewed | No candidate promoted yet | Attack flow adds context. |
+| Web/API — Broken Authorization and IDOR | RECOMMENDED VIDEO | PortSwigger access-control demos reviewed | No candidate promoted yet | Changing object identifiers and observing authorization failure is concrete. |
+| Web/API — Server-side Request Forgery | RECOMMENDED VIDEO | PortSwigger SSRF demos reviewed | No candidate promoted yet | Server-as-client pivot is visual. |
+| Web/API — Path Traversal | RECOMMENDED VIDEO | PortSwigger traversal demos reviewed | No candidate promoted yet | Path manipulation is easy to demonstrate. |
+| Web/API — File Upload Risks | RECOMMENDED VIDEO | OWASP/PortSwigger upload demos reviewed | No candidate promoted yet | Validation/storage/execution boundaries benefit from demonstration. |
+| Web/API — Command Injection | RECOMMENDED VIDEO | PortSwigger command-injection demos reviewed | No candidate promoted yet | Unsafe command construction is concrete. |
+| Web/API — Insecure Deserialization Concepts | RECOMMENDED VIDEO | Deserialization attack explainers reviewed | No candidate promoted yet | Object reconstruction/trust boundary is conceptually difficult. |
+| Web/API — Security Misconfiguration | OPTIONAL VIDEO | Misconfiguration demos reviewed | No candidate promoted yet | Useful examples; configuration audit is primary. |
+| Web/API — Sensitive Data and Secrets | NO VIDEO | — | — | Inspect actual exposure. |
+| Web/API — API Abuse and Rate Limiting | RECOMMENDED VIDEO | Rate-limit/abuse demos reviewed | No candidate promoted yet | Request-rate behavior over time is visual. |
+| Web/API — Token and Session Attacks | RECOMMENDED VIDEO | Session/token attack demos reviewed | No candidate promoted yet | Lifecycle/replay/fixation flows are visual. |
+| Web/API — Cryptographic Failures | OPTIONAL VIDEO | Crypto-failure explainers reviewed | No candidate promoted yet | Use only focused conceptual media, not crypto implementation tutorials. |
+| Web/API — Vulnerable Dependencies | OPTIONAL VIDEO | SCA/dependency vulnerability demos reviewed | No candidate promoted yet | Tool workflow can be shown briefly. |
+| Web/API — Security Logging and Monitoring Failures | OPTIONAL VIDEO | Detection-gap demos reviewed | No candidate promoted yet | Later Reliability covers observability deeper. |
+| Web/API — Mass Assignment and Excessive Data Exposure | RECOMMENDED VIDEO | API object-binding/exposure demos reviewed | No candidate promoted yet | Request/response field abuse is concrete. |
+| Vulnerability Lab — Designing an Isolated Security Lab | RECOMMENDED VIDEO | Safe lab/network isolation demos reviewed | No candidate promoted yet | Seeing isolated topology reduces accidental exposure risk. |
+| Vulnerability Lab — Safe Lab Networking | RECOMMENDED VIDEO | Host-only/NAT lab-network demos reviewed | No candidate promoted yet | Network isolation is visual. |
+| Vulnerability Lab — Vulnerable Applications and Intentional Weaknesses | OPTIONAL VIDEO | OWASP Juice Shop/WebGoat introductions reviewed | No candidate promoted yet | Useful orientation; learner still operates lab. |
+| Vulnerability Lab — Observing Vulnerable Behavior | NO VIDEO | — | — | Observe actual lab. |
+| Vulnerability Lab — Reproducing Representative Attacks Safely | RECOMMENDED VIDEO | Safe proxy/request demonstrations reviewed | No candidate promoted yet | A controlled demonstration can establish workflow. |
