@@ -580,3 +580,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture/Cost — Availability in Cloud Environments | RECOMMENDED VIDEO | Cloud failure-domain/HA diagrams reviewed | No candidate promoted yet | Availability topology is visual. |
 | Architecture/Cost — Scalability and Capacity | RECOMMENDED VIDEO | Scaling/bottleneck diagrams reviewed | No candidate promoted yet | Demand/capacity/bottleneck relationships benefit from graphs. |
 | Architecture/Cost — Security Boundaries | RECOMMENDED VIDEO | Cloud trust-path diagrams reviewed | No candidate promoted yet | Public/operator/runtime/control-plane separation is visual. |
+| Architecture/Cost — Backup and Recovery | RECOMMENDED VIDEO | Cloud restore/DR demos reviewed | No candidate promoted yet | Recovery sequence and failure domains are visual. |
