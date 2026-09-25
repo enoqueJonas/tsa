@@ -618,3 +618,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Unit/Component — Test Doubles | RECOMMENDED VIDEO | Martin Fowler mocks/stubs material reviewed | No candidate promoted yet | Collaborator substitution is easier with a concrete interaction diagram. |
 | Unit/Component — Mocks, Stubs and Fakes | RECOMMENDED VIDEO | Mock/stub/fake worked examples reviewed | No candidate promoted yet | Behavior differences benefit from side-by-side examples. |
 | Unit/Component — Coverage and Its Limitations | RECOMMENDED VIDEO | Mutation/coverage demonstrations reviewed | No candidate promoted yet | Seeing high coverage coexist with weak assertions makes the limitation concrete. |
+| Unit/Component — Component Boundaries | OPTIONAL VIDEO | Component-test architecture examples reviewed | No candidate promoted yet | A boundary diagram can reinforce the middle layer. |
