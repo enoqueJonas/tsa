@@ -824,3 +824,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Observability — Instrumentation | RECOMMENDED VIDEO | OpenTelemetry instrumentation demos reviewed | No candidate promoted yet | Code→exporter→backend path is useful to see. |
 | Observability — OpenTelemetry Concepts | RECOMMENDED VIDEO | OpenTelemetry official/community intros reviewed | No candidate promoted yet | SDK/provider/exporter/context architecture is visual. |
 | Observability — Golden Signals and Service Questions | OPTIONAL VIDEO | Google SRE golden-signals material reviewed | No candidate promoted yet | Useful reinforcement; learner questions remain primary. |
+| Observability — Telemetry Cost and Noise | NO VIDEO | — | — | Evaluate actual telemetry volume/value. |
