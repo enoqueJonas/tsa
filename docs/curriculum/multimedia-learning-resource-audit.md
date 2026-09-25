@@ -631,3 +631,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | API/Integration — Internal Package Compatibility | NO VIDEO | — | — | Test actual consumed package versions. |
 | API/Integration — Data Setup and Cleanup | NO VIDEO | — | — | Own test state directly. |
 | API/Integration — Lab: Test Steward API End-to-End at the Service Layer | NO VIDEO | — | — | Synthesis lab. |
+| Automation Framework — What Makes an Automation Framework | OPTIONAL VIDEO | Framework-architecture talks reviewed | No candidate promoted yet | A component map can orient the framework before implementation. |
