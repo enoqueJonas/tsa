@@ -863,3 +863,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Stack Integration — Run a Cross-Signal Incident Investigation | RECOMMENDED VIDEO | incident investigation demos reviewed | No candidate promoted yet | Logs→metrics→traces diagnostic workflow is ideal to watch once. |
 | Stack Integration — Defend the Observability Architecture | NO VIDEO | — | — | Defence uses evidence. |
 | SLO — SLIs | RECOMMENDED VIDEO | Google SRE SLI/SLO talks reviewed | No candidate promoted yet | Indicator/measurement examples benefit from worked scenarios. |
+| SLO — SLOs | RECOMMENDED VIDEO | Google SRE SLO talks reviewed | No candidate promoted yet | Target/window reasoning benefits from worked examples. |
