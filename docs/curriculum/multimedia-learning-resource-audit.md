@@ -495,3 +495,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Windows — Domain Join and Group Policy | RECOMMENDED VIDEO | Domain-join/GPO demonstrations reviewed | No candidate promoted yet | Seeing policy scope/application/result evidence adds value. |
 | Windows — Linux–Windows Interoperability | RECOMMENDED VIDEO | SMB/DNS/LDAP cross-platform demos reviewed | No candidate promoted yet | Cross-OS boundaries are well suited to a live interoperability demonstration. |
 | Windows — Reassess Windows Operational Depth | NO VIDEO | — | — | Scope decision should be based on TSA's target role and implemented evidence. |
+| Enterprise Services — Enterprise File Services: NFS and SMB | RECOMMENDED VIDEO | NFS/Samba cross-platform demonstrations reviewed | No candidate promoted yet | A producer/consumer share plus permission boundary is useful to see before the practical. |
