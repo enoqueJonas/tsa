@@ -686,3 +686,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI — Internal Test Package Publishing and Compatibility in CI | NO VIDEO | — | — | Implement package lifecycle and compatibility directly. |
 | CI — Lab: Build the Steward Quality Pipeline | NO VIDEO | — | — | Independent pipeline lab. |
 | Scheduled Execution — Continuous and Scheduled Quality Execution | OPTIONAL VIDEO | Jenkins trigger/cron demos reviewed | No candidate promoted yet | Orientation can help, but policy/evidence are primary. |
+| Scheduled Execution — Design Triggered Quality Feedback | NO VIDEO | — | — | Design from feedback needs. |
