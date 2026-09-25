@@ -710,3 +710,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Milestone: Build and Operate the Rocky Configuration Baseline | NO VIDEO | — | — | Independent synthesis milestone. |
 | Reassess Image, Ansible and Platform Ownership | NO VIDEO | — | — | The learner must define ownership boundaries from implemented evidence. |
 | Patch Risk, Exposure and Change Windows | OPTIONAL VIDEO | Enterprise patch-management/change-window material reviewed | No candidate promoted yet | A real maintenance decision example can add context, but risk classification is primarily reasoning. |
+| Patch a Rocky Linux Workload Host | NO VIDEO | — | — | The learner should execute and verify a real maintenance window. |
