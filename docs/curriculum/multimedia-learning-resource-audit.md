@@ -558,3 +558,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Object Storage — Design the Object Boundary | NO VIDEO | — | — | Storage-authority decision must be independent. |
 | Object Storage — Deploy the S3-Compatible Service | RECOMMENDED VIDEO | MinIO deployment/admin demos reviewed | No candidate promoted yet | A live deployment can reduce tool friction while the learner still owns persistence/networking. |
 | Object Storage — Integrate Steward with Object Storage | NO VIDEO | — | — | Integration implementation is primary. |
+| Object Storage — Break Access, Capacity and Availability | NO VIDEO | — | — | Failure injection must be performed directly. |
