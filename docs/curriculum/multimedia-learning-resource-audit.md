@@ -1041,3 +1041,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architectural Styles — Record Style Decision and Evolution Triggers | NO VIDEO | — | — | ADR/evolution artifact. |
 | Data Architecture — Establish the Data Architecture Baseline | NO VIDEO | — | — | Reconstruct actual ownership/flows. |
 | Data Architecture — Challenge Data Architecture Options | OPTIONAL VIDEO | Data ownership/distributed-data talks reviewed | No candidate promoted yet | A strong case study may broaden options. |
+| Data Architecture — Record and Validate the Decision | NO VIDEO | — | — | Decision evidence. |
