@@ -818,3 +818,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | SRE — Reliability Ownership | NO VIDEO | — | — | Define ownership from the actual service. |
 | SRE — Lab: Build the Steward Reliability Risk Map | NO VIDEO | — | — | Synthesis lab. |
 | Observability — Observability vs Monitoring | RECOMMENDED VIDEO | observability/monitoring talks reviewed | No candidate promoted yet | Question→signal→diagnosis distinction benefits from a worked incident. |
+| Observability — Logs, Metrics and Traces | RECOMMENDED VIDEO | OpenTelemetry signal explainers reviewed | No candidate promoted yet | Three signal types and correlation are highly visual. |
