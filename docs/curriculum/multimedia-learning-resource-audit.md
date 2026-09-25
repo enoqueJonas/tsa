@@ -614,3 +614,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Test Design — Traceability | NO VIDEO | — | — | Build the actual risk→condition→evidence trace. |
 | Test Design — Lab: Design Risk-based Steward Test Coverage | NO VIDEO | — | — | Synthesis lab. |
 | Unit/Component — Designing Unit Tests | OPTIONAL VIDEO | Unit-testing design talks reviewed | No candidate promoted yet | A worked behavior-focused test can help. |
+| Unit/Component — Isolation | RECOMMENDED VIDEO | Isolation/nondeterminism demonstrations reviewed | No candidate promoted yet | Controlled dependencies are useful to see live. |
