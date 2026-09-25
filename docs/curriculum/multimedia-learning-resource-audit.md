@@ -2025,3 +2025,28 @@ A blog post may also be better than either a manual or a video. The resource mix
 | SLE — Set SLOs and Error Budgets | NO VIDEO | — | — | Implementation. |
 | Alerting — Symptoms vs Causes | RECOMMENDED VIDEO | SRE alerting talks reviewed | No candidate promoted yet | Symptom/cause examples add value. |
 | Alerting — Actionable Alerts | NO VIDEO | — | — | Design actual alerts. |
+| Alerting — Alert Fatigue | OPTIONAL VIDEO | Alert-fatigue talks reviewed | No candidate promoted yet | Operational stories add context. |
+| Alerting — Severity | NO VIDEO | — | — | Define actual response levels. |
+| Alerting — Escalation | OPTIONAL VIDEO | On-call escalation demos reviewed | No candidate promoted yet | Workflow visualization can help. |
+| Alerting — Alert Routing Concepts | RECOMMENDED VIDEO | Alertmanager routing-tree demos reviewed | No candidate promoted yet | Routing/grouping/inhibition are visual. |
+| Alerting — Runbooks | NO VIDEO | — | — | Write/exercise actual runbook. |
+| Alerting — On-call Handover and Context | OPTIONAL VIDEO | On-call handover talks reviewed | No candidate promoted yet | Practitioner examples useful. |
+| Alerting — implementation/runbook exercise | NO VIDEO | — | — | Independent evidence. |
+| Alertmanager — Operate Prometheus Alertmanager | RECOMMENDED VIDEO | Prometheus Alertmanager demos reviewed | No candidate promoted yet | Alert→route→notification→silence/inhibition is a live workflow. |
+| Database — Database Roles and Least Privilege | NO VIDEO | — | — | Apply directly. |
+| Database — Connections, Pools and Exhaustion | RECOMMENDED VIDEO | Connection-pool/exhaustion demos reviewed | No candidate promoted yet | Pool saturation over time is visual. |
+| Database — Slow Queries and Query-plan Evidence | RECOMMENDED VIDEO | Postgres EXPLAIN demos reviewed | No candidate promoted yet | Live plan interpretation adds value. |
+| Database — Locks, Blocking and Deadlocks | RECOMMENDED VIDEO | PostgreSQL lock/deadlock demos reviewed | No candidate promoted yet | Concurrent sessions/timelines are highly visual. |
+| Database — Operationally Safe Database Migrations | RECOMMENDED VIDEO | Expand/contract migration talks reviewed | No candidate promoted yet | Compatibility timeline is visual. |
+| Database — Database Backup, Restore and Recovery Evidence | RECOMMENDED VIDEO | Postgres restore demos reviewed | No candidate promoted yet | Actual restore workflow is worth seeing. |
+| Database — Database Capacity and Health Review | NO VIDEO | — | — | Measure actual DB. |
+| Performance — Latency and Throughput | RECOMMENDED VIDEO | Performance graphs/queueing talks reviewed | No candidate promoted yet | Relationship is visual. |
+| Performance — Saturation | RECOMMENDED VIDEO | Saturation demos reviewed | No candidate promoted yet | Knee/queue growth is visual. |
+| Performance — Bottlenecks | RECOMMENDED VIDEO | Profiling/bottleneck demos reviewed | No candidate promoted yet | Live evidence is useful. |
+| Performance — Load and Stress Testing | RECOMMENDED VIDEO | k6 demos reviewed | No candidate promoted yet | Traffic/result graphs are visual. |
+| Performance — Capacity Planning | OPTIONAL VIDEO | Capacity-planning talks reviewed | No candidate promoted yet | Useful context; actual forecast is primary. |
+| Performance — Resource Utilization | OPTIONAL VIDEO | Resource dashboard demos reviewed | No candidate promoted yet | Useful visualization. |
+| Performance — Database and Application Bottlenecks | RECOMMENDED VIDEO | Cross-layer profiling demos reviewed | No candidate promoted yet | Correlation across layers is visual. |
+| Performance — Performance Baselines | NO VIDEO | — | — | Measure actual baseline. |
+| Performance — Queueing and Contention Concepts | RECOMMENDED VIDEO | Queueing animations reviewed | No candidate promoted yet | Waiting/arrival/service rate is visual. |
+| Performance — Storage Growth and Artifact Capacity | NO VIDEO | — | — | Forecast actual storage. |
