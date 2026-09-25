@@ -2000,3 +2000,28 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Logging — Log Retention Concepts | OPTIONAL VIDEO | Retention/lifecycle demos reviewed | No candidate promoted yet | Can reinforce storage/cost lifecycle. |
 | Logging — implementation/review | NO VIDEO | — | — | Independent evidence. |
 | Metrics — Metrics Mental Models | RECOMMENDED VIDEO | Prometheus metric-model talks reviewed | No candidate promoted yet | Time-series labels/samples are visual. |
+| Metrics — Counters, Gauges and Histograms | RECOMMENDED VIDEO | Prometheus histogram demos reviewed | No candidate promoted yet | Histogram buckets/rates benefit strongly from visualization. |
+| Metrics — Application and Infrastructure Metrics | OPTIONAL VIDEO | Exporter/app metric demos reviewed | No candidate promoted yet | Useful mapping. |
+| Metrics — Exporters | RECOMMENDED VIDEO | Prometheus exporter demos reviewed | No candidate promoted yet | Scrape endpoint→Prometheus is useful to see. |
+| Metrics — Service Discovery Concepts | RECOMMENDED VIDEO | Prometheus target discovery demos reviewed | No candidate promoted yet | Dynamic target lifecycle is visual. |
+| Metrics — PromQL | RECOMMENDED VIDEO | PromQL query demos reviewed | No candidate promoted yet | Interactive query evaluation benefits from live UI. |
+| Metrics — Recording Rules Concepts | OPTIONAL VIDEO | Recording-rule demos reviewed | No candidate promoted yet | Useful but straightforward. |
+| Metrics — Dashboard Design | RECOMMENDED VIDEO | Grafana dashboard design demos reviewed | No candidate promoted yet | This is inherently visual. |
+| Metrics — Dashboard Anti-patterns | RECOMMENDED VIDEO | Grafana/SRE dashboard critique talks reviewed | No candidate promoted yet | Before/after dashboards are useful. |
+| Metrics — Nexus and Internal Platform Metrics | NO VIDEO | — | — | Instrument actual dependency. |
+| Metrics — CI and Delivery Metrics | OPTIONAL VIDEO | DORA/dashboard demos reviewed | No candidate promoted yet | Useful visualization. |
+| Metrics — practical measurement | NO VIDEO | — | — | Independent evidence. |
+| Tracing — Distributed Tracing with OpenTelemetry and Tempo | RECOMMENDED VIDEO | OpenTelemetry/Tempo trace demos reviewed | No candidate promoted yet | Span tree, propagation and trace UI are inherently visual. |
+| Observability Integration | RECOMMENDED VIDEO | Grafana cross-signal correlation demos reviewed | No candidate promoted yet | Metric→trace→log pivot is exactly the kind of workflow video teaches well. |
+| SLE — SLIs | RECOMMENDED VIDEO | Google SRE SLI/SLO talks reviewed | No candidate promoted yet | Measurement definition examples add value. |
+| SLE — SLOs | RECOMMENDED VIDEO | Google SRE SLO talks reviewed | No candidate promoted yet | Target/window/error visualization helps. |
+| SLE — SLAs | OPTIONAL VIDEO | SLO/SLA comparison material reviewed | No candidate promoted yet | Short reinforcement. |
+| SLE — Error Budgets | RECOMMENDED VIDEO | Google SRE error-budget talks reviewed | No candidate promoted yet | Budget burn over time is visual. |
+| SLE — User-visible Reliability | NO VIDEO | — | — | Define from actual user journey. |
+| SLE — Choosing Good Indicators | NO VIDEO | — | — | Select actual indicators. |
+| SLE — Windowing and Measurement Concepts | RECOMMENDED VIDEO | SLO window/burn-rate explainers reviewed | No candidate promoted yet | Time windows are visual. |
+| SLE — Reliability Targets and Trade-offs | NO VIDEO | — | — | Decision exercise. |
+| SLE — Error Budgets and Release Decisions | RECOMMENDED VIDEO | Error-budget policy examples reviewed | No candidate promoted yet | Budget→release decision flow is useful. |
+| SLE — Set SLOs and Error Budgets | NO VIDEO | — | — | Implementation. |
+| Alerting — Symptoms vs Causes | RECOMMENDED VIDEO | SRE alerting talks reviewed | No candidate promoted yet | Symptom/cause examples add value. |
+| Alerting — Actionable Alerts | NO VIDEO | — | — | Design actual alerts. |
