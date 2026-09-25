@@ -740,3 +740,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — Token and Session Attacks | RECOMMENDED VIDEO | PortSwigger token/session labs reviewed | No candidate promoted yet | Replay/fixation/theft behavior is best understood from request flows. |
 | Web/API — Cryptographic Failures | OPTIONAL VIDEO | Crypto-failure explainers reviewed | No candidate promoted yet | Visual examples help, but TSA should avoid turning this into a cryptography lecture. |
 | Web/API — Vulnerable Dependencies | RECOMMENDED VIDEO | Dependency/SBOM vulnerability demos reviewed | No candidate promoted yet | Seeing a dependency finding traced to an exploitable path adds value. |
+| Web/API — Security Logging and Monitoring Failures | OPTIONAL VIDEO | Detection-gap incident demos reviewed | No candidate promoted yet | A missed-versus-detected attack timeline can reinforce observability needs. |
