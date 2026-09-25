@@ -531,3 +531,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Internet — Domains and DNS Records | RECOMMENDED VIDEO | DNS record/authoritative-zone explainers reviewed | No candidate promoted yet | Public delegation extends the earlier DNS model. |
 | Internet — DNS Resolution and Troubleshooting | NO VIDEO | Computerphile DNS already selected earlier | Reuse earlier video only if needed | Troubleshoot with dig rather than duplicate media. |
 | Internet — TLS Certificates and Certificate Authorities | RECOMMENDED VIDEO | TLS/certificate trust material reviewed | No candidate promoted yet | Chain of trust, names and signatures are visual. |
+| Internet — HTTPS and TLS Termination | RECOMMENDED VIDEO | TLS termination/reverse-proxy demos reviewed | No candidate promoted yet | Client→TLS endpoint→upstream boundary is best shown as a path. |
