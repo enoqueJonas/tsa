@@ -1186,3 +1186,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Security/Data — Access Governance | RECOMMENDED VIDEO | access-review/IGA demonstrations reviewed | No candidate promoted yet | Joiner/mover/leaver and periodic review flows benefit from visualization. |
 | Security/Data — Security Exceptions and Risk Acceptance | NO VIDEO | — | — | Use the actual risk/exception mechanism. |
 | Security/Data — Lab: Define Steward Security and Data Accountability | NO VIDEO | — | — | Independent governance synthesis. |
+| Change/Service — Classify and Prepare the Change | OPTIONAL VIDEO | ITIL/change-enablement practitioner material reviewed | No candidate promoted yet | A real change-classification example can add context without creating CAB theater. |
