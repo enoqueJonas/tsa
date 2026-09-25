@@ -1035,3 +1035,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architectural Styles — Event-driven Architecture | RECOMMENDED VIDEO | Event-driven architecture talks reviewed | No candidate promoted yet | Producer/broker/consumer and temporal decoupling are visual. |
 | Architectural Styles — Serverless Concepts | OPTIONAL VIDEO | Serverless architecture explainers reviewed | No candidate promoted yet | Runtime ownership differences benefit from a visual model. |
 | Architectural Styles — Choosing Styles from Drivers | NO VIDEO | — | — | Decision exercise. |
+| Architectural Styles — The Cost of Distribution | RECOMMENDED VIDEO | Distributed-systems architecture talks reviewed | No candidate promoted yet | Failure/latency/consistency costs benefit from real examples. |
