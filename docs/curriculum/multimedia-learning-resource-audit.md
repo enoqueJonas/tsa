@@ -691,3 +691,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Scheduled Execution — Implement Jenkins CRON Regression | RECOMMENDED VIDEO | Jenkins cron/pipeline demos reviewed | No candidate promoted yet | Scheduling and collision behavior benefit from live demonstration. |
 | Scheduled Execution — Implement Failure Alerts and Reports | RECOMMENDED VIDEO | Jenkins notification/report demos reviewed | No candidate promoted yet | Failure→alert→diagnostic artifact is a useful end-to-end workflow. |
 | Scheduled Execution — Defend the Quality Execution Policy | NO VIDEO | — | — | Defence uses learner evidence. |
+| Quality Milestone — Quality Steward Milestone Readiness | NO VIDEO | — | — | Readiness review. |
