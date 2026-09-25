@@ -643,3 +643,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Helpers and Utilities | NO VIDEO | — | — | Refactor from repeated need. |
 | Automation — Assertions | NO VIDEO | — | — | Write domain-meaningful assertions. |
 | Automation — Markers and Tags | NO VIDEO | — | — | Apply suite selection. |
+| Automation — Parameterization | OPTIONAL VIDEO | pytest parameterization demos reviewed | No candidate promoted yet | Compact demonstration may help. |
