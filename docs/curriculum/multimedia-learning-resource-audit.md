@@ -1137,3 +1137,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technology Governance — ITIL and Service-management Concepts | RECOMMENDED VIDEO | PeopleCert/ITIL service-management overviews reviewed | No candidate promoted yet | Value/service lifecycle concepts benefit from a concise framework overview. |
 | Technology Governance — ISO Management-system Concepts | OPTIONAL VIDEO | ISO management-system explainers reviewed | No candidate promoted yet | Plan/control/evaluate/improve cycle can be reinforced visually. |
 | Technology Governance — NIST Framework Landscape | RECOMMENDED VIDEO | NIST CSF/RMF/SSDF overview material reviewed | No candidate promoted yet | Seeing framework scopes side by side helps prevent checklist conflation. |
+| Technology Governance — Using Frameworks Without Checklist Thinking | NO VIDEO | — | — | The learner must tailor frameworks to actual governance problems. |
