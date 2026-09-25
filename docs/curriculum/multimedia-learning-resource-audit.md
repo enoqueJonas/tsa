@@ -1095,3 +1095,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technology Risk — Risk Treatment | NO VIDEO | — | — | Treatment selection is contextual. |
 | Technology Risk — Risk Acceptance | RECOMMENDED VIDEO | Risk-acceptance governance case studies reviewed | No candidate promoted yet | A real acceptance/expiry/owner workflow adds value. |
 | Technology Risk — Risk Registers | OPTIONAL VIDEO | Risk-register walkthroughs reviewed | No candidate promoted yet | A concise example can orient structure, but the learner must build one. |
+| Technology Risk — Key Risk Indicators | OPTIONAL VIDEO | KRI/KPI explainers reviewed | No candidate promoted yet | A worked threshold example can help. |
