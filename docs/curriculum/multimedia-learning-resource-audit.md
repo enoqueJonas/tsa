@@ -1668,3 +1668,15 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Configuration Management — Playbooks | NO VIDEO | — | — | Author/run playbooks directly. |
 | Configuration Management — Roles Concepts | OPTIONAL VIDEO | Ansible role-layout demos reviewed | No candidate promoted yet | A visual directory/reuse walkthrough may reinforce structure. |
 | Release — Release Candidates | NO VIDEO | — | — | Artifact/version evidence is primary. |
+| Release — Promotion and Gates | RECOMMENDED VIDEO | Release-promotion pipeline demos reviewed | No candidate promoted yet | Gate progression is visual. |
+| Release — Deployment Evidence | NO VIDEO | — | — | Learner must define/capture evidence. |
+| Release — Release Observability | OPTIONAL VIDEO | Deployment dashboard demos reviewed | No candidate promoted yet | Seeing release markers against metrics/logs can reinforce correlation. |
+| Release — Release Failure Handling | RECOMMENDED VIDEO | Failed-release/rollback demos reviewed | No candidate promoted yet | Operational response benefits from live sequence. |
+| Release — Release Runbooks | NO VIDEO | — | — | Writing and executing the runbook is primary. |
+| Schema Evolution — Production Database Schema Evolution | RECOMMENDED VIDEO | Expand/contract zero-downtime migration talks reviewed | No candidate promoted yet | Old/new application versions and schema phases need a timeline. |
+| CI Migration Exercise | NO VIDEO | — | — | Migration/reassessment exercise should be independent. |
+| Delivery Milestone — Milestone Brief: Steward Delivery Platform | NO VIDEO | — | — | Milestone brief. |
+| Delivery Milestone — Gate 1: Source, CI and Artifact Integrity | NO VIDEO | — | — | Evidence gate. |
+| Delivery Milestone — Gate 2: Reproducible Delivery Infrastructure | NO VIDEO | — | — | Evidence gate. |
+| Delivery Milestone — Gate 3: Promotion and Deployment | NO VIDEO | — | — | Evidence gate. |
+| Delivery Milestone — Gate 4: Runtime Verification | NO VIDEO | — | — | Evidence gate. |
