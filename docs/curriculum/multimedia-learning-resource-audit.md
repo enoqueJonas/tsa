@@ -2098,3 +2098,69 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Fault Injection — Chaos Engineering Principles and Safety | RECOMMENDED VIDEO | Principles of Chaos talks reviewed | No candidate promoted yet | Practitioner framing adds value. |
 | Fault Injection — experiment lab | NO VIDEO | — | — | Independent experiment. |
 | Reliability Engineer Milestone | NO VIDEO | — | — | Independent reliability program synthesis. |
+
+
+## Architect — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Fundamentals — What Software Architecture Is | OPTIONAL VIDEO | SEI/architecture practitioner talks reviewed | No candidate promoted yet | Practitioner framing can reinforce decision scope. |
+| Fundamentals — Architecture vs Design | NO VIDEO | — | — | Apply distinction to actual decisions. |
+| Fundamentals — Architecture Drivers | NO VIDEO | — | — | Extract actual drivers. |
+| Fundamentals — Quality Attributes and Architecture Characteristics | RECOMMENDED VIDEO | Quality-attribute scenario talks reviewed | No candidate promoted yet | Scenario stimulus/response/artifact structure benefits from worked examples. |
+| Fundamentals — Constraints | NO VIDEO | — | — | Identify actual constraints. |
+| Fundamentals — Trade-offs and Consequences | NO VIDEO | — | — | Decision analysis is primary. |
+| Fundamentals — Architecture Fitness and Evolution | RECOMMENDED VIDEO | Evolutionary architecture/fitness-function talks reviewed | No candidate promoted yet | Continuous architecture verification benefits from examples. |
+| Fundamentals — Architecture Documentation | RECOMMENDED VIDEO | C4/architecture documentation talks reviewed | Reuse Simon Brown candidate where relevant | Visual communication is the point. |
+| Fundamentals — practical baseline work | NO VIDEO | — | — | Independent architecture reconstruction. |
+| Domain — Domain Models and Business Language | OPTIONAL VIDEO | DDD modeling talks reviewed | No candidate promoted yet | A live domain-modeling conversation can help. |
+| Domain — Bounded Context Concepts | RECOMMENDED VIDEO | DDD bounded-context talks reviewed | No candidate promoted yet | Context boundaries/language differences are visual. |
+| Domain — Entities, Value Objects and Aggregates | RECOMMENDED VIDEO | DDD tactical modeling talks reviewed | No candidate promoted yet | Object roles/invariants benefit from worked model. |
+| Domain — Invariants and Transaction Boundaries | RECOMMENDED VIDEO | DDD aggregate/transaction talks reviewed | No candidate promoted yet | Consistency boundary is architectural. |
+| Domain — Context Mapping Concepts | RECOMMENDED VIDEO | DDD context-map demos reviewed | No candidate promoted yet | Relationships are explicitly visual. |
+| Domain — Domain Services | OPTIONAL VIDEO | DDD domain-service examples reviewed | No candidate promoted yet | Useful worked example. |
+| Domain — Avoiding Anemic and Over-engineered Models | OPTIONAL VIDEO | DDD critique talks reviewed | No candidate promoted yet | Contrasting examples can help. |
+| Domain — practical model work | NO VIDEO | — | — | Independent modeling. |
+| Modularity — Modules and Boundaries | RECOMMENDED VIDEO | Modular-monolith talks reviewed | No candidate promoted yet | System boundary diagrams add value. |
+| Modularity — Coupling and Cohesion Revisited | OPTIONAL VIDEO | Coupling/cohesion architecture talks reviewed | No candidate promoted yet | Worked change-impact examples help. |
+| Modularity — Dependency Direction | RECOMMENDED VIDEO | Dependency architecture demos reviewed | No candidate promoted yet | Dependency arrows are visual. |
+| Modularity — Encapsulation at System Scale | OPTIONAL VIDEO | Module encapsulation talks reviewed | No candidate promoted yet | Examples can reinforce. |
+| Modularity — Shared Libraries and Coupling | NO VIDEO | — | — | Analyze actual dependency. |
+| Modularity — Package Ownership and Change Impact | NO VIDEO | — | — | Use actual repository/change evidence. |
+| Modularity — Modular Monoliths | RECOMMENDED VIDEO | Modular-monolith talks reviewed | No candidate promoted yet | Boundary/deployment model benefits from visual architecture. |
+| Modularity — When a Service Boundary Is Justified | NO VIDEO | — | — | Decision must come from pressures. |
+| Modularity — Distributed Monoliths | RECOMMENDED VIDEO | Distributed-monolith failure talks reviewed | No candidate promoted yet | Cross-service coupling is useful to visualize. |
+| Modularity — practical decision work | NO VIDEO | — | — | Independent architecture decision. |
+| Styles — Layered Architecture | OPTIONAL VIDEO | Architecture-style diagrams reviewed | No candidate promoted yet | Short visual reinforcement. |
+| Styles — Hexagonal and Ports-and-Adapters Thinking | RECOMMENDED VIDEO | Hexagonal architecture talks reviewed | No candidate promoted yet | Ports/adapters/dependency direction are highly visual. |
+| Styles — Modular Monolith | RECOMMENDED VIDEO | Modular-monolith talks reviewed | No candidate promoted yet | Structure/deployment boundary visual. |
+| Styles — Service-oriented Architecture | RECOMMENDED VIDEO | SOA architecture material reviewed | No candidate promoted yet | Service/integration boundaries are visual. |
+| Styles — Microservices | RECOMMENDED VIDEO | Microservices architecture talks reviewed | No candidate promoted yet | Distribution/coupling/operational cost benefit from diagrams. |
+| Styles — Event-driven Architecture | RECOMMENDED VIDEO | Event-driven architecture talks reviewed | No candidate promoted yet | Producer/event/broker/consumer flows are visual. |
+| Styles — Serverless Concepts | RECOMMENDED VIDEO | Serverless event/runtime demos reviewed | No candidate promoted yet | Execution/managed responsibility model is visual. |
+| Styles — Choosing Styles from Drivers | NO VIDEO | — | — | Trade-off exercise. |
+| Styles — The Cost of Distribution | RECOMMENDED VIDEO | Distributed-systems practitioner talks reviewed | No candidate promoted yet | Latency/failure/consistency/operations interactions are visual. |
+| Styles — practical comparison | NO VIDEO | — | — | Independent decision. |
+| Data Architecture — Establish the Data Architecture Baseline | NO VIDEO | — | — | Map actual authority/flows. |
+| Data Architecture — Challenge Data Architecture Options | RECOMMENDED VIDEO | Data architecture/polyglot persistence talks reviewed | No candidate promoted yet | Authority/replication/storage boundaries benefit from diagrams. |
+| Data Architecture — Record and Validate the Decision | NO VIDEO | — | — | ADR/evidence. |
+| Integration — Integration Styles | RECOMMENDED VIDEO | Integration-pattern talks reviewed | No candidate promoted yet | Interaction topology is visual. |
+| Integration — Synchronous APIs | OPTIONAL VIDEO | API interaction diagrams reviewed | No candidate promoted yet | Already familiar; optional. |
+| Integration — Asynchronous Messaging | RECOMMENDED VIDEO | Messaging architecture talks reviewed | No candidate promoted yet | Temporal decoupling is visual. |
+| Integration — Queues and Pub/Sub | RECOMMENDED VIDEO | Queue/pubsub diagrams reviewed | No candidate promoted yet | Delivery topology is visual. |
+| Integration — Events and Commands | RECOMMENDED VIDEO | Event/command semantics talks reviewed | No candidate promoted yet | Worked message contracts help. |
+| Integration — Delivery Semantics | RECOMMENDED VIDEO | At-least-once/exactly-once talks reviewed | No candidate promoted yet | Duplicate/loss timelines are visual. |
+| Integration — Idempotency | OPTIONAL VIDEO | Idempotency examples reviewed | No candidate promoted yet | Useful reinforcement. |
+| Integration — Schema and Contract Evolution | RECOMMENDED VIDEO | Event schema evolution talks reviewed | No candidate promoted yet | Producer/consumer compatibility over time is visual. |
+| Integration — Failure and Backpressure | RECOMMENDED VIDEO | Backpressure/failure talks reviewed | No candidate promoted yet | Rate/failure propagation is visual. |
+| Integration — When Not to Add a Broker | NO VIDEO | — | — | Decision reasoning. |
+| Scale — Define Evidence-backed Growth Scenarios | NO VIDEO | — | — | Use actual evidence. |
+| Scale — Compare Scale and Distribution Options | RECOMMENDED VIDEO | Horizontal scaling/partitioning/cache architecture talks reviewed | No candidate promoted yet | Scale topology options are visual. |
+| Scale — Record the Growth Architecture Decision | NO VIDEO | — | — | Decision evidence. |
+| Resilience Architecture — Select and Model the Failure Path | RECOMMENDED VIDEO | Resilience pattern diagrams reviewed | No candidate promoted yet | Failure path is visual. |
+| Resilience Architecture — Compare Resilience Options | RECOMMENDED VIDEO | Timeout/retry/circuit-breaker/bulkhead architecture talks reviewed | No candidate promoted yet | Pattern interactions are visual. |
+| Resilience Architecture — Validate and Record the Evolution | NO VIDEO | — | — | Decision/evidence. |
+| Governance — Prepare the Review | OPTIONAL VIDEO | Architecture review facilitation talks reviewed | No candidate promoted yet | Seeing a good review can help. |
+| Governance — Run the Review | RECOMMENDED VIDEO | Architecture review/ATAM-style workshops reviewed | No candidate promoted yet | Facilitation and scenario questioning are behavioral skills. |
+| Governance — Turn Decisions into Guardrails | RECOMMENDED VIDEO | Architecture fitness/policy-as-code talks reviewed | No candidate promoted yet | Decision→automated guardrail flow is useful. |
+| Architect Milestone | NO VIDEO | — | — | Independent architecture evolution synthesis. |
