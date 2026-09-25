@@ -613,3 +613,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Test Design — Negative Testing | NO VIDEO | — | — | Design failures against actual invariants. |
 | Test Design — Traceability | OPTIONAL VIDEO | Requirements-to-test traceability examples reviewed | No candidate promoted yet | A visual trace chain can help, but the learner's matrix is primary. |
 | Test Design — Lab: Design Risk-based Steward Test Coverage | NO VIDEO | — | — | Synthesis lab. |
+| Unit/Component — Designing Unit Tests | OPTIONAL VIDEO | Google/Fowler unit-testing talks reviewed | No candidate promoted yet | A behavior-focused worked example can reinforce design. |
