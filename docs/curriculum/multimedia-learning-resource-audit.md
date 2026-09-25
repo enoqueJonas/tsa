@@ -417,3 +417,92 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Platform Builder — Milestone Review and Exit Criteria | NO VIDEO | — | — | Milestone evidence review. |
 | Platform Builder — Assemble the Platform Builder Evidence Pack | NO VIDEO | — | — | Portfolio assembly. |
 | Platform Builder — Platform Builder Exit Reflection | NO VIDEO | — | — | Reflection and transfer check. |
+
+
+## Delivery Engineer — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Foundations — The Source-to-Production Lifecycle | RECOMMENDED VIDEO | CI/CD lifecycle visualizations reviewed | No candidate promoted yet | End-to-end source→build→artifact→promotion→runtime flow is inherently visual. |
+| Foundations — Git Workflows | NO VIDEO | — | — | Git workflow was already practiced; apply it to delivery. |
+| Foundations — Pull Requests and Reviews | NO VIDEO | — | — | Review behavior is learned through actual PRs. |
+| Foundations — Semantic Versioning | OPTIONAL VIDEO | SemVer explainers reviewed | No candidate promoted yet | A concise example can reinforce compatibility signaling, but the spec and release exercise are enough. |
+| Foundations — Conventional Commits | NO VIDEO | — | — | Convention is compact and practice-oriented. |
+| Foundations — Release Notes and Changelogs | NO VIDEO | — | — | Produce them from real changes. |
+| Foundations — Build Artifacts | RECOMMENDED VIDEO | Artifact/repository pipeline explainers reviewed | No candidate promoted yet | Immutable artifact flow and provenance benefit from a pipeline diagram. |
+| Foundations — Environment Promotion | RECOMMENDED VIDEO | Promotion-pipeline demonstrations reviewed | No candidate promoted yet | Same-artifact promotion across environments is best seen as a flow. |
+| Automation — Shell Scripting | NO VIDEO | — | — | Writing and running scripts is primary. |
+| Automation — Pipes and Exit Codes | RECOMMENDED VIDEO | Unix pipeline/exit-code demos reviewed | No candidate promoted yet | A live pipeline failure shows why exit status controls automation. |
+| Automation — Environment and Inputs | NO VIDEO | — | — | Input/config handling should be implemented directly. |
+| Automation — Repeatable Automation | NO VIDEO | — | — | Repeatability is proven by rerunning the task. |
+| Automation — Make and Task Entry Points | OPTIONAL VIDEO | Make/task-runner demos reviewed | No candidate promoted yet | A short dependency-target demonstration may help. |
+| Automation — Idempotency | RECOMMENDED VIDEO | Idempotent automation demonstrations reviewed | No candidate promoted yet | First-run change versus second-run no-op is valuable to see. |
+| Automation — Lab: Automate Steward Developer and Operator Tasks | NO VIDEO | — | — | Independent automation lab. |
+| Containers — Containers versus Virtual Machines | RECOMMENDED VIDEO | Container/VM architecture animations reviewed | No candidate promoted yet | Process isolation versus full guest OS is strongly visual. |
+| Containers — Namespaces and cgroups Concepts | RECOMMENDED VIDEO | Linux namespace/cgroup demonstrations reviewed | No candidate promoted yet | The kernel mechanisms behind containers are difficult to infer from Docker commands alone. |
+| Containers — Docker Architecture | RECOMMENDED VIDEO | Docker client/daemon/image/container diagrams reviewed | No candidate promoted yet | Architecture is visual and operationally important. |
+| Containers — Images and Layers | RECOMMENDED VIDEO | Image-layer/cache demonstrations reviewed | No candidate promoted yet | Layer reuse and invalidation are best shown live. |
+| Containers — Writing Dockerfiles | NO VIDEO | — | — | Write/build/inspect directly. |
+| Containers — Build Context | OPTIONAL VIDEO | Docker build-context demos reviewed | No candidate promoted yet | A concise demo can expose accidental context size/secrets. |
+| Containers — Multi-stage Builds | RECOMMENDED VIDEO | Multi-stage build demos reviewed | No candidate promoted yet | Builder/runtime stage separation and image-size difference are visually useful. |
+| Containers — Volumes | RECOMMENDED VIDEO | Docker volume/bind-mount demos reviewed | No candidate promoted yet | Persistence and host/container path boundaries benefit from demonstration. |
+| Containers — Container Networking | RECOMMENDED VIDEO | Docker bridge/DNS/port-publish demos reviewed | No candidate promoted yet | Network namespace/bridge/published-port flow is highly visual. |
+| Containers — Docker Compose | OPTIONAL VIDEO | Compose multi-service demos reviewed | No candidate promoted yet | Useful once, but learner should build the composition. |
+| Containers — Health Checks | NO VIDEO | — | — | Implement and break health behavior directly. |
+| Containers — Container Registries | RECOMMENDED VIDEO | Registry push/pull/tag flows reviewed | No candidate promoted yet | Image identity and registry movement are visual. |
+| Containers — Image Tags and Versioning | NO VIDEO | — | — | Apply versioning rules to actual images. |
+| Containers — Image Optimization | OPTIONAL VIDEO | Docker image optimization demos reviewed | No candidate promoted yet | Before/after layer-size inspection can reinforce the evidence loop. |
+| Containers — Container Debugging | RECOMMENDED VIDEO | Docker troubleshooting demos reviewed | No candidate promoted yet | Live inspect/log/exec/network diagnosis is valuable. |
+| CI — CI Pipeline Architecture | RECOMMENDED VIDEO | Jenkins pipeline architecture demos reviewed | No candidate promoted yet | SCM trigger→agent→stages→artifacts/gates is visual. |
+| CI — Jobs, Stages and Dependencies | RECOMMENDED VIDEO | Pipeline DAG/stage demos reviewed | No candidate promoted yet | Execution dependencies and fail-fast behavior benefit from a pipeline graph. |
+| CI — Runners and Agents | RECOMMENDED VIDEO | Jenkins agent/controller demos reviewed | No candidate promoted yet | Execution placement is easier to understand visually. |
+| CI — GitHub Actions and Jenkins | OPTIONAL VIDEO | Jenkins/GitHub Actions comparisons reviewed | No candidate promoted yet | Comparison is useful, but Jenkins remains primary and Actions bounded. |
+| CI — Self-hosted Runners | OPTIONAL VIDEO | Self-hosted agent setup demos reviewed | No candidate promoted yet | A setup demo can help with execution-boundary intuition. |
+| CI — Caching | OPTIONAL VIDEO | CI cache demos reviewed | No candidate promoted yet | Cache hit/miss and invalidation are useful but secondary. |
+| CI — Pipeline Artifacts | RECOMMENDED VIDEO | Artifact handoff demos reviewed | No candidate promoted yet | Stage-to-stage immutable artifact movement is visual. |
+| CI — Secrets and Variables | NO VIDEO | — | — | Configure safely; avoid normalizing secret exposure through tutorial copy-along. |
+| CI — Parallelism | OPTIONAL VIDEO | Parallel pipeline demos reviewed | No candidate promoted yet | A DAG/timeline can make speed-versus-contention trade-offs concrete. |
+| CI — Automated Checks | NO VIDEO | — | — | Implement the checks. |
+| CI — Test Stages | NO VIDEO | — | — | Quality school deepens testing; here integrate real stages. |
+| CI — Quality Gates | NO VIDEO | — | — | Gate behavior should be proven with failing/passing pipelines. |
+| CI — Building Containers in CI | RECOMMENDED VIDEO | Jenkins Docker-build pipeline demos reviewed | No candidate promoted yet | A live source→image→registry path adds value. |
+| CD — CI versus Continuous Delivery versus Continuous Deployment | RECOMMENDED VIDEO | CI/CD distinction explainers reviewed | No candidate promoted yet | A pipeline-state diagram makes the release boundary clear. |
+| CD — Environment Management | NO VIDEO | — | — | Implement environment ownership/promotion. |
+| CD — Deployment Automation | RECOMMENDED VIDEO | Deployment-pipeline demos reviewed | No candidate promoted yet | Live automated deploy+verification shows the contract. |
+| CD — Release Approvals | NO VIDEO | — | — | Approval semantics are process design. |
+| CD — Database Migrations During Deployment | RECOMMENDED VIDEO | Zero-downtime migration talks reviewed | No candidate promoted yet | Application/schema compatibility across deployment phases is a timeline problem. |
+| CD — Rollback | RECOMMENDED VIDEO | Rollback demonstrations reviewed | No candidate promoted yet | Seeing artifact rollback plus state caveats is useful. |
+| CD — Rolling Deployments | RECOMMENDED VIDEO | Rolling-update animations reviewed | No candidate promoted yet | Instance-by-instance replacement is visual. |
+| CD — Blue-Green Deployments | RECOMMENDED VIDEO | Blue-green traffic-switch demos reviewed | No candidate promoted yet | Two environments and traffic cutover are inherently visual. |
+| CD — Canary Deployment Concepts | RECOMMENDED VIDEO | Canary traffic-shift demos reviewed | No candidate promoted yet | Progressive percentages and analysis gates benefit from animation. |
+| CD — Feature Flag Concepts | OPTIONAL VIDEO | Feature-flag rollout demos reviewed | No candidate promoted yet | Control-plane separation can help, but implementation is not central here. |
+| Config — Configuration Drift | RECOMMENDED VIDEO | Ansible drift media already reviewed | Reuse Platform Builder candidate only if needed | Avoid duplicate assignment unless Delivery framing adds something new. |
+| Config — Desired State and Idempotency | NO VIDEO | Prior Ansible lesson already covers this | — | Apply prior knowledge. |
+| Config — Ansible Fundamentals | NO VIDEO | Prior Ansible path already implemented | — | Delivery uses the existing tool rather than reteaching it. |
+| Config — Inventories | NO VIDEO | — | — | Use actual environments. |
+| Config — Playbooks | NO VIDEO | — | — | Write and run them. |
+| Config — Roles Concepts | NO VIDEO | — | — | Already implemented earlier. |
+| Release — Release Candidates | NO VIDEO | — | — | Create and promote a real candidate. |
+| Release — Promotion and Gates | RECOMMENDED VIDEO | Release-promotion pipeline demos reviewed | No candidate promoted yet | Artifact/gate/environment flow is visual. |
+| Release — Deployment Evidence | NO VIDEO | — | — | Capture evidence from actual deployments. |
+| Release — Release Observability | OPTIONAL VIDEO | Release-marker/dashboard demos reviewed | No candidate promoted yet | Visual correlation of deploy markers and telemetry can help. |
+| Release — Release Failure Handling | RECOMMENDED VIDEO | Failed-release/rollback incident demos reviewed | No candidate promoted yet | Timeline of detection→decision→rollback/recovery is useful. |
+| Release — Release Runbooks | NO VIDEO | — | — | Write and execute the runbook. |
+| Artifact Management — Artifact, Dependency and Supply-Chain Management | RECOMMENDED VIDEO | Nexus repository/proxy/hosted-flow demos reviewed | No candidate promoted yet | Hosted/proxy/group repositories and immutable artifact flow are easier to understand visually. |
+| Schema Evolution — Production Database Schema Evolution | RECOMMENDED VIDEO | Expand-contract/zero-downtime migration talks reviewed | No candidate promoted yet | Old/new app versions, schema states and backfill coexistence are timeline-heavy and benefit from animation. |
+| Schema Evolution — Design a Backward-Compatible Steward Change | NO VIDEO | — | — | Design work should be independent. |
+| Schema Evolution — Run the Expand and Backfill | RECOMMENDED VIDEO | Online migration/backfill demos reviewed | No candidate promoted yet | A real staged migration can reinforce restartability and coexistence before the learner executes it. |
+| Schema Evolution — Switch, Fail and Recover | NO VIDEO | — | — | Controlled failure/recovery is the learner's evidence. |
+| Schema Evolution — Contract and Prove the End State | NO VIDEO | — | — | Execute the final gate and cleanup directly. |
+| Schema Evolution — Defend the Migration Strategy | NO VIDEO | — | — | Reflection/defence. |
+| CI Migration — Migration Brief: Move a Steward CI Workflow Safely | OPTIONAL VIDEO | CI migration case studies reviewed | No candidate promoted yet | A case study can provide context, but semantic mapping is primary. |
+| CI Migration — Execute a Bounded CI Migration | NO VIDEO | — | — | Independent migration exercise. |
+| CI Migration — Migration Review | NO VIDEO | — | — | Reflection. |
+| Delivery Milestone — Milestone Brief: Steward Delivery Platform | NO VIDEO | — | — | Milestone brief. |
+| Delivery Milestone — Gate 1: Source, CI and Artifact Integrity | NO VIDEO | — | — | Evidence gate. |
+| Delivery Milestone — Gate 2: Reproducible Delivery Infrastructure | NO VIDEO | — | — | Evidence gate. |
+| Delivery Milestone — Gate 3: Promotion and Deployment | NO VIDEO | — | — | Evidence gate. |
+| Delivery Milestone — Gate 4: Runtime Verification | NO VIDEO | — | — | Evidence gate. |
+| Delivery Milestone — Gate 5: Failure, Rollback and Recovery | NO VIDEO | — | — | Evidence gate. |
+| Delivery Milestone — Gate 6: Delivery Platform Handoff | NO VIDEO | — | — | Evidence gate. |
+| Delivery Milestone — Milestone Review and Exit Criteria | NO VIDEO | — | — | School exit review. |
