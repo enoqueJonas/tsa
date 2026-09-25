@@ -1028,3 +1028,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Modularity — Challenge Module, Package and Service Options | NO VIDEO | — | — | Architecture exercise. |
 | Modularity — Record and Enforce the Boundary Decision | NO VIDEO | — | — | Decision/guardrail artifact. |
 | Architectural Styles — Layered Architecture | OPTIONAL VIDEO | Architecture-style comparisons reviewed | No candidate promoted yet | A layer/dependency diagram is useful but not required. |
+| Architectural Styles — Hexagonal and Ports-and-Adapters Thinking | RECOMMENDED VIDEO | Ports-and-adapters talks reviewed | No candidate promoted yet | Ports, adapters and dependency inversion are strongly visual. |
