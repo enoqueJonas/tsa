@@ -1034,3 +1034,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Modularity — Shared Libraries and Coupling | RECOMMENDED VIDEO | shared-library/platform dependency talks reviewed | No candidate promoted yet | Version/coupling blast radius benefits from concrete examples. |
 | Modularity — Package Ownership and Change Impact | NO VIDEO | — | — | Use actual repository/package evidence. |
 | Modularity — Modular Monoliths | RECOMMENDED VIDEO | modular-monolith talks reviewed | No candidate promoted yet | Module boundaries within one deployment are useful to see contrasted with services. |
+| Modularity — When a Service Boundary Is Justified | NO VIDEO | — | — | The learner must prove independent lifecycle/ownership/scaling pressure. |
