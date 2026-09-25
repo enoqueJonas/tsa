@@ -321,3 +321,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Homelab — CPU, RAM, Storage and NIC Trade-offs | RECOMMENDED VIDEO | Server hardware/resource explainers reviewed | No candidate promoted yet | Seeing physical components and bottlenecks adds value. |
 | Homelab — Power, Noise and Reliability | OPTIONAL VIDEO | Homelab power/noise measurements reviewed | No candidate promoted yet | Real measurements add context but are environment-specific. |
 | Homelab — Ethernet Switches and Cabling | RECOMMENDED VIDEO | Switch/cabling demonstrations reviewed | No candidate promoted yet | Physical ports/cables/link evidence are visual. |
+| Homelab — Designing the Home Network Topology | RECOMMENDED VIDEO | Homelab topology walkthroughs reviewed | No candidate promoted yet | Physical/logical topology is best visualized. |
