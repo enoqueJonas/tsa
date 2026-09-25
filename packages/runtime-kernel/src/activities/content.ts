@@ -1,6 +1,10 @@
 export interface LearningResource {
     title: string;
     url: string;
+    /** Exact chapter, section, heading or page range the learner should read. */
+    read?: string;
+    /** Why this particular slice of the source matters for the lesson. */
+    purpose?: string;
 }
 
 export type LessonBlock =
