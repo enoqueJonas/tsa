@@ -696,3 +696,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Operate Time Synchronization with Chrony | OPTIONAL VIDEO | Chrony/NTP operational walkthroughs reviewed | No candidate promoted yet | A live chronyc demonstration can reduce tool friction, but the synchronization experiment is straightforward. |
 | Clock Skew as a Security and Observability Incident | RECOMMENDED VIDEO | Clock-skew/TLS/token/log-correlation material reviewed | No candidate promoted yet | A timeline makes the cross-system consequences of incorrect time substantially clearer. |
 | Integrate Core Services into the Homelab | NO VIDEO | — | — | This is an integration/cutover exercise using services already learned. |
+| Reassess Availability and Ownership | NO VIDEO | — | — | The learner should make the SPOF/ownership decision from implemented evidence. |
