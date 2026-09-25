@@ -526,3 +526,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Configuration — Secrets, Failure and Safe Fleet Changes | OPTIONAL VIDEO | Ansible secrets/serial/canary material reviewed | No candidate promoted yet | A fleet-change demo can help, but later Vault and delivery paths go deeper. |
 | Configuration — Milestone: Build and Operate the Rocky Configuration Baseline | NO VIDEO | — | — | Milestone synthesis. |
 | Configuration — Reassess Image, Ansible and Platform Ownership | NO VIDEO | — | — | Ownership decision must come from implemented boundaries. |
+| OS Lifecycle — Patch Risk, Exposure and Change Windows | OPTIONAL VIDEO | Patch-management/SRE change-risk talks reviewed | No candidate promoted yet | Real change narratives can add context, but the risk model is primarily a decision exercise. |
