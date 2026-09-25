@@ -1176,3 +1176,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Controls — Audit Fundamentals | OPTIONAL VIDEO | internal-audit lifecycle explainers reviewed | No candidate promoted yet | A concise audit lifecycle overview can orient scope/evidence/findings. |
 | Controls — Findings and Remediation | NO VIDEO | — | — | Draft and track actual findings. |
 | Controls — Designing Proportionate Controls | NO VIDEO | — | — | Proportionality is a contextual design decision. |
+| Controls — Lab: Test Steward Engineering Controls | NO VIDEO | — | — | Independent assurance exercise. |
