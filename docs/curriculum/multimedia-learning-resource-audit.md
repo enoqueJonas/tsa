@@ -1281,3 +1281,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Defence — Explain Trade-offs | NO VIDEO | — | — | Defend accepted consequences and alternatives. |
 | Defence — Present Engineering Evidence | NO VIDEO | — | — | Use the evidence portfolio. |
 | Defence — Defend Quality Decisions | NO VIDEO | — | — | Independent defence. |
+| Defence — Defend Security Decisions | NO VIDEO | — | — | Independent defence. |
