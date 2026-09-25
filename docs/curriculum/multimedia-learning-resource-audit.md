@@ -1243,3 +1243,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Proposal — Dependency and Internal Platform Decisions | NO VIDEO | — | — | Choose reuse/build boundaries independently. |
 | Proposal — Implementation Milestones | NO VIDEO | — | — | Plan executable increments. |
 | Proposal — Architecture and Risk Review | NO VIDEO | Prior review material sufficient | — | Run the review; don't watch one instead. |
+| Proposal — Lab: Defend the Capstone Engineering Proposal | NO VIDEO | — | — | Independent defence. |
