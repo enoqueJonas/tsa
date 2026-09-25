@@ -665,3 +665,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Browser — Local vs Remote Execution | OPTIONAL VIDEO | Remote browser-grid demos reviewed | No candidate promoted yet | Execution-location dependencies can be visualized. |
 | Browser — Environment Parity and Configuration Risk | NO VIDEO | — | — | Compare actual environments and diagnose drift. |
 | Browser — Lab: Run Steward Tests Across Environments | NO VIDEO | — | — | Independent lab. |
+| Non-functional — Performance Tool Decision | NO VIDEO | — | — | Tool choice must follow workload/question. |
