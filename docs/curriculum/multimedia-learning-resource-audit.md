@@ -1072,3 +1072,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Scale — Distributed Transactions and Sagas Concepts | RECOMMENDED VIDEO | saga/compensation talks reviewed | No candidate promoted yet | Multi-step transaction/compensation sequences are ideal for diagrams. |
 | Scale — Capacity vs Architectural Complexity | NO VIDEO | — | — | Compare measured pressure with complexity cost. |
 | Scale — Compare Scale and Distribution Options | NO VIDEO | — | — | Decision exercise. |
+| Scale — Record the Growth Architecture Decision | NO VIDEO | — | — | Decision evidence. |
