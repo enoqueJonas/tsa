@@ -543,3 +543,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | --- | --- | --- | --- | --- |
 | Windows — Windows in a Linux-Primary Enterprise Platform | OPTIONAL VIDEO | Mixed-estate operations material reviewed | No candidate promoted yet | A concise enterprise-estate overview can add context, but the boundary is more important than platform advocacy. |
 | Windows — Build and Baseline Windows Server | OPTIONAL VIDEO | Windows Server evaluation/install walkthroughs reviewed | No candidate promoted yet | Visual setup can reduce friction; actual baseline evidence remains primary. |
+| Windows — PowerShell as an Administrative Interface | RECOMMENDED VIDEO | Microsoft PowerShell learning/demos reviewed | No candidate promoted yet | Objects, pipeline and discovery are easier to grasp from a live shell demonstration. |
