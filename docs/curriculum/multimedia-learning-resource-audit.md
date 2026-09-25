@@ -802,3 +802,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Application Security — Abuse Cases and Negative Security Requirements | NO VIDEO | — | — | Write actual abuse cases/requirements. |
 | Application Security — Security Regression Testing | NO VIDEO | — | — | Automate actual fixed vulnerabilities. |
 | Security Milestone — Milestone Briefing: Build a Defensible Steward Security Posture | NO VIDEO | — | — | Milestone brief. |
+| Security Milestone — Milestone: Steward Security Assessment and Hardening | NO VIDEO | — | — | Independent security synthesis. |
