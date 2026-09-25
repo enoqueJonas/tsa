@@ -1132,3 +1132,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technology Governance — Value Delivery | NO VIDEO | — | — | Tie actual investment to outcomes. |
 | Technology Governance — Resource Stewardship | OPTIONAL VIDEO | FinOps/resource-governance talks reviewed | No candidate promoted yet | Lifecycle-cost examples can add context. |
 | Technology Governance — Performance Oversight | NO VIDEO | — | — | Define actual decision-linked measures. |
+| Technology Governance — Governance Structures | OPTIONAL VIDEO | IT governance operating-model talks reviewed | No candidate promoted yet | Examples can show decision forums versus delegated authority. |
