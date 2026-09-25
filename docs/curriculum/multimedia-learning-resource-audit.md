@@ -1046,3 +1046,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Integration — Challenge Sync and Async Options | RECOMMENDED VIDEO | Sync/async/event architecture talks reviewed | No candidate promoted yet | Timing/coupling/failure differences are highly visual. |
 | Integration — Record and Govern the Integration Decision | NO VIDEO | — | — | Governance artifact. |
 | Scalability — Define Evidence-backed Growth Scenarios | NO VIDEO | — | — | Growth scenarios must be evidence-based. |
+| Scalability — Compare Scale and Distribution Options | RECOMMENDED VIDEO | Scaling/distributed-systems talks reviewed | No candidate promoted yet | Topology and bottleneck movement benefit from visual explanation. |
