@@ -1232,3 +1232,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Proposal — System Context and Boundaries | NO VIDEO | C4/system-context media already reviewed | Reuse prior C4 resource only for refresh | Capstone should demonstrate the modeling skill independently. |
 | Proposal — Domain and Data Model Proposal | NO VIDEO | — | — | Design from the discovered domain. |
 | Proposal — Architecture Proposal | NO VIDEO | Prior Architect resources sufficient | — | Produce and defend the architecture rather than copy a reference architecture. |
+| Proposal — Infrastructure and Hosting Proposal | NO VIDEO | Prior platform/cloud material sufficient | — | Choose infrastructure from actual constraints. |
