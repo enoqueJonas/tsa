@@ -919,3 +919,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | DR — Lab: Run a Steward Restore Drill | NO VIDEO | — | — | Independent recovery drill. |
 | Incident — Detection | RECOMMENDED VIDEO | incident detection walkthroughs reviewed | No candidate promoted yet | Signal→alert→incident transition is useful to see. |
 | Incident — Triage | RECOMMENDED VIDEO | SRE incident-response simulations reviewed | No candidate promoted yet | Watching prioritization under uncertainty models method. |
+| Incident — Incident Roles | OPTIONAL VIDEO | incident commander role talks reviewed | No candidate promoted yet | Real coordination examples add context. |
