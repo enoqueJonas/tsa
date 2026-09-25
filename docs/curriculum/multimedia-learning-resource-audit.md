@@ -856,3 +856,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Observability Integration — Run a Cross-Signal Incident Investigation | RECOMMENDED VIDEO | incident investigation demos reviewed | No candidate promoted yet | Expert navigation across signals can model diagnostic method. |
 | Observability Integration — Defend the Observability Architecture | NO VIDEO | — | — | Defence uses learner evidence. |
 | SLO — SLIs | RECOMMENDED VIDEO | Google SRE SLI/SLO material reviewed | No candidate promoted yet | Indicator/target/window relationship benefits from graphs. |
+| SLO — SLOs | RECOMMENDED VIDEO | Google SRE SLO talks reviewed | No candidate promoted yet | Good/bad SLO examples are useful visually. |
