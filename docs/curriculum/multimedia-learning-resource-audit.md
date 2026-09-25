@@ -900,3 +900,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Performance — Load and Stress Testing | RECOMMENDED VIDEO | k6/load-test demos reviewed | No candidate promoted yet | Load ramp, latency and errors are useful to see together. |
 | Performance — Capacity Planning | OPTIONAL VIDEO | capacity-planning talks reviewed | No candidate promoted yet | Worked forecasting can reinforce the model. |
 | Performance — Resource Utilization | NO VIDEO | — | — | Measure actual resources. |
+| Performance — Database and Application Bottlenecks | RECOMMENDED VIDEO | APM/query profiling demos reviewed | No candidate promoted yet | Cross-layer bottleneck attribution is visual. |
