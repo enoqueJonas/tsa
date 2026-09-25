@@ -686,3 +686,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Scheduled Quality — Continuous and Scheduled Quality Execution | RECOMMENDED VIDEO | Jenkins scheduled/SCM-trigger pipeline demos reviewed | No candidate promoted yet | SCM trigger versus cron regression and collision control benefit from a pipeline demonstration. |
 | Scheduled Quality — Wire Mandatory Continuous Checks | NO VIDEO | — | — | Implement real trigger/checks. |
 | Scheduled Quality — Schedule Regression and Prevent Collisions | NO VIDEO | — | — | Implement and prove scheduling/locking. |
+| Scheduled Quality — Prove Failure Notification and Recovery | NO VIDEO | — | — | Failure→notification→fix→green must be learner evidence. |
