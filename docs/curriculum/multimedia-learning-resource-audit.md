@@ -845,3 +845,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Metrics — PromQL | RECOMMENDED VIDEO | PromQL query demos reviewed | No candidate promoted yet | Interactive query construction is worth watching once. |
 | Metrics — Recording Rules Concepts | OPTIONAL VIDEO | recording-rule demos reviewed | No candidate promoted yet | Useful operational reinforcement. |
 | Metrics — Grafana | RECOMMENDED VIDEO | Grafana dashboard/query demos reviewed | No candidate promoted yet | The UI/query/dashboard workflow is inherently visual. |
+| Metrics — Dashboard Design | RECOMMENDED VIDEO | dashboard-design talks reviewed | No candidate promoted yet | Good/bad dashboard comparisons are visual. |
