@@ -955,3 +955,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Reliability Milestone — Milestone: Steward Reliability Program | NO VIDEO | — | — | Milestone synthesis. |
 | Reliability Milestone — Assemble the Reliability Evidence Baseline | NO VIDEO | — | — | Evidence assembly. |
 | Reliability Milestone — Operate Steward Through a Reliability Review Scenario | NO VIDEO | — | — | Independent scenario. |
+| Reliability Milestone — Publish the Steward Reliability Review | NO VIDEO | — | — | Deliverable creation. |
