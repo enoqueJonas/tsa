@@ -598,3 +598,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Patching — Major OS Version Change Is a Migration | OPTIONAL VIDEO | Enterprise Linux major-upgrade/migration material reviewed | No candidate promoted yet | A real migration narrative can add useful failure/rollback context. |
 | Patching — Reassess the Patch Operating Model | NO VIDEO | — | — | ADR/runbook synthesis. |
 | Windows — Windows in a Linux-Primary Enterprise Platform | OPTIONAL VIDEO | Mixed-estate architecture material reviewed | No candidate promoted yet | A visual estate map can establish boundaries without turning TSA into Windows-specialist training. |
+| Windows — Build and Baseline Windows Server | OPTIONAL VIDEO | Windows Server installation/baseline walkthroughs reviewed | No candidate promoted yet | A setup walkthrough can reduce friction; actual VM build is primary. |
