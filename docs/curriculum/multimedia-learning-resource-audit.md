@@ -1253,3 +1253,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Build — Automate Delivery | NO VIDEO | — | — | Independent delivery implementation. |
 | Build — Build Quality Evidence | NO VIDEO | — | — | Independent testing/quality evidence. |
 | Build — Secure the System | NO VIDEO | — | — | Independent security implementation. |
+| Build — Instrument the System | NO VIDEO | — | — | Independent observability implementation. |
