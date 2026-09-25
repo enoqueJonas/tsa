@@ -1208,3 +1208,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Handbook — Review Checklists | NO VIDEO | — | — | Design the actual risk-sensitive checklist and automate machine-verifiable items. |
 | Handbook — Knowledge Stewardship | OPTIONAL VIDEO | documentation/knowledge-management engineering talks reviewed | No candidate promoted yet | Examples can show authoritative-source and ownership patterns. |
 | Handbook — Standards Ownership and Versioning | NO VIDEO | — | — | Define lifecycle metadata for actual standards. |
+| Handbook — Exception and Waiver Records | NO VIDEO | — | — | Use the governance exception model already built. |
