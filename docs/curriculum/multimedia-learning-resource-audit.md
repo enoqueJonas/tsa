@@ -704,3 +704,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | --- | --- | --- | --- | --- |
 | Foundations — Confidentiality, Integrity and Availability | OPTIONAL VIDEO | CIA-triad explainers reviewed | No candidate promoted yet | Simple visual reinforcement; risk application is primary. |
 | Foundations — Assets, Threats, Vulnerabilities and Risk | RECOMMENDED VIDEO | Security risk-model explainers reviewed | No candidate promoted yet | Relationships between asset/threat/vulnerability/control/consequence benefit from a model. |
+| Foundations — Attack Surface | RECOMMENDED VIDEO | Attack-surface mapping demos reviewed | No candidate promoted yet | Entry points and reachable trust paths are visual. |
