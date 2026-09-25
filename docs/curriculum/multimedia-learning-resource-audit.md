@@ -723,3 +723,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Threat Modeling — Lab: Threat-model Steward API | NO VIDEO | — | — | Independent model. |
 | Web/API — Injection and SQL Injection | REQUIRED WATCH | PortSwigger Web Security Academy material reviewed | Safe PortSwigger SQLi lab/demo; exact resource at insertion | Exploit→query effect→fix materially improves understanding. |
 | Web/API — Cross-site Scripting | REQUIRED WATCH | PortSwigger XSS material reviewed | Safe PortSwigger XSS lab/demo; exact resource at insertion | Browser execution context is best understood through controlled demonstration. |
+| Web/API — Cross-site Request Forgery | RECOMMENDED VIDEO | PortSwigger CSRF material reviewed | No candidate promoted yet | Cross-origin request/session behavior benefits from a browser-flow demo. |
