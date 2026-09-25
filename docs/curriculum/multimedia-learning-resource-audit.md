@@ -546,3 +546,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Cloud Blocks — Block Storage | OPTIONAL VIDEO | Cloud block-storage explainers reviewed | No candidate promoted yet | Attachment/lifetime boundary can benefit from a diagram. |
 | Cloud Blocks — Managed Databases | OPTIONAL VIDEO | Managed DB responsibility explainers reviewed | No candidate promoted yet | Useful ownership comparison; decision exercise is primary. |
 | Cloud Blocks — Virtual Networks and Subnets | NO VIDEO | Prior networking material covers fundamentals | — | Apply established network model. |
+| Cloud Blocks — Routing and Gateways | NO VIDEO | Prior routing material covers fundamentals | — | Trace the actual cloud packet path. |
