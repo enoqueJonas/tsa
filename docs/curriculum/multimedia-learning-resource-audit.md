@@ -1230,3 +1230,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Discovery — Scope and Non-goals | NO VIDEO | — | — | Scope discipline is part of independent engineering. |
 | Discovery — Lab: Produce the Capstone Discovery Brief | NO VIDEO | — | — | Independent synthesis deliverable. |
 | Proposal — System Context and Boundaries | NO VIDEO | C4/system-context media already reviewed | Reuse prior C4 resource only for refresh | Capstone should demonstrate the modeling skill independently. |
+| Proposal — Domain and Data Model Proposal | NO VIDEO | — | — | Design from the discovered domain. |
