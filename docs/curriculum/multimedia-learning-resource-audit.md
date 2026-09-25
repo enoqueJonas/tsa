@@ -850,3 +850,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Metrics — CI and Delivery Metrics | OPTIONAL VIDEO | DORA/CI metrics dashboards reviewed | No candidate promoted yet | Graphs reinforce trend interpretation. |
 | Metrics — Lab: Instrument Steward API | NO VIDEO | — | — | Independent instrumentation lab. |
 | Metrics — Lab: Observe the Internal Artifact Platform | NO VIDEO | — | — | Independent platform observation lab. |
+| Tracing — Distributed Tracing with OpenTelemetry and Tempo | RECOMMENDED VIDEO | OpenTelemetry/Tempo trace demos reviewed | No candidate promoted yet | Cross-service spans/context propagation/trace UI are inherently visual. |
