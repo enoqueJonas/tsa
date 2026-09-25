@@ -864,3 +864,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Stack Integration — Defend the Observability Architecture | NO VIDEO | — | — | Defence uses evidence. |
 | SLO — SLIs | RECOMMENDED VIDEO | Google SRE SLI/SLO talks reviewed | No candidate promoted yet | Indicator/measurement examples benefit from worked scenarios. |
 | SLO — SLOs | RECOMMENDED VIDEO | Google SRE SLO talks reviewed | No candidate promoted yet | Target/window reasoning benefits from worked examples. |
+| SLO — SLAs | OPTIONAL VIDEO | SLA/SLO explainers reviewed | No candidate promoted yet | Compact distinction; reinforcement only. |
