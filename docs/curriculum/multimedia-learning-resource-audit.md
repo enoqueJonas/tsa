@@ -539,3 +539,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Certificates — Certificate Lifecycle Operations | RECOMMENDED VIDEO | ACME/certificate lifecycle demonstrations reviewed | No candidate promoted yet | Issue→serve→renew→reload→expire/revoke is a timeline. |
 | Certificates — Inspect Steward's TLS Identity and Trust Chain | RECOMMENDED VIDEO | openssl certificate-chain demos reviewed | No candidate promoted yet | Live chain inspection connects abstract PKI to served identity. |
 | Certificates — Automate Renewal and Gateway Reload | RECOMMENDED VIDEO | ACME renewal/reload demos reviewed | No candidate promoted yet | Automation lifecycle is useful to see once. |
+| Certificates — Break and Recover Certificate Renewal | NO VIDEO | — | — | Learner must diagnose the controlled failure. |
