@@ -602,3 +602,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture — Cost Controls and Budgets | OPTIONAL VIDEO | Cloud budget/alert demos reviewed | No candidate promoted yet | Useful control-plane mechanics, but provider-specific. |
 | Architecture — Resource Right-sizing | RECOMMENDED VIDEO | Right-sizing/metrics demos reviewed | No candidate promoted yet | Before/after utilization evidence makes the decision concrete. |
 | Architecture — Managed vs Self-managed Trade-offs | NO VIDEO | — | — | Operating-model decision should be independent. |
+| Architecture — Homelab, VPS and Cloud Hybrid Trade-offs | NO VIDEO | — | — | Use the learner's real environments and constraints. |
