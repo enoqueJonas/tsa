@@ -2190,3 +2190,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Security/Data Governance — Test an exception and review loop | NO VIDEO | — | — | Exercise actual loop. |
 | Change/Service Governance — Classify and prepare the change | NO VIDEO | — | — | Apply actual classification. |
 | Change/Service Governance — Make the release decision | RECOMMENDED VIDEO | Change advisory/release decision simulations reviewed | No candidate promoted yet | Decision meeting behavior and evidence use are worth observing. |
+| Change/Service Governance — Close the service-governance loop | NO VIDEO | — | — | Actual closure/review evidence. |
+| Third-party/Lifecycle — Establish dependency and product governance | NO VIDEO | — | — | Inventory/ownership primary. |
+| Third-party/Lifecycle — Govern provenance, retention and exceptions | OPTIONAL VIDEO | Supply-chain governance case studies reviewed | No candidate promoted yet | Useful context. |
+| Third-party/Lifecycle — Review continuity and ecosystem health | RECOMMENDED VIDEO | Vendor/lifecycle risk case studies reviewed | No candidate promoted yet | Real ecosystem failure/obsolescence examples add value. |
+| Technical Debt and Engineering Health | OPTIONAL VIDEO | Ward Cunningham/Martin Fowler technical-debt material reviewed | No candidate promoted yet | Original/practitioner framing can sharpen the metaphor, but portfolio evidence is primary. |
+| Engineering Handbook and Standards | NO VIDEO | — | — | The learner must author usable standards, not consume another organization's handbook. |
+| Technical Steward Milestone | NO VIDEO | — | — | Independent governance/stewardship synthesis. |
