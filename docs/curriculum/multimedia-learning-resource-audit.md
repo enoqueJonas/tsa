@@ -469,3 +469,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CD — CI versus Continuous Delivery versus Continuous Deployment | RECOMMENDED VIDEO | CI/CD distinction explainers reviewed | No candidate promoted yet | A pipeline-state diagram makes the release boundary clear. |
 | CD — Environment Management | NO VIDEO | — | — | Implement environment ownership/promotion. |
 | CD — Deployment Automation | RECOMMENDED VIDEO | Deployment-pipeline demos reviewed | No candidate promoted yet | Live automated deploy+verification shows the contract. |
+| CD — Release Approvals | NO VIDEO | — | — | Approval semantics are process design. |
