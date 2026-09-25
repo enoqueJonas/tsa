@@ -182,3 +182,14 @@ For every required or supporting resource:
 - distinguish material that should be read now from reference material that is useful to keep nearby.
 
 Existing curriculum resources must be migrated to this standard school by school. Do not remove useful authoritative sources merely because they are large; narrow the assignment and deep-link to the relevant part instead.
+
+
+### Use the medium that teaches the lesson best
+
+Do not treat "further reading" as text-only. A lesson may assign a video, talk, recorded demonstration, interactive lab, or strong technical blog post when that medium teaches the objective better.
+
+Video selection is lesson-driven, not quota-driven. Basic syntax or a small factual concept often needs no video. Prefer video where motion, sequence, topology, UI behavior, live diagnosis, operational workflow, or a worked engineering discussion adds real value.
+
+Before adding a video, record it in the multimedia resource audit and compare plausible candidates. For long videos, assign the exact timestamp range to watch and state what the learner should notice. Use a timestamped link when possible. Do not require an hour-long course lecture for a ten-minute learning objective.
+
+Authoritative documentation remains the source of truth for exact commands, APIs, configuration, standards, and version-specific behavior; a video complements rather than silently replaces it.
