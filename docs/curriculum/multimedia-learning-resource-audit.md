@@ -1152,3 +1152,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Engineering Health — Identifying Technical Debt | OPTIONAL VIDEO | Ward Cunningham/technical-debt explanations and modern talks reviewed | No candidate promoted yet | Historical metaphor/context can help prevent debt from becoming a label for disliked code. |
 | Engineering Health — Measuring and Communicating Debt | NO VIDEO | — | — | Use actual consequence evidence. |
 | Engineering Health — Prioritization | NO VIDEO | — | — | Prioritize actual debt from harm/opportunity cost. |
+| Engineering Health — Engineering Health Metrics | OPTIONAL VIDEO | DORA/engineering-metrics talks reviewed | No candidate promoted yet | Worked metric examples can reinforce decision-linked measurement without turning metrics into targets. |
