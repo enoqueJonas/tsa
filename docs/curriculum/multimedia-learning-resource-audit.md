@@ -928,3 +928,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | DR — Artifact Repository Backup and Restore | RECOMMENDED VIDEO | repository restore demos reviewed | No candidate promoted yet | Artifact recovery is a distinct operational workflow. |
 | DR — Configuration and Infrastructure Recovery | OPTIONAL VIDEO | IaC/config recovery demos reviewed | No candidate promoted yet | Rebuild-from-source workflow can reinforce recovery boundaries. |
 | DR — Recovery Evidence | NO VIDEO | — | — | Capture actual evidence. |
+| DR — Lab: Run a Steward Restore Drill | NO VIDEO | — | — | Independent restore drill. |
