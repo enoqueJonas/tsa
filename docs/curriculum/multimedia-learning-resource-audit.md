@@ -829,3 +829,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Logging — Structured Logs | RECOMMENDED VIDEO | structured logging demos reviewed | No candidate promoted yet | Before/after machine-queryable logs are useful to see. |
 | Logging — Log Levels | NO VIDEO | — | — | Small policy concept; apply directly. |
 | Logging — Correlation IDs | RECOMMENDED VIDEO | correlation-ID demos reviewed | No candidate promoted yet | Following one request across components is a strong live demonstration. |
+| Logging — Request and Trace Context | RECOMMENDED VIDEO | trace-context/log-correlation demos reviewed | No candidate promoted yet | Context propagation is sequence-oriented. |
