@@ -821,3 +821,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Application Security — Security Headers and Configuration | OPTIONAL VIDEO | browser/header inspection demos reviewed | No candidate promoted yet | A browser/devtools demonstration can reinforce effect. |
 | Application Security — Security Logging | NO VIDEO | — | — | Implement and inspect actual security events. |
 | Application Security — Rate Limiting and Abuse Resistance | NO VIDEO | — | — | Implement and load-test actual policy. |
+| Application Security — Data Protection | NO VIDEO | — | — | Apply classification/protection decisions. |
