@@ -199,3 +199,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Requirements — Acceptance and Evidence | NO VIDEO | — | — | Evidence design is better learned by defining observable acceptance. |
 | Requirements — Lab: Reframe Steward API Requirements | NO VIDEO | — | — | Synthesis lab. |
 | Boundaries — System Context | OPTIONAL VIDEO | C4 talks considered | No candidate promoted yet | Context diagrams benefit from seeing a model built, but the dedicated C4 lesson is the better place for the main video. |
+| Boundaries — Actors and External Systems | NO VIDEO | — | — | Mapping real actors/dependencies is primary. |
