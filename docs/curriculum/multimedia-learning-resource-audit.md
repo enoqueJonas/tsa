@@ -602,3 +602,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Quality Engineering — Shift-left and Shift-right | RECOMMENDED VIDEO | Modern testing/observability shift-left/right talks reviewed | No candidate promoted yet | Delivery timeline and feedback-loop placement are visual. |
 | Quality Engineering — Testability | RECOMMENDED VIDEO | Testability architecture talks reviewed | No candidate promoted yet | Controllability/observability examples benefit from a worked system. |
 | Quality Engineering — Defect Evidence and Communication | NO VIDEO | — | — | Write evidence-rich defects directly. |
+| Quality Engineering — Lab: Write the Steward Quality Strategy | NO VIDEO | — | — | Synthesis lab. |
