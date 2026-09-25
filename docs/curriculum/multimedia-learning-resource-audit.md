@@ -929,3 +929,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Incident — Corrective Actions | NO VIDEO | — | — | Design actual corrective actions. |
 | Incident — Learning from Near Misses | OPTIONAL VIDEO | near-miss engineering talks reviewed | No candidate promoted yet | Case studies broaden learning. |
 | Incident — Lab: Run a Steward Incident Exercise | NO VIDEO | — | — | Independent incident simulation. |
+| Fault Injection — Hypothesis-driven Reliability Experiments | RECOMMENDED VIDEO | chaos engineering experiment talks reviewed | No candidate promoted yet | Steady state→hypothesis→injection→observation is visual. |
