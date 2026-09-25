@@ -1169,3 +1169,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Controls — Preventive, Detective and Corrective Controls | RECOMMENDED VIDEO | control-type explainers reviewed | No candidate promoted yet | A single incident mapped to prevent/detect/correct controls is well suited to visual explanation. |
 | Controls — Control Objectives | NO VIDEO | — | — | Write objectives against actual risks. |
 | Controls — Control Design | OPTIONAL VIDEO | control-design/audit examples reviewed | No candidate promoted yet | Worked design examples can reinforce owner/frequency/evidence/failure response. |
+| Controls — Control Effectiveness | RECOMMENDED VIDEO | control design-vs-operating-effectiveness material reviewed | No candidate promoted yet | Side-by-side evidence examples help distinguish intended design from operation. |
