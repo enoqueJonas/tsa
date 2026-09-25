@@ -1912,3 +1912,23 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Vulnerability Lab — Vulnerable Applications and Intentional Weaknesses | OPTIONAL VIDEO | OWASP Juice Shop/WebGoat introductions reviewed | No candidate promoted yet | Useful orientation; learner still operates lab. |
 | Vulnerability Lab — Observing Vulnerable Behavior | NO VIDEO | — | — | Observe actual lab. |
 | Vulnerability Lab — Reproducing Representative Attacks Safely | RECOMMENDED VIDEO | Safe proxy/request demonstrations reviewed | No candidate promoted yet | A controlled demonstration can establish workflow. |
+| Vulnerability Lab — Using Proxies and Request Inspection | RECOMMENDED VIDEO | Burp Suite official academy material reviewed | No candidate promoted yet | Intercept/edit/replay is inherently visual. |
+| Vulnerability Lab — Capturing Security Evidence | NO VIDEO | — | — | Capture actual evidence. |
+| Vulnerability Lab — From Finding to Reproduction Steps | NO VIDEO | — | — | Write actual reproduction. |
+| Vulnerability Lab — Implementing Mitigations | NO VIDEO | — | — | Implement fix. |
+| Vulnerability Lab — Retesting Fixes | NO VIDEO | — | — | Retest actual fix. |
+| Vulnerability Lab — Writing Security Findings | NO VIDEO | — | — | Write finding. |
+| Linux/Network — Users, Groups and Permissions | NO VIDEO | — | — | Prior Linux + direct hardening. |
+| Linux/Network — Privilege and sudo | RECOMMENDED VIDEO | sudo privilege demos reviewed | No candidate promoted yet | Effective identity/command boundary can be shown live. |
+| Linux/Network — SSH Hardening | RECOMMENDED VIDEO | SSH hardening demos reviewed | No candidate promoted yet | Config→connection→failure evidence is useful. |
+| Linux/Network — Host Firewalls | NO VIDEO | — | — | Prior firewall skills transfer. |
+| Linux/Network — Service Exposure | RECOMMENDED VIDEO | socket/firewall/exposure audits reviewed | No candidate promoted yet | Listening vs reachable vs intended is a useful live comparison. |
+| Linux/Network — Patching and Vulnerability Windows | NO VIDEO | — | — | Prior patch lifecycle transfers. |
+| Linux/Network — File and Secret Permissions | NO VIDEO | — | — | Direct permission evidence. |
+| Linux/Network — Security Logging and Auditing | RECOMMENDED VIDEO | auditd/security log demos reviewed | No candidate promoted yet | Live event→audit evidence is useful. |
+| Linux/Network — Network Segmentation Concepts | RECOMMENDED VIDEO | Segmentation/VLAN/firewall topology demos reviewed | No candidate promoted yet | Trust-zone topology is visual. |
+| Linux/Network — Administrative Network Boundaries | RECOMMENDED VIDEO | management-plane topology demos reviewed | No candidate promoted yet | Separate admin path is architectural. |
+| Linux/Network — TLS Configuration and Certificate Hygiene | RECOMMENDED VIDEO | TLS inspection/hardening demos reviewed | No candidate promoted yet | Certificate/cipher/protocol inspection is visual. |
+| Container/Delivery Security — Map and Baseline the Trusted Delivery Path | RECOMMENDED VIDEO | Software supply-chain diagrams reviewed | No candidate promoted yet | Source→build→artifact→deploy trust chain is visual. |
+| Container/Delivery Security — Implement High-value Supply-chain Controls | RECOMMENDED VIDEO | SBOM/scanning/signing demos reviewed | No candidate promoted yet | Control sequence benefits from live tooling. |
+| Container/Delivery Security — Define Gates, Exceptions and Residual Risk | NO VIDEO | — | — | Policy decision is primary. |
