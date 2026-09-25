@@ -597,3 +597,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture — Scalability and Capacity | RECOMMENDED VIDEO | Scaling/capacity architecture explainers reviewed | No candidate promoted yet | Demand/bottleneck/scaling choices benefit from diagrams. |
 | Architecture — Security Boundaries | RECOMMENDED VIDEO | Cloud trust-boundary architecture material reviewed | No candidate promoted yet | Public/operator/runtime/control-plane paths are spatial. |
 | Architecture — Backup and Recovery | OPTIONAL VIDEO | Cloud recovery demos reviewed | No candidate promoted yet | Recovery sequence can help; actual restore evidence remains primary. |
+| Architecture — Failure Domains | RECOMMENDED VIDEO | Region/AZ/correlated-failure explainers reviewed | No candidate promoted yet | Correlation is easiest to see on topology. |
