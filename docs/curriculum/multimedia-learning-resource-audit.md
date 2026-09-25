@@ -1192,3 +1192,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Change/Service — Lab: Govern a Steward Production Change | NO VIDEO | — | — | Independent change-governance exercise. |
 | Third-party — Vendor Assessment | OPTIONAL VIDEO | third-party risk assessment material reviewed | No candidate promoted yet | A worked assessment can reinforce evidence-based vendor questions. |
 | Third-party — Dependency Risk | NO VIDEO | — | — | Assess actual dependencies and their ownership/lifecycle. |
+| Third-party — SaaS and Cloud Risk | OPTIONAL VIDEO | shared-responsibility/vendor-risk material reviewed | No candidate promoted yet | Responsibility-boundary examples add context. |
