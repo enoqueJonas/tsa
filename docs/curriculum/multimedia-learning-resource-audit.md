@@ -843,3 +843,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Metrics — Exporters | RECOMMENDED VIDEO | node_exporter/exporter demos reviewed | No candidate promoted yet | Exporter→scrape endpoint workflow is useful to see. |
 | Metrics — Service Discovery Concepts | OPTIONAL VIDEO | Prometheus service-discovery demos reviewed | No candidate promoted yet | Dynamic target discovery is easier with a visual model. |
 | Metrics — PromQL | RECOMMENDED VIDEO | PromQL query demos reviewed | No candidate promoted yet | Interactive query construction is worth watching once. |
+| Metrics — Recording Rules Concepts | OPTIONAL VIDEO | recording-rule demos reviewed | No candidate promoted yet | Useful operational reinforcement. |
