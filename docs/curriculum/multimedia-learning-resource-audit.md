@@ -696,3 +696,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Quality Milestone — Audit the Existing Evidence | NO VIDEO | — | — | Evidence audit. |
 | Quality Milestone — Milestone: Steward Quality Platform | NO VIDEO | — | — | Milestone synthesis. |
 | Quality Milestone — Quality Steward Final Review | NO VIDEO | — | — | Final defence/reflection. |
+
+
+## Security Steward — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Foundations — Confidentiality, Integrity and Availability | OPTIONAL VIDEO | CIA-triad visual explainers reviewed | No candidate promoted yet | A simple scenario animation can reinforce trade-offs, but the concept is compact. |
