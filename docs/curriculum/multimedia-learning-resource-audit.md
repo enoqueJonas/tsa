@@ -634,3 +634,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — What Makes an Automation Framework | OPTIONAL VIDEO | Framework architecture talks reviewed | No candidate promoted yet | Useful orientation; framework design work is primary. |
 | Automation — Framework Architecture | RECOMMENDED VIDEO | Test-framework architecture diagrams reviewed | No candidate promoted yet | Layering clients/fixtures/data/assertions/reporting is visual. |
 | Automation — Playwright with Python | OPTIONAL VIDEO | Playwright Python demos reviewed | No candidate promoted yet | A concise API/UI trace demo can reduce tool friction. |
+| Automation — pytest Fundamentals | OPTIONAL VIDEO | pytest fixture/collection demos reviewed | No candidate promoted yet | Useful once, then practice. |
