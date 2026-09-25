@@ -2197,3 +2197,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technical Debt and Engineering Health | OPTIONAL VIDEO | Ward Cunningham/Martin Fowler technical-debt material reviewed | No candidate promoted yet | Original/practitioner framing can sharpen the metaphor, but portfolio evidence is primary. |
 | Engineering Handbook and Standards | NO VIDEO | — | — | The learner must author usable standards, not consume another organization's handbook. |
 | Technical Steward Milestone | NO VIDEO | — | — | Independent governance/stewardship synthesis. |
+
+
+## Professional Engineer — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Problem Discovery | NO VIDEO | The capstone discovery lessons are deliberately media-free | — | At this stage the learner must discover a new domain from stakeholders, evidence and constraints rather than consume a prescribed solution narrative. |
