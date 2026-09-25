@@ -884,3 +884,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Alertmanager — Operate Prometheus Alertmanager | RECOMMENDED VIDEO | Alertmanager UI/routing demos reviewed | No candidate promoted yet | Seeing grouping/inhibition/routing is useful. |
 | Alertmanager — From Firing Rule to Delivered Notification | RECOMMENDED VIDEO | Prometheus→Alertmanager notification demos reviewed | No candidate promoted yet | End-to-end signal path is visual. |
 | Alertmanager — Deploy and Route with Alertmanager | NO VIDEO | — | — | Implement actual routing. |
+| Alertmanager — Break Alert Delivery and Recover It | NO VIDEO | — | — | Failure drill. |
