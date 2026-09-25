@@ -872,3 +872,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Alerting — Escalation | OPTIONAL VIDEO | on-call escalation demos reviewed | No candidate promoted yet | Timeline/workflow can reinforce escalation. |
 | Alerting — Alert Routing Concepts | RECOMMENDED VIDEO | Alertmanager routing demos reviewed | No candidate promoted yet | Label→route→receiver tree is highly visual. |
 | Alerting — Runbooks | NO VIDEO | — | — | Write and exercise actual runbook. |
+| Alerting — On-call Handover and Context | OPTIONAL VIDEO | on-call handover talks reviewed | No candidate promoted yet | Operational examples can help. |
