@@ -197,3 +197,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Requirements — Quality Requirements | OPTIONAL VIDEO | Quality-attribute scenario talks reviewed | No candidate promoted yet | A worked scenario can reinforce measurable quality attributes. |
 | Requirements — Constraints and Assumptions | NO VIDEO | — | — | The learner must surface these in a real problem. |
 | Requirements — Acceptance and Evidence | NO VIDEO | — | — | Evidence design is better learned by defining observable acceptance. |
+| Requirements — Lab: Reframe Steward API Requirements | NO VIDEO | — | — | Synthesis lab. |
