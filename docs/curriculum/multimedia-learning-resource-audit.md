@@ -431,3 +431,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Foundations — Release Notes and Changelogs | NO VIDEO | — | — | Produce them from real changes. |
 | Foundations — Build Artifacts | RECOMMENDED VIDEO | Artifact/repository pipeline explainers reviewed | No candidate promoted yet | Immutable artifact flow and provenance benefit from a pipeline diagram. |
 | Foundations — Environment Promotion | RECOMMENDED VIDEO | Promotion-pipeline demonstrations reviewed | No candidate promoted yet | Same-artifact promotion across environments is best seen as a flow. |
+| Automation — Shell Scripting | NO VIDEO | — | — | Writing and running scripts is primary. |
