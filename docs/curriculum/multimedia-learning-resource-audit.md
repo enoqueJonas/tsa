@@ -494,3 +494,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Windows — Active Directory, DNS and Domain Identity | RECOMMENDED VIDEO | Microsoft/AD architecture explainers reviewed | No candidate promoted yet | Domain/DC/DNS/Kerberos relationships are strongly architectural and visual. |
 | Windows — Domain Join and Group Policy | RECOMMENDED VIDEO | Domain-join/GPO demonstrations reviewed | No candidate promoted yet | Seeing policy scope/application/result evidence adds value. |
 | Windows — Linux–Windows Interoperability | RECOMMENDED VIDEO | SMB/DNS/LDAP cross-platform demos reviewed | No candidate promoted yet | Cross-OS boundaries are well suited to a live interoperability demonstration. |
+| Windows — Reassess Windows Operational Depth | NO VIDEO | — | — | Scope decision should be based on TSA's target role and implemented evidence. |
