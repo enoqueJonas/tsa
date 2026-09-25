@@ -1046,3 +1046,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Data — Caching | NO VIDEO | Redis/cache media already audited earlier | Reuse earlier media if review is needed | Avoid duplicate assignment. |
 | Data — Read Models | RECOMMENDED VIDEO | CQRS/read-model talks reviewed | No candidate promoted yet | Write model→event/data→read model flow is visual. |
 | Data — Database-per-service Trade-offs | RECOMMENDED VIDEO | microservice data architecture talks reviewed | No candidate promoted yet | Ownership gains versus distributed consistency/query costs benefit from worked examples. |
+| Data — Data Migration and Evolution | RECOMMENDED VIDEO | expand-contract/online migration talks reviewed | No candidate promoted yet | Coexistence/backfill/cutover/contract sequence is a strong timeline use case. |
