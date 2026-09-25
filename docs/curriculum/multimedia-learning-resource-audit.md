@@ -1134,3 +1134,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technology Governance — Performance Oversight | NO VIDEO | — | — | Define actual decision-linked measures. |
 | Technology Governance — Governance Structures | OPTIONAL VIDEO | IT governance operating-model talks reviewed | No candidate promoted yet | Examples can show decision forums versus delegated authority. |
 | Technology Governance — COBIT Concepts | RECOMMENDED VIDEO | ISACA COBIT overview material reviewed | No candidate promoted yet | A concise official overview can orient governance objectives without teaching the whole framework. |
+| Technology Governance — ITIL and Service-management Concepts | RECOMMENDED VIDEO | PeopleCert/ITIL service-management overviews reviewed | No candidate promoted yet | Value/service lifecycle concepts benefit from a concise framework overview. |
