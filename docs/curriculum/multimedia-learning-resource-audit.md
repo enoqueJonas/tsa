@@ -777,3 +777,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Artifact Trust — Enforce Verification Before Deployment | RECOMMENDED VIDEO | Cosign/admission verification demos reviewed | No candidate promoted yet | A rejected unsigned/tampered artifact is a strong live demonstration. |
 | Artifact Trust — Break and Recover the Signing Trust Chain | NO VIDEO | — | — | Failure injection/recovery is the exercise. |
 | Artifact Trust — Defend Steward's Artifact Trust Policy | NO VIDEO | — | — | Defence uses learner evidence. |
+| Identity/Secrets — Identity Planes and Trust Boundaries | RECOMMENDED VIDEO | OIDC/identity-plane diagrams reviewed | No candidate promoted yet | Human/workload/service identity boundaries are visual. |
