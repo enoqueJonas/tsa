@@ -1045,3 +1045,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Data — Data Duplication and Derived Views | RECOMMENDED VIDEO | CQRS/read-model material reviewed | No candidate promoted yet | Source-of-truth versus derived-copy flow benefits from visualization. |
 | Data — Caching | NO VIDEO | Redis/cache media already audited earlier | Reuse earlier media if review is needed | Avoid duplicate assignment. |
 | Data — Read Models | RECOMMENDED VIDEO | CQRS/read-model talks reviewed | No candidate promoted yet | Write model→event/data→read model flow is visual. |
+| Data — Database-per-service Trade-offs | RECOMMENDED VIDEO | microservice data architecture talks reviewed | No candidate promoted yet | Ownership gains versus distributed consistency/query costs benefit from worked examples. |
