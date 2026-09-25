@@ -1050,3 +1050,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Data — Audit and Historical Data | OPTIONAL VIDEO | audit/event-history architecture talks reviewed | No candidate promoted yet | Examples can distinguish audit history from operational tables. |
 | Data — Establish the Data Architecture Baseline | NO VIDEO | — | — | Independent baseline. |
 | Data — Challenge Data Architecture Options | NO VIDEO | — | — | Decision exercise. |
+| Data — Record and Validate the Decision | NO VIDEO | — | — | Decision evidence. |
