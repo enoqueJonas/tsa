@@ -861,3 +861,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | SLO — Error Budgets | RECOMMENDED VIDEO | Google SRE error-budget talks reviewed | No candidate promoted yet | Budget burn over time is graph-oriented. |
 | SLO — User-visible Reliability | NO VIDEO | — | — | Define from actual user journeys. |
 | SLO — Choosing Good Indicators | NO VIDEO | — | — | Choose from actual service behavior. |
+| SLO — Windowing and Measurement Concepts | RECOMMENDED VIDEO | rolling-window/burn-rate explainers reviewed | No candidate promoted yet | Window behavior benefits from time-series visualization. |
