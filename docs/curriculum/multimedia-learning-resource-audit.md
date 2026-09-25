@@ -920,3 +920,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Incident — Detection | RECOMMENDED VIDEO | incident detection walkthroughs reviewed | No candidate promoted yet | Signal→alert→incident transition is useful to see. |
 | Incident — Triage | RECOMMENDED VIDEO | SRE incident-response simulations reviewed | No candidate promoted yet | Watching prioritization under uncertainty models method. |
 | Incident — Incident Roles | OPTIONAL VIDEO | incident commander role talks reviewed | No candidate promoted yet | Real coordination examples add context. |
+| Incident — Communication | OPTIONAL VIDEO | incident communication examples reviewed | No candidate promoted yet | Good/bad updates are useful to compare. |
