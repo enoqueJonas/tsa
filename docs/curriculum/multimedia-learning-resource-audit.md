@@ -914,3 +914,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Resilience — Dependency Failure | RECOMMENDED VIDEO | dependency-outage demos reviewed | No candidate promoted yet | Failure propagation is valuable to visualize. |
 | Resilience — Cascading Failure | RECOMMENDED VIDEO | Google SRE cascading-failure material reviewed | No candidate promoted yet | Amplification across dependencies is strongly visual. |
 | Resilience — Queues and Backpressure | RECOMMENDED VIDEO | backpressure/queue demos reviewed | No candidate promoted yet | Producer/consumer imbalance and queue growth are temporal. |
+| Resilience — Graceful Degradation | OPTIONAL VIDEO | degradation-pattern examples reviewed | No candidate promoted yet | Worked examples can reinforce product trade-offs. |
