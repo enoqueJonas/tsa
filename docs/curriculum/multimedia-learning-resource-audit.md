@@ -1224,3 +1224,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Discovery — Requirements | NO VIDEO | Prior System Thinker material sufficient | — | Transfer existing requirements capability. |
 | Discovery — Constraints | NO VIDEO | Prior System Thinker material sufficient | — | Identify real constraints. |
 | Discovery — Working with Ambiguity | NO VIDEO | — | — | Ambiguity is the condition the learner must handle, not a topic requiring another lecture. |
+| Discovery — Quality Attributes | NO VIDEO | Prior architecture material sufficient | — | Elicit measurable quality scenarios from the capstone. |
