@@ -308,3 +308,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Packet Tracer — ACL Policy and Negative Testing | RECOMMENDED VIDEO | Free CCNA ACL labs reviewed | No candidate promoted yet | Seeing permit/deny placement and verification supports the negative-testing emphasis. |
 | Packet Tracer — IPv6 Fundamentals | RECOMMENDED VIDEO | Free CCNA IPv6 labs reviewed | No candidate promoted yet | Address types/NDP/routing benefit from topology visualization. |
 | Packet Tracer — Enterprise Branch Capstone | NO VIDEO | — | — | Capstone must be independent fault diagnosis and restoration. |
+| Virtualization — Virtual Machines and Hypervisors | RECOMMENDED VIDEO | Hypervisor/VM architecture explainers reviewed | No candidate promoted yet | Host/hypervisor/guest/resource layers are inherently visual. |
