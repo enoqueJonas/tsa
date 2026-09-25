@@ -648,3 +648,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Automation Logging | OPTIONAL VIDEO | Test-diagnostics demos reviewed | No candidate promoted yet | A before/after failure diagnosis can reinforce useful logging. |
 | Automation — Reports | OPTIONAL VIDEO | pytest/CI report demos reviewed | No candidate promoted yet | Seeing a report consumed in triage adds context. |
 | Automation — Screenshots, Traces and Video | RECOMMENDED VIDEO | Playwright Trace Viewer demos reviewed | No candidate promoted yet | The capability is itself visual; a trace-viewer demo materially helps. |
+| Automation — Parallel Execution | RECOMMENDED VIDEO | pytest-xdist/Playwright parallel demos reviewed | No candidate promoted yet | Worker scheduling and shared-state failures benefit from demonstration. |
