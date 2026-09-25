@@ -530,3 +530,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Internet — Internet Routing Concepts | RECOMMENDED VIDEO | BGP/Internet routing visual explainers reviewed | No candidate promoted yet | Autonomous-system/path concepts benefit from visualization without becoming a BGP operator course. |
 | Internet — Domains and DNS Records | NO VIDEO | DNS media already selected | — | Avoid duplicate assignment. |
 | Internet — DNS Resolution and Troubleshooting | NO VIDEO | — | — | Use dig and evidence directly. |
+| Internet — TLS Certificates and Certificate Authorities | RECOMMENDED VIDEO | Computerphile — Public Key Cryptography / TLS material reviewed | No candidate promoted yet | Chain-of-trust and certificate identity are strongly visual. |
