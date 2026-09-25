@@ -758,3 +758,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Linux/Network Security — Users, Groups and Permissions | NO VIDEO | — | — | Apply prior Linux knowledge under security constraints. |
 | Linux/Network Security — Privilege and sudo | RECOMMENDED VIDEO | sudo/privilege-escalation demonstrations reviewed | No candidate promoted yet | Seeing command-specific privilege and failure cases reinforces least privilege. |
 | Linux/Network Security — SSH Hardening | RECOMMENDED VIDEO | OpenSSH hardening demos reviewed | No candidate promoted yet | A live before/after configuration and negative login test adds value. |
+| Linux/Network Security — Host Firewalls | NO VIDEO | — | — | Prior firewall concepts; harden actual host. |
