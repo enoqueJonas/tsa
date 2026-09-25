@@ -528,3 +528,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | VPS — Backups and Snapshots | OPTIONAL VIDEO | VPS snapshot/backup demos reviewed | No candidate promoted yet | Useful mechanics; failure-domain reasoning remains primary. |
 | Internet — Public and Private Addressing | NO VIDEO | Prior networking media covers this | — | Apply prior knowledge. |
 | Internet — Internet Routing Concepts | RECOMMENDED VIDEO | BGP/Internet routing visual explainers reviewed | No candidate promoted yet | Autonomous systems and route propagation are highly visual. |
+| Internet — Domains and DNS Records | RECOMMENDED VIDEO | DNS record/authoritative-zone explainers reviewed | No candidate promoted yet | Public delegation extends the earlier DNS model. |
