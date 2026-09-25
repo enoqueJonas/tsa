@@ -1024,3 +1024,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Domain — Context Mapping Concepts | RECOMMENDED VIDEO | DDD context-map talks reviewed | No candidate promoted yet | Relationships between contexts are inherently visual. |
 | Domain — Domain Services | NO VIDEO | — | — | The learner should decide from behavior that does not naturally belong to an entity/value object. |
 | Domain — Avoiding Anemic and Over-engineered Models | OPTIONAL VIDEO | DDD critique/refactoring talks reviewed | No candidate promoted yet | Contrasting examples can help, but context matters more than doctrine. |
+| Domain — Recover the Current Domain Model | NO VIDEO | — | — | Independent model recovery. |
