@@ -506,3 +506,85 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Delivery Milestone — Gate 5: Failure, Rollback and Recovery | NO VIDEO | — | — | Evidence gate. |
 | Delivery Milestone — Gate 6: Delivery Platform Handoff | NO VIDEO | — | — | Evidence gate. |
 | Delivery Milestone — Milestone Review and Exit Criteria | NO VIDEO | — | — | School exit review. |
+
+
+## Cloud Engineer — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Hosting — On-premises, Colocation, VPS and Cloud | RECOMMENDED VIDEO | Hosting-model architecture explainers reviewed | No candidate promoted yet | Physical ownership and responsibility boundaries are visual. |
+| Hosting — IaaS, PaaS and SaaS | RECOMMENDED VIDEO | Cloud service-model diagrams reviewed | No candidate promoted yet | Responsibility shifts are easiest to compare visually. |
+| Hosting — Regions, Zones and Availability Concepts | RECOMMENDED VIDEO | Cloud region/AZ architecture material reviewed | No candidate promoted yet | Failure-domain geography is inherently visual. |
+| Hosting — Shared Responsibility | RECOMMENDED VIDEO | Cloud shared-responsibility explainers reviewed | No candidate promoted yet | Provider/customer ownership boundary benefits from a layered diagram. |
+| Hosting — Elasticity and Consumption Models | OPTIONAL VIDEO | Elasticity/autoscaling demos reviewed | No candidate promoted yet | A demand/capacity timeline can help. |
+| Hosting — Cloud Cost Awareness | OPTIONAL VIDEO | Cloud billing model explainers reviewed | No candidate promoted yet | Useful context; actual cost modeling is primary. |
+| VPS — Choosing a Budget VPS | NO VIDEO | — | — | Provider choice changes; compare current constraints directly. |
+| VPS — Provisioning a Server | OPTIONAL VIDEO | VPS provisioning demos reviewed | No candidate promoted yet | A visual setup can reduce friction but should not tie TSA to one vendor UI. |
+| VPS — Public IP Addressing | NO VIDEO | — | — | Apply networking foundations. |
+| VPS — Securing SSH Access | NO VIDEO | Prior SSH lesson | — | Apply prior skill. |
+| VPS — Provider Firewalls and Security Controls | RECOMMENDED VIDEO | Cloud firewall/security-group demos reviewed | No candidate promoted yet | Provider edge versus host firewall is a visual boundary. |
+| VPS — OS Lifecycle and Patching | NO VIDEO | Prior lifecycle path | — | Apply existing patch model. |
+| VPS — Remote Recovery Concepts | OPTIONAL VIDEO | Provider console/rescue-mode demos reviewed | No candidate promoted yet | Out-of-band recovery is useful to see once. |
+| VPS — Backups and Snapshots | OPTIONAL VIDEO | Provider snapshot/backup demos reviewed | No candidate promoted yet | Useful for provider boundary; preserve snapshot≠backup reasoning. |
+| Internet — Public and Private Addressing | NO VIDEO | Prior networking coverage | — | Apply prior model. |
+| Internet — Internet Routing Concepts | RECOMMENDED VIDEO | BGP/Internet routing visual explainers reviewed | No candidate promoted yet | Autonomous-system/path concepts benefit from visualization without becoming a BGP operator course. |
+| Internet — Domains and DNS Records | NO VIDEO | DNS media already selected | — | Avoid duplicate assignment. |
+| Internet — DNS Resolution and Troubleshooting | NO VIDEO | — | — | Use dig and evidence directly. |
+| Internet — TLS Certificates and Certificate Authorities | RECOMMENDED VIDEO | Computerphile — Public Key Cryptography / TLS material reviewed | No candidate promoted yet | Chain-of-trust and certificate identity are strongly visual. |
+| Internet — HTTPS and TLS Termination | RECOMMENDED VIDEO | TLS termination/reverse-proxy diagrams reviewed | No candidate promoted yet | Client→gateway→upstream trust boundary is visual. |
+| Internet — Reverse Proxies | NO VIDEO | Reverse-proxy slot already exists in Platform Builder | — | Avoid duplicate media. |
+| Internet — Ingress Concepts | RECOMMENDED VIDEO | Ingress/gateway traffic-flow demos reviewed | No candidate promoted yet | External→edge→service path is inherently visual. |
+| Internet — Internet-facing Firewalls | NO VIDEO | — | — | Apply prior firewall reasoning. |
+| Internet — Exposure, Attack Surface and Administrative Boundaries | RECOMMENDED VIDEO | Attack-surface/trust-boundary diagrams reviewed | No candidate promoted yet | Public, operator and control-plane paths benefit from a visual model. |
+| Certificates — Certificate Lifecycle Operations | RECOMMENDED VIDEO | ACME/certificate lifecycle demonstrations reviewed | No candidate promoted yet | Issue→serve→renew→reload→expire/revoke is a timeline. |
+| Certificates — Inspect Steward's TLS Identity and Trust Chain | RECOMMENDED VIDEO | openssl certificate-chain demos reviewed | No candidate promoted yet | Live chain inspection connects abstract PKI to served identity. |
+| Certificates — Automate Renewal and Gateway Reload | RECOMMENDED VIDEO | ACME renewal/reload demos reviewed | No candidate promoted yet | Automation lifecycle is useful to see once. |
+| Certificates — Break and Recover Certificate Renewal | NO VIDEO | — | — | Learner must diagnose the controlled failure. |
+| Certificates — Defend the Certificate Lifecycle | NO VIDEO | — | — | Architecture/operations defence. |
+| Building Blocks — Compute | RECOMMENDED VIDEO | Cloud compute architecture demos reviewed | No candidate promoted yet | Placement/capacity abstraction is visual. |
+| Building Blocks — Object Storage | RECOMMENDED VIDEO | S3 object-storage architecture demos reviewed | No candidate promoted yet | Bucket/key/API model differs enough from filesystems to merit visualization. |
+| Building Blocks — Block Storage | RECOMMENDED VIDEO | Cloud block-volume attach/detach demos reviewed | No candidate promoted yet | Volume lifetime versus compute lifetime is visual. |
+| Building Blocks — Managed Databases | OPTIONAL VIDEO | Managed PostgreSQL responsibility demos reviewed | No candidate promoted yet | Useful to show shifted operational ownership. |
+| Building Blocks — Virtual Networks and Subnets | RECOMMENDED VIDEO | VPC/VNet topology demos reviewed | No candidate promoted yet | Subnet/trust placement is inherently visual. |
+| Building Blocks — Routing and Gateways | RECOMMENDED VIDEO | Cloud route/gateway packet-flow demos reviewed | No candidate promoted yet | Ingress/egress path selection is visual. |
+| Building Blocks — Load Balancers | RECOMMENDED VIDEO | Load-balancer traffic demos reviewed | No candidate promoted yet | Distribution/health-check behavior is strongly visual. |
+| Building Blocks — IAM | RECOMMENDED VIDEO | Cloud IAM principal/role/policy diagrams reviewed | No candidate promoted yet | Identity assumption and policy evaluation benefit from diagrams. |
+| Object Storage — S3-Compatible Object Storage for Steward | RECOMMENDED VIDEO | S3/MinIO architecture demos reviewed | No candidate promoted yet | Object API, bucket policy and persistence boundaries benefit from a visual model. |
+| Object Storage — From Object-storage Design to Operation | NO VIDEO | — | — | Design should use the actual Steward need. |
+| Object Storage — Deploy and Secure the Object Store | OPTIONAL VIDEO | MinIO deployment demos reviewed | No candidate promoted yet | Setup support only; learner must own security decisions. |
+| Object Storage — Operate Lifecycle, Failure and Recovery | RECOMMENDED VIDEO | Object lifecycle/versioning/recovery demos reviewed | No candidate promoted yet | Lifecycle and version recovery are visual operational flows. |
+| Object Storage — Defend the Storage Architecture | NO VIDEO | — | — | Architecture defence. |
+| IaC — Why Infrastructure as Code | OPTIONAL VIDEO | IaC state/change workflow explainers reviewed | No candidate promoted yet | Useful motivation, but the console-to-code audit is primary. |
+| IaC — Declarative Infrastructure | RECOMMENDED VIDEO | Declarative reconciliation demos reviewed | No candidate promoted yet | Desired versus actual state is a strong visual concept. |
+| IaC — Terraform and OpenTofu Fundamentals | RECOMMENDED VIDEO | OpenTofu/Terraform plan/apply demos reviewed | No candidate promoted yet | init→plan→apply→state workflow is useful to see once. |
+| IaC — Providers and Resources | OPTIONAL VIDEO | Provider/resource graph demos reviewed | No candidate promoted yet | Provider trust and resource ownership can benefit from a concise walkthrough. |
+| IaC — State | RECOMMENDED VIDEO | Terraform/OpenTofu state demos reviewed | No candidate promoted yet | State's role as control record and drift/recovery boundary is central. |
+| IaC — Variables and Outputs | NO VIDEO | — | — | Interface design is better practiced. |
+| IaC — Dependencies | RECOMMENDED VIDEO | Terraform dependency-graph demos reviewed | No candidate promoted yet | Graph-derived ordering is visual. |
+| IaC — Modules Concepts | NO VIDEO | — | — | Abstraction should be earned through refactoring. |
+| Orchestration — Kubernetes Cluster and Control Plane | RECOMMENDED VIDEO | Kubernetes control-plane animations reviewed | No candidate promoted yet | API server/scheduler/controllers/etcd/node relationships are highly visual. |
+| Orchestration — Pods, Deployments and ReplicaSets | RECOMMENDED VIDEO | Kubernetes reconciliation animations reviewed | No candidate promoted yet | Desired replicas and replacement behavior are ideal for animation. |
+| Orchestration — Services and Cluster Networking | RECOMMENDED VIDEO | Kubernetes Service/networking demos reviewed | No candidate promoted yet | Pod IPs, Service VIPs and routing are difficult without diagrams. |
+| Orchestration — OpenShift as an Enterprise Application Platform | RECOMMENDED VIDEO | Red Hat OpenShift architecture demos reviewed | No candidate promoted yet | Shows the platform delta over Kubernetes without treating it as a new universe. |
+| Orchestration — OpenShift Routes, SCC Concepts and Operators | RECOMMENDED VIDEO | OpenShift Route/SCC/Operator demos reviewed | No candidate promoted yet | These platform-specific abstractions benefit from guided visual demonstration. |
+| Orchestration — GitOps and Reconciliation | RECOMMENDED VIDEO | Argo CD reconciliation demos reviewed | No candidate promoted yet | Git desired state→controller→cluster drift correction is inherently visual. |
+| Orchestration — Lab: Migrate Steward to OpenShift with Argo CD | NO VIDEO | — | — | Independent migration lab. |
+| Orchestration — Deploy and Verify on OpenShift | NO VIDEO | — | — | Deployment evidence. |
+| Orchestration — Transfer Deployment Authority to Argo CD | NO VIDEO | — | — | Authority cutover must be performed and evidenced. |
+| Orchestration — Orchestration and GitOps Review | NO VIDEO | — | — | Review. |
+| Canary — Progressive Delivery with Canary Releases | RECOMMENDED VIDEO | Argo Rollouts/canary visual demos reviewed | No candidate promoted yet | Traffic percentages, analysis and promotion/abort are inherently visual. |
+| Canary — Design Steward's Canary Contract | NO VIDEO | — | — | Design from service risk and SLO evidence. |
+| Canary — Implement Argo Rollouts Canary Delivery | RECOMMENDED VIDEO | Argo Rollouts live demos reviewed | No candidate promoted yet | Seeing rollout steps and controller state is useful before independent implementation. |
+| Canary — Automate Analysis and Abort a Bad Canary | RECOMMENDED VIDEO | Argo Rollouts + Prometheus analysis demos reviewed | No candidate promoted yet | Metric gate→abort flow is a strong live demonstration. |
+| Canary — Reassess Progressive Delivery | NO VIDEO | — | — | Architecture reassessment. |
+| Architecture/Cost — Availability in Cloud Environments | RECOMMENDED VIDEO | Cloud failure-domain/HA diagrams reviewed | No candidate promoted yet | Availability topology is visual. |
+| Architecture/Cost — Scalability and Capacity | RECOMMENDED VIDEO | Scaling/bottleneck diagrams reviewed | No candidate promoted yet | Demand/capacity/bottleneck relationships benefit from graphs. |
+| Architecture/Cost — Security Boundaries | RECOMMENDED VIDEO | Cloud trust-path diagrams reviewed | No candidate promoted yet | Public/operator/runtime/control-plane separation is visual. |
+| Architecture/Cost — Backup and Recovery | RECOMMENDED VIDEO | Cloud restore/DR demos reviewed | No candidate promoted yet | Recovery sequence and failure domains are visual. |
+| Architecture/Cost — Failure Domains | RECOMMENDED VIDEO | Region/AZ correlated-failure diagrams reviewed | No candidate promoted yet | Redundancy versus shared fate is inherently visual. |
+| Architecture/Cost — Cost Estimation | OPTIONAL VIDEO | Cloud pricing-calculator walkthroughs reviewed | No candidate promoted yet | Useful context, but estimates should use current provider data when learner reaches lesson. |
+| Architecture/Cost — Cost Controls and Budgets | OPTIONAL VIDEO | Budget/alert demos reviewed | No candidate promoted yet | A console demo may help but is provider-specific. |
+| Architecture/Cost — Resource Right-sizing | RECOMMENDED VIDEO | Right-sizing metrics demos reviewed | No candidate promoted yet | Before/after utilization and cost evidence is valuable. |
+| Cloud Milestone — Milestone Brief: Steward Internet Environment | NO VIDEO | — | — | Milestone brief. |
+| Cloud Milestone — Milestone Review and Exit Criteria | NO VIDEO | — | — | Evidence review. |
+| Cloud Milestone — Cloud Engineer Exit Review | NO VIDEO | — | — | Reflection/transfer check. |
