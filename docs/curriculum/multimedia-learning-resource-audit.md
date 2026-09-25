@@ -292,3 +292,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Networking — HTTP and TLS from the Network Perspective | RECOMMENDED VIDEO | TLS handshake/HTTP-layer explainers reviewed | No candidate promoted yet | Separating DNS/TCP/TLS/HTTP is a strong sequence-diagram use case. |
 | Networking — Network Troubleshooting Tools | RECOMMENDED VIDEO | tcpdump/dig/curl troubleshooting demos reviewed | No candidate promoted yet | Live diagnosis demonstrates what each tool can and cannot prove. |
 | Networking — Lab: Diagnose a Broken Service Path | NO VIDEO | — | — | Independent troubleshooting lab. |
+
+
+## Platform Builder — Packet Tracer, Virtualization, Bare Metal and Homelab lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Packet Tracer — IOS CLI and Device Evidence | RECOMMENDED VIDEO | Jeremy's IT Lab / Cisco Packet Tracer labs reviewed | No single candidate promoted yet | Seeing IOS navigation and show/config evidence once reduces tool friction before independent labs. |
