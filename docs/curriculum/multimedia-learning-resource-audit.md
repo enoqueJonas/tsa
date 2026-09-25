@@ -591,3 +591,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Canary — Define the Canary Rollout | RECOMMENDED VIDEO | Argo Rollouts step/analysis demos reviewed | No candidate promoted yet | 5→20→50→100 progression is useful to see once. |
 | Canary — Wire Prometheus Analysis | RECOMMENDED VIDEO | Argo Rollouts + Prometheus demos reviewed | No candidate promoted yet | Metric query→analysis result→rollout decision is a visual control loop. |
 | Canary — Inject a Defective Candidate and Abort | NO VIDEO | — | — | Learner must perform the failure drill. |
+| Canary — Fail the Analysis Dependency Safely | NO VIDEO | — | — | Learner must prove fail-safe behavior. |
