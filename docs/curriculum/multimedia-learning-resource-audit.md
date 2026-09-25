@@ -834,3 +834,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Security Milestone — Verify Controls Across the Steward Stack | NO VIDEO | — | — | Verification work. |
 | Security Milestone — Close High-priority Gaps and Retest | NO VIDEO | — | — | Remediation/retest. |
 | Security Milestone — Publish the Steward Security Assessment | NO VIDEO | — | — | Deliverable creation. |
+| Security Milestone — Defend the Security Posture | NO VIDEO | — | — | Final defence. |
