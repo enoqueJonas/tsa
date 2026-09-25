@@ -1,6 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities";
 import type { Lesson } from "./lesson";
-import { the applicationValuesAndTypesLesson } from "./the application-values-types-lesson";
+import { stewardValuesAndTypesLesson } from "./steward-values-types-lesson";
 
 const pythonTutorial: LearningResource = { title: "Python Tutorial", url: "https://docs.python.org/3/tutorial/" };
 const pythonReference: LearningResource = { title: "Python Language Reference", url: "https://docs.python.org/3/reference/" };
@@ -306,7 +306,7 @@ const dependencies = lesson(
         { type: "heading", id: "direct-transitive", text: "Direct vs transitive dependencies" },
         { type: "paragraph", text: "If the application imports package A and A internally requires B, A is your direct dependency while B is transitive. Your project should express the dependencies it intentionally uses rather than copying the entire state of one laptop without understanding it." },
         { type: "heading", id: "constraints", text: "Version constraints are policy" },
-        { type: "code", language: "toml", caption: "Illustrative project metadata", code: "[project]\nname = \"the application-core\"\nversion = \"0.1.0\"\nrequires-python = \">=3.12\"\ndependencies = [\n  \"rich>=13,<15\",\n]" },
+        { type: "code", language: "toml", caption: "Illustrative project metadata", code: "[project]\nname = \"application-core\"\nversion = \"0.1.0\"\nrequires-python = \">=3.12\"\ndependencies = [\n  \"rich>=13,<15\",\n]" },
         { type: "paragraph", text: "An unbounded dependency maximizes update freedom but also allows unexpected change. An exact pin maximizes repeatability for one environment but increases update maintenance. Later Delivery Engineer work will deepen lockfiles, internal repositories, SBOMs and provenance." },
         { type: "heading", id: "clean-room", text: "The clean-environment test" },
         { type: "code", language: "bash", caption: "Recreate instead of trusting your machine", code: "deactivate 2>/dev/null || true\nrm -rf .venv\npython3 -m venv .venv\nsource .venv/bin/activate\npython -m pip install -e .\npython -m the application_core.demo" },
@@ -375,7 +375,7 @@ const lab: Lesson = {
                 objective: "Build a credible framework-free Python core for the application's service registry that later Builder modules can evolve rather than replace.",
                 scenario: "the application will later become a Django/DRF + PostgreSQL system. For now, implement the smallest domain/service core that proves real rules and clean Python boundaries.",
                 instructions: ["Create a package structure with deliberate modules.", "Model Service and at least one related concept using classes, dataclasses or simpler structures where justified.", "Enforce allowed lifecycle and criticality values.", "Reject self-dependencies and duplicate dependencies.", "Use explicit exceptions for invalid operations.", "Add type annotations to public functions/methods.", "Provide a small executable demo that exercises happy, boundary and failure paths.", "Declare project metadata/dependencies and prove a clean-environment install.", "Introduce one deliberate bug, investigate it with an evidence log and fix it.", "Write a short architecture note identifying what should remain framework-independent when Django arrives and what you expect the framework to own."],
-                deliverables: ["Runnable the application-core package", "Domain rules and examples", "Project dependency metadata", "Type-check evidence", "Failure demonstrations", "Debugging evidence log", "Framework-boundary note"],
+                deliverables: ["Runnable application-core package", "Domain rules and examples", "Project dependency metadata", "Type-check evidence", "Failure demonstrations", "Debugging evidence log", "Framework-boundary note"],
                 completionCriteria: ["The package demonstrates real application domain behavior rather than generic syntax exercises.", "Invalid state is deliberately rejected.", "The environment can be recreated.", "Module dependencies can be explained.", "At least one design is intentionally simple rather than over-engineered.", "The learner can identify which future concerns belong to Django/DRF or PostgreSQL rather than this core."],
                 resources: [packagingGuide, typingDocs, pdbDocs],
             },
@@ -386,7 +386,7 @@ const lab: Lesson = {
             estimatedMinutes: 25,
             content: {
                 type: "reflection",
-                prompt: "Defend the current design of your the application Python core. Which rule is best protected? Which part is over-engineered or still too weak? Which data representation do you expect Django/PostgreSQL to replace? What would you deliberately refuse to redesign until later evidence exists? Which Python capability from this module was hardest to apply without copying an example?",
+                prompt: "Defend the current design of your application Python core. Which rule is best protected? Which part is over-engineered or still too weak? Which data representation do you expect Django/PostgreSQL to replace? What would you deliberately refuse to redesign until later evidence exists? Which Python capability from this module was hardest to apply without copying an example?",
             },
         },
     ],
@@ -394,7 +394,7 @@ const lab: Lesson = {
 
 export const programmingWithPythonRichLessons: Lesson[] = [
     environment,
-    the applicationValuesAndTypesLesson,
+    stewardValuesAndTypesLesson,
     controlFlow,
     functions,
     collections,
