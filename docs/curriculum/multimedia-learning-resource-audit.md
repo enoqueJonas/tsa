@@ -1131,3 +1131,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technology Governance — Business and Technology Alignment | OPTIONAL VIDEO | COBIT/IT governance alignment material reviewed | No candidate promoted yet | A worked goal→capability→measure mapping can reinforce alignment. |
 | Technology Governance — Value Delivery | NO VIDEO | — | — | Tie actual investment to outcomes. |
 | Technology Governance — Resource Stewardship | OPTIONAL VIDEO | FinOps/resource-governance talks reviewed | No candidate promoted yet | Lifecycle-cost examples can add context. |
+| Technology Governance — Performance Oversight | NO VIDEO | — | — | Define actual decision-linked measures. |
