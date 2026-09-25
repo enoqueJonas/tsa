@@ -816,3 +816,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | SRE — Toil | OPTIONAL VIDEO | Google SRE toil talks reviewed | No candidate promoted yet | Real operational examples can clarify toil. |
 | SRE — Reliability and Risk Trade-offs | NO VIDEO | — | — | Make actual risk/reliability decisions. |
 | SRE — Reliability Ownership | NO VIDEO | — | — | Define ownership from the actual service. |
+| SRE — Lab: Build the Steward Reliability Risk Map | NO VIDEO | — | — | Synthesis lab. |
