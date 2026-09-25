@@ -1093,3 +1093,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technology Risk — Inherent and Residual Risk | RECOMMENDED VIDEO | Risk/control walkthroughs reviewed | No candidate promoted yet | A before-controls/after-controls worked example can make residual risk concrete. |
 | Technology Risk — Risk Appetite and Tolerance | OPTIONAL VIDEO | Risk-appetite explainers reviewed | No candidate promoted yet | A governance example can clarify thresholds. |
 | Technology Risk — Risk Treatment | NO VIDEO | — | — | Treatment selection is contextual. |
+| Technology Risk — Risk Acceptance | RECOMMENDED VIDEO | Risk-acceptance governance case studies reviewed | No candidate promoted yet | A real acceptance/expiry/owner workflow adds value. |
