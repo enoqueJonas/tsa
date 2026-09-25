@@ -742,3 +742,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Vulnerability Lab — Designing an Isolated Security Lab | RECOMMENDED VIDEO | isolated lab-network walkthroughs reviewed | No candidate promoted yet | Seeing isolation boundaries reduces accidental exposure risk. |
 | Vulnerability Lab — Safe Lab Networking | RECOMMENDED VIDEO | virtual lab network demos reviewed | No candidate promoted yet | Topology and reachability are visual. |
 | Vulnerability Lab — Vulnerable Applications and Intentional Weaknesses | OPTIONAL VIDEO | OWASP Juice Shop/DVWA introductions reviewed | No candidate promoted yet | Orientation can help; learner must inspect lab directly. |
+| Vulnerability Lab — Observing Vulnerable Behavior | NO VIDEO | — | — | Observe actual vulnerable behavior. |
