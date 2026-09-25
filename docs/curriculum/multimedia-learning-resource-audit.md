@@ -325,3 +325,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Homelab — Static Addressing | NO VIDEO | — | — | Already covered conceptually; apply it directly. |
 | Homelab — Multiple Hosts and VMs | OPTIONAL VIDEO | Homelab VM layout tours reviewed | No candidate promoted yet | Can reinforce placement, but learner capacity model is primary. |
 | Homelab — Remote Administration | NO VIDEO | — | — | SSH/remoting was already taught; implement it. |
+| Homelab — Local Firewalling | NO VIDEO | — | — | Apply prior networking/Linux knowledge. |
