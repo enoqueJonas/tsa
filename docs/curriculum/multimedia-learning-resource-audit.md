@@ -642,3 +642,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Page Objects and UI Abstractions | OPTIONAL VIDEO | Page-object design demos reviewed | No candidate promoted yet | Only useful if browser surface exists; decision gate comes first. |
 | Automation — Helpers and Utilities | NO VIDEO | — | — | Refactor from repeated need. |
 | Automation — Assertions | NO VIDEO | — | — | Write domain-meaningful assertions. |
+| Automation — Markers and Tags | NO VIDEO | — | — | Apply suite selection. |
