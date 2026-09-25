@@ -697,3 +697,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Clock Skew as a Security and Observability Incident | RECOMMENDED VIDEO | Clock-skew/TLS/token/log-correlation material reviewed | No candidate promoted yet | A timeline makes the cross-system consequences of incorrect time substantially clearer. |
 | Integrate Core Services into the Homelab | NO VIDEO | — | — | This is an integration/cutover exercise using services already learned. |
 | Reassess Availability and Ownership | NO VIDEO | — | — | The learner should make the SPOF/ownership decision from implemented evidence. |
+
+
+## Platform Builder — Configuration Management and OS Lifecycle lesson audit
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Desired State, Inventory and Idempotence | RECOMMENDED VIDEO | Ansible desired-state/idempotence introductions reviewed | No candidate promoted yet | Seeing first-run changed state followed by an unchanged second run makes declarative convergence concrete. |
