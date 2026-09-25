@@ -1766,3 +1766,103 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture/Cost — Homelab, VPS and Cloud Hybrid Trade-offs | NO VIDEO | — | — | Learner's actual architecture drives the decision. |
 | Architecture/Cost — Lab: Review the Steward Internet Architecture | NO VIDEO | — | — | Independent review. |
 | Cloud Engineer Milestone | NO VIDEO | — | — | Milestone/gates are synthesis and evidence. |
+
+
+## Quality Steward — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Quality Engineering — Quality vs Testing | OPTIONAL VIDEO | Modern testing/quality engineering talks reviewed | No candidate promoted yet | A strong talk can reinforce quality as a system property, but risk modeling is primary. |
+| Quality Engineering — Quality Risks | NO VIDEO | — | — | Build the actual risk model. |
+| Quality Engineering — Test Strategy | OPTIONAL VIDEO | Risk-based test strategy talks reviewed | No candidate promoted yet | A worked strategy review may help. |
+| Quality Engineering — Test Levels and Test Types | RECOMMENDED VIDEO | Test-pyramid/honeycomb boundary explainers reviewed | No candidate promoted yet | Boundary/feedback-cost visualization adds value. |
+| Quality Engineering — Risk-based Testing | NO VIDEO | — | — | Prioritization exercise is primary. |
+| Quality Engineering — Shift-left and Shift-right | RECOMMENDED VIDEO | Continuous testing/observability talks reviewed | No candidate promoted yet | Lifecycle placement is visual. |
+| Quality Engineering — Testability | RECOMMENDED VIDEO | Testability/design talks reviewed | No candidate promoted yet | Control/observe architecture examples add value. |
+| Quality Engineering — Defect Evidence and Communication | NO VIDEO | — | — | Actual evidence/report writing is primary. |
+| Quality Engineering — Establish the Quality Context | NO VIDEO | — | — | Practical. |
+| Quality Engineering — Design the Evidence Model | NO VIDEO | — | — | Practical. |
+| Quality Engineering — Define Quality Decision Rules | NO VIDEO | — | — | Practical. |
+| Quality Engineering — Quality Engineering Review | NO VIDEO | — | — | Review gate. |
+| Test Design — Requirements Analysis for Testing | NO VIDEO | — | — | Interrogate actual requirements. |
+| Test Design — Equivalence Partitioning | RECOMMENDED VIDEO | ISTQB technique demonstrations reviewed | No candidate promoted yet | Partition construction benefits from worked examples. |
+| Test Design — Boundary Value Analysis | RECOMMENDED VIDEO | ISTQB BVA worked examples reviewed | No candidate promoted yet | Visual number-line/rule transitions help. |
+| Test Design — Decision Tables | RECOMMENDED VIDEO | Decision-table worked examples reviewed | No candidate promoted yet | Conditions/actions matrix is well suited to demonstration. |
+| Test Design — State Transition Testing | RECOMMENDED VIDEO | State-machine testing demos reviewed | No candidate promoted yet | States/events/invalid transitions are visual. |
+| Test Design — Pairwise and Combinatorial Concepts | RECOMMENDED VIDEO | Pairwise generation demos reviewed | No candidate promoted yet | Combination reduction is clearer from a worked matrix. |
+| Test Design — Exploratory Testing | RECOMMENDED VIDEO | James Bach/Michael Bolton exploratory testing material reviewed | No candidate promoted yet | A real charter/session/debrief demonstration adds value. |
+| Test Design — Negative Testing | NO VIDEO | — | — | Design failure cases directly. |
+| Test Design — Traceability | NO VIDEO | — | — | Build the risk→condition→evidence links. |
+| Test Design — Analyze the Domain | NO VIDEO | — | — | Practical. |
+| Test Design — Apply Formal Techniques | NO VIDEO | — | — | Practical. |
+| Test Design — Add Exploration and Negative Coverage | NO VIDEO | — | — | Practical. |
+| Test Design — Coverage Review | NO VIDEO | — | — | Review gate. |
+| Unit/Component — Designing Unit Tests | OPTIONAL VIDEO | Google testing/unit-test talks reviewed | No candidate promoted yet | A worked behavior-focused test can reinforce design. |
+| Unit/Component — Isolation | RECOMMENDED VIDEO | Test isolation/determinism demos reviewed | No candidate promoted yet | Controlling time/network/randomness benefits from examples. |
+| Unit/Component — Test Doubles | RECOMMENDED VIDEO | Martin Fowler mocks/stubs material and demos reviewed | No candidate promoted yet | Dummy/stub/fake/mock distinctions benefit from worked code. |
+| Unit/Component — Mocks, Stubs and Fakes | RECOMMENDED VIDEO | Mocking demos reviewed | No candidate promoted yet | Observable behavior versus interaction verification is easier with code. |
+| Unit/Component — Coverage and Its Limitations | OPTIONAL VIDEO | Coverage mutation-testing talks reviewed | No candidate promoted yet | A 100%-coverage-but-broken example can be powerful. |
+| Unit/Component — Component Boundaries | OPTIONAL VIDEO | Component-test architecture talks reviewed | No candidate promoted yet | Boundary selection can be reinforced visually. |
+| Unit/Component — Fast Feedback and Maintainability | NO VIDEO | — | — | Measure the real suite. |
+| Unit/Component — implementation/review labs | NO VIDEO | — | — | Independent testing evidence. |
+| API/Integration — API Test Design | NO VIDEO | — | — | Contract/risk model is primary. |
+| API/Integration — Authentication and Authorization Testing | RECOMMENDED VIDEO | OWASP authorization testing demos reviewed | No candidate promoted yet | Privilege matrix and broken access examples benefit from live requests. |
+| API/Integration — Schema and Contract Validation | OPTIONAL VIDEO | OpenAPI/Pact contract demos reviewed | No candidate promoted yet | Useful visualization; actual contract tests are primary. |
+| API/Integration — Database Assertions | NO VIDEO | — | — | Implement transaction-aware evidence. |
+| API/Integration — Integration Boundaries | NO VIDEO | — | — | Name/test actual boundary. |
+| API/Integration — Contract Testing Concepts | RECOMMENDED VIDEO | Pact contract-testing talks reviewed | No candidate promoted yet | Consumer/provider interaction and verification lifecycle are visual. |
+| API/Integration — Mocking and Service Virtualization | RECOMMENDED VIDEO | Service virtualization demos reviewed | No candidate promoted yet | Real vs simulated boundary is useful to see. |
+| API/Integration — Internal Package Compatibility | NO VIDEO | — | — | Compatibility tests are primary. |
+| API/Integration — Data Setup and Cleanup | NO VIDEO | — | — | State ownership must be implemented. |
+| API/Integration — implementation/review labs | NO VIDEO | — | — | Independent evidence. |
+| Automation Framework — What Makes an Automation Framework | OPTIONAL VIDEO | Framework architecture talks reviewed | No candidate promoted yet | Can reinforce separation of domain tests and reusable infrastructure. |
+| Automation Framework — Framework Architecture | RECOMMENDED VIDEO | pytest/Playwright framework design demos reviewed | No candidate promoted yet | Layers/fixtures/clients/reporting are visual. |
+| Automation Framework — Playwright with Python | RECOMMENDED VIDEO | Microsoft Playwright demos reviewed | No candidate promoted yet | Seeing browser/API automation once reduces tool friction. |
+| Automation Framework — pytest Fundamentals | RECOMMENDED VIDEO | pytest official/community demos reviewed | No candidate promoted yet | Fixtures/collection/assertion flow benefits from live code. |
+| Automation Framework — Configuration | NO VIDEO | — | — | Implement directly. |
+| Automation Framework — Fixtures | RECOMMENDED VIDEO | pytest fixture dependency demos reviewed | No candidate promoted yet | Fixture dependency/scope graph is visual. |
+| Automation Framework — Test Data | NO VIDEO | — | — | Design actual data strategy. |
+| Automation Framework — API Clients | NO VIDEO | — | — | Implement client abstraction. |
+| Automation Framework — Page Objects and UI Abstractions | OPTIONAL VIDEO | Playwright page-object demos reviewed | No candidate promoted yet | Worked abstraction can help, with caution against over-abstraction. |
+| Automation Framework — Helpers and Utilities | NO VIDEO | — | — | Implement when justified. |
+| Automation Framework — Assertions | NO VIDEO | — | — | Direct practice. |
+| Automation Framework — Markers and Tags | NO VIDEO | — | — | Direct practice. |
+| Automation Framework — Parameterization | OPTIONAL VIDEO | pytest parameterization demos reviewed | No candidate promoted yet | Short live example may help. |
+| Automation Framework — Automation Logging | NO VIDEO | — | — | Implement diagnostic evidence. |
+| Automation Framework — Reports | OPTIONAL VIDEO | pytest/reporting demos reviewed | No candidate promoted yet | Seeing report artifact can help. |
+| Automation Framework — Screenshots, Traces and Video | RECOMMENDED VIDEO | Playwright trace viewer demos reviewed | No candidate promoted yet | This capability is inherently visual. |
+| Automation Framework — Parallel Execution | RECOMMENDED VIDEO | pytest-xdist/Playwright parallel demos reviewed | No candidate promoted yet | Worker timing/isolation benefits from visualization. |
+| Automation Framework — Retries and Flaky-test Risk | RECOMMENDED VIDEO | Flaky-test/retry demonstrations reviewed | No candidate promoted yet | Failure masking is clearer from repeated runs. |
+| Automation Framework — Framework Maintainability | NO VIDEO | — | — | Review real framework coupling. |
+| Automation Framework — reusable package lessons/labs/review | NO VIDEO | — | — | Independent extraction/versioning evidence. |
+| Browser — Browser Differences | RECOMMENDED VIDEO | Browser engine/rendering explainers reviewed | No candidate promoted yet | Engine differences are visual. |
+| Browser — Responsive Testing | RECOMMENDED VIDEO | Playwright responsive/device demos reviewed | No candidate promoted yet | Layout-state behavior is visual. |
+| Browser — Cross-browser Testing | RECOMMENDED VIDEO | Playwright cross-browser demos reviewed | No candidate promoted yet | Same claim across engines is useful to see. |
+| Browser — BrowserStack or Equivalent | OPTIONAL VIDEO | BrowserStack platform demos reviewed | No candidate promoted yet | Useful UI/infrastructure orientation. |
+| Browser — Local vs Remote Execution | OPTIONAL VIDEO | Remote-grid/cloud browser demos reviewed | No candidate promoted yet | Execution-boundary topology can help. |
+| Browser — Environment Parity and Configuration Risk | NO VIDEO | — | — | Compare actual environments. |
+| Browser — labs/review | NO VIDEO | — | — | Independent evidence. |
+| Non-functional — Performance Testing | RECOMMENDED VIDEO | Grafana k6 demos reviewed | No candidate promoted yet | Load→latency→throughput/error behavior is visual. |
+| Non-functional — Load, Stress, Spike and Endurance | RECOMMENDED VIDEO | k6 workload-shape demos reviewed | No candidate promoted yet | Traffic shapes over time are visual. |
+| Non-functional — Accessibility Fundamentals | RECOMMENDED VIDEO | W3C/accessibility assistive-tech demos reviewed | No candidate promoted yet | Seeing keyboard/screen-reader barriers adds essential human context. |
+| Non-functional — Compatibility Testing | OPTIONAL VIDEO | Compatibility demos reviewed | No candidate promoted yet | Can reinforce matrix thinking. |
+| Non-functional — Reliability-oriented Testing | RECOMMENDED VIDEO | Resilience/fault test demos reviewed | No candidate promoted yet | Degraded behavior is worth seeing. |
+| Non-functional — Data Integrity and Concurrency Testing | RECOMMENDED VIDEO | Concurrency race demos reviewed | No candidate promoted yet | Interleavings are visual. |
+| Non-functional — baseline labs | NO VIDEO | — | — | Measure actual system. |
+| Quality in Containers/CI — Test Containers and Environments | RECOMMENDED VIDEO | Containerized test-environment demos reviewed | No candidate promoted yet | Environment lifecycle is visual. |
+| Quality in Containers/CI — Dockerized Test Dependencies | RECOMMENDED VIDEO | Testcontainers/docker dependency demos reviewed | No candidate promoted yet | Dependency startup/isolation is useful to see. |
+| Quality in Containers/CI — Ephemeral Environment Concepts | RECOMMENDED VIDEO | Preview/ephemeral environment demos reviewed | No candidate promoted yet | Environment lifecycle/topology is visual. |
+| Quality in Containers/CI — Test Pipeline Stages | RECOMMENDED VIDEO | Test pipeline visualizations reviewed | No candidate promoted yet | Evidence flow is visual. |
+| Quality in Containers/CI — Parallelization | OPTIONAL VIDEO | Parallel test pipeline demos reviewed | No candidate promoted yet | Timing visualization can help. |
+| Quality in Containers/CI — Reports and Artifacts | OPTIONAL VIDEO | CI test artifact demos reviewed | No candidate promoted yet | Useful UI context. |
+| Quality in Containers/CI — Test Selection | NO VIDEO | — | — | Policy/implementation primary. |
+| Quality in Containers/CI — Failure Triage | RECOMMENDED VIDEO | CI failure-triage demos reviewed | No candidate promoted yet | Live evidence navigation is valuable. |
+| Quality in Containers/CI — Flaky-test Containment | RECOMMENDED VIDEO | Flake quarantine/analytics demos reviewed | No candidate promoted yet | Repeated-run evidence helps. |
+| Quality in Containers/CI — package/pipeline labs/review | NO VIDEO | — | — | Independent evidence. |
+| Continuous Execution — Continuous and Scheduled Quality Execution | RECOMMENDED VIDEO | Jenkins trigger/cron pipeline demos reviewed | No candidate promoted yet | SCM trigger vs scheduled execution is visual. |
+| Continuous Execution — Design Triggered Quality Feedback | NO VIDEO | — | — | Design actual policy. |
+| Continuous Execution — Implement SCM-triggered Automated Testing | NO VIDEO | — | — | Implementation evidence. |
+| Continuous Execution — Implement Jenkins CRON Regression | NO VIDEO | — | — | Implementation evidence. |
+| Continuous Execution — Implement Failure Alerts and Reports | RECOMMENDED VIDEO | Jenkins notification/report demos reviewed | No candidate promoted yet | End-to-end fail→alert→artifact flow is useful to see. |
+| Continuous Execution — Defend the Quality Execution Policy | NO VIDEO | — | — | Defence/reassessment. |
+| Quality Steward Milestone | NO VIDEO | — | — | Milestone is independent synthesis. |
