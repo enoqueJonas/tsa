@@ -583,3 +583,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Core Infrastructure — Integrate Core Services into the Homelab | NO VIDEO | — | — | Integration evidence is primary. |
 | Core Infrastructure — Reassess Availability and Ownership | NO VIDEO | — | — | The learner must make the ownership/SPOF decision from their topology. |
 | Ansible — Desired State, Inventory and Idempotence | RECOMMENDED VIDEO | Ansible inventory/idempotence demonstrations reviewed | No candidate promoted yet | Seeing first-run changes followed by a clean second run makes idempotence tangible. |
+| Ansible — Reusable Rocky Baseline Role | RECOMMENDED VIDEO | Ansible role/handler demos reviewed | No candidate promoted yet | Role structure and change-driven handlers benefit from a live demonstration. |
