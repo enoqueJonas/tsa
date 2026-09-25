@@ -998,3 +998,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Fundamentals — Architecture vs Design | NO VIDEO | — | — | The distinction is best applied to concrete decisions rather than memorized. |
 | Fundamentals — Architecture Drivers | NO VIDEO | — | — | Drivers must be extracted from actual stakeholder/quality constraints. |
 | Fundamentals — Quality Attributes and Architecture Characteristics | RECOMMENDED VIDEO | SEI quality-attribute scenario material reviewed | No candidate promoted yet | Worked quality scenarios connect vague qualities to measurable architectural pressure. |
+| Fundamentals — Constraints | NO VIDEO | — | — | Identify and classify actual constraints. |
