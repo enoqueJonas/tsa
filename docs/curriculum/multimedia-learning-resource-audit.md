@@ -931,3 +931,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | DR — Lab: Run a Steward Restore Drill | NO VIDEO | — | — | Independent restore drill. |
 | Incident — Detection | RECOMMENDED VIDEO | incident-response simulations reviewed | No candidate promoted yet | Seeing first signal→incident declaration provides context. |
 | Incident — Triage | RECOMMENDED VIDEO | SRE incident simulations reviewed | No candidate promoted yet | Live prioritization and hypothesis formation are valuable. |
+| Incident — Incident Roles | OPTIONAL VIDEO | incident-command talks reviewed | No candidate promoted yet | Real role handoffs add context. |
