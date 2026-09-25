@@ -424,3 +424,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
 | Foundations — The Source-to-Production Lifecycle | RECOMMENDED VIDEO | CI/CD lifecycle visualizations reviewed | No candidate promoted yet | End-to-end source→build→artifact→promotion→runtime flow is inherently visual. |
+| Foundations — Git Workflows | NO VIDEO | — | — | Git workflow was already practiced; apply it to delivery. |
