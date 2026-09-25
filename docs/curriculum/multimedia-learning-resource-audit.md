@@ -1015,3 +1015,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Domain Modeling — Recover the Current Domain Model | NO VIDEO | — | — | Independent exercise. |
 | Domain Modeling — Challenge and Refine the Model | NO VIDEO | — | — | Independent design challenge. |
 | Domain Modeling — Validate and Record the Domain Decision | NO VIDEO | — | — | Decision evidence. |
+| Modularity — Modules and Boundaries | OPTIONAL VIDEO | Modular-monolith/boundary talks reviewed | No candidate promoted yet | A worked boundary decomposition can help. |
