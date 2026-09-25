@@ -599,3 +599,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture — Backup and Recovery | OPTIONAL VIDEO | Cloud recovery demos reviewed | No candidate promoted yet | Recovery sequence can help; actual restore evidence remains primary. |
 | Architecture — Failure Domains | RECOMMENDED VIDEO | Region/AZ/correlated-failure explainers reviewed | No candidate promoted yet | Correlation is easiest to see on topology. |
 | Architecture — Cost Estimation | OPTIONAL VIDEO | FinOps cost-model material reviewed | No candidate promoted yet | Can orient unit economics; learner model is primary. |
+| Architecture — Cost Controls and Budgets | OPTIONAL VIDEO | Cloud budget/alert demos reviewed | No candidate promoted yet | Useful control-plane mechanics, but provider-specific. |
