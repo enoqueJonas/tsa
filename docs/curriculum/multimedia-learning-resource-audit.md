@@ -654,3 +654,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation Framework — Designing Public APIs for Test Libraries | NO VIDEO | — | — | Design actual package API. |
 | Automation Framework — Reusable pytest Fixtures and Plugins | OPTIONAL VIDEO | pytest plugin demos reviewed | No candidate promoted yet | Plugin hook/fixture reuse can benefit from a short demonstration. |
 | Automation Framework — Versioning Shared Test Infrastructure | NO VIDEO | — | — | Version compatibility must be exercised. |
+| Automation Framework — Lab: Build the Steward Automation Framework | NO VIDEO | — | — | Independent synthesis. |
