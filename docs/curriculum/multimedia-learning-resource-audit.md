@@ -737,3 +737,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — Security Misconfiguration | RECOMMENDED VIDEO | OWASP misconfiguration demonstrations reviewed | No candidate promoted yet | A concrete exposed-debug/default-config example makes configuration risk tangible. |
 | Web/API — Sensitive Data and Secrets | OPTIONAL VIDEO | Secret-exposure demos reviewed | No candidate promoted yet | A short leak→abuse example can reinforce consequences; implementation controls remain primary. |
 | Web/API — API Abuse and Rate Limiting | RECOMMENDED VIDEO | API abuse/rate-limit demonstrations reviewed | No candidate promoted yet | Request bursts, quotas and client-visible throttling are useful to see. |
+| Web/API — Token and Session Attacks | RECOMMENDED VIDEO | PortSwigger token/session labs reviewed | No candidate promoted yet | Replay/fixation/theft behavior is best understood from request flows. |
