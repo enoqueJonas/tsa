@@ -1032,3 +1032,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Modularity — Dependency Direction | RECOMMENDED VIDEO | dependency-rule/clean-architecture diagrams reviewed | No candidate promoted yet | Direction and policy/mechanism boundaries are visual. |
 | Modularity — Encapsulation at System Scale | OPTIONAL VIDEO | modular architecture talks reviewed | No candidate promoted yet | A worked module boundary can reinforce information hiding. |
 | Modularity — Shared Libraries and Coupling | RECOMMENDED VIDEO | shared-library/platform dependency talks reviewed | No candidate promoted yet | Version/coupling blast radius benefits from concrete examples. |
+| Modularity — Package Ownership and Change Impact | NO VIDEO | — | — | Use actual repository/package evidence. |
