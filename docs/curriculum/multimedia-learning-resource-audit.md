@@ -584,3 +584,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Kubernetes — Namespaces, Service Accounts and RBAC | RECOMMENDED VIDEO | Kubernetes RBAC demos reviewed | No candidate promoted yet | Subject→role→binding→resource authorization is visual. |
 | OpenShift — OpenShift as an Enterprise Application Platform | RECOMMENDED VIDEO | Red Hat OpenShift architecture material reviewed | No candidate promoted yet | Seeing Kubernetes plus OpenShift platform additions clarifies the delta. |
 | OpenShift — Routes, SCC Concepts and Operators | RECOMMENDED VIDEO | Red Hat route/SCC/operator demos reviewed | No candidate promoted yet | These OpenShift-specific mechanisms benefit from UI/CLI demonstration. |
+| GitOps — GitOps and Reconciliation | RECOMMENDED VIDEO | CNCF/Argo GitOps explainers reviewed | No candidate promoted yet | Git desired state→controller→cluster reconciliation is inherently visual. |
