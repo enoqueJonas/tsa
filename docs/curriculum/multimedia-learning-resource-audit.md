@@ -1000,3 +1000,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture Fundamentals — Quality Attributes and Architecture Characteristics | RECOMMENDED VIDEO | SEI quality-attribute scenario material reviewed | No candidate promoted yet | Worked quality scenarios are valuable to watch before constructing them. |
 | Architecture Fundamentals — Constraints | NO VIDEO | — | — | Constraint identification is contextual reasoning. |
 | Architecture Fundamentals — Trade-offs and Consequences | NO VIDEO | — | — | Trade-off analysis must be performed, not watched. |
+| Architecture Fundamentals — Architecture Fitness and Evolution | RECOMMENDED VIDEO | Thoughtworks evolutionary-architecture talks reviewed | No candidate promoted yet | Fitness functions/evolution benefit from real examples of architecture changing under pressure. |
