@@ -536,3 +536,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Internet — Ingress Concepts | RECOMMENDED VIDEO | Ingress/edge-routing explainers reviewed | No candidate promoted yet | External traffic entering controlled internal paths is visual. |
 | Internet — Internet-facing Firewalls | NO VIDEO | Prior firewall concepts covered | — | Apply policy to public exposure. |
 | Internet — Exposure, Attack Surface and Administrative Boundaries | RECOMMENDED VIDEO | Attack-surface/trust-boundary explainers reviewed | No candidate promoted yet | A topology walkthrough makes exposed/admin paths concrete. |
+| Certificates — Certificate Lifecycle Operations | RECOMMENDED VIDEO | Let's Encrypt/ACME lifecycle material reviewed | No candidate promoted yet | Issuance→validation→renewal→reload→expiry is a lifecycle best understood as a sequence. |
