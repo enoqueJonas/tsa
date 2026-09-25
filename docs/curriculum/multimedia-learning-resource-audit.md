@@ -475,3 +475,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CD — Rolling Deployments | RECOMMENDED VIDEO | Rolling-update animations reviewed | No candidate promoted yet | Instance-by-instance replacement is visual. |
 | CD — Blue-Green Deployments | RECOMMENDED VIDEO | Blue-green traffic-switch demos reviewed | No candidate promoted yet | Two environments and traffic cutover are inherently visual. |
 | CD — Canary Deployment Concepts | RECOMMENDED VIDEO | Canary traffic-shift demos reviewed | No candidate promoted yet | Progressive percentages and analysis gates benefit from animation. |
+| CD — Feature Flag Concepts | OPTIONAL VIDEO | Feature-flag rollout demos reviewed | No candidate promoted yet | Control-plane separation can help, but implementation is not central here. |
