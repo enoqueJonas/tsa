@@ -330,3 +330,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Homelab — Reverse Proxies | RECOMMENDED VIDEO | NGINX/reverse-proxy visual explainers reviewed | No candidate promoted yet | Client→proxy→upstream flow and headers are visual. |
 | Homelab — Storage and Backups | OPTIONAL VIDEO | Homelab backup strategy explainers reviewed | No candidate promoted yet | Failure-domain diagrams can help; NAS path goes deeper. |
 | Homelab — Safe Exposure and Isolation | RECOMMENDED VIDEO | Network exposure/isolation demos reviewed | No candidate promoted yet | Ingress paths and trust boundaries benefit from topology visualization. |
+| Homelab — VLAN Concepts | NO VIDEO | Packet Tracer VLAN lesson already covers this | Reuse earlier VLAN media only if review is needed | Avoid duplicate assignment. |
