@@ -637,3 +637,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Playwright with Python | RECOMMENDED VIDEO | Playwright official Python material reviewed | No candidate promoted yet | A real execution and trace demo is useful before framework integration. |
 | Automation — pytest Fundamentals | OPTIONAL VIDEO | pytest introductions reviewed | No candidate promoted yet | Useful orientation; hands-on tests remain primary. |
 | Automation — Configuration | NO VIDEO | — | — | Implement and validate actual configuration. |
+| Automation — Fixtures | RECOMMENDED VIDEO | pytest fixture demos reviewed | No candidate promoted yet | Fixture dependency, scope and teardown are easier to see in execution. |
