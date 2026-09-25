@@ -542,3 +542,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Certificates — Break and Recover Certificate Renewal | NO VIDEO | — | — | Learner must diagnose the controlled failure. |
 | Certificates — Defend the Certificate Lifecycle | NO VIDEO | — | — | Architecture/operations defence. |
 | Building Blocks — Compute | RECOMMENDED VIDEO | Cloud compute architecture demos reviewed | No candidate promoted yet | Placement/capacity abstraction is visual. |
+| Building Blocks — Object Storage | RECOMMENDED VIDEO | S3 object-storage architecture demos reviewed | No candidate promoted yet | Bucket/key/API model differs enough from filesystems to merit visualization. |
