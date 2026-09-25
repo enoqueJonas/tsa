@@ -562,3 +562,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | IaC — Variables and Outputs | NO VIDEO | — | — | Interface design is better practiced. |
 | IaC — Dependencies | RECOMMENDED VIDEO | Terraform dependency-graph demos reviewed | No candidate promoted yet | Graph-derived ordering is visual. |
 | IaC — Modules Concepts | NO VIDEO | — | — | Abstraction should be earned through refactoring. |
+| Orchestration — Kubernetes Cluster and Control Plane | RECOMMENDED VIDEO | Kubernetes control-plane animations reviewed | No candidate promoted yet | API server/scheduler/controllers/etcd/node relationships are highly visual. |
