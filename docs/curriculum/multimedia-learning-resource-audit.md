@@ -1267,3 +1267,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Readiness — Performance Evidence | NO VIDEO | — | — | Measure the real workload. |
 | Readiness — Reliability and Failure Testing | NO VIDEO | — | — | Inject failures and collect evidence. |
 | Readiness — Backup and Recovery | NO VIDEO | — | — | Perform actual restore/recovery proof. |
+| Readiness — Runbooks | NO VIDEO | Prior handbook/runbook material sufficient | — | Exercise the capstone runbooks. |
