@@ -1656,3 +1656,15 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CD — Deployment Automation | RECOMMENDED VIDEO | Deployment pipeline demos reviewed | No candidate promoted yet | Artifact promotion/deploy/verify sequence is visual. |
 | CD — Release Approvals | OPTIONAL VIDEO | Approval-gate demos reviewed | No candidate promoted yet | Useful UI/workflow context; policy reasoning remains primary. |
 | CD — Database Migrations During Deployment | RECOMMENDED VIDEO | Zero-downtime migration talks reviewed | No candidate promoted yet | App/schema compatibility over time is a timeline problem. |
+| CD — Rollback | RECOMMENDED VIDEO | Rollback/recovery demonstrations reviewed | No candidate promoted yet | Seeing failed deploy→rollback→verification reinforces recovery. |
+| CD — Rolling Deployments | RECOMMENDED VIDEO | Rolling deployment animations reviewed | No candidate promoted yet | Instance-by-instance replacement is inherently visual. |
+| CD — Blue-Green Deployments | RECOMMENDED VIDEO | Blue/green topology animations reviewed | No candidate promoted yet | Traffic switch and two-environment model are visual. |
+| CD — Canary Deployment Concepts | RECOMMENDED VIDEO | Canary/progressive delivery animations reviewed | No candidate promoted yet | Traffic percentage/progressive evidence is visual. |
+| CD — Feature Flag Concepts | OPTIONAL VIDEO | Feature-flag rollout demos reviewed | No candidate promoted yet | A short runtime-toggle demonstration can help. |
+| Configuration Management — Configuration Drift | RECOMMENDED VIDEO | Ansible drift demos reviewed | No candidate promoted yet | Desired-versus-actual state and repair are useful to see. |
+| Configuration Management — Desired State and Idempotency | RECOMMENDED VIDEO | Ansible idempotency demos reviewed | No candidate promoted yet | Changed→unchanged runs make the concept concrete. |
+| Configuration Management — Ansible Fundamentals | RECOMMENDED VIDEO | Red Hat/Ansible introductory demos reviewed | No candidate promoted yet | Inventory→module/playbook→host result is worth seeing once. |
+| Configuration Management — Inventories | NO VIDEO | — | — | Write and query the actual inventory. |
+| Configuration Management — Playbooks | NO VIDEO | — | — | Author/run playbooks directly. |
+| Configuration Management — Roles Concepts | OPTIONAL VIDEO | Ansible role-layout demos reviewed | No candidate promoted yet | A visual directory/reuse walkthrough may reinforce structure. |
+| Release — Release Candidates | NO VIDEO | — | — | Artifact/version evidence is primary. |
