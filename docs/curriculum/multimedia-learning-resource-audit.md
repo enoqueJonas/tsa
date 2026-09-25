@@ -1620,3 +1620,15 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Pipes and Exit Codes | RECOMMENDED VIDEO | Unix pipeline/exit-status demos reviewed | No candidate promoted yet | Process composition and failure propagation are useful to see live. |
 | Automation — Environment | NO VIDEO | — | — | Inspect and control environment directly. |
 | Automation — Repeatable Automation | NO VIDEO | — | — | Re-run behavior must be demonstrated. |
+| Automation — Make | OPTIONAL VIDEO | Make dependency-graph demos reviewed | No candidate promoted yet | Target/dependency execution can benefit from a short visualization. |
+| Automation — Idempotency | OPTIONAL VIDEO | Idempotency demonstrations reviewed | No candidate promoted yet | Repeated execution is better proven hands-on; video is reinforcement. |
+| Automation — Lab: Automate Steward Developer and Operator Tasks | NO VIDEO | — | — | Independent lab. |
+| Containers — Containers versus Virtual Machines | RECOMMENDED VIDEO | Container/VM architecture animations reviewed | No candidate promoted yet | Isolation boundary differences are highly visual. |
+| Containers — Namespaces and cgroups Concepts | RECOMMENDED VIDEO | Linux namespace/cgroup demonstrations reviewed | No candidate promoted yet | Kernel primitives behind containers are much easier to understand visually. |
+| Containers — Docker Architecture | RECOMMENDED VIDEO | Docker engine/client/registry explainers reviewed | No candidate promoted yet | Daemon/client/image/container relationships benefit from a diagram. |
+| Containers — Images and Layers | RECOMMENDED VIDEO | Docker layer/cache visual demos reviewed | No candidate promoted yet | Layer composition and cache invalidation are visual. |
+| Containers — Writing Dockerfiles | NO VIDEO | — | — | Writing/building the Dockerfile is primary. |
+| Containers — Build Context | OPTIONAL VIDEO | Docker build-context demos reviewed | No candidate promoted yet | A short context-size/cache demo may reinforce behavior. |
+| Containers — Multi-stage Builds | RECOMMENDED VIDEO | Multi-stage build demonstrations reviewed | No candidate promoted yet | Builder/runtime stage separation is useful to see. |
+| Containers — Volumes | RECOMMENDED VIDEO | Docker volume/bind-mount demos reviewed | No candidate promoted yet | Host/container persistence boundaries benefit from visualization. |
+| Containers — Container Networking | RECOMMENDED VIDEO | Docker bridge/DNS/port-publish demos reviewed | No candidate promoted yet | Network namespace/bridge/port mapping is highly visual. |
