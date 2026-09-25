@@ -1969,3 +1969,34 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Application Security — Abuse Cases and Negative Security Requirements | NO VIDEO | — | — | Derive actual abuse cases. |
 | Application Security — Security Regression Testing | NO VIDEO | — | — | Automate actual regressions. |
 | Security Steward Milestone | NO VIDEO | — | — | Independent security assessment/hardening synthesis. |
+
+
+## Reliability Engineer — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| SRE — Reliability as a Quality Attribute | OPTIONAL VIDEO | Google SRE introductory talks reviewed | No candidate promoted yet | Strong talk can add operating context. |
+| SRE — Failure and Recovery | RECOMMENDED VIDEO | SRE failure/recovery talks reviewed | No candidate promoted yet | Failure timeline and recovery behavior are visual. |
+| SRE — SRE Principles | RECOMMENDED VIDEO | Google SRE material reviewed | No candidate promoted yet | Service ownership/engineering approach benefits from practitioner context. |
+| SRE — Toil | OPTIONAL VIDEO | Google SRE toil talks reviewed | No candidate promoted yet | Examples can reinforce the definition. |
+| SRE — Reliability and Risk Trade-offs | NO VIDEO | — | — | Decision exercise is primary. |
+| SRE — Reliability Ownership | NO VIDEO | — | — | Ownership model is primary. |
+| SRE — practical agenda work | NO VIDEO | — | — | Independent evidence. |
+| Observability — Observability vs Monitoring | RECOMMENDED VIDEO | Observability talks reviewed | No candidate promoted yet | Unknown-question versus known-check distinction benefits from examples. |
+| Observability — Logs, Metrics and Traces | RECOMMENDED VIDEO | Three-pillars/telemetry-flow explainers reviewed | No candidate promoted yet | Signal differences are visual. |
+| Observability — Telemetry Design | NO VIDEO | — | — | Design from actual service questions. |
+| Observability — Correlation and Context | RECOMMENDED VIDEO | Trace/correlation demos reviewed | No candidate promoted yet | Cross-signal context is visual. |
+| Observability — Instrumentation | RECOMMENDED VIDEO | OpenTelemetry instrumentation demos reviewed | No candidate promoted yet | Code→telemetry pipeline is useful to see. |
+| Observability — Golden Signals and Service Questions | OPTIONAL VIDEO | SRE golden-signals talks reviewed | No candidate promoted yet | Useful reinforcement. |
+| Observability — Telemetry Cost and Noise | NO VIDEO | — | — | Analyze actual telemetry. |
+| Observability — practical diagnostic path | NO VIDEO | — | — | Independent evidence. |
+| Logging — Structured Logs | RECOMMENDED VIDEO | Structured logging demos reviewed | No candidate promoted yet | Raw text versus structured event querying is concrete. |
+| Logging — Log Levels | NO VIDEO | — | — | Apply to actual events. |
+| Logging — Correlation IDs | RECOMMENDED VIDEO | Correlation-ID request-flow demos reviewed | No candidate promoted yet | Cross-service request tracking is visual. |
+| Logging — Request and Trace Context | RECOMMENDED VIDEO | Context propagation demos reviewed | No candidate promoted yet | Propagation is visual. |
+| Logging — Centralized Logging | RECOMMENDED VIDEO | Graylog centralized-log demos reviewed | No candidate promoted yet | Ship→index/search/dashboard flow is visual. |
+| Logging — Useful vs Noisy Logs | NO VIDEO | — | — | Evaluate actual logs. |
+| Logging — Privacy and Security in Logs | NO VIDEO | — | — | Inspect actual data exposure. |
+| Logging — Log Retention Concepts | OPTIONAL VIDEO | Retention/lifecycle demos reviewed | No candidate promoted yet | Can reinforce storage/cost lifecycle. |
+| Logging — implementation/review | NO VIDEO | — | — | Independent evidence. |
+| Metrics — Metrics Mental Models | RECOMMENDED VIDEO | Prometheus metric-model talks reviewed | No candidate promoted yet | Time-series labels/samples are visual. |
