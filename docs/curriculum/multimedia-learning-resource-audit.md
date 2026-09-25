@@ -944,3 +944,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Fault Injection — Hypothesis-driven Reliability Experiments | RECOMMENDED VIDEO | chaos-engineering talks reviewed | No candidate promoted yet | Steady state→hypothesis→injection→observation is a workflow worth seeing. |
 | Fault Injection — Controlled Failure Injection | RECOMMENDED VIDEO | Chaos Mesh/Litmus/manual fault demos reviewed | No candidate promoted yet | A bounded live fault injection makes the safety model concrete. |
 | Fault Injection — Blast Radius and Safety | NO VIDEO | — | — | Define actual safeguards before experiment. |
+| Fault Injection — Process and Container Failure | RECOMMENDED VIDEO | pod/process failure demos reviewed | No candidate promoted yet | Seeing restart/recovery behavior is useful. |
