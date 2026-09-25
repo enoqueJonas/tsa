@@ -1079,3 +1079,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Resilience Architecture — Circuit Breakers | RECOMMENDED VIDEO | circuit-breaker state-machine demos reviewed | No candidate promoted yet | Closed/open/half-open transitions are inherently visual. |
 | Resilience Architecture — Bulkheads | RECOMMENDED VIDEO | bulkhead/isolation diagrams reviewed | No candidate promoted yet | Resource-pool isolation benefits from diagrams. |
 | Resilience Architecture — Graceful Degradation | OPTIONAL VIDEO | degradation case studies reviewed | No candidate promoted yet | Worked examples can reinforce product trade-offs. |
+| Resilience Architecture — Dependency Isolation | RECOMMENDED VIDEO | dependency-isolation patterns reviewed | No candidate promoted yet | Failure containment is visual. |
