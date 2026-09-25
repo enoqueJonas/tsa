@@ -653,3 +653,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Lifecycle — Patch Regression and Recovery | RECOMMENDED VIDEO | Linux rollback/recovery demonstrations reviewed | No candidate promoted yet | A controlled failed update and recovery path is valuable to see, but learner must reproduce safely. |
 | Lifecycle — Patch Multiple Rocky Hosts with Ansible | RECOMMENDED VIDEO | Ansible rolling/canary update demos reviewed | No candidate promoted yet | Canary→fleet orchestration and explicit reboot handling are sequential and visual. |
 | Lifecycle — Patch Age and Lifecycle Visibility | OPTIONAL VIDEO | Prometheus patch-compliance dashboards reviewed | No candidate promoted yet | A dashboard example can help, but implementation evidence is primary. |
+| Lifecycle — Separate Proxmox Host and Rocky Guest Lifecycles | NO VIDEO | — | — | The important skill is distinguishing maintenance domains. |
