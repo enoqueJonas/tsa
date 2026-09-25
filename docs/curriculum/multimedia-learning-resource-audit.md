@@ -2134,3 +2134,18 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Styles — Layered Architecture | OPTIONAL VIDEO | Architecture-style diagrams reviewed | No candidate promoted yet | Short visual reinforcement. |
 | Styles — Hexagonal and Ports-and-Adapters Thinking | RECOMMENDED VIDEO | Hexagonal architecture talks reviewed | No candidate promoted yet | Ports/adapters/dependency direction are highly visual. |
 | Styles — Modular Monolith | RECOMMENDED VIDEO | Modular-monolith talks reviewed | No candidate promoted yet | Structure/deployment boundary visual. |
+| Styles — Service-oriented Architecture | RECOMMENDED VIDEO | SOA architecture material reviewed | No candidate promoted yet | Service/integration boundaries are visual. |
+| Styles — Microservices | RECOMMENDED VIDEO | Microservices architecture talks reviewed | No candidate promoted yet | Distribution/coupling/operational cost benefit from diagrams. |
+| Styles — Event-driven Architecture | RECOMMENDED VIDEO | Event-driven architecture talks reviewed | No candidate promoted yet | Producer/event/broker/consumer flows are visual. |
+| Styles — Serverless Concepts | RECOMMENDED VIDEO | Serverless event/runtime demos reviewed | No candidate promoted yet | Execution/managed responsibility model is visual. |
+| Styles — Choosing Styles from Drivers | NO VIDEO | — | — | Trade-off exercise. |
+| Styles — The Cost of Distribution | RECOMMENDED VIDEO | Distributed-systems practitioner talks reviewed | No candidate promoted yet | Latency/failure/consistency/operations interactions are visual. |
+| Styles — practical comparison | NO VIDEO | — | — | Independent decision. |
+| Data Architecture — Establish the Data Architecture Baseline | NO VIDEO | — | — | Map actual authority/flows. |
+| Data Architecture — Challenge Data Architecture Options | RECOMMENDED VIDEO | Data architecture/polyglot persistence talks reviewed | No candidate promoted yet | Authority/replication/storage boundaries benefit from diagrams. |
+| Data Architecture — Record and Validate the Decision | NO VIDEO | — | — | ADR/evidence. |
+| Integration — Integration Styles | RECOMMENDED VIDEO | Integration-pattern talks reviewed | No candidate promoted yet | Interaction topology is visual. |
+| Integration — Synchronous APIs | OPTIONAL VIDEO | API interaction diagrams reviewed | No candidate promoted yet | Already familiar; optional. |
+| Integration — Asynchronous Messaging | RECOMMENDED VIDEO | Messaging architecture talks reviewed | No candidate promoted yet | Temporal decoupling is visual. |
+| Integration — Queues and Pub/Sub | RECOMMENDED VIDEO | Queue/pubsub diagrams reviewed | No candidate promoted yet | Delivery topology is visual. |
+| Integration — Events and Commands | RECOMMENDED VIDEO | Event/command semantics talks reviewed | No candidate promoted yet | Worked message contracts help. |
