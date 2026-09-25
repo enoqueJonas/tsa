@@ -2180,3 +2180,13 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technology Risk — Assess controls and treatments | NO VIDEO | — | — | Perform actual assessment. |
 | Technology Risk — Operationalize the register | OPTIONAL VIDEO | Technology risk committee/reporting examples reviewed | No candidate promoted yet | A governance cadence example may help. |
 | Controls/Assurance — Build the control catalogue | NO VIDEO | — | — | Design controls from risks. |
+| Controls/Assurance — Assess design and operation | RECOMMENDED VIDEO | Control design/effectiveness assessment workshops reviewed | No candidate promoted yet | Design effectiveness versus operating effectiveness benefits from worked evidence. |
+| Controls/Assurance — Issue findings and improve assurance | OPTIONAL VIDEO | Audit finding/assurance review examples reviewed | No candidate promoted yet | Useful communication examples. |
+| Architecture Governance — Establish the governing baseline | NO VIDEO | — | — | Create actual baseline. |
+| Architecture Governance — Evaluate the exception | RECOMMENDED VIDEO | Architecture review board/exception case studies reviewed | No candidate promoted yet | A live exception challenge can demonstrate proportional governance. |
+| Architecture Governance — Operate and learn from the exception | NO VIDEO | — | — | Track actual exception lifecycle. |
+| Security/Data Governance — Map accountability and policy | NO VIDEO | — | — | Map actual accountability. |
+| Security/Data Governance — Govern access and lifecycle | OPTIONAL VIDEO | Data lifecycle/access governance examples reviewed | No candidate promoted yet | Lifecycle visualization can help. |
+| Security/Data Governance — Test an exception and review loop | NO VIDEO | — | — | Exercise actual loop. |
+| Change/Service Governance — Classify and prepare the change | NO VIDEO | — | — | Apply actual classification. |
+| Change/Service Governance — Make the release decision | RECOMMENDED VIDEO | Change advisory/release decision simulations reviewed | No candidate promoted yet | Decision meeting behavior and evidence use are worth observing. |
