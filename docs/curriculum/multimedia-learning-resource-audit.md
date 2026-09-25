@@ -759,3 +759,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Linux/Network Security — File and Secret Permissions | NO VIDEO | — | — | Inspect and prove actual permissions. |
 | Linux/Network Security — Security Logging and Auditing | RECOMMENDED VIDEO | auditd/security-log demos reviewed | No candidate promoted yet | A live event→audit record investigation adds value. |
 | Linux/Network Security — Network Segmentation Concepts | RECOMMENDED VIDEO | segmentation topology demos reviewed | No candidate promoted yet | Trust zones and allowed flows are visual. |
+| Linux/Network Security — Administrative Network Boundaries | RECOMMENDED VIDEO | management-plane segmentation demos reviewed | No candidate promoted yet | Separate admin path is best shown topologically. |
