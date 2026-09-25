@@ -873,3 +873,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | SLO — Error Budgets and Release Decisions | RECOMMENDED VIDEO | error-budget policy examples reviewed | No candidate promoted yet | A worked burn→decision scenario adds value. |
 | SLO — Lab: Define Steward SLOs | NO VIDEO | — | — | Independent SLO lab. |
 | Alerting — Symptoms vs Causes | RECOMMENDED VIDEO | Google SRE alerting talks reviewed | No candidate promoted yet | A worked incident shows why symptom alerts are more actionable. |
+| Alerting — Actionable Alerts | NO VIDEO | — | — | Design from actual operator action. |
