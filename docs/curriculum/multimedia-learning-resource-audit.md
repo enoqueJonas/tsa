@@ -1010,3 +1010,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Domain Modeling — Entities, Value Objects and Aggregates | RECOMMENDED VIDEO | DDD tactical-modeling talks reviewed | No candidate promoted yet | Worked examples help distinguish identity, value and consistency boundaries. |
 | Domain Modeling — Invariants and Transaction Boundaries | RECOMMENDED VIDEO | Aggregate/invariant talks reviewed | No candidate promoted yet | A consistency-boundary walkthrough can prevent cargo-cult aggregate design. |
 | Domain Modeling — Context Mapping Concepts | RECOMMENDED VIDEO | DDD context-map demonstrations reviewed | No candidate promoted yet | Relationships between contexts are inherently visual. |
+| Domain Modeling — Domain Services | NO VIDEO | — | — | The concept is compact and best evaluated in the learner's model. |
