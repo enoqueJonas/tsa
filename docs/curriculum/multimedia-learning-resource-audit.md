@@ -1086,3 +1086,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Resilience Architecture — Compare Resilience Options | NO VIDEO | — | — | Decision exercise. |
 | Resilience Architecture — Validate and Record the Evolution | NO VIDEO | — | — | Evidence and ADR. |
 | Evaluation — Architecture Decision Records | NO VIDEO | ADR media already audited earlier | Reuse earlier optional media if needed | Do not duplicate. |
+| Evaluation — Architecture Reviews | OPTIONAL VIDEO | architecture-review facilitation talks reviewed | No candidate promoted yet | A real review discussion can model challenge and evidence use. |
