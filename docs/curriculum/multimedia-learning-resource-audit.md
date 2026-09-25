@@ -811,3 +811,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | SFTP Migration — Build the SFTP Trust and Identity Boundary | RECOMMENDED VIDEO | OpenSSH SFTP key/host-key demos reviewed | No candidate promoted yet | User key authentication plus host-key trust is a live workflow. |
 | SFTP Migration — Prove File-Contract Parity over SFTP | NO VIDEO | — | — | Parity proof is the exercise. |
 | SFTP Migration — Run Bounded FTP and SFTP Coexistence | OPTIONAL VIDEO | migration/cutover demonstrations reviewed | No candidate promoted yet | A coexistence timeline can reinforce bounded migration. |
+| SFTP Migration — Decommission FTP and Prove the Security End State | NO VIDEO | — | — | Negative proof that FTP no longer works is primary. |
