@@ -1033,3 +1033,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architectural Styles — Service-oriented Architecture | OPTIONAL VIDEO | SOA architecture talks reviewed | No candidate promoted yet | Useful historical/enterprise context. |
 | Architectural Styles — Microservices | RECOMMENDED VIDEO | Martin Fowler / microservices talks reviewed | No candidate promoted yet | Distribution boundaries and operational cost deserve practitioner treatment. |
 | Architectural Styles — Event-driven Architecture | RECOMMENDED VIDEO | Event-driven architecture talks reviewed | No candidate promoted yet | Producer/broker/consumer and temporal decoupling are visual. |
+| Architectural Styles — Serverless Concepts | OPTIONAL VIDEO | Serverless architecture explainers reviewed | No candidate promoted yet | Runtime ownership differences benefit from a visual model. |
