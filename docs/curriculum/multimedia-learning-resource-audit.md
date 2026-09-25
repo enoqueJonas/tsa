@@ -1195,3 +1195,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Third-party — SaaS and Cloud Risk | OPTIONAL VIDEO | shared-responsibility/vendor-risk material reviewed | No candidate promoted yet | Responsibility-boundary examples add context. |
 | Third-party — End-of-life Technology | RECOMMENDED VIDEO | technology lifecycle/EOL case studies reviewed | No candidate promoted yet | A lifecycle timeline with support/patch/migration consequences is useful. |
 | Third-party — Exit and Continuity Planning | RECOMMENDED VIDEO | cloud/SaaS exit-strategy talks reviewed | No candidate promoted yet | Data export, replacement, cutover and continuity are strong sequence/topology topics. |
+| Third-party — Internal Software Product Ownership | NO VIDEO | — | — | Apply ownership to steward-common and tsa-test-core. |
