@@ -598,3 +598,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Quality Engineering — Quality Risks | NO VIDEO | — | — | Build the living risk model. |
 | Quality Engineering — Test Strategy | NO VIDEO | — | — | Design the strategy from product risk. |
 | Quality Engineering — Test Levels and Test Types | OPTIONAL VIDEO | Testing-pyramid/levels visualizations reviewed | No candidate promoted yet | A visual boundary map can reinforce level/type distinction. |
+| Quality Engineering — Risk-based Testing | NO VIDEO | — | — | Prioritization is a reasoning exercise. |
