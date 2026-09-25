@@ -333,3 +333,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Homelab — VLAN Concepts | NO VIDEO | Packet Tracer VLAN lesson already covers this | Reuse earlier VLAN media only if review is needed | Avoid duplicate assignment. |
 | Homelab — Planning Capacity for Internal Platform Services | NO VIDEO | — | — | Use the learner's own hardware/workloads. |
 | Homelab — Lab: Move Steward API into the Homelab | NO VIDEO | — | — | Independent deployment lab. |
+
+
+## Platform Builder — Proxmox and Enterprise Storage lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Proxmox — From Virtual Machines to an Operated Hypervisor | RECOMMENDED VIDEO | Proxmox architecture/UI overviews reviewed | No candidate promoted yet | Seeing host, storage, bridge and guest ownership in one interface gives useful platform context. |
