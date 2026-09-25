@@ -608,3 +608,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Test Design — Boundary Value Analysis | RECOMMENDED VIDEO | Boundary-value worked examples reviewed | No candidate promoted yet | Rule transitions around edges benefit from a worked visual example. |
 | Test Design — Decision Tables | RECOMMENDED VIDEO | Decision-table worked examples reviewed | No candidate promoted yet | Conditions/actions matrix construction is inherently visual. |
 | Test Design — State Transition Testing | RECOMMENDED VIDEO | State-transition test-design demos reviewed | No candidate promoted yet | States/events/invalid transitions benefit from diagrams. |
+| Test Design — Pairwise and Combinatorial Concepts | RECOMMENDED VIDEO | Pairwise/combinatorial test demos reviewed | No candidate promoted yet | Combination explosion and pair coverage are easier to see visually. |
