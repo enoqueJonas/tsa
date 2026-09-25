@@ -476,3 +476,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Configuration — Secrets, Failure and Safe Fleet Changes | RECOMMENDED VIDEO | Ansible rolling/failure-handling material reviewed | No candidate promoted yet | Canary/serial/failure behavior across hosts is strongly operational and visual. |
 | Configuration — Milestone: Build and Operate the Rocky Configuration Baseline | NO VIDEO | — | — | Milestone synthesis. |
 | Configuration — Reassess Image, Ansible and Platform Ownership | NO VIDEO | — | — | Ownership boundaries are an architecture decision. |
+| Patching — Patch Risk, Exposure and Change Windows | OPTIONAL VIDEO | Patch-management/SRE change talks reviewed | No candidate promoted yet | Real operational examples add context, but the risk model is primary. |
