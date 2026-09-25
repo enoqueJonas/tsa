@@ -482,3 +482,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Config — Inventories | NO VIDEO | — | — | Use actual environments. |
 | Config — Playbooks | NO VIDEO | — | — | Write and run them. |
 | Config — Roles Concepts | NO VIDEO | — | — | Already implemented earlier. |
+| Release — Release Candidates | NO VIDEO | — | — | Create and promote a real candidate. |
