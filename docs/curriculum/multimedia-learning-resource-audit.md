@@ -1148,3 +1148,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Risk — Risk Registers | NO VIDEO | — | — | Build and operate the actual register. |
 | Risk — Key Risk Indicators | OPTIONAL VIDEO | KRI design talks reviewed | No candidate promoted yet | Examples can help distinguish leading exposure signals from vanity metrics. |
 | Risk — Risk Ownership | NO VIDEO | — | — | Assign accountable owners. |
+| Risk — Lab: Build the Steward Technology Risk Register | NO VIDEO | — | — | Independent synthesis. |
