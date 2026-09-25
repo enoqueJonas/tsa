@@ -315,3 +315,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Bare Metal — Firmware, UEFI and the Boot Chain | RECOMMENDED VIDEO | UEFI/boot-chain explainers reviewed | No candidate promoted yet | Firmware→bootloader→kernel sequence is strongly visual. |
 | Bare Metal — Hardware Health and SMART Evidence | OPTIONAL VIDEO | SMART drive-health demos reviewed | No candidate promoted yet | A live SMART interpretation can help, but actual device evidence is primary. |
 | Bare Metal — Recovery, Out-of-Band Management and Power Boundaries | RECOMMENDED VIDEO | IPMI/iDRAC/iLO/OOB demonstrations reviewed | No candidate promoted yet | Remote console/power paths are hard to understand without seeing the separate management plane. |
+| Bare Metal — Bare-Metal Readiness Gate for Proxmox | NO VIDEO | — | — | Readiness gate is evidence synthesis. |
