@@ -522,3 +522,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Core Services — Reassess Availability and Ownership | NO VIDEO | — | — | Availability/SPOF decisions must use the learner's topology. |
 | Configuration — Desired State, Inventory and Idempotence | RECOMMENDED VIDEO | Ansible desired-state/idempotence demos reviewed | No candidate promoted yet | Seeing first-run changed state versus second-run unchanged state makes idempotence concrete. |
 | Configuration — Reusable Rocky Baseline Role | RECOMMENDED VIDEO | Ansible roles demonstrations reviewed | No candidate promoted yet | Role structure, variables, handlers and reuse benefit from a concise live walkthrough. |
+| Configuration — Configuration Drift Detection and Repair | RECOMMENDED VIDEO | Ansible drift/remediation demos reviewed | No candidate promoted yet | Deliberate drift followed by detection/repair is a strong visual workflow. |
