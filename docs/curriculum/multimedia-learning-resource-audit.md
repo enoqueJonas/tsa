@@ -453,3 +453,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Containers — Image Tags and Versioning | NO VIDEO | — | — | Apply versioning rules to actual images. |
 | Containers — Image Optimization | OPTIONAL VIDEO | Docker image optimization demos reviewed | No candidate promoted yet | Before/after layer-size inspection can reinforce the evidence loop. |
 | Containers — Container Debugging | RECOMMENDED VIDEO | Docker troubleshooting demos reviewed | No candidate promoted yet | Live inspect/log/exec/network diagnosis is valuable. |
+| CI — CI Pipeline Architecture | RECOMMENDED VIDEO | Jenkins pipeline architecture demos reviewed | No candidate promoted yet | SCM trigger→agent→stages→artifacts/gates is visual. |
