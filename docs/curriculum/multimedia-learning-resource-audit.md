@@ -826,3 +826,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Application Security — Abuse Cases and Negative Security Requirements | NO VIDEO | — | — | Write concrete abuse cases/negative requirements. |
 | Application Security — Security Regression Testing | NO VIDEO | — | — | Build automated regression evidence. |
 | Application Security — Lab: Harden Steward API | NO VIDEO | — | — | Independent hardening lab. |
+| Security Milestone — Milestone Briefing: Build a Defensible Steward Security Posture | NO VIDEO | — | — | Milestone briefing. |
