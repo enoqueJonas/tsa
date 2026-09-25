@@ -790,3 +790,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Vault — From Static Secrets to Leased Credentials | RECOMMENDED VIDEO | Vault database-secrets demos reviewed | No candidate promoted yet | Static→dynamic comparison and lease lifecycle are visual. |
 | Vault — Deploy and Initialize Vault Safely | OPTIONAL VIDEO | Vault initialization/unseal demos reviewed | No candidate promoted yet | UI/CLI orientation helps, but learner must understand recovery boundaries. |
 | Vault — Issue Dynamic PostgreSQL Credentials | RECOMMENDED VIDEO | Vault database-secrets engine demos reviewed | No candidate promoted yet | Credential creation, TTL and revocation are strong live demonstrations. |
+| Vault — Break Vault and Rotate Trust | NO VIDEO | — | — | Failure/rotation drill is primary. |
