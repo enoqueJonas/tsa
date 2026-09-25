@@ -524,3 +524,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Configuration — Reusable Rocky Baseline Role | RECOMMENDED VIDEO | Ansible roles demonstrations reviewed | No candidate promoted yet | Role structure, variables, handlers and reuse benefit from a concise live walkthrough. |
 | Configuration — Configuration Drift Detection and Repair | RECOMMENDED VIDEO | Ansible drift/remediation demos reviewed | No candidate promoted yet | Deliberate drift followed by detection/repair is a strong visual workflow. |
 | Configuration — Secrets, Failure and Safe Fleet Changes | OPTIONAL VIDEO | Ansible secrets/serial/canary material reviewed | No candidate promoted yet | A fleet-change demo can help, but later Vault and delivery paths go deeper. |
+| Configuration — Milestone: Build and Operate the Rocky Configuration Baseline | NO VIDEO | — | — | Milestone synthesis. |
