@@ -771,3 +771,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Supply Chain — Map and Baseline the Trusted Delivery Path | RECOMMENDED VIDEO | software-supply-chain diagrams/talks reviewed | No candidate promoted yet | Source→build→artifact→deploy trust chain is inherently visual. |
 | Supply Chain — Implement High-value Supply-chain Controls | OPTIONAL VIDEO | SBOM/scanning/signing demos reviewed | No candidate promoted yet | Specific controls may benefit from demos; implementation remains primary. |
 | Supply Chain — Define Gates, Exceptions and Residual Risk | NO VIDEO | — | — | Policy design and exception reasoning are primary. |
+| Artifact Trust — Artifact Signing and Verification | RECOMMENDED VIDEO | Sigstore/Cosign signing demos reviewed | No candidate promoted yet | Keyless/key-based signing and verification are command workflows worth seeing. |
