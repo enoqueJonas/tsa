@@ -461,3 +461,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Platform Builder — Milestone Review and Exit Criteria | NO VIDEO | — | — | Milestone assessment. |
 | Platform Builder — Assemble the Platform Builder Evidence Pack | NO VIDEO | — | — | Evidence synthesis. |
 | Platform Builder — Exit Reflection | NO VIDEO | — | — | Reflection and transfer assessment. |
+| Core Infra — DNS, DHCP and Time as Infrastructure | RECOMMENDED VIDEO | Infrastructure dependency explainers reviewed | No candidate promoted yet | Seeing name/address/time as separate authorities helps prevent troubleshooting category errors. |
