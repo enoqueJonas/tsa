@@ -939,3 +939,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Incident — Contributing Factors | NO VIDEO | — | — | Analyze actual system/human factors. |
 | Incident — Blameless Postmortems | OPTIONAL VIDEO | Google SRE/postmortem talks reviewed | No candidate promoted yet | A real postmortem discussion can model tone and systems thinking. |
 | Incident — Corrective Actions | NO VIDEO | — | — | Create actual actions. |
+| Incident — Learning from Near Misses | OPTIONAL VIDEO | near-miss engineering talks reviewed | No candidate promoted yet | Real examples add perspective. |
