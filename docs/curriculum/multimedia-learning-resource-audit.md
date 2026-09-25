@@ -899,3 +899,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Performance — Bottlenecks | RECOMMENDED VIDEO | profiling/bottleneck demos reviewed | No candidate promoted yet | Live measurement helps model evidence-based bottleneck identification. |
 | Performance — Load and Stress Testing | RECOMMENDED VIDEO | k6/load-test demos reviewed | No candidate promoted yet | Load ramp, latency and errors are useful to see together. |
 | Performance — Capacity Planning | OPTIONAL VIDEO | capacity-planning talks reviewed | No candidate promoted yet | Worked forecasting can reinforce the model. |
+| Performance — Resource Utilization | NO VIDEO | — | — | Measure actual resources. |
