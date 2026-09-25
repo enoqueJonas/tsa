@@ -798,3 +798,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | PKI — Distribute Trust without Disabling Verification | RECOMMENDED VIDEO | Linux/Windows trust-store demos reviewed | No candidate promoted yet | Cross-platform trust-store behavior is useful to see. |
 | PKI — Implement Mutual TLS between Workloads | RECOMMENDED VIDEO | mTLS handshake demos reviewed | No candidate promoted yet | Both sides presenting/verifying identity is best shown as a sequence. |
 | PKI — Rotate Certificates without Changing Identity Semantics | OPTIONAL VIDEO | certificate rotation demos reviewed | No candidate promoted yet | Timeline can reinforce overlap/cutover, but drill is primary. |
+| PKI — Revocation and Compromised Identity Response | RECOMMENDED VIDEO | CRL/OCSP/revocation demos reviewed | No candidate promoted yet | Revocation lookup/failure behavior benefits from visualization. |
