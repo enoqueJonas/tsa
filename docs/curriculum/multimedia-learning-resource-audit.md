@@ -327,3 +327,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Homelab — Remote Administration | NO VIDEO | — | — | SSH/remoting was already taught; implement it. |
 | Homelab — Local Firewalling | NO VIDEO | — | — | Apply prior networking/Linux knowledge. |
 | Homelab — Local DNS Concepts | NO VIDEO | Computerphile DNS already selected earlier | Reuse earlier video only if review is needed | Avoid duplicate assignment. |
+| Homelab — Reverse Proxies | RECOMMENDED VIDEO | NGINX/reverse-proxy visual explainers reviewed | No candidate promoted yet | Client→proxy→upstream flow and headers are visual. |
