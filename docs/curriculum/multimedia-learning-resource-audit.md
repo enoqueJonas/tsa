@@ -742,3 +742,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — Lab: Assess Steward Web and API Attack Paths | NO VIDEO | — | — | Independent safe assessment. |
 | Vulnerability Lab — Designing an Isolated Security Lab | RECOMMENDED VIDEO | Isolated lab-network demonstrations reviewed | No candidate promoted yet | Network isolation and target/control paths are visual and safety-critical. |
 | Vulnerability Lab — Safe Lab Networking | RECOMMENDED VIDEO | Virtual lab network demos reviewed | No candidate promoted yet | NAT/host-only/isolated boundaries are best shown topologically. |
+| Vulnerability Lab — Vulnerable Applications and Intentional Weaknesses | OPTIONAL VIDEO | OWASP Juice Shop/PortSwigger lab intros reviewed | No candidate promoted yet | Useful orientation to intentionally vulnerable targets. |
