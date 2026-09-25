@@ -478,3 +478,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Configuration — Reassess Image, Ansible and Platform Ownership | NO VIDEO | — | — | Ownership boundaries are an architecture decision. |
 | Patching — Patch Risk, Exposure and Change Windows | OPTIONAL VIDEO | Patch-management/SRE change talks reviewed | No candidate promoted yet | Real operational examples add context, but the risk model is primary. |
 | Patching — Patch a Rocky Linux Workload Host | NO VIDEO | — | — | The learner must perform and verify the real maintenance. |
+| Patching — Kernel Update and Controlled Reboot | RECOMMENDED VIDEO | Linux kernel update/reboot verification demos reviewed | No candidate promoted yet | Installed-versus-running kernel state is useful to see demonstrated once. |
