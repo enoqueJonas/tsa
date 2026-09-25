@@ -738,3 +738,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — Sensitive Data and Secrets | OPTIONAL VIDEO | Secret-exposure demos reviewed | No candidate promoted yet | A short leak→abuse example can reinforce consequences; implementation controls remain primary. |
 | Web/API — Vulnerable Dependencies | RECOMMENDED VIDEO | dependency/SBOM vulnerability demos reviewed | No candidate promoted yet | Package→advisory→impact→upgrade flow is useful to see. |
 | Web/API — Security Logging and Monitoring Failures | OPTIONAL VIDEO | security logging incident demos reviewed | No candidate promoted yet | A missed/visible attack comparison can reinforce detection. |
+| Web/API — Mass Assignment and Excessive Data Exposure | RECOMMENDED VIDEO | API mass-assignment demos reviewed | No candidate promoted yet | Request/serializer/model boundary failure is demonstrable. |
