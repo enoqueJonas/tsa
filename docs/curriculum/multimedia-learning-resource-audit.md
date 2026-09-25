@@ -891,3 +891,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Performance — Database and Application Bottlenecks | RECOMMENDED VIDEO | APM/query bottleneck investigations reviewed | No candidate promoted yet | Cross-layer diagnosis benefits from walkthrough. |
 | Performance — Performance Baselines | NO VIDEO | — | — | Measure actual baseline. |
 | Performance — Queueing and Contention Concepts | RECOMMENDED VIDEO | queueing theory animations reviewed | No candidate promoted yet | Queue growth/wait time/contention are visual. |
+| Performance — Storage Growth and Artifact Capacity | OPTIONAL VIDEO | capacity trend demos reviewed | No candidate promoted yet | Trend visualization can reinforce forecasting. |
