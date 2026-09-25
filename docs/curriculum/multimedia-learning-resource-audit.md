@@ -634,3 +634,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation Framework — What Makes an Automation Framework | OPTIONAL VIDEO | Framework-architecture talks reviewed | No candidate promoted yet | A component map can orient the framework before implementation. |
 | Automation Framework — Framework Architecture | RECOMMENDED VIDEO | Test framework architecture examples reviewed | No candidate promoted yet | Layers/dependencies/reuse boundaries are visual. |
 | Automation Framework — Playwright with Python | RECOMMENDED VIDEO | Playwright official demos reviewed | No candidate promoted yet | Browser/API automation behavior benefits from a live tool demonstration. |
+| Automation Framework — pytest Fundamentals | OPTIONAL VIDEO | pytest demos reviewed | No candidate promoted yet | Useful tool orientation; tests themselves remain primary. |
