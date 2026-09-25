@@ -915,3 +915,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | DR — Database Recovery | RECOMMENDED VIDEO | PostgreSQL recovery demos reviewed | No candidate promoted yet | Restore/verify sequence adds value. |
 | DR — Artifact Repository Backup and Restore | RECOMMENDED VIDEO | Nexus backup/restore demos reviewed | No candidate promoted yet | Platform-specific restore workflow is visual. |
 | DR — Configuration and Infrastructure Recovery | RECOMMENDED VIDEO | IaC/config recovery demos reviewed | No candidate promoted yet | Rebuild order/dependencies benefit from recovery diagram. |
+| DR — Recovery Evidence | NO VIDEO | — | — | Produce actual evidence. |
