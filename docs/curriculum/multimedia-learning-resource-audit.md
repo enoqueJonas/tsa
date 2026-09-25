@@ -1288,3 +1288,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Defence — State Limitations | NO VIDEO | — | — | Demonstrate calibrated engineering judgment. |
 | Defence — Propose Future Evolution | NO VIDEO | — | — | Use current evidence to propose next changes. |
 | Defence — Reflect on the TSA Journey | NO VIDEO | — | — | Final transfer reflection. |
+| Defence — Milestone: Professional Engineering Capstone and Defence | NO VIDEO | — | — | Final transfer assessment; no new instructional media. |
