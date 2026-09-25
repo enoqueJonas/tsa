@@ -1242,3 +1242,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Proposal — Governance Approach | NO VIDEO | Prior Technical Steward material sufficient | — | Tailor governance to the capstone. |
 | Proposal — Dependency and Internal Platform Decisions | NO VIDEO | — | — | Choose reuse/build boundaries independently. |
 | Proposal — Implementation Milestones | NO VIDEO | — | — | Plan executable increments. |
+| Proposal — Architecture and Risk Review | NO VIDEO | Prior review material sufficient | — | Run the review; don't watch one instead. |
