@@ -499,3 +499,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI Migration — Execute a Bounded CI Migration | NO VIDEO | — | — | Independent migration exercise. |
 | CI Migration — Migration Review | NO VIDEO | — | — | Reflection. |
 | Delivery Milestone — Milestone Brief: Steward Delivery Platform | NO VIDEO | — | — | Milestone brief. |
+| Delivery Milestone — Gate 1: Source, CI and Artifact Integrity | NO VIDEO | — | — | Evidence gate. |
