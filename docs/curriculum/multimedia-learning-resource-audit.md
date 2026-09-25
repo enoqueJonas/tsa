@@ -747,3 +747,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Vulnerability Lab — Safe Lab Networking | RECOMMENDED VIDEO | Virtual lab networking demos reviewed | No candidate promoted yet | Network containment is spatial and benefits from topology demonstration. |
 | Vulnerability Lab — Vulnerable Applications and Intentional Weaknesses | OPTIONAL VIDEO | OWASP Juice Shop orientation reviewed | No candidate promoted yet | A short orientation can reduce tool friction without becoming a walkthrough of answers. |
 | Vulnerability Lab — Observing Vulnerable Behavior | NO VIDEO | — | — | Learner should inspect the target directly. |
+| Vulnerability Lab — Reproducing Representative Attacks Safely | RECOMMENDED VIDEO | PortSwigger/OWASP lab demos reviewed | No candidate promoted yet | A bounded demonstration models evidence capture and safe reproduction. |
