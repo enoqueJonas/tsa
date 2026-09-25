@@ -1632,3 +1632,15 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Containers — Multi-stage Builds | RECOMMENDED VIDEO | Multi-stage build demonstrations reviewed | No candidate promoted yet | Builder/runtime stage separation is useful to see. |
 | Containers — Volumes | RECOMMENDED VIDEO | Docker volume/bind-mount demos reviewed | No candidate promoted yet | Host/container persistence boundaries benefit from visualization. |
 | Containers — Container Networking | RECOMMENDED VIDEO | Docker bridge/DNS/port-publish demos reviewed | No candidate promoted yet | Network namespace/bridge/port mapping is highly visual. |
+| Containers — Docker Compose | OPTIONAL VIDEO | Compose stack demos reviewed | No candidate promoted yet | A short multi-service demonstration can reduce tool friction. |
+| Containers — Health Checks | OPTIONAL VIDEO | Container healthcheck demos reviewed | No candidate promoted yet | Useful to see healthy/unhealthy transitions, but implementation is simple. |
+| Containers — Container Registries | RECOMMENDED VIDEO | Registry push/pull/tag flow demos reviewed | No candidate promoted yet | Artifact movement and trust boundaries are visual. |
+| Containers — Image Tags and Versioning | NO VIDEO | — | — | Policy/reproducibility reasoning is primary. |
+| Containers — Image Optimization | OPTIONAL VIDEO | Image-size/layer optimization demos reviewed | No candidate promoted yet | Before/after inspection can reinforce evidence-based optimization. |
+| Containers — Container Debugging | RECOMMENDED VIDEO | Docker inspect/logs/exec troubleshooting demos reviewed | No candidate promoted yet | Live diagnosis is the right medium. |
+| CI — CI Pipeline Architecture | RECOMMENDED VIDEO | Jenkins pipeline architecture demos reviewed | No candidate promoted yet | SCM trigger→agent→stages→artifacts→gates is visual. |
+| CI — Jobs, Stages and Dependencies | RECOMMENDED VIDEO | Pipeline DAG/stage visualizations reviewed | No candidate promoted yet | Dependency/order/parallelism benefit from pipeline visualization. |
+| CI — Runners and Agents | RECOMMENDED VIDEO | Jenkins agent architecture material reviewed | No candidate promoted yet | Controller/agent execution boundaries are easier visually. |
+| CI — GitHub Actions and Jenkins | OPTIONAL VIDEO | Jenkins/GitHub Actions comparisons reviewed | No candidate promoted yet | Useful comparison, but Jenkins is primary and GitHub Actions bounded. |
+| CI — Self-hosted Runners | OPTIONAL VIDEO | Self-hosted agent setup demos reviewed | No candidate promoted yet | Can reduce setup friction; security boundary remains the key lesson. |
+| CI — Caching | RECOMMENDED VIDEO | CI cache demos reviewed | No candidate promoted yet | Cache hit/miss/key invalidation behavior is worth seeing. |
