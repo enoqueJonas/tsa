@@ -1193,3 +1193,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Third-party — Vendor Assessment | OPTIONAL VIDEO | third-party risk assessment material reviewed | No candidate promoted yet | A worked assessment can reinforce evidence-based vendor questions. |
 | Third-party — Dependency Risk | NO VIDEO | — | — | Assess actual dependencies and their ownership/lifecycle. |
 | Third-party — SaaS and Cloud Risk | OPTIONAL VIDEO | shared-responsibility/vendor-risk material reviewed | No candidate promoted yet | Responsibility-boundary examples add context. |
+| Third-party — End-of-life Technology | RECOMMENDED VIDEO | technology lifecycle/EOL case studies reviewed | No candidate promoted yet | A lifecycle timeline with support/patch/migration consequences is useful. |
