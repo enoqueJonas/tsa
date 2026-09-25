@@ -1764,3 +1764,5 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture/Cost — Resource Right-sizing | NO VIDEO | — | — | Evidence/cost calculation is primary. |
 | Architecture/Cost — Managed vs Self-managed Trade-offs | NO VIDEO | — | — | Decision analysis is primary. |
 | Architecture/Cost — Homelab, VPS and Cloud Hybrid Trade-offs | NO VIDEO | — | — | Learner's actual architecture drives the decision. |
+| Architecture/Cost — Lab: Review the Steward Internet Architecture | NO VIDEO | — | — | Independent review. |
+| Cloud Engineer Milestone | NO VIDEO | — | — | Milestone/gates are synthesis and evidence. |
