@@ -923,3 +923,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | DR — Restore Testing | RECOMMENDED VIDEO | restore-drill demonstrations reviewed | No candidate promoted yet | A complete restore workflow is worth seeing before running one. |
 | DR — RPO and RTO | RECOMMENDED VIDEO | RPO/RTO timeline explainers reviewed | No candidate promoted yet | Recovery-point/time objectives are inherently timeline-based. |
 | DR — Disaster Scenarios | OPTIONAL VIDEO | DR scenario talks reviewed | No candidate promoted yet | Real incident examples add context. |
+| DR — Recovery Procedures | NO VIDEO | — | — | Write/exercise actual procedure. |
