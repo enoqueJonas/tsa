@@ -657,3 +657,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Versioning Shared Test Infrastructure | NO VIDEO | — | — | Version/compatibility exercise is primary. |
 | Automation — Lab: Build the Steward Automation Framework | NO VIDEO | — | — | Independent build. |
 | Automation — Lab: Extract tsa-test-core | NO VIDEO | — | — | Independent extraction. |
+| Automation — Lab: Publish and Consume tsa-test-core | NO VIDEO | — | — | Independent package lifecycle lab. |
