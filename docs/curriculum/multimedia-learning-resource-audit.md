@@ -709,3 +709,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Foundations — Defense in Depth | RECOMMENDED VIDEO | Layered-defense diagrams reviewed | No candidate promoted yet | Multiple independent controls are inherently layered. |
 | Foundations — Trust Boundaries | RECOMMENDED VIDEO | Trust-boundary modeling demos reviewed | No candidate promoted yet | Boundary crossings are visual. |
 | Foundations — Security Controls: Preventive, Detective and Corrective | OPTIONAL VIDEO | Control-category examples reviewed | No candidate promoted yet | A worked incident/control chain can reinforce categories. |
+| Foundations — Risk Treatment and Residual Risk | NO VIDEO | — | — | Make treatment decisions from the actual risk register. |
