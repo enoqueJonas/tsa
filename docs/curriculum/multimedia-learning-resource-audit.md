@@ -652,3 +652,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Framework Maintainability | NO VIDEO | — | — | Refactor and review actual framework. |
 | Automation — Reusable Testing Infrastructure vs Domain Test Code | NO VIDEO | — | — | Boundary reasoning. |
 | Automation — Designing Public APIs for Test Libraries | NO VIDEO | — | — | Design from consumers. |
+| Automation — Reusable pytest Fixtures and Plugins | OPTIONAL VIDEO | pytest plugin demos reviewed | No candidate promoted yet | Useful for mechanics; extraction is primary. |
