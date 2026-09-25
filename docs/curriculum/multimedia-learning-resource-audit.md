@@ -1749,3 +1749,18 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Orchestration — ConfigMaps, Secrets and Runtime Configuration | OPTIONAL VIDEO | Kubernetes config demos reviewed | No candidate promoted yet | Useful but direct practice remains primary. |
 | Orchestration — Probes, Resources and Rollouts | RECOMMENDED VIDEO | Kubernetes probe/rollout demos reviewed | No candidate promoted yet | Health/readiness/resource/rollout transitions benefit from live behavior. |
 | Orchestration — Namespaces, Service Accounts and RBAC | RECOMMENDED VIDEO | Kubernetes RBAC demos reviewed | No candidate promoted yet | Principal→role→binding→resource authorization is visual. |
+| Orchestration — OpenShift as an Enterprise Application Platform | RECOMMENDED VIDEO | Red Hat OpenShift architecture demos reviewed | No candidate promoted yet | Shows the enterprise platform delta from Kubernetes. |
+| Orchestration — OpenShift Routes, SCC Concepts and Operators | RECOMMENDED VIDEO | Red Hat route/SCC/operator material reviewed | No candidate promoted yet | These OpenShift-specific abstractions benefit from guided demonstration. |
+| Orchestration — GitOps and Reconciliation | RECOMMENDED VIDEO | Argo CD/GitOps reconciliation demos reviewed | No candidate promoted yet | Git desired state→controller→cluster drift correction is inherently visual. |
+| Orchestration — Argo CD Applications, Sync and Drift | RECOMMENDED VIDEO | Argo CD official demos reviewed | No candidate promoted yet | UI/live reconciliation makes the model concrete. |
+| Canary — Progressive Delivery with Canary Releases | RECOMMENDED VIDEO | Argo Rollouts canary demos reviewed | No candidate promoted yet | 5→20→50→100 promotion/analysis/abort is highly visual. |
+| Architecture/Cost — Availability in Cloud Environments | RECOMMENDED VIDEO | Cloud failure-domain architecture material reviewed | No candidate promoted yet | Zone/region dependency diagrams add value. |
+| Architecture/Cost — Scalability and Capacity | OPTIONAL VIDEO | Scaling architecture material reviewed | No candidate promoted yet | Useful reinforcement; sizing exercise remains primary. |
+| Architecture/Cost — Security Boundaries | RECOMMENDED VIDEO | Cloud trust-boundary diagrams reviewed | No candidate promoted yet | Layered boundary visualization helps. |
+| Architecture/Cost — Backup and Recovery | OPTIONAL VIDEO | Cloud DR walkthroughs reviewed | No candidate promoted yet | Recovery sequence can reinforce RPO/RTO. |
+| Architecture/Cost — Failure Domains | RECOMMENDED VIDEO | Failure-domain diagrams reviewed | No candidate promoted yet | This is inherently architectural/visual. |
+| Architecture/Cost — Cost Estimation | NO VIDEO | — | — | Learner should calculate real estimates. |
+| Architecture/Cost — Cost Controls and Budgets | OPTIONAL VIDEO | Provider budget-alert demos reviewed | No candidate promoted yet | Can reduce UI friction. |
+| Architecture/Cost — Resource Right-sizing | NO VIDEO | — | — | Evidence/cost calculation is primary. |
+| Architecture/Cost — Managed vs Self-managed Trade-offs | NO VIDEO | — | — | Decision analysis is primary. |
+| Architecture/Cost — Homelab, VPS and Cloud Hybrid Trade-offs | NO VIDEO | — | — | Learner's actual architecture drives the decision. |
