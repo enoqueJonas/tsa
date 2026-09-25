@@ -1007,3 +1007,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Fundamentals — Create the Architecture Baseline Record | NO VIDEO | — | — | Deliverable creation. |
 | Styles — Layered Architecture | OPTIONAL VIDEO | architecture-style explainers reviewed | No candidate promoted yet | A dependency-flow diagram can reinforce the style. |
 | Styles — Hexagonal and Ports-and-Adapters Thinking | RECOMMENDED VIDEO | Alistair Cockburn/ports-and-adapters talks reviewed | No candidate promoted yet | Boundary/port/adapter direction is highly visual. |
+| Styles — Modular Monolith | RECOMMENDED VIDEO | modular-monolith talks reviewed | No candidate promoted yet | Module boundaries and deployment unity are easier to compare visually with services. |
