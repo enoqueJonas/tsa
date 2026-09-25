@@ -1185,3 +1185,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Security/Data — Retention and Privacy Concepts | OPTIONAL VIDEO | privacy/data-lifecycle explainers reviewed | No candidate promoted yet | A data lifecycle visual can reinforce collection→use→retention→deletion. |
 | Security/Data — Access Governance | RECOMMENDED VIDEO | access-review/IGA demonstrations reviewed | No candidate promoted yet | Joiner/mover/leaver and periodic review flows benefit from visualization. |
 | Security/Data — Security Exceptions and Risk Acceptance | NO VIDEO | — | — | Use the actual risk/exception mechanism. |
+| Security/Data — Lab: Define Steward Security and Data Accountability | NO VIDEO | — | — | Independent governance synthesis. |
