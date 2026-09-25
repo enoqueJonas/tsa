@@ -271,3 +271,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Linux — Package Management | NO VIDEO | — | — | Repository/package evidence should be gathered directly on Rocky. |
 | Linux — Processes and Signals | RECOMMENDED VIDEO | Linux process/signal demonstrations reviewed | No candidate promoted yet | Seeing TERM/KILL/reload behavior and process state live adds value. |
 | Linux — systemd and Services | RECOMMENDED VIDEO | systemd service walkthroughs reviewed | No candidate promoted yet | Unit lifecycle, status and journal integration are well suited to live demonstration. |
+| Linux — Environment and Configuration | NO VIDEO | — | — | The learner should configure and break the service directly. |
