@@ -514,3 +514,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | --- | --- | --- | --- | --- |
 | Hosting Models — On-premises, Colocation, VPS and Cloud | RECOMMENDED VIDEO | Cloud hosting-model explainers reviewed | No candidate promoted yet | Physical ownership/control boundaries benefit from a visual comparison. |
 | Hosting Models — IaaS, PaaS and SaaS | RECOMMENDED VIDEO | NIST/vendor service-model explainers reviewed | No candidate promoted yet | Responsibility layers are easier to compare visually. |
+| Hosting Models — Regions, Zones and Availability Concepts | RECOMMENDED VIDEO | Cloud region/AZ architecture explainers reviewed | No candidate promoted yet | Failure domains are inherently spatial. |
