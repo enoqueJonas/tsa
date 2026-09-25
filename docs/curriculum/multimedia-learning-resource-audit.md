@@ -553,3 +553,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Cloud Blocks — Cloud Monitoring | OPTIONAL VIDEO | Provider metrics/logs demos reviewed | No candidate promoted yet | Seeing provider-owned signals can clarify responsibility. |
 | Cloud Blocks — Cloud Backup Services | OPTIONAL VIDEO | Cloud backup/restore demos reviewed | No candidate promoted yet | Restore/failure-domain context can help. |
 | Cloud Blocks — Managed Services versus Self-managed Infrastructure | NO VIDEO | — | — | Operating-model trade-off should be reasoned from constraints. |
+| Cloud Blocks — Lab: Map Steward Platform to Cloud Building Blocks | NO VIDEO | — | — | Synthesis mapping lab. |
