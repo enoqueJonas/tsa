@@ -581,3 +581,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Kubernetes — Services and Cluster Networking | RECOMMENDED VIDEO | Kubernetes networking/service visual explainers reviewed | No candidate promoted yet | Pod IPs, Services and routing are topology-heavy. |
 | Kubernetes — ConfigMaps, Secrets and Runtime Configuration | OPTIONAL VIDEO | Kubernetes config/secret demos reviewed | No candidate promoted yet | Useful mechanics; secret-management boundaries remain primary. |
 | Kubernetes — Probes, Resources and Rollouts | RECOMMENDED VIDEO | Kubernetes probe/resource/rollout demos reviewed | No candidate promoted yet | Readiness/liveness and rolling replacement benefit from live behavior. |
+| Kubernetes — Namespaces, Service Accounts and RBAC | RECOMMENDED VIDEO | Kubernetes RBAC demos reviewed | No candidate promoted yet | Subject→role→binding→resource authorization is visual. |
