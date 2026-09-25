@@ -834,3 +834,157 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Security Milestone — Close High-priority Gaps and Retest | NO VIDEO | — | — | Remediation/retest. |
 | Security Milestone — Publish the Steward Security Assessment | NO VIDEO | — | — | Deliverable creation. |
 | Security Milestone — Defend the Security Posture | NO VIDEO | — | — | Final defence. |
+
+
+## Reliability Engineer — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| SRE — Reliability as a Quality Attribute | OPTIONAL VIDEO | Google SRE talks reviewed | No candidate promoted yet | Industry framing can reinforce the quality/reliability boundary. |
+| SRE — Availability | RECOMMENDED VIDEO | availability/error-budget visual explainers reviewed | No candidate promoted yet | Downtime windows and availability math benefit from timelines. |
+| SRE — Failure and Recovery | RECOMMENDED VIDEO | recovery lifecycle demos reviewed | No candidate promoted yet | Failure→detect→mitigate→recover is temporal. |
+| SRE — SRE Principles | OPTIONAL VIDEO | Google SRE introductory talks reviewed | No candidate promoted yet | Useful context, but TSA implementation remains primary. |
+| SRE — Toil | OPTIONAL VIDEO | Google SRE toil talks reviewed | No candidate promoted yet | Real operational examples can clarify toil. |
+| SRE — Reliability and Risk Trade-offs | NO VIDEO | — | — | Make actual risk/reliability decisions. |
+| SRE — Reliability Ownership | NO VIDEO | — | — | Define ownership from the actual service. |
+| SRE — Lab: Build the Steward Reliability Risk Map | NO VIDEO | — | — | Synthesis lab. |
+| Observability — Observability vs Monitoring | RECOMMENDED VIDEO | observability/monitoring talks reviewed | No candidate promoted yet | Question→signal→diagnosis distinction benefits from a worked incident. |
+| Observability — Logs, Metrics and Traces | RECOMMENDED VIDEO | OpenTelemetry signal explainers reviewed | No candidate promoted yet | Three signal types and correlation are highly visual. |
+| Observability — Telemetry Design | NO VIDEO | — | — | Design from actual reliability questions. |
+| Observability — Correlation and Context | RECOMMENDED VIDEO | trace/log correlation demos reviewed | No candidate promoted yet | Following one request across signals is ideal for live demonstration. |
+| Observability — Instrumentation | RECOMMENDED VIDEO | OpenTelemetry instrumentation demos reviewed | No candidate promoted yet | Code→exporter→backend path is useful to see. |
+| Observability — OpenTelemetry Concepts | RECOMMENDED VIDEO | OpenTelemetry official/community intros reviewed | No candidate promoted yet | SDK/provider/exporter/context architecture is visual. |
+| Observability — Golden Signals and Service Questions | OPTIONAL VIDEO | Google SRE golden-signals material reviewed | No candidate promoted yet | Useful reinforcement; learner questions remain primary. |
+| Observability — Telemetry Cost and Noise | NO VIDEO | — | — | Evaluate actual telemetry volume/value. |
+| Observability — Lab: Design Steward Observability | NO VIDEO | — | — | Independent design lab. |
+| Logging — Structured Logs | RECOMMENDED VIDEO | structured logging demos reviewed | No candidate promoted yet | Before/after machine-queryable logs are useful to see. |
+| Logging — Log Levels | NO VIDEO | — | — | Small policy concept; apply directly. |
+| Logging — Correlation IDs | RECOMMENDED VIDEO | correlation-ID demos reviewed | No candidate promoted yet | Following one request across components is a strong live demonstration. |
+| Logging — Request and Trace Context | RECOMMENDED VIDEO | trace-context/log-correlation demos reviewed | No candidate promoted yet | Context propagation is sequence-oriented. |
+| Logging — Centralized Logging | RECOMMENDED VIDEO | Graylog centralized-logging demos reviewed | No candidate promoted yet | Host/app→collector→search/dashboard path is useful to see. |
+| Logging — Useful vs Noisy Logs | NO VIDEO | — | — | Judge actual events against diagnostic questions. |
+| Logging — Privacy and Security in Logs | NO VIDEO | — | — | Review actual fields and leakage risk. |
+| Logging — Log Retention Concepts | OPTIONAL VIDEO | retention/lifecycle explainers reviewed | No candidate promoted yet | Lifecycle visualization can help but policy is primary. |
+| Logging — Lab: Build a Steward Diagnostic Logging Path | NO VIDEO | — | — | Independent implementation lab. |
+| Logging — Decision Gate: Select the Steward Centralized Logging Stack | NO VIDEO | — | — | Decision from evidence. |
+| Metrics — Metrics Mental Models | RECOMMENDED VIDEO | Prometheus metric-model explainers reviewed | No candidate promoted yet | Time-series labels/samples are visual. |
+| Metrics — Counters, Gauges and Histograms | RECOMMENDED VIDEO | Prometheus metric-type demos reviewed | No candidate promoted yet | Histograms/buckets especially benefit from visualization. |
+| Metrics — Application and Infrastructure Metrics | OPTIONAL VIDEO | app/infra metric demos reviewed | No candidate promoted yet | Useful examples, but selection should follow questions. |
+| Metrics — Prometheus Architecture | RECOMMENDED VIDEO | Prometheus architecture talks reviewed | No candidate promoted yet | Targets→scrape→TSDB→query/alert flow is architectural. |
+| Metrics — Exporters | RECOMMENDED VIDEO | node_exporter/exporter demos reviewed | No candidate promoted yet | Exporter→scrape endpoint workflow is useful to see. |
+| Metrics — Service Discovery Concepts | OPTIONAL VIDEO | Prometheus service-discovery demos reviewed | No candidate promoted yet | Dynamic target discovery is easier with a visual model. |
+| Metrics — PromQL | RECOMMENDED VIDEO | PromQL query demos reviewed | No candidate promoted yet | Interactive query construction is worth watching once. |
+| Metrics — Recording Rules Concepts | OPTIONAL VIDEO | recording-rule demos reviewed | No candidate promoted yet | Useful operational reinforcement. |
+| Metrics — Grafana | RECOMMENDED VIDEO | Grafana dashboard/query demos reviewed | No candidate promoted yet | The UI/query/dashboard workflow is inherently visual. |
+| Metrics — Dashboard Design | RECOMMENDED VIDEO | dashboard-design talks reviewed | No candidate promoted yet | Good/bad dashboard comparisons are visual. |
+| Metrics — Dashboard Anti-patterns | RECOMMENDED VIDEO | dashboard anti-pattern reviews | No candidate promoted yet | Seeing misleading/noisy dashboards makes the critique concrete. |
+| Metrics — Nexus and Internal Platform Metrics | NO VIDEO | — | — | Instrument actual platform dependencies. |
+| Metrics — CI and Delivery Metrics | NO VIDEO | — | — | Choose metrics from actual delivery questions. |
+| Metrics — Lab: Instrument Steward API | NO VIDEO | — | — | Independent instrumentation lab. |
+| Metrics — Lab: Observe the Internal Artifact Platform | NO VIDEO | — | — | Independent platform observation lab. |
+| Tracing — Decision Gate: Select Steward's Tracing Backend | NO VIDEO | — | — | Decision from evidence. |
+| Tracing — Distributed Tracing with OpenTelemetry and Tempo | RECOMMENDED VIDEO | OpenTelemetry/Tempo tracing demos reviewed | No candidate promoted yet | Trace/span hierarchy and backend UI are inherently visual. |
+| Tracing — Trace the Steward Request Path | RECOMMENDED VIDEO | Grafana Tempo trace walkthroughs reviewed | No candidate promoted yet | Following a real trace across boundaries is ideal for video. |
+| Tracing — Deploy Tempo and Instrument Steward | OPTIONAL VIDEO | Tempo deployment/instrumentation demos reviewed | No candidate promoted yet | Setup orientation can help; implementation remains primary. |
+| Tracing — Investigate Cross-Boundary Latency | RECOMMENDED VIDEO | trace waterfall/latency demos reviewed | No candidate promoted yet | Span waterfall makes latency attribution concrete. |
+| Tracing — Break the Tracing Pipeline | NO VIDEO | — | — | Failure injection is the exercise. |
+| Tracing — Defend the Tracing Architecture | NO VIDEO | — | — | Defence uses evidence. |
+| Stack Integration — Observability Stack Integration: Graylog, Prometheus and Grafana | RECOMMENDED VIDEO | cross-signal observability demos reviewed | No candidate promoted yet | Signal ownership and navigation across tools are visual. |
+| Stack Integration — Implement the Steward Observability Stack | NO VIDEO | — | — | Independent integration work. |
+| Stack Integration — Run a Cross-Signal Incident Investigation | RECOMMENDED VIDEO | incident investigation demos reviewed | No candidate promoted yet | Logs→metrics→traces diagnostic workflow is ideal to watch once. |
+| Stack Integration — Defend the Observability Architecture | NO VIDEO | — | — | Defence uses evidence. |
+| SLO — SLIs | RECOMMENDED VIDEO | Google SRE SLI/SLO talks reviewed | No candidate promoted yet | Indicator/measurement examples benefit from worked scenarios. |
+| SLO — SLOs | RECOMMENDED VIDEO | Google SRE SLO talks reviewed | No candidate promoted yet | Target/window reasoning benefits from worked examples. |
+| SLO — SLAs | OPTIONAL VIDEO | SLA/SLO explainers reviewed | No candidate promoted yet | Compact distinction; reinforcement only. |
+| SLO — Error Budgets | RECOMMENDED VIDEO | Google SRE error-budget talks reviewed | No candidate promoted yet | Budget burn and release trade-offs benefit from timeline visualization. |
+| SLO — User-visible Reliability | NO VIDEO | — | — | Select indicators from actual user journeys. |
+| SLO — Choosing Good Indicators | NO VIDEO | — | — | Indicator selection is contextual reasoning. |
+| SLO — Windowing and Measurement Concepts | RECOMMENDED VIDEO | rolling-window/burn-rate explainers reviewed | No candidate promoted yet | Time windows are easier to understand graphically. |
+| SLO — Reliability Targets and Trade-offs | NO VIDEO | — | — | Make actual target trade-offs. |
+| SLO — Error Budgets and Release Decisions | RECOMMENDED VIDEO | error-budget policy examples reviewed | No candidate promoted yet | A worked burn→decision scenario adds value. |
+| SLO — Lab: Define Steward SLOs | NO VIDEO | — | — | Independent SLO lab. |
+| Alerting — Symptoms vs Causes | RECOMMENDED VIDEO | Google SRE alerting talks reviewed | No candidate promoted yet | A worked incident shows why symptom alerts are more actionable. |
+| Alerting — Actionable Alerts | NO VIDEO | — | — | Design from actual operator action. |
+| Alerting — Alert Fatigue | OPTIONAL VIDEO | on-call/alert-fatigue talks reviewed | No candidate promoted yet | Real incident narratives add context. |
+| Alerting — Severity | NO VIDEO | — | — | Define severity from impact/response needs. |
+| Alerting — Escalation | OPTIONAL VIDEO | on-call escalation examples reviewed | No candidate promoted yet | Timeline can reinforce escalation behavior. |
+| Alerting — Alert Routing Concepts | RECOMMENDED VIDEO | Alertmanager routing demos reviewed | No candidate promoted yet | Label→route→receiver flow is visual. |
+| Alerting — Runbooks | NO VIDEO | — | — | Write/exercise actual runbook. |
+| Alerting — On-call Handover and Context | OPTIONAL VIDEO | on-call handover talks reviewed | No candidate promoted yet | Operational examples can help. |
+| Alerting — Lab: Build Steward Alerts and Runbooks | NO VIDEO | — | — | Independent alerting lab. |
+| Alertmanager — Operate Prometheus Alertmanager | RECOMMENDED VIDEO | Alertmanager UI/routing demos reviewed | No candidate promoted yet | Seeing grouping/inhibition/routing is useful. |
+| Alertmanager — From Firing Rule to Delivered Notification | RECOMMENDED VIDEO | Prometheus→Alertmanager notification demos reviewed | No candidate promoted yet | End-to-end signal path is visual. |
+| Alertmanager — Deploy and Route with Alertmanager | NO VIDEO | — | — | Implement actual routing. |
+| Alertmanager — Break Alert Delivery and Recover It | NO VIDEO | — | — | Failure drill. |
+| Alertmanager — Defend the Alerting Pipeline | NO VIDEO | — | — | Defence uses evidence. |
+| Database — Database Roles and Least Privilege | NO VIDEO | — | — | Apply actual DB roles. |
+| Database — Connections, Pools and Exhaustion | RECOMMENDED VIDEO | connection-pool/exhaustion demos reviewed | No candidate promoted yet | Pool saturation and wait behavior are temporal. |
+| Database — Slow Queries and Query-plan Evidence | RECOMMENDED VIDEO | PostgreSQL EXPLAIN demos reviewed | No candidate promoted yet | Live plan interpretation adds value. |
+| Database — Locks, Blocking and Deadlocks | RECOMMENDED VIDEO | PostgreSQL lock/deadlock demos reviewed | No candidate promoted yet | Two-session blocking/deadlock is ideal for live demonstration. |
+| Database — Operationally Safe Database Migrations | OPTIONAL VIDEO | expand-contract migration talks reviewed | No candidate promoted yet | A production rollout timeline reinforces earlier migration work. |
+| Database — Database Backup, Restore and Recovery Evidence | RECOMMENDED VIDEO | PostgreSQL backup/restore demos reviewed | No candidate promoted yet | Restore verification is worth seeing once. |
+| Database — Database Capacity and Health Review | NO VIDEO | — | — | Review actual database evidence. |
+| Database — Lab: Run the Steward Database Stewardship Review | NO VIDEO | — | — | Independent review lab. |
+| Performance — Latency and Throughput | RECOMMENDED VIDEO | latency/throughput visual explainers reviewed | No candidate promoted yet | Concurrent load and response-time relationships are visual. |
+| Performance — Saturation | RECOMMENDED VIDEO | saturation/resource-pressure demos reviewed | No candidate promoted yet | Knee-point behavior is best shown graphically. |
+| Performance — Bottlenecks | RECOMMENDED VIDEO | profiling/bottleneck demos reviewed | No candidate promoted yet | Live measurement helps model evidence-based bottleneck identification. |
+| Performance — Load and Stress Testing | RECOMMENDED VIDEO | k6/load-test demos reviewed | No candidate promoted yet | Load ramp, latency and errors are useful to see together. |
+| Performance — Capacity Planning | OPTIONAL VIDEO | capacity-planning talks reviewed | No candidate promoted yet | Worked forecasting can reinforce the model. |
+| Performance — Resource Utilization | NO VIDEO | — | — | Measure actual resources. |
+| Performance — Database and Application Bottlenecks | RECOMMENDED VIDEO | APM/query profiling demos reviewed | No candidate promoted yet | Cross-layer bottleneck attribution is visual. |
+| Performance — Performance Baselines | NO VIDEO | — | — | Establish actual baseline. |
+| Performance — Queueing and Contention Concepts | RECOMMENDED VIDEO | queueing/concurrency animations reviewed | No candidate promoted yet | Queue growth/waiting under contention is inherently visual. |
+| Performance — Storage Growth and Artifact Capacity | NO VIDEO | — | — | Model actual growth/capacity. |
+| Performance — Lab: Establish Steward Capacity Baselines | NO VIDEO | — | — | Independent performance lab. |
+| Resilience — Timeouts | RECOMMENDED VIDEO | timeout/failure-timeline demos reviewed | No candidate promoted yet | Bounded waiting is temporal. |
+| Resilience — Retries | RECOMMENDED VIDEO | retry failure demos reviewed | No candidate promoted yet | Retry behavior under transient failure is temporal. |
+| Resilience — Exponential Backoff and Jitter | RECOMMENDED VIDEO | AWS retry/backoff material reviewed | No candidate promoted yet | Request-wave desynchronization is best shown graphically. |
+| Resilience — Circuit Breakers | RECOMMENDED VIDEO | circuit-breaker state-machine demos reviewed | No candidate promoted yet | Closed/open/half-open states are visual. |
+| Resilience — Idempotency | OPTIONAL VIDEO | duplicate-delivery demos reviewed | No candidate promoted yet | A duplicate effect demo can reinforce the concept. |
+| Resilience — Partial Failure | RECOMMENDED VIDEO | distributed-failure diagrams reviewed | No candidate promoted yet | Some components succeeding while others fail is system-level and visual. |
+| Resilience — Dependency Failure | RECOMMENDED VIDEO | dependency-outage demos reviewed | No candidate promoted yet | Failure propagation is valuable to visualize. |
+| Resilience — Cascading Failure | RECOMMENDED VIDEO | Google SRE cascading-failure material reviewed | No candidate promoted yet | Amplification across dependencies is strongly visual. |
+| Resilience — Queues and Backpressure | RECOMMENDED VIDEO | backpressure/queue demos reviewed | No candidate promoted yet | Producer/consumer imbalance and queue growth are temporal. |
+| Resilience — Graceful Degradation | OPTIONAL VIDEO | degradation-pattern examples reviewed | No candidate promoted yet | Worked examples can reinforce product trade-offs. |
+| Resilience — Retry Storms and Amplification | RECOMMENDED VIDEO | retry-storm visualizations reviewed | No candidate promoted yet | Synchronized retries and amplification are ideal for animation. |
+| Resilience — Dependency Availability Budgets | OPTIONAL VIDEO | availability composition explainers reviewed | No candidate promoted yet | Graphical composition can help, but calculation is primary. |
+| Resilience — Lab: Harden Steward Against Dependency Failure | NO VIDEO | — | — | Independent resilience lab. |
+| DR — Backups | NO VIDEO | — | — | Implement actual backup policy. |
+| DR — Backup Integrity | NO VIDEO | — | — | Verify actual backup artifacts. |
+| DR — Restore Testing | RECOMMENDED VIDEO | restore-drill demonstrations reviewed | No candidate promoted yet | A complete restore workflow is worth seeing before running one. |
+| DR — RPO and RTO | RECOMMENDED VIDEO | RPO/RTO timeline explainers reviewed | No candidate promoted yet | Recovery-point/time objectives are inherently timeline-based. |
+| DR — Disaster Scenarios | OPTIONAL VIDEO | DR scenario talks reviewed | No candidate promoted yet | Real incident examples add context. |
+| DR — Recovery Procedures | NO VIDEO | — | — | Write/exercise actual procedure. |
+| DR — Database Recovery | RECOMMENDED VIDEO | PostgreSQL recovery demos reviewed | No candidate promoted yet | Recovery sequence and verification are useful to see. |
+| DR — Artifact Repository Backup and Restore | RECOMMENDED VIDEO | repository restore demos reviewed | No candidate promoted yet | Artifact recovery is a distinct operational workflow. |
+| DR — Configuration and Infrastructure Recovery | OPTIONAL VIDEO | IaC/config recovery demos reviewed | No candidate promoted yet | Rebuild-from-source workflow can reinforce recovery boundaries. |
+| DR — Recovery Evidence | NO VIDEO | — | — | Capture actual evidence. |
+| DR — Lab: Run a Steward Restore Drill | NO VIDEO | — | — | Independent restore drill. |
+| Incident — Detection | RECOMMENDED VIDEO | incident-response simulations reviewed | No candidate promoted yet | Seeing first signal→incident declaration provides context. |
+| Incident — Triage | RECOMMENDED VIDEO | SRE incident simulations reviewed | No candidate promoted yet | Live prioritization and hypothesis formation are valuable. |
+| Incident — Incident Roles | OPTIONAL VIDEO | incident-command talks reviewed | No candidate promoted yet | Real role handoffs add context. |
+| Incident — Communication | OPTIONAL VIDEO | incident-comms examples reviewed | No candidate promoted yet | Examples can model concise stakeholder updates. |
+| Incident — Mitigation | RECOMMENDED VIDEO | incident simulation/postmortem material reviewed | No candidate promoted yet | Mitigation under uncertainty benefits from a worked scenario. |
+| Incident — Timeline Construction | NO VIDEO | — | — | Construct actual timeline from evidence. |
+| Incident — Root Cause | NO VIDEO | — | — | Reason from actual evidence; avoid simplistic narratives. |
+| Incident — Contributing Factors | NO VIDEO | — | — | Analyze actual system/human factors. |
+| Incident — Blameless Postmortems | OPTIONAL VIDEO | Google SRE/postmortem talks reviewed | No candidate promoted yet | A real postmortem discussion can model tone and systems thinking. |
+| Incident — Corrective Actions | NO VIDEO | — | — | Create actual actions. |
+| Incident — Learning from Near Misses | OPTIONAL VIDEO | near-miss engineering talks reviewed | No candidate promoted yet | Real examples add perspective. |
+| Incident — Lab: Run a Steward Incident Exercise | NO VIDEO | — | — | Independent incident exercise. |
+| Fault Injection — Hypothesis-driven Reliability Experiments | RECOMMENDED VIDEO | chaos-engineering talks reviewed | No candidate promoted yet | Steady state→hypothesis→injection→observation is a workflow worth seeing. |
+| Fault Injection — Controlled Failure Injection | RECOMMENDED VIDEO | Chaos Mesh/Litmus/manual fault demos reviewed | No candidate promoted yet | A bounded live fault injection makes the safety model concrete. |
+| Fault Injection — Blast Radius and Safety | NO VIDEO | — | — | Define actual safeguards before experiment. |
+| Fault Injection — Process and Container Failure | RECOMMENDED VIDEO | pod/process failure demos reviewed | No candidate promoted yet | Seeing restart/recovery behavior is useful. |
+| Fault Injection — Resource Exhaustion Concepts | RECOMMENDED VIDEO | CPU/memory/disk pressure demos reviewed | No candidate promoted yet | Failure onset under pressure is visual. |
+| Fault Injection — Network and Dependency Failure Simulation | RECOMMENDED VIDEO | latency/loss/dependency fault demos reviewed | No candidate promoted yet | Injected latency/loss and downstream effects are ideal for live demo. |
+| Fault Injection — Database Failure Scenarios | OPTIONAL VIDEO | database outage demos reviewed | No candidate promoted yet | Useful context; actual controlled scenario remains primary. |
+| Fault Injection — Artifact Repository Failure Scenarios | OPTIONAL VIDEO | artifact dependency outage demos reviewed | No candidate promoted yet | Useful context; actual failure drill remains primary. |
+| Fault Injection — Recovery Verification | NO VIDEO | — | — | Verify actual recovery. |
+| Fault Injection — Chaos Engineering Principles and Safety | OPTIONAL VIDEO | Principles of Chaos Engineering talks reviewed | No candidate promoted yet | Industry framing can reinforce safe experimentation. |
+| Fault Injection — Lab: Run a Steward Reliability Experiment | NO VIDEO | — | — | Independent experiment. |
+| Reliability Milestone — Milestone: Steward Reliability Program | NO VIDEO | — | — | Milestone synthesis. |
+| Reliability Milestone — Assemble the Reliability Evidence Baseline | NO VIDEO | — | — | Evidence assembly. |
+| Reliability Milestone — Operate Steward Through a Reliability Review Scenario | NO VIDEO | — | — | Independent scenario. |
+| Reliability Milestone — Publish the Steward Reliability Review | NO VIDEO | — | — | Deliverable creation. |
+| Reliability Milestone — Defend the Reliability Posture | NO VIDEO | — | — | Final defence. |
