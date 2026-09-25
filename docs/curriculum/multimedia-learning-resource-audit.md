@@ -752,3 +752,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Vulnerability Lab — Capturing Security Evidence | NO VIDEO | — | — | Evidence discipline should be practiced directly. |
 | Vulnerability Lab — From Finding to Reproduction Steps | NO VIDEO | — | — | Writing reproducible steps is the learning task. |
 | Vulnerability Lab — Implementing Mitigations | NO VIDEO | — | — | Fix the actual weakness. |
+| Vulnerability Lab — Retesting Fixes | NO VIDEO | — | — | Independent verification is primary. |
