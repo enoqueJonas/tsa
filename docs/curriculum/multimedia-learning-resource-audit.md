@@ -731,3 +731,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — File Upload Risks | RECOMMENDED VIDEO | PortSwigger file-upload labs reviewed | No candidate promoted yet | Validation/storage/execution boundaries benefit from controlled demo. |
 | Web/API — Command Injection | REQUIRED WATCH | PortSwigger OS command injection labs reviewed | Safe lab demo; exact selection at insertion | Input→shell execution is a high-value controlled demonstration. |
 | Web/API — Insecure Deserialization Concepts | RECOMMENDED VIDEO | PortSwigger deserialization material reviewed | No candidate promoted yet | Object reconstruction/trust boundary is easier with a worked example. |
+| Web/API — Security Misconfiguration | OPTIONAL VIDEO | OWASP/PortSwigger examples reviewed | No candidate promoted yet | Examples help; hardening exercise is primary. |
