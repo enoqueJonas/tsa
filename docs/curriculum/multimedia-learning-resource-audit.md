@@ -928,3 +928,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Incident — Blameless Postmortems | OPTIONAL VIDEO | Google SRE postmortem talks reviewed | No candidate promoted yet | Real postmortem facilitation adds context. |
 | Incident — Corrective Actions | NO VIDEO | — | — | Design actual corrective actions. |
 | Incident — Learning from Near Misses | OPTIONAL VIDEO | near-miss engineering talks reviewed | No candidate promoted yet | Case studies broaden learning. |
+| Incident — Lab: Run a Steward Incident Exercise | NO VIDEO | — | — | Independent incident simulation. |
