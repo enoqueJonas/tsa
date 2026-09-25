@@ -228,3 +228,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | SOAP/XML — Contract Testing and Compatibility Failure | NO VIDEO | — | — | Breaking and testing the contract is the lesson. |
 | SOAP/XML — Milestone: Build and Integrate a Contract-First SOAP Service | NO VIDEO | — | — | Milestone synthesis. |
 | SOAP/XML — Reassess SOAP, REST and the Integration Boundary | NO VIDEO | — | — | The learner must make the architecture decision from evidence. |
+| Messaging — When Distributed State Is Justified | NO VIDEO | — | — | The key skill is proving pressure before infrastructure. |
