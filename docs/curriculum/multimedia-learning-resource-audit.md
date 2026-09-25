@@ -453,3 +453,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Windows — Reassess Windows Operational Depth | NO VIDEO | — | — | Boundary decision, not tutorial content. |
 | Enterprise Services — Enterprise File Services: NFS and SMB | RECOMMENDED VIDEO | NFS/Samba interoperability demonstrations reviewed | No candidate promoted yet | Comparing Linux NFS and bounded SMB behavior is operationally visual. |
 | Enterprise Services — Enterprise Directory Services: LDAP | RECOMMENDED VIDEO | LDAP DN/search/bind visual explainers reviewed | No candidate promoted yet | DIT hierarchy, DN/RDN, bind and search scope are easier to grasp visually. |
+| File Integration — File-Based Integration Contracts | NO VIDEO | — | — | The contract and lifecycle must be designed explicitly. |
