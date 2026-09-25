@@ -790,3 +790,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Directory Federation — Active Directory, LDAP and Kerberos Context | RECOMMENDED VIDEO | AD/LDAP/Kerberos architecture explainers reviewed | No candidate promoted yet | Protocol/service relationships benefit from diagrams. |
 | Secure Transfer — FTP to SFTP Secure Transfer Migration | RECOMMENDED VIDEO | OpenSSH SFTP migration/host-key demos reviewed | No candidate promoted yet | Protocol replacement, key auth and host-key pinning are operational workflows. |
 | Application Security — Secure Authentication | NO VIDEO | — | — | Apply prior identity/security knowledge directly. |
+| Application Security — Authorization Design and Testing | NO VIDEO | — | — | Design and prove actual authorization rules. |
