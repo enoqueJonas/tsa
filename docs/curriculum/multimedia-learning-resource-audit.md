@@ -723,3 +723,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — Cross-site Scripting | RECOMMENDED VIDEO | PortSwigger XSS demonstrations reviewed | No candidate promoted yet | Browser execution makes XSS inherently demonstrable. |
 | Web/API — Cross-site Request Forgery | RECOMMENDED VIDEO | PortSwigger CSRF demonstrations reviewed | No candidate promoted yet | Browser/session/request flow benefits from live demonstration. |
 | Web/API — Broken Authentication | RECOMMENDED VIDEO | OWASP auth-failure demos reviewed | No candidate promoted yet | Concrete bypass/session failures add value. |
+| Web/API — Broken Authorization and IDOR | RECOMMENDED VIDEO | PortSwigger access-control/IDOR labs reviewed | No candidate promoted yet | Changing object identifiers across users is a powerful live demo. |
