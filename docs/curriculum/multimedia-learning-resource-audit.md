@@ -837,3 +837,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Logging — Lab: Build a Steward Diagnostic Logging Path | NO VIDEO | — | — | Independent implementation lab. |
 | Logging — Decision Gate: Select the Steward Centralized Logging Stack | NO VIDEO | — | — | Decision from evidence. |
 | Metrics — Metrics Mental Models | RECOMMENDED VIDEO | Prometheus metric-model explainers reviewed | No candidate promoted yet | Time-series labels/samples are visual. |
+| Metrics — Counters, Gauges and Histograms | RECOMMENDED VIDEO | Prometheus metric-type demos reviewed | No candidate promoted yet | Histograms/buckets especially benefit from visualization. |
