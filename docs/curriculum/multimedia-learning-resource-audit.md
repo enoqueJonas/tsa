@@ -754,3 +754,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Linux/Network Security — Privilege and sudo | RECOMMENDED VIDEO | sudo/privilege-boundary demos reviewed | No candidate promoted yet | Effective privilege and escalation paths benefit from live evidence. |
 | Linux/Network Security — SSH Hardening | RECOMMENDED VIDEO | SSH hardening demos reviewed | No candidate promoted yet | Config→reload→positive/negative access proof is useful to see. |
 | Linux/Network Security — Host Firewalls | RECOMMENDED VIDEO | firewalld/nftables demos reviewed | No candidate promoted yet | Packet policy and negative testing are visual. |
+| Linux/Network Security — Service Exposure | RECOMMENDED VIDEO | socket/listener exposure demos reviewed | No candidate promoted yet | Listening interface/port→network reachability is concrete. |
