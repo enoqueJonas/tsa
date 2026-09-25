@@ -751,3 +751,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Vulnerability Lab — Using Proxies and Request Inspection | RECOMMENDED VIDEO | Burp Suite request-interception demos reviewed | No candidate promoted yet | Proxy interception is a UI workflow worth seeing once. |
 | Vulnerability Lab — Capturing Security Evidence | NO VIDEO | — | — | Evidence discipline should be practiced directly. |
 | Vulnerability Lab — From Finding to Reproduction Steps | NO VIDEO | — | — | Writing reproducible steps is the learning task. |
+| Vulnerability Lab — Implementing Mitigations | NO VIDEO | — | — | Fix the actual weakness. |
