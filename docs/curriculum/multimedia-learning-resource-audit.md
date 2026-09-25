@@ -2098,3 +2098,24 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Fault Injection — Chaos Engineering Principles and Safety | RECOMMENDED VIDEO | Principles of Chaos talks reviewed | No candidate promoted yet | Practitioner framing adds value. |
 | Fault Injection — experiment lab | NO VIDEO | — | — | Independent experiment. |
 | Reliability Engineer Milestone | NO VIDEO | — | — | Independent reliability program synthesis. |
+
+
+## Architect — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Fundamentals — What Software Architecture Is | OPTIONAL VIDEO | SEI/architecture practitioner talks reviewed | No candidate promoted yet | Practitioner framing can reinforce decision scope. |
+| Fundamentals — Architecture vs Design | NO VIDEO | — | — | Apply distinction to actual decisions. |
+| Fundamentals — Architecture Drivers | NO VIDEO | — | — | Extract actual drivers. |
+| Fundamentals — Quality Attributes and Architecture Characteristics | RECOMMENDED VIDEO | Quality-attribute scenario talks reviewed | No candidate promoted yet | Scenario stimulus/response/artifact structure benefits from worked examples. |
+| Fundamentals — Constraints | NO VIDEO | — | — | Identify actual constraints. |
+| Fundamentals — Trade-offs and Consequences | NO VIDEO | — | — | Decision analysis is primary. |
+| Fundamentals — Architecture Fitness and Evolution | RECOMMENDED VIDEO | Evolutionary architecture/fitness-function talks reviewed | No candidate promoted yet | Continuous architecture verification benefits from examples. |
+| Fundamentals — Architecture Documentation | RECOMMENDED VIDEO | C4/architecture documentation talks reviewed | Reuse Simon Brown candidate where relevant | Visual communication is the point. |
+| Fundamentals — practical baseline work | NO VIDEO | — | — | Independent architecture reconstruction. |
+| Domain — Domain Models and Business Language | OPTIONAL VIDEO | DDD modeling talks reviewed | No candidate promoted yet | A live domain-modeling conversation can help. |
+| Domain — Bounded Context Concepts | RECOMMENDED VIDEO | DDD bounded-context talks reviewed | No candidate promoted yet | Context boundaries/language differences are visual. |
+| Domain — Entities, Value Objects and Aggregates | RECOMMENDED VIDEO | DDD tactical modeling talks reviewed | No candidate promoted yet | Object roles/invariants benefit from worked model. |
+| Domain — Invariants and Transaction Boundaries | RECOMMENDED VIDEO | DDD aggregate/transaction talks reviewed | No candidate promoted yet | Consistency boundary is architectural. |
+| Domain — Context Mapping Concepts | RECOMMENDED VIDEO | DDD context-map demos reviewed | No candidate promoted yet | Relationships are explicitly visual. |
+| Domain — Domain Services | OPTIONAL VIDEO | DDD domain-service examples reviewed | No candidate promoted yet | Useful worked example. |
