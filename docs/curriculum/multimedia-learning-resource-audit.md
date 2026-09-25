@@ -270,3 +270,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Linux — Linux Permissions | RECOMMENDED VIDEO | Linux permission demonstrations reviewed | No candidate promoted yet | rwx ownership/effective-access examples are useful to see before deliberately breaking permissions. |
 | Linux — Package Management | NO VIDEO | — | — | Repository/package evidence should be gathered directly on Rocky. |
 | Linux — Processes and Signals | RECOMMENDED VIDEO | Linux process/signal demonstrations reviewed | No candidate promoted yet | Seeing TERM/KILL/reload behavior and process state live adds value. |
+| Linux — systemd and Services | RECOMMENDED VIDEO | systemd service walkthroughs reviewed | No candidate promoted yet | Unit lifecycle, status and journal integration are well suited to live demonstration. |
