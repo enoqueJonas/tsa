@@ -882,3 +882,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Database — Operationally Safe Database Migrations | RECOMMENDED VIDEO | expand-contract migration talks reviewed | No candidate promoted yet | Compatibility/cutover timeline benefits from diagrams. |
 | Database — Database Backup, Restore and Recovery Evidence | RECOMMENDED VIDEO | PostgreSQL restore demos reviewed | No candidate promoted yet | Actual restore/verification is useful to see. |
 | Database — Database Capacity and Health Review | NO VIDEO | — | — | Review actual metrics/evidence. |
+| Performance — Latency and Throughput | RECOMMENDED VIDEO | latency/throughput graph explainers reviewed | No candidate promoted yet | Relationship under load is graph-oriented. |
