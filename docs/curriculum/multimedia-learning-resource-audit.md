@@ -626,3 +626,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Milestone — Gate 3: Client Path, Reverse Proxy and Firewall Policy | NO VIDEO | — | — | The learner must prove actual network paths and policy. |
 | Milestone — Gate 4: Failure, Backup and Recovery Drill | NO VIDEO | — | — | The controlled failure/recovery itself is the learning evidence. |
 | Milestone — Gate 5: Capacity, Runbook and Platform Handoff | NO VIDEO | — | — | Handoff synthesis should be independently produced. |
+
+
+## Platform Builder — Core Infrastructure, Configuration and Lifecycle lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Core Infrastructure — DNS, DHCP and Time as Infrastructure | RECOMMENDED VIDEO | Infrastructure dependency/packet-flow explainers reviewed | No candidate promoted yet | Seeing naming, address assignment and time as separate shared dependencies helps establish the operating model. |
