@@ -1068,3 +1068,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Leadership — Mentoring | OPTIONAL VIDEO | Engineering mentoring talks reviewed | No candidate promoted yet | Observation of a good mentoring interaction can add value. |
 | Leadership — Engineering Reviews | RECOMMENDED VIDEO | Architecture/code/design review facilitation talks reviewed | No candidate promoted yet | A real review demonstrates challenge without turning review into gatekeeping. |
 | Leadership — Escalation and Responsible Challenge | RECOMMENDED VIDEO | Incident/risk escalation case studies reviewed | No candidate promoted yet | Case studies make timing, evidence and responsibility concrete. |
+| Leadership — Lab: Lead a Steward Technical Review | NO VIDEO | — | — | Independent leadership lab. |
