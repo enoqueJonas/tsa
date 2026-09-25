@@ -1012,3 +1012,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Styles — Microservices | RECOMMENDED VIDEO | Martin Fowler microservices material and practitioner talks reviewed | No candidate promoted yet | Service boundaries, independent deployment and distribution cost benefit from worked architecture examples. |
 | Styles — Event-driven Architecture | RECOMMENDED VIDEO | AWS/event-driven architecture talks reviewed | No candidate promoted yet | Producer/event/broker/consumer topology and temporal decoupling are visual. |
 | Styles — Serverless Concepts | RECOMMENDED VIDEO | serverless execution/event-flow demos reviewed | No candidate promoted yet | Trigger→managed runtime→managed services is easier to understand visually. |
+| Styles — Choosing Styles from Drivers | NO VIDEO | — | — | The learner must compare styles against actual drivers. |
