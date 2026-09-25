@@ -578,3 +578,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Kubernetes — Why Container Orchestration | RECOMMENDED VIDEO | CNCF/Kubernetes orchestration explainers reviewed | No candidate promoted yet | Desired replicas, scheduling and reconciliation are visual. |
 | Kubernetes — Kubernetes Cluster and Control Plane | RECOMMENDED VIDEO | Kubernetes official/control-plane explainers reviewed | No candidate promoted yet | API server, scheduler, controllers, etcd and nodes form a visual control loop. |
 | Kubernetes — Pods, Deployments and ReplicaSets | RECOMMENDED VIDEO | Kubernetes workload-controller demos reviewed | No candidate promoted yet | Desired replicas and replacement behavior are ideal for live demonstration. |
+| Kubernetes — Services and Cluster Networking | RECOMMENDED VIDEO | Kubernetes networking/service visual explainers reviewed | No candidate promoted yet | Pod IPs, Services and routing are topology-heavy. |
