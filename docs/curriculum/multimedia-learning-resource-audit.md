@@ -566,3 +566,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | File Integration — Secure File Transfer Readiness: SFTP and FTPS | RECOMMENDED VIDEO | SFTP/FTPS protocol-boundary explainers reviewed | No candidate promoted yet | SSH-based SFTP versus TLS-wrapped FTP is frequently confused and benefits from visual protocol comparison. |
 | Platform Builder Milestone — Assemble the Platform Builder Evidence Pack | NO VIDEO | — | — | Milestone is synthesis of implemented platform evidence. |
 | Platform Builder Milestone — Milestone Review and Exit Criteria | NO VIDEO | — | — | Exit gate should assess capability, not introduce media. |
+| Platform Builder Milestone — Platform Builder Exit Reflection | NO VIDEO | — | — | Reflection should use the learner's own operational evidence. |
