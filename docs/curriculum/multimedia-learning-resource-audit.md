@@ -447,3 +447,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Containers — Multi-stage Builds | RECOMMENDED VIDEO | Multi-stage build demos reviewed | No candidate promoted yet | Builder/runtime stage separation and image-size difference are visually useful. |
 | Containers — Volumes | RECOMMENDED VIDEO | Docker volume/bind-mount demos reviewed | No candidate promoted yet | Persistence and host/container path boundaries benefit from demonstration. |
 | Containers — Container Networking | RECOMMENDED VIDEO | Docker bridge/DNS/port-publish demos reviewed | No candidate promoted yet | Network namespace/bridge/published-port flow is highly visual. |
+| Containers — Docker Compose | OPTIONAL VIDEO | Compose multi-service demos reviewed | No candidate promoted yet | Useful once, but learner should build the composition. |
