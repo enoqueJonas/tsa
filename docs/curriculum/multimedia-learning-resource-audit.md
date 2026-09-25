@@ -562,3 +562,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Object Storage — Lifecycle, Versioning and Recovery | RECOMMENDED VIDEO | S3 versioning/lifecycle/restore demos reviewed | No candidate promoted yet | Object-version and lifecycle transitions are useful to visualize. |
 | Object Storage — Reassess the Storage Authority | NO VIDEO | — | — | Architecture decision from evidence. |
 | IaC — Why Infrastructure as Code | OPTIONAL VIDEO | OpenTofu/Terraform introductions reviewed | No candidate promoted yet | A visual desired-state/change-plan overview can orient the model. |
+| IaC — Declarative Infrastructure | RECOMMENDED VIDEO | Declarative-vs-imperative IaC explainers reviewed | No candidate promoted yet | Desired-state reconciliation is easier with before/desired/plan diagrams. |
