@@ -744,3 +744,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Vulnerability Lab — Vulnerable Applications and Intentional Weaknesses | OPTIONAL VIDEO | OWASP Juice Shop/DVWA introductions reviewed | No candidate promoted yet | Orientation can help; learner must inspect lab directly. |
 | Vulnerability Lab — Observing Vulnerable Behavior | NO VIDEO | — | — | Observe actual vulnerable behavior. |
 | Vulnerability Lab — Reproducing Representative Attacks Safely | RECOMMENDED VIDEO | safe lab exploit walkthroughs reviewed | No candidate promoted yet | A bounded demo models method/evidence. |
+| Vulnerability Lab — Using Proxies and Request Inspection | RECOMMENDED VIDEO | PortSwigger Burp Proxy tutorials reviewed | No candidate promoted yet | Intercept/modify/replay is inherently interactive. |
