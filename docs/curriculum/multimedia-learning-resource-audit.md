@@ -905,3 +905,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Performance — Queueing and Contention Concepts | RECOMMENDED VIDEO | queueing/concurrency animations reviewed | No candidate promoted yet | Queue growth/waiting under contention is inherently visual. |
 | Performance — Storage Growth and Artifact Capacity | NO VIDEO | — | — | Model actual growth/capacity. |
 | Performance — Lab: Establish Steward Capacity Baselines | NO VIDEO | — | — | Independent performance lab. |
+| Resilience — Timeouts | RECOMMENDED VIDEO | timeout/failure-timeline demos reviewed | No candidate promoted yet | Bounded waiting is temporal. |
