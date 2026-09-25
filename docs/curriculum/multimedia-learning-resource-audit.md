@@ -1255,3 +1255,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Build — Secure the System | NO VIDEO | — | — | Independent security implementation. |
 | Build — Instrument the System | NO VIDEO | — | — | Independent observability implementation. |
 | Build — Build Reliability Evidence | NO VIDEO | — | — | Independent failure/recovery evidence. |
+| Build — Operate Internal Dependencies Deliberately | NO VIDEO | — | — | Make explicit dependency ownership decisions. |
