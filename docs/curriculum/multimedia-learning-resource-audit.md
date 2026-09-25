@@ -852,3 +852,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Metrics — Lab: Instrument Steward API | NO VIDEO | — | — | Independent instrumentation lab. |
 | Metrics — Lab: Observe the Internal Artifact Platform | NO VIDEO | — | — | Independent platform observation lab. |
 | Tracing — Decision Gate: Select Steward's Tracing Backend | NO VIDEO | — | — | Decision from evidence. |
+| Tracing — Distributed Tracing with OpenTelemetry and Tempo | RECOMMENDED VIDEO | OpenTelemetry/Tempo tracing demos reviewed | No candidate promoted yet | Trace/span hierarchy and backend UI are inherently visual. |
