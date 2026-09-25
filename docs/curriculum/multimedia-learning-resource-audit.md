@@ -475,3 +475,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Configuration — Configuration Drift Detection and Repair | RECOMMENDED VIDEO | Ansible drift/remediation demos reviewed | No candidate promoted yet | Desired-versus-actual state and repair is valuable to see live. |
 | Configuration — Secrets, Failure and Safe Fleet Changes | RECOMMENDED VIDEO | Ansible rolling/failure-handling material reviewed | No candidate promoted yet | Canary/serial/failure behavior across hosts is strongly operational and visual. |
 | Configuration — Milestone: Build and Operate the Rocky Configuration Baseline | NO VIDEO | — | — | Milestone synthesis. |
+| Configuration — Reassess Image, Ansible and Platform Ownership | NO VIDEO | — | — | Ownership boundaries are an architecture decision. |
