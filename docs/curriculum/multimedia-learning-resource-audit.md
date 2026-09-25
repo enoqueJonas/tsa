@@ -721,3 +721,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Threat Modeling — Threat Models as Living Engineering Artifacts | OPTIONAL VIDEO | Threat-model maintenance talks reviewed | No candidate promoted yet | Industry workflow context is useful but not required. |
 | Web/API — Injection and SQL Injection | RECOMMENDED VIDEO | PortSwigger/OWASP SQLi demonstrations reviewed | No candidate promoted yet | Seeing input alter query behavior makes the vulnerability concrete. |
 | Web/API — Cross-site Scripting | RECOMMENDED VIDEO | PortSwigger XSS demonstrations reviewed | No candidate promoted yet | Browser execution makes XSS inherently demonstrable. |
+| Web/API — Cross-site Request Forgery | RECOMMENDED VIDEO | PortSwigger CSRF demonstrations reviewed | No candidate promoted yet | Browser/session/request flow benefits from live demonstration. |
