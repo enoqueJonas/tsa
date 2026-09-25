@@ -537,3 +537,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Internet — Internet-facing Firewalls | NO VIDEO | Prior firewall concepts covered | — | Apply policy to public exposure. |
 | Internet — Exposure, Attack Surface and Administrative Boundaries | RECOMMENDED VIDEO | Attack-surface/trust-boundary explainers reviewed | No candidate promoted yet | A topology walkthrough makes exposed/admin paths concrete. |
 | Certificates — Certificate Lifecycle Operations | RECOMMENDED VIDEO | Let's Encrypt/ACME lifecycle material reviewed | No candidate promoted yet | Issuance→validation→renewal→reload→expiry is a lifecycle best understood as a sequence. |
+| Certificates — Inspect the Served Certificate and Trust Chain | RECOMMENDED VIDEO | openssl/browser chain inspection demos reviewed | No candidate promoted yet | Seeing leaf/intermediate/root and SAN/hostname checks live adds value. |
