@@ -564,3 +564,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | IaC — Why Infrastructure as Code | OPTIONAL VIDEO | OpenTofu/Terraform introductions reviewed | No candidate promoted yet | A visual desired-state/change-plan overview can orient the model. |
 | IaC — Declarative Infrastructure | RECOMMENDED VIDEO | Declarative-vs-imperative IaC explainers reviewed | No candidate promoted yet | Desired-state reconciliation is easier with before/desired/plan diagrams. |
 | IaC — Terraform and OpenTofu Fundamentals | RECOMMENDED VIDEO | OpenTofu/Terraform workflow demos reviewed | No candidate promoted yet | init→plan→apply is useful to see once before independent use. |
+| IaC — Providers and Resources | OPTIONAL VIDEO | Provider/resource demos reviewed | No candidate promoted yet | Plugin/control boundary can be shown visually. |
