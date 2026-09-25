@@ -817,3 +817,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Application Security — Authorization Design and Testing | NO VIDEO | — | — | Authorization matrix and negative tests are primary. |
 | Application Security — Input Validation | NO VIDEO | — | — | Implement/retest actual validation. |
 | Application Security — Secure Error Handling | NO VIDEO | — | — | Implement and inspect actual failure responses. |
+| Application Security — Secrets Management | NO VIDEO | — | — | Vault/secret lifecycle already taught. |
