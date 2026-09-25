@@ -1028,3 +1028,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Domain — Challenge and Refine the Model | NO VIDEO | — | — | Independent challenge. |
 | Domain — Validate and Record the Domain Decision | NO VIDEO | — | — | Decision evidence. |
 | Modularity — Modules and Boundaries | RECOMMENDED VIDEO | modularity/boundary talks reviewed | No candidate promoted yet | Dependency and ownership boundaries benefit from visual examples. |
+| Modularity — Coupling and Cohesion Revisited | OPTIONAL VIDEO | coupling/cohesion talks reviewed | No candidate promoted yet | Worked examples can reinforce change coupling. |
