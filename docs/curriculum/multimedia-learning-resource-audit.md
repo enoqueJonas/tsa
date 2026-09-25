@@ -627,3 +627,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | API/Integration — Database Assertions | NO VIDEO | — | — | Use persistence as supporting evidence directly. |
 | API/Integration — Integration Boundaries | NO VIDEO | — | — | Name and implement the boundary. |
 | API/Integration — Contract Testing Concepts | RECOMMENDED VIDEO | Pact contract-testing demos reviewed | No candidate promoted yet | Consumer/provider contract publication and verification benefit from demonstration. |
+| API/Integration — Mocking and Service Virtualization | RECOMMENDED VIDEO | Service-virtualization demos reviewed | No candidate promoted yet | Real-versus-virtual boundary and failure simulation are visual. |
