@@ -1089,3 +1089,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technology Governance — Using Frameworks Without Checklist Thinking | RECOMMENDED VIDEO | Governance/framework tailoring talks reviewed | No candidate promoted yet | Practitioner discussion helps counter cargo-cult compliance. |
 | Technology Governance — Lab: Map Steward Governance Responsibilities | NO VIDEO | — | — | Independent mapping lab. |
 | Technology Risk — Risk Identification | OPTIONAL VIDEO | Technology-risk workshops reviewed | No candidate promoted yet | A worked risk-identification session can add context. |
+| Technology Risk — Likelihood and Impact | NO VIDEO | — | — | Assessment calibration is best practiced on scenarios. |
