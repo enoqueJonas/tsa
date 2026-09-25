@@ -1105,3 +1105,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architect Milestone — Reconstruct and Defend the Current Architecture | NO VIDEO | — | — | Independent evidence. |
 | Architect Milestone — Challenge the Architecture with New Drivers | NO VIDEO | — | — | Independent scenario. |
 | Architect Milestone — Produce the Evolution Decision | NO VIDEO | — | — | Decision artifact. |
+| Architect Milestone — Defend Trade-offs and Reversal Triggers | NO VIDEO | — | — | Final defence. |
