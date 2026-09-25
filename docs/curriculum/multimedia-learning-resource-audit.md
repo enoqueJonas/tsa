@@ -910,3 +910,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | DR — Backup Integrity | NO VIDEO | — | — | Verify actual backup artifacts. |
 | DR — Restore Testing | RECOMMENDED VIDEO | restore drill demos reviewed | No candidate promoted yet | A restore workflow is useful to see before executing one. |
 | DR — RPO and RTO | RECOMMENDED VIDEO | RPO/RTO timeline explainers reviewed | No candidate promoted yet | Both are timeline concepts. |
+| DR — Disaster Scenarios | OPTIONAL VIDEO | DR scenario talks reviewed | No candidate promoted yet | Real cases can broaden failure imagination. |
