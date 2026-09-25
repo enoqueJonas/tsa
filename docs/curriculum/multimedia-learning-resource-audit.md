@@ -573,3 +573,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | IaC — Drift | RECOMMENDED VIDEO | IaC drift demos reviewed | No candidate promoted yet | Console mutation→plan detection→reconciliation is a strong live workflow. |
 | IaC — Remote State Concepts | OPTIONAL VIDEO | Remote-state collaboration explainers reviewed | No candidate promoted yet | Locking/shared-control context can help. |
 | IaC — Secrets and Sensitive Values | NO VIDEO | — | — | Secret-path design and negative checks are primary. |
+| IaC — Destroy and Resource Lifecycle | OPTIONAL VIDEO | IaC lifecycle/prevent-destroy demos reviewed | No candidate promoted yet | Controlled lifecycle demo can reinforce destructive boundaries. |
