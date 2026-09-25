@@ -472,3 +472,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CD — Release Approvals | NO VIDEO | — | — | Approval semantics are process design. |
 | CD — Database Migrations During Deployment | RECOMMENDED VIDEO | Zero-downtime migration talks reviewed | No candidate promoted yet | Application/schema compatibility across deployment phases is a timeline problem. |
 | CD — Rollback | RECOMMENDED VIDEO | Rollback demonstrations reviewed | No candidate promoted yet | Seeing artifact rollback plus state caveats is useful. |
+| CD — Rolling Deployments | RECOMMENDED VIDEO | Rolling-update animations reviewed | No candidate promoted yet | Instance-by-instance replacement is visual. |
