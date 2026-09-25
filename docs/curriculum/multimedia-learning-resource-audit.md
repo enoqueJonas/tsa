@@ -1096,3 +1096,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Evaluation — Architecture Debt | OPTIONAL VIDEO | architecture-debt talks reviewed | No candidate promoted yet | Case studies can show delayed architectural consequences. |
 | Evaluation — Architecture Governance without Bottlenecks | OPTIONAL VIDEO | architecture-governance/platform talks reviewed | No candidate promoted yet | Examples can show guardrails versus approval gates. |
 | Evaluation — Dependency and Package Governance | NO VIDEO | — | — | Use actual Nexus/package ownership evidence. |
+| Evaluation — Evaluating steward-common as a Shared Library | NO VIDEO | — | — | Evaluate the real internal product. |
