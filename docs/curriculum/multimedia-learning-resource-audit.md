@@ -1004,3 +1004,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Fundamentals — Architecture Documentation | OPTIONAL VIDEO | arc42/C4 documentation talks reviewed | No candidate promoted yet | A guided architecture-document walkthrough can help, but producing the baseline is primary. |
 | Fundamentals — Reconstruct Current Architecture | NO VIDEO | — | — | Independent evidence reconstruction. |
 | Fundamentals — Define Drivers and Quality Scenarios | NO VIDEO | — | — | Independent analysis. |
+| Fundamentals — Create the Architecture Baseline Record | NO VIDEO | — | — | Deliverable creation. |
