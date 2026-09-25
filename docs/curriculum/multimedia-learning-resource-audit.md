@@ -460,3 +460,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI — Self-hosted Runners | OPTIONAL VIDEO | Self-hosted agent setup demos reviewed | No candidate promoted yet | A setup demo can help with execution-boundary intuition. |
 | CI — Caching | OPTIONAL VIDEO | CI cache demos reviewed | No candidate promoted yet | Cache hit/miss and invalidation are useful but secondary. |
 | CI — Pipeline Artifacts | RECOMMENDED VIDEO | Artifact handoff demos reviewed | No candidate promoted yet | Stage-to-stage immutable artifact movement is visual. |
+| CI — Secrets and Variables | NO VIDEO | — | — | Configure safely; avoid normalizing secret exposure through tutorial copy-along. |
