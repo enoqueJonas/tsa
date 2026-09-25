@@ -2119,3 +2119,18 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Domain — Invariants and Transaction Boundaries | RECOMMENDED VIDEO | DDD aggregate/transaction talks reviewed | No candidate promoted yet | Consistency boundary is architectural. |
 | Domain — Context Mapping Concepts | RECOMMENDED VIDEO | DDD context-map demos reviewed | No candidate promoted yet | Relationships are explicitly visual. |
 | Domain — Domain Services | OPTIONAL VIDEO | DDD domain-service examples reviewed | No candidate promoted yet | Useful worked example. |
+| Domain — Avoiding Anemic and Over-engineered Models | OPTIONAL VIDEO | DDD critique talks reviewed | No candidate promoted yet | Contrasting examples can help. |
+| Domain — practical model work | NO VIDEO | — | — | Independent modeling. |
+| Modularity — Modules and Boundaries | RECOMMENDED VIDEO | Modular-monolith talks reviewed | No candidate promoted yet | System boundary diagrams add value. |
+| Modularity — Coupling and Cohesion Revisited | OPTIONAL VIDEO | Coupling/cohesion architecture talks reviewed | No candidate promoted yet | Worked change-impact examples help. |
+| Modularity — Dependency Direction | RECOMMENDED VIDEO | Dependency architecture demos reviewed | No candidate promoted yet | Dependency arrows are visual. |
+| Modularity — Encapsulation at System Scale | OPTIONAL VIDEO | Module encapsulation talks reviewed | No candidate promoted yet | Examples can reinforce. |
+| Modularity — Shared Libraries and Coupling | NO VIDEO | — | — | Analyze actual dependency. |
+| Modularity — Package Ownership and Change Impact | NO VIDEO | — | — | Use actual repository/change evidence. |
+| Modularity — Modular Monoliths | RECOMMENDED VIDEO | Modular-monolith talks reviewed | No candidate promoted yet | Boundary/deployment model benefits from visual architecture. |
+| Modularity — When a Service Boundary Is Justified | NO VIDEO | — | — | Decision must come from pressures. |
+| Modularity — Distributed Monoliths | RECOMMENDED VIDEO | Distributed-monolith failure talks reviewed | No candidate promoted yet | Cross-service coupling is useful to visualize. |
+| Modularity — practical decision work | NO VIDEO | — | — | Independent architecture decision. |
+| Styles — Layered Architecture | OPTIONAL VIDEO | Architecture-style diagrams reviewed | No candidate promoted yet | Short visual reinforcement. |
+| Styles — Hexagonal and Ports-and-Adapters Thinking | RECOMMENDED VIDEO | Hexagonal architecture talks reviewed | No candidate promoted yet | Ports/adapters/dependency direction are highly visual. |
+| Styles — Modular Monolith | RECOMMENDED VIDEO | Modular-monolith talks reviewed | No candidate promoted yet | Structure/deployment boundary visual. |
