@@ -827,3 +827,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Application Security — Security Regression Testing | NO VIDEO | — | — | Build automated regression evidence. |
 | Application Security — Lab: Harden Steward API | NO VIDEO | — | — | Independent hardening lab. |
 | Security Milestone — Milestone Briefing: Build a Defensible Steward Security Posture | NO VIDEO | — | — | Milestone briefing. |
+| Security Milestone — Integrate the Security Steward Evidence | NO VIDEO | — | — | Evidence integration. |
