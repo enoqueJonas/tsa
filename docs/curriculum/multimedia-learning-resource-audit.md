@@ -1683,3 +1683,24 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Delivery Milestone — Gate 5: Failure, Rollback and Recovery | NO VIDEO | — | — | Evidence gate. |
 | Delivery Milestone — Gate 6: Delivery Platform Handoff | NO VIDEO | — | — | Evidence gate. |
 | Delivery Milestone — Milestone Review and Exit Criteria | NO VIDEO | — | — | Exit assessment. |
+
+
+## Cloud Engineer — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Hosting — On-premises, Colocation, VPS and Cloud | RECOMMENDED VIDEO | Hosting-model explainers reviewed | No candidate promoted yet | Physical ownership and abstraction levels benefit from diagrams. |
+| Hosting — IaaS, PaaS and SaaS | RECOMMENDED VIDEO | NIST/cloud service-model explainers reviewed | No candidate promoted yet | Responsibility boundaries are visual. |
+| Hosting — Regions, Zones and Availability Concepts | RECOMMENDED VIDEO | Cloud region/AZ architecture animations reviewed | No candidate promoted yet | Failure-domain geography is inherently visual. |
+| Hosting — Shared Responsibility | RECOMMENDED VIDEO | Cloud shared-responsibility material reviewed | No candidate promoted yet | Provider/customer ownership boundary is easier as a layered model. |
+| Hosting — Elasticity and Consumption Models | OPTIONAL VIDEO | Autoscaling/consumption demos reviewed | No candidate promoted yet | Useful reinforcement; cost/capacity exercise remains primary. |
+| Hosting — Cloud Cost Awareness | OPTIONAL VIDEO | FinOps introductory material reviewed | No candidate promoted yet | Can add context without replacing cost calculations. |
+| VPS — Choosing a Budget VPS | NO VIDEO | — | — | Selection should use current requirements/provider evidence. |
+| VPS — Provisioning a Server | OPTIONAL VIDEO | VPS provisioning walkthroughs reviewed | No candidate promoted yet | Can reduce provider UI friction; actual provisioning is primary. |
+| VPS — Public IP Addressing | NO VIDEO | — | — | Networking foundations already cover addressing. |
+| VPS — Securing SSH Access | NO VIDEO | — | — | Prior Linux knowledge should be applied. |
+| VPS — Provider Firewalls and Security Controls | RECOMMENDED VIDEO | Cloud firewall/security-group demos reviewed | No candidate promoted yet | Provider edge versus host firewall boundary is useful to see. |
+| VPS — OS Lifecycle and Patching | NO VIDEO | — | — | Prior patching path should transfer. |
+| VPS — Remote Recovery Concepts | RECOMMENDED VIDEO | Provider console/rescue-mode demos reviewed | No candidate promoted yet | Out-of-band recovery is visual and operational. |
+| VPS — Backups and Snapshots | OPTIONAL VIDEO | Provider snapshot/restore demos reviewed | No candidate promoted yet | Useful if restore is emphasized; snapshot≠backup remains primary reasoning. |
+| Internet — Public and Private Addressing | NO VIDEO | — | — | Already deeply covered. |
