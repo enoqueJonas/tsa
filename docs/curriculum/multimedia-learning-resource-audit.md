@@ -556,3 +556,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Cloud Blocks — Lab: Map Steward Platform to Cloud Building Blocks | NO VIDEO | — | — | Synthesis mapping lab. |
 | Object Storage — S3-Compatible Object Storage for Steward | RECOMMENDED VIDEO | MinIO/S3 API and object-storage demonstrations reviewed | No candidate promoted yet | Bucket/key/object semantics and HTTP API behavior are useful to see before implementation. |
 | Object Storage — Design the Object Boundary | NO VIDEO | — | — | Storage-authority decision must be independent. |
+| Object Storage — Deploy the S3-Compatible Service | RECOMMENDED VIDEO | MinIO deployment/admin demos reviewed | No candidate promoted yet | A live deployment can reduce tool friction while the learner still owns persistence/networking. |
