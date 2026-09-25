@@ -565,3 +565,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | IaC — Declarative Infrastructure | RECOMMENDED VIDEO | Declarative-vs-imperative IaC explainers reviewed | No candidate promoted yet | Desired-state reconciliation is easier with before/desired/plan diagrams. |
 | IaC — Terraform and OpenTofu Fundamentals | RECOMMENDED VIDEO | OpenTofu/Terraform workflow demos reviewed | No candidate promoted yet | init→plan→apply is useful to see once before independent use. |
 | IaC — Providers and Resources | OPTIONAL VIDEO | Provider/resource demos reviewed | No candidate promoted yet | Plugin/control boundary can be shown visually. |
+| IaC — State | RECOMMENDED VIDEO | Terraform/OpenTofu state explainers reviewed | No candidate promoted yet | Declared config, state record and real infrastructure are a three-way relationship worth visualizing. |
