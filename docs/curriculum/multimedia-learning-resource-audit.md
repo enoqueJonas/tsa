@@ -1021,3 +1021,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Modularity — Encapsulation at System Scale | NO VIDEO | — | — | Boundary enforcement is best inspected in system structure. |
 | Modularity — Shared Libraries and Coupling | NO VIDEO | — | — | Analyze real change coupling. |
 | Modularity — Package Ownership and Change Impact | NO VIDEO | — | — | Ownership/change analysis is contextual. |
+| Modularity — Modular Monoliths | RECOMMENDED VIDEO | Modular-monolith talks reviewed | No candidate promoted yet | A concrete module/dependency architecture counters the false monolith=mud assumption. |
