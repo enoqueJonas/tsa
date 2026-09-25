@@ -821,3 +821,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Observability — Logs, Metrics and Traces | RECOMMENDED VIDEO | OpenTelemetry signal explainers reviewed | No candidate promoted yet | Three signal types and correlation are highly visual. |
 | Observability — Telemetry Design | NO VIDEO | — | — | Design from actual reliability questions. |
 | Observability — Correlation and Context | RECOMMENDED VIDEO | trace/log correlation demos reviewed | No candidate promoted yet | Following one request across signals is ideal for live demonstration. |
+| Observability — Instrumentation | RECOMMENDED VIDEO | OpenTelemetry instrumentation demos reviewed | No candidate promoted yet | Code→exporter→backend path is useful to see. |
