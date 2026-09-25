@@ -746,3 +746,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Vulnerability Lab — Observing Vulnerable Behavior | RECOMMENDED VIDEO | Burp/browser devtools observation demos reviewed | No candidate promoted yet | Live request/response inspection is valuable. |
 | Vulnerability Lab — Reproducing Representative Attacks Safely | REQUIRED WATCH | PortSwigger safe lab demonstrations reviewed | Use threat-specific safe lab demos selected above | Demonstration is part of safe reproduction learning. |
 | Vulnerability Lab — Using Proxies and Request Inspection | RECOMMENDED VIDEO | PortSwigger Burp Suite getting-started material reviewed | No candidate promoted yet | Intercept/modify/replay workflow is explicitly visual. |
+| Vulnerability Lab — Capturing Security Evidence | OPTIONAL VIDEO | Security finding evidence demos reviewed | No candidate promoted yet | A finding walkthrough can reinforce reproducibility. |
