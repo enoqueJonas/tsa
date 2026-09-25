@@ -1079,3 +1079,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Engineering Governance — Lab: Design the Steward Engineering Governance Model | NO VIDEO | — | — | Independent governance design. |
 | Technology Governance — Business and Technology Alignment | OPTIONAL VIDEO | IT governance/business-alignment talks reviewed | No candidate promoted yet | Case studies can show how technology decisions trace to outcomes. |
 | Technology Governance — Value Delivery | NO VIDEO | — | — | Value measures must be defined in context. |
+| Technology Governance — Resource Stewardship | NO VIDEO | — | — | Resource prioritization is a decision exercise. |
