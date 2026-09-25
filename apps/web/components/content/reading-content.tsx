@@ -25,6 +25,14 @@ function Resources({ resources, title = "Resources" }: { resources: LearningReso
             >
               {resource.title} ↗
             </a>
+            {resource.read ? (
+              <p className="mt-1 text-sm leading-6 text-zinc-700">
+                <span className="font-semibold text-zinc-900">Read:</span> {resource.read}
+              </p>
+            ) : null}
+            {resource.purpose ? (
+              <p className="mt-1 text-sm leading-6 text-zinc-600">{resource.purpose}</p>
+            ) : null}
           </li>
         ))}
       </ul>
