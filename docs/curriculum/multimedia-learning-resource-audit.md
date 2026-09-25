@@ -599,3 +599,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Patching — Reassess the Patch Operating Model | NO VIDEO | — | — | ADR/runbook synthesis. |
 | Windows — Windows in a Linux-Primary Enterprise Platform | OPTIONAL VIDEO | Mixed-estate architecture material reviewed | No candidate promoted yet | A visual estate map can establish boundaries without turning TSA into Windows-specialist training. |
 | Windows — Build and Baseline Windows Server | OPTIONAL VIDEO | Windows Server installation/baseline walkthroughs reviewed | No candidate promoted yet | A setup walkthrough can reduce friction; actual VM build is primary. |
+| Windows — PowerShell as an Administrative Interface | RECOMMENDED VIDEO | Microsoft/PowerShell object-pipeline demonstrations reviewed | No candidate promoted yet | The object pipeline is much clearer when shown interactively rather than described as a shell analogy. |
