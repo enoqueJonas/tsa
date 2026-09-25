@@ -833,3 +833,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Security Milestone — Rebaseline Threats, Assets and Trust Boundaries | NO VIDEO | — | — | Reassessment uses actual system. |
 | Security Milestone — Verify Controls Across the Steward Stack | NO VIDEO | — | — | Verification work. |
 | Security Milestone — Close High-priority Gaps and Retest | NO VIDEO | — | — | Remediation/retest. |
+| Security Milestone — Publish the Steward Security Assessment | NO VIDEO | — | — | Deliverable creation. |
