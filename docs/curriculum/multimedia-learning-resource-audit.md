@@ -951,3 +951,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Fault Injection — Artifact Repository Failure Scenarios | OPTIONAL VIDEO | artifact dependency outage demos reviewed | No candidate promoted yet | Useful context; actual failure drill remains primary. |
 | Fault Injection — Recovery Verification | NO VIDEO | — | — | Verify actual recovery. |
 | Fault Injection — Chaos Engineering Principles and Safety | OPTIONAL VIDEO | Principles of Chaos Engineering talks reviewed | No candidate promoted yet | Industry framing can reinforce safe experimentation. |
+| Fault Injection — Lab: Run a Steward Reliability Experiment | NO VIDEO | — | — | Independent experiment. |
