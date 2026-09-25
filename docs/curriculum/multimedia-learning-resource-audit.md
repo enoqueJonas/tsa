@@ -555,3 +555,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Object Storage — Operate Lifecycle, Failure and Recovery | RECOMMENDED VIDEO | Object lifecycle/versioning/recovery demos reviewed | No candidate promoted yet | Lifecycle and version recovery are visual operational flows. |
 | Object Storage — Defend the Storage Architecture | NO VIDEO | — | — | Architecture defence. |
 | IaC — Why Infrastructure as Code | OPTIONAL VIDEO | IaC state/change workflow explainers reviewed | No candidate promoted yet | Useful motivation, but the console-to-code audit is primary. |
+| IaC — Declarative Infrastructure | RECOMMENDED VIDEO | Declarative reconciliation demos reviewed | No candidate promoted yet | Desired versus actual state is a strong visual concept. |
