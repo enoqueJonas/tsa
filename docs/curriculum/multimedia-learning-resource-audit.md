@@ -2164,3 +2164,36 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Governance — Run the Review | RECOMMENDED VIDEO | Architecture review/ATAM-style workshops reviewed | No candidate promoted yet | Facilitation and scenario questioning are behavioral skills. |
 | Governance — Turn Decisions into Guardrails | RECOMMENDED VIDEO | Architecture fitness/policy-as-code talks reviewed | No candidate promoted yet | Decision→automated guardrail flow is useful. |
 | Architect Milestone | NO VIDEO | — | — | Independent architecture evolution synthesis. |
+
+
+## Technical Steward — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Leadership — Prepare the Review | OPTIONAL VIDEO | Technical design-review facilitation talks reviewed | No candidate promoted yet | Seeing review preparation/facilitation can add behavioral context. |
+| Leadership — Facilitate Decision and Challenge | RECOMMENDED VIDEO | Architecture/technical leadership review sessions reviewed | No candidate promoted yet | Challenge without authority and decision facilitation are skills worth observing. |
+| Leadership — Close the Leadership Loop | NO VIDEO | — | — | Follow-up/accountability should be practiced. |
+| Engineering Governance — Design the Governance Artifact and Exception System | NO VIDEO | — | — | Design actual lightweight governance. |
+| Engineering Governance — Define Evidence, Cadence and Lightweight Oversight | NO VIDEO | — | — | Operating model is primary. |
+| Technology Governance | OPTIONAL VIDEO | COBIT/technology governance overview material reviewed | No candidate promoted yet | A concise governance-system overview can provide organizational context, but framework memorization is not the goal. |
+| Technology Risk — Build the risk universe | NO VIDEO | — | — | Build actual risk taxonomy/register. |
+| Technology Risk — Assess controls and treatments | NO VIDEO | — | — | Perform actual assessment. |
+| Technology Risk — Operationalize the register | OPTIONAL VIDEO | Technology risk committee/reporting examples reviewed | No candidate promoted yet | A governance cadence example may help. |
+| Controls/Assurance — Build the control catalogue | NO VIDEO | — | — | Design controls from risks. |
+| Controls/Assurance — Assess design and operation | RECOMMENDED VIDEO | Control design/effectiveness assessment workshops reviewed | No candidate promoted yet | Design effectiveness versus operating effectiveness benefits from worked evidence. |
+| Controls/Assurance — Issue findings and improve assurance | OPTIONAL VIDEO | Audit finding/assurance review examples reviewed | No candidate promoted yet | Useful communication examples. |
+| Architecture Governance — Establish the governing baseline | NO VIDEO | — | — | Create actual baseline. |
+| Architecture Governance — Evaluate the exception | RECOMMENDED VIDEO | Architecture review board/exception case studies reviewed | No candidate promoted yet | A live exception challenge can demonstrate proportional governance. |
+| Architecture Governance — Operate and learn from the exception | NO VIDEO | — | — | Track actual exception lifecycle. |
+| Security/Data Governance — Map accountability and policy | NO VIDEO | — | — | Map actual accountability. |
+| Security/Data Governance — Govern access and lifecycle | OPTIONAL VIDEO | Data lifecycle/access governance examples reviewed | No candidate promoted yet | Lifecycle visualization can help. |
+| Security/Data Governance — Test an exception and review loop | NO VIDEO | — | — | Exercise actual loop. |
+| Change/Service Governance — Classify and prepare the change | NO VIDEO | — | — | Apply actual classification. |
+| Change/Service Governance — Make the release decision | RECOMMENDED VIDEO | Change advisory/release decision simulations reviewed | No candidate promoted yet | Decision meeting behavior and evidence use are worth observing. |
+| Change/Service Governance — Close the service-governance loop | NO VIDEO | — | — | Actual closure/review evidence. |
+| Third-party/Lifecycle — Establish dependency and product governance | NO VIDEO | — | — | Inventory/ownership primary. |
+| Third-party/Lifecycle — Govern provenance, retention and exceptions | OPTIONAL VIDEO | Supply-chain governance case studies reviewed | No candidate promoted yet | Useful context. |
+| Third-party/Lifecycle — Review continuity and ecosystem health | RECOMMENDED VIDEO | Vendor/lifecycle risk case studies reviewed | No candidate promoted yet | Real ecosystem failure/obsolescence examples add value. |
+| Technical Debt and Engineering Health | OPTIONAL VIDEO | Ward Cunningham/Martin Fowler technical-debt material reviewed | No candidate promoted yet | Original/practitioner framing can sharpen the metaphor, but portfolio evidence is primary. |
+| Engineering Handbook and Standards | NO VIDEO | — | — | The learner must author usable standards, not consume another organization's handbook. |
+| Technical Steward Milestone | NO VIDEO | — | — | Independent governance/stewardship synthesis. |
