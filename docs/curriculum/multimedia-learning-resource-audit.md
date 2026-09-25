@@ -1075,3 +1075,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Engineering Governance — Policies, Standards, Procedures and Guidelines | OPTIONAL VIDEO | Governance artifact hierarchy explainers reviewed | No candidate promoted yet | A worked hierarchy can clarify purpose without over-bureaucratizing. |
 | Engineering Governance — Exceptions | RECOMMENDED VIDEO | Policy-exception/risk-acceptance case studies reviewed | No candidate promoted yet | A real exception workflow shows why governance needs bounded escape paths. |
 | Engineering Governance — Evidence and Review Cadence | NO VIDEO | — | — | Cadence/evidence design is contextual. |
+| Engineering Governance — Governance Without Bureaucracy | RECOMMENDED VIDEO | Lean governance/platform governance talks reviewed | No candidate promoted yet | Practitioner examples can show controls embedded in engineering flow. |
