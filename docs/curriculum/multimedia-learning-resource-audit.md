@@ -1704,3 +1704,18 @@ A blog post may also be better than either a manual or a video. The resource mix
 | VPS — Remote Recovery Concepts | RECOMMENDED VIDEO | Provider console/rescue-mode demos reviewed | No candidate promoted yet | Out-of-band recovery is visual and operational. |
 | VPS — Backups and Snapshots | OPTIONAL VIDEO | Provider snapshot/restore demos reviewed | No candidate promoted yet | Useful if restore is emphasized; snapshot≠backup remains primary reasoning. |
 | Internet — Public and Private Addressing | NO VIDEO | — | — | Already deeply covered. |
+| Internet — Internet Routing Concepts | RECOMMENDED VIDEO | BGP/Internet-routing visual explainers reviewed | No candidate promoted yet | Autonomous systems/path propagation are visual. |
+| Internet — Domains and DNS Records | OPTIONAL VIDEO | DNS record demos reviewed | Reuse earlier DNS media if needed | Avoid duplicate foundational video. |
+| Internet — DNS Resolution and Troubleshooting | NO VIDEO | Earlier DNS video + hands-on evidence | Reuse only for review | Troubleshooting should be hands-on. |
+| Internet — TLS Certificates and Certificate Authorities | RECOMMENDED VIDEO | TLS/PKI chain animations reviewed | No candidate promoted yet | Chain of trust and handshake are visual. |
+| Internet — HTTPS and TLS Termination | RECOMMENDED VIDEO | TLS termination/reverse-proxy demos reviewed | No candidate promoted yet | Client→terminator→upstream boundary is visual. |
+| Internet — Reverse Proxies | NO VIDEO | Homelab reverse-proxy slot already exists | Reuse if selected later | Avoid duplicate assignment. |
+| Internet — Ingress Concepts | RECOMMENDED VIDEO | Ingress/edge-routing explainers reviewed | No candidate promoted yet | External traffic path to workloads benefits from topology. |
+| Internet — Internet-facing Firewalls | NO VIDEO | — | — | Apply prior firewall knowledge to public boundary. |
+| Internet — Exposure, Attack Surface and Administrative Boundaries | RECOMMENDED VIDEO | Attack-surface/topology reviews considered | No candidate promoted yet | A before/after exposure map can make boundary reduction concrete. |
+| Certificates — Certificate Lifecycle Operations | RECOMMENDED VIDEO | ACME/cert renewal demonstrations reviewed | No candidate promoted yet | Issue→serve→renew→reload→expire/fail sequence is ideal for a live demonstration. |
+| Cloud Blocks — Compute | OPTIONAL VIDEO | Provider compute overviews reviewed | No candidate promoted yet | Useful mapping from VPS/VM concepts; no need for a full course. |
+| Cloud Blocks — Object Storage | RECOMMENDED VIDEO | S3/object-storage model explainers reviewed | No candidate promoted yet | Bucket/key/object semantics differ from filesystems and benefit from visual contrast. |
+| Cloud Blocks — Block Storage | OPTIONAL VIDEO | Cloud block-volume demos reviewed | No candidate promoted yet | Attachment/persistence boundary can be shown quickly. |
+| Cloud Blocks — Managed Databases | OPTIONAL VIDEO | Managed DB architecture material reviewed | No candidate promoted yet | Useful responsibility-boundary context. |
+| Cloud Blocks — Virtual Networks and Subnets | RECOMMENDED VIDEO | VPC/VNet topology animations reviewed | No candidate promoted yet | Cloud network topology is highly visual. |
