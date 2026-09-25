@@ -643,3 +643,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Page Objects and UI Abstractions | OPTIONAL VIDEO | Playwright POM examples reviewed | No candidate promoted yet | A refactor can help, without teaching POM as mandatory dogma. |
 | Automation — Helpers and Utilities | NO VIDEO | — | — | Reuse boundaries should emerge from actual duplication. |
 | Automation — Assertions | NO VIDEO | — | — | Concrete false-positive/negative cases are stronger. |
+| Automation — Markers and Tags | NO VIDEO | — | — | Small pytest mechanism; docs and practice suffice. |
