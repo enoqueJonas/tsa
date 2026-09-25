@@ -57,3 +57,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | --- | --- | --- | --- | --- |
 | Thinking Like an Engineer | NO VIDEO | No search promoted after lesson fit review | — | The lesson is about framing, constraints, uncertainty and evidence. The written worked example plus the learner's own problem frame is more valuable than passive viewing. |
 | Systems Thinking | OPTIONAL VIDEO | MIT OpenCourseWare — Information Flow / Feedback Loops | MIT OCW Information Flow series; optional, focused on the Feedback Loops item | A visual feedback-loop explanation can reinforce the idea of system behavior emerging from relationships, but the TSA mapping exercise remains the primary learning activity. |
+| Trade-offs | NO VIDEO | No search promoted after lesson fit review | — | The learner needs to make and defend a contextual decision. Another general explanation of trade-offs adds less value than the matrix and real decision exercise. |
