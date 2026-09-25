@@ -465,3 +465,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Core Infra — Operate Authoritative Homelab DNS | RECOMMENDED VIDEO | BIND authoritative DNS demos reviewed | No candidate promoted yet | Zone/record/query flow benefits from a live authoritative-server demonstration. |
 | Core Infra — Break and Diagnose DNS | NO VIDEO | — | — | The learner should diagnose wrong records, cache and outage directly. |
 | Core Infra — Operate DHCP Scopes and Reservations | RECOMMENDED VIDEO | DHCP server/scope demonstrations reviewed | No candidate promoted yet | Lease, reservation and option behavior is useful to see in a controlled network. |
+| Core Infra — DHCP Exhaustion, Wrong Options and Relay | RECOMMENDED VIDEO | DHCP relay/failure demonstrations reviewed | No candidate promoted yet | Relay and exhaustion are path/state problems that benefit from topology and packet-flow visualization. |
