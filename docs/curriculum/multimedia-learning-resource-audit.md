@@ -226,3 +226,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | SOAP/XML — Implement a Contract-First SOAP Endpoint | NO VIDEO | — | — | Implementation evidence is primary. |
 | SOAP/XML — Integrate Steward with the SOAP Provider | NO VIDEO | — | — | Integration lab. |
 | SOAP/XML — Contract Testing and Compatibility Failure | NO VIDEO | — | — | Breaking and testing the contract is the lesson. |
+| SOAP/XML — Milestone: Build and Integrate a Contract-First SOAP Service | NO VIDEO | — | — | Milestone synthesis. |
