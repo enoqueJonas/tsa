@@ -477,3 +477,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Configuration — Milestone: Build and Operate the Rocky Configuration Baseline | NO VIDEO | — | — | Milestone synthesis. |
 | Configuration — Reassess Image, Ansible and Platform Ownership | NO VIDEO | — | — | Ownership boundaries are an architecture decision. |
 | Patching — Patch Risk, Exposure and Change Windows | OPTIONAL VIDEO | Patch-management/SRE change talks reviewed | No candidate promoted yet | Real operational examples add context, but the risk model is primary. |
+| Patching — Patch a Rocky Linux Workload Host | NO VIDEO | — | — | The learner must perform and verify the real maintenance. |
