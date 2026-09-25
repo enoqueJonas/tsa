@@ -760,3 +760,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Linux/Network Security — Security Logging and Auditing | RECOMMENDED VIDEO | auditd/security-log demos reviewed | No candidate promoted yet | A live event→audit record investigation adds value. |
 | Linux/Network Security — Network Segmentation Concepts | RECOMMENDED VIDEO | segmentation topology demos reviewed | No candidate promoted yet | Trust zones and allowed flows are visual. |
 | Linux/Network Security — Administrative Network Boundaries | RECOMMENDED VIDEO | management-plane segmentation demos reviewed | No candidate promoted yet | Separate admin path is best shown topologically. |
+| Linux/Network Security — TLS Configuration and Certificate Hygiene | RECOMMENDED VIDEO | TLS/certificate inspection demos reviewed | No candidate promoted yet | Chain/hostname/expiry/protocol evidence benefits from live inspection. |
