@@ -493,3 +493,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Schema Evolution — Design a Backward-Compatible Steward Change | NO VIDEO | — | — | Design work should be independent. |
 | Schema Evolution — Run the Expand and Backfill | RECOMMENDED VIDEO | Online migration/backfill demos reviewed | No candidate promoted yet | A real staged migration can reinforce restartability and coexistence before the learner executes it. |
 | Schema Evolution — Switch, Fail and Recover | NO VIDEO | — | — | Controlled failure/recovery is the learner's evidence. |
+| Schema Evolution — Contract and Prove the End State | NO VIDEO | — | — | Execute the final gate and cleanup directly. |
