@@ -876,3 +876,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Alerting — Lab: Build Steward Alerts and Runbooks | NO VIDEO | — | — | Independent lab. |
 | Alertmanager — Operate Prometheus Alertmanager | RECOMMENDED VIDEO | Prometheus Alertmanager routing/silence demos reviewed | No candidate promoted yet | Routing/grouping/inhibition/silences benefit from live demonstration. |
 | Database — Database Roles and Least Privilege | NO VIDEO | — | — | Implement and prove actual role boundaries. |
+| Database — Connections, Pools and Exhaustion | RECOMMENDED VIDEO | connection-pool saturation demos reviewed | No candidate promoted yet | Pool occupancy/wait/exhaustion is temporal and graphable. |
