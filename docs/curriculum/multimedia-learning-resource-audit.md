@@ -638,3 +638,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Configuration | NO VIDEO | — | — | Implement configuration directly. |
 | Automation — Fixtures | RECOMMENDED VIDEO | pytest fixture lifecycle demos reviewed | No candidate promoted yet | Scope/dependency/teardown behavior benefits from visualization. |
 | Automation — Test Data | NO VIDEO | — | — | Design and own test data. |
+| Automation — API Clients | NO VIDEO | — | — | Implement reusable client boundary. |
