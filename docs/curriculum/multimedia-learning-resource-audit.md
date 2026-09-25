@@ -659,3 +659,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Lab: Extract tsa-test-core | NO VIDEO | — | — | Independent extraction. |
 | Automation — Lab: Publish and Consume tsa-test-core | NO VIDEO | — | — | Independent package lifecycle lab. |
 | Browser — Decision Gate: Does Steward Need Browser Testing? | NO VIDEO | — | — | Decision gate should use actual product surface/risk. |
+| Browser — Browser Differences | RECOMMENDED VIDEO | Browser-engine/rendering demos reviewed | No candidate promoted yet | Engine differences and reproducibility benefit from visual comparison. |
