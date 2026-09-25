@@ -898,3 +898,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Resilience — Exponential Backoff and Jitter | RECOMMENDED VIDEO | AWS retry/backoff material reviewed | No candidate promoted yet | Retry schedules are best visualized on timelines. |
 | Resilience — Circuit Breakers | RECOMMENDED VIDEO | circuit-breaker demos reviewed | No candidate promoted yet | Closed/open/half-open state transitions are visual. |
 | Resilience — Idempotency | OPTIONAL VIDEO | idempotency/retry demos reviewed | No candidate promoted yet | Duplicate request timeline can reinforce effect semantics. |
+| Resilience — Partial Failure | RECOMMENDED VIDEO | distributed partial-failure talks reviewed | No candidate promoted yet | Mixed healthy/unhealthy state is core distributed-systems intuition. |
