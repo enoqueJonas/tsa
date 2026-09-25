@@ -203,3 +203,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Boundaries — Defining System Boundaries | NO VIDEO | — | — | Boundary choice must be defended from the actual system. |
 | Boundaries — Trust and Ownership Boundaries | OPTIONAL VIDEO | Trust-boundary modeling material reviewed | No candidate promoted yet | A visual worked example can help, but Security later goes deeper. |
 | Boundaries — Lab: Draw the Steward API Context | NO VIDEO | — | — | Independent modeling lab. |
+| Modeling — Why We Model Systems | OPTIONAL VIDEO | Simon Brown C4 talks reviewed | No candidate promoted here | Useful motivation, but reserve the selected talk for C4-style thinking. |
