@@ -638,3 +638,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — pytest Fundamentals | OPTIONAL VIDEO | pytest introductions reviewed | No candidate promoted yet | Useful orientation; hands-on tests remain primary. |
 | Automation — Configuration | NO VIDEO | — | — | Implement and validate actual configuration. |
 | Automation — Fixtures | RECOMMENDED VIDEO | pytest fixture demos reviewed | No candidate promoted yet | Fixture dependency, scope and teardown are easier to see in execution. |
+| Automation — Test Data | NO VIDEO | — | — | Design and manage real test data. |
