@@ -506,3 +506,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Delivery Milestone — Gate 5: Failure, Rollback and Recovery | NO VIDEO | — | — | Evidence gate. |
 | Delivery Milestone — Gate 6: Delivery Platform Handoff | NO VIDEO | — | — | Evidence gate. |
 | Delivery Milestone — Milestone Review and Exit Criteria | NO VIDEO | — | — | School exit review. |
+
+
+## Cloud Engineer — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Hosting Models — On-premises, Colocation, VPS and Cloud | RECOMMENDED VIDEO | Cloud hosting-model explainers reviewed | No candidate promoted yet | Physical ownership/control boundaries benefit from a visual comparison. |
