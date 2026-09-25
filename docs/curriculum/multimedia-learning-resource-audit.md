@@ -580,3 +580,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Kubernetes — Pods, Deployments and ReplicaSets | RECOMMENDED VIDEO | Kubernetes workload-controller demos reviewed | No candidate promoted yet | Desired replicas and replacement behavior are ideal for live demonstration. |
 | Kubernetes — Services and Cluster Networking | RECOMMENDED VIDEO | Kubernetes networking/service visual explainers reviewed | No candidate promoted yet | Pod IPs, Services and routing are topology-heavy. |
 | Kubernetes — ConfigMaps, Secrets and Runtime Configuration | OPTIONAL VIDEO | Kubernetes config/secret demos reviewed | No candidate promoted yet | Useful mechanics; secret-management boundaries remain primary. |
+| Kubernetes — Probes, Resources and Rollouts | RECOMMENDED VIDEO | Kubernetes probe/resource/rollout demos reviewed | No candidate promoted yet | Readiness/liveness and rolling replacement benefit from live behavior. |
