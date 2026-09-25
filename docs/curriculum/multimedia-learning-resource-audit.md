@@ -569,3 +569,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | IaC — Variables and Outputs | NO VIDEO | — | — | Direct implementation is simple and more useful. |
 | IaC — Dependencies | OPTIONAL VIDEO | Terraform dependency-graph explainers reviewed | No candidate promoted yet | Graph-derived ordering can benefit from visualization. |
 | IaC — Modules Concepts | NO VIDEO | — | — | Reuse boundary decision is primary. |
+| IaC — Plan and Apply Lifecycle | RECOMMENDED VIDEO | Plan/apply change-control demos reviewed | No candidate promoted yet | Seeing exact diff review before mutation reinforces the control model. |
