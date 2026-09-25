@@ -647,3 +647,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Automation Logging | NO VIDEO | — | — | Add diagnostic evidence. |
 | Automation — Reports | OPTIONAL VIDEO | test-report examples reviewed | No candidate promoted yet | Visual report can show what useful failure evidence looks like. |
 | Automation — Screenshots, Traces and Video | RECOMMENDED VIDEO | Playwright trace viewer demos reviewed | No candidate promoted yet | The trace viewer itself is visual and worth demonstrating. |
+| Automation — Parallel Execution | RECOMMENDED VIDEO | pytest-xdist/parallel timeline demos reviewed | No candidate promoted yet | Concurrency/isolation problems are easier to see. |
