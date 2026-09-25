@@ -1129,3 +1129,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture Governance — Architecture Decision Ownership | NO VIDEO | — | — | Assign actual ownership. |
 | Architecture Governance — Lab: Govern a Steward Architecture Exception | NO VIDEO | — | — | Independent exception exercise. |
 | Technology Governance — Business and Technology Alignment | OPTIONAL VIDEO | COBIT/IT governance alignment material reviewed | No candidate promoted yet | A worked goal→capability→measure mapping can reinforce alignment. |
+| Technology Governance — Value Delivery | NO VIDEO | — | — | Tie actual investment to outcomes. |
