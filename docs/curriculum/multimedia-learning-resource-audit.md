@@ -489,3 +489,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Release — Release Failure Handling | RECOMMENDED VIDEO | Failed-release/rollback incident demos reviewed | No candidate promoted yet | Timeline of detection→decision→rollback/recovery is useful. |
 | Release — Release Runbooks | NO VIDEO | — | — | Write and execute the runbook. |
 | Artifact Management — Artifact, Dependency and Supply-Chain Management | RECOMMENDED VIDEO | Nexus repository/proxy/hosted-flow demos reviewed | No candidate promoted yet | Hosted/proxy/group repositories and immutable artifact flow are easier to understand visually. |
+| Schema Evolution — Production Database Schema Evolution | RECOMMENDED VIDEO | Expand-contract/zero-downtime migration talks reviewed | No candidate promoted yet | Old/new app versions, schema states and backfill coexistence are timeline-heavy and benefit from animation. |
