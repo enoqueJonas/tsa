@@ -574,3 +574,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
 | Core Infrastructure — DNS, DHCP and Time as Infrastructure | RECOMMENDED VIDEO | Infrastructure dependency/bootstrapping explainers reviewed | No candidate promoted yet | The dependency chain between name resolution, addressing and time is easier to grasp as a topology. |
+| Core Infrastructure — Operate Authoritative Homelab DNS | RECOMMENDED VIDEO | BIND authoritative DNS demos reviewed | No candidate promoted yet | Zone, authoritative answer and reverse lookup behavior benefit from live dig/BIND evidence. |
