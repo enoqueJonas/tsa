@@ -870,3 +870,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | SLO — Choosing Good Indicators | NO VIDEO | — | — | Indicator selection is contextual reasoning. |
 | SLO — Windowing and Measurement Concepts | RECOMMENDED VIDEO | rolling-window/burn-rate explainers reviewed | No candidate promoted yet | Time windows are easier to understand graphically. |
 | SLO — Reliability Targets and Trade-offs | NO VIDEO | — | — | Make actual target trade-offs. |
+| SLO — Error Budgets and Release Decisions | RECOMMENDED VIDEO | error-budget policy examples reviewed | No candidate promoted yet | A worked burn→decision scenario adds value. |
