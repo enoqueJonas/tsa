@@ -808,3 +808,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Directory Federation — Active Directory, LDAP and Kerberos Context | RECOMMENDED VIDEO | AD/LDAP/Kerberos relationship explainers reviewed | No candidate promoted yet | Protocol/service relationships are easy to confuse and benefit from a visual map. |
 | SFTP Migration — FTP to SFTP Secure Transfer Migration | RECOMMENDED VIDEO | FTP/SFTP protocol-flow comparisons reviewed | No candidate promoted yet | The transport/security-model difference benefits from packet/flow visualization. |
 | SFTP Migration — From Legacy Compatibility to Secure Transfer | NO VIDEO | — | — | Migration pressure and constraints are contextual. |
+| SFTP Migration — Build the SFTP Trust and Identity Boundary | RECOMMENDED VIDEO | OpenSSH SFTP key/host-key demos reviewed | No candidate promoted yet | User key authentication plus host-key trust is a live workflow. |
