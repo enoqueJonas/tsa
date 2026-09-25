@@ -1044,3 +1044,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Data — Transactional Consistency | RECOMMENDED VIDEO | transaction/consistency talks reviewed | No candidate promoted yet | Transaction scope and cross-boundary consistency are temporal and visual. |
 | Data — Data Duplication and Derived Views | RECOMMENDED VIDEO | CQRS/read-model material reviewed | No candidate promoted yet | Source-of-truth versus derived-copy flow benefits from visualization. |
 | Data — Caching | NO VIDEO | Redis/cache media already audited earlier | Reuse earlier media if review is needed | Avoid duplicate assignment. |
+| Data — Read Models | RECOMMENDED VIDEO | CQRS/read-model talks reviewed | No candidate promoted yet | Write model→event/data→read model flow is visual. |
