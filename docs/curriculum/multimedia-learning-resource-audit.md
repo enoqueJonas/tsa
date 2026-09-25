@@ -195,3 +195,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Requirements — Stakeholders and Actors | NO VIDEO | — | — | Stakeholder mapping is a reasoning exercise. |
 | Requirements — Functional Requirements | NO VIDEO | — | — | Writing testable behavior is the core practice. |
 | Requirements — Quality Requirements | OPTIONAL VIDEO | Quality-attribute scenario talks reviewed | No candidate promoted yet | A worked scenario can reinforce measurable quality attributes. |
+| Requirements — Constraints and Assumptions | NO VIDEO | — | — | The learner must surface these in a real problem. |
