@@ -1127,3 +1127,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture Governance — Architecture Exceptions | NO VIDEO | — | — | Operate the actual exception model. |
 | Architecture Governance — Technology Lifecycle | RECOMMENDED VIDEO | technology lifecycle/EOL governance talks reviewed | No candidate promoted yet | Adopt→operate→upgrade→retire sequence and triggers are visual. |
 | Architecture Governance — Architecture Decision Ownership | NO VIDEO | — | — | Assign actual ownership. |
+| Architecture Governance — Lab: Govern a Steward Architecture Exception | NO VIDEO | — | — | Independent exception exercise. |
