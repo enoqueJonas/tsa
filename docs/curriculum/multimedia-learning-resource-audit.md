@@ -464,3 +464,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI — Parallelism | OPTIONAL VIDEO | Parallel pipeline demos reviewed | No candidate promoted yet | A DAG/timeline can make speed-versus-contention trade-offs concrete. |
 | CI — Automated Checks | NO VIDEO | — | — | Implement the checks. |
 | CI — Test Stages | NO VIDEO | — | — | Quality school deepens testing; here integrate real stages. |
+| CI — Quality Gates | NO VIDEO | — | — | Gate behavior should be proven with failing/passing pipelines. |
