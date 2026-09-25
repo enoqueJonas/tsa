@@ -621,3 +621,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Unit/Component — Component Boundaries | OPTIONAL VIDEO | Component-testing boundary talks reviewed | No candidate promoted yet | A boundary diagram can reinforce the slice. |
 | Unit/Component — Fast Feedback and Maintainability | NO VIDEO | — | — | Measure and maintain the actual suite. |
 | Unit/Component — Lab: Strengthen Steward Component Tests | NO VIDEO | — | — | Independent lab. |
+| API/Integration — API Test Design | NO VIDEO | — | — | Design from the actual contract. |
