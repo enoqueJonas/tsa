@@ -822,3 +822,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Application Security — Security Logging | NO VIDEO | — | — | Implement and inspect actual security events. |
 | Application Security — Rate Limiting and Abuse Resistance | NO VIDEO | — | — | Implement and load-test actual policy. |
 | Application Security — Data Protection | NO VIDEO | — | — | Apply classification/protection decisions. |
+| Application Security — Security-focused Code Review | OPTIONAL VIDEO | secure-code-review walkthroughs reviewed | No candidate promoted yet | Watching an expert reason through a diff can model review technique. |
