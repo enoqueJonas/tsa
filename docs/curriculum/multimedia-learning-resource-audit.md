@@ -210,3 +210,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Modeling — Communicating Architecture Visually | RECOMMENDED VIDEO | Simon Brown C4 talk | Same candidate; communication/notation segment to be verified | The lesson is explicitly visual communication. |
 | Modeling — Lab: Model Steward API at Multiple Levels | NO VIDEO | — | — | Synthesis lab. |
 | Components — Components and Responsibilities | NO VIDEO | — | — | Responsibility assignment should come from the system model. |
+| Components — Coupling and Cohesion Foundations | OPTIONAL VIDEO | Coupling/cohesion design talks reviewed | No candidate promoted yet | A worked refactor may reinforce the concept. |
