@@ -741,3 +741,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — Mass Assignment and Excessive Data Exposure | RECOMMENDED VIDEO | API mass-assignment demos reviewed | No candidate promoted yet | Request/serializer/model boundary failure is demonstrable. |
 | Vulnerability Lab — Designing an Isolated Security Lab | RECOMMENDED VIDEO | isolated lab-network walkthroughs reviewed | No candidate promoted yet | Seeing isolation boundaries reduces accidental exposure risk. |
 | Vulnerability Lab — Safe Lab Networking | RECOMMENDED VIDEO | virtual lab network demos reviewed | No candidate promoted yet | Topology and reachability are visual. |
+| Vulnerability Lab — Vulnerable Applications and Intentional Weaknesses | OPTIONAL VIDEO | OWASP Juice Shop/DVWA introductions reviewed | No candidate promoted yet | Orientation can help; learner must inspect lab directly. |
