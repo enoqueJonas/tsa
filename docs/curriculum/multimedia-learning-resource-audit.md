@@ -949,3 +949,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Fault Injection — Network and Dependency Failure Simulation | RECOMMENDED VIDEO | latency/loss/dependency fault demos reviewed | No candidate promoted yet | Injected latency/loss and downstream effects are ideal for live demo. |
 | Fault Injection — Database Failure Scenarios | OPTIONAL VIDEO | database outage demos reviewed | No candidate promoted yet | Useful context; actual controlled scenario remains primary. |
 | Fault Injection — Artifact Repository Failure Scenarios | OPTIONAL VIDEO | artifact dependency outage demos reviewed | No candidate promoted yet | Useful context; actual failure drill remains primary. |
+| Fault Injection — Recovery Verification | NO VIDEO | — | — | Verify actual recovery. |
