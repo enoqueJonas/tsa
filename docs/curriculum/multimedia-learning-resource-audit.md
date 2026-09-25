@@ -777,3 +777,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Vault — Vault and Dynamic Secrets for Steward | RECOMMENDED VIDEO | HashiCorp Vault dynamic secrets demos reviewed | No candidate promoted yet | Dynamic credential issuance/lease/revocation should be seen once before implementation. |
 | PKI — Model Internal PKI and Machine Trust | RECOMMENDED VIDEO | PKI chain-of-trust explainers reviewed | No candidate promoted yet | Root→intermediate→leaf trust hierarchy is highly visual. |
 | PKI — Build a Root and Issuing CA Hierarchy | RECOMMENDED VIDEO | OpenSSL/Vault PKI hierarchy demos reviewed | No candidate promoted yet | Seeing CA hierarchy creation and protected root boundary adds value. |
+| PKI — Issue Workload Certificates with Explicit Identity | RECOMMENDED VIDEO | certificate SAN/EKU demos reviewed | No candidate promoted yet | Certificate identity fields and validation are easier with live inspection. |
