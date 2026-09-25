@@ -681,3 +681,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI — Reports and Artifacts | OPTIONAL VIDEO | CI artifact/report demos reviewed | No candidate promoted yet | Seeing diagnostics consumed after a failure adds context. |
 | CI — Quality Gates | OPTIONAL VIDEO | quality-gate pipeline demos reviewed | No candidate promoted yet | Useful reinforcement; actual policy design is primary. |
 | CI — Test Selection | NO VIDEO | — | — | Selection should be designed from suite risk/cost. |
+| CI — Failure Triage | RECOMMENDED VIDEO | CI failure-triage demos reviewed | No candidate promoted yet | A real red pipeline investigation is valuable. |
