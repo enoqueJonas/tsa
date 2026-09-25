@@ -604,3 +604,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Quality Engineering — Defect Evidence and Communication | NO VIDEO | — | — | Write evidence from actual failures. |
 | Quality Engineering — Lab: Write the Steward Quality Strategy | NO VIDEO | — | — | Synthesis lab. |
 | Test Design — Requirements Analysis for Testing | NO VIDEO | — | — | Interrogate real requirements. |
+| Test Design — Equivalence Partitioning | RECOMMENDED VIDEO | ISTQB-style partition demonstrations reviewed | No candidate promoted yet | Partitioning behavior is easy to reinforce with worked visual examples. |
