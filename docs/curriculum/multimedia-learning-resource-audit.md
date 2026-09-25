@@ -913,3 +913,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | DR — Disaster Scenarios | OPTIONAL VIDEO | DR scenario talks reviewed | No candidate promoted yet | Real cases can broaden failure imagination. |
 | DR — Recovery Procedures | NO VIDEO | — | — | Write and exercise actual procedure. |
 | DR — Database Recovery | RECOMMENDED VIDEO | PostgreSQL recovery demos reviewed | No candidate promoted yet | Restore/verify sequence adds value. |
+| DR — Artifact Repository Backup and Restore | RECOMMENDED VIDEO | Nexus backup/restore demos reviewed | No candidate promoted yet | Platform-specific restore workflow is visual. |
