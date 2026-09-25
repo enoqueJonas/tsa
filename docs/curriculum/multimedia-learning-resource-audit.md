@@ -1286,3 +1286,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Defence — Defend Governance Decisions | NO VIDEO | — | — | Independent defence. |
 | Defence — Respond to Challenges | NO VIDEO | — | — | Live reasoning under challenge is itself the assessment. |
 | Defence — State Limitations | NO VIDEO | — | — | Demonstrate calibrated engineering judgment. |
+| Defence — Propose Future Evolution | NO VIDEO | — | — | Use current evidence to propose next changes. |
