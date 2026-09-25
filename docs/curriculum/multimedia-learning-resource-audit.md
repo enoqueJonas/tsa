@@ -279,3 +279,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Linux — Lab: Operate Steward API as a Linux Service | NO VIDEO | — | — | Independent operations lab. |
 | Networking — Networking Mental Models: OSI and TCP/IP | RECOMMENDED VIDEO | Layer-model explainers reviewed | No candidate promoted yet | Encapsulation/layer responsibility is highly visual. |
 | Networking — Ethernet and Switching | RECOMMENDED VIDEO | Switching/frame-forwarding animations reviewed | No candidate promoted yet | MAC learning and frame forwarding benefit from animation. |
+| Networking — IP Addressing | RECOMMENDED VIDEO | IP addressing explainers reviewed | No candidate promoted yet | Binary/prefix/address scope is easier with diagrams. |
