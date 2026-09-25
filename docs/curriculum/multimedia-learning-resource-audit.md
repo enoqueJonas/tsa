@@ -781,3 +781,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Identity/Secrets — OAuth 2.0 and OpenID Connect Mental Model | RECOMMENDED VIDEO | OAuth/OIDC visual flows reviewed | No candidate promoted yet | Browser/client/IdP/API sequence is best shown as a flow. |
 | Identity/Secrets — Keycloak Realms, Clients, Users and Roles | RECOMMENDED VIDEO | Keycloak official/community demos reviewed | No candidate promoted yet | The admin UI and token claims are useful to see once. |
 | Identity/Secrets — Machine and Workload Identity | RECOMMENDED VIDEO | workload-identity/mTLS/OIDC talks reviewed | No candidate promoted yet | Non-human identity lifecycle benefits from architecture diagrams. |
+| Identity/Secrets — Secret Lifecycle: Create, Distribute, Rotate, Revoke | RECOMMENDED VIDEO | secret-lifecycle demonstrations reviewed | No candidate promoted yet | Rotation/revocation timelines add operational intuition. |
