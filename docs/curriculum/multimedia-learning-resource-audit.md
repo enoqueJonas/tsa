@@ -858,3 +858,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Tracing — Investigate Cross-Boundary Latency | RECOMMENDED VIDEO | trace waterfall/latency demos reviewed | No candidate promoted yet | Span waterfall makes latency attribution concrete. |
 | Tracing — Break the Tracing Pipeline | NO VIDEO | — | — | Failure injection is the exercise. |
 | Tracing — Defend the Tracing Architecture | NO VIDEO | — | — | Defence uses evidence. |
+| Stack Integration — Observability Stack Integration: Graylog, Prometheus and Grafana | RECOMMENDED VIDEO | cross-signal observability demos reviewed | No candidate promoted yet | Signal ownership and navigation across tools are visual. |
