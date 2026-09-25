@@ -775,3 +775,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Artifact Trust — From Provenance Evidence to Enforced Trust | RECOMMENDED VIDEO | Sigstore verification-policy talks reviewed | No candidate promoted yet | The distinction between evidence and enforced admission is architectural and visual. |
 | Artifact Trust — Sign a Steward Release with Cosign | NO VIDEO | — | — | Learner must sign the actual release. |
 | Artifact Trust — Enforce Verification Before Deployment | RECOMMENDED VIDEO | Cosign/admission verification demos reviewed | No candidate promoted yet | A rejected unsigned/tampered artifact is a strong live demonstration. |
+| Artifact Trust — Break and Recover the Signing Trust Chain | NO VIDEO | — | — | Failure injection/recovery is the exercise. |
