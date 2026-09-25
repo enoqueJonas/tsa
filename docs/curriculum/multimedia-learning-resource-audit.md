@@ -588,3 +588,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Cloud Milestone — Milestone Brief: Steward Internet Environment | NO VIDEO | — | — | Milestone brief. |
 | Cloud Milestone — Milestone Review and Exit Criteria | NO VIDEO | — | — | Evidence review. |
 | Cloud Milestone — Cloud Engineer Exit Review | NO VIDEO | — | — | Reflection/transfer check. |
+
+
+## Quality Steward — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Quality Engineering — Quality vs Testing | OPTIONAL VIDEO | Modern testing/quality engineering talks reviewed | No candidate promoted yet | A strong talk can reframe quality as system property, but strategy work is primary. |
