@@ -674,3 +674,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Windows — Reassess Windows Operational Depth | NO VIDEO | — | — | The learner must define specialist boundaries from the implemented estate. |
 | Enterprise Services — Enterprise File Services: NFS and SMB | RECOMMENDED VIDEO | Red Hat NFS and Samba interoperability demonstrations reviewed | No candidate promoted yet | Producer/consumer mounts, identity and protocol differences benefit from a live cross-host demonstration. |
 | Enterprise Services — Enterprise Directory Services: LDAP | RECOMMENDED VIDEO | LDAP DN/search/bind visual explainers reviewed | No candidate promoted yet | DIT hierarchy, DN/RDN, bind and search filters are easier with a visual directory tree and live query. |
+| File Integration — File-Based Integration Contracts | NO VIDEO | — | — | Contract design and atomicity rules are better expressed/tested directly. |
