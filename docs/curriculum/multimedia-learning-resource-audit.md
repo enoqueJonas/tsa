@@ -900,3 +900,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Resilience — Idempotency | OPTIONAL VIDEO | idempotency/retry demos reviewed | No candidate promoted yet | Duplicate request timeline can reinforce effect semantics. |
 | Resilience — Partial Failure | RECOMMENDED VIDEO | distributed partial-failure talks reviewed | No candidate promoted yet | Mixed healthy/unhealthy state is core distributed-systems intuition. |
 | Resilience — Dependency Failure | RECOMMENDED VIDEO | dependency outage demos reviewed | No candidate promoted yet | Failure propagation is visual. |
+| Resilience — Cascading Failure | RECOMMENDED VIDEO | Google SRE cascading-failure material reviewed | No candidate promoted yet | Feedback loops and amplification benefit from diagrams. |
