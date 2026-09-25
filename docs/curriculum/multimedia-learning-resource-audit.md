@@ -1019,3 +1019,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Styles — Record Style Decision and Evolution Triggers | NO VIDEO | — | — | ADR/evolution evidence. |
 | Domain — Domain Models and Business Language | OPTIONAL VIDEO | DDD/domain-modeling talks reviewed | No candidate promoted yet | A worked ubiquitous-language/modeling session can reinforce the concept. |
 | Domain — Bounded Context Concepts | RECOMMENDED VIDEO | Martin Fowler bounded-context material and DDD talks reviewed | No candidate promoted yet | Context boundaries and language shifts are strongly diagrammatic. |
+| Domain — Entities, Value Objects and Aggregates | RECOMMENDED VIDEO | DDD tactical-modeling talks reviewed | No candidate promoted yet | Worked object/aggregate examples help distinguish identity, value and consistency boundaries. |
