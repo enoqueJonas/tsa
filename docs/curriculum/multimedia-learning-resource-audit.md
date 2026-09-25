@@ -519,3 +519,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Core Services — Operate Time Synchronization with Chrony | OPTIONAL VIDEO | chrony/NTP demos reviewed | No candidate promoted yet | A live chronyc sources/tracking demo can help, but operation is straightforward. |
 | Core Services — Clock Skew as a Security and Observability Incident | RECOMMENDED VIDEO | Clock-skew/TLS/token incident material reviewed | No candidate promoted yet | A timeline makes skew consequences across certificates, tokens and logs concrete. |
 | Core Services — Integrate Core Services into the Homelab | NO VIDEO | — | — | Integration evidence is primary. |
+| Core Services — Reassess Availability and Ownership | NO VIDEO | — | — | Availability/SPOF decisions must use the learner's topology. |
