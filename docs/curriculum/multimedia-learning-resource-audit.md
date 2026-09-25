@@ -807,3 +807,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Directory Federation — Federated Identity Lifecycle and Failure Modes | RECOMMENDED VIDEO | federation lifecycle/outage demos reviewed | No candidate promoted yet | Disable/delete/outage/trust-failure behavior benefits from a timeline. |
 | Directory Federation — Active Directory, LDAP and Kerberos Context | RECOMMENDED VIDEO | AD/LDAP/Kerberos relationship explainers reviewed | No candidate promoted yet | Protocol/service relationships are easy to confuse and benefit from a visual map. |
 | SFTP Migration — FTP to SFTP Secure Transfer Migration | RECOMMENDED VIDEO | FTP/SFTP protocol-flow comparisons reviewed | No candidate promoted yet | The transport/security-model difference benefits from packet/flow visualization. |
+| SFTP Migration — From Legacy Compatibility to Secure Transfer | NO VIDEO | — | — | Migration pressure and constraints are contextual. |
