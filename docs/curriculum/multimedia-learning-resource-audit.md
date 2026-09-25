@@ -1103,3 +1103,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Evaluation — Turn Decisions into Guardrails | NO VIDEO | — | — | Implement actual guardrails. |
 | Architect Milestone — Architecture Review and Evolution Decision | NO VIDEO | — | — | School synthesis milestone. |
 | Architect Milestone — Reconstruct and Defend the Current Architecture | NO VIDEO | — | — | Independent evidence. |
+| Architect Milestone — Challenge the Architecture with New Drivers | NO VIDEO | — | — | Independent scenario. |
