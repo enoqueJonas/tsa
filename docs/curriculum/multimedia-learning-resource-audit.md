@@ -657,3 +657,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation Framework — Lab: Build the Steward Automation Framework | NO VIDEO | — | — | Independent synthesis. |
 | Automation Framework — Lab: Extract tsa-test-core | NO VIDEO | — | — | Independent extraction. |
 | Automation Framework — Lab: Publish and Consume tsa-test-core | NO VIDEO | — | — | Independent package workflow. |
+| Browser — Browser Surface Decision | NO VIDEO | — | — | Decide whether UI coverage is justified by the actual product surface. |
