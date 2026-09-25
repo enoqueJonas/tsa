@@ -671,3 +671,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Non-functional — Load, Stress, Spike and Endurance | RECOMMENDED VIDEO | Performance test-shape demos reviewed | No candidate promoted yet | Traffic-shape graphs make the distinctions concrete. |
 | Non-functional — Accessibility Fundamentals | RECOMMENDED VIDEO | screen-reader/accessibility testing demos reviewed | No candidate promoted yet | Experiencing keyboard/screen-reader behavior adds something text cannot. |
 | Non-functional — Compatibility Testing | OPTIONAL VIDEO | Compatibility matrix demos reviewed | No candidate promoted yet | Useful reinforcement, but matrix design is primary. |
+| Non-functional — Reliability-oriented Testing | RECOMMENDED VIDEO | failure/recovery testing demos reviewed | No candidate promoted yet | Seeing a dependency fail during a test reinforces temporal behavior. |
