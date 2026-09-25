@@ -550,3 +550,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Cloud Blocks — Load Balancers | RECOMMENDED VIDEO | Load-balancing traffic-flow demos reviewed | No candidate promoted yet | Distribution/health-check/failure behavior is visual. |
 | Cloud Blocks — IAM | RECOMMENDED VIDEO | Cloud IAM policy/identity explainers reviewed | No candidate promoted yet | Principal→policy→resource authorization is easier with a relationship diagram. |
 | Cloud Blocks — Secrets Management | OPTIONAL VIDEO | Cloud secret-manager workflows reviewed | No candidate promoted yet | Useful lifecycle context; Vault later owns the deeper implementation. |
+| Cloud Blocks — Cloud Monitoring | OPTIONAL VIDEO | Provider metrics/logs demos reviewed | No candidate promoted yet | Seeing provider-owned signals can clarify responsibility. |
