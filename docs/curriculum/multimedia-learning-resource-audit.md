@@ -713,3 +713,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Patch a Rocky Linux Workload Host | NO VIDEO | — | — | The learner should execute and verify a real maintenance window. |
 | Kernel Update and Controlled Reboot | RECOMMENDED VIDEO | Linux kernel-update/reboot lifecycle demos reviewed | No candidate promoted yet | Installed-versus-running kernel and reboot dependency are useful to see live once. |
 | Patch Regression and Recovery | RECOMMENDED VIDEO | Patch rollback/recovery demonstrations reviewed | No candidate promoted yet | Failure after change and evidence-driven recovery is a strong operational demonstration. |
+| Patch Multiple Rocky Hosts with Ansible | RECOMMENDED VIDEO | Ansible rolling/canary patch demos reviewed | No candidate promoted yet | Fleet sequencing and explicit reboot behavior benefit from live host-by-host evidence. |
