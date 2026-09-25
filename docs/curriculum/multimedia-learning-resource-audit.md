@@ -436,3 +436,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Environment and Inputs | NO VIDEO | — | — | Input/config handling should be implemented directly. |
 | Automation — Repeatable Automation | NO VIDEO | — | — | Repeatability is proven by rerunning the task. |
 | Automation — Make and Task Entry Points | OPTIONAL VIDEO | Make/task-runner demos reviewed | No candidate promoted yet | A short dependency-target demonstration may help. |
+| Automation — Idempotency | RECOMMENDED VIDEO | Idempotent automation demonstrations reviewed | No candidate promoted yet | First-run change versus second-run no-op is valuable to see. |
