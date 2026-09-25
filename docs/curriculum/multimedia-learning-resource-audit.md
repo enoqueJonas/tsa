@@ -869,3 +869,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Alerting — Actionable Alerts | NO VIDEO | — | — | Design from actual operator action. |
 | Alerting — Alert Fatigue | OPTIONAL VIDEO | alert-fatigue talks reviewed | No candidate promoted yet | Real pager-noise stories add context. |
 | Alerting — Severity | NO VIDEO | — | — | Define actual severity policy. |
+| Alerting — Escalation | OPTIONAL VIDEO | on-call escalation demos reviewed | No candidate promoted yet | Timeline/workflow can reinforce escalation. |
