@@ -761,3 +761,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Linux/Network Security — Network Segmentation Concepts | RECOMMENDED VIDEO | segmentation topology demos reviewed | No candidate promoted yet | Trust zones and allowed flows are visual. |
 | Linux/Network Security — Administrative Network Boundaries | RECOMMENDED VIDEO | management-plane segmentation demos reviewed | No candidate promoted yet | Separate admin path is best shown topologically. |
 | Linux/Network Security — TLS Configuration and Certificate Hygiene | RECOMMENDED VIDEO | TLS/certificate inspection demos reviewed | No candidate promoted yet | Chain/hostname/expiry/protocol evidence benefits from live inspection. |
+| Supply Chain — Map and Baseline the Trusted Delivery Path | RECOMMENDED VIDEO | software supply-chain/SLSA flow talks reviewed | No candidate promoted yet | Source→build→artifact→deploy trust path is visual. |
