@@ -49,3 +49,10 @@ These rows seed the audit; they are **not** the completed curriculum-wide matrix
 Video does not replace authoritative documentation. Documentation remains the source for exact syntax, configuration, API behavior, standards and version-specific details. Video is for intuition, visualization, demonstration, diagnosis, workflow or engineering discussion.
 
 A blog post may also be better than either a manual or a video. The resource mix follows the lesson, not a fixed template.
+
+
+## Engineering Apprentice — completed lesson audit
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Thinking Like an Engineer | NO VIDEO | No search promoted after lesson fit review | — | The lesson is about framing, constraints, uncertainty and evidence. The written worked example plus the learner's own problem frame is more valuable than passive viewing. |
