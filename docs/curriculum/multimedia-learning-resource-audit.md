@@ -803,3 +803,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Application Security — Security Regression Testing | NO VIDEO | — | — | Automate actual fixed vulnerabilities. |
 | Security Milestone — Milestone Briefing: Build a Defensible Steward Security Posture | NO VIDEO | — | — | Milestone brief. |
 | Security Milestone — Milestone: Steward Security Assessment and Hardening | NO VIDEO | — | — | Independent security synthesis. |
+
+
+## Reliability Engineer — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| SRE — Reliability as a Quality Attribute | OPTIONAL VIDEO | Google SRE talks reviewed | No candidate promoted yet | Industry framing can reinforce the quality/reliability boundary. |
