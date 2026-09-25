@@ -485,3 +485,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Release — Release Candidates | NO VIDEO | — | — | Create and promote a real candidate. |
 | Release — Promotion and Gates | RECOMMENDED VIDEO | Release-promotion pipeline demos reviewed | No candidate promoted yet | Artifact/gate/environment flow is visual. |
 | Release — Deployment Evidence | NO VIDEO | — | — | Capture evidence from actual deployments. |
+| Release — Release Observability | OPTIONAL VIDEO | Release-marker/dashboard demos reviewed | No candidate promoted yet | Visual correlation of deploy markers and telemetry can help. |
