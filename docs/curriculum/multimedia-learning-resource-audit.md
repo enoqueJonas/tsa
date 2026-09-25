@@ -518,3 +518,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Core Services — DHCP Exhaustion, Wrong Options and Relay | RECOMMENDED VIDEO | DHCP relay/failure demos reviewed | No candidate promoted yet | Relay and exhaustion are path/state behaviors that benefit from visualization. |
 | Core Services — Operate Time Synchronization with Chrony | OPTIONAL VIDEO | chrony/NTP demos reviewed | No candidate promoted yet | A live chronyc sources/tracking demo can help, but operation is straightforward. |
 | Core Services — Clock Skew as a Security and Observability Incident | RECOMMENDED VIDEO | Clock-skew/TLS/token incident material reviewed | No candidate promoted yet | A timeline makes skew consequences across certificates, tokens and logs concrete. |
+| Core Services — Integrate Core Services into the Homelab | NO VIDEO | — | — | Integration evidence is primary. |
