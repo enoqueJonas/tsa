@@ -893,3 +893,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Performance — Queueing and Contention Concepts | RECOMMENDED VIDEO | queueing theory animations reviewed | No candidate promoted yet | Queue growth/wait time/contention are visual. |
 | Performance — Storage Growth and Artifact Capacity | OPTIONAL VIDEO | capacity trend demos reviewed | No candidate promoted yet | Trend visualization can reinforce forecasting. |
 | Performance — Lab: Establish Steward Capacity Baselines | NO VIDEO | — | — | Independent measurement lab. |
+| Resilience — Timeouts | RECOMMENDED VIDEO | timeout/dependency demos reviewed | No candidate promoted yet | Caller wait/failure timeline is visual. |
