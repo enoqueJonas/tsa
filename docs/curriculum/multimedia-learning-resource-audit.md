@@ -1852,3 +1852,17 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Quality in Containers/CI — Test Containers and Environments | RECOMMENDED VIDEO | Containerized test-environment demos reviewed | No candidate promoted yet | Environment lifecycle is visual. |
 | Quality in Containers/CI — Dockerized Test Dependencies | RECOMMENDED VIDEO | Testcontainers/docker dependency demos reviewed | No candidate promoted yet | Dependency startup/isolation is useful to see. |
 | Quality in Containers/CI — Ephemeral Environment Concepts | RECOMMENDED VIDEO | Preview/ephemeral environment demos reviewed | No candidate promoted yet | Environment lifecycle/topology is visual. |
+| Quality in Containers/CI — Test Pipeline Stages | RECOMMENDED VIDEO | Test pipeline visualizations reviewed | No candidate promoted yet | Evidence flow is visual. |
+| Quality in Containers/CI — Parallelization | OPTIONAL VIDEO | Parallel test pipeline demos reviewed | No candidate promoted yet | Timing visualization can help. |
+| Quality in Containers/CI — Reports and Artifacts | OPTIONAL VIDEO | CI test artifact demos reviewed | No candidate promoted yet | Useful UI context. |
+| Quality in Containers/CI — Test Selection | NO VIDEO | — | — | Policy/implementation primary. |
+| Quality in Containers/CI — Failure Triage | RECOMMENDED VIDEO | CI failure-triage demos reviewed | No candidate promoted yet | Live evidence navigation is valuable. |
+| Quality in Containers/CI — Flaky-test Containment | RECOMMENDED VIDEO | Flake quarantine/analytics demos reviewed | No candidate promoted yet | Repeated-run evidence helps. |
+| Quality in Containers/CI — package/pipeline labs/review | NO VIDEO | — | — | Independent evidence. |
+| Continuous Execution — Continuous and Scheduled Quality Execution | RECOMMENDED VIDEO | Jenkins trigger/cron pipeline demos reviewed | No candidate promoted yet | SCM trigger vs scheduled execution is visual. |
+| Continuous Execution — Design Triggered Quality Feedback | NO VIDEO | — | — | Design actual policy. |
+| Continuous Execution — Implement SCM-triggered Automated Testing | NO VIDEO | — | — | Implementation evidence. |
+| Continuous Execution — Implement Jenkins CRON Regression | NO VIDEO | — | — | Implementation evidence. |
+| Continuous Execution — Implement Failure Alerts and Reports | RECOMMENDED VIDEO | Jenkins notification/report demos reviewed | No candidate promoted yet | End-to-end fail→alert→artifact flow is useful to see. |
+| Continuous Execution — Defend the Quality Execution Policy | NO VIDEO | — | — | Defence/reassessment. |
+| Quality Steward Milestone | NO VIDEO | — | — | Milestone is independent synthesis. |
