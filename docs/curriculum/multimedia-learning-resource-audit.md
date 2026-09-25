@@ -1073,3 +1073,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Scale — Capacity vs Architectural Complexity | NO VIDEO | — | — | Compare measured pressure with complexity cost. |
 | Scale — Compare Scale and Distribution Options | NO VIDEO | — | — | Decision exercise. |
 | Scale — Record the Growth Architecture Decision | NO VIDEO | — | — | Decision evidence. |
+| Resilience Architecture — Designing for Failure | RECOMMENDED VIDEO | SRE/resilience architecture talks reviewed | No candidate promoted yet | Failure-domain diagrams and dependency paths add value. |
