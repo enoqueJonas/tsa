@@ -1025,3 +1025,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Domain — Domain Services | NO VIDEO | — | — | The learner should decide from behavior that does not naturally belong to an entity/value object. |
 | Domain — Avoiding Anemic and Over-engineered Models | OPTIONAL VIDEO | DDD critique/refactoring talks reviewed | No candidate promoted yet | Contrasting examples can help, but context matters more than doctrine. |
 | Domain — Recover the Current Domain Model | NO VIDEO | — | — | Independent model recovery. |
+| Domain — Challenge and Refine the Model | NO VIDEO | — | — | Independent challenge. |
