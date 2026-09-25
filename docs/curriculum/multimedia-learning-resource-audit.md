@@ -1932,3 +1932,23 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Container/Delivery Security — Map and Baseline the Trusted Delivery Path | RECOMMENDED VIDEO | Software supply-chain diagrams reviewed | No candidate promoted yet | Source→build→artifact→deploy trust chain is visual. |
 | Container/Delivery Security — Implement High-value Supply-chain Controls | RECOMMENDED VIDEO | SBOM/scanning/signing demos reviewed | No candidate promoted yet | Control sequence benefits from live tooling. |
 | Container/Delivery Security — Define Gates, Exceptions and Residual Risk | NO VIDEO | — | — | Policy decision is primary. |
+| Artifact Signing — Artifact Signing and Verification | RECOMMENDED VIDEO | Sigstore/Cosign demos reviewed | No candidate promoted yet | Keyless/key-based signing, signature and enforced verification are visual workflows. |
+| Identity/Secrets — Identity Planes and Trust Boundaries | RECOMMENDED VIDEO | Identity architecture diagrams reviewed | No candidate promoted yet | Human/workload/service identities are visual boundaries. |
+| Identity/Secrets — OAuth 2.0 and OpenID Connect Mental Model | RECOMMENDED VIDEO | OAuth/OIDC flow talks reviewed | No candidate promoted yet | Browser/client/IdP/API sequence is highly visual. |
+| Identity/Secrets — Keycloak Realms, Clients, Users and Roles | RECOMMENDED VIDEO | Keycloak demos reviewed | No candidate promoted yet | UI/configuration and token claims benefit from guided demo. |
+| Identity/Secrets — Machine and Workload Identity | RECOMMENDED VIDEO | Workload identity/mTLS material reviewed | No candidate promoted yet | Machine identity lifecycle is architectural. |
+| Identity/Secrets — Secret Lifecycle: Create, Distribute, Rotate, Revoke | RECOMMENDED VIDEO | Secret lifecycle demos reviewed | No candidate promoted yet | Lifecycle is sequential and visual. |
+| Identity/Secrets — Vault Concepts and Dynamic Secrets | RECOMMENDED VIDEO | HashiCorp Vault dynamic-secret demos reviewed | No candidate promoted yet | Lease/credential generation/revocation is ideal for live demonstration. |
+| Identity/Secrets — Kong, Identity and API Policy | RECOMMENDED VIDEO | API gateway OIDC/policy demos reviewed | No candidate promoted yet | Edge policy flow is visual. |
+| Identity/Secrets — review/integration labs | NO VIDEO | — | — | Independent implementation. |
+| Vault — Vault and Dynamic Secrets for Steward | RECOMMENDED VIDEO | HashiCorp Vault dynamic database credential demos reviewed | No candidate promoted yet | Auth→lease→dynamic DB credential→expiry/revoke is strongly visual. |
+| PKI — Model Internal PKI and Machine Trust | RECOMMENDED VIDEO | PKI hierarchy/chain animations reviewed | No candidate promoted yet | Root/intermediate/leaf trust is visual. |
+| PKI — Build a Root and Issuing CA Hierarchy | RECOMMENDED VIDEO | OpenSSL/Vault PKI demos reviewed | No candidate promoted yet | Issuance chain is useful to see once. |
+| PKI — Issue Workload Certificates with Explicit Identity | RECOMMENDED VIDEO | SAN/EKU certificate demos reviewed | No candidate promoted yet | Identity fields and validation are concrete. |
+| PKI — Distribute Trust without Disabling Verification | RECOMMENDED VIDEO | Linux/Windows trust-store demos reviewed | No candidate promoted yet | Trust installation and failure are operational. |
+| PKI — Implement Mutual TLS between Workloads | RECOMMENDED VIDEO | mTLS handshake demos reviewed | No candidate promoted yet | Both-side authentication is inherently visual. |
+| PKI — Rotate Certificates without Changing Identity Semantics | RECOMMENDED VIDEO | Certificate rotation demos reviewed | No candidate promoted yet | Old/new overlap and reload are timeline problems. |
+| PKI — Revocation and Compromised Identity Response | RECOMMENDED VIDEO | CRL/OCSP/revocation demos reviewed | No candidate promoted yet | Compromise→revoke→reject flow benefits from demonstration. |
+| PKI — Trust-Anchor Rotation and Failure Recovery | RECOMMENDED VIDEO | CA rotation material reviewed | No candidate promoted yet | Trust-anchor overlap/cutover is visual. |
+| PKI — Reassess PKI Ownership with Vault | NO VIDEO | — | — | Architecture decision. |
+| Directory Federation — Directory Federation Architecture | RECOMMENDED VIDEO | LDAP→Keycloak→OIDC architecture demos reviewed | No candidate promoted yet | Identity source/federation/token boundary is visual. |
