@@ -827,3 +827,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Observability — Telemetry Cost and Noise | NO VIDEO | — | — | Evaluate actual telemetry volume/value. |
 | Observability — Lab: Design Steward Observability | NO VIDEO | — | — | Independent design lab. |
 | Logging — Structured Logs | RECOMMENDED VIDEO | structured logging demos reviewed | No candidate promoted yet | Before/after machine-queryable logs are useful to see. |
+| Logging — Log Levels | NO VIDEO | — | — | Small policy concept; apply directly. |
