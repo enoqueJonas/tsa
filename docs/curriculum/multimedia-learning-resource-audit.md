@@ -735,3 +735,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — Token and Session Attacks | RECOMMENDED VIDEO | JWT/session attack demos reviewed | No candidate promoted yet | Token lifecycle/replay/tampering are strong live examples. |
 | Web/API — Cryptographic Failures | OPTIONAL VIDEO | crypto misuse explainers reviewed | No candidate promoted yet | Use visual intuition selectively; authoritative guidance remains primary. |
 | Web/API — Security Misconfiguration | RECOMMENDED VIDEO | OWASP misconfiguration demonstrations reviewed | No candidate promoted yet | A concrete exposed-debug/default-config example makes configuration risk tangible. |
+| Web/API — Sensitive Data and Secrets | OPTIONAL VIDEO | Secret-exposure demos reviewed | No candidate promoted yet | A short leak→abuse example can reinforce consequences; implementation controls remain primary. |
