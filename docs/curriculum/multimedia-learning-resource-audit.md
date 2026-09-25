@@ -773,3 +773,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Identity/Secrets — Vault Concepts and Dynamic Secrets | RECOMMENDED VIDEO | HashiCorp Vault dynamic-database-secret demos reviewed | No candidate promoted yet | Lease→credential→expiry/revocation is ideal for live demonstration. |
 | Identity/Secrets — Kong, Identity and API Policy | RECOMMENDED VIDEO | Kong OIDC/policy flow demos reviewed | No candidate promoted yet | Edge→identity-provider→upstream policy flow is visual. |
 | Identity/Secrets — Identity and Secrets Security Review | NO VIDEO | — | — | Review learner implementation/evidence. |
+| Identity/Secrets — Lab: Integrate Keycloak and Harden Steward Identity | NO VIDEO | — | — | Independent integration lab. |
