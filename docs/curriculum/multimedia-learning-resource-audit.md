@@ -523,3 +523,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | VPS — Public IP Addressing | NO VIDEO | — | — | Apply networking foundations. |
 | VPS — Securing SSH Access | NO VIDEO | Prior SSH lesson | — | Apply prior skill. |
 | VPS — Provider Firewalls and Security Controls | RECOMMENDED VIDEO | Cloud firewall/security-group demos reviewed | No candidate promoted yet | Provider edge versus host firewall is a visual boundary. |
+| VPS — OS Lifecycle and Patching | NO VIDEO | Prior lifecycle path | — | Apply existing patch model. |
