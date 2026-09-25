@@ -651,3 +651,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Lifecycle — Patch a Rocky Linux Workload Host | NO VIDEO | — | — | Actual DNF maintenance and before/after workload evidence are the learning activity. |
 | Lifecycle — Kernel Update and Controlled Reboot | RECOMMENDED VIDEO | Linux kernel/reboot lifecycle demonstrations reviewed | No candidate promoted yet | Installed-versus-running kernel state and reboot transition benefit from live evidence. |
 | Lifecycle — Patch Regression and Recovery | RECOMMENDED VIDEO | Linux rollback/recovery demonstrations reviewed | No candidate promoted yet | A controlled failed update and recovery path is valuable to see, but learner must reproduce safely. |
+| Lifecycle — Patch Multiple Rocky Hosts with Ansible | RECOMMENDED VIDEO | Ansible rolling/canary update demos reviewed | No candidate promoted yet | Canary→fleet orchestration and explicit reboot handling are sequential and visual. |
