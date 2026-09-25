@@ -535,3 +535,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | OS Lifecycle — Separate Proxmox Host and Rocky Guest Lifecycles | NO VIDEO | — | — | The two maintenance domains should be reasoned from the actual homelab. |
 | OS Lifecycle — Major OS Version Change Is a Migration | OPTIONAL VIDEO | RHEL/Rocky major-upgrade material reviewed | No candidate promoted yet | A migration case study can add context; the architecture/rollback plan remains primary. |
 | OS Lifecycle — Reassess the Patch Operating Model | NO VIDEO | — | — | ADR/runbook synthesis. |
+
+
+## Platform Builder — Windows/PowerShell lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Windows — Windows in a Linux-Primary Enterprise Platform | OPTIONAL VIDEO | Mixed-estate operations material reviewed | No candidate promoted yet | A concise enterprise-estate overview can add context, but the boundary is more important than platform advocacy. |
