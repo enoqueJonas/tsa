@@ -1091,3 +1091,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Evaluation — Fitness Functions | RECOMMENDED VIDEO | evolutionary-architecture fitness-function talks reviewed | No candidate promoted yet | Automated architecture constraints benefit from concrete demonstrations. |
 | Evaluation — Evolutionary Architecture | OPTIONAL VIDEO | Thoughtworks evolutionary-architecture talks reviewed | No candidate promoted yet | Industry examples reinforce change-oriented architecture. |
 | Evaluation — Standards vs Context | NO VIDEO | — | — | The learner must decide when standardization helps or harms. |
+| Evaluation — Technology Selection | NO VIDEO | — | — | Evidence-based selection exercise. |
