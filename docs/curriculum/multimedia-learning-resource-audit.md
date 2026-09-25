@@ -1246,3 +1246,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Proposal — Lab: Defend the Capstone Engineering Proposal | NO VIDEO | — | — | Independent defence. |
 | Build — Start from a Blank Repository | NO VIDEO | — | — | Blank-repo start is deliberate transfer evidence. |
 | Build — Establish Engineering Conventions | NO VIDEO | — | — | Choose and encode conventions from the system's needs. |
+| Build — Model the Domain | NO VIDEO | — | — | Independent domain modeling. |
