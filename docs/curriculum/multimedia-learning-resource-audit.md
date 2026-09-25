@@ -582,3 +582,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Core Infrastructure — Clock Skew as a Security and Observability Incident | RECOMMENDED VIDEO | Clock-skew/TLS/token incident material reviewed | No candidate promoted yet | A timeline makes skew-induced certificate, token and log-order failures concrete. |
 | Core Infrastructure — Integrate Core Services into the Homelab | NO VIDEO | — | — | Integration evidence is primary. |
 | Core Infrastructure — Reassess Availability and Ownership | NO VIDEO | — | — | The learner must make the ownership/SPOF decision from their topology. |
+| Ansible — Desired State, Inventory and Idempotence | RECOMMENDED VIDEO | Ansible inventory/idempotence demonstrations reviewed | No candidate promoted yet | Seeing first-run changes followed by a clean second run makes idempotence tangible. |
