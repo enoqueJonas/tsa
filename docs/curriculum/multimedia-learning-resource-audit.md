@@ -1069,3 +1069,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Scale — Partitioning Concepts | RECOMMENDED VIDEO | sharding/partitioning visual explainers reviewed | No candidate promoted yet | Key→partition placement and rebalance are spatial. |
 | Scale — Consistency and Availability Trade-offs | RECOMMENDED VIDEO | distributed consistency/CAP talks reviewed | No candidate promoted yet | Network partition scenarios need careful visual treatment; avoid slogan-only CAP videos. |
 | Scale — Distributed Coordination | RECOMMENDED VIDEO | consensus/coordination visual explainers reviewed | No candidate promoted yet | Coordination under failure is difficult to learn from prose alone. |
+| Scale — Distributed Transactions and Sagas Concepts | RECOMMENDED VIDEO | saga/compensation talks reviewed | No candidate promoted yet | Multi-step transaction/compensation sequences are ideal for diagrams. |
