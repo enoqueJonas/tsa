@@ -551,3 +551,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Windows — Domain Join and Group Policy | RECOMMENDED VIDEO | Domain join/GPO demonstrations reviewed | No candidate promoted yet | The client→DNS→DC→policy sequence and gpresult evidence are worth seeing once. |
 | Windows — Linux–Windows Interoperability | RECOMMENDED VIDEO | SMB/DNS/LDAP cross-platform demos reviewed | No candidate promoted yet | Cross-OS identity/name/file boundaries benefit from a topology walkthrough. |
 | Windows — Reassess Windows Operational Depth | NO VIDEO | — | — | The learner must decide specialist boundaries from implemented experience. |
+
+
+## Platform Builder — Enterprise file/directory services, file integration and milestone audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Enterprise Services — Enterprise File Services: NFS and SMB | RECOMMENDED VIDEO | NFS/Samba service demonstrations reviewed | No candidate promoted yet | Seeing exports, mounts, share permissions and cross-host access once helps before the learner operates both protocols. |
