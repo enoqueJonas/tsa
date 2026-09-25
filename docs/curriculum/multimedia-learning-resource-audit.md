@@ -712,3 +712,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Foundations — Risk Treatment and Residual Risk | NO VIDEO | — | — | Make treatment decisions from the actual risk register. |
 | Foundations — Lab: Map Steward Security Assets and Attack Surface | NO VIDEO | — | — | Independent synthesis. |
 | Threat Modeling — Assets and Actors | NO VIDEO | — | — | Model the actual system. |
+| Threat Modeling — Data and Control Flows | RECOMMENDED VIDEO | Microsoft threat-modeling/DFD demos reviewed | No candidate promoted yet | Flow diagrams are the core medium. |
