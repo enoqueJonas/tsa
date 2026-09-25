@@ -1060,3 +1060,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Integration — Idempotency | NO VIDEO | Idempotent-consumer media already audited | Reuse earlier media if needed | Apply rather than reteach. |
 | Integration — Schema and Contract Evolution | RECOMMENDED VIDEO | schema-evolution/compatibility talks reviewed | No candidate promoted yet | Producer/consumer compatibility across versions is a timeline problem. |
 | Integration — Integration Failure and Backpressure | RECOMMENDED VIDEO | backpressure/failure talks reviewed | No candidate promoted yet | Queue growth and dependency slowdown are temporal and visual. |
+| Integration — When Not to Add a Message Broker | NO VIDEO | — | — | The learner must justify the simpler option from actual pressure. |
