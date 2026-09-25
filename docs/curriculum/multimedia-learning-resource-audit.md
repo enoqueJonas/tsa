@@ -64,3 +64,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Learning as an Engineering Skill | OPTIONAL VIDEO | Osmosis — Spaced repetition in learning theory; Pablo Sánchez Urina — Spaced Repetition / Science-based | Osmosis — Spaced repetition in learning theory; whole short video | Animation helps make spacing intuitive, but the lesson covers retrieval, feedback and capability evidence too, so the video is reinforcement rather than required material. |
 | Communicating Technical Work | NO VIDEO | Google Technical Writing facilitator videos reviewed but not promoted | — | Google's learner-facing written course matches the objective better. The surfaced videos are primarily facilitator guides, so adding them would be resource noise. |
 | Milestone: Engineering Investigation | NO VIDEO | No search promoted | — | This is a synthesis milestone. New explanatory media would distract from demonstrating the capabilities already taught. |
+
+
+## Builder — Programming with Python lesson audit
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Setting Up a Python Engineering Environment | NO VIDEO | No video promoted | — | The commands are short and the learner must inspect their own interpreter, PATH and virtual environment. Targeted venv/packaging docs plus the practical are more useful. |
