@@ -923,3 +923,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Incident — Communication | OPTIONAL VIDEO | incident communication examples reviewed | No candidate promoted yet | Good/bad updates are useful to compare. |
 | Incident — Mitigation | RECOMMENDED VIDEO | incident mitigation simulations reviewed | No candidate promoted yet | Stabilize-first decision making benefits from a scenario. |
 | Incident — Timeline Construction | NO VIDEO | — | — | Build timeline from actual evidence. |
+| Incident — Root Cause | NO VIDEO | — | — | Reason from evidence rather than generic RCA. |
