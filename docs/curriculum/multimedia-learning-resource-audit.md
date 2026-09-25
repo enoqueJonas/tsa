@@ -1273,3 +1273,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Readiness — Dependency and Supply-chain Readiness | NO VIDEO | — | — | Verify actual provenance/lifecycle/dependencies. |
 | Readiness — Cost and Capacity Review | NO VIDEO | — | — | Review measured/estimated capstone capacity and cost. |
 | Readiness — Release Decision | NO VIDEO | — | — | Make the evidence-based go/no-go decision. |
+| Readiness — Lab: Run the Capstone Production Readiness Review | NO VIDEO | — | — | Independent production-readiness review. |
