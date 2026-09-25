@@ -1118,3 +1118,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Governance — Policies, Standards, Procedures and Guidelines | RECOMMENDED VIDEO | policy/standard/procedure governance explainers reviewed | No candidate promoted yet | Side-by-side examples help distinguish artifact purpose and mandatory strength. |
 | Governance — Exceptions | OPTIONAL VIDEO | exception/waiver governance material reviewed | No candidate promoted yet | A worked exception can add context, but drafting one is primary. |
 | Governance — Evidence and Review Cadence | NO VIDEO | — | — | The learner should map actual operating evidence and cadence. |
+| Governance — Governance Without Bureaucracy | OPTIONAL VIDEO | paved-road/guardrail governance talks reviewed | No candidate promoted yet | Industry examples can show automation/defaults replacing approval theater. |
