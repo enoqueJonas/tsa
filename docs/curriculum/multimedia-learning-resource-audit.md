@@ -644,3 +644,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Helpers and Utilities | NO VIDEO | — | — | Reuse boundaries should emerge from actual duplication. |
 | Automation — Assertions | NO VIDEO | — | — | Concrete false-positive/negative cases are stronger. |
 | Automation — Markers and Tags | NO VIDEO | — | — | Small pytest mechanism; docs and practice suffice. |
+| Automation — Parameterization | NO VIDEO | — | — | Small mechanism; executable examples suffice. |
