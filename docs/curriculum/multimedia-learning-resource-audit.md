@@ -998,3 +998,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture Fundamentals — Architecture vs Design | NO VIDEO | — | — | The distinction is best tested against concrete decisions. |
 | Architecture Fundamentals — Architecture Drivers | NO VIDEO | — | — | Drivers must be extracted from context. |
 | Architecture Fundamentals — Quality Attributes and Architecture Characteristics | RECOMMENDED VIDEO | SEI quality-attribute scenario material reviewed | No candidate promoted yet | Worked quality scenarios are valuable to watch before constructing them. |
+| Architecture Fundamentals — Constraints | NO VIDEO | — | — | Constraint identification is contextual reasoning. |
