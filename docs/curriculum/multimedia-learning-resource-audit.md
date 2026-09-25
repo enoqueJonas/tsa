@@ -1270,3 +1270,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Readiness — Runbooks | NO VIDEO | Prior handbook/runbook material sufficient | — | Exercise the capstone runbooks. |
 | Readiness — Operational Ownership | NO VIDEO | — | — | Define actual ownership/escalation. |
 | Readiness — Risk and Control Evidence | NO VIDEO | Prior Technical Steward material sufficient | — | Assemble operating evidence. |
+| Readiness — Dependency and Supply-chain Readiness | NO VIDEO | — | — | Verify actual provenance/lifecycle/dependencies. |
