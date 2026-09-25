@@ -709,3 +709,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Foundations — Defense in Depth | OPTIONAL VIDEO | Layered-control explainers reviewed | No candidate promoted yet | Layer visualization can reinforce independent controls. |
 | Foundations — Trust Boundaries | RECOMMENDED VIDEO | Trust-boundary diagram demos reviewed | No candidate promoted yet | Boundary crossings are inherently visual. |
 | Foundations — Security Controls: Preventive, Detective and Corrective | OPTIONAL VIDEO | Control-type examples reviewed | No candidate promoted yet | A short incident timeline can reinforce control roles. |
+| Foundations — Risk Treatment and Residual Risk | NO VIDEO | — | — | Risk decision should be made from scenario evidence. |
