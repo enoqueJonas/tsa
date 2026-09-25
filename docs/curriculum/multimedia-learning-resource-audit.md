@@ -667,3 +667,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Browser — Environment Parity and Configuration Risk | NO VIDEO | — | — | Compare actual environments and configuration. |
 | Browser — Lab: Run Steward Tests Across Environments | NO VIDEO | — | — | Independent environment lab. |
 | Non-functional — Decision Gate: Select the Steward Performance Tool | OPTIONAL VIDEO | k6/JMeter/Gatling demos reviewed | No candidate promoted yet | A short tool execution comparison can inform choice, but the gate must remain criteria-driven. |
+| Non-functional — Performance Testing | RECOMMENDED VIDEO | Grafana k6 load-test demos reviewed | No candidate promoted yet | Virtual users, latency percentiles and saturation graphs are valuable to see. |
