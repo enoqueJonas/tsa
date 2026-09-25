@@ -619,3 +619,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Unit/Component — Mocks, Stubs and Fakes | RECOMMENDED VIDEO | Same test-double candidates | No candidate promoted yet | Behavior versus interaction evidence is clearer in code demonstration. |
 | Unit/Component — Coverage and Its Limitations | RECOMMENDED VIDEO | Mutation/coverage demonstrations reviewed | No candidate promoted yet | High coverage with weak assertions is a powerful demonstration. |
 | Unit/Component — Component Boundaries | OPTIONAL VIDEO | Component-testing boundary talks reviewed | No candidate promoted yet | A boundary diagram can reinforce the slice. |
+| Unit/Component — Fast Feedback and Maintainability | NO VIDEO | — | — | Measure and maintain the actual suite. |
