@@ -558,3 +558,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | IaC — Declarative Infrastructure | RECOMMENDED VIDEO | Declarative reconciliation demos reviewed | No candidate promoted yet | Desired versus actual state is a strong visual concept. |
 | IaC — Terraform and OpenTofu Fundamentals | RECOMMENDED VIDEO | OpenTofu/Terraform plan/apply demos reviewed | No candidate promoted yet | init→plan→apply→state workflow is useful to see once. |
 | IaC — Providers and Resources | OPTIONAL VIDEO | Provider/resource graph demos reviewed | No candidate promoted yet | Provider trust and resource ownership can benefit from a concise walkthrough. |
+| IaC — State | RECOMMENDED VIDEO | Terraform/OpenTofu state demos reviewed | No candidate promoted yet | State's role as control record and drift/recovery boundary is central. |
