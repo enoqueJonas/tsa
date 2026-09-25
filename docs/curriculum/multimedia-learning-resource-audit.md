@@ -906,3 +906,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Resilience — Retry Storms and Amplification | RECOMMENDED VIDEO | retry-storm simulations reviewed | No candidate promoted yet | Amplification is best understood on timelines/graphs. |
 | Resilience — Dependency Availability Budgets | OPTIONAL VIDEO | availability composition explainers reviewed | No candidate promoted yet | Dependency math can benefit from diagrams. |
 | Resilience — Lab: Harden Steward Against Dependency Failure | NO VIDEO | — | — | Independent resilience lab. |
+| DR — Backups | NO VIDEO | — | — | Implement actual backups. |
