@@ -667,3 +667,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Browser — Lab: Run Steward Tests Across Environments | NO VIDEO | — | — | Independent lab. |
 | Non-functional — Performance Tool Decision | NO VIDEO | — | — | Tool choice must follow workload/question. |
 | Non-functional — Performance Testing | RECOMMENDED VIDEO | k6 performance-test demos reviewed | No candidate promoted yet | Virtual users, latency distributions and thresholds benefit from a live run. |
+| Non-functional — Load, Stress, Spike and Endurance | RECOMMENDED VIDEO | Load-shape visualizations reviewed | No candidate promoted yet | Different workload curves are inherently visual. |
