@@ -1016,3 +1016,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Styles — The Cost of Distribution | RECOMMENDED VIDEO | distributed-systems/microservices failure talks reviewed | No candidate promoted yet | Latency, partial failure and operational multiplication benefit from concrete examples. |
 | Styles — Establish Current Style and Drivers | NO VIDEO | — | — | Independent baseline. |
 | Styles — Compare Credible Target Styles | NO VIDEO | — | — | Decision exercise. |
+| Styles — Record Style Decision and Evolution Triggers | NO VIDEO | — | — | ADR/evolution evidence. |
