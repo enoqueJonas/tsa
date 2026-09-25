@@ -689,3 +689,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Scheduled Quality — Prove Failure Notification and Recovery | NO VIDEO | — | — | Failure→notification→fix→green must be learner evidence. |
 | Quality Milestone — Quality Steward Milestone Readiness | NO VIDEO | — | — | Readiness review. |
 | Quality Milestone — Integrate the Quality Steward System | NO VIDEO | — | — | Integration work. |
+| Quality Milestone — Audit the Existing Evidence | NO VIDEO | — | — | Evidence audit. |
