@@ -687,3 +687,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Scheduled Quality — Wire Mandatory Continuous Checks | NO VIDEO | — | — | Implement real trigger/checks. |
 | Scheduled Quality — Schedule Regression and Prevent Collisions | NO VIDEO | — | — | Implement and prove scheduling/locking. |
 | Scheduled Quality — Prove Failure Notification and Recovery | NO VIDEO | — | — | Failure→notification→fix→green must be learner evidence. |
+| Quality Milestone — Quality Steward Milestone Readiness | NO VIDEO | — | — | Readiness review. |
