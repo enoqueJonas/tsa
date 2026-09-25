@@ -936,3 +936,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Incident — Mitigation | RECOMMENDED VIDEO | incident simulation/postmortem material reviewed | No candidate promoted yet | Mitigation under uncertainty benefits from a worked scenario. |
 | Incident — Timeline Construction | NO VIDEO | — | — | Construct actual timeline from evidence. |
 | Incident — Root Cause | NO VIDEO | — | — | Reason from actual evidence; avoid simplistic narratives. |
+| Incident — Contributing Factors | NO VIDEO | — | — | Analyze actual system/human factors. |
