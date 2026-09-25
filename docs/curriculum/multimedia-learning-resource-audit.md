@@ -705,3 +705,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Foundations — Confidentiality, Integrity and Availability | OPTIONAL VIDEO | CIA-triad visual explainers reviewed | No candidate promoted yet | A simple scenario animation can reinforce trade-offs, but the concept is compact. |
 | Foundations — Assets, Threats, Vulnerabilities and Risk | RECOMMENDED VIDEO | Threat/risk modeling explainers reviewed | No candidate promoted yet | Relationships among asset/threat/vulnerability/control are visual. |
 | Foundations — Attack Surface | RECOMMENDED VIDEO | Attack-surface mapping demos reviewed | No candidate promoted yet | A system diagram evolving into exposed entry points adds value. |
+| Foundations — Least Privilege | NO VIDEO | — | — | Apply privilege boundaries directly. |
