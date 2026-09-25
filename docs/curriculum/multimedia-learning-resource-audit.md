@@ -778,3 +778,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Artifact Trust — Break and Recover the Signing Trust Chain | NO VIDEO | — | — | Failure injection/recovery is the exercise. |
 | Artifact Trust — Defend Steward's Artifact Trust Policy | NO VIDEO | — | — | Defence uses learner evidence. |
 | Identity/Secrets — Identity Planes and Trust Boundaries | RECOMMENDED VIDEO | OIDC/identity-plane diagrams reviewed | No candidate promoted yet | Human/workload/service identity boundaries are visual. |
+| Identity/Secrets — OAuth 2.0 and OpenID Connect Mental Model | RECOMMENDED VIDEO | OAuth/OIDC visual flows reviewed | No candidate promoted yet | Browser/client/IdP/API sequence is best shown as a flow. |
