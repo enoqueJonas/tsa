@@ -242,3 +242,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Failure — Thinking in Failure Modes | OPTIONAL VIDEO | SRE/failure-analysis talks reviewed | No candidate promoted yet | A worked failure-mode review can reinforce the method. |
 | Failure — Dependency Failure | RECOMMENDED VIDEO | Distributed-failure/cascading-failure talks reviewed | No candidate promoted yet | A dependency slowdown propagating through queues/retries is valuable to visualize. |
 | Failure — Invalid and Partial State | NO VIDEO | — | — | The learner should construct and reason about actual partial-state cases. |
+| Failure — Resource Exhaustion | RECOMMENDED VIDEO | Resource-exhaustion/queueing demos reviewed | No candidate promoted yet | Seeing saturation, queue growth and failure onset can build intuition. |
