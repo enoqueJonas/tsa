@@ -830,3 +830,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Security Milestone — Integrate the Security Steward Evidence | NO VIDEO | — | — | Evidence integration. |
 | Security Milestone — Evidence Readiness Check | NO VIDEO | — | — | Readiness review. |
 | Security Milestone — Milestone: Steward Security Assessment and Hardening | NO VIDEO | — | — | Milestone synthesis. |
+| Security Milestone — Rebaseline Threats, Assets and Trust Boundaries | NO VIDEO | — | — | Reassessment uses actual system. |
