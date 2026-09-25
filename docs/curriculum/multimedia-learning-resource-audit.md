@@ -689,3 +689,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Scheduled Execution — Design Triggered Quality Feedback | NO VIDEO | — | — | Design from feedback needs. |
 | Scheduled Execution — Implement SCM-triggered Automated Testing | RECOMMENDED VIDEO | Jenkins SCM-trigger demos reviewed | No candidate promoted yet | Webhook/SCM→job→test flow is useful to see. |
 | Scheduled Execution — Implement Jenkins CRON Regression | RECOMMENDED VIDEO | Jenkins cron/pipeline demos reviewed | No candidate promoted yet | Scheduling and collision behavior benefit from live demonstration. |
+| Scheduled Execution — Implement Failure Alerts and Reports | RECOMMENDED VIDEO | Jenkins notification/report demos reviewed | No candidate promoted yet | Failure→alert→diagnostic artifact is a useful end-to-end workflow. |
