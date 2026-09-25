@@ -260,3 +260,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Computer/OS — CPU, Memory, Storage and I/O | RECOMMENDED VIDEO | Computer architecture animations reviewed | No candidate promoted yet | CPU/memory/storage/I-O interactions benefit from visual data-flow explanation. |
 | Computer/OS — What an Operating System Does | RECOMMENDED VIDEO | OS process/memory/filesystem explainers reviewed | No candidate promoted yet | The abstraction boundary between hardware and applications is visual and foundational. |
 | Computer/OS — Kernel Space and User Space | RECOMMENDED VIDEO | Kernel/user-space explainers reviewed | No candidate promoted yet | Privilege transitions and system-call boundaries are easier to see diagrammed. |
+| Computer/OS — Processes and Threads | RECOMMENDED VIDEO | Process/thread visual explainers reviewed | No candidate promoted yet | Scheduling and shared-vs-isolated state benefit from animation. |
