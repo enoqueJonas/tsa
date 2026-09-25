@@ -697,7 +697,6 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Quality Milestone — Milestone: Steward Quality Platform | NO VIDEO | — | — | Milestone synthesis. |
 | Quality Milestone — Quality Steward Final Review | NO VIDEO | — | — | Final defence/reflection. |
 
-
 ## Security Steward — lesson audit
 
 | Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
@@ -736,70 +735,102 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — Cryptographic Failures | OPTIONAL VIDEO | crypto misuse explainers reviewed | No candidate promoted yet | Use visual intuition selectively; authoritative guidance remains primary. |
 | Web/API — Security Misconfiguration | RECOMMENDED VIDEO | OWASP misconfiguration demonstrations reviewed | No candidate promoted yet | A concrete exposed-debug/default-config example makes configuration risk tangible. |
 | Web/API — Sensitive Data and Secrets | OPTIONAL VIDEO | Secret-exposure demos reviewed | No candidate promoted yet | A short leak→abuse example can reinforce consequences; implementation controls remain primary. |
-| Web/API — Vulnerable Dependencies | RECOMMENDED VIDEO | dependency/SBOM vulnerability demos reviewed | No candidate promoted yet | Package→advisory→impact→upgrade flow is useful to see. |
-| Web/API — Security Logging and Monitoring Failures | OPTIONAL VIDEO | security logging incident demos reviewed | No candidate promoted yet | A missed/visible attack comparison can reinforce detection. |
-| Web/API — Mass Assignment and Excessive Data Exposure | RECOMMENDED VIDEO | API mass-assignment demos reviewed | No candidate promoted yet | Request/serializer/model boundary failure is demonstrable. |
-| Vulnerability Lab — Designing an Isolated Security Lab | RECOMMENDED VIDEO | isolated lab-network walkthroughs reviewed | No candidate promoted yet | Seeing isolation boundaries reduces accidental exposure risk. |
-| Vulnerability Lab — Safe Lab Networking | RECOMMENDED VIDEO | virtual lab network demos reviewed | No candidate promoted yet | Topology and reachability are visual. |
-| Vulnerability Lab — Vulnerable Applications and Intentional Weaknesses | OPTIONAL VIDEO | OWASP Juice Shop/DVWA introductions reviewed | No candidate promoted yet | Orientation can help; learner must inspect lab directly. |
-| Vulnerability Lab — Observing Vulnerable Behavior | NO VIDEO | — | — | Observe actual vulnerable behavior. |
-| Vulnerability Lab — Reproducing Representative Attacks Safely | RECOMMENDED VIDEO | safe lab exploit walkthroughs reviewed | No candidate promoted yet | A bounded demo models method/evidence. |
-| Vulnerability Lab — Using Proxies and Request Inspection | RECOMMENDED VIDEO | PortSwigger Burp Proxy tutorials reviewed | No candidate promoted yet | Intercept/modify/replay is inherently interactive. |
-| Vulnerability Lab — Capturing Security Evidence | OPTIONAL VIDEO | security evidence/report demos reviewed | No candidate promoted yet | Useful workflow context. |
-| Vulnerability Lab — From Finding to Reproduction Steps | NO VIDEO | — | — | Write reproducible steps from own evidence. |
-| Vulnerability Lab — Implementing Mitigations | NO VIDEO | — | — | Implement actual fix. |
-| Vulnerability Lab — Retesting Fixes | NO VIDEO | — | — | Retest actual fix and regression boundary. |
-| Vulnerability Lab — Writing Security Findings | OPTIONAL VIDEO | professional finding/report walkthroughs reviewed | No candidate promoted yet | A report review can reinforce impact/evidence/remediation structure. |
-| Linux/Network Security — Users, Groups and Permissions | NO VIDEO | — | — | Prior Linux lesson plus hardening exercise suffice. |
-| Linux/Network Security — Privilege and sudo | RECOMMENDED VIDEO | sudo/privilege-boundary demos reviewed | No candidate promoted yet | Effective privilege and escalation paths benefit from live evidence. |
-| Linux/Network Security — SSH Hardening | RECOMMENDED VIDEO | SSH hardening demos reviewed | No candidate promoted yet | Config→reload→positive/negative access proof is useful to see. |
-| Linux/Network Security — Host Firewalls | RECOMMENDED VIDEO | firewalld/nftables demos reviewed | No candidate promoted yet | Packet policy and negative testing are visual. |
-| Linux/Network Security — Service Exposure | RECOMMENDED VIDEO | socket/listener exposure demos reviewed | No candidate promoted yet | Listening interface/port→network reachability is concrete. |
-| Linux/Network Security — Patching and Vulnerability Windows | OPTIONAL VIDEO | patch-risk/vulnerability-window talks reviewed | No candidate promoted yet | Operational context useful; patching path already hands-on. |
-| Linux/Network Security — File and Secret Permissions | NO VIDEO | — | — | Inspect and prove actual permissions. |
+| Web/API — API Abuse and Rate Limiting | RECOMMENDED VIDEO | API abuse/rate-limit demonstrations reviewed | No candidate promoted yet | Request bursts, quotas and client-visible throttling are useful to see. |
+| Web/API — Token and Session Attacks | RECOMMENDED VIDEO | PortSwigger token/session labs reviewed | No candidate promoted yet | Replay/fixation/theft behavior is best understood from request flows. |
+| Web/API — Cryptographic Failures | OPTIONAL VIDEO | Crypto-failure explainers reviewed | No candidate promoted yet | Visual examples help, but TSA should avoid turning this into a cryptography lecture. |
+| Web/API — Vulnerable Dependencies | RECOMMENDED VIDEO | Dependency/SBOM vulnerability demos reviewed | No candidate promoted yet | Seeing a dependency finding traced to an exploitable path adds value. |
+| Web/API — Security Logging and Monitoring Failures | OPTIONAL VIDEO | Detection-gap incident demos reviewed | No candidate promoted yet | A missed-versus-detected attack timeline can reinforce observability needs. |
+| Web/API — Mass Assignment and Excessive Data Exposure | RECOMMENDED VIDEO | API mass-assignment/data-exposure demos reviewed | No candidate promoted yet | Manipulating hidden/unintended fields is concrete and demonstrable. |
+| Web/API — Lab: Assess Steward Web and API Attack Paths | NO VIDEO | — | — | Independent threat-driven assessment lab. |
+| Vulnerability Lab — Designing an Isolated Security Lab | RECOMMENDED VIDEO | Isolated lab-network walkthroughs reviewed | No candidate promoted yet | Seeing host-only/NAT/isolated boundaries helps prevent unsafe exposure. |
+| Vulnerability Lab — Safe Lab Networking | RECOMMENDED VIDEO | Virtual lab networking demos reviewed | No candidate promoted yet | Network containment is spatial and benefits from topology demonstration. |
+| Vulnerability Lab — Vulnerable Applications and Intentional Weaknesses | OPTIONAL VIDEO | OWASP Juice Shop orientation reviewed | No candidate promoted yet | A short orientation can reduce tool friction without becoming a walkthrough of answers. |
+| Vulnerability Lab — Observing Vulnerable Behavior | NO VIDEO | — | — | Learner should inspect the target directly. |
+| Vulnerability Lab — Reproducing Representative Attacks Safely | RECOMMENDED VIDEO | PortSwigger/OWASP lab demos reviewed | No candidate promoted yet | A bounded demonstration models evidence capture and safe reproduction. |
+| Vulnerability Lab — Using Proxies and Request Inspection | RECOMMENDED VIDEO | Burp Suite request-interception demos reviewed | No candidate promoted yet | Proxy interception is a UI workflow worth seeing once. |
+| Vulnerability Lab — Capturing Security Evidence | NO VIDEO | — | — | Evidence discipline should be practiced directly. |
+| Vulnerability Lab — From Finding to Reproduction Steps | NO VIDEO | — | — | Writing reproducible steps is the learning task. |
+| Vulnerability Lab — Implementing Mitigations | NO VIDEO | — | — | Fix the actual weakness. |
+| Vulnerability Lab — Retesting Fixes | NO VIDEO | — | — | Independent verification is primary. |
+| Vulnerability Lab — Writing Security Findings | NO VIDEO | — | — | Writing the finding is the exercise. |
+| Vulnerability Lab — Lab: Reproduce and Fix Steward Vulnerabilities | NO VIDEO | — | — | Independent security lab. |
+| Linux/Network Security — Users, Groups and Permissions | NO VIDEO | — | — | Apply prior Linux knowledge under security constraints. |
+| Linux/Network Security — Privilege and sudo | RECOMMENDED VIDEO | sudo/privilege-escalation demonstrations reviewed | No candidate promoted yet | Seeing command-specific privilege and failure cases reinforces least privilege. |
+| Linux/Network Security — SSH Hardening | RECOMMENDED VIDEO | OpenSSH hardening demos reviewed | No candidate promoted yet | A live before/after configuration and negative login test adds value. |
+| Linux/Network Security — Host Firewalls | NO VIDEO | — | — | Prior firewall concepts; harden actual host. |
+| Linux/Network Security — Service Exposure | RECOMMENDED VIDEO | socket/exposure enumeration demos reviewed | No candidate promoted yet | Listening sockets→network reachability→attack surface is useful to see. |
+| Linux/Network Security — Patching and Vulnerability Windows | OPTIONAL VIDEO | Patch-window/risk explainers reviewed | No candidate promoted yet | Incident context can reinforce urgency; patch lifecycle was already taught. |
+| Linux/Network Security — File and Secret Permissions | NO VIDEO | — | — | Direct permission proof is primary. |
 | Linux/Network Security — Security Logging and Auditing | RECOMMENDED VIDEO | auditd/security-log demos reviewed | No candidate promoted yet | A live event→audit record investigation adds value. |
-| Linux/Network Security — Network Segmentation Concepts | RECOMMENDED VIDEO | segmentation topology demos reviewed | No candidate promoted yet | Trust zones and allowed flows are visual. |
-| Linux/Network Security — Administrative Network Boundaries | RECOMMENDED VIDEO | management-plane segmentation demos reviewed | No candidate promoted yet | Separate admin path is best shown topologically. |
-| Linux/Network Security — TLS Configuration and Certificate Hygiene | RECOMMENDED VIDEO | TLS/certificate inspection demos reviewed | No candidate promoted yet | Chain/hostname/expiry/protocol evidence benefits from live inspection. |
-| Supply Chain — Map and Baseline the Trusted Delivery Path | RECOMMENDED VIDEO | software supply-chain/SLSA flow talks reviewed | No candidate promoted yet | Source→build→artifact→deploy trust path is visual. |
-| Supply Chain — Implement High-value Supply-chain Controls | RECOMMENDED VIDEO | SBOM/image-scan/signing demos reviewed | No candidate promoted yet | Seeing scan/sign/verify gates adds operational intuition. |
-| Supply Chain — Define Gates, Exceptions and Residual Risk | NO VIDEO | — | — | Policy decision should use actual evidence. |
-| Artifact Signing — Artifact Signing and Verification | RECOMMENDED VIDEO | Sigstore Cosign signing/verification demos reviewed | No candidate promoted yet | Keyless/key-based sign→verify→tamper-fail is ideal for live demonstration. |
-| Identity/Secrets — Identity Planes and Trust Boundaries | RECOMMENDED VIDEO | identity-plane architecture talks reviewed | No candidate promoted yet | Human/workload/admin identities and trust boundaries are visual. |
-| Identity/Secrets — OAuth 2.0 and OpenID Connect Mental Model | RECOMMENDED VIDEO | OAuth/OIDC flow explainers reviewed | No candidate promoted yet | Browser/client/authorization-server/resource-server sequence is highly visual. |
-| Identity/Secrets — Keycloak Realms, Clients, Users and Roles | RECOMMENDED VIDEO | Keycloak official/community demos reviewed | No candidate promoted yet | UI plus token claims/role mapping benefits from demonstration. |
-| Identity/Secrets — Machine and Workload Identity | RECOMMENDED VIDEO | workload identity/mTLS talks reviewed | No candidate promoted yet | Machine identity lifecycle is conceptually difficult and visual. |
-| Identity/Secrets — Secret Lifecycle: Create, Distribute, Rotate, Revoke | RECOMMENDED VIDEO | secret-lifecycle/Vault demos reviewed | No candidate promoted yet | Lifecycle and exposure paths benefit from sequence diagrams. |
-| Identity/Secrets — Vault Concepts and Dynamic Secrets | RECOMMENDED VIDEO | HashiCorp Vault dynamic-database-secret demos reviewed | No candidate promoted yet | Lease→credential→expiry/revocation is ideal for live demonstration. |
-| Identity/Secrets — Kong, Identity and API Policy | RECOMMENDED VIDEO | Kong OIDC/policy flow demos reviewed | No candidate promoted yet | Edge→identity-provider→upstream policy flow is visual. |
-| Identity/Secrets — Identity and Secrets Security Review | NO VIDEO | — | — | Review learner implementation/evidence. |
+| Linux/Network Security — Network Segmentation Concepts | RECOMMENDED VIDEO | segmentation/topology demos reviewed | No candidate promoted yet | Trust zones and permitted flows are visual. |
+| Linux/Network Security — Administrative Network Boundaries | RECOMMENDED VIDEO | management-plane isolation examples reviewed | No candidate promoted yet | Separate admin/data paths benefit from topology visualization. |
+| Linux/Network Security — TLS Configuration and Certificate Hygiene | RECOMMENDED VIDEO | TLS/certificate inspection demos reviewed | No candidate promoted yet | Seeing chain/hostname/protocol evidence is useful before hardening. |
+| Linux/Network Security — Lab: Harden the Steward Hosts and Network Path | NO VIDEO | — | — | Independent hardening lab. |
+| Supply Chain — Lab: Harden the Steward Software Supply Chain | NO VIDEO | — | — | Independent integration lab. |
+| Supply Chain — Map and Baseline the Trusted Delivery Path | RECOMMENDED VIDEO | software-supply-chain diagrams/talks reviewed | No candidate promoted yet | Source→build→artifact→deploy trust chain is inherently visual. |
+| Supply Chain — Implement High-value Supply-chain Controls | OPTIONAL VIDEO | SBOM/scanning/signing demos reviewed | No candidate promoted yet | Specific controls may benefit from demos; implementation remains primary. |
+| Supply Chain — Define Gates, Exceptions and Residual Risk | NO VIDEO | — | — | Policy design and exception reasoning are primary. |
+| Artifact Trust — Artifact Signing and Verification | RECOMMENDED VIDEO | Sigstore/Cosign signing demos reviewed | No candidate promoted yet | Keyless/key-based signing and verification are command workflows worth seeing. |
+| Artifact Trust — From Provenance Evidence to Enforced Trust | RECOMMENDED VIDEO | Sigstore verification-policy talks reviewed | No candidate promoted yet | The distinction between evidence and enforced admission is architectural and visual. |
+| Artifact Trust — Sign a Steward Release with Cosign | NO VIDEO | — | — | Learner must sign the actual release. |
+| Artifact Trust — Enforce Verification Before Deployment | RECOMMENDED VIDEO | Cosign/admission verification demos reviewed | No candidate promoted yet | A rejected unsigned/tampered artifact is a strong live demonstration. |
+| Artifact Trust — Break and Recover the Signing Trust Chain | NO VIDEO | — | — | Failure injection/recovery is the exercise. |
+| Artifact Trust — Defend Steward's Artifact Trust Policy | NO VIDEO | — | — | Defence uses learner evidence. |
+| Identity/Secrets — Identity Planes and Trust Boundaries | RECOMMENDED VIDEO | OIDC/identity-plane diagrams reviewed | No candidate promoted yet | Human/workload/service identity boundaries are visual. |
+| Identity/Secrets — OAuth 2.0 and OpenID Connect Mental Model | RECOMMENDED VIDEO | OAuth/OIDC visual flows reviewed | No candidate promoted yet | Browser/client/IdP/API sequence is best shown as a flow. |
+| Identity/Secrets — Keycloak Realms, Clients, Users and Roles | RECOMMENDED VIDEO | Keycloak official/community demos reviewed | No candidate promoted yet | The admin UI and token claims are useful to see once. |
+| Identity/Secrets — Machine and Workload Identity | RECOMMENDED VIDEO | workload-identity/mTLS/OIDC talks reviewed | No candidate promoted yet | Non-human identity lifecycle benefits from architecture diagrams. |
+| Identity/Secrets — Secret Lifecycle: Create, Distribute, Rotate, Revoke | RECOMMENDED VIDEO | secret-lifecycle demonstrations reviewed | No candidate promoted yet | Rotation/revocation timelines add operational intuition. |
+| Identity/Secrets — Vault Concepts and Dynamic Secrets | RECOMMENDED VIDEO | HashiCorp Vault dynamic-secrets demos reviewed | No candidate promoted yet | Lease issuance/renewal/revocation is especially useful to see live. |
+| Identity/Secrets — Kong, Identity and API Policy | RECOMMENDED VIDEO | Kong/OIDC policy-flow demos reviewed | No candidate promoted yet | Gateway→IdP→API policy flow is visual. |
+| Identity/Secrets — Identity and Secrets Security Review | NO VIDEO | — | — | Review uses actual architecture/evidence. |
 | Identity/Secrets — Lab: Integrate Keycloak and Harden Steward Identity | NO VIDEO | — | — | Independent integration lab. |
-| Vault — Vault and Dynamic Secrets for Steward | RECOMMENDED VIDEO | HashiCorp Vault dynamic secrets demos reviewed | No candidate promoted yet | Dynamic credential issuance/lease/revocation should be seen once before implementation. |
-| PKI — Model Internal PKI and Machine Trust | RECOMMENDED VIDEO | PKI chain-of-trust explainers reviewed | No candidate promoted yet | Root→intermediate→leaf trust hierarchy is highly visual. |
-| PKI — Build a Root and Issuing CA Hierarchy | RECOMMENDED VIDEO | OpenSSL/Vault PKI hierarchy demos reviewed | No candidate promoted yet | Seeing CA hierarchy creation and protected root boundary adds value. |
-| PKI — Issue Workload Certificates with Explicit Identity | RECOMMENDED VIDEO | certificate SAN/EKU demos reviewed | No candidate promoted yet | Certificate identity fields and validation are easier with live inspection. |
-| PKI — Distribute Trust without Disabling Verification | RECOMMENDED VIDEO | Linux/Windows trust-store demos reviewed | No candidate promoted yet | Trust installation and negative validation are operational/visual. |
-| PKI — Implement Mutual TLS between Workloads | RECOMMENDED VIDEO | mTLS handshake demos reviewed | No candidate promoted yet | Both sides authenticating via certificates is best shown as a handshake/sequence. |
-| PKI — Rotate Certificates without Changing Identity Semantics | RECOMMENDED VIDEO | certificate rotation demos reviewed | No candidate promoted yet | Old/new overlap and reload behavior benefit from timeline visualization. |
-| PKI — Revocation and Compromised Identity Response | RECOMMENDED VIDEO | CRL/OCSP/revocation demos reviewed | No candidate promoted yet | Compromise→revoke→validation-fail is demonstrable. |
-| PKI — Trust-Anchor Rotation and Failure Recovery | RECOMMENDED VIDEO | CA rotation/dual-trust material reviewed | No candidate promoted yet | Trust-anchor migration is a timeline/compatibility problem. |
-| PKI — Reassess PKI Ownership with Vault | NO VIDEO | — | — | Architecture decision from implemented evidence. |
-| Directory Federation — Directory Federation Architecture | RECOMMENDED VIDEO | LDAP→Keycloak federation architecture demos reviewed | No candidate promoted yet | Identity source→federation→OIDC→application flow is visual. |
-| Directory Federation — Keycloak LDAP Federation | RECOMMENDED VIDEO | Keycloak LDAP federation demos reviewed | No candidate promoted yet | Live mapper/sync/login behavior is useful. |
-| Directory Federation — Federated Identity Lifecycle and Failure Modes | RECOMMENDED VIDEO | federation outage/lifecycle demos reviewed | No candidate promoted yet | Directory outage and lifecycle propagation are temporal. |
-| Directory Federation — Active Directory, LDAP and Kerberos Context | RECOMMENDED VIDEO | AD/LDAP/Kerberos architecture explainers reviewed | No candidate promoted yet | Protocol/service relationships benefit from diagrams. |
-| Secure Transfer — FTP to SFTP Secure Transfer Migration | RECOMMENDED VIDEO | OpenSSH SFTP migration/host-key demos reviewed | No candidate promoted yet | Protocol replacement, key auth and host-key pinning are operational workflows. |
-| Application Security — Secure Authentication | NO VIDEO | — | — | Apply prior identity/security knowledge directly. |
-| Application Security — Authorization Design and Testing | NO VIDEO | — | — | Design and prove actual authorization rules. |
-| Application Security — Input Validation | NO VIDEO | — | — | Implement boundary validation and negative cases. |
-| Application Security — Secure Error Handling | NO VIDEO | — | — | Implement actual failure contract. |
-| Application Security — Secrets Management | NO VIDEO | — | — | Vault/secret lifecycle already covered. |
-| Application Security — Security Headers and Configuration | OPTIONAL VIDEO | browser security-header demos reviewed | No candidate promoted yet | Seeing CSP/HSTS/etc. in browser/network tools can reinforce effects. |
+| Vault — Vault and Dynamic Secrets for Steward | RECOMMENDED VIDEO | HashiCorp Vault demos reviewed | No candidate promoted yet | Seeing dynamic credentials issued with TTL makes the model concrete. |
+| Vault — From Static Secrets to Leased Credentials | RECOMMENDED VIDEO | Vault database-secrets demos reviewed | No candidate promoted yet | Static→dynamic comparison and lease lifecycle are visual. |
+| Vault — Deploy and Initialize Vault Safely | OPTIONAL VIDEO | Vault initialization/unseal demos reviewed | No candidate promoted yet | UI/CLI orientation helps, but learner must understand recovery boundaries. |
+| Vault — Issue Dynamic PostgreSQL Credentials | RECOMMENDED VIDEO | Vault database-secrets engine demos reviewed | No candidate promoted yet | Credential creation, TTL and revocation are strong live demonstrations. |
+| Vault — Break Vault and Rotate Trust | NO VIDEO | — | — | Failure/rotation drill is primary. |
+| Vault — Reassess the Secrets Platform | NO VIDEO | — | — | Architecture reassessment uses evidence. |
+| PKI — Model Internal PKI and Machine Trust | RECOMMENDED VIDEO | PKI chain/trust diagrams reviewed | No candidate promoted yet | Root→intermediate→leaf and trust-anchor relationships are inherently visual. |
+| PKI — Build a Root and Issuing CA Hierarchy | RECOMMENDED VIDEO | CA hierarchy/OpenSSL demos reviewed | No candidate promoted yet | Seeing certificate chain construction helps before implementation. |
+| PKI — Issue Workload Certificates with Explicit Identity | RECOMMENDED VIDEO | SAN/EKU certificate demos reviewed | No candidate promoted yet | Inspecting identity fields in real certificates adds value. |
+| PKI — Distribute Trust without Disabling Verification | RECOMMENDED VIDEO | Linux/Windows trust-store demos reviewed | No candidate promoted yet | Cross-platform trust-store behavior is useful to see. |
+| PKI — Implement Mutual TLS between Workloads | RECOMMENDED VIDEO | mTLS handshake demos reviewed | No candidate promoted yet | Both sides presenting/verifying identity is best shown as a sequence. |
+| PKI — Rotate Certificates without Changing Identity Semantics | OPTIONAL VIDEO | certificate rotation demos reviewed | No candidate promoted yet | Timeline can reinforce overlap/cutover, but drill is primary. |
+| PKI — Revocation and Compromised Identity Response | RECOMMENDED VIDEO | CRL/OCSP/revocation demos reviewed | No candidate promoted yet | Revocation lookup/failure behavior benefits from visualization. |
+| PKI — Trust-Anchor Rotation and Failure Recovery | RECOMMENDED VIDEO | CA/intermediate rotation material reviewed | No candidate promoted yet | Overlapping trust and cutover are sequence-oriented. |
+| PKI — Milestone: Operate Steward Internal Machine Trust | NO VIDEO | — | — | Milestone synthesis. |
+| PKI — Reassess PKI Ownership with Vault | NO VIDEO | — | — | Ownership decision from evidence. |
+| Directory Federation — Directory Federation Architecture | RECOMMENDED VIDEO | Keycloak LDAP federation architecture demos reviewed | No candidate promoted yet | Directory→Keycloak→OIDC→application identity path is visual. |
+| Directory Federation — Keycloak LDAP Federation | RECOMMENDED VIDEO | Keycloak LDAP federation walkthroughs reviewed | No candidate promoted yet | Admin configuration, sync and claim mapping are useful to see. |
+| Directory Federation — Federated Identity Lifecycle and Failure Modes | RECOMMENDED VIDEO | federation lifecycle/outage demos reviewed | No candidate promoted yet | Disable/delete/outage/trust-failure behavior benefits from a timeline. |
+| Directory Federation — Active Directory, LDAP and Kerberos Context | RECOMMENDED VIDEO | AD/LDAP/Kerberos relationship explainers reviewed | No candidate promoted yet | Protocol/service relationships are easy to confuse and benefit from a visual map. |
+| SFTP Migration — FTP to SFTP Secure Transfer Migration | RECOMMENDED VIDEO | FTP/SFTP protocol-flow comparisons reviewed | No candidate promoted yet | The transport/security-model difference benefits from packet/flow visualization. |
+| SFTP Migration — From Legacy Compatibility to Secure Transfer | NO VIDEO | — | — | Migration pressure and constraints are contextual. |
+| SFTP Migration — Build the SFTP Trust and Identity Boundary | RECOMMENDED VIDEO | OpenSSH SFTP key/host-key demos reviewed | No candidate promoted yet | User key authentication plus host-key trust is a live workflow. |
+| SFTP Migration — Prove File-Contract Parity over SFTP | NO VIDEO | — | — | Parity proof is the exercise. |
+| SFTP Migration — Run Bounded FTP and SFTP Coexistence | OPTIONAL VIDEO | migration/cutover demonstrations reviewed | No candidate promoted yet | A coexistence timeline can reinforce bounded migration. |
+| SFTP Migration — Decommission FTP and Prove the Security End State | NO VIDEO | — | — | Negative proof that FTP no longer works is primary. |
+| SFTP Migration — Defend the Secure Transfer Migration | NO VIDEO | — | — | Defence uses evidence. |
+| Application Security — Secure Authentication | NO VIDEO | — | — | Apply prior auth security to actual application. |
+| Application Security — Authorization Design and Testing | NO VIDEO | — | — | Authorization matrix and negative tests are primary. |
+| Application Security — Input Validation | NO VIDEO | — | — | Implement/retest actual validation. |
+| Application Security — Secure Error Handling | NO VIDEO | — | — | Implement and inspect actual failure responses. |
+| Application Security — Secrets Management | NO VIDEO | — | — | Vault/secret lifecycle already taught. |
+| Application Security — Security Headers and Configuration | OPTIONAL VIDEO | browser/header inspection demos reviewed | No candidate promoted yet | A browser/devtools demonstration can reinforce effect. |
 | Application Security — Security Logging | NO VIDEO | — | — | Implement and inspect actual security events. |
-| Application Security — Rate Limiting and Abuse Resistance | RECOMMENDED VIDEO | rate-limit load/abuse demos reviewed | No candidate promoted yet | Burst→throttle/reject behavior is temporal. |
-| Application Security — Data Protection | NO VIDEO | — | — | Apply classification/encryption/access boundaries directly. |
-| Application Security — Security-focused Code Review | OPTIONAL VIDEO | secure code-review walkthroughs reviewed | No candidate promoted yet | Watching an expert trace untrusted input can model review method. |
-| Application Security — Abuse Cases and Negative Security Requirements | NO VIDEO | — | — | Write actual abuse cases/requirements. |
-| Application Security — Security Regression Testing | NO VIDEO | — | — | Automate actual fixed vulnerabilities. |
-| Security Milestone — Milestone Briefing: Build a Defensible Steward Security Posture | NO VIDEO | — | — | Milestone brief. |
-| Security Milestone — Milestone: Steward Security Assessment and Hardening | NO VIDEO | — | — | Independent security synthesis. |
+| Application Security — Rate Limiting and Abuse Resistance | NO VIDEO | — | — | Implement and load-test actual policy. |
+| Application Security — Data Protection | NO VIDEO | — | — | Apply classification/protection decisions. |
+| Application Security — Security-focused Code Review | OPTIONAL VIDEO | secure-code-review walkthroughs reviewed | No candidate promoted yet | Watching an expert reason through a diff can model review technique. |
+| Application Security — Abuse Cases and Negative Security Requirements | NO VIDEO | — | — | Write concrete abuse cases/negative requirements. |
+| Application Security — Security Regression Testing | NO VIDEO | — | — | Build automated regression evidence. |
+| Application Security — Lab: Harden Steward API | NO VIDEO | — | — | Independent hardening lab. |
+| Security Milestone — Milestone Briefing: Build a Defensible Steward Security Posture | NO VIDEO | — | — | Milestone briefing. |
+| Security Milestone — Integrate the Security Steward Evidence | NO VIDEO | — | — | Evidence integration. |
+| Security Milestone — Evidence Readiness Check | NO VIDEO | — | — | Readiness review. |
+| Security Milestone — Milestone: Steward Security Assessment and Hardening | NO VIDEO | — | — | Milestone synthesis. |
+| Security Milestone — Rebaseline Threats, Assets and Trust Boundaries | NO VIDEO | — | — | Reassessment uses actual system. |
+| Security Milestone — Verify Controls Across the Steward Stack | NO VIDEO | — | — | Verification work. |
+| Security Milestone — Close High-priority Gaps and Retest | NO VIDEO | — | — | Remediation/retest. |
+| Security Milestone — Publish the Steward Security Assessment | NO VIDEO | — | — | Deliverable creation. |
+| Security Milestone — Defend the Security Posture | NO VIDEO | — | — | Final defence. |
