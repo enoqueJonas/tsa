@@ -680,3 +680,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI Quality — Reports and Artifacts | OPTIONAL VIDEO | CI report/artifact UI demos reviewed | No candidate promoted yet | Seeing persisted evidence can help. |
 | CI Quality — Quality Gates | RECOMMENDED VIDEO | Quality-gate pipeline demos reviewed | No candidate promoted yet | Signal→gate→promotion blocking is a visual decision flow. |
 | CI Quality — Test Selection | NO VIDEO | — | — | Select tests from risk/change evidence. |
+| CI Quality — Failure Triage | RECOMMENDED VIDEO | CI failure-triage demos reviewed | No candidate promoted yet | A real red-build investigation demonstrates evidence flow. |
