@@ -439,3 +439,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | OS Lifecycle — Patch Multiple Rocky Hosts with Ansible | RECOMMENDED VIDEO | Ansible rolling/canary patch demos reviewed | No candidate promoted yet | Canary→fleet progression is a visual operational workflow. |
 | OS Lifecycle — Patch Age and Lifecycle Visibility | OPTIONAL VIDEO | Patch-compliance dashboard demos reviewed | No candidate promoted yet | Dashboard examples can help, but the learner must build their own visibility. |
 | OS Lifecycle — Separate Proxmox Host and Rocky Guest Lifecycles | NO VIDEO | — | — | The important result is an explicit maintenance-domain model. |
+| OS Lifecycle — Major OS Version Change Is a Migration | OPTIONAL VIDEO | Enterprise Linux major-upgrade/migration talks reviewed | No candidate promoted yet | A migration case study can add context without encouraging blind in-place upgrades. |
