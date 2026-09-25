@@ -609,3 +609,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Test Design — Decision Tables | RECOMMENDED VIDEO | Decision-table demonstrations reviewed | No candidate promoted yet | Condition/action combinations are inherently tabular/visual. |
 | Test Design — State Transition Testing | RECOMMENDED VIDEO | State-machine testing demos reviewed | No candidate promoted yet | States/events/invalid transitions are visual. |
 | Test Design — Pairwise and Combinatorial Concepts | RECOMMENDED VIDEO | Pairwise generation demonstrations reviewed | No candidate promoted yet | Combinatorial explosion and reduced pair coverage benefit from a matrix. |
+| Test Design — Exploratory Testing | OPTIONAL VIDEO | James Bach/Michael Bolton exploratory-testing talks reviewed | No candidate promoted yet | A real session can model charter→observation→learning, but learner exploration is primary. |
