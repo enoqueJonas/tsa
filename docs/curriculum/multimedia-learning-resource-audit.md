@@ -728,3 +728,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — Path Traversal | RECOMMENDED VIDEO | PortSwigger traversal demos reviewed | No candidate promoted yet | Path manipulation escaping intended root is demonstrable. |
 | Web/API — File Upload Risks | RECOMMENDED VIDEO | OWASP/PortSwigger upload demos reviewed | No candidate promoted yet | Content/type/storage/execution boundary failures are demonstrable. |
 | Web/API — Command Injection | RECOMMENDED VIDEO | PortSwigger command-injection demos reviewed | No candidate promoted yet | Input crossing into shell execution is valuable to see. |
+| Web/API — Insecure Deserialization Concepts | RECOMMENDED VIDEO | Deserialization exploit explainers reviewed | No candidate promoted yet | Object reconstruction→unexpected behavior benefits from a worked demo. |
