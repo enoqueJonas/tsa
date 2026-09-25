@@ -870,3 +870,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Alerting — Alert Fatigue | OPTIONAL VIDEO | alert-fatigue talks reviewed | No candidate promoted yet | Real pager-noise stories add context. |
 | Alerting — Severity | NO VIDEO | — | — | Define actual severity policy. |
 | Alerting — Escalation | OPTIONAL VIDEO | on-call escalation demos reviewed | No candidate promoted yet | Timeline/workflow can reinforce escalation. |
+| Alerting — Alert Routing Concepts | RECOMMENDED VIDEO | Alertmanager routing demos reviewed | No candidate promoted yet | Label→route→receiver tree is highly visual. |
