@@ -1030,3 +1030,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Modularity — Modules and Boundaries | RECOMMENDED VIDEO | modularity/boundary talks reviewed | No candidate promoted yet | Dependency and ownership boundaries benefit from visual examples. |
 | Modularity — Coupling and Cohesion Revisited | OPTIONAL VIDEO | coupling/cohesion talks reviewed | No candidate promoted yet | Worked examples can reinforce change coupling. |
 | Modularity — Dependency Direction | RECOMMENDED VIDEO | dependency-rule/clean-architecture diagrams reviewed | No candidate promoted yet | Direction and policy/mechanism boundaries are visual. |
+| Modularity — Encapsulation at System Scale | OPTIONAL VIDEO | modular architecture talks reviewed | No candidate promoted yet | A worked module boundary can reinforce information hiding. |
