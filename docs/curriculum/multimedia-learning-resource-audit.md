@@ -629,3 +629,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | API/Integration — Contract Testing Concepts | RECOMMENDED VIDEO | Pact consumer-driven contract demos reviewed | No candidate promoted yet | Provider/consumer expectation flow is best shown as a sequence. |
 | API/Integration — Mocking and Service Virtualization | RECOMMENDED VIDEO | Service-virtualization demos reviewed | No candidate promoted yet | Controlled simulated dependency behavior is useful to see. |
 | API/Integration — Internal Package Compatibility | NO VIDEO | — | — | Test actual consumed package versions. |
+| API/Integration — Data Setup and Cleanup | NO VIDEO | — | — | Own test state directly. |
