@@ -1055,3 +1055,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture Governance — Run the Review | RECOMMENDED VIDEO | Architecture review/ATAM workshop material reviewed | No candidate promoted yet | Seeing stakeholders challenge scenarios and trade-offs is valuable. |
 | Architecture Governance — Turn Decisions into Guardrails | OPTIONAL VIDEO | Architecture fitness/guardrail talks reviewed | No candidate promoted yet | Automated guardrail examples can reinforce governance. |
 | Architect — Milestone: Steward Architecture Evolution | NO VIDEO | — | — | Milestone synthesis and defence. |
+
+
+## Technical Steward — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Leadership — Technical Ownership | OPTIONAL VIDEO | Staff/technical-leadership talks reviewed | No candidate promoted yet | A strong practitioner story can add context; ownership must still be exercised. |
