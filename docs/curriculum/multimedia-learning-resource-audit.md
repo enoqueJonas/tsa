@@ -889,3 +889,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Performance — Capacity Planning | OPTIONAL VIDEO | capacity planning talks reviewed | No candidate promoted yet | Worked forecasts can reinforce method. |
 | Performance — Resource Utilization | RECOMMENDED VIDEO | CPU/memory/I/O metric demos reviewed | No candidate promoted yet | Correlated resource graphs add intuition. |
 | Performance — Database and Application Bottlenecks | RECOMMENDED VIDEO | APM/query bottleneck investigations reviewed | No candidate promoted yet | Cross-layer diagnosis benefits from walkthrough. |
+| Performance — Performance Baselines | NO VIDEO | — | — | Measure actual baseline. |
