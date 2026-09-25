@@ -544,3 +544,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Building Blocks — Compute | RECOMMENDED VIDEO | Cloud compute architecture demos reviewed | No candidate promoted yet | Placement/capacity abstraction is visual. |
 | Building Blocks — Object Storage | RECOMMENDED VIDEO | S3 object-storage architecture demos reviewed | No candidate promoted yet | Bucket/key/API model differs enough from filesystems to merit visualization. |
 | Building Blocks — Block Storage | RECOMMENDED VIDEO | Cloud block-volume attach/detach demos reviewed | No candidate promoted yet | Volume lifetime versus compute lifetime is visual. |
+| Building Blocks — Managed Databases | OPTIONAL VIDEO | Managed PostgreSQL responsibility demos reviewed | No candidate promoted yet | Useful to show shifted operational ownership. |
