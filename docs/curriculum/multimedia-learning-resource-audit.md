@@ -505,3 +505,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Delivery Milestone — Gate 4: Runtime Verification | NO VIDEO | — | — | Evidence gate. |
 | Delivery Milestone — Gate 5: Failure, Rollback and Recovery | NO VIDEO | — | — | Evidence gate. |
 | Delivery Milestone — Gate 6: Delivery Platform Handoff | NO VIDEO | — | — | Evidence gate. |
+| Delivery Milestone — Milestone Review and Exit Criteria | NO VIDEO | — | — | School exit review. |
