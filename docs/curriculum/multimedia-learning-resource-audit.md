@@ -1114,3 +1114,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | --- | --- | --- | --- | --- |
 | Governance — Governance vs Management | RECOMMENDED VIDEO | COBIT governance-vs-management explainers reviewed | No candidate promoted yet | A concise governance/management responsibility model can anchor the school. |
 | Governance — Decision Rights | OPTIONAL VIDEO | decision-rights/RACI governance talks reviewed | No candidate promoted yet | Worked organizational examples can reinforce authority boundaries. |
+| Governance — Accountability | NO VIDEO | — | — | Apply ownership directly to Steward services/risks/products. |
