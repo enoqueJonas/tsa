@@ -874,3 +874,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Alerting — Runbooks | NO VIDEO | — | — | Write and exercise actual runbook. |
 | Alerting — On-call Handover and Context | OPTIONAL VIDEO | on-call handover talks reviewed | No candidate promoted yet | Operational examples can help. |
 | Alerting — Lab: Build Steward Alerts and Runbooks | NO VIDEO | — | — | Independent lab. |
+| Alertmanager — Operate Prometheus Alertmanager | RECOMMENDED VIDEO | Prometheus Alertmanager routing/silence demos reviewed | No candidate promoted yet | Routing/grouping/inhibition/silences benefit from live demonstration. |
