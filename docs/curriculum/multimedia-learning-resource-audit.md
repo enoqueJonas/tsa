@@ -1206,3 +1206,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Handbook — Runbooks and Playbooks | RECOMMENDED VIDEO | SRE runbook/incident-playbook material reviewed | No candidate promoted yet | A worked operational procedure shows prerequisites, stop conditions, verification and escalation better than definitions alone. |
 | Handbook — Decision Records | NO VIDEO | ADR media already reviewed earlier | Reuse earlier ADR candidate only if needed | Avoid duplicate media; apply the established ADR discipline. |
 | Handbook — Review Checklists | NO VIDEO | — | — | Design the actual risk-sensitive checklist and automate machine-verifiable items. |
+| Handbook — Knowledge Stewardship | OPTIONAL VIDEO | documentation/knowledge-management engineering talks reviewed | No candidate promoted yet | Examples can show authoritative-source and ownership patterns. |
