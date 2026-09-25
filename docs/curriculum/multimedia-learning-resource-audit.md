@@ -214,3 +214,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Components — Dependency Direction | OPTIONAL VIDEO | Dependency-direction explainers reviewed | No candidate promoted yet | A visual dependency-arrow example can help. |
 | Components — Internal and External Dependencies | NO VIDEO | — | — | The learner must inventory and classify actual dependencies. |
 | Components — Lab: Map Steward API Dependencies | NO VIDEO | — | — | Independent mapping lab. |
+| Data Flow — Following Data Through a System | RECOMMENDED VIDEO | Sequence/data-flow modeling material reviewed | No candidate promoted yet | Tracing a request visually across components materially improves comprehension. |
