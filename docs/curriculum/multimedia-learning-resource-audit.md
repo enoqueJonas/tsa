@@ -735,3 +735,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — Sensitive Data and Secrets | NO VIDEO | — | — | Inspect actual exposure paths. |
 | Web/API — API Abuse and Rate Limiting | RECOMMENDED VIDEO | Rate-limit/abuse demos reviewed | No candidate promoted yet | Request-rate/threshold behavior benefits from live visualization. |
 | Web/API — Token and Session Attacks | RECOMMENDED VIDEO | PortSwigger JWT/session labs reviewed | No candidate promoted yet | Token/session lifecycle attacks are useful to demonstrate safely. |
+| Web/API — Cryptographic Failures | RECOMMENDED VIDEO | Crypto-failure explainers reviewed | No candidate promoted yet | Misuse consequences can be visualized. |
