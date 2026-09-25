@@ -1001,3 +1001,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Fundamentals — Constraints | NO VIDEO | — | — | Identify and classify actual constraints. |
 | Fundamentals — Trade-offs and Consequences | NO VIDEO | — | — | Decision analysis is the learning activity. |
 | Fundamentals — Architecture Fitness and Evolution | RECOMMENDED VIDEO | Thoughtworks evolutionary-architecture talks reviewed | No candidate promoted yet | Fitness-function/evolution examples can make continuous architecture concrete. |
+| Fundamentals — Architecture Documentation | OPTIONAL VIDEO | arc42/C4 documentation talks reviewed | No candidate promoted yet | A guided architecture-document walkthrough can help, but producing the baseline is primary. |
