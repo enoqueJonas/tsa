@@ -711,3 +711,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Foundations — Security Controls: Preventive, Detective and Corrective | OPTIONAL VIDEO | Control-category examples reviewed | No candidate promoted yet | A worked incident/control chain can reinforce categories. |
 | Foundations — Risk Treatment and Residual Risk | NO VIDEO | — | — | Make treatment decisions from the actual risk register. |
 | Foundations — Lab: Map Steward Security Assets and Attack Surface | NO VIDEO | — | — | Independent synthesis. |
+| Threat Modeling — Assets and Actors | NO VIDEO | — | — | Model the actual system. |
