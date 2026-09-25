@@ -468,3 +468,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Core Infra — DHCP Exhaustion, Wrong Options and Relay | RECOMMENDED VIDEO | DHCP relay/failure demonstrations reviewed | No candidate promoted yet | Relay and exhaustion are path/state problems that benefit from topology and packet-flow visualization. |
 | Core Infra — Operate Time Synchronization with Chrony | OPTIONAL VIDEO | Chrony/NTP demonstrations reviewed | No candidate promoted yet | A short live chronyc demonstration can help; configuration and evidence remain primary. |
 | Core Infra — Clock Skew as a Security and Observability Incident | RECOMMENDED VIDEO | Clock-skew/TLS/token/logging examples reviewed | No candidate promoted yet | A timeline makes the cross-system consequences of wrong time much easier to understand. |
+| Core Infra — Integrate Core Services into the Homelab | NO VIDEO | — | — | Integration evidence is the lesson. |
