@@ -1167,3 +1167,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technical Leadership — Escalation and Responsible Challenge | RECOMMENDED VIDEO | psychological-safety/escalation engineering talks reviewed | No candidate promoted yet | Scenario-based demonstrations add value for high-stakes disagreement. |
 | Technical Leadership — Lab: Lead a Steward Technical Review | NO VIDEO | — | — | Independent leadership exercise. |
 | Controls — Preventive, Detective and Corrective Controls | RECOMMENDED VIDEO | control-type explainers reviewed | No candidate promoted yet | A single incident mapped to prevent/detect/correct controls is well suited to visual explanation. |
+| Controls — Control Objectives | NO VIDEO | — | — | Write objectives against actual risks. |
