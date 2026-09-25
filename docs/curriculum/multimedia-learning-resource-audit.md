@@ -687,3 +687,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI — Lab: Build the Steward Quality Pipeline | NO VIDEO | — | — | Independent pipeline lab. |
 | Scheduled Execution — Continuous and Scheduled Quality Execution | OPTIONAL VIDEO | Jenkins trigger/cron demos reviewed | No candidate promoted yet | Orientation can help, but policy/evidence are primary. |
 | Scheduled Execution — Design Triggered Quality Feedback | NO VIDEO | — | — | Design from feedback needs. |
+| Scheduled Execution — Implement SCM-triggered Automated Testing | RECOMMENDED VIDEO | Jenkins SCM-trigger demos reviewed | No candidate promoted yet | Webhook/SCM→job→test flow is useful to see. |
