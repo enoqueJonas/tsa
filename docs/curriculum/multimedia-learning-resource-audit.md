@@ -1237,3 +1237,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Proposal — Quality Strategy | NO VIDEO | Prior Quality Steward material sufficient | — | Build a strategy from capstone risks. |
 | Proposal — Security Strategy | NO VIDEO | Prior Security Steward material sufficient | — | Apply threat/risk/control reasoning. |
 | Proposal — Reliability Strategy | NO VIDEO | Prior Reliability Engineer material sufficient | — | Select reliability mechanisms from actual failure modes/SLOs. |
+| Proposal — Operational Model | NO VIDEO | — | — | Define real ownership/support/operations. |
