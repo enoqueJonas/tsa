@@ -714,3 +714,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Threat Modeling — Assets and Actors | NO VIDEO | — | — | Model the actual system. |
 | Threat Modeling — Data and Control Flows | RECOMMENDED VIDEO | Microsoft threat-modeling/DFD demos reviewed | No candidate promoted yet | Flow diagrams are the core medium. |
 | Threat Modeling — Trust Boundaries | RECOMMENDED VIDEO | Threat-model walkthroughs reviewed | No candidate promoted yet | Boundary crossing plus data flow is visual. |
+| Threat Modeling — Threat Identification | RECOMMENDED VIDEO | Threat-modeling workshops reviewed | No candidate promoted yet | Watching threats elicited from a diagram demonstrates the reasoning process. |
