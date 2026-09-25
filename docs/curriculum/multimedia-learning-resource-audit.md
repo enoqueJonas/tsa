@@ -503,3 +503,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Delivery Milestone — Gate 2: Reproducible Delivery Infrastructure | NO VIDEO | — | — | Evidence gate. |
 | Delivery Milestone — Gate 3: Promotion and Deployment | NO VIDEO | — | — | Evidence gate. |
 | Delivery Milestone — Gate 4: Runtime Verification | NO VIDEO | — | — | Evidence gate. |
+| Delivery Milestone — Gate 5: Failure, Rollback and Recovery | NO VIDEO | — | — | Evidence gate. |
