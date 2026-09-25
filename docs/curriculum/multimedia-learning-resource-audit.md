@@ -514,3 +514,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Core Services — DNS, DHCP and Time as Infrastructure | RECOMMENDED VIDEO | DNS/DHCP/NTP dependency explainers reviewed | Reuse prior DNS video for DNS only; no combined candidate promoted | A dependency map is useful, but avoid repeating full DNS instruction. |
 | Core Services — Operate Authoritative Homelab DNS | RECOMMENDED VIDEO | BIND authoritative DNS demonstrations reviewed | No candidate promoted yet | Authoritative zones, records and dig evidence benefit from live demonstration. |
 | Core Services — Break and Diagnose DNS | NO VIDEO | — | — | The learner should diagnose the injected DNS failures directly. |
+| Core Services — Operate DHCP Scopes and Reservations | RECOMMENDED VIDEO | DHCP server/scope demos reviewed | No candidate promoted yet | Lease allocation and reservation behavior are useful to see before operation. |
