@@ -650,3 +650,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation Framework — Parallel Execution | RECOMMENDED VIDEO | pytest-xdist/parallel test demos reviewed | No candidate promoted yet | Worker scheduling and shared-state collisions benefit from live evidence. |
 | Automation Framework — Retries and Flaky-test Risk | RECOMMENDED VIDEO | Flaky-test diagnosis talks reviewed | No candidate promoted yet | Retry masking versus root-cause diagnosis is useful to demonstrate. |
 | Automation Framework — Framework Maintainability | NO VIDEO | — | — | Review/refactor actual framework. |
+| Automation Framework — Reusable Testing Infrastructure vs Domain Test Code | NO VIDEO | — | — | Boundary decision from real code. |
