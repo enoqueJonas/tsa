@@ -1157,3 +1157,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Engineering Health — Sustainable Remediation | NO VIDEO | — | — | Choose remediation from actual recurring causes and verify the consequence changes. |
 | Engineering Health — Debt Ownership and Review Cadence | NO VIDEO | — | — | Ownership/cadence design is contextual governance work. |
 | Engineering Health — Balancing Feature Delivery and Engineering Health | OPTIONAL VIDEO | Engineering-investment practitioner talks reviewed | No candidate promoted yet | Real trade-off cases can add context without prescribing a universal capacity percentage. |
+| Engineering Health — Lab: Build the Steward Engineering Health Review | NO VIDEO | — | — | Independent synthesis and review. |
