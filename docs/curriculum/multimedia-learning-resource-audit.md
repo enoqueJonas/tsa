@@ -531,3 +531,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | OS Lifecycle — Kernel Update and Controlled Reboot | RECOMMENDED VIDEO | Linux kernel update/reboot lifecycle demos reviewed | No candidate promoted yet | Installed-versus-running kernel state is useful to see demonstrated. |
 | OS Lifecycle — Patch Regression and Recovery | NO VIDEO | — | — | The learner must diagnose a deterministic regression and recover it. |
 | OS Lifecycle — Patch Multiple Rocky Hosts with Ansible | RECOMMENDED VIDEO | Ansible rolling/serial patch demos reviewed | No candidate promoted yet | Canary-to-fleet orchestration and explicit reboot handling benefit from a live run. |
+| OS Lifecycle — Patch Age and Lifecycle Visibility | OPTIONAL VIDEO | Patch-age dashboard examples reviewed | No candidate promoted yet | A dashboard walkthrough can reinforce the signal, but the learner must build the visibility. |
