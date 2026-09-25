@@ -718,3 +718,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Separate Proxmox Host and Rocky Guest Lifecycles | NO VIDEO | — | — | This is an ownership/maintenance-domain design exercise. |
 | Major OS Version Change Is a Migration | OPTIONAL VIDEO | Enterprise Linux major-upgrade/migration material reviewed | No candidate promoted yet | A migration case study can add context, but TSA deliberately treats this as architecture/change planning rather than copy-along upgrade. |
 | Reassess the Patch Operating Model | NO VIDEO | — | — | ADR/runbook synthesis. |
+
+
+## Platform Builder — Windows, File/Directory Services and File Integration lesson audit
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Windows in a Linux-Primary Enterprise Platform | OPTIONAL VIDEO | Mixed Linux/Windows enterprise operations material reviewed | No candidate promoted yet | A visual estate map can provide context, but responsibility boundaries are the main objective. |
