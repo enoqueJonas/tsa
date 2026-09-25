@@ -647,3 +647,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation Framework — Automation Logging | OPTIONAL VIDEO | Test diagnostic logging demos reviewed | No candidate promoted yet | Failure-diagnostic comparison can help. |
 | Automation Framework — Reports | RECOMMENDED VIDEO | Playwright/pytest report demos reviewed | No candidate promoted yet | Seeing navigable failure evidence adds value. |
 | Automation Framework — Screenshots, Traces and Video | RECOMMENDED VIDEO | Playwright Trace Viewer demos reviewed | No candidate promoted yet | This capability is explicitly visual; a Trace Viewer walkthrough is valuable. |
+| Automation Framework — Parallel Execution | RECOMMENDED VIDEO | pytest-xdist/parallel test demos reviewed | No candidate promoted yet | Worker scheduling and shared-state collisions benefit from live evidence. |
