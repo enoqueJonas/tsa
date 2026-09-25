@@ -727,3 +727,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — Server-side Request Forgery | RECOMMENDED VIDEO | PortSwigger SSRF demos reviewed | No candidate promoted yet | Victim server→internal target request path is highly visual. |
 | Web/API — Path Traversal | RECOMMENDED VIDEO | PortSwigger traversal demos reviewed | No candidate promoted yet | Path manipulation escaping intended root is demonstrable. |
 | Web/API — File Upload Risks | RECOMMENDED VIDEO | OWASP/PortSwigger upload demos reviewed | No candidate promoted yet | Content/type/storage/execution boundary failures are demonstrable. |
+| Web/API — Command Injection | RECOMMENDED VIDEO | PortSwigger command-injection demos reviewed | No candidate promoted yet | Input crossing into shell execution is valuable to see. |
