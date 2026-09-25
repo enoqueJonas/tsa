@@ -377,3 +377,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Core Services — Integrate Core Services into the Homelab | NO VIDEO | — | — | Integration evidence is primary. |
 | Core Services — Reassess Availability and Ownership | NO VIDEO | — | — | Architecture reassessment. |
 | Config Mgmt — Desired State, Inventory and Idempotence | RECOMMENDED VIDEO | Ansible desired-state/idempotence demos reviewed | No candidate promoted yet | A first run versus no-change second run is a strong live demonstration. |
+| Config Mgmt — Reusable Rocky Baseline Role | RECOMMENDED VIDEO | Ansible role demonstrations reviewed | No candidate promoted yet | Role structure/variables/handlers benefit from a concise walkthrough. |
