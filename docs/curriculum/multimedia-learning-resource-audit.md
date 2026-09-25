@@ -1130,3 +1130,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture Governance — Lab: Govern a Steward Architecture Exception | NO VIDEO | — | — | Independent exception exercise. |
 | Technology Governance — Business and Technology Alignment | OPTIONAL VIDEO | COBIT/IT governance alignment material reviewed | No candidate promoted yet | A worked goal→capability→measure mapping can reinforce alignment. |
 | Technology Governance — Value Delivery | NO VIDEO | — | — | Tie actual investment to outcomes. |
+| Technology Governance — Resource Stewardship | OPTIONAL VIDEO | FinOps/resource-governance talks reviewed | No candidate promoted yet | Lifecycle-cost examples can add context. |
