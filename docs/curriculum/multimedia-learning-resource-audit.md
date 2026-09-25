@@ -419,3 +419,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Platform Builder — Platform Builder Exit Reflection | NO VIDEO | — | — | Reflection and transfer check. |
 | Core Infrastructure — DNS, DHCP and Time as Infrastructure | RECOMMENDED VIDEO | DNS/DHCP/NTP architecture material reviewed | Reuse focused protocol videos where applicable | The combined dependency/authority model benefits from a topology view before implementation. |
 | Core Infrastructure — Operate Authoritative Homelab DNS | RECOMMENDED VIDEO | BIND authoritative-DNS demonstrations reviewed | No candidate promoted yet | Authoritative zones, recursion boundaries and record ownership are useful to see configured once. |
+| Core Infrastructure — Break and Diagnose DNS | NO VIDEO | — | — | The learner should diagnose deliberately broken DNS from dig/service evidence. |
