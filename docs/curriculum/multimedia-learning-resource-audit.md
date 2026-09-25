@@ -626,3 +626,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | API/Integration — Schema and Contract Validation | OPTIONAL VIDEO | OpenAPI/contract validation demos reviewed | No candidate promoted yet | Useful workflow demonstration; actual assertions remain primary. |
 | API/Integration — Database Assertions | NO VIDEO | — | — | Transaction-aware assertions should be implemented directly. |
 | API/Integration — Integration Boundaries | RECOMMENDED VIDEO | Integration-test boundary diagrams reviewed | No candidate promoted yet | Real/virtual dependency boundaries are visual. |
+| API/Integration — Contract Testing Concepts | RECOMMENDED VIDEO | Pact consumer-driven contract demos reviewed | No candidate promoted yet | Provider/consumer expectation flow is best shown as a sequence. |
