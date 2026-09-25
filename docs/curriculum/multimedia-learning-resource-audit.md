@@ -1212,3 +1212,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Handbook — Keeping the Handbook Alive | OPTIONAL VIDEO | docs-as-code/living-documentation talks reviewed | No candidate promoted yet | A maintained repository workflow can reinforce event-driven documentation updates. |
 | Handbook — Lab: Build the Steward Engineering Handbook | NO VIDEO | — | — | Independent synthesis. |
 | Technical Steward Milestone — Milestone: Technical Stewardship Review | NO VIDEO | — | — | Final school synthesis and defence; no new instructional media. |
+
+
+## Professional Engineer — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Discovery — Choosing a Substantial Problem | NO VIDEO | Prior curriculum resources sufficient | — | Capstone begins by proving transfer; problem choice must come from evidence, not new instruction. |
