@@ -548,3 +548,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Cloud Blocks — Virtual Networks and Subnets | NO VIDEO | Prior networking material covers fundamentals | — | Apply established network model. |
 | Cloud Blocks — Routing and Gateways | NO VIDEO | Prior routing material covers fundamentals | — | Trace the actual cloud packet path. |
 | Cloud Blocks — Load Balancers | RECOMMENDED VIDEO | Load-balancing traffic-flow demos reviewed | No candidate promoted yet | Distribution/health-check/failure behavior is visual. |
+| Cloud Blocks — IAM | RECOMMENDED VIDEO | Cloud IAM policy/identity explainers reviewed | No candidate promoted yet | Principal→policy→resource authorization is easier with a relationship diagram. |
