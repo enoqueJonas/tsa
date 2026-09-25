@@ -1158,3 +1158,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Engineering Health — Debt Ownership and Review Cadence | NO VIDEO | — | — | Ownership/cadence design is contextual governance work. |
 | Engineering Health — Balancing Feature Delivery and Engineering Health | OPTIONAL VIDEO | Engineering-investment practitioner talks reviewed | No candidate promoted yet | Real trade-off cases can add context without prescribing a universal capacity percentage. |
 | Engineering Health — Lab: Build the Steward Engineering Health Review | NO VIDEO | — | — | Independent synthesis and review. |
+| Technical Leadership — Technical Ownership | OPTIONAL VIDEO | staff/principal engineering ownership talks reviewed | No candidate promoted yet | Real ownership examples can illustrate responsibility without conflating ownership with doing all work. |
