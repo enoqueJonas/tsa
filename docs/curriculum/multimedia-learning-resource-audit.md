@@ -634,3 +634,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | API/Integration — Lab: Test Steward API End-to-End at the Service Layer | NO VIDEO | — | — | Synthesis lab. |
 | Automation — What Makes an Automation Framework | OPTIONAL VIDEO | Framework architecture walkthroughs reviewed | No candidate promoted yet | A repository walkthrough can orient without prescribing architecture. |
 | Automation — Framework Architecture | RECOMMENDED VIDEO | Playwright/pytest framework walkthroughs reviewed | No candidate promoted yet | Layers and dependency direction benefit from a codebase tour. |
+| Automation — Playwright with Python | RECOMMENDED VIDEO | Playwright official Python material reviewed | No candidate promoted yet | A real execution and trace demo is useful before framework integration. |
