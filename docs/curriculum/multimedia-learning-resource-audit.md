@@ -938,3 +938,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Fault Injection — Database Failure Scenarios | RECOMMENDED VIDEO | database outage/lock demos reviewed | No candidate promoted yet | Failure propagation/recovery are visual. |
 | Fault Injection — Artifact Repository Failure Scenarios | OPTIONAL VIDEO | artifact outage demos reviewed | No candidate promoted yet | Useful context but lab evidence is primary. |
 | Fault Injection — Recovery Verification | NO VIDEO | — | — | Verify actual recovery. |
+| Fault Injection — Chaos Engineering Principles and Safety | OPTIONAL VIDEO | Principles of Chaos Engineering talks reviewed | No candidate promoted yet | Industry framing is useful reinforcement. |
