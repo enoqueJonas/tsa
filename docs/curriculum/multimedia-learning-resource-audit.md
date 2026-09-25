@@ -1017,3 +1017,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Styles — Establish Current Style and Drivers | NO VIDEO | — | — | Independent baseline. |
 | Styles — Compare Credible Target Styles | NO VIDEO | — | — | Decision exercise. |
 | Styles — Record Style Decision and Evolution Triggers | NO VIDEO | — | — | ADR/evolution evidence. |
+| Domain — Domain Models and Business Language | OPTIONAL VIDEO | DDD/domain-modeling talks reviewed | No candidate promoted yet | A worked ubiquitous-language/modeling session can reinforce the concept. |
