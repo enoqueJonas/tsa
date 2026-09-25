@@ -496,3 +496,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Schema Evolution — Contract and Prove the End State | NO VIDEO | — | — | Execute the final gate and cleanup directly. |
 | Schema Evolution — Defend the Migration Strategy | NO VIDEO | — | — | Reflection/defence. |
 | CI Migration — Migration Brief: Move a Steward CI Workflow Safely | OPTIONAL VIDEO | CI migration case studies reviewed | No candidate promoted yet | A case study can provide context, but semantic mapping is primary. |
+| CI Migration — Execute a Bounded CI Migration | NO VIDEO | — | — | Independent migration exercise. |
