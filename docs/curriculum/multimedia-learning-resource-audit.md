@@ -878,3 +878,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Database — Database Roles and Least Privilege | NO VIDEO | — | — | Implement and prove actual role boundaries. |
 | Database — Connections, Pools and Exhaustion | RECOMMENDED VIDEO | connection-pool saturation demos reviewed | No candidate promoted yet | Pool occupancy/wait/exhaustion is temporal and graphable. |
 | Database — Slow Queries and Query-plan Evidence | RECOMMENDED VIDEO | PostgreSQL EXPLAIN demos reviewed | No candidate promoted yet | Live plan interpretation adds value. |
+| Database — Locks, Blocking and Deadlocks | RECOMMENDED VIDEO | PostgreSQL lock/deadlock demos reviewed | No candidate promoted yet | Two-session blocking/deadlock timelines are highly visual. |
