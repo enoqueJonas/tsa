@@ -725,3 +725,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — Broken Authentication | RECOMMENDED VIDEO | OWASP auth-failure demos reviewed | No candidate promoted yet | Concrete bypass/session failures add value. |
 | Web/API — Broken Authorization and IDOR | RECOMMENDED VIDEO | PortSwigger access-control/IDOR labs reviewed | No candidate promoted yet | Changing object identifiers across users is a powerful live demo. |
 | Web/API — Server-side Request Forgery | RECOMMENDED VIDEO | PortSwigger SSRF demos reviewed | No candidate promoted yet | Victim server→internal target request path is highly visual. |
+| Web/API — Path Traversal | RECOMMENDED VIDEO | PortSwigger traversal demos reviewed | No candidate promoted yet | Path manipulation escaping intended root is demonstrable. |
