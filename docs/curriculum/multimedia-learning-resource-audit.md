@@ -1277,3 +1277,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Defence — Present the Problem and Outcomes | NO VIDEO | — | — | Defend the discovered problem and achieved outcomes. |
 | Defence — Present the Architecture | NO VIDEO | — | — | Explain the architecture the learner actually built. |
 | Readiness — Lab: Run the Capstone Production Readiness Review | NO VIDEO | — | — | Independent readiness synthesis. |
+| Defence — Present the Problem and Outcomes | NO VIDEO | — | — | The learner must present their own problem and demonstrated outcomes. |
