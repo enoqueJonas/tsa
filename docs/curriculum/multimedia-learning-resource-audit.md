@@ -600,3 +600,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Quality Engineering — Test Levels and Test Types | OPTIONAL VIDEO | ISTQB/test-level explainers reviewed | No candidate promoted yet | Boundary visualization can help, but avoid taxonomy memorization. |
 | Quality Engineering — Risk-based Testing | NO VIDEO | — | — | Prioritize the actual product risks. |
 | Quality Engineering — Shift-left and Shift-right | RECOMMENDED VIDEO | Modern testing/observability shift-left/right talks reviewed | No candidate promoted yet | Delivery timeline and feedback-loop placement are visual. |
+| Quality Engineering — Testability | RECOMMENDED VIDEO | Testability architecture talks reviewed | No candidate promoted yet | Controllability/observability examples benefit from a worked system. |
