@@ -851,3 +851,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Metrics — CI and Delivery Metrics | NO VIDEO | — | — | Choose metrics from actual delivery questions. |
 | Metrics — Lab: Instrument Steward API | NO VIDEO | — | — | Independent instrumentation lab. |
 | Metrics — Lab: Observe the Internal Artifact Platform | NO VIDEO | — | — | Independent platform observation lab. |
+| Tracing — Decision Gate: Select Steward's Tracing Backend | NO VIDEO | — | — | Decision from evidence. |
