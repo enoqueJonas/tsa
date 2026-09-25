@@ -934,3 +934,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Fault Injection — Blast Radius and Safety | RECOMMENDED VIDEO | chaos engineering safety talks reviewed | No candidate promoted yet | Scope/abort controls benefit from scenario diagrams. |
 | Fault Injection — Process and Container Failure | RECOMMENDED VIDEO | Kubernetes/process kill demos reviewed | No candidate promoted yet | Failure/recovery behavior is live and visual. |
 | Fault Injection — Resource Exhaustion Concepts | RECOMMENDED VIDEO | CPU/memory/disk pressure demos reviewed | No candidate promoted yet | Resource graphs make failure onset concrete. |
+| Fault Injection — Network and Dependency Failure Simulation | RECOMMENDED VIDEO | latency/drop/dependency outage demos reviewed | No candidate promoted yet | Temporal failure behavior benefits from demonstration. |
