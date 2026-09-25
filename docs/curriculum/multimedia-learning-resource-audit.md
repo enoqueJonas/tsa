@@ -1178,3 +1178,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Controls — Designing Proportionate Controls | NO VIDEO | — | — | Proportionality is a contextual design decision. |
 | Controls — Lab: Test Steward Engineering Controls | NO VIDEO | — | — | Independent assurance exercise. |
 | Security/Data — Security Governance | RECOMMENDED VIDEO | NIST CSF 2.0 official overview reviewed | [NIST — The Cybersecurity Framework (CSF) 2.0](https://www.youtube.com/watch?v=pPPiaGU12Og); whole short animation | The official CSF 2.0 overview explicitly includes the Govern function and gives concise governance context. |
+| Security/Data — Roles and Accountability | NO VIDEO | — | — | Map real security/data decision rights. |
