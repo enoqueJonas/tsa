@@ -1106,3 +1106,109 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architect Milestone — Challenge the Architecture with New Drivers | NO VIDEO | — | — | Independent scenario. |
 | Architect Milestone — Produce the Evolution Decision | NO VIDEO | — | — | Decision artifact. |
 | Architect Milestone — Defend Trade-offs and Reversal Triggers | NO VIDEO | — | — | Final defence. |
+
+
+## Technical Steward — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Governance — Governance vs Management | RECOMMENDED VIDEO | COBIT governance-vs-management explainers reviewed | No candidate promoted yet | A concise governance/management responsibility model can anchor the school. |
+| Governance — Decision Rights | OPTIONAL VIDEO | decision-rights/RACI governance talks reviewed | No candidate promoted yet | Worked organizational examples can reinforce authority boundaries. |
+| Governance — Accountability | NO VIDEO | — | — | Apply ownership directly to Steward services/risks/products. |
+| Governance — Policies, Standards, Procedures and Guidelines | RECOMMENDED VIDEO | policy/standard/procedure governance explainers reviewed | No candidate promoted yet | Side-by-side examples help distinguish artifact purpose and mandatory strength. |
+| Governance — Exceptions | OPTIONAL VIDEO | exception/waiver governance material reviewed | No candidate promoted yet | A worked exception can add context, but drafting one is primary. |
+| Governance — Evidence and Review Cadence | NO VIDEO | — | — | The learner should map actual operating evidence and cadence. |
+| Governance — Governance Without Bureaucracy | OPTIONAL VIDEO | paved-road/guardrail governance talks reviewed | No candidate promoted yet | Industry examples can show automation/defaults replacing approval theater. |
+| Governance — Lab: Design the Steward Engineering Governance Model | NO VIDEO | — | — | Independent governance design. |
+| Architecture Governance — Architecture Principles | OPTIONAL VIDEO | architecture-principles talks reviewed | No candidate promoted yet | Examples can show principle versus slogan. |
+| Architecture Governance — Technology Standards | NO VIDEO | — | — | Write/test standards against Steward context. |
+| Architecture Governance — Technology Selection | NO VIDEO | — | — | Evidence-based selection. |
+| Architecture Governance — Architecture Reviews | OPTIONAL VIDEO | architecture-review facilitation talks reviewed | No candidate promoted yet | A real review can model challenge without centralizing decisions. |
+| Architecture Governance — Architecture Exceptions | NO VIDEO | — | — | Operate the actual exception model. |
+| Architecture Governance — Technology Lifecycle | RECOMMENDED VIDEO | technology lifecycle/EOL governance talks reviewed | No candidate promoted yet | Adopt→operate→upgrade→retire sequence and triggers are visual. |
+| Architecture Governance — Architecture Decision Ownership | NO VIDEO | — | — | Assign actual ownership. |
+| Architecture Governance — Lab: Govern a Steward Architecture Exception | NO VIDEO | — | — | Independent exception exercise. |
+| Technology Governance — Business and Technology Alignment | OPTIONAL VIDEO | COBIT/IT governance alignment material reviewed | No candidate promoted yet | A worked goal→capability→measure mapping can reinforce alignment. |
+| Technology Governance — Value Delivery | NO VIDEO | — | — | Tie actual investment to outcomes. |
+| Technology Governance — Resource Stewardship | OPTIONAL VIDEO | FinOps/resource-governance talks reviewed | No candidate promoted yet | Lifecycle-cost examples can add context. |
+| Technology Governance — Performance Oversight | NO VIDEO | — | — | Define actual decision-linked measures. |
+| Technology Governance — Governance Structures | OPTIONAL VIDEO | IT governance operating-model talks reviewed | No candidate promoted yet | Examples can show decision forums versus delegated authority. |
+| Technology Governance — COBIT Concepts | RECOMMENDED VIDEO | ISACA COBIT overview material reviewed | No candidate promoted yet | A concise official overview can orient governance objectives without teaching the whole framework. |
+| Technology Governance — ITIL and Service-management Concepts | RECOMMENDED VIDEO | PeopleCert/ITIL service-management overviews reviewed | No candidate promoted yet | Value/service lifecycle concepts benefit from a concise framework overview. |
+| Technology Governance — ISO Management-system Concepts | OPTIONAL VIDEO | ISO management-system explainers reviewed | No candidate promoted yet | Plan/control/evaluate/improve cycle can be reinforced visually. |
+| Technology Governance — NIST Framework Landscape | RECOMMENDED VIDEO | NIST CSF/RMF/SSDF overview material reviewed | No candidate promoted yet | Seeing framework scopes side by side helps prevent checklist conflation. |
+| Technology Governance — Using Frameworks Without Checklist Thinking | NO VIDEO | — | — | The learner must tailor frameworks to actual governance problems. |
+| Technology Governance — Lab: Map Steward Governance Responsibilities | NO VIDEO | — | — | Independent governance mapping. |
+| Risk — Risk Identification | OPTIONAL VIDEO | NIST/ISO risk-identification material reviewed | No candidate promoted yet | Worked risk statements can reinforce cause/event/consequence structure. |
+| Risk — Likelihood and Impact | OPTIONAL VIDEO | risk-matrix critique/material reviewed | No candidate promoted yet | Examples help show uncertainty and ordinal limitations. |
+| Risk — Inherent and Residual Risk | RECOMMENDED VIDEO | risk/control visual explainers reviewed | No candidate promoted yet | Before-controls→controls→residual exposure is well suited to a diagram. |
+| Risk — Risk Appetite and Tolerance | OPTIONAL VIDEO | enterprise-risk appetite/tolerance explainers reviewed | No candidate promoted yet | Examples can distinguish organizational boundaries from case-level assessment. |
+| Risk — Risk Treatment | NO VIDEO | — | — | Choose actual avoid/reduce/transfer/accept treatments. |
+| Risk — Risk Acceptance | NO VIDEO | — | — | Decision authority and evidence are primary. |
+| Risk — Risk Registers | NO VIDEO | — | — | Build and operate the actual register. |
+| Risk — Key Risk Indicators | OPTIONAL VIDEO | KRI design talks reviewed | No candidate promoted yet | Examples can help distinguish leading exposure signals from vanity metrics. |
+| Risk — Risk Ownership | NO VIDEO | — | — | Assign accountable owners. |
+| Risk — Lab: Build the Steward Technology Risk Register | NO VIDEO | — | — | Independent synthesis. |
+| Engineering Health — Identifying Technical Debt | OPTIONAL VIDEO | Ward Cunningham/technical-debt explanations and modern talks reviewed | No candidate promoted yet | Historical metaphor/context can help prevent debt from becoming a label for disliked code. |
+| Engineering Health — Measuring and Communicating Debt | NO VIDEO | — | — | Use actual consequence evidence. |
+| Engineering Health — Prioritization | NO VIDEO | — | — | Prioritize actual debt from harm/opportunity cost. |
+| Engineering Health — Engineering Health Metrics | OPTIONAL VIDEO | DORA/engineering-metrics talks reviewed | No candidate promoted yet | Worked metric examples can reinforce decision-linked measurement without turning metrics into targets. |
+| Engineering Health — KPI vs KRI | OPTIONAL VIDEO | KPI/KRI governance explainers reviewed | No candidate promoted yet | A side-by-side worked example helps distinguish performance from exposure signals. |
+| Engineering Health — Sustainable Remediation | NO VIDEO | — | — | Choose remediation from actual recurring causes and verify the consequence changes. |
+| Engineering Health — Debt Ownership and Review Cadence | NO VIDEO | — | — | Ownership/cadence design is contextual governance work. |
+| Engineering Health — Balancing Feature Delivery and Engineering Health | OPTIONAL VIDEO | Engineering-investment practitioner talks reviewed | No candidate promoted yet | Real trade-off cases can add context without prescribing a universal capacity percentage. |
+| Engineering Health — Lab: Build the Steward Engineering Health Review | NO VIDEO | — | — | Independent synthesis and review. |
+| Technical Leadership — Technical Ownership | OPTIONAL VIDEO | staff/principal engineering ownership talks reviewed | No candidate promoted yet | Real ownership examples can illustrate responsibility without conflating ownership with doing all work. |
+| Technical Leadership — Influence Without Authority | RECOMMENDED VIDEO | technical-leadership influence talks reviewed | No candidate promoted yet | Observed communication/decision scenarios are valuable because the capability is interpersonal rather than tool-based. |
+| Technical Leadership — Decision-making | OPTIONAL VIDEO | engineering decision-making talks reviewed | No candidate promoted yet | A worked decision under uncertainty can reinforce reversible/irreversible framing. |
+| Technical Leadership — Technical Communication | RECOMMENDED VIDEO | technical communication/review talks reviewed | No candidate promoted yet | Seeing a concise technical explanation and challenge exchange is useful. |
+| Technical Leadership — Mentoring | OPTIONAL VIDEO | engineering mentoring talks reviewed | No candidate promoted yet | A good mentoring conversation can model questioning and feedback, but practice remains primary. |
+| Technical Leadership — Engineering Reviews | RECOMMENDED VIDEO | architecture/code review facilitation talks reviewed | No candidate promoted yet | A real review demonstrates evidence-based challenge and decision closure. |
+| Technical Leadership — Escalation and Responsible Challenge | RECOMMENDED VIDEO | psychological-safety/escalation engineering talks reviewed | No candidate promoted yet | Scenario-based demonstrations add value for high-stakes disagreement. |
+| Technical Leadership — Lab: Lead a Steward Technical Review | NO VIDEO | — | — | Independent leadership exercise. |
+| Controls — Preventive, Detective and Corrective Controls | RECOMMENDED VIDEO | control-type explainers reviewed | No candidate promoted yet | A single incident mapped to prevent/detect/correct controls is well suited to visual explanation. |
+| Controls — Control Objectives | NO VIDEO | — | — | Write objectives against actual risks. |
+| Controls — Control Design | OPTIONAL VIDEO | control-design/audit examples reviewed | No candidate promoted yet | Worked design examples can reinforce owner/frequency/evidence/failure response. |
+| Controls — Control Effectiveness | RECOMMENDED VIDEO | control design-vs-operating-effectiveness material reviewed | No candidate promoted yet | Side-by-side evidence examples help distinguish intended design from operation. |
+| Controls — Evidence | NO VIDEO | — | — | The learner must identify and preserve actual operating evidence. |
+| Controls — Control Testing | RECOMMENDED VIDEO | audit/control-testing walkthroughs reviewed | No candidate promoted yet | Sampling/reperformance/inspection are useful to see applied to a concrete control. |
+| Controls — Compliance vs Security | OPTIONAL VIDEO | security/compliance practitioner talks reviewed | No candidate promoted yet | Case studies help show why compliance evidence is not equivalent to security. |
+| Controls — Audit Fundamentals | OPTIONAL VIDEO | internal-audit lifecycle explainers reviewed | No candidate promoted yet | A concise audit lifecycle overview can orient scope/evidence/findings. |
+| Controls — Findings and Remediation | NO VIDEO | — | — | Draft and track actual findings. |
+| Controls — Designing Proportionate Controls | NO VIDEO | — | — | Proportionality is a contextual design decision. |
+| Controls — Lab: Test Steward Engineering Controls | NO VIDEO | — | — | Independent assurance exercise. |
+| Security/Data — Security Governance | RECOMMENDED VIDEO | NIST CSF 2.0 official overview reviewed | [NIST — The Cybersecurity Framework (CSF) 2.0](https://www.youtube.com/watch?v=pPPiaGU12Og); whole short animation | The official CSF 2.0 overview explicitly includes the Govern function and gives concise governance context. |
+| Security/Data — Roles and Accountability | NO VIDEO | — | — | Map real security/data decision rights. |
+| Security/Data — Policy Hierarchy | OPTIONAL VIDEO | policy/standard/procedure hierarchy material reviewed | No candidate promoted yet | A visual hierarchy can reinforce artifact relationships. |
+| Security/Data — Data Ownership | NO VIDEO | — | — | Assign ownership to actual Steward data. |
+| Security/Data — Data Classification | OPTIONAL VIDEO | data-classification examples reviewed | No candidate promoted yet | Worked classification examples can reinforce consequence-based categories. |
+| Security/Data — Retention and Privacy Concepts | OPTIONAL VIDEO | privacy/data-lifecycle explainers reviewed | No candidate promoted yet | A data lifecycle visual can reinforce collection→use→retention→deletion. |
+| Security/Data — Access Governance | RECOMMENDED VIDEO | access-review/IGA demonstrations reviewed | No candidate promoted yet | Joiner/mover/leaver and periodic review flows benefit from visualization. |
+| Security/Data — Security Exceptions and Risk Acceptance | NO VIDEO | — | — | Use the actual risk/exception mechanism. |
+| Security/Data — Lab: Define Steward Security and Data Accountability | NO VIDEO | — | — | Independent governance synthesis. |
+| Change/Service — Classify and Prepare the Change | OPTIONAL VIDEO | ITIL/change-enablement practitioner material reviewed | No candidate promoted yet | A real change-classification example can add context without creating CAB theater. |
+| Change/Service — Make the Release Decision | RECOMMENDED VIDEO | production-readiness/change-risk review talks reviewed | No candidate promoted yet | Watching a risk/evidence-based go/no-go discussion can model the decision process. |
+| Change/Service — Close the Service-governance Loop | RECOMMENDED VIDEO | Google Cloud Tech — Postmortems and Retrospectives | [Google Cloud Tech — Postmortems and Retrospectives](https://www.youtube.com/watch?v=UBe7U2b3tsA); whole video | The Google SRE discussion directly demonstrates learning after incidents and turning operational evidence into improvement. |
+| Change/Service — Lab: Govern a Steward Production Change | NO VIDEO | — | — | Independent change-governance exercise. |
+| Third-party — Vendor Assessment | OPTIONAL VIDEO | third-party risk assessment material reviewed | No candidate promoted yet | A worked assessment can reinforce evidence-based vendor questions. |
+| Third-party — Dependency Risk | NO VIDEO | — | — | Assess actual dependencies and their ownership/lifecycle. |
+| Third-party — SaaS and Cloud Risk | OPTIONAL VIDEO | shared-responsibility/vendor-risk material reviewed | No candidate promoted yet | Responsibility-boundary examples add context. |
+| Third-party — End-of-life Technology | RECOMMENDED VIDEO | technology lifecycle/EOL case studies reviewed | No candidate promoted yet | A lifecycle timeline with support/patch/migration consequences is useful. |
+| Third-party — Exit and Continuity Planning | RECOMMENDED VIDEO | cloud/SaaS exit-strategy talks reviewed | No candidate promoted yet | Data export, replacement, cutover and continuity are strong sequence/topology topics. |
+| Third-party — Internal Software Product Ownership | NO VIDEO | — | — | Apply ownership to steward-common and tsa-test-core. |
+| Third-party — Approved Dependency Sources | NO VIDEO | — | — | Use the real Nexus/source policy. |
+| Third-party — Internal Package Version and Support Policy | NO VIDEO | — | — | Define the actual support contract. |
+| Third-party — Repository Retention and Lifecycle | OPTIONAL VIDEO | artifact-repository lifecycle material reviewed | No candidate promoted yet | A lifecycle example can reinforce retention versus recoverability. |
+| Third-party — Dependency Exceptions | NO VIDEO | — | — | Operate the actual exception mechanism. |
+| Third-party — Supply-chain Ownership and Provenance Requirements | RECOMMENDED VIDEO | SLSA/software supply-chain provenance talks reviewed | No candidate promoted yet | Build→artifact→provenance→verification flow is visual and cross-cutting. |
+| Third-party — Lab: Govern steward-common and tsa-test-core | NO VIDEO | — | — | Independent product-governance exercise. |
+| Handbook — Writing Usable Standards | OPTIONAL VIDEO | engineering standards/paved-road talks reviewed | No candidate promoted yet | Industry examples can show outcome standards versus personal tool preferences. |
+| Handbook — Runbooks and Playbooks | RECOMMENDED VIDEO | SRE runbook/incident-playbook material reviewed | No candidate promoted yet | A worked operational procedure shows prerequisites, stop conditions, verification and escalation better than definitions alone. |
+| Handbook — Decision Records | NO VIDEO | ADR media already reviewed earlier | Reuse earlier ADR candidate only if needed | Avoid duplicate media; apply the established ADR discipline. |
+| Handbook — Review Checklists | NO VIDEO | — | — | Design the actual risk-sensitive checklist and automate machine-verifiable items. |
+| Handbook — Knowledge Stewardship | OPTIONAL VIDEO | documentation/knowledge-management engineering talks reviewed | No candidate promoted yet | Examples can show authoritative-source and ownership patterns. |
+| Handbook — Standards Ownership and Versioning | NO VIDEO | — | — | Define lifecycle metadata for actual standards. |
+| Handbook — Exception and Waiver Records | NO VIDEO | — | — | Use the governance exception model already built. |
+| Handbook — Keeping the Handbook Alive | OPTIONAL VIDEO | docs-as-code/living-documentation talks reviewed | No candidate promoted yet | A maintained repository workflow can reinforce event-driven documentation updates. |
+| Handbook — Lab: Build the Steward Engineering Handbook | NO VIDEO | — | — | Independent synthesis. |
+| Technical Steward Milestone — Milestone: Technical Stewardship Review | NO VIDEO | — | — | Final school synthesis and defence; no new instructional media. |
