@@ -2164,3 +2164,19 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Governance — Run the Review | RECOMMENDED VIDEO | Architecture review/ATAM-style workshops reviewed | No candidate promoted yet | Facilitation and scenario questioning are behavioral skills. |
 | Governance — Turn Decisions into Guardrails | RECOMMENDED VIDEO | Architecture fitness/policy-as-code talks reviewed | No candidate promoted yet | Decision→automated guardrail flow is useful. |
 | Architect Milestone | NO VIDEO | — | — | Independent architecture evolution synthesis. |
+
+
+## Technical Steward — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Leadership — Prepare the Review | OPTIONAL VIDEO | Technical design-review facilitation talks reviewed | No candidate promoted yet | Seeing review preparation/facilitation can add behavioral context. |
+| Leadership — Facilitate Decision and Challenge | RECOMMENDED VIDEO | Architecture/technical leadership review sessions reviewed | No candidate promoted yet | Challenge without authority and decision facilitation are skills worth observing. |
+| Leadership — Close the Leadership Loop | NO VIDEO | — | — | Follow-up/accountability should be practiced. |
+| Engineering Governance — Design the Governance Artifact and Exception System | NO VIDEO | — | — | Design actual lightweight governance. |
+| Engineering Governance — Define Evidence, Cadence and Lightweight Oversight | NO VIDEO | — | — | Operating model is primary. |
+| Technology Governance | OPTIONAL VIDEO | COBIT/technology governance overview material reviewed | No candidate promoted yet | A concise governance-system overview can provide organizational context, but framework memorization is not the goal. |
+| Technology Risk — Build the risk universe | NO VIDEO | — | — | Build actual risk taxonomy/register. |
+| Technology Risk — Assess controls and treatments | NO VIDEO | — | — | Perform actual assessment. |
+| Technology Risk — Operationalize the register | OPTIONAL VIDEO | Technology risk committee/reporting examples reviewed | No candidate promoted yet | A governance cadence example may help. |
+| Controls/Assurance — Build the control catalogue | NO VIDEO | — | — | Design controls from risks. |
