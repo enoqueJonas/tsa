@@ -524,3 +524,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | VPS — Securing SSH Access | NO VIDEO | Prior SSH media considered | Reuse earlier material only if needed | Avoid reteaching SSH. |
 | VPS — Provider Firewalls and Security Controls | RECOMMENDED VIDEO | Cloud/provider firewall demos reviewed | No candidate promoted yet | Provider edge rules versus host firewall are easier to see in a path diagram. |
 | VPS — OS Lifecycle and Patching | NO VIDEO | Prior OS lifecycle path covers this | — | Apply established practice. |
+| VPS — Remote Recovery Concepts | RECOMMENDED VIDEO | Provider console/rescue-mode demos reviewed | No candidate promoted yet | OOB console/rescue paths are useful before an SSH lockout. |
