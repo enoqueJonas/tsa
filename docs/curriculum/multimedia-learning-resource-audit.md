@@ -704,3 +704,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
 | Desired State, Inventory and Idempotence | RECOMMENDED VIDEO | Ansible desired-state/idempotence introductions reviewed | No candidate promoted yet | Seeing first-run changed state followed by an unchanged second run makes declarative convergence concrete. |
+| Reusable Rocky Baseline Role | RECOMMENDED VIDEO | Ansible role/handler demonstrations reviewed | No candidate promoted yet | Role structure, handlers and canary application benefit from a live focused demonstration. |
