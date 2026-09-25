@@ -1084,3 +1084,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Resilience Architecture — Recovery Objectives as Architecture Drivers | RECOMMENDED VIDEO | RPO/RTO media already audited in Reliability | Reuse earlier media if review is needed | Apply recovery objectives architecturally without duplicate viewing. |
 | Resilience Architecture — Select and Model the Failure Path | NO VIDEO | — | — | Independent modeling. |
 | Resilience Architecture — Compare Resilience Options | NO VIDEO | — | — | Decision exercise. |
+| Resilience Architecture — Validate and Record the Evolution | NO VIDEO | — | — | Evidence and ADR. |
