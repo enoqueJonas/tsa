@@ -1011,3 +1011,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Styles — Service-oriented Architecture | OPTIONAL VIDEO | SOA architecture talks reviewed | No candidate promoted yet | Historical/contextual visualization can help distinguish SOA from microservices. |
 | Styles — Microservices | RECOMMENDED VIDEO | Martin Fowler microservices material and practitioner talks reviewed | No candidate promoted yet | Service boundaries, independent deployment and distribution cost benefit from worked architecture examples. |
 | Styles — Event-driven Architecture | RECOMMENDED VIDEO | AWS/event-driven architecture talks reviewed | No candidate promoted yet | Producer/event/broker/consumer topology and temporal decoupling are visual. |
+| Styles — Serverless Concepts | RECOMMENDED VIDEO | serverless execution/event-flow demos reviewed | No candidate promoted yet | Trigger→managed runtime→managed services is easier to understand visually. |
