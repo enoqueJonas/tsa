@@ -682,3 +682,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI Quality — Test Selection | NO VIDEO | — | — | Select tests from risk/change evidence. |
 | CI Quality — Failure Triage | RECOMMENDED VIDEO | CI failure-triage demos reviewed | No candidate promoted yet | A real red-build investigation demonstrates evidence flow. |
 | CI Quality — Flaky-test Containment | RECOMMENDED VIDEO | Flake quarantine/diagnosis talks reviewed | No candidate promoted yet | Seeing intermittent evidence and containment workflow adds value. |
+| CI Quality — Internal Test Package Publishing and Compatibility in CI | NO VIDEO | — | — | Exercise actual package compatibility. |
