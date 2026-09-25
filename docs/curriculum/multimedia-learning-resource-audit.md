@@ -1181,3 +1181,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Security/Data — Roles and Accountability | NO VIDEO | — | — | Map real security/data decision rights. |
 | Security/Data — Policy Hierarchy | OPTIONAL VIDEO | policy/standard/procedure hierarchy material reviewed | No candidate promoted yet | A visual hierarchy can reinforce artifact relationships. |
 | Security/Data — Data Ownership | NO VIDEO | — | — | Assign ownership to actual Steward data. |
+| Security/Data — Data Classification | OPTIONAL VIDEO | data-classification examples reviewed | No candidate promoted yet | Worked classification examples can reinforce consequence-based categories. |
