@@ -417,3 +417,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Platform Builder — Milestone Review and Exit Criteria | NO VIDEO | — | — | Milestone evidence review. |
 | Platform Builder — Assemble the Platform Builder Evidence Pack | NO VIDEO | — | — | Portfolio assembly. |
 | Platform Builder — Platform Builder Exit Reflection | NO VIDEO | — | — | Reflection and transfer check. |
+
+
+## Delivery Engineer — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Foundations — The Source-to-Production Lifecycle | RECOMMENDED VIDEO | CI/CD lifecycle visualizations reviewed | No candidate promoted yet | End-to-end source→build→artifact→promotion→runtime flow is inherently visual. |
