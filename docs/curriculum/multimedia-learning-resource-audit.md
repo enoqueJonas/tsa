@@ -886,3 +886,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Performance — Saturation | RECOMMENDED VIDEO | saturation/load demos reviewed | No candidate promoted yet | Knee point and queue growth are visual. |
 | Performance — Bottlenecks | RECOMMENDED VIDEO | profiling/bottleneck demos reviewed | No candidate promoted yet | Resource evidence→bottleneck diagnosis is useful live. |
 | Performance — Load and Stress Testing | RECOMMENDED VIDEO | k6 load/stress demos reviewed | No candidate promoted yet | Traffic and response graphs are visual. |
+| Performance — Capacity Planning | OPTIONAL VIDEO | capacity planning talks reviewed | No candidate promoted yet | Worked forecasts can reinforce method. |
