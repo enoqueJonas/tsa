@@ -284,3 +284,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Networking — ARP | RECOMMENDED VIDEO | ARP packet-flow explainers reviewed | No candidate promoted yet | IP-to-MAC resolution is a short visual packet exchange. |
 | Networking — TCP and UDP | RECOMMENDED VIDEO | Transport-protocol animations reviewed | No candidate promoted yet | Handshake/reliability versus datagrams benefits from packet-flow visualization. |
 | Networking — Ports and Sockets | OPTIONAL VIDEO | Socket/port explainers reviewed | No candidate promoted yet | A process-to-socket diagram can reinforce the OS/network boundary. |
+| Networking — Routing | RECOMMENDED VIDEO | Routing-table/next-hop demonstrations reviewed | No candidate promoted yet | Route selection is inherently path-oriented and visual. |
