@@ -516,3 +516,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Core Services — Break and Diagnose DNS | NO VIDEO | — | — | The learner should diagnose the injected DNS failures directly. |
 | Core Services — Operate DHCP Scopes and Reservations | RECOMMENDED VIDEO | DHCP server/scope demos reviewed | No candidate promoted yet | Lease allocation and reservation behavior are useful to see before operation. |
 | Core Services — DHCP Exhaustion, Wrong Options and Relay | RECOMMENDED VIDEO | DHCP relay/failure demos reviewed | No candidate promoted yet | Relay and exhaustion are path/state behaviors that benefit from visualization. |
+| Core Services — Operate Time Synchronization with Chrony | OPTIONAL VIDEO | chrony/NTP demos reviewed | No candidate promoted yet | A live chronyc sources/tracking demo can help, but operation is straightforward. |
