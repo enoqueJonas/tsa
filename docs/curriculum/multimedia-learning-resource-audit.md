@@ -690,3 +690,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | --- | --- | --- | --- | --- |
 | DNS, DHCP and Time as Infrastructure | RECOMMENDED VIDEO | DNS/DHCP/NTP infrastructure-flow material reviewed | Reuse focused DNS media plus service-dependency diagram; no additional broad video promoted | The lesson connects three infrastructure dependencies; visualization helps, but a generic networking overview would duplicate earlier material. |
 | Operate Authoritative Homelab DNS | RECOMMENDED VIDEO | BIND authoritative DNS demonstrations reviewed | No candidate promoted yet | Zone authority, records and recursive-vs-authoritative behavior benefit from a live dig/BIND demonstration. |
+| Break and Diagnose DNS | RECOMMENDED VIDEO | DNS troubleshooting demonstrations reviewed | No candidate promoted yet | Watching wrong record, cache and service failures diagnosed with dig provides useful operational pattern recognition. |
