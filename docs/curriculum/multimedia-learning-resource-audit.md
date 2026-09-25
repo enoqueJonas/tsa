@@ -426,3 +426,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Foundations — The Source-to-Production Lifecycle | RECOMMENDED VIDEO | CI/CD lifecycle visualizations reviewed | No candidate promoted yet | End-to-end source→build→artifact→promotion→runtime flow is inherently visual. |
 | Foundations — Git Workflows | NO VIDEO | — | — | Git workflow was already practiced; apply it to delivery. |
 | Foundations — Pull Requests and Reviews | NO VIDEO | — | — | Review behavior is learned through actual PRs. |
+| Foundations — Semantic Versioning | OPTIONAL VIDEO | SemVer explainers reviewed | No candidate promoted yet | A concise example can reinforce compatibility signaling, but the spec and release exercise are enough. |
