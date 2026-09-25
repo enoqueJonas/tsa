@@ -1263,3 +1263,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Build — Lab: Deliver the First End-to-End Capstone Release | NO VIDEO | — | — | End-to-end synthesis release. |
 | Readiness — Deployment Readiness | NO VIDEO | — | — | Run the real readiness checks. |
 | Readiness — Observability | NO VIDEO | Prior Reliability material sufficient | — | Validate actual telemetry coverage. |
+| Readiness — Security Assessment | NO VIDEO | Prior Security material sufficient | — | Assess the capstone. |
