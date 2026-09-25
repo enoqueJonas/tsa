@@ -894,3 +894,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Performance — Storage Growth and Artifact Capacity | OPTIONAL VIDEO | capacity trend demos reviewed | No candidate promoted yet | Trend visualization can reinforce forecasting. |
 | Performance — Lab: Establish Steward Capacity Baselines | NO VIDEO | — | — | Independent measurement lab. |
 | Resilience — Timeouts | RECOMMENDED VIDEO | timeout/dependency demos reviewed | No candidate promoted yet | Caller wait/failure timeline is visual. |
+| Resilience — Retries | RECOMMENDED VIDEO | retry behavior demos reviewed | No candidate promoted yet | Repeated attempts and amplification are temporal. |
