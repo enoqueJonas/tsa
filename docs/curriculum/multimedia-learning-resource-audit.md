@@ -659,3 +659,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation Framework — Lab: Publish and Consume tsa-test-core | NO VIDEO | — | — | Independent package workflow. |
 | Browser — Browser Surface Decision | NO VIDEO | — | — | Decide whether UI coverage is justified by the actual product surface. |
 | Browser — Browser Differences | RECOMMENDED VIDEO | Browser engine/rendering explainers reviewed | No candidate promoted yet | Engine differences and rendering behavior are visual. |
+| Browser — Responsive Testing | RECOMMENDED VIDEO | Playwright responsive/device emulation demos reviewed | No candidate promoted yet | Viewport/layout behavior is explicitly visual. |
