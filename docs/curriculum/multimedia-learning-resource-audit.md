@@ -526,3 +526,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | VPS — OS Lifecycle and Patching | NO VIDEO | Prior OS lifecycle path covers this | — | Apply established practice. |
 | VPS — Remote Recovery Concepts | RECOMMENDED VIDEO | Provider console/rescue-mode demos reviewed | No candidate promoted yet | OOB console/rescue paths are useful before an SSH lockout. |
 | VPS — Backups and Snapshots | OPTIONAL VIDEO | VPS snapshot/backup demos reviewed | No candidate promoted yet | Useful mechanics; failure-domain reasoning remains primary. |
+| Internet — Public and Private Addressing | NO VIDEO | Prior networking media covers this | — | Apply prior knowledge. |
