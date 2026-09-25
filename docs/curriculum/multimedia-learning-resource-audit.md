@@ -1233,3 +1233,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Proposal — Domain and Data Model Proposal | NO VIDEO | — | — | Design from the discovered domain. |
 | Proposal — Architecture Proposal | NO VIDEO | Prior Architect resources sufficient | — | Produce and defend the architecture rather than copy a reference architecture. |
 | Proposal — Infrastructure and Hosting Proposal | NO VIDEO | Prior platform/cloud material sufficient | — | Choose infrastructure from actual constraints. |
+| Proposal — Delivery Plan | NO VIDEO | Prior Delivery Engineer material sufficient | — | Apply existing delivery capability. |
