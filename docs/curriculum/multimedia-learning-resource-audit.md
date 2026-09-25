@@ -749,3 +749,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Vulnerability Lab — From Finding to Reproduction Steps | NO VIDEO | — | — | Write reproducible steps from own evidence. |
 | Vulnerability Lab — Implementing Mitigations | NO VIDEO | — | — | Implement actual fix. |
 | Vulnerability Lab — Retesting Fixes | NO VIDEO | — | — | Retest actual fix and regression boundary. |
+| Vulnerability Lab — Writing Security Findings | OPTIONAL VIDEO | professional finding/report walkthroughs reviewed | No candidate promoted yet | A report review can reinforce impact/evidence/remediation structure. |
