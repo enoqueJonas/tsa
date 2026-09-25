@@ -606,3 +606,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Windows — Active Directory, DNS and Domain Identity | RECOMMENDED VIDEO | Microsoft AD DS/DNS demonstrations reviewed | No candidate promoted yet | Domain, DC, DNS SRV, OU/user/group relationships are strongly visual. |
 | Windows — Domain Join and Group Policy | RECOMMENDED VIDEO | Domain join/GPO demonstrations reviewed | No candidate promoted yet | Policy application and resultant state benefit from a live member-machine example. |
 | Windows — Linux–Windows Interoperability | RECOMMENDED VIDEO | SMB/DNS/LDAP cross-platform demos reviewed | No candidate promoted yet | Cross-OS trust/name/file boundaries are useful to see end-to-end. |
+| Windows — Reassess Windows Operational Depth | NO VIDEO | — | — | Boundary decision is the point of the lesson. |
