@@ -605,3 +605,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Quality Engineering — Lab: Write the Steward Quality Strategy | NO VIDEO | — | — | Synthesis lab. |
 | Test Design — Requirements Analysis for Testing | NO VIDEO | — | — | Interrogate actual requirements. |
 | Test Design — Equivalence Partitioning | RECOMMENDED VIDEO | ISTQB technique demonstrations reviewed | No candidate promoted yet | Partition formation is easy to demonstrate visually with a domain. |
+| Test Design — Boundary Value Analysis | RECOMMENDED VIDEO | Boundary-value worked examples reviewed | No candidate promoted yet | Rule transitions around edges benefit from a worked visual example. |
