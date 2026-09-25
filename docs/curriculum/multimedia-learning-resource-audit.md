@@ -534,3 +534,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Internet — HTTPS and TLS Termination | RECOMMENDED VIDEO | TLS termination/reverse-proxy demos reviewed | No candidate promoted yet | Client→TLS endpoint→upstream boundary is best shown as a path. |
 | Internet — Reverse Proxies | NO VIDEO | Prior reverse-proxy slot exists | Reuse prior candidate if selected | Avoid duplicate teaching. |
 | Internet — Ingress Concepts | RECOMMENDED VIDEO | Ingress/edge-routing explainers reviewed | No candidate promoted yet | External traffic entering controlled internal paths is visual. |
+| Internet — Internet-facing Firewalls | NO VIDEO | Prior firewall concepts covered | — | Apply policy to public exposure. |
