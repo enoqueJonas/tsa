@@ -1644,3 +1644,15 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI — GitHub Actions and Jenkins | OPTIONAL VIDEO | Jenkins/GitHub Actions comparisons reviewed | No candidate promoted yet | Useful comparison, but Jenkins is primary and GitHub Actions bounded. |
 | CI — Self-hosted Runners | OPTIONAL VIDEO | Self-hosted agent setup demos reviewed | No candidate promoted yet | Can reduce setup friction; security boundary remains the key lesson. |
 | CI — Caching | RECOMMENDED VIDEO | CI cache demos reviewed | No candidate promoted yet | Cache hit/miss/key invalidation behavior is worth seeing. |
+| CI — Pipeline Artifacts | RECOMMENDED VIDEO | CI artifact flow demos reviewed | No candidate promoted yet | Producer/consumer and retention boundaries are visual. |
+| CI — Secrets and Variables | NO VIDEO | — | — | Secure configuration should be implemented and negative-tested. |
+| CI — Parallelism | OPTIONAL VIDEO | Pipeline parallel-stage demos reviewed | No candidate promoted yet | Visual timing can reinforce dependency safety. |
+| CI — Automated Checks | NO VIDEO | — | — | Actual automated checks are primary. |
+| CI — Test Stages | NO VIDEO | — | — | The learner must structure and run the real suite. |
+| CI — Quality Gates | NO VIDEO | — | — | Gate policy and failure evidence are primary. |
+| CI — Building Containers in CI | RECOMMENDED VIDEO | Jenkins Docker-build pipeline demos reviewed | No candidate promoted yet | SCM→build→image→registry sequence is useful to see once. |
+| CD — CI versus Continuous Delivery versus Continuous Deployment | RECOMMENDED VIDEO | CI/CD/CD distinction explainers reviewed | No candidate promoted yet | The decision points and automation boundaries benefit from a pipeline diagram. |
+| CD — Environment Management | NO VIDEO | — | — | Environment ownership should be implemented. |
+| CD — Deployment Automation | RECOMMENDED VIDEO | Deployment pipeline demos reviewed | No candidate promoted yet | Artifact promotion/deploy/verify sequence is visual. |
+| CD — Release Approvals | OPTIONAL VIDEO | Approval-gate demos reviewed | No candidate promoted yet | Useful UI/workflow context; policy reasoning remains primary. |
+| CD — Database Migrations During Deployment | RECOMMENDED VIDEO | Zero-downtime migration talks reviewed | No candidate promoted yet | App/schema compatibility over time is a timeline problem. |
