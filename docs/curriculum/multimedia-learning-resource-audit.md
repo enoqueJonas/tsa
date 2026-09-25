@@ -566,3 +566,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | IaC — Terraform and OpenTofu Fundamentals | RECOMMENDED VIDEO | OpenTofu/Terraform workflow demos reviewed | No candidate promoted yet | init→plan→apply is useful to see once before independent use. |
 | IaC — Providers and Resources | OPTIONAL VIDEO | Provider/resource demos reviewed | No candidate promoted yet | Plugin/control boundary can be shown visually. |
 | IaC — State | RECOMMENDED VIDEO | Terraform/OpenTofu state explainers reviewed | No candidate promoted yet | Declared config, state record and real infrastructure are a three-way relationship worth visualizing. |
+| IaC — Variables and Outputs | NO VIDEO | — | — | Direct implementation is simple and more useful. |
