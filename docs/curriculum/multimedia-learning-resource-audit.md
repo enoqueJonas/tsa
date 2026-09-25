@@ -1160,3 +1160,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Engineering Health — Lab: Build the Steward Engineering Health Review | NO VIDEO | — | — | Independent synthesis and review. |
 | Technical Leadership — Technical Ownership | OPTIONAL VIDEO | staff/principal engineering ownership talks reviewed | No candidate promoted yet | Real ownership examples can illustrate responsibility without conflating ownership with doing all work. |
 | Technical Leadership — Influence Without Authority | RECOMMENDED VIDEO | technical-leadership influence talks reviewed | No candidate promoted yet | Observed communication/decision scenarios are valuable because the capability is interpersonal rather than tool-based. |
+| Technical Leadership — Decision-making | OPTIONAL VIDEO | engineering decision-making talks reviewed | No candidate promoted yet | A worked decision under uncertainty can reinforce reversible/irreversible framing. |
