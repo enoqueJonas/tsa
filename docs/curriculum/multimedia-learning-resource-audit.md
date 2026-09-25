@@ -583,3 +583,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture/Cost — Backup and Recovery | RECOMMENDED VIDEO | Cloud restore/DR demos reviewed | No candidate promoted yet | Recovery sequence and failure domains are visual. |
 | Architecture/Cost — Failure Domains | RECOMMENDED VIDEO | Region/AZ correlated-failure diagrams reviewed | No candidate promoted yet | Redundancy versus shared fate is inherently visual. |
 | Architecture/Cost — Cost Estimation | OPTIONAL VIDEO | Cloud pricing-calculator walkthroughs reviewed | No candidate promoted yet | Useful context, but estimates should use current provider data when learner reaches lesson. |
+| Architecture/Cost — Cost Controls and Budgets | OPTIONAL VIDEO | Budget/alert demos reviewed | No candidate promoted yet | A console demo may help but is provider-specific. |
