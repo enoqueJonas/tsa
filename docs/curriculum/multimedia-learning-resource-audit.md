@@ -1146,3 +1146,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Risk — Risk Treatment | NO VIDEO | — | — | Choose actual avoid/reduce/transfer/accept treatments. |
 | Risk — Risk Acceptance | NO VIDEO | — | — | Decision authority and evidence are primary. |
 | Risk — Risk Registers | NO VIDEO | — | — | Build and operate the actual register. |
+| Risk — Key Risk Indicators | OPTIONAL VIDEO | KRI design talks reviewed | No candidate promoted yet | Examples can help distinguish leading exposure signals from vanity metrics. |
