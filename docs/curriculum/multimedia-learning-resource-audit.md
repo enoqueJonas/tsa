@@ -1074,3 +1074,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Scale — Compare Scale and Distribution Options | NO VIDEO | — | — | Decision exercise. |
 | Scale — Record the Growth Architecture Decision | NO VIDEO | — | — | Decision evidence. |
 | Resilience Architecture — Designing for Failure | RECOMMENDED VIDEO | SRE/resilience architecture talks reviewed | No candidate promoted yet | Failure-domain diagrams and dependency paths add value. |
+| Resilience Architecture — Timeouts | RECOMMENDED VIDEO | timeout/deadline demos reviewed | No candidate promoted yet | Caller waiting and resource occupancy are temporal. |
