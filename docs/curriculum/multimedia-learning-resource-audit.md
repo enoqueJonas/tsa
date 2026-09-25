@@ -291,3 +291,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Networking — Firewalls | RECOMMENDED VIDEO | Packet-filter/firewall flow demos reviewed | No candidate promoted yet | Policy benefits from concrete packet-path examples. |
 | Networking — HTTP and TLS from the Network Perspective | RECOMMENDED VIDEO | TLS handshake/HTTP-layer explainers reviewed | No candidate promoted yet | Separating DNS/TCP/TLS/HTTP is a strong sequence-diagram use case. |
 | Networking — Network Troubleshooting Tools | RECOMMENDED VIDEO | tcpdump/dig/curl troubleshooting demos reviewed | No candidate promoted yet | Live diagnosis demonstrates what each tool can and cannot prove. |
+| Networking — Lab: Diagnose a Broken Service Path | NO VIDEO | — | — | Independent troubleshooting lab. |
