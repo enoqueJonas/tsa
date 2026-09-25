@@ -1081,3 +1081,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technology Governance — Value Delivery | NO VIDEO | — | — | Value measures must be defined in context. |
 | Technology Governance — Resource Stewardship | NO VIDEO | — | — | Resource prioritization is a decision exercise. |
 | Technology Governance — Performance Oversight | OPTIONAL VIDEO | Technology-performance governance examples reviewed | No candidate promoted yet | A dashboard/review example can add context. |
+| Technology Governance — Governance Structures | OPTIONAL VIDEO | IT governance operating-model material reviewed | No candidate promoted yet | Visual decision forums/accountabilities can help. |
