@@ -438,3 +438,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | OS Lifecycle — Patch Regression and Recovery | RECOMMENDED VIDEO | Patch rollback/recovery demonstrations reviewed | No candidate promoted yet | A deterministic regression and recovery sequence is useful to observe before reproducing it. |
 | OS Lifecycle — Patch Multiple Rocky Hosts with Ansible | RECOMMENDED VIDEO | Ansible rolling/canary patch demos reviewed | No candidate promoted yet | Canary→fleet progression is a visual operational workflow. |
 | OS Lifecycle — Patch Age and Lifecycle Visibility | OPTIONAL VIDEO | Patch-compliance dashboard demos reviewed | No candidate promoted yet | Dashboard examples can help, but the learner must build their own visibility. |
+| OS Lifecycle — Separate Proxmox Host and Rocky Guest Lifecycles | NO VIDEO | — | — | The important result is an explicit maintenance-domain model. |
