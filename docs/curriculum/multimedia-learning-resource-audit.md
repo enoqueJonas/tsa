@@ -794,3 +794,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Vault — Reassess the Secrets Platform | NO VIDEO | — | — | Architecture reassessment uses evidence. |
 | PKI — Model Internal PKI and Machine Trust | RECOMMENDED VIDEO | PKI chain/trust diagrams reviewed | No candidate promoted yet | Root→intermediate→leaf and trust-anchor relationships are inherently visual. |
 | PKI — Build a Root and Issuing CA Hierarchy | RECOMMENDED VIDEO | CA hierarchy/OpenSSL demos reviewed | No candidate promoted yet | Seeing certificate chain construction helps before implementation. |
+| PKI — Issue Workload Certificates with Explicit Identity | RECOMMENDED VIDEO | SAN/EKU certificate demos reviewed | No candidate promoted yet | Inspecting identity fields in real certificates adds value. |
