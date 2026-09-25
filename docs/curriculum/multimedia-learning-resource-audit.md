@@ -1082,3 +1082,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technology Governance — Resource Stewardship | NO VIDEO | — | — | Resource prioritization is a decision exercise. |
 | Technology Governance — Performance Oversight | OPTIONAL VIDEO | Technology-performance governance examples reviewed | No candidate promoted yet | A dashboard/review example can add context. |
 | Technology Governance — Governance Structures | OPTIONAL VIDEO | IT governance operating-model material reviewed | No candidate promoted yet | Visual decision forums/accountabilities can help. |
+| Technology Governance — COBIT Concepts | OPTIONAL VIDEO | ISACA COBIT introductory material reviewed | No candidate promoted yet | Useful framework orientation; not certification prep. |
