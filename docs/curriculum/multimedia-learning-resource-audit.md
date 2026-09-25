@@ -641,3 +641,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation Framework — API Clients | NO VIDEO | — | — | Implement reusable clients. |
 | Automation Framework — Page Objects and UI Abstractions | OPTIONAL VIDEO | Page-object design demos reviewed | No candidate promoted yet | A before/after refactor can help; avoid pattern cargo cult. |
 | Automation Framework — Helpers and Utilities | NO VIDEO | — | — | Reuse boundary is code-driven. |
+| Automation Framework — Assertions | NO VIDEO | — | — | Write meaningful assertions directly. |
