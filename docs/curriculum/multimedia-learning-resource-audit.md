@@ -721,3 +721,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Threat Modeling — Mitigations and Security Requirements | NO VIDEO | — | — | Translate identified threats into controls directly. |
 | Threat Modeling — Threat Models as Living Engineering Artifacts | OPTIONAL VIDEO | Continuous threat-modeling talks reviewed | No candidate promoted yet | Lifecycle integration can benefit from an industry example. |
 | Threat Modeling — Lab: Threat-model Steward API | NO VIDEO | — | — | Independent model. |
+| Web/API — Injection and SQL Injection | REQUIRED WATCH | PortSwigger Web Security Academy material reviewed | Safe PortSwigger SQLi lab/demo; exact resource at insertion | Exploit→query effect→fix materially improves understanding. |
