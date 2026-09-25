@@ -223,3 +223,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | SOAP/XML — XSD: Make the XML Contract Executable | OPTIONAL VIDEO | XSD walkthroughs reviewed | No candidate promoted yet | Schema validation can be demonstrated visually. |
 | SOAP/XML — WSDL and the SOAP Service Contract | RECOMMENDED VIDEO | WSDL/SOAP contract demonstrations reviewed | No candidate promoted yet | WSDL structure and generated surfaces benefit from a guided walkthrough. |
 | SOAP/XML — SOAP Envelopes, Headers and Faults | RECOMMENDED VIDEO | SOAP message walkthroughs reviewed | No candidate promoted yet | Envelope/header/body/fault structure is a strong visual target. |
+| SOAP/XML — Implement a Contract-First SOAP Endpoint | NO VIDEO | — | — | Implementation evidence is primary. |
