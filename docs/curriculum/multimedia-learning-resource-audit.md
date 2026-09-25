@@ -1036,3 +1036,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Modularity — Modular Monoliths | RECOMMENDED VIDEO | modular-monolith talks reviewed | No candidate promoted yet | Module boundaries within one deployment are useful to see contrasted with services. |
 | Modularity — When a Service Boundary Is Justified | NO VIDEO | — | — | The learner must prove independent lifecycle/ownership/scaling pressure. |
 | Modularity — Distributed Monoliths | RECOMMENDED VIDEO | distributed-monolith failure talks reviewed | No candidate promoted yet | Coupled services with distributed failure modes are best illustrated by a concrete architecture. |
+| Modularity — Map Current Boundaries and Change Coupling | NO VIDEO | — | — | Independent analysis. |
