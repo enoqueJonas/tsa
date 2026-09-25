@@ -547,3 +547,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Building Blocks — Managed Databases | OPTIONAL VIDEO | Managed PostgreSQL responsibility demos reviewed | No candidate promoted yet | Useful to show shifted operational ownership. |
 | Building Blocks — Virtual Networks and Subnets | RECOMMENDED VIDEO | VPC/VNet topology demos reviewed | No candidate promoted yet | Subnet/trust placement is inherently visual. |
 | Building Blocks — Routing and Gateways | RECOMMENDED VIDEO | Cloud route/gateway packet-flow demos reviewed | No candidate promoted yet | Ingress/egress path selection is visual. |
+| Building Blocks — Load Balancers | RECOMMENDED VIDEO | Load-balancer traffic demos reviewed | No candidate promoted yet | Distribution/health-check behavior is strongly visual. |
