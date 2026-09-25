@@ -596,3 +596,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | --- | --- | --- | --- | --- |
 | Quality Engineering — Quality vs Testing | OPTIONAL VIDEO | Modern testing/quality engineering talks reviewed | No candidate promoted yet | A strong talk can reframe quality as system property, but strategy work is primary. |
 | Quality Engineering — Quality Risks | NO VIDEO | — | — | Build the living risk model. |
+| Quality Engineering — Test Strategy | NO VIDEO | — | — | Design the strategy from product risk. |
