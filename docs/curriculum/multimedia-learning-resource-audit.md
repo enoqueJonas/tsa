@@ -672,3 +672,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Windows — Domain Join and Group Policy | RECOMMENDED VIDEO | Microsoft domain-join/GPO demonstrations reviewed | No candidate promoted yet | Join, policy application and resultant-policy evidence are sequential UI/system behaviors. |
 | Windows — Linux–Windows Interoperability | RECOMMENDED VIDEO | SMB/DNS/LDAP cross-platform demonstrations reviewed | No candidate promoted yet | Cross-OS identity/name/file flows are useful to see end to end. |
 | Windows — Reassess Windows Operational Depth | NO VIDEO | — | — | The learner must define specialist boundaries from the implemented estate. |
+| Enterprise Services — Enterprise File Services: NFS and SMB | RECOMMENDED VIDEO | Red Hat NFS and Samba interoperability demonstrations reviewed | No candidate promoted yet | Producer/consumer mounts, identity and protocol differences benefit from a live cross-host demonstration. |
