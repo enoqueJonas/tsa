@@ -906,3 +906,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Performance — Storage Growth and Artifact Capacity | NO VIDEO | — | — | Model actual growth/capacity. |
 | Performance — Lab: Establish Steward Capacity Baselines | NO VIDEO | — | — | Independent performance lab. |
 | Resilience — Timeouts | RECOMMENDED VIDEO | timeout/failure-timeline demos reviewed | No candidate promoted yet | Bounded waiting is temporal. |
+| Resilience — Retries | RECOMMENDED VIDEO | retry failure demos reviewed | No candidate promoted yet | Retry behavior under transient failure is temporal. |
