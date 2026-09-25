@@ -656,3 +656,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation Framework — Versioning Shared Test Infrastructure | NO VIDEO | — | — | Version compatibility must be exercised. |
 | Automation Framework — Lab: Build the Steward Automation Framework | NO VIDEO | — | — | Independent synthesis. |
 | Automation Framework — Lab: Extract tsa-test-core | NO VIDEO | — | — | Independent extraction. |
+| Automation Framework — Lab: Publish and Consume tsa-test-core | NO VIDEO | — | — | Independent package workflow. |
