@@ -438,3 +438,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Make and Task Entry Points | OPTIONAL VIDEO | Make/task-runner demos reviewed | No candidate promoted yet | A short dependency-target demonstration may help. |
 | Automation — Idempotency | RECOMMENDED VIDEO | Idempotent automation demonstrations reviewed | No candidate promoted yet | First-run change versus second-run no-op is valuable to see. |
 | Automation — Lab: Automate Steward Developer and Operator Tasks | NO VIDEO | — | — | Independent automation lab. |
+| Containers — Containers versus Virtual Machines | RECOMMENDED VIDEO | Container/VM architecture animations reviewed | No candidate promoted yet | Process isolation versus full guest OS is strongly visual. |
