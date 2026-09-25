@@ -318,3 +318,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Bare Metal — Bare-Metal Readiness Gate for Proxmox | NO VIDEO | — | — | Readiness gate is evidence synthesis. |
 | Homelab — Designing a Learning Homelab | OPTIONAL VIDEO | Homelab architecture tours reviewed | No candidate promoted yet | A good tour can provide physical intuition, but TSA must avoid copying another person's hardware zoo. |
 | Homelab — Choosing Budget Hardware | OPTIONAL VIDEO | Budget homelab hardware guides reviewed | No candidate promoted yet | Useful for form-factor/expandability context; decisions remain local. |
+| Homelab — CPU, RAM, Storage and NIC Trade-offs | RECOMMENDED VIDEO | Server hardware/resource explainers reviewed | No candidate promoted yet | Seeing physical components and bottlenecks adds value. |
