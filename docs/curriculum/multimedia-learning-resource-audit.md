@@ -1009,3 +1009,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Styles — Hexagonal and Ports-and-Adapters Thinking | RECOMMENDED VIDEO | Alistair Cockburn/ports-and-adapters talks reviewed | No candidate promoted yet | Boundary/port/adapter direction is highly visual. |
 | Styles — Modular Monolith | RECOMMENDED VIDEO | modular-monolith talks reviewed | No candidate promoted yet | Module boundaries and deployment unity are easier to compare visually with services. |
 | Styles — Service-oriented Architecture | OPTIONAL VIDEO | SOA architecture talks reviewed | No candidate promoted yet | Historical/contextual visualization can help distinguish SOA from microservices. |
+| Styles — Microservices | RECOMMENDED VIDEO | Martin Fowler microservices material and practitioner talks reviewed | No candidate promoted yet | Service boundaries, independent deployment and distribution cost benefit from worked architecture examples. |
