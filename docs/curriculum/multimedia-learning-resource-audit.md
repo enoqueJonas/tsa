@@ -593,3 +593,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Canary — Inject a Defective Candidate and Abort | NO VIDEO | — | — | Learner must perform the failure drill. |
 | Canary — Fail the Analysis Dependency Safely | NO VIDEO | — | — | Learner must prove fail-safe behavior. |
 | Canary — Reassess Progressive Delivery | NO VIDEO | — | — | Decision from evidence. |
+| Architecture — Availability in Cloud Environments | RECOMMENDED VIDEO | Cloud failure-domain/HA explainers reviewed | No candidate promoted yet | Redundancy versus shared failure domains is visual. |
