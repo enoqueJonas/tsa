@@ -676,3 +676,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Non-functional — Lab: Establish Steward Non-functional Baselines | NO VIDEO | — | — | Independent baseline lab. |
 | CI — Test Containers and Environments | RECOMMENDED VIDEO | Dockerized test-dependency demos reviewed | No candidate promoted yet | Test process→container dependency topology is visual. |
 | CI — Dockerized Test Dependencies | RECOMMENDED VIDEO | Testcontainers/Docker Compose test demos reviewed | No candidate promoted yet | Lifecycle and isolation benefit from live execution. |
+| CI — Test Pipeline Stages | RECOMMENDED VIDEO | CI test-pipeline walkthroughs reviewed | No candidate promoted yet | Stage ordering and feedback latency are easier to see in a pipeline. |
