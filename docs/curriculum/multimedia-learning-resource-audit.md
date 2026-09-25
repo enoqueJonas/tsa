@@ -924,3 +924,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Incident — Mitigation | RECOMMENDED VIDEO | incident mitigation simulations reviewed | No candidate promoted yet | Stabilize-first decision making benefits from a scenario. |
 | Incident — Timeline Construction | NO VIDEO | — | — | Build timeline from actual evidence. |
 | Incident — Root Cause | NO VIDEO | — | — | Reason from evidence rather than generic RCA. |
+| Incident — Contributing Factors | NO VIDEO | — | — | Analyze actual system/process factors. |
