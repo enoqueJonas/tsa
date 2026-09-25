@@ -663,3 +663,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
 | Windows — Windows in a Linux-Primary Enterprise Platform | OPTIONAL VIDEO | Mixed-estate administration overviews reviewed | No candidate promoted yet | A brief enterprise-estate overview can provide context without turning TSA into Windows-specialist training. |
+| Windows — Build and Baseline Windows Server | OPTIONAL VIDEO | Windows Server evaluation/install walkthroughs reviewed | No candidate promoted yet | A visual install can reduce setup friction; the actual baseline evidence is primary. |
