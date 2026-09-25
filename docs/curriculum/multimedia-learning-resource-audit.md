@@ -264,3 +264,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Computer/OS — Filesystems | OPTIONAL VIDEO | Filesystem explainers reviewed | No candidate promoted yet | Inode/path/mount concepts can benefit from a visual model, but hands-on inspection is primary. |
 | Computer/OS — Lab: Inspect the Machine Beneath Steward API | NO VIDEO | — | — | Independent inspection lab. |
 | Linux — Installing Rocky Linux | OPTIONAL VIDEO | Rocky installation walkthroughs reviewed | No candidate promoted yet | A visual install walkthrough can reduce setup friction, but official docs and the actual installation remain primary. |
+| Linux — Shell Navigation and Command Fluency | NO VIDEO | — | — | Shell fluency comes from using the shell, not watching it. |
