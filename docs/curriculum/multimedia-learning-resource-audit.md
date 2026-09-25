@@ -1210,3 +1210,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Handbook — Standards Ownership and Versioning | NO VIDEO | — | — | Define lifecycle metadata for actual standards. |
 | Handbook — Exception and Waiver Records | NO VIDEO | — | — | Use the governance exception model already built. |
 | Handbook — Keeping the Handbook Alive | OPTIONAL VIDEO | docs-as-code/living-documentation talks reviewed | No candidate promoted yet | A maintained repository workflow can reinforce event-driven documentation updates. |
+| Handbook — Lab: Build the Steward Engineering Handbook | NO VIDEO | — | — | Independent synthesis. |
