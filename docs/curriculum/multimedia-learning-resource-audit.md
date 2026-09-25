@@ -814,3 +814,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | SRE — Failure and Recovery | RECOMMENDED VIDEO | recovery lifecycle demos reviewed | No candidate promoted yet | Failure→detect→mitigate→recover is temporal. |
 | SRE — SRE Principles | OPTIONAL VIDEO | Google SRE introductory talks reviewed | No candidate promoted yet | Useful context, but TSA implementation remains primary. |
 | SRE — Toil | OPTIONAL VIDEO | Google SRE toil talks reviewed | No candidate promoted yet | Real operational examples can clarify toil. |
+| SRE — Reliability and Risk Trade-offs | NO VIDEO | — | — | Make actual risk/reliability decisions. |
