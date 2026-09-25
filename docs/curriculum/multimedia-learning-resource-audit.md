@@ -841,3 +841,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Metrics — Prometheus Architecture | RECOMMENDED VIDEO | Prometheus architecture demos reviewed | No candidate promoted yet | Targets→scrape→TSDB→query flow is visual. |
 | Metrics — Exporters | RECOMMENDED VIDEO | node_exporter demos reviewed | No candidate promoted yet | Exporter→scrape flow is useful to see. |
 | Metrics — Service Discovery Concepts | RECOMMENDED VIDEO | Prometheus service discovery demos reviewed | No candidate promoted yet | Dynamic target discovery benefits from visual flow. |
+| Metrics — PromQL | RECOMMENDED VIDEO | PromQL query demos reviewed | No candidate promoted yet | Live query→graph feedback adds value. |
