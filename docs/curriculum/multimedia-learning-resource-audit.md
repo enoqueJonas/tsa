@@ -1050,3 +1050,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Scalability — Record the Growth Architecture Decision | NO VIDEO | — | — | Decision artifact. |
 | Resilience — Select and Model the Failure Path | RECOMMENDED VIDEO | Resilience/failure-path talks reviewed | No candidate promoted yet | Failure propagation is ideal for sequence/topology visualization. |
 | Resilience — Compare Resilience Options | OPTIONAL VIDEO | Circuit breaker/bulkhead/retry talks reviewed | No candidate promoted yet | Patterns can be demonstrated, but choice must follow the failure model. |
+| Resilience — Validate and Record the Evolution | NO VIDEO | — | — | Validation evidence. |
