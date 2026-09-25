@@ -774,3 +774,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Identity/Secrets — Kong, Identity and API Policy | RECOMMENDED VIDEO | Kong OIDC/policy flow demos reviewed | No candidate promoted yet | Edge→identity-provider→upstream policy flow is visual. |
 | Identity/Secrets — Identity and Secrets Security Review | NO VIDEO | — | — | Review learner implementation/evidence. |
 | Identity/Secrets — Lab: Integrate Keycloak and Harden Steward Identity | NO VIDEO | — | — | Independent integration lab. |
+| Vault — Vault and Dynamic Secrets for Steward | RECOMMENDED VIDEO | HashiCorp Vault dynamic secrets demos reviewed | No candidate promoted yet | Dynamic credential issuance/lease/revocation should be seen once before implementation. |
