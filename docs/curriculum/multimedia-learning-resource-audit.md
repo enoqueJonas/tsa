@@ -1054,3 +1054,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture Governance — Prepare the Review | OPTIONAL VIDEO | ATAM/architecture-review material reviewed | No candidate promoted yet | A real review format can add context. |
 | Architecture Governance — Run the Review | RECOMMENDED VIDEO | Architecture review/ATAM workshop material reviewed | No candidate promoted yet | Seeing stakeholders challenge scenarios and trade-offs is valuable. |
 | Architecture Governance — Turn Decisions into Guardrails | OPTIONAL VIDEO | Architecture fitness/guardrail talks reviewed | No candidate promoted yet | Automated guardrail examples can reinforce governance. |
+| Architect — Milestone: Steward Architecture Evolution | NO VIDEO | — | — | Milestone synthesis and defence. |
