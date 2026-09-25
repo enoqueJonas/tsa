@@ -1000,3 +1000,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Fundamentals — Quality Attributes and Architecture Characteristics | RECOMMENDED VIDEO | SEI quality-attribute scenario material reviewed | No candidate promoted yet | Worked quality scenarios connect vague qualities to measurable architectural pressure. |
 | Fundamentals — Constraints | NO VIDEO | — | — | Identify and classify actual constraints. |
 | Fundamentals — Trade-offs and Consequences | NO VIDEO | — | — | Decision analysis is the learning activity. |
+| Fundamentals — Architecture Fitness and Evolution | RECOMMENDED VIDEO | Thoughtworks evolutionary-architecture talks reviewed | No candidate promoted yet | Fitness-function/evolution examples can make continuous architecture concrete. |
