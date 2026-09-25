@@ -1812,3 +1812,23 @@ A blog post may also be better than either a manual or a video. The resource mix
 | API/Integration — Integration Boundaries | NO VIDEO | — | — | Name/test actual boundary. |
 | API/Integration — Contract Testing Concepts | RECOMMENDED VIDEO | Pact contract-testing talks reviewed | No candidate promoted yet | Consumer/provider interaction and verification lifecycle are visual. |
 | API/Integration — Mocking and Service Virtualization | RECOMMENDED VIDEO | Service virtualization demos reviewed | No candidate promoted yet | Real vs simulated boundary is useful to see. |
+| API/Integration — Internal Package Compatibility | NO VIDEO | — | — | Compatibility tests are primary. |
+| API/Integration — Data Setup and Cleanup | NO VIDEO | — | — | State ownership must be implemented. |
+| API/Integration — implementation/review labs | NO VIDEO | — | — | Independent evidence. |
+| Automation Framework — What Makes an Automation Framework | OPTIONAL VIDEO | Framework architecture talks reviewed | No candidate promoted yet | Can reinforce separation of domain tests and reusable infrastructure. |
+| Automation Framework — Framework Architecture | RECOMMENDED VIDEO | pytest/Playwright framework design demos reviewed | No candidate promoted yet | Layers/fixtures/clients/reporting are visual. |
+| Automation Framework — Playwright with Python | RECOMMENDED VIDEO | Microsoft Playwright demos reviewed | No candidate promoted yet | Seeing browser/API automation once reduces tool friction. |
+| Automation Framework — pytest Fundamentals | RECOMMENDED VIDEO | pytest official/community demos reviewed | No candidate promoted yet | Fixtures/collection/assertion flow benefits from live code. |
+| Automation Framework — Configuration | NO VIDEO | — | — | Implement directly. |
+| Automation Framework — Fixtures | RECOMMENDED VIDEO | pytest fixture dependency demos reviewed | No candidate promoted yet | Fixture dependency/scope graph is visual. |
+| Automation Framework — Test Data | NO VIDEO | — | — | Design actual data strategy. |
+| Automation Framework — API Clients | NO VIDEO | — | — | Implement client abstraction. |
+| Automation Framework — Page Objects and UI Abstractions | OPTIONAL VIDEO | Playwright page-object demos reviewed | No candidate promoted yet | Worked abstraction can help, with caution against over-abstraction. |
+| Automation Framework — Helpers and Utilities | NO VIDEO | — | — | Implement when justified. |
+| Automation Framework — Assertions | NO VIDEO | — | — | Direct practice. |
+| Automation Framework — Markers and Tags | NO VIDEO | — | — | Direct practice. |
+| Automation Framework — Parameterization | OPTIONAL VIDEO | pytest parameterization demos reviewed | No candidate promoted yet | Short live example may help. |
+| Automation Framework — Automation Logging | NO VIDEO | — | — | Implement diagnostic evidence. |
+| Automation Framework — Reports | OPTIONAL VIDEO | pytest/reporting demos reviewed | No candidate promoted yet | Seeing report artifact can help. |
+| Automation Framework — Screenshots, Traces and Video | RECOMMENDED VIDEO | Playwright trace viewer demos reviewed | No candidate promoted yet | This capability is inherently visual. |
+| Automation Framework — Parallel Execution | RECOMMENDED VIDEO | pytest-xdist/Playwright parallel demos reviewed | No candidate promoted yet | Worker timing/isolation benefits from visualization. |
