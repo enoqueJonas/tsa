@@ -694,3 +694,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Quality Milestone — Quality Steward Milestone Readiness | NO VIDEO | — | — | Readiness review. |
 | Quality Milestone — Integrate the Quality Steward System | NO VIDEO | — | — | Integration work. |
 | Quality Milestone — Audit the Existing Evidence | NO VIDEO | — | — | Evidence audit. |
+| Quality Milestone — Milestone: Steward Quality Platform | NO VIDEO | — | — | Milestone synthesis. |
