@@ -467,3 +467,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI — Quality Gates | NO VIDEO | — | — | Gate behavior should be proven with failing/passing pipelines. |
 | CI — Building Containers in CI | RECOMMENDED VIDEO | Jenkins Docker-build pipeline demos reviewed | No candidate promoted yet | A live source→image→registry path adds value. |
 | CD — CI versus Continuous Delivery versus Continuous Deployment | RECOMMENDED VIDEO | CI/CD distinction explainers reviewed | No candidate promoted yet | A pipeline-state diagram makes the release boundary clear. |
+| CD — Environment Management | NO VIDEO | — | — | Implement environment ownership/promotion. |
