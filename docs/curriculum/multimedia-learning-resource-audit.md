@@ -1259,3 +1259,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Build — Iterate on Engineering Decisions | NO VIDEO | — | — | Reassess decisions from implementation evidence. |
 | Build — Document Significant Decisions | NO VIDEO | ADR media already available earlier | Reuse only as reference if needed | The learner should now produce ADRs without new instruction. |
 | Build — Manage Scope and Technical Debt | NO VIDEO | Prior engineering-health material sufficient | — | Manage actual capstone trade-offs. |
+| Build — Lab: Reuse tsa-test-core as a Second Consumer | NO VIDEO | — | — | Independent transfer/reuse proof. |
