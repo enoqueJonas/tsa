@@ -1026,3 +1026,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Modularity — Distributed Monoliths | RECOMMENDED VIDEO | Distributed-monolith failure talks reviewed | No candidate promoted yet | A visual dependency/coupling example makes the failure mode concrete. |
 | Modularity — Map Current Boundaries and Change Coupling | NO VIDEO | — | — | Independent analysis. |
 | Modularity — Challenge Module, Package and Service Options | NO VIDEO | — | — | Architecture exercise. |
+| Modularity — Record and Enforce the Boundary Decision | NO VIDEO | — | — | Decision/guardrail artifact. |
