@@ -1003,3 +1003,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Fundamentals — Architecture Fitness and Evolution | RECOMMENDED VIDEO | Thoughtworks evolutionary-architecture talks reviewed | No candidate promoted yet | Fitness-function/evolution examples can make continuous architecture concrete. |
 | Fundamentals — Architecture Documentation | OPTIONAL VIDEO | arc42/C4 documentation talks reviewed | No candidate promoted yet | A guided architecture-document walkthrough can help, but producing the baseline is primary. |
 | Fundamentals — Reconstruct Current Architecture | NO VIDEO | — | — | Independent evidence reconstruction. |
+| Fundamentals — Define Drivers and Quality Scenarios | NO VIDEO | — | — | Independent analysis. |
