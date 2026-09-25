@@ -1120,3 +1120,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Governance — Evidence and Review Cadence | NO VIDEO | — | — | The learner should map actual operating evidence and cadence. |
 | Governance — Governance Without Bureaucracy | OPTIONAL VIDEO | paved-road/guardrail governance talks reviewed | No candidate promoted yet | Industry examples can show automation/defaults replacing approval theater. |
 | Governance — Lab: Design the Steward Engineering Governance Model | NO VIDEO | — | — | Independent governance design. |
+| Architecture Governance — Architecture Principles | OPTIONAL VIDEO | architecture-principles talks reviewed | No candidate promoted yet | Examples can show principle versus slogan. |
