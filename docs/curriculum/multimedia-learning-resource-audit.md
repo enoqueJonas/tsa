@@ -586,3 +586,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Architecture/Cost — Cost Controls and Budgets | OPTIONAL VIDEO | Budget/alert demos reviewed | No candidate promoted yet | A console demo may help but is provider-specific. |
 | Architecture/Cost — Resource Right-sizing | RECOMMENDED VIDEO | Right-sizing metrics demos reviewed | No candidate promoted yet | Before/after utilization and cost evidence is valuable. |
 | Cloud Milestone — Milestone Brief: Steward Internet Environment | NO VIDEO | — | — | Milestone brief. |
+| Cloud Milestone — Milestone Review and Exit Criteria | NO VIDEO | — | — | Evidence review. |
