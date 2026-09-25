@@ -376,3 +376,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Core Services — Clock Skew as a Security and Observability Incident | RECOMMENDED VIDEO | Clock-skew/TLS/token/log-order demos reviewed | No candidate promoted yet | A visible before/after incident makes the cross-layer consequence concrete. |
 | Core Services — Integrate Core Services into the Homelab | NO VIDEO | — | — | Integration evidence is primary. |
 | Core Services — Reassess Availability and Ownership | NO VIDEO | — | — | Architecture reassessment. |
+| Config Mgmt — Desired State, Inventory and Idempotence | RECOMMENDED VIDEO | Ansible desired-state/idempotence demos reviewed | No candidate promoted yet | A first run versus no-change second run is a strong live demonstration. |
