@@ -817,3 +817,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | SRE — Reliability and Risk Trade-offs | NO VIDEO | — | — | Make actual risk/reliability decisions. |
 | SRE — Reliability Ownership | NO VIDEO | — | — | Define ownership from the actual service. |
 | SRE — Lab: Build the Steward Reliability Risk Map | NO VIDEO | — | — | Synthesis lab. |
+| Observability — Observability vs Monitoring | RECOMMENDED VIDEO | observability/monitoring talks reviewed | No candidate promoted yet | Question→signal→diagnosis distinction benefits from a worked incident. |
