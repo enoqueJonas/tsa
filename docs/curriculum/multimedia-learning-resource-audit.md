@@ -856,3 +856,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Tracing — Trace the Steward Request Path | RECOMMENDED VIDEO | Grafana Tempo trace walkthroughs reviewed | No candidate promoted yet | Following a real trace across boundaries is ideal for video. |
 | Tracing — Deploy Tempo and Instrument Steward | OPTIONAL VIDEO | Tempo deployment/instrumentation demos reviewed | No candidate promoted yet | Setup orientation can help; implementation remains primary. |
 | Tracing — Investigate Cross-Boundary Latency | RECOMMENDED VIDEO | trace waterfall/latency demos reviewed | No candidate promoted yet | Span waterfall makes latency attribution concrete. |
+| Tracing — Break the Tracing Pipeline | NO VIDEO | — | — | Failure injection is the exercise. |
