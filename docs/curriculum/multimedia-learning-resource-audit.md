@@ -534,3 +534,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | OS Lifecycle — Patch Age and Lifecycle Visibility | OPTIONAL VIDEO | Patch-age dashboard examples reviewed | No candidate promoted yet | A dashboard walkthrough can reinforce the signal, but the learner must build the visibility. |
 | OS Lifecycle — Separate Proxmox Host and Rocky Guest Lifecycles | NO VIDEO | — | — | The two maintenance domains should be reasoned from the actual homelab. |
 | OS Lifecycle — Major OS Version Change Is a Migration | OPTIONAL VIDEO | RHEL/Rocky major-upgrade material reviewed | No candidate promoted yet | A migration case study can add context; the architecture/rollback plan remains primary. |
+| OS Lifecycle — Reassess the Patch Operating Model | NO VIDEO | — | — | ADR/runbook synthesis. |
