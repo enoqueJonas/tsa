@@ -243,3 +243,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Failure — Dependency Failure | RECOMMENDED VIDEO | Distributed-failure/cascading-failure talks reviewed | No candidate promoted yet | A dependency slowdown propagating through queues/retries is valuable to visualize. |
 | Failure — Invalid and Partial State | NO VIDEO | — | — | The learner should construct and reason about actual partial-state cases. |
 | Failure — Resource Exhaustion | RECOMMENDED VIDEO | Resource-exhaustion/queueing demos reviewed | No candidate promoted yet | Seeing saturation, queue growth and failure onset can build intuition. |
+| Failure — Human and Operational Failure | OPTIONAL VIDEO | Incident/postmortem talks reviewed | No candidate promoted yet | Real incident narratives can add context, but should not replace the learner's operational analysis. |
