@@ -833,3 +833,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Logging — Centralized Logging | RECOMMENDED VIDEO | Graylog centralized logging demos reviewed | No candidate promoted yet | Ship→index/search→investigate workflow benefits from demonstration. |
 | Logging — Useful vs Noisy Logs | NO VIDEO | — | — | Compare actual diagnostic value/noise. |
 | Logging — Privacy and Security in Logs | NO VIDEO | — | — | Inspect actual data exposure. |
+| Logging — Log Retention Concepts | OPTIONAL VIDEO | retention/index lifecycle demos reviewed | No candidate promoted yet | Storage lifecycle can benefit from visualization. |
