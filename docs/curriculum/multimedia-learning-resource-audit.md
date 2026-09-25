@@ -804,3 +804,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | PKI — Reassess PKI Ownership with Vault | NO VIDEO | — | — | Ownership decision from evidence. |
 | Directory Federation — Directory Federation Architecture | RECOMMENDED VIDEO | Keycloak LDAP federation architecture demos reviewed | No candidate promoted yet | Directory→Keycloak→OIDC→application identity path is visual. |
 | Directory Federation — Keycloak LDAP Federation | RECOMMENDED VIDEO | Keycloak LDAP federation walkthroughs reviewed | No candidate promoted yet | Admin configuration, sync and claim mapping are useful to see. |
+| Directory Federation — Federated Identity Lifecycle and Failure Modes | RECOMMENDED VIDEO | federation lifecycle/outage demos reviewed | No candidate promoted yet | Disable/delete/outage/trust-failure behavior benefits from a timeline. |
