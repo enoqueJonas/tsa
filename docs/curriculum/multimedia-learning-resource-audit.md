@@ -1066,3 +1066,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Leadership — Decision-making | NO VIDEO | — | — | Decision quality is demonstrated through actual decisions. |
 | Leadership — Technical Communication | OPTIONAL VIDEO | Engineering communication talks reviewed | No candidate promoted yet | A worked technical briefing can reinforce audience/context adaptation. |
 | Leadership — Mentoring | OPTIONAL VIDEO | Engineering mentoring talks reviewed | No candidate promoted yet | Observation of a good mentoring interaction can add value. |
+| Leadership — Engineering Reviews | RECOMMENDED VIDEO | Architecture/code/design review facilitation talks reviewed | No candidate promoted yet | A real review demonstrates challenge without turning review into gatekeeping. |
