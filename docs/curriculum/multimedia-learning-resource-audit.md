@@ -1052,3 +1052,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Data — Challenge Data Architecture Options | NO VIDEO | — | — | Decision exercise. |
 | Data — Record and Validate the Decision | NO VIDEO | — | — | Decision evidence. |
 | Integration — Integration Styles | RECOMMENDED VIDEO | integration-pattern talks reviewed | No candidate promoted yet | Request/reply, messaging, files and events benefit from side-by-side topology diagrams. |
+| Integration — Synchronous APIs | NO VIDEO | HTTP/API media already covered earlier | Reuse earlier media only if review is needed | Avoid duplication. |
