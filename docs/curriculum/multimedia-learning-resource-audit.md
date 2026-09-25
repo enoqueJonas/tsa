@@ -535,3 +535,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Internet — Reverse Proxies | NO VIDEO | Reverse-proxy slot already exists in Platform Builder | — | Avoid duplicate media. |
 | Internet — Ingress Concepts | RECOMMENDED VIDEO | Ingress/gateway traffic-flow demos reviewed | No candidate promoted yet | External→edge→service path is inherently visual. |
 | Internet — Internet-facing Firewalls | NO VIDEO | — | — | Apply prior firewall reasoning. |
+| Internet — Exposure, Attack Surface and Administrative Boundaries | RECOMMENDED VIDEO | Attack-surface/trust-boundary diagrams reviewed | No candidate promoted yet | Public, operator and control-plane paths benefit from a visual model. |
