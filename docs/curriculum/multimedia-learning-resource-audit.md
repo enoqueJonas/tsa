@@ -502,3 +502,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | File Integration — Batch File Processing Lifecycle | RECOMMENDED VIDEO | Batch file handoff/atomic rename patterns reviewed | No candidate promoted yet | Producer→landing→validation→processing→archive/reject lifecycle is useful as a state-flow visualization. |
 | File Integration — Shared Filesystem versus Managed File Transfer | OPTIONAL VIDEO | MFT/shared-filesystem architecture comparisons reviewed | No candidate promoted yet | A topology comparison can reinforce ownership/failure differences. |
 | File Integration — Secure File Transfer Readiness: SFTP and FTPS | RECOMMENDED VIDEO | SFTP/FTPS protocol-boundary explainers reviewed | No candidate promoted yet | Seeing SSH-based SFTP versus TLS-based FTPS prevents protocol-name confusion. |
+| Platform Builder — Milestone Review and Exit Criteria | NO VIDEO | — | — | Review gate. |
