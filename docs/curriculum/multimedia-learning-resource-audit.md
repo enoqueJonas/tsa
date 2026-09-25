@@ -458,3 +458,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | File Integration — Batch File Processing Lifecycle | RECOMMENDED VIDEO | Batch/file handoff workflow material reviewed | No candidate promoted yet | Producer→staging→atomic handoff→consumer→archive/reject is a useful sequence to visualize. |
 | File Integration — Shared Filesystem versus Managed File Transfer | NO VIDEO | — | — | The lesson is a boundary/trade-off decision. |
 | File Integration — Secure File Transfer Readiness: SFTP and FTPS | RECOMMENDED VIDEO | SFTP versus FTPS protocol explainers reviewed | No candidate promoted yet | Seeing SSH-based SFTP versus TLS-based FTPS prevents a common conceptual mix-up. |
+| Platform Builder — Milestone Review and Exit Criteria | NO VIDEO | — | — | Milestone assessment. |
