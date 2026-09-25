@@ -668,3 +668,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Non-functional — Performance Tool Decision | NO VIDEO | — | — | Tool choice must follow workload/question. |
 | Non-functional — Performance Testing | RECOMMENDED VIDEO | k6 performance-test demos reviewed | No candidate promoted yet | Virtual users, latency distributions and thresholds benefit from a live run. |
 | Non-functional — Load, Stress, Spike and Endurance | RECOMMENDED VIDEO | Load-shape visualizations reviewed | No candidate promoted yet | Different workload curves are inherently visual. |
+| Non-functional — Accessibility Fundamentals | RECOMMENDED VIDEO | Screen-reader/accessibility testing demos reviewed | No candidate promoted yet | Seeing/hearing assistive technology interaction is uniquely valuable. |
