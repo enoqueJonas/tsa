@@ -670,3 +670,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Non-functional — Load, Stress, Spike and Endurance | RECOMMENDED VIDEO | Load-shape visualizations reviewed | No candidate promoted yet | Different workload curves are inherently visual. |
 | Non-functional — Accessibility Fundamentals | RECOMMENDED VIDEO | Screen-reader/accessibility testing demos reviewed | No candidate promoted yet | Seeing/hearing assistive technology interaction is uniquely valuable. |
 | Non-functional — Compatibility Testing | OPTIONAL VIDEO | Compatibility matrix examples reviewed | No candidate promoted yet | Useful reinforcement; risk matrix remains primary. |
+| Non-functional — Reliability-oriented Testing | RECOMMENDED VIDEO | Fault-injection/reliability test demos reviewed | No candidate promoted yet | Failure injection and recovery behavior benefit from demonstration. |
