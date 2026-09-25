@@ -522,3 +522,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | VPS — Provisioning a Server | OPTIONAL VIDEO | VPS provisioning walkthroughs reviewed | No candidate promoted yet | Can reduce setup friction, but provider UI changes quickly. |
 | VPS — Public IP Addressing | NO VIDEO | — | — | Apply networking knowledge. |
 | VPS — Securing SSH Access | NO VIDEO | Prior SSH media considered | Reuse earlier material only if needed | Avoid reteaching SSH. |
+| VPS — Provider Firewalls and Security Controls | RECOMMENDED VIDEO | Cloud/provider firewall demos reviewed | No candidate promoted yet | Provider edge rules versus host firewall are easier to see in a path diagram. |
