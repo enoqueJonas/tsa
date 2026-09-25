@@ -850,3 +850,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Metrics — Nexus and Internal Platform Metrics | NO VIDEO | — | — | Instrument actual platform dependencies. |
 | Metrics — CI and Delivery Metrics | NO VIDEO | — | — | Choose metrics from actual delivery questions. |
 | Metrics — Lab: Instrument Steward API | NO VIDEO | — | — | Independent instrumentation lab. |
+| Metrics — Lab: Observe the Internal Artifact Platform | NO VIDEO | — | — | Independent platform observation lab. |
