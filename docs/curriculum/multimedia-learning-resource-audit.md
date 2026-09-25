@@ -822,3 +822,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Observability — Telemetry Design | NO VIDEO | — | — | Design from actual reliability questions. |
 | Observability — Correlation and Context | RECOMMENDED VIDEO | trace/log correlation demos reviewed | No candidate promoted yet | Following one request across signals is ideal for live demonstration. |
 | Observability — Instrumentation | RECOMMENDED VIDEO | OpenTelemetry instrumentation demos reviewed | No candidate promoted yet | Code→exporter→backend path is useful to see. |
+| Observability — OpenTelemetry Concepts | RECOMMENDED VIDEO | OpenTelemetry official/community intros reviewed | No candidate promoted yet | SDK/provider/exporter/context architecture is visual. |
