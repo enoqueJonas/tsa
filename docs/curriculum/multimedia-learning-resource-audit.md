@@ -594,3 +594,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Canary — Fail the Analysis Dependency Safely | NO VIDEO | — | — | Learner must prove fail-safe behavior. |
 | Canary — Reassess Progressive Delivery | NO VIDEO | — | — | Decision from evidence. |
 | Architecture — Availability in Cloud Environments | RECOMMENDED VIDEO | Cloud failure-domain/HA explainers reviewed | No candidate promoted yet | Redundancy versus shared failure domains is visual. |
+| Architecture — Scalability and Capacity | RECOMMENDED VIDEO | Scaling/capacity architecture explainers reviewed | No candidate promoted yet | Demand/bottleneck/scaling choices benefit from diagrams. |
