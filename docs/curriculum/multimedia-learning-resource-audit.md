@@ -1734,3 +1734,18 @@ A blog post may also be better than either a manual or a video. The resource mix
 | IaC — Providers and Resources | OPTIONAL VIDEO | Provider/resource demos reviewed | No candidate promoted yet | Useful but straightforward. |
 | IaC — State | RECOMMENDED VIDEO | Terraform/OpenTofu state explainers reviewed | No candidate promoted yet | Desired/config/real/state relationships are conceptually difficult and visual. |
 | IaC — Variables and Outputs | NO VIDEO | — | — | Direct implementation is enough. |
+| IaC — Dependencies | OPTIONAL VIDEO | Resource-graph demos reviewed | No candidate promoted yet | Dependency graph visualization can help. |
+| IaC — Modules Concepts | OPTIONAL VIDEO | Module demos reviewed | No candidate promoted yet | Useful reuse illustration. |
+| IaC — Plan and Apply Lifecycle | RECOMMENDED VIDEO | Plan/apply demos reviewed | No candidate promoted yet | Change preview/execution is central and visual. |
+| IaC — Drift | RECOMMENDED VIDEO | IaC drift demonstrations reviewed | No candidate promoted yet | Out-of-band change→plan detection is worth seeing. |
+| IaC — Remote State Concepts | RECOMMENDED VIDEO | Remote state/locking explainers reviewed | No candidate promoted yet | Shared authority/locking/failure boundaries benefit from diagrams. |
+| IaC — Secrets and Sensitive Values | NO VIDEO | — | — | Secure handling must be implemented. |
+| IaC — Destroy and Resource Lifecycle | OPTIONAL VIDEO | Lifecycle/destroy demos reviewed | No candidate promoted yet | Can reinforce dependency-aware teardown. |
+| IaC — Lab: Define Steward Infrastructure as Code | NO VIDEO | — | — | Independent lab. |
+| Orchestration — Why Container Orchestration | RECOMMENDED VIDEO | Kubernetes architecture explainers reviewed | No candidate promoted yet | Scheduling/reconciliation/multi-node pressure is visual. |
+| Orchestration — Kubernetes Cluster and Control Plane | RECOMMENDED VIDEO | Kubernetes official/control-plane animations reviewed | No candidate promoted yet | API server/scheduler/controller/etcd/node relationships are highly visual. |
+| Orchestration — Pods, Deployments and ReplicaSets | RECOMMENDED VIDEO | Kubernetes workload-controller demos reviewed | No candidate promoted yet | Desired replicas and reconciliation are ideal for animation. |
+| Orchestration — Services and Cluster Networking | RECOMMENDED VIDEO | Kubernetes service/networking visual explainers reviewed | No candidate promoted yet | Pod IP/service discovery/load distribution are visual. |
+| Orchestration — ConfigMaps, Secrets and Runtime Configuration | OPTIONAL VIDEO | Kubernetes config demos reviewed | No candidate promoted yet | Useful but direct practice remains primary. |
+| Orchestration — Probes, Resources and Rollouts | RECOMMENDED VIDEO | Kubernetes probe/rollout demos reviewed | No candidate promoted yet | Health/readiness/resource/rollout transitions benefit from live behavior. |
+| Orchestration — Namespaces, Service Accounts and RBAC | RECOMMENDED VIDEO | Kubernetes RBAC demos reviewed | No candidate promoted yet | Principal→role→binding→resource authorization is visual. |
