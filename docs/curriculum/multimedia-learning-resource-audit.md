@@ -676,3 +676,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | CI Quality — Dockerized Test Dependencies | OPTIONAL VIDEO | Docker Compose test-dependency demos reviewed | No candidate promoted yet | Prior Docker knowledge applies; short demo can reinforce orchestration. |
 | CI Quality — Ephemeral Environment Concepts | RECOMMENDED VIDEO | Preview/ephemeral environment demos reviewed | No candidate promoted yet | Create→test→destroy lifecycle is visual. |
 | CI Quality — Test Pipeline Stages | RECOMMENDED VIDEO | CI test-pipeline visualizations reviewed | No candidate promoted yet | Fast→slow evidence stages and dependencies are visual. |
+| CI Quality — Parallelization | RECOMMENDED VIDEO | Parallel CI test demos reviewed | No candidate promoted yet | Worker/shard execution and collision risks benefit from visualization. |
