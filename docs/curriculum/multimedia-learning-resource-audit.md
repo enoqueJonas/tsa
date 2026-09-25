@@ -707,3 +707,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Foundations — Attack Surface | RECOMMENDED VIDEO | Attack-surface mapping demos reviewed | No candidate promoted yet | Entry points and reachable trust paths are visual. |
 | Foundations — Least Privilege | OPTIONAL VIDEO | Least-privilege case studies reviewed | No candidate promoted yet | Concrete permission reduction can reinforce the principle. |
 | Foundations — Defense in Depth | RECOMMENDED VIDEO | Layered-defense diagrams reviewed | No candidate promoted yet | Multiple independent controls are inherently layered. |
+| Foundations — Trust Boundaries | RECOMMENDED VIDEO | Trust-boundary modeling demos reviewed | No candidate promoted yet | Boundary crossings are visual. |
