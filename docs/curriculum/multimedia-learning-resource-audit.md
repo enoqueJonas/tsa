@@ -941,3 +941,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Incident — Corrective Actions | NO VIDEO | — | — | Create actual actions. |
 | Incident — Learning from Near Misses | OPTIONAL VIDEO | near-miss engineering talks reviewed | No candidate promoted yet | Real examples add perspective. |
 | Incident — Lab: Run a Steward Incident Exercise | NO VIDEO | — | — | Independent incident exercise. |
+| Fault Injection — Hypothesis-driven Reliability Experiments | RECOMMENDED VIDEO | chaos-engineering talks reviewed | No candidate promoted yet | Steady state→hypothesis→injection→observation is a workflow worth seeing. |
