@@ -760,3 +760,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Linux/Network Security — SSH Hardening | RECOMMENDED VIDEO | OpenSSH hardening demos reviewed | No candidate promoted yet | A live before/after configuration and negative login test adds value. |
 | Linux/Network Security — Host Firewalls | NO VIDEO | — | — | Prior firewall concepts; harden actual host. |
 | Linux/Network Security — Service Exposure | RECOMMENDED VIDEO | socket/exposure enumeration demos reviewed | No candidate promoted yet | Listening sockets→network reachability→attack surface is useful to see. |
+| Linux/Network Security — Patching and Vulnerability Windows | OPTIONAL VIDEO | Patch-window/risk explainers reviewed | No candidate promoted yet | Incident context can reinforce urgency; patch lifecycle was already taught. |
