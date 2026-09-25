@@ -902,3 +902,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Performance — Resource Utilization | NO VIDEO | — | — | Measure actual resources. |
 | Performance — Database and Application Bottlenecks | RECOMMENDED VIDEO | APM/query profiling demos reviewed | No candidate promoted yet | Cross-layer bottleneck attribution is visual. |
 | Performance — Performance Baselines | NO VIDEO | — | — | Establish actual baseline. |
+| Performance — Queueing and Contention Concepts | RECOMMENDED VIDEO | queueing/concurrency animations reviewed | No candidate promoted yet | Queue growth/waiting under contention is inherently visual. |
