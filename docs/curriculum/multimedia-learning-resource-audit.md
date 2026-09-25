@@ -1099,3 +1099,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Evaluation — Evaluating steward-common as a Shared Library | NO VIDEO | — | — | Evaluate the real internal product. |
 | Evaluation — Evaluating tsa-test-core as a Shared Engineering Library | NO VIDEO | — | — | Evaluate the real internal product. |
 | Evaluation — Prepare the Review | NO VIDEO | — | — | Review preparation. |
+| Evaluation — Run the Review | NO VIDEO | — | — | Interactive architecture review. |
