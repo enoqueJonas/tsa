@@ -209,3 +209,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Modeling — State and Lifecycle Modeling | OPTIONAL VIDEO | State-machine demonstrations reviewed | No candidate promoted yet | Animation can reinforce transitions, but the learner's lifecycle model is primary. |
 | Modeling — Communicating Architecture Visually | RECOMMENDED VIDEO | Simon Brown C4 talk | Same candidate; communication/notation segment to be verified | The lesson is explicitly visual communication. |
 | Modeling — Lab: Model Steward API at Multiple Levels | NO VIDEO | — | — | Synthesis lab. |
+| Components — Components and Responsibilities | NO VIDEO | — | — | Responsibility assignment should come from the system model. |
