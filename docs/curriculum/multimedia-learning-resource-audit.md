@@ -516,3 +516,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Hosting — IaaS, PaaS and SaaS | RECOMMENDED VIDEO | Cloud service-model diagrams reviewed | No candidate promoted yet | Responsibility shifts are easiest to compare visually. |
 | Hosting — Regions, Zones and Availability Concepts | RECOMMENDED VIDEO | Cloud region/AZ architecture material reviewed | No candidate promoted yet | Failure-domain geography is inherently visual. |
 | Hosting — Shared Responsibility | RECOMMENDED VIDEO | Cloud shared-responsibility explainers reviewed | No candidate promoted yet | Provider/customer ownership boundary benefits from a layered diagram. |
+| Hosting — Elasticity and Consumption Models | OPTIONAL VIDEO | Elasticity/autoscaling demos reviewed | No candidate promoted yet | A demand/capacity timeline can help. |
