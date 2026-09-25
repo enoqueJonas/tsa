@@ -1163,3 +1163,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technical Leadership — Decision-making | OPTIONAL VIDEO | engineering decision-making talks reviewed | No candidate promoted yet | A worked decision under uncertainty can reinforce reversible/irreversible framing. |
 | Technical Leadership — Technical Communication | RECOMMENDED VIDEO | technical communication/review talks reviewed | No candidate promoted yet | Seeing a concise technical explanation and challenge exchange is useful. |
 | Technical Leadership — Mentoring | OPTIONAL VIDEO | engineering mentoring talks reviewed | No candidate promoted yet | A good mentoring conversation can model questioning and feedback, but practice remains primary. |
+| Technical Leadership — Engineering Reviews | RECOMMENDED VIDEO | architecture/code review facilitation talks reviewed | No candidate promoted yet | A real review demonstrates evidence-based challenge and decision closure. |
