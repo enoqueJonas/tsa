@@ -23,10 +23,9 @@ function Resources({ resources, title = "Resources" }: { resources: LearningReso
               rel="noreferrer"
               className="font-medium text-blue-700 underline underline-offset-4 hover:text-blue-900"
             >
-              {resource.title} ↗
+              {resource.kind === "video" ? "Watch" : resource.kind === "interactive" ? "Open" : "Read"}: {resource.title} ↗
             </a>
-            {resource.read ? (
-              <p className="mt-1 text-sm leading-6 text-zinc-700">
+            {resource.watch ? (\n              <p className="mt-1 text-sm leading-6 text-zinc-700">\n                <span className="font-semibold text-zinc-900">Watch:</span> {resource.watch}\n              </p>\n            ) : null}\n            {resource.read ? (\n              <p className="mt-1 text-sm leading-6 text-zinc-700">
                 <span className="font-semibold text-zinc-900">Read:</span> {resource.read}
               </p>
             ) : null}
