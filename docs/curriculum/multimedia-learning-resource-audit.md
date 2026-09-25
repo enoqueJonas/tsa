@@ -1057,3 +1057,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Integration — Queues and Publish-Subscribe | RECOMMENDED VIDEO | queue/pub-sub architecture explainers reviewed | No candidate promoted yet | Fan-out and competing-consumer semantics are visual. |
 | Integration — Events and Commands | RECOMMENDED VIDEO | event-vs-command talks reviewed | No candidate promoted yet | Intent versus fact and coupling consequences benefit from examples. |
 | Integration — Delivery Semantics | NO VIDEO | Delivery/ack media already audited in System Thinker | Reuse earlier media if needed | Avoid duplication. |
+| Integration — Idempotency | NO VIDEO | Idempotent-consumer media already audited | Reuse earlier media if needed | Apply rather than reteach. |
