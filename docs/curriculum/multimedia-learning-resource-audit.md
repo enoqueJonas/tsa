@@ -1077,3 +1077,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Resilience Architecture — Timeouts | RECOMMENDED VIDEO | timeout/deadline demos reviewed | No candidate promoted yet | Caller waiting and resource occupancy are temporal. |
 | Resilience Architecture — Retries and Retry Storms | RECOMMENDED VIDEO | retry amplification visualizations reviewed | No candidate promoted yet | Amplification is ideal for animation. |
 | Resilience Architecture — Circuit Breakers | RECOMMENDED VIDEO | circuit-breaker state-machine demos reviewed | No candidate promoted yet | Closed/open/half-open transitions are inherently visual. |
+| Resilience Architecture — Bulkheads | RECOMMENDED VIDEO | bulkhead/isolation diagrams reviewed | No candidate promoted yet | Resource-pool isolation benefits from diagrams. |
