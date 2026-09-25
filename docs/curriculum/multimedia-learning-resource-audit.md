@@ -455,3 +455,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Enterprise Services — Enterprise Directory Services: LDAP | RECOMMENDED VIDEO | LDAP DN/search/bind visual explainers reviewed | No candidate promoted yet | DIT hierarchy, DN/RDN, bind and search scope are easier to grasp visually. |
 | File Integration — File-Based Integration Contracts | NO VIDEO | — | — | The contract and lifecycle must be designed explicitly. |
 | File Integration — Legacy FTP Integration | OPTIONAL VIDEO | FTP protocol/session demonstrations reviewed | No candidate promoted yet | A packet/session view can add historical protocol intuition. |
+| File Integration — Batch File Processing Lifecycle | RECOMMENDED VIDEO | Batch/file handoff workflow material reviewed | No candidate promoted yet | Producer→staging→atomic handoff→consumer→archive/reject is a useful sequence to visualize. |
