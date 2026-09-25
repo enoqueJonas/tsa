@@ -1070,3 +1070,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Leadership — Escalation and Responsible Challenge | RECOMMENDED VIDEO | Incident/risk escalation case studies reviewed | No candidate promoted yet | Case studies make timing, evidence and responsibility concrete. |
 | Leadership — Lab: Lead a Steward Technical Review | NO VIDEO | — | — | Independent leadership lab. |
 | Engineering Governance — Governance vs Management | OPTIONAL VIDEO | Governance/management explainers reviewed | No candidate promoted yet | A concise distinction can orient the learner. |
+| Engineering Governance — Decision Rights | NO VIDEO | — | — | Decision-right mapping is contextual. |
