@@ -616,3 +616,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Unit/Component — Designing Unit Tests | OPTIONAL VIDEO | Unit-testing design talks reviewed | No candidate promoted yet | A worked behavior-focused test can help. |
 | Unit/Component — Isolation | RECOMMENDED VIDEO | Isolation/nondeterminism demonstrations reviewed | No candidate promoted yet | Controlled dependencies are useful to see live. |
 | Unit/Component — Test Doubles | RECOMMENDED VIDEO | Mock/stub/fake explanations reviewed | No candidate promoted yet | Different double roles benefit from side-by-side examples. |
+| Unit/Component — Mocks, Stubs and Fakes | RECOMMENDED VIDEO | Same test-double candidates | No candidate promoted yet | Behavior versus interaction evidence is clearer in code demonstration. |
