@@ -840,3 +840,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Metrics — Counters, Gauges and Histograms | RECOMMENDED VIDEO | Prometheus metric-type demos reviewed | No candidate promoted yet | Histograms/buckets especially benefit from visualization. |
 | Metrics — Application and Infrastructure Metrics | OPTIONAL VIDEO | app/infra metric demos reviewed | No candidate promoted yet | Useful examples, but selection should follow questions. |
 | Metrics — Prometheus Architecture | RECOMMENDED VIDEO | Prometheus architecture talks reviewed | No candidate promoted yet | Targets→scrape→TSDB→query/alert flow is architectural. |
+| Metrics — Exporters | RECOMMENDED VIDEO | node_exporter/exporter demos reviewed | No candidate promoted yet | Exporter→scrape endpoint workflow is useful to see. |
