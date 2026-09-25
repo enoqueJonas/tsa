@@ -988,3 +988,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Reliability Milestone — Operate Steward Through a Reliability Review Scenario | NO VIDEO | — | — | Independent scenario. |
 | Reliability Milestone — Publish the Steward Reliability Review | NO VIDEO | — | — | Deliverable creation. |
 | Reliability Milestone — Defend the Reliability Posture | NO VIDEO | — | — | Final defence. |
+
+
+## Architect — lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Fundamentals — What Software Architecture Is | OPTIONAL VIDEO | SEI/architecture overview talks reviewed | No candidate promoted yet | A strong practitioner explanation can reinforce architecture as consequential decisions rather than diagrams. |
