@@ -996,3 +996,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | --- | --- | --- | --- | --- |
 | Architecture Fundamentals — What Software Architecture Is | OPTIONAL VIDEO | SEI/architecture-foundations talks reviewed | No candidate promoted yet | A strong practitioner explanation can reinforce architecture as consequential decisions rather than diagrams. |
 | Architecture Fundamentals — Architecture vs Design | NO VIDEO | — | — | The distinction is best tested against concrete decisions. |
+| Architecture Fundamentals — Architecture Drivers | NO VIDEO | — | — | Drivers must be extracted from context. |
