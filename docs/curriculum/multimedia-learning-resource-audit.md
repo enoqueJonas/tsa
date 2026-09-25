@@ -555,3 +555,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Cloud Blocks — Managed Services versus Self-managed Infrastructure | NO VIDEO | — | — | Operating-model trade-off should be reasoned from constraints. |
 | Cloud Blocks — Lab: Map Steward Platform to Cloud Building Blocks | NO VIDEO | — | — | Synthesis mapping lab. |
 | Object Storage — S3-Compatible Object Storage for Steward | RECOMMENDED VIDEO | MinIO/S3 API and object-storage demonstrations reviewed | No candidate promoted yet | Bucket/key/object semantics and HTTP API behavior are useful to see before implementation. |
+| Object Storage — Design the Object Boundary | NO VIDEO | — | — | Storage-authority decision must be independent. |
