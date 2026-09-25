@@ -434,3 +434,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Automation — Shell Scripting | NO VIDEO | — | — | Writing and running scripts is primary. |
 | Automation — Pipes and Exit Codes | RECOMMENDED VIDEO | Unix pipeline/exit-code demos reviewed | No candidate promoted yet | A live pipeline failure shows why exit status controls automation. |
 | Automation — Environment and Inputs | NO VIDEO | — | — | Input/config handling should be implemented directly. |
+| Automation — Repeatable Automation | NO VIDEO | — | — | Repeatability is proven by rerunning the task. |
