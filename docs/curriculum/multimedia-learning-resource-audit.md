@@ -733,3 +733,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — Insecure Deserialization Concepts | RECOMMENDED VIDEO | PortSwigger deserialization material reviewed | No candidate promoted yet | Object reconstruction/trust boundary is easier with a worked example. |
 | Web/API — Security Misconfiguration | OPTIONAL VIDEO | OWASP/PortSwigger examples reviewed | No candidate promoted yet | Examples help; hardening exercise is primary. |
 | Web/API — Sensitive Data and Secrets | NO VIDEO | — | — | Inspect actual exposure paths. |
+| Web/API — API Abuse and Rate Limiting | RECOMMENDED VIDEO | Rate-limit/abuse demos reviewed | No candidate promoted yet | Request-rate/threshold behavior benefits from live visualization. |
