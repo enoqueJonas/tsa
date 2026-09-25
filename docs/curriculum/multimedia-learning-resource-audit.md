@@ -312,3 +312,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Virtualization — VM CPU, Memory and Storage | RECOMMENDED VIDEO | Virtual resource allocation explainers reviewed | No candidate promoted yet | Overcommit/contention is easier with host-versus-guest resource diagrams. |
 | Virtualization — Virtual Networking Modes | RECOMMENDED VIDEO | NAT/bridged/host-only VM networking demos reviewed | No candidate promoted yet | Reachability differences are best shown with topology diagrams. |
 | Virtualization — Snapshots and Recovery | OPTIONAL VIDEO | Snapshot demonstrations reviewed | No candidate promoted yet | A short demo can show snapshot/revert mechanics, while the lesson must preserve snapshot≠backup reasoning. |
+| Bare Metal — Firmware, UEFI and the Boot Chain | RECOMMENDED VIDEO | UEFI/boot-chain explainers reviewed | No candidate promoted yet | Firmware→bootloader→kernel sequence is strongly visual. |
