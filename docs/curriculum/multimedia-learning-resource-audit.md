@@ -624,3 +624,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Milestone — Gate 1: Infrastructure and Topology Baseline | NO VIDEO | — | — | Gate evidence must come from the learner's running homelab. |
 | Milestone — Gate 2: Rocky Linux Service and Administrative Control | NO VIDEO | — | — | Operational proof, not instruction. |
 | Milestone — Gate 3: Client Path, Reverse Proxy and Firewall Policy | NO VIDEO | — | — | The learner must prove actual network paths and policy. |
+| Milestone — Gate 4: Failure, Backup and Recovery Drill | NO VIDEO | — | — | The controlled failure/recovery itself is the learning evidence. |
