@@ -571,3 +571,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Orchestration — Lab: Migrate Steward to OpenShift with Argo CD | NO VIDEO | — | — | Independent migration lab. |
 | Orchestration — Deploy and Verify on OpenShift | NO VIDEO | — | — | Deployment evidence. |
 | Orchestration — Transfer Deployment Authority to Argo CD | NO VIDEO | — | — | Authority cutover must be performed and evidenced. |
+| Orchestration — Orchestration and GitOps Review | NO VIDEO | — | — | Review. |
