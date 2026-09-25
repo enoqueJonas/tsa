@@ -567,3 +567,10 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Platform Builder Milestone — Assemble the Platform Builder Evidence Pack | NO VIDEO | — | — | Milestone is synthesis of implemented platform evidence. |
 | Platform Builder Milestone — Milestone Review and Exit Criteria | NO VIDEO | — | — | Exit gate should assess capability, not introduce media. |
 | Platform Builder Milestone — Platform Builder Exit Reflection | NO VIDEO | — | — | Reflection should use the learner's own operational evidence. |
+
+
+## Platform Builder — Core Infrastructure, Configuration Management, Patching and Windows lesson audit
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Core Infrastructure — DNS, DHCP and Time as Infrastructure | RECOMMENDED VIDEO | Infrastructure dependency/bootstrapping explainers reviewed | No candidate promoted yet | The dependency chain between name resolution, addressing and time is easier to grasp as a topology. |
