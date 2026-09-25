@@ -1165,3 +1165,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Technical Leadership — Mentoring | OPTIONAL VIDEO | engineering mentoring talks reviewed | No candidate promoted yet | A good mentoring conversation can model questioning and feedback, but practice remains primary. |
 | Technical Leadership — Engineering Reviews | RECOMMENDED VIDEO | architecture/code review facilitation talks reviewed | No candidate promoted yet | A real review demonstrates evidence-based challenge and decision closure. |
 | Technical Leadership — Escalation and Responsible Challenge | RECOMMENDED VIDEO | psychological-safety/escalation engineering talks reviewed | No candidate promoted yet | Scenario-based demonstrations add value for high-stakes disagreement. |
+| Technical Leadership — Lab: Lead a Steward Technical Review | NO VIDEO | — | — | Independent leadership exercise. |
