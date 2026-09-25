@@ -726,3 +726,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Web/API — Cross-site Request Forgery | RECOMMENDED VIDEO | PortSwigger CSRF material reviewed | No candidate promoted yet | Cross-origin request/session behavior benefits from a browser-flow demo. |
 | Web/API — Broken Authentication | RECOMMENDED VIDEO | PortSwigger authentication labs reviewed | No candidate promoted yet | A safe auth-failure demo makes consequences concrete. |
 | Web/API — Broken Authorization and IDOR | REQUIRED WATCH | PortSwigger access-control labs reviewed | Safe access-control/IDOR demo; exact selection at insertion | Object-level authorization failure is valuable to see end-to-end. |
+| Web/API — Server-side Request Forgery | RECOMMENDED VIDEO | PortSwigger SSRF material reviewed | No candidate promoted yet | Server→internal-resource request path is highly visual. |
