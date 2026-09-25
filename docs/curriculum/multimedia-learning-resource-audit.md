@@ -854,3 +854,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Tracing — Decision Gate: Select Steward's Tracing Backend | NO VIDEO | — | — | Decision from evidence. |
 | Tracing — Distributed Tracing with OpenTelemetry and Tempo | RECOMMENDED VIDEO | OpenTelemetry/Tempo tracing demos reviewed | No candidate promoted yet | Trace/span hierarchy and backend UI are inherently visual. |
 | Tracing — Trace the Steward Request Path | RECOMMENDED VIDEO | Grafana Tempo trace walkthroughs reviewed | No candidate promoted yet | Following a real trace across boundaries is ideal for video. |
+| Tracing — Deploy Tempo and Instrument Steward | OPTIONAL VIDEO | Tempo deployment/instrumentation demos reviewed | No candidate promoted yet | Setup orientation can help; implementation remains primary. |
