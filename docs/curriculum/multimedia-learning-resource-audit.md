@@ -590,3 +590,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Ansible — Reassess Image, Ansible and Platform Ownership | NO VIDEO | — | — | Architecture ownership decision is evidence-driven. |
 | Patching — Patch Risk, Exposure and Change Windows | OPTIONAL VIDEO | Enterprise patch-management talks reviewed | No candidate promoted yet | Real change-window examples can add context, but the risk classification exercise is primary. |
 | Patching — Patch a Rocky Linux Workload Host | NO VIDEO | — | — | DNF maintenance and before/after verification should be performed directly. |
+| Patching — Kernel Update and Controlled Reboot | RECOMMENDED VIDEO | Linux kernel update/reboot lifecycle demos reviewed | No candidate promoted yet | Installed-versus-running kernel state is useful to see live. |
