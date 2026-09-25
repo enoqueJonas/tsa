@@ -450,3 +450,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Windows — Active Directory, DNS and Domain Identity | RECOMMENDED VIDEO | Microsoft/AD DS architecture explainers reviewed | No candidate promoted yet | Domain controller, DNS, Kerberos/LDAP and directory objects are strongly visual. |
 | Windows — Domain Join and Group Policy | RECOMMENDED VIDEO | Domain join/GPO demonstrations reviewed | No candidate promoted yet | Join, policy application and gpresult evidence form a useful end-to-end workflow. |
 | Windows — Linux–Windows Interoperability | RECOMMENDED VIDEO | SMB/DNS/LDAP cross-platform demos reviewed | No candidate promoted yet | Cross-OS identity/name/file boundaries are useful to see integrated. |
+| Windows — Reassess Windows Operational Depth | NO VIDEO | — | — | Boundary decision, not tutorial content. |
