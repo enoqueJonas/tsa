@@ -715,3 +715,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Patch Regression and Recovery | RECOMMENDED VIDEO | Patch rollback/recovery demonstrations reviewed | No candidate promoted yet | Failure after change and evidence-driven recovery is a strong operational demonstration. |
 | Patch Multiple Rocky Hosts with Ansible | RECOMMENDED VIDEO | Ansible rolling/canary patch demos reviewed | No candidate promoted yet | Fleet sequencing and explicit reboot behavior benefit from live host-by-host evidence. |
 | Patch Age and Lifecycle Visibility | OPTIONAL VIDEO | Patch posture/dashboard examples reviewed | No candidate promoted yet | Dashboard examples can reinforce visibility, but later observability paths go deeper. |
+| Separate Proxmox Host and Rocky Guest Lifecycles | NO VIDEO | — | — | This is an ownership/maintenance-domain design exercise. |
