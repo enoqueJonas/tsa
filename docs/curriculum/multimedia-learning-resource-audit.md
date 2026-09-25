@@ -1022,3 +1022,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Domain — Entities, Value Objects and Aggregates | RECOMMENDED VIDEO | DDD tactical-modeling talks reviewed | No candidate promoted yet | Worked object/aggregate examples help distinguish identity, value and consistency boundaries. |
 | Domain — Invariants and Transaction Boundaries | RECOMMENDED VIDEO | aggregate/invariant talks reviewed | No candidate promoted yet | A transaction-boundary walkthrough can connect domain rules to persistence. |
 | Domain — Context Mapping Concepts | RECOMMENDED VIDEO | DDD context-map talks reviewed | No candidate promoted yet | Relationships between contexts are inherently visual. |
+| Domain — Domain Services | NO VIDEO | — | — | The learner should decide from behavior that does not naturally belong to an entity/value object. |
