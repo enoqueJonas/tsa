@@ -595,3 +595,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
 | Quality Engineering — Quality vs Testing | OPTIONAL VIDEO | Google testing/quality engineering talks reviewed | No candidate promoted yet | A systems view can reinforce that testing supplies evidence while quality emerges from the delivery system. |
+| Quality Engineering — Quality Risks | NO VIDEO | — | — | Build the live risk model directly. |
