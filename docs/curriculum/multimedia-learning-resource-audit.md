@@ -595,3 +595,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Patching — Patch Multiple Rocky Hosts with Ansible | RECOMMENDED VIDEO | Ansible rolling/canary patch demos reviewed | No candidate promoted yet | Fleet sequencing and explicit reboot behavior benefit from execution visualization. |
 | Patching — Patch Age and Lifecycle Visibility | OPTIONAL VIDEO | Patch compliance dashboard examples reviewed | No candidate promoted yet | A dashboard example can help, but learner-built metrics are primary. |
 | Patching — Separate Proxmox Host and Rocky Guest Lifecycles | NO VIDEO | — | — | The separation is an operating-model decision. |
+| Patching — Major OS Version Change Is a Migration | OPTIONAL VIDEO | Enterprise Linux major-upgrade/migration material reviewed | No candidate promoted yet | A real migration narrative can add useful failure/rollback context. |
