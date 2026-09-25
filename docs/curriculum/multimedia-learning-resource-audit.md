@@ -2050,3 +2050,28 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Performance — Performance Baselines | NO VIDEO | — | — | Measure actual baseline. |
 | Performance — Queueing and Contention Concepts | RECOMMENDED VIDEO | Queueing animations reviewed | No candidate promoted yet | Waiting/arrival/service rate is visual. |
 | Performance — Storage Growth and Artifact Capacity | NO VIDEO | — | — | Forecast actual storage. |
+| Performance — practical workload/capacity work | NO VIDEO | — | — | Independent evidence. |
+| Resilience — Timeouts | RECOMMENDED VIDEO | AWS Builders' Library talks/material reviewed | No candidate promoted yet | Deadline behavior is visual. |
+| Resilience — Retries | RECOMMENDED VIDEO | Retry demos reviewed | No candidate promoted yet | Repeated calls and amplification are visual. |
+| Resilience — Exponential Backoff and Jitter | RECOMMENDED VIDEO | AWS retry/backoff material reviewed | No candidate promoted yet | Timing distribution is visual. |
+| Resilience — Circuit Breakers | RECOMMENDED VIDEO | Circuit-breaker state demos reviewed | No candidate promoted yet | Closed/open/half-open is a state machine. |
+| Resilience — Idempotency | OPTIONAL VIDEO | Duplicate request demos reviewed | No candidate promoted yet | Useful reinforcement. |
+| Resilience — Partial Failure | RECOMMENDED VIDEO | Distributed-failure talks reviewed | No candidate promoted yet | Different component states are visual. |
+| Resilience — Dependency Failure | RECOMMENDED VIDEO | Dependency outage demos reviewed | No candidate promoted yet | Failure propagation is visual. |
+| Resilience — Cascading Failure | RECOMMENDED VIDEO | Cascade/queue saturation talks reviewed | No candidate promoted yet | Propagation is highly visual. |
+| Resilience — Queues and Backpressure | RECOMMENDED VIDEO | Backpressure animations reviewed | No candidate promoted yet | Producer/consumer rates are visual. |
+| Resilience — Graceful Degradation | OPTIONAL VIDEO | Degradation pattern demos reviewed | No candidate promoted yet | Examples can help. |
+| Resilience — Retry Storms and Amplification | RECOMMENDED VIDEO | Retry-storm visualizations reviewed | No candidate promoted yet | Amplification is a timing/load phenomenon. |
+| Resilience — practical failure path | NO VIDEO | — | — | Independent experiment. |
+| DR — Backups | NO VIDEO | — | — | Implement actual backups. |
+| DR — Backup Integrity | NO VIDEO | — | — | Verify actual backup. |
+| DR — Restore Testing | RECOMMENDED VIDEO | Restore drills reviewed | No candidate promoted yet | A disciplined restore drill is useful to see. |
+| DR — RPO and RTO | RECOMMENDED VIDEO | DR timeline explainers reviewed | No candidate promoted yet | Data-loss/downtime windows are visual. |
+| DR — Disaster Scenarios | OPTIONAL VIDEO | DR case studies reviewed | No candidate promoted yet | Real scenarios add context. |
+| DR — Recovery Procedures | NO VIDEO | — | — | Write/exercise actual procedure. |
+| DR — Database Recovery | RECOMMENDED VIDEO | Postgres recovery demos reviewed | No candidate promoted yet | Operational workflow. |
+| DR — Artifact Repository Backup and Restore | RECOMMENDED VIDEO | Repository recovery demos reviewed | No candidate promoted yet | Restore path is useful. |
+| DR — Configuration and Infrastructure Recovery | RECOMMENDED VIDEO | IaC/config rebuild demos reviewed | No candidate promoted yet | Reconstruction sequence is visual. |
+| DR — Recovery Evidence | NO VIDEO | — | — | Capture actual evidence. |
+| DR — exercise/review | NO VIDEO | — | — | Independent recovery exercise. |
+| Incident — Detection | RECOMMENDED VIDEO | Incident-response simulations reviewed | No candidate promoted yet | Detection→triage transition is useful to watch. |
