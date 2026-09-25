@@ -481,3 +481,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Config — Ansible Fundamentals | NO VIDEO | Prior Ansible path already implemented | — | Delivery uses the existing tool rather than reteaching it. |
 | Config — Inventories | NO VIDEO | — | — | Use actual environments. |
 | Config — Playbooks | NO VIDEO | — | — | Write and run them. |
+| Config — Roles Concepts | NO VIDEO | — | — | Already implemented earlier. |
