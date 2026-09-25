@@ -773,3 +773,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Supply Chain — Define Gates, Exceptions and Residual Risk | NO VIDEO | — | — | Policy design and exception reasoning are primary. |
 | Artifact Trust — Artifact Signing and Verification | RECOMMENDED VIDEO | Sigstore/Cosign signing demos reviewed | No candidate promoted yet | Keyless/key-based signing and verification are command workflows worth seeing. |
 | Artifact Trust — From Provenance Evidence to Enforced Trust | RECOMMENDED VIDEO | Sigstore verification-policy talks reviewed | No candidate promoted yet | The distinction between evidence and enforced admission is architectural and visual. |
+| Artifact Trust — Sign a Steward Release with Cosign | NO VIDEO | — | — | Learner must sign the actual release. |
