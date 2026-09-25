@@ -558,3 +558,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
 | Enterprise Services — Enterprise File Services: NFS and SMB | RECOMMENDED VIDEO | NFS/Samba service demonstrations reviewed | No candidate promoted yet | Seeing exports, mounts, share permissions and cross-host access once helps before the learner operates both protocols. |
+| Enterprise Services — Enterprise Directory Services: LDAP | RECOMMENDED VIDEO | LDAP/DN/search/filter visual explainers reviewed | No candidate promoted yet | DIT hierarchy, DN/RDN, bind and search scope are much easier to understand visually. |
