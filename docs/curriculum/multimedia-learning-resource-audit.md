@@ -1074,3 +1074,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Engineering Governance — Accountability | NO VIDEO | — | — | Accountability design is applied work. |
 | Engineering Governance — Policies, Standards, Procedures and Guidelines | OPTIONAL VIDEO | Governance artifact hierarchy explainers reviewed | No candidate promoted yet | A worked hierarchy can clarify purpose without over-bureaucratizing. |
 | Engineering Governance — Exceptions | RECOMMENDED VIDEO | Policy-exception/risk-acceptance case studies reviewed | No candidate promoted yet | A real exception workflow shows why governance needs bounded escape paths. |
+| Engineering Governance — Evidence and Review Cadence | NO VIDEO | — | — | Cadence/evidence design is contextual. |
