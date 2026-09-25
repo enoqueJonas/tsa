@@ -623,3 +623,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Unit/Component — Lab: Strengthen Steward Component Tests | NO VIDEO | — | — | Independent implementation lab. |
 | API/Integration — API Test Design | NO VIDEO | — | — | Design contract/domain assertions directly. |
 | API/Integration — Authentication and Authorization Testing | RECOMMENDED VIDEO | Authorization-test demonstrations reviewed | No candidate promoted yet | A role/object authorization matrix exercised live can reinforce negative coverage. |
+| API/Integration — Schema and Contract Validation | OPTIONAL VIDEO | OpenAPI/contract validation demos reviewed | No candidate promoted yet | Useful workflow demonstration; actual assertions remain primary. |
