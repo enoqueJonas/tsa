@@ -435,3 +435,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | OS Lifecycle — Patch Risk, Exposure and Change Windows | OPTIONAL VIDEO | Patch-management/change-window talks reviewed | No candidate promoted yet | A real operational case can add context, but the learner's risk classification is primary. |
 | OS Lifecycle — Patch a Rocky Linux Workload Host | NO VIDEO | — | — | Hands-on DNF maintenance and verification are sufficient. |
 | OS Lifecycle — Kernel Update and Controlled Reboot | RECOMMENDED VIDEO | Linux kernel update/reboot demonstrations reviewed | No candidate promoted yet | Installed-versus-running kernel state and reboot verification benefit from live evidence. |
+| OS Lifecycle — Patch Regression and Recovery | RECOMMENDED VIDEO | Patch rollback/recovery demonstrations reviewed | No candidate promoted yet | A deterministic regression and recovery sequence is useful to observe before reproducing it. |
