@@ -212,3 +212,4 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Components — Components and Responsibilities | NO VIDEO | — | — | Responsibility assignment should come from the system model. |
 | Components — Coupling and Cohesion Foundations | OPTIONAL VIDEO | Coupling/cohesion design talks reviewed | No candidate promoted yet | A worked refactor may reinforce the concept. |
 | Components — Dependency Direction | OPTIONAL VIDEO | Dependency-direction explainers reviewed | No candidate promoted yet | A visual dependency-arrow example can help. |
+| Components — Internal and External Dependencies | NO VIDEO | — | — | The learner must inventory and classify actual dependencies. |
