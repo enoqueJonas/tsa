@@ -1216,6 +1216,8 @@ A blog post may also be better than either a manual or a video. The resource mix
 
 ## Professional Engineer — lesson audit
 
+Professional Engineer is intentionally a **transfer-and-defence capstone**, not another content-acquisition school. By this point the learner is expected to retrieve prior Academy resources only when evidence exposes a genuine knowledge gap. New media is therefore exceptional: the default is independent discovery, design, implementation, operation, review and defence from a blank repository.
+
 | Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
 | Discovery — Choosing a Substantial Problem | NO VIDEO | Prior curriculum resources sufficient | — | Capstone begins by proving transfer; problem choice must come from evidence, not new instruction. |
