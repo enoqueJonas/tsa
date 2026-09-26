@@ -1052,3 +1052,164 @@ This audit follows the live Cloud Engineer deep paths rather than the older six-
 | --- | --- | --- | --- | --- |
 | Milestone Brief: Steward Internet Environment | NO VIDEO | — | — | Defines the independent cloud synthesis target. |
 | Milestone Review and Exit Criteria | NO VIDEO | — | — | The learner must defend public reachability, TLS, IaC, recovery, cost and operational boundaries from evidence. |
+
+
+## Quality Steward — complete school multimedia audit
+
+This audit follows every live Quality Steward deep path, including the browser-surface and performance-tool decision gates, reusable internal test infrastructure, continuous/scheduled execution and the complete Steward Quality Platform milestone.
+
+### Quality Engineering
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Quality vs Testing | RECOMMENDED VIDEO | Modern quality-engineering material reviewed | [Google — Software Engineering at Google: Testing Overview](https://abseil.io/resources/swe-book/html/ch11.html) — use the test-size/scope models as visual support | Establishes testing as one engineering mechanism inside a broader quality system rather than equating quality with test execution. |
+| Quality Risks | RECOMMENDED VIDEO | Risk-based testing material reviewed | [ISTQB CTFL syllabus](https://www.istqb.org/certifications/certified-tester-foundation-level) — use risk-based testing diagrams/tables | Gives a standardized risk vocabulary while TSA applies it to Steward consequences and evidence. |
+| Test Strategy | RECOMMENDED VIDEO | Test strategy material reviewed | [Google Testing Blog](https://testing.googleblog.com/) plus TSA-authored strategy model; no single video promoted | The strategy must emerge from product risk, delivery architecture and evidence needs rather than a generic template. |
+| Test Levels and Test Types | RECOMMENDED VIDEO | Test-level/type explainers reviewed | Reuse ISTQB CTFL visual models | Standard taxonomy is useful once; TSA emphasizes selecting the smallest useful boundary. |
+| Risk-based Testing | RECOMMENDED VIDEO | Risk-based testing material reviewed | Reuse ISTQB CTFL risk material | Direct continuation of the quality-risk model. |
+| Shift-left and Shift-right | RECOMMENDED VIDEO | Shift-left/right material reviewed | [DORA — Capabilities](https://dora.dev/capabilities/) — use continuous testing/delivery context | Connects earlier feedback and production evidence to delivery performance without reducing the concept to a slogan. |
+| Testability | RECOMMENDED VIDEO | Testability material reviewed | No candidate promoted | The learner should identify controllability/observability constraints in Steward itself. |
+| Defect Evidence and Communication | NO VIDEO | — | — | Quality of evidence is learned by producing reproducible defect reports from observed behavior. |
+| Lab: Write the Steward Quality Strategy | NO VIDEO | — | — | Independent strategy/risk/evidence synthesis. |
+
+### Test Analysis and Design
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Requirements Analysis for Testing | NO VIDEO | — | — | Learner must interrogate actual Steward requirements and derive test conditions. |
+| Equivalence Partitioning | RECOMMENDED VIDEO | Formal test-design technique material reviewed | [ISTQB CTFL syllabus](https://www.istqb.org/certifications/certified-tester-foundation-level) — use worked equivalence-partition examples | The partition model is visual and standardized; Steward examples provide transfer. |
+| Boundary Value Analysis | RECOMMENDED VIDEO | Boundary-analysis material reviewed | Reuse ISTQB CTFL worked examples | Closely coupled to equivalence partitions; one authoritative source is enough. |
+| Decision Tables | RECOMMENDED VIDEO | Decision-table testing material reviewed | [ISTQB Glossary — Decision Table Testing](https://glossary.istqb.org/en_US/term/decision-table-testing) plus CTFL examples | Conditions/actions and rule combinations benefit from a tabular visual model. |
+| State Transition Testing | RECOMMENDED VIDEO | State-transition testing material reviewed | Reuse ISTQB CTFL state diagrams | State/event/invalid-transition reasoning is strongly visual. |
+| Pairwise and Combinatorial Concepts | RECOMMENDED VIDEO | Pairwise material reviewed | [Microsoft PICT](https://github.com/microsoft/pict) — use model/output examples | Demonstrates combinatorial reduction concretely while preserving the warning that pairwise is a heuristic. |
+| Exploratory Testing | RECOMMENDED VIDEO | James Bach/DevelopSense exploratory material reviewed | [DevelopSense — Exploratory Testing](https://developsense.com/blog/category/exploratory-testing/) | Practitioner material reinforces chartered learning, observation and adaptation rather than unscripted clicking. |
+| Negative Testing | NO VIDEO | — | — | Learner deliberately derives invalid actions and invariant violations from Steward. |
+| Traceability | NO VIDEO | — | — | Traceability must connect the learner's risks, requirements, tests and evidence. |
+| Lab: Design Risk-based Steward Test Coverage | NO VIDEO | — | — | Independent formal-technique + exploration synthesis. |
+
+### Unit and Component Testing
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Designing Unit Tests | RECOMMENDED VIDEO | Google unit-testing guidance reviewed | [Software Engineering at Google — Unit Testing](https://abseil.io/resources/swe-book/html/ch12.html) — use test structure/behavior examples | Strong engineering treatment of unit-test value and maintainability rather than framework syntax. |
+| Isolation | RECOMMENDED VIDEO | Isolation/test-double material reviewed | Reuse Google unit-testing guidance | Keeps isolation tied to behavior and feedback rather than maximizing mocks. |
+| Test Doubles | RECOMMENDED VIDEO | Test-double taxonomy reviewed | [Martin Fowler — Mocks Aren't Stubs](https://martinfowler.com/articles/mocksArentStubs.html) | Canonical visual/conceptual distinction between state verification and behavior verification. |
+| Mocks, Stubs and Fakes | RECOMMENDED VIDEO | Mock/stub/fake material reviewed | Reuse Fowler test-double material | Avoids redundant taxonomy resources. |
+| Coverage and Its Limitations | RECOMMENDED VIDEO | Coverage guidance reviewed | [Google Testing Blog — Code Coverage Best Practices](https://testing.googleblog.com/2020/08/code-coverage-best-practices.html) | Reinforces coverage as feedback rather than a proxy for correctness. |
+| Component Boundaries | RECOMMENDED VIDEO | Component-test material reviewed | No candidate promoted | Boundary choice is architecture-specific and should be defended against Steward. |
+| Fast Feedback and Maintainability | NO VIDEO | — | — | Learner measures and reviews the actual test portfolio. |
+| Lab: Strengthen Steward Component Tests | NO VIDEO | — | — | Independent implementation evidence. |
+
+### API, Integration and Contract Testing
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| API Test Design | RECOMMENDED VIDEO | Playwright API testing material reviewed | [Playwright Python — API testing](https://playwright.dev/python/docs/api-testing) — use request/context examples | Maps protocol-level automation to the same framework used later without replacing domain-oriented assertions. |
+| Authentication and Authorization Testing | RECOMMENDED VIDEO | OWASP authorization testing material reviewed | [OWASP WSTG — Authorization Testing](https://owasp.org/www-project-web-security-testing-guide/) | Provides systematic negative/role-boundary thinking; Security Steward later deepens attack-oriented testing. |
+| Schema and Contract Validation | RECOMMENDED VIDEO | Contract/schema material reviewed | [Pact — What is Contract Testing?](https://docs.pact.io/) | The consumer/provider contract model is highly visual and distinguishes compatibility from broad integration testing. |
+| Database Assertions | OPTIONAL VIDEO | DB assertion material reviewed | No candidate promoted | Steward's real transaction/persistence boundary is the better teacher. |
+| Integration Boundaries | RECOMMENDED VIDEO | Integration-test boundary material reviewed | No candidate promoted | The learner must name actual Steward boundaries rather than copy a test pyramid mechanically. |
+| Contract Testing Concepts | RECOMMENDED VIDEO | Pact contract-testing material reviewed | Reuse Pact documentation/diagrams | One coherent contract model is sufficient. |
+| Mocking and Service Virtualization | RECOMMENDED VIDEO | Mock/service virtualization material reviewed | Reuse Fowler test-double model plus Pact provider-state concepts | Reinforces controlled simulation without pretending virtualized dependencies prove full integration. |
+| Internal Package Compatibility | NO VIDEO | — | — | Compatibility is tested against the real consumed internal package. |
+| Data Setup and Cleanup | NO VIDEO | — | — | State ownership and deterministic cleanup are implemented directly. |
+| Lab: Test Steward API End-to-End at the Service Layer | NO VIDEO | — | — | Independent API/persistence/auth/contract evidence. |
+
+### Automation Framework Engineering
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| What Makes an Automation Framework | RECOMMENDED VIDEO | Framework-architecture material reviewed | No candidate promoted | TSA's framework requirements and later refactoring provide a stronger architecture exercise than a vendor tutorial. |
+| Framework Architecture | RECOMMENDED VIDEO | pytest/Playwright architecture material reviewed | No candidate promoted | Learner must derive boundaries from Steward's tests and reusable infrastructure. |
+| Playwright with Python | RECOMMENDED VIDEO | Official Playwright material reviewed | [Playwright — Getting Started](https://playwright.dev/python/docs/intro) and [Playwright YouTube](https://www.youtube.com/@Playwrightdev) | First-party material establishes locator, browser/context/page and debugging concepts. |
+| pytest Fundamentals | RECOMMENDED VIDEO | pytest material reviewed | [pytest — Get Started](https://docs.pytest.org/en/stable/getting-started.html) | Current first-party examples are preferable to a long framework course. |
+| Configuration | NO VIDEO | — | — | Framework configuration is designed and versioned directly. |
+| Fixtures | RECOMMENDED VIDEO | pytest fixture material reviewed | [pytest — Fixtures](https://docs.pytest.org/en/stable/how-to/fixtures.html) — use dependency/lifetime examples | Fixture dependency and scope are non-obvious and benefit from canonical diagrams/examples. |
+| Test Data | NO VIDEO | — | — | Data ownership is a framework/domain design exercise. |
+| API Clients | NO VIDEO | — | — | Learner builds a narrow client around the actual Steward contract. |
+| Page Objects and UI Abstractions | RECOMMENDED VIDEO | Playwright page-object material reviewed | [Playwright — Page Object Models](https://playwright.dev/python/docs/pom) | First-party pattern guidance supports abstraction without mandating a page object for every screen. |
+| Helpers and Utilities | NO VIDEO | — | — | Refactoring/reuse decision. |
+| Assertions | RECOMMENDED VIDEO | Playwright/pytest assertion material reviewed | [Playwright — Assertions](https://playwright.dev/python/docs/test-assertions) | Auto-retrying web assertions are materially different from immediate Python assertions. |
+| Markers and Tags | OPTIONAL VIDEO | pytest marker material reviewed | [pytest — Marking test functions](https://docs.pytest.org/en/stable/how-to/mark.html) | Reference examples are sufficient. |
+| Parameterization | RECOMMENDED VIDEO | pytest parameterization material reviewed | [pytest — Parametrize](https://docs.pytest.org/en/stable/how-to/parametrize.html) | Canonical examples show data variation without duplicated tests. |
+| Automation Logging | NO VIDEO | — | — | Logging must be designed around failure diagnosis. |
+| Reports | OPTIONAL VIDEO | pytest/CI reporting material reviewed | No candidate promoted | Pipeline consumption determines the useful report format. |
+| Screenshots, Traces and Video | RECOMMENDED VIDEO | Playwright trace/debug material reviewed | [Playwright — Trace Viewer](https://playwright.dev/python/docs/trace-viewer) | Trace Viewer is inherently visual and provides high diagnostic value. |
+| Parallel Execution | RECOMMENDED VIDEO | pytest-xdist/parallel material reviewed | [pytest-xdist documentation](https://pytest-xdist.readthedocs.io/) | Makes worker distribution explicit; learner must still prove isolation. |
+| Retries and Flaky-test Risk | RECOMMENDED VIDEO | Playwright retry/flakiness material reviewed | [Playwright — Test retries](https://playwright.dev/docs/test-retries) as conceptual support | Reinforces that retries classify/contain instability rather than fixing nondeterminism. |
+| Framework Maintainability | NO VIDEO | — | — | Maintainability is evaluated through change/refactoring evidence. |
+| Reusable Testing Infrastructure vs Domain Test Code | RECOMMENDED VIDEO | Python package/plugin architecture material reviewed | [pytest — Writing plugins](https://docs.pytest.org/en/stable/how-to/writing_plugins.html) | Gives the extension boundary needed for shared infrastructure without leaking Steward domain logic. |
+| Designing Public APIs for Test Libraries | NO VIDEO | — | — | API design is exercised through the actual reusable package. |
+| Reusable pytest Fixtures and Plugins | RECOMMENDED VIDEO | pytest plugin material reviewed | Reuse pytest plugin documentation | Direct continuation of the shared-infrastructure boundary. |
+| Versioning Shared Test Infrastructure | NO VIDEO | — | — | Apply existing SemVer/release-engineering discipline. |
+| Lab: Build the Steward Automation Framework | NO VIDEO | — | — | Independent framework construction evidence. |
+| Lab: Extract tsa-test-core | NO VIDEO | — | — | Refactoring/reuse boundary is the assessment. |
+| Lab: Publish and Consume tsa-test-core | NO VIDEO | — | — | Real package publication/consumption evidence. |
+| Automation Framework Engineering Review | NO VIDEO | — | — | Capability review. |
+
+### Browser and Environment Testing
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Decision Gate: Does Steward Need Browser Testing? | NO VIDEO | — | — | Browser automation must be justified by an actual user-facing browser surface. |
+| Browser Differences | RECOMMENDED VIDEO | Browser engine/cross-browser material reviewed | [Playwright — Browsers](https://playwright.dev/python/docs/browsers) | Maps Chromium/Firefox/WebKit to execution and configuration directly. |
+| Responsive Testing | RECOMMENDED VIDEO | Responsive-design/testing material reviewed | [MDN — Responsive Web Design](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design) | Establishes layout-state concepts before testing behavior at representative viewports. |
+| Cross-browser Testing | RECOMMENDED VIDEO | Cross-browser strategy material reviewed | [BrowserStack — Cross Browser Testing](https://www.browserstack.com/cross-browser-testing) — use browser/device matrix visuals | Makes environment diversity concrete; TSA still requires risk-based selection. |
+| BrowserStack or Equivalent | OPTIONAL VIDEO | BrowserStack platform material reviewed | No separate candidate promoted | Provider UI walkthroughs age quickly; the execution contract matters more. |
+| Local vs Remote Execution | RECOMMENDED VIDEO | Playwright/remote grid material reviewed | No candidate promoted | Learner compares the same claim across actual local and remote environments. |
+| Environment Parity and Configuration Risk | NO VIDEO | — | — | Configuration drift is diagnosed from real environment evidence. |
+| Lab: Run Steward Tests Across Environments | NO VIDEO | — | — | Independent cross-environment evidence. |
+
+### Non-functional Quality
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Decision Gate: Select the Steward Performance Tool | NO VIDEO | — | — | Tool selection must be defended from protocol, workload, scripting and CI requirements. |
+| Performance Testing | RECOMMENDED VIDEO | k6 performance material reviewed | [Grafana k6 — Documentation](https://grafana.com/docs/k6/latest/) and getting-started examples | Current first-party workload/metric model supports the learner's chosen baseline. |
+| Load, Stress, Spike and Endurance | RECOMMENDED VIDEO | Performance-test type material reviewed | [Grafana k6 — Test types](https://grafana.com/docs/k6/latest/testing-guides/test-types/) | The workload-shape diagrams make the distinctions concrete. |
+| Accessibility Fundamentals | RECOMMENDED VIDEO | W3C accessibility material reviewed | [W3C — Introduction to Web Accessibility](https://www.w3.org/WAI/fundamentals/accessibility-intro/) | Authoritative user/barrier model before automated accessibility checks. |
+| Compatibility Testing | RECOMMENDED VIDEO | MDN compatibility material reviewed | [MDN — Browser compatibility data](https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Page_structures/Compatibility_tables) | Connects compatibility claims to explicit platform support evidence. |
+| Reliability-oriented Testing | RECOMMENDED VIDEO | reliability-test material reviewed | No candidate promoted | Reliability Engineer later owns deep failure engineering; here tests should emerge from known quality risks. |
+| Data Integrity and Concurrency Testing | RECOMMENDED VIDEO | PostgreSQL isolation/concurrency material reviewed | [PostgreSQL — Transaction Isolation](https://www.postgresql.org/docs/current/transaction-iso.html) | Isolation phenomena are subtle and need authoritative transaction semantics before concurrent test design. |
+| Lab: Establish Steward Non-functional Baselines | NO VIDEO | — | — | Baselines must be measured against the actual service. |
+
+### Quality in Containers and CI/CD
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Test Containers and Environments | RECOMMENDED VIDEO | Dockerized testing material reviewed | Reuse Delivery Engineer Docker resources | Quality Steward applies existing container knowledge to deterministic test dependencies. |
+| Dockerized Test Dependencies | RECOMMENDED VIDEO | Container dependency material reviewed | Reuse Docker Compose resource | No need to reteach Compose. |
+| Ephemeral Environment Concepts | RECOMMENDED VIDEO | Ephemeral CI environment material reviewed | No candidate promoted | The learner's pipeline should prove create→test→destroy lifecycle directly. |
+| Test Pipeline Stages | RECOMMENDED VIDEO | Jenkins pipeline material reviewed | Reuse Delivery Engineer Jenkins Pipeline media | Existing execution model is sufficient. |
+| Parallelization | RECOMMENDED VIDEO | pytest-xdist/CI parallel material reviewed | Reuse pytest-xdist documentation | Connects framework worker isolation to pipeline execution. |
+| Reports and Artifacts | OPTIONAL VIDEO | CI reporting material reviewed | No candidate promoted | Diagnostic usefulness is judged from failed pipeline evidence. |
+| Quality Gates | NO VIDEO | — | — | Gate policy must be risk/evidence based. |
+| Test Selection | RECOMMENDED VIDEO | pytest marker/selection material reviewed | Reuse pytest marker documentation | Existing selection primitives are enough. |
+| Failure Triage | NO VIDEO | — | — | Learner must diagnose real failed CI evidence. |
+| Flaky-test Containment | RECOMMENDED VIDEO | retry/flakiness material reviewed | Reuse Playwright retry guidance | Reinforces containment/classification rather than hiding failures. |
+| Internal Test Package Publishing and Compatibility in CI | NO VIDEO | — | — | Real tsa-test-core producer/consumer compatibility is the evidence. |
+| Lab: Build the Steward Quality Pipeline | NO VIDEO | — | — | Independent pipeline/gate/diagnostic evidence. |
+
+### Continuous and Scheduled Quality Execution
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Continuous and Scheduled Quality Execution | RECOMMENDED VIDEO | Jenkins trigger/schedule material reviewed | [Jenkins — Pipeline Syntax](https://www.jenkins.io/doc/book/pipeline/syntax/#triggers) | First-party trigger semantics support SCM-driven and scheduled execution without another broad Jenkins course. |
+| Design Triggered Quality Feedback | NO VIDEO | — | — | Trigger policy is a feedback-speed/cost/risk decision. |
+| Implement SCM-triggered Automated Testing | NO VIDEO | — | — | Real pipeline implementation evidence. |
+| Implement Jenkins CRON Regression | RECOMMENDED VIDEO | Jenkins cron syntax material reviewed | Reuse Jenkins trigger documentation | Exact syntax/reference is more useful than a walkthrough. |
+| Implement Failure Alerts and Reports | NO VIDEO | — | — | Learner must prove actionable failure delivery without notification noise. |
+| Defend the Quality Execution Policy | NO VIDEO | — | — | Policy defense based on actual pipeline behavior. |
+
+### Quality Steward Milestone
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Quality Steward Milestone Readiness | NO VIDEO | — | — | Evidence audit before final integration. |
+| Integrate the Quality Steward System | NO VIDEO | — | — | Cross-module integration is the assessment. |
+| Audit the Existing Evidence | NO VIDEO | — | — | Learner must identify evidence gaps independently. |
+| Milestone: Steward Quality Platform | NO VIDEO | — | — | Independent synthesis target. |
+| Finalize the Steward Quality Strategy | NO VIDEO | — | — | Strategy must reflect the implemented system. |
+| Prove the Automated Quality Portfolio | NO VIDEO | — | — | Real test evidence. |
+| Prove the Quality Pipeline | NO VIDEO | — | — | Real pipeline/gate evidence. |
+| Quality Steward Final Review | NO VIDEO | — | — | Final capability defense. |
