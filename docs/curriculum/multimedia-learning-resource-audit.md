@@ -1392,3 +1392,211 @@ This audit follows every live Security Steward deep path. It includes foundation
 | Close High-priority Gaps and Retest | NO VIDEO | — | — | Remediation and regression evidence. |
 | Publish the Steward Security Assessment | NO VIDEO | — | — | Professional assessment artifact. |
 | Defend the Security Posture | NO VIDEO | — | — | Final capability/risk defense. |
+
+
+## Reliability Engineer — complete school multimedia audit
+
+This audit follows every live Reliability Engineer deep path, including observability architecture, Graylog selection and integration, Prometheus/Grafana, Alertmanager, OpenTelemetry/Tempo tracing, SLO engineering, production logging, database stewardship, performance/capacity, resilience patterns, incident management, controlled fault injection, disaster recovery and the final Steward Reliability Program.
+
+### SRE Foundations and Service Levels
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Reliability as a Quality Attribute | RECOMMENDED VIDEO | Google/AWS reliability material reviewed | [Google SRE — Introduction](https://sre.google/sre-book/introduction/) | Establishes reliability as an engineering property tied to user experience and operations. |
+| Availability | RECOMMENDED VIDEO | SRE availability material reviewed | [Google SRE — Embracing Risk](https://sre.google/sre-book/embracing-risk/) | Connects availability targets to risk and trade-offs instead of treating 100% as the goal. |
+| Failure and Recovery | RECOMMENDED VIDEO | AWS reliability material reviewed | [AWS Well-Architected — Reliability Pillar](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html) | Strong failure/recovery design framing. |
+| SRE Principles | RECOMMENDED VIDEO | Google SRE material reviewed | [Google — Site Reliability Engineering](https://sre.google/sre-book/table-of-contents/) | Canonical SRE operating model. |
+| Toil | RECOMMENDED VIDEO | Google SRE toil material reviewed | [Google SRE — Eliminating Toil](https://sre.google/sre-book/eliminating-toil/) | Gives a precise operational definition and why automation alone is not the objective. |
+| Reliability and Risk Trade-offs | RECOMMENDED VIDEO | risk/error-budget material reviewed | Reuse Google SRE Embracing Risk | Keeps trade-offs connected to measurable reliability. |
+| Reliability Ownership | NO VIDEO | — | — | Ownership must be mapped to the actual Steward operating model. |
+| Lab: Build the Steward Reliability Risk Map | NO VIDEO | — | — | Independent capability/failure/recovery analysis. |
+| SLIs | RECOMMENDED VIDEO | Google SLO material reviewed | [Google SRE Workbook — Implementing SLOs](https://sre.google/workbook/implementing-slos/) | Canonical user-centric indicator selection and examples. |
+| SLOs | RECOMMENDED VIDEO | Google SLO material reviewed | Reuse Implementing SLOs | One coherent model from indicator to target. |
+| SLAs | RECOMMENDED VIDEO | SLI/SLO/SLA material reviewed | [Google SRE — Service Level Objectives](https://sre.google/sre-book/service-level-objectives/) | Distinguishes engineering objectives from external agreements. |
+| Error Budgets | RECOMMENDED VIDEO | error-budget material reviewed | [Google SRE Workbook — Error Budget Policy](https://sre.google/workbook/error-budget-policy/) | Directly links reliability consumption to release/operational decisions. |
+| User-visible Reliability | NO VIDEO | — | — | Learner must choose indicators from actual Steward user outcomes. |
+| Choosing Good Indicators | RECOMMENDED VIDEO | SLI selection material reviewed | Reuse Google SLO workbook | Authoritative examples are sufficient. |
+| Windowing and Measurement Concepts | RECOMMENDED VIDEO | SLO window material reviewed | Reuse Google SLO workbook | Measurement windows are best understood in the same SLO model. |
+| Reliability Targets and Trade-offs | NO VIDEO | — | — | Target selection is a product/risk decision. |
+| Error Budgets and Release Decisions | RECOMMENDED VIDEO | error-budget policy material reviewed | Reuse Google Error Budget Policy | Makes the reliability/release control loop explicit. |
+| Lab: Define Steward SLOs | NO VIDEO | — | — | Independent SLI/SLO/budget policy evidence. |
+
+### Observability Architecture and Production Logging
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Observability vs Monitoring | RECOMMENDED VIDEO | OpenTelemetry/Grafana material reviewed | [OpenTelemetry — Observability Primer](https://opentelemetry.io/docs/concepts/observability-primer/) | Frames observability around understanding internal state from telemetry rather than merely watching known thresholds. |
+| Logs, Metrics and Traces | RECOMMENDED VIDEO | telemetry signal material reviewed | [OpenTelemetry — Signals](https://opentelemetry.io/docs/concepts/signals/) | One canonical model for the three signal families and their roles. |
+| Telemetry Design | NO VIDEO | — | — | Signals must answer Steward reliability questions rather than mirror a generic dashboard. |
+| Correlation and Context | RECOMMENDED VIDEO | OpenTelemetry context material reviewed | [OpenTelemetry — Context propagation](https://opentelemetry.io/docs/concepts/context-propagation/) | Correlation across boundaries is central to later logs/traces. |
+| Instrumentation | RECOMMENDED VIDEO | OTel instrumentation material reviewed | [OpenTelemetry — Instrumentation](https://opentelemetry.io/docs/concepts/instrumentation/) | Establishes automatic/manual instrumentation boundaries. |
+| OpenTelemetry Concepts | RECOMMENDED VIDEO | OTel architecture material reviewed | [OpenTelemetry — What is OpenTelemetry?](https://opentelemetry.io/docs/what-is-opentelemetry/) | Canonical vendor-neutral telemetry model. |
+| Golden Signals and Service Questions | RECOMMENDED VIDEO | Google SRE monitoring material reviewed | [Google SRE — Monitoring Distributed Systems](https://sre.google/sre-book/monitoring-distributed-systems/) | Latency, traffic, errors and saturation are tied to service questions rather than dashboard fashion. |
+| Telemetry Cost and Noise | NO VIDEO | — | — | Learner evaluates signal value/cardinality/retention against actual cost and diagnosis needs. |
+| Lab: Design Steward Observability | NO VIDEO | — | — | Independent question→signal→diagnostic-path design. |
+| Structured Logs | RECOMMENDED VIDEO | Twelve-Factor/OTel logs material reviewed | [OpenTelemetry — Logs](https://opentelemetry.io/docs/concepts/signals/logs/) | Shows structured log records and telemetry correlation. |
+| Log Levels | OPTIONAL VIDEO | logging-level material reviewed | No candidate promoted | Direct implementation and noise review are stronger. |
+| Correlation IDs | RECOMMENDED VIDEO | trace/log correlation material reviewed | Reuse OpenTelemetry context propagation | Connects request identity across service boundaries. |
+| Request and Trace Context | RECOMMENDED VIDEO | OTel context material reviewed | Reuse context propagation | Same model, no redundant media. |
+| Centralized Logging | RECOMMENDED VIDEO | centralized logging platforms reviewed | [Graylog — Documentation](https://go2docs.graylog.org/) — use architecture/search/stream concepts | Supports the academy's implementation while retaining transferable centralized-logging concepts. |
+| Useful vs Noisy Logs | NO VIDEO | — | — | Learner evaluates real diagnostic value from Steward failures. |
+| Privacy and Security in Logs | RECOMMENDED VIDEO | OWASP logging material reviewed | [OWASP Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html) | Explicit guidance on sensitive data and security event logging. |
+| Log Retention Concepts | NO VIDEO | — | — | Retention must balance investigation, compliance, storage and privacy. |
+| Lab: Build a Steward Diagnostic Logging Path | NO VIDEO | — | — | Independent diagnostic evidence. |
+| Decision Gate: Select the Steward Centralized Logging Stack | NO VIDEO | — | — | Platform choice must be defended against requirements. |
+| Compare Centralized Logging Implementations | NO VIDEO | — | — | Comparative architecture/cost/operations decision. |
+| Defend Graylog as the Logging Platform | NO VIDEO | — | — | Explicit platform defense. |
+
+### Metrics, Prometheus and Grafana
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Metrics Mental Models | RECOMMENDED VIDEO | Prometheus metric-model material reviewed | [Prometheus — Metric types](https://prometheus.io/docs/concepts/metric_types/) | Canonical semantics before instrumentation. |
+| Counters, Gauges and Histograms | RECOMMENDED VIDEO | Prometheus metric types reviewed | Reuse Prometheus metric types | One authoritative model is enough. |
+| Application and Infrastructure Metrics | NO VIDEO | — | — | Metric selection must follow service questions and risks. |
+| Prometheus Architecture | RECOMMENDED VIDEO | Prometheus architecture material reviewed | [Prometheus — Overview](https://prometheus.io/docs/introduction/overview/) — use architecture diagram | Pull model, TSDB, exporters, rules and Alertmanager are highly visual. |
+| Exporters | RECOMMENDED VIDEO | Prometheus exporter material reviewed | [Prometheus — Exporters and integrations](https://prometheus.io/docs/instrumenting/exporters/) | Establishes translation from system metrics into Prometheus exposition. |
+| Service Discovery Concepts | RECOMMENDED VIDEO | Prometheus discovery material reviewed | [Prometheus — Configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/) | Current first-party discovery/target model. |
+| PromQL | RECOMMENDED VIDEO | PromQL material reviewed | [Prometheus — Querying basics](https://prometheus.io/docs/prometheus/latest/querying/basics/) | Query semantics are best learned against live Steward metrics. |
+| Recording Rules Concepts | RECOMMENDED VIDEO | Prometheus rule material reviewed | [Prometheus — Recording rules](https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/) | Canonical precomputation/rule model. |
+| Grafana | RECOMMENDED VIDEO | Grafana dashboard material reviewed | [Grafana — Getting started](https://grafana.com/docs/grafana/latest/getting-started/) | First-party data-source/panel/dashboard workflow. |
+| Dashboard Design | RECOMMENDED VIDEO | dashboard design material reviewed | [Grafana — Dashboard best practices](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/best-practices/) | Supports question-driven dashboards rather than graph accumulation. |
+| Dashboard Anti-patterns | NO VIDEO | — | — | Learner critiques the actual Steward dashboard. |
+| Nexus and Internal Platform Metrics | NO VIDEO | — | — | Must reflect the deployed Nexus service and delivery dependency. |
+| CI and Delivery Metrics | NO VIDEO | — | — | Delivery metrics must answer actual pipeline reliability questions. |
+| Lab: Instrument Steward API | NO VIDEO | — | — | Independent instrumentation/query/dashboard evidence. |
+| Lab: Observe the Internal Artifact Platform | NO VIDEO | — | — | Independent Nexus dependency evidence. |
+
+### Alerting and On-call
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Symptoms vs Causes | RECOMMENDED VIDEO | SRE alerting material reviewed | [Google SRE Workbook — Alerting on SLOs](https://sre.google/workbook/alerting-on-slos/) | Strong symptom/user-impact orientation for paging. |
+| Actionable Alerts | RECOMMENDED VIDEO | SRE alerting material reviewed | Reuse Alerting on SLOs | Alert must imply meaningful action. |
+| Alert Fatigue | RECOMMENDED VIDEO | SRE/PagerDuty material reviewed | Reuse Google alerting guidance | Keeps noise tied to paging policy rather than notification tooling. |
+| Severity | NO VIDEO | — | — | Severity model must fit Steward impact and response expectations. |
+| Escalation | NO VIDEO | — | — | Organizational/operational policy. |
+| Alert Routing Concepts | RECOMMENDED VIDEO | Alertmanager material reviewed | [Prometheus — Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/) | Grouping, inhibition, silences and routing are central and visual. |
+| Runbooks | NO VIDEO | — | — | Runbook quality is proved by execution. |
+| On-call Handover and Context | NO VIDEO | — | — | Handover is an operational communication artifact. |
+| Lab: Build Steward Alerts and Runbooks | NO VIDEO | — | — | Independent paging/runbook evidence. |
+| Operate Prometheus Alertmanager | RECOMMENDED VIDEO | Alertmanager implementation material reviewed | Reuse Prometheus Alertmanager documentation | Direct implementation reference. |
+| From Firing Rule to Delivered Notification | RECOMMENDED VIDEO | Prometheus alert pipeline reviewed | [Prometheus — Alerting rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) plus Alertmanager docs | Makes rule evaluation versus notification delivery an explicit two-stage system. |
+| Deploy and Route with Alertmanager | NO VIDEO | — | — | Real routing configuration evidence. |
+| Break Alert Delivery and Recover It | NO VIDEO | — | — | Controlled alert-pipeline failure exercise. |
+| Defend the Alerting Pipeline | NO VIDEO | — | — | Architecture/operability defense. |
+
+### Distributed Tracing and Stack Integration
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Decision Gate: Select Steward's Tracing Backend | NO VIDEO | — | — | Backend selection must be defended from scale, integration and operations requirements. |
+| Evaluate Distributed Tracing Value and Select the Backend | NO VIDEO | — | — | Explicit value/tool decision. |
+| Distributed Tracing with OpenTelemetry and Tempo | RECOMMENDED VIDEO | OTel/Tempo material reviewed | [Grafana Tempo — Introduction](https://grafana.com/docs/tempo/latest/introduction/) plus OTel trace concepts | Connects instrumentation, trace transport/storage and Grafana exploration. |
+| Trace the Steward Request Path | RECOMMENDED VIDEO | OTel tracing material reviewed | [OpenTelemetry — Traces](https://opentelemetry.io/docs/concepts/signals/traces/) | Span/trace hierarchy is inherently visual. |
+| Deploy Tempo and Instrument Steward | RECOMMENDED VIDEO | Tempo deployment material reviewed | [Grafana Tempo — Getting started](https://grafana.com/docs/tempo/latest/getting-started/) | Current first-party implementation path. |
+| Investigate Cross-boundary Latency | NO VIDEO | — | — | Learner must diagnose a real trace. |
+| Break the Tracing Pipeline | NO VIDEO | — | — | Controlled telemetry failure. |
+| Defend the Tracing Architecture | NO VIDEO | — | — | Architecture defense. |
+| Observability Stack Integration: Graylog, Prometheus and Grafana | RECOMMENDED VIDEO | cross-signal observability material reviewed | Reuse OpenTelemetry signals + product architecture resources | Integration value comes from correlating the learner's real signals. |
+| Implement the Steward Observability Stack | NO VIDEO | — | — | Independent stack integration. |
+| Run a Cross-signal Incident Investigation | NO VIDEO | — | — | Diagnosis exercise is the assessment. |
+| Defend the Observability Architecture | NO VIDEO | — | — | Final signal/tool/retention boundary defense. |
+
+### Database Stewardship and Capacity
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Database Roles and Least Privilege | RECOMMENDED VIDEO | PostgreSQL role material reviewed | [PostgreSQL — Database Roles](https://www.postgresql.org/docs/current/user-manag.html) | Canonical ownership/privilege semantics. |
+| Connections, Pools and Exhaustion | RECOMMENDED VIDEO | PostgreSQL connection/pool material reviewed | No candidate promoted | Actual connection saturation/pool behavior is implementation-specific and should be measured. |
+| Slow Queries and Query-plan Evidence | RECOMMENDED VIDEO | PostgreSQL EXPLAIN material reviewed | [PostgreSQL — Using EXPLAIN](https://www.postgresql.org/docs/current/using-explain.html) | Query-plan evidence is central to diagnosing database performance. |
+| Locks, Blocking and Deadlocks | RECOMMENDED VIDEO | PostgreSQL locking material reviewed | [PostgreSQL — Explicit Locking](https://www.postgresql.org/docs/current/explicit-locking.html) | Authoritative lock/deadlock semantics before controlled reproduction. |
+| Operationally Safe Database Migrations | RECOMMENDED VIDEO | safe-schema-change material reviewed | Reuse Delivery Engineer Parallel Change resource | Reliability applies the existing expand/contract model operationally. |
+| Database Backup, Restore and Recovery Evidence | RECOMMENDED VIDEO | PostgreSQL backup material reviewed | [PostgreSQL — Backup and Restore](https://www.postgresql.org/docs/current/backup.html) | Canonical backup modes and recovery boundary. |
+| Database Capacity and Health Review | NO VIDEO | — | — | Review must use actual metrics/query/storage evidence. |
+| Lab: Run the Steward Database Stewardship Review | NO VIDEO | — | — | Independent operational review. |
+| Investigate a Slow or Saturated Database Path | NO VIDEO | — | — | Diagnostic exercise. |
+| Prove Recovery and Operational Readiness | NO VIDEO | — | — | Restore/readiness evidence. |
+| Latency and Throughput | RECOMMENDED VIDEO | performance material reviewed | [Google SRE — Addressing Cascading Failures](https://sre.google/sre-book/addressing-cascading-failures/) | Connects latency/load/resource pressure to distributed failure. |
+| Saturation | RECOMMENDED VIDEO | golden-signal/capacity material reviewed | Reuse Google SRE monitoring/cascading-failure resources | Existing model is sufficient. |
+| Bottlenecks | NO VIDEO | — | — | Learner must locate the actual constrained resource from evidence. |
+| Load and Stress Testing | RECOMMENDED VIDEO | k6 material reviewed | Reuse Quality Steward Grafana k6 resources | Performance-tool mechanics are already established. |
+| Capacity Planning | RECOMMENDED VIDEO | SRE capacity material reviewed | No candidate promoted | Capacity plan should emerge from measured demand, saturation and growth assumptions. |
+| Resource Utilization | NO VIDEO | — | — | Direct metric analysis. |
+| Database and Application Bottlenecks | NO VIDEO | — | — | Cross-layer diagnosis exercise. |
+| Performance Baselines | NO VIDEO | — | — | Must be measured on Steward. |
+| Queueing and Contention Concepts | RECOMMENDED VIDEO | queueing/backpressure material reviewed | [AWS Builders' Library — Avoiding overload](https://aws.amazon.com/builders-library/avoiding-insurmountable-queue-backlogs/) | Strong production framing for queues, overload and recovery. |
+| Storage Growth and Artifact Capacity | NO VIDEO | — | — | Nexus/storage growth plan uses actual repository evidence. |
+| Lab: Establish Steward Capacity Baselines | NO VIDEO | — | — | Independent workload/measurement/growth evidence. |
+
+### Resilience and Distributed Failure
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Timeouts | RECOMMENDED VIDEO | AWS resilience material reviewed | [AWS Builders' Library — Timeouts, retries and backoff with jitter](https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/) | Production-grade explanation of bounded waiting and retry interaction. |
+| Retries | RECOMMENDED VIDEO | retry material reviewed | Reuse AWS Builders' Library | Keeps timeout/retry/backoff as one system. |
+| Exponential Backoff and Jitter | RECOMMENDED VIDEO | backoff material reviewed | Reuse AWS Builders' Library | Canonical production treatment. |
+| Circuit Breakers | RECOMMENDED VIDEO | resilience-pattern material reviewed | [Azure Architecture Center — Circuit Breaker pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker) | State diagrams make closed/open/half-open behavior clear. |
+| Idempotency | RECOMMENDED VIDEO | idempotency material reviewed | Reuse earlier desired-state/API idempotency concepts | Learner applies it specifically to retry-safe distributed operations. |
+| Partial Failure | RECOMMENDED VIDEO | distributed-failure material reviewed | [Google SRE — Addressing Cascading Failures](https://sre.google/sre-book/addressing-cascading-failures/) | Strong model of localized failures becoming system failures. |
+| Dependency Failure | RECOMMENDED VIDEO | dependency resilience material reviewed | Reuse Google/AWS reliability resources | Avoids redundant media. |
+| Cascading Failure | RECOMMENDED VIDEO | cascading-failure material reviewed | Reuse Google SRE chapter | Canonical production examples. |
+| Queues and Backpressure | RECOMMENDED VIDEO | queue/backpressure material reviewed | Reuse AWS queue-backlog resource | Direct connection to overload containment. |
+| Graceful Degradation | RECOMMENDED VIDEO | reliability-pattern material reviewed | [Azure Architecture Center — Graceful Degradation](https://learn.microsoft.com/en-us/azure/well-architected/reliability/graceful-degradation) | Connects reduced functionality to preserving critical user outcomes. |
+| Retry Storms and Amplification | RECOMMENDED VIDEO | retry amplification material reviewed | Reuse AWS timeout/retry/backoff resource | Explicit production warning against layered retries. |
+| Dependency Availability Budgets | NO VIDEO | — | — | Learner computes/defends dependency assumptions from Steward SLOs. |
+| Lab: Harden Steward Against Dependency Failure | NO VIDEO | — | — | Independent failure/control/recovery evidence. |
+
+### Incident Management and Fault Injection
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Detection | RECOMMENDED VIDEO | Google SRE incident material reviewed | [Google SRE — Managing Incidents](https://sre.google/sre-book/managing-incidents/) | Canonical incident lifecycle and command structure. |
+| Triage | RECOMMENDED VIDEO | incident-management material reviewed | Reuse Google SRE incident guidance | One coherent model is preferable. |
+| Incident Roles | RECOMMENDED VIDEO | incident command material reviewed | Reuse Google SRE incident guidance | Makes separation of command/operations/communications explicit. |
+| Communication | RECOMMENDED VIDEO | incident communication material reviewed | [Atlassian — Incident communication](https://www.atlassian.com/incident-management/incident-communication) | Practical stakeholder/status communication model. |
+| Mitigation | NO VIDEO | — | — | Mitigation choice is scenario-specific and must prioritize restoration. |
+| Timeline Construction | NO VIDEO | — | — | Learner reconstructs the actual exercise timeline. |
+| Root Cause | RECOMMENDED VIDEO | postmortem material reviewed | [Google SRE — Postmortem Culture](https://sre.google/sre-book/postmortem-culture/) | Frames root/contributing factors without simplistic blame. |
+| Contributing Factors | RECOMMENDED VIDEO | postmortem material reviewed | Reuse Google postmortem guidance | Same causal-analysis model. |
+| Blameless Postmortems | RECOMMENDED VIDEO | Google postmortem material reviewed | Reuse Google postmortem guidance | Canonical organizational-learning framing. |
+| Corrective Actions | NO VIDEO | — | — | Actions must trace to actual contributing factors and owners. |
+| Learning from Near Misses | RECOMMENDED VIDEO | incident-learning material reviewed | Reuse postmortem culture guidance | Extends learning beyond outages. |
+| Lab: Run a Steward Incident Exercise | NO VIDEO | — | — | Independent detect→triage→mitigate→postmortem evidence. |
+| Hypothesis-driven Reliability Experiments | RECOMMENDED VIDEO | chaos-engineering principles reviewed | [Principles of Chaos Engineering](https://principlesofchaos.org/) | Starts from steady-state hypothesis rather than random breakage. |
+| Controlled Failure Injection | RECOMMENDED VIDEO | chaos material reviewed | Reuse Principles of Chaos | Safety and hypothesis remain primary. |
+| Blast Radius and Safety | RECOMMENDED VIDEO | chaos safety material reviewed | Reuse Principles of Chaos | Explicitly bounds experiments. |
+| Process and Container Failure | NO VIDEO | — | — | Controlled lab injection. |
+| Resource Exhaustion Concepts | RECOMMENDED VIDEO | saturation/cascading material reviewed | Reuse Google cascading-failure resource | Existing production model is sufficient. |
+| Network and Dependency Failure Simulation | NO VIDEO | — | — | Controlled lab injection. |
+| Database Failure Scenarios | NO VIDEO | — | — | Controlled lab injection. |
+| Artifact Repository Failure Scenarios | NO VIDEO | — | — | Controlled Nexus dependency failure. |
+| Recovery Verification | NO VIDEO | — | — | Recovery evidence is the objective. |
+| Chaos Engineering Principles and Safety | RECOMMENDED VIDEO | chaos principles reviewed | Reuse Principles of Chaos Engineering | Avoids tool-first chaos engineering. |
+| Lab: Run a Steward Reliability Experiment | NO VIDEO | — | — | Independent hypothesis/injection/observation/improvement evidence. |
+
+### Data Protection and Disaster Recovery
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Backups | RECOMMENDED VIDEO | CISA/AWS backup material reviewed | [CISA — Data Backup Options](https://www.cisa.gov/news-events/news/data-backup-options) | Establishes backup copies/media/location as risk controls. |
+| Backup Integrity | NO VIDEO | — | — | Integrity must be verified from actual backup artifacts. |
+| Restore Testing | RECOMMENDED VIDEO | DR material reviewed | [AWS Well-Architected — Disaster Recovery](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/disaster-recovery-dr-objectives.html) | Recovery objectives and strategy diagrams support restore planning. |
+| RPO and RTO | RECOMMENDED VIDEO | DR objective material reviewed | Reuse AWS DR objectives | RPO/RTO are best understood inside recovery strategy. |
+| Disaster Scenarios | NO VIDEO | — | — | Learner selects credible Steward failure scenarios. |
+| Recovery Procedures | NO VIDEO | — | — | Procedures must be executable against the real system. |
+| Database Recovery | RECOMMENDED VIDEO | PostgreSQL recovery material reviewed | Reuse PostgreSQL Backup and Restore | Canonical DB recovery reference. |
+| Artifact Repository Backup and Restore | NO VIDEO | — | — | Must prove Nexus recovery directly. |
+| Configuration and Infrastructure Recovery | NO VIDEO | — | — | Existing Git/IaC/configuration assets must reconstruct the environment. |
+| Recovery Evidence | NO VIDEO | — | — | Evidence is the lesson. |
+| Lab: Run a Steward Restore Drill | NO VIDEO | — | — | Independent destructive/recovery verification. |
+
+### Reliability Engineer Milestone
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Milestone: Steward Reliability Program | NO VIDEO | — | — | Defines the independent reliability synthesis. |
+| Assemble the Reliability Evidence Baseline | NO VIDEO | — | — | Cross-module evidence audit. |
+| Operate Steward Through a Reliability Review Scenario | NO VIDEO | — | — | Live operational scenario is the assessment. |
+| Publish the Steward Reliability Review | NO VIDEO | — | — | Professional reliability artifact. |
+| Defend the Reliability Posture | NO VIDEO | — | — | Final SLO, telemetry, resilience, incident and recovery defense. |
