@@ -1,3 +1,4 @@
+import type { LearningResource } from "../activities";
 import type { Lesson } from "./lesson";
 
 const OWASP_AUTH = "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html";
@@ -5,6 +6,8 @@ const OWASP_PASSWORD = "https://cheatsheetseries.owasp.org/cheatsheets/Password_
 const OWASP_JWT = "https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html";
 const DRF_AUTH = "https://www.django-rest-framework.org/api-guide/authentication/";
 const DRF_PERMISSIONS = "https://www.django-rest-framework.org/api-guide/permissions/";
+
+const passwordStorageVideo: LearningResource = { title: "Computerphile — How NOT to Store Passwords!", url: "https://www.youtube.com/watch?v=8ZtInClXe1Q", kind: "video", recommended: true, read: "Whole video", purpose: "Visually demonstrates the progression from plaintext to hashing and salting. OWASP remains authoritative for current password-storage choices." };
 
 function richLesson(
     id: string,
@@ -14,7 +17,7 @@ function richLesson(
     sections: { id: string; title: string; paragraphs: string[]; code?: { language: string; code: string; caption?: string } }[],
     practice: { objective: string; scenario: string; instructions: string[]; deliverables: string[]; completionCriteria: string[] },
     questions: string[],
-    resources: { title: string; url: string }[],
+    resources: LearningResource[],
 ): Lesson {
     return {
         id,
