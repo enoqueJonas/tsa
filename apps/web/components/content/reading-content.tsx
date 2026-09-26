@@ -10,29 +10,45 @@ interface ReadingContentProps {
   blocks?: LessonBlock[];
 }
 
+function resourceLabel(resource: LearningResource) {
+  if (resource.kind === "video") return "Watch";
+  if (resource.kind === "course") return "Study";
+  if (resource.kind === "documentation") return "Docs";
+  if (resource.kind === "reference") return "Reference";
+  return "Read";
+}
+
 function Resources({ resources, title = "Resources" }: { resources: LearningResource[]; title?: string }) {
   return (
     <section className="my-10 rounded-xl border border-zinc-200 bg-zinc-50 p-6">
       <h3 className="text-lg font-bold text-zinc-950">{title}</h3>
-      <ul className="mt-4 space-y-3">
+      <ul className="mt-4 space-y-4">
         {resources.map((resource) => (
-          <li key={resource.url}>
+          <li key={resource.url} className="rounded-lg border border-zinc-200 bg-white p-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full bg-zinc-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-zinc-600">
+                {resourceLabel(resource)}
+              </span>
+              {resource.recommended ? (
+                <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-blue-700">
+                  Recommended
+                </span>
+              ) : null}
+            </div>
             <a
               href={resource.url}
               target="_blank"
               rel="noreferrer"
-              className="font-medium text-blue-700 underline underline-offset-4 hover:text-blue-900"
+              className="mt-3 block font-medium text-blue-700 underline underline-offset-4 hover:text-blue-900"
             >
               {resource.title} ↗
             </a>
             {resource.read ? (
-              <p className="mt-1 text-sm leading-6 text-zinc-700">
-                <span className="font-semibold text-zinc-900">Read:</span> {resource.read}
+              <p className="mt-2 text-sm leading-6 text-zinc-700">
+                <span className="font-semibold text-zinc-900">{resource.kind === "video" ? "Watch:" : "Focus:"}</span> {resource.read}
               </p>
             ) : null}
-            {resource.purpose ? (
-              <p className="mt-1 text-sm leading-6 text-zinc-600">{resource.purpose}</p>
-            ) : null}
+            {resource.purpose ? <p className="mt-1 text-sm leading-6 text-zinc-600">{resource.purpose}</p> : null}
           </li>
         ))}
       </ul>
