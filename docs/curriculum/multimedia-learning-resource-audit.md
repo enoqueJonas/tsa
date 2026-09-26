@@ -1289,3 +1289,860 @@ Professional Engineer is intentionally a **transfer-and-defence capstone**, not 
 | Defence — Propose Future Evolution | NO VIDEO | — | — | Use current evidence to propose next changes. |
 | Defence — Reflect on the TSA Journey | NO VIDEO | — | — | Final transfer reflection. |
 | Defence — Milestone: Professional Engineering Capstone and Defence | NO VIDEO | — | — | Final transfer assessment; no new instructional media. |
+
+
+## Delivery Engineer — complete school multimedia audit
+
+This pass audits the live deep-authored Delivery Engineer runtime paths, including the later production-schema and migration exercises that extend the older high-level journey summary. Media is promoted only when it adds a useful visual or operational model; documentation and learner-run delivery evidence remain primary.
+
+### Software Delivery Foundations and Automation
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| The Source-to-Production Lifecycle | RECOMMENDED VIDEO | CI/CD lifecycle explainers reviewed | [GitLab — What is CI/CD?](https://www.youtube.com/watch?v=scEDHsr3APg) — use as the lifecycle primer | Gives a compact visual path from change through automated integration and delivery before TSA separates each control boundary in depth. |
+| Git Workflows | OPTIONAL VIDEO | Branching/workflow explainers reviewed | No candidate promoted | The lesson is a policy/trade-off exercise; repository practice and review evidence matter more than a branching animation. |
+| Pull Requests and Reviews | NO VIDEO | — | — | Review quality is learned by reviewing real Steward changes and evidence. |
+| Semantic Versioning | OPTIONAL VIDEO | SemVer explainers reviewed | No candidate promoted | The specification is short and authoritative; applying version decisions to Steward is higher value. |
+| Conventional Commits | NO VIDEO | — | — | The convention plus real repository history is sufficient. |
+| Release Notes and Changelogs | NO VIDEO | — | — | This is release communication practice. |
+| Build Artifacts | RECOMMENDED VIDEO | Build/release artifact material reviewed | Reuse the CI/CD lifecycle primer; no separate artifact video promoted | The key TSA behavior is immutable source-to-artifact traceability, which is proved in later CI/release labs. |
+| Environment Promotion | RECOMMENDED VIDEO | Promotion/pipeline material reviewed | Reuse [GitLab — What is CI/CD?](https://www.youtube.com/watch?v=scEDHsr3APg) for pipeline context | The visual pipeline helps establish promotion; TSA then requires the same immutable candidate across environments. |
+| Shell Scripting for Engineers | OPTIONAL VIDEO | Bash scripting tutorials reviewed | No candidate promoted | The GNU Bash manual plus learner-authored scripts avoid duplicating earlier shell foundations. |
+| Pipes, Exit Codes and Failure | RECOMMENDED VIDEO | Shell pipeline/failure material reviewed | No candidate promoted | Worth visual reinforcement, but no candidate met the focused operational standard. |
+| Environment Variables | NO VIDEO | — | — | Direct process/configuration experiments are primary. |
+| Repeatable Automation Scripts | NO VIDEO | — | — | Repetition, preconditions and rerun behavior must be demonstrated in the learner's scripts. |
+| Make and Task Automation | OPTIONAL VIDEO | Make/task-runner tutorials reviewed | No candidate promoted | The lesson needs a small discoverable interface, not a broad Make course. |
+| Idempotency Concepts | RECOMMENDED VIDEO | Desired-state/idempotence material reviewed | Reuse [Packet Pushers — Ansible Desired State Configuration & Idempotency Explained](https://packetpushers.net/blog/ansible-desired-state-configuration-idempotency-explained-video/) for the convergence mental model | Reinforces the same property across scripts and delivery automation without duplicating instruction. |
+| Lab: Automate Steward Developer and Operator Tasks | NO VIDEO | — | — | Independent automation evidence. |
+
+### Containers and Docker
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Containers versus Virtual Machines | RECOMMENDED VIDEO | Container/VM architecture explainers reviewed | [IBM Technology — Containers vs VMs: What's the difference?](https://www.youtube.com/watch?v=cjXI-yxqGTI) | Strong visual comparison of isolation boundaries before the learner works with Linux container primitives. |
+| Namespaces and cgroups Concepts | RECOMMENDED VIDEO | Linux container primitive explainers reviewed | [Docker — How Containers Work](https://www.youtube.com/watch?v=-YnMr1lj4Z8) — focus on namespaces/cgroups isolation concepts | Connects the Docker abstraction to Linux isolation/resource primitives instead of presenting containers as magic. |
+| Docker Architecture | RECOMMENDED VIDEO | Docker architecture material reviewed | [Docker — Docker 101 Tutorial](https://www.youtube.com/watch?v=gAGEar5HQoU) — use the architecture/image/container portions | Establishes the client/daemon/image/container model before operational work. |
+| Images and Layers | RECOMMENDED VIDEO | Docker image/layer material reviewed | Reuse Docker 101; inspect image history/layers during the TSA lab | Avoids redundant media while the learner proves caching and immutable image identity directly. |
+| Writing Dockerfiles | RECOMMENDED VIDEO | Dockerfile tutorials reviewed | Reuse [Docker — Docker 101 Tutorial](https://www.youtube.com/watch?v=gAGEar5HQoU) for build mechanics | First-party demonstration complements the Dockerfile reference; TSA owns production-oriented decisions. |
+| Build Context | OPTIONAL VIDEO | Build-context explanations reviewed | No separate candidate promoted | A .dockerignore/build-context experiment is clearer than another video. |
+| Multi-stage Builds | RECOMMENDED VIDEO | Multi-stage build material reviewed | [Docker — Multi-stage Builds](https://www.youtube.com/watch?v=zpkqNPwEzac) | The build-stage/runtime-stage boundary is easier to understand visually before optimizing Steward. |
+| Volumes | RECOMMENDED VIDEO | Docker storage demonstrations reviewed | Reuse Docker 101 for volume mechanics; prove persistence through container destruction | The destructive/recreate lab supplies the important evidence. |
+| Container Networking | RECOMMENDED VIDEO | Docker networking material reviewed | [NetworkChuck — Docker Networking](https://www.youtube.com/watch?v=bKFMS5C4CG0) — use for bridge/port/container communication visualization | Makes the virtual network boundary visible while relying on Platform Builder networking knowledge. |
+| Docker Compose | RECOMMENDED VIDEO | Compose demonstrations reviewed | [Docker — Docker Compose](https://www.youtube.com/watch?v=HG6yIjZapSA) — use as the multi-service declaration primer | Visualizes services/networks/volumes as one application model before Steward+PostgreSQL implementation. |
+| Health Checks | OPTIONAL VIDEO | Container health-check material reviewed | No candidate promoted | Learner must define and falsify a meaningful health claim. |
+| Container Registries | RECOMMENDED VIDEO | Registry workflow material reviewed | Reuse Docker 101 for push/pull context; deeper repository management follows in Artifact & Supply Chain | Prevents duplicating the later repository-manager module. |
+| Image Tags and Versioning | RECOMMENDED VIDEO | Tag/digest material reviewed | No candidate promoted | Direct tag-versus-digest inspection against the learner's built image is stronger evidence. |
+| Image Optimization | OPTIONAL VIDEO | Image optimization material reviewed | Reuse multi-stage-build media | Multi-stage construction is the main visual concept; optimization remains evidence-based. |
+| Container Debugging | RECOMMENDED VIDEO | Docker troubleshooting demonstrations reviewed | No candidate promoted | TSA's controlled failure lab deliberately exercises logs, inspect, networking and configuration boundaries. |
+| Lab: Containerize Steward API | NO VIDEO | — | — | Independent build/recreate/failure evidence. |
+
+### Continuous Integration
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| CI Pipeline Architecture | RECOMMENDED VIDEO | Jenkins/GitHub Actions pipeline introductions reviewed | [Jenkins — Pipeline](https://www.jenkins.io/doc/book/pipeline/) plus [Jenkins Pipeline overview video](https://www.youtube.com/watch?v=7KCS70sCoK0) | The pipeline-as-code/stage model is strongly visual and maps to the self-hosted CI work. |
+| Jobs, Stages and Dependencies | RECOMMENDED VIDEO | Pipeline execution-model material reviewed | Reuse Jenkins Pipeline overview | One coherent execution model is preferable to unrelated CI tutorials. |
+| Runners and Agents | RECOMMENDED VIDEO | Jenkins agent architecture material reviewed | [Jenkins — Using Jenkins agents](https://www.youtube.com/watch?v=99DddJiH7lM) | Makes controller/agent execution boundaries concrete before installing the homelab agent. |
+| GitHub Actions and Jenkins | OPTIONAL VIDEO | Platform comparison material reviewed | No candidate promoted | TSA needs capability comparison and an explicit platform choice, not a vendor popularity comparison. |
+| Self-hosted Runners | RECOMMENDED VIDEO | Self-hosted runner/agent setup material reviewed | Reuse Jenkins agent media for execution boundary; setup remains learner-run | Keeps the conceptual and operational model aligned with the academy's Jenkins path. |
+| Caching | OPTIONAL VIDEO | CI cache demonstrations reviewed | No candidate promoted | Cache correctness is better learned by measuring cold/warm pipeline behavior. |
+| Pipeline Artifacts | RECOMMENDED VIDEO | CI artifact material reviewed | Reuse pipeline overview; later Nexus module owns durable artifact management | Avoids conflating temporary CI artifacts with repository-managed release artifacts. |
+| Secrets and Variables | RECOMMENDED VIDEO | Jenkins credential-handling material reviewed | [Jenkins — Using Credentials](https://www.jenkins.io/doc/book/using/using-credentials/) | First-party guidance establishes credential boundaries; secret-management depth remains later curriculum. |
+| Parallelism | OPTIONAL VIDEO | Parallel pipeline material reviewed | No candidate promoted | Learner should parallelize only after identifying independent work and measuring value. |
+| Automated Checks | NO VIDEO | — | — | Existing tests/linters are integrated directly. |
+| Test Stages | NO VIDEO | — | — | Pipeline composition practice. |
+| Quality Gates | NO VIDEO | — | — | Gate policy must be defended from real risk/evidence. |
+| Building Containers in CI | RECOMMENDED VIDEO | Jenkins+Docker build material reviewed | Reuse Jenkins Pipeline + Docker build resources | The value is integrating already-learned primitives into one traceable pipeline. |
+
+### Continuous Delivery and Deployment
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| CI versus Continuous Delivery versus Continuous Deployment | RECOMMENDED VIDEO | CI/CD boundary explainers reviewed | Reuse [GitLab — What is CI/CD?](https://www.youtube.com/watch?v=scEDHsr3APg) | Provides the visual vocabulary; TSA explicitly tests the control boundaries. |
+| Environment Management | NO VIDEO | — | — | Environment contracts are derived from the learner's infrastructure/configuration. |
+| Deployment Automation | RECOMMENDED VIDEO | Deployment pipeline demonstrations reviewed | Reuse Jenkins Pipeline overview | Pipeline mechanics are known; the lesson's value is executable deployment intent and verification. |
+| Release Approvals | OPTIONAL VIDEO | Approval-gate material reviewed | No candidate promoted | Approval is a decision/evidence design problem rather than a UI tutorial. |
+| Database Migrations During Deployment | RECOMMENDED VIDEO | Expand/contract and migration-safety material reviewed | [Martin Fowler — Parallel Change](https://martinfowler.com/bliki/ParallelChange.html) — visual/article resource rather than forcing a weaker video | Backward-compatible expand/migrate/contract thinking is more important than framework-specific migration commands. |
+| Rollback | RECOMMENDED VIDEO | Deployment rollback material reviewed | No candidate promoted | TSA must prove rollback against immutable image identity and persistent-state constraints. |
+| Rolling Deployments | RECOMMENDED VIDEO | Kubernetes deployment strategy explainers reviewed | [Kubernetes — Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) — use rolling-update diagrams | The controller diagrams make incremental replacement and coexistence constraints clear even before later Kubernetes depth. |
+| Blue-Green Deployments | RECOMMENDED VIDEO | Blue/green strategy explainers reviewed | [Martin Fowler — BlueGreenDeployment](https://martinfowler.com/bliki/BlueGreenDeployment.html) | Clear topology/traffic-switch mental model without adding a tool-specific recipe. |
+| Canary Deployment Concepts | RECOMMENDED VIDEO | Canary/progressive delivery material reviewed | [Argo Rollouts — Canary strategy](https://argo-rollouts.readthedocs.io/en/stable/features/canary/) | The staged exposure model directly prepares the later progressive-delivery exercise. |
+| Feature Flag Concepts | OPTIONAL VIDEO | Feature-toggle material reviewed | [Martin Fowler — Feature Toggles](https://martinfowler.com/articles/feature-toggles.html) — use diagrams as supporting visual material | Shows deployment/exposure decoupling and the operational complexity of long-lived flags. |
+| Lab: Automate Steward API Deployment and Rollback | NO VIDEO | — | — | Independent release/rollback evidence. |
+
+### Configuration Management
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Configuration Drift | RECOMMENDED VIDEO | Ansible drift material reviewed | Reuse [Ansible — Managing Configuration and Drift](https://www.youtube.com/watch?v=a5nZbSAfdKg) | This is deliberate reinforcement of Platform Builder: Delivery Engineer now connects declared host state to the delivery platform. |
+| Desired State and Idempotency | RECOMMENDED VIDEO | Desired-state material reviewed | Reuse Packet Pushers idempotency primer | Reinforcement rather than duplicate instruction. |
+| Ansible Fundamentals | OPTIONAL VIDEO | Ansible fundamentals reviewed | Reuse Jeff Geerling Ansible 101 only as needed | Platform Builder already established the operational foundation. |
+| Inventories | NO VIDEO | — | — | Learner models the actual Steward host roles. |
+| Playbooks | OPTIONAL VIDEO | Playbook demonstrations reviewed | Reuse Jeff Geerling Ansible 101 | Existing media is sufficient. |
+| Roles Concepts | OPTIONAL VIDEO | Role demonstrations reviewed | Reuse Jeff Geerling Ansible 101 Episode 6 | Existing media is sufficient. |
+| Lab: Automate Steward Servers with Ansible | NO VIDEO | — | — | Independent convergence/drift/rebuild evidence. |
+
+### Artifact, Dependency and Supply-Chain Foundations
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Why Organizations Use Internal Artifact Repositories | RECOMMENDED VIDEO | Sonatype repository-manager material reviewed | [Sonatype — What is a Repository Manager?](https://www.youtube.com/watch?v=6F5tTzYgKxQ) | Establishes the enterprise repository-manager role before homelab deployment. |
+| Package Registries versus Artifact Repositories | RECOMMENDED VIDEO | Registry/repository-manager comparisons reviewed | Reuse Sonatype repository-manager primer | One conceptual model is sufficient; TSA then compares supported formats and ownership. |
+| Public and Private Dependencies | NO VIDEO | — | — | Dependency classification is applied directly to Steward. |
+| Repository Manager Architecture | RECOMMENDED VIDEO | Nexus architecture/deployment material reviewed | [Sonatype Nexus Repository documentation](https://help.sonatype.com/en/sonatype-nexus-repository.html) with architecture diagrams | First-party architecture is preferable to an installation-only video. |
+| Hosted, Proxy and Group Repositories | RECOMMENDED VIDEO | Nexus repository-type demonstrations reviewed | [Sonatype — Repository Management Basics](https://www.youtube.com/watch?v=6F5tTzYgKxQ) — focus on hosted/proxy/group concepts | These repository types are easiest to understand as a request-flow model before implementation. |
+| Python and PyPI Package Distribution | OPTIONAL VIDEO | Python packaging material reviewed | No candidate promoted | PyPA documentation and actual publish/install evidence are stronger. |
+| npm Package Distribution | OPTIONAL VIDEO | npm publishing material reviewed | No candidate promoted | npm documentation plus real package publication is sufficient. |
+| Container Registries | RECOMMENDED VIDEO | OCI registry workflow reviewed | Reuse Docker registry material | Connects image publication to the same repository platform without duplicating Docker. |
+| Deploying Nexus Repository in the Homelab | OPTIONAL VIDEO | Nexus installation walkthroughs reviewed | No candidate promoted | Installation changes over time; first-party docs plus the academy topology are safer. |
+| Repository Authentication and Permissions | RECOMMENDED VIDEO | Nexus security/RBAC material reviewed | [Sonatype Nexus Repository documentation](https://help.sonatype.com/en/roles.html) | First-party role/privilege model directly supports least-privilege repository operation. |
+| Publishing Internal Python Packages | NO VIDEO | — | — | Learner must build/publish a real internal package. |
+| Consuming Internal Packages with pip | NO VIDEO | — | — | Direct client configuration and resolution evidence. |
+| Publishing Internal npm Packages | NO VIDEO | — | — | Direct publication evidence. |
+| Consuming Internal Packages with npm and pnpm | NO VIDEO | — | — | Direct client-resolution evidence. |
+| Publishing Steward Container Images Internally | NO VIDEO | — | — | Direct CI-to-registry evidence. |
+| Proxying and Caching Public Dependencies | RECOMMENDED VIDEO | Nexus proxy-repository material reviewed | Reuse Sonatype repository-manager primer | The request/cache flow is the important visual model. |
+| Internal Package Versioning | NO VIDEO | — | — | Apply SemVer/release policy to actual internal packages. |
+| Prerelease, Snapshot and Release Concepts | OPTIONAL VIDEO | Repository version-state material reviewed | No candidate promoted | The learner should reason from package/repository policy and immutable release identity. |
+| Artifact Retention and Cleanup | OPTIONAL VIDEO | Repository cleanup-policy material reviewed | No candidate promoted | Policy is driven by recovery/audit/storage constraints. |
+| Dependency Provenance | RECOMMENDED VIDEO | SLSA provenance material reviewed | [SLSA — Provenance](https://slsa.dev/spec/v1.0/provenance) — use provenance model/diagrams | Gives a precise source→build→artifact attestation model. |
+| SBOM Fundamentals | RECOMMENDED VIDEO | CISA/CycloneDX SBOM material reviewed | [CycloneDX — SBOM](https://cyclonedx.org/capabilities/sbom/) — use component/dependency model diagrams | Establishes the software-component inventory model before generating Steward evidence. |
+| Signing and Provenance Concepts | RECOMMENDED VIDEO | Sigstore/SLSA signing material reviewed | [Sigstore — How it works](https://www.sigstore.dev/how-it-works/) | Visualizes identity, signing and transparency-log concepts without requiring premature deep PKI work. |
+| Dependency, Package and Image Scanning | RECOMMENDED VIDEO | Trivy/scanning material reviewed | [Aqua Security — Trivy documentation](https://trivy.dev/latest/) | One tool can demonstrate filesystem/package/image findings while TSA keeps scanning as evidence, not a security guarantee. |
+| Lab: Build the Steward Internal Artifact Repository | NO VIDEO | — | — | Independent repository-platform build evidence. |
+| Lab: Publish and Consume steward-common through CI | NO VIDEO | — | — | Independent source→package→repository→consumer traceability evidence. |
+
+### Release Engineering and Production Evolution
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Release Candidates | RECOMMENDED VIDEO | Release-engineering material reviewed | [Google SRE Book — Release Engineering](https://sre.google/sre-book/release-engineering/) — use the release philosophy/process diagrams as supporting visual material | Authoritative operational framing for reproducible, automated releases. |
+| Promotion and Gates | RECOMMENDED VIDEO | Promotion/gating material reviewed | Reuse Google SRE Release Engineering plus the CI pipeline model | Connects immutable candidate identity to explicit promotion decisions. |
+| Deployment Evidence | NO VIDEO | — | — | Evidence must come from the actual deployed Steward release. |
+| Release Observability | OPTIONAL VIDEO | Release telemetry material reviewed | No candidate promoted | Reliability Engineer later owns the observability stack; here only enough evidence for a release decision is required. |
+| Release Failure Handling | RECOMMENDED VIDEO | Rollback/failure material reviewed | No candidate promoted | The controlled failed release and recovery exercise is intentionally primary. |
+| Release Runbooks | NO VIDEO | — | — | Runbook quality is proved by another engineer being able to execute it. |
+| Release Engineering Lab and Review | NO VIDEO | — | — | Synthesis, failure and review evidence. |
+| Production Database Schema Evolution | RECOMMENDED VIDEO | Parallel-change/expand-contract material reviewed | Reuse [Martin Fowler — Parallel Change](https://martinfowler.com/bliki/ParallelChange.html) | Directly supports expand/backfill/switch/contract and old/new coexistence reasoning. |
+| Delivery Platform Migration Exercise | NO VIDEO | — | — | Migration is a bounded comparative exercise using real CI evidence. |
+| Progressive Delivery with Canary Releases | RECOMMENDED VIDEO | Argo Rollouts canary material reviewed | [Argo Rollouts — Canary](https://argo-rollouts.readthedocs.io/en/stable/features/canary/) plus rollout diagrams | The staged traffic and automated-analysis control loop is highly visual; implementation remains learner-owned. |
+
+### Delivery Engineer Milestone
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Milestone Brief: Steward Delivery Platform | NO VIDEO | — | — | Defines the independent synthesis target. |
+| Gate 1: Source, CI and Artifact Integrity | NO VIDEO | — | — | Must be proven from source, pipeline and immutable artifact evidence. |
+| Gate 2: Reproducible Delivery Infrastructure | NO VIDEO | — | — | Must be demonstrated from a reproducible host/repository build. |
+| Gate 3: Promotion and Deployment | NO VIDEO | — | — | Same-candidate promotion is assessed directly. |
+| Gate 4: Runtime Verification | NO VIDEO | — | — | Requires observed behavior from the deployed release. |
+| Gate 5: Failure, Rollback and Recovery | NO VIDEO | — | — | Controlled failure evidence is the assessment. |
+| Gate 6: Delivery Platform Handoff | NO VIDEO | — | — | Engineering handoff is the artifact. |
+| Milestone Review and Exit Criteria | NO VIDEO | — | — | Final capability assessment. |
+
+
+## Cloud Engineer — complete school multimedia audit
+
+This audit follows the live Cloud Engineer deep paths rather than the older six-module summary. It therefore includes certificate lifecycle operations, S3-compatible object storage, Kubernetes/OpenShift orchestration, Argo CD GitOps and progressive delivery in addition to hosting, VPS, internet networking, cloud building blocks, IaC and architecture/cost.
+
+### Cloud and Hosting Models
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| On-premises, Colocation, VPS and Cloud | RECOMMENDED VIDEO | Cloud hosting-model explainers reviewed | [IBM Technology — Cloud Computing Explained](https://www.youtube.com/watch?v=M988_fsOSWo) — use for the cloud/service consumption mental model | Gives a visual baseline for what changes when infrastructure ownership moves away from the learner's homelab. |
+| IaaS, PaaS and SaaS | RECOMMENDED VIDEO | Service-model explainers reviewed | [IBM Technology — IaaS, PaaS, SaaS](https://www.youtube.com/watch?v=36zducUX16w) | Clearly visualizes the changing responsibility boundary across service models. |
+| Regions, Zones and Availability Concepts | RECOMMENDED VIDEO | AWS/Azure region/AZ material reviewed | [AWS — Global Infrastructure](https://aws.amazon.com/about-aws/global-infrastructure/) — use the region/AZ diagrams | Provider diagrams are better than a generic cloud video for physical/logical failure-domain concepts. |
+| Shared Responsibility | RECOMMENDED VIDEO | AWS shared-responsibility material reviewed | [AWS — Shared Responsibility Model](https://aws.amazon.com/compliance/shared-responsibility-model/) — use the responsibility diagrams | The responsibility split is the core lesson and is explicitly visualized by the provider. |
+| Elasticity and Consumption Models | OPTIONAL VIDEO | Elasticity/cloud economics material reviewed | Reuse IBM cloud-computing primer | The learner's comparison exercise supplies the important cost/capacity context. |
+| Cloud Cost Awareness | RECOMMENDED VIDEO | FinOps introductions reviewed | [FinOps Foundation — What is FinOps?](https://www.finops.org/introduction/what-is-finops/) | Establishes cloud cost as an engineering/operating concern rather than only a finance concern. |
+| Lab: Compare Homelab, VPS and Managed Cloud Hosting | NO VIDEO | — | — | The learner must defend a hosting decision against actual constraints. |
+
+### VPS Operations
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Choosing a Budget VPS | NO VIDEO | — | — | Provider/pricing choice is time-sensitive and must use current requirements and prices. |
+| Provisioning a Server | OPTIONAL VIDEO | VPS provisioning walkthroughs reviewed | No candidate promoted | Provider UIs change; current provider documentation plus learner evidence is safer. |
+| Public IP Addressing | RECOMMENDED VIDEO | Public/private addressing material reviewed | Reuse Platform Builder networking foundations; no new broad video promoted | Cloud Engineer applies an already-learned network model to a public host. |
+| Securing SSH Access | RECOMMENDED VIDEO | OpenSSH hardening material reviewed | [Red Hat — OpenSSH](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/securing_networks/using-secure-communications-between-two-systems-with-openssh_securing-networks) | First-party operational guidance is preferable to copying an SSH-hardening recipe from video. |
+| Provider Firewalls and Security Controls | RECOMMENDED VIDEO | Cloud firewall/security-group material reviewed | [AWS — Security groups](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html) — use rule/traffic diagrams as a provider example | Shows the external/provider firewall boundary; TSA then maps the same concept to the chosen VPS. |
+| OS Lifecycle and Patching | OPTIONAL VIDEO | Linux patching material reviewed | Reuse Platform Builder OS lifecycle resources | Reinforcement, not duplicate teaching. |
+| Remote Recovery Concepts | RECOMMENDED VIDEO | VPS rescue/console material reviewed | No candidate promoted | Recovery mechanisms vary by provider; the learner must document the chosen provider's actual console/rescue path. |
+| Backups and Snapshots | RECOMMENDED VIDEO | VPS snapshot/backup material reviewed | No candidate promoted | Provider semantics vary; direct restore evidence matters more than a generic snapshot demo. |
+| Lab: Provision the Steward VPS | NO VIDEO | — | — | Independent host, deploy, recovery and handoff evidence. |
+
+### Internet Networking, DNS and TLS
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Public and Private Addressing | RECOMMENDED VIDEO | Internet addressing material reviewed | Reuse prior networking media | The new learning objective is exposure/ownership, not relearning IP addressing. |
+| Internet Routing Concepts | RECOMMENDED VIDEO | Internet routing/BGP explainers reviewed | [Cloudflare — What is BGP?](https://www.cloudflare.com/learning/security/glossary/what-is-bgp/) — use routing diagrams | Gives enough global-routing context without turning Cloud Engineer into a BGP course. |
+| Domains and DNS Records | RECOMMENDED VIDEO | DNS record material reviewed | [Cloudflare — DNS record types](https://www.cloudflare.com/learning/dns/dns-records/) | Visual/reference treatment of A/AAAA/CNAME/MX/TXT and record purpose supports the public DNS lab. |
+| DNS Resolution and Troubleshooting | RECOMMENDED VIDEO | DNS resolution material reviewed | [Cloudflare — What is DNS?](https://www.cloudflare.com/learning/dns/what-is-dns/) — use recursive-resolution diagram | The request path from resolver to authoritative answer is useful before deliberate DNS break/fix. |
+| TLS Certificates and Certificate Authorities | RECOMMENDED VIDEO | TLS/CA material reviewed | [Let's Encrypt — How It Works](https://letsencrypt.org/how-it-works/) | Directly connects ACME, domain control and certificate issuance to the learner's public service. |
+| HTTPS and TLS Termination | RECOMMENDED VIDEO | TLS handshake/termination material reviewed | [Cloudflare — What happens in a TLS handshake?](https://www.cloudflare.com/learning/ssl/what-happens-in-a-tls-handshake/) | Visual handshake sequence clarifies what the reverse proxy terminates and what the client validates. |
+| Reverse Proxies | RECOMMENDED VIDEO | NGINX reverse-proxy material reviewed | [NGINX — Reverse Proxy](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) — use request-flow configuration examples | First-party material maps directly to the gateway role without replacing the learner's configuration. |
+| Ingress Concepts | OPTIONAL VIDEO | Ingress/gateway material reviewed | No candidate promoted | Full Kubernetes ingress arrives later in this school; here the conceptual boundary is enough. |
+| Internet-facing Firewalls | RECOMMENDED VIDEO | Cloud firewall material reviewed | Reuse provider security-group diagrams | Avoids redundant firewall instruction. |
+| Exposure, Attack Surface and Administrative Boundaries | NO VIDEO | — | — | This is an architecture/security-boundary decision against the learner's topology. |
+| Lab: Publish Steward API with DNS and TLS | NO VIDEO | — | — | Independent public request-path and break/fix evidence. |
+
+### Cloud Building Blocks
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Compute | RECOMMENDED VIDEO | Cloud compute material reviewed | [AWS — What is Amazon EC2?](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html) — use architecture diagrams as one concrete provider mapping | Connects generic compute to a real IaaS implementation without making AWS the curriculum itself. |
+| Object Storage | RECOMMENDED VIDEO | Object-storage explainers reviewed | [IBM Technology — Object Storage](https://www.youtube.com/watch?v=eV7T3t2d-7E) | Object/key/bucket semantics differ enough from files/block storage to benefit from visualization. |
+| Block Storage | RECOMMENDED VIDEO | Block/file/object comparisons reviewed | [IBM Technology — Block vs File vs Object Storage](https://www.youtube.com/watch?v=5EqAXnNm0FE) | Visual comparison establishes the workload/storage fit before provider mapping. |
+| Managed Databases | RECOMMENDED VIDEO | Managed DB/shared-responsibility material reviewed | No candidate promoted | The important lesson is the shifted operational boundary, already covered by shared responsibility. |
+| Virtual Networks and Subnets | RECOMMENDED VIDEO | VPC/VNet material reviewed | [AWS — What is Amazon VPC?](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html) — use VPC/subnet diagrams | Maps Platform Builder networking concepts into a provider virtual-network boundary. |
+| Routing and Gateways | RECOMMENDED VIDEO | VPC routing material reviewed | Reuse AWS VPC diagrams | Keeps one coherent provider example. |
+| Load Balancers | RECOMMENDED VIDEO | Load-balancing explainers reviewed | [IBM Technology — Load Balancers](https://www.youtube.com/watch?v=sCR3SAVdyCc) | Request-distribution and health-routing behavior are strongly visual. |
+| IAM | RECOMMENDED VIDEO | Cloud IAM explainers reviewed | [Google Cloud — IAM overview](https://cloud.google.com/iam/docs/overview) — use principal/role/resource model diagrams | Makes authorization attachment and least privilege concrete without tying the concept to local OS users. |
+| Secrets Management | RECOMMENDED VIDEO | Cloud secret-manager material reviewed | [Google Cloud — Secret Manager overview](https://cloud.google.com/secret-manager/docs/overview) | Establishes a managed secret lifecycle boundary; Security Steward later goes deeper. |
+| Cloud Monitoring | OPTIONAL VIDEO | Provider monitoring material reviewed | No candidate promoted | Reliability Engineer owns deep telemetry; here the learner only maps the managed capability. |
+| Cloud Backup Services | OPTIONAL VIDEO | Provider backup material reviewed | No candidate promoted | Recovery semantics must be evaluated against the chosen data/service. |
+| Managed Services versus Self-managed Infrastructure | NO VIDEO | — | — | Trade-off decision based on responsibility, cost and operational capability. |
+| Lab: Map Steward Platform to Cloud Building Blocks | NO VIDEO | — | — | Architecture mapping exercise. |
+
+### Infrastructure as Code — OpenTofu/Terraform Concepts
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Why Infrastructure as Code | RECOMMENDED VIDEO | HashiCorp IaC introductions reviewed | [HashiCorp — What is Infrastructure as Code?](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/infrastructure-as-code) | Establishes versioned/declarative infrastructure as the control model before syntax. |
+| Declarative Infrastructure | RECOMMENDED VIDEO | Terraform/OpenTofu workflow material reviewed | Reuse HashiCorp IaC primer | One conceptual source is enough; TSA proves convergence/drift operationally. |
+| Terraform and OpenTofu Fundamentals | RECOMMENDED VIDEO | OpenTofu/Terraform introductions reviewed | [OpenTofu — Documentation](https://opentofu.org/docs/) plus getting-started flow | Uses the academy's open implementation while retaining transferable Terraform concepts. |
+| Providers and Resources | RECOMMENDED VIDEO | Provider/resource model reviewed | [OpenTofu — Providers](https://opentofu.org/docs/language/providers/) | First-party model directly supports implementation. |
+| State | RECOMMENDED VIDEO | Terraform/OpenTofu state material reviewed | [OpenTofu — State](https://opentofu.org/docs/language/state/) | State is a critical non-obvious operational boundary and deserves explicit reinforcement. |
+| Variables and Outputs | OPTIONAL VIDEO | IaC variable/output tutorials reviewed | No candidate promoted | Straightforward to learn by implementing the Steward stack. |
+| Dependencies | OPTIONAL VIDEO | Resource graph material reviewed | No candidate promoted | The learner can inspect implicit/explicit dependencies directly. |
+| Modules Concepts | RECOMMENDED VIDEO | Terraform module material reviewed | [HashiCorp — Modules overview](https://developer.hashicorp.com/terraform/language/modules) | Visual/file-structure model helps establish reusable infrastructure boundaries. |
+| Plan and Apply Lifecycle | RECOMMENDED VIDEO | OpenTofu workflow material reviewed | [OpenTofu — CLI workflow](https://opentofu.org/docs/cli/) | Plan-before-apply is central to the school and must be observed directly. |
+| Drift | RECOMMENDED VIDEO | IaC drift material reviewed | No separate candidate promoted | The learner deliberately introduces drift and reconciles it; direct plan evidence is stronger. |
+| Remote State Concepts | RECOMMENDED VIDEO | Remote-state material reviewed | [OpenTofu — Remote state data](https://opentofu.org/docs/language/state/remote-state-data/) | Clarifies collaboration/state-sharing boundaries before later team-scale infrastructure. |
+| Secrets and Sensitive Values | RECOMMENDED VIDEO | IaC secret/state material reviewed | No candidate promoted | The lab should expose the danger by inspecting state/plan behavior rather than hiding it behind a tutorial. |
+| Destroy and Resource Lifecycle | RECOMMENDED VIDEO | Resource lifecycle material reviewed | [OpenTofu — Resource lifecycle](https://opentofu.org/docs/language/meta-arguments/lifecycle/) | First-party semantics support safe teardown/replacement reasoning. |
+| Lab: Define Steward Infrastructure as Code | NO VIDEO | — | — | Independent plan/apply/drift/state/teardown evidence. |
+
+### Cloud Architecture and Cost
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Availability in Cloud Environments | RECOMMENDED VIDEO | Well-Architected reliability material reviewed | [AWS Well-Architected — Reliability Pillar](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html) | Frames availability around failure/recovery rather than simply adding instances. |
+| Scalability and Capacity | RECOMMENDED VIDEO | Scaling material reviewed | [IBM Technology — Horizontal vs Vertical Scaling](https://www.youtube.com/watch?v=xpDnVSmNFX0) | The scale-up/scale-out distinction is visual and prepares later architecture work. |
+| Security Boundaries | NO VIDEO | — | — | Must be drawn from the actual Steward trust/exposure model. |
+| Backup and Recovery | RECOMMENDED VIDEO | Cloud recovery material reviewed | No candidate promoted | Recovery must be proven with the learner's real data and infrastructure. |
+| Failure Domains | RECOMMENDED VIDEO | Region/AZ failure-domain material reviewed | Reuse AWS global-infrastructure diagrams | Direct continuation of regions/zones learning. |
+| Cost Estimation | RECOMMENDED VIDEO | FinOps cost material reviewed | Reuse FinOps Foundation introduction | The lab must use current provider pricing rather than static video numbers. |
+| Cost Controls and Budgets | RECOMMENDED VIDEO | FinOps framework material reviewed | [FinOps Foundation — FinOps Framework](https://www.finops.org/framework/) | Connects engineering decisions to allocation, optimization and governance. |
+| Resource Right-sizing | OPTIONAL VIDEO | Right-sizing material reviewed | No candidate promoted | Learner should justify sizing from observed workload assumptions/evidence. |
+| Managed vs Self-managed Trade-offs | NO VIDEO | — | — | Architecture decision. |
+| Homelab, VPS and Cloud Hybrid Trade-offs | NO VIDEO | — | — | Architecture decision grounded in the learner's actual environments. |
+| Lab: Review the Steward Internet Architecture | NO VIDEO | — | — | Independent architecture/cost/recovery review. |
+
+### Certificate Lifecycle Operations
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Certificate Lifecycle Operations | RECOMMENDED VIDEO | ACME/certificate lifecycle material reviewed | Reuse [Let's Encrypt — How It Works](https://letsencrypt.org/how-it-works/) | The issuance/renewal automation loop is the central mental model. |
+| Certificates Are Expiring Operational State | NO VIDEO | — | — | Learner inspects actual validity periods and renewal state. |
+| Inspect Steward's TLS Identity and Trust Chain | RECOMMENDED VIDEO | OpenSSL certificate inspection material reviewed | No candidate promoted | Direct openssl/browser inspection of the learner's certificate is stronger. |
+| Automate Renewal and Gateway Reload | RECOMMENDED VIDEO | Certbot renewal material reviewed | [Certbot — Instructions](https://certbot.eff.org/instructions) | Current first-party workflow is preferable to an aging walkthrough. |
+| Monitor Expiry and Renewal Health | NO VIDEO | — | — | Operational evidence is the objective. |
+| Break and Recover Certificate Renewal | NO VIDEO | — | — | Controlled failure exercise. |
+| Defend the Certificate Lifecycle | NO VIDEO | — | — | Architecture/operations defense. |
+
+### S3-Compatible Object Storage
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| S3-Compatible Object Storage for Steward | RECOMMENDED VIDEO | S3/object-storage material reviewed | Reuse IBM object-storage explainer plus [Amazon S3 concepts](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) | Combines the storage mental model with the API/bucket/object vocabulary used by S3-compatible systems. |
+| From Object-storage Design to Operation | NO VIDEO | — | — | Learner converts the prior design into an operational contract. |
+| Deploy and Secure the Object Store | RECOMMENDED VIDEO | MinIO deployment/security material reviewed | [MinIO Documentation](https://min.io/docs/minio/linux/index.html) | Current implementation docs are preferable to version-sensitive installation videos. |
+| Integrate Steward Export Evidence | NO VIDEO | — | — | Real application integration evidence. |
+| Operate Lifecycle, Failure and Recovery | NO VIDEO | — | — | Controlled lifecycle/failure/recovery evidence. |
+| Defend the Storage Architecture | NO VIDEO | — | — | Architecture defense. |
+
+### Kubernetes, OpenShift and GitOps
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Why Container Orchestration | RECOMMENDED VIDEO | Kubernetes introductions reviewed | [IBM Technology — Kubernetes Explained](https://www.youtube.com/watch?v=aSrqRSk43lY) | Visualizes why scheduling/reconciliation/service discovery emerge beyond single-host Compose. |
+| Kubernetes Cluster and Control Plane | RECOMMENDED VIDEO | Kubernetes architecture material reviewed | [Kubernetes — Components](https://kubernetes.io/docs/concepts/overview/components/) — use control-plane/node diagram | Canonical architecture diagram establishes ownership and reconciliation boundaries. |
+| Pods, Deployments and ReplicaSets | RECOMMENDED VIDEO | Kubernetes workload-controller material reviewed | [Kubernetes — Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) | Controller diagrams map desired replicas to rollout behavior. |
+| Services and Cluster Networking | RECOMMENDED VIDEO | Kubernetes networking material reviewed | [Kubernetes — Services](https://kubernetes.io/docs/concepts/services-networking/service/) | Canonical service/endpoint model prepares cross-pod reachability work. |
+| ConfigMaps, Secrets and Runtime Configuration | RECOMMENDED VIDEO | Kubernetes configuration material reviewed | [Kubernetes — ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/) and Secrets docs | First-party resource boundaries prevent treating image configuration as mutable container state. |
+| Probes, Resources and Rollouts | RECOMMENDED VIDEO | Kubernetes probe/resource/rollout material reviewed | [Kubernetes — Configure Liveness, Readiness and Startup Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) | Probes are subtle enough to warrant canonical lifecycle diagrams/examples before failure exercises. |
+| Namespaces, Service Accounts and RBAC | RECOMMENDED VIDEO | Kubernetes RBAC material reviewed | [Kubernetes — RBAC](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) | Canonical subject/role/binding model supports least-privilege cluster operation. |
+| OpenShift as an Enterprise Application Platform | RECOMMENDED VIDEO | Red Hat OpenShift introductions reviewed | [Red Hat — What is OpenShift?](https://www.redhat.com/en/topics/containers/what-is-red-hat-openshift) | Establishes what OpenShift adds around Kubernetes without presenting it as a separate universe. |
+| OpenShift Routes, SCC Concepts and Operators | RECOMMENDED VIDEO | Red Hat route/SCC/operator material reviewed | [OpenShift Documentation](https://docs.redhat.com/en/documentation/openshift_container_platform/) — use architecture/resource diagrams | Versioned first-party docs are safer for platform-specific security and routing behavior. |
+| GitOps and Reconciliation | RECOMMENDED VIDEO | GitOps conceptual material reviewed | [Argo CD — What is Argo CD?](https://argo-cd.readthedocs.io/en/stable/) | Connects Git desired state to continuous reconciliation rather than imperative deployment. |
+| Argo CD Applications, Sync and Drift | RECOMMENDED VIDEO | Argo CD sync/drift material reviewed | [Argo CD — Core Concepts](https://argo-cd.readthedocs.io/en/stable/core_concepts/) | The desired/live-state model directly supports the learner's drift experiment. |
+| Lab: Migrate Steward to OpenShift with Argo CD | NO VIDEO | — | — | Independent migration and authority-transfer evidence. |
+| Orchestration and GitOps Review | NO VIDEO | — | — | Capability review. |
+
+### Progressive Delivery
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| From Rolling Updates to Progressive Delivery | RECOMMENDED VIDEO | Argo Rollouts material reviewed | [Argo Rollouts — Concepts](https://argo-rollouts.readthedocs.io/en/stable/concepts/) | Shows why ordinary rolling replacement and evidence-driven progressive delivery are different controls. |
+| Design Steward's Canary Contract | NO VIDEO | — | — | The learner must define risk, metrics, compatibility and abort criteria. |
+| Implement Argo Rollouts Canary Delivery | RECOMMENDED VIDEO | Argo Rollouts canary material reviewed | [Argo Rollouts — Canary](https://argo-rollouts.readthedocs.io/en/stable/features/canary/) | Staged traffic/replica progression is strongly visual. |
+| Automate Analysis and Abort a Bad Canary | RECOMMENDED VIDEO | Analysis-run material reviewed | [Argo Rollouts — Analysis](https://argo-rollouts.readthedocs.io/en/stable/features/analysis/) | Makes metric-driven promotion/abort control explicit. |
+| Break the Progressive Delivery Control Plane | NO VIDEO | — | — | Failure injection is the lesson. |
+| Reassess Progressive Delivery | NO VIDEO | — | — | Architecture/operational reassessment. |
+
+### Cloud Engineer Milestone
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Milestone Brief: Steward Internet Environment | NO VIDEO | — | — | Defines the independent cloud synthesis target. |
+| Milestone Review and Exit Criteria | NO VIDEO | — | — | The learner must defend public reachability, TLS, IaC, recovery, cost and operational boundaries from evidence. |
+
+
+## Quality Steward — complete school multimedia audit
+
+This audit follows every live Quality Steward deep path, including the browser-surface and performance-tool decision gates, reusable internal test infrastructure, continuous/scheduled execution and the complete Steward Quality Platform milestone.
+
+### Quality Engineering
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Quality vs Testing | RECOMMENDED VIDEO | Modern quality-engineering material reviewed | [Google — Software Engineering at Google: Testing Overview](https://abseil.io/resources/swe-book/html/ch11.html) — use the test-size/scope models as visual support | Establishes testing as one engineering mechanism inside a broader quality system rather than equating quality with test execution. |
+| Quality Risks | RECOMMENDED VIDEO | Risk-based testing material reviewed | [ISTQB CTFL syllabus](https://www.istqb.org/certifications/certified-tester-foundation-level) — use risk-based testing diagrams/tables | Gives a standardized risk vocabulary while TSA applies it to Steward consequences and evidence. |
+| Test Strategy | RECOMMENDED VIDEO | Test strategy material reviewed | [Google Testing Blog](https://testing.googleblog.com/) plus TSA-authored strategy model; no single video promoted | The strategy must emerge from product risk, delivery architecture and evidence needs rather than a generic template. |
+| Test Levels and Test Types | RECOMMENDED VIDEO | Test-level/type explainers reviewed | Reuse ISTQB CTFL visual models | Standard taxonomy is useful once; TSA emphasizes selecting the smallest useful boundary. |
+| Risk-based Testing | RECOMMENDED VIDEO | Risk-based testing material reviewed | Reuse ISTQB CTFL risk material | Direct continuation of the quality-risk model. |
+| Shift-left and Shift-right | RECOMMENDED VIDEO | Shift-left/right material reviewed | [DORA — Capabilities](https://dora.dev/capabilities/) — use continuous testing/delivery context | Connects earlier feedback and production evidence to delivery performance without reducing the concept to a slogan. |
+| Testability | RECOMMENDED VIDEO | Testability material reviewed | No candidate promoted | The learner should identify controllability/observability constraints in Steward itself. |
+| Defect Evidence and Communication | NO VIDEO | — | — | Quality of evidence is learned by producing reproducible defect reports from observed behavior. |
+| Lab: Write the Steward Quality Strategy | NO VIDEO | — | — | Independent strategy/risk/evidence synthesis. |
+
+### Test Analysis and Design
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Requirements Analysis for Testing | NO VIDEO | — | — | Learner must interrogate actual Steward requirements and derive test conditions. |
+| Equivalence Partitioning | RECOMMENDED VIDEO | Formal test-design technique material reviewed | [ISTQB CTFL syllabus](https://www.istqb.org/certifications/certified-tester-foundation-level) — use worked equivalence-partition examples | The partition model is visual and standardized; Steward examples provide transfer. |
+| Boundary Value Analysis | RECOMMENDED VIDEO | Boundary-analysis material reviewed | Reuse ISTQB CTFL worked examples | Closely coupled to equivalence partitions; one authoritative source is enough. |
+| Decision Tables | RECOMMENDED VIDEO | Decision-table testing material reviewed | [ISTQB Glossary — Decision Table Testing](https://glossary.istqb.org/en_US/term/decision-table-testing) plus CTFL examples | Conditions/actions and rule combinations benefit from a tabular visual model. |
+| State Transition Testing | RECOMMENDED VIDEO | State-transition testing material reviewed | Reuse ISTQB CTFL state diagrams | State/event/invalid-transition reasoning is strongly visual. |
+| Pairwise and Combinatorial Concepts | RECOMMENDED VIDEO | Pairwise material reviewed | [Microsoft PICT](https://github.com/microsoft/pict) — use model/output examples | Demonstrates combinatorial reduction concretely while preserving the warning that pairwise is a heuristic. |
+| Exploratory Testing | RECOMMENDED VIDEO | James Bach/DevelopSense exploratory material reviewed | [DevelopSense — Exploratory Testing](https://developsense.com/blog/category/exploratory-testing/) | Practitioner material reinforces chartered learning, observation and adaptation rather than unscripted clicking. |
+| Negative Testing | NO VIDEO | — | — | Learner deliberately derives invalid actions and invariant violations from Steward. |
+| Traceability | NO VIDEO | — | — | Traceability must connect the learner's risks, requirements, tests and evidence. |
+| Lab: Design Risk-based Steward Test Coverage | NO VIDEO | — | — | Independent formal-technique + exploration synthesis. |
+
+### Unit and Component Testing
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Designing Unit Tests | RECOMMENDED VIDEO | Google unit-testing guidance reviewed | [Software Engineering at Google — Unit Testing](https://abseil.io/resources/swe-book/html/ch12.html) — use test structure/behavior examples | Strong engineering treatment of unit-test value and maintainability rather than framework syntax. |
+| Isolation | RECOMMENDED VIDEO | Isolation/test-double material reviewed | Reuse Google unit-testing guidance | Keeps isolation tied to behavior and feedback rather than maximizing mocks. |
+| Test Doubles | RECOMMENDED VIDEO | Test-double taxonomy reviewed | [Martin Fowler — Mocks Aren't Stubs](https://martinfowler.com/articles/mocksArentStubs.html) | Canonical visual/conceptual distinction between state verification and behavior verification. |
+| Mocks, Stubs and Fakes | RECOMMENDED VIDEO | Mock/stub/fake material reviewed | Reuse Fowler test-double material | Avoids redundant taxonomy resources. |
+| Coverage and Its Limitations | RECOMMENDED VIDEO | Coverage guidance reviewed | [Google Testing Blog — Code Coverage Best Practices](https://testing.googleblog.com/2020/08/code-coverage-best-practices.html) | Reinforces coverage as feedback rather than a proxy for correctness. |
+| Component Boundaries | RECOMMENDED VIDEO | Component-test material reviewed | No candidate promoted | Boundary choice is architecture-specific and should be defended against Steward. |
+| Fast Feedback and Maintainability | NO VIDEO | — | — | Learner measures and reviews the actual test portfolio. |
+| Lab: Strengthen Steward Component Tests | NO VIDEO | — | — | Independent implementation evidence. |
+
+### API, Integration and Contract Testing
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| API Test Design | RECOMMENDED VIDEO | Playwright API testing material reviewed | [Playwright Python — API testing](https://playwright.dev/python/docs/api-testing) — use request/context examples | Maps protocol-level automation to the same framework used later without replacing domain-oriented assertions. |
+| Authentication and Authorization Testing | RECOMMENDED VIDEO | OWASP authorization testing material reviewed | [OWASP WSTG — Authorization Testing](https://owasp.org/www-project-web-security-testing-guide/) | Provides systematic negative/role-boundary thinking; Security Steward later deepens attack-oriented testing. |
+| Schema and Contract Validation | RECOMMENDED VIDEO | Contract/schema material reviewed | [Pact — What is Contract Testing?](https://docs.pact.io/) | The consumer/provider contract model is highly visual and distinguishes compatibility from broad integration testing. |
+| Database Assertions | OPTIONAL VIDEO | DB assertion material reviewed | No candidate promoted | Steward's real transaction/persistence boundary is the better teacher. |
+| Integration Boundaries | RECOMMENDED VIDEO | Integration-test boundary material reviewed | No candidate promoted | The learner must name actual Steward boundaries rather than copy a test pyramid mechanically. |
+| Contract Testing Concepts | RECOMMENDED VIDEO | Pact contract-testing material reviewed | Reuse Pact documentation/diagrams | One coherent contract model is sufficient. |
+| Mocking and Service Virtualization | RECOMMENDED VIDEO | Mock/service virtualization material reviewed | Reuse Fowler test-double model plus Pact provider-state concepts | Reinforces controlled simulation without pretending virtualized dependencies prove full integration. |
+| Internal Package Compatibility | NO VIDEO | — | — | Compatibility is tested against the real consumed internal package. |
+| Data Setup and Cleanup | NO VIDEO | — | — | State ownership and deterministic cleanup are implemented directly. |
+| Lab: Test Steward API End-to-End at the Service Layer | NO VIDEO | — | — | Independent API/persistence/auth/contract evidence. |
+
+### Automation Framework Engineering
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| What Makes an Automation Framework | RECOMMENDED VIDEO | Framework-architecture material reviewed | No candidate promoted | TSA's framework requirements and later refactoring provide a stronger architecture exercise than a vendor tutorial. |
+| Framework Architecture | RECOMMENDED VIDEO | pytest/Playwright architecture material reviewed | No candidate promoted | Learner must derive boundaries from Steward's tests and reusable infrastructure. |
+| Playwright with Python | RECOMMENDED VIDEO | Official Playwright material reviewed | [Playwright — Getting Started](https://playwright.dev/python/docs/intro) and [Playwright YouTube](https://www.youtube.com/@Playwrightdev) | First-party material establishes locator, browser/context/page and debugging concepts. |
+| pytest Fundamentals | RECOMMENDED VIDEO | pytest material reviewed | [pytest — Get Started](https://docs.pytest.org/en/stable/getting-started.html) | Current first-party examples are preferable to a long framework course. |
+| Configuration | NO VIDEO | — | — | Framework configuration is designed and versioned directly. |
+| Fixtures | RECOMMENDED VIDEO | pytest fixture material reviewed | [pytest — Fixtures](https://docs.pytest.org/en/stable/how-to/fixtures.html) — use dependency/lifetime examples | Fixture dependency and scope are non-obvious and benefit from canonical diagrams/examples. |
+| Test Data | NO VIDEO | — | — | Data ownership is a framework/domain design exercise. |
+| API Clients | NO VIDEO | — | — | Learner builds a narrow client around the actual Steward contract. |
+| Page Objects and UI Abstractions | RECOMMENDED VIDEO | Playwright page-object material reviewed | [Playwright — Page Object Models](https://playwright.dev/python/docs/pom) | First-party pattern guidance supports abstraction without mandating a page object for every screen. |
+| Helpers and Utilities | NO VIDEO | — | — | Refactoring/reuse decision. |
+| Assertions | RECOMMENDED VIDEO | Playwright/pytest assertion material reviewed | [Playwright — Assertions](https://playwright.dev/python/docs/test-assertions) | Auto-retrying web assertions are materially different from immediate Python assertions. |
+| Markers and Tags | OPTIONAL VIDEO | pytest marker material reviewed | [pytest — Marking test functions](https://docs.pytest.org/en/stable/how-to/mark.html) | Reference examples are sufficient. |
+| Parameterization | RECOMMENDED VIDEO | pytest parameterization material reviewed | [pytest — Parametrize](https://docs.pytest.org/en/stable/how-to/parametrize.html) | Canonical examples show data variation without duplicated tests. |
+| Automation Logging | NO VIDEO | — | — | Logging must be designed around failure diagnosis. |
+| Reports | OPTIONAL VIDEO | pytest/CI reporting material reviewed | No candidate promoted | Pipeline consumption determines the useful report format. |
+| Screenshots, Traces and Video | RECOMMENDED VIDEO | Playwright trace/debug material reviewed | [Playwright — Trace Viewer](https://playwright.dev/python/docs/trace-viewer) | Trace Viewer is inherently visual and provides high diagnostic value. |
+| Parallel Execution | RECOMMENDED VIDEO | pytest-xdist/parallel material reviewed | [pytest-xdist documentation](https://pytest-xdist.readthedocs.io/) | Makes worker distribution explicit; learner must still prove isolation. |
+| Retries and Flaky-test Risk | RECOMMENDED VIDEO | Playwright retry/flakiness material reviewed | [Playwright — Test retries](https://playwright.dev/docs/test-retries) as conceptual support | Reinforces that retries classify/contain instability rather than fixing nondeterminism. |
+| Framework Maintainability | NO VIDEO | — | — | Maintainability is evaluated through change/refactoring evidence. |
+| Reusable Testing Infrastructure vs Domain Test Code | RECOMMENDED VIDEO | Python package/plugin architecture material reviewed | [pytest — Writing plugins](https://docs.pytest.org/en/stable/how-to/writing_plugins.html) | Gives the extension boundary needed for shared infrastructure without leaking Steward domain logic. |
+| Designing Public APIs for Test Libraries | NO VIDEO | — | — | API design is exercised through the actual reusable package. |
+| Reusable pytest Fixtures and Plugins | RECOMMENDED VIDEO | pytest plugin material reviewed | Reuse pytest plugin documentation | Direct continuation of the shared-infrastructure boundary. |
+| Versioning Shared Test Infrastructure | NO VIDEO | — | — | Apply existing SemVer/release-engineering discipline. |
+| Lab: Build the Steward Automation Framework | NO VIDEO | — | — | Independent framework construction evidence. |
+| Lab: Extract tsa-test-core | NO VIDEO | — | — | Refactoring/reuse boundary is the assessment. |
+| Lab: Publish and Consume tsa-test-core | NO VIDEO | — | — | Real package publication/consumption evidence. |
+| Automation Framework Engineering Review | NO VIDEO | — | — | Capability review. |
+
+### Browser and Environment Testing
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Decision Gate: Does Steward Need Browser Testing? | NO VIDEO | — | — | Browser automation must be justified by an actual user-facing browser surface. |
+| Browser Differences | RECOMMENDED VIDEO | Browser engine/cross-browser material reviewed | [Playwright — Browsers](https://playwright.dev/python/docs/browsers) | Maps Chromium/Firefox/WebKit to execution and configuration directly. |
+| Responsive Testing | RECOMMENDED VIDEO | Responsive-design/testing material reviewed | [MDN — Responsive Web Design](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design) | Establishes layout-state concepts before testing behavior at representative viewports. |
+| Cross-browser Testing | RECOMMENDED VIDEO | Cross-browser strategy material reviewed | [BrowserStack — Cross Browser Testing](https://www.browserstack.com/cross-browser-testing) — use browser/device matrix visuals | Makes environment diversity concrete; TSA still requires risk-based selection. |
+| BrowserStack or Equivalent | OPTIONAL VIDEO | BrowserStack platform material reviewed | No separate candidate promoted | Provider UI walkthroughs age quickly; the execution contract matters more. |
+| Local vs Remote Execution | RECOMMENDED VIDEO | Playwright/remote grid material reviewed | No candidate promoted | Learner compares the same claim across actual local and remote environments. |
+| Environment Parity and Configuration Risk | NO VIDEO | — | — | Configuration drift is diagnosed from real environment evidence. |
+| Lab: Run Steward Tests Across Environments | NO VIDEO | — | — | Independent cross-environment evidence. |
+
+### Non-functional Quality
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Decision Gate: Select the Steward Performance Tool | NO VIDEO | — | — | Tool selection must be defended from protocol, workload, scripting and CI requirements. |
+| Performance Testing | RECOMMENDED VIDEO | k6 performance material reviewed | [Grafana k6 — Documentation](https://grafana.com/docs/k6/latest/) and getting-started examples | Current first-party workload/metric model supports the learner's chosen baseline. |
+| Load, Stress, Spike and Endurance | RECOMMENDED VIDEO | Performance-test type material reviewed | [Grafana k6 — Test types](https://grafana.com/docs/k6/latest/testing-guides/test-types/) | The workload-shape diagrams make the distinctions concrete. |
+| Accessibility Fundamentals | RECOMMENDED VIDEO | W3C accessibility material reviewed | [W3C — Introduction to Web Accessibility](https://www.w3.org/WAI/fundamentals/accessibility-intro/) | Authoritative user/barrier model before automated accessibility checks. |
+| Compatibility Testing | RECOMMENDED VIDEO | MDN compatibility material reviewed | [MDN — Browser compatibility data](https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Page_structures/Compatibility_tables) | Connects compatibility claims to explicit platform support evidence. |
+| Reliability-oriented Testing | RECOMMENDED VIDEO | reliability-test material reviewed | No candidate promoted | Reliability Engineer later owns deep failure engineering; here tests should emerge from known quality risks. |
+| Data Integrity and Concurrency Testing | RECOMMENDED VIDEO | PostgreSQL isolation/concurrency material reviewed | [PostgreSQL — Transaction Isolation](https://www.postgresql.org/docs/current/transaction-iso.html) | Isolation phenomena are subtle and need authoritative transaction semantics before concurrent test design. |
+| Lab: Establish Steward Non-functional Baselines | NO VIDEO | — | — | Baselines must be measured against the actual service. |
+
+### Quality in Containers and CI/CD
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Test Containers and Environments | RECOMMENDED VIDEO | Dockerized testing material reviewed | Reuse Delivery Engineer Docker resources | Quality Steward applies existing container knowledge to deterministic test dependencies. |
+| Dockerized Test Dependencies | RECOMMENDED VIDEO | Container dependency material reviewed | Reuse Docker Compose resource | No need to reteach Compose. |
+| Ephemeral Environment Concepts | RECOMMENDED VIDEO | Ephemeral CI environment material reviewed | No candidate promoted | The learner's pipeline should prove create→test→destroy lifecycle directly. |
+| Test Pipeline Stages | RECOMMENDED VIDEO | Jenkins pipeline material reviewed | Reuse Delivery Engineer Jenkins Pipeline media | Existing execution model is sufficient. |
+| Parallelization | RECOMMENDED VIDEO | pytest-xdist/CI parallel material reviewed | Reuse pytest-xdist documentation | Connects framework worker isolation to pipeline execution. |
+| Reports and Artifacts | OPTIONAL VIDEO | CI reporting material reviewed | No candidate promoted | Diagnostic usefulness is judged from failed pipeline evidence. |
+| Quality Gates | NO VIDEO | — | — | Gate policy must be risk/evidence based. |
+| Test Selection | RECOMMENDED VIDEO | pytest marker/selection material reviewed | Reuse pytest marker documentation | Existing selection primitives are enough. |
+| Failure Triage | NO VIDEO | — | — | Learner must diagnose real failed CI evidence. |
+| Flaky-test Containment | RECOMMENDED VIDEO | retry/flakiness material reviewed | Reuse Playwright retry guidance | Reinforces containment/classification rather than hiding failures. |
+| Internal Test Package Publishing and Compatibility in CI | NO VIDEO | — | — | Real tsa-test-core producer/consumer compatibility is the evidence. |
+| Lab: Build the Steward Quality Pipeline | NO VIDEO | — | — | Independent pipeline/gate/diagnostic evidence. |
+
+### Continuous and Scheduled Quality Execution
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Continuous and Scheduled Quality Execution | RECOMMENDED VIDEO | Jenkins trigger/schedule material reviewed | [Jenkins — Pipeline Syntax](https://www.jenkins.io/doc/book/pipeline/syntax/#triggers) | First-party trigger semantics support SCM-driven and scheduled execution without another broad Jenkins course. |
+| Design Triggered Quality Feedback | NO VIDEO | — | — | Trigger policy is a feedback-speed/cost/risk decision. |
+| Implement SCM-triggered Automated Testing | NO VIDEO | — | — | Real pipeline implementation evidence. |
+| Implement Jenkins CRON Regression | RECOMMENDED VIDEO | Jenkins cron syntax material reviewed | Reuse Jenkins trigger documentation | Exact syntax/reference is more useful than a walkthrough. |
+| Implement Failure Alerts and Reports | NO VIDEO | — | — | Learner must prove actionable failure delivery without notification noise. |
+| Defend the Quality Execution Policy | NO VIDEO | — | — | Policy defense based on actual pipeline behavior. |
+
+### Quality Steward Milestone
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Quality Steward Milestone Readiness | NO VIDEO | — | — | Evidence audit before final integration. |
+| Integrate the Quality Steward System | NO VIDEO | — | — | Cross-module integration is the assessment. |
+| Audit the Existing Evidence | NO VIDEO | — | — | Learner must identify evidence gaps independently. |
+| Milestone: Steward Quality Platform | NO VIDEO | — | — | Independent synthesis target. |
+| Finalize the Steward Quality Strategy | NO VIDEO | — | — | Strategy must reflect the implemented system. |
+| Prove the Automated Quality Portfolio | NO VIDEO | — | — | Real test evidence. |
+| Prove the Quality Pipeline | NO VIDEO | — | — | Real pipeline/gate evidence. |
+| Quality Steward Final Review | NO VIDEO | — | — | Final capability defense. |
+
+
+## Security Steward — complete school multimedia audit
+
+This audit follows every live Security Steward deep path. It includes foundations, threat modeling, host/network hardening, identity and secrets, Keycloak/LDAP federation, Vault dynamic secrets, internal PKI and mTLS, web/API security, an isolated vulnerability laboratory, application hardening, software-supply-chain controls, artifact signing, secure file-transfer migration and the final security milestone. Offensive material is used only to understand and safely reproduce weaknesses in authorized training environments.
+
+### Security Foundations and Threat Modeling
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Confidentiality, Integrity and Availability | RECOMMENDED VIDEO | Security-foundation material reviewed | [NIST CSF 2.0](https://www.nist.gov/cyberframework) plus framework diagrams | Establishes security outcomes in a recognized risk-management context without reducing security to tool use. |
+| Assets, Threats, Vulnerabilities and Risk | RECOMMENDED VIDEO | OWASP risk material reviewed | [OWASP Risk Rating Methodology](https://owasp.org/www-community/OWASP_Risk_Rating_Methodology) | Gives a concrete likelihood/impact model before the Steward risk register. |
+| Attack Surface | RECOMMENDED VIDEO | Attack-surface/threat-model material reviewed | [OWASP Threat Modeling](https://owasp.org/www-community/Threat_Modeling) | Connects entry points, assets, flows and trust boundaries visually. |
+| Least Privilege | RECOMMENDED VIDEO | Zero-trust/least-privilege material reviewed | [CISA Zero Trust Maturity Model](https://www.cisa.gov/resources-tools/resources/zero-trust-maturity-model) | Places least privilege in identity/device/network/application/data control planes. |
+| Defense in Depth | RECOMMENDED VIDEO | Layered-control material reviewed | Reuse NIST/CISA framework diagrams | One control-framework model is enough; Steward must map actual preventive/detective/corrective layers. |
+| Trust Boundaries | RECOMMENDED VIDEO | Threat-model boundary material reviewed | Reuse OWASP Threat Modeling | Direct precursor to data-flow modeling. |
+| Security Controls: Preventive, Detective and Corrective | RECOMMENDED VIDEO | Control taxonomy material reviewed | Reuse NIST CSF | Framework functions make control purpose visible without a vendor-specific product tour. |
+| Risk Treatment and Residual Risk | NO VIDEO | — | — | Learner must decide accept/mitigate/transfer/avoid from actual Steward risk. |
+| Lab: Map Steward Security Assets and Attack Surface | NO VIDEO | — | — | Independent inventory, boundary and risk-register evidence. |
+| Assets and Actors | NO VIDEO | — | — | Must be derived from the real Steward system. |
+| Data and Control Flows | RECOMMENDED VIDEO | DFD/threat-model material reviewed | [Microsoft Threat Modeling Tool overview](https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool) — use DFD/trust-boundary examples | Makes actors/processes/data stores/flows and boundaries concrete before modeling Steward. |
+| Threat Identification | RECOMMENDED VIDEO | STRIDE material reviewed | [Microsoft — Threat Modeling Security Fundamentals](https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool-threats) | Provides the STRIDE prompts as a systematic enumeration aid. |
+| STRIDE-style Thinking | RECOMMENDED VIDEO | STRIDE material reviewed | Reuse Microsoft threat-model material | Avoids redundant threat-taxonomy media. |
+| Abuse Cases | RECOMMENDED VIDEO | Abuse-case material reviewed | [OWASP — Abuse Case Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Abuse_Case_Cheat_Sheet.html) | Turns attacker goals into explicit negative requirements. |
+| Threat Prioritization | RECOMMENDED VIDEO | Risk-prioritization material reviewed | Reuse OWASP Risk Rating | Connects threat discovery to likelihood/impact decisions. |
+| Mitigations and Security Requirements | NO VIDEO | — | — | Controls must trace to Steward threats and acceptance criteria. |
+| Threat Models as Living Engineering Artifacts | NO VIDEO | — | — | Learner proves update/review behavior across later changes. |
+| Lab: Threat-model Steward API | NO VIDEO | — | — | Independent model/threat/mitigation evidence. |
+
+### Linux and Network Security
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Users, Groups and Permissions | OPTIONAL VIDEO | Linux hardening material reviewed | Reuse Platform Builder Linux administration resources | Security Steward applies known primitives to least privilege rather than relearning commands. |
+| Privilege and sudo | RECOMMENDED VIDEO | sudo/privilege material reviewed | [Red Hat — Managing sudo access](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/managing-sudo-access_configuring-basic-system-settings) | First-party operational guidance supports explicit privilege delegation. |
+| SSH Hardening | RECOMMENDED VIDEO | OpenSSH/host-hardening material reviewed | [Red Hat — OpenSSH security](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/securing_networks/using-secure-communications-between-two-systems-with-openssh_securing-networks) | Current first-party guidance is safer than copying an arbitrary hardening checklist. |
+| Host Firewalls | OPTIONAL VIDEO | firewall material reviewed | Reuse Platform Builder firewall resources | The new objective is exposure reduction and verification. |
+| Service Exposure | NO VIDEO | — | — | Learner inventories listening services and closes unnecessary exposure. |
+| Patching and Vulnerability Windows | RECOMMENDED VIDEO | vulnerability/patch lifecycle material reviewed | [CISA — Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) | Grounds patch urgency in known exploitation rather than CVSS alone. |
+| File and Secret Permissions | NO VIDEO | — | — | Direct filesystem/secret audit evidence. |
+| Security Logging and Auditing | RECOMMENDED VIDEO | Linux audit material reviewed | [Red Hat — Auditing the system](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/security_hardening/auditing-the-system_security-hardening) | First-party auditd model supports traceable security events. |
+| Network Segmentation Concepts | RECOMMENDED VIDEO | segmentation/zero-trust material reviewed | Reuse CISA Zero Trust model | Connects segmentation to explicit trust boundaries rather than VLANs for their own sake. |
+| Administrative Network Boundaries | NO VIDEO | — | — | Must be defended from the actual homelab/public topology. |
+| TLS Configuration and Certificate Hygiene | RECOMMENDED VIDEO | TLS configuration material reviewed | [Mozilla SSL Configuration Generator](https://ssl-config.mozilla.org/) | Current configuration generator ties protocol/cipher choices to server/software compatibility. |
+| Lab: Harden the Steward Hosts and Network Path | NO VIDEO | — | — | Independent baseline→hardening→retest evidence. |
+
+### Identity, Federation and Secrets
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Identity Planes and Trust Boundaries | RECOMMENDED VIDEO | IAM/OIDC material reviewed | [OAuth 2.0 and OpenID Connect — OpenID Foundation](https://openid.net/developers/how-connect-works/) — use authorization/authentication flow diagrams | Establishes actors/tokens/trust relationships before Keycloak configuration. |
+| OAuth 2.0 and OpenID Connect Mental Model | RECOMMENDED VIDEO | OIDC material reviewed | Reuse OpenID Foundation flow diagrams | Canonical protocol model is preferable to vendor-specific shortcuts. |
+| Keycloak Realms, Clients, Users and Roles | RECOMMENDED VIDEO | Keycloak material reviewed | [Keycloak — Server Administration Guide](https://www.keycloak.org/docs/latest/server_admin/) | Current first-party model supports realms/clients/roles and identity ownership. |
+| Machine and Workload Identity | RECOMMENDED VIDEO | workload identity material reviewed | No candidate promoted | Internal PKI later provides the concrete machine-identity implementation. |
+| Secret Lifecycle: Create, Distribute, Rotate, Revoke | RECOMMENDED VIDEO | secrets lifecycle material reviewed | [HashiCorp Vault — What is Vault?](https://developer.hashicorp.com/vault/docs/what-is-vault) | Introduces secret lifecycle, leases and centralized policy before implementation. |
+| Vault Concepts and Dynamic Secrets | RECOMMENDED VIDEO | Vault dynamic-secret material reviewed | [HashiCorp Vault — Database secrets engine](https://developer.hashicorp.com/vault/docs/secrets/databases) | Dynamic credential lease/revocation is central and non-obvious. |
+| Kong, Identity and API Policy | OPTIONAL VIDEO | gateway identity-policy material reviewed | No candidate promoted | Gateway choice/configuration should follow the actual Steward deployment boundary. |
+| Identity and Secrets Security Review | NO VIDEO | — | — | Architecture review. |
+| Lab: Integrate Keycloak and Harden Steward Identity | NO VIDEO | — | — | Independent identity/secret evidence. |
+| Directory Federation Architecture | RECOMMENDED VIDEO | LDAP federation material reviewed | [Keycloak — LDAP and Active Directory](https://www.keycloak.org/docs/latest/server_admin/#_ldap) | First-party federation model maps directory identity into Keycloak without pretending the systems share ownership. |
+| Keycloak LDAP Federation | RECOMMENDED VIDEO | Keycloak LDAP material reviewed | Reuse Keycloak LDAP documentation | Direct implementation reference. |
+| Federated Identity Lifecycle and Failure Modes | NO VIDEO | — | — | Learner must test disable/delete/outage/stale-membership behavior. |
+| Active Directory, LDAP and Kerberos Context | RECOMMENDED VIDEO | directory/Kerberos context reviewed | Reuse Platform Builder AD/LDAP resources | Security Steward extends the existing directory model into federation. |
+| Vault and Dynamic Secrets for Steward | RECOMMENDED VIDEO | Vault database-secret material reviewed | Reuse Vault database secrets engine | Establishes leased database credentials before hands-on implementation. |
+| From Static Secrets to Leased Credentials | RECOMMENDED VIDEO | Vault lease material reviewed | [HashiCorp Vault — Lease, renew and revoke](https://developer.hashicorp.com/vault/docs/concepts/lease) | Lease lifecycle is the key conceptual shift. |
+| Deploy and Initialize Vault Safely | RECOMMENDED VIDEO | Vault deployment/init material reviewed | [HashiCorp Vault — Production hardening](https://developer.hashicorp.com/vault/docs/concepts/production-hardening) | Emphasizes operational security boundaries rather than a dev-mode walkthrough. |
+| Issue Dynamic PostgreSQL Credentials | RECOMMENDED VIDEO | Vault PostgreSQL engine material reviewed | Reuse Vault database secrets engine | Direct first-party configuration model. |
+| Break Vault and Rotate Trust | NO VIDEO | — | — | Controlled failure/recovery exercise. |
+| Reassess the Secrets Platform | NO VIDEO | — | — | Architecture/ownership reassessment. |
+
+### Internal PKI and Machine Trust
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Model Internal PKI and Machine Trust | RECOMMENDED VIDEO | PKI/X.509 material reviewed | [Cloudflare — What is PKI?](https://www.cloudflare.com/learning/ssl/what-is-pki/) — use CA/trust-chain diagrams | Gives the hierarchy/trust-anchor mental model before building a CA. |
+| Build a Root and Issuing CA Hierarchy | RECOMMENDED VIDEO | CA hierarchy material reviewed | [Smallstep — PKI](https://smallstep.com/blog/everything-pki/) — use root/intermediate/leaf diagrams | Visually separates offline trust anchor from issuing authority and workload certificates. |
+| Issue Workload Certificates with Explicit Identity | RECOMMENDED VIDEO | X.509 identity material reviewed | [RFC 5280](https://www.rfc-editor.org/rfc/rfc5280) plus Smallstep diagrams | Grounds certificate identity in SAN/subject/usage semantics rather than filenames. |
+| Distribute Trust without Disabling Verification | NO VIDEO | — | — | Cross-platform trust-store work must be proven directly. |
+| Implement Mutual TLS between Workloads | RECOMMENDED VIDEO | mTLS explainers reviewed | [Cloudflare — What is mutual TLS?](https://www.cloudflare.com/learning/access-management/what-is-mutual-tls/) | Client/server certificate exchange and mutual authentication are highly visual. |
+| Rotate Certificates without Changing Identity Semantics | NO VIDEO | — | — | Rotation drill is the learning evidence. |
+| Revocation and Compromised Identity Response | RECOMMENDED VIDEO | certificate revocation material reviewed | [Cloudflare — How certificate revocation works](https://www.cloudflare.com/learning/ssl/what-happens-when-an-ssl-certificate-is-revoked/) | CRL/OCSP and trust-removal concepts support the compromised-identity drill. |
+| Trust-Anchor Rotation and Failure Recovery | NO VIDEO | — | — | Intermediate/root transition must be exercised safely. |
+| Reassess PKI Ownership with Vault | NO VIDEO | — | — | ADR/ownership decision after operating both models. |
+| Milestone: Operate Steward Internal Machine Trust | NO VIDEO | — | — | Independent trust-platform synthesis. |
+
+### Web and API Threats
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Injection and SQL Injection | RECOMMENDED VIDEO | OWASP/PortSwigger training reviewed | [PortSwigger Web Security Academy — SQL injection](https://portswigger.net/web-security/sql-injection) — use only in authorized labs | Interactive training makes unsafe query construction and mitigations concrete. |
+| Cross-site Scripting | RECOMMENDED VIDEO | PortSwigger XSS material reviewed | [PortSwigger — XSS](https://portswigger.net/web-security/cross-site-scripting) — authorized training labs only | Visual browser execution context is valuable for understanding stored/reflected/DOM XSS. |
+| Cross-site Request Forgery | RECOMMENDED VIDEO | PortSwigger CSRF material reviewed | [PortSwigger — CSRF](https://portswigger.net/web-security/csrf) — authorized labs only | Request/authentication context benefits from interactive visualization. |
+| Broken Authentication | RECOMMENDED VIDEO | OWASP authentication material reviewed | [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html) | Defensive requirements are more durable than exploit-only demonstrations. |
+| Broken Authorization and IDOR | RECOMMENDED VIDEO | OWASP API/PortSwigger access-control material reviewed | [PortSwigger — Access control](https://portswigger.net/web-security/access-control) — authorized labs only | Makes horizontal/vertical authorization failures concrete. |
+| Server-side Request Forgery | RECOMMENDED VIDEO | PortSwigger SSRF material reviewed | [PortSwigger — SSRF](https://portswigger.net/web-security/ssrf) — authorized labs only | Request-path visualization clarifies why server-side network reachability matters. |
+| Path Traversal | RECOMMENDED VIDEO | PortSwigger traversal material reviewed | [PortSwigger — Path traversal](https://portswigger.net/web-security/file-path-traversal) — authorized labs only | Clear controlled examples of filesystem-boundary failure. |
+| File Upload Risks | RECOMMENDED VIDEO | OWASP upload material reviewed | [OWASP File Upload Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html) | Defensive control layers map directly to Steward's upload surfaces. |
+| Command Injection | RECOMMENDED VIDEO | PortSwigger command-injection material reviewed | [PortSwigger — OS command injection](https://portswigger.net/web-security/os-command-injection) — authorized labs only | Controlled labs demonstrate data crossing into command execution. |
+| Insecure Deserialization Concepts | RECOMMENDED VIDEO | PortSwigger deserialization material reviewed | [PortSwigger — Insecure deserialization](https://portswigger.net/web-security/deserialization) — conceptual/lab use only | Shows the trust-boundary failure without requiring unsafe real-world targeting. |
+| Security Misconfiguration | RECOMMENDED VIDEO | OWASP configuration material reviewed | [OWASP Top 10](https://owasp.org/www-project-top-ten/) | Broad category is best anchored to the current OWASP taxonomy and Steward findings. |
+| Sensitive Data and Secrets | RECOMMENDED VIDEO | OWASP secrets material reviewed | Reuse Vault/secret-lifecycle resources | Avoids duplicate security instruction. |
+| API Abuse and Rate Limiting | RECOMMENDED VIDEO | OWASP API security material reviewed | [OWASP API Security Top 10](https://owasp.org/API-Security/) | Grounds abuse/resource-consumption risks in API-specific taxonomy. |
+| Token and Session Attacks | RECOMMENDED VIDEO | OWASP session material reviewed | [OWASP Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html) | Defensive token/session lifecycle is the priority. |
+| Cryptographic Failures | RECOMMENDED VIDEO | OWASP crypto material reviewed | [OWASP Cryptographic Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html) | Keeps focus on correct protection decisions rather than crypto implementation tricks. |
+| Vulnerable Dependencies | RECOMMENDED VIDEO | dependency-risk material reviewed | [OWASP Dependency-Check](https://owasp.org/www-project-dependency-check/) plus supply-chain module | Connects component inventory to known-vulnerability evidence. |
+| Security Logging and Monitoring Failures | RECOMMENDED VIDEO | OWASP logging material reviewed | [OWASP Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html) | Establishes security-event evidence requirements. |
+| Mass Assignment and Excessive Data Exposure | RECOMMENDED VIDEO | OWASP API authorization/data-exposure material reviewed | Reuse OWASP API Security Top 10 | API-specific taxonomy directly supports negative tests. |
+| Lab: Assess Steward Web and API Attack Paths | NO VIDEO | — | — | Threat-model-driven, authorized assessment with evidence and remediation. |
+
+### Vulnerability Laboratory and Application Hardening
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Designing an Isolated Security Lab | RECOMMENDED VIDEO | OWASP training-lab material reviewed | [OWASP Juice Shop](https://owasp.org/www-project-juice-shop/) — use its intentionally vulnerable training model | Establishes an explicit legal/safety boundary for attack reproduction. |
+| Safe Lab Networking | NO VIDEO | — | — | Isolation must be designed against the learner's actual virtualization/network topology. |
+| Vulnerable Applications and Intentional Weaknesses | RECOMMENDED VIDEO | OWASP Juice Shop material reviewed | Reuse OWASP Juice Shop | Purpose-built vulnerable targets are safer and more pedagogically useful than real systems. |
+| Observing Vulnerable Behavior | RECOMMENDED VIDEO | PortSwigger Academy material reviewed | [PortSwigger Web Security Academy](https://portswigger.net/web-security) | Interactive labs teach observation/reproduction in an authorized environment. |
+| Reproducing Representative Attacks Safely | RECOMMENDED VIDEO | PortSwigger/OWASP labs reviewed | Reuse PortSwigger Academy and Juice Shop | Keeps offensive practice bounded to training targets. |
+| Using Proxies and Request Inspection | RECOMMENDED VIDEO | Burp Suite training material reviewed | [PortSwigger — Getting started with Burp Suite](https://portswigger.net/burp/documentation/desktop/getting-started) | First-party request interception/replay workflow supports evidence collection. |
+| Capturing Security Evidence | NO VIDEO | — | — | Learner must produce reproducible requests/responses/logs/screenshots from the lab. |
+| From Finding to Reproduction Steps | NO VIDEO | — | — | Finding quality is assessed from another engineer's ability to reproduce it. |
+| Implementing Mitigations | NO VIDEO | — | — | Remediation is application-specific. |
+| Retesting Fixes | NO VIDEO | — | — | Closure requires direct negative/positive evidence. |
+| Writing Security Findings | NO VIDEO | — | — | Professional finding communication is the deliverable. |
+| Lab: Reproduce and Fix Steward Vulnerabilities | NO VIDEO | — | — | Controlled Steward vulnerability/remediation evidence. |
+| Secure Authentication | RECOMMENDED VIDEO | OWASP authentication controls reviewed | Reuse OWASP Authentication Cheat Sheet | Directly translates earlier threat knowledge into requirements. |
+| Authorization Design and Testing | RECOMMENDED VIDEO | OWASP authorization material reviewed | [OWASP Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html) | Centralizes deny-by-default, least privilege and per-request authorization guidance. |
+| Input Validation | RECOMMENDED VIDEO | OWASP validation material reviewed | [OWASP Input Validation Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html) | Defensive validation rules complement attack-path labs. |
+| Secure Error Handling | RECOMMENDED VIDEO | OWASP error-handling material reviewed | [OWASP Error Handling Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Error_Handling_Cheat_Sheet.html) | Supports useful diagnostics without sensitive disclosure. |
+| Secrets Management | RECOMMENDED VIDEO | OWASP/Vault material reviewed | Reuse Vault secret-lifecycle resources | Existing implementation depth is sufficient. |
+| Security Headers and Configuration | RECOMMENDED VIDEO | OWASP header material reviewed | [OWASP HTTP Headers Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html) | Concrete defensive configuration reference. |
+| Security Logging | RECOMMENDED VIDEO | OWASP logging material reviewed | Reuse OWASP Logging Cheat Sheet | Avoids duplicate media. |
+| Rate Limiting and Abuse Resistance | RECOMMENDED VIDEO | OWASP API material reviewed | Reuse OWASP API Security Top 10 | Connects controls to previously modeled abuse cases. |
+| Data Protection | RECOMMENDED VIDEO | OWASP cryptographic storage material reviewed | Reuse OWASP Cryptographic Storage Cheat Sheet | Keeps data protection tied to explicit threat/retention needs. |
+| Security-focused Code Review | RECOMMENDED VIDEO | OWASP code-review material reviewed | [OWASP Code Review Guide](https://owasp.org/www-project-code-review-guide/) | Provides a repeatable security review lens before reviewing Steward changes. |
+| Abuse Cases and Negative Security Requirements | RECOMMENDED VIDEO | OWASP abuse-case material reviewed | Reuse OWASP Abuse Case Cheat Sheet | Maintains traceability from threat to negative requirement. |
+| Security Regression Testing | NO VIDEO | — | — | Learner converts closed findings into durable automated evidence. |
+| Lab: Harden Steward API | NO VIDEO | — | — | Independent requirements→controls→retest evidence. |
+
+### Software Supply Chain and Artifact Trust
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Lab: Harden the Steward Software Supply Chain | NO VIDEO | — | — | Cross-stage trust mapping and controls are the assessment. |
+| Map and Baseline the Trusted Delivery Path | RECOMMENDED VIDEO | SLSA/supply-chain material reviewed | [SLSA — Supply-chain Levels for Software Artifacts](https://slsa.dev/) — use threat/provenance diagrams | Gives a source→build→artifact trust model that connects Delivery Engineer evidence to security controls. |
+| Implement High-value Supply-chain Controls | RECOMMENDED VIDEO | OWASP supply-chain/Sigstore material reviewed | [OWASP Software Supply Chain Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Software_Supply_Chain_Security_Cheat_Sheet.html) | Defensive control catalogue supports prioritization without prescribing every tool. |
+| Define Gates, Exceptions and Residual Risk | NO VIDEO | — | — | Gate/exception policy is a risk decision. |
+| Artifact Signing and Verification | RECOMMENDED VIDEO | Sigstore/Cosign material reviewed | [Sigstore — Cosign](https://docs.sigstore.dev/cosign/overview/) | Establishes signing and verification workflow against immutable artifact identity. |
+| From Provenance Evidence to Enforced Trust | RECOMMENDED VIDEO | Sigstore policy material reviewed | [Sigstore — Policy Controller](https://docs.sigstore.dev/policy-controller/overview/) — conceptual reference | Shows the shift from recording evidence to enforcing admission/deployment policy. |
+| Sign a Steward Release with Cosign | NO VIDEO | — | — | Real release signing evidence. |
+| Enforce Verification Before Deployment | NO VIDEO | — | — | Real policy/gate evidence. |
+| Break and Recover the Signing Trust Chain | NO VIDEO | — | — | Controlled trust failure/recovery exercise. |
+| Defend Steward's Artifact Trust Policy | NO VIDEO | — | — | Policy defense. |
+
+### Secure File Transfer Migration
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| FTP to SFTP Secure Transfer Migration | RECOMMENDED VIDEO | SFTP/FTP protocol material reviewed | Reuse Delivery/Platform SFTP-vs-FTPS protocol-boundary resource | Existing media already establishes that SFTP is a distinct SSH-based protocol. |
+| From Legacy Compatibility to Secure Transfer | NO VIDEO | — | — | Migration contract and coexistence plan are the learning objective. |
+| Build the SFTP Trust and Identity Boundary | RECOMMENDED VIDEO | OpenSSH key-auth material reviewed | [OpenSSH manuals](https://www.openssh.com/manual.html) | First-party SSH identity/authorization semantics support the secure boundary. |
+| Prove File-contract Parity over SFTP | NO VIDEO | — | — | Actual producer/consumer file-contract evidence. |
+| Run Bounded FTP and SFTP Coexistence | NO VIDEO | — | — | Time-bounded migration exercise. |
+| Decommission FTP and Prove the Security End State | NO VIDEO | — | — | Removal/exposure evidence is the assessment. |
+| Defend the Secure Transfer Migration | NO VIDEO | — | — | Architecture and residual-risk defense. |
+
+### Security Steward Milestone
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Milestone Briefing: Build a Defensible Steward Security Posture | NO VIDEO | — | — | Defines the independent security synthesis target. |
+| Integrate the Security Steward Evidence | NO VIDEO | — | — | Cross-module evidence integration. |
+| Evidence Readiness Check | NO VIDEO | — | — | Learner audits gaps independently. |
+| Milestone: Steward Security Assessment and Hardening | NO VIDEO | — | — | Independent assessment/hardening target. |
+| Rebaseline Threats, Assets and Trust Boundaries | NO VIDEO | — | — | Must reflect the final implemented system. |
+| Verify Controls Across the Steward Stack | NO VIDEO | — | — | Real control evidence. |
+| Close High-priority Gaps and Retest | NO VIDEO | — | — | Remediation and regression evidence. |
+| Publish the Steward Security Assessment | NO VIDEO | — | — | Professional assessment artifact. |
+| Defend the Security Posture | NO VIDEO | — | — | Final capability/risk defense. |
+
+
+## Reliability Engineer — complete school multimedia audit
+
+This audit follows every live Reliability Engineer deep path, including observability architecture, Graylog selection and integration, Prometheus/Grafana, Alertmanager, OpenTelemetry/Tempo tracing, SLO engineering, production logging, database stewardship, performance/capacity, resilience patterns, incident management, controlled fault injection, disaster recovery and the final Steward Reliability Program.
+
+### SRE Foundations and Service Levels
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Reliability as a Quality Attribute | RECOMMENDED VIDEO | Google/AWS reliability material reviewed | [Google SRE — Introduction](https://sre.google/sre-book/introduction/) | Establishes reliability as an engineering property tied to user experience and operations. |
+| Availability | RECOMMENDED VIDEO | SRE availability material reviewed | [Google SRE — Embracing Risk](https://sre.google/sre-book/embracing-risk/) | Connects availability targets to risk and trade-offs instead of treating 100% as the goal. |
+| Failure and Recovery | RECOMMENDED VIDEO | AWS reliability material reviewed | [AWS Well-Architected — Reliability Pillar](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html) | Strong failure/recovery design framing. |
+| SRE Principles | RECOMMENDED VIDEO | Google SRE material reviewed | [Google — Site Reliability Engineering](https://sre.google/sre-book/table-of-contents/) | Canonical SRE operating model. |
+| Toil | RECOMMENDED VIDEO | Google SRE toil material reviewed | [Google SRE — Eliminating Toil](https://sre.google/sre-book/eliminating-toil/) | Gives a precise operational definition and why automation alone is not the objective. |
+| Reliability and Risk Trade-offs | RECOMMENDED VIDEO | risk/error-budget material reviewed | Reuse Google SRE Embracing Risk | Keeps trade-offs connected to measurable reliability. |
+| Reliability Ownership | NO VIDEO | — | — | Ownership must be mapped to the actual Steward operating model. |
+| Lab: Build the Steward Reliability Risk Map | NO VIDEO | — | — | Independent capability/failure/recovery analysis. |
+| SLIs | RECOMMENDED VIDEO | Google SLO material reviewed | [Google SRE Workbook — Implementing SLOs](https://sre.google/workbook/implementing-slos/) | Canonical user-centric indicator selection and examples. |
+| SLOs | RECOMMENDED VIDEO | Google SLO material reviewed | Reuse Implementing SLOs | One coherent model from indicator to target. |
+| SLAs | RECOMMENDED VIDEO | SLI/SLO/SLA material reviewed | [Google SRE — Service Level Objectives](https://sre.google/sre-book/service-level-objectives/) | Distinguishes engineering objectives from external agreements. |
+| Error Budgets | RECOMMENDED VIDEO | error-budget material reviewed | [Google SRE Workbook — Error Budget Policy](https://sre.google/workbook/error-budget-policy/) | Directly links reliability consumption to release/operational decisions. |
+| User-visible Reliability | NO VIDEO | — | — | Learner must choose indicators from actual Steward user outcomes. |
+| Choosing Good Indicators | RECOMMENDED VIDEO | SLI selection material reviewed | Reuse Google SLO workbook | Authoritative examples are sufficient. |
+| Windowing and Measurement Concepts | RECOMMENDED VIDEO | SLO window material reviewed | Reuse Google SLO workbook | Measurement windows are best understood in the same SLO model. |
+| Reliability Targets and Trade-offs | NO VIDEO | — | — | Target selection is a product/risk decision. |
+| Error Budgets and Release Decisions | RECOMMENDED VIDEO | error-budget policy material reviewed | Reuse Google Error Budget Policy | Makes the reliability/release control loop explicit. |
+| Lab: Define Steward SLOs | NO VIDEO | — | — | Independent SLI/SLO/budget policy evidence. |
+
+### Observability Architecture and Production Logging
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Observability vs Monitoring | RECOMMENDED VIDEO | OpenTelemetry/Grafana material reviewed | [OpenTelemetry — Observability Primer](https://opentelemetry.io/docs/concepts/observability-primer/) | Frames observability around understanding internal state from telemetry rather than merely watching known thresholds. |
+| Logs, Metrics and Traces | RECOMMENDED VIDEO | telemetry signal material reviewed | [OpenTelemetry — Signals](https://opentelemetry.io/docs/concepts/signals/) | One canonical model for the three signal families and their roles. |
+| Telemetry Design | NO VIDEO | — | — | Signals must answer Steward reliability questions rather than mirror a generic dashboard. |
+| Correlation and Context | RECOMMENDED VIDEO | OpenTelemetry context material reviewed | [OpenTelemetry — Context propagation](https://opentelemetry.io/docs/concepts/context-propagation/) | Correlation across boundaries is central to later logs/traces. |
+| Instrumentation | RECOMMENDED VIDEO | OTel instrumentation material reviewed | [OpenTelemetry — Instrumentation](https://opentelemetry.io/docs/concepts/instrumentation/) | Establishes automatic/manual instrumentation boundaries. |
+| OpenTelemetry Concepts | RECOMMENDED VIDEO | OTel architecture material reviewed | [OpenTelemetry — What is OpenTelemetry?](https://opentelemetry.io/docs/what-is-opentelemetry/) | Canonical vendor-neutral telemetry model. |
+| Golden Signals and Service Questions | RECOMMENDED VIDEO | Google SRE monitoring material reviewed | [Google SRE — Monitoring Distributed Systems](https://sre.google/sre-book/monitoring-distributed-systems/) | Latency, traffic, errors and saturation are tied to service questions rather than dashboard fashion. |
+| Telemetry Cost and Noise | NO VIDEO | — | — | Learner evaluates signal value/cardinality/retention against actual cost and diagnosis needs. |
+| Lab: Design Steward Observability | NO VIDEO | — | — | Independent question→signal→diagnostic-path design. |
+| Structured Logs | RECOMMENDED VIDEO | Twelve-Factor/OTel logs material reviewed | [OpenTelemetry — Logs](https://opentelemetry.io/docs/concepts/signals/logs/) | Shows structured log records and telemetry correlation. |
+| Log Levels | OPTIONAL VIDEO | logging-level material reviewed | No candidate promoted | Direct implementation and noise review are stronger. |
+| Correlation IDs | RECOMMENDED VIDEO | trace/log correlation material reviewed | Reuse OpenTelemetry context propagation | Connects request identity across service boundaries. |
+| Request and Trace Context | RECOMMENDED VIDEO | OTel context material reviewed | Reuse context propagation | Same model, no redundant media. |
+| Centralized Logging | RECOMMENDED VIDEO | centralized logging platforms reviewed | [Graylog — Documentation](https://go2docs.graylog.org/) — use architecture/search/stream concepts | Supports the academy's implementation while retaining transferable centralized-logging concepts. |
+| Useful vs Noisy Logs | NO VIDEO | — | — | Learner evaluates real diagnostic value from Steward failures. |
+| Privacy and Security in Logs | RECOMMENDED VIDEO | OWASP logging material reviewed | [OWASP Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html) | Explicit guidance on sensitive data and security event logging. |
+| Log Retention Concepts | NO VIDEO | — | — | Retention must balance investigation, compliance, storage and privacy. |
+| Lab: Build a Steward Diagnostic Logging Path | NO VIDEO | — | — | Independent diagnostic evidence. |
+| Decision Gate: Select the Steward Centralized Logging Stack | NO VIDEO | — | — | Platform choice must be defended against requirements. |
+| Compare Centralized Logging Implementations | NO VIDEO | — | — | Comparative architecture/cost/operations decision. |
+| Defend Graylog as the Logging Platform | NO VIDEO | — | — | Explicit platform defense. |
+
+### Metrics, Prometheus and Grafana
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Metrics Mental Models | RECOMMENDED VIDEO | Prometheus metric-model material reviewed | [Prometheus — Metric types](https://prometheus.io/docs/concepts/metric_types/) | Canonical semantics before instrumentation. |
+| Counters, Gauges and Histograms | RECOMMENDED VIDEO | Prometheus metric types reviewed | Reuse Prometheus metric types | One authoritative model is enough. |
+| Application and Infrastructure Metrics | NO VIDEO | — | — | Metric selection must follow service questions and risks. |
+| Prometheus Architecture | RECOMMENDED VIDEO | Prometheus architecture material reviewed | [Prometheus — Overview](https://prometheus.io/docs/introduction/overview/) — use architecture diagram | Pull model, TSDB, exporters, rules and Alertmanager are highly visual. |
+| Exporters | RECOMMENDED VIDEO | Prometheus exporter material reviewed | [Prometheus — Exporters and integrations](https://prometheus.io/docs/instrumenting/exporters/) | Establishes translation from system metrics into Prometheus exposition. |
+| Service Discovery Concepts | RECOMMENDED VIDEO | Prometheus discovery material reviewed | [Prometheus — Configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/) | Current first-party discovery/target model. |
+| PromQL | RECOMMENDED VIDEO | PromQL material reviewed | [Prometheus — Querying basics](https://prometheus.io/docs/prometheus/latest/querying/basics/) | Query semantics are best learned against live Steward metrics. |
+| Recording Rules Concepts | RECOMMENDED VIDEO | Prometheus rule material reviewed | [Prometheus — Recording rules](https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/) | Canonical precomputation/rule model. |
+| Grafana | RECOMMENDED VIDEO | Grafana dashboard material reviewed | [Grafana — Getting started](https://grafana.com/docs/grafana/latest/getting-started/) | First-party data-source/panel/dashboard workflow. |
+| Dashboard Design | RECOMMENDED VIDEO | dashboard design material reviewed | [Grafana — Dashboard best practices](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/best-practices/) | Supports question-driven dashboards rather than graph accumulation. |
+| Dashboard Anti-patterns | NO VIDEO | — | — | Learner critiques the actual Steward dashboard. |
+| Nexus and Internal Platform Metrics | NO VIDEO | — | — | Must reflect the deployed Nexus service and delivery dependency. |
+| CI and Delivery Metrics | NO VIDEO | — | — | Delivery metrics must answer actual pipeline reliability questions. |
+| Lab: Instrument Steward API | NO VIDEO | — | — | Independent instrumentation/query/dashboard evidence. |
+| Lab: Observe the Internal Artifact Platform | NO VIDEO | — | — | Independent Nexus dependency evidence. |
+
+### Alerting and On-call
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Symptoms vs Causes | RECOMMENDED VIDEO | SRE alerting material reviewed | [Google SRE Workbook — Alerting on SLOs](https://sre.google/workbook/alerting-on-slos/) | Strong symptom/user-impact orientation for paging. |
+| Actionable Alerts | RECOMMENDED VIDEO | SRE alerting material reviewed | Reuse Alerting on SLOs | Alert must imply meaningful action. |
+| Alert Fatigue | RECOMMENDED VIDEO | SRE/PagerDuty material reviewed | Reuse Google alerting guidance | Keeps noise tied to paging policy rather than notification tooling. |
+| Severity | NO VIDEO | — | — | Severity model must fit Steward impact and response expectations. |
+| Escalation | NO VIDEO | — | — | Organizational/operational policy. |
+| Alert Routing Concepts | RECOMMENDED VIDEO | Alertmanager material reviewed | [Prometheus — Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/) | Grouping, inhibition, silences and routing are central and visual. |
+| Runbooks | NO VIDEO | — | — | Runbook quality is proved by execution. |
+| On-call Handover and Context | NO VIDEO | — | — | Handover is an operational communication artifact. |
+| Lab: Build Steward Alerts and Runbooks | NO VIDEO | — | — | Independent paging/runbook evidence. |
+| Operate Prometheus Alertmanager | RECOMMENDED VIDEO | Alertmanager implementation material reviewed | Reuse Prometheus Alertmanager documentation | Direct implementation reference. |
+| From Firing Rule to Delivered Notification | RECOMMENDED VIDEO | Prometheus alert pipeline reviewed | [Prometheus — Alerting rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) plus Alertmanager docs | Makes rule evaluation versus notification delivery an explicit two-stage system. |
+| Deploy and Route with Alertmanager | NO VIDEO | — | — | Real routing configuration evidence. |
+| Break Alert Delivery and Recover It | NO VIDEO | — | — | Controlled alert-pipeline failure exercise. |
+| Defend the Alerting Pipeline | NO VIDEO | — | — | Architecture/operability defense. |
+
+### Distributed Tracing and Stack Integration
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Decision Gate: Select Steward's Tracing Backend | NO VIDEO | — | — | Backend selection must be defended from scale, integration and operations requirements. |
+| Evaluate Distributed Tracing Value and Select the Backend | NO VIDEO | — | — | Explicit value/tool decision. |
+| Distributed Tracing with OpenTelemetry and Tempo | RECOMMENDED VIDEO | OTel/Tempo material reviewed | [Grafana Tempo — Introduction](https://grafana.com/docs/tempo/latest/introduction/) plus OTel trace concepts | Connects instrumentation, trace transport/storage and Grafana exploration. |
+| Trace the Steward Request Path | RECOMMENDED VIDEO | OTel tracing material reviewed | [OpenTelemetry — Traces](https://opentelemetry.io/docs/concepts/signals/traces/) | Span/trace hierarchy is inherently visual. |
+| Deploy Tempo and Instrument Steward | RECOMMENDED VIDEO | Tempo deployment material reviewed | [Grafana Tempo — Getting started](https://grafana.com/docs/tempo/latest/getting-started/) | Current first-party implementation path. |
+| Investigate Cross-boundary Latency | NO VIDEO | — | — | Learner must diagnose a real trace. |
+| Break the Tracing Pipeline | NO VIDEO | — | — | Controlled telemetry failure. |
+| Defend the Tracing Architecture | NO VIDEO | — | — | Architecture defense. |
+| Observability Stack Integration: Graylog, Prometheus and Grafana | RECOMMENDED VIDEO | cross-signal observability material reviewed | Reuse OpenTelemetry signals + product architecture resources | Integration value comes from correlating the learner's real signals. |
+| Implement the Steward Observability Stack | NO VIDEO | — | — | Independent stack integration. |
+| Run a Cross-signal Incident Investigation | NO VIDEO | — | — | Diagnosis exercise is the assessment. |
+| Defend the Observability Architecture | NO VIDEO | — | — | Final signal/tool/retention boundary defense. |
+
+### Database Stewardship and Capacity
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Database Roles and Least Privilege | RECOMMENDED VIDEO | PostgreSQL role material reviewed | [PostgreSQL — Database Roles](https://www.postgresql.org/docs/current/user-manag.html) | Canonical ownership/privilege semantics. |
+| Connections, Pools and Exhaustion | RECOMMENDED VIDEO | PostgreSQL connection/pool material reviewed | No candidate promoted | Actual connection saturation/pool behavior is implementation-specific and should be measured. |
+| Slow Queries and Query-plan Evidence | RECOMMENDED VIDEO | PostgreSQL EXPLAIN material reviewed | [PostgreSQL — Using EXPLAIN](https://www.postgresql.org/docs/current/using-explain.html) | Query-plan evidence is central to diagnosing database performance. |
+| Locks, Blocking and Deadlocks | RECOMMENDED VIDEO | PostgreSQL locking material reviewed | [PostgreSQL — Explicit Locking](https://www.postgresql.org/docs/current/explicit-locking.html) | Authoritative lock/deadlock semantics before controlled reproduction. |
+| Operationally Safe Database Migrations | RECOMMENDED VIDEO | safe-schema-change material reviewed | Reuse Delivery Engineer Parallel Change resource | Reliability applies the existing expand/contract model operationally. |
+| Database Backup, Restore and Recovery Evidence | RECOMMENDED VIDEO | PostgreSQL backup material reviewed | [PostgreSQL — Backup and Restore](https://www.postgresql.org/docs/current/backup.html) | Canonical backup modes and recovery boundary. |
+| Database Capacity and Health Review | NO VIDEO | — | — | Review must use actual metrics/query/storage evidence. |
+| Lab: Run the Steward Database Stewardship Review | NO VIDEO | — | — | Independent operational review. |
+| Investigate a Slow or Saturated Database Path | NO VIDEO | — | — | Diagnostic exercise. |
+| Prove Recovery and Operational Readiness | NO VIDEO | — | — | Restore/readiness evidence. |
+| Latency and Throughput | RECOMMENDED VIDEO | performance material reviewed | [Google SRE — Addressing Cascading Failures](https://sre.google/sre-book/addressing-cascading-failures/) | Connects latency/load/resource pressure to distributed failure. |
+| Saturation | RECOMMENDED VIDEO | golden-signal/capacity material reviewed | Reuse Google SRE monitoring/cascading-failure resources | Existing model is sufficient. |
+| Bottlenecks | NO VIDEO | — | — | Learner must locate the actual constrained resource from evidence. |
+| Load and Stress Testing | RECOMMENDED VIDEO | k6 material reviewed | Reuse Quality Steward Grafana k6 resources | Performance-tool mechanics are already established. |
+| Capacity Planning | RECOMMENDED VIDEO | SRE capacity material reviewed | No candidate promoted | Capacity plan should emerge from measured demand, saturation and growth assumptions. |
+| Resource Utilization | NO VIDEO | — | — | Direct metric analysis. |
+| Database and Application Bottlenecks | NO VIDEO | — | — | Cross-layer diagnosis exercise. |
+| Performance Baselines | NO VIDEO | — | — | Must be measured on Steward. |
+| Queueing and Contention Concepts | RECOMMENDED VIDEO | queueing/backpressure material reviewed | [AWS Builders' Library — Avoiding overload](https://aws.amazon.com/builders-library/avoiding-insurmountable-queue-backlogs/) | Strong production framing for queues, overload and recovery. |
+| Storage Growth and Artifact Capacity | NO VIDEO | — | — | Nexus/storage growth plan uses actual repository evidence. |
+| Lab: Establish Steward Capacity Baselines | NO VIDEO | — | — | Independent workload/measurement/growth evidence. |
+
+### Resilience and Distributed Failure
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Timeouts | RECOMMENDED VIDEO | AWS resilience material reviewed | [AWS Builders' Library — Timeouts, retries and backoff with jitter](https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/) | Production-grade explanation of bounded waiting and retry interaction. |
+| Retries | RECOMMENDED VIDEO | retry material reviewed | Reuse AWS Builders' Library | Keeps timeout/retry/backoff as one system. |
+| Exponential Backoff and Jitter | RECOMMENDED VIDEO | backoff material reviewed | Reuse AWS Builders' Library | Canonical production treatment. |
+| Circuit Breakers | RECOMMENDED VIDEO | resilience-pattern material reviewed | [Azure Architecture Center — Circuit Breaker pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker) | State diagrams make closed/open/half-open behavior clear. |
+| Idempotency | RECOMMENDED VIDEO | idempotency material reviewed | Reuse earlier desired-state/API idempotency concepts | Learner applies it specifically to retry-safe distributed operations. |
+| Partial Failure | RECOMMENDED VIDEO | distributed-failure material reviewed | [Google SRE — Addressing Cascading Failures](https://sre.google/sre-book/addressing-cascading-failures/) | Strong model of localized failures becoming system failures. |
+| Dependency Failure | RECOMMENDED VIDEO | dependency resilience material reviewed | Reuse Google/AWS reliability resources | Avoids redundant media. |
+| Cascading Failure | RECOMMENDED VIDEO | cascading-failure material reviewed | Reuse Google SRE chapter | Canonical production examples. |
+| Queues and Backpressure | RECOMMENDED VIDEO | queue/backpressure material reviewed | Reuse AWS queue-backlog resource | Direct connection to overload containment. |
+| Graceful Degradation | RECOMMENDED VIDEO | reliability-pattern material reviewed | [Azure Architecture Center — Graceful Degradation](https://learn.microsoft.com/en-us/azure/well-architected/reliability/graceful-degradation) | Connects reduced functionality to preserving critical user outcomes. |
+| Retry Storms and Amplification | RECOMMENDED VIDEO | retry amplification material reviewed | Reuse AWS timeout/retry/backoff resource | Explicit production warning against layered retries. |
+| Dependency Availability Budgets | NO VIDEO | — | — | Learner computes/defends dependency assumptions from Steward SLOs. |
+| Lab: Harden Steward Against Dependency Failure | NO VIDEO | — | — | Independent failure/control/recovery evidence. |
+
+### Incident Management and Fault Injection
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Detection | RECOMMENDED VIDEO | Google SRE incident material reviewed | [Google SRE — Managing Incidents](https://sre.google/sre-book/managing-incidents/) | Canonical incident lifecycle and command structure. |
+| Triage | RECOMMENDED VIDEO | incident-management material reviewed | Reuse Google SRE incident guidance | One coherent model is preferable. |
+| Incident Roles | RECOMMENDED VIDEO | incident command material reviewed | Reuse Google SRE incident guidance | Makes separation of command/operations/communications explicit. |
+| Communication | RECOMMENDED VIDEO | incident communication material reviewed | [Atlassian — Incident communication](https://www.atlassian.com/incident-management/incident-communication) | Practical stakeholder/status communication model. |
+| Mitigation | NO VIDEO | — | — | Mitigation choice is scenario-specific and must prioritize restoration. |
+| Timeline Construction | NO VIDEO | — | — | Learner reconstructs the actual exercise timeline. |
+| Root Cause | RECOMMENDED VIDEO | postmortem material reviewed | [Google SRE — Postmortem Culture](https://sre.google/sre-book/postmortem-culture/) | Frames root/contributing factors without simplistic blame. |
+| Contributing Factors | RECOMMENDED VIDEO | postmortem material reviewed | Reuse Google postmortem guidance | Same causal-analysis model. |
+| Blameless Postmortems | RECOMMENDED VIDEO | Google postmortem material reviewed | Reuse Google postmortem guidance | Canonical organizational-learning framing. |
+| Corrective Actions | NO VIDEO | — | — | Actions must trace to actual contributing factors and owners. |
+| Learning from Near Misses | RECOMMENDED VIDEO | incident-learning material reviewed | Reuse postmortem culture guidance | Extends learning beyond outages. |
+| Lab: Run a Steward Incident Exercise | NO VIDEO | — | — | Independent detect→triage→mitigate→postmortem evidence. |
+| Hypothesis-driven Reliability Experiments | RECOMMENDED VIDEO | chaos-engineering principles reviewed | [Principles of Chaos Engineering](https://principlesofchaos.org/) | Starts from steady-state hypothesis rather than random breakage. |
+| Controlled Failure Injection | RECOMMENDED VIDEO | chaos material reviewed | Reuse Principles of Chaos | Safety and hypothesis remain primary. |
+| Blast Radius and Safety | RECOMMENDED VIDEO | chaos safety material reviewed | Reuse Principles of Chaos | Explicitly bounds experiments. |
+| Process and Container Failure | NO VIDEO | — | — | Controlled lab injection. |
+| Resource Exhaustion Concepts | RECOMMENDED VIDEO | saturation/cascading material reviewed | Reuse Google cascading-failure resource | Existing production model is sufficient. |
+| Network and Dependency Failure Simulation | NO VIDEO | — | — | Controlled lab injection. |
+| Database Failure Scenarios | NO VIDEO | — | — | Controlled lab injection. |
+| Artifact Repository Failure Scenarios | NO VIDEO | — | — | Controlled Nexus dependency failure. |
+| Recovery Verification | NO VIDEO | — | — | Recovery evidence is the objective. |
+| Chaos Engineering Principles and Safety | RECOMMENDED VIDEO | chaos principles reviewed | Reuse Principles of Chaos Engineering | Avoids tool-first chaos engineering. |
+| Lab: Run a Steward Reliability Experiment | NO VIDEO | — | — | Independent hypothesis/injection/observation/improvement evidence. |
+
+### Data Protection and Disaster Recovery
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Backups | RECOMMENDED VIDEO | CISA/AWS backup material reviewed | [CISA — Data Backup Options](https://www.cisa.gov/news-events/news/data-backup-options) | Establishes backup copies/media/location as risk controls. |
+| Backup Integrity | NO VIDEO | — | — | Integrity must be verified from actual backup artifacts. |
+| Restore Testing | RECOMMENDED VIDEO | DR material reviewed | [AWS Well-Architected — Disaster Recovery](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/disaster-recovery-dr-objectives.html) | Recovery objectives and strategy diagrams support restore planning. |
+| RPO and RTO | RECOMMENDED VIDEO | DR objective material reviewed | Reuse AWS DR objectives | RPO/RTO are best understood inside recovery strategy. |
+| Disaster Scenarios | NO VIDEO | — | — | Learner selects credible Steward failure scenarios. |
+| Recovery Procedures | NO VIDEO | — | — | Procedures must be executable against the real system. |
+| Database Recovery | RECOMMENDED VIDEO | PostgreSQL recovery material reviewed | Reuse PostgreSQL Backup and Restore | Canonical DB recovery reference. |
+| Artifact Repository Backup and Restore | NO VIDEO | — | — | Must prove Nexus recovery directly. |
+| Configuration and Infrastructure Recovery | NO VIDEO | — | — | Existing Git/IaC/configuration assets must reconstruct the environment. |
+| Recovery Evidence | NO VIDEO | — | — | Evidence is the lesson. |
+| Lab: Run a Steward Restore Drill | NO VIDEO | — | — | Independent destructive/recovery verification. |
+
+### Reliability Engineer Milestone
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Milestone: Steward Reliability Program | NO VIDEO | — | — | Defines the independent reliability synthesis. |
+| Assemble the Reliability Evidence Baseline | NO VIDEO | — | — | Cross-module evidence audit. |
+| Operate Steward Through a Reliability Review Scenario | NO VIDEO | — | — | Live operational scenario is the assessment. |
+| Publish the Steward Reliability Review | NO VIDEO | — | — | Professional reliability artifact. |
+| Defend the Reliability Posture | NO VIDEO | — | — | Final SLO, telemetry, resilience, incident and recovery defense. |
