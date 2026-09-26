@@ -743,3 +743,153 @@ A blog post may also be better than either a manual or a video. The resource mix
 | File Integration — Secure File Transfer Readiness: SFTP and FTPS | RECOMMENDED VIDEO | SFTP/FTPS protocol-boundary explainers reviewed | [Fortra — SFTP vs. FTPS: The Key Differences](https://www.youtube.com/watch?v=G2s855EP-HI) — use as the short protocol-boundary primer | The concise comparison reinforces that SFTP and FTPS are distinct protocols with different transport/security models, preventing the common assumption that SFTP is simply encrypted FTP. |
 | Platform Builder Milestone — Assemble the Platform Builder Evidence Pack | NO VIDEO | — | — | Milestone evidence synthesis. |
 | Platform Builder Milestone — Platform Builder Exit Reflection | NO VIDEO | — | — | Reflection and capability assessment. |
+
+
+## Delivery Engineer — complete school multimedia audit
+
+This pass audits the live deep-authored Delivery Engineer runtime paths, including the later production-schema and migration exercises that extend the older high-level journey summary. Media is promoted only when it adds a useful visual or operational model; documentation and learner-run delivery evidence remain primary.
+
+### Software Delivery Foundations and Automation
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| The Source-to-Production Lifecycle | RECOMMENDED VIDEO | CI/CD lifecycle explainers reviewed | [GitLab — What is CI/CD?](https://www.youtube.com/watch?v=scEDHsr3APg) — use as the lifecycle primer | Gives a compact visual path from change through automated integration and delivery before TSA separates each control boundary in depth. |
+| Git Workflows | OPTIONAL VIDEO | Branching/workflow explainers reviewed | No candidate promoted | The lesson is a policy/trade-off exercise; repository practice and review evidence matter more than a branching animation. |
+| Pull Requests and Reviews | NO VIDEO | — | — | Review quality is learned by reviewing real Steward changes and evidence. |
+| Semantic Versioning | OPTIONAL VIDEO | SemVer explainers reviewed | No candidate promoted | The specification is short and authoritative; applying version decisions to Steward is higher value. |
+| Conventional Commits | NO VIDEO | — | — | The convention plus real repository history is sufficient. |
+| Release Notes and Changelogs | NO VIDEO | — | — | This is release communication practice. |
+| Build Artifacts | RECOMMENDED VIDEO | Build/release artifact material reviewed | Reuse the CI/CD lifecycle primer; no separate artifact video promoted | The key TSA behavior is immutable source-to-artifact traceability, which is proved in later CI/release labs. |
+| Environment Promotion | RECOMMENDED VIDEO | Promotion/pipeline material reviewed | Reuse [GitLab — What is CI/CD?](https://www.youtube.com/watch?v=scEDHsr3APg) for pipeline context | The visual pipeline helps establish promotion; TSA then requires the same immutable candidate across environments. |
+| Shell Scripting for Engineers | OPTIONAL VIDEO | Bash scripting tutorials reviewed | No candidate promoted | The GNU Bash manual plus learner-authored scripts avoid duplicating earlier shell foundations. |
+| Pipes, Exit Codes and Failure | RECOMMENDED VIDEO | Shell pipeline/failure material reviewed | No candidate promoted | Worth visual reinforcement, but no candidate met the focused operational standard. |
+| Environment Variables | NO VIDEO | — | — | Direct process/configuration experiments are primary. |
+| Repeatable Automation Scripts | NO VIDEO | — | — | Repetition, preconditions and rerun behavior must be demonstrated in the learner's scripts. |
+| Make and Task Automation | OPTIONAL VIDEO | Make/task-runner tutorials reviewed | No candidate promoted | The lesson needs a small discoverable interface, not a broad Make course. |
+| Idempotency Concepts | RECOMMENDED VIDEO | Desired-state/idempotence material reviewed | Reuse [Packet Pushers — Ansible Desired State Configuration & Idempotency Explained](https://packetpushers.net/blog/ansible-desired-state-configuration-idempotency-explained-video/) for the convergence mental model | Reinforces the same property across scripts and delivery automation without duplicating instruction. |
+| Lab: Automate Steward Developer and Operator Tasks | NO VIDEO | — | — | Independent automation evidence. |
+
+### Containers and Docker
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Containers versus Virtual Machines | RECOMMENDED VIDEO | Container/VM architecture explainers reviewed | [IBM Technology — Containers vs VMs: What's the difference?](https://www.youtube.com/watch?v=cjXI-yxqGTI) | Strong visual comparison of isolation boundaries before the learner works with Linux container primitives. |
+| Namespaces and cgroups Concepts | RECOMMENDED VIDEO | Linux container primitive explainers reviewed | [Docker — How Containers Work](https://www.youtube.com/watch?v=-YnMr1lj4Z8) — focus on namespaces/cgroups isolation concepts | Connects the Docker abstraction to Linux isolation/resource primitives instead of presenting containers as magic. |
+| Docker Architecture | RECOMMENDED VIDEO | Docker architecture material reviewed | [Docker — Docker 101 Tutorial](https://www.youtube.com/watch?v=gAGEar5HQoU) — use the architecture/image/container portions | Establishes the client/daemon/image/container model before operational work. |
+| Images and Layers | RECOMMENDED VIDEO | Docker image/layer material reviewed | Reuse Docker 101; inspect image history/layers during the TSA lab | Avoids redundant media while the learner proves caching and immutable image identity directly. |
+| Writing Dockerfiles | RECOMMENDED VIDEO | Dockerfile tutorials reviewed | Reuse [Docker — Docker 101 Tutorial](https://www.youtube.com/watch?v=gAGEar5HQoU) for build mechanics | First-party demonstration complements the Dockerfile reference; TSA owns production-oriented decisions. |
+| Build Context | OPTIONAL VIDEO | Build-context explanations reviewed | No separate candidate promoted | A .dockerignore/build-context experiment is clearer than another video. |
+| Multi-stage Builds | RECOMMENDED VIDEO | Multi-stage build material reviewed | [Docker — Multi-stage Builds](https://www.youtube.com/watch?v=zpkqNPwEzac) | The build-stage/runtime-stage boundary is easier to understand visually before optimizing Steward. |
+| Volumes | RECOMMENDED VIDEO | Docker storage demonstrations reviewed | Reuse Docker 101 for volume mechanics; prove persistence through container destruction | The destructive/recreate lab supplies the important evidence. |
+| Container Networking | RECOMMENDED VIDEO | Docker networking material reviewed | [NetworkChuck — Docker Networking](https://www.youtube.com/watch?v=bKFMS5C4CG0) — use for bridge/port/container communication visualization | Makes the virtual network boundary visible while relying on Platform Builder networking knowledge. |
+| Docker Compose | RECOMMENDED VIDEO | Compose demonstrations reviewed | [Docker — Docker Compose](https://www.youtube.com/watch?v=HG6yIjZapSA) — use as the multi-service declaration primer | Visualizes services/networks/volumes as one application model before Steward+PostgreSQL implementation. |
+| Health Checks | OPTIONAL VIDEO | Container health-check material reviewed | No candidate promoted | Learner must define and falsify a meaningful health claim. |
+| Container Registries | RECOMMENDED VIDEO | Registry workflow material reviewed | Reuse Docker 101 for push/pull context; deeper repository management follows in Artifact & Supply Chain | Prevents duplicating the later repository-manager module. |
+| Image Tags and Versioning | RECOMMENDED VIDEO | Tag/digest material reviewed | No candidate promoted | Direct tag-versus-digest inspection against the learner's built image is stronger evidence. |
+| Image Optimization | OPTIONAL VIDEO | Image optimization material reviewed | Reuse multi-stage-build media | Multi-stage construction is the main visual concept; optimization remains evidence-based. |
+| Container Debugging | RECOMMENDED VIDEO | Docker troubleshooting demonstrations reviewed | No candidate promoted | TSA's controlled failure lab deliberately exercises logs, inspect, networking and configuration boundaries. |
+| Lab: Containerize Steward API | NO VIDEO | — | — | Independent build/recreate/failure evidence. |
+
+### Continuous Integration
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| CI Pipeline Architecture | RECOMMENDED VIDEO | Jenkins/GitHub Actions pipeline introductions reviewed | [Jenkins — Pipeline](https://www.jenkins.io/doc/book/pipeline/) plus [Jenkins Pipeline overview video](https://www.youtube.com/watch?v=7KCS70sCoK0) | The pipeline-as-code/stage model is strongly visual and maps to the self-hosted CI work. |
+| Jobs, Stages and Dependencies | RECOMMENDED VIDEO | Pipeline execution-model material reviewed | Reuse Jenkins Pipeline overview | One coherent execution model is preferable to unrelated CI tutorials. |
+| Runners and Agents | RECOMMENDED VIDEO | Jenkins agent architecture material reviewed | [Jenkins — Using Jenkins agents](https://www.youtube.com/watch?v=99DddJiH7lM) | Makes controller/agent execution boundaries concrete before installing the homelab agent. |
+| GitHub Actions and Jenkins | OPTIONAL VIDEO | Platform comparison material reviewed | No candidate promoted | TSA needs capability comparison and an explicit platform choice, not a vendor popularity comparison. |
+| Self-hosted Runners | RECOMMENDED VIDEO | Self-hosted runner/agent setup material reviewed | Reuse Jenkins agent media for execution boundary; setup remains learner-run | Keeps the conceptual and operational model aligned with the academy's Jenkins path. |
+| Caching | OPTIONAL VIDEO | CI cache demonstrations reviewed | No candidate promoted | Cache correctness is better learned by measuring cold/warm pipeline behavior. |
+| Pipeline Artifacts | RECOMMENDED VIDEO | CI artifact material reviewed | Reuse pipeline overview; later Nexus module owns durable artifact management | Avoids conflating temporary CI artifacts with repository-managed release artifacts. |
+| Secrets and Variables | RECOMMENDED VIDEO | Jenkins credential-handling material reviewed | [Jenkins — Using Credentials](https://www.jenkins.io/doc/book/using/using-credentials/) | First-party guidance establishes credential boundaries; secret-management depth remains later curriculum. |
+| Parallelism | OPTIONAL VIDEO | Parallel pipeline material reviewed | No candidate promoted | Learner should parallelize only after identifying independent work and measuring value. |
+| Automated Checks | NO VIDEO | — | — | Existing tests/linters are integrated directly. |
+| Test Stages | NO VIDEO | — | — | Pipeline composition practice. |
+| Quality Gates | NO VIDEO | — | — | Gate policy must be defended from real risk/evidence. |
+| Building Containers in CI | RECOMMENDED VIDEO | Jenkins+Docker build material reviewed | Reuse Jenkins Pipeline + Docker build resources | The value is integrating already-learned primitives into one traceable pipeline. |
+
+### Continuous Delivery and Deployment
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| CI versus Continuous Delivery versus Continuous Deployment | RECOMMENDED VIDEO | CI/CD boundary explainers reviewed | Reuse [GitLab — What is CI/CD?](https://www.youtube.com/watch?v=scEDHsr3APg) | Provides the visual vocabulary; TSA explicitly tests the control boundaries. |
+| Environment Management | NO VIDEO | — | — | Environment contracts are derived from the learner's infrastructure/configuration. |
+| Deployment Automation | RECOMMENDED VIDEO | Deployment pipeline demonstrations reviewed | Reuse Jenkins Pipeline overview | Pipeline mechanics are known; the lesson's value is executable deployment intent and verification. |
+| Release Approvals | OPTIONAL VIDEO | Approval-gate material reviewed | No candidate promoted | Approval is a decision/evidence design problem rather than a UI tutorial. |
+| Database Migrations During Deployment | RECOMMENDED VIDEO | Expand/contract and migration-safety material reviewed | [Martin Fowler — Parallel Change](https://martinfowler.com/bliki/ParallelChange.html) — visual/article resource rather than forcing a weaker video | Backward-compatible expand/migrate/contract thinking is more important than framework-specific migration commands. |
+| Rollback | RECOMMENDED VIDEO | Deployment rollback material reviewed | No candidate promoted | TSA must prove rollback against immutable image identity and persistent-state constraints. |
+| Rolling Deployments | RECOMMENDED VIDEO | Kubernetes deployment strategy explainers reviewed | [Kubernetes — Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) — use rolling-update diagrams | The controller diagrams make incremental replacement and coexistence constraints clear even before later Kubernetes depth. |
+| Blue-Green Deployments | RECOMMENDED VIDEO | Blue/green strategy explainers reviewed | [Martin Fowler — BlueGreenDeployment](https://martinfowler.com/bliki/BlueGreenDeployment.html) | Clear topology/traffic-switch mental model without adding a tool-specific recipe. |
+| Canary Deployment Concepts | RECOMMENDED VIDEO | Canary/progressive delivery material reviewed | [Argo Rollouts — Canary strategy](https://argo-rollouts.readthedocs.io/en/stable/features/canary/) | The staged exposure model directly prepares the later progressive-delivery exercise. |
+| Feature Flag Concepts | OPTIONAL VIDEO | Feature-toggle material reviewed | [Martin Fowler — Feature Toggles](https://martinfowler.com/articles/feature-toggles.html) — use diagrams as supporting visual material | Shows deployment/exposure decoupling and the operational complexity of long-lived flags. |
+| Lab: Automate Steward API Deployment and Rollback | NO VIDEO | — | — | Independent release/rollback evidence. |
+
+### Configuration Management
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Configuration Drift | RECOMMENDED VIDEO | Ansible drift material reviewed | Reuse [Ansible — Managing Configuration and Drift](https://www.youtube.com/watch?v=a5nZbSAfdKg) | This is deliberate reinforcement of Platform Builder: Delivery Engineer now connects declared host state to the delivery platform. |
+| Desired State and Idempotency | RECOMMENDED VIDEO | Desired-state material reviewed | Reuse Packet Pushers idempotency primer | Reinforcement rather than duplicate instruction. |
+| Ansible Fundamentals | OPTIONAL VIDEO | Ansible fundamentals reviewed | Reuse Jeff Geerling Ansible 101 only as needed | Platform Builder already established the operational foundation. |
+| Inventories | NO VIDEO | — | — | Learner models the actual Steward host roles. |
+| Playbooks | OPTIONAL VIDEO | Playbook demonstrations reviewed | Reuse Jeff Geerling Ansible 101 | Existing media is sufficient. |
+| Roles Concepts | OPTIONAL VIDEO | Role demonstrations reviewed | Reuse Jeff Geerling Ansible 101 Episode 6 | Existing media is sufficient. |
+| Lab: Automate Steward Servers with Ansible | NO VIDEO | — | — | Independent convergence/drift/rebuild evidence. |
+
+### Artifact, Dependency and Supply-Chain Foundations
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Why Organizations Use Internal Artifact Repositories | RECOMMENDED VIDEO | Sonatype repository-manager material reviewed | [Sonatype — What is a Repository Manager?](https://www.youtube.com/watch?v=6F5tTzYgKxQ) | Establishes the enterprise repository-manager role before homelab deployment. |
+| Package Registries versus Artifact Repositories | RECOMMENDED VIDEO | Registry/repository-manager comparisons reviewed | Reuse Sonatype repository-manager primer | One conceptual model is sufficient; TSA then compares supported formats and ownership. |
+| Public and Private Dependencies | NO VIDEO | — | — | Dependency classification is applied directly to Steward. |
+| Repository Manager Architecture | RECOMMENDED VIDEO | Nexus architecture/deployment material reviewed | [Sonatype Nexus Repository documentation](https://help.sonatype.com/en/sonatype-nexus-repository.html) with architecture diagrams | First-party architecture is preferable to an installation-only video. |
+| Hosted, Proxy and Group Repositories | RECOMMENDED VIDEO | Nexus repository-type demonstrations reviewed | [Sonatype — Repository Management Basics](https://www.youtube.com/watch?v=6F5tTzYgKxQ) — focus on hosted/proxy/group concepts | These repository types are easiest to understand as a request-flow model before implementation. |
+| Python and PyPI Package Distribution | OPTIONAL VIDEO | Python packaging material reviewed | No candidate promoted | PyPA documentation and actual publish/install evidence are stronger. |
+| npm Package Distribution | OPTIONAL VIDEO | npm publishing material reviewed | No candidate promoted | npm documentation plus real package publication is sufficient. |
+| Container Registries | RECOMMENDED VIDEO | OCI registry workflow reviewed | Reuse Docker registry material | Connects image publication to the same repository platform without duplicating Docker. |
+| Deploying Nexus Repository in the Homelab | OPTIONAL VIDEO | Nexus installation walkthroughs reviewed | No candidate promoted | Installation changes over time; first-party docs plus the academy topology are safer. |
+| Repository Authentication and Permissions | RECOMMENDED VIDEO | Nexus security/RBAC material reviewed | [Sonatype Nexus Repository documentation](https://help.sonatype.com/en/roles.html) | First-party role/privilege model directly supports least-privilege repository operation. |
+| Publishing Internal Python Packages | NO VIDEO | — | — | Learner must build/publish a real internal package. |
+| Consuming Internal Packages with pip | NO VIDEO | — | — | Direct client configuration and resolution evidence. |
+| Publishing Internal npm Packages | NO VIDEO | — | — | Direct publication evidence. |
+| Consuming Internal Packages with npm and pnpm | NO VIDEO | — | — | Direct client-resolution evidence. |
+| Publishing Steward Container Images Internally | NO VIDEO | — | — | Direct CI-to-registry evidence. |
+| Proxying and Caching Public Dependencies | RECOMMENDED VIDEO | Nexus proxy-repository material reviewed | Reuse Sonatype repository-manager primer | The request/cache flow is the important visual model. |
+| Internal Package Versioning | NO VIDEO | — | — | Apply SemVer/release policy to actual internal packages. |
+| Prerelease, Snapshot and Release Concepts | OPTIONAL VIDEO | Repository version-state material reviewed | No candidate promoted | The learner should reason from package/repository policy and immutable release identity. |
+| Artifact Retention and Cleanup | OPTIONAL VIDEO | Repository cleanup-policy material reviewed | No candidate promoted | Policy is driven by recovery/audit/storage constraints. |
+| Dependency Provenance | RECOMMENDED VIDEO | SLSA provenance material reviewed | [SLSA — Provenance](https://slsa.dev/spec/v1.0/provenance) — use provenance model/diagrams | Gives a precise source→build→artifact attestation model. |
+| SBOM Fundamentals | RECOMMENDED VIDEO | CISA/CycloneDX SBOM material reviewed | [CycloneDX — SBOM](https://cyclonedx.org/capabilities/sbom/) — use component/dependency model diagrams | Establishes the software-component inventory model before generating Steward evidence. |
+| Signing and Provenance Concepts | RECOMMENDED VIDEO | Sigstore/SLSA signing material reviewed | [Sigstore — How it works](https://www.sigstore.dev/how-it-works/) | Visualizes identity, signing and transparency-log concepts without requiring premature deep PKI work. |
+| Dependency, Package and Image Scanning | RECOMMENDED VIDEO | Trivy/scanning material reviewed | [Aqua Security — Trivy documentation](https://trivy.dev/latest/) | One tool can demonstrate filesystem/package/image findings while TSA keeps scanning as evidence, not a security guarantee. |
+| Lab: Build the Steward Internal Artifact Repository | NO VIDEO | — | — | Independent repository-platform build evidence. |
+| Lab: Publish and Consume steward-common through CI | NO VIDEO | — | — | Independent source→package→repository→consumer traceability evidence. |
+
+### Release Engineering and Production Evolution
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Release Candidates | RECOMMENDED VIDEO | Release-engineering material reviewed | [Google SRE Book — Release Engineering](https://sre.google/sre-book/release-engineering/) — use the release philosophy/process diagrams as supporting visual material | Authoritative operational framing for reproducible, automated releases. |
+| Promotion and Gates | RECOMMENDED VIDEO | Promotion/gating material reviewed | Reuse Google SRE Release Engineering plus the CI pipeline model | Connects immutable candidate identity to explicit promotion decisions. |
+| Deployment Evidence | NO VIDEO | — | — | Evidence must come from the actual deployed Steward release. |
+| Release Observability | OPTIONAL VIDEO | Release telemetry material reviewed | No candidate promoted | Reliability Engineer later owns the observability stack; here only enough evidence for a release decision is required. |
+| Release Failure Handling | RECOMMENDED VIDEO | Rollback/failure material reviewed | No candidate promoted | The controlled failed release and recovery exercise is intentionally primary. |
+| Release Runbooks | NO VIDEO | — | — | Runbook quality is proved by another engineer being able to execute it. |
+| Release Engineering Lab and Review | NO VIDEO | — | — | Synthesis, failure and review evidence. |
+| Production Database Schema Evolution | RECOMMENDED VIDEO | Parallel-change/expand-contract material reviewed | Reuse [Martin Fowler — Parallel Change](https://martinfowler.com/bliki/ParallelChange.html) | Directly supports expand/backfill/switch/contract and old/new coexistence reasoning. |
+| Delivery Platform Migration Exercise | NO VIDEO | — | — | Migration is a bounded comparative exercise using real CI evidence. |
+| Progressive Delivery with Canary Releases | RECOMMENDED VIDEO | Argo Rollouts canary material reviewed | [Argo Rollouts — Canary](https://argo-rollouts.readthedocs.io/en/stable/features/canary/) plus rollout diagrams | The staged traffic and automated-analysis control loop is highly visual; implementation remains learner-owned. |
+
+### Delivery Engineer Milestone
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Milestone Brief: Steward Delivery Platform | NO VIDEO | — | — | Defines the independent synthesis target. |
+| Gate 1: Source, CI and Artifact Integrity | NO VIDEO | — | — | Must be proven from source, pipeline and immutable artifact evidence. |
+| Gate 2: Reproducible Delivery Infrastructure | NO VIDEO | — | — | Must be demonstrated from a reproducible host/repository build. |
+| Gate 3: Promotion and Deployment | NO VIDEO | — | — | Same-candidate promotion is assessed directly. |
+| Gate 4: Runtime Verification | NO VIDEO | — | — | Requires observed behavior from the deployed release. |
+| Gate 5: Failure, Rollback and Recovery | NO VIDEO | — | — | Controlled failure evidence is the assessment. |
+| Gate 6: Delivery Platform Handoff | NO VIDEO | — | — | Engineering handoff is the artifact. |
+| Milestone Review and Exit Criteria | NO VIDEO | — | — | Final capability assessment. |
