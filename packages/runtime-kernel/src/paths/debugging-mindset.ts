@@ -33,7 +33,7 @@ During a serious incident, mitigation and diagnosis can have different prioritie
 The goal of debugging is not merely to make the symptom disappear. It is to produce a defensible explanation and evidence that the correction addresses the relevant cause.`,
                 resources: [
                     { title: "Google SRE — Effective Troubleshooting", url: "https://sre.google/sre-book/effective-troubleshooting/" },
-                    { title: "MIT Missing Semester — Debugging and Profiling", url: "https://missing.csail.mit.edu/2020/debugging-profiling/" },
+                    { title: "MIT Missing Semester — Debugging and Profiling", url: "https://www.youtube.com/watch?v=l812pUnKxME", kind: "video", recommended: true, read: "Watch the debugging portion before the lecture moves into profiling.", purpose: "Live debugging demonstrates the transition from symptoms to logs, debuggers and inspection tools." },
                 ],
             },
         },
