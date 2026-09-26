@@ -2370,3 +2370,80 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Handbook — Keeping the Handbook Alive | OPTIONAL VIDEO | docs-as-code/living-documentation talks reviewed | No candidate promoted yet | A maintained repository workflow can reinforce event-driven documentation updates. |
 | Handbook — Lab: Build the Steward Engineering Handbook | NO VIDEO | — | — | Independent synthesis. |
 | Technical Steward Milestone — Milestone: Technical Stewardship Review | NO VIDEO | — | — | Final school synthesis and defence; no new instructional media. |
+
+
+## Professional Engineer — complete school multimedia audit
+
+Professional Engineer is intentionally a **transfer-and-defence capstone**, not another content-acquisition school. By this point the learner is expected to retrieve prior Academy resources only when evidence exposes a genuine knowledge gap. New media is therefore exceptional: the default is independent discovery, design, implementation, operation, review and defence from a blank repository.
+
+| Path / lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Discovery — Choosing a Substantial Problem | NO VIDEO | Prior curriculum resources sufficient | — | Capstone begins by proving transfer; problem choice must come from evidence, not new instruction. |
+| Discovery — Stakeholder Discovery | OPTIONAL VIDEO | Stakeholder-interview material reviewed | No candidate promoted; use only if interview technique needs refresh | A short interview demonstration can refresh technique, but the learner must conduct real discovery. |
+| Discovery — Problem Framing | NO VIDEO | Prior requirements/problem-framing material sufficient | — | Apply the established framing method independently. |
+| Discovery — Requirements | NO VIDEO | Prior System Thinker material sufficient | — | Transfer existing requirements capability. |
+| Discovery — Constraints | NO VIDEO | Prior System Thinker material sufficient | — | Identify real constraints. |
+| Discovery — Working with Ambiguity | NO VIDEO | — | — | Ambiguity is the condition the learner must handle, not a topic requiring another lecture. |
+| Discovery — Quality Attributes | NO VIDEO | Prior architecture material sufficient | — | Elicit measurable quality scenarios from the capstone. |
+| Discovery — Risk | NO VIDEO | Prior Technical Steward risk material sufficient | — | Apply the existing risk model. |
+| Discovery — Success Measures and Evidence | NO VIDEO | — | — | Define observable outcomes for the chosen problem. |
+| Discovery — Scope and Non-goals | NO VIDEO | — | — | Scope discipline is part of independent engineering. |
+| Discovery — Lab: Produce the Capstone Discovery Brief | NO VIDEO | — | — | Independent synthesis deliverable. |
+| Proposal — System Context and Boundaries | NO VIDEO | C4/system-context media already reviewed | Reuse prior C4 resource only for refresh | Capstone should demonstrate the modeling skill independently. |
+| Proposal — Domain and Data Model Proposal | NO VIDEO | — | — | Design from the discovered domain. |
+| Proposal — Architecture Proposal | NO VIDEO | Prior Architect resources sufficient | — | Produce and defend the architecture rather than copy a reference architecture. |
+| Proposal — Infrastructure and Hosting Proposal | NO VIDEO | Prior platform/cloud material sufficient | — | Choose infrastructure from actual constraints. |
+| Proposal — Delivery Plan | NO VIDEO | Prior Delivery Engineer material sufficient | — | Apply existing delivery capability. |
+| Proposal — Quality Strategy | NO VIDEO | Prior Quality Steward material sufficient | — | Build a strategy from capstone risks. |
+| Proposal — Security Strategy | NO VIDEO | Prior Security Steward material sufficient | — | Apply threat/risk/control reasoning. |
+| Proposal — Reliability Strategy | NO VIDEO | Prior Reliability Engineer material sufficient | — | Select reliability mechanisms from actual failure modes/SLOs. |
+| Proposal — Operational Model | NO VIDEO | — | — | Define real ownership/support/operations. |
+| Proposal — Cost Model | OPTIONAL VIDEO | FinOps/cost-model material reviewed | No new candidate promoted | Optional refresh only if the selected hosting model introduces unfamiliar billing dimensions. |
+| Proposal — Governance Approach | NO VIDEO | Prior Technical Steward material sufficient | — | Tailor governance to the capstone. |
+| Proposal — Dependency and Internal Platform Decisions | NO VIDEO | — | — | Choose reuse/build boundaries independently. |
+| Proposal — Implementation Milestones | NO VIDEO | — | — | Plan executable increments. |
+| Proposal — Architecture and Risk Review | NO VIDEO | Prior review material sufficient | — | Run the review; don't watch one instead. |
+| Proposal — Lab: Defend the Capstone Engineering Proposal | NO VIDEO | — | — | Independent defence. |
+| Build — Start from a Blank Repository | NO VIDEO | — | — | Blank-repo start is deliberate transfer evidence. |
+| Build — Establish Engineering Conventions | NO VIDEO | — | — | Choose and encode conventions from the system's needs. |
+| Build — Model the Domain | NO VIDEO | — | — | Independent domain modeling. |
+| Build — Implement the System | NO VIDEO | — | — | Independent implementation. |
+| Build — Design and Evolve the Data | NO VIDEO | — | — | Independent data/schema evolution. |
+| Build — Build Infrastructure | NO VIDEO | — | — | Independent platform implementation. |
+| Build — Automate Delivery | NO VIDEO | — | — | Independent delivery implementation. |
+| Build — Build Quality Evidence | NO VIDEO | — | — | Independent testing/quality evidence. |
+| Build — Secure the System | NO VIDEO | — | — | Independent security implementation. |
+| Build — Instrument the System | NO VIDEO | — | — | Independent observability implementation. |
+| Build — Build Reliability Evidence | NO VIDEO | — | — | Independent failure/recovery evidence. |
+| Build — Operate Internal Dependencies Deliberately | NO VIDEO | — | — | Make explicit dependency ownership decisions. |
+| Build — Iterate on Engineering Decisions | NO VIDEO | — | — | Reassess decisions from implementation evidence. |
+| Build — Document Significant Decisions | NO VIDEO | ADR media already available earlier | Reuse only as reference if needed | The learner should now produce ADRs without new instruction. |
+| Build — Manage Scope and Technical Debt | NO VIDEO | Prior engineering-health material sufficient | — | Manage actual capstone trade-offs. |
+| Build — Lab: Reuse tsa-test-core as a Second Consumer | NO VIDEO | — | — | Independent transfer/reuse proof. |
+| Build — Lab: Deliver the First End-to-End Capstone Release | NO VIDEO | — | — | End-to-end synthesis release. |
+| Readiness — Deployment Readiness | NO VIDEO | — | — | Run the real readiness checks. |
+| Readiness — Observability | NO VIDEO | Prior Reliability material sufficient | — | Validate actual telemetry coverage. |
+| Readiness — Security Assessment | NO VIDEO | Prior Security material sufficient | — | Assess the capstone. |
+| Readiness — Performance Evidence | NO VIDEO | — | — | Measure the real workload. |
+| Readiness — Reliability and Failure Testing | NO VIDEO | — | — | Inject failures and collect evidence. |
+| Readiness — Backup and Recovery | NO VIDEO | — | — | Perform actual restore/recovery proof. |
+| Readiness — Runbooks | NO VIDEO | Prior handbook/runbook material sufficient | — | Exercise the capstone runbooks. |
+| Readiness — Operational Ownership | NO VIDEO | — | — | Define actual ownership/escalation. |
+| Readiness — Risk and Control Evidence | NO VIDEO | Prior Technical Steward material sufficient | — | Assemble operating evidence. |
+| Readiness — Dependency and Supply-chain Readiness | NO VIDEO | — | — | Verify actual provenance/lifecycle/dependencies. |
+| Readiness — Cost and Capacity Review | NO VIDEO | — | — | Review measured/estimated capstone capacity and cost. |
+| Readiness — Release Decision | NO VIDEO | — | — | Make the evidence-based go/no-go decision. |
+| Readiness — Lab: Run the Capstone Production Readiness Review | NO VIDEO | — | — | Independent production-readiness review. |
+| Defence — Present the Problem and Outcomes | NO VIDEO | — | — | Defend the discovered problem and achieved outcomes. |
+| Defence — Present the Architecture | NO VIDEO | — | — | Explain the architecture the learner actually built. |
+| Defence — Explain Trade-offs | NO VIDEO | — | — | Defend accepted consequences and alternatives. |
+| Defence — Present Engineering Evidence | NO VIDEO | — | — | Use the evidence portfolio. |
+| Defence — Defend Quality Decisions | NO VIDEO | — | — | Independent defence. |
+| Defence — Defend Security Decisions | NO VIDEO | — | — | Independent defence. |
+| Defence — Defend Reliability Decisions | NO VIDEO | — | — | Independent defence. |
+| Defence — Defend Governance Decisions | NO VIDEO | — | — | Independent defence. |
+| Defence — Respond to Challenges | NO VIDEO | — | — | Live reasoning under challenge is itself the assessment. |
+| Defence — State Limitations | NO VIDEO | — | — | Demonstrate calibrated engineering judgment. |
+| Defence — Propose Future Evolution | NO VIDEO | — | — | Use current evidence to propose next changes. |
+| Defence — Reflect on the TSA Journey | NO VIDEO | — | — | Final transfer reflection. |
+| Defence — Milestone: Professional Engineering Capstone and Defence | NO VIDEO | — | — | Final transfer assessment; no new instructional media. |
