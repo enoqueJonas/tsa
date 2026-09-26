@@ -893,3 +893,162 @@ This pass audits the live deep-authored Delivery Engineer runtime paths, includi
 | Gate 5: Failure, Rollback and Recovery | NO VIDEO | — | — | Controlled failure evidence is the assessment. |
 | Gate 6: Delivery Platform Handoff | NO VIDEO | — | — | Engineering handoff is the artifact. |
 | Milestone Review and Exit Criteria | NO VIDEO | — | — | Final capability assessment. |
+
+
+## Cloud Engineer — complete school multimedia audit
+
+This audit follows the live Cloud Engineer deep paths rather than the older six-module summary. It therefore includes certificate lifecycle operations, S3-compatible object storage, Kubernetes/OpenShift orchestration, Argo CD GitOps and progressive delivery in addition to hosting, VPS, internet networking, cloud building blocks, IaC and architecture/cost.
+
+### Cloud and Hosting Models
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| On-premises, Colocation, VPS and Cloud | RECOMMENDED VIDEO | Cloud hosting-model explainers reviewed | [IBM Technology — Cloud Computing Explained](https://www.youtube.com/watch?v=M988_fsOSWo) — use for the cloud/service consumption mental model | Gives a visual baseline for what changes when infrastructure ownership moves away from the learner's homelab. |
+| IaaS, PaaS and SaaS | RECOMMENDED VIDEO | Service-model explainers reviewed | [IBM Technology — IaaS, PaaS, SaaS](https://www.youtube.com/watch?v=36zducUX16w) | Clearly visualizes the changing responsibility boundary across service models. |
+| Regions, Zones and Availability Concepts | RECOMMENDED VIDEO | AWS/Azure region/AZ material reviewed | [AWS — Global Infrastructure](https://aws.amazon.com/about-aws/global-infrastructure/) — use the region/AZ diagrams | Provider diagrams are better than a generic cloud video for physical/logical failure-domain concepts. |
+| Shared Responsibility | RECOMMENDED VIDEO | AWS shared-responsibility material reviewed | [AWS — Shared Responsibility Model](https://aws.amazon.com/compliance/shared-responsibility-model/) — use the responsibility diagrams | The responsibility split is the core lesson and is explicitly visualized by the provider. |
+| Elasticity and Consumption Models | OPTIONAL VIDEO | Elasticity/cloud economics material reviewed | Reuse IBM cloud-computing primer | The learner's comparison exercise supplies the important cost/capacity context. |
+| Cloud Cost Awareness | RECOMMENDED VIDEO | FinOps introductions reviewed | [FinOps Foundation — What is FinOps?](https://www.finops.org/introduction/what-is-finops/) | Establishes cloud cost as an engineering/operating concern rather than only a finance concern. |
+| Lab: Compare Homelab, VPS and Managed Cloud Hosting | NO VIDEO | — | — | The learner must defend a hosting decision against actual constraints. |
+
+### VPS Operations
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Choosing a Budget VPS | NO VIDEO | — | — | Provider/pricing choice is time-sensitive and must use current requirements and prices. |
+| Provisioning a Server | OPTIONAL VIDEO | VPS provisioning walkthroughs reviewed | No candidate promoted | Provider UIs change; current provider documentation plus learner evidence is safer. |
+| Public IP Addressing | RECOMMENDED VIDEO | Public/private addressing material reviewed | Reuse Platform Builder networking foundations; no new broad video promoted | Cloud Engineer applies an already-learned network model to a public host. |
+| Securing SSH Access | RECOMMENDED VIDEO | OpenSSH hardening material reviewed | [Red Hat — OpenSSH](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/securing_networks/using-secure-communications-between-two-systems-with-openssh_securing-networks) | First-party operational guidance is preferable to copying an SSH-hardening recipe from video. |
+| Provider Firewalls and Security Controls | RECOMMENDED VIDEO | Cloud firewall/security-group material reviewed | [AWS — Security groups](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html) — use rule/traffic diagrams as a provider example | Shows the external/provider firewall boundary; TSA then maps the same concept to the chosen VPS. |
+| OS Lifecycle and Patching | OPTIONAL VIDEO | Linux patching material reviewed | Reuse Platform Builder OS lifecycle resources | Reinforcement, not duplicate teaching. |
+| Remote Recovery Concepts | RECOMMENDED VIDEO | VPS rescue/console material reviewed | No candidate promoted | Recovery mechanisms vary by provider; the learner must document the chosen provider's actual console/rescue path. |
+| Backups and Snapshots | RECOMMENDED VIDEO | VPS snapshot/backup material reviewed | No candidate promoted | Provider semantics vary; direct restore evidence matters more than a generic snapshot demo. |
+| Lab: Provision the Steward VPS | NO VIDEO | — | — | Independent host, deploy, recovery and handoff evidence. |
+
+### Internet Networking, DNS and TLS
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Public and Private Addressing | RECOMMENDED VIDEO | Internet addressing material reviewed | Reuse prior networking media | The new learning objective is exposure/ownership, not relearning IP addressing. |
+| Internet Routing Concepts | RECOMMENDED VIDEO | Internet routing/BGP explainers reviewed | [Cloudflare — What is BGP?](https://www.cloudflare.com/learning/security/glossary/what-is-bgp/) — use routing diagrams | Gives enough global-routing context without turning Cloud Engineer into a BGP course. |
+| Domains and DNS Records | RECOMMENDED VIDEO | DNS record material reviewed | [Cloudflare — DNS record types](https://www.cloudflare.com/learning/dns/dns-records/) | Visual/reference treatment of A/AAAA/CNAME/MX/TXT and record purpose supports the public DNS lab. |
+| DNS Resolution and Troubleshooting | RECOMMENDED VIDEO | DNS resolution material reviewed | [Cloudflare — What is DNS?](https://www.cloudflare.com/learning/dns/what-is-dns/) — use recursive-resolution diagram | The request path from resolver to authoritative answer is useful before deliberate DNS break/fix. |
+| TLS Certificates and Certificate Authorities | RECOMMENDED VIDEO | TLS/CA material reviewed | [Let's Encrypt — How It Works](https://letsencrypt.org/how-it-works/) | Directly connects ACME, domain control and certificate issuance to the learner's public service. |
+| HTTPS and TLS Termination | RECOMMENDED VIDEO | TLS handshake/termination material reviewed | [Cloudflare — What happens in a TLS handshake?](https://www.cloudflare.com/learning/ssl/what-happens-in-a-tls-handshake/) | Visual handshake sequence clarifies what the reverse proxy terminates and what the client validates. |
+| Reverse Proxies | RECOMMENDED VIDEO | NGINX reverse-proxy material reviewed | [NGINX — Reverse Proxy](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) — use request-flow configuration examples | First-party material maps directly to the gateway role without replacing the learner's configuration. |
+| Ingress Concepts | OPTIONAL VIDEO | Ingress/gateway material reviewed | No candidate promoted | Full Kubernetes ingress arrives later in this school; here the conceptual boundary is enough. |
+| Internet-facing Firewalls | RECOMMENDED VIDEO | Cloud firewall material reviewed | Reuse provider security-group diagrams | Avoids redundant firewall instruction. |
+| Exposure, Attack Surface and Administrative Boundaries | NO VIDEO | — | — | This is an architecture/security-boundary decision against the learner's topology. |
+| Lab: Publish Steward API with DNS and TLS | NO VIDEO | — | — | Independent public request-path and break/fix evidence. |
+
+### Cloud Building Blocks
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Compute | RECOMMENDED VIDEO | Cloud compute material reviewed | [AWS — What is Amazon EC2?](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html) — use architecture diagrams as one concrete provider mapping | Connects generic compute to a real IaaS implementation without making AWS the curriculum itself. |
+| Object Storage | RECOMMENDED VIDEO | Object-storage explainers reviewed | [IBM Technology — Object Storage](https://www.youtube.com/watch?v=eV7T3t2d-7E) | Object/key/bucket semantics differ enough from files/block storage to benefit from visualization. |
+| Block Storage | RECOMMENDED VIDEO | Block/file/object comparisons reviewed | [IBM Technology — Block vs File vs Object Storage](https://www.youtube.com/watch?v=5EqAXnNm0FE) | Visual comparison establishes the workload/storage fit before provider mapping. |
+| Managed Databases | RECOMMENDED VIDEO | Managed DB/shared-responsibility material reviewed | No candidate promoted | The important lesson is the shifted operational boundary, already covered by shared responsibility. |
+| Virtual Networks and Subnets | RECOMMENDED VIDEO | VPC/VNet material reviewed | [AWS — What is Amazon VPC?](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html) — use VPC/subnet diagrams | Maps Platform Builder networking concepts into a provider virtual-network boundary. |
+| Routing and Gateways | RECOMMENDED VIDEO | VPC routing material reviewed | Reuse AWS VPC diagrams | Keeps one coherent provider example. |
+| Load Balancers | RECOMMENDED VIDEO | Load-balancing explainers reviewed | [IBM Technology — Load Balancers](https://www.youtube.com/watch?v=sCR3SAVdyCc) | Request-distribution and health-routing behavior are strongly visual. |
+| IAM | RECOMMENDED VIDEO | Cloud IAM explainers reviewed | [Google Cloud — IAM overview](https://cloud.google.com/iam/docs/overview) — use principal/role/resource model diagrams | Makes authorization attachment and least privilege concrete without tying the concept to local OS users. |
+| Secrets Management | RECOMMENDED VIDEO | Cloud secret-manager material reviewed | [Google Cloud — Secret Manager overview](https://cloud.google.com/secret-manager/docs/overview) | Establishes a managed secret lifecycle boundary; Security Steward later goes deeper. |
+| Cloud Monitoring | OPTIONAL VIDEO | Provider monitoring material reviewed | No candidate promoted | Reliability Engineer owns deep telemetry; here the learner only maps the managed capability. |
+| Cloud Backup Services | OPTIONAL VIDEO | Provider backup material reviewed | No candidate promoted | Recovery semantics must be evaluated against the chosen data/service. |
+| Managed Services versus Self-managed Infrastructure | NO VIDEO | — | — | Trade-off decision based on responsibility, cost and operational capability. |
+| Lab: Map Steward Platform to Cloud Building Blocks | NO VIDEO | — | — | Architecture mapping exercise. |
+
+### Infrastructure as Code — OpenTofu/Terraform Concepts
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Why Infrastructure as Code | RECOMMENDED VIDEO | HashiCorp IaC introductions reviewed | [HashiCorp — What is Infrastructure as Code?](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/infrastructure-as-code) | Establishes versioned/declarative infrastructure as the control model before syntax. |
+| Declarative Infrastructure | RECOMMENDED VIDEO | Terraform/OpenTofu workflow material reviewed | Reuse HashiCorp IaC primer | One conceptual source is enough; TSA proves convergence/drift operationally. |
+| Terraform and OpenTofu Fundamentals | RECOMMENDED VIDEO | OpenTofu/Terraform introductions reviewed | [OpenTofu — Documentation](https://opentofu.org/docs/) plus getting-started flow | Uses the academy's open implementation while retaining transferable Terraform concepts. |
+| Providers and Resources | RECOMMENDED VIDEO | Provider/resource model reviewed | [OpenTofu — Providers](https://opentofu.org/docs/language/providers/) | First-party model directly supports implementation. |
+| State | RECOMMENDED VIDEO | Terraform/OpenTofu state material reviewed | [OpenTofu — State](https://opentofu.org/docs/language/state/) | State is a critical non-obvious operational boundary and deserves explicit reinforcement. |
+| Variables and Outputs | OPTIONAL VIDEO | IaC variable/output tutorials reviewed | No candidate promoted | Straightforward to learn by implementing the Steward stack. |
+| Dependencies | OPTIONAL VIDEO | Resource graph material reviewed | No candidate promoted | The learner can inspect implicit/explicit dependencies directly. |
+| Modules Concepts | RECOMMENDED VIDEO | Terraform module material reviewed | [HashiCorp — Modules overview](https://developer.hashicorp.com/terraform/language/modules) | Visual/file-structure model helps establish reusable infrastructure boundaries. |
+| Plan and Apply Lifecycle | RECOMMENDED VIDEO | OpenTofu workflow material reviewed | [OpenTofu — CLI workflow](https://opentofu.org/docs/cli/) | Plan-before-apply is central to the school and must be observed directly. |
+| Drift | RECOMMENDED VIDEO | IaC drift material reviewed | No separate candidate promoted | The learner deliberately introduces drift and reconciles it; direct plan evidence is stronger. |
+| Remote State Concepts | RECOMMENDED VIDEO | Remote-state material reviewed | [OpenTofu — Remote state data](https://opentofu.org/docs/language/state/remote-state-data/) | Clarifies collaboration/state-sharing boundaries before later team-scale infrastructure. |
+| Secrets and Sensitive Values | RECOMMENDED VIDEO | IaC secret/state material reviewed | No candidate promoted | The lab should expose the danger by inspecting state/plan behavior rather than hiding it behind a tutorial. |
+| Destroy and Resource Lifecycle | RECOMMENDED VIDEO | Resource lifecycle material reviewed | [OpenTofu — Resource lifecycle](https://opentofu.org/docs/language/meta-arguments/lifecycle/) | First-party semantics support safe teardown/replacement reasoning. |
+| Lab: Define Steward Infrastructure as Code | NO VIDEO | — | — | Independent plan/apply/drift/state/teardown evidence. |
+
+### Cloud Architecture and Cost
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Availability in Cloud Environments | RECOMMENDED VIDEO | Well-Architected reliability material reviewed | [AWS Well-Architected — Reliability Pillar](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html) | Frames availability around failure/recovery rather than simply adding instances. |
+| Scalability and Capacity | RECOMMENDED VIDEO | Scaling material reviewed | [IBM Technology — Horizontal vs Vertical Scaling](https://www.youtube.com/watch?v=xpDnVSmNFX0) | The scale-up/scale-out distinction is visual and prepares later architecture work. |
+| Security Boundaries | NO VIDEO | — | — | Must be drawn from the actual Steward trust/exposure model. |
+| Backup and Recovery | RECOMMENDED VIDEO | Cloud recovery material reviewed | No candidate promoted | Recovery must be proven with the learner's real data and infrastructure. |
+| Failure Domains | RECOMMENDED VIDEO | Region/AZ failure-domain material reviewed | Reuse AWS global-infrastructure diagrams | Direct continuation of regions/zones learning. |
+| Cost Estimation | RECOMMENDED VIDEO | FinOps cost material reviewed | Reuse FinOps Foundation introduction | The lab must use current provider pricing rather than static video numbers. |
+| Cost Controls and Budgets | RECOMMENDED VIDEO | FinOps framework material reviewed | [FinOps Foundation — FinOps Framework](https://www.finops.org/framework/) | Connects engineering decisions to allocation, optimization and governance. |
+| Resource Right-sizing | OPTIONAL VIDEO | Right-sizing material reviewed | No candidate promoted | Learner should justify sizing from observed workload assumptions/evidence. |
+| Managed vs Self-managed Trade-offs | NO VIDEO | — | — | Architecture decision. |
+| Homelab, VPS and Cloud Hybrid Trade-offs | NO VIDEO | — | — | Architecture decision grounded in the learner's actual environments. |
+| Lab: Review the Steward Internet Architecture | NO VIDEO | — | — | Independent architecture/cost/recovery review. |
+
+### Certificate Lifecycle Operations
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Certificate Lifecycle Operations | RECOMMENDED VIDEO | ACME/certificate lifecycle material reviewed | Reuse [Let's Encrypt — How It Works](https://letsencrypt.org/how-it-works/) | The issuance/renewal automation loop is the central mental model. |
+| Certificates Are Expiring Operational State | NO VIDEO | — | — | Learner inspects actual validity periods and renewal state. |
+| Inspect Steward's TLS Identity and Trust Chain | RECOMMENDED VIDEO | OpenSSL certificate inspection material reviewed | No candidate promoted | Direct openssl/browser inspection of the learner's certificate is stronger. |
+| Automate Renewal and Gateway Reload | RECOMMENDED VIDEO | Certbot renewal material reviewed | [Certbot — Instructions](https://certbot.eff.org/instructions) | Current first-party workflow is preferable to an aging walkthrough. |
+| Monitor Expiry and Renewal Health | NO VIDEO | — | — | Operational evidence is the objective. |
+| Break and Recover Certificate Renewal | NO VIDEO | — | — | Controlled failure exercise. |
+| Defend the Certificate Lifecycle | NO VIDEO | — | — | Architecture/operations defense. |
+
+### S3-Compatible Object Storage
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| S3-Compatible Object Storage for Steward | RECOMMENDED VIDEO | S3/object-storage material reviewed | Reuse IBM object-storage explainer plus [Amazon S3 concepts](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) | Combines the storage mental model with the API/bucket/object vocabulary used by S3-compatible systems. |
+| From Object-storage Design to Operation | NO VIDEO | — | — | Learner converts the prior design into an operational contract. |
+| Deploy and Secure the Object Store | RECOMMENDED VIDEO | MinIO deployment/security material reviewed | [MinIO Documentation](https://min.io/docs/minio/linux/index.html) | Current implementation docs are preferable to version-sensitive installation videos. |
+| Integrate Steward Export Evidence | NO VIDEO | — | — | Real application integration evidence. |
+| Operate Lifecycle, Failure and Recovery | NO VIDEO | — | — | Controlled lifecycle/failure/recovery evidence. |
+| Defend the Storage Architecture | NO VIDEO | — | — | Architecture defense. |
+
+### Kubernetes, OpenShift and GitOps
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Why Container Orchestration | RECOMMENDED VIDEO | Kubernetes introductions reviewed | [IBM Technology — Kubernetes Explained](https://www.youtube.com/watch?v=aSrqRSk43lY) | Visualizes why scheduling/reconciliation/service discovery emerge beyond single-host Compose. |
+| Kubernetes Cluster and Control Plane | RECOMMENDED VIDEO | Kubernetes architecture material reviewed | [Kubernetes — Components](https://kubernetes.io/docs/concepts/overview/components/) — use control-plane/node diagram | Canonical architecture diagram establishes ownership and reconciliation boundaries. |
+| Pods, Deployments and ReplicaSets | RECOMMENDED VIDEO | Kubernetes workload-controller material reviewed | [Kubernetes — Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) | Controller diagrams map desired replicas to rollout behavior. |
+| Services and Cluster Networking | RECOMMENDED VIDEO | Kubernetes networking material reviewed | [Kubernetes — Services](https://kubernetes.io/docs/concepts/services-networking/service/) | Canonical service/endpoint model prepares cross-pod reachability work. |
+| ConfigMaps, Secrets and Runtime Configuration | RECOMMENDED VIDEO | Kubernetes configuration material reviewed | [Kubernetes — ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/) and Secrets docs | First-party resource boundaries prevent treating image configuration as mutable container state. |
+| Probes, Resources and Rollouts | RECOMMENDED VIDEO | Kubernetes probe/resource/rollout material reviewed | [Kubernetes — Configure Liveness, Readiness and Startup Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) | Probes are subtle enough to warrant canonical lifecycle diagrams/examples before failure exercises. |
+| Namespaces, Service Accounts and RBAC | RECOMMENDED VIDEO | Kubernetes RBAC material reviewed | [Kubernetes — RBAC](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) | Canonical subject/role/binding model supports least-privilege cluster operation. |
+| OpenShift as an Enterprise Application Platform | RECOMMENDED VIDEO | Red Hat OpenShift introductions reviewed | [Red Hat — What is OpenShift?](https://www.redhat.com/en/topics/containers/what-is-red-hat-openshift) | Establishes what OpenShift adds around Kubernetes without presenting it as a separate universe. |
+| OpenShift Routes, SCC Concepts and Operators | RECOMMENDED VIDEO | Red Hat route/SCC/operator material reviewed | [OpenShift Documentation](https://docs.redhat.com/en/documentation/openshift_container_platform/) — use architecture/resource diagrams | Versioned first-party docs are safer for platform-specific security and routing behavior. |
+| GitOps and Reconciliation | RECOMMENDED VIDEO | GitOps conceptual material reviewed | [Argo CD — What is Argo CD?](https://argo-cd.readthedocs.io/en/stable/) | Connects Git desired state to continuous reconciliation rather than imperative deployment. |
+| Argo CD Applications, Sync and Drift | RECOMMENDED VIDEO | Argo CD sync/drift material reviewed | [Argo CD — Core Concepts](https://argo-cd.readthedocs.io/en/stable/core_concepts/) | The desired/live-state model directly supports the learner's drift experiment. |
+| Lab: Migrate Steward to OpenShift with Argo CD | NO VIDEO | — | — | Independent migration and authority-transfer evidence. |
+| Orchestration and GitOps Review | NO VIDEO | — | — | Capability review. |
+
+### Progressive Delivery
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| From Rolling Updates to Progressive Delivery | RECOMMENDED VIDEO | Argo Rollouts material reviewed | [Argo Rollouts — Concepts](https://argo-rollouts.readthedocs.io/en/stable/concepts/) | Shows why ordinary rolling replacement and evidence-driven progressive delivery are different controls. |
+| Design Steward's Canary Contract | NO VIDEO | — | — | The learner must define risk, metrics, compatibility and abort criteria. |
+| Implement Argo Rollouts Canary Delivery | RECOMMENDED VIDEO | Argo Rollouts canary material reviewed | [Argo Rollouts — Canary](https://argo-rollouts.readthedocs.io/en/stable/features/canary/) | Staged traffic/replica progression is strongly visual. |
+| Automate Analysis and Abort a Bad Canary | RECOMMENDED VIDEO | Analysis-run material reviewed | [Argo Rollouts — Analysis](https://argo-rollouts.readthedocs.io/en/stable/features/analysis/) | Makes metric-driven promotion/abort control explicit. |
+| Break the Progressive Delivery Control Plane | NO VIDEO | — | — | Failure injection is the lesson. |
+| Reassess Progressive Delivery | NO VIDEO | — | — | Architecture/operational reassessment. |
+
+### Cloud Engineer Milestone
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Milestone Brief: Steward Internet Environment | NO VIDEO | — | — | Defines the independent cloud synthesis target. |
+| Milestone Review and Exit Criteria | NO VIDEO | — | — | The learner must defend public reachability, TLS, IaC, recovery, cost and operational boundaries from evidence. |
