@@ -1213,3 +1213,182 @@ This audit follows every live Quality Steward deep path, including the browser-s
 | Prove the Automated Quality Portfolio | NO VIDEO | — | — | Real test evidence. |
 | Prove the Quality Pipeline | NO VIDEO | — | — | Real pipeline/gate evidence. |
 | Quality Steward Final Review | NO VIDEO | — | — | Final capability defense. |
+
+
+## Security Steward — complete school multimedia audit
+
+This audit follows every live Security Steward deep path. It includes foundations, threat modeling, host/network hardening, identity and secrets, Keycloak/LDAP federation, Vault dynamic secrets, internal PKI and mTLS, web/API security, an isolated vulnerability laboratory, application hardening, software-supply-chain controls, artifact signing, secure file-transfer migration and the final security milestone. Offensive material is used only to understand and safely reproduce weaknesses in authorized training environments.
+
+### Security Foundations and Threat Modeling
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Confidentiality, Integrity and Availability | RECOMMENDED VIDEO | Security-foundation material reviewed | [NIST CSF 2.0](https://www.nist.gov/cyberframework) plus framework diagrams | Establishes security outcomes in a recognized risk-management context without reducing security to tool use. |
+| Assets, Threats, Vulnerabilities and Risk | RECOMMENDED VIDEO | OWASP risk material reviewed | [OWASP Risk Rating Methodology](https://owasp.org/www-community/OWASP_Risk_Rating_Methodology) | Gives a concrete likelihood/impact model before the Steward risk register. |
+| Attack Surface | RECOMMENDED VIDEO | Attack-surface/threat-model material reviewed | [OWASP Threat Modeling](https://owasp.org/www-community/Threat_Modeling) | Connects entry points, assets, flows and trust boundaries visually. |
+| Least Privilege | RECOMMENDED VIDEO | Zero-trust/least-privilege material reviewed | [CISA Zero Trust Maturity Model](https://www.cisa.gov/resources-tools/resources/zero-trust-maturity-model) | Places least privilege in identity/device/network/application/data control planes. |
+| Defense in Depth | RECOMMENDED VIDEO | Layered-control material reviewed | Reuse NIST/CISA framework diagrams | One control-framework model is enough; Steward must map actual preventive/detective/corrective layers. |
+| Trust Boundaries | RECOMMENDED VIDEO | Threat-model boundary material reviewed | Reuse OWASP Threat Modeling | Direct precursor to data-flow modeling. |
+| Security Controls: Preventive, Detective and Corrective | RECOMMENDED VIDEO | Control taxonomy material reviewed | Reuse NIST CSF | Framework functions make control purpose visible without a vendor-specific product tour. |
+| Risk Treatment and Residual Risk | NO VIDEO | — | — | Learner must decide accept/mitigate/transfer/avoid from actual Steward risk. |
+| Lab: Map Steward Security Assets and Attack Surface | NO VIDEO | — | — | Independent inventory, boundary and risk-register evidence. |
+| Assets and Actors | NO VIDEO | — | — | Must be derived from the real Steward system. |
+| Data and Control Flows | RECOMMENDED VIDEO | DFD/threat-model material reviewed | [Microsoft Threat Modeling Tool overview](https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool) — use DFD/trust-boundary examples | Makes actors/processes/data stores/flows and boundaries concrete before modeling Steward. |
+| Threat Identification | RECOMMENDED VIDEO | STRIDE material reviewed | [Microsoft — Threat Modeling Security Fundamentals](https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool-threats) | Provides the STRIDE prompts as a systematic enumeration aid. |
+| STRIDE-style Thinking | RECOMMENDED VIDEO | STRIDE material reviewed | Reuse Microsoft threat-model material | Avoids redundant threat-taxonomy media. |
+| Abuse Cases | RECOMMENDED VIDEO | Abuse-case material reviewed | [OWASP — Abuse Case Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Abuse_Case_Cheat_Sheet.html) | Turns attacker goals into explicit negative requirements. |
+| Threat Prioritization | RECOMMENDED VIDEO | Risk-prioritization material reviewed | Reuse OWASP Risk Rating | Connects threat discovery to likelihood/impact decisions. |
+| Mitigations and Security Requirements | NO VIDEO | — | — | Controls must trace to Steward threats and acceptance criteria. |
+| Threat Models as Living Engineering Artifacts | NO VIDEO | — | — | Learner proves update/review behavior across later changes. |
+| Lab: Threat-model Steward API | NO VIDEO | — | — | Independent model/threat/mitigation evidence. |
+
+### Linux and Network Security
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Users, Groups and Permissions | OPTIONAL VIDEO | Linux hardening material reviewed | Reuse Platform Builder Linux administration resources | Security Steward applies known primitives to least privilege rather than relearning commands. |
+| Privilege and sudo | RECOMMENDED VIDEO | sudo/privilege material reviewed | [Red Hat — Managing sudo access](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/managing-sudo-access_configuring-basic-system-settings) | First-party operational guidance supports explicit privilege delegation. |
+| SSH Hardening | RECOMMENDED VIDEO | OpenSSH/host-hardening material reviewed | [Red Hat — OpenSSH security](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/securing_networks/using-secure-communications-between-two-systems-with-openssh_securing-networks) | Current first-party guidance is safer than copying an arbitrary hardening checklist. |
+| Host Firewalls | OPTIONAL VIDEO | firewall material reviewed | Reuse Platform Builder firewall resources | The new objective is exposure reduction and verification. |
+| Service Exposure | NO VIDEO | — | — | Learner inventories listening services and closes unnecessary exposure. |
+| Patching and Vulnerability Windows | RECOMMENDED VIDEO | vulnerability/patch lifecycle material reviewed | [CISA — Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) | Grounds patch urgency in known exploitation rather than CVSS alone. |
+| File and Secret Permissions | NO VIDEO | — | — | Direct filesystem/secret audit evidence. |
+| Security Logging and Auditing | RECOMMENDED VIDEO | Linux audit material reviewed | [Red Hat — Auditing the system](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/security_hardening/auditing-the-system_security-hardening) | First-party auditd model supports traceable security events. |
+| Network Segmentation Concepts | RECOMMENDED VIDEO | segmentation/zero-trust material reviewed | Reuse CISA Zero Trust model | Connects segmentation to explicit trust boundaries rather than VLANs for their own sake. |
+| Administrative Network Boundaries | NO VIDEO | — | — | Must be defended from the actual homelab/public topology. |
+| TLS Configuration and Certificate Hygiene | RECOMMENDED VIDEO | TLS configuration material reviewed | [Mozilla SSL Configuration Generator](https://ssl-config.mozilla.org/) | Current configuration generator ties protocol/cipher choices to server/software compatibility. |
+| Lab: Harden the Steward Hosts and Network Path | NO VIDEO | — | — | Independent baseline→hardening→retest evidence. |
+
+### Identity, Federation and Secrets
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Identity Planes and Trust Boundaries | RECOMMENDED VIDEO | IAM/OIDC material reviewed | [OAuth 2.0 and OpenID Connect — OpenID Foundation](https://openid.net/developers/how-connect-works/) — use authorization/authentication flow diagrams | Establishes actors/tokens/trust relationships before Keycloak configuration. |
+| OAuth 2.0 and OpenID Connect Mental Model | RECOMMENDED VIDEO | OIDC material reviewed | Reuse OpenID Foundation flow diagrams | Canonical protocol model is preferable to vendor-specific shortcuts. |
+| Keycloak Realms, Clients, Users and Roles | RECOMMENDED VIDEO | Keycloak material reviewed | [Keycloak — Server Administration Guide](https://www.keycloak.org/docs/latest/server_admin/) | Current first-party model supports realms/clients/roles and identity ownership. |
+| Machine and Workload Identity | RECOMMENDED VIDEO | workload identity material reviewed | No candidate promoted | Internal PKI later provides the concrete machine-identity implementation. |
+| Secret Lifecycle: Create, Distribute, Rotate, Revoke | RECOMMENDED VIDEO | secrets lifecycle material reviewed | [HashiCorp Vault — What is Vault?](https://developer.hashicorp.com/vault/docs/what-is-vault) | Introduces secret lifecycle, leases and centralized policy before implementation. |
+| Vault Concepts and Dynamic Secrets | RECOMMENDED VIDEO | Vault dynamic-secret material reviewed | [HashiCorp Vault — Database secrets engine](https://developer.hashicorp.com/vault/docs/secrets/databases) | Dynamic credential lease/revocation is central and non-obvious. |
+| Kong, Identity and API Policy | OPTIONAL VIDEO | gateway identity-policy material reviewed | No candidate promoted | Gateway choice/configuration should follow the actual Steward deployment boundary. |
+| Identity and Secrets Security Review | NO VIDEO | — | — | Architecture review. |
+| Lab: Integrate Keycloak and Harden Steward Identity | NO VIDEO | — | — | Independent identity/secret evidence. |
+| Directory Federation Architecture | RECOMMENDED VIDEO | LDAP federation material reviewed | [Keycloak — LDAP and Active Directory](https://www.keycloak.org/docs/latest/server_admin/#_ldap) | First-party federation model maps directory identity into Keycloak without pretending the systems share ownership. |
+| Keycloak LDAP Federation | RECOMMENDED VIDEO | Keycloak LDAP material reviewed | Reuse Keycloak LDAP documentation | Direct implementation reference. |
+| Federated Identity Lifecycle and Failure Modes | NO VIDEO | — | — | Learner must test disable/delete/outage/stale-membership behavior. |
+| Active Directory, LDAP and Kerberos Context | RECOMMENDED VIDEO | directory/Kerberos context reviewed | Reuse Platform Builder AD/LDAP resources | Security Steward extends the existing directory model into federation. |
+| Vault and Dynamic Secrets for Steward | RECOMMENDED VIDEO | Vault database-secret material reviewed | Reuse Vault database secrets engine | Establishes leased database credentials before hands-on implementation. |
+| From Static Secrets to Leased Credentials | RECOMMENDED VIDEO | Vault lease material reviewed | [HashiCorp Vault — Lease, renew and revoke](https://developer.hashicorp.com/vault/docs/concepts/lease) | Lease lifecycle is the key conceptual shift. |
+| Deploy and Initialize Vault Safely | RECOMMENDED VIDEO | Vault deployment/init material reviewed | [HashiCorp Vault — Production hardening](https://developer.hashicorp.com/vault/docs/concepts/production-hardening) | Emphasizes operational security boundaries rather than a dev-mode walkthrough. |
+| Issue Dynamic PostgreSQL Credentials | RECOMMENDED VIDEO | Vault PostgreSQL engine material reviewed | Reuse Vault database secrets engine | Direct first-party configuration model. |
+| Break Vault and Rotate Trust | NO VIDEO | — | — | Controlled failure/recovery exercise. |
+| Reassess the Secrets Platform | NO VIDEO | — | — | Architecture/ownership reassessment. |
+
+### Internal PKI and Machine Trust
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Model Internal PKI and Machine Trust | RECOMMENDED VIDEO | PKI/X.509 material reviewed | [Cloudflare — What is PKI?](https://www.cloudflare.com/learning/ssl/what-is-pki/) — use CA/trust-chain diagrams | Gives the hierarchy/trust-anchor mental model before building a CA. |
+| Build a Root and Issuing CA Hierarchy | RECOMMENDED VIDEO | CA hierarchy material reviewed | [Smallstep — PKI](https://smallstep.com/blog/everything-pki/) — use root/intermediate/leaf diagrams | Visually separates offline trust anchor from issuing authority and workload certificates. |
+| Issue Workload Certificates with Explicit Identity | RECOMMENDED VIDEO | X.509 identity material reviewed | [RFC 5280](https://www.rfc-editor.org/rfc/rfc5280) plus Smallstep diagrams | Grounds certificate identity in SAN/subject/usage semantics rather than filenames. |
+| Distribute Trust without Disabling Verification | NO VIDEO | — | — | Cross-platform trust-store work must be proven directly. |
+| Implement Mutual TLS between Workloads | RECOMMENDED VIDEO | mTLS explainers reviewed | [Cloudflare — What is mutual TLS?](https://www.cloudflare.com/learning/access-management/what-is-mutual-tls/) | Client/server certificate exchange and mutual authentication are highly visual. |
+| Rotate Certificates without Changing Identity Semantics | NO VIDEO | — | — | Rotation drill is the learning evidence. |
+| Revocation and Compromised Identity Response | RECOMMENDED VIDEO | certificate revocation material reviewed | [Cloudflare — How certificate revocation works](https://www.cloudflare.com/learning/ssl/what-happens-when-an-ssl-certificate-is-revoked/) | CRL/OCSP and trust-removal concepts support the compromised-identity drill. |
+| Trust-Anchor Rotation and Failure Recovery | NO VIDEO | — | — | Intermediate/root transition must be exercised safely. |
+| Reassess PKI Ownership with Vault | NO VIDEO | — | — | ADR/ownership decision after operating both models. |
+| Milestone: Operate Steward Internal Machine Trust | NO VIDEO | — | — | Independent trust-platform synthesis. |
+
+### Web and API Threats
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Injection and SQL Injection | RECOMMENDED VIDEO | OWASP/PortSwigger training reviewed | [PortSwigger Web Security Academy — SQL injection](https://portswigger.net/web-security/sql-injection) — use only in authorized labs | Interactive training makes unsafe query construction and mitigations concrete. |
+| Cross-site Scripting | RECOMMENDED VIDEO | PortSwigger XSS material reviewed | [PortSwigger — XSS](https://portswigger.net/web-security/cross-site-scripting) — authorized training labs only | Visual browser execution context is valuable for understanding stored/reflected/DOM XSS. |
+| Cross-site Request Forgery | RECOMMENDED VIDEO | PortSwigger CSRF material reviewed | [PortSwigger — CSRF](https://portswigger.net/web-security/csrf) — authorized labs only | Request/authentication context benefits from interactive visualization. |
+| Broken Authentication | RECOMMENDED VIDEO | OWASP authentication material reviewed | [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html) | Defensive requirements are more durable than exploit-only demonstrations. |
+| Broken Authorization and IDOR | RECOMMENDED VIDEO | OWASP API/PortSwigger access-control material reviewed | [PortSwigger — Access control](https://portswigger.net/web-security/access-control) — authorized labs only | Makes horizontal/vertical authorization failures concrete. |
+| Server-side Request Forgery | RECOMMENDED VIDEO | PortSwigger SSRF material reviewed | [PortSwigger — SSRF](https://portswigger.net/web-security/ssrf) — authorized labs only | Request-path visualization clarifies why server-side network reachability matters. |
+| Path Traversal | RECOMMENDED VIDEO | PortSwigger traversal material reviewed | [PortSwigger — Path traversal](https://portswigger.net/web-security/file-path-traversal) — authorized labs only | Clear controlled examples of filesystem-boundary failure. |
+| File Upload Risks | RECOMMENDED VIDEO | OWASP upload material reviewed | [OWASP File Upload Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html) | Defensive control layers map directly to Steward's upload surfaces. |
+| Command Injection | RECOMMENDED VIDEO | PortSwigger command-injection material reviewed | [PortSwigger — OS command injection](https://portswigger.net/web-security/os-command-injection) — authorized labs only | Controlled labs demonstrate data crossing into command execution. |
+| Insecure Deserialization Concepts | RECOMMENDED VIDEO | PortSwigger deserialization material reviewed | [PortSwigger — Insecure deserialization](https://portswigger.net/web-security/deserialization) — conceptual/lab use only | Shows the trust-boundary failure without requiring unsafe real-world targeting. |
+| Security Misconfiguration | RECOMMENDED VIDEO | OWASP configuration material reviewed | [OWASP Top 10](https://owasp.org/www-project-top-ten/) | Broad category is best anchored to the current OWASP taxonomy and Steward findings. |
+| Sensitive Data and Secrets | RECOMMENDED VIDEO | OWASP secrets material reviewed | Reuse Vault/secret-lifecycle resources | Avoids duplicate security instruction. |
+| API Abuse and Rate Limiting | RECOMMENDED VIDEO | OWASP API security material reviewed | [OWASP API Security Top 10](https://owasp.org/API-Security/) | Grounds abuse/resource-consumption risks in API-specific taxonomy. |
+| Token and Session Attacks | RECOMMENDED VIDEO | OWASP session material reviewed | [OWASP Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html) | Defensive token/session lifecycle is the priority. |
+| Cryptographic Failures | RECOMMENDED VIDEO | OWASP crypto material reviewed | [OWASP Cryptographic Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html) | Keeps focus on correct protection decisions rather than crypto implementation tricks. |
+| Vulnerable Dependencies | RECOMMENDED VIDEO | dependency-risk material reviewed | [OWASP Dependency-Check](https://owasp.org/www-project-dependency-check/) plus supply-chain module | Connects component inventory to known-vulnerability evidence. |
+| Security Logging and Monitoring Failures | RECOMMENDED VIDEO | OWASP logging material reviewed | [OWASP Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html) | Establishes security-event evidence requirements. |
+| Mass Assignment and Excessive Data Exposure | RECOMMENDED VIDEO | OWASP API authorization/data-exposure material reviewed | Reuse OWASP API Security Top 10 | API-specific taxonomy directly supports negative tests. |
+| Lab: Assess Steward Web and API Attack Paths | NO VIDEO | — | — | Threat-model-driven, authorized assessment with evidence and remediation. |
+
+### Vulnerability Laboratory and Application Hardening
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Designing an Isolated Security Lab | RECOMMENDED VIDEO | OWASP training-lab material reviewed | [OWASP Juice Shop](https://owasp.org/www-project-juice-shop/) — use its intentionally vulnerable training model | Establishes an explicit legal/safety boundary for attack reproduction. |
+| Safe Lab Networking | NO VIDEO | — | — | Isolation must be designed against the learner's actual virtualization/network topology. |
+| Vulnerable Applications and Intentional Weaknesses | RECOMMENDED VIDEO | OWASP Juice Shop material reviewed | Reuse OWASP Juice Shop | Purpose-built vulnerable targets are safer and more pedagogically useful than real systems. |
+| Observing Vulnerable Behavior | RECOMMENDED VIDEO | PortSwigger Academy material reviewed | [PortSwigger Web Security Academy](https://portswigger.net/web-security) | Interactive labs teach observation/reproduction in an authorized environment. |
+| Reproducing Representative Attacks Safely | RECOMMENDED VIDEO | PortSwigger/OWASP labs reviewed | Reuse PortSwigger Academy and Juice Shop | Keeps offensive practice bounded to training targets. |
+| Using Proxies and Request Inspection | RECOMMENDED VIDEO | Burp Suite training material reviewed | [PortSwigger — Getting started with Burp Suite](https://portswigger.net/burp/documentation/desktop/getting-started) | First-party request interception/replay workflow supports evidence collection. |
+| Capturing Security Evidence | NO VIDEO | — | — | Learner must produce reproducible requests/responses/logs/screenshots from the lab. |
+| From Finding to Reproduction Steps | NO VIDEO | — | — | Finding quality is assessed from another engineer's ability to reproduce it. |
+| Implementing Mitigations | NO VIDEO | — | — | Remediation is application-specific. |
+| Retesting Fixes | NO VIDEO | — | — | Closure requires direct negative/positive evidence. |
+| Writing Security Findings | NO VIDEO | — | — | Professional finding communication is the deliverable. |
+| Lab: Reproduce and Fix Steward Vulnerabilities | NO VIDEO | — | — | Controlled Steward vulnerability/remediation evidence. |
+| Secure Authentication | RECOMMENDED VIDEO | OWASP authentication controls reviewed | Reuse OWASP Authentication Cheat Sheet | Directly translates earlier threat knowledge into requirements. |
+| Authorization Design and Testing | RECOMMENDED VIDEO | OWASP authorization material reviewed | [OWASP Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html) | Centralizes deny-by-default, least privilege and per-request authorization guidance. |
+| Input Validation | RECOMMENDED VIDEO | OWASP validation material reviewed | [OWASP Input Validation Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html) | Defensive validation rules complement attack-path labs. |
+| Secure Error Handling | RECOMMENDED VIDEO | OWASP error-handling material reviewed | [OWASP Error Handling Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Error_Handling_Cheat_Sheet.html) | Supports useful diagnostics without sensitive disclosure. |
+| Secrets Management | RECOMMENDED VIDEO | OWASP/Vault material reviewed | Reuse Vault secret-lifecycle resources | Existing implementation depth is sufficient. |
+| Security Headers and Configuration | RECOMMENDED VIDEO | OWASP header material reviewed | [OWASP HTTP Headers Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html) | Concrete defensive configuration reference. |
+| Security Logging | RECOMMENDED VIDEO | OWASP logging material reviewed | Reuse OWASP Logging Cheat Sheet | Avoids duplicate media. |
+| Rate Limiting and Abuse Resistance | RECOMMENDED VIDEO | OWASP API material reviewed | Reuse OWASP API Security Top 10 | Connects controls to previously modeled abuse cases. |
+| Data Protection | RECOMMENDED VIDEO | OWASP cryptographic storage material reviewed | Reuse OWASP Cryptographic Storage Cheat Sheet | Keeps data protection tied to explicit threat/retention needs. |
+| Security-focused Code Review | RECOMMENDED VIDEO | OWASP code-review material reviewed | [OWASP Code Review Guide](https://owasp.org/www-project-code-review-guide/) | Provides a repeatable security review lens before reviewing Steward changes. |
+| Abuse Cases and Negative Security Requirements | RECOMMENDED VIDEO | OWASP abuse-case material reviewed | Reuse OWASP Abuse Case Cheat Sheet | Maintains traceability from threat to negative requirement. |
+| Security Regression Testing | NO VIDEO | — | — | Learner converts closed findings into durable automated evidence. |
+| Lab: Harden Steward API | NO VIDEO | — | — | Independent requirements→controls→retest evidence. |
+
+### Software Supply Chain and Artifact Trust
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Lab: Harden the Steward Software Supply Chain | NO VIDEO | — | — | Cross-stage trust mapping and controls are the assessment. |
+| Map and Baseline the Trusted Delivery Path | RECOMMENDED VIDEO | SLSA/supply-chain material reviewed | [SLSA — Supply-chain Levels for Software Artifacts](https://slsa.dev/) — use threat/provenance diagrams | Gives a source→build→artifact trust model that connects Delivery Engineer evidence to security controls. |
+| Implement High-value Supply-chain Controls | RECOMMENDED VIDEO | OWASP supply-chain/Sigstore material reviewed | [OWASP Software Supply Chain Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Software_Supply_Chain_Security_Cheat_Sheet.html) | Defensive control catalogue supports prioritization without prescribing every tool. |
+| Define Gates, Exceptions and Residual Risk | NO VIDEO | — | — | Gate/exception policy is a risk decision. |
+| Artifact Signing and Verification | RECOMMENDED VIDEO | Sigstore/Cosign material reviewed | [Sigstore — Cosign](https://docs.sigstore.dev/cosign/overview/) | Establishes signing and verification workflow against immutable artifact identity. |
+| From Provenance Evidence to Enforced Trust | RECOMMENDED VIDEO | Sigstore policy material reviewed | [Sigstore — Policy Controller](https://docs.sigstore.dev/policy-controller/overview/) — conceptual reference | Shows the shift from recording evidence to enforcing admission/deployment policy. |
+| Sign a Steward Release with Cosign | NO VIDEO | — | — | Real release signing evidence. |
+| Enforce Verification Before Deployment | NO VIDEO | — | — | Real policy/gate evidence. |
+| Break and Recover the Signing Trust Chain | NO VIDEO | — | — | Controlled trust failure/recovery exercise. |
+| Defend Steward's Artifact Trust Policy | NO VIDEO | — | — | Policy defense. |
+
+### Secure File Transfer Migration
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| FTP to SFTP Secure Transfer Migration | RECOMMENDED VIDEO | SFTP/FTP protocol material reviewed | Reuse Delivery/Platform SFTP-vs-FTPS protocol-boundary resource | Existing media already establishes that SFTP is a distinct SSH-based protocol. |
+| From Legacy Compatibility to Secure Transfer | NO VIDEO | — | — | Migration contract and coexistence plan are the learning objective. |
+| Build the SFTP Trust and Identity Boundary | RECOMMENDED VIDEO | OpenSSH key-auth material reviewed | [OpenSSH manuals](https://www.openssh.com/manual.html) | First-party SSH identity/authorization semantics support the secure boundary. |
+| Prove File-contract Parity over SFTP | NO VIDEO | — | — | Actual producer/consumer file-contract evidence. |
+| Run Bounded FTP and SFTP Coexistence | NO VIDEO | — | — | Time-bounded migration exercise. |
+| Decommission FTP and Prove the Security End State | NO VIDEO | — | — | Removal/exposure evidence is the assessment. |
+| Defend the Secure Transfer Migration | NO VIDEO | — | — | Architecture and residual-risk defense. |
+
+### Security Steward Milestone
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Milestone Briefing: Build a Defensible Steward Security Posture | NO VIDEO | — | — | Defines the independent security synthesis target. |
+| Integrate the Security Steward Evidence | NO VIDEO | — | — | Cross-module evidence integration. |
+| Evidence Readiness Check | NO VIDEO | — | — | Learner audits gaps independently. |
+| Milestone: Steward Security Assessment and Hardening | NO VIDEO | — | — | Independent assessment/hardening target. |
+| Rebaseline Threats, Assets and Trust Boundaries | NO VIDEO | — | — | Must reflect the final implemented system. |
+| Verify Controls Across the Steward Stack | NO VIDEO | — | — | Real control evidence. |
+| Close High-priority Gaps and Retest | NO VIDEO | — | — | Remediation and regression evidence. |
+| Publish the Steward Security Assessment | NO VIDEO | — | — | Professional assessment artifact. |
+| Defend the Security Posture | NO VIDEO | — | — | Final capability/risk defense. |
