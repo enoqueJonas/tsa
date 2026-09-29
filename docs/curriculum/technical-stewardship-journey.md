@@ -508,7 +508,15 @@ Learn quality engineering deeply and build a real automation framework against t
 - Coverage and its limitations
 
 ## Module 5 — API and Integration Testing
+- HTTP semantics before tooling: methods, safety/idempotency, status/header/representation semantics, content negotiation and retry risk
 - Introduce REST Assured by replacing the earlier raw HttpClient ceremony
+- Direct `given/when/then` execution before extracting specifications
+- Request/response specification boundaries and immutable specification construction
+- Authentication architecture with explicit caller identity and credential redaction
+- Jackson serialization/deserialization, typed DTOs and dynamic JSON tradeoffs
+- REST Assured filters for correlation and sanitized diagnostics
+- Thin product API clients versus generic REST god-clients
+- Negative testing, protected-state assertions, duplicate delivery and idempotency
 - Grow typed Steward API clients, Jackson models and AssertJ assertions
 - API test design
 - Authentication/authorization tests
