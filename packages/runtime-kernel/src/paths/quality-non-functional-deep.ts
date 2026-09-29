@@ -5,6 +5,23 @@ const k6: LearningResource = { title: "Grafana k6 documentation", url: "https://
 const wcag: LearningResource = { title: "W3C Web Content Accessibility Guidelines (WCAG)", url: "https://www.w3.org/WAI/standards-guidelines/wcag/" };
 const mdnCompatibility: LearningResource = { title: "MDN Browser Compatibility Data", url: "https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Page_structures/Compatibility_tables" };
 const postgresTransactions: LearningResource = { title: "PostgreSQL Transaction Isolation", url: "https://www.postgresql.org/docs/current/transaction-iso.html" };
+const k6Scenarios: LearningResource = { title: "k6 — Scenarios", url: "https://grafana.com/docs/k6/latest/using-k6/scenarios/" };
+const k6Executors: LearningResource = { title: "k6 — Executors", url: "https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/" };
+const k6Models: LearningResource = { title: "k6 — Open and closed workload models", url: "https://grafana.com/docs/k6/latest/using-k6/scenarios/concepts/open-vs-closed/" };
+const k6Thresholds: LearningResource = { title: "k6 — Thresholds and checks", url: "https://grafana.com/docs/k6/latest/using-k6/thresholds/" };
+const waiEvaluate: LearningResource = { title: "W3C WAI — Evaluating accessibility", url: "https://www.w3.org/WAI/test-evaluate/" };
+const waiKeyboard: LearningResource = { title: "W3C WAI — Keyboard accessibility", url: "https://www.w3.org/WAI/WCAG21/Understanding/keyboard.html" };
+
+const resourcesFor = (id: string): LearningResource[] => {
+    if (id === "k6-execution-model" || id === "load-models") return [k6Scenarios, k6Executors, k6Models];
+    if (id === "k6-checks-thresholds") return [k6Thresholds, k6];
+    if (id === "performance-measurement-model" || id === "performance" || id === "performance-environment-validity") return [k6, k6Scenarios];
+    if (id === "accessibility-automation" || id === "accessibility") return [waiEvaluate, wcag, waiKeyboard];
+    if (id === "compatibility-matrix-engineering" || id === "compatibility") return [mdnCompatibility];
+    if (id === "integrity-concurrency") return [postgresTransactions];
+    if (id === "controlled-failure-testing" || id === "reliability-oriented") return [k6];
+    return [k6, wcag];
+};
 
 type Spec = {
     id: string;
@@ -42,7 +59,7 @@ function blocksFor(spec: Spec): LessonBlock[] {
         title: "Stewardship boundary",
         body: "This module establishes quality evidence and baselines. It does not replace the later Security Steward or Reliability Engineer schools. Keep the focus on measurable product risk, reproducible evidence and clear residual uncertainty.",
     });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [k6, wcag, mdnCompatibility, postgresTransactions] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: resourcesFor(spec.id) });
 
     return blocks;
 }
