@@ -1,4 +1,7 @@
-# TSA Final Cross-School Tightness Audit
+# TSA Historical Cross-School Tightness Audit
+
+
+> **Historical status:** This document records an earlier audit state and is not the canonical description of the current executable curriculum. Later school-level remediation and the academy-wide regression supersede its Jenkins-era technology assumptions and resolved findings. Use the executable school registries plus the current Technical Stewardship Journey for present curriculum truth.
 
 ## Purpose
 
