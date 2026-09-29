@@ -481,25 +481,22 @@ Learn quality engineering deeply and build a real automation framework against t
 - Mocking/service virtualization
 
 ## Module 5 — Automation Framework Engineering
-- What makes a framework
-- Framework architecture
-- Playwright with Python
-- pytest
-- Configuration
-- Fixtures
-- Test data
-- API clients
-- UI abstractions/Page Objects where appropriate
-- Helpers/utilities
-- Assertions
-- Markers/tags
-- Parameterization
-- Logging
-- Reporting
-- Screenshots/traces/videos
-- Parallel execution
-- Retry strategy and flaky-test risks
-- Maintainability and code quality
+- Java 17+ test-project structure and Maven lifecycle
+- JUnit 5 fundamentals, lifecycle, parameterized tests, tags and extensions
+- Framework architecture and dependency direction
+- Validated environment/configuration model
+- Test-data builders, isolation and deterministic cleanup
+- REST Assured API clients and request/response specifications
+- Jackson DTO/JSON mapping and AssertJ assertions
+- Playwright Java browser/context lifecycle
+- UI abstractions/Page Objects and component objects where appropriate
+- Logging, Allure reporting and diagnostic evidence
+- Screenshots/traces/video only where diagnostically useful
+- Parallel execution, collision-safe data and test isolation
+- Retry/quarantine strategy and flaky-test risks
+- Maintainability, public APIs and framework ownership
+- Extract reusable infrastructure into `tsa-test-core`
+- Publish/consume `tsa-test-core` as a versioned Maven artifact through Nexus
 
 ## Module 6 — Browser and Environment Testing
 - Browser differences
@@ -528,7 +525,7 @@ Learn quality engineering deeply and build a real automation framework against t
 
 ## Labs
 - Write Steward API quality strategy
-- Build Playwright/Python automation framework from first principles
+- Build the Steward Java/Maven automation platform from first principles with JUnit 5, REST Assured and Playwright Java
 - Add API and UI/system tests as applicable
 - Execute against Docker environment
 - Add BrowserStack cross-browser execution where applicable
