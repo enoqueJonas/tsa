@@ -4,6 +4,16 @@ import type { Lesson } from "./lesson";
 const kubernetesDocs: LearningResource = { title: "Kubernetes Documentation", url: "https://kubernetes.io/docs/" };
 const openshiftDocs: LearningResource = { title: "Red Hat OpenShift Documentation", url: "https://docs.redhat.com/en/documentation/openshift_container_platform" };
 const argoDocs: LearningResource = { title: "Argo CD Documentation", url: "https://argo-cd.readthedocs.io/" };
+const ibmKubernetesVideo: LearningResource = { title: "IBM Technology — Kubernetes Explained", url: "https://www.youtube.com/watch?v=aSrqRSk43lY", purpose: "RECOMMENDED VIDEO — visualize why scheduling, reconciliation and service discovery emerge beyond single-host Compose." };
+const k8sComponents: LearningResource = { title: "Kubernetes — Components", url: "https://kubernetes.io/docs/concepts/overview/components/", read: "Use the control-plane and node architecture diagram.", purpose: "RECOMMENDED VISUAL RESOURCE — establish cluster ownership and reconciliation boundaries." };
+const k8sDeployments: LearningResource = { title: "Kubernetes — Deployments", url: "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/", purpose: "RECOMMENDED FIRST-PARTY RESOURCE — connect desired replicas to controller and rollout behavior." };
+const k8sServices: LearningResource = { title: "Kubernetes — Services", url: "https://kubernetes.io/docs/concepts/services-networking/service/", purpose: "RECOMMENDED FIRST-PARTY RESOURCE — establish stable service discovery and endpoint semantics." };
+const k8sConfigMaps: LearningResource = { title: "Kubernetes — ConfigMaps and Secrets", url: "https://kubernetes.io/docs/concepts/configuration/configmap/", purpose: "RECOMMENDED FIRST-PARTY RESOURCE — separate runtime configuration from immutable image state." };
+const k8sProbes: LearningResource = { title: "Kubernetes — Liveness, Readiness and Startup Probes", url: "https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/", purpose: "RECOMMENDED FIRST-PARTY RESOURCE — understand workload lifecycle signals before failure exercises." };
+const k8sRbac: LearningResource = { title: "Kubernetes — RBAC", url: "https://kubernetes.io/docs/reference/access-authn-authz/rbac/", purpose: "RECOMMENDED FIRST-PARTY RESOURCE — map subjects, roles and bindings to least-privilege cluster operation." };
+const redHatOpenShift: LearningResource = { title: "Red Hat — What is OpenShift?", url: "https://www.redhat.com/en/topics/containers/what-is-red-hat-openshift", purpose: "RECOMMENDED VISUAL RESOURCE — establish what OpenShift adds around Kubernetes." };
+const argoWhatIs: LearningResource = { title: "Argo CD — What is Argo CD?", url: "https://argo-cd.readthedocs.io/en/stable/", purpose: "RECOMMENDED FIRST-PARTY RESOURCE — connect Git desired state to continuous reconciliation." };
+const argoCore: LearningResource = { title: "Argo CD — Core Concepts", url: "https://argo-cd.readthedocs.io/en/stable/core_concepts/", purpose: "RECOMMENDED FIRST-PARTY RESOURCE — make desired/live state, sync and drift explicit." };
 
 interface LessonSpec {
     id: string;
@@ -65,7 +75,8 @@ const specs: LessonSpec[] = [
         practice: ["List the current Steward runtime responsibilities handled by Docker/Compose or host services.", "Identify which of them Kubernetes would own and which remain outside the cluster.", "Name two concrete benefits and three new operational costs.", "Write an adopt/defer decision tied to a real Steward requirement."],
         deliverables: ["Runtime responsibility map", "Kubernetes adopt/defer decision", "New failure-boundary list"],
         criteria: ["The decision is problem-driven.", "Kubernetes is not presented as a replacement for CI, IaC or the database.", "The learner can explain what reconciliation means operationally."],
-        questions: ["What problem does a Kubernetes control loop solve that Docker packaging does not?", "Why can adding Kubernetes reduce some toil while increasing total system responsibility?"]
+        questions: ["What problem does a Kubernetes control loop solve that Docker packaging does not?", "Why can adding Kubernetes reduce some toil while increasing total system responsibility?"],
+        resources: [ibmKubernetesVideo]
     },
     {
         id: "cluster-control-plane",
@@ -79,7 +90,8 @@ const specs: LessonSpec[] = [
         practice: ["Trace the path from an applied Deployment manifest to a running Steward container.", "Identify which component validates, schedules and realizes the pod.", "Simulate or reason through a worker-node loss and predict which controller actions should follow.", "Record which evidence distinguishes control-plane failure from application failure."],
         deliverables: ["Control-plane sequence", "Node-loss hypothesis", "Layered diagnostic evidence"],
         criteria: ["Each major control-plane responsibility is correctly separated.", "The recovery explanation relies on reconciliation rather than manual container restart.", "Application and cluster health are not conflated."],
-        questions: ["Why is the API server more than a configuration endpoint?", "What does the scheduler decide, and what does it not decide?"]
+        questions: ["Why is the API server more than a configuration endpoint?", "What does the scheduler decide, and what does it not decide?"],
+        resources: [k8sComponents]
     },
     {
         id: "pods-deployments",
@@ -93,7 +105,8 @@ const specs: LessonSpec[] = [
         practice: ["Create a namespace for the Steward learning environment.", "Define a Deployment using the existing immutable Steward image from Nexus.", "Set resource requests/limits and non-secret runtime configuration deliberately.", "Delete one pod and prove the controller restores desired state.", "Update to another approved image tag/digest and observe rollout behavior."],
         deliverables: ["Versioned Deployment manifest", "Pod-replacement evidence", "Release rollout evidence"],
         criteria: ["The image is reused from the existing release chain rather than rebuilt in-cluster.", "Pod loss is recovered by the controller.", "The learner can distinguish pod identity from application release identity."],
-        questions: ["Why should application data not depend on pod filesystem lifetime?", "What does a Deployment add beyond directly creating a Pod?"]
+        questions: ["Why should application data not depend on pod filesystem lifetime?", "What does a Deployment add beyond directly creating a Pod?"],
+        resources: [k8sDeployments]
     },
     {
         id: "services-discovery",
@@ -107,7 +120,8 @@ const specs: LessonSpec[] = [
         practice: ["Create a ClusterIP Service for the Steward API.", "Verify discovery from an allowed in-cluster client.", "Prove the pod IP can change without changing the service name.", "Confirm PostgreSQL and other backend-only services are not made public merely because they are represented in Kubernetes."],
         deliverables: ["Service manifest", "DNS/discovery evidence", "Public/private reachability matrix"],
         criteria: ["Service discovery survives pod replacement.", "The public path remains narrower than the internal service graph.", "No backend port is exposed simply for convenience."],
-        questions: ["Why is a Service needed when pod IPs already exist?", "Why is ClusterIP usually a safer default for backend services?"]
+        questions: ["Why is a Service needed when pod IPs already exist?", "Why is ClusterIP usually a safer default for backend services?"],
+        resources: [k8sServices]
     },
     {
         id: "config-secrets",
@@ -121,7 +135,8 @@ const specs: LessonSpec[] = [
         practice: ["Move one non-secret Steward runtime value into a ConfigMap.", "Reference one placeholder secret through a Kubernetes Secret without committing real secret material.", "Rotate the placeholder value and observe how the workload receives the change.", "Document what Kubernetes Secret does not solve and hand that gap to Security Steward."],
         deliverables: ["ConfigMap/Secret manifests without real credentials", "Runtime-change evidence", "Security handoff note"],
         criteria: ["The image remains environment-independent.", "No real secret is committed to Git.", "The learner can explain why a Kubernetes Secret is not equivalent to Vault-style secret management."],
-        questions: ["Why is a Kubernetes Secret not sufficient evidence of secure secret lifecycle?", "What configuration change should not force a new application image?"]
+        questions: ["Why is a Kubernetes Secret not sufficient evidence of secure secret lifecycle?", "What configuration change should not force a new application image?"],
+        resources: [k8sConfigMaps]
     },
     {
         id: "health-resources-rollouts",
@@ -135,7 +150,8 @@ const specs: LessonSpec[] = [
         practice: ["Define readiness and liveness behavior for Steward and justify the endpoints used.", "Add measured resource requests and cautious limits.", "Create a safe readiness failure and prove traffic is withdrawn without unnecessary restart.", "Create a safe process failure and observe restart behavior.", "Review rollout status and rollback to a known-good image if the new release fails verification."],
         deliverables: ["Probe/resource configuration", "Readiness failure evidence", "Restart/rollback evidence"],
         criteria: ["Readiness and liveness are not identical by habit.", "Resource values are tied to evidence or an explicit provisional assumption.", "A bad rollout can be detected and recovered without rebuilding the old release."],
-        questions: ["Why can an overly aggressive liveness probe create an outage?", "How do resource requests differ from limits?"]
+        questions: ["Why can an overly aggressive liveness probe create an outage?", "How do resource requests differ from limits?"],
+        resources: [k8sProbes]
     },
     {
         id: "rbac-namespaces",
@@ -149,7 +165,8 @@ const specs: LessonSpec[] = [
         practice: ["List the Kubernetes actions required by an operator, GitLab CI, Argo CD and the Steward workload.", "Create or design distinct service accounts and RBAC roles for those responsibilities.", "Attempt one action that should be denied to a restricted identity.", "Record why namespace separation alone would not protect an exposed service."],
         deliverables: ["RBAC responsibility matrix", "Versioned role/binding manifests", "Denied-action evidence"],
         criteria: ["No routine actor depends on shared cluster-admin credentials.", "At least one least-privilege denial is proven.", "RBAC and network reachability are treated as different controls."],
-        questions: ["Why should a deployment controller not use a human administrator token?", "What does a namespace provide, and what security property does it not guarantee?"]
+        questions: ["Why should a deployment controller not use a human administrator token?", "What does a namespace provide, and what security property does it not guarantee?"],
+        resources: [k8sRbac]
     },
     {
         id: "openshift-platform",
@@ -163,7 +180,8 @@ const specs: LessonSpec[] = [
         practice: ["Map the Steward Kubernetes objects that remain unchanged on OpenShift.", "Identify OpenShift-specific capabilities relevant to the environment: Projects, Routes, Operators/OLM, registry/build integration, SCC concepts and the oc workflow.", "Compare vanilla Kubernetes, managed Kubernetes and OpenShift for the current Steward constraints.", "Choose which OpenShift additions the migration will actually use and reject those with no current requirement."],
         deliverables: ["Kubernetes-to-OpenShift mapping", "Platform comparison", "Adopt/defer decisions"],
         criteria: ["OpenShift is not described as a different orchestrator.", "Added capabilities have explicit drivers.", "The learner can explain the operational cost of the enterprise platform."],
-        questions: ["What remains standard Kubernetes when Steward moves to OpenShift?", "Why can stronger platform defaults create both safety and operational friction?"]
+        questions: ["What remains standard Kubernetes when Steward moves to OpenShift?", "Why can stronger platform defaults create both safety and operational friction?"],
+        resources: [redHatOpenShift]
     },
     {
         id: "openshift-security-routing",
@@ -178,7 +196,8 @@ const specs: LessonSpec[] = [
         practice: ["Deploy the existing Steward image to an OpenShift-compatible environment or local distribution where practical.", "Use oc to inspect project, pod, service and route state.", "Verify the image can run without requiring unsafe root assumptions.", "Map the external request path and decide whether Kong remains the API edge in front of platform routing or whether a simpler lab topology is justified.", "Inspect one Operator/OLM example and state why Steward does or does not need it."],
         deliverables: ["OpenShift deployment evidence", "Security-compatibility findings", "Routing-path diagram", "Operator adopt/defer note"],
         criteria: ["The existing image is reused rather than rebuilt specifically for OpenShift without reason.", "Security constraints are respected rather than disabled as a shortcut.", "Routing layers are explicit and non-duplicative."],
-        questions: ["Why can an image that works on Docker fail under OpenShift security defaults?", "When is an Operator more appropriate than plain manifests or Helm-style packaging?"]
+        questions: ["Why can an image that works on Docker fail under OpenShift security defaults?", "When is an Operator more appropriate than plain manifests or Helm-style packaging?"],
+        resources: [openshiftDocs]
     },
     {
         id: "gitops-model",
@@ -192,7 +211,8 @@ const specs: LessonSpec[] = [
         practice: ["Diagram the current GitLab CI-driven deployment flow and the proposed Argo CD flow.", "Identify exactly where artifact build ends and environment reconciliation begins.", "Define the Git repository path that will own Steward environment state.", "List the credentials removed from GitLab CI and the new permissions required by Argo CD.", "Choose a migration boundary that does not make both systems authoritative at once."],
         deliverables: ["Push-vs-pull comparison", "Environment Git ownership contract", "Authority migration decision"],
         criteria: ["GitLab CI remains responsible for build/test/package/publish.", "Argo CD becomes the only reconciler for the chosen environment after migration.", "Secrets are not moved into Git for convenience."],
-        questions: ["What changes when deployment authority moves from GitLab CI push to Argo CD pull?", "Why is running both as independent deployment authorities dangerous?"]
+        questions: ["What changes when deployment authority moves from GitLab CI push to Argo CD pull?", "Why is running both as independent deployment authorities dangerous?"],
+        resources: [argoWhatIs]
     },
     {
         id: "argocd-operation",
@@ -206,7 +226,8 @@ const specs: LessonSpec[] = [
         practice: ["Create an Argo CD Application for the Steward environment declaration.", "Deploy one known release by changing the declared image identity in Git.", "Verify sync and application health from the platform and from an external client.", "Make one safe manual cluster change and observe OutOfSync/drift evidence.", "Reconcile to the intended state and record whether self-heal/prune should be automatic for this environment."],
         deliverables: ["Argo CD Application configuration", "Release reconciliation evidence", "Drift/recovery evidence", "Sync-policy decision"],
         criteria: ["The running release traces to Git and the existing Nexus artifact identity.", "Manual drift is visible and recoverable.", "Automation policy is chosen from risk rather than convenience."],
-        questions: ["What does OutOfSync prove and what does it not prove?", "Why can automatic self-healing amplify a bad desired-state change?"]
+        questions: ["What does OutOfSync prove and what does it not prove?", "Why can automatic self-healing amplify a bad desired-state change?"],
+        resources: [argoCore]
     },
 ];
 
