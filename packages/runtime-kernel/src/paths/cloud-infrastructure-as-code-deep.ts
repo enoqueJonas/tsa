@@ -5,6 +5,12 @@ const terraformDocs: LearningResource = { title: "HashiCorp Terraform Documentat
 const openTofuDocs: LearningResource = { title: "OpenTofu Documentation", url: "https://opentofu.org/docs/" };
 const terraformStateDocs: LearningResource = { title: "Terraform — State", url: "https://developer.hashicorp.com/terraform/language/state" };
 const terraformModules: LearningResource = { title: "Terraform — Modules", url: "https://developer.hashicorp.com/terraform/language/modules" };
+const hashicorpIac: LearningResource = { title: "HashiCorp — What is Infrastructure as Code?", url: "https://developer.hashicorp.com/terraform/tutorials/aws-get-started/infrastructure-as-code", purpose: "RECOMMENDED CONCEPTUAL RESOURCE — establish versioned declarative infrastructure before OpenTofu implementation syntax." };
+const openTofuProviders: LearningResource = { title: "OpenTofu — Providers", url: "https://opentofu.org/docs/language/providers/", purpose: "RECOMMENDED FIRST-PARTY RESOURCE — connect provider configuration to resource ownership." };
+const openTofuState: LearningResource = { title: "OpenTofu — State", url: "https://opentofu.org/docs/language/state/", purpose: "RECOMMENDED FIRST-PARTY RESOURCE — reinforce state as a critical operational boundary." };
+const openTofuCli: LearningResource = { title: "OpenTofu — CLI workflow", url: "https://opentofu.org/docs/cli/", purpose: "RECOMMENDED FIRST-PARTY RESOURCE — observe plan-before-apply and lifecycle commands directly." };
+const openTofuRemoteState: LearningResource = { title: "OpenTofu — Remote state data", url: "https://opentofu.org/docs/language/state/remote-state-data/", purpose: "RECOMMENDED FIRST-PARTY RESOURCE — clarify state-sharing boundaries without treating remote state as a generic secret store." };
+const openTofuLifecycle: LearningResource = { title: "OpenTofu — Resource lifecycle", url: "https://opentofu.org/docs/language/meta-arguments/lifecycle/", purpose: "RECOMMENDED FIRST-PARTY RESOURCE — reason about replacement, protection and teardown semantics." };
 
 interface LessonSpec {
     id: string;
@@ -48,7 +54,8 @@ const specs: LessonSpec[] = [
             { heading: "Automation follows architecture", paragraphs: ["A bad design becomes repeatably bad when encoded as code. The Cloud Building Blocks module therefore came first: Steward already has a reasoned target architecture, and IaC now captures that design rather than inventing it."], list: ["Versioned intent", "Reviewable change", "Repeatable provisioning", "Detectable drift", "Documented dependencies", "Safer teardown and recreation"] },
         ],
         practice: ["List five current cloud decisions for Steward that would be unsafe to leave only in a provider console.", "For each, identify the desired state that IaC should record.", "Write one example of something that should remain outside IaC, such as application deployment or runtime business configuration, and explain why."],
-        questions: ["Why is Infrastructure as Code more than faster provisioning?", "How can IaC make a poor architecture worse rather than better?"]
+        questions: ["Why is Infrastructure as Code more than faster provisioning?", "How can IaC make a poor architecture worse rather than better?"],
+        resources: [hashicorpIac]
     },
     {
         id: "declarative-infrastructure",
@@ -59,7 +66,8 @@ const specs: LessonSpec[] = [
             { heading: "Declarative does not mean consequence-free", paragraphs: ["Changing one property may force replacement instead of in-place mutation. A declarative tool can destroy and recreate resources correctly according to its model while still violating your operational expectations. Plans must therefore be read, not merely generated." ] },
         ],
         practice: ["Take one current manual Steward provisioning procedure and rewrite it as desired-state statements.", "Identify one property where a change could require resource replacement.", "Explain what evidence you would require before allowing that replacement."],
-        questions: ["What is the difference between desired state and command history?", "Why can a declarative change still be operationally dangerous?"]
+        questions: ["What is the difference between desired state and command history?", "Why can a declarative change still be operationally dangerous?"],
+        resources: [hashicorpIac]
     },
     {
         id: "terraform-opentofu-fundamentals",
@@ -70,7 +78,8 @@ const specs: LessonSpec[] = [
             { heading: "Tool choice should not dominate the lesson", paragraphs: ["Terraform and OpenTofu share the same fundamental model for this curriculum. The engineering skill is understanding providers, state, dependencies, planning and lifecycle—not attaching professional identity to one executable."] },
         ],
         practice: ["Install or inspect Terraform/OpenTofu in a clean workspace.", "Create a minimal configuration block and run formatting and validation.", "Record what init, validate, plan and apply each prove—and what they do not prove."],
-        questions: ["What information does plan provide that validate does not?", "Why should the curriculum focus on the IaC model rather than one vendor command?"]
+        questions: ["What information does plan provide that validate does not?", "Why should the curriculum focus on the IaC model rather than one vendor command?"],
+        resources: [openTofuDocs]
     },
     {
         id: "providers-resources",
@@ -81,7 +90,8 @@ const specs: LessonSpec[] = [
             { heading: "Resources should mirror architectural intent", paragraphs: ["A virtual network, firewall rule, VM or object bucket may each become a resource block. Avoid one giant file that hides ownership and relationships, but also avoid premature module abstraction before the topology is understood."], code: { language: "hcl", caption: "Provider-neutral shape", code: "resource \"example_network\" \"steward\" {\n  name = \"steward-prod\"\n}\n\nresource \"example_server\" \"api\" {\n  network_id = example_network.steward.id\n}" } },
         ],
         practice: ["List the concrete Steward target components that should become IaC resources.", "Separate provider configuration from managed resources.", "Choose and document provider version constraints instead of accepting any future version automatically."],
-        questions: ["Why is a provider plugin a security boundary?", "How should resource structure reflect architecture rather than arbitrary file organization?"]
+        questions: ["Why is a provider plugin a security boundary?", "How should resource structure reflect architecture rather than arbitrary file organization?"],
+        resources: [openTofuProviders]
     },
     {
         id: "state",
@@ -93,7 +103,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Inspect an example state file in a disposable environment without committing it.", "Identify resource IDs and attributes that would matter for recovery.", "Write the access and backup requirements for Steward production state."],
         questions: ["Why can deleting state be dangerous even if the cloud resources still exist?", "Why must state be protected even when secrets are not written directly in HCL?"],
-        resources: [terraformStateDocs, openTofuDocs]
+        resources: [terraformStateDocs, openTofuDocs, openTofuState]
     },
     {
         id: "variables-outputs",
@@ -138,7 +148,8 @@ const specs: LessonSpec[] = [
             { heading: "Apply the reviewed plan", paragraphs: ["If the configuration or provider reality changes after review, regenerate the plan. In automated delivery, store or tightly couple the approved plan to the apply stage so that approval cannot silently drift away from execution."], code: { language: "bash", caption: "Review then execute the exact plan", code: "tofu plan -out=steward.tfplan\ntofu show steward.tfplan\ntofu apply steward.tfplan" } },
         ],
         practice: ["Generate a plan for a disposable Steward infrastructure change.", "Classify every proposed action as create, mutate, replace or destroy.", "Write the approval evidence required for any destructive or replacement action."],
-        questions: ["Why is 'plan succeeded' not equivalent to 'change is safe'?", "Why should apply use the exact reviewed plan when possible?"]
+        questions: ["Why is 'plan succeeded' not equivalent to 'change is safe'?", "Why should apply use the exact reviewed plan when possible?"],
+        resources: [openTofuCli]
     },
     {
         id: "drift",
@@ -160,7 +171,8 @@ const specs: LessonSpec[] = [
             { heading: "Bootstrap and recovery matter", paragraphs: ["The backend storing state may itself require infrastructure. Decide how it is created, protected and recovered. Avoid circular designs where recovering the state backend requires the state that was lost."], list: ["Restricted access", "Encryption", "Versioning/backups", "Locking or concurrency protection", "Clear ownership", "Recovery procedure"] },
         ],
         practice: ["Design a remote-state backend for Steward without deploying it yet.", "Identify who needs read, write and administrative access.", "Write a recovery path for accidental state deletion or corruption."],
-        questions: ["Why does team-managed infrastructure make local state insufficient?", "What bootstrap problem can remote state introduce?"]
+        questions: ["Why does team-managed infrastructure make local state insufficient?", "What bootstrap problem can remote state introduce?"],
+        resources: [openTofuRemoteState]
     },
     {
         id: "secrets-sensitive-values",
@@ -182,7 +194,8 @@ const specs: LessonSpec[] = [
             { heading: "Teardown is part of cloud cost discipline", paragraphs: ["The ability to destroy a lab environment cleanly is valuable because forgotten resources continue to cost money. A good lab proves both creation and teardown while preserving any evidence or state that must outlive the experiment." ] },
         ],
         practice: ["Classify Steward resources as ephemeral, replaceable-with-recovery or protected/persistent.", "Identify which resources need lifecycle protection or manual approval before destroy.", "Plan a safe teardown of a non-production Steward environment and state what must survive."],
-        questions: ["Why should resource lifecycle differ between a test VM and a production database?", "How does destroy capability contribute to cost governance?"]
+        questions: ["Why should resource lifecycle differ between a test VM and a production database?", "How does destroy capability contribute to cost governance?"],
+        resources: [openTofuLifecycle]
     },
 ];
 
