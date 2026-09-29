@@ -1,4 +1,10 @@
 import type { AuthoredLesson } from "./normalize-authored-curriculum";
+const patchingReferences = [
+ "https://docs.rockylinux.org/guides/security/dnf_automatic/",
+ "https://dnf.readthedocs.io/en/latest/",
+ "https://access.redhat.com/security/updates/classification/",
+ "https://docs.ansible.com/ansible/latest/collections/ansible/builtin/dnf_module.html",
+];
 
 export const osPatchingLifecycleDeepLessons: AuthoredLesson[] = [
     {

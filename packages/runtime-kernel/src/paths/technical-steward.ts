@@ -11,10 +11,12 @@ import { technicalLeadershipDeepLessons } from "./technical-steward-technical-le
 import { thirdPartyLifecycleRiskDeepLessons } from "./technical-steward-third-party-lifecycle-risk-deep";
 import { technologyGovernanceDeepLessons } from "./technical-steward-technology-governance-deep";
 import { technologyRiskDeepLessons } from "./technical-steward-technology-risk-deep";
+import { technicalStrategyCapabilityDeepLessons } from "./technical-steward-strategy-capability-deep";
 
 export const technicalLeadership: LearningPath = { id: "technical-leadership", title: "Technical Leadership", lessons: technicalLeadershipDeepLessons };
 export const engineeringGovernance: LearningPath = { id: "engineering-governance", title: "Engineering Governance", lessons: engineeringGovernanceDeepLessons };
 export const technologyGovernance: LearningPath = { id: "technology-governance", title: "IT and Technology Governance", lessons: technologyGovernanceDeepLessons };
+export const technologyStrategyCapability: LearningPath = { id: "technology-strategy-capability", title: "Technology Strategy and Capability Planning", lessons: technicalStrategyCapabilityDeepLessons };
 export const technologyRisk: LearningPath = { id: "technology-risk", title: "Technology Risk", lessons: technologyRiskDeepLessons };
 export const controlsComplianceAssurance: LearningPath = { id: "controls-compliance-assurance", title: "Controls, Compliance and Assurance", lessons: controlsComplianceAssuranceDeepLessons };
 export const architectureGovernance: LearningPath = { id: "architecture-governance", title: "Architecture Governance", lessons: architectureGovernanceDeepLessons };
@@ -25,4 +27,4 @@ export const technicalDebtHealth: LearningPath = { id: "technical-debt-health", 
 export const handbookAndStandards: LearningPath = { id: "handbook-and-standards", title: "Engineering Handbook and Standards", lessons: handbookAndStandardsDeepLessons };
 export const technicalStewardshipReview: LearningPath = { id: "technical-stewardship-review", title: "Technical Steward Milestone", lessons: technicalStewardMilestoneDeepLessons };
 
-export const technicalStewardPaths: LearningPath[] = [technicalLeadership, engineeringGovernance, technologyGovernance, technologyRisk, controlsComplianceAssurance, architectureGovernance, securityDataGovernance, changeServiceGovernance, thirdPartyLifecycleRisk, technicalDebtHealth, handbookAndStandards, technicalStewardshipReview];
+export const technicalStewardPaths: LearningPath[] = [technicalLeadership, engineeringGovernance, technologyGovernance, technologyStrategyCapability, technologyRisk, controlsComplianceAssurance, architectureGovernance, securityDataGovernance, changeServiceGovernance, thirdPartyLifecycleRisk, technicalDebtHealth, handbookAndStandards, technicalStewardshipReview];

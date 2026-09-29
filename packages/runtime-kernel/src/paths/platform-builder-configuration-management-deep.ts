@@ -1,7 +1,12 @@
+import type { LearningResource } from "../activities/content";
 import type { Lesson } from "./lesson";
+const ansibleIntro:LearningResource={title:"Ansible — Introduction to playbooks",url:"https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_intro.html",kind:"reference"};
+const ansibleInventory:LearningResource={title:"Ansible — Building inventory",url:"https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html",kind:"reference"};
+const ansibleVault:LearningResource={title:"Ansible Vault",url:"https://docs.ansible.com/ansible/latest/vault_guide/index.html",kind:"reference"};
+const defaultResources=[ansibleIntro,ansibleInventory,ansibleVault];
 
-function practical(id: string, title: string, objective: string, scenario: string, instructions: string[], deliverables: string[], completionCriteria: string[], estimatedMinutes = 120): Lesson {
-    return { id, title, activities: [{ id: `${id}-lab`, title, estimatedMinutes, content: { type: "practical", objective, scenario, instructions, deliverables, completionCriteria } }] };
+function practical(id: string, title: string, objective: string, scenario: string, instructions: string[], deliverables: string[], completionCriteria: string[], estimatedMinutes = 120, resources: LearningResource[] = defaultResources): Lesson {
+    return { id, title, activities: [{ id: `${id}-lab`, title, estimatedMinutes, content: { type: "practical", objective, scenario, instructions, deliverables: [...deliverables, `Reference set: ${resources.map(r => r.title).join("; ")}`], completionCriteria } }] };
 }
 
 export const configurationManagementDeepLessons: Lesson[] = [

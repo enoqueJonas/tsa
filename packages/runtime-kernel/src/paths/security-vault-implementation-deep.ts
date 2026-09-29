@@ -3,7 +3,21 @@ import type { Lesson } from "./lesson";
 
 const vaultDocs: LearningResource = { title: "HashiCorp Vault Documentation", url: "https://developer.hashicorp.com/vault/docs" };
 const databaseEngine: LearningResource = { title: "Vault Database Secrets Engine", url: "https://developer.hashicorp.com/vault/docs/secrets/databases" };
-const authDocs: LearningResource = { title: "Vault Auth Methods", url: "https://developer.hashicorp.com/vault/docs/auth" };
+const authDocs: LearningResource = { title: "Vault Auth Methods", url: "https://developer.hashicorp.com/vault/docs/auth", kind: "documentation" };
+const productionHardening: LearningResource = { title: "Vault Production Hardening", url: "https://developer.hashicorp.com/vault/docs/concepts/production-hardening", kind: "documentation" };
+const initializeDocs: LearningResource = { title: "Vault Operator Init", url: "https://developer.hashicorp.com/vault/docs/commands/operator/init", kind: "documentation" };
+const auditDocs: LearningResource = { title: "Vault Audit Devices", url: "https://developer.hashicorp.com/vault/docs/audit", kind: "documentation" };
+const policyDocs: LearningResource = { title: "Vault Policies", url: "https://developer.hashicorp.com/vault/docs/concepts/policies", kind: "documentation" };
+const leaseDocs: LearningResource = { title: "Vault Lease, Renew and Revoke", url: "https://developer.hashicorp.com/vault/docs/concepts/lease", kind: "documentation" };
+const healthDocs: LearningResource = { title: "Vault /sys/health API", url: "https://developer.hashicorp.com/vault/api-docs/system/health", kind: "documentation" };
+
+const resourcesByVaultActivity: Record<string, LearningResource[]> = {
+    "security-vault-implementation-001": [vaultDocs, leaseDocs],
+    "security-vault-implementation-002": [productionHardening, initializeDocs, auditDocs, policyDocs],
+    "security-vault-implementation-003": [databaseEngine, authDocs, leaseDocs, policyDocs],
+    "security-vault-implementation-004": [healthDocs, leaseDocs, authDocs],
+    "security-vault-implementation-005": [productionHardening, vaultDocs],
+};
 
 const blocks: LessonBlock[] = [
     { type: "paragraph", text: "Steward has accumulated enough machine identities, database access and platform automation that manually rotating long-lived credentials is now a measurable security and operations burden. TSA therefore moves Vault from an optional design exercise to a mandatory learner-owned implementation." },
@@ -15,7 +29,7 @@ const blocks: LessonBlock[] = [
         "Vault availability, audit, unseal/recovery and backup responsibilities become part of operating the platform."
     ] },
     { type: "callout", tone: "steward", title: "Scenario-forced implementation", body: "The learning objective is not to install Vault because enterprises use it. Steward now has a concrete database-credential lifecycle problem that dynamic credentials solve. Architect may later retain, simplify or replace the platform after evaluating its operational cost." },
-    { type: "resources", title: "Continue learning", resources: [vaultDocs, databaseEngine, authDocs] },
+    { type: "resources", title: "Continue learning", resources: [productionHardening, initializeDocs, auditDocs, policyDocs, authDocs, databaseEngine, leaseDocs, healthDocs] },
 ];
 
 export const vaultImplementationDeepLessons: Lesson[] = [

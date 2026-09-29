@@ -27,6 +27,18 @@ Develop engineering habits before framework specialization: evidence, systems th
 - Learning as an Engineering Skill
 - Communicating Technical Work
 
+## Incremental Quality Steward build
+The learner does not wait for a final framework lab. Each module changes the same `steward-tests` project:
+
+1. **Java Foundation** — create Maven/JUnit project, configuration, DI boundaries, tag policy and raw HTTP probe.
+2. **API Foundation** — introduce REST Assured, typed contracts, API client, test-data builders and service-layer evidence.
+3. **Framework Consolidation** — refactor only proven repetition; add diagnostics, Allure, selection and maintainability controls.
+4. **Browser Layer** — add Playwright Java, explicit browser/context ownership, direct-locator smoke flow, then extract page/component objects from repetition.
+5. **Reuse Boundary** — only now evaluate generic configuration/API/browser/evidence/JUnit infrastructure and extract justified pieces into `tsa-test-core`.
+6. **Internal Distribution** — publish the versioned `tsa-test-core` JAR to Nexus and make Steward consume it as a normal Maven dependency.
+7. **CI and Continuous Execution** — containerize dependencies, add GitLab CI/CD gates/selection/artifacts and scheduled regression.
+8. **Quality Steward Milestone** — defend the completed quality platform, its evidence model, framework boundaries and unresolved risks.
+
 ## Labs
 - Debugging investigation
 - Analyze an unfamiliar system
@@ -303,7 +315,9 @@ Make software reproducibly buildable, packageable, testable, releasable and depl
 - Pipeline architecture
 - Jobs, stages and dependencies
 - Runners/agents
-- GitHub Actions and/or Jenkins
+- GitLab CI/CD as the canonical CI implementation
+- `.gitlab-ci.yml`, jobs, stages, runners, `rules`, `needs`, variables, caches and artifacts
+- Merge request, branch/tag and scheduled pipeline sources
 - Self-hosted runners
 - Caching
 - Pipeline artifacts
@@ -441,6 +455,8 @@ Operate a real internet-facing remote environment while learning the concepts be
 
 # 07 — Quality Steward
 
+> Implementation contract: [`quality-steward-repository-evolution.md`](./quality-steward-repository-evolution.md). Quality Steward lessons must evolve the same `steward-tests` artifact according to these checkpoints rather than introducing the finished framework early.
+
 ## Purpose
 Learn quality engineering deeply and build a real automation framework against the increasingly realistic Steward platform.
 
@@ -464,14 +480,46 @@ Learn quality engineering deeply and build a real automation framework against t
 - Negative testing
 - Traceability
 
-## Module 3 — Unit and Component Testing
+## Module 3 — Java for Test Framework Engineering
+- Java/JVM execution model and Maven project structure
+- Maven lifecycle phases vs plugin goals, effective POM and reproducible plugin configuration
+- Dependency graphs, scopes, mediation, `dependencyManagement`, local repository, Nexus and SNAPSHOT tradeoffs
+- Surefire vs Failsafe and test-discovery boundaries
+- Classes, records, enums, access modifiers and immutability
+- Object identity, `equals`, `hashCode` and safe diagnostic `toString`
+- Interfaces, composition and dependency direction
+- Constructor dependency injection before DI containers
+- Generics, collections and type erasure
+- Exceptions, cause preservation and try-with-resources
+- Annotations, retention and reflection
+- JUnit Platform vs Jupiter/TestEngine, discovery and the complete Maven → Surefire → Platform → Jupiter execution chain
+- JUnit test-instance lifecycle and resource ownership
+- Parameterized tests/MethodSource and diagnostic invocation naming
+- JUnit extension callbacks, `ParameterResolver` and extension-state boundaries
+- JUnit tags and governed test selection
+- Lambdas, functional interfaces, streams and Optional
+- Concurrency, shared state, visibility/atomicity, `ThreadLocal` risks and thread-safety fundamentals
+- **Execution milestone:** explain and debug `mvn test` end-to-end, inspect effective POM/dependency tree, prove tag selection/parameterization and build one deliberately narrow extension
+- **Increment:** create `steward-tests`, establish Maven/JUnit, immutable configuration, constructor injection, tag policy and one raw Java HttpClient probe
+
+## Module 4 — Unit and Component Testing
 - Unit-test design
 - Isolation
 - Test doubles
 - Mocks/stubs/fakes
 - Coverage and its limitations
 
-## Module 4 — API and Integration Testing
+## Module 5 — API and Integration Testing
+- HTTP semantics before tooling: methods, safety/idempotency, status/header/representation semantics, content negotiation and retry risk
+- Introduce REST Assured by replacing the earlier raw HttpClient ceremony
+- Direct `given/when/then` execution before extracting specifications
+- Request/response specification boundaries and immutable specification construction
+- Authentication architecture with explicit caller identity and credential redaction
+- Jackson serialization/deserialization, typed DTOs and dynamic JSON tradeoffs
+- REST Assured filters for correlation and sanitized diagnostics
+- Thin product API clients versus generic REST god-clients
+- Negative testing, protected-state assertions, duplicate delivery and idempotency
+- Grow typed Steward API clients, Jackson models and AssertJ assertions
 - API test design
 - Authentication/authorization tests
 - Schema/contract validation
@@ -480,42 +528,82 @@ Learn quality engineering deeply and build a real automation framework against t
 - Contract testing concepts
 - Mocking/service virtualization
 
-## Module 5 — Automation Framework Engineering
-- What makes a framework
-- Framework architecture
-- Playwright with Python
-- pytest
-- Configuration
-- Fixtures
-- Test data
-- API clients
-- UI abstractions/Page Objects where appropriate
-- Helpers/utilities
-- Assertions
-- Markers/tags
-- Parameterization
-- Logging
-- Reporting
-- Screenshots/traces/videos
-- Parallel execution
-- Retry strategy and flaky-test risks
-- Maintainability and code quality
+## Module 6 — Automation Framework Engineering
+- Java 17+ test-project structure and Maven lifecycle
+- JUnit 5 fundamentals, lifecycle, parameterized tests, tags and extensions
+- Framework architecture and dependency direction
+- Validated environment/configuration model
+- Test-data builders, isolation and deterministic cleanup
+- REST Assured API clients and request/response specifications
+- Jackson DTO/JSON mapping and AssertJ assertions
+- Decide whether each scenario actually requires browser evidence
+- Playwright Java runtime ownership: Playwright → Browser → BrowserContext → Page
+- BrowserContext session isolation versus shared backend-data isolation
+- DOM and accessibility-tree semantics; role/label/test-id locator policy
+- Playwright actionability, auto-waiting and web-first assertions
+- SPA navigation, network observation and application-readiness signals
+- Cookies, local/session storage and secure authentication-state reuse
+- Playwright Java browser/context lifecycle after the API/framework substrate exists
+- UI abstractions/Page Objects and component objects where appropriate
+- Logging, Allure reporting and diagnostic evidence
+- Screenshots/traces/video only where diagnostically useful
+- Parallel execution, collision-safe data and test isolation
+- Retry/quarantine strategy and flaky-test risks
+- Maintainability, public APIs and framework ownership
+- Extract reusable infrastructure into `tsa-test-core`
+- Publish/consume `tsa-test-core` as a versioned Maven artifact through Nexus
+- SLF4J logging architecture, levels, execution context and secret redaction
+- Stable run/test/attempt identity across logs, API evidence, browser artifacts and reports
+- Failure taxonomy: product, automation/framework, environment/infrastructure and precondition
+- Allure as evidence presentation: meaningful steps, metadata, sanitized attachments and stable history identity
+- Artifact capture, sensitivity, naming and retention policy
+- Retry eligibility with first-attempt evidence preservation and mutation safety
+- Flake measurement using first-pass/recovered outcomes
+- Quarantine ownership, visibility, aging and exit criteria
+- Operability indicators beyond pass percentage
+- **Operability milestone:** diagnose a simulated unattended mixed API/browser regression run from evidence alone
 
-## Module 6 — Browser and Environment Testing
+
+## Module 7 — Browser and Environment Testing
 - Browser differences
 - Responsive testing
 - Cross-browser strategy
 - BrowserStack or equivalent cloud test infrastructure
 - Local vs remote execution
 
-## Module 7 — Non-functional Quality
+## Module 8 — Reusable Test Infrastructure and Internal Distribution
+- Audit the proven API/browser/configuration/evidence infrastructure for genuine cross-project reuse
+- Keep Steward clients, contracts, page objects, workflows and business assertions local
+- Extract only approved generic capabilities into `tsa-test-core`
+- Define a small intentional public API and compatibility policy
+- Build a versioned Maven JAR
+- Publish to Nexus and consume it from `steward-tests`
+- Prove consumer compatibility before promotion
+
+## Module 9 — Non-functional Quality
 - Performance concepts
 - Load/stress/spike/endurance distinctions
 - Basic accessibility testing
 - Compatibility
 - Reliability-oriented tests
 
-## Module 8 — Quality in Containers and CI/CD
+- Performance measurement model: latency distributions, throughput, errors, saturation and warm-up
+- k6 VUs, iterations, scenarios, closed versus arrival-rate/open workload models
+- k6 checks versus thresholds and evidence-backed threshold selection
+- Performance experiment validity: release/environment/dataset/generator identity and comparable-run discipline
+- Accessibility automation plus keyboard/manual semantic evidence; no scanner-only accessibility claims
+- Compatibility-contract engineering and risk-based reduction of combinatorial matrices
+- Controlled dependency failure through recovery with post-failure state-integrity evidence
+- Non-functional execution cadence: merge request versus scheduled versus release/manual evidence
+- **Measurement milestone:** defend workload, environment, interpretation and limitations—not just the resulting number
+
+## Module 10 — Quality in Containers and CI/CD
+- Testcontainers Java lifecycle and JUnit integration
+- PostgreSQLContainer and container-derived connection configuration
+- Testcontainers vs Docker Compose vs deployed/UAT environment boundaries
+- Container readiness, cleanup, version pinning and test-data isolation
+- GitLab Runner execution model and runner/environment assumptions
+- GitLab CI/CD `rules`, `needs`, caches, artifacts, reports and protected/masked variables
 - Test containers/environments
 - Running tests against Dockerized services
 - Ephemeral test environments concepts
@@ -528,7 +616,7 @@ Learn quality engineering deeply and build a real automation framework against t
 
 ## Labs
 - Write Steward API quality strategy
-- Build Playwright/Python automation framework from first principles
+- Build the Steward Java/Maven automation platform from first principles with JUnit 5, REST Assured and Playwright Java
 - Add API and UI/system tests as applicable
 - Execute against Docker environment
 - Add BrowserStack cross-browser execution where applicable
@@ -544,314 +632,358 @@ Learn quality engineering deeply and build a real automation framework against t
 # 08 — Security Steward
 
 ## Purpose
-Understand common threats by safely observing and reproducing vulnerabilities in controlled labs, then secure the system built throughout TSA.
+Move from trustworthy quality evidence to adversarial security engineering: model assets and trust boundaries, reproduce weaknesses only in controlled systems, harden application/platform/supply-chain identity boundaries, verify controls, and defend residual risk.
+
+> Transition contract: [`security-steward-transition-audit.md`](./security-steward-transition-audit.md). Security Steward reuses HTTP/Linux/Docker/GitLab/JWT/testing mechanics learned earlier and applies them to attacker capability, exploitability, trust and layered controls rather than reteaching their functional operation.
 
 ## Module 1 — Security Foundations
 - Confidentiality, integrity and availability
-- Assets, threats, vulnerabilities and risk
-- Attack surface
-- Least privilege
-- Defense in depth
-- Trust boundaries
+- Assets, threats, vulnerabilities, controls and risk
+- Attack surface and trust boundaries
+- Least privilege and defense in depth
+- Preventive, detective and corrective controls
+- Risk treatment and residual risk
 
 ## Module 2 — Threat Modeling
 - Assets and actors
-- Data flows
-- Trust boundaries
-- Threat identification
-- STRIDE-style thinking
+- Data flows and trust boundaries
+- Threat identification and STRIDE-style thinking
+- Abuse cases
 - Risk prioritization
-- Mitigations
+- Mitigation design
+- Living threat models
 
 ## Module 3 — Web and API Threats
-- Injection and SQL injection
-- Cross-site scripting
-- CSRF
-- Broken authentication
+- Injection/SQL injection, XSS and CSRF
+- Broken authentication and token/session attacks
 - Broken authorization/IDOR
-- SSRF
-- Path traversal
-- File upload risks
-- Command injection
-- Insecure deserialization concepts
-- Security misconfiguration
-- Sensitive data/secrets exposure
-- API abuse
-- Rate limiting
-- Token/session attacks
+- SSRF, path traversal and file-upload risks
+- Command injection and insecure deserialization concepts
+- Security misconfiguration and secrets exposure
+- API abuse and rate limiting
 - Cryptographic failures
 - Vulnerable dependencies
 - Logging/monitoring failures
+- Mass assignment/excessive exposure
+- Exploit preconditions, impact and bypass paths—not only negative test cases
 
 ## Module 4 — Practical Vulnerability Laboratory
-- Isolated vulnerable applications
-- Safe lab networking
-- Observe vulnerability behavior
-- Reproduce representative attacks in the lab
-- Analyze evidence
-- Implement mitigation
-- Retest
+- Isolated vulnerable applications and safe lab networking
+- Intercepting/proxying and observing behavior
+- Reproduce representative attacks only in learner-controlled systems
+- Capture reproducible evidence
+- Develop mitigation hypotheses
+- Retest and write actionable findings
 
-## Module 5 — Linux and Network Security
-- Users/permissions
+## Module 5 — Application Security Engineering
+- Secure authentication lifecycle
+- Authorization design and object-level enforcement
+- Input validation and safe APIs
+- Secure error handling
+- Secrets lifecycle
+- Security headers/configuration
+- Security logging/audit evidence
+- Abuse resistance/rate limiting
+- Data protection
+- Security-focused code review
+- Abuse cases and negative security requirements
+- Durable security regression testing using the existing quality platform
+
+## Module 6 — Linux and Network Security
+- Users/groups/permissions and sudo boundaries
 - SSH hardening
-- Firewalling
-- Service exposure
-- Patch management
-- Privilege concepts
+- Host firewalling and service exposure
+- Patch/update windows
+- File/secret permissions
 - Logging/auditing
-- Network segmentation concepts
+- Segmentation and administrative boundaries
+- TLS/certificate configuration
 
-## Module 6 — Container and Delivery Security
-- Container attack surface
-- Image scanning
-- Minimal images
-- Runtime permissions
-- Secrets
-- CI/CD permissions
-- Dependency scanning
-- SAST/DAST concepts
-- Supply-chain risks
-- Security gates
+## Module 7 — Container and Delivery Security
+- Container attack surface and runtime permissions
+- Minimal/trusted base images and image scanning
+- Delivery secrets and GitLab CI identities/least privilege
+- Protected environments and approval boundaries
+- Dependency scanning and contextual remediation
+- SAST/DAST as complementary evidence
+- Software supply-chain threats
+- Dependency confusion, typosquatting and malicious packages
+- Nexus/internal repository trust boundaries
+- Package provenance/integrity
+- SBOMs
+- Security gates/exceptions
+- Protecting internal publishing credentials and `tsa-test-core` consumption
 
-## Module 7 — Application Security Engineering
-- Secure authentication
-- Authorization testing
-- Input validation
-- Secret management
-- Secure headers/configuration
-- Security logging
-- Abuse cases
+## Module 8 — Artifact Signing and Verification
+- Artifact identity, digests and signatures
+- Sigstore/Cosign concepts and trust model
+- Signing Steward artifacts
+- Consumer verification
+- Enforcement/failure behavior
+
+## Module 9 — Identity and Secrets Security
+- Identity/trust boundaries
+- OAuth 2.0 / OpenID Connect concepts
+- Keycloak/federated identity
+- Service/workload identity
+- Token validation and audience/issuer boundaries
+- Secret lifecycle and rotation
+- Gateway identity boundaries
+- Domain authorization remains in Steward
+
+## Module 10 — Vault and Dynamic Secrets
+- Vault architecture and trust
+- Authentication methods
+- Policies
+- Static versus dynamic secrets
+- Short-lived database/service credentials
+- Rotation/revocation and audit evidence
+
+## Module 11 — Internal PKI and Machine Trust
+- PKI hierarchy and trust roots
+- Certificates and key lifecycle
+- Internal issuance
+- TLS/mTLS concepts
+- Rotation and revocation
+- Machine/workload trust implementation
+
+## Module 12 — Enterprise Directory Federation
+- Enterprise directory concepts
+- Federation boundaries
+- Group/claim mapping
+- Authentication versus domain authorization
+- Failure/bypass analysis
+
+## Module 13 — Secure File Transfer Migration
+- FTP threat model
+- SFTP/SSH trust and host-key verification
+- Key lifecycle and least privilege
+- Migration/rollback evidence
+- Secure operational transfer design
 
 ## Labs
-Use deliberately vulnerable applications only in isolated learning infrastructure, then apply defensive lessons to Steward API and its platform.
+Use deliberately vulnerable applications only in isolated learning infrastructure. Apply findings to Steward through explicit requirements, code/configuration changes and positive/adversarial retest evidence. Reuse the Java quality platform where durable regression automation adds value.
 
 ## Milestone
-**Steward Security Assessment and Hardening** — threat model, controlled assessment, findings, remediation, Linux/container/application hardening, pipeline security controls, and retest evidence.
+**Steward Security Assessment and Hardening** — living threat model, controlled assessment, reproducible findings, application/host/container/delivery/identity hardening, supply-chain and machine-trust controls, durable regression evidence, and a defended residual-risk register.
 
 ---
 
 # 09 — Reliability Engineer
 
 ## Purpose
-Learn to operate systems under uncertainty and failure. Reliability is treated as engineering work, not a monitoring dashboard exercise.
+Operate Steward under uncertainty and failure. Reliability is engineering of user-visible service behavior, recovery and operational decision-making—not installation of monitoring products.
 
 ## Module 1 — Reliability and SRE Foundations
 - Reliability as a quality attribute
-- Availability
-- Failure and recovery
-- SRE principles
-- Toil
-- Risk and reliability trade-offs
+- Availability, failure and recovery
+- SRE principles and toil
+- Risk/reliability trade-offs and ownership
 
-## Module 2 — Observability
+## Module 2 — Service Level Engineering
+- User journeys and service boundaries
+- SLIs, SLOs and SLAs
+- Error budgets
+- Windowing and meaningful targets
+- Release/risk decisions driven by objectives
+
+> Reliability intent comes before instrumentation: define what must be reliable before deciding which telemetry to collect.
+
+## Module 3 — Observability
 - Observability vs monitoring
 - Logs, metrics and traces
-- Telemetry design
-- Correlation/context
-- Instrumentation
-- OpenTelemetry concepts
+- Telemetry design and correlation/context
+- Instrumentation and OpenTelemetry
+- Golden signals
+- Telemetry cost/noise
+- Tracing-backend architecture decision
 
-## Module 3 — Logging
-- Structured logging
-- Log levels
-- Correlation IDs
-- Centralization concepts
-- Useful vs noisy logs
-- Security/privacy considerations
+## Module 4 — Production Logging
+- Structured logs and levels
+- Correlation/request/trace context
+- Diagnostic usefulness vs noise
+- Privacy/security and retention
+- Centralized logging architecture decision
+- Graylog implementation boundary used by the Steward reliability program
 
-## Module 4 — Metrics, Prometheus and Grafana
-- Counters/gauges/histograms
-- Application and infrastructure metrics
-- Prometheus architecture
-- Exporters
-- PromQL fundamentals
-- Grafana dashboards
-- Dashboard design
+## Module 5 — Metrics, Prometheus and Grafana
+- Metric types and application/infrastructure metrics
+- Prometheus architecture/exporters/discovery
+- PromQL and recording rules
+- Grafana and dashboard design
+- Nexus/platform and delivery metrics
 
-## Module 5 — Service Level Engineering
-- SLIs
-- SLOs
-- SLAs
-- Error budgets
-- Measuring user-visible reliability
-- Choosing meaningful objectives
+## Module 6 — Distributed Tracing
+- Trace/span/context model
+- OpenTelemetry instrumentation
+- propagation across Steward boundaries
+- Tempo as the selected implementation path
+- trace/log/metric correlation and diagnostic evidence
 
-## Module 6 — Alerting and On-call Thinking
+## Module 7 — Observability Stack Integration
+- Cross-signal navigation
+- consistent service/release/environment identity
+- symptom → metric → trace → log investigation
+- gaps, cost and ownership
+
+## Module 8 — Alerting and On-call
 - Symptoms vs causes
-- Actionable alerts
-- Alert fatigue
-- Severity
-- Escalation
-- Runbooks
+- actionable alerts and alert fatigue
+- severity/escalation/routing
+- runbooks and handover
+- SLO-aware alerting
 
-## Module 7 — Performance and Capacity
-- Latency and throughput
-- Saturation
-- Bottlenecks
-- Load/stress testing
-- Capacity planning
-- Resource utilization
-- Database/application bottlenecks
-- Performance baselines
+## Module 9 — Alertmanager Operations
+- routing, grouping and inhibition
+- receivers and notification behavior
+- HA/availability expectations where justified
+- firing/resolution evidence
 
-## Module 8 — Resilience and Distributed Failure
-- Timeouts
-- Retries
-- Exponential backoff/jitter concepts
-- Circuit breakers
-- Idempotency
-- Partial failure
-- Dependency failure
-- Cascading failure
-- Queue/backpressure concepts
-- Graceful degradation
+## Module 10 — Database Stewardship
+- PostgreSQL roles/privileges and connections
+- slow queries/plans
+- locks/deadlocks
+- safe migrations
+- backup/restore, RPO/RTO
+- capacity and health
 
-## Module 9 — Data Protection and Disaster Recovery
-- Backup strategies
-- Restore testing
+## Module 11 — Performance and Capacity
+- latency/throughput/saturation
+- bottlenecks and baselines
+- load/stress evidence
+- capacity planning and headroom
+- queueing/contention
+- artifact/platform capacity
+
+## Module 12 — Resilience and Distributed Failure
+- timeouts, retries, backoff and jitter
+- circuit breakers and idempotency
+- partial/dependency/cascading failure
+- queues/backpressure
+- graceful degradation and retry storms
+- dependency reliability budgets
+
+## Module 13 — Data Protection and Disaster Recovery
+- backup integrity and restore testing
 - RPO/RTO
-- Disaster scenarios
-- Recovery procedures
-- Data durability
+- database recovery
+- artifact repository recovery
+- configuration/infrastructure recovery
+- measured recovery evidence
 
-## Module 10 — Incident Management
-- Detection
-- Triage
-- Incident roles
-- Communication
-- Mitigation
-- Root-cause analysis
-- Blameless postmortems
-- Corrective actions
+## Module 14 — Incident Management
+- detection and triage
+- roles/communication/mitigation
+- timeline and decision records
+- root cause and contributing factors
+- blameless postmortems
+- corrective actions and near misses
 
-## Module 11 — Fault Injection and Reliability Experiments
-- Hypothesis-driven experiments
-- Controlled failure injection
-- Killing processes/containers
-- Resource exhaustion concepts
-- Network/dependency failure simulation
-- Recovery verification
-- Chaos engineering principles and safety
+## Module 15 — Fault Injection and Reliability Experiments
+- hypothesis and steady state
+- blast radius/abort controls
+- process/container/resource/dependency/database failures
+- artifact-repository failure
+- recovery verification
+- chaos-engineering principles and safety
 
-## Labs
-- Instrument Steward API
-- Deploy Prometheus/Grafana in homelab or VPS environment
-- Build dashboards
-- Define SLIs/SLOs
-- Configure actionable alerts
-- Establish performance baseline
-- Run load tests
-- Perform backup and restore drill
-- Inject controlled failures
-- Respond to simulated incident
-- Produce postmortem and reliability improvements
-
-## Milestone
-**Steward Reliability Program** — observable service with SLOs, dashboards, alerts, capacity evidence, tested recovery, runbooks, controlled failure experiment and completed incident/postmortem.
+## Module 16 — Reliability Engineer Milestone
+**Steward Reliability Program** — defend SLOs, cross-signal observability, actionable alerts, PostgreSQL/data recovery, capacity boundaries, resilience controls, incident response and controlled failure evidence across Steward and its active platform dependencies.
 
 ---
 
 # 10 — Architect
 
 ## Purpose
-Develop the ability to make and defend architecture decisions under competing constraints. Architecture is not synonymous with microservices or diagramming.
+Develop the ability to make, challenge and defend architecture decisions under competing constraints. Architecture is not synonymous with microservices, cloud products or diagramming. Simplifying or retaining the current system is a first-class architectural outcome.
 
 ## Module 1 — Architecture Fundamentals
 - Architecture vs design
-- Architecture characteristics
-- Constraints
-- Trade-offs
-- Fitness for purpose
+- Drivers, constraints and quality attributes
+- Trade-offs and fitness for purpose
+- Evolution and architecture documentation
 
-## Module 2 — Modularity
+## Module 2 — Domain Modeling
+- Business language and domain boundaries
+- Entities, value objects and aggregates
+- Invariants and transaction boundaries
+- Bounded contexts/context maps
+- When DDD is and is not worth its cost
+
+## Module 3 — Modularity
 - Coupling and cohesion
-- Components/modules
-- Dependency direction
-- Boundaries
+- Dependency direction and encapsulation
+- Package/module ownership
+- Shared-library boundaries
 - Modular monoliths
-- When distribution is justified
+- Service boundaries and distributed-monolith risk
 
-## Module 3 — Architectural Styles
-- Layered architecture
-- Hexagonal/ports-and-adapters concepts
+## Module 4 — Architectural Styles
+- Layered and hexagonal/ports-and-adapters concepts
+- Modular monoliths
+- SOA/microservices
 - Event-driven architecture
-- Service-oriented/microservices concepts
-- Serverless concepts
+- Serverless
+- Distribution cost
 - Choosing rather than collecting styles
 
-## Module 4 — Domain Modeling
-- Domain boundaries
-- Domain-Driven Design fundamentals
-- Entities/value objects/aggregates concepts
-- Bounded contexts
-- Ubiquitous language
-- When DDD is and is not worth the cost
-
 ## Module 5 — Data Architecture
-- Transactional boundaries
-- Consistency
+- Data ownership and schema boundaries
+- Transactional consistency
+- Duplication/derived views/read models
 - Caching
-- Replication concepts
-- Partitioning concepts
-- Data ownership
-- Eventual consistency
+- Database-per-service trade-offs
+- Migration/evolution and audit/history
 
 ## Module 6 — Integration and Messaging
-- Synchronous vs asynchronous integration
-- Messaging
-- Queues
-- Events
-- Delivery semantics concepts
-- Idempotency
-- Failure handling
+- Integration styles and synchronous APIs
+- Asynchronous messaging
+- Queues vs publish-subscribe
+- Commands vs events
+- Delivery semantics and idempotency
+- Contract evolution
+- Backpressure/failure
+- When not to add a broker
 
 ## Module 7 — Scalability and Distributed Systems
-- Horizontal/vertical scaling
-- Load balancing
-- Statelessness
-- Caching
-- Distributed-system constraints
-- CAP theorem as a reasoning tool
-- Consistency/availability trade-offs
-- Distributed failure
+- Vertical vs horizontal scaling
+- Statelessness and load distribution
+- Caching/contention
+- Replication and partitioning
+- CAP/consistency reasoning
+- Coordination/distributed failure
+- Measured demand before distribution
 
 ## Module 8 — Resilience Architecture
-- Redundancy
-- Isolation
-- Bulkheads
-- Timeouts/retries
-- Circuit breakers
-- Graceful degradation
-- Disaster scenarios
+- Designing for failure
+- Timeouts/retries and retry storms
+- isolation/bulkheads/circuit breakers
+- redundancy and graceful degradation
+- failure-domain and recovery consequences
+- architecture changes validated with Reliability evidence
 
 ## Module 9 — Architecture Evaluation and Governance
-- ADRs
-- Architecture reviews
-- Architecture fitness functions
-- Evolutionary architecture
-- Technical debt
-- Architecture katas
-- Cost/performance/security/reliability trade-offs
+- ADRs and architecture reviews
+- scenario-based evaluation
+- fitness functions and evolutionary architecture
+- standards with contextual exceptions
+- technology selection and build-vs-buy
+- architecture debt
+- governance without bottlenecks
+- dependency/package governance
+- steward-common and tsa-test-core review
 
-## Labs
-- Perform architecture katas
-- Re-evaluate Steward API characteristics
-- Identify scaling and reliability constraints
-- Prototype alternative designs
-- Introduce messaging/caching only where a scenario justifies them
-- Create architecture fitness checks where practical
-- Defend keep/change decisions
+## Module 10 — Architect Milestone
+**Steward Architecture Evolution** — reconstruct the current system, evaluate retain/change/simplify options, implement the smallest justified improvement and defend both retained and rejected complexity.
 
-## Milestone
-**Steward Architecture Evolution** — evidence-based architecture assessment and implemented evolution. Keeping a modular monolith is a valid outcome when justified; unnecessary microservices are a failure, not a badge.
+A valid outcome can retain a modular monolith, shared PostgreSQL, RabbitMQ or the current platform when evidence supports them. Unnecessary microservices, brokers, caches, databases, service meshes or orchestration layers are architecture failures rather than maturity badges.
 
 ---
 
 # 11 — Technical Steward
 
 ## Purpose
-Expand from engineering systems to stewarding technology: standards, governance, risk, controls, decisions, people and long-term technical health.
+Expand from engineering systems to stewarding technology over time: strategy, capability investment, standards, governance, risk, controls, decisions, people and long-term technical health. The school connects engineering evidence to organizational choices without becoming generic business management.
 
 ## Module 1 — Technical Leadership
 - Technical ownership
@@ -880,7 +1012,15 @@ Expand from engineering systems to stewarding technology: standards, governance,
 - ISO management-system concepts
 - NIST framework landscape
 
-## Module 4 — Technology Risk
+## Module 4 — Technology Strategy and Capability Planning
+- Technology outcomes and planning horizons
+- Strategic choices and explicit non-choices
+- Technology capability mapping
+- Investment and prioritization
+- Build/buy/learn/simplify/retire decisions
+- Evidence-gated roadmaps and reconsideration triggers
+
+## Module 5 — Technology Risk
 - Risk identification
 - Likelihood/impact
 - Inherent vs residual risk
@@ -890,7 +1030,7 @@ Expand from engineering systems to stewarding technology: standards, governance,
 - Risk registers
 - KRIs
 
-## Module 5 — Controls, Compliance and Assurance
+## Module 6 — Controls, Compliance and Assurance
 - Preventive/detective/corrective controls
 - Control objectives
 - Control design
@@ -901,7 +1041,7 @@ Expand from engineering systems to stewarding technology: standards, governance,
 - Audit fundamentals
 - Remediation tracking
 
-## Module 6 — Architecture Governance
+## Module 7 — Architecture Governance
 - Architecture principles
 - Standards
 - Technology selection
@@ -909,7 +1049,7 @@ Expand from engineering systems to stewarding technology: standards, governance,
 - Exceptions
 - Lifecycle management
 
-## Module 7 — Security and Data Governance
+## Module 8 — Security and Data Governance
 - Security governance
 - Roles and accountability
 - Policy hierarchy
@@ -918,7 +1058,7 @@ Expand from engineering systems to stewarding technology: standards, governance,
 - Retention/privacy concepts
 - Access governance
 
-## Module 8 — Change and Service Governance
+## Module 9 — Change and Service Governance
 - Change risk
 - Change controls
 - Release governance
@@ -926,14 +1066,14 @@ Expand from engineering systems to stewarding technology: standards, governance,
 - Incident/problem/change relationships
 - Operational readiness
 
-## Module 9 — Third-party and Technology Lifecycle Risk
+## Module 10 — Third-party and Technology Lifecycle Risk
 - Vendor assessment
 - Dependency risk
 - SaaS/cloud considerations
 - End-of-life technology
 - Exit/continuity considerations
 
-## Module 10 — Technical Debt and Engineering Health
+## Module 11 — Technical Debt and Engineering Health
 - Identifying debt
 - Measuring/communicating debt
 - Prioritization
@@ -941,7 +1081,7 @@ Expand from engineering systems to stewarding technology: standards, governance,
 - KPIs vs KRIs
 - Sustainable remediation
 
-## Module 11 — Engineering Handbook and Standards
+## Module 12 — Engineering Handbook and Standards
 - Writing standards people can use
 - Runbooks and playbooks
 - Decision records
@@ -963,7 +1103,14 @@ Prove independent engineering judgment. The learner now receives a problem and c
 
 This school deliberately reduces hand-holding.
 
-## Module 1 — Problem Discovery
+## Module 1 — Professional Practice and Ethics
+- Public interest and foreseeable harm
+- Privacy and responsible data practice
+- Limits of competence and uncertainty
+- Responsible escalation and professional dissent
+- Traceability and accountability
+
+## Module 2 — Problem Discovery
 - Stakeholders
 - Requirements
 - Constraints
@@ -971,7 +1118,7 @@ This school deliberately reduces hand-holding.
 - Quality attributes
 - Risk
 
-## Module 2 — Engineering Proposal
+## Module 3 — Engineering Proposal
 - System design
 - Architecture decisions
 - Delivery plan
@@ -982,10 +1129,10 @@ This school deliberately reduces hand-holding.
 - Cost model
 - Governance considerations
 
-## Module 3 — Independent Build
+## Module 4 — Independent Build
 The learner creates a **second substantial system from a blank repository**. It must not simply clone Steward API. The project should force meaningful decisions across software, data, infrastructure, delivery, quality, security and operations.
 
-## Module 4 — Production Readiness
+## Module 5 — Production Readiness
 - Deployment
 - Observability
 - Security assessment
@@ -994,7 +1141,12 @@ The learner creates a **second substantial system from a blank repository**. It 
 - Runbooks
 - Risk/control evidence
 
-## Module 5 — Engineering Defence
+## Module 6 — Engineering Portfolio and Reflective Practice
+- Claim-to-evidence portfolio
+- Reflective practice and changed decisions
+- Continuing professional development based on evidence gaps
+
+## Module 7 — Engineering Defence
 - Present architecture
 - Explain trade-offs
 - Demonstrate evidence

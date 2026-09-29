@@ -1,6 +1,37 @@
+import type { LearningResource } from "../activities/content";
 import type { AuthoredLesson } from "./normalize-authored-curriculum";
 
-export const internalPkiMachineTrustDeepLessons: AuthoredLesson[] = [
+const rfc5280: LearningResource = { title: "RFC 5280 — Internet X.509 PKI Certificate and CRL Profile", url: "https://www.rfc-editor.org/rfc/rfc5280", kind: "reference" };
+const opensslVerify: LearningResource = { title: "OpenSSL verify", url: "https://docs.openssl.org/3.0/man1/openssl-verify/", kind: "documentation" };
+const opensslX509: LearningResource = { title: "OpenSSL x509", url: "https://docs.openssl.org/3.0/man1/openssl-x509/", kind: "documentation" };
+const opensslCa: LearningResource = { title: "OpenSSL ca", url: "https://docs.openssl.org/3.0/man1/openssl-ca/", kind: "documentation" };
+const redHatTrust: LearningResource = { title: "Red Hat — Using Shared System Certificates", url: "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/securing_networks/using-shared-system-certificates_securing-networks", kind: "documentation" };
+const windowsTrust: LearningResource = { title: "Microsoft — Certificate Stores", url: "https://learn.microsoft.com/en-us/windows-hardware/drivers/install/certificate-stores", kind: "documentation" };
+const vaultPki: LearningResource = { title: "Vault PKI Secrets Engine", url: "https://developer.hashicorp.com/vault/docs/secrets/pki", kind: "documentation" };
+
+const resourcesByPkiLesson: Record<string, LearningResource[]> = {
+    "pki-trust-model": [rfc5280, opensslVerify],
+    "pki-ca-hierarchy": [rfc5280, opensslCa, opensslX509],
+    "pki-workload-certificates": [rfc5280, opensslX509],
+    "pki-trust-distribution": [redHatTrust, windowsTrust, opensslVerify],
+    "pki-mtls": [rfc5280, opensslVerify],
+    "pki-rotation": [opensslX509, rfc5280],
+    "pki-revocation": [rfc5280, opensslCa],
+    "pki-ca-rotation-failure": [rfc5280, opensslVerify],
+    "pki-vault-integration": [vaultPki, rfc5280],
+};
+
+function withPkiResources(lesson: AuthoredLesson): AuthoredLesson {
+    return {
+        ...lesson,
+        activities: [
+            { type: "resources", title: "Read before the exercise", resources: resourcesByPkiLesson[lesson.id] ?? [rfc5280] },
+            ...lesson.activities,
+        ],
+    };
+}
+
+const pkiLessons: AuthoredLesson[] = [
     {
         id: "pki-trust-model",
         title: "Model Internal PKI and Machine Trust",
@@ -65,3 +96,5 @@ export const internalPkiMachineTrustDeepLessons: AuthoredLesson[] = [
         activities: [{ type: "exercise", title: "PKI ownership ADR", description: "After the Vault path is implemented, compare retaining the lab OpenSSL issuing CA with migrating workload issuance to Vault PKI. Define root/intermediate ownership, authentication for certificate requests, TTLs, renewal, revocation, audit, trust distribution and migration/decommission. Public ACME/Kong certificates remain under the Cloud certificate lifecycle unless a later architecture decision explicitly changes that boundary. End with one authoritative internal workload-PKI design, not two permanent issuers." }],
     },
 ];
+
+export const internalPkiMachineTrustDeepLessons: AuthoredLesson[] = pkiLessons.map(withPkiResources);

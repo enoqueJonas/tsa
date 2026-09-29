@@ -1,6 +1,22 @@
+import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
-function reading(id:string,title:string,body:string,practice:string[]):Lesson{return{id:`architect-data-${id}`,title,activities:[{id:`architect-data-${id}-001`,title,estimatedMinutes:55,content:{type:"reading",body}},{id:`architect-data-${id}-002`,title:`Evaluate: ${title}`,estimatedMinutes:55,content:{type:"practical",objective:`Evaluate ${title} in Steward.`,scenario:"Use Steward's current PostgreSQL schema, domain model, APIs, tests, operational evidence and recovery constraints. Treat the existing database as evidence, not as unquestionable architecture.",instructions:practice,deliverables:["Current-state evidence","Trade-off analysis","Recommendation and consequences"],completionCriteria:["Data ownership and invariants are explicit.","Consistency assumptions are stated.","Operational and migration consequences are considered."]}}]};}
+const postgresTransactions: LearningResource = { title: "PostgreSQL — Transaction Isolation", url: "https://www.postgresql.org/docs/current/transaction-iso.html", kind: "documentation" };
+const postgresDdl: LearningResource = { title: "PostgreSQL — DDL", url: "https://www.postgresql.org/docs/current/ddl.html", kind: "documentation" };
+const awsCaching: LearningResource = { title: "AWS Well-Architected — Caching", url: "https://docs.aws.amazon.com/wellarchitected/latest/performance-efficiency-pillar/caching.html", kind: "reference" };
+const fowlerCqrs: LearningResource = { title: "Martin Fowler — CQRS", url: "https://martinfowler.com/bliki/CQRS.html", kind: "reference" };
+const fowlerEventSourcing: LearningResource = { title: "Martin Fowler — Event Sourcing", url: "https://martinfowler.com/eaaDev/EventSourcing.html", kind: "reference" };
+const resourcesByDataTopic: Record<string, LearningResource[]> = {
+  ownership: [postgresDdl], "schema-boundaries": [postgresDdl],
+  "transactional-consistency": [postgresTransactions],
+  "duplication-derived-views": [fowlerCqrs], caching: [awsCaching],
+  "read-models": [fowlerCqrs], "database-per-service": [postgresTransactions, fowlerCqrs],
+  "migration-evolution": [postgresDdl], "audit-history": [fowlerEventSourcing, postgresDdl],
+};
+
+function resources(id:string): LessonBlock[] { return [{ type: "resources", title: "Continue learning", resources: resourcesByDataTopic[id] ?? [postgresDdl] }]; }
+
+function reading(id:string,title:string,body:string,practice:string[]):Lesson{return{id:`architect-data-${id}`,title,activities:[{id:`architect-data-${id}-001`,title,estimatedMinutes:55,content:{type:"reading",body,blocks:resources(id)}},{id:`architect-data-${id}-002`,title:`Evaluate: ${title}`,estimatedMinutes:55,content:{type:"practical",objective:`Evaluate ${title} in Steward.`,scenario:"Use Steward's current PostgreSQL schema, domain model, APIs, tests, operational evidence and recovery constraints. Treat the existing database as evidence, not as unquestionable architecture.",instructions:practice,deliverables:["Current-state evidence","Trade-off analysis","Recommendation and consequences"],completionCriteria:["Data ownership and invariants are explicit.","Consistency assumptions are stated.","Operational and migration consequences are considered."]}}]};}
 
 export const dataArchitectureDeepLessons:Lesson[]=[
 reading("ownership","Data Ownership","Data ownership answers who is authoritative for a piece of information and who may change it. Shared storage without ownership produces hidden coupling and ambiguous invariants.",["Map major Steward data sets to owning domain capability.","Identify direct cross-boundary reads/writes.","Mark authoritative vs derived data.","Recommend ownership rules for ambiguous areas."]),

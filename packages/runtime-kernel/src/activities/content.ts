@@ -1,10 +1,16 @@
+export type LearningResourceKind = "article" | "documentation" | "video" | "course" | "reference";
+
 export interface LearningResource {
     title: string;
     url: string;
-    /** Exact chapter, section, heading or page range the learner should read. */
+    /** Lets the learner distinguish watch/read/reference material before opening it. */
+    kind?: LearningResourceKind;
+    /** Exact chapter, section, heading, page range, timestamp or segment to consume. */
     read?: string;
     /** Why this particular slice of the source matters for the lesson. */
     purpose?: string;
+    /** Marks the small number of resources the learner should consume before continuing. */
+    recommended?: boolean;
 }
 
 export type LessonBlock =

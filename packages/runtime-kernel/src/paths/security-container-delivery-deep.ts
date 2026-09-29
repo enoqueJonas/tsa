@@ -4,7 +4,41 @@ import type { Lesson } from "./lesson";
 const owaspSupplyChain: LearningResource = { title: "OWASP Software Supply Chain Security", url: "https://owasp.org/www-project-software-supply-chain-security/" };
 const sigstore: LearningResource = { title: "Sigstore Documentation", url: "https://docs.sigstore.dev/" };
 const spdx: LearningResource = { title: "SPDX", url: "https://spdx.dev/" };
-const cyclonedx: LearningResource = { title: "CycloneDX", url: "https://cyclonedx.org/" };
+const cyclonedx: LearningResource = { title: "CycloneDX", url: "https://cyclonedx.org/", kind: "reference" };
+const dockerBuild: LearningResource = { title: "Docker Build — Best Practices", url: "https://docs.docker.com/build/building/best-practices/", kind: "documentation" };
+const dockerSecurity: LearningResource = { title: "Docker Engine Security", url: "https://docs.docker.com/engine/security/", kind: "documentation" };
+const gitlabContainerScanning: LearningResource = { title: "GitLab Container Scanning", url: "https://docs.gitlab.com/user/application_security/container_scanning/", kind: "documentation" };
+const gitlabDependencyScanning: LearningResource = { title: "GitLab Dependency Scanning", url: "https://docs.gitlab.com/user/application_security/dependency_scanning/", kind: "documentation" };
+const gitlabSast: LearningResource = { title: "GitLab SAST", url: "https://docs.gitlab.com/user/application_security/sast/", kind: "documentation" };
+const gitlabDast: LearningResource = { title: "GitLab DAST", url: "https://docs.gitlab.com/user/application_security/dast/", kind: "documentation" };
+const gitlabProtectedEnvironments: LearningResource = { title: "GitLab Protected Environments", url: "https://docs.gitlab.com/ci/environments/protected_environments/", kind: "documentation" };
+const gitlabVariables: LearningResource = { title: "GitLab CI/CD Variables", url: "https://docs.gitlab.com/ci/variables/", kind: "documentation" };
+const gitlabJobTokens: LearningResource = { title: "GitLab CI/CD Job Token", url: "https://docs.gitlab.com/ci/jobs/ci_job_token/", kind: "documentation" };
+const slsa: LearningResource = { title: "SLSA — Supply-chain Levels for Software Artifacts", url: "https://slsa.dev/spec/v1.0/", kind: "reference" };
+const owaspDependencyConfusion: LearningResource = { title: "OWASP Dependency Confusion", url: "https://owasp.org/www-community/attacks/Dependency_Confusion", kind: "reference" };
+const cosignDocs: LearningResource = { title: "Sigstore Cosign", url: "https://docs.sigstore.dev/cosign/", kind: "documentation" };
+
+const resourcesByDeliveryTopic: Partial<Record<Topic, LearningResource[]>> = {
+    "Container Attack Surface": [dockerSecurity, owaspSupplyChain],
+    "Minimal and Trusted Base Images": [dockerBuild, dockerSecurity],
+    "Image Scanning": [gitlabContainerScanning, dockerSecurity],
+    "Container Runtime Permissions": [dockerSecurity],
+    "Secrets in Delivery": [gitlabVariables, owaspSupplyChain],
+    "CI/CD Identities and Least Privilege": [gitlabJobTokens, gitlabVariables],
+    "Protected Environments and Approval Boundaries": [gitlabProtectedEnvironments],
+    "Dependency Scanning": [gitlabDependencyScanning, owaspSupplyChain],
+    "SAST and DAST Concepts": [gitlabSast, gitlabDast],
+    "Software Supply-chain Security": [owaspSupplyChain, slsa],
+    "Dependency Confusion": [owaspDependencyConfusion, owaspSupplyChain],
+    "Typosquatting and Malicious Packages": [owaspSupplyChain],
+    "Internal Repository Trust Boundaries": [owaspSupplyChain, slsa],
+    "Package Provenance and Integrity": [slsa, sigstore],
+    "SBOMs as Security Evidence": [spdx, cyclonedx],
+    "Signing and Verification Concepts": [cosignDocs, sigstore],
+    "Security Gates and Exceptions": [gitlabContainerScanning, gitlabDependencyScanning],
+    "Protecting Internal Publishing Credentials": [gitlabJobTokens, gitlabVariables],
+    "Securing steward-common and tsa-test-core Consumption": [owaspSupplyChain, slsa],
+};
 
 const titles = [
     "Container Attack Surface",
@@ -162,7 +196,7 @@ function blocksFor(topic: Topic, item: Guidance): LessonBlock[] {
         { type: "heading", id: `${topic.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-steward`, text: "Apply it to Steward", level: 2 },
         { type: "paragraph", text: item.steward },
         { type: "callout", tone: "steward", title: "Stewardship checkpoint", body: "The trusted path is source → CI identity → build artifact → internal repository/registry → verification → deployment/consumption. Every lesson should make at least one trust decision in that path explicit and evidence-backed." },
-        { type: "resources", title: "Continue learning", resources: [owaspSupplyChain, sigstore, spdx, cyclonedx] },
+        { type: "resources", title: "Continue learning", resources: resourcesByDeliveryTopic[topic] ?? [owaspSupplyChain] },
     ];
 }
 

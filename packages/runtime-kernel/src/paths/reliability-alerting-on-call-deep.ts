@@ -3,7 +3,17 @@ import type { Lesson } from "./lesson";
 
 const sreAlerting: LearningResource = { title: "Google SRE Workbook - Alerting on SLOs", url: "https://sre.google/workbook/alerting-on-slos/" };
 const promAlerting: LearningResource = { title: "Prometheus Alerting Rules", url: "https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/" };
-const alertmanager: LearningResource = { title: "Prometheus Alertmanager", url: "https://prometheus.io/docs/alerting/latest/alertmanager/" };
+const alertmanager: LearningResource = { title: "Prometheus Alertmanager", url: "https://prometheus.io/docs/alerting/latest/alertmanager/", kind: "documentation" };
+const sreOnCall: LearningResource = { title: "Google SRE — Being On-Call", url: "https://sre.google/sre-book/being-on-call/", kind: "reference" };
+const srePracticalAlerting: LearningResource = { title: "Google SRE — Practical Alerting", url: "https://sre.google/sre-book/practical-alerting/", kind: "reference" };
+const resourcesByAlertingTopic: Record<string, LearningResource[]> = {
+  "symptoms-vs-causes": [srePracticalAlerting, sreAlerting],
+  "actionable-alerts": [sreAlerting, promAlerting],
+  "alert-fatigue": [sreOnCall, srePracticalAlerting],
+  severity: [sreOnCall, sreAlerting], escalation: [sreOnCall],
+  "alert-routing": [alertmanager, promAlerting], runbooks: [sreOnCall, sreAlerting],
+  handover: [sreOnCall],
+};
 
 type Spec = { id: string; title: string; intro: string; principles: string[]; steward: string[]; practice: string[]; reflection: string };
 
@@ -15,7 +25,7 @@ function lessonFrom(spec: Spec): Lesson {
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
         { type: "callout", tone: "steward", title: "Page on symptoms that require action", body: "The purpose of an alert is not to report every abnormal metric. It is to create timely human action when user-visible reliability is at risk and automation alone is insufficient." },
-        { type: "resources", title: "Continue learning", resources: [sreAlerting, promAlerting, alertmanager] },
+        { type: "resources", title: "Continue learning", resources: resourcesByAlertingTopic[spec.id] ?? [sreAlerting, promAlerting] },
     ];
     return { id: `alerting-and-on-call-${spec.id}`, title: spec.title, activities: [
         { id: `alerting-and-on-call-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: spec.intro, blocks } },

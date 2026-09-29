@@ -1,11 +1,20 @@
+import type { LearningResource } from "../activities/content";
 import type { Lesson } from "./lesson";
+const nistCsf={title:"NIST Cybersecurity Framework 2.0",url:"https://www.nist.gov/cyberframework",kind:"reference"} satisfies LearningResource;
+const nistPrivacy={title:"NIST Privacy Framework",url:"https://www.nist.gov/privacy-framework",kind:"reference"} satisfies LearningResource;
+const nistZeroTrust={title:"NIST SP 800-207 — Zero Trust Architecture",url:"https://csrc.nist.gov/pubs/sp/800/207/final",kind:"reference"} satisfies LearningResource;
+const resourcesBySecData:Record<string,LearningResource[]>={
+ "security-governance":[nistCsf],roles:[nistCsf],"policy-hierarchy":[nistCsf],
+ "data-ownership":[nistPrivacy],classification:[nistPrivacy],"retention-privacy":[nistPrivacy],
+ access:[nistZeroTrust,nistCsf],exceptions:[nistCsf,nistPrivacy],
+};
 
 const scenario = "Treat Steward as an organization-owned service whose security and data responsibilities span application code, PostgreSQL, cloud/VPS infrastructure, CI/CD, Nexus, internal packages, operators and business stakeholders. Reuse Security Steward evidence; this module governs accountability and decisions rather than reteaching attack techniques.";
 const deliverables = ["Governance artifact", "Evidence and rationale", "Owner, exception or review record"];
 const criteria = ["Security or data accountability is explicit.", "Policy intent is separated from implementation detail.", "Exceptions and residual risk follow defined authority and review rules."];
 function lesson(id: string, title: string, body: string, instructions: string[]): Lesson {
   return { id: `security-data-governance-${id}`, title, activities: [
-    { id: `security-data-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 60, content: { type: "reading", body } },
+    { id: `security-data-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 60, content: { type: "reading", body, blocks:[{type:"resources",title:"Governance reference",resources:resourcesBySecData[id] ?? [nistCsf]}] } },
     { id: `security-data-governance-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward governance.`, scenario, instructions, deliverables, completionCriteria: criteria } },
   ] };
 }

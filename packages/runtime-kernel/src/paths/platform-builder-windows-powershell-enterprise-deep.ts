@@ -1,4 +1,11 @@
 import type { AuthoredLesson } from "./normalize-authored-curriculum";
+const windowsReferences = [
+ "https://learn.microsoft.com/en-us/windows-server/",
+ "https://learn.microsoft.com/en-us/powershell/scripting/overview",
+ "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain-services-overview",
+ "https://learn.microsoft.com/en-us/powershell/scripting/security/remoting/ssh-remoting-in-powershell",
+ "https://learn.microsoft.com/en-us/windows-server/storage/file-server/",
+];
 
 export const windowsPowerShellEnterpriseDeepLessons: AuthoredLesson[] = [
     {

@@ -4,10 +4,30 @@ import type { Lesson } from "./lesson";
 const djangoDocs: LearningResource = { title: "Django documentation", url: "https://docs.djangoproject.com/en/stable/" };
 const drfDocs: LearningResource = { title: "Django REST framework documentation", url: "https://www.django-rest-framework.org/" };
 const openApi: LearningResource = { title: "OpenAPI Specification", url: "https://spec.openapis.org/oas/latest.html" };
+const djangoRequest: LearningResource = { title:"Django — Request and response objects", url:"https://docs.djangoproject.com/en/stable/ref/request-response/", kind:"reference" };
+const djangoApps: LearningResource = { title:"Django — Applications", url:"https://docs.djangoproject.com/en/stable/ref/applications/", kind:"reference" };
+const djangoModels: LearningResource = { title:"Django — Models", url:"https://docs.djangoproject.com/en/stable/topics/db/models/", kind:"reference" };
+const drfSerializers: LearningResource = { title:"DRF — Serializers", url:"https://www.django-rest-framework.org/api-guide/serializers/", kind:"reference" };
+const drfViews: LearningResource = { title:"DRF — Views", url:"https://www.django-rest-framework.org/api-guide/views/", kind:"reference" };
+const drfValidation: LearningResource = { title:"DRF — Validators", url:"https://www.django-rest-framework.org/api-guide/validators/", kind:"reference" };
+const drfExceptions: LearningResource = { title:"DRF — Exceptions", url:"https://www.django-rest-framework.org/api-guide/exceptions/", kind:"reference" };
+const drfFiltering: LearningResource = { title:"DRF — Filtering", url:"https://www.django-rest-framework.org/api-guide/filtering/", kind:"reference" };
+const drfPagination: LearningResource = { title:"DRF — Pagination", url:"https://www.django-rest-framework.org/api-guide/pagination/", kind:"reference" };
+const djangoSettings: LearningResource = { title:"Django — Settings", url:"https://docs.djangoproject.com/en/stable/topics/settings/", kind:"reference" };
+const djangoLogging: LearningResource = { title:"Django — Logging", url:"https://docs.djangoproject.com/en/stable/topics/logging/", kind:"reference" };
+const resourcesByDjangoLesson: Record<string, LearningResource[]> = {
+ "Django Foundations":[djangoRequest,djangoDocs],"Django REST Framework":[drfDocs],
+ "Projects, Applications and Boundaries":[djangoApps],"Models and Domain Data":[djangoModels],
+ "Serializers and Representation":[drfSerializers],"Views, ViewSets and Routing":[drfViews],
+ "Validation and Business Rules":[drfValidation],"API Error Handling":[drfExceptions],
+ "Filtering, Searching and Ordering":[drfFiltering],"Pagination":[drfPagination],
+ "API Versioning":[drfDocs],"OpenAPI and Swagger Documentation":[openApi],
+ "Configuration and Environments":[djangoSettings],"Application Logging":[djangoLogging],
+};
 
 function slug(value: string) { return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 
-function richLesson(title: string, introduction: string, outcomes: string[], concepts: Array<{ heading: string; body: string; code?: { language: string; caption: string; value: string } }>, practice: string[], check: string[], resources: LearningResource[] = [djangoDocs, drfDocs]): Lesson {
+function richLesson(title: string, introduction: string, outcomes: string[], concepts: Array<{ heading: string; body: string; code?: { language: string; caption: string; value: string } }>, practice: string[], check: string[], resources: LearningResource[] = resourcesByDjangoLesson[title] ?? [djangoDocs, drfDocs]): Lesson {
   const id = `django-and-api-engineering-${slug(title)}`;
   const blocks: LessonBlock[] = [
     { type: "heading", id: "introduction", text: "Introduction" },

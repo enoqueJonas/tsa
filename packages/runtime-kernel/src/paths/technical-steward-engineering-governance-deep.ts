@@ -1,4 +1,14 @@
+import type { LearningResource } from "../activities/content";
 import type { Lesson } from "./lesson";
+const iso38500={title:"ISO/IEC 38500 — Governance of IT overview",url:"https://www.iso.org/standard/62816.html",kind:"reference"} satisfies LearningResource;
+const cobit={title:"ISACA — COBIT",url:"https://www.isaca.org/resources/cobit",kind:"reference"} satisfies LearningResource;
+const adr={title:"Architectural Decision Records",url:"https://adr.github.io/",kind:"reference"} satisfies LearningResource;
+const resourcesByGovernance:Record<string,LearningResource[]>={
+ "engineering-governance-governance-vs-management":[iso38500,cobit],"engineering-governance-decision-rights":[iso38500],
+ "engineering-governance-accountability":[iso38500],"engineering-governance-policy-standard-procedure-guideline":[cobit],
+ "engineering-governance-exceptions":[adr,cobit],"engineering-governance-evidence-review-cadence":[cobit],
+ "engineering-governance-without-bureaucracy":[iso38500,adr],
+};
 
 function readingLesson(id: string, title: string, body: string, practice: string[]): Lesson {
   return {
@@ -9,7 +19,7 @@ function readingLesson(id: string, title: string, body: string, practice: string
         id: `${id}-reading`,
         title,
         estimatedMinutes: 55,
-        content: { type: "reading", body },
+        content: { type: "reading", body, blocks:[{type:"resources",title:"Continue learning",resources:resourcesByGovernance[id] ?? [iso38500]}] },
       },
       {
         id: `${id}-practice`,

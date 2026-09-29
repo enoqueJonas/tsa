@@ -115,3 +115,8 @@ TSA platform development
 The [Curriculum Content Quality Standard](./content-quality-standard.md) remains the guardrail for future lesson changes. The [Content Quality and Enterprise Alignment Audit](./content-quality-audit.md) records the baseline completion state and the decisions that closed the original watch items.
 
 The curriculum specification remains a living document. Significant changes should be intentional and committed to the repository so the academy plan is never dependent on chat history.
+
+
+## Quality Steward implementation contract
+
+Quality Steward evolves a single Java automation product rather than generating a finished framework. The canonical checkpoint-by-checkpoint repository structure, allowed dependencies, required evidence, review gates and deliberately deferred abstractions are defined in [`quality-steward-repository-evolution.md`](./quality-steward-repository-evolution.md).

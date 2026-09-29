@@ -1,11 +1,20 @@
+import type { LearningResource } from "../activities/content";
 import type { Lesson } from "./lesson";
+const nistRisk={title:"NIST SP 800-30 Rev. 1 — Guide for Conducting Risk Assessments",url:"https://csrc.nist.gov/pubs/sp/800/30/r1/final",kind:"reference"} satisfies LearningResource;
+const nistRmf={title:"NIST Risk Management Framework",url:"https://csrc.nist.gov/projects/risk-management/about-rmf",kind:"reference"} satisfies LearningResource;
+const isoRisk={title:"ISO 31000 — Risk management",url:"https://www.iso.org/iso-31000-risk-management.html",kind:"reference"} satisfies LearningResource;
+const resourcesByRisk:Record<string,LearningResource[]>={
+ identification:[nistRisk,isoRisk],"likelihood-impact":[nistRisk],"inherent-residual":[nistRmf,nistRisk],
+ "appetite-tolerance":[isoRisk],treatment:[isoRisk,nistRmf],acceptance:[isoRisk,nistRmf],
+ registers:[isoRisk],kri:[isoRisk],ownership:[isoRisk,nistRmf],
+};
 
 const scenario = "Treat Steward as a mature organization-owned technology service spanning application code, PostgreSQL, cloud/VPS infrastructure, Nexus, internal packages, CI/CD, security controls, reliability practices and operational ownership. Risk statements must describe uncertain events and consequences, not merely list vulnerabilities, defects or controls.";
 const deliverables = ["Risk analysis artifact", "Evidence and rationale", "Owner, treatment or review record"];
 const criteria = ["Risk is expressed in terms of cause/event/consequence and linked to evidence.", "Scoring and treatment are proportionate rather than false precision.", "Ownership, acceptance authority and review triggers are explicit."];
 function lesson(id: string, title: string, body: string, instructions: string[]): Lesson {
   return { id: `technology-risk-${id}`, title, activities: [
-    { id: `technology-risk-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 60, content: { type: "reading", body } },
+    { id: `technology-risk-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 60, content: { type: "reading", body, blocks:[{type:"resources",title:"Risk reference",resources:resourcesByRisk[id] ?? [nistRisk]}] } },
     { id: `technology-risk-${id}-practice`, title: `${title}: Steward risk exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to a real Steward technology-risk decision.`, scenario, instructions, deliverables, completionCriteria: criteria } },
   ] };
 }

@@ -4,7 +4,21 @@ import type { Lesson } from "./lesson";
 const owaspRisk: LearningResource = { title: "OWASP Risk Rating Methodology", url: "https://owasp.org/www-community/OWASP_Risk_Rating_Methodology" };
 const nistControls: LearningResource = { title: "NIST Cybersecurity Framework", url: "https://www.nist.gov/cyberframework" };
 const cisaZeroTrust: LearningResource = { title: "CISA Zero Trust Maturity Model", url: "https://www.cisa.gov/resources-tools/resources/zero-trust-maturity-model" };
-const owaspThreatModel: LearningResource = { title: "OWASP Threat Modeling", url: "https://owasp.org/www-community/Threat_Modeling" };
+const owaspThreatModel: LearningResource = { title: "OWASP Threat Modeling", url: "https://owasp.org/www-community/Threat_Modeling", kind: "reference" };
+const nistRiskAssessment: LearningResource = { title: "NIST SP 800-30 — Guide for Conducting Risk Assessments", url: "https://csrc.nist.gov/pubs/sp/800/30/r1/final", kind: "reference" };
+const nistZeroTrust: LearningResource = { title: "NIST SP 800-207 — Zero Trust Architecture", url: "https://csrc.nist.gov/pubs/sp/800/207/final", kind: "reference" };
+const cisaSecureByDesign: LearningResource = { title: "CISA Secure by Design", url: "https://www.cisa.gov/securebydesign", kind: "reference" };
+
+const resourcesByFoundation: Record<string, LearningResource[]> = {
+    cia: [nistControls],
+    "risk-language": [nistRiskAssessment, owaspRisk],
+    "attack-surface": [owaspThreatModel, cisaSecureByDesign],
+    "least-privilege": [nistZeroTrust, cisaZeroTrust],
+    "defense-depth": [nistControls, cisaSecureByDesign],
+    "trust-boundaries": [owaspThreatModel, nistZeroTrust],
+    "control-types": [nistControls],
+    "risk-treatment": [nistRiskAssessment, owaspRisk],
+};
 
 type Spec = {
     id: string;
@@ -36,7 +50,7 @@ function lessonFrom(spec: Spec): Lesson {
         title: "Security Steward checkpoint",
         body: "Security reasoning starts from assets, actors, trust and consequences. Tools are secondary. Every control should have a threat or risk it addresses, evidence that it works, and a residual-risk statement for what remains.",
     });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [owaspRisk, nistControls, cisaZeroTrust, owaspThreatModel] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: resourcesByFoundation[spec.id] ?? [nistControls, owaspThreatModel] });
 
     return {
         id: `security-foundations-${spec.id}`,

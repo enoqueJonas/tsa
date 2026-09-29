@@ -1,6 +1,21 @@
+import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
-function reading(id:string,title:string,body:string,practice:string[]):Lesson{return{id:`architect-scale-${id}`,title,activities:[{id:`architect-scale-${id}-001`,title,estimatedMinutes:55,content:{type:"reading",body}},{id:`architect-scale-${id}-002`,title:`Evaluate: ${title}`,estimatedMinutes:60,content:{type:"practical",objective:`Evaluate ${title} for Steward using measured demand and explicit architecture drivers.`,scenario:"Use Steward's current deployment, PostgreSQL design, observability, performance/capacity evidence, reliability experiments and integration/data decisions. Do not assume distribution is the target state.",instructions:practice,deliverables:["Workload/driver evidence","Trade-off analysis","Recommendation with operational consequences"],completionCriteria:["The scalability problem is stated before the mechanism.","Coordination/consistency costs are explicit.","A simpler capacity option is considered seriously."]}}]};}
+const awsScale: LearningResource = { title: "AWS Well-Architected — Demand and Scaling", url: "https://docs.aws.amazon.com/wellarchitected/latest/performance-efficiency-pillar/selection.html", kind: "reference" };
+const googleDistributed: LearningResource = { title: "Google SRE — Distributed Systems", url: "https://sre.google/sre-book/distributed-systems/", kind: "reference" };
+const postgresReplication: LearningResource = { title: "PostgreSQL — High Availability, Load Balancing and Replication", url: "https://www.postgresql.org/docs/current/high-availability.html", kind: "documentation" };
+const azurePartition: LearningResource = { title: "Azure Architecture — Data Partitioning Guidance", url: "https://learn.microsoft.com/azure/architecture/best-practices/data-partitioning", kind: "reference" };
+const gilbertLynch: LearningResource = { title: "Brewer's Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services", url: "https://www.comp.nus.edu.sg/~gilbert/pubs/BrewersConjecture-SigAct.pdf", kind: "reference" };
+const resourcesByScaleTopic: Record<string, LearningResource[]> = {
+  "scale-up-out": [awsScale, googleDistributed], stateless: [googleDistributed],
+  "load-distribution": [awsScale, googleDistributed], "cache-contention": [googleDistributed],
+  replication: [postgresReplication, googleDistributed], partitioning: [azurePartition, googleDistributed],
+  "consistency-availability": [gilbertLynch, googleDistributed], coordination: [googleDistributed],
+  sagas: [googleDistributed], "capacity-complexity": [awsScale, googleDistributed],
+};
+function resources(id:string): LessonBlock[] { return [{ type: "resources", title: "Continue learning", resources: resourcesByScaleTopic[id] ?? [googleDistributed] }]; }
+
+function reading(id:string,title:string,body:string,practice:string[]):Lesson{return{id:`architect-scale-${id}`,title,activities:[{id:`architect-scale-${id}-001`,title,estimatedMinutes:55,content:{type:"reading",body,blocks:resources(id)}},{id:`architect-scale-${id}-002`,title:`Evaluate: ${title}`,estimatedMinutes:60,content:{type:"practical",objective:`Evaluate ${title} for Steward using measured demand and explicit architecture drivers.`,scenario:"Use Steward's current deployment, PostgreSQL design, observability, performance/capacity evidence, reliability experiments and integration/data decisions. Do not assume distribution is the target state.",instructions:practice,deliverables:["Workload/driver evidence","Trade-off analysis","Recommendation with operational consequences"],completionCriteria:["The scalability problem is stated before the mechanism.","Coordination/consistency costs are explicit.","A simpler capacity option is considered seriously."]}}]};}
 
 export const scalabilityAndDistributedSystemsDeepLessons:Lesson[]=[
 reading("scale-up-out","Scaling Up and Scaling Out","Scaling up adds capacity to an existing node; scaling out adds nodes and therefore coordination. Horizontal scale can increase resilience and throughput, but only if the workload, state model and bottleneck permit it.",["Use Steward performance evidence to identify an actual or hypothetical bottleneck.","Compare vertical tuning/capacity with horizontal scale.","State the saturation signal that would trigger action.","Document new failure and cost modes introduced by scale-out."]),

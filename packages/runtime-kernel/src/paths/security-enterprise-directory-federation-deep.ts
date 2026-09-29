@@ -3,7 +3,18 @@ import type { Lesson } from "./lesson";
 
 const keycloakDocs: LearningResource = { title: "Keycloak Server Administration", url: "https://www.keycloak.org/docs/latest/server_admin/" };
 const openLdapDocs: LearningResource = { title: "OpenLDAP Administrator's Guide", url: "https://www.openldap.org/doc/admin26/" };
-const ldapRfc: LearningResource = { title: "RFC 4511 — LDAP", url: "https://www.rfc-editor.org/rfc/rfc4511" };
+const ldapRfc: LearningResource = { title: "RFC 4511 — LDAP", url: "https://www.rfc-editor.org/rfc/rfc4511", kind: "reference" };
+const oidcCore: LearningResource = { title: "OpenID Connect Core 1.0", url: "https://openid.net/specs/openid-connect-core-1_0.html", kind: "reference" };
+const keycloakLdap: LearningResource = { title: "Keycloak — LDAP and Active Directory", url: "https://www.keycloak.org/docs/latest/server_admin/#_ldap", kind: "documentation" };
+const keycloakUserStorage: LearningResource = { title: "Keycloak — User Storage Federation", url: "https://www.keycloak.org/docs/latest/server_admin/#_user-storage-federation", kind: "documentation" };
+const microsoftAdDs: LearningResource = { title: "Microsoft — Active Directory Domain Services", url: "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain-services-overview", kind: "documentation" };
+
+const resourcesByFederationTopic: Record<string, LearningResource[]> = {
+    "federation-model": [oidcCore, keycloakUserStorage, ldapRfc],
+    "keycloak-ldap": [keycloakLdap, openLdapDocs, ldapRfc],
+    "lifecycle-failures": [keycloakUserStorage, keycloakLdap, openLdapDocs],
+    "active-directory-context": [microsoftAdDs, keycloakLdap, oidcCore],
+};
 
 interface Spec {
     id: string;
@@ -21,7 +32,7 @@ function lesson(spec: Spec): Lesson {
     const blocks: LessonBlock[] = [
         { type: "paragraph", text: spec.intro },
         { type: "callout", tone: "steward", title: "Identity ownership boundary", body: "LDAP is the workforce identity source, Keycloak is the authentication/federation boundary, and Steward still owns domain authorization such as service ownership and governance permissions. Do not collapse these responsibilities." },
-        { type: "resources", title: "Continue learning", resources: [keycloakDocs, openLdapDocs, ldapRfc] },
+        { type: "resources", title: "Continue learning", resources: resourcesByFederationTopic[spec.id] ?? [keycloakDocs, ldapRfc] },
     ];
 
     return {

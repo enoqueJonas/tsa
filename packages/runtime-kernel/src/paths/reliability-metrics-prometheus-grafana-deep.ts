@@ -4,7 +4,20 @@ import type { Lesson } from "./lesson";
 const prometheus: LearningResource = { title: "Prometheus Documentation", url: "https://prometheus.io/docs/introduction/overview/" };
 const promql: LearningResource = { title: "Prometheus Querying Basics", url: "https://prometheus.io/docs/prometheus/latest/querying/basics/" };
 const grafana: LearningResource = { title: "Grafana Documentation", url: "https://grafana.com/docs/grafana/latest/" };
-const otelMetrics: LearningResource = { title: "OpenTelemetry Metrics", url: "https://opentelemetry.io/docs/concepts/signals/metrics/" };
+const otelMetrics: LearningResource = { title: "OpenTelemetry Metrics", url: "https://opentelemetry.io/docs/concepts/signals/metrics/", kind: "documentation" };
+const promMetricTypes: LearningResource = { title: "Prometheus Metric Types", url: "https://prometheus.io/docs/concepts/metric_types/", kind: "documentation" };
+const promInstrumentation: LearningResource = { title: "Prometheus Instrumentation", url: "https://prometheus.io/docs/practices/instrumentation/", kind: "documentation" };
+const promNaming: LearningResource = { title: "Prometheus Metric and Label Naming", url: "https://prometheus.io/docs/practices/naming/", kind: "documentation" };
+const promRecording: LearningResource = { title: "Prometheus Recording Rules", url: "https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/", kind: "documentation" };
+const grafanaDashboards: LearningResource = { title: "Grafana Dashboards", url: "https://grafana.com/docs/grafana/latest/dashboards/", kind: "documentation" };
+const resourcesByMetricsTopic: Record<string, LearningResource[]> = {
+  "mental-models": [otelMetrics, promMetricTypes], "metric-types": [promMetricTypes, promInstrumentation],
+  "application-infrastructure": [promInstrumentation, promNaming], "prometheus-architecture": [prometheus],
+  exporters: [prometheus], "service-discovery": [prometheus], promql: [promql],
+  "recording-rules": [promRecording, promql], grafana: [grafana],
+  "dashboard-design": [grafanaDashboards, promql], "dashboard-antipatterns": [grafanaDashboards, promNaming],
+  "nexus-platform-metrics": [promInstrumentation, promql], "ci-delivery-metrics": [promInstrumentation, promql],
+};
 
 type Spec = { id: string; title: string; intro: string; principles: string[]; steward: string[]; practice: string[]; reflection: string };
 
@@ -16,7 +29,7 @@ function lessonFrom(spec: Spec): Lesson {
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
         { type: "callout", tone: "steward", title: "Question before chart", body: "A metric is valuable when its meaning, labels and aggregation support a concrete reliability decision. A dashboard full of available numbers is not evidence that Steward is observable." },
-        { type: "resources", title: "Continue learning", resources: [prometheus, promql, grafana, otelMetrics] },
+        { type: "resources", title: "Continue learning", resources: resourcesByMetricsTopic[spec.id] ?? [prometheus, promql] },
     ];
     return { id: `metrics-prometheus-grafana-${spec.id}`, title: spec.title, activities: [
         { id: `metrics-prometheus-grafana-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: spec.intro, blocks } },

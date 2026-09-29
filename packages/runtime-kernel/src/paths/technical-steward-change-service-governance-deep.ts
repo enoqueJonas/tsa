@@ -1,11 +1,20 @@
+import type { LearningResource } from "../activities/content";
 import type { Lesson } from "./lesson";
+const itil={title:"PeopleCert — ITIL",url:"https://www.peoplecert.org/browse-certifications/it-governance-and-service-management/ITIL-1",kind:"reference"} satisfies LearningResource;
+const sreRelease={title:"Google SRE — Reliable Product Launches at Scale",url:"https://sre.google/sre-book/reliable-product-launches/",kind:"reference"} satisfies LearningResource;
+const sreIncident={title:"Google SRE — Managing Incidents",url:"https://sre.google/sre-book/managing-incidents/",kind:"reference"} satisfies LearningResource;
+const resourcesByChange:Record<string,LearningResource[]>={
+ "change-risk":[itil,sreRelease],"change-controls":[itil,sreRelease],"release-governance":[sreRelease,itil],
+ "service-ownership":[itil],"incident-problem-change":[itil,sreIncident],"operational-readiness":[sreRelease],
+ "emergency-change":[itil,sreIncident],"evidence-release":[sreRelease],
+};
 
 const scenario = "Treat Steward as a mature organization-owned service with production users, releases, incidents, service dependencies, PostgreSQL, cloud/VPS infrastructure, Nexus, internal packages, CI/CD, security controls and reliability evidence. Governance should make risky change accountable without slowing low-risk engineering work unnecessarily.";
 const deliverables = ["Governance artifact", "Evidence and rationale", "Owner, approval or follow-up record"];
 const completion = ["The governance mechanism is proportionate to change/service risk.", "Ownership and decision authority are explicit.", "Approval depends on evidence, not ceremony alone."];
 function moduleLesson(id: string, title: string, body: string, instructions: string[]): Lesson {
   return { id: `change-service-governance-${id}`, title, activities: [
-    { id: `change-service-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 55, content: { type: "reading", body } },
+    { id: `change-service-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 55, content: { type: "reading", body, blocks:[{type:"resources",title:"Service/change reference",resources:resourcesByChange[id] ?? [itil]}] } },
     { id: `change-service-governance-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward.`, scenario, instructions, deliverables, completionCriteria: completion } },
   ]};
 }

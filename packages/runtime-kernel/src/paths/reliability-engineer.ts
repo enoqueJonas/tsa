@@ -35,15 +35,15 @@ export const incidentManagement: LearningPath = { id: "incident-management", tit
 export const faultInjection: LearningPath = { id: "fault-injection", title: "Fault Injection and Reliability Experiments", lessons: faultInjectionDeepLessons };
 export const stewardReliabilityProgram: LearningPath = { id: "steward-reliability-program", title: "Reliability Engineer Milestone", lessons: stewardReliabilityProgramDeepLessons };
 
-// Each telemetry signal is implemented before the cross-signal integration path.
+// Reliability intent (SLIs/SLOs) is defined before instrumentation. Each telemetry signal is then implemented before the cross-signal integration path.
 export const reliabilityEngineerPaths: LearningPath[] = [
     reliabilityAndSre,
+    serviceLevelEngineering,
     observability,
     productionLogging,
     metricsPrometheusGrafana,
     distributedTracing,
     observabilityStackIntegration,
-    serviceLevelEngineering,
     alertingAndOnCall,
     alertmanagerImplementation,
     databaseStewardship,
