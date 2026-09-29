@@ -6,6 +6,7 @@ const ipAddressing: LearningResource = { title: "RFC 1918 — Address Allocation
 const tcpRfc: LearningResource = { title: "RFC 9293 — Transmission Control Protocol", url: "https://datatracker.ietf.org/doc/html/rfc9293" };
 const udpRfc: LearningResource = { title: "RFC 768 — User Datagram Protocol", url: "https://datatracker.ietf.org/doc/html/rfc768" };
 const dnsGuide: LearningResource = { title: "Cloudflare Learning Center — What is DNS?", url: "https://www.cloudflare.com/learning/dns/what-is-dns/" };
+const dnsVideo: LearningResource = { title: "Computerphile — How DNS Works", url: "https://www.youtube.com/watch?v=uOfonONtIuk", read: "Recommended — whole video.", purpose: "RECOMMENDED VIDEO — visualize DNS hierarchy and recursive lookup before proving resolution with homelab tools." };
 const tlsGuide: LearningResource = { title: "Cloudflare Learning Center — What is TLS?", url: "https://www.cloudflare.com/learning/ssl/transport-layer-security-tls/" };
 const ipMan: LearningResource = { title: "ip(8) Linux manual", url: "https://man7.org/linux/man-pages/man8/ip.8.html" };
 const ssMan: LearningResource = { title: "ss(8) Linux manual", url: "https://man7.org/linux/man-pages/man8/ss.8.html" };
@@ -198,7 +199,7 @@ export const networkingFoundationsDeepLessons: Lesson[] = [
         "Create or document a name-resolution path for Steward and prove name and address tests independently.",
         ["Record the current DNS resolver.", "Query the Steward hostname if one exists.", "Test Steward directly by IP.", "Test by hostname.", "Explain which evidence would distinguish stale DNS from an application outage."],
         ["Why can a service work by IP but fail by hostname?", "What is an A record?", "Why is DNS a separate failure boundary from TCP?"],
-        [dnsGuide],
+        [dnsGuide, dnsVideo],
     ),
     richLesson(
         "NAT",
