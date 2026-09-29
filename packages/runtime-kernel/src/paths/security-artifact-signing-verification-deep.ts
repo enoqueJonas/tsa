@@ -2,7 +2,12 @@ import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
 const cosign: LearningResource = { title: "Sigstore Cosign", url: "https://docs.sigstore.dev/cosign/" };
-const sigstoreSecurity: LearningResource = { title: "Sigstore security model", url: "https://docs.sigstore.dev/about/security/" };
+const sigstoreSecurity: LearningResource = { title: "Sigstore security model", url: "https://docs.sigstore.dev/about/security/", kind: "reference" };
+const cosignSigning: LearningResource = { title: "Cosign — Signing Containers", url: "https://docs.sigstore.dev/cosign/signing/signing_with_containers/", kind: "documentation" };
+const cosignVerify: LearningResource = { title: "Cosign — Verifying Signatures", url: "https://docs.sigstore.dev/cosign/verifying/verify/", kind: "documentation" };
+const sigstoreKeyless: LearningResource = { title: "Sigstore Keyless Signing", url: "https://docs.sigstore.dev/cosign/signing/signing_with_containers/#keyless-signing-using-openid-connect", kind: "documentation" };
+const gitlabIdTokens: LearningResource = { title: "GitLab CI/CD ID Tokens", url: "https://docs.gitlab.com/ci/secrets/id_token_authentication/", kind: "documentation" };
+const slsaProvenance: LearningResource = { title: "SLSA Provenance", url: "https://slsa.dev/spec/v1.0/provenance", kind: "reference" };
 
 const blocks: LessonBlock[] = [
     { type: "paragraph", text: "Delivery Engineer created immutable Steward artifacts, provenance records and SBOMs. Security Steward now turns signing from a concept into an enforced trust control: sign one exact artifact identity, verify it independently, reject tampering or the wrong signer, and make deployment fail closed when verification does not satisfy policy." },
@@ -14,7 +19,7 @@ const blocks: LessonBlock[] = [
         "SBOM/provenance evidence should remain bound to the same release identity.",
         "A valid signature from an untrusted identity must not become automatic authorization to deploy."
     ] },
-    { type: "resources", title: "Continue learning", resources: [cosign, sigstoreSecurity] },
+    { type: "resources", title: "Continue learning", resources: [sigstoreSecurity, cosignSigning, cosignVerify, sigstoreKeyless, gitlabIdTokens, slsaProvenance] },
 ];
 
 export const artifactSigningVerificationDeepLessons: Lesson[] = [
