@@ -147,17 +147,28 @@ steward-tests/
 
 ## Required implementation
 
+Before abstraction:
+- inspect real HTTP method/status/header/body semantics with the raw Java HTTP capability
+- distinguish safe/idempotent operations and document retry/duplicate-delivery risk
+- distinguish `Content-Type` from `Accept`
+- capture sanitized correlation/request identity where available
+
+Then introduce REST Assured:
+- first write direct `given/when/then` tests so repetition is visible
 - A minimal `RequestSpecification` centralizes transport defaults, not business assertions.
-- `StewardApiClient` remains thin and Steward-specific.
-- Jackson records/DTOs represent selected contracts.
+- `StewardApiClient` remains thin and Steward-specific and exposes product operations rather than a universal `execute(method,path,body)` API.
+- Jackson records/DTOs represent selected stable contracts; dynamic/partial JSON may remain tree-based when that is clearer.
 - Test-data builders expose meaningful defaults and unique identifiers.
-- Caller identity is explicit for authorization scenarios.
+- Caller identity is explicit for authorization scenarios through authentication abstractions; privileged tokens are never global defaults.
+- REST Assured filters are limited to cross-cutting transport/evidence concerns and redact credentials.
 - API tests assert semantic response/state behavior, not only status codes.
 
 ## Required evidence
 
 - Raw `HttpClient` probe can be compared with its REST Assured replacement.
 - Successful and rejected mutations are covered.
+- Rejected mutations prove protected state remains unchanged.
+- Retry/idempotency behavior is tested or its risk is explicitly documented for mutation endpoints.
 - Denied mutations prove protected state remains unchanged.
 - Repeated runs do not require manual cleanup.
 
