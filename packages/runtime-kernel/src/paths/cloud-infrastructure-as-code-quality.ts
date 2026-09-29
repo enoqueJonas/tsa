@@ -32,10 +32,10 @@ function enrichLesson(lesson: Lesson): Lesson {
                 content: {
                     ...activity.content,
                     objective: `${practiceTitle}. Use OpenTofu as the implementation tool while keeping Terraform concepts transferable.`,
-                    scenario: "Steward already has a reasoned remote architecture, a Kong public edge, Rocky Linux hosts, private backend boundaries, Jenkins/Nexus delivery and Ansible-managed host state. Infrastructure as Code must encode that approved infrastructure without swallowing application deployment, host configuration or secret-management responsibilities that belong elsewhere.",
+                    scenario: "Steward already has a reasoned remote architecture, a Kong public edge, Rocky Linux hosts, private backend boundaries, GitLab CI/Nexus delivery and Ansible-managed host state. Infrastructure as Code must encode that approved infrastructure without swallowing application deployment, host configuration or secret-management responsibilities that belong elsewhere.",
                     deliverables: [
                         ...activity.content.deliverables,
-                        "Boundary note stating what OpenTofu owns and what remains owned by Ansible, Jenkins, Kong or the application",
+                        "Boundary note stating what OpenTofu owns and what remains owned by Ansible, GitLab CI, Kong or the application",
                     ],
                     completionCriteria: [
                         ...activity.content.completionCriteria,
