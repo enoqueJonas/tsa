@@ -3,7 +3,23 @@ import type { Lesson } from "./lesson";
 
 const owaspThreatModeling: LearningResource = { title: "OWASP Threat Modeling", url: "https://owasp.org/www-community/Threat_Modeling" };
 const microsoftStride: LearningResource = { title: "Microsoft STRIDE Threat Model", url: "https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool-threats" };
-const nistRisk: LearningResource = { title: "NIST Risk Management Framework", url: "https://csrc.nist.gov/projects/risk-management/about-rmf" };
+const nistRisk: LearningResource = { title: "NIST Risk Management Framework", url: "https://csrc.nist.gov/projects/risk-management/about-rmf", kind: "reference" };
+const owaspThreatModelProcess: LearningResource = { title: "OWASP Threat Modeling Process", url: "https://owasp.org/www-community/Threat_Modeling_Process", kind: "reference" };
+const owaspAttackSurface: LearningResource = { title: "OWASP Attack Surface Analysis Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Attack_Surface_Analysis_Cheat_Sheet.html", kind: "reference" };
+const owaspAbuseCase: LearningResource = { title: "OWASP Abuse Case Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Abuse_Case_Cheat_Sheet.html", kind: "reference" };
+const nistRiskAssessment: LearningResource = { title: "NIST SP 800-30 — Risk Assessments", url: "https://csrc.nist.gov/pubs/sp/800/30/r1/final", kind: "reference" };
+
+const resourcesByThreatModelTopic: Record<string, LearningResource[]> = {
+    "assets-actors": [owaspThreatModeling, owaspThreatModelProcess],
+    flows: [owaspThreatModelProcess],
+    boundaries: [owaspThreatModelProcess, owaspAttackSurface],
+    identification: [owaspAttackSurface, owaspThreatModeling],
+    stride: [microsoftStride, owaspThreatModeling],
+    "abuse-cases": [owaspAbuseCase, owaspThreatModeling],
+    prioritization: [nistRiskAssessment, nistRisk],
+    mitigations: [owaspThreatModeling, nistRisk],
+    "living-model": [owaspThreatModelProcess, nistRisk],
+};
 
 type Spec = {
     id: string;
@@ -35,7 +51,7 @@ function blocksFor(spec: Spec): LessonBlock[] {
         title: "Stewardship checkpoint",
         body: "A useful threat model records what is known, what is assumed, who owns each mitigation and what residual risk remains. The model exists to improve engineering decisions, not to produce a diagram that is never revisited.",
     });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [owaspThreatModeling, microsoftStride, nistRisk] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: resourcesByThreatModelTopic[spec.id] ?? [owaspThreatModeling, nistRisk] });
     return blocks;
 }
 
