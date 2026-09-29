@@ -114,7 +114,7 @@ Artifacts:
 - security gate + time-bounded exception policy
 
 Constraints:
-- GitLab CI/CD is canonical; do not introduce Jenkins implementation
+- GitLab CI/CD is canonical; do not introduce a second CI implementation
 - scan severity alone is not deployment policy
 - publishing/deployment credentials are narrower than ordinary test/read credentials
 - caches/artifacts/logs must not leak secrets
@@ -235,4 +235,4 @@ When adding a standalone decision lesson or milestone:
 
 ## CI implementation rule
 
-GitLab CI/CD is TSA's canonical CI implementation. Do not add Jenkins implementation instructions, Jenkinsfiles or Jenkins-specific labs to any school. A historical/comparative mention is acceptable only when necessary to explain platform-neutral CI concepts and must not become an alternate implementation path.
+GitLab CI/CD is TSA's canonical CI implementation. Do not add a second CI implementation path, alternate pipeline configuration format or platform-specific lab to another school unless the canonical architecture is deliberately revised.
