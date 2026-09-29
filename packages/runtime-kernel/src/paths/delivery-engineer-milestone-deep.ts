@@ -11,10 +11,10 @@ export const deliveryEngineerMilestoneDeepLessons: Lesson[] = [
             content: {
                 type: "practical",
                 objective: "Integrate the Delivery Engineer school into one credible commit-to-runtime delivery platform for Steward.",
-                scenario: "Do not build parallel demo infrastructure. Reconcile the CI pipeline, container workflow, Nexus repositories, Ansible-managed host state, deployment automation and release process you already created into one evidence-backed system.",
+                scenario: "Do not build parallel demo infrastructure. Reconcile the GitLab CI pipeline and learner-managed Runner, container workflow, Nexus repositories, Ansible-managed host state, deployment automation and release process you already created into one evidence-backed system.",
                 instructions: [
                     "Choose one real Steward release candidate and freeze its source revision, package versions and OCI image identity.",
-                    "Draw the authoritative delivery path from source change through CI, Nexus, promotion, deployment and runtime verification.",
+                    "Draw the authoritative delivery path from source change through GitLab CI, Nexus, promotion, deployment and runtime verification.",
                     "Identify the owner and evidence for every transition in that path.",
                     "List any remaining manual or mutable step that can break traceability or repeatability.",
                 ],
@@ -33,16 +33,16 @@ export const deliveryEngineerMilestoneDeepLessons: Lesson[] = [
             content: {
                 type: "practical",
                 objective: "Prove that reviewed Steward source produces traceable internal package and container artifacts without workstation-local handoffs.",
-                scenario: "Use the existing CI and Nexus path. The goal is evidence, not adding more tools.",
+                scenario: "Use the existing GitLab CI and Nexus path. The goal is evidence, not adding more tools.",
                 instructions: [
-                    "Run the pipeline for the chosen source revision from a clean CI context.",
+                    "Run the `.gitlab-ci.yml` pipeline for the chosen source revision on the intended GitLab Runner from a clean execution context.",
                     "Prove required checks and tests gate artifact production.",
                     "Publish steward-common through the approved internal package path when applicable.",
                     "Publish the Steward OCI image to Nexus and record its immutable digest.",
                     "Record source commit, CI run, package version/hash and image digest in one release candidate record.",
                     "Demonstrate one intentional CI failure that correctly prevents publish or promotion.",
                 ],
-                deliverables: ["CI evidence", "Internal package identity", "OCI digest", "Source-to-artifact traceability record", "Blocked-failure evidence"],
+                deliverables: ["GitLab pipeline/Runner evidence", "Internal package identity", "OCI digest", "Source-to-artifact traceability record", "Blocked-failure evidence"],
                 completionCriteria: ["No consumer depends on producer filesystem state.", "Failed required checks cannot produce an accepted release candidate.", "The exact artifacts can be traced to the exact source revision."],
             },
         }],
@@ -57,7 +57,7 @@ export const deliveryEngineerMilestoneDeepLessons: Lesson[] = [
             content: {
                 type: "practical",
                 objective: "Prove the infrastructure required to deliver Steward is declared, reproducible and separated from application release state.",
-                scenario: "The homelab already hosts Steward, CI execution and Nexus. Demonstrate that host configuration is not dependent on undocumented manual repair.",
+                scenario: "The homelab already hosts Steward, GitLab Runner execution and Nexus. Demonstrate that host configuration is not dependent on undocumented manual repair.",
                 instructions: [
                     "Run the relevant Ansible configuration against the Steward delivery hosts.",
                     "Prove a second run converges without unnecessary change.",
@@ -151,7 +151,7 @@ export const deliveryEngineerMilestoneDeepLessons: Lesson[] = [
                 scenario: "Cloud Engineer will later move the now-containerized and automated system onto cloud/VPS infrastructure. The handoff should make the current delivery contract explicit without prematurely solving cloud architecture.",
                 instructions: [
                     "Document the authoritative source-to-runtime path and major trust boundaries.",
-                    "Record CI runner assumptions, Nexus endpoints, repository roles, artifact naming/versioning and Ansible inventory boundaries.",
+                    "Record GitLab Runner registration/executor assumptions, Nexus endpoints, repository roles, artifact naming/versioning and Ansible inventory boundaries.",
                     "Reference the release runbook and recovery procedure.",
                     "List current capacity/failure-domain constraints that matter when moving to cloud infrastructure.",
                     "List security, quality and reliability work intentionally deferred to later schools."],
@@ -169,7 +169,7 @@ export const deliveryEngineerMilestoneDeepLessons: Lesson[] = [
             estimatedMinutes: 45,
             content: {
                 type: "reflection",
-                prompt: "Assume your development laptop disappears and you are not available. Can another engineer take a reviewed Steward commit, reproduce the required delivery infrastructure, obtain the correct internal dependencies, produce and identify the release artifacts, promote the exact candidate, deploy it, verify it and recover from a failed release using only versioned configuration, Nexus, pipeline evidence and runbooks? Identify every remaining step that still depends on your personal machine or memory.\n\nThen explain which parts of the platform are Delivery Engineer responsibilities and which concerns must now pass to Cloud Engineer, Quality Steward, Security Steward and Reliability Engineer.",
+                prompt: "Assume your development laptop disappears and you are not available. Can another engineer take a reviewed Steward commit, reproduce the required delivery infrastructure, obtain the correct internal dependencies, produce and identify the release artifacts, promote the exact candidate, deploy it, verify it and recover from a failed release using only versioned configuration, GitLab CI, Nexus, pipeline evidence and runbooks? Identify every remaining step that still depends on your personal machine or memory.\n\nThen explain which parts of the platform are Delivery Engineer responsibilities and which concerns must now pass to Cloud Engineer, Quality Steward, Security Steward and Reliability Engineer.",
                 minimumCharacters: 400,
             },
         }],
