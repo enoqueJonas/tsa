@@ -1,7 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
-const pytest: LearningResource = { title: "pytest documentation", url: "https://docs.pytest.org/" };
+const junit: LearningResource = { title: "JUnit 5 User Guide", url: "https://docs.junit.org/current/user-guide/" };
 const testingGoogle: LearningResource = { title: "Software Engineering at Google — Unit Testing", url: "https://abseil.io/resources/swe-book/html/ch12.html" };
 const mocksArentStubs: LearningResource = { title: "Martin Fowler — Mocks Aren't Stubs", url: "https://martinfowler.com/articles/mocksArentStubs.html" };
 
@@ -13,10 +13,10 @@ function rich(spec: Spec): Lesson {
         blocks.push({ type: "heading", id: section.title.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.title, level: 2 });
         section.body.forEach((text) => blocks.push({ type: "paragraph", text }));
         if (section.list) blocks.push({ type: "list", items: section.list });
-        if (section.code) blocks.push({ type: "code", language: "python", code: section.code });
+        if (section.code) blocks.push({ type: "code", language: "java", code: section.code });
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward test-design checkpoint", body: "Use the risk and test-design artifacts from the previous Quality Steward modules. Put evidence at the smallest credible boundary. A fast test that proves the wrong thing is not useful; a huge integrated test for a local rule is unnecessary cost." });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [pytest, testingGoogle, mocksArentStubs] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: [junit, testingGoogle, mocksArentStubs] });
     return { id: `unit-component-${spec.id}`, title: spec.title, activities: [
         { id: `unit-component-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: spec.intro, blocks } },
         { id: `unit-component-${spec.id}-002`, title: `Apply: ${spec.title}`, estimatedMinutes: 50, content: { type: "practical", objective: `Apply ${spec.title} to Steward's Python/Django codebase.`, scenario: "Strengthen Steward at code and component boundaries before adding broader API/integration automation.", instructions: spec.practice, deliverables: ["Executable tests or focused test design", "Reason for the chosen boundary", "Failure-diagnostic note"], completionCriteria: ["Tests express observable behavior rather than implementation trivia.", "Dependencies are real or replaced deliberately according to the risk.", "A failure points toward a useful engineering cause."] } },
