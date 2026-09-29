@@ -3,6 +3,7 @@ import type { LearningResource, LessonBlock } from "../activities/content";
 
 const packetTracer: LearningResource = { title: "Cisco Packet Tracer", url: "https://www.netacad.com/cisco-packet-tracer" };
 const ciscoNetworking: LearningResource = { title: "Cisco Networking Academy", url: "https://www.netacad.com/" };
+const ospfVideo: LearningResource = { title: "Jeremy's IT Lab — Configuring OSPF Day 26 Lab", url: "https://www.youtube.com/watch?v=LeLRWjfylcs", read: "Watch 00:59–12:59; skip the introduction/promotion.", purpose: "RECOMMENDED VIDEO — a Packet Tracer OSPF configuration and verification walkthrough immediately before the independent TSA routing lab." };
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -16,6 +17,7 @@ function lab(
     deliverables: string[],
     completionCriteria: string[],
     estimatedMinutes = 120,
+    resources: LearningResource[] = [],
 ): Lesson {
     const id = `packet-tracer-${slug(title)}`;
     const blocks: LessonBlock[] = [
@@ -23,7 +25,7 @@ function lab(
         { type: "heading", id: "learning-outcomes", text: "Learning outcomes", level: 2 },
         { type: "list", items: outcomes },
         { type: "callout", tone: "steward", title: "Vendor syntax, transferable model", body: "Cisco IOS is the implementation medium for this lab. Treat commands as evidence of switching, routing and policy behavior rather than as trivia to memorize. The transferable skill is predicting packet behavior, proving it with device state, breaking it deliberately and localizing the fault." },
-        { type: "resources", title: "Required and supporting resources", resources: [packetTracer, ciscoNetworking] },
+        { type: "resources", title: "Required and supporting resources", resources: [packetTracer, ciscoNetworking, ...resources] },
     ];
 
     return {
@@ -100,6 +102,7 @@ export const packetTracerNetworkEngineeringDeepLessons: Lesson[] = [
         ["Multi-router .pkt topology", "Static/default route baseline", "OSPF neighbor and route evidence", "Routing failure diagnosis", "Static-versus-OSPF trade-off note"],
         ["Every remote subnet has an explainable route and return route.", "OSPF adjacency and learned routes are proven from device state.", "The default route is not confused with internal dynamic routing.", "The learner can identify a control-plane failure before testing applications."],
         160,
+        [ospfVideo],
     ),
     lab(
         "DHCP, Relay and NAT/PAT",
