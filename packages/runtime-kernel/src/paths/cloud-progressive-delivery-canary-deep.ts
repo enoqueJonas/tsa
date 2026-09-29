@@ -62,7 +62,7 @@ export const progressiveDeliveryCanaryDeepLessons: Lesson[] = [
                     "Deploy a deliberately defective but safe candidate that passes startup/readiness yet violates one configured analysis criterion.",
                     "Send representative traffic and prove the rollout pauses/fails/aborts before reaching 100% exposure.",
                     "Verify stable traffic remains available and capture the exact telemetry and rollout evidence that caused the decision.",
-                    "Fix the defect, publish a new immutable candidate through the normal Jenkins/Nexus release chain, and prove the new candidate can progress successfully.",
+                    "Fix the defect, publish a new immutable candidate through the normal GitLab CI/Nexus release chain, and prove the new candidate can progress successfully.",
                     "Document alert/notification handoff for an aborted progressive rollout without creating a duplicate alerting stack."
                 ], deliverables: ["Automated analysis configuration", "Defective candidate", "Prometheus failure evidence", "Automatic pause/abort evidence", "Stable-service evidence", "Fixed-candidate promotion", "Notification handoff"], completionCriteria: ["A candidate that passes readiness can still be rejected by release analysis.", "At least one promotion/abort decision is driven automatically by real telemetry.", "The bad candidate does not reach full exposure.", "Stable service remains available during abort.", "The recovery uses a newly built fixed candidate or known-good immutable artifact, not an ad-hoc in-cluster patch." ] },
             },
