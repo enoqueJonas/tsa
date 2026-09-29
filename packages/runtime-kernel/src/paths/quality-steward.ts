@@ -9,6 +9,7 @@ import { continuousAndScheduledQualityExecutionDeepLessons } from "./quality-con
 import { nonFunctionalQualityDeepLessons } from "./quality-non-functional-deep";
 import { qualityEngineeringDeepLessons } from "./quality-engineering-deep";
 import { qualityStewardMilestoneDeepLessons } from "./quality-steward-milestone-deep";
+import { qualityReuseAndInternalLibraryDeepLessons } from "./quality-reuse-internal-library-deep";
 import { testAnalysisAndDesignDeepLessons } from "./quality-test-analysis-design-deep";
 import { unitAndComponentTestingDeepLessons } from "./quality-unit-component-testing-deep";
 import type { LearningPath } from "./learning-path";
@@ -55,6 +56,12 @@ export const browserAndEnvironmentTesting: LearningPath = {
     lessons: [browserSurfaceDecisionLesson, ...browserAndEnvironmentTestingDeepLessons],
 };
 
+export const reusableTestInfrastructure: LearningPath = {
+    id: "reusable-test-infrastructure",
+    title: "Reusable Test Infrastructure and Internal Distribution",
+    lessons: qualityReuseAndInternalLibraryDeepLessons,
+};
+
 export const nonFunctionalQuality: LearningPath = {
     id: "non-functional-quality",
     title: "Non-functional Quality",
@@ -87,6 +94,7 @@ export const qualityStewardPaths: LearningPath[] = [
     apiAndIntegrationTesting,
     automationFrameworkEngineering,
     browserAndEnvironmentTesting,
+    reusableTestInfrastructure,
     nonFunctionalQuality,
     qualityInContainersAndCi,
     continuousAndScheduledQualityExecution,
