@@ -81,13 +81,13 @@ const practices: Record<string, PracticalContent> = {
             "Separate user-visible behavior, migration/configuration needs, operational considerations and known issues.",
             "Create or update a changelog entry that preserves longer-term release history.",
             "Identify one Git-level implementation detail that should not appear in release communication and one operational detail that must.",
-            "Define the evidence a release note should link to once Jenkins/Nexus automation exists."],
+            "Define the evidence a release note should link to once GitLab CI/Nexus automation exists."],
         deliverables: ["Steward release note", "Changelog entry", "Release-evidence linkage plan"],
         completionCriteria: ["Release notes describe impact rather than raw commits.", "Migration or rollback constraints are explicit where relevant.", "Changelog and one-release notes serve different purposes."],
     },
     "Build Artifacts": {
         type: "practical",
-        objective: "Define the immutable Steward artifact contract that later Jenkins and Nexus work will build and publish once, then promote unchanged.",
+        objective: "Define the immutable Steward artifact contract that later GitLab CI and Nexus work will build and publish once, then promote unchanged.",
         scenario: "The current homelab can be updated manually, but the enterprise path requires a named artifact whose bytes and source identity do not change between environments.",
         instructions: [
             "Identify what currently gets copied or rebuilt when Steward is deployed.",
@@ -96,7 +96,7 @@ const practices: Record<string, PracticalContent> = {
             "Separate environment-specific configuration and secrets from the artifact.",
             "Describe how Nexus will later store and identify the artifact and why rebuilding for another environment would violate the contract."],
         deliverables: ["Steward artifact contract", "Artifact-vs-configuration boundary", "Future Nexus publication metadata"],
-        completionCriteria: ["The artifact has one immutable identity.", "Environment credentials/URLs are not baked into separate builds.", "The contract is ready for later Jenkins/Nexus implementation."],
+        completionCriteria: ["The artifact has one immutable identity.", "Environment credentials/URLs are not baked into separate builds.", "The contract is ready for later GitLab CI/Nexus implementation."],
     },
     "Environment Promotion": {
         type: "practical",
@@ -107,7 +107,7 @@ const practices: Record<string, PracticalContent> = {
             "Define candidate, approval, deployment and verification transitions for Steward.",
             "For each gate, write the risk question it answers and the evidence required to pass.",
             "Mark which environment differences belong in runtime configuration rather than the artifact.",
-            "Create a backlog of the current manual/untraceable steps that Automation, Containers, Jenkins, Ansible and Nexus must eliminate in later Delivery Engineer modules."],
+            "Create a backlog of the current manual/untraceable steps that Automation, Containers, GitLab CI, Ansible and Nexus must eliminate in later Delivery Engineer modules."],
         deliverables: ["Build-once promotion map", "Evidence-based gate table", "Delivery-automation backlog"],
         completionCriteria: ["The artifact remains unchanged across promotion stages.", "Every gate answers a specific risk question.", "The backlog hands concrete problems to later Delivery Engineer modules instead of installing tools without need."],
     },
