@@ -12,7 +12,7 @@ const blocks: LessonBlock[] = [
         "Kubernetes Deployment rolling updates remain the baseline rollout mechanism.",
         "Argo Rollouts is introduced for one concrete canary requirement, not as a second GitOps controller replacing Argo CD.",
         "Argo CD remains responsible for reconciling desired deployment configuration from Git; Argo Rollouts controls the progressive rollout state machine.",
-        "Prometheus supplies automated analysis signals when the environment can support them; manual promotion alone does not satisfy the final exercise.",
+        "Cloud Engineer must use a real automated analysis signal that exists at this stage; Prometheus integration is deferred until Reliability Engineer owns the observability stack. Manual promotion alone does not satisfy the final exercise.",
         "Blue/green is compared as an alternative but is not permanently implemented beside canary merely for exposure."
     ] },
     { type: "callout", tone: "steward", title: "State compatibility comes first", body: "A canary is unsafe if candidate and stable versions cannot share the current schema, queues, caches or contracts. Reuse the production schema-evolution discipline before exposing two application versions to live traffic." },
@@ -57,20 +57,20 @@ export const progressiveDeliveryCanaryDeepLessons: Lesson[] = [
                 title: "Automate Analysis and Abort a Bad Canary",
                 estimatedMinutes: 210,
                 content: { type: "practical", objective: "Prove that a bad Steward candidate can be detected and stopped before full exposure using real telemetry.", scenario: "A candidate is technically ready and healthy enough to receive traffic but produces elevated errors or latency under the canary path. The rollout must stop on evidence rather than operator intuition.", instructions: [
-                    "Connect the canary analysis to Prometheus metrics already owned by the Steward observability environment, using an Argo Rollouts AnalysisTemplate/AnalysisRun or equivalent automated gate.",
+                    "Connect the canary analysis to a stage-appropriate automated signal such as an HTTP/API success-rate probe, synthetic verification job or other measurable service check through an Argo Rollouts AnalysisTemplate/AnalysisRun or equivalent gate. Record the analysis contract so Reliability Engineer can later replace or enrich the signal with Prometheus-backed service metrics.",
                     "Include at least one service indicator such as error ratio or latency and one release-specific functional/business check where technically reasonable.",
                     "Deploy a deliberately defective but safe candidate that passes startup/readiness yet violates one configured analysis criterion.",
                     "Send representative traffic and prove the rollout pauses/fails/aborts before reaching 100% exposure.",
                     "Verify stable traffic remains available and capture the exact telemetry and rollout evidence that caused the decision.",
                     "Fix the defect, publish a new immutable candidate through the normal Jenkins/Nexus release chain, and prove the new candidate can progress successfully.",
                     "Document alert/notification handoff for an aborted progressive rollout without creating a duplicate alerting stack."
-                ], deliverables: ["Automated analysis configuration", "Defective candidate", "Prometheus failure evidence", "Automatic pause/abort evidence", "Stable-service evidence", "Fixed-candidate promotion", "Notification handoff"], completionCriteria: ["A candidate that passes readiness can still be rejected by release analysis.", "At least one promotion/abort decision is driven automatically by real telemetry.", "The bad candidate does not reach full exposure.", "Stable service remains available during abort.", "The recovery uses a newly built fixed candidate or known-good immutable artifact, not an ad-hoc in-cluster patch." ] },
+                ], deliverables: ["Automated analysis configuration", "Defective candidate", "Analysis-signal failure evidence", "Automatic pause/abort evidence", "Stable-service evidence", "Fixed-candidate promotion", "Prometheus integration handoff", "Notification handoff"], completionCriteria: ["A candidate that passes readiness can still be rejected by release analysis.", "At least one promotion/abort decision is driven automatically by real telemetry.", "The bad candidate does not reach full exposure.", "Stable service remains available during abort.", "The recovery uses a newly built fixed candidate or known-good immutable artifact, not an ad-hoc in-cluster patch." ] },
             },
             {
                 id: "cloud-progressive-delivery-canary-005",
                 title: "Break the Progressive Delivery Control Plane",
                 estimatedMinutes: 120,
-                content: { type: "practical", objective: "Understand failure of the rollout/analysis mechanism itself and define safe operator behavior.", scenario: "Prometheus analysis becomes unavailable or the rollout controller cannot complete its next decision. Lack of evidence must not silently become permission to promote.", instructions: [
+                content: { type: "practical", objective: "Understand failure of the rollout/analysis mechanism itself and define safe operator behavior.", scenario: "The configured analysis signal becomes unavailable or the rollout controller cannot complete its next decision. Lack of evidence must not silently become permission to promote.", instructions: [
                     "During a canary step, make the selected analysis dependency unavailable or otherwise create a safe inconclusive-analysis condition.",
                     "Observe the rollout state and prove the configured policy fails safe: pause/inconclusive/fail according to the documented decision rather than automatically promoting without evidence.",
                     "Restore the dependency and demonstrate controlled continuation or restart of the rollout.",
@@ -78,7 +78,7 @@ export const progressiveDeliveryCanaryDeepLessons: Lesson[] = [
                     "Define monitoring for the progressive-delivery controller and analysis path themselves."
                 ], deliverables: ["Analysis/control-plane failure experiment", "Fail-safe behavior evidence", "Recovery evidence", "Manual override policy", "Control-plane monitoring requirements"], completionCriteria: ["Loss of analysis evidence does not silently promote the candidate.", "The rollout recovers predictably after analysis/control-plane restoration.", "Manual override is bounded and auditable.", "The learner identifies operational signals for the rollout machinery itself." ] },
             },
-            { id: "cloud-progressive-delivery-canary-006", title: "Reassess Progressive Delivery", estimatedMinutes: 20, content: { type: "reflection", prompt: "Defend Steward's canary implementation. Explain what risk it controls beyond Kubernetes rolling updates, why Argo Rollouts does not replace Argo CD, how Prometheus influences promotion, what happens when analysis is unavailable, how database compatibility constrains rollback, and what evidence would justify simplifying back to ordinary rolling releases or adopting blue/green later.", minimumCharacters: 350 } },
+            { id: "cloud-progressive-delivery-canary-006", title: "Reassess Progressive Delivery", estimatedMinutes: 20, content: { type: "reflection", prompt: "Defend Steward's canary implementation. Explain what risk it controls beyond Kubernetes rolling updates, why Argo Rollouts does not replace Argo CD, how the current automated analysis signal influences promotion and how Reliability Engineer will later integrate Prometheus, what happens when analysis is unavailable, how database compatibility constrains rollback, and what evidence would justify simplifying back to ordinary rolling releases or adopting blue/green later.", minimumCharacters: 350 } },
         ],
     },
 ];
