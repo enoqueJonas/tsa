@@ -4,6 +4,8 @@ import type { LearningResource, LessonBlock } from "../activities/content";
 const packetTracer: LearningResource = { title: "Cisco Packet Tracer", url: "https://www.netacad.com/cisco-packet-tracer" };
 const ciscoNetworking: LearningResource = { title: "Cisco Networking Academy", url: "https://www.netacad.com/" };
 
+const ospfVideo: LearningResource = { title: "Jeremy's IT Lab — Configuring OSPF Day 26 Lab", url: "https://www.youtube.com/watch?v=LeLRWjfylcs", read: "Watch 00:59–12:59;
+
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
