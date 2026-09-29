@@ -5,6 +5,18 @@ const playwright: LearningResource = { title: "Playwright Java", url: "https://p
 const junit: LearningResource = { title: "JUnit 5 User Guide", url: "https://docs.junit.org/current/user-guide/" };
 const restAssured: LearningResource = { title: "REST Assured", url: "https://rest-assured.io/" };
 const maven: LearningResource = { title: "Apache Maven", url: "https://maven.apache.org/guides/" };
+const slf4j: LearningResource = { title: "SLF4J Manual", url: "https://www.slf4j.org/manual.html" };
+const allureJunit: LearningResource = { title: "Allure — JUnit 5", url: "https://allurereport.org/docs/junit5/" };
+const allureAttachments: LearningResource = { title: "Allure — Attachments", url: "https://allurereport.org/docs/attachments/" };
+
+const resourcesFor = (id: string): LearningResource[] => {
+    if (id === "logging" || id === "failure-classification") return [slf4j, junit];
+    if (id === "allure") return [allureJunit, allureAttachments];
+    if (id === "artifact-policy") return [allureAttachments, playwright];
+    if (id === "retries" || id === "flake-management") return [junit];
+    if (id === "architecture" || id === "what-framework" || id === "maintainability") return [junit, restAssured, playwright];
+    return [junit, maven];
+};
 
 type Spec = { id: string; title: string; core: string; mechanics?: string[]; signals?: string[]; antiPatterns?: string[]; practice: string[]; code?: string; warning?: string };
 
@@ -22,7 +34,7 @@ function lessonFrom(spec: Spec): Lesson {
     if (spec.code) blocks.push({ type: "code", language: "java", code: spec.code });
     if (spec.warning) blocks.push({ type: "callout", tone: "warning", title: "Framework risk", body: spec.warning });
     blocks.push({ type: "callout", tone: "steward", title: "Steward automation checkpoint", body: "Generic infrastructure may be reusable. Ownership rules, lifecycle behavior, service registration workflows and Steward-specific assertions are domain code and should remain explicit." });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [junit, restAssured, playwright, maven] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: resourcesFor(spec.id) });
     return { id: `automation-framework-${spec.id}`, title: spec.title, activities: [
         { id: `automation-framework-${spec.id}-001`, title: spec.title, estimatedMinutes: 40, content: { type: "reading", body: spec.core, blocks } },
         { id: `automation-framework-${spec.id}-002`, title: `Apply: ${spec.title}`, estimatedMinutes: 45, content: { type: "practical", objective: `Apply ${spec.title} to the Steward automation project.`, scenario: "Build the automation system incrementally around the real Steward API and environments rather than generating an abstract framework first.", instructions: spec.practice, deliverables: ["Executable framework change", "Focused test using the change", "Diagnostic or maintainability note"], completionCriteria: ["The abstraction removes real repetition or risk.", "Steward domain intent remains readable.", "The change can fail with useful diagnostics."] } },
