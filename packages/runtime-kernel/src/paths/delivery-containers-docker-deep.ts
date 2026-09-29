@@ -5,6 +5,4021 @@ const dockerDocs: LearningResource = { title: "Docker documentation", url: "http
 const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
 const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
 
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture", "Docker Architecture", "Docker separates client commands from the daemon that manages images, networks, volumes and containers. This matters for security, troubleshooting and automation.", [
+        { heading: "Follow the control path", body: "The CLI sends API requests to the Docker daemon. The daemon performs privileged host operations and delegates low-level container execution through the container runtime stack." },
+        { heading: "The daemon is a trust boundary", body: "Membership in the docker group commonly grants power equivalent to root on the host. Treat Docker administration as privileged platform access, not as an ordinary developer convenience." },
+    ]),
+    richLesson("images-layers", "Images and Layers", "An image is an immutable content-addressed filesystem plus metadata. Layers make builds cacheable and distributable, but Dockerfile order affects both efficiency and invalidation.", [
+        { heading: "Separate image from container", body: "The image is the packaged template. A container adds a writable runtime layer and process state. Recreating a container from the same image should not require preserving that writable layer." },
+        { heading: "Think in cache boundaries", body: "Place stable dependency installation before frequently changing application source where practical so code edits do not invalidate expensive layers unnecessarily." },
+    ]),
+    richLesson("dockerfiles",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture", "Docker Architecture", "Docker separates client commands from the daemon that manages images, networks, volumes and containers. This matters for security, troubleshooting and automation.", [
+        { heading: "Follow the control path", body: "The CLI sends API requests to the Docker daemon. The daemon performs privileged host operations and delegates low-level container execution through the container runtime stack." },
+        { heading: "The daemon is a trust boundary", body: "Membership in the docker group commonly grants power equivalent to root on the host. Treat Docker administration as privileged platform access, not as an ordinary developer convenience." },
+    ]),
+    richLesson("images-layers", "Images and Layers", "An image is an immutable content-addressed filesystem plus metadata. Layers make builds cacheable and distributable, but Dockerfile order affects both efficiency and invalidation.", [
+        { heading: "Separate image from container", body: "The image is the packaged template. A container adds a writable runtime layer and process state. Recreating a container from the same image should not require preserving that writable layer." },
+        { heading: "Think in cache boundaries", body: "Place stable dependency installation before frequently changing application source where practical so code edits do not invalidate expensive layers unnecessarily." },
+    ]),
+    richLesson("dockerfiles", "Writing Dockerfiles", "A Dockerfile is executable build documentation. Its quality determines how reproducibly and safely the application image can be created.", [
+        { heading: "Make the runtime explicit", body: "Pin an appropriate base-image family/version strategy, set a working directory, install dependencies deliberately, copy only required files, run as a non-root user when possible and define the process contract clearly." },
+        { heading: "Avoid environment-specific builds", body: "The Steward image should not contain homelab secrets or environment-specific database URLs. Those belong to runtime configuration.", code: { language: "dockerfile", code: "FROM python:3.12-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nRUN useradd --system steward && chown -R steward:steward /app\nUSER steward\nCMD [\"gunicorn\", \"steward.wsgi:application\", \"--bind\", \"0.0.0.0:8000\"]" } },
+    ], [dockerDocs, dockerfileRef]),
+    richLesson("build-context", "Build Context", "Every Docker build receives a context: the set of files the builder is allowed to access. Oversized contexts slow builds and can accidentally expose sensitive material to build steps.", [
+        { heading: "Control what enters the build", body: "Use .dockerignore to exclude virtual environments, Git metadata, logs, local databases, secrets and other irrelevant files." },
+        { heading: "Context is part of reproducibility", body: "A Dockerfile that depends on undeclared files from a developer machine is not a reliable build. The build context should contain exactly the inputs required to create the image." },
+    ], [dockerfileRef]),
+    richLesson("multistage",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture", "Docker Architecture", "Docker separates client commands from the daemon that manages images, networks, volumes and containers. This matters for security, troubleshooting and automation.", [
+        { heading: "Follow the control path", body: "The CLI sends API requests to the Docker daemon. The daemon performs privileged host operations and delegates low-level container execution through the container runtime stack." },
+        { heading: "The daemon is a trust boundary", body: "Membership in the docker group commonly grants power equivalent to root on the host. Treat Docker administration as privileged platform access, not as an ordinary developer convenience." },
+    ]),
+    richLesson("images-layers", "Images and Layers", "An image is an immutable content-addressed filesystem plus metadata. Layers make builds cacheable and distributable, but Dockerfile order affects both efficiency and invalidation.", [
+        { heading: "Separate image from container", body: "The image is the packaged template. A container adds a writable runtime layer and process state. Recreating a container from the same image should not require preserving that writable layer." },
+        { heading: "Think in cache boundaries", body: "Place stable dependency installation before frequently changing application source where practical so code edits do not invalidate expensive layers unnecessarily." },
+    ]),
+    richLesson("dockerfiles",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture", "Docker Architecture", "Docker separates client commands from the daemon that manages images, networks, volumes and containers. This matters for security, troubleshooting and automation.", [
+        { heading: "Follow the control path", body: "The CLI sends API requests to the Docker daemon. The daemon performs privileged host operations and delegates low-level container execution through the container runtime stack." },
+        { heading: "The daemon is a trust boundary", body: "Membership in the docker group commonly grants power equivalent to root on the host. Treat Docker administration as privileged platform access, not as an ordinary developer convenience." },
+    ]),
+    richLesson("images-layers", "Images and Layers", "An image is an immutable content-addressed filesystem plus metadata. Layers make builds cacheable and distributable, but Dockerfile order affects both efficiency and invalidation.", [
+        { heading: "Separate image from container", body: "The image is the packaged template. A container adds a writable runtime layer and process state. Recreating a container from the same image should not require preserving that writable layer." },
+        { heading: "Think in cache boundaries", body: "Place stable dependency installation before frequently changing application source where practical so code edits do not invalidate expensive layers unnecessarily." },
+    ]),
+    richLesson("dockerfiles", "Writing Dockerfiles", "A Dockerfile is executable build documentation. Its quality determines how reproducibly and safely the application image can be created.", [
+        { heading: "Make the runtime explicit", body: "Pin an appropriate base-image family/version strategy, set a working directory, install dependencies deliberately, copy only required files, run as a non-root user when possible and define the process contract clearly." },
+        { heading: "Avoid environment-specific builds", body: "The Steward image should not contain homelab secrets or environment-specific database URLs. Those belong to runtime configuration.", code: { language: "dockerfile", code: "FROM python:3.12-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nRUN useradd --system steward && chown -R steward:steward /app\nUSER steward\nCMD [\"gunicorn\", \"steward.wsgi:application\", \"--bind\", \"0.0.0.0:8000\"]" } },
+    ], [dockerDocs, dockerfileRef]),
+    richLesson("build-context", "Build Context", "Every Docker build receives a context: the set of files the builder is allowed to access. Oversized contexts slow builds and can accidentally expose sensitive material to build steps.", [
+        { heading: "Control what enters the build", body: "Use .dockerignore to exclude virtual environments, Git metadata, logs, local databases, secrets and other irrelevant files." },
+        { heading: "Context is part of reproducibility", body: "A Dockerfile that depends on undeclared files from a developer machine is not a reliable build. The build context should contain exactly the inputs required to create the image." },
+    ], [dockerfileRef]),
+    richLesson("multistage", "Multi-stage Builds", "Multi-stage builds separate build-time tooling from runtime contents. They are useful when compilation or asset generation requires dependencies that the final container does not need.", [
+        { heading: "Separate build and runtime concerns", body: "One stage can compile dependencies or assets; the final stage copies only the required result. This can reduce image size and attack surface." },
+        { heading: "Use only when it buys something", body: "Do not add stages as decoration. For Steward, justify a second stage if it removes compilers, package caches or frontend build tooling from the runtime image." },
+    ], [dockerfileRef]),
+    richLesson("volumes", "Volumes", "Containers are disposable; important state is not. Volumes and bind mounts move persistent or host-managed data outside the container writable layer.", [
+        { heading: "Classify data before mounting", body: "Database files, uploaded assets and operational state have different persistence and backup needs. Source code bind mounts are convenient in development but usually inappropriate for immutable production-like deployment." },
+        { heading: "Persistence still needs backup", body: "A named volume survives container replacement, but it can still be deleted, corrupted or lost with the host. Volume persistence is not a backup strategy." },
+    ]),
+    richLesson("networking",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture", "Docker Architecture", "Docker separates client commands from the daemon that manages images, networks, volumes and containers. This matters for security, troubleshooting and automation.", [
+        { heading: "Follow the control path", body: "The CLI sends API requests to the Docker daemon. The daemon performs privileged host operations and delegates low-level container execution through the container runtime stack." },
+        { heading: "The daemon is a trust boundary", body: "Membership in the docker group commonly grants power equivalent to root on the host. Treat Docker administration as privileged platform access, not as an ordinary developer convenience." },
+    ]),
+    richLesson("images-layers", "Images and Layers", "An image is an immutable content-addressed filesystem plus metadata. Layers make builds cacheable and distributable, but Dockerfile order affects both efficiency and invalidation.", [
+        { heading: "Separate image from container", body: "The image is the packaged template. A container adds a writable runtime layer and process state. Recreating a container from the same image should not require preserving that writable layer." },
+        { heading: "Think in cache boundaries", body: "Place stable dependency installation before frequently changing application source where practical so code edits do not invalidate expensive layers unnecessarily." },
+    ]),
+    richLesson("dockerfiles",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture", "Docker Architecture", "Docker separates client commands from the daemon that manages images, networks, volumes and containers. This matters for security, troubleshooting and automation.", [
+        { heading: "Follow the control path", body: "The CLI sends API requests to the Docker daemon. The daemon performs privileged host operations and delegates low-level container execution through the container runtime stack." },
+        { heading: "The daemon is a trust boundary", body: "Membership in the docker group commonly grants power equivalent to root on the host. Treat Docker administration as privileged platform access, not as an ordinary developer convenience." },
+    ]),
+    richLesson("images-layers", "Images and Layers", "An image is an immutable content-addressed filesystem plus metadata. Layers make builds cacheable and distributable, but Dockerfile order affects both efficiency and invalidation.", [
+        { heading: "Separate image from container", body: "The image is the packaged template. A container adds a writable runtime layer and process state. Recreating a container from the same image should not require preserving that writable layer." },
+        { heading: "Think in cache boundaries", body: "Place stable dependency installation before frequently changing application source where practical so code edits do not invalidate expensive layers unnecessarily." },
+    ]),
+    richLesson("dockerfiles", "Writing Dockerfiles", "A Dockerfile is executable build documentation. Its quality determines how reproducibly and safely the application image can be created.", [
+        { heading: "Make the runtime explicit", body: "Pin an appropriate base-image family/version strategy, set a working directory, install dependencies deliberately, copy only required files, run as a non-root user when possible and define the process contract clearly." },
+        { heading: "Avoid environment-specific builds", body: "The Steward image should not contain homelab secrets or environment-specific database URLs. Those belong to runtime configuration.", code: { language: "dockerfile", code: "FROM python:3.12-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nRUN useradd --system steward && chown -R steward:steward /app\nUSER steward\nCMD [\"gunicorn\", \"steward.wsgi:application\", \"--bind\", \"0.0.0.0:8000\"]" } },
+    ], [dockerDocs, dockerfileRef]),
+    richLesson("build-context", "Build Context", "Every Docker build receives a context: the set of files the builder is allowed to access. Oversized contexts slow builds and can accidentally expose sensitive material to build steps.", [
+        { heading: "Control what enters the build", body: "Use .dockerignore to exclude virtual environments, Git metadata, logs, local databases, secrets and other irrelevant files." },
+        { heading: "Context is part of reproducibility", body: "A Dockerfile that depends on undeclared files from a developer machine is not a reliable build. The build context should contain exactly the inputs required to create the image." },
+    ], [dockerfileRef]),
+    richLesson("multistage",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture", "Docker Architecture", "Docker separates client commands from the daemon that manages images, networks, volumes and containers. This matters for security, troubleshooting and automation.", [
+        { heading: "Follow the control path", body: "The CLI sends API requests to the Docker daemon. The daemon performs privileged host operations and delegates low-level container execution through the container runtime stack." },
+        { heading: "The daemon is a trust boundary", body: "Membership in the docker group commonly grants power equivalent to root on the host. Treat Docker administration as privileged platform access, not as an ordinary developer convenience." },
+    ]),
+    richLesson("images-layers", "Images and Layers", "An image is an immutable content-addressed filesystem plus metadata. Layers make builds cacheable and distributable, but Dockerfile order affects both efficiency and invalidation.", [
+        { heading: "Separate image from container", body: "The image is the packaged template. A container adds a writable runtime layer and process state. Recreating a container from the same image should not require preserving that writable layer." },
+        { heading: "Think in cache boundaries", body: "Place stable dependency installation before frequently changing application source where practical so code edits do not invalidate expensive layers unnecessarily." },
+    ]),
+    richLesson("dockerfiles",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture", "Docker Architecture", "Docker separates client commands from the daemon that manages images, networks, volumes and containers. This matters for security, troubleshooting and automation.", [
+        { heading: "Follow the control path", body: "The CLI sends API requests to the Docker daemon. The daemon performs privileged host operations and delegates low-level container execution through the container runtime stack." },
+        { heading: "The daemon is a trust boundary", body: "Membership in the docker group commonly grants power equivalent to root on the host. Treat Docker administration as privileged platform access, not as an ordinary developer convenience." },
+    ]),
+    richLesson("images-layers", "Images and Layers", "An image is an immutable content-addressed filesystem plus metadata. Layers make builds cacheable and distributable, but Dockerfile order affects both efficiency and invalidation.", [
+        { heading: "Separate image from container", body: "The image is the packaged template. A container adds a writable runtime layer and process state. Recreating a container from the same image should not require preserving that writable layer." },
+        { heading: "Think in cache boundaries", body: "Place stable dependency installation before frequently changing application source where practical so code edits do not invalidate expensive layers unnecessarily." },
+    ]),
+    richLesson("dockerfiles", "Writing Dockerfiles", "A Dockerfile is executable build documentation. Its quality determines how reproducibly and safely the application image can be created.", [
+        { heading: "Make the runtime explicit", body: "Pin an appropriate base-image family/version strategy, set a working directory, install dependencies deliberately, copy only required files, run as a non-root user when possible and define the process contract clearly." },
+        { heading: "Avoid environment-specific builds", body: "The Steward image should not contain homelab secrets or environment-specific database URLs. Those belong to runtime configuration.", code: { language: "dockerfile", code: "FROM python:3.12-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nRUN useradd --system steward && chown -R steward:steward /app\nUSER steward\nCMD [\"gunicorn\", \"steward.wsgi:application\", \"--bind\", \"0.0.0.0:8000\"]" } },
+    ], [dockerDocs, dockerfileRef]),
+    richLesson("build-context", "Build Context", "Every Docker build receives a context: the set of files the builder is allowed to access. Oversized contexts slow builds and can accidentally expose sensitive material to build steps.", [
+        { heading: "Control what enters the build", body: "Use .dockerignore to exclude virtual environments, Git metadata, logs, local databases, secrets and other irrelevant files." },
+        { heading: "Context is part of reproducibility", body: "A Dockerfile that depends on undeclared files from a developer machine is not a reliable build. The build context should contain exactly the inputs required to create the image." },
+    ], [dockerfileRef]),
+    richLesson("multistage", "Multi-stage Builds", "Multi-stage builds separate build-time tooling from runtime contents. They are useful when compilation or asset generation requires dependencies that the final container does not need.", [
+        { heading: "Separate build and runtime concerns", body: "One stage can compile dependencies or assets; the final stage copies only the required result. This can reduce image size and attack surface." },
+        { heading: "Use only when it buys something", body: "Do not add stages as decoration. For Steward, justify a second stage if it removes compilers, package caches or frontend build tooling from the runtime image." },
+    ], [dockerfileRef]),
+    richLesson("volumes", "Volumes", "Containers are disposable; important state is not. Volumes and bind mounts move persistent or host-managed data outside the container writable layer.", [
+        { heading: "Classify data before mounting", body: "Database files, uploaded assets and operational state have different persistence and backup needs. Source code bind mounts are convenient in development but usually inappropriate for immutable production-like deployment." },
+        { heading: "Persistence still needs backup", body: "A named volume survives container replacement, but it can still be deleted, corrupted or lost with the host. Volume persistence is not a backup strategy." },
+    ]),
+    richLesson("networking", "Container Networking", "Containers normally communicate through virtual network interfaces, bridges, routing and NAT created by the container platform. The networking concepts from Platform Builder still apply.", [
+        { heading: "Published ports are explicit exposure", body: "A service listening on port 8000 inside the container is not necessarily reachable from the host or LAN. Publishing creates a host-side path to that container port." },
+        { heading: "Use service names internally", body: "In a Compose network, services can reach one another by service name. Do not hard-code transient container IP addresses." },
+    ]),
+    richLesson("compose",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture", "Docker Architecture", "Docker separates client commands from the daemon that manages images, networks, volumes and containers. This matters for security, troubleshooting and automation.", [
+        { heading: "Follow the control path", body: "The CLI sends API requests to the Docker daemon. The daemon performs privileged host operations and delegates low-level container execution through the container runtime stack." },
+        { heading: "The daemon is a trust boundary", body: "Membership in the docker group commonly grants power equivalent to root on the host. Treat Docker administration as privileged platform access, not as an ordinary developer convenience." },
+    ]),
+    richLesson("images-layers", "Images and Layers", "An image is an immutable content-addressed filesystem plus metadata. Layers make builds cacheable and distributable, but Dockerfile order affects both efficiency and invalidation.", [
+        { heading: "Separate image from container", body: "The image is the packaged template. A container adds a writable runtime layer and process state. Recreating a container from the same image should not require preserving that writable layer." },
+        { heading: "Think in cache boundaries", body: "Place stable dependency installation before frequently changing application source where practical so code edits do not invalidate expensive layers unnecessarily." },
+    ]),
+    richLesson("dockerfiles",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture", "Docker Architecture", "Docker separates client commands from the daemon that manages images, networks, volumes and containers. This matters for security, troubleshooting and automation.", [
+        { heading: "Follow the control path", body: "The CLI sends API requests to the Docker daemon. The daemon performs privileged host operations and delegates low-level container execution through the container runtime stack." },
+        { heading: "The daemon is a trust boundary", body: "Membership in the docker group commonly grants power equivalent to root on the host. Treat Docker administration as privileged platform access, not as an ordinary developer convenience." },
+    ]),
+    richLesson("images-layers", "Images and Layers", "An image is an immutable content-addressed filesystem plus metadata. Layers make builds cacheable and distributable, but Dockerfile order affects both efficiency and invalidation.", [
+        { heading: "Separate image from container", body: "The image is the packaged template. A container adds a writable runtime layer and process state. Recreating a container from the same image should not require preserving that writable layer." },
+        { heading: "Think in cache boundaries", body: "Place stable dependency installation before frequently changing application source where practical so code edits do not invalidate expensive layers unnecessarily." },
+    ]),
+    richLesson("dockerfiles", "Writing Dockerfiles", "A Dockerfile is executable build documentation. Its quality determines how reproducibly and safely the application image can be created.", [
+        { heading: "Make the runtime explicit", body: "Pin an appropriate base-image family/version strategy, set a working directory, install dependencies deliberately, copy only required files, run as a non-root user when possible and define the process contract clearly." },
+        { heading: "Avoid environment-specific builds", body: "The Steward image should not contain homelab secrets or environment-specific database URLs. Those belong to runtime configuration.", code: { language: "dockerfile", code: "FROM python:3.12-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nRUN useradd --system steward && chown -R steward:steward /app\nUSER steward\nCMD [\"gunicorn\", \"steward.wsgi:application\", \"--bind\", \"0.0.0.0:8000\"]" } },
+    ], [dockerDocs, dockerfileRef]),
+    richLesson("build-context", "Build Context", "Every Docker build receives a context: the set of files the builder is allowed to access. Oversized contexts slow builds and can accidentally expose sensitive material to build steps.", [
+        { heading: "Control what enters the build", body: "Use .dockerignore to exclude virtual environments, Git metadata, logs, local databases, secrets and other irrelevant files." },
+        { heading: "Context is part of reproducibility", body: "A Dockerfile that depends on undeclared files from a developer machine is not a reliable build. The build context should contain exactly the inputs required to create the image." },
+    ], [dockerfileRef]),
+    richLesson("multistage",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture", "Docker Architecture", "Docker separates client commands from the daemon that manages images, networks, volumes and containers. This matters for security, troubleshooting and automation.", [
+        { heading: "Follow the control path", body: "The CLI sends API requests to the Docker daemon. The daemon performs privileged host operations and delegates low-level container execution through the container runtime stack." },
+        { heading: "The daemon is a trust boundary", body: "Membership in the docker group commonly grants power equivalent to root on the host. Treat Docker administration as privileged platform access, not as an ordinary developer convenience." },
+    ]),
+    richLesson("images-layers", "Images and Layers", "An image is an immutable content-addressed filesystem plus metadata. Layers make builds cacheable and distributable, but Dockerfile order affects both efficiency and invalidation.", [
+        { heading: "Separate image from container", body: "The image is the packaged template. A container adds a writable runtime layer and process state. Recreating a container from the same image should not require preserving that writable layer." },
+        { heading: "Think in cache boundaries", body: "Place stable dependency installation before frequently changing application source where practical so code edits do not invalidate expensive layers unnecessarily." },
+    ]),
+    richLesson("dockerfiles",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture", "Docker Architecture", "Docker separates client commands from the daemon that manages images, networks, volumes and containers. This matters for security, troubleshooting and automation.", [
+        { heading: "Follow the control path", body: "The CLI sends API requests to the Docker daemon. The daemon performs privileged host operations and delegates low-level container execution through the container runtime stack." },
+        { heading: "The daemon is a trust boundary", body: "Membership in the docker group commonly grants power equivalent to root on the host. Treat Docker administration as privileged platform access, not as an ordinary developer convenience." },
+    ]),
+    richLesson("images-layers", "Images and Layers", "An image is an immutable content-addressed filesystem plus metadata. Layers make builds cacheable and distributable, but Dockerfile order affects both efficiency and invalidation.", [
+        { heading: "Separate image from container", body: "The image is the packaged template. A container adds a writable runtime layer and process state. Recreating a container from the same image should not require preserving that writable layer." },
+        { heading: "Think in cache boundaries", body: "Place stable dependency installation before frequently changing application source where practical so code edits do not invalidate expensive layers unnecessarily." },
+    ]),
+    richLesson("dockerfiles", "Writing Dockerfiles", "A Dockerfile is executable build documentation. Its quality determines how reproducibly and safely the application image can be created.", [
+        { heading: "Make the runtime explicit", body: "Pin an appropriate base-image family/version strategy, set a working directory, install dependencies deliberately, copy only required files, run as a non-root user when possible and define the process contract clearly." },
+        { heading: "Avoid environment-specific builds", body: "The Steward image should not contain homelab secrets or environment-specific database URLs. Those belong to runtime configuration.", code: { language: "dockerfile", code: "FROM python:3.12-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nRUN useradd --system steward && chown -R steward:steward /app\nUSER steward\nCMD [\"gunicorn\", \"steward.wsgi:application\", \"--bind\", \"0.0.0.0:8000\"]" } },
+    ], [dockerDocs, dockerfileRef]),
+    richLesson("build-context", "Build Context", "Every Docker build receives a context: the set of files the builder is allowed to access. Oversized contexts slow builds and can accidentally expose sensitive material to build steps.", [
+        { heading: "Control what enters the build", body: "Use .dockerignore to exclude virtual environments, Git metadata, logs, local databases, secrets and other irrelevant files." },
+        { heading: "Context is part of reproducibility", body: "A Dockerfile that depends on undeclared files from a developer machine is not a reliable build. The build context should contain exactly the inputs required to create the image." },
+    ], [dockerfileRef]),
+    richLesson("multistage", "Multi-stage Builds", "Multi-stage builds separate build-time tooling from runtime contents. They are useful when compilation or asset generation requires dependencies that the final container does not need.", [
+        { heading: "Separate build and runtime concerns", body: "One stage can compile dependencies or assets; the final stage copies only the required result. This can reduce image size and attack surface." },
+        { heading: "Use only when it buys something", body: "Do not add stages as decoration. For Steward, justify a second stage if it removes compilers, package caches or frontend build tooling from the runtime image." },
+    ], [dockerfileRef]),
+    richLesson("volumes", "Volumes", "Containers are disposable; important state is not. Volumes and bind mounts move persistent or host-managed data outside the container writable layer.", [
+        { heading: "Classify data before mounting", body: "Database files, uploaded assets and operational state have different persistence and backup needs. Source code bind mounts are convenient in development but usually inappropriate for immutable production-like deployment." },
+        { heading: "Persistence still needs backup", body: "A named volume survives container replacement, but it can still be deleted, corrupted or lost with the host. Volume persistence is not a backup strategy." },
+    ]),
+    richLesson("networking",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture", "Docker Architecture", "Docker separates client commands from the daemon that manages images, networks, volumes and containers. This matters for security, troubleshooting and automation.", [
+        { heading: "Follow the control path", body: "The CLI sends API requests to the Docker daemon. The daemon performs privileged host operations and delegates low-level container execution through the container runtime stack." },
+        { heading: "The daemon is a trust boundary", body: "Membership in the docker group commonly grants power equivalent to root on the host. Treat Docker administration as privileged platform access, not as an ordinary developer convenience." },
+    ]),
+    richLesson("images-layers", "Images and Layers", "An image is an immutable content-addressed filesystem plus metadata. Layers make builds cacheable and distributable, but Dockerfile order affects both efficiency and invalidation.", [
+        { heading: "Separate image from container", body: "The image is the packaged template. A container adds a writable runtime layer and process state. Recreating a container from the same image should not require preserving that writable layer." },
+        { heading: "Think in cache boundaries", body: "Place stable dependency installation before frequently changing application source where practical so code edits do not invalidate expensive layers unnecessarily." },
+    ]),
+    richLesson("dockerfiles",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture", "Docker Architecture", "Docker separates client commands from the daemon that manages images, networks, volumes and containers. This matters for security, troubleshooting and automation.", [
+        { heading: "Follow the control path", body: "The CLI sends API requests to the Docker daemon. The daemon performs privileged host operations and delegates low-level container execution through the container runtime stack." },
+        { heading: "The daemon is a trust boundary", body: "Membership in the docker group commonly grants power equivalent to root on the host. Treat Docker administration as privileged platform access, not as an ordinary developer convenience." },
+    ]),
+    richLesson("images-layers", "Images and Layers", "An image is an immutable content-addressed filesystem plus metadata. Layers make builds cacheable and distributable, but Dockerfile order affects both efficiency and invalidation.", [
+        { heading: "Separate image from container", body: "The image is the packaged template. A container adds a writable runtime layer and process state. Recreating a container from the same image should not require preserving that writable layer." },
+        { heading: "Think in cache boundaries", body: "Place stable dependency installation before frequently changing application source where practical so code edits do not invalidate expensive layers unnecessarily." },
+    ]),
+    richLesson("dockerfiles", "Writing Dockerfiles", "A Dockerfile is executable build documentation. Its quality determines how reproducibly and safely the application image can be created.", [
+        { heading: "Make the runtime explicit", body: "Pin an appropriate base-image family/version strategy, set a working directory, install dependencies deliberately, copy only required files, run as a non-root user when possible and define the process contract clearly." },
+        { heading: "Avoid environment-specific builds", body: "The Steward image should not contain homelab secrets or environment-specific database URLs. Those belong to runtime configuration.", code: { language: "dockerfile", code: "FROM python:3.12-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nRUN useradd --system steward && chown -R steward:steward /app\nUSER steward\nCMD [\"gunicorn\", \"steward.wsgi:application\", \"--bind\", \"0.0.0.0:8000\"]" } },
+    ], [dockerDocs, dockerfileRef]),
+    richLesson("build-context", "Build Context", "Every Docker build receives a context: the set of files the builder is allowed to access. Oversized contexts slow builds and can accidentally expose sensitive material to build steps.", [
+        { heading: "Control what enters the build", body: "Use .dockerignore to exclude virtual environments, Git metadata, logs, local databases, secrets and other irrelevant files." },
+        { heading: "Context is part of reproducibility", body: "A Dockerfile that depends on undeclared files from a developer machine is not a reliable build. The build context should contain exactly the inputs required to create the image." },
+    ], [dockerfileRef]),
+    richLesson("multistage",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture", "Docker Architecture", "Docker separates client commands from the daemon that manages images, networks, volumes and containers. This matters for security, troubleshooting and automation.", [
+        { heading: "Follow the control path", body: "The CLI sends API requests to the Docker daemon. The daemon performs privileged host operations and delegates low-level container execution through the container runtime stack." },
+        { heading: "The daemon is a trust boundary", body: "Membership in the docker group commonly grants power equivalent to root on the host. Treat Docker administration as privileged platform access, not as an ordinary developer convenience." },
+    ]),
+    richLesson("images-layers", "Images and Layers", "An image is an immutable content-addressed filesystem plus metadata. Layers make builds cacheable and distributable, but Dockerfile order affects both efficiency and invalidation.", [
+        { heading: "Separate image from container", body: "The image is the packaged template. A container adds a writable runtime layer and process state. Recreating a container from the same image should not require preserving that writable layer." },
+        { heading: "Think in cache boundaries", body: "Place stable dependency installation before frequently changing application source where practical so code edits do not invalidate expensive layers unnecessarily." },
+    ]),
+    richLesson("dockerfiles",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
+        { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
+        { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
+    ]),
+    richLesson("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
+        { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
+        { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
+    ]),
+    richLesson("namespaces-cgroups",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
+function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const containersAndDockerDeepLessons: Lesson[] = [
+    richLesson("containers-vms",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
+const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs: What's the difference?", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before working with Linux container primitives." };
+const containerPrimitivesVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", read: "Focus on namespaces and cgroups isolation concepts.", purpose: "RECOMMENDED VIDEO — connect Docker's abstraction to the Linux mechanisms that isolate processes and resources." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101 Tutorial", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", read: "Use the architecture/image/container portions; reuse the build mechanics for the Dockerfile lesson rather than replaying the full video.", purpose: "RECOMMENDED VIDEO — first-party visual model of Docker architecture and image/container build mechanics." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — make the build-stage/runtime-stage boundary concrete before optimizing Steward." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", read: "Use for bridge, port and container-communication visualization.", purpose: "RECOMMENDED VIDEO — visualize container networking while applying Platform Builder networking knowledge." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", read: "Use as the multi-service declaration primer.", purpose: "RECOMMENDED VIDEO — visualize services, networks and volumes as one application model before the Steward Compose work." };
 function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
     for (const section of sections) {
