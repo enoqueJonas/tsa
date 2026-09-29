@@ -3,10 +3,20 @@ import type { Lesson } from "./lesson";
 
 const google: LearningResource = { title: "Google SRE: Managing Incidents", url: "https://sre.google/workbook/incident-response/" };
 const atlassian: LearningResource = { title: "Atlassian: Incident Management", url: "https://www.atlassian.com/incident-management" };
-const pagerduty: LearningResource = { title: "PagerDuty Incident Response Documentation", url: "https://response.pagerduty.com/" };
+const pagerduty: LearningResource = { title: "PagerDuty Incident Response Documentation", url: "https://response.pagerduty.com/", kind: "reference" };
+const googlePostmortem: LearningResource = { title: "Google SRE — Postmortem Culture", url: "https://sre.google/sre-book/postmortem-culture/", kind: "reference" };
+const googleEffectivePostmortem: LearningResource = { title: "Google SRE Workbook — Postmortem", url: "https://sre.google/workbook/postmortem-culture/", kind: "reference" };
+const resourcesByIncidentTopic: Record<string, LearningResource[]> = {
+  detection: [google, pagerduty], triage: [google, pagerduty], roles: [google, pagerduty],
+  communication: [google, pagerduty], mitigation: [google], timeline: [google, pagerduty],
+  "root-cause": [googlePostmortem, google], "contributing-factors": [googlePostmortem],
+  "blameless-postmortems": [googlePostmortem, googleEffectivePostmortem],
+  "corrective-actions": [googleEffectivePostmortem, googlePostmortem],
+  "near-misses": [googlePostmortem],
+};
 type Spec = { id: string; title: string; intro: string; principles: string[]; steward: string[]; practice: string[]; reflection: string };
 function make(spec: Spec): Lesson {
- const blocks: LessonBlock[] = [{type:"paragraph",text:spec.intro},{type:"heading",id:`${spec.id}-principles`,text:"Incident practice",level:2},{type:"list",items:spec.principles},{type:"heading",id:`${spec.id}-steward`,text:"Apply it to Steward",level:2},...spec.steward.map((text):LessonBlock=>({type:"paragraph",text})),{type:"callout",tone:"steward",title:"Restore service, preserve learning",body:"During an incident, reduce user impact safely before pursuing a perfect explanation. Preserve enough evidence to learn afterward, and keep mitigation, diagnosis and causal claims clearly separated."},{type:"resources",title:"Continue learning",resources:[google,atlassian,pagerduty]}];
+ const blocks: LessonBlock[] = [{type:"paragraph",text:spec.intro},{type:"heading",id:`${spec.id}-principles`,text:"Incident practice",level:2},{type:"list",items:spec.principles},{type:"heading",id:`${spec.id}-steward`,text:"Apply it to Steward",level:2},...spec.steward.map((text):LessonBlock=>({type:"paragraph",text})),{type:"callout",tone:"steward",title:"Restore service, preserve learning",body:"During an incident, reduce user impact safely before pursuing a perfect explanation. Preserve enough evidence to learn afterward, and keep mitigation, diagnosis and causal claims clearly separated."},{type:"resources",title:"Continue learning",resources:resourcesByIncidentTopic[spec.id] ?? [google,pagerduty]}];
  return {id:`incident-management-${spec.id}`,title:spec.title,activities:[{id:`incident-management-${spec.id}-001`,title:spec.title,estimatedMinutes:50,content:{type:"reading",body:spec.intro,blocks}},{id:`incident-management-${spec.id}-002`,title:`Respond: ${spec.title}`,estimatedMinutes:55,content:{type:"practical",objective:`Apply ${spec.title} to a Steward incident scenario.`,scenario:"Use Steward telemetry, SLOs, alerts, runbooks, resilience controls and recovery evidence. Treat observations, hypotheses and decisions as separate artifacts so the incident record remains defensible.",instructions:spec.practice,deliverables:["Incident-response artifact","Evidence and decision record","Improvement note"],completionCriteria:["User/service impact is explicit.","Claims are tied to evidence or labeled as hypotheses.","Actions preserve security and data integrity."]}},{id:`incident-management-${spec.id}-003`,title:`Knowledge Check: ${spec.title}`,estimatedMinutes:10,content:{type:"reflection",prompt:spec.reflection,minimumCharacters:200}}]};
 }
 const specs: Spec[] = [

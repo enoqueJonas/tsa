@@ -3,7 +3,18 @@ import type { Lesson } from "./lesson";
 
 const sre: LearningResource = { title: "Google SRE: Addressing Cascading Failures", url: "https://sre.google/sre-book/addressing-cascading-failures/" };
 const aws: LearningResource = { title: "AWS Builders' Library: Timeouts, Retries and Backoff with Jitter", url: "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/" };
-const azure: LearningResource = { title: "Azure Architecture Center: Reliability Patterns", url: "https://learn.microsoft.com/azure/architecture/framework/resiliency/reliability-patterns" };
+const azure: LearningResource = { title: "Azure Architecture Center: Reliability Patterns", url: "https://learn.microsoft.com/azure/architecture/framework/resiliency/reliability-patterns", kind: "reference" };
+const awsIdempotency: LearningResource = { title: "AWS Builders' Library — Making Retries Safe with Idempotent APIs", url: "https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/", kind: "reference" };
+const azureCircuitBreaker: LearningResource = { title: "Azure Circuit Breaker Pattern", url: "https://learn.microsoft.com/azure/architecture/patterns/circuit-breaker", kind: "reference" };
+const azureQueue: LearningResource = { title: "Azure Queue-Based Load Leveling Pattern", url: "https://learn.microsoft.com/azure/architecture/patterns/queue-based-load-leveling", kind: "reference" };
+const resourcesByResilienceTopic: Record<string, LearningResource[]> = {
+  timeouts: [aws, sre], retries: [aws, awsIdempotency], "backoff-jitter": [aws],
+  "circuit-breakers": [azureCircuitBreaker, sre], idempotency: [awsIdempotency, aws],
+  "partial-failure": [sre, azure], "dependency-failure": [sre, azure],
+  "cascading-failure": [sre, aws], "queues-backpressure": [azureQueue, sre],
+  "graceful-degradation": [azure, sre], "retry-storms": [aws, sre],
+  "dependency-budgets": [sre, aws],
+};
 
 type Spec = { id: string; title: string; intro: string; principles: string[]; steward: string[]; practice: string[]; reflection: string };
 
@@ -15,7 +26,7 @@ function lessonFrom(spec: Spec): Lesson {
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
         { type: "callout", tone: "steward", title: "Resilience is bounded failure", body: "The goal is not to pretend dependencies never fail. Design Steward so a dependency can be slow, unavailable or partially successful without turning one failure into duplicate work, resource exhaustion or ecosystem-wide collapse." },
-        { type: "resources", title: "Continue learning", resources: [sre, aws, azure] },
+        { type: "resources", title: "Continue learning", resources: resourcesByResilienceTopic[spec.id] ?? [sre, azure] },
     ];
     return { id: `resilience-distributed-failure-${spec.id}`, title: spec.title, activities: [
         { id: `resilience-distributed-failure-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: spec.intro, blocks } },

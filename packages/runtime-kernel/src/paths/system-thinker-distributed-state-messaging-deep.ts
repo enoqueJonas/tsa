@@ -6,6 +6,7 @@ const rabbitmqDocs: LearningResource = { title: "RabbitMQ Documentation", url: "
 const rabbitmqReliability: LearningResource = { title: "RabbitMQ Reliability Guide", url: "https://www.rabbitmq.com/docs/reliability" };
 const kafkaDocs: LearningResource = { title: "Apache Kafka Documentation", url: "https://kafka.apache.org/documentation/" };
 const microservicesPatterns: LearningResource = { title: "Transactional Outbox Pattern", url: "https://microservices.io/patterns/data/transactional-outbox.html" };
+const redisCacheAsideVideo: LearningResource = { title: "Redis — Cache-Aside Pattern", url: "https://www.youtube.com/watch?v=AJhTduDOVCs", kind: "video", recommended: true, read: "Whole short video", purpose: "Shows the cache-aside read flow before implementation while PostgreSQL remains Steward's source of truth." };
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -102,7 +103,7 @@ export const distributedStateAndMessagingDeepLessons: Lesson[] = [
             completionCriteria: ["PostgreSQL remains authoritative.", "The cache addresses a measured access pattern.", "Freshness tolerance is explicit.", "The learner can remove Redis and explain the correctness behavior that remains."],
         },
         ["What remains authoritative in cache-aside?", "Why is a TTL not a complete invalidation strategy?", "Why should cache keys follow access patterns rather than tables?"],
-        [redisDocs],
+        [redisDocs, redisCacheAsideVideo],
     ),
     richLesson(
         "Cache Invalidation, Staleness and Failure",

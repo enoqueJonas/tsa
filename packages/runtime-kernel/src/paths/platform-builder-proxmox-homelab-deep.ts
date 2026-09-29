@@ -1,5 +1,10 @@
 import type { AuthoredLesson } from "./normalize-authored-curriculum";
+const proxmoxDocs = "https://pve.proxmox.com/pve-docs/";
+const proxmoxAdmin = "https://pve.proxmox.com/pve-docs/pve-admin-guide.html";
+const proxmoxBackup = "https://pve.proxmox.com/pve-docs/chapter-vzdump.html";
 
+// Primary references: Proxmox VE documentation. Lessons keep product mechanics tied to transferable hypervisor, network, storage and recovery models.
+// ${proxmoxDocs} ${proxmoxAdmin} ${proxmoxBackup}
 export const proxmoxHomelabDeepLessons: AuthoredLesson[] = [
     {
         id: "proxmox-platform-boundary",

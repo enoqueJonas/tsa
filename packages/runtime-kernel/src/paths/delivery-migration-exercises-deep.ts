@@ -11,10 +11,10 @@ export const deliveryMigrationExerciseDeepLessons: Lesson[] = [
         estimatedMinutes: 30,
         content: {
           type: "reading",
-          body: "Migration is a different engineering skill from greenfield implementation. Jenkins remains TSA's primary Steward CI implementation, but an organization may later change platforms because of hosting, maintenance, integration, cost or strategic constraints. This exercise teaches how to move a delivery capability without silently changing its guarantees.",
+          body: "Migration is a different engineering skill from greenfield implementation. GitLab CI/CD is TSA's canonical delivery platform. This exercise starts from a deliberately legacy Jenkins workflow and teaches how to migrate an inherited CI capability into GitLab without silently changing its guarantees.",
           blocks: [
             { type: "heading", id: "scenario", text: "Scenario", level: 2 },
-            { type: "paragraph", text: "The organization is evaluating a move of one representative Steward CI workflow from Jenkins to an alternative CI platform such as GitHub Actions. Leadership does not authorize a permanent duplicate CI architecture. You must prove semantic equivalence, define a bounded coexistence/cutover window, preserve rollback and finish with one primary implementation." },
+            { type: "paragraph", text: "The organization is evaluating a move of one representative Steward CI workflow from an inherited Jenkins implementation to GitLab CI/CD. Leadership does not authorize a permanent duplicate CI architecture. You must prove semantic equivalence, define a bounded coexistence/cutover window, preserve rollback and finish with one primary implementation." },
             { type: "callout", tone: "warning", title: "Migration, not duplication", body: "Do not maintain both full pipelines indefinitely. Temporary duplication exists only to validate migration and must end in an explicit primary-platform decision." },
           ],
         },
@@ -26,20 +26,20 @@ export const deliveryMigrationExerciseDeepLessons: Lesson[] = [
         content: {
           type: "practical",
           objective: "Migrate one representative Steward CI workflow while preserving its engineering guarantees and proving rollback/decommission behavior.",
-          scenario: "The current Jenkins pipeline protects source checks, tests, artifact identity and fail-closed image creation. An alternative platform is being evaluated. A successful migration must preserve those semantics rather than merely produce a green job in another UI.",
+          scenario: "The inherited Jenkins pipeline protects source checks, tests, artifact identity and fail-closed image creation. An alternative platform is being evaluated. A successful migration must preserve those semantics rather than merely produce a green job in another UI.",
           instructions: [
             "Inventory the selected Jenkins workflow: triggers, stages, dependencies, agents, credentials, caches, artifacts, gates, evidence and failure behavior.",
-            "Choose an alternative CI platform for the migration exercise and map semantic equivalents before writing its configuration.",
+            "Treat GitLab CI/CD as the target platform and map semantic equivalents before writing .gitlab-ci.yml.",
             "Identify features that do not map directly and decide whether to redesign, emulate or explicitly accept a changed behavior.",
-            "Implement the representative workflow on the target platform without removing Jenkins yet.",
+            "Implement the representative workflow in GitLab CI/CD without removing the legacy Jenkins path yet.",
             "Run equivalent success and controlled-failure cases on both paths and compare evidence, artifact identity and fail-closed behavior.",
             "Define the coexistence window and a cutover criterion. During coexistence, identify which pipeline is authoritative for release decisions so two successful jobs cannot independently publish conflicting releases.",
-            "Execute or simulate cutover to the target platform and prove the rollback path back to Jenkins.",
-            "Finish with a decision: retain Jenkins as primary after the learning exercise, complete the migration to the target, or defer migration. In every case, remove/disable the non-primary release path and document what was decommissioned."
+            "Execute or simulate cutover to the target platform and prove the bounded rollback path to the legacy Jenkins workflow during the migration window.",
+            "Complete the migration to GitLab CI/CD when equivalence gates pass. Disable/decommission the Jenkins release path and document what was retired. If an equivalence gate cannot be met, record the blocker and keep the exercise non-releasable rather than redefining Jenkins as TSA's canonical target."
           ],
           deliverables: [
             "Source-platform capability inventory",
-            "Jenkins-to-target semantic mapping",
+            "Jenkins-to-GitLab semantic mapping",
             "Target CI configuration for the representative workflow",
             "Equivalent success/failure evidence",
             "Coexistence and authoritative-release rule",
@@ -62,7 +62,7 @@ export const deliveryMigrationExerciseDeepLessons: Lesson[] = [
         estimatedMinutes: 20,
         content: {
           type: "reflection",
-          prompt: "1. Which Jenkins guarantee was hardest to reproduce on the target platform, and why?\n2. What would have gone wrong if both pipelines were allowed to publish releases during coexistence?\n3. Which credential or artifact responsibility changed during migration?\n4. What evidence was required before cutover?\n5. What exact condition would trigger rollback?\n6. Which platform is primary after the exercise, and what happened to the other release path?",
+          prompt: "1. Which legacy Jenkins guarantee was hardest to reproduce in GitLab CI/CD, and why?\n2. What would have gone wrong if both pipelines were allowed to publish releases during coexistence?\n3. Which credential or artifact responsibility changed during migration?\n4. What evidence was required before cutover?\n5. What exact condition would trigger rollback?\n6. Which platform is primary after the exercise, and what happened to the other release path?",
         },
       },
     ],

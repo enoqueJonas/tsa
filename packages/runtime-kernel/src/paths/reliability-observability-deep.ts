@@ -3,7 +3,22 @@ import type { Lesson } from "./lesson";
 
 const otelDocs: LearningResource = { title: "OpenTelemetry Documentation", url: "https://opentelemetry.io/docs/" };
 const sreBook: LearningResource = { title: "Google Site Reliability Engineering", url: "https://sre.google/sre-book/table-of-contents/" };
-const grafanaObs: LearningResource = { title: "Grafana Observability", url: "https://grafana.com/docs/" };
+const grafanaObs: LearningResource = { title: "Grafana Observability", url: "https://grafana.com/docs/", kind: "documentation" };
+const otelSignals: LearningResource = { title: "OpenTelemetry Signals", url: "https://opentelemetry.io/docs/concepts/signals/", kind: "documentation" };
+const otelContext: LearningResource = { title: "OpenTelemetry Context", url: "https://opentelemetry.io/docs/concepts/context-propagation/", kind: "documentation" };
+const otelInstrumentation: LearningResource = { title: "OpenTelemetry Instrumentation", url: "https://opentelemetry.io/docs/concepts/instrumentation/", kind: "documentation" };
+const otelSampling: LearningResource = { title: "OpenTelemetry Sampling", url: "https://opentelemetry.io/docs/concepts/sampling/", kind: "documentation" };
+const sreMonitoring: LearningResource = { title: "Google SRE — Monitoring Distributed Systems", url: "https://sre.google/sre-book/monitoring-distributed-systems/", kind: "reference" };
+const resourcesByObservabilityTopic: Record<string, LearningResource[]> = {
+  "observability-vs-monitoring": [sreMonitoring, otelDocs],
+  "logs-metrics-traces": [otelSignals],
+  "telemetry-design": [sreMonitoring, otelSignals],
+  "correlation-context": [otelContext, otelSignals],
+  instrumentation: [otelInstrumentation, otelDocs],
+  opentelemetry: [otelDocs, otelInstrumentation],
+  "golden-signals": [sreMonitoring],
+  "telemetry-cost-noise": [otelSampling, sreMonitoring],
+};
 
 type Spec = { id: string; title: string; intro: string; principles: string[]; steward: string[]; practice: string[]; reflection: string };
 
@@ -15,7 +30,7 @@ function blocksFor(spec: Spec): LessonBlock[] {
     { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
     ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
     { type: "callout", tone: "steward", title: "Question before signal", body: "Do not add telemetry because a tool can collect it. Start with a concrete question about Steward behavior, then choose the smallest set of signals and context that can answer it reliably." },
-    { type: "resources", title: "Continue learning", resources: [otelDocs, sreBook, grafanaObs] },
+    { type: "resources", title: "Continue learning", resources: resourcesByObservabilityTopic[spec.id] ?? [otelDocs, sreBook] },
   ];
 }
 

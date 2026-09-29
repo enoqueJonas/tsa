@@ -18,6 +18,23 @@ interface DataLessonSpec {
 const postgresDocs: LearningResource = { title: "PostgreSQL Documentation", url: "https://www.postgresql.org/docs/current/" };
 const djangoQueryDocs: LearningResource = { title: "Django — Making queries", url: "https://docs.djangoproject.com/en/stable/topics/db/queries/" };
 const djangoMigrationDocs: LearningResource = { title: "Django — Migrations", url: "https://docs.djangoproject.com/en/stable/topics/migrations/" };
+const pgDdl: LearningResource = { title: "PostgreSQL — Data Definition", url: "https://www.postgresql.org/docs/current/ddl.html", kind: "reference" };
+const pgQueries: LearningResource = { title: "PostgreSQL — Queries", url: "https://www.postgresql.org/docs/current/queries.html", kind: "reference" };
+const pgFunctions: LearningResource = { title: "PostgreSQL — Aggregate Functions", url: "https://www.postgresql.org/docs/current/functions-aggregate.html", kind: "reference" };
+const pgWith: LearningResource = { title: "PostgreSQL — WITH Queries", url: "https://www.postgresql.org/docs/current/queries-with.html", kind: "reference" };
+const pgTransactions: LearningResource = { title: "PostgreSQL — Transaction Isolation", url: "https://www.postgresql.org/docs/current/transaction-iso.html", kind: "reference" };
+const pgConstraints: LearningResource = { title: "PostgreSQL — Constraints", url: "https://www.postgresql.org/docs/current/ddl-constraints.html", kind: "reference" };
+const pgIndexes: LearningResource = { title: "PostgreSQL — Indexes", url: "https://www.postgresql.org/docs/current/indexes.html", kind: "reference" };
+const pgExplain: LearningResource = { title: "PostgreSQL — Using EXPLAIN", url: "https://www.postgresql.org/docs/current/using-explain.html", kind: "reference" };
+const pgPsql: LearningResource = { title: "PostgreSQL — psql", url: "https://www.postgresql.org/docs/current/app-psql.html", kind: "reference" };
+const pgLocks: LearningResource = { title: "PostgreSQL — Explicit Locking", url: "https://www.postgresql.org/docs/current/explicit-locking.html", kind: "reference" };
+const resourcesByDataLesson: Record<string, LearningResource[]> = {
+ "relational-model":[pgDdl],"sql-crud":[pgQueries],"filtering-ordering":[pgQueries],aggregation:[pgFunctions],joins:[pgQueries],
+ subqueries:[pgQueries],ctes:[pgWith],"transactions-acid":[pgTransactions],"constraints-keys":[pgConstraints],"schema-design":[pgDdl],
+ normalization:[pgDdl],indexes:[pgIndexes],"query-plans":[pgExplain],"query-performance":[pgExplain],"postgresql-practice":[pgPsql],
+ "django-orm":[djangoQueryDocs],"orm-vs-sql":[djangoQueryDocs,pgQueries],"n-plus-one":[djangoQueryDocs,pgExplain],migrations:[djangoMigrationDocs,pgDdl],
+ concurrency:[pgTransactions,pgLocks],
+};
 
 function lesson(spec: DataLessonSpec): Lesson {
     const blocks: LessonBlock[] = [
@@ -34,7 +51,7 @@ function lesson(spec: DataLessonSpec): Lesson {
             : []),
         { type: "heading", id: "assignment", text: "Assignment", level: 2 },
         { type: "list", ordered: true, items: spec.assignment },
-        { type: "resources", title: "Required and supporting reading", resources: spec.resources },
+        { type: "resources", title: "Required and supporting reading", resources: resourcesByDataLesson[spec.id] ?? spec.resources },
     ];
 
     return {

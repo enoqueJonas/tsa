@@ -5,6 +5,23 @@ const k6: LearningResource = { title: "Grafana k6 documentation", url: "https://
 const wcag: LearningResource = { title: "W3C Web Content Accessibility Guidelines (WCAG)", url: "https://www.w3.org/WAI/standards-guidelines/wcag/" };
 const mdnCompatibility: LearningResource = { title: "MDN Browser Compatibility Data", url: "https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Page_structures/Compatibility_tables" };
 const postgresTransactions: LearningResource = { title: "PostgreSQL Transaction Isolation", url: "https://www.postgresql.org/docs/current/transaction-iso.html" };
+const k6Scenarios: LearningResource = { title: "k6 — Scenarios", url: "https://grafana.com/docs/k6/latest/using-k6/scenarios/" };
+const k6Executors: LearningResource = { title: "k6 — Executors", url: "https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/" };
+const k6Models: LearningResource = { title: "k6 — Open and closed workload models", url: "https://grafana.com/docs/k6/latest/using-k6/scenarios/concepts/open-vs-closed/" };
+const k6Thresholds: LearningResource = { title: "k6 — Thresholds and checks", url: "https://grafana.com/docs/k6/latest/using-k6/thresholds/" };
+const waiEvaluate: LearningResource = { title: "W3C WAI — Evaluating accessibility", url: "https://www.w3.org/WAI/test-evaluate/" };
+const waiKeyboard: LearningResource = { title: "W3C WAI — Keyboard accessibility", url: "https://www.w3.org/WAI/WCAG21/Understanding/keyboard.html" };
+
+const resourcesFor = (id: string): LearningResource[] => {
+    if (id === "k6-execution-model" || id === "load-models") return [k6Scenarios, k6Executors, k6Models];
+    if (id === "k6-checks-thresholds") return [k6Thresholds, k6];
+    if (id === "performance-measurement-model" || id === "performance" || id === "performance-environment-validity") return [k6, k6Scenarios];
+    if (id === "accessibility-automation" || id === "accessibility") return [waiEvaluate, wcag, waiKeyboard];
+    if (id === "compatibility-matrix-engineering" || id === "compatibility") return [mdnCompatibility];
+    if (id === "integrity-concurrency") return [postgresTransactions];
+    if (id === "controlled-failure-testing" || id === "reliability-oriented") return [k6];
+    return [k6, wcag];
+};
 
 type Spec = {
     id: string;
@@ -42,7 +59,7 @@ function blocksFor(spec: Spec): LessonBlock[] {
         title: "Stewardship boundary",
         body: "This module establishes quality evidence and baselines. It does not replace the later Security Steward or Reliability Engineer schools. Keep the focus on measurable product risk, reproducible evidence and clear residual uncertainty.",
     });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [k6, wcag, mdnCompatibility, postgresTransactions] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: resourcesFor(spec.id) });
 
     return blocks;
 }
@@ -86,6 +103,137 @@ function lessonFrom(spec: Spec): Lesson {
 }
 
 const specs: Spec[] = [
+    {
+        id: "performance-measurement-model",
+        title: "Performance Measurement Model: Latency, Throughput, Errors and Saturation",
+        intro: "Performance evidence is multidimensional. Latency distributions, throughput, error rate and resource saturation describe different parts of system behavior; interpreting one without the others can produce a false conclusion.",
+        principles: [
+            "Percentiles answer distribution questions: p95 is a boundary below which roughly 95% of observed values fall, not an average or a promise about every request.",
+            "Throughput/request rate describes completed or attempted work over time; distinguish offered load from successful throughput.",
+            "Error rate belongs beside latency because rejecting work quickly can make latency look excellent.",
+            "Saturation indicators such as CPU, memory, connection pools, worker queues or database capacity help explain why behavior changes, but correlation is not automatically causation.",
+            "Warm-up, caches, connection establishment and runtime optimization can make early measurements differ from steady-state behavior."
+        ],
+        steward: [
+            "For Steward search/registration, report latency percentiles, request/iteration rate and failures together. If infrastructure metrics are available, align them to the same test window and release identity.",
+            "Quality Steward interprets evidence and flags likely bottlenecks; deep production capacity/SLO engineering remains for Reliability Engineer."
+        ],
+        practice: ["Run a short controlled workload and capture p50/p95/p99, request rate and failure rate.", "Compare warm-up and steady-state windows.", "Create a deliberately failing-fast condition and explain why latency alone is misleading.", "Correlate one available resource signal with workload behavior without claiming causality you have not proven."],
+        questions: ["What does p95 actually mean?", "Why can lower latency accompany a worse system?", "What is the difference between offered load and successful throughput?"]
+    },
+    {
+        id: "k6-execution-model",
+        title: "k6 Execution Model: VUs, Iterations and Scenarios",
+        intro: "k6 scripts execute iterations through virtual users, while scenarios/executors determine how work is scheduled. Choosing an executor is part of the workload model, not a syntax preference.",
+        principles: [
+            "Virtual users model concurrent independent execution contexts; an iteration is one execution of the scenario function.",
+            "Closed-model executors primarily control VUs/iterations and allow achieved request rate to fall as the system slows.",
+            "Arrival-rate/open-model executors schedule new iterations at a target rate independently of response time, subject to available VUs.",
+            "Use scenarios to represent distinct workloads rather than forcing unrelated behavior into one default function.",
+            "Parameterize target URL/credentials/test data through controlled configuration; do not bake environment secrets into scripts."
+        ],
+        steward: [
+            "A fixed-VU service-search baseline and a constant-arrival-rate catalog traffic experiment answer different questions. The curriculum now requires the learner to explain that difference before choosing one.",
+            "Write-heavy registration workloads need collision-safe data and cleanup so the load generator does not measure its own duplicate-data mistakes."
+        ],
+        practice: ["Implement one fixed-VU scenario and one arrival-rate scenario against a safe Steward read flow.", "Compare achieved request rate when response latency is deliberately increased.", "Split read and write behavior into explicit scenarios if both are needed.", "Make environment and test-data configuration external and secret-safe."],
+        questions: ["Why can fixed VUs reduce offered load when the system slows?", "When is an arrival-rate executor a better model?", "What does one k6 iteration represent in your chosen scenario?"],
+        code: "export const options = {\n  scenarios: {\n    catalog_reads: {\n      executor: 'constant-arrival-rate',\n      rate: 20,\n      timeUnit: '1s',\n      duration: '2m',\n      preAllocatedVUs: 10,\n      maxVUs: 50,\n    },\n  },\n};",
+        language: "javascript"
+    },
+    {
+        id: "k6-checks-thresholds",
+        title: "k6 Checks, Thresholds and Release Interpretation",
+        intro: "Checks record functional observations inside workload execution; thresholds evaluate aggregated metrics and can make a k6 run fail. They solve different problems and should not be confused.",
+        principles: [
+            "A check records whether an individual response/iteration satisfied a condition; failed checks do not automatically mean the process exits unsuccessfully.",
+            "Thresholds evaluate metric aggregates such as error rate or p95 latency and can enforce a test-level performance criterion.",
+            "Threshold values need a source: requirement, SLO/SLA input, established baseline plus agreed tolerance, or explicit experiment objective.",
+            "Segment/tag metrics when one aggregate would mix endpoints with very different risk/latency expectations.",
+            "A threshold breach should preserve the measurements that explain it rather than collapsing into a generic red job."
+        ],
+        steward: [
+            "Use checks to ensure a fast 500 response is not counted as acceptable behavior; use thresholds for agreed error/latency criteria on the measured flow.",
+            "Do not invent a 500 ms threshold because an example uses it. Record why Steward's threshold exists."
+        ],
+        practice: ["Add functional checks and prove a failed check's behavior.", "Add an evidence-backed threshold and trigger a controlled breach.", "Tag two operations and define a targeted threshold where aggregate latency would hide one path.", "Document the source and review policy for each threshold."],
+        questions: ["What is the difference between a k6 check and threshold?", "Why should endpoint groups sometimes have separate thresholds?", "Who or what justifies a performance threshold?"]
+    },
+    {
+        id: "performance-environment-validity",
+        title: "Performance Environment Validity and Comparative Baselines",
+        intro: "Performance tests are experiments. If the environment, dataset, competing workloads or load generator change materially between runs, a numerical difference may describe the experiment rather than the release.",
+        principles: [
+            "Record application commit/release, infrastructure shape, database/data volume, dependency versions and workload definition.",
+            "Keep the load generator from becoming the bottleneck; monitor its capacity when tests become significant.",
+            "Control or record competing activity in shared environments.",
+            "Compare equivalent windows and repeat measurements when noise is material.",
+            "Treat a baseline as contextual evidence, not a universal truth transferable across environments."
+        ],
+        steward: [
+            "A developer laptop, GitLab runner, QA/UAT environment and production-like environment can produce different numbers even for identical code. Label them rather than comparing them as if they were interchangeable.",
+            "A CI smoke performance check can detect gross regression but should not be marketed as a capacity benchmark if the runner/environment is variable."
+        ],
+        practice: ["Create a performance run manifest with release, environment, dataset, workload and generator identity.", "Run two intentionally non-equivalent experiments and identify why direct comparison is invalid.", "Repeat an equivalent baseline and quantify normal variation.", "Decide which performance evidence is appropriate for merge requests, schedules and release reviews."],
+        questions: ["What makes two performance runs comparable?", "How can the load generator distort results?", "Why is a shared UAT environment risky for precise benchmarking?"]
+    },
+    {
+        id: "accessibility-automation",
+        title: "Accessibility Automation and Manual Evidence Boundaries",
+        intro: "Automated accessibility tooling detects machine-testable rule violations; it cannot judge the full usability, meaning or interaction experience. A credible accessibility baseline combines automation with deliberate human checks.",
+        principles: [
+            "Automate repeatable rules such as selected semantic/ARIA/color/structure violations with a recognized engine where appropriate.",
+            "Treat automated findings as evidence requiring context, not as a percentage accessibility score.",
+            "Manual keyboard testing checks focus order, reachability, traps, visible focus and operability.",
+            "Screen-reader evidence is targeted to critical flows and semantics rather than pretending automation simulates human assistive-technology use.",
+            "Regression automation should focus on stable high-value accessibility contracts while broader audits remain periodic/manual."
+        ],
+        steward: [
+            "The Playwright layer already favors role/label semantics. Accessibility checks build on that foundation rather than creating a disconnected scanner-only suite.",
+            "For service registration, combine automated rule scanning with keyboard operation, error association, heading/landmark inspection and targeted screen-reader-oriented semantic review."
+        ],
+        practice: ["Integrate an automated accessibility check into one critical Playwright flow or document the chosen scanner integration.", "Triage each finding rather than accepting raw scanner severity blindly.", "Perform keyboard-only execution and record focus evidence.", "Create an accessibility evidence table separating automated, manual keyboard and residual assistive-technology checks."],
+        questions: ["What kinds of accessibility defects require human judgment?", "Why is an automated accessibility score a weak release claim?", "How should browser semantic locators and accessibility testing reinforce each other?"]
+    },
+    {
+        id: "compatibility-matrix-engineering",
+        title: "Compatibility Contracts, Matrices and Pairwise Risk",
+        intro: "Compatibility space grows combinatorially. Engineer a support contract first, then select combinations using usage, change risk, boundary divergence and representative interaction rather than multiplying every dimension blindly.",
+        principles: [
+            "Separate dimensions: browser/OS, Java test platform, Python/Django runtime, PostgreSQL, tsa-test-core, API contract/version and deployment environment.",
+            "Test all combinations only when the support contract/risk justifies it; otherwise use representative, boundary and pairwise-style selection.",
+            "Always include changed/upgraded boundaries and minimum/maximum supported versions where those boundaries matter.",
+            "Record unsupported combinations explicitly.",
+            "A compatibility failure should identify the dimension combination, not just the test name."
+        ],
+        steward: [
+            "A tsa-test-core upgrade may require candidate-versus-current consumer compatibility evidence without rerunning every browser/database combination.",
+            "A PostgreSQL major-version upgrade deserves focused persistence/component evidence because its risk differs from Chromium/Firefox compatibility."
+        ],
+        practice: ["Define Steward's compatibility dimensions and supported values.", "Calculate the naive Cartesian matrix size.", "Reduce it using risk/boundary reasoning and document every retained combination.", "Run one changed-boundary compatibility check and preserve the full combination identity."],
+        questions: ["Why does Cartesian-product testing scale poorly?", "When should a boundary version receive explicit minimum/maximum testing?", "What information must accompany a compatibility failure?"]
+    },
+    {
+        id: "controlled-failure-testing",
+        title: "Controlled Dependency Failure and Recovery Evidence",
+        intro: "Reliability-oriented quality testing injects a known dependency failure to verify timeout, error mapping, state integrity and recovery behavior. The experiment must be bounded and observable.",
+        principles: [
+            "Define steady state and invariant before injecting failure.",
+            "Inject one understood failure mode at a controlled boundary.",
+            "Measure detection/timeout behavior and user/API-visible result.",
+            "Verify persisted state after failure and after dependency recovery.",
+            "Restore the dependency and prove the system can resume the intended behavior.",
+            "Do not generalize one experiment into a claim of overall resilience."
+        ],
+        steward: [
+            "A safe example can make an identity dependency return an error/timeout or stop a Testcontainers-owned dependency in an isolated integration environment, then verify no partial Steward mutation survives.",
+            "These results become reliability risks/hypotheses for the later Reliability Engineer school, where production SLOs, telemetry and resilience architecture are developed."
+        ],
+        practice: ["Write steady-state and state-integrity invariants for one dependency failure.", "Inject the failure in a controlled test environment.", "Measure timeout/error behavior and inspect post-failure persisted state.", "Restore the dependency and verify recovery.", "Record what this experiment cannot prove about production resilience."],
+        questions: ["Why must recovery be part of the experiment?", "What makes a failure injection controlled?", "Why does one successful failure test not prove resilience?"],
+        warning: "Keep destructive/failure injection inside explicitly safe environments and boundaries. Production chaos engineering is outside this module."
+    },
+
     {
         id: "performance",
         title: "Performance Testing",
@@ -222,6 +370,34 @@ const specs: Spec[] = [
     },
 ];
 
+const measurementMilestone: Lesson = {
+    id: "non-functional-measurement-milestone",
+    title: "Milestone: Build a Trustworthy Steward Measurement Baseline",
+    activities: [{
+        id: "non-functional-measurement-milestone-001",
+        title: "Defend the Measurement, Not Just the Number",
+        estimatedMinutes: 210,
+        content: {
+            type: "practical",
+            objective: "Produce non-functional evidence whose workload, environment, interpretation and limitations are explicit enough to support an engineering decision.",
+            scenario: "A release reviewer should be able to tell whether a changed number represents Steward behavior, experimental noise, an invalid comparison or a real regression.",
+            instructions: [
+                "Define a Steward performance hypothesis and choose a k6 executor/workload model that matches it.",
+                "Capture latency percentiles, successful throughput/request rate and error/check evidence together.",
+                "Define at least one justified threshold and document its source.",
+                "Create a run manifest containing release, environment, dataset, dependency and load-generator identity.",
+                "Repeat an equivalent run and discuss normal variation before interpreting regression.",
+                "Execute one critical accessibility flow with automated plus keyboard/manual evidence.",
+                "Build a risk-reduced compatibility matrix from an explicit support contract.",
+                "Execute one controlled dependency failure through recovery and verify state integrity.",
+                "Assign each check to merge-request, scheduled, release-review or manual cadence based on stability/cost."
+            ],
+            deliverables: ["k6 workload and results", "Threshold rationale", "Performance run manifest", "Repeatability comparison", "Accessibility evidence", "Compatibility matrix", "Controlled failure/recovery record", "Execution-cadence decision"],
+            completionCriteria: ["Performance conclusions include workload, errors and environment context.", "Checks and thresholds are not confused.", "The compared performance runs are demonstrably comparable or explicitly rejected as incomparable.", "Accessibility evidence includes human interaction checks.", "Compatibility selection is risk-based rather than Cartesian by default.", "Failure injection proves post-failure integrity and recovery without claiming general resilience."]
+        }
+    }]
+};
+
 const baselineLab: Lesson = {
     id: "non-functional-baseline-lab",
     title: "Lab: Establish Steward Non-functional Baselines",
@@ -276,5 +452,6 @@ const baselineLab: Lesson = {
 
 export const nonFunctionalQualityDeepLessons: Lesson[] = [
     ...specs.map(lessonFrom),
+    measurementMilestone,
     baselineLab,
 ];

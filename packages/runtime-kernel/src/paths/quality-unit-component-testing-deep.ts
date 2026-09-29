@@ -1,9 +1,21 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
+const djangoTesting: LearningResource = { title: "Django testing documentation", url: "https://docs.djangoproject.com/en/stable/topics/testing/" };
 const pytest: LearningResource = { title: "pytest documentation", url: "https://docs.pytest.org/" };
 const testingGoogle: LearningResource = { title: "Software Engineering at Google — Unit Testing", url: "https://abseil.io/resources/swe-book/html/ch12.html" };
 const mocksArentStubs: LearningResource = { title: "Martin Fowler — Mocks Aren't Stubs", url: "https://martinfowler.com/articles/mocksArentStubs.html" };
+const djangoTools: LearningResource = { title: "Django — Testing tools", url: "https://docs.djangoproject.com/en/stable/topics/testing/tools/" };
+const djangoDb: LearningResource = { title: "Django — Testing database behavior", url: "https://docs.djangoproject.com/en/stable/topics/testing/overview/#the-test-database" };
+const pytestFixtures: LearningResource = { title: "pytest — Fixtures", url: "https://docs.pytest.org/en/stable/how-to/fixtures.html" };
+
+const resourcesFor = (id: string): LearningResource[] => {
+    if (id === "designing-unit-tests" || id === "fast-feedback") return [testingGoogle, djangoTesting];
+    if (id === "isolation" || id === "component-boundaries") return [djangoTesting, djangoDb];
+    if (id === "test-doubles" || id === "mocks-stubs-fakes") return [mocksArentStubs, pytestFixtures];
+    if (id === "coverage") return [djangoTesting, testingGoogle];
+    return [djangoTesting, pytest];
+};
 
 type Spec = { id: string; title: string; intro: string; sections: Array<{ title: string; body: string[]; list?: string[]; code?: string }>; practice: string[]; questions: string[] };
 
@@ -16,7 +28,7 @@ function rich(spec: Spec): Lesson {
         if (section.code) blocks.push({ type: "code", language: "python", code: section.code });
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward test-design checkpoint", body: "Use the risk and test-design artifacts from the previous Quality Steward modules. Put evidence at the smallest credible boundary. A fast test that proves the wrong thing is not useful; a huge integrated test for a local rule is unnecessary cost." });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [pytest, testingGoogle, mocksArentStubs] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: resourcesFor(spec.id) });
     return { id: `unit-component-${spec.id}`, title: spec.title, activities: [
         { id: `unit-component-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: spec.intro, blocks } },
         { id: `unit-component-${spec.id}-002`, title: `Apply: ${spec.title}`, estimatedMinutes: 50, content: { type: "practical", objective: `Apply ${spec.title} to Steward's Python/Django codebase.`, scenario: "Strengthen Steward at code and component boundaries before adding broader API/integration automation.", instructions: spec.practice, deliverables: ["Executable tests or focused test design", "Reason for the chosen boundary", "Failure-diagnostic note"], completionCriteria: ["Tests express observable behavior rather than implementation trivia.", "Dependencies are real or replaced deliberately according to the risk.", "A failure points toward a useful engineering cause."] } },

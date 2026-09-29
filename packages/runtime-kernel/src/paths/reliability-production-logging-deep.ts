@@ -3,7 +3,20 @@ import type { Lesson } from "./lesson";
 
 const otelLogs: LearningResource = { title: "OpenTelemetry Logs", url: "https://opentelemetry.io/docs/concepts/signals/logs/" };
 const twelveFactor: LearningResource = { title: "The Twelve-Factor App: Logs", url: "https://12factor.net/logs" };
-const owaspLogging: LearningResource = { title: "OWASP Logging Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html" };
+const owaspLogging: LearningResource = { title: "OWASP Logging Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html", kind: "reference" };
+const otelLogsData: LearningResource = { title: "OpenTelemetry Logs Data Model", url: "https://opentelemetry.io/docs/specs/otel/logs/data-model/", kind: "reference" };
+const otelContext: LearningResource = { title: "OpenTelemetry Context Propagation", url: "https://opentelemetry.io/docs/concepts/context-propagation/", kind: "documentation" };
+const otelBaggage: LearningResource = { title: "OpenTelemetry Baggage", url: "https://opentelemetry.io/docs/concepts/signals/baggage/", kind: "documentation" };
+const resourcesByLoggingTopic: Record<string, LearningResource[]> = {
+  "structured-logs": [otelLogsData, twelveFactor],
+  "log-levels": [otelLogs, twelveFactor],
+  "correlation-ids": [otelContext, otelLogsData],
+  "request-trace-context": [otelContext, otelBaggage],
+  "centralized-logging": [twelveFactor, otelLogs],
+  "useful-noisy": [otelLogsData, twelveFactor],
+  "privacy-security": [owaspLogging, otelBaggage],
+  retention: [owaspLogging, otelLogs],
+};
 
 type Spec = { id: string; title: string; intro: string; principles: string[]; steward: string[]; practice: string[]; reflection: string; warning?: string };
 
@@ -17,7 +30,7 @@ function blocksFor(spec: Spec): LessonBlock[] {
     ];
     if (spec.warning) blocks.push({ type: "callout", tone: "warning", title: "Operational warning", body: spec.warning });
     blocks.push({ type: "callout", tone: "steward", title: "Diagnostic standard", body: "A production log should help reconstruct what happened, to which component or request, with what outcome and enough context to investigate—without leaking secrets or creating unbounded noise." });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [otelLogs, twelveFactor, owaspLogging] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: resourcesByLoggingTopic[spec.id] ?? [otelLogs, twelveFactor] });
     return blocks;
 }
 

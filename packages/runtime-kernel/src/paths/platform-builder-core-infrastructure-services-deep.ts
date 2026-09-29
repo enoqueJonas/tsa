@@ -1,4 +1,13 @@
 import type { AuthoredLesson } from "./normalize-authored-curriculum";
+// Protocol and implementation references:
+const coreServiceReferences = [
+ "https://bind9.readthedocs.io/",
+ "https://kb.isc.org/docs/isc-dhcp-44-manual-pages-dhcpd",
+ "https://chrony-project.org/documentation.html",
+ "https://datatracker.ietf.org/doc/html/rfc1034",
+ "https://datatracker.ietf.org/doc/html/rfc2131",
+ "https://datatracker.ietf.org/doc/html/rfc5905",
+];
 
 export const coreInfrastructureServicesDeepLessons: AuthoredLesson[] = [
     {

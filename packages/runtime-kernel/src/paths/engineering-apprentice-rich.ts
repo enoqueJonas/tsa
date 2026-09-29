@@ -6,7 +6,28 @@ const sreTroubleshooting: LearningResource = { title: "Google SRE — Effective 
 const missingSemesterDebugging: LearningResource = { title: "MIT Missing Semester — Debugging and Profiling", url: "https://missing.csail.mit.edu/2020/debugging-profiling/" };
 const googleTechnicalWriting: LearningResource = { title: "Google for Developers — Technical Writing", url: "https://developers.google.com/tech-writing" };
 const learningScience: LearningResource = { title: "Nature Reviews Psychology — Science of effective learning", url: "https://doi.org/10.1038/s44159-022-00089-1" };
-const acmEthics: LearningResource = { title: "ACM Code of Ethics and Professional Conduct", url: "https://www.acm.org/code-of-ethics" };
+const acmEthics: LearningResource = { title: "ACM Code of Ethics and Professional Conduct", url: "https://www.acm.org/code-of-ethics", kind: "reference" };
+const systemsFeedbackVideo: LearningResource = {
+    title: "MIT OpenCourseWare — Information Flow / Feedback Loops",
+    url: "https://ocw.mit.edu/courses/res-tll-004-stem-concept-videos-fall-2013/video_galleries/videos/information-flow/",
+    kind: "video",
+    read: "Feedback Loops item",
+    purpose: "Optional visual reinforcement for feedback and system behavior; the TSA mapping exercise remains primary.",
+};
+const adrBasicsVideo: LearningResource = {
+    title: "Architecture Decision Records (ADR): The Basics",
+    url: "https://www.youtube.com/watch?v=7Gqn2dbt_JY",
+    kind: "video",
+    read: "Whole short video",
+    purpose: "Concrete example of how teams preserve technical decision reasoning.",
+};
+const spacedRepetitionVideo: LearningResource = {
+    title: "Osmosis — Spaced repetition in learning theory",
+    url: "https://www.youtube.com/watch?v=cVf38y07cfk",
+    kind: "video",
+    read: "Whole short video",
+    purpose: "Optional animation that makes spacing intuitive; retrieval and capability evidence remain the lesson focus.",
+};
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");

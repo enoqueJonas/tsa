@@ -1,9 +1,20 @@
+import type { LearningResource } from "../activities/content";
 import type { Lesson } from "./lesson";
+const nistSupply={title:"NIST SP 800-161 Rev. 1 — Cybersecurity Supply Chain Risk Management",url:"https://csrc.nist.gov/pubs/sp/800/161/r1/final",kind:"reference"} satisfies LearningResource;
+const nistSsdf={title:"NIST SP 800-218 — Secure Software Development Framework",url:"https://csrc.nist.gov/pubs/sp/800/218/final",kind:"reference"} satisfies LearningResource;
+const cisaSbom={title:"CISA — Software Bill of Materials",url:"https://www.cisa.gov/sbom",kind:"reference"} satisfies LearningResource;
+const semver={title:"Semantic Versioning",url:"https://semver.org/",kind:"reference"} satisfies LearningResource;
+const resourcesByLifecycle:Record<string,LearningResource[]>={
+ "vendor-assessment":[nistSupply],"dependency-risk":[nistSupply,cisaSbom],"saas-cloud":[nistSupply],
+ "end-of-life":[nistSupply],"exit-continuity":[nistSupply],"internal-product-ownership":[nistSsdf],
+ "approved-sources":[nistSupply,nistSsdf],"version-support":[semver,nistSsdf],"repository-retention":[nistSsdf],
+ "dependency-exceptions":[nistSupply],"provenance":[nistSsdf,cisaSbom],
+};
 
 const scenario = "Treat Steward as a mature organization-owned technology service that depends on cloud/VPS infrastructure, PostgreSQL, CI/CD tooling, Nexus, third-party libraries and the internal packages steward-common and tsa-test-core. Governance must make ownership, provenance, support boundaries, lifecycle state, continuity and exceptions explicit without blocking ordinary engineering work.";
 const criteria = ["The decision is tied to a real dependency, service objective or technology risk.", "Ownership, lifecycle state, evidence and review triggers are explicit.", "Controls are proportionate and avoid unnecessary approval bureaucracy."];
 function lesson(id: string, title: string, body: string, instructions: string[]): Lesson { return { id: `third-party-lifecycle-risk-${id}`, title, activities: [
-  { id: `third-party-lifecycle-risk-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 60, content: { type: "reading", body } },
+  { id: `third-party-lifecycle-risk-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 60, content: { type: "reading", body, blocks:[{type:"resources",title:"Lifecycle/supply-chain reference",resources:resourcesByLifecycle[id] ?? [nistSupply]}] } },
   { id: `third-party-lifecycle-risk-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward's dependency ecosystem.`, scenario, instructions, deliverables: ["Lifecycle/risk decision artifact", "Evidence and rationale", "Ownership or exception record"], completionCriteria: criteria } },
 ] }; }
 

@@ -38,6 +38,7 @@ export const securityStewardPaths: AuthoredLearningPath[] = [
     threatModeling,
     webAndApiThreats,
     vulnerabilityLaboratory,
+    applicationSecurity,
     linuxAndNetworkSecurity,
     containerAndDeliverySecurity,
     artifactSigningVerification,
@@ -46,6 +47,5 @@ export const securityStewardPaths: AuthoredLearningPath[] = [
     internalPkiMachineTrust,
     enterpriseDirectoryFederation,
     secureFileTransferMigration,
-    applicationSecurity,
     stewardSecurityAssessment,
 ];

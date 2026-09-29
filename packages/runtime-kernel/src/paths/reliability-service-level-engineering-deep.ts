@@ -2,7 +2,15 @@ import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
 const sreWorkbook: LearningResource = { title: "Google SRE Workbook — Implementing SLOs", url: "https://sre.google/workbook/implementing-slos/" };
-const sreBook: LearningResource = { title: "Google SRE — Service Level Objectives", url: "https://sre.google/sre-book/service-level-objectives/" };
+const sreBook: LearningResource = { title: "Google SRE — Service Level Objectives", url: "https://sre.google/sre-book/service-level-objectives/", kind: "reference" };
+const sreAlerting: LearningResource = { title: "Google SRE Workbook — Alerting on SLOs", url: "https://sre.google/workbook/alerting-on-slos/", kind: "reference" };
+const sreErrorBudget: LearningResource = { title: "Google SRE Workbook — Error Budget Policy", url: "https://sre.google/workbook/error-budget-policy/", kind: "reference" };
+const resourcesBySloTopic: Record<string, LearningResource[]> = {
+  slis: [sreWorkbook, sreBook], slos: [sreWorkbook, sreBook], slas: [sreBook],
+  "error-budgets": [sreErrorBudget, sreWorkbook], "user-visible": [sreWorkbook, sreBook],
+  "good-indicators": [sreWorkbook], windowing: [sreWorkbook, sreAlerting],
+  "targets-tradeoffs": [sreWorkbook, sreErrorBudget], "release-decisions": [sreErrorBudget, sreAlerting],
+};
 
 type Spec = { id: string; title: string; intro: string; principles: string[]; steward: string[]; practice: string[]; reflection: string };
 
@@ -14,7 +22,7 @@ function deepLesson(spec: Spec): Lesson {
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
         { type: "callout", tone: "steward", title: "Measure user-visible reliability", body: "A service objective is useful only when its indicator represents behavior users or dependent systems actually care about and when the target changes engineering decisions." },
-        { type: "resources", title: "Reference material", resources: [sreWorkbook, sreBook] },
+        { type: "resources", title: "Reference material", resources: resourcesBySloTopic[spec.id] ?? [sreWorkbook, sreBook] },
     ];
     return { id: `service-level-engineering-${spec.id}`, title: spec.title, activities: [
         { id: `service-level-engineering-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: spec.intro, blocks } },

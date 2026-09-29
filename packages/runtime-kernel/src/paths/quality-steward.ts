@@ -4,10 +4,12 @@ import { browserAndEnvironmentTestingDeepLessons } from "./quality-browser-envir
 import { browserSurfaceDecisionLesson } from "./quality-browser-surface-decision";
 import { performanceToolDecisionLesson } from "./quality-performance-tool-decision";
 import { qualityInContainersAndCiDeepLessons } from "./quality-containers-ci-deep";
+import { javaForTestFrameworkEngineeringDeepLessons } from "./quality-java-test-engineering-deep";
 import { continuousAndScheduledQualityExecutionDeepLessons } from "./quality-continuous-scheduled-execution-deep";
 import { nonFunctionalQualityDeepLessons } from "./quality-non-functional-deep";
 import { qualityEngineeringDeepLessons } from "./quality-engineering-deep";
 import { qualityStewardMilestoneDeepLessons } from "./quality-steward-milestone-deep";
+import { qualityReuseAndInternalLibraryDeepLessons } from "./quality-reuse-internal-library-deep";
 import { testAnalysisAndDesignDeepLessons } from "./quality-test-analysis-design-deep";
 import { unitAndComponentTestingDeepLessons } from "./quality-unit-component-testing-deep";
 import type { LearningPath } from "./learning-path";
@@ -22,6 +24,12 @@ export const testAnalysisAndDesign: LearningPath = {
     id: "test-analysis-and-design",
     title: "Test Analysis and Design",
     lessons: testAnalysisAndDesignDeepLessons,
+};
+
+export const javaForTestFrameworkEngineering: LearningPath = {
+    id: "java-for-test-framework-engineering",
+    title: "Java for Test Framework Engineering",
+    lessons: javaForTestFrameworkEngineeringDeepLessons,
 };
 
 export const unitAndComponentTesting: LearningPath = {
@@ -46,6 +54,12 @@ export const browserAndEnvironmentTesting: LearningPath = {
     id: "browser-and-environment-testing",
     title: "Browser and Environment Testing",
     lessons: [browserSurfaceDecisionLesson, ...browserAndEnvironmentTestingDeepLessons],
+};
+
+export const reusableTestInfrastructure: LearningPath = {
+    id: "reusable-test-infrastructure",
+    title: "Reusable Test Infrastructure and Internal Distribution",
+    lessons: qualityReuseAndInternalLibraryDeepLessons,
 };
 
 export const nonFunctionalQuality: LearningPath = {
@@ -75,10 +89,12 @@ export const stewardQualityPlatform: LearningPath = {
 export const qualityStewardPaths: LearningPath[] = [
     qualityEngineering,
     testAnalysisAndDesign,
+    javaForTestFrameworkEngineering,
     unitAndComponentTesting,
     apiAndIntegrationTesting,
     automationFrameworkEngineering,
     browserAndEnvironmentTesting,
+    reusableTestInfrastructure,
     nonFunctionalQuality,
     qualityInContainersAndCi,
     continuousAndScheduledQualityExecution,

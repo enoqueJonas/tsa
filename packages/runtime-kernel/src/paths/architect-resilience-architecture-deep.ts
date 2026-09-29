@@ -1,6 +1,21 @@
+import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
-function reading(id:string,title:string,body:string,practice:string[]):Lesson{return{id:`architect-resilience-${id}`,title,activities:[{id:`architect-resilience-${id}-001`,title,estimatedMinutes:55,content:{type:"reading",body}},{id:`architect-resilience-${id}-002`,title:`Evaluate: ${title}`,estimatedMinutes:55,content:{type:"practical",objective:`Evaluate ${title} in Steward.`,scenario:"Use Steward's current architecture, dependency graph, SLOs, incident evidence, reliability experiments, restore drills and integration behavior. Prefer demonstrated failure modes over imagined ones.",instructions:practice,deliverables:["Failure-path evidence","Trade-off analysis","Architecture recommendation"],completionCriteria:["Failure mode and user impact are explicit.","Mitigation cost and secondary failure modes are considered.","Recovery behavior is testable."]}}]};}
+const sreCascades: LearningResource = { title: "Google SRE — Addressing Cascading Failures", url: "https://sre.google/sre-book/addressing-cascading-failures/", kind: "reference" };
+const awsTimeouts: LearningResource = { title: "AWS Builders' Library — Timeouts, Retries and Backoff with Jitter", url: "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/", kind: "reference" };
+const azureCircuit: LearningResource = { title: "Azure Architecture — Circuit Breaker Pattern", url: "https://learn.microsoft.com/azure/architecture/patterns/circuit-breaker", kind: "reference" };
+const azureBulkhead: LearningResource = { title: "Azure Architecture — Bulkhead Pattern", url: "https://learn.microsoft.com/azure/architecture/patterns/bulkhead", kind: "reference" };
+const awsDr: LearningResource = { title: "AWS Well-Architected — Plan for Disaster Recovery", url: "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/plan-for-disaster-recovery-dr.html", kind: "reference" };
+const resourcesByResilienceTopic: Record<string, LearningResource[]> = {
+  "designing-for-failure": [sreCascades], timeouts: [awsTimeouts, sreCascades],
+  retries: [awsTimeouts, sreCascades], "circuit-breakers": [azureCircuit, sreCascades],
+  bulkheads: [azureBulkhead, sreCascades], "graceful-degradation": [sreCascades],
+  "dependency-isolation": [azureBulkhead, sreCascades], "redundancy-failure-domains": [awsDr, sreCascades],
+  "recovery-objectives": [awsDr],
+};
+function resources(id:string): LessonBlock[] { return [{ type: "resources", title: "Architecture reference — reuse Reliability evidence", resources: resourcesByResilienceTopic[id] ?? [sreCascades] }]; }
+
+function reading(id:string,title:string,body:string,practice:string[]):Lesson{return{id:`architect-resilience-${id}`,title,activities:[{id:`architect-resilience-${id}-001`,title,estimatedMinutes:55,content:{type:"reading",body,blocks:resources(id)}},{id:`architect-resilience-${id}-002`,title:`Evaluate: ${title}`,estimatedMinutes:55,content:{type:"practical",objective:`Evaluate ${title} in Steward.`,scenario:"Use Steward's current architecture, dependency graph, SLOs, incident evidence, reliability experiments, restore drills and integration behavior. Prefer demonstrated failure modes over imagined ones.",instructions:practice,deliverables:["Failure-path evidence","Trade-off analysis","Architecture recommendation"],completionCriteria:["Failure mode and user impact are explicit.","Mitigation cost and secondary failure modes are considered.","Recovery behavior is testable."]}}]};}
 
 export const resilienceArchitectureDeepLessons:Lesson[]=[
 reading("designing-for-failure","Designing for Failure","Resilient architecture assumes components, networks and dependencies will fail and structures the system so those failures remain bounded, observable and recoverable.",["Select a critical Steward user journey.","Map dependencies and failure points.","Identify which failures must be isolated, degraded or surfaced.","Compare current behavior with the desired failure contract."]),

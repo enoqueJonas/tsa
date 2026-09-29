@@ -1,11 +1,19 @@
+import type { LearningResource } from "../activities/content";
 import type { Lesson } from "./lesson";
+const adr={title:"Architectural Decision Records",url:"https://adr.github.io/",kind:"reference"} satisfies LearningResource;
+const atam={title:"SEI — Architecture Tradeoff Analysis Method",url:"https://www.sei.cmu.edu/library/architecture-tradeoff-analysis-method-collection/",kind:"reference"} satisfies LearningResource;
+const techRadar={title:"Thoughtworks Technology Radar",url:"https://www.thoughtworks.com/radar",kind:"reference"} satisfies LearningResource;
+const resourcesByArchGov:Record<string,LearningResource[]>={
+ principles:[atam],standards:[techRadar,adr],selection:[techRadar,atam],reviews:[atam,adr],
+ exceptions:[adr],lifecycle:[techRadar,adr],"decision-ownership":[adr],context:[atam,adr],
+};
 
 const scenario = "Treat Steward as a mature organization-owned technology service with established architecture evidence, ADRs, technical-risk records, control evidence, internal packages, Nexus, cloud/VPS infrastructure, PostgreSQL, delivery pipelines and operational history. Architecture governance must preserve decision quality and lifecycle accountability without becoming a duplicate architecture school or approval bureaucracy.";
 const deliverables = ["Architecture-governance artifact", "Evidence and rationale", "Ownership, exception or lifecycle record"];
 const criteria = ["The governance mechanism is tied to a real decision or risk.", "Ownership and decision rights are explicit.", "The mechanism is proportionate and avoids unnecessary approval gates."];
 function readingPractice(id: string, title: string, body: string, instructions: string[]): Lesson {
   return { id: `architecture-governance-${id}`, title, activities: [
-    { id: `architecture-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 55, content: { type: "reading", body } },
+    { id: `architecture-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 55, content: { type: "reading", body, blocks:[{type:"resources",title:"Architecture governance reference",resources:resourcesByArchGov[id] ?? [adr]}] } },
     { id: `architecture-governance-${id}-practice`, title: `${title}: Steward governance exercise`, estimatedMinutes: 55, content: { type: "practical", objective: `Apply ${title} as an architecture-governance capability for Steward.`, scenario, instructions, deliverables, completionCriteria: criteria } },
   ] };
 }

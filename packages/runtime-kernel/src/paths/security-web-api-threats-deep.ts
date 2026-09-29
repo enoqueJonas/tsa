@@ -5,7 +5,44 @@ const owaspTop10: LearningResource = { title: "OWASP Top 10", url: "https://owas
 const owaspApiTop10: LearningResource = { title: "OWASP API Security Top 10", url: "https://owasp.org/API-Security/" };
 const portSwiggerAcademy: LearningResource = { title: "PortSwigger Web Security Academy", url: "https://portswigger.net/web-security" };
 
-const resources = [owaspTop10, owaspApiTop10, portSwiggerAcademy];
+const sqlInjection: LearningResource = { title: "OWASP SQL Injection Prevention Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html", kind: "reference" };
+const xssPrevention: LearningResource = { title: "OWASP Cross Site Scripting Prevention Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html", kind: "reference" };
+const csrfPrevention: LearningResource = { title: "OWASP CSRF Prevention Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html", kind: "reference" };
+const authCheatSheet: LearningResource = { title: "OWASP Authentication Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html", kind: "reference" };
+const authorizationCheatSheet: LearningResource = { title: "OWASP Authorization Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html", kind: "reference" };
+const ssrfPrevention: LearningResource = { title: "OWASP SSRF Prevention Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html", kind: "reference" };
+const fileUpload: LearningResource = { title: "OWASP File Upload Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html", kind: "reference" };
+const pathTraversal: LearningResource = { title: "PortSwigger Path Traversal", url: "https://portswigger.net/web-security/file-path-traversal", kind: "course" };
+const commandInjection: LearningResource = { title: "OWASP OS Command Injection Defense Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html", kind: "reference" };
+const deserialization: LearningResource = { title: "OWASP Deserialization Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html", kind: "reference" };
+const secretsManagement: LearningResource = { title: "OWASP Secrets Management Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html", kind: "reference" };
+const dosPrevention: LearningResource = { title: "OWASP Denial of Service Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Denial_of_Service_Cheat_Sheet.html", kind: "reference" };
+const sessionManagement: LearningResource = { title: "OWASP Session Management Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html", kind: "reference" };
+const cryptoStorage: LearningResource = { title: "OWASP Cryptographic Storage Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html", kind: "reference" };
+const dependencyCheck: LearningResource = { title: "OWASP Vulnerable Dependency Management Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Vulnerable_Dependency_Management_Cheat_Sheet.html", kind: "reference" };
+const loggingCheatSheet: LearningResource = { title: "OWASP Logging Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html", kind: "reference" };
+const massAssignment: LearningResource = { title: "OWASP Mass Assignment Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html", kind: "reference" };
+
+const resourcesByTopic: Record<string, LearningResource[]> = {
+    "injection-sqli": [sqlInjection, portSwiggerAcademy],
+    xss: [xssPrevention, portSwiggerAcademy],
+    csrf: [csrfPrevention, portSwiggerAcademy],
+    "broken-authentication": [authCheatSheet, owaspTop10],
+    "authorization-idor": [authorizationCheatSheet, owaspApiTop10],
+    ssrf: [ssrfPrevention, portSwiggerAcademy],
+    "path-traversal": [pathTraversal, portSwiggerAcademy],
+    "file-upload": [fileUpload, portSwiggerAcademy],
+    "command-injection": [commandInjection, portSwiggerAcademy],
+    deserialization: [deserialization, owaspTop10],
+    misconfiguration: [owaspTop10],
+    secrets: [secretsManagement, owaspTop10],
+    "api-abuse": [dosPrevention, owaspApiTop10],
+    "token-session": [sessionManagement, authCheatSheet],
+    crypto: [cryptoStorage, owaspTop10],
+    dependencies: [dependencyCheck, owaspTop10],
+    "logging-monitoring": [loggingCheatSheet, owaspTop10],
+    "mass-assignment-exposure": [massAssignment, owaspApiTop10],
+};
 
 type Spec = {
     id: string;
@@ -37,7 +74,7 @@ function blocksFor(spec: Spec): LessonBlock[] {
         title: "Threat-model continuity",
         body: "Do not test this weakness because it appears on a famous checklist. Trace it back to a Steward asset, flow, trust boundary or abuse case from the threat model, then determine whether the path is actually reachable and what evidence would verify the control.",
     });
-    blocks.push({ type: "resources", title: "Continue learning", resources });
+    blocks.push({ type: "resources", title: "Continue learning", resources: resourcesByTopic[spec.id] ?? [owaspTop10, owaspApiTop10] });
     return blocks;
 }
 

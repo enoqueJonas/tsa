@@ -3,11 +3,22 @@ import type { Lesson } from "./lesson";
 
 const aws: LearningResource = { title: "AWS Well-Architected: Disaster Recovery", url: "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/plan-for-disaster-recovery-dr.html" };
 const postgres: LearningResource = { title: "PostgreSQL: Backup and Restore", url: "https://www.postgresql.org/docs/current/backup.html" };
-const cisa: LearningResource = { title: "CISA: Data Backup Options", url: "https://www.cisa.gov/news-events/news/data-backup-options" };
+const cisa: LearningResource = { title: "CISA: Data Backup Options", url: "https://www.cisa.gov/news-events/news/data-backup-options", kind: "reference" };
+const postgresContinuous: LearningResource = { title: "PostgreSQL — Continuous Archiving and PITR", url: "https://www.postgresql.org/docs/current/continuous-archiving.html", kind: "documentation" };
+const awsRpoRto: LearningResource = { title: "AWS — Disaster Recovery Objectives", url: "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/plan-for-disaster-recovery-dr.html", kind: "reference" };
+const resourcesByRecoveryTopic: Record<string, LearningResource[]> = {
+  backups: [cisa, postgres], "backup-integrity": [cisa, postgres],
+  "restore-testing": [postgres, aws], "rpo-rto": [awsRpoRto, postgresContinuous],
+  "disaster-scenarios": [aws], "recovery-procedures": [aws, cisa],
+  "database-recovery": [postgres, postgresContinuous],
+  "artifact-repository-recovery": [aws, cisa],
+  "configuration-infrastructure-recovery": [aws],
+  "recovery-evidence": [awsRpoRto, postgres],
+};
 
 type Spec = { id: string; title: string; intro: string; principles: string[]; steward: string[]; practice: string[]; reflection: string };
 function lessonFrom(spec: Spec): Lesson {
-    const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }, { type: "heading", id: `${spec.id}-principles`, text: "Recovery model", level: 2 }, { type: "list", items: spec.principles }, { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 }, ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })), { type: "callout", tone: "steward", title: "A backup is not a recovery", body: "Steward is recoverable only when required data, configuration, artifacts and dependencies can be restored into a usable service within understood loss and time bounds. Backup-job success alone is not proof." }, { type: "resources", title: "Continue learning", resources: [aws, postgres, cisa] }];
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }, { type: "heading", id: `${spec.id}-principles`, text: "Recovery model", level: 2 }, { type: "list", items: spec.principles }, { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 }, ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })), { type: "callout", tone: "steward", title: "A backup is not a recovery", body: "Steward is recoverable only when required data, configuration, artifacts and dependencies can be restored into a usable service within understood loss and time bounds. Backup-job success alone is not proof." }, { type: "resources", title: "Continue learning", resources: resourcesByRecoveryTopic[spec.id] ?? [aws, postgres] }];
     return { id: `data-protection-dr-${spec.id}`, title: spec.title, activities: [
         { id: `data-protection-dr-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: spec.intro, blocks } },
         { id: `data-protection-dr-${spec.id}-002`, title: `Recover: ${spec.title}`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${spec.title} to Steward recovery planning.`, scenario: "Work from Steward's actual state: PostgreSQL data, application/configuration state, secrets references, deployment definitions and Nexus/internal artifacts. Define what must survive and prove assumptions with learner-owned recovery evidence.", instructions: spec.practice, deliverables: ["Recovery design or evidence", "Measured/declared loss and time assumptions", "Residual-risk note"], completionCriteria: ["The protected asset and failure scenario are explicit.", "Recovery depends on evidence rather than backup-job status.", "Security and integrity requirements remain valid during restoration." ] } },

@@ -6,6 +6,8 @@ const pythonReference: LearningResource = { title: "Python Language Reference", 
 const typingDocs: LearningResource = { title: "Python typing documentation", url: "https://docs.python.org/3/library/typing.html" };
 const venvDocs: LearningResource = { title: "Python venv documentation", url: "https://docs.python.org/3/library/venv.html" };
 const packagingGuide: LearningResource = { title: "Python Packaging User Guide", url: "https://packaging.python.org/en/latest/" };
+const pythonOopVideo: LearningResource = { title: "Corey Schafer — Python OOP Tutorial 1: Classes and Instances", url: "https://www.youtube.com/watch?v=ZDa-Z5JzLYM", kind: "video", read: "Whole first video in the OOP series", purpose: "Optional reinforcement for the class/instance object model; TSA still emphasizes when a class is justified." };
+const pythonPdbVideo: LearningResource = { title: "Red Eyed Coder Club — Python PDB tutorial", url: "https://www.youtube.com/watch?v=SdsHXwN3Ka4", kind: "video", recommended: true, read: "02:19–17:42", purpose: "Shows debugger output, stepping, inspection, breakpoints and stack navigation in a real Python session." };
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");

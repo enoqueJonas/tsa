@@ -1,10 +1,33 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
-const linuxSecurity: LearningResource = { title: "Linux Security Hardening", url: "https://www.cyberciti.biz/tips/linux-security.html" };
-const openssh: LearningResource = { title: "OpenSSH Manual", url: "https://man.openbsd.org/sshd_config" };
-const cisLinux: LearningResource = { title: "CIS Benchmarks", url: "https://www.cisecurity.org/cis-benchmarks" };
-const mozillaTls: LearningResource = { title: "Mozilla SSL Configuration Generator", url: "https://ssl-config.mozilla.org/" };
+const rhelUsers: LearningResource = { title: "RHEL 9 — Managing Users and Groups", url: "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/managing-users-and-groups_configuring-basic-system-settings", kind: "documentation" };
+const sudoers: LearningResource = { title: "sudoers manual", url: "https://www.sudo.ws/docs/man/sudoers.man/", kind: "documentation" };
+const sshdConfig: LearningResource = { title: "OpenSSH sshd_config", url: "https://man.openbsd.org/sshd_config", kind: "documentation" };
+const rhelFirewalld: LearningResource = { title: "RHEL 9 — Using and Configuring firewalld", url: "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_firewalls_and_packet_filters/using-and-configuring-firewalld_firewall-packet-filters", kind: "documentation" };
+const systemdSecurity: LearningResource = { title: "systemd.exec security controls", url: "https://www.freedesktop.org/software/systemd/man/latest/systemd.exec.html", kind: "documentation" };
+const rhelUpdates: LearningResource = { title: "RHEL 9 — Managing Software with DNF", url: "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/managing_software_with_the_dnf_tool/index", kind: "documentation" };
+const microsoftUpdate: LearningResource = { title: "Microsoft — Windows Update for Business", url: "https://learn.microsoft.com/en-us/windows/deployment/update/waas-manage-updates-wufb", kind: "documentation" };
+const rhelPermissions: LearningResource = { title: "RHEL 9 — Managing File Permissions", url: "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/managing-file-permissions_configuring-basic-system-settings", kind: "documentation" };
+const journald: LearningResource = { title: "systemd-journald manual", url: "https://www.freedesktop.org/software/systemd/man/latest/systemd-journald.service.html", kind: "documentation" };
+const auditd: LearningResource = { title: "RHEL 9 — Auditing the System", url: "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/security_hardening/auditing-the-system_security-hardening", kind: "documentation" };
+const nistZeroTrust: LearningResource = { title: "NIST SP 800-207 — Zero Trust Architecture", url: "https://csrc.nist.gov/pubs/sp/800/207/final", kind: "reference" };
+const mozillaTls: LearningResource = { title: "Mozilla SSL Configuration Generator", url: "https://ssl-config.mozilla.org/", kind: "reference" };
+const opensslVerify: LearningResource = { title: "OpenSSL verify", url: "https://docs.openssl.org/3.0/man1/openssl-verify/", kind: "documentation" };
+
+const resourcesByLinuxTopic: Record<string, LearningResource[]> = {
+    "users-groups-permissions": [rhelUsers, rhelPermissions],
+    "privilege-sudo": [sudoers, rhelUsers],
+    "ssh-hardening": [sshdConfig],
+    "host-firewalls": [rhelFirewalld],
+    "service-exposure": [systemdSecurity, rhelFirewalld],
+    "patching-windows": [rhelUpdates, microsoftUpdate],
+    "file-secret-permissions": [rhelPermissions, systemdSecurity],
+    "logging-auditing": [journald, auditd],
+    segmentation: [nistZeroTrust, rhelFirewalld],
+    "admin-boundaries": [nistZeroTrust, sshdConfig],
+    "tls-certificates": [mozillaTls, opensslVerify],
+};
 
 type Spec = {
     id: string;
@@ -36,7 +59,7 @@ function blocksFor(spec: Spec): LessonBlock[] {
         title: "Stewardship checkpoint",
         body: "Host and network security should reduce reachable attack paths without making the system unmaintainable. Every hardening decision should preserve a documented administrative path, observable evidence and a recovery plan.",
     });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [linuxSecurity, openssh, cisLinux, mozillaTls] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: resourcesByLinuxTopic[spec.id] ?? [nistZeroTrust] });
     return blocks;
 }
 
