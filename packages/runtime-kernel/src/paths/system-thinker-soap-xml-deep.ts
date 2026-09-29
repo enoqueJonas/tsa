@@ -1,7 +1,21 @@
+import type { LearningResource } from "../activities/content";
 import type { Lesson } from "./lesson";
 
+const xmlSpec:LearningResource={title:"W3C — Extensible Markup Language (XML) 1.0",url:"https://www.w3.org/TR/xml/",kind:"reference"};
+const xmlNamespaces:LearningResource={title:"W3C — Namespaces in XML",url:"https://www.w3.org/TR/xml-names/",kind:"reference"};
+const xsdSpec:LearningResource={title:"W3C — XML Schema Definition Language 1.1",url:"https://www.w3.org/TR/xmlschema11-1/",kind:"reference"};
+const wsdlSpec:LearningResource={title:"W3C — Web Services Description Language (WSDL) 1.1",url:"https://www.w3.org/TR/2001/NOTE-wsdl-20010315",kind:"reference"};
+const soapSpec:LearningResource={title:"W3C — SOAP Version 1.2",url:"https://www.w3.org/TR/soap12-part1/",kind:"reference"};
+const owaspXxe:LearningResource={title:"OWASP — XML External Entity Prevention",url:"https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html",kind:"reference"};
+const resourcesBySoap:Record<string,LearningResource[]>={
+ "soap-xml-document-model":[xmlSpec,xmlNamespaces,owaspXxe],"soap-xml-xsd-contract":[xsdSpec,xmlNamespaces],
+ "soap-wsdl-contract":[wsdlSpec,xsdSpec],"soap-envelope-faults":[soapSpec,wsdlSpec],
+ "soap-service-implementation":[wsdlSpec,soapSpec],"soap-steward-consumer":[wsdlSpec,soapSpec],
+ "soap-contract-testing-failure":[xsdSpec,wsdlSpec],"soap-xml-milestone":[xmlSpec,xsdSpec,wsdlSpec,soapSpec],
+};
+
 function practical(id: string, title: string, objective: string, scenario: string, instructions: string[], deliverables: string[], completionCriteria: string[], estimatedMinutes = 120): Lesson {
-    return { id, title, activities: [{ id: `${id}-lab`, title, estimatedMinutes, content: { type: "practical", objective, scenario, instructions, deliverables, completionCriteria } }] };
+    return { id, title, activities: [{ id: `${id}-lab`, title, estimatedMinutes, content: { type: "practical", objective, scenario, instructions, deliverables: [...deliverables, `Reference set: ${(resourcesBySoap[id] ?? [soapSpec]).map(r => r.title).join("; ")}`], completionCriteria } }] };
 }
 
 export const soapXmlEnterpriseIntegrationDeepLessons: Lesson[] = [
