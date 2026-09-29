@@ -110,6 +110,7 @@ export const systemsThinkingRich = richLesson(
     "Build a system map that explains behavior and failure propagation rather than merely listing components.",
     ["Select a real application or work process.", "Define the question your system model should answer.", "Draw actors, components, dependencies and flows.", "Identify shared resources, delays and feedback loops.", "Trace two different failure paths to user-visible symptoms.", "Revise the boundary if the model cannot explain the observed behavior."],
     "Why is a system boundary a decision rather than an objective fact? Give an example of a symptom whose likely cause sits outside the component that reports the error. What information does an unlabeled architecture box-and-arrow diagram fail to communicate?",
+    [systemsThinkingVideo],
 );
 
 export const tradeOffsRich = richLesson(
@@ -173,6 +174,7 @@ export const engineeringDecisionsRich = richLesson(
     "Write an engineering decision record whose context, alternatives, trade-offs and revisit conditions are understandable without chat history.",
     ["Pick a decision with at least two credible alternatives.", "Write context and drivers.", "Separate evidence and assumptions.", "Explain why the selected option wins now.", "List positive and negative consequences.", "Define one measurable or observable revisit condition."],
     "Why can reversing a decision later be evidence of good engineering rather than failure? What distinguishes an ADR-worthy choice from a routine implementation detail? Why should the disadvantages of the chosen option be documented?",
+    [engineeringDecisionsVideo],
 );
 
 export const evidenceAndTechnicalReasoningRich = richLesson(
