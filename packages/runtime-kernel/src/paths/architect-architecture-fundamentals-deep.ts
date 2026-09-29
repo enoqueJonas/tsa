@@ -4,6 +4,12 @@ import type { Lesson } from "./lesson";
 const fundamentals: LearningResource = { title: "Software Architecture in Practice — SEI", url: "https://www.sei.cmu.edu/library/software-architecture-in-practice/" };
 const arc42: LearningResource = { title: "arc42 Documentation Template", url: "https://arc42.org/overview" };
 const fitness: LearningResource = { title: "Thoughtworks: Evolutionary Architecture", url: "https://www.thoughtworks.com/insights/articles/fitness-function-driven-development" };
+const resourcesByFundamentalsTopic: Record<string, LearningResource[]> = {
+  "what-architecture-is": [fundamentals, arc42], "architecture-vs-design": [fundamentals],
+  "architecture-drivers": [fundamentals], "quality-attributes": [fundamentals],
+  constraints: [fundamentals, arc42], tradeoffs: [fundamentals],
+  "fitness-evolution": [fitness, fundamentals], documentation: [arc42, fundamentals],
+};
 
 type Spec = { id: string; title: string; intro: string; principles: string[]; steward: string[]; practice: string[]; reflection: string };
 
@@ -15,7 +21,7 @@ function make(spec: Spec): Lesson {
     { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
     ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
     { type: "callout", tone: "steward", title: "Architecture is a decision discipline", body: "A diagram is not architecture by itself. Architecture becomes meaningful when important structural decisions are tied to drivers, constraints, quality attributes, trade-offs and evidence about the system's behavior." },
-    { type: "resources", title: "Continue learning", resources: [fundamentals, arc42, fitness] },
+    { type: "resources", title: "Continue learning", resources: resourcesByFundamentalsTopic[spec.id] ?? [fundamentals] },
   ];
 
   return {
