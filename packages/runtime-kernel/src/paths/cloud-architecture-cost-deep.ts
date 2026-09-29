@@ -5,6 +5,9 @@ const awsWellArchitected: LearningResource = { title: "AWS — Well-Architected 
 const googleCloudFramework: LearningResource = { title: "Google Cloud — Architecture Framework", url: "https://cloud.google.com/architecture/framework" };
 const azureReliability: LearningResource = { title: "Microsoft Azure — Reliability documentation", url: "https://learn.microsoft.com/azure/reliability/" };
 const finops: LearningResource = { title: "FinOps Foundation — FinOps Framework", url: "https://www.finops.org/framework/" };
+const awsReliability: LearningResource = { title: "AWS Well-Architected — Reliability Pillar", url: "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html", purpose: "RECOMMENDED FIRST-PARTY RESOURCE — frame availability around failure and recovery rather than instance count." };
+const ibmScalingVideo: LearningResource = { title: "IBM Technology — Horizontal vs Vertical Scaling", url: "https://www.youtube.com/watch?v=xpDnVSmNFX0", purpose: "RECOMMENDED VIDEO — visualize scale-up versus scale-out before later architecture depth." };
+const finopsIntro: LearningResource = { title: "FinOps Foundation — What is FinOps?", url: "https://www.finops.org/introduction/what-is-finops/", purpose: "RECOMMENDED RESOURCE — connect engineering consumption decisions to cost accountability." };
 
 interface LessonSpec {
     id: string;
@@ -13,6 +16,7 @@ interface LessonSpec {
     sections: Array<{ heading: string; paragraphs: string[]; list?: string[]; code?: { language: string; code: string; caption?: string } }>;
     practice: string[];
     questions: string[];
+    resources?: LearningResource[];
 }
 
 function richLesson(spec: LessonSpec): Lesson {
@@ -24,7 +28,7 @@ function richLesson(spec: LessonSpec): Lesson {
         if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code, caption: section.code.caption });
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward architecture checkpoint", body: "Do not optimize a diagram in isolation. Relate availability, capacity, security, recovery and cost decisions to Steward's real workload, failure impact and operating model. Every extra component adds both capability and responsibility." });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [awsWellArchitected, googleCloudFramework, azureReliability, finops] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: [...(spec.resources ?? []), awsWellArchitected, googleCloudFramework, azureReliability, finops] });
 
     return {
         id: `cloud-architecture-and-cost-${spec.id}`,
@@ -42,10 +46,12 @@ const specs: LessonSpec[] = [
         { heading: "Remove the right single points of failure", paragraphs: ["A redundant application tier does little if every instance depends on one unrecoverable database. Likewise, a managed database does not help when DNS, credentials or deployment logic can still make the service unavailable.", "Start with the user-visible path and identify which failures can stop it."], list: ["Client name resolution", "Public ingress", "Application compute", "Database", "Credentials and configuration", "Critical external dependencies"] },
         { heading: "Availability has a cost", paragraphs: ["More replicas, zones, managed failover and standby capacity all increase cost and operational complexity. The target should follow business impact and recovery expectations, not a desire to draw a multi-zone diagram."] },
     ], practice: ["Trace the complete Steward request path and mark every single point of failure.", "Select the one availability improvement with the highest value for the current stage.", "State which remaining failure you deliberately accept and why."], questions: ["Why is multi-zone compute insufficient when the database is still a single unrecoverable dependency?", "Why should availability targets be connected to failure impact and cost?"] },
+        resources: [awsReliability],
     { id: "scalability-capacity", title: "Scalability and Capacity", intro: "Capacity planning asks how much load the system can handle now and how it should respond as demand changes. Scaling should follow observed resource pressure and workload shape, not vague expectations of future growth.", sections: [
         { heading: "Measure the bottleneck first", paragraphs: ["CPU, memory, storage latency, database connections, query cost and network throughput can constrain Steward independently. Increasing the wrong resource changes cost without increasing useful capacity."] },
         { heading: "Vertical before horizontal can be rational", paragraphs: ["For a small service, a larger instance can be simpler and cheaper than introducing a load balancer, multiple application instances and new coordination concerns. Horizontal scaling becomes more attractive when vertical limits, availability requirements or traffic patterns justify it."] },
     ], practice: ["Define three measurable Steward capacity signals.", "Choose one plausible bottleneck and propose the smallest response.", "Document the trigger that would justify moving from vertical to horizontal scaling."], questions: ["Why can scaling CPU fail to improve throughput?", "When is vertical scaling a better engineering choice than adding instances?"] },
+        resources: [ibmScalingVideo],
     { id: "security-boundaries", title: "Security Boundaries", intro: "Cloud architecture creates multiple control planes and network boundaries. Good design minimizes which identities and components can reach sensitive resources while keeping the path operable.", sections: [
         { heading: "Separate public, administrative and control-plane access", paragraphs: ["Internet users need HTTPS to Steward's public entry point. Operators need tightly controlled administration. CI or IaC needs cloud control-plane permissions. The database needs application traffic, not public internet exposure. These are different trust relationships and should not share one broad path."] },
         { heading: "Least privilege is architectural", paragraphs: ["IAM policy, subnet placement, firewall rules, secret access and workload identity all shape blast radius. Security is stronger when several boundaries agree on the intended communication graph rather than relying on one perimeter rule."] },
@@ -62,10 +68,12 @@ const specs: LessonSpec[] = [
         { heading: "Estimate by resource and unit", paragraphs: ["List compute hours, allocated storage, snapshots, managed databases, public addresses, load balancers, DNS, outbound traffic and retained logs separately. Mark which are fixed while allocated and which vary with usage."], code: { language: "text", caption: "Architecture cost model", code: "compute          quantity × hours × rate\nstorage          GB allocated × monthly rate\nbackup           retained GB × rate\nnetwork egress   transferred GB × rate\nmanaged service  instance-hours + storage + I/O where applicable\n\nmonthly estimate = sum(each resource assumption)" } },
         { heading: "Make assumptions reviewable", paragraphs: ["Write the region, size, expected traffic and retention period next to the estimate. A number without its assumptions becomes stale silently when architecture or pricing changes."] },
     ], practice: ["Build a monthly estimate for the current Steward cloud target.", "Show quantity, pricing unit and assumption for every line.", "Identify the top two cost drivers and one architecture change that would materially alter them."], questions: ["Why is a monthly total without assumptions weak engineering evidence?", "Which cloud costs can vary substantially even if compute size never changes?"] },
+        resources: [finopsIntro],
     { id: "cost-controls-budgets", title: "Cost Controls and Budgets", intro: "Cost control turns an estimate into an operating constraint. Budgets, alerts, tagging and teardown rules reduce the chance that temporary infrastructure becomes permanent unnoticed spend.", sections: [
         { heading: "A budget alert is not a hard safety boundary", paragraphs: ["Many provider budgets notify rather than automatically stop resources. Engineers still need ownership, review cadence and safe teardown procedures. Automated shutdown can also be dangerous for stateful or production resources if used without lifecycle awareness."] },
         { heading: "Ownership makes spend actionable", paragraphs: ["Tags or labels such as system, environment, owner and purpose make cost attribution easier. Temporary learning infrastructure should also have an expiry or teardown decision so that forgotten resources are visible." ] },
     ], practice: ["Set or design a monthly Steward budget threshold and alert path.", "Define required tags/labels for Steward resources.", "Create a teardown rule for temporary environments and identify resources that must never be destroyed automatically."], questions: ["Why does a budget alert not guarantee spending will stop?", "Why can automatic teardown be risky for stateful resources?"] },
+        resources: [finops],
     { id: "right-sizing", title: "Resource Right-sizing", intro: "Right-sizing means matching provisioned resources to observed workload needs while preserving enough headroom for expected variability. It is an iterative operating practice, not a one-time purchase decision.", sections: [
         { heading: "Use evidence over average utilization alone", paragraphs: ["A low monthly CPU average can hide short saturation periods. Memory pressure, burst behavior, disk latency and startup requirements also matter. Right-sizing should consider percentiles, peaks and failure behavior, not only averages."] },
         { heading: "Downsizing is a controlled change", paragraphs: ["A cheaper instance is useful only if Steward continues meeting response, deployment and recovery needs. Treat size changes like infrastructure changes: plan, apply, verify and retain rollback options where possible."] },
