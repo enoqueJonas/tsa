@@ -3,7 +3,7 @@ import type { Lesson } from "./lesson";
 
 const gitlabCi: LearningResource = { title: "GitLab CI/CD pipelines", url: "https://docs.gitlab.com/ci/pipelines/" };
 const gitlabSchedules: LearningResource = { title: "GitLab pipeline schedules", url: "https://docs.gitlab.com/ci/pipelines/schedules/" };
-const pytest: LearningResource = { title: "pytest documentation", url: "https://docs.pytest.org/" };
+const junit: LearningResource = { title: "JUnit 5 User Guide", url: "https://docs.junit.org/5.11.4/user-guide/" };
 
 const readingBlocks: LessonBlock[] = [
     { type: "paragraph", text: "A production test-automation system does not wait for a tester to remember to run it. It connects execution cadence to engineering decisions: change-triggered checks provide fast feedback on pushes and pull requests, while scheduled regression searches more broadly for integration, environment and accumulated-regression failures." },
@@ -18,7 +18,7 @@ const readingBlocks: LessonBlock[] = [
     { type: "paragraph", text: "A red build hidden inside GitLab CI is incomplete feedback. The pipeline must publish durable reports and useful failure diagnostics, then notify an appropriate learner-owned channel so a failed automated run becomes an actionable event." },
     { type: "callout", tone: "warning", title: "Do not create notification noise", body: "Notify on actionable failed or unstable runs with enough identity to triage them. Do not send success spam or hide repeated failures behind automatic reruns." },
     { type: "callout", tone: "steward", title: "Mandatory operational proof", body: "Quality Steward is complete only after the learner proves both an SCM-triggered run and a GitLab pipeline schedule-triggered run, publishes reports/artifacts, deliberately causes a test failure and receives the configured failure notification." },
-    { type: "resources", title: "Continue learning", resources: [gitlabCi, gitlabSchedules, pytest] },
+    { type: "resources", title: "Continue learning", resources: [gitlabCi, gitlabSchedules, junit] },
 ];
 
 export const continuousAndScheduledQualityExecutionDeepLessons: Lesson[] = [
