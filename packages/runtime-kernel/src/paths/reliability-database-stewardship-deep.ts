@@ -13,9 +13,19 @@ const postgresExplain: LearningResource = {
     title: "PostgreSQL — Using EXPLAIN",
     url: "https://www.postgresql.org/docs/current/using-explain.html",
 };
-const postgresBackup: LearningResource = {
-    title: "PostgreSQL — Backup and Restore",
-    url: "https://www.postgresql.org/docs/current/backup.html",
+const postgresBackup: LearningResource = { title: "PostgreSQL — Backup and Restore", url: "https://www.postgresql.org/docs/current/backup.html", kind: "documentation" };
+const postgresConnections: LearningResource = { title: "PostgreSQL — Connections and Authentication", url: "https://www.postgresql.org/docs/current/runtime-config-connection.html", kind: "documentation" };
+const postgresAnalyze: LearningResource = { title: "PostgreSQL — EXPLAIN ANALYZE", url: "https://www.postgresql.org/docs/current/using-explain.html", kind: "documentation" };
+const postgresMigration: LearningResource = { title: "PostgreSQL — ALTER TABLE", url: "https://www.postgresql.org/docs/current/sql-altertable.html", kind: "documentation" };
+const postgresStats: LearningResource = { title: "PostgreSQL — Monitoring Database Activity", url: "https://www.postgresql.org/docs/current/monitoring-stats.html", kind: "documentation" };
+const resourcesByDatabaseTopic: Record<string, LearningResource[]> = {
+  "roles-privileges": [postgresRoles],
+  "connections-pooling": [postgresConnections, postgresStats],
+  "slow-queries-plans": [postgresExplain, postgresAnalyze],
+  "locks-deadlocks": [postgresLocks, postgresStats],
+  "safe-migrations": [postgresMigration, postgresLocks],
+  "backup-restore-rpo-rto": [postgresBackup],
+  "database-capacity-health": [postgresStats, postgresExplain],
 };
 
 type DatabaseLessonSpec = {
@@ -48,7 +58,7 @@ function databaseLesson(spec: DatabaseLessonSpec): Lesson {
         {
             type: "resources",
             title: "Continue learning",
-            resources: [postgresRoles, postgresLocks, postgresExplain, postgresBackup],
+            resources: resourcesByDatabaseTopic[spec.id] ?? [postgresRoles, postgresStats],
         },
     ];
 
