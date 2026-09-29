@@ -4,6 +4,8 @@ import type { Lesson } from "./lesson";
 const junit: LearningResource = { title: "JUnit 5 User Guide", url: "https://docs.junit.org/current/user-guide/" };
 const playwright: LearningResource = { title: "Playwright Java", url: "https://playwright.dev/java/" };
 const k6: LearningResource = { title: "Grafana k6 documentation", url: "https://grafana.com/docs/k6/latest/" };
+const gitlabCi: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
+const testcontainers: LearningResource = { title: "Testcontainers for Java", url: "https://java.testcontainers.org/" };
 
 const readingBlocks: LessonBlock[] = [
   { type: "paragraph", text: "The Quality Steward milestone is not a request to create more tests. It is the point where the learner proves that Steward has a coherent, maintainable quality system whose evidence can influence release decisions." },
@@ -15,7 +17,8 @@ const readingBlocks: LessonBlock[] = [
     "API and integration checks prove service contracts, persistence and integration boundaries.",
     "Browser and environment checks cover browser behavior and meaningful environment differences without duplicating all service-layer tests.",
     "Selected non-functional baselines provide comparable evidence for performance, accessibility, compatibility and integrity risks.",
-    "CI stages publish reports and artifacts, preserve release/environment identity and apply quality gates that reflect real release risk."
+    "GitLab CI/CD jobs publish reports and artifacts, preserve commit/release/environment/pipeline-source identity and apply quality gates that reflect real release risk.",
+    "Testcontainers-backed integration evidence proves controlled dependency behavior separately from tests against already-deployed shared/UAT environments."
   ] },
   { type: "heading", id: "milestone-traceability", text: "Trace decisions back to risk", level: 2 },
   { type: "paragraph", text: "The milestone should make it possible to start from a release risk and follow the chain to its test design, automated or manual evidence, execution environment, result and release interpretation. A large suite without this traceability is weaker than a smaller suite whose purpose is explicit." },
@@ -32,7 +35,7 @@ const readingBlocks: LessonBlock[] = [
     "What residual risks remain for Security Steward and Reliability Engineer?"
   ] },
   { type: "callout", tone: "steward", title: "Quality Steward completion standard", body: "The learner should leave this school with an operational quality platform around Steward, not a folder of disconnected scripts. The system should make quality risk visible before release and failures understandable after execution." },
-  { type: "resources", title: "Reference tools", resources: [junit, playwright, k6] }
+  { type: "resources", title: "Reference tools", resources: [junit, playwright, k6, gitlabCi, testcontainers] }
 ];
 
 export const qualityStewardMilestoneDeepLessons: Lesson[] = [
@@ -118,14 +121,17 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
           objective: "Demonstrate that CI quality gates influence release decisions without hiding uncertainty.",
           scenario: "The pipeline is the operational expression of the Quality Steward strategy.",
           instructions: [
-            "Run the staged quality pipeline against a known Steward release candidate.",
+            "Run the staged GitLab CI/CD quality pipeline against a known Steward release candidate.",
+            "Prove at least one Testcontainers-backed integration slice on the intended GitLab Runner architecture and distinguish its evidence from shared/UAT regression.",
+            "Demonstrate merge-request/default-branch or release/scheduled pipeline selection through explicit GitLab rules.",
+            "Verify cache is used only for acceleration while JUnit/Allure/browser diagnostics are retained as pipeline evidence/artifacts.",
             "Confirm reports and artifacts are retained for failed and successful stages where appropriate.",
             "Demonstrate one meaningful quality gate blocking a deliberately invalid candidate.",
             "Demonstrate that skipped/quarantined evidence remains visible rather than becoming a silent pass.",
             "If tsa-test-core was legitimately extracted, prove Steward consumes a versioned package from the internal repository and executes a compatibility check."
           ],
-          deliverables: ["Pipeline execution evidence", "Quality-gate failure evidence", "Reports/artifacts", "tsa-test-core compatibility evidence when applicable"],
-          completionCriteria: ["The pipeline can stop an unacceptable candidate for a stated risk reason.", "Missing evidence is not silently green.", "Shared test infrastructure is consumed as a normal versioned dependency where applicable."]
+          deliverables: ["GitLab pipeline execution evidence", "Testcontainers/runner evidence", "Pipeline-source/rules evidence", "Quality-gate failure evidence", "Reports/artifacts", "tsa-test-core compatibility evidence when applicable"],
+          completionCriteria: ["The GitLab pipeline can stop an unacceptable candidate for a stated risk reason.", "A Testcontainers infrastructure failure is distinguishable from a product assertion failure.", "Pipeline source and selected portfolio are visible.", "Missing evidence is not silently green.", "Shared test infrastructure is consumed as a normal versioned dependency where applicable."]
         }
       },
       {
