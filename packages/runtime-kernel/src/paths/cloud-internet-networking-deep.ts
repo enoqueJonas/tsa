@@ -6,6 +6,10 @@ const letsEncrypt: LearningResource = { title: "Let's Encrypt — How it works",
 const mdnTls: LearningResource = { title: "MDN — Transport Layer Security", url: "https://developer.mozilla.org/en-US/docs/Web/Security/Transport_Layer_Security" };
 const nginxDocs: LearningResource = { title: "NGINX documentation", url: "https://nginx.org/en/docs/" };
 const cloudflareRouting: LearningResource = { title: "Cloudflare Learning Center — Internet routing", url: "https://www.cloudflare.com/learning/network-layer/internet-protocol/" };
+const cloudflareBgp: LearningResource = { title: "Cloudflare — What is BGP?", url: "https://www.cloudflare.com/learning/security/glossary/what-is-bgp/", read: "Use the routing diagrams; do not turn this into a BGP configuration course.", purpose: "RECOMMENDED VISUAL RESOURCE — enough global-routing context to reason about Internet reachability." };
+const cloudflareDnsRecords: LearningResource = { title: "Cloudflare — DNS record types", url: "https://www.cloudflare.com/learning/dns/dns-records/", purpose: "RECOMMENDED VISUAL/REFERENCE RESOURCE — map public DNS record types to their purpose." };
+const cloudflareTlsHandshake: LearningResource = { title: "Cloudflare — What happens in a TLS handshake?", url: "https://www.cloudflare.com/learning/ssl/what-happens-in-a-tls-handshake/", purpose: "RECOMMENDED VISUAL RESOURCE — clarify client validation and the TLS termination boundary." };
+const nginxReverseProxy: LearningResource = { title: "NGINX — Reverse Proxy", url: "https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/", read: "Use the request-flow configuration examples.", purpose: "RECOMMENDED FIRST-PARTY RESOURCE — map the gateway role to an actual reverse-proxy configuration." };
 
 interface LessonSpec {
     id: string;
@@ -74,7 +78,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["From an external client, capture the route or path evidence toward the VPS public IP.", "Record the last point you can observe before provider infrastructure takes over.", "Explain how you would distinguish a routing problem from a closed TCP port."],
         questions: ["Why can a service be healthy while still being unreachable from the internet?", "What does a successful TCP connection prove that traceroute does not?"],
-        resources: [cloudflareRouting],
+        resources: [cloudflareRouting, cloudflareBgp],
     },
     {
         id: "domains-dns-records",
@@ -86,7 +90,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Choose the Steward public hostname and document why it is stable enough for clients.", "Create or plan the minimum required DNS record for the VPS public address.", "Record TTL and explain how it affects later address changes."],
         questions: ["What does an A record prove and what does it not prove?", "Why is DNS indirection useful even when the VPS public IP is currently static?"],
-        resources: [cloudflareDns],
+        resources: [cloudflareDns, cloudflareDnsRecords],
     },
     {
         id: "dns-resolution-troubleshooting",
@@ -122,7 +126,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Draw the exact TLS termination point for Steward.", "List which component owns the certificate, private key and port 443 listener.", "Document which forwarded headers the application needs and why they are trusted only from the proxy."],
         questions: ["What changes operationally when TLS terminates at a reverse proxy?", "Why should an application not blindly trust X-Forwarded-* headers from every client?"],
-        resources: [mdnTls, nginxDocs],
+        resources: [mdnTls, nginxDocs, cloudflareTlsHandshake],
     },
     {
         id: "reverse-proxies",
@@ -134,7 +138,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Configure or draft the minimal Steward reverse-proxy virtual host.", "Keep the backend listener non-public.", "Deliberately stop the backend and record how the proxy failure differs from a closed public port."],
         questions: ["Why is a reverse proxy not the same thing as the application server?", "What does an HTTP 502 tell you that a TCP timeout does not?"],
-        resources: [nginxDocs],
+        resources: [nginxDocs, nginxReverseProxy],
     },
     {
         id: "ingress-concepts",
