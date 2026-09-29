@@ -3,7 +3,9 @@ import type { Lesson } from "./lesson";
 
 const k8sDeployment: LearningResource = { title: "Kubernetes Deployments", url: "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/" };
 const argoRollouts: LearningResource = { title: "Argo Rollouts documentation", url: "https://argo-rollouts.readthedocs.io/" };
-const prometheus: LearningResource = { title: "Prometheus documentation", url: "https://prometheus.io/docs/" };
+const argoConcepts: LearningResource = { title: "Argo Rollouts — Concepts", url: "https://argo-rollouts.readthedocs.io/en/stable/concepts/", purpose: "RECOMMENDED VISUAL RESOURCE — distinguish ordinary rolling replacement from evidence-driven progressive delivery." };
+const argoCanary: LearningResource = { title: "Argo Rollouts — Canary", url: "https://argo-rollouts.readthedocs.io/en/stable/features/canary/", purpose: "RECOMMENDED FIRST-PARTY RESOURCE — visualize staged replica/traffic progression and promotion." };
+const argoAnalysis: LearningResource = { title: "Argo Rollouts — Analysis", url: "https://argo-rollouts.readthedocs.io/en/stable/features/analysis/", purpose: "RECOMMENDED FIRST-PARTY RESOURCE — make automated promotion and abort criteria explicit without requiring the later Reliability stack." };
 
 const blocks: LessonBlock[] = [
     { type: "paragraph", text: "A rolling update limits replacement pace but does not by itself make release risk evidence-driven. Steward now needs one bounded progressive-delivery implementation where a candidate receives limited traffic, is evaluated against explicit health criteria and is either promoted or aborted." },
@@ -16,7 +18,7 @@ const blocks: LessonBlock[] = [
         "Blue/green is compared as an alternative but is not permanently implemented beside canary merely for exposure."
     ] },
     { type: "callout", tone: "steward", title: "State compatibility comes first", body: "A canary is unsafe if candidate and stable versions cannot share the current schema, queues, caches or contracts. Reuse the production schema-evolution discipline before exposing two application versions to live traffic." },
-    { type: "resources", title: "Continue learning", resources: [k8sDeployment, argoRollouts, prometheus] },
+    { type: "resources", title: "Continue learning", resources: [k8sDeployment, argoRollouts, argoConcepts, argoCanary, argoAnalysis] },
 ];
 
 export const progressiveDeliveryCanaryDeepLessons: Lesson[] = [
