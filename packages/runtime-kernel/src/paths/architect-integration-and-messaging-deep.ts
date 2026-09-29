@@ -1,6 +1,21 @@
+import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
-function lesson(id:string,title:string,body:string,practice:string[]):Lesson{return{id:`architect-integration-${id}`,title,activities:[{id:`architect-integration-${id}-001`,title,estimatedMinutes:55,content:{type:"reading",body}},{id:`architect-integration-${id}-002`,title:`Evaluate: ${title}`,estimatedMinutes:60,content:{type:"practical",objective:`Evaluate ${title} in the Steward ecosystem.`,scenario:"Use Steward's current module boundaries, APIs, PostgreSQL ownership, package ecosystem, delivery model and reliability evidence. Integration choices must be justified by explicit drivers rather than by a desire to introduce messaging technology.",instructions:practice,deliverables:["Current integration evidence","Trade-off analysis","Recommendation with failure consequences"],completionCriteria:["Interaction semantics are explicit.","Failure and recovery behavior is considered.","The simplest adequate integration style remains a valid outcome."]}}]};}
+const fowlerIntegration: LearningResource = { title: "Martin Fowler — Integration Patterns", url: "https://martinfowler.com/tags/enterprise%20integration%20patterns.html", kind: "reference" };
+const rabbitConcepts: LearningResource = { title: "RabbitMQ — AMQP 0-9-1 Model", url: "https://www.rabbitmq.com/tutorials/amqp-concepts", kind: "documentation" };
+const rabbitReliability: LearningResource = { title: "RabbitMQ — Reliability Guide", url: "https://www.rabbitmq.com/docs/reliability", kind: "documentation" };
+const awsIdempotency: LearningResource = { title: "AWS Builders' Library — Making Retries Safe with Idempotent APIs", url: "https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/", kind: "reference" };
+const microsoftAsync: LearningResource = { title: "Microsoft — Asynchronous Messaging Options", url: "https://learn.microsoft.com/azure/architecture/guide/technology-choices/messaging", kind: "reference" };
+const resourcesByIntegrationTopic: Record<string, LearningResource[]> = {
+  styles: [fowlerIntegration, microsoftAsync], "sync-apis": [fowlerIntegration],
+  async: [microsoftAsync, rabbitConcepts], "queues-pubsub": [rabbitConcepts, fowlerIntegration],
+  "events-commands": [fowlerIntegration], "delivery-semantics": [rabbitReliability, rabbitConcepts],
+  idempotency: [awsIdempotency, rabbitReliability], "schema-contract": [fowlerIntegration],
+  "failure-backpressure": [rabbitReliability], "no-broker": [microsoftAsync, rabbitConcepts],
+};
+function resources(id:string): LessonBlock[] { return [{ type: "resources", title: "Continue learning", resources: resourcesByIntegrationTopic[id] ?? [fowlerIntegration] }]; }
+
+function lesson(id:string,title:string,body:string,practice:string[]):Lesson{return{id:`architect-integration-${id}`,title,activities:[{id:`architect-integration-${id}-001`,title,estimatedMinutes:55,content:{type:"reading",body,blocks:resources(id)}},{id:`architect-integration-${id}-002`,title:`Evaluate: ${title}`,estimatedMinutes:60,content:{type:"practical",objective:`Evaluate ${title} in the Steward ecosystem.`,scenario:"Use Steward's current module boundaries, APIs, PostgreSQL ownership, package ecosystem, delivery model and reliability evidence. Integration choices must be justified by explicit drivers rather than by a desire to introduce messaging technology.",instructions:practice,deliverables:["Current integration evidence","Trade-off analysis","Recommendation with failure consequences"],completionCriteria:["Interaction semantics are explicit.","Failure and recovery behavior is considered.","The simplest adequate integration style remains a valid outcome."]}}]};}
 
 export const integrationAndMessagingDeepLessons:Lesson[]=[
 lesson("styles","Integration Styles","Integration architecture coordinates independently meaningful parts of a system. In-process calls, HTTP APIs, file exchange, queues, publish-subscribe and events each create different temporal, availability, ownership and operational coupling.",["Map Steward integration points by style.","Classify temporal and availability coupling.","Identify which interactions cross true ownership boundaries.","State whether each current style matches its driver."]),
