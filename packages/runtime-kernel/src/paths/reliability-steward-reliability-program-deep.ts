@@ -47,42 +47,44 @@ export const stewardReliabilityProgramDeepLessons: Lesson[] = [
         }
       },
       {
-        id: "steward-reliability-program-milestone-002",
-        title: "Operate Steward Through a Reliability Review Scenario",
-        estimatedMinutes: 210,
+        id: "steward-reliability-program-milestone-002a",
+        title: "Scenario Gate 1: Charter, Baseline and Controlled Failure",
+        estimatedMinutes: 90,
         content: {
           type: "practical",
-          objective: "Demonstrate that Steward can be detected, diagnosed, protected and recovered across application and enterprise-platform boundaries using the required observability stack.",
-          scenario: "Run one bounded end-to-end reliability scenario in learner-owned infrastructure. Choose a real dependency or platform risk—for example Redis degradation, RabbitMQ backlog/retry failure, Keycloak unavailability, Kong routing failure, pod/node loss, PostgreSQL saturation or Nexus unavailability—rather than random chaos.",
+          objective: "Define a bounded reliability claim and establish trustworthy pre-failure evidence before changing the system.",
+          scenario: "Choose one real dependency or platform risk such as Redis degradation, RabbitMQ backlog/retry failure, Keycloak unavailability, Kong routing failure, pod/node loss, PostgreSQL saturation or Nexus unavailability.",
           instructions: [
             "Define the steady-state SLI/SLO expectation and experiment/incident boundary before starting.",
-            "Capture the healthy baseline in Prometheus/Grafana and confirm Graylog is receiving the relevant correlated application/platform events.",
-            "Introduce the controlled condition with explicit blast-radius, abort and recovery controls.",
-            "Detect the user-visible symptom through Prometheus/Grafana rather than by relying on prior knowledge of the injected failure.",
-            "Use Graylog to investigate the same time window and reconstruct event-level behavior using service/component, event and correlation/request context.",
-            "Record which facts came from metrics and which required logs; do not claim the two signal types are interchangeable.",
-            "Use the incident-management model: detect, triage, communicate, mitigate and maintain a timestamped decision record.",
-            "Apply the intended resilience behavior instead of bypassing integrity, authentication, authorization or data-safety constraints for availability.",
+            "State blast-radius, abort and recovery controls.",
+            "Capture the healthy baseline in Prometheus/Grafana and confirm Graylog receives the relevant correlated application/platform events.",
+            "Introduce the controlled condition without observing the injected mechanism as the primary detector.",
+            "Detect and bound the user-visible symptom through Prometheus/Grafana."
+          ],
+          deliverables: ["Reliability scenario charter", "Healthy baseline evidence", "Controlled-failure record", "Prometheus/Grafana detection evidence"],
+          completionCriteria: ["The scenario tests a stated reliability claim.", "Safety/recovery controls exist before injection.", "Detection is based on service evidence rather than foreknowledge of the failure."]
+        }
+      },
+      {
+        id: "steward-reliability-program-milestone-002b",
+        title: "Scenario Gate 2: Diagnose, Mitigate and Recover",
+        estimatedMinutes: 120,
+        content: {
+          type: "practical",
+          objective: "Use cross-signal evidence to diagnose the failure, operate the incident and prove authoritative recovery.",
+          scenario: "Continue the bounded scenario from Gate 1. Treat the detected symptom as an incident to investigate rather than jumping directly to the injected cause.",
+          instructions: [
+            "Use Graylog to investigate the same time window and reconstruct event-level behavior with service/component, event and correlation/request context.",
+            "Record which facts came from metrics and which required logs; do not treat the signal types as interchangeable.",
+            "Use the incident-management model: triage, communicate, mitigate and maintain a timestamped decision record.",
+            "Apply intended resilience behavior without bypassing integrity, authentication, authorization or data-safety constraints.",
             "Recover through the authoritative mechanism for the affected layer.",
-            "Verify recovery from an external client and confirm Prometheus/Grafana signals and Graylog error/event patterns return to expected boundaries.",
+            "Verify recovery from an external client and confirm Prometheus/Grafana signals and Graylog patterns return to expected boundaries.",
+            "Calculate the SLO/error-budget impact.",
             "Record any observability gap that slowed diagnosis and correct at least one missing field, metric, query or dashboard element."
           ],
-          deliverables: [
-            "End-to-end reliability scenario charter",
-            "Prometheus/Grafana detection evidence",
-            "Graylog investigation evidence and correlated event timeline",
-            "Cross-layer diagnosis record",
-            "SLO/error-budget impact analysis",
-            "Mitigation and recovery evidence",
-            "Observability gap and applied correction"
-          ],
-          completionCriteria: [
-            "The scenario demonstrates a real reliability claim rather than merely causing a failure.",
-            "Prometheus/Grafana detect and bound the service symptom.",
-            "Graylog supplies event-level evidence that materially advances diagnosis.",
-            "The learner can explain why the metrics and logging systems both remain necessary.",
-            "Recovery is verified from the client perspective and in both metric and log evidence."
-          ]
+          deliverables: ["Graylog investigation evidence and correlated timeline", "Cross-layer diagnosis/incident record", "SLO/error-budget impact analysis", "Mitigation and recovery evidence", "Observability gap and applied correction"],
+          completionCriteria: ["Graylog materially advances diagnosis beyond metric detection.", "The learner explains why metrics and logs both remain necessary.", "Recovery is verified from the client perspective and in metric/log evidence.", "At least one demonstrated observability gap is improved."]
         }
       },
       {
