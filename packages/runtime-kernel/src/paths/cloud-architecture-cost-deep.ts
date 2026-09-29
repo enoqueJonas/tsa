@@ -5,6 +5,7 @@ const awsWellArchitected: LearningResource = { title: "AWS — Well-Architected 
 const googleCloudFramework: LearningResource = { title: "Google Cloud — Architecture Framework", url: "https://cloud.google.com/architecture/framework" };
 const azureReliability: LearningResource = { title: "Microsoft Azure — Reliability documentation", url: "https://learn.microsoft.com/azure/reliability/" };
 const finops: LearningResource = { title: "FinOps Foundation — FinOps Framework", url: "https://www.finops.org/framework/" };
+const scalingVideo: LearningResource = { title: "IBM Technology — Horizontal vs Vertical Scaling", url: "https://www.youtube.com/watch?v=xpDnVSmNFX0", purpose: "RECOMMENDED VIDEO — visualize scale-up versus scale-out before the capacity review." };
 
 interface LessonSpec {
     id: string;
@@ -24,7 +25,8 @@ function richLesson(spec: LessonSpec): Lesson {
         if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code, caption: section.code.caption });
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward architecture checkpoint", body: "Do not optimize a diagram in isolation. Relate availability, capacity, security, recovery and cost decisions to Steward's real workload, failure impact and operating model. Every extra component adds both capability and responsibility." });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [awsWellArchitected, googleCloudFramework, azureReliability, finops] });
+    const lessonMedia: LearningResource[] = spec.id === "scalability-and-capacity" ? [scalingVideo] : [];
+    blocks.push({ type: "resources", title: "Continue learning", resources: [awsWellArchitected, googleCloudFramework, azureReliability, finops, ...lessonMedia] });
 
     return {
         id: `cloud-architecture-and-cost-${spec.id}`,
