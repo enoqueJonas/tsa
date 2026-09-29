@@ -329,5 +329,7 @@ const pipelineLab: Lesson = {
 
 export const qualityInContainersAndCiDeepLessons: Lesson[] = [
     ...specs.map(lessonFrom),
+    controlledIntegrationMilestone,
+    gitlabPipelineMilestone,
     pipelineLab,
 ];
