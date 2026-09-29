@@ -10,7 +10,7 @@ import { architectPaths } from "./architect";
 import { technicalStewardPaths } from "./technical-steward";
 import { professionalEngineerPaths } from "./professional-engineer";
 import { technicalStewardshipJourney as plannedTechnicalStewardshipJourney } from "./technical-stewardship-journey";
-import { normalizeJourney, type AuthoredLearningJourney, type AuthoredLearningPath } from "./normalize-authored-curriculum";
+import { normalizeJourney, type AuthoredLearningJourney } from "./normalize-authored-curriculum";
 import type { LearningJourney } from "./learning-journey";
 import type { Lesson } from "./lesson";
 
@@ -30,7 +30,7 @@ const authoredJourney: AuthoredLearningJourney = {
         if (school.id === "professional-engineer") return { ...school, paths: professionalEngineerPaths };
         return school;
     }),
-});
+};
 
 const normalizedJourney = normalizeJourney(authoredJourney);
 
