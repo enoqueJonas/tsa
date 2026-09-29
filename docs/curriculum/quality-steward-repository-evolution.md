@@ -397,7 +397,7 @@ Make the quality platform reproducible, selective and operational.
 
 ```text
 steward-tests/
-├── Jenkinsfile
+├── .gitlab-ci.yml
 ├── docker/
 │   └── ... only required test dependencies
 └── docs/
@@ -424,7 +424,7 @@ steward-tests/
 - first-attempt failure retention
 - quarantine ownership/expiry policy
 - parallelism only after isolation proof
-- scheduled Jenkins regression with actionable notifications
+- scheduled GitLab CI/CD regression with actionable notifications
 
 ## Review gate
 
@@ -449,7 +449,7 @@ The learner must demonstrate:
 - safe parallelism or an explicit reason it remains disabled
 - justified `tsa-test-core` extraction
 - Maven/Nexus dependency lifecycle
-- Jenkins continuous/scheduled execution
+- GitLab CI/CD continuous/scheduled execution
 - explicit unresolved risks that move to Security Steward or Reliability Engineer
 
 ## Final defense questions
