@@ -4,6 +4,29 @@ import type { Lesson } from "./lesson";
 const playwright: LearningResource = { title: "Playwright — Browsers", url: "https://playwright.dev/java/docs/browsers" };
 const mdnResponsive: LearningResource = { title: "MDN — Responsive web design", url: "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design" };
 const browserstack: LearningResource = { title: "BrowserStack — Cross browser testing", url: "https://www.browserstack.com/guide/cross-browser-testing" };
+const pwContexts: LearningResource = { title: "Playwright — Browser contexts", url: "https://playwright.dev/java/docs/browser-contexts" };
+const pwLocators: LearningResource = { title: "Playwright — Locators", url: "https://playwright.dev/java/docs/locators" };
+const pwActionability: LearningResource = { title: "Playwright — Actionability", url: "https://playwright.dev/java/docs/actionability" };
+const pwNavigation: LearningResource = { title: "Playwright — Navigations", url: "https://playwright.dev/java/docs/navigations" };
+const pwAuth: LearningResource = { title: "Playwright — Authentication", url: "https://playwright.dev/java/docs/auth" };
+const pwPages: LearningResource = { title: "Playwright — Pages and popups", url: "https://playwright.dev/java/docs/pages" };
+const pwFrames: LearningResource = { title: "Playwright — Frames", url: "https://playwright.dev/java/docs/frames" };
+const pwDownloads: LearningResource = { title: "Playwright — Downloads", url: "https://playwright.dev/java/docs/downloads" };
+const pwTrace: LearningResource = { title: "Playwright — Trace viewer", url: "https://playwright.dev/java/docs/trace-viewer" };
+
+const resourcesFor = (id: string): LearningResource[] => {
+    if (id === "playwright-runtime-model" || id === "browser-parallelism") return [pwContexts, playwright];
+    if (id === "dom-accessibility-locators" || id === "page-components") return [pwLocators, playwright];
+    if (id === "actionability-auto-waiting") return [pwActionability, pwLocators];
+    if (id === "navigation-network") return [pwNavigation, playwright];
+    if (id === "browser-state") return [pwAuth, pwContexts];
+    if (id === "advanced-browser-interactions") return [pwPages, pwFrames, pwDownloads];
+    if (id === "browser-diagnostics") return [pwTrace, playwright];
+    if (id === "responsive-testing") return [mdnResponsive, playwright];
+    if (id === "cross-browser" || id === "browser-differences" || id === "browserstack" || id === "local-remote") return [playwright, browserstack];
+    if (id === "ui-test-selection" || id === "environment-parity") return [playwright];
+    return [playwright];
+};
 
 type Spec = { id: string; title: string; intro: string; sections: Array<{ title: string; body: string[]; list?: string[]; code?: string }>; practice: string[]; questions: string[] };
 
@@ -16,7 +39,7 @@ function rich(spec: Spec): Lesson {
         if (section.code) blocks.push({ type: "code", language: "java", code: section.code });
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward browser checkpoint", body: "Browser and environment tests must add evidence that service-layer tests cannot provide. Record the exact browser, operating system, viewport, environment and release identity for every meaningful failure." });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [playwright, mdnResponsive, browserstack] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: resourcesFor(spec.id) });
     return { id: `browser-environment-${spec.id}`, title: spec.title, activities: [
         { id: `browser-environment-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: spec.intro, blocks } },
         { id: `browser-environment-${spec.id}-002`, title: `Apply: ${spec.title}`, estimatedMinutes: 45, content: { type: "practical", objective: `Apply ${spec.title} to Steward's browser and deployed environments.`, scenario: "Use the existing JUnit/Playwright Java framework and the real Steward environment. Do not move API-only checks into the browser merely because browser automation exists.", instructions: spec.practice, deliverables: ["Executable browser/environment evidence", "Risk-based coverage rationale", "Failure-diagnostic record"], completionCriteria: ["The selected browser/environment adds unique evidence.", "The test remains diagnosable.", "The coverage choice is tied to risk rather than matrix size."] } },
