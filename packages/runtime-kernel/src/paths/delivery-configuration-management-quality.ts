@@ -50,7 +50,7 @@ const practices: Record<string, PracticalContent> = {
     "Inventories": {
         type: "practical",
         objective: "Model the current Steward homelab as an operational inventory whose groups reflect responsibility rather than hostname accidents.",
-        scenario: "The homelab now contains or anticipates Steward runtime, Jenkins agents and later artifact-platform hosts. Applying the same state to every machine would create hidden coupling and excess privilege.",
+        scenario: "The homelab now contains or anticipates Steward runtime, GitLab Runners and later artifact-platform hosts. Applying the same state to every machine would create hidden coupling and excess privilege.",
         instructions: [
             "List the currently managed hosts and their responsibilities.",
             "Create inventory groups for real roles such as steward_api and ci_runners; add future groups only when a host actually exists or the design needs a documented placeholder.",
@@ -72,7 +72,7 @@ const practices: Record<string, PracticalContent> = {
             "Use become only on tasks or plays that genuinely require it.",
             "Manage one configuration file or template and notify a handler only when that resource changes.",
             "Run once, run again unchanged, then modify the managed input and prove the handler fires only on the meaningful change.",
-            "Review the playbook and remove any task that actually belongs to the Jenkins deployment pipeline or application release process."
+            "Review the playbook and remove any task that actually belongs to the GitLab CI deployment pipeline or application release process."
         ],
         deliverables: ["Focused playbook", "Handler/change evidence", "Boundary review"],
         completionCriteria: ["Task names communicate intent.", "Handlers respond to real changes instead of restarting services on every run.", "Host configuration remains distinct from application deployment."],
