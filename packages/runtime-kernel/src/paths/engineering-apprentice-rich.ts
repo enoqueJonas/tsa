@@ -7,6 +7,10 @@ const missingSemesterDebugging: LearningResource = { title: "MIT Missing Semeste
 const googleTechnicalWriting: LearningResource = { title: "Google for Developers — Technical Writing", url: "https://developers.google.com/tech-writing" };
 const learningScience: LearningResource = { title: "Nature Reviews Psychology — Science of effective learning", url: "https://doi.org/10.1038/s44159-022-00089-1" };
 const acmEthics: LearningResource = { title: "ACM Code of Ethics and Professional Conduct", url: "https://www.acm.org/code-of-ethics" };
+const systemsThinkingVideo: LearningResource = { title: "MIT OpenCourseWare — Information Flow / Feedback Loops", url: "https://ocw.mit.edu/courses/res-tll-004-stem-concept-videos-fall-2013/video_galleries/videos/information-flow/", purpose: "OPTIONAL VIDEO — visual reinforcement for feedback loops and information flow; the TSA system-mapping exercise remains primary." };
+const debuggingMindsetVideo: LearningResource = { title: "MIT Missing Semester — Lecture 7: Debugging and Profiling", url: "https://www.youtube.com/watch?v=l812pUnKxME", read: "Watch the debugging portion before the lecture moves into profiling.", purpose: "RECOMMENDED VIDEO — observe the transition from symptoms to logs, debuggers and inspection tools before applying TSA's hypothesis-driven method." };
+const engineeringDecisionsVideo: LearningResource = { title: "Architecture Decision Records (ADR): The Basics", url: "https://www.youtube.com/watch?v=7Gqn2dbt_JY", read: "Whole short video.", purpose: "OPTIONAL VIDEO — concrete reinforcement for preserving engineering decision context; TSA's own decision exercise remains primary." };
+const spacedRepetitionVideo: LearningResource = { title: "Osmosis — Spaced repetition in learning theory", url: "https://www.youtube.com/watch?v=cVf38y07cfk", read: "Whole short video.", purpose: "OPTIONAL VIDEO — visual reinforcement for spacing; the TSA lesson also covers retrieval, feedback and capability evidence." };
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -102,6 +106,7 @@ export const systemsThinkingRich = richLesson(
     "Build a system map that explains behavior and failure propagation rather than merely listing components.",
     ["Select a real application or work process.", "Define the question your system model should answer.", "Draw actors, components, dependencies and flows.", "Identify shared resources, delays and feedback loops.", "Trace two different failure paths to user-visible symptoms.", "Revise the boundary if the model cannot explain the observed behavior."],
     "Why is a system boundary a decision rather than an objective fact? Give an example of a symptom whose likely cause sits outside the component that reports the error. What information does an unlabeled architecture box-and-arrow diagram fail to communicate?",
+    [systemsThinkingVideo],
 );
 
 export const tradeOffsRich = richLesson(
@@ -144,7 +149,7 @@ export const debuggingMindsetRich = richLesson(
     "Diagnose a technical failure using competing hypotheses, discriminating experiments and a preserved evidence trail.",
     ["Reproduce and capture the failure.", "Write three hypotheses before changing the system.", "Choose one high-information experiment.", "Record evidence and eliminate at least one hypothesis.", "Implement the smallest justified fix.", "Recreate the causal condition to verify the explanation."],
     "What is the difference between fixing a symptom and establishing a root cause? Why is a hypothesis that can be falsified more useful than a vague suspicion? Describe a case where a recent deployment could correlate with a failure without causing it.",
-    [sreTroubleshooting, missingSemesterDebugging],
+    [sreTroubleshooting, missingSemesterDebugging, debuggingMindsetVideo],
 );
 
 export const engineeringDecisionsRich = richLesson(
@@ -165,6 +170,7 @@ export const engineeringDecisionsRich = richLesson(
     "Write an engineering decision record whose context, alternatives, trade-offs and revisit conditions are understandable without chat history.",
     ["Pick a decision with at least two credible alternatives.", "Write context and drivers.", "Separate evidence and assumptions.", "Explain why the selected option wins now.", "List positive and negative consequences.", "Define one measurable or observable revisit condition."],
     "Why can reversing a decision later be evidence of good engineering rather than failure? What distinguishes an ADR-worthy choice from a routine implementation detail? Why should the disadvantages of the chosen option be documented?",
+    [engineeringDecisionsVideo],
 );
 
 export const evidenceAndTechnicalReasoningRich = richLesson(
@@ -208,7 +214,7 @@ export const learningAsEngineeringSkillRich = richLesson(
     "Turn a broad learning goal into a demonstrable capability with retrieval, feedback, spacing and reviewable evidence.",
     ["Select a skill you genuinely want to improve.", "Write one observable capability statement.", "Design a first attempt and evidence criteria.", "Add a retrieval task with no notes open.", "Schedule two increasingly difficult follow-up attempts.", "Define how failure changes the next study step."],
     "What is the difference between content familiarity and demonstrated capability? Why can retrieval feel worse while producing better evidence of learning? Give an example of a portfolio artifact that is also a learning instrument.",
-    [learningScience],
+    [learningScience, spacedRepetitionVideo],
 );
 
 export const communicatingTechnicalWorkRich = richLesson(
