@@ -3,6 +3,24 @@ import type { Lesson } from "./lesson";
 const java: LearningResource = { title: "Java Language Guide", url: "https://dev.java/learn/" };
 const maven: LearningResource = { title: "Apache Maven Guides", url: "https://maven.apache.org/guides/" };
 const junit: LearningResource = { title: "JUnit 5 User Guide", url: "https://docs.junit.org/current/user-guide/" };
+const mavenLifecycle: LearningResource = { title: "Maven — Build Lifecycle", url: "https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle" };
+const mavenDependencies: LearningResource = { title: "Maven — Dependency Mechanism", url: "https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism" };
+const mavenPlugins: LearningResource = { title: "Maven — Plugins and Goals", url: "https://maven.apache.org/guides/introduction/introduction-to-plugins.html" };
+const junitParameterized: LearningResource = { title: "JUnit — Parameterized Tests", url: "https://docs.junit.org/current/user-guide/#writing-tests-parameterized-tests" };
+const junitExtensions: LearningResource = { title: "JUnit — Extension Model", url: "https://docs.junit.org/current/user-guide/#extensions" };
+const javaConcurrency: LearningResource = { title: "Java — Concurrency", url: "https://dev.java/learn/concurrency/" };
+
+const resourcesFor = (id: string): LearningResource[] => {
+ if (id === "maven-lifecycle" || id === "surefire-failsafe") return [mavenLifecycle, mavenPlugins];
+ if (id === "maven-dependencies") return [mavenDependencies, maven];
+ if (id === "junit-parameterization") return [junitParameterized, junit];
+ if (id === "junit-extensions" || id === "annotations-reflection") return [junitExtensions, junit];
+ if (id === "concurrency") return [javaConcurrency, junit];
+ if (id.startsWith("junit-")) return [junit, java];
+ if (id === "jvm-maven") return [java, mavenLifecycle];
+ return [java, junit];
+};
+
 type Spec = {
  id: string; title: string; principle: string; mechanics: string[]; frameworkUse: string[];
  antiPatterns: string[]; practice: string[]; questions: string[]; code?: string;
@@ -18,7 +36,7 @@ function lesson(spec: Spec): Lesson {
   {type:"list",style:"unordered",items:spec.antiPatterns},
  ];
  if(spec.code) blocks.push({type:"code",language:"java",code:spec.code});
- blocks.push({type:"heading",id:`${spec.id}-check`,text:"Check your understanding",level:2},{type:"list",style:"unordered",items:spec.questions},{type:"resources",title:"Continue learning",resources:[java,maven,junit]});
+ blocks.push({type:"heading",id:`${spec.id}-check`,text:"Check your understanding",level:2},{type:"list",style:"unordered",items:spec.questions},{type:"resources",title:"Continue learning",resources:resourcesFor(spec.id)});
  return {id:`quality-java-${spec.id}`,title:spec.title,activities:[
   {id:`quality-java-${spec.id}-001`,title:spec.title,estimatedMinutes:55,content:{type:"reading",body:spec.principle,blocks}},
   {id:`quality-java-${spec.id}-002`,title:`Build: ${spec.title}`,estimatedMinutes:65,content:{type:"practical",objective:`Apply ${spec.title} while growing steward-tests.`,scenario:"Every exercise changes the real test project. Small isolated experiments are allowed only to expose a Java mechanism before applying it to steward-tests.",instructions:spec.practice,deliverables:["Committed steward-tests increment","Executable example or test","Short design note answering the lesson questions"],completionCriteria:["The learner can explain the Java mechanism without framework magic.","The increment compiles and tests execute.","The design keeps dependencies explicit.","The learner can identify the lesson anti-patterns in a code review."]}}
