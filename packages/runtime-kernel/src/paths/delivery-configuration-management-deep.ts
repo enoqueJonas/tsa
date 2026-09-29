@@ -5,6 +5,7 @@ const ansibleDocs: LearningResource = { title: "Ansible documentation", url: "ht
 const ansibleInventory: LearningResource = { title: "Ansible inventory guide", url: "https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html" };
 const ansiblePlaybook: LearningResource = { title: "Ansible playbook guide", url: "https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_intro.html" };
 const ansibleRoles: LearningResource = { title: "Ansible roles", url: "https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_reuse_roles.html" };
+const ansibleDriftVideo: LearningResource = { title: "Ansible — Managing Configuration and Drift", url: "https://www.youtube.com/watch?v=a5nZbSAfdKg", purpose: "RECOMMENDED VIDEO — visualize desired-state convergence and drift correction before applying Ansible repeatedly to Steward hosts." };
 
 function reading(id: string, title: string, intro: string, blocks: LessonBlock[], resources: LearningResource[]): Lesson {
     return {
@@ -42,7 +43,7 @@ export const configurationManagementDeepLessons: Lesson[] = [
             { type: "heading", id: "manual-repair-is-not-state", text: "Manual repair is not declared state", level: 2 },
             { type: "paragraph", text: "A command history can show what someone did, but it does not define what the machine should be. Configuration management turns desired host state into versioned intent that can be reviewed and reapplied." },
         ],
-        [ansibleDocs],
+        [ansibleDocs, ansibleDriftVideo],
     ),
     reading(
         "desired-state",
