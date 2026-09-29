@@ -1,7 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
-const pytest: LearningResource = { title: "pytest documentation", url: "https://docs.pytest.org/" };
+const junit: LearningResource = { title: "JUnit 5 User Guide", url: "https://docs.junit.org/5.11.4/user-guide/" };
 const testingGoogle: LearningResource = { title: "Software Engineering at Google — Unit Testing", url: "https://abseil.io/resources/swe-book/html/ch12.html" };
 const mocksArentStubs: LearningResource = { title: "Martin Fowler — Mocks Aren't Stubs", url: "https://martinfowler.com/articles/mocksArentStubs.html" };
 
@@ -13,13 +13,13 @@ function rich(spec: Spec): Lesson {
         blocks.push({ type: "heading", id: section.title.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.title, level: 2 });
         section.body.forEach((text) => blocks.push({ type: "paragraph", text }));
         if (section.list) blocks.push({ type: "list", items: section.list });
-        if (section.code) blocks.push({ type: "code", language: "python", code: section.code });
+        if (section.code) blocks.push({ type: "code", language: "java", code: section.code });
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward test-design checkpoint", body: "Use the risk and test-design artifacts from the previous Quality Steward modules. Put evidence at the smallest credible boundary. A fast test that proves the wrong thing is not useful; a huge integrated test for a local rule is unnecessary cost." });
-    blocks.push({ type: "resources", title: "Continue learning", resources: spec.resources ?? [pytest, testingGoogle, mocksArentStubs] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: spec.resources ?? [junit, testingGoogle, mocksArentStubs] });
     return { id: `unit-component-${spec.id}`, title: spec.title, activities: [
         { id: `unit-component-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: spec.intro, blocks } },
-        { id: `unit-component-${spec.id}-002`, title: `Apply: ${spec.title}`, estimatedMinutes: 50, content: { type: "practical", objective: `Apply ${spec.title} to Steward's Python/Django codebase.`, scenario: "Strengthen Steward at code and component boundaries before adding broader API/integration automation.", instructions: spec.practice, deliverables: ["Executable tests or focused test design", "Reason for the chosen boundary", "Failure-diagnostic note"], completionCriteria: ["Tests express observable behavior rather than implementation trivia.", "Dependencies are real or replaced deliberately according to the risk.", "A failure points toward a useful engineering cause."] } },
+        { id: `unit-component-${spec.id}-002`, title: `Apply: ${spec.title}`, estimatedMinutes: 50, content: { type: "practical", objective: `Apply ${spec.title} to Steward's Java-facing testable components and service boundaries.`, scenario: "Strengthen Steward at code and component boundaries before adding broader API/integration automation.", instructions: spec.practice, deliverables: ["Executable tests or focused test design", "Reason for the chosen boundary", "Failure-diagnostic note"], completionCriteria: ["Tests express observable behavior rather than implementation trivia.", "Dependencies are real or replaced deliberately according to the risk.", "A failure points toward a useful engineering cause."] } },
         { id: `unit-component-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.questions.join("\n\n"), minimumCharacters: 180 } },
     ] };
 }
@@ -29,7 +29,7 @@ const specs: Spec[] = [
         { title: "Test behavior, not line execution", body: ["Start from a rule discovered during test analysis. For Steward, a lifecycle transition, ownership invariant or dependency rule is a stronger test target than whether an internal helper was called.", "Arrange only the state relevant to the behavior, perform one meaningful action, then assert the externally meaningful result. Multiple assertions are fine when they describe one outcome."], code: "def test_retired_service_cannot_gain_new_dependency():\n    service = Service(lifecycle=\"retired\")\n\n    result = service.add_dependency(other_service)\n\n    assert result.is_rejected\n    assert result.reason == \"retired_service\"" },
         { title: "Tests are executable examples", body: ["Names and fixtures should explain the rule. Avoid tests whose only purpose is to mirror every branch or private method. Refactoring internal structure should not break tests when externally meaningful behavior remains unchanged."], list: ["One recognizable behavior or rule", "Minimal relevant setup", "Deterministic result", "Meaningful failure message", "No dependence on unrelated network, clock or database behavior"] },
     ], practice: ["Choose three high-risk Steward domain rules from the risk-to-evidence matrix.", "Design unit tests for the rules that can be proven without infrastructure.", "Name each test as a behavioral claim and explain what defect it would detect."], questions: ["Why is one function not always the best definition of a unit?", "What makes a unit test resilient to harmless refactoring?"],
-        resources: [testingGoogle, pytest] },
+        resources: [testingGoogle, junit] },
     { id: "isolation", title: "Isolation", intro: "Isolation removes irrelevant causes of failure from a test. It is a means to speed and diagnosis, not a command to replace every collaborator with a mock.", sections: [
         { title: "Choose the isolation boundary deliberately", body: ["If you are proving a pure ownership rule, PostgreSQL and HTTP add no useful evidence. If you are proving a repository query, replacing the database destroys the behavior you need to investigate. Isolation follows the question.", "Excessive isolation creates tests for an imaginary system where collaborators always behave exactly as configured."] },
         { title: "Control nondeterminism", body: ["Time, randomness, external APIs and shared mutable data are common instability sources. Introduce explicit seams where the product already has a meaningful dependency boundary; do not contort the architecture merely to satisfy a mocking library."], list: ["Keep local domain logic local.", "Use real value objects freely.", "Replace slow or nondeterministic external boundaries when their behavior is not the test target.", "Use real infrastructure when integration semantics are the risk."] },
