@@ -772,121 +772,123 @@ Use deliberately vulnerable applications only in isolated learning infrastructur
 # 09 — Reliability Engineer
 
 ## Purpose
-Learn to operate systems under uncertainty and failure. Reliability is treated as engineering work, not a monitoring dashboard exercise.
+Operate Steward under uncertainty and failure. Reliability is engineering of user-visible service behavior, recovery and operational decision-making—not installation of monitoring products.
 
 ## Module 1 — Reliability and SRE Foundations
 - Reliability as a quality attribute
-- Availability
-- Failure and recovery
-- SRE principles
-- Toil
-- Risk and reliability trade-offs
+- Availability, failure and recovery
+- SRE principles and toil
+- Risk/reliability trade-offs and ownership
 
-## Module 2 — Observability
+## Module 2 — Service Level Engineering
+- User journeys and service boundaries
+- SLIs, SLOs and SLAs
+- Error budgets
+- Windowing and meaningful targets
+- Release/risk decisions driven by objectives
+
+> Reliability intent comes before instrumentation: define what must be reliable before deciding which telemetry to collect.
+
+## Module 3 — Observability
 - Observability vs monitoring
 - Logs, metrics and traces
-- Telemetry design
-- Correlation/context
-- Instrumentation
-- OpenTelemetry concepts
+- Telemetry design and correlation/context
+- Instrumentation and OpenTelemetry
+- Golden signals
+- Telemetry cost/noise
+- Tracing-backend architecture decision
 
-## Module 3 — Logging
-- Structured logging
-- Log levels
-- Correlation IDs
-- Centralization concepts
-- Useful vs noisy logs
-- Security/privacy considerations
+## Module 4 — Production Logging
+- Structured logs and levels
+- Correlation/request/trace context
+- Diagnostic usefulness vs noise
+- Privacy/security and retention
+- Centralized logging architecture decision
+- Graylog implementation boundary used by the Steward reliability program
 
-## Module 4 — Metrics, Prometheus and Grafana
-- Counters/gauges/histograms
-- Application and infrastructure metrics
-- Prometheus architecture
-- Exporters
-- PromQL fundamentals
-- Grafana dashboards
-- Dashboard design
+## Module 5 — Metrics, Prometheus and Grafana
+- Metric types and application/infrastructure metrics
+- Prometheus architecture/exporters/discovery
+- PromQL and recording rules
+- Grafana and dashboard design
+- Nexus/platform and delivery metrics
 
-## Module 5 — Service Level Engineering
-- SLIs
-- SLOs
-- SLAs
-- Error budgets
-- Measuring user-visible reliability
-- Choosing meaningful objectives
+## Module 6 — Distributed Tracing
+- Trace/span/context model
+- OpenTelemetry instrumentation
+- propagation across Steward boundaries
+- Tempo as the selected implementation path
+- trace/log/metric correlation and diagnostic evidence
 
-## Module 6 — Alerting and On-call Thinking
+## Module 7 — Observability Stack Integration
+- Cross-signal navigation
+- consistent service/release/environment identity
+- symptom → metric → trace → log investigation
+- gaps, cost and ownership
+
+## Module 8 — Alerting and On-call
 - Symptoms vs causes
-- Actionable alerts
-- Alert fatigue
-- Severity
-- Escalation
-- Runbooks
+- actionable alerts and alert fatigue
+- severity/escalation/routing
+- runbooks and handover
+- SLO-aware alerting
 
-## Module 7 — Performance and Capacity
-- Latency and throughput
-- Saturation
-- Bottlenecks
-- Load/stress testing
-- Capacity planning
-- Resource utilization
-- Database/application bottlenecks
-- Performance baselines
+## Module 9 — Alertmanager Operations
+- routing, grouping and inhibition
+- receivers and notification behavior
+- HA/availability expectations where justified
+- firing/resolution evidence
 
-## Module 8 — Resilience and Distributed Failure
-- Timeouts
-- Retries
-- Exponential backoff/jitter concepts
-- Circuit breakers
-- Idempotency
-- Partial failure
-- Dependency failure
-- Cascading failure
-- Queue/backpressure concepts
-- Graceful degradation
+## Module 10 — Database Stewardship
+- PostgreSQL roles/privileges and connections
+- slow queries/plans
+- locks/deadlocks
+- safe migrations
+- backup/restore, RPO/RTO
+- capacity and health
 
-## Module 9 — Data Protection and Disaster Recovery
-- Backup strategies
-- Restore testing
+## Module 11 — Performance and Capacity
+- latency/throughput/saturation
+- bottlenecks and baselines
+- load/stress evidence
+- capacity planning and headroom
+- queueing/contention
+- artifact/platform capacity
+
+## Module 12 — Resilience and Distributed Failure
+- timeouts, retries, backoff and jitter
+- circuit breakers and idempotency
+- partial/dependency/cascading failure
+- queues/backpressure
+- graceful degradation and retry storms
+- dependency reliability budgets
+
+## Module 13 — Data Protection and Disaster Recovery
+- backup integrity and restore testing
 - RPO/RTO
-- Disaster scenarios
-- Recovery procedures
-- Data durability
+- database recovery
+- artifact repository recovery
+- configuration/infrastructure recovery
+- measured recovery evidence
 
-## Module 10 — Incident Management
-- Detection
-- Triage
-- Incident roles
-- Communication
-- Mitigation
-- Root-cause analysis
-- Blameless postmortems
-- Corrective actions
+## Module 14 — Incident Management
+- detection and triage
+- roles/communication/mitigation
+- timeline and decision records
+- root cause and contributing factors
+- blameless postmortems
+- corrective actions and near misses
 
-## Module 11 — Fault Injection and Reliability Experiments
-- Hypothesis-driven experiments
-- Controlled failure injection
-- Killing processes/containers
-- Resource exhaustion concepts
-- Network/dependency failure simulation
-- Recovery verification
-- Chaos engineering principles and safety
+## Module 15 — Fault Injection and Reliability Experiments
+- hypothesis and steady state
+- blast radius/abort controls
+- process/container/resource/dependency/database failures
+- artifact-repository failure
+- recovery verification
+- chaos-engineering principles and safety
 
-## Labs
-- Instrument Steward API
-- Deploy Prometheus/Grafana in homelab or VPS environment
-- Build dashboards
-- Define SLIs/SLOs
-- Configure actionable alerts
-- Establish performance baseline
-- Run load tests
-- Perform backup and restore drill
-- Inject controlled failures
-- Respond to simulated incident
-- Produce postmortem and reliability improvements
-
-## Milestone
-**Steward Reliability Program** — observable service with SLOs, dashboards, alerts, capacity evidence, tested recovery, runbooks, controlled failure experiment and completed incident/postmortem.
+## Module 16 — Reliability Engineer Milestone
+**Steward Reliability Program** — defend SLOs, cross-signal observability, actionable alerts, PostgreSQL/data recovery, capacity boundaries, resilience controls, incident response and controlled failure evidence across Steward and its active platform dependencies.
 
 ---
 
