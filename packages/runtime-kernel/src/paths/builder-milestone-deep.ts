@@ -43,16 +43,42 @@ export const stewardApiV1Deep: LearningPath = {
                     },
                 },
                 {
-                    id: "steward-api-v1-milestone-build",
-                    title: "Gate 2: Build Steward API v1",
-                    estimatedMinutes: 480,
+                    id: "steward-api-v1-milestone-build-domain",
+                    title: "Gate 2A: Build Steward Domain and Persistence",
+                    estimatedMinutes: 180,
                     content: {
                         type: "practical",
-                        objective: "Build the first portfolio-grade version of Steward as a coherent Engineering Service Registry.",
-                        scenario: "The registry will be handed to an engineering organization that expects trustworthy ownership, environment and dependency data. The implementation must combine the programming, HTTP, Django, PostgreSQL, identity and software-craft capabilities developed across Builder.",
-                        instructions: ["Implement or complete User, Team, Membership, Service, Environment, ServiceDependency and ServiceReview using Python, Django and Django REST Framework.", "Require every Service to have an owning Team and prevent clients from bypassing ownership rules through nested or alternate endpoints.", "Represent lifecycle and criticality with explicit supported values and reject invalid transitions or values at the appropriate boundary.", "Prevent self-dependencies and duplicate dependencies at both application and database levels where feasible.", "Implement the Builder-level production-environment rule defined by the canonical Steward product specification.", "Persist all domain concepts in PostgreSQL with meaningful foreign keys, uniqueness rules, check constraints where useful, and reviewable migrations.", "Implement JWT access and refresh authentication with explicit expiry behavior.", "Enforce Team membership, role and object-level authorization for write operations. Demonstrate authenticated cross-team denials.", "Add useful filtering, searching, ordering and bounded pagination for service-registry use cases.", "Publish an OpenAPI/Swagger contract that matches runtime endpoints and failure behavior closely enough for another engineer to explore the API.", "Use environment-based configuration with safe handling of secrets and required values.", "Add useful application logs for important registry changes and denied/failure paths without logging passwords or raw tokens.", "Keep error responses deliberate and avoid leaking stack traces, SQL text or internal exception classes.", "Refactor only where a concrete maintainability problem exists; do not add speculative architecture layers that belong to System Thinker."],
-                        deliverables: ["Working Steward API v1 source", "PostgreSQL schema and migrations", "JWT authentication and authorization implementation", "Documented API contract", "Configuration and logging setup"],
-                        completionCriteria: ["The API cannot reasonably be described as a basic CRUD tutorial.", "Ownership, dependency and environment rules are real domain behavior.", "Authentication and authorization protect real cross-team operations.", "Database integrity does not rely solely on front-end behavior.", "The API exposes deliberate success and failure semantics.", "The repository remains understandable without unnecessary abstraction."],
+                        objective: "Turn the approved Steward model into working domain and PostgreSQL behavior.",
+                        scenario: "Build the durable registry core first so later API and identity work rests on explicit ownership and integrity rules.",
+                        instructions: ["Implement or complete User, Team, Membership, Service, Environment, ServiceDependency and ServiceReview using Python, Django and Django REST Framework.", "Require every Service to have an owning Team.", "Represent lifecycle and criticality with explicit supported values.", "Prevent self-dependencies and duplicate dependencies at application and database levels where feasible.", "Implement the Builder-level production-environment rule.", "Persist all domain concepts in PostgreSQL with meaningful foreign keys, uniqueness rules, useful check constraints and reviewable migrations."],
+                        deliverables: ["Working Steward domain model", "PostgreSQL schema and migrations", "Domain-invariant evidence"],
+                        completionCriteria: ["Ownership, dependency and environment rules are real behavior.", "Database integrity does not rely solely on client behavior.", "The domain remains aligned with the Gate 1 model."]
+                    },
+                },
+                {
+                    id: "steward-api-v1-milestone-build-api",
+                    title: "Gate 2B: Build the Authenticated API Contract",
+                    estimatedMinutes: 180,
+                    content: {
+                        type: "practical",
+                        objective: "Expose the Steward domain through a deliberate authenticated API without weakening its invariants.",
+                        scenario: "The domain core now exists. Add the public contract and prove valid credentials do not imply unrestricted ownership access.",
+                        instructions: ["Implement JWT access and refresh authentication with explicit expiry behavior.", "Enforce Team membership, role and object-level authorization for write operations, including nested/alternate mutation paths.", "Add useful filtering, searching, ordering and bounded pagination.", "Publish an OpenAPI/Swagger contract matching runtime endpoints and failure behavior.", "Keep malformed, validation, unauthenticated, forbidden, not-found and conflict responses deliberate and distinguishable."],
+                        deliverables: ["JWT authentication/authorization implementation", "Documented API contract", "Representative success/failure evidence"],
+                        completionCriteria: ["Authentication and authorization protect real cross-team operations.", "Route shape cannot trivially bypass ownership rules.", "The API exposes deliberate success and failure semantics.", "OpenAPI is materially aligned with runtime behavior."]
+                    },
+                },
+                {
+                    id: "steward-api-v1-milestone-build-operability",
+                    title: "Gate 2C: Make Steward Reviewable and Operable",
+                    estimatedMinutes: 120,
+                    content: {
+                        type: "practical",
+                        objective: "Finish Steward API v1 as a coherent codebase another engineer can operate and review.",
+                        scenario: "The core and API work. Add the bounded operational behavior required before deeper database, authorization and handoff gates.",
+                        instructions: ["Use environment-based configuration with safe handling of secrets and required values.", "Add useful application logs for important registry changes and denied/failure paths without logging passwords or raw tokens.", "Ensure public errors do not leak stack traces, SQL text or internal exception classes.", "Refactor only where a concrete maintainability problem exists; do not introduce speculative architecture layers reserved for System Thinker.", "Run a coherent end-to-end smoke path over the assembled v1."],
+                        deliverables: ["Configuration and logging setup", "Leakage/error-handling evidence", "End-to-end v1 smoke evidence", "Reviewable Steward API v1 source"],
+                        completionCriteria: ["The API cannot reasonably be described as a basic CRUD tutorial.", "Sensitive configuration and failure behavior are deliberate.", "The repository remains understandable without unnecessary abstraction.", "The assembled v1 is ready for the later database, authorization and handoff gates."]
                     },
                 },
                 {
