@@ -5,6 +5,9 @@ const awsWellArchitected: LearningResource = { title: "AWS — Well-Architected 
 const azureArchitecture: LearningResource = { title: "Microsoft Azure — Architecture Center", url: "https://learn.microsoft.com/azure/architecture/" };
 const googleCloudArchitecture: LearningResource = { title: "Google Cloud — Architecture Framework", url: "https://cloud.google.com/architecture/framework" };
 const nistCloud: LearningResource = { title: "NIST — The NIST Definition of Cloud Computing", url: "https://csrc.nist.gov/publications/detail/sp/800-145/final" };
+const objectStorageVideo: LearningResource = { title: "IBM Technology — Object Storage", url: "https://www.youtube.com/watch?v=eV7T3t2d-7E", purpose: "RECOMMENDED VIDEO — visualize bucket, key and object semantics before mapping Steward storage." };
+const storageComparisonVideo: LearningResource = { title: "IBM Technology — Block vs File vs Object Storage", url: "https://www.youtube.com/watch?v=5EqAXnNm0FE", purpose: "RECOMMENDED VIDEO — compare storage models visually before selecting workload fit." };
+const loadBalancersVideo: LearningResource = { title: "IBM Technology — Load Balancers", url: "https://www.youtube.com/watch?v=sCR3SAVdyCc", purpose: "RECOMMENDED VIDEO — visualize request distribution and health-based routing." };
 
 interface LessonSpec {
     id: string;
@@ -24,7 +27,8 @@ function richLesson(spec: LessonSpec): Lesson {
         if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code, caption: section.code.caption });
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward cloud checkpoint", body: "Map this capability to a concrete Steward responsibility. Ask what the VPS currently provides, what a cloud service could take over, what responsibility remains with the team, and whether the additional abstraction is justified by evidence rather than novelty." });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [awsWellArchitected, azureArchitecture, googleCloudArchitecture] });
+    const lessonMedia: LearningResource[] = spec.id === "object-storage" ? [objectStorageVideo] : spec.id === "block-storage" ? [storageComparisonVideo] : spec.id === "load-balancers" ? [loadBalancersVideo] : [];
+    blocks.push({ type: "resources", title: "Continue learning", resources: [awsWellArchitected, azureArchitecture, googleCloudArchitecture, ...lessonMedia] });
     return {
         id: `cloud-building-blocks-${spec.id}`,
         title: spec.title,
