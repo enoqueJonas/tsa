@@ -33,23 +33,22 @@ for (const symbol of schoolAggregators) {
   if (!academy.includes(symbol)) failures.push(`school runtime path array not wired in academy-journey.ts: ${symbol}`);
 }
 
-const scanRoots = [pathsDir, docsDir];
-const textFiles = [];
-for (const dir of scanRoots) {
-  if (!fs.existsSync(dir)) continue;
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (!entry.isFile()) continue;
-    if (!/\.(ts|md)$/.test(entry.name)) continue;
-    textFiles.push(path.join(dir, entry.name));
+// Jenkins is intentionally retained only in the bounded legacy-to-GitLab migration exercise.
+// Historical curriculum audit documents may also describe the migration and are not active runtime architecture.
+const jenkinsRuntimeAllowlist = new Set(["delivery-migration-exercises-deep.ts"]);
+for (const [file, source] of sources) {
+  if (/\bJenkins(?:file)?\b/i.test(source) && !jenkinsRuntimeAllowlist.has(file)) {
+    failures.push(`non-canonical Jenkins runtime reference: ${file}`);
   }
 }
-for (const file of textFiles) {
-  const text = fs.readFileSync(file, "utf8");
-  if (/\bJenkins(?:file)?\b/i.test(text)) failures.push(`Jenkins implementation/reference residue: ${path.relative(root, file)}`);
+
+const migrationExercise = sources.get("delivery-migration-exercises-deep.ts") ?? "";
+if (!/GitLab CI\/CD/.test(migrationExercise) || !/Jenkins/.test(migrationExercise)) {
+  failures.push("legacy CI migration exercise must explicitly preserve Jenkins-to-GitLab migration semantics");
 }
 
 if (failures.length) {
   console.error("Curriculum integrity audit failed:\n- " + failures.join("\n- "));
   process.exit(1);
 }
-console.log(`Curriculum integrity audit passed: ${files.length} runtime path files checked; school wiring, lesson-array reachability, milestone composition and Jenkins residue are clean.`);
+console.log(`Curriculum integrity audit passed: ${files.length} runtime path files checked; school wiring, lesson-array reachability, milestone composition and canonical CI architecture are clean.`);
