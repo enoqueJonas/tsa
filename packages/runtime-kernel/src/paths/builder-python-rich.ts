@@ -11,10 +11,6 @@ const typingDocs: LearningResource = { title: "typing — Support for type hints
 const mypyDocs: LearningResource = { title: "mypy documentation", url: "https://mypy.readthedocs.io/en/stable/" };
 const pdbDocs: LearningResource = { title: "pdb — The Python Debugger", url: "https://docs.python.org/3/library/pdb.html" };
 
-const pythonOopVideo: LearningResource = { title: "Corey Schafer — Python OOP Tutorial 1: Classes and Instances", url: "https://www.youtube.com/watch?v=ZDa-Z5JzLYM", read: "Optional — whole first video in the OOP series.", purpose: "OPTIONAL VIDEO — reinforces the class/instance model;
-
-const pythonPdbVideo: LearningResource = { title: "Red Eyed Coder Club — Python PDB tutorial", url: "https://www.youtube.com/watch?v=SdsHXwN3Ka4", read: "Watch 02:19–17:42 for debugger output, stepping, inspection, breakpoints and stack navigation.", purpose: "RECOMMENDED VIDEO — see an interactive debugger session before applying the same inspection workflow to the Steward Python defect." };
-
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
@@ -153,7 +149,7 @@ const collections = lesson(
         { type: "callout", tone: "note", title: "Domain choice", body: "If duplicate dependencies are invalid, a set can help in memory—but later PostgreSQL must enforce the rule too. An in-memory structure is not a substitute for a persistence constraint." },
         { type: "heading", id: "complexity", text: "Think about access patterns" },
         { type: "paragraph", text: "You do not need formal algorithm analysis to notice that scanning a list for every lookup differs from keyed dictionary/set membership. Choose structures based on operations and guarantees rather than habit." },
-        { type: "resources", title: "Required reading", resources: [pythonTutorial, stdlib, pythonOopVideo] },
+        { type: "resources", title: "Required reading", resources: [pythonTutorial, stdlib] },
     ],
     "Model several the application concerns using different built-in collections and justify each choice from its required guarantees.",
     ["Represent ordered lifecycle history with a list.", "Represent unique service tags or dependencies with a set.", "Represent a keyed service record with a dictionary.", "Use a tuple for one deliberately fixed grouping.", "Demonstrate aliasing with one mutable collection.", "Compare one lookup-oriented operation across two possible structures."],
@@ -309,7 +305,7 @@ const debugging = lesson(
         { type: "callout", tone: "warning", title: "Do not shotgun-debug", body: "Changing several lines, adding retries and swallowing exceptions at once destroys your ability to know which hypothesis was correct. Prefer the smallest experiment that distinguishes explanations." },
         { type: "heading", id: "evidence-log", text: "Keep a chronological evidence log" },
         { type: "paragraph", text: "Record symptom, timestamp/order, hypothesis, experiment, observation and conclusion. This prevents circular investigation and creates evidence you can later use in incident work." },
-        { type: "resources", title: "Required and supporting reading", resources: [pdbDocs, pythonTutorial, pythonPdbVideo] },
+        { type: "resources", title: "Required and supporting reading", resources: [pdbDocs, pythonTutorial] },
     ],
     "Diagnose a non-trivial the application Python defect using a traceback, competing hypotheses and debugger/inspection evidence.",
     ["Introduce or select a defect crossing at least two function calls.", "Capture the traceback before editing.", "Write at least two hypotheses.", "Use breakpoint(), pdb, logging or targeted prints to falsify one.", "Fix the root cause rather than suppressing the symptom.", "Rerun the original reproduction and record the evidence chain."],
