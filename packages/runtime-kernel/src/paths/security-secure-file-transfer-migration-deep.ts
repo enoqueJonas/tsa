@@ -2,7 +2,13 @@ import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
 const openssh: LearningResource = { title: "OpenSSH manuals", url: "https://www.openssh.com/manual.html" };
-const sshKeygen: LearningResource = { title: "ssh-keygen manual", url: "https://man.openbsd.org/ssh-keygen" };
+const sshKeygen: LearningResource = { title: "ssh-keygen manual", url: "https://man.openbsd.org/ssh-keygen", kind: "documentation" };
+const sshdConfig: LearningResource = { title: "sshd_config manual", url: "https://man.openbsd.org/sshd_config", kind: "documentation" };
+const sftpServer: LearningResource = { title: "sftp-server manual", url: "https://man.openbsd.org/sftp-server", kind: "documentation" };
+const sshConfig: LearningResource = { title: "ssh_config manual", url: "https://man.openbsd.org/ssh_config", kind: "documentation" };
+const authorizedKeys: LearningResource = { title: "authorized_keys format and restrictions", url: "https://man.openbsd.org/sshd#AUTHORIZED_KEYS_FILE_FORMAT", kind: "documentation" };
+
+const sftpResources: LearningResource[] = [sshdConfig, sftpServer, sshConfig, sshKeygen, authorizedKeys];
 
 const blocks: LessonBlock[] = [
     { type: "paragraph", text: "System Thinker deliberately implemented a legacy FTP exchange and prepared its secure-transfer contract. Security Steward now executes the migration: SFTP becomes the authoritative transfer path, coexistence is bounded, trust and machine identity are explicit, rollback is rehearsed and FTP is removed rather than left as a permanent parallel channel." },
@@ -15,7 +21,7 @@ const blocks: LessonBlock[] = [
         "Migration is complete only when FTP credentials/listener/firewall exposure are disabled and post-cutover evidence is healthy."
     ] },
     { type: "callout", tone: "steward", title: "No permanent dual transport", body: "Keeping FTP enabled 'just in case' preserves the original security risk and doubles the operating surface. Rollback is a bounded migration capability, not an indefinite architecture." },
-    { type: "resources", title: "Continue learning", resources: [openssh, sshKeygen] },
+    { type: "resources", title: "Continue learning", resources: sftpResources },
 ];
 
 export const secureFileTransferMigrationDeepLessons: Lesson[] = [
