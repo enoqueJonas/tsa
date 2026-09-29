@@ -983,7 +983,7 @@ A valid outcome can retain a modular monolith, shared PostgreSQL, RabbitMQ or th
 # 11 — Technical Steward
 
 ## Purpose
-Expand from engineering systems to stewarding technology: standards, governance, risk, controls, decisions, people and long-term technical health.
+Expand from engineering systems to stewarding technology over time: strategy, capability investment, standards, governance, risk, controls, decisions, people and long-term technical health. The school connects engineering evidence to organizational choices without becoming generic business management.
 
 ## Module 1 — Technical Leadership
 - Technical ownership
@@ -1012,7 +1012,15 @@ Expand from engineering systems to stewarding technology: standards, governance,
 - ISO management-system concepts
 - NIST framework landscape
 
-## Module 4 — Technology Risk
+## Module 4 — Technology Strategy and Capability Planning
+- Technology outcomes and planning horizons
+- Strategic choices and explicit non-choices
+- Technology capability mapping
+- Investment and prioritization
+- Build/buy/learn/simplify/retire decisions
+- Evidence-gated roadmaps and reconsideration triggers
+
+## Module 5 — Technology Risk
 - Risk identification
 - Likelihood/impact
 - Inherent vs residual risk
@@ -1022,7 +1030,7 @@ Expand from engineering systems to stewarding technology: standards, governance,
 - Risk registers
 - KRIs
 
-## Module 5 — Controls, Compliance and Assurance
+## Module 6 — Controls, Compliance and Assurance
 - Preventive/detective/corrective controls
 - Control objectives
 - Control design
@@ -1033,7 +1041,7 @@ Expand from engineering systems to stewarding technology: standards, governance,
 - Audit fundamentals
 - Remediation tracking
 
-## Module 6 — Architecture Governance
+## Module 7 — Architecture Governance
 - Architecture principles
 - Standards
 - Technology selection
@@ -1041,7 +1049,7 @@ Expand from engineering systems to stewarding technology: standards, governance,
 - Exceptions
 - Lifecycle management
 
-## Module 7 — Security and Data Governance
+## Module 8 — Security and Data Governance
 - Security governance
 - Roles and accountability
 - Policy hierarchy
@@ -1050,7 +1058,7 @@ Expand from engineering systems to stewarding technology: standards, governance,
 - Retention/privacy concepts
 - Access governance
 
-## Module 8 — Change and Service Governance
+## Module 9 — Change and Service Governance
 - Change risk
 - Change controls
 - Release governance
@@ -1058,14 +1066,14 @@ Expand from engineering systems to stewarding technology: standards, governance,
 - Incident/problem/change relationships
 - Operational readiness
 
-## Module 9 — Third-party and Technology Lifecycle Risk
+## Module 10 — Third-party and Technology Lifecycle Risk
 - Vendor assessment
 - Dependency risk
 - SaaS/cloud considerations
 - End-of-life technology
 - Exit/continuity considerations
 
-## Module 10 — Technical Debt and Engineering Health
+## Module 11 — Technical Debt and Engineering Health
 - Identifying debt
 - Measuring/communicating debt
 - Prioritization
@@ -1073,7 +1081,7 @@ Expand from engineering systems to stewarding technology: standards, governance,
 - KPIs vs KRIs
 - Sustainable remediation
 
-## Module 11 — Engineering Handbook and Standards
+## Module 12 — Engineering Handbook and Standards
 - Writing standards people can use
 - Runbooks and playbooks
 - Decision records
