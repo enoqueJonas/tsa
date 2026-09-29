@@ -221,8 +221,9 @@ const oop = lesson(
         { type: "resources", title: "Required reading", resources: [pythonTutorial, stdlib] },
     ],
     "Model one the application concept as an object, protect at least one invariant, and compare it with a simpler representation.",
-    ["Choose Service, Team or Environment.", "Implement state plus meaningful behavior.", "Protect one invariant in the object API.", "Use composition for one relationship.", "Build a functional/dictionary alternative.", "Write a comparison explaining which version you would keep today.", pythonOopVideo],
-    "When does a class improve the design? When is it unnecessary? Why can inheritance increase coupling?"
+    ["Choose Service, Team or Environment.", "Implement state plus meaningful behavior.", "Protect one invariant in the object API.", "Use composition for one relationship.", "Build a functional/dictionary alternative.", "Write a comparison explaining which version you would keep today."],
+    "When does a class improve the design? When is it unnecessary? Why can inheritance increase coupling?",
+    [pythonTutorial, stdlib, pythonOopVideo]
 );
 
 const comprehensions = lesson(
