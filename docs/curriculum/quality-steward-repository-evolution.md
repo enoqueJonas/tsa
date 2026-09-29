@@ -265,13 +265,17 @@ src/test/java/com/tsa/steward/
 
 ## Required implementation
 
-1. First browser flow uses Playwright locators directly.
-2. Browser and `BrowserContext` ownership/cleanup are explicit.
-3. API helpers may create test preconditions where UI setup adds no evidence.
-4. A second related flow creates actual repetition.
-5. Only then extract the smallest useful Page/Component Object.
-6. Prefer role/label/test-id semantics over brittle CSS/XPath.
-7. Capture trace/screenshot primarily on failure.
+1. First write the unique browser-level claim; if API/component evidence can prove it more directly, do not create the browser test.
+2. First browser flow uses Playwright locators directly.
+3. `Playwright`/`Browser`/`BrowserContext`/`Page` ownership and cleanup are explicit; context is the default per-test session isolation boundary.
+4. Semantic role/label/test-id locator policy is applied before structural selectors.
+5. Playwright actionability/web-first assertions and observable application readiness replace arbitrary sleeps.
+6. API helpers may create test preconditions where UI setup adds no evidence.
+7. Authentication/storage-state reuse is deliberate, protected and never allowed to hide the login behavior when login itself is under test.
+8. A second related flow creates actual repetition.
+9. Only then extract the smallest useful Page/Component Object.
+10. Trace, screenshot, console/network diagnostics are retained according to evidence policy and sanitized.
+11. Parallel execution requires both BrowserContext isolation and collision-safe backend data; they are separate concerns.
 
 ## Required evidence
 
