@@ -12,7 +12,7 @@ const practices: Record<string, PracticalContent> = {
             "Compare the current homelab, colocation, one budget VPS design and one broader public-cloud design against cost, provisioning time, control, recovery, reachability and expected growth.",
             "Reject at least one option explicitly and record the constraint that makes it a poor fit today.",
             "Choose the smallest credible next-stage model and define the future condition that would justify moving beyond it.",
-            "Record which existing Delivery Engineer capabilities must survive the move unchanged: immutable artifacts, Jenkins evidence, Nexus identities, Ansible state and release traceability.",
+            "Record which existing Delivery Engineer capabilities must survive the move unchanged: immutable artifacts, GitLab CI evidence, Nexus identities, Ansible state and release traceability.",
         ],
         deliverables: ["Hosting constraint matrix", "Adopt/reject decision", "Delivery-capability continuity map"],
         completionCriteria: ["The decision starts from a real Steward requirement.", "At least one technically possible option is rejected for a concrete reason.", "Cloud adoption does not discard evidence or automation already earned in earlier schools."],
