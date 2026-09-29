@@ -1021,20 +1021,47 @@ The final system must include evidence of:
 - cost awareness
 
 ## Final portfolio
-- Source code
-- Running system
-- Architecture portfolio
-- ADRs
-- Infrastructure definitions/configuration
-- CI/CD evidence
-- Automation framework/test evidence
-- Security assessment
-- Dashboards/SLOs
-- Runbooks
-- Recovery evidence
-- Risk/control artifacts
-- Engineering handbook contributions
-- Capstone presentation and defence
+
+The final portfolio is a **curated two-system engineering narrative**, not a dump of every TSA lab artifact.
+
+### Portfolio A — Steward evolution
+
+Show how one system changed as engineering responsibility increased across the Academy. The portfolio should tell a reviewer the sequence **problem/system model → software → platform → delivery → cloud → quality → security → reliability → architecture → governance** and point to the authoritative evidence produced at each stage.
+
+Curate:
+- Steward source and representative release identity
+- system/architecture views and consequential ADRs
+- infrastructure and environment definitions
+- GitLab CI, Nexus and deployment/GitOps evidence
+- representative quality strategy/framework evidence, including reusable internal-package evolution where applicable
+- security assessment and representative verified controls
+- observability/SLO, incident, failure and recovery evidence
+- architecture evolution decisions, including complexity deliberately rejected or removed
+- Technical Stewardship Review decisions, risk/control evidence and handbook/standards updates
+
+Do not copy every screenshot, report or lab deliverable into the portfolio. Maintain a compact **claim-to-evidence index** that links to authoritative repositories, reports, dashboards, decision records and runbooks.
+
+### Portfolio B — Independent Professional Engineer capstone
+
+Show that the judgment developed on Steward transfers to a new domain rather than that Steward's implementation can be copied.
+
+Curate:
+- discovery brief and measurable outcome/evidence strategy
+- proposal and consequential architecture/engineering decisions
+- independent source repository and running release
+- delivery, quality, security, reliability, operational and cost evidence appropriate to that system
+- production-readiness/release decision
+- defence evidence, limitations, challenge decisions and evolution roadmap
+
+### Portfolio review standard
+
+A reviewer should be able to answer three questions without depending on the learner's oral history:
+
+1. **What engineering responsibility did the learner progressively assume on Steward?**
+2. **Which claims are supported by reproducible or reviewable evidence rather than tool names or screenshots?**
+3. **What changed when the learner independently engineered a different system, and which principles transferred?**
+
+The portfolio should favor a small number of strong, traceable artifacts over duplicated evidence. Historical artifacts remain available in their authoritative locations; the portfolio explains why the selected evidence matters.
 
 ## Final milestone
 **Professional Engineering Capstone and Defence** — independently take a non-trivial system from ambiguous problem to demonstrably operable engineering product and defend the decisions using evidence.
