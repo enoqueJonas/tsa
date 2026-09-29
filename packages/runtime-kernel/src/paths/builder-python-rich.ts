@@ -88,36 +88,6 @@ const environment = lesson(
     [venvDocs, packagingGuide]
 );
 
-const valuesTypes = lesson(
-    "Python Syntax, Values and Types",
-    45,
-    [
-        { type: "heading", id: "introduction", text: "Introduction" },
-        { type: "paragraph", text: "the application will catalogue technical services, teams, environments and dependencies. Before those concepts reach Django or PostgreSQL, Python needs to represent their values correctly. Names refer to objects, objects have types, mutable state can be shared accidentally, and external representations must be parsed before they become trusted domain data." },
-        { type: "callout", tone: "note", title: "Why this matters", body: "A future service-registration request may contain a service slug, criticality, lifecycle and technical-owner identifier. JSON can carry those values, but JSON does not decide whether they are valid application domain values." },
-        { type: "heading", id: "outcomes", text: "Learning outcomes" },
-        { type: "list", items: ["Explain names, objects, values and types.", "Use core scalar types deliberately.", "Distinguish equality from identity.", "Explain mutability and aliasing.", "Parse external text deliberately.", "Recognize technically valid Python values that should still be constrained by the domain."] },
-        { type: "heading", id: "names", text: "Names reference objects" },
-        { type: "code", language: "python", caption: "Representing a application service", code: "service_name = \"Payments API\"\nservice_slug = \"payments-api\"\ncriticality = \"high\"\nproduction = True\ntechnical_owner_id = None\n\nprint(type(service_name))\nprint(type(production))\nprint(type(technical_owner_id))" },
-        { type: "paragraph", text: "The type tells us what operations an object supports. It does not tell us whether a value is valid for the application domain. The string 'extremely-important' is a valid str even if the application permits only low, medium, high and critical." },
-        { type: "heading", id: "mutability", text: "Mutability and aliasing" },
-        { type: "code", language: "python", caption: "Two names, one list", code: "dependencies = [\"authentication-service\"]\nservice_dependencies = dependencies\nservice_dependencies.append(\"notification-service\")\nprint(dependencies)" },
-        { type: "callout", tone: "warning", title: "Assignment is not copying", body: "If two names refer to one mutable object, a mutation through either name changes that object. Shared mutable state is a source of subtle defects when ownership is unclear." },
-        { type: "heading", id: "types", text: "Strings, numbers, booleans and None" },
-        { type: "code", language: "python", caption: "Different kinds of the application state", code: "review_interval_days = 90\navailability_target = 99.9\nproduction = False\nopen_risk_count = 0\ntechnical_owner_id = None" },
-        { type: "paragraph", text: "False, zero, an empty string and None are not interchangeable. A service can be non-production, have zero open risks and have no technical owner assigned; each communicates a different state." },
-        { type: "heading", id: "equality", text: "Equality is not identity" },
-        { type: "code", language: "python", caption: "Value equality and object identity", code: "first = [\"auth-service\"]\nsecond = [\"auth-service\"]\nalias = first\n\nprint(first == second)\nprint(first is second)\nprint(first is alias)\n\nif technical_owner_id is None:\n    print(\"Owner still needs to be assigned\")" },
-        { type: "heading", id: "boundaries", text: "External representations and conversion" },
-        { type: "code", language: "python", caption: "Parsing external text", code: "raw_review_interval = \"90\"\nreview_interval_days = int(raw_review_interval)\n\ntry:\n    technical_owner_id = int(\"not-a-number\")\nexcept ValueError as error:\n    print(f\"Invalid owner id: {error}\")" },
-        { type: "resources", title: "Required and supporting reading", resources: [pythonTutorial, pythonReference] },
-    ],
-    "Model representative application service-registry values and prove how type, equality, identity, conversion and mutability affect them.",
-    ["Create representative service, team, environment and dependency values.", "Inspect them with type() and repr().", "Demonstrate aliasing with a dependency list.", "Compare == and is.", "Convert two external strings and preserve one conversion failure.", "Define a constrained lifecycle or criticality set and reject an invalid option."],
-    "Explain names vs objects, dynamic typing, equality vs identity, aliasing and boundary conversion using the application examples.",
-    [pythonTutorial, pythonReference]
-);
-
 const controlFlow = lesson(
     "Control Flow",
     40,
