@@ -35,7 +35,7 @@ const practices: Record<string, PracticalContent> = {
     "Runners and Agents": {
         type: "practical",
         objective: "Design a GitLab Runner execution model for the Rocky Linux homelab with explicit trust, capacity and cleanup boundaries.",
-        scenario: "GitLab CI needs a learner-managed runner to execute Steward builds, but allowing the controller or a general-purpose server to run arbitrary build workloads would blur privilege and failure boundaries.",
+        scenario: "GitLab CI needs a learner-managed runner to execute Steward builds, but allowing a broadly privileged runner or a general-purpose server to run arbitrary build workloads would blur privilege and failure boundaries.",
         instructions: [
             "Choose where the GitLab Runner host will run in the homelab and justify the placement.",
             "Record CPU, RAM, storage and network requirements for the agent.",
@@ -44,8 +44,8 @@ const practices: Record<string, PracticalContent> = {
             "Define workspace cleanup and rebuild expectations so jobs do not depend on residue.",
             "Identify the consequence of granting Docker access to the agent account."
         ],
-        deliverables: ["GitLab Runner topology", "Agent privilege matrix", "Capacity and cleanup plan"],
-        completionCriteria: ["GitLab coordination and runner execution responsibilities are distinguishable.", "Agent privileges are no broader than required.", "Persistent workspace state is not part of the build contract."],
+        deliverables: ["GitLab Runner topology", "Runner privilege matrix", "Capacity and cleanup plan"],
+        completionCriteria: ["GitLab coordination and runner execution responsibilities are distinguishable.", "Runner privileges are no broader than required.", "Persistent workspace state is not part of the build contract."],
     },
     "GitLab CI and Jenkins": {
         type: "practical",
@@ -197,17 +197,17 @@ const gitlabCiLabPractice: PracticalContent = {
     scenario: "GitLab CI is TSA's primary enterprise CI implementation. Jenkins remains a bounded comparison/migration platform; do not maintain duplicate mandatory release pipelines for Steward.",
     instructions: [
         "Provision and register at least one dedicated GitLab Runner on the learner-managed Rocky Linux/homelab platform, documenting identities, network access, storage and maintenance ownership.",
-        "Store the pipeline as a versioned Jenkinsfile in the Steward repository.",
+        "Store the pipeline as a versioned `.gitlab-ci.yml` in the Steward repository.",
         "Create separate source-check/test and container-build stages, using parallel branches only for genuinely independent checks.",
         "Ensure image creation depends on all required gates and does not run after a controlled failing check.",
         "Record commit SHA, GitLab pipeline/job identity, image tag and immutable image ID/digest.",
-        "Archive useful test/build evidence in Jenkins and define what later belongs in Nexus instead.",
+        "Publish useful test/build evidence as GitLab CI artifacts and define what later belongs in Nexus instead.",
         "Run once from a clean/cold-cache path to prove the job does not require accidental runner residue.",
         "Trigger a controlled failure, prove fail-closed behavior, then restore and rerun successfully.",
         "Document the remaining human handoff from successful image to deployment; that becomes input to Continuous Delivery and Deployment."
     ],
     deliverables: ["Versioned .gitlab-ci.yml", "GitLab Runner topology and privilege notes", "Successful pipeline evidence", "Blocked-pipeline evidence", "Commit -> GitLab pipeline -> image identity traceability", "Artifact/retention note", "CD handoff"],
-    completionCriteria: ["GitLab CI is the actual Steward CI implementation.", "A repository change can produce repeatable CI without developer-workstation build commands.", "Required checks fail closed.", "The image maps to an exact source revision and GitLab CI run.", "The agent does not depend on undocumented residue or general administrator credentials.", "The learner can distinguish CI, Nexus artifact storage and later deployment responsibilities."],
+    completionCriteria: ["GitLab CI is the actual Steward CI implementation.", "A repository change can produce repeatable CI without developer-workstation build commands.", "Required checks fail closed.", "The image maps to an exact source revision and GitLab CI run.", "The runner does not depend on undocumented residue or general administrator credentials.", "The learner can distinguish CI, Nexus artifact storage and later deployment responsibilities."],
 };
 
 function enrichLesson(lesson: Lesson): Lesson {
