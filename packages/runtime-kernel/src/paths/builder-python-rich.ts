@@ -10,6 +10,8 @@ const packagingGuide: LearningResource = { title: "Python Packaging User Guide",
 const typingDocs: LearningResource = { title: "typing — Support for type hints", url: "https://docs.python.org/3/library/typing.html" };
 const mypyDocs: LearningResource = { title: "mypy documentation", url: "https://mypy.readthedocs.io/en/stable/" };
 const pdbDocs: LearningResource = { title: "pdb — The Python Debugger", url: "https://docs.python.org/3/library/pdb.html" };
+const pythonOopVideo: LearningResource = { title: "Corey Schafer — Python OOP Tutorial 1", url: "https://www.youtube.com/watch?v=ZDa-Z5JzLYM", purpose: "OPTIONAL VIDEO — reinforce class, instance and method mechanics before applying them to Steward." };
+const pythonPdbVideo: LearningResource = { title: "Python PDB Debugger Tutorial", url: "https://www.youtube.com/watch?v=SdsHXwN3Ka4", read: "Watch 02:19–17:42.", purpose: "RECOMMENDED VIDEO — observe an interactive debugging workflow before the hands-on debugging lesson." };
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -219,7 +221,7 @@ const oop = lesson(
         { type: "resources", title: "Required reading", resources: [pythonTutorial, stdlib] },
     ],
     "Model one the application concept as an object, protect at least one invariant, and compare it with a simpler representation.",
-    ["Choose Service, Team or Environment.", "Implement state plus meaningful behavior.", "Protect one invariant in the object API.", "Use composition for one relationship.", "Build a functional/dictionary alternative.", "Write a comparison explaining which version you would keep today."],
+    ["Choose Service, Team or Environment.", "Implement state plus meaningful behavior.", "Protect one invariant in the object API.", "Use composition for one relationship.", "Build a functional/dictionary alternative.", "Write a comparison explaining which version you would keep today.", pythonOopVideo],
     "When does a class improve the design? When is it unnecessary? Why can inheritance increase coupling?"
 );
 
@@ -310,7 +312,7 @@ const debugging = lesson(
     "Diagnose a non-trivial the application Python defect using a traceback, competing hypotheses and debugger/inspection evidence.",
     ["Introduce or select a defect crossing at least two function calls.", "Capture the traceback before editing.", "Write at least two hypotheses.", "Use breakpoint(), pdb, logging or targeted prints to falsify one.", "Fix the root cause rather than suppressing the symptom.", "Rerun the original reproduction and record the evidence chain."],
     "Why can the final traceback frame differ from the true origin of invalid state? Describe how one experiment falsified a hypothesis in your investigation.",
-    [pdbDocs, pythonTutorial]
+    [pdbDocs, pythonTutorial, pythonPdbVideo]
 );
 
 const lab: Lesson = {
