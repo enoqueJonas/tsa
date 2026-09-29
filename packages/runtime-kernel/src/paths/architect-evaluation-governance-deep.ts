@@ -1,6 +1,22 @@
+import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
-function reading(id:string,title:string,body:string,practice:string[]):Lesson{return{id:`architect-governance-${id}`,title,activities:[{id:`architect-governance-${id}-001`,title,estimatedMinutes:60,content:{type:"reading",body}},{id:`architect-governance-${id}-002`,title:`Evaluate: ${title}`,estimatedMinutes:60,content:{type:"practical",objective:`Apply ${title} to Steward using accumulated architecture evidence.`,scenario:"Treat Steward as a mature system with code, PostgreSQL, internal packages, Nexus, CI/CD, cloud/VPS infrastructure, security controls, SLOs, incidents and recovery evidence. Governance should preserve engineering autonomy while making important decisions explicit, reviewable and enforceable.",instructions:practice,deliverables:["Evidence reviewed","Decision/governance artifact","Consequences and follow-up"],completionCriteria:["The practice uses explicit drivers and evidence.","Governance is proportional to decision risk.","The outcome avoids process for process's sake."]}}]};}
+const adr: LearningResource = { title: "Architectural Decision Records", url: "https://adr.github.io/", kind: "reference" };
+const seiAtam: LearningResource = { title: "SEI — Architecture Tradeoff Analysis Method", url: "https://www.sei.cmu.edu/library/architecture-tradeoff-analysis-method-collection/", kind: "reference" };
+const fitness: LearningResource = { title: "Thoughtworks — Fitness Function-Driven Development", url: "https://www.thoughtworks.com/insights/articles/fitness-function-driven-development", kind: "reference" };
+const techRadar: LearningResource = { title: "Thoughtworks Technology Radar", url: "https://www.thoughtworks.com/radar", kind: "reference" };
+const semver: LearningResource = { title: "Semantic Versioning", url: "https://semver.org/", kind: "reference" };
+const resourcesByGovernanceTopic: Record<string, LearningResource[]> = {
+  adrs: [adr], reviews: [seiAtam, adr], "scenario-evaluation": [seiAtam],
+  "fitness-functions": [fitness], "evolutionary-architecture": [fitness, adr],
+  "standards-context": [techRadar, adr], "technology-selection": [techRadar, seiAtam],
+  "build-buy": [seiAtam], "architecture-debt": [adr, fitness],
+  "governance-without-bottlenecks": [adr, fitness], "dependency-governance": [semver, adr],
+  "steward-common": [semver, adr], "tsa-test-core": [semver, adr],
+};
+function resources(id:string): LessonBlock[] { return [{ type: "resources", title: "Continue learning", resources: resourcesByGovernanceTopic[id] ?? [adr] }]; }
+
+function reading(id:string,title:string,body:string,practice:string[]):Lesson{return{id:`architect-governance-${id}`,title,activities:[{id:`architect-governance-${id}-001`,title,estimatedMinutes:60,content:{type:"reading",body,blocks:resources(id)}},{id:`architect-governance-${id}-002`,title:`Evaluate: ${title}`,estimatedMinutes:60,content:{type:"practical",objective:`Apply ${title} to Steward using accumulated architecture evidence.`,scenario:"Treat Steward as a mature system with code, PostgreSQL, internal packages, Nexus, CI/CD, cloud/VPS infrastructure, security controls, SLOs, incidents and recovery evidence. Governance should preserve engineering autonomy while making important decisions explicit, reviewable and enforceable.",instructions:practice,deliverables:["Evidence reviewed","Decision/governance artifact","Consequences and follow-up"],completionCriteria:["The practice uses explicit drivers and evidence.","Governance is proportional to decision risk.","The outcome avoids process for process's sake."]}}]};}
 
 export const architectureEvaluationAndGovernanceDeepLessons:Lesson[]=[
 reading("adrs","Architecture Decision Records","An ADR captures a significant decision, its context, considered options, rationale, consequences and status. It preserves why a choice was made so future engineers can distinguish deliberate trade-offs from accidents.",["Select one significant existing Steward decision.","Recover its context, drivers and alternatives.","Write an ADR including consequences and evidence.","Define what future evidence would justify superseding it."]),
