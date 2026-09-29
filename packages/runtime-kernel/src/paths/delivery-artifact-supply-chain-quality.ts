@@ -25,7 +25,7 @@ const profiles: Record<string, PracticeProfile> = {
     },
     "Repository Manager Architecture": {
         objective: "Design Nexus as real homelab infrastructure with explicit clients, persistence and trust boundaries.",
-        scenario: "Jenkins must publish, deployment hosts must pull, developers may consume packages and administrators must operate Nexus. A single shared credential and disposable data directory would make the platform fragile.",
+        scenario: "GitLab CI must publish, deployment hosts must pull, developers may consume packages and administrators must operate Nexus. A single shared credential and disposable data directory would make the platform fragile.",
         deliverables: ["Nexus topology", "Client/permission boundary map", "Persistent-state and recovery boundary"],
         completionCriteria: ["Publisher, consumer and administrator paths are separate.", "Disposable service state is distinguished from durable repository state.", "The topology fits the existing Rocky Linux, WireGuard and backend-network model."],
     },
@@ -55,19 +55,19 @@ const profiles: Record<string, PracticeProfile> = {
     },
     "Deploying Nexus Repository in the Homelab": {
         objective: "Deploy Nexus as a persistent, privately administered service on the Rocky Linux homelab and prove its operational boundary.",
-        scenario: "Nexus is now required by Jenkins and deployment workflows. Install it without exposing administration publicly or losing repository state when the service instance is recreated.",
+        scenario: "Nexus is now required by GitLab CI and deployment workflows. Install it without exposing administration publicly or losing repository state when the service instance is recreated.",
         deliverables: ["Running Nexus service", "Persistent-storage evidence", "Network-access proof", "Resource and recovery notes"],
         completionCriteria: ["Nexus is reachable through the intended private-management/client paths only.", "Repository data survives service recreation.", "Placement is justified against current homelab capacity.", "The service does not require undocumented manual host preparation outside the established Ansible boundary."],
     },
     "Repository Authentication and Permissions": {
         objective: "Prove least privilege in Nexus with separate administrator, publisher and consumer capabilities.",
-        scenario: "Jenkins needs publish rights while developers and deployment hosts usually need read access. A shared administrator credential would make every client unnecessarily privileged.",
+        scenario: "GitLab CI needs publish rights while developers and deployment hosts usually need read access. A shared administrator credential would make every client unnecessarily privileged.",
         deliverables: ["Role/permission matrix", "Successful authorized-operation evidence", "Denied-operation evidence"],
-        completionCriteria: ["Jenkins can publish without administrative rights.", "A read-only identity cannot upload or mutate artifacts.", "Secrets are not stored in repository source or plaintext inventory."],
+        completionCriteria: ["GitLab CI can publish without administrative rights.", "A read-only identity cannot upload or mutate artifacts.", "Secrets are not stored in repository source or plaintext inventory."],
     },
     "Publishing Internal Python Packages": {
         objective: "Publish an immutable steward-common version from a verified build and preserve source-to-artifact evidence.",
-        scenario: "A package that passes locally should not become an internal release unless Jenkins can verify, build and publish it reproducibly with a non-admin identity.",
+        scenario: "A package that passes locally should not become an internal release unless GitLab CI can verify, build and publish it reproducibly with a non-admin identity.",
         deliverables: ["Published steward-common version", "Source/build/publication trace", "Rejected invalid or duplicate publication evidence"],
         completionCriteria: ["Verification precedes publication.", "Published bytes map to one source revision and version.", "A failed verification or disallowed overwrite fails closed."],
     },
@@ -90,7 +90,7 @@ const profiles: Record<string, PracticeProfile> = {
         completionCriteria: ["Internal package resolution follows the intended namespace and registry path.", "The lockfile records the selected dependency graph.", "The learner can distinguish repeatability evidence from trust evidence."],
     },
     "Publishing Steward Container Images Internally": {
-        objective: "Make Jenkins publish the validated Steward image to Nexus and make deployment consume that exact artifact by stable identity.",
+        objective: "Make GitLab CI publish the validated Steward image to Nexus and make deployment consume that exact artifact by stable identity.",
         scenario: "CI currently builds a usable image, but the release path is incomplete until the image is stored outside the agent and can be pulled independently.",
         deliverables: ["Published Steward image", "Commit-build-tag-digest chain", "Independent pull evidence"],
         completionCriteria: ["The image is built once and pushed after required checks.", "Deployment can pull it without the original CI workspace.", "The recorded digest matches the published content used for release evidence."],
