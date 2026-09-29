@@ -3,7 +3,8 @@ import type { Lesson } from "./lesson";
 
 const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
 const junit: LearningResource = { title: "JUnit 5 User Guide", url: "https://docs.junit.org/current/user-guide/" };
-const githubActions: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
+const gitlabCi: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
+const testcontainers: LearningResource = { title: "Testcontainers for Java", url: "https://java.testcontainers.org/" };
 const playwright: LearningResource = { title: "Playwright Java", url: "https://playwright.dev/java/" };
 
 type Spec = {
@@ -29,7 +30,7 @@ function lessonFrom(spec: Spec): Lesson {
     if (spec.code) blocks.push({ type: "code", language: spec.language ?? "text", code: spec.code });
     if (spec.warning) blocks.push({ type: "callout", tone: "warning", title: "Pipeline risk", body: spec.warning });
     blocks.push({ type: "callout", tone: "steward", title: "Quality pipeline checkpoint", body: "A pipeline is a decision system around evidence. It must preserve release/environment identity, make missing evidence visible and fail for reasons a human can triage. Green is meaningful only when the intended checks actually ran." });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [docker, junit, githubActions, playwright] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: [docker, junit, gitlabCi, testcontainers, playwright] });
 
     return {
         id: `quality-ci-${spec.id}`,
@@ -45,11 +46,11 @@ function lessonFrom(spec: Spec): Lesson {
 const specs: Spec[] = [
     {
         id: "test-containers",
-        title: "Test Containers and Environments",
-        core: "Containers make test dependencies and runtime assumptions reproducible, but a container is not automatically a trustworthy test environment. The useful boundary is the set of dependencies and configuration required to prove a behavior consistently.",
-        principles: ["Containerize dependencies that benefit from repeatable lifecycle and isolation.", "Keep the test subject's release identity explicit rather than rebuilding silently inside every stage.", "Prefer realistic dependency behavior where the risk depends on persistence, networking or protocol semantics.", "Separate disposable test infrastructure from long-lived shared environments."],
+        title: "Testcontainers Java and Controlled Integration Dependencies",
+        core: "Testcontainers lets JUnit tests own real disposable dependencies through Java code. Containers make test dependencies and runtime assumptions reproducible, but a container is not automatically a trustworthy test environment. The useful boundary is the set of dependencies and configuration required to prove a behavior consistently.",
+        principles: ["Use Testcontainers when the test should own a disposable dependency lifecycle; use Docker Compose or deployed environments when the boundary/lifecycle genuinely belongs outside the test JVM.", "Containerize dependencies that benefit from repeatable lifecycle and isolation.", "Keep the test subject's release identity explicit rather than rebuilding silently inside every stage.", "Prefer realistic dependency behavior where the risk depends on persistence, networking or protocol semantics.", "Separate disposable test infrastructure from long-lived shared environments."],
         steward: ["For Steward, PostgreSQL is a strong candidate for disposable test infrastructure because schema, constraints and transaction behavior matter.", "The same immutable Steward artifact should be identified across relevant delivery and quality stages; tests should not accidentally validate a different build."],
-        practice: ["Inventory Steward test dependencies and classify which should be disposable containers versus external environments.", "Define startup/readiness/cleanup behavior.", "Run one focused integration suite against a disposable dependency set."],
+        practice: ["Inventory Steward test dependencies and classify Testcontainers-owned, Compose-owned and external/shared dependencies.", "Add the Testcontainers Java dependency and create one PostgreSQLContainer-based JUnit integration test.", "Use container-derived host/port credentials rather than hard-coded localhost assumptions.", "Define startup/readiness/cleanup behavior and explain reuse policy.", "Run one focused integration suite against the disposable dependency and compare its evidence with a UAT test."],
     },
     {
         id: "dockerized-dependencies",
@@ -70,11 +71,22 @@ const specs: Spec[] = [
         practice: ["Define the minimum Steward ephemeral stack.", "List known parity gaps and which risks they affect.", "Describe creation, readiness, test execution and teardown as one lifecycle."],
     },
     {
+        id: "gitlab-ci-foundations",
+        title: "GitLab CI/CD: Pipelines, Jobs, Stages and Runners",
+        core: "GitLab CI/CD is the canonical Quality Steward pipeline implementation. Learn .gitlab-ci.yml, jobs, stages, runners, variables, rules, needs, caches and artifacts as execution architecture rather than YAML syntax.",
+        principles: ["Jobs execute on runners; stages provide coarse ordering while needs can express a DAG for faster dependency-aware execution.", "rules should make pipeline intent explicit for merge requests, branches, tags and schedules.", "Cache accelerates reusable downloaded/build data; artifacts preserve outputs/evidence between jobs and after execution.", "Protected/masked CI variables and least-privilege credentials protect environment and Nexus access.", "Pipeline source, commit SHA, environment and test selection are evidence identity."],
+        steward: ["steward-tests should use GitLab CI/CD as its primary CI implementation and produce JUnit/Allure-compatible evidence plus Playwright/API diagnostics.", "The same Maven commands proven locally remain the execution contract; GitLab orchestrates them rather than replacing Maven."],
+        practice: ["Create the initial .gitlab-ci.yml for steward-tests.", "Run a Maven verification job on an appropriate GitLab Runner.", "Use rules to distinguish merge-request, default-branch and scheduled behavior.", "Use needs where a DAG improves feedback without weakening dependencies.", "Publish JUnit/test artifacts and inspect them after a controlled failure.", "Define cache versus artifact usage and configure one of each deliberately."],
+        code: "stages:\n  - verify\n  - integration\n  - browser\n\njava-verify:\n  stage: verify\n  script:\n    - mvn -B -U clean test\n  artifacts:\n    when: always\n    reports:\n      junit: target/surefire-reports/TEST-*.xml",
+        language: "yaml",
+        warning: "Do not encode business/test logic in GitLab YAML. The pipeline should orchestrate reproducible Maven commands and preserve evidence."
+    },
+    {
         id: "pipeline-stages",
         title: "Test Pipeline Stages",
         core: "Pipeline stages should order feedback by cost, speed, dependency and decision value. Fast checks should reject obvious failures early; slower evidence should run when its additional confidence justifies the cost.",
         principles: ["Fail fast on deterministic high-signal checks.", "Do not rerun the same behavior through every layer.", "Make stage dependencies explicit.", "Preserve one release identity across promotion-oriented evidence."],
-        steward: ["A sensible Steward flow can progress from static/build checks to unit/component, API/integration, selected browser checks and then targeted non-functional evidence.", "Not every non-functional baseline belongs on every commit; cadence should follow risk and cost."],
+        steward: ["A sensible GitLab pipeline can progress from static/build checks to unit/component, API/integration, selected browser checks and then targeted non-functional evidence.", "Not every non-functional baseline belongs on every commit; cadence should follow risk and cost."],
         practice: ["Map the existing Steward checks into ordered stages.", "Identify duplicate evidence and remove unjustified repetition.", "Define which failures block later stages and why."],
         code: "quality:\n  stages:\n    - build-and-static\n    - unit-component\n    - api-integration\n    - browser-smoke\n    - targeted-non-functional",
         language: "yaml",
@@ -126,7 +138,7 @@ const specs: Spec[] = [
         title: "Flaky-test Containment",
         core: "Flaky tests destroy trust because identical code can produce conflicting evidence. Containment keeps unstable checks visible and owned while preventing them from silently defining release confidence.",
         principles: ["Track first-attempt failures even if a retry passes.", "Quarantine only with owner, reason and exit criteria.", "Prefer root-cause removal over retry inflation.", "Separate product nondeterminism from test nondeterminism."],
-        steward: ["A Steward browser test that races page readiness may need locator/wait design fixes; a test that exposes real eventual-consistency behavior may be revealing a product contract problem instead.", "The pipeline must not translate eventual green into clean evidence without exposing the instability."],
+        steward: ["A Steward browser test that races page readiness may need locator/wait design fixes; a test that exposes real eventual-consistency behavior may be revealing a product contract problem instead.", "GitLab CI/CD must not translate eventual green into clean evidence without exposing the instability."],
         practice: ["Define Steward's flaky-test policy.", "Simulate or inspect one unstable test and classify the cause.", "Show how reports preserve retry history and quarantine state."],
     },
     {
