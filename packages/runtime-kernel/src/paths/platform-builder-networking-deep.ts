@@ -10,6 +10,8 @@ const tlsGuide: LearningResource = { title: "Cloudflare Learning Center — What
 const ipMan: LearningResource = { title: "ip(8) Linux manual", url: "https://man7.org/linux/man-pages/man8/ip.8.html" };
 const ssMan: LearningResource = { title: "ss(8) Linux manual", url: "https://man7.org/linux/man-pages/man8/ss.8.html" };
 
+const dnsVideo: LearningResource = { title: "Computerphile — How DNS Works", url: "https://www.youtube.com/watch?v=uOfonONtIuk", read: "Recommended — whole video.", purpose: "RECOMMENDED VIDEO — visualize DNS hierarchy and recursive lookup before proving resolution with homelab tools." };
+
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
@@ -198,7 +200,7 @@ export const networkingFoundationsDeepLessons: Lesson[] = [
         "Create or document a name-resolution path for Steward and prove name and address tests independently.",
         ["Record the current DNS resolver.", "Query the Steward hostname if one exists.", "Test Steward directly by IP.", "Test by hostname.", "Explain which evidence would distinguish stale DNS from an application outage."],
         ["Why can a service work by IP but fail by hostname?", "What is an A record?", "Why is DNS a separate failure boundary from TCP?"],
-        [dnsGuide],
+        [dnsGuide, dnsVideo],
     ),
     richLesson(
         "NAT",
