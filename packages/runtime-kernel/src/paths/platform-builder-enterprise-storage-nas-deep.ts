@@ -1,4 +1,12 @@
 import type { AuthoredLesson } from "./normalize-authored-curriculum";
+// Primary operational references:
+const storageReferences = [
+ "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/managing_storage_devices/",
+ "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_and_managing_logical_volumes/",
+ "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/managing_file_systems/",
+ "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/managing_file_systems/deploying-an-nfs-server_managing-file-systems",
+ "https://www.samba.org/samba/docs/",
+];
 
 export const enterpriseStorageNasDeepLessons: AuthoredLesson[] = [
     {
