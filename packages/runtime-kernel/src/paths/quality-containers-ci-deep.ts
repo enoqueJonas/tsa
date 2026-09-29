@@ -6,6 +6,32 @@ const junit: LearningResource = { title: "JUnit 5 User Guide", url: "https://doc
 const gitlabCi: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
 const testcontainers: LearningResource = { title: "Testcontainers for Java", url: "https://java.testcontainers.org/" };
 const playwright: LearningResource = { title: "Playwright Java", url: "https://playwright.dev/java/" };
+const tcJunit: LearningResource = { title: "Testcontainers — JUnit 5", url: "https://java.testcontainers.org/test_framework_integration/junit_5/" };
+const tcPostgres: LearningResource = { title: "Testcontainers — PostgreSQL", url: "https://java.testcontainers.org/modules/databases/postgres/" };
+const tcNetworking: LearningResource = { title: "Testcontainers — Networking", url: "https://java.testcontainers.org/features/networking/" };
+const tcWaits: LearningResource = { title: "Testcontainers — Waiting for containers", url: "https://java.testcontainers.org/features/startup_and_waits/" };
+const gitlabRunners: LearningResource = { title: "GitLab — Runners", url: "https://docs.gitlab.com/ci/runners/" };
+const gitlabRules: LearningResource = { title: "GitLab — Job rules", url: "https://docs.gitlab.com/ci/jobs/job_rules/" };
+const gitlabNeeds: LearningResource = { title: "GitLab — needs", url: "https://docs.gitlab.com/ci/yaml/#needs" };
+const gitlabCache: LearningResource = { title: "GitLab — Cache and artifacts", url: "https://docs.gitlab.com/ci/caching/" };
+const gitlabVariables: LearningResource = { title: "GitLab — CI/CD variables", url: "https://docs.gitlab.com/ci/variables/" };
+const gitlabEnvironments: LearningResource = { title: "GitLab — Environments", url: "https://docs.gitlab.com/ci/environments/" };
+
+const resourcesFor = (id: string): LearningResource[] => {
+    if (id === "testcontainers-lifecycle") return [tcJunit, tcWaits];
+    if (id === "testcontainers-networking") return [tcNetworking, testcontainers];
+    if (id === "database-migrations-isolation") return [tcPostgres, tcJunit];
+    if (id === "testcontainers-observability" || id === "test-containers") return [testcontainers, tcWaits];
+    if (id === "gitlab-runners" || id === "gitlab-container-execution") return [gitlabRunners, testcontainers, docker];
+    if (id === "gitlab-cache-artifacts" || id === "reports-artifacts") return [gitlabCache, gitlabCi];
+    if (id === "gitlab-dag-rules" || id === "test-selection" || id === "pipeline-stages") return [gitlabRules, gitlabNeeds, gitlabCi];
+    if (id === "gitlab-security") return [gitlabVariables, gitlabRunners];
+    if (id === "gitlab-environments-approvals" || id === "quality-gates") return [gitlabEnvironments, gitlabCi];
+    if (id === "parallelization") return [junit, gitlabNeeds];
+    if (id === "internal-package-compatibility") return [gitlabCi];
+    if (id === "dockerized-dependencies" || id === "ephemeral-environments") return [docker, testcontainers];
+    return [gitlabCi, testcontainers];
+};
 
 type Spec = {
     id: string;
@@ -30,7 +56,7 @@ function lessonFrom(spec: Spec): Lesson {
     if (spec.code) blocks.push({ type: "code", language: spec.language ?? "text", code: spec.code });
     if (spec.warning) blocks.push({ type: "callout", tone: "warning", title: "Pipeline risk", body: spec.warning });
     blocks.push({ type: "callout", tone: "steward", title: "Quality pipeline checkpoint", body: "A pipeline is a decision system around evidence. It must preserve release/environment identity, make missing evidence visible and fail for reasons a human can triage. Green is meaningful only when the intended checks actually ran." });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [docker, junit, gitlabCi, testcontainers, playwright] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: resourcesFor(spec.id) });
 
     return {
         id: `quality-ci-${spec.id}`,
