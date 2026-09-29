@@ -4,7 +4,35 @@ import type { Lesson } from "./lesson";
 const owaspAsvs: LearningResource = { title: "OWASP Application Security Verification Standard", url: "https://owasp.org/www-project-application-security-verification-standard/" };
 const owaspCheatSheets: LearningResource = { title: "OWASP Cheat Sheet Series", url: "https://cheatsheetseries.owasp.org/" };
 const djangoSecurity: LearningResource = { title: "Django Security", url: "https://docs.djangoproject.com/en/stable/topics/security/" };
-const drfAuth: LearningResource = { title: "Django REST Framework Authentication", url: "https://www.django-rest-framework.org/api-guide/authentication/" };
+const drfAuth: LearningResource = { title: "Django REST Framework Authentication", url: "https://www.django-rest-framework.org/api-guide/authentication/", kind: "documentation" };
+const drfPermissions: LearningResource = { title: "Django REST Framework Permissions", url: "https://www.django-rest-framework.org/api-guide/permissions/", kind: "documentation" };
+const drfSerializers: LearningResource = { title: "Django REST Framework Serializers", url: "https://www.django-rest-framework.org/api-guide/serializers/", kind: "documentation" };
+const authCheatSheet: LearningResource = { title: "OWASP Authentication Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html", kind: "reference" };
+const authorizationCheatSheet: LearningResource = { title: "OWASP Authorization Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html", kind: "reference" };
+const validationCheatSheet: LearningResource = { title: "OWASP Input Validation Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html", kind: "reference" };
+const errorHandlingCheatSheet: LearningResource = { title: "OWASP Error Handling Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Error_Handling_Cheat_Sheet.html", kind: "reference" };
+const secretsCheatSheet: LearningResource = { title: "OWASP Secrets Management Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html", kind: "reference" };
+const headersCheatSheet: LearningResource = { title: "OWASP HTTP Headers Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html", kind: "reference" };
+const loggingCheatSheet: LearningResource = { title: "OWASP Logging Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html", kind: "reference" };
+const dosCheatSheet: LearningResource = { title: "OWASP Denial of Service Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Denial_of_Service_Cheat_Sheet.html", kind: "reference" };
+const cryptoStorage: LearningResource = { title: "OWASP Cryptographic Storage Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html", kind: "reference" };
+const secureCodeReview: LearningResource = { title: "OWASP Secure Code Review Guide", url: "https://owasp.org/www-project-code-review-guide/", kind: "reference" };
+const abuseCase: LearningResource = { title: "OWASP Abuse Case Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Abuse_Case_Cheat_Sheet.html", kind: "reference" };
+
+const resourcesByTopic: Record<string, LearningResource[]> = {
+    "secure-authentication": [authCheatSheet, drfAuth, djangoSecurity],
+    "authorization-design-testing": [authorizationCheatSheet, drfPermissions],
+    "input-validation": [validationCheatSheet, drfSerializers],
+    "secure-error-handling": [errorHandlingCheatSheet, djangoSecurity],
+    "secrets-management": [secretsCheatSheet, djangoSecurity],
+    "security-headers-configuration": [headersCheatSheet, djangoSecurity],
+    "security-logging": [loggingCheatSheet, owaspAsvs],
+    "rate-limiting-abuse": [dosCheatSheet, owaspAsvs],
+    "data-protection": [cryptoStorage, djangoSecurity],
+    "security-code-review": [secureCodeReview, owaspAsvs],
+    "abuse-cases-negative-requirements": [abuseCase, owaspAsvs],
+    "security-regression-testing": [owaspAsvs, owaspCheatSheets],
+};
 
 type Spec = {
     id: string;
@@ -27,7 +55,7 @@ function blocksFor(spec: Spec): LessonBlock[] {
     ];
     if (spec.warning) blocks.push({ type: "callout", tone: "warning", title: "Security warning", body: spec.warning });
     blocks.push({ type: "callout", tone: "steward", title: "Stewardship checkpoint", body: "Application security is complete only when the control is explicit in design, enforced in code or configuration, and verified by positive and negative evidence. A recommendation without implementation and retest remains residual risk." });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [owaspAsvs, owaspCheatSheets, djangoSecurity, drfAuth] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: resourcesByTopic[spec.id] ?? [owaspAsvs, djangoSecurity] });
     return blocks;
 }
 
