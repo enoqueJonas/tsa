@@ -109,14 +109,14 @@ Networking depth must be sufficient to troubleshoot real service-to-service fail
 
 ### Delivery Engineer — CI/CD, configuration and artifact lifecycle
 
-CI/CD concepts remain tool-independent first, then **GitLab CI** becomes the primary self-hosted enterprise implementation. Jenkins remains bounded to the Quality Steward comparison/migration context rather than serving as TSA's primary implementation rather than disappearing from the curriculum.
+CI/CD concepts remain tool-independent first, then **GitLab CI** becomes the primary self-hosted enterprise implementation. Jenkins remains bounded to the Quality Steward comparison/migration context rather than serving as TSA's primary implementation.
 
 The GitLab CI progression should cover:
 
 - controller/agent architecture;
 - executors and build isolation;
 - jobs versus pipelines;
-- Pipeline as Code and `GitLab CIfile`;
+- Pipeline as Code and `.gitlab-ci.yml`;
 - declarative versus scripted pipeline concepts;
 - stages, steps, conditions and parallelism;
 - credentials and secret injection;
