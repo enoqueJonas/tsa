@@ -27,6 +27,18 @@ Develop engineering habits before framework specialization: evidence, systems th
 - Learning as an Engineering Skill
 - Communicating Technical Work
 
+## Incremental Quality Steward build
+The learner does not wait for a final framework lab. Each module changes the same `steward-tests` project:
+
+1. **Java Foundation** — create Maven/JUnit project, configuration, DI boundaries, tag policy and raw HTTP probe.
+2. **API Foundation** — introduce REST Assured, typed contracts, API client, test-data builders and service-layer evidence.
+3. **Framework Consolidation** — refactor only proven repetition; add diagnostics, Allure, selection and maintainability controls.
+4. **Browser Layer** — add Playwright Java, explicit browser/context ownership, direct-locator smoke flow, then extract page/component objects from repetition.
+5. **Reuse Boundary** — only now evaluate generic configuration/API/browser/evidence/JUnit infrastructure and extract justified pieces into `tsa-test-core`.
+6. **Internal Distribution** — publish the versioned `tsa-test-core` JAR to Nexus and make Steward consume it as a normal Maven dependency.
+7. **CI and Continuous Execution** — containerize dependencies, add Jenkins gates/selection/artifacts and scheduled regression.
+8. **Quality Steward Milestone** — defend the completed quality platform, its evidence model, framework boundaries and unresolved risks.
+
 ## Labs
 - Debugging investigation
 - Analyze an unfamiliar system
@@ -464,14 +476,29 @@ Learn quality engineering deeply and build a real automation framework against t
 - Negative testing
 - Traceability
 
-## Module 3 — Unit and Component Testing
+## Module 3 — Java for Test Framework Engineering
+- Java/JVM execution model and Maven project structure
+- Classes, records, enums and immutability
+- Interfaces, composition and dependency direction
+- Constructor dependency injection before DI containers
+- Generics and collections
+- Exceptions and try-with-resources
+- Annotations and reflection
+- JUnit tags and governed test selection
+- Lambdas, functional interfaces, streams and Optional
+- Concurrency, shared state and thread-safety fundamentals
+- **Increment:** create `steward-tests`, establish Maven/JUnit, immutable configuration, constructor injection, tag policy and one raw Java HttpClient probe
+
+## Module 4 — Unit and Component Testing
 - Unit-test design
 - Isolation
 - Test doubles
 - Mocks/stubs/fakes
 - Coverage and its limitations
 
-## Module 4 — API and Integration Testing
+## Module 5 — API and Integration Testing
+- Introduce REST Assured by replacing the earlier raw HttpClient ceremony
+- Grow typed Steward API clients, Jackson models and AssertJ assertions
 - API test design
 - Authentication/authorization tests
 - Schema/contract validation
@@ -480,7 +507,7 @@ Learn quality engineering deeply and build a real automation framework against t
 - Contract testing concepts
 - Mocking/service virtualization
 
-## Module 5 — Automation Framework Engineering
+## Module 6 — Automation Framework Engineering
 - Java 17+ test-project structure and Maven lifecycle
 - JUnit 5 fundamentals, lifecycle, parameterized tests, tags and extensions
 - Framework architecture and dependency direction
@@ -488,7 +515,7 @@ Learn quality engineering deeply and build a real automation framework against t
 - Test-data builders, isolation and deterministic cleanup
 - REST Assured API clients and request/response specifications
 - Jackson DTO/JSON mapping and AssertJ assertions
-- Playwright Java browser/context lifecycle
+- Playwright Java browser/context lifecycle after the API/framework substrate exists
 - UI abstractions/Page Objects and component objects where appropriate
 - Logging, Allure reporting and diagnostic evidence
 - Screenshots/traces/video only where diagnostically useful
@@ -498,21 +525,21 @@ Learn quality engineering deeply and build a real automation framework against t
 - Extract reusable infrastructure into `tsa-test-core`
 - Publish/consume `tsa-test-core` as a versioned Maven artifact through Nexus
 
-## Module 6 — Browser and Environment Testing
+## Module 7 — Browser and Environment Testing
 - Browser differences
 - Responsive testing
 - Cross-browser strategy
 - BrowserStack or equivalent cloud test infrastructure
 - Local vs remote execution
 
-## Module 7 — Non-functional Quality
+## Module 8 — Non-functional Quality
 - Performance concepts
 - Load/stress/spike/endurance distinctions
 - Basic accessibility testing
 - Compatibility
 - Reliability-oriented tests
 
-## Module 8 — Quality in Containers and CI/CD
+## Module 9 — Quality in Containers and CI/CD
 - Test containers/environments
 - Running tests against Dockerized services
 - Ephemeral test environments concepts
