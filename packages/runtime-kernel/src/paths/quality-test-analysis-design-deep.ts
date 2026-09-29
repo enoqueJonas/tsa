@@ -4,6 +4,7 @@ import type { Lesson } from "./lesson";
 const istqb: LearningResource = { title: "ISTQB — Certified Tester Foundation Level Syllabus", url: "https://www.istqb.org/certifications/certified-tester-foundation-level" };
 const guruDecisionTables: LearningResource = { title: "ISTQB Glossary — Decision Table Testing", url: "https://glossary.istqb.org/en_US/term/decision-table-testing-3" };
 const exploratory: LearningResource = { title: "DevelopSense — Exploratory Testing", url: "https://www.satisfice.com/exploratory-testing" };
+const pict: LearningResource = { title: "Microsoft PICT — Pairwise Independent Combinatorial Testing", url: "https://github.com/microsoft/pict", purpose: "RECOMMENDED RESOURCE — inspect model and generated combination examples while treating pairwise as a coverage heuristic, not proof of completeness." };
 
 type Spec = { id: string; title: string; intro: string; sections: Array<{ title: string; body: string[]; list?: string[]; code?: string }>; practice: string[]; questions: string[]; resources?: LearningResource[] };
 
@@ -52,7 +53,8 @@ const specs: Spec[] = [
     { id: "pairwise", title: "Pairwise and Combinatorial Concepts", intro: "Combinatorial testing addresses the explosion created by multiple interacting dimensions. Pairwise coverage aims to exercise every pair of parameter values at least once, reducing combinations while retaining interaction-focused evidence.", sections: [
         { title: "The Cartesian product grows quickly", body: ["Browser × role × lifecycle × criticality × environment can create hundreds of combinations. Exhaustive coverage may be wasteful when most failures arise from lower-order interactions."] },
         { title: "Pairwise is a heuristic, not a guarantee", body: ["Pairwise suites can miss failures requiring three or more specific factors. Use domain risk to force critical combinations even when a generated pairwise set would omit them."] },
-    ], practice: ["Choose four Steward dimensions with at least two values each.", "Estimate exhaustive combination count.", "Produce a reduced pairwise-style set manually or with a tool, then add any high-risk combinations that must be forced."], questions: ["What problem does pairwise testing address?", "Why must risk-based mandatory combinations override an automatically reduced set?"] },
+    ], practice: ["Choose four Steward dimensions with at least two values each.", "Estimate exhaustive combination count.", "Produce a reduced pairwise-style set manually or with a tool, then add any high-risk combinations that must be forced."], questions: ["What problem does pairwise testing address?", "Why must risk-based mandatory combinations override an automatically reduced set?"],
+        resources: [pict] },
     { id: "exploratory-testing", title: "Exploratory Testing", intro: "Exploratory testing combines learning, test design and execution in the same activity. It is disciplined investigation guided by a charter, observations and adaptation—not random clicking.", sections: [
         { title: "Use a charter", body: ["A charter frames mission, target area, risks and useful heuristics while leaving room to follow evidence. Example: explore Steward ownership-transfer behavior with emphasis on stale sessions, concurrent updates and authorization boundaries."] },
         { title: "Capture evidence and learning", body: ["Record observations, test data, questions, defects, coverage and follow-up ideas. Session notes turn exploration into reviewable engineering evidence."] },
