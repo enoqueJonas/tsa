@@ -14,6 +14,7 @@ import { technicalStewardshipJourney as plannedTechnicalStewardshipJourney } fro
 import { normalizeJourney, type AuthoredLearningJourney, type AuthoredLearningPath } from "./normalize-authored-curriculum";
 import type { LearningJourney } from "./learning-journey";
 import type { LearningPath } from "./learning-path";
+import type { Lesson } from "./lesson";
 
 function extendBuilderPath(path: LearningPath): LearningPath {
     if (path.id === "programming-with-python") return { ...path, lessons: programmingWithPythonQualityLessons };
@@ -46,11 +47,57 @@ const authoredJourney: AuthoredLearningJourney = {
         if (school.id === "professional-engineer") return { ...school, paths: professionalEngineerPaths };
         return school;
     }),
-};
+});
 
 const normalizedJourney = normalizeJourney(authoredJourney);
 
-export const technicalStewardshipJourney: LearningJourney = {
+function assertUniqueIds(scope: string, values: { id: string }[]): void {
+    const seen = new Set<string>();
+    for (const value of values) {
+        if (seen.has(value.id)) throw new Error(`Duplicate TSA ${scope} id: ${value.id}`);
+        seen.add(value.id);
+    }
+}
+
+function assertUniqueLessonAndActivityIds(lessons: Lesson[]): void {
+    assertUniqueIds("lesson", lessons);
+    const activities = lessons.flatMap((lesson) => lesson.activities);
+    assertUniqueIds("activity", activities);
+}
+
+function validateRuntimeJourney(journey: LearningJourney): LearningJourney {
+    assertUniqueIds("school", journey.schools);
+
+    for (const school of journey.schools) {
+        assertUniqueIds(`path in school ${school.id}`, school.paths);
+        for (const path of school.paths) assertUniqueLessonAndActivityIds(path.lessons);
+    }
+
+    const executableSchools = new Set([
+        "system-thinker",
+        "platform-builder",
+        "delivery-engineer",
+        "cloud-engineer",
+        "quality-steward",
+        "security-steward",
+        "reliability-engineer",
+        "architect",
+        "technical-steward",
+        "professional-engineer",
+    ]);
+
+    for (const schoolId of executableSchools) {
+        const school = journey.schools.find((candidate) => candidate.id === schoolId);
+        if (!school || school.paths.length === 0) throw new Error(`TSA executable school is unreachable at runtime: ${schoolId}`);
+        for (const path of school.paths) {
+            if (path.lessons.length === 0) throw new Error(`TSA executable path has no runtime lessons: ${schoolId}/${path.id}`);
+        }
+    }
+
+    return journey;
+}
+
+export const technicalStewardshipJourney: LearningJourney = validateRuntimeJourney({
     ...normalizedJourney,
     schools: normalizedJourney.schools.map((school) => {
         if (school.id === "builder") return { ...school, paths: school.paths.map(extendBuilderPath) };
