@@ -8,6 +8,10 @@ const dockerRegistry: LearningResource = { title: "Docker registry documentation
 const cyclonedx: LearningResource = { title: "CycloneDX specification", url: "https://cyclonedx.org/" };
 const spdx: LearningResource = { title: "SPDX", url: "https://spdx.dev/" };
 const slsa: LearningResource = { title: "SLSA", url: "https://slsa.dev/" };
+const repositoryManagerVideo: LearningResource = { title: "Sonatype — What is a Repository Manager?", url: "https://www.youtube.com/watch?v=6F5tTzYgKxQ", purpose: "RECOMMENDED VIDEO — establish repository-manager request flows before operating Nexus." };
+const nexusRoles: LearningResource = { title: "Sonatype Nexus Repository — Roles", url: "https://help.sonatype.com/en/roles.html", purpose: "RECOMMENDED SUPPORT — first-party least-privilege role model." };
+const slsaProvenance: LearningResource = { title: "SLSA — Provenance", url: "https://slsa.dev/spec/v1.0/provenance", read: "Use the provenance model and diagrams.", purpose: "RECOMMENDED VISUAL RESOURCE — connect source, build process and produced artifact." };
+const cyclonedxSbom: LearningResource = { title: "CycloneDX — SBOM capability", url: "https://cyclonedx.org/capabilities/sbom/", read: "Use the component and dependency model diagrams.", purpose: "RECOMMENDED VISUAL RESOURCE — establish the component-inventory model before generating Steward SBOM evidence." };
 
 interface LessonSpec {
     id: string;
@@ -73,7 +77,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Draw Steward's current producer-to-consumer path for steward-common and the Steward container image.", "Mark every place that currently relies on local files, mutable tags or public-registry availability.", "Write the repository responsibilities that remove those assumptions."],
         questions: ["What problem does an internal repository solve that version control does not?", "Why is copying a wheel or tarball into another repository a weak long-term distribution mechanism?"],
-        resources: [nexusDocs],
+        resources: [nexusDocs, repositoryManagerVideo],
     },
     {
         id: "registries-vs-repositories",
@@ -121,7 +125,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Design hosted, proxy and group repositories for Python, npm and container use.", "Document which URL publishers use and which URL consumers use.", "Explain how the group repository reduces client configuration without hiding ownership."],
         questions: ["Why should publishing target hosted rather than group repositories?", "What benefit does a proxy provide even when the upstream public repository is highly available?"],
-        resources: [nexusDocs],
+        resources: [nexusDocs, repositoryManagerVideo],
     },
     {
         id: "python-pypi-distribution",
@@ -181,7 +185,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Create separate Nexus roles for publish and read access.", "Use a non-admin credential to prove publishing works only where intended.", "Use a read-only credential to prove an upload attempt is rejected."],
         questions: ["Why is a single shared Nexus administrator account dangerous even in a small team?", "What failure evidence proves least privilege is actually enforced?"],
-        resources: [nexusDocs],
+        resources: [nexusDocs, nexusRoles],
     },
     {
         id: "publish-python",
@@ -301,7 +305,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Create a provenance record for one Steward image and one steward-common release.", "Include source revision, CI run, repository path, version and digest/checksum.", "Identify one provenance fact you still cannot prove automatically."],
         questions: ["How is provenance different from a version number?", "What missing provenance fact would most weaken a rollback investigation?"],
-        resources: [slsa],
+        resources: [slsa, slsaProvenance],
     },
     {
         id: "sbom",
@@ -313,7 +317,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Generate an SBOM for one Steward container image or application build using an available tool.", "Store it as pipeline evidence alongside the artifact identity.", "Inspect five components and verify their versions against the actual build."],
         questions: ["Why is an SBOM not the same thing as a vulnerability scan?", "At what point in the pipeline is SBOM generation most reproducible?"],
-        resources: [cyclonedx, spdx],
+        resources: [cyclonedx, spdx, cyclonedxSbom],
     },
     {
         id: "signing-provenance",
