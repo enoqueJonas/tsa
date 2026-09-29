@@ -7,8 +7,6 @@ const mdnStatus: LearningResource = { title: "MDN — HTTP response status codes
 const rfc9110: LearningResource = { title: "RFC 9110 — HTTP Semantics", url: "https://www.rfc-editor.org/rfc/rfc9110" };
 const jsonSpec: LearningResource = { title: "RFC 8259 — The JavaScript Object Notation (JSON) Data Interchange Format", url: "https://www.rfc-editor.org/rfc/rfc8259" };
 
-const jsonVideo: LearningResource = { title: "Computerphile — JSON, not Jason", url: "https://www.youtube.com/watch?v=A0hoqSkyY7o", read: "Optional — whole short video.", purpose: "OPTIONAL VIDEO — concise visual reinforcement for JSON as a data-interchange representation;
-
 function slug(value: string) { return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 
 function lesson(title: string, estimatedMinutes: number, blocks: LessonBlock[], objective: string, instructions: string[], check: string, resources: LearningResource[] = [mdnHttp]): Lesson {
@@ -89,7 +87,7 @@ export const webAndApiFoundationsDeepLessons: Lesson[] = [
     { type: "callout", tone: "warning", title: "Valid JSON is not valid domain data", body: "{\"criticality\":\"banana\"} is valid JSON. Steward must still reject it because the representation violates the service-registry contract." },
     { type: "heading", id: "assignment", text: "Assignment" },
     { type: "list", ordered: true, items: ["Create valid JSON representations for a service and environment.", "Create syntactically valid JSON that violates Steward rules.", "Send a request with the wrong Content-Type and inspect the response.", "Explain how null differs from an omitted property for at least one Steward field."] },
-    { type: "resources", resources: [jsonSpec, mdnHttp, jsonVideo] },
+    { type: "resources", resources: [jsonSpec, mdnHttp] },
   ], "Distinguish JSON syntax, HTTP representation metadata and domain validation.", ["Create valid and domain-invalid JSON.", "Test Content-Type behavior.", "Compare null with omission.", "Document what the parser can validate versus what the Steward domain must validate."], "Why does valid JSON not imply a valid API request? What is the difference between Content-Type and Accept?", [jsonSpec, mdnHttp]),
 
   lesson("REST Principles and Trade-offs", 50, [
