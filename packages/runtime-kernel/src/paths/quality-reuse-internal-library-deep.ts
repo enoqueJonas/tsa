@@ -7,9 +7,9 @@ const junit: LearningResource = { title: "JUnit 5 User Guide", url: "https://doc
 const boundaryBlocks: LessonBlock[] = [
   { type: "paragraph", text: "Shared test infrastructure becomes valuable only after multiple capabilities have produced stable, demonstrably generic repetition. Steward domain behavior must remain local even when it is reused by many Steward tests." },
   { type: "heading", id: "reuse-candidates", text: "Audit candidates, do not move folders mechanically", level: 2 },
-  { type: "list", style: "unordered", items: ["Validated configuration primitives", "Generic REST Assured specification factories", "Playwright browser/context lifecycle foundations", "Evidence and attachment helpers", "Safe logging/redaction", "Selected JUnit extensions", "Generic unique-data utilities"] },
+  { type: "list", items: ["Validated configuration primitives", "Generic REST Assured specification factories", "Playwright browser/context lifecycle foundations", "Evidence and attachment helpers", "Safe logging/redaction", "Selected JUnit extensions", "Generic unique-data utilities"] },
   { type: "heading", id: "must-remain-steward", text: "Keep product behavior with the product", level: 2 },
-  { type: "list", style: "unordered", items: ["StewardApiClient", "Steward contract DTOs", "Steward page/component objects", "Ownership/lifecycle/dependency workflows", "Steward-specific assertions and test-data semantics"] },
+  { type: "list", items: ["StewardApiClient", "Steward contract DTOs", "Steward page/component objects", "Ownership/lifecycle/dependency workflows", "Steward-specific assertions and test-data semantics"] },
   { type: "resources", title: "Continue learning", resources: [maven, junit] }
 ];
 

@@ -89,7 +89,12 @@ export const webAndApiFoundationsDeepLessons: Lesson[] = [
     { type: "heading", id: "assignment", text: "Assignment" },
     { type: "list", ordered: true, items: ["Create valid JSON representations for a service and environment.", "Create syntactically valid JSON that violates Steward rules.", "Send a request with the wrong Content-Type and inspect the response.", "Explain how null differs from an omitted property for at least one Steward field."] },
     { type: "resources", resources: [jsonSpec, mdnHttp] },
-  ], "Distinguish JSON syntax, HTTP representation metadata and domain validation.", [jsonSpec, jsonVideo]),
+  ], "Distinguish JSON syntax, HTTP representation metadata and domain validation.", [
+    "Create valid and invalid Steward JSON representations.",
+    "Send requests with correct and incorrect Content-Type headers and compare the responses.",
+    "Use Accept and Content-Type independently and explain what each header communicates.",
+    "Test an omitted property, an explicit null value and a syntactically valid value that violates a Steward domain rule."
+  ], "Why can a request contain valid JSON and still be invalid for Steward? Explain the difference between Content-Type and Accept, and distinguish an omitted property from an explicit null value.", [jsonSpec, jsonVideo]),
 
   lesson("REST Principles and Trade-offs", 50, [
     { type: "heading", id: "rest", text: "REST is an architectural style, not a URL naming recipe" },

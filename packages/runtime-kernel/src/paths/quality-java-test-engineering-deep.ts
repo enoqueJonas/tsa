@@ -29,14 +29,14 @@ function lesson(spec: Spec): Lesson {
  const blocks: LessonBlock[]=[
   {type:"paragraph",text:spec.principle},
   {type:"heading",id:`${spec.id}-mechanics`,text:"Mechanics you must understand",level:2},
-  {type:"list",style:"unordered",items:spec.mechanics},
+  {type:"list",items:spec.mechanics},
   {type:"heading",id:`${spec.id}-framework`,text:"Why framework engineers need this",level:2},
-  {type:"list",style:"unordered",items:spec.frameworkUse},
+  {type:"list",items:spec.frameworkUse},
   {type:"heading",id:`${spec.id}-failure-patterns`,text:"Failure patterns to recognize",level:2},
-  {type:"list",style:"unordered",items:spec.antiPatterns},
+  {type:"list",items:spec.antiPatterns},
  ];
  if(spec.code) blocks.push({type:"code",language:"java",code:spec.code});
- blocks.push({type:"heading",id:`${spec.id}-check`,text:"Check your understanding",level:2},{type:"list",style:"unordered",items:spec.questions},{type:"resources",title:"Continue learning",resources:resourcesFor(spec.id)});
+ blocks.push({type:"heading",id:`${spec.id}-check`,text:"Check your understanding",level:2},{type:"list",items:spec.questions},{type:"resources",title:"Continue learning",resources:resourcesFor(spec.id)});
  return {id:`quality-java-${spec.id}`,title:spec.title,activities:[
   {id:`quality-java-${spec.id}-001`,title:spec.title,estimatedMinutes:55,content:{type:"reading",body:spec.principle,blocks}},
   {id:`quality-java-${spec.id}-002`,title:`Build: ${spec.title}`,estimatedMinutes:65,content:{type:"practical",objective:`Apply ${spec.title} while growing steward-tests.`,scenario:"Every exercise changes the real test project. Small isolated experiments are allowed only to expose a Java mechanism before applying it to steward-tests.",instructions:spec.practice,deliverables:["Committed steward-tests increment","Executable example or test","Short design note answering the lesson questions"],completionCriteria:["The learner can explain the Java mechanism without framework magic.","The increment compiles and tests execute.","The design keeps dependencies explicit.","The learner can identify the lesson anti-patterns in a code review."]}}

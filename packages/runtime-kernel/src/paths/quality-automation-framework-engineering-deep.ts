@@ -28,9 +28,9 @@ function lessonFrom(spec: Spec): Lesson {
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         { type: "paragraph", text: `For Steward, ${spec.core.toLowerCase()} The framework should preserve clear release identity, environment configuration and diagnostic evidence while keeping domain workflows close to the tests that need them.` },
     ];
-    if (spec.mechanics) blocks.push({ type: "heading", id: `${spec.id}-mechanics`, text: "Mechanics", level: 2 }, { type: "list", style: "unordered", items: spec.mechanics });
-    if (spec.signals) blocks.push({ type: "heading", id: `${spec.id}-signals`, text: "Evidence and signals", level: 2 }, { type: "list", style: "unordered", items: spec.signals });
-    if (spec.antiPatterns) blocks.push({ type: "heading", id: `${spec.id}-anti-patterns`, text: "Failure patterns to recognize", level: 2 }, { type: "list", style: "unordered", items: spec.antiPatterns });
+    if (spec.mechanics) blocks.push({ type: "heading", id: `${spec.id}-mechanics`, text: "Mechanics", level: 2 }, { type: "list", items: spec.mechanics });
+    if (spec.signals) blocks.push({ type: "heading", id: `${spec.id}-signals`, text: "Evidence and signals", level: 2 }, { type: "list", items: spec.signals });
+    if (spec.antiPatterns) blocks.push({ type: "heading", id: `${spec.id}-anti-patterns`, text: "Failure patterns to recognize", level: 2 }, { type: "list", items: spec.antiPatterns });
     if (spec.code) blocks.push({ type: "code", language: "java", code: spec.code });
     if (spec.warning) blocks.push({ type: "callout", tone: "warning", title: "Framework risk", body: spec.warning });
     blocks.push({ type: "callout", tone: "steward", title: "Steward automation checkpoint", body: "Generic infrastructure may be reusable. Ownership rules, lifecycle behavior, service registration workflows and Steward-specific assertions are domain code and should remain explicit." });
