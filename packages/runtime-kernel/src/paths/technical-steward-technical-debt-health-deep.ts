@@ -1,7 +1,17 @@
+import type { LearningResource } from "../activities/content";
 import type { Lesson } from "./lesson";
+const fowlerDebt={title:"Martin Fowler — Technical Debt",url:"https://martinfowler.com/bliki/TechnicalDebt.html",kind:"reference"} satisfies LearningResource;
+const dora={title:"DORA — Research Program",url:"https://dora.dev/research/",kind:"reference"} satisfies LearningResource;
+const sreToil={title:"Google SRE — Eliminating Toil",url:"https://sre.google/sre-book/eliminating-toil/",kind:"reference"} satisfies LearningResource;
+const resourcesByHealth:Record<string,LearningResource[]>={
+ "technical-debt-health-identifying-technical-debt":[fowlerDebt],"technical-debt-health-measuring-and-communicating-debt":[fowlerDebt,dora],
+ "technical-debt-health-prioritization":[fowlerDebt,sreToil],"technical-debt-health-engineering-health-metrics":[dora,sreToil],
+ "technical-debt-health-kpi-vs-kri":[dora],"technical-debt-health-sustainable-remediation":[sreToil,fowlerDebt],
+ "technical-debt-health-debt-ownership-and-review-cadence":[fowlerDebt],"technical-debt-health-balancing-feature-delivery-and-engineering-health":[dora,sreToil],
+};
 
 function reading(id: string, title: string, body: string): Lesson {
-  return { id, title, activities: [{ id: `${id}-001`, title, estimatedMinutes: 18, content: { type: "reading", body } }] };
+  return { id, title, activities: [{ id: `${id}-001`, title, estimatedMinutes: 18, content: { type: "reading", body, blocks:[{type:"resources",title:"Engineering health reference",resources:resourcesByHealth[id] ?? [fowlerDebt]}] } }] };
 }
 
 const scenario = "Steward is a mature organization-owned service spanning application code, PostgreSQL, cloud/VPS infrastructure, Nexus, steward-common, tsa-test-core, CI/CD, security controls, observability and operational ownership. Engineering-health decisions must use evidence and connect debt to delivery, reliability, security, cost or maintainability outcomes rather than treating every imperfection as debt.";
