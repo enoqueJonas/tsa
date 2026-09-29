@@ -6,9 +6,9 @@ const practices: Record<string, PracticalContent> = {
     "CI versus Continuous Delivery versus Continuous Deployment": {
         type: "practical",
         objective: "Draw the actual Steward delivery control boundaries and decide which transitions should remain human-approved versus automatically executed.",
-        scenario: "Steward now has a Jenkins CI pipeline that can validate source and build a traceable image. The next problem is deciding how that known artifact reaches the Rocky Linux homelab without turning every green build into an uncontrolled deployment.",
+        scenario: "Steward now has a GitLab CI pipeline that can validate source and build a traceable image. The next problem is deciding how that known artifact reaches the Rocky Linux homelab without turning every green build into an uncontrolled deployment.",
         instructions: [
-            "Trace one real Steward change from commit through Jenkins checks and image creation to the currently running homelab release.",
+            "Trace one real Steward change from commit through GitLab CI checks and image creation to the currently running homelab release.",
             "Mark exactly where CI ends and where delivery/deployment begins.",
             "For every remaining human step, state whether it is mechanical execution or a genuine risk decision.",
             "Choose one transition that GitLab CI should automate now and one approval that should remain explicit.",
@@ -34,7 +34,7 @@ const practices: Record<string, PracticalContent> = {
     "Deployment Automation": {
         type: "practical",
         objective: "Turn Steward deployment into a GitLab CI-orchestrated, versioned procedure that deploys a known image to the Rocky Linux homelab and fails visibly when preconditions or verification fail.",
-        scenario: "A successful Jenkins build still leaves an engineer SSHing into the homelab and typing container commands manually. The release identity is known, but the deployment mechanics are not yet reproducible.",
+        scenario: "A successful GitLab CI build still leaves an engineer SSHing into the homelab and typing container commands manually. The release identity is known, but the deployment mechanics are not yet reproducible.",
         instructions: [
             "Document the current manual deployment sequence before changing it.",
             "Define preconditions: target reachable through the approved private path, required configuration present, previous release identifiable and candidate image available.",
