@@ -165,7 +165,7 @@ const specs: Spec[] = [
             "A targeted compatibility matrix should produce decisions, not just more test executions.",
         ],
         steward: [
-            "Browser compatibility was explored in the previous module. Here the learner broadens the concept to Steward's Python/runtime assumptions, PostgreSQL version, internal tsa-test-core version and any public API compatibility obligations.",
+            "Browser compatibility was explored in the previous module. Here the learner broadens the concept to Steward's Java/JUnit automation runtime assumptions, PostgreSQL version, internal tsa-test-core version and any public API compatibility obligations.",
             "The goal is not to execute every release against every historical dependency. The goal is to know which combinations matter and what evidence is required before an upgrade or release."],
         practice: [
             "Write a small Steward compatibility contract covering client/runtime/dependency combinations that actually matter.",
@@ -218,7 +218,7 @@ const specs: Spec[] = [
             "Explain which database or application mechanism protects the invariant."],
         questions: ["Why is sending many requests insufficient as a concurrency test?", "What final-state assertion proves the chosen Steward invariant?"],
         code: "from concurrent.futures import ThreadPoolExecutor\n\ndef create_same_slug(client, payload):\n    return client.create_service(payload)\n\nwith ThreadPoolExecutor(max_workers=2) as pool:\n    results = list(pool.map(\n        lambda _: create_same_slug(client, payload),\n        range(2),\n    ))\n\n# Then assert the API/database invariant: exactly one service identity exists.",
-        language: "python",
+        language: "java",
     },
 ];
 
