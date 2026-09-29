@@ -4,6 +4,12 @@ import type { Lesson } from "./lesson";
 const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
 const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
 const composeDocs: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
+const containersVsVmsVideo: LearningResource = { title: "IBM Technology — Containers vs VMs", url: "https://www.youtube.com/watch?v=cjXI-yxqGTI", purpose: "RECOMMENDED VIDEO — visualize the isolation boundary before using containers operationally." };
+const containerInternalsVideo: LearningResource = { title: "Docker — How Containers Work", url: "https://www.youtube.com/watch?v=-YnMr1lj4Z8", purpose: "RECOMMENDED VIDEO — connect namespaces and cgroups to container behavior." };
+const docker101Video: LearningResource = { title: "Docker — Docker 101", url: "https://www.youtube.com/watch?v=gAGEar5HQoU", purpose: "RECOMMENDED VIDEO — reinforce Docker architecture and image build workflow." };
+const multiStageVideo: LearningResource = { title: "Docker — Multi-stage Builds", url: "https://www.youtube.com/watch?v=zpkqNPwEzac", purpose: "RECOMMENDED VIDEO — visualize build-stage separation and smaller runtime images." };
+const containerNetworkingVideo: LearningResource = { title: "NetworkChuck — Docker Networking", url: "https://www.youtube.com/watch?v=bKFMS5C4CG0", purpose: "RECOMMENDED VIDEO — visualize container network boundaries before the networking lab." };
+const composeVideo: LearningResource = { title: "Docker — Docker Compose", url: "https://www.youtube.com/watch?v=HG6yIjZapSA", purpose: "RECOMMENDED VIDEO — visualize declarative multi-container composition." };
 
 function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
@@ -22,15 +28,15 @@ export const containersAndDockerDeepLessons: Lesson[] = [
     richLesson("containers-vms", "Containers versus Virtual Machines", "Containers and virtual machines isolate workloads at different boundaries. Understanding the difference matters more than memorizing that containers are 'lighter'.", [
         { heading: "Shared kernel versus virtual hardware", body: "A VM includes a guest operating system above virtualized hardware. A container is a process isolated by kernel mechanisms while sharing the host kernel. This changes startup cost, density and the set of failures that remain shared." },
         { heading: "Choose isolation for the requirement", body: "Containers improve packaging and repeatability; VMs give a stronger operating-system boundary. Steward can run inside a container hosted by the VM built in Platform Builder: the layers solve different problems rather than replacing one another." },
-    ]),
+    ], [dockerDocs, containersVsVmsVideo]),
     richLesson("namespaces-cgroups", "Namespaces and cgroups Concepts", "Docker builds on Linux primitives. Namespaces shape what a process can see; cgroups shape how much resource it may consume and how that usage is accounted for.", [
         { heading: "Isolation is selective", body: "PID, network, mount, user and other namespaces can give a process its own view of system resources. The process is still running on the host kernel." },
         { heading: "Resources need explicit thinking", body: "Without limits, a container can compete with other workloads for host CPU and memory. A container boundary is not a capacity guarantee." },
-    ]),
+    ], [dockerDocs, containerInternalsVideo]),
     richLesson("architecture", "Docker Architecture", "Docker separates client commands from the daemon that manages images, networks, volumes and containers. This matters for security, troubleshooting and automation.", [
         { heading: "Follow the control path", body: "The CLI sends API requests to the Docker daemon. The daemon performs privileged host operations and delegates low-level container execution through the container runtime stack." },
         { heading: "The daemon is a trust boundary", body: "Membership in the docker group commonly grants power equivalent to root on the host. Treat Docker administration as privileged platform access, not as an ordinary developer convenience." },
-    ]),
+    ], [dockerDocs, docker101Video]),
     richLesson("images-layers", "Images and Layers", "An image is an immutable content-addressed filesystem plus metadata. Layers make builds cacheable and distributable, but Dockerfile order affects both efficiency and invalidation.", [
         { heading: "Separate image from container", body: "The image is the packaged template. A container adds a writable runtime layer and process state. Recreating a container from the same image should not require preserving that writable layer." },
         { heading: "Think in cache boundaries", body: "Place stable dependency installation before frequently changing application source where practical so code edits do not invalidate expensive layers unnecessarily." },
@@ -38,7 +44,7 @@ export const containersAndDockerDeepLessons: Lesson[] = [
     richLesson("dockerfiles", "Writing Dockerfiles", "A Dockerfile is executable build documentation. Its quality determines how reproducibly and safely the application image can be created.", [
         { heading: "Make the runtime explicit", body: "Pin an appropriate base-image family/version strategy, set a working directory, install dependencies deliberately, copy only required files, run as a non-root user when possible and define the process contract clearly." },
         { heading: "Avoid environment-specific builds", body: "The Steward image should not contain homelab secrets or environment-specific database URLs. Those belong to runtime configuration.", code: { language: "dockerfile", code: "FROM python:3.12-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nRUN useradd --system steward && chown -R steward:steward /app\nUSER steward\nCMD [\"gunicorn\", \"steward.wsgi:application\", \"--bind\", \"0.0.0.0:8000\"]" } },
-    ], [dockerDocs, dockerfileRef]),
+    ], [dockerDocs, dockerfileRef], [dockerfileRef, docker101Video]),
     richLesson("build-context", "Build Context", "Every Docker build receives a context: the set of files the builder is allowed to access. Oversized contexts slow builds and can accidentally expose sensitive material to build steps.", [
         { heading: "Control what enters the build", body: "Use .dockerignore to exclude virtual environments, Git metadata, logs, local databases, secrets and other irrelevant files." },
         { heading: "Context is part of reproducibility", body: "A Dockerfile that depends on undeclared files from a developer machine is not a reliable build. The build context should contain exactly the inputs required to create the image." },
@@ -46,7 +52,7 @@ export const containersAndDockerDeepLessons: Lesson[] = [
     richLesson("multistage", "Multi-stage Builds", "Multi-stage builds separate build-time tooling from runtime contents. They are useful when compilation or asset generation requires dependencies that the final container does not need.", [
         { heading: "Separate build and runtime concerns", body: "One stage can compile dependencies or assets; the final stage copies only the required result. This can reduce image size and attack surface." },
         { heading: "Use only when it buys something", body: "Do not add stages as decoration. For Steward, justify a second stage if it removes compilers, package caches or frontend build tooling from the runtime image." },
-    ], [dockerfileRef]),
+    ], [dockerfileRef], [dockerfileRef, multiStageVideo]),
     richLesson("volumes", "Volumes", "Containers are disposable; important state is not. Volumes and bind mounts move persistent or host-managed data outside the container writable layer.", [
         { heading: "Classify data before mounting", body: "Database files, uploaded assets and operational state have different persistence and backup needs. Source code bind mounts are convenient in development but usually inappropriate for immutable production-like deployment." },
         { heading: "Persistence still needs backup", body: "A named volume survives container replacement, but it can still be deleted, corrupted or lost with the host. Volume persistence is not a backup strategy." },
@@ -54,11 +60,11 @@ export const containersAndDockerDeepLessons: Lesson[] = [
     richLesson("networking", "Container Networking", "Containers normally communicate through virtual network interfaces, bridges, routing and NAT created by the container platform. The networking concepts from Platform Builder still apply.", [
         { heading: "Published ports are explicit exposure", body: "A service listening on port 8000 inside the container is not necessarily reachable from the host or LAN. Publishing creates a host-side path to that container port." },
         { heading: "Use service names internally", body: "In a Compose network, services can reach one another by service name. Do not hard-code transient container IP addresses." },
-    ]),
+    ], [dockerDocs, containerNetworkingVideo]),
     richLesson("compose", "Docker Compose", "Compose declares a small multi-container application: services, networks, volumes, configuration and dependency relationships. It is ideal for making Steward plus its database reproducible in the homelab.", [
         { heading: "Declare the topology", body: "Use Compose to express the application image, PostgreSQL dependency, persistent volume, network relationship and runtime configuration without turning a README into a sequence of manual docker run commands." },
         { heading: "Dependency order is not readiness", body: "A database container may have started before it is ready to accept connections. Add meaningful health checks or application retry behavior where startup ordering matters.", code: { language: "yaml", code: "services:\n  api:\n    build: .\n    depends_on:\n      db:\n        condition: service_healthy\n  db:\n    image: postgres:17\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U steward\"]\n      interval: 5s\n      timeout: 3s\n      retries: 10" } },
-    ], [composeDocs]),
+    ], [composeDocs], [composeDocs, composeVideo]),
     richLesson("health", "Health Checks", "A running process is not always a usable service. Health checks make one narrow operational claim testable, but poor checks can create false confidence.", [
         { heading: "Define what healthy means", body: "A liveness-style check asks whether the process is functioning enough to continue. A readiness-style check asks whether it can serve traffic. Do not make every dependency outage look like the process itself is dead." },
         { heading: "Keep checks cheap and specific", body: "For Steward, prefer a lightweight endpoint that verifies the application is responsive and only include database dependency if that matches the operational question being asked." },
