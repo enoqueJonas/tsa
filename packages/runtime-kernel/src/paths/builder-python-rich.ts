@@ -10,6 +10,8 @@ const packagingGuide: LearningResource = { title: "Python Packaging User Guide",
 const typingDocs: LearningResource = { title: "typing — Support for type hints", url: "https://docs.python.org/3/library/typing.html" };
 const mypyDocs: LearningResource = { title: "mypy documentation", url: "https://mypy.readthedocs.io/en/stable/" };
 const pdbDocs: LearningResource = { title: "pdb — The Python Debugger", url: "https://docs.python.org/3/library/pdb.html" };
+const pythonOopVideo: LearningResource = { title: "Corey Schafer — Python OOP Tutorial 1: Classes and Instances", url: "https://www.youtube.com/watch?v=ZDa-Z5JzLYM", read: "Optional — whole first video in the OOP series.", purpose: "OPTIONAL VIDEO — reinforces the class/instance model; TSA remains focused on when an object is justified, not syntax alone." };
+const pythonPdbVideo: LearningResource = { title: "Red Eyed Coder Club — Python PDB tutorial", url: "https://www.youtube.com/watch?v=SdsHXwN3Ka4", read: "Watch 02:19–17:42 for debugger output, stepping, inspection, breakpoints and stack navigation.", purpose: "RECOMMENDED VIDEO — see an interactive debugger session before applying the same inspection workflow to the Steward Python defect." };
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -250,7 +252,8 @@ const oop = lesson(
     ],
     "Model one the application concept as an object, protect at least one invariant, and compare it with a simpler representation.",
     ["Choose Service, Team or Environment.", "Implement state plus meaningful behavior.", "Protect one invariant in the object API.", "Use composition for one relationship.", "Build a functional/dictionary alternative.", "Write a comparison explaining which version you would keep today."],
-    "When does a class improve the design? When is it unnecessary? Why can inheritance increase coupling?"
+    "When does a class improve the design? When is it unnecessary? Why can inheritance increase coupling?",
+    [pythonTutorial, stdlib, pythonOopVideo]
 );
 
 const comprehensions = lesson(
@@ -340,7 +343,7 @@ const debugging = lesson(
     "Diagnose a non-trivial the application Python defect using a traceback, competing hypotheses and debugger/inspection evidence.",
     ["Introduce or select a defect crossing at least two function calls.", "Capture the traceback before editing.", "Write at least two hypotheses.", "Use breakpoint(), pdb, logging or targeted prints to falsify one.", "Fix the root cause rather than suppressing the symptom.", "Rerun the original reproduction and record the evidence chain."],
     "Why can the final traceback frame differ from the true origin of invalid state? Describe how one experiment falsified a hypothesis in your investigation.",
-    [pdbDocs, pythonTutorial]
+    [pdbDocs, pythonTutorial, pythonPdbVideo]
 );
 
 const lab: Lesson = {
