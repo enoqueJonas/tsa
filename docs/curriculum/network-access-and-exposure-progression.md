@@ -8,7 +8,7 @@ The progression deliberately separates three traffic classes:
 
 1. **Public application traffic** — traffic that legitimate Steward users may originate from the internet.
 2. **Private service traffic** — database, cache, messaging and internal service-to-service paths that should not be exposed directly to the internet.
-3. **Administrative/control-plane traffic** — SSH, Jenkins, Nexus, dashboards and other operator interfaces that should normally require a private/VPN path or another deliberately restricted management boundary.
+3. **Administrative/control-plane traffic** — SSH, GitLab CI, Nexus, dashboards and other operator interfaces that should normally require a private/VPN path or another deliberately restricted management boundary.
 
 ## Platform Builder — local network, host policy and VPN
 
@@ -26,18 +26,18 @@ The learner must:
 - prove both positive and negative reachability: an allowed client can reach the resource while an untrusted/public path cannot;
 - keep database and other backend-only ports private.
 
-Suitable VPN-only resources include SSH administration, an internal diagnostic endpoint, a future Jenkins/Nexus interface, or another non-public control-plane service. The exercise is about access boundaries, not hiding insecure software behind a VPN.
+Suitable VPN-only resources include SSH administration, an internal diagnostic endpoint, a future GitLab CI runner/management or Nexus interface, or another non-public control-plane service. The exercise is about access boundaries, not hiding insecure software behind a VPN.
 
 ## Delivery Engineer — reproducible homelab deployment
 
 Delivery Engineer keeps the Platform Builder access boundaries while making deployment reproducible.
 
-Steward should be deployed to the learner-managed Rocky Linux/homelab environment through the established delivery system rather than copied and started manually. Ansible, Jenkins and the artifact repository automate host/application state, but their administrative interfaces are not made public merely because Steward is deployable.
+Steward should be deployed to the learner-managed Rocky Linux/homelab environment through the established delivery system rather than copied and started manually. Ansible, GitLab CI and the artifact repository automate host/application state, but their administrative interfaces are not made public merely because Steward is deployable.
 
 The learner should preserve a topology in which:
 
 - Steward application ingress has a defined user-facing path;
-- Jenkins, Nexus and SSH remain on the private/VPN management path unless a later exercise establishes a stronger justified control;
+- GitLab CI, Nexus and SSH remain on the private/VPN management path unless a later exercise establishes a stronger justified control;
 - PostgreSQL, Redis and RabbitMQ remain backend-only;
 - deployment automation can reach the target through a deliberate trusted path.
 
@@ -84,7 +84,7 @@ Administrator
       |
  WireGuard VPN
       |
-SSH / Jenkins / Nexus / private operations
+SSH / GitLab CI / Nexus / private operations
 ```
 
 The learner must prove the boundary with reachability evidence rather than only a diagram.
@@ -120,7 +120,7 @@ The default exposure model is:
 | Steward HTTPS API through the designed edge | Public when the exercise requires it |
 | Kong public listener | Public when acting as the internet edge |
 | SSH | VPN/private management path |
-| Jenkins | VPN/private management path |
+| GitLab CI | VPN/private management path |
 | Nexus | VPN/private management path |
 | Grafana/operations UI | Private by default; deliberate authenticated exposure only when justified |
 | PostgreSQL | Backend/private only |

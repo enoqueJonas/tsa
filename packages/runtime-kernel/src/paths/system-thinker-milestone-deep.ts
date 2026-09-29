@@ -26,6 +26,7 @@ export const stewardApiSystemDesignPortfolioDeep: LearningPath = {
                             "Container/component views and one lifecycle/state model",
                             "Responsibility and dependency map with coupling findings",
                             "At least three important data-flow views, including one failure-oriented flow",
+                            "Versioned enterprise file-interface contract plus the future NFS/managed-transfer boundary and Platform Builder implementation handoff",
                             "Cache-pressure evidence, Redis authority/staleness/invalidation/fallback evidence and a keep/remove condition",
                             "Async-side-effect pressure, RabbitMQ delivery/retry/idempotency/DLQ evidence and a keep/remove condition",
                             "RabbitMQ-versus-Kafka comparison without a duplicate Kafka production implementation",
@@ -129,14 +130,15 @@ export const stewardApiSystemDesignPortfolioDeep: LearningPath = {
                     scenario: "A senior engineer should be able to understand not only the final topology but the pressures and decisions that caused it to change.",
                     instructions: [
                         "Create a portfolio index with purpose, scope and navigation.",
+                        "Include the enterprise file-interface contract, authority map and future NFS/managed-transfer boundary; verify that implementation remains explicitly handed to Platform Builder rather than claimed complete.",
                         "Order evidence from baseline problem/context through pressure, implementation, failure and decisions.",
                         "For every diagram/model state the question, audience, evidence, assumptions and omissions.",
                         "Show current-state versus future/migration possibilities explicitly.",
                         "Remove redundant artifacts that do not add a useful perspective.",
                         "Finish with a Platform Builder handoff describing what operating PostgreSQL, Redis, RabbitMQ and Steward on real hosts now requires."
                     ],
-                    deliverables: ["Portfolio index", "Curated evidence set", "Consistency checklist", "Platform Builder handoff"],
-                    completionCriteria: ["A reviewer can navigate without oral guidance.", "The original simple baseline remains visible.", "The reasons for Redis/RabbitMQ are traceable.", "Future alternatives are not confused with current deployed components."],
+                    deliverables: ["Portfolio index", "Curated evidence set", "Enterprise file-integration design + implementation handoff", "Consistency checklist", "Platform Builder handoff"],
+                    completionCriteria: ["A reviewer can navigate without oral guidance.", "The original simple baseline remains visible.", "The reasons for Redis/RabbitMQ are traceable.", "Future alternatives are not confused with current deployed components.", "The file-integration design distinguishes contract/authority reasoning from the NFS implementation deferred to Platform Builder."],
                 },
             },
             {

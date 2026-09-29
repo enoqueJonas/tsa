@@ -36,9 +36,9 @@ const brief: Lesson = {
                 blocks: [
                     { type: "heading", id: "goal", text: "What this milestone proves", level: 2 },
                     { type: "paragraph", text: "The goal is not to collect cloud products. The goal is to show that you can choose a hosting model, provision infrastructure, expose the right network path through Kong, encode infrastructure with OpenTofu, operate a Kubernetes/OpenShift runtime, reconcile declared environment state with Argo CD, reason about failure and recovery, and explain the cost and responsibility of the resulting system." },
-                    { type: "list", items: ["One real Steward release candidate is reused; no environment rebuilds source by hand.", "Internet exposure is explicit: DNS, TLS, Kong ingress and administrative access are separate concerns.", "Infrastructure is reproducible through OpenTofu while Terraform concepts remain transferable.", "Kubernetes/OpenShift runtime state is versioned and GitOps reconciliation has one authoritative owner.", "Jenkins remains the build/test/package/publish system; Argo CD reconciles environment state rather than replacing CI.", "Managed services or enterprise platform layers remain only where a driver justifies their cost and responsibility shift.", "Backup and recovery are demonstrated, not assumed.", "The final architecture includes an explicit monthly cost model and accepted risks."] },
+                    { type: "list", items: ["One real Steward release candidate is reused; no environment rebuilds source by hand.", "Internet exposure is explicit: DNS, TLS, Kong ingress and administrative access are separate concerns.", "Infrastructure is reproducible through OpenTofu while Terraform concepts remain transferable.", "Kubernetes/OpenShift runtime state is versioned and GitOps reconciliation has one authoritative owner.", "GitLab CI remains the build/test/package/publish system; Argo CD reconciles environment state rather than replacing CI.", "S3-compatible object storage, certificate automation and progressive delivery remain only where their demonstrated requirement justifies the added lifecycle and operational responsibility.", "Managed services or enterprise platform layers remain only where a driver justifies their cost and responsibility shift.", "Backup and recovery are demonstrated, not assumed.", "The final architecture includes an explicit monthly cost model and accepted risks."] },
                     { type: "heading", id: "evidence-chain", text: "The evidence chain", level: 2 },
-                    { type: "code", language: "text", caption: "Milestone evidence flow", code: "Steward source revision\n        ↓\nJenkins build/test/package\n        ↓\nimmutable artifact in Nexus\n        ↓\nOpenTofu-defined infrastructure\n        ↓\nOpenShift/Kubernetes + environment Git\n        ↓\nArgo CD reconciliation\n        ↓\nKong + DNS + TLS public edge\n        ↓\nrunning Steward image digest\n        ↓\nexternal verification + recovery evidence\n        ↓\narchitecture + cost handoff" },
+                    { type: "code", language: "text", caption: "Milestone evidence flow", code: "Steward source revision\n        ↓\nGitLab CI build/test/package/publish\n        ↓\nimmutable artifact in Nexus\n        ↓\nOpenTofu-defined infrastructure\n        ↓\nOpenShift/Kubernetes + environment Git\n        ↓\nArgo CD reconciliation\n        ↓\nKong + DNS + TLS public edge\n        ↓\nrunning Steward image digest\n        ↓\nexternal verification + recovery evidence\n        ↓\narchitecture + cost handoff" },
                     { type: "callout", tone: "steward", title: "Cloud boundary", body: "Cloud Engineer establishes the infrastructure, orchestration, gateway and GitOps platform. It does not yet replace Quality, Security or Reliability with shallow checklists. Preserve clear handoffs into those schools." },
                 ],
             },
@@ -52,7 +52,7 @@ const gate1 = practicalLesson(
     "Freeze the target architecture and explain why it is the smallest defensible remote design for Steward.",
     [
         "Start from the final Cloud Architecture and Cost review, not from a blank diagram.",
-        "Record the chosen region, hosting model, compute, storage, database, virtual-network, Kong edge, Kubernetes/OpenShift, GitOps, identity, secret and backup decisions.",
+        "Record the chosen region, hosting model, compute, relational storage, S3-compatible object storage where justified, database, virtual-network, Kong edge, Kubernetes/OpenShift, GitOps, identity, secret, certificate-lifecycle and backup decisions.",
         "For every managed service or platform layer, state the operational responsibility transferred or added, plus the new dependency or cost introduced.",
         "Compare the target with Steward Homelab v1 and the single-VPS baseline; state which problems justify keeping Kubernetes/OpenShift and which simpler designs would still be valid alternatives.",
         "List accepted risks and explicitly deferred improvements.",
@@ -83,7 +83,7 @@ const gate3 = practicalLesson(
     "Prove that Steward's public request path and administrative/control-plane paths are deliberately separated.",
     [
         "Trace the external HTTPS path from DNS resolution through provider routing/firewall, Kong TLS termination/routing and the Steward service endpoint.",
-        "Confirm that direct Django, PostgreSQL, Redis, RabbitMQ, Jenkins, Nexus and cluster-management endpoints are not public user services.",
+        "Confirm that direct Django, PostgreSQL, Redis, RabbitMQ, GitLab CI, Nexus and cluster-management endpoints are not public user services.",
         "Demonstrate the intended SSH/VPN or cluster administrative path and show how it differs from public user ingress.",
         "Record the cloud, Kubernetes/OpenShift and GitOps identities used by a human operator, infrastructure automation, Argo CD and the running workload.",
         "Trace one runtime secret from its managed source to the workload without exposing its value in source, image, logs, environment Git or IaC output.",
@@ -96,17 +96,17 @@ const gate3 = practicalLesson(
 const gate4 = practicalLesson(
     "gate-4-release-verification",
     "Gate 4: Reconcile and Verify the Steward Release",
-    "Deploy the same immutable Steward artifact through the established Jenkins/Nexus and GitOps chain and verify it from outside the environment.",
+    "Deploy the same immutable Steward artifact through the established GitLab CI/Nexus and GitOps chain and verify it from outside the environment.",
     [
         "Choose one existing release candidate and record its source revision, application version and immutable image digest in Nexus.",
-        "Keep Jenkins responsible for build/test/package/publish; update or approve environment Git so Argo CD reconciles that exact artifact into Kubernetes/OpenShift.",
-        "Verify that direct Jenkins push deployment is not simultaneously authoritative for the same GitOps-managed environment.",
-        "Record configuration and migration assumptions separately from artifact identity.",
+        "Keep GitLab CI responsible for build/test/package/publish; update or approve environment Git so Argo CD reconciles that exact artifact into Kubernetes/OpenShift.",
+        "Verify that direct GitLab CI push deployment is not simultaneously authoritative for the same GitOps-managed environment.",
+        "Record configuration and migration assumptions separately from artifact identity.", "Prove the currently served TLS certificate and expiry evidence using the Cloud-stage certificate probe/notification contract.", "Where the progressive-delivery lesson retained canary delivery, demonstrate the configured analysis signal and successful promotion or rollback without assuming the later Prometheus stack.",
         "Verify DNS resolution, certificate validity, Kong routing, HTTPS response and a representative authenticated Steward API request from an external client.",
         "Capture the running pod image identity and prove it matches environment Git and the selected Nexus artifact.",
     ],
-    ["Release identity record", "Environment Git change", "Argo CD reconciliation evidence", "External client verification", "Running image-digest proof"],
-    ["The deployed bytes are traceable source → Jenkins → Nexus → environment Git → Argo CD → running pod.", "Success is demonstrated from a real external client rather than inferred from pipeline or sync success.", "There is one authoritative deployment model for the environment."],
+    ["Release identity record", "Environment Git change", "Argo CD reconciliation evidence", "External client verification", "Running image-digest proof", "TLS certificate/expiry evidence", "Canary analysis evidence where retained"],
+    ["The deployed bytes are traceable source → GitLab CI → Nexus → environment Git → Argo CD → running pod.", "Certificate validity and expiry are proven from the served endpoint.", "If canary delivery is retained, its automated analysis and rollback/promotion behavior are evidenced with the stage-appropriate signal.", "Success is demonstrated from a real external client rather than inferred from pipeline or sync success.", "There is one authoritative deployment model for the environment."],
 );
 
 const gate5 = practicalLesson(
@@ -130,13 +130,13 @@ const gate6 = practicalLesson(
     "Prove that the remote and enterprise-platform environment is financially explainable and operationally proportionate.",
     [
         "List all billable resources and classify fixed/allocated versus usage-dependent cost drivers.",
-        "Include the capacity cost of Kubernetes/OpenShift nodes, public addresses, storage, backups, load-balancing/gateway dependencies and retained logs where applicable.",
+        "Include the capacity cost of Kubernetes/OpenShift nodes, public addresses, block/file storage, S3-compatible object storage, backups, load-balancing/gateway dependencies and retained logs where applicable.",
         "Produce the expected monthly baseline using current provider pricing assumptions and record the date/source of those assumptions in your project notes.",
         "Compare actual or forecast spend with the budget threshold defined earlier in Cloud Engineer.",
         "Identify idle, oversized or redundant resources and either remove/right-size them or justify their retention.",
-        "Document which provider, cluster, Kong and Argo CD health signals an operator should review before later Reliability work begins.",
+        "Document which provider, object-storage, certificate, cluster, Kong and Argo CD health signals an operator should review before later Reliability work begins.", "For any S3-compatible storage retained by Steward, prove one real put/get or application-consumer path plus its access/lifecycle boundary; do not treat Nexus or NFS as interchangeable object stores.",
     ],
-    ["Monthly cost model", "Budget threshold and response", "Right-sizing decision", "Minimal cloud/platform operations checklist"],
+    ["Monthly cost model", "Budget threshold and response", "Right-sizing decision", "Minimal cloud/platform operations checklist", "Object-storage operation/lifecycle evidence where retained"],
     ["Every persistent paid resource has an owner and reason to exist.", "Kubernetes/OpenShift cost is justified by a capability requirement rather than assumed as mandatory production architecture.", "The review does not prematurely duplicate Reliability Engineer's deeper observability work."],
 );
 
@@ -148,8 +148,8 @@ const gate7 = practicalLesson(
         "Document the authoritative architecture and the public request path through Kong.",
         "Reference the OpenTofu root, state backend assumptions, provider identity boundaries and destructive-change rules.",
         "Reference the Kubernetes/OpenShift manifests, environment Git repository, Argo CD Application and deployment-authority rules.",
-        "Reference the Jenkins/Nexus release path and immutable artifact source.",
-        "Document DNS/TLS ownership, backup/recovery method, cost baseline and current failure domains.",
+        "Reference the GitLab CI/Nexus release path and immutable artifact source.",
+        "Document DNS/TLS ownership, certificate-renewal/expiry evidence, object-storage ownership where retained, backup/recovery method, progressive-delivery status, cost baseline and current failure domains.",
         "Separate completed Cloud Engineer concerns from work intentionally deferred to Quality Steward, Security Steward and Reliability Engineer.",
         "Record the most important known limitation that the next school should inherit rather than silently solving it here.",
     ],
@@ -167,7 +167,7 @@ const review: Lesson = {
             estimatedMinutes: 45,
             content: {
                 type: "reflection",
-                prompt: "Can another engineer recreate the Steward environment from versioned infrastructure, artifact and environment-state sources without relying on your laptop, cloud-console memory or undocumented manual steps? Explain the full path from source revision to Jenkins/Nexus artifact, OpenTofu infrastructure, Kubernetes/OpenShift workload, environment Git and Argo CD reconciliation, Kong/DNS/TLS exposure and external verification. Identify the current single points of failure, the accepted monthly cost, the recovery evidence you actually proved, one reason a simpler VPS architecture could still be preferable, and which remaining concerns now belong specifically to Quality Steward, Security Steward and Reliability Engineer rather than Cloud Engineer.",
+                prompt: "Can another engineer recreate the Steward environment from versioned infrastructure, artifact and environment-state sources without relying on your laptop, cloud-console memory or undocumented manual steps? Explain the full path from source revision to GitLab CI/Nexus artifact, OpenTofu infrastructure, Kubernetes/OpenShift workload, environment Git and Argo CD reconciliation, Kong/DNS/TLS exposure and external verification. Identify the current single points of failure, the accepted monthly cost, the recovery evidence you actually proved, one reason a simpler VPS architecture could still be preferable, and which remaining concerns now belong specifically to Quality Steward, Security Steward and Reliability Engineer rather than Cloud Engineer.",
                 minimumCharacters: 450,
             },
         },

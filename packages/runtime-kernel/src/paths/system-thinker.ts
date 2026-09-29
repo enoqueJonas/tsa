@@ -6,6 +6,7 @@ import { modelingSoftwareSystemsQualityLessons } from "./system-thinker-modeling
 import { componentsAndDependenciesQualityLessons } from "./system-thinker-components-quality";
 import { dataFlowAndIntegrationQualityLessons } from "./system-thinker-data-flow-quality";
 import { soapXmlEnterpriseIntegrationDeepLessons } from "./system-thinker-soap-xml-deep";
+import { enterpriseFileIntegrationDeepLessons } from "./system-thinker-enterprise-file-integration-deep";
 import { distributedStateAndMessagingDeepLessons } from "./system-thinker-distributed-state-messaging-deep";
 import { failureModesQualityLessons } from "./system-thinker-failure-quality";
 import { architectureDecisionsAndTradeOffsQualityLessons } from "./system-thinker-architecture-decisions-quality";
@@ -21,6 +22,7 @@ export const modelingSoftwareSystems = path("modeling-software-systems", "Modeli
 export const componentsAndDependencies = path("components-and-dependencies", "Components and Dependencies", componentsAndDependenciesQualityLessons);
 export const dataFlowAndIntegration = path("data-flow-and-integration", "Data Flow and Integration", dataFlowAndIntegrationQualityLessons);
 export const soapXmlEnterpriseIntegration = path("soap-xml-enterprise-integration", "SOAP and XML Enterprise Integration", soapXmlEnterpriseIntegrationDeepLessons);
+export const enterpriseFileIntegrationDesign = path("enterprise-file-integration", "Enterprise File and Batch Integration Design", enterpriseFileIntegrationDeepLessons);
 export const distributedStateAndMessaging = path("distributed-state-and-messaging", "Distributed State and Messaging", distributedStateAndMessagingDeepLessons);
 export const failureModes = path("failure-modes", "Failure Modes", failureModesQualityLessons);
 export const architectureDecisionsAndTradeOffs = path("architecture-decisions", "Architecture Decisions and Trade-offs", architectureDecisionsAndTradeOffsQualityLessons);
@@ -37,6 +39,7 @@ export const systemThinkerPaths: LearningPath[] = [
     componentsAndDependencies,
     dataFlowAndIntegration,
     soapXmlEnterpriseIntegration,
+    enterpriseFileIntegrationDesign,
     distributedStateAndMessaging,
     failureModes,
     architectureDecisionsAndTradeOffs,
