@@ -14,7 +14,7 @@ During Builder, the learner extracts a small genuinely reusable Python package f
 
 During Delivery Engineer, a second internal consumer needs the package. Copying source code between repositories is explicitly rejected. The learner deploys and operates an internal artifact repository in the homelab, with Sonatype Nexus Repository as the reference implementation unless a later curriculum decision selects an equivalent product.
 
-During Quality Steward, the same principle is applied to test engineering. The Steward automation framework is built first as a coherent project. Only after generic testing infrastructure has demonstrated a legitimate reuse boundary does the learner extract a reusable internal testing package, provisionally named `tsa-test-core`. Steward-specific domain helpers remain in the Steward test project.
+During Quality Steward, the same principle is applied to test engineering. The Steward automation framework is built first as a Java 17+ Maven project using JUnit 5, REST Assured and Playwright Java. Only after generic testing infrastructure has demonstrated a legitimate reuse boundary does the learner extract a reusable Maven library named `tsa-test-core`. Steward-specific API clients, page/workflow objects and domain assertions remain in the Steward test project.
 
 The target flow becomes:
 
@@ -25,7 +25,7 @@ Application and test source repositories
 CI -> test -> build -> version -> publish
                               |
                               v
-                    Internal Repository
+                    Internal Maven Repository
                     /        |         \
               private PyPI  npm     container
                  /     \                |
@@ -48,7 +48,7 @@ Add to Software Craft:
 - package boundaries and public APIs
 - avoiding accidental coupling
 - semantic versioning for a library
-- building a Python distribution
+- building a versioned Maven JAR
 - consuming a local/private source package during development
 - Lab: Extract `steward-common` from Steward API
 
@@ -72,24 +72,23 @@ Add to Automation Framework Engineering:
 - framework code vs domain-specific test code
 - recognizing reusable testing infrastructure
 - public APIs for test libraries
-- reusable pytest fixtures and plugins
+- reusable JUnit 5 extensions and test infrastructure
 - reusable HTTP/client foundations
 - shared assertions and evidence/reporting helpers
 - versioning test infrastructure
 - Lab: Extract `tsa-test-core`
-- Lab: Publish and Consume `tsa-test-core` from the Internal Repository
+- Lab: Publish and Consume `tsa-test-core` from the Internal Maven Repository
 
 Candidate `tsa-test-core` capabilities may include:
-- environment/configuration loading
-- generic HTTP client foundations
-- retry/wait utilities where justified
-- common assertions
-- structured test logging
-- test metadata and evidence capture
-- reporting helpers
-- genuinely generic pytest fixtures/plugins
+- validated environment/configuration loading
+- generic REST Assured request/response specifications and transport helpers
+- Playwright browser/context lifecycle foundations
+- generic JUnit 5 extensions, tags and execution metadata
+- Jackson serialization support and test-data foundations
+- Allure attachments/evidence helpers and diagnostic capture
+- logging and safe secret-redaction helpers
 
-Steward-specific operations such as `create_steward_user`, Steward domain clients, Steward page objects and business assertions must remain in the Steward automation project unless later evidence proves a broader reuse boundary.
+Steward domain clients, workflows, page/component models and business assertions stay outside the shared library.
 
 A second test project must eventually consume `tsa-test-core`. The Professional Engineer capstone is a strong candidate. This provides evidence that the package is actually reusable rather than an artificial curriculum extraction.
 
