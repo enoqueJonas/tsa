@@ -151,7 +151,7 @@ export const continuousDeliveryDeploymentDeepLessons: Lesson[] = [
     richLesson("canary", "Canary Deployment Concepts", "Canary deployment exposes a new release to a limited slice of traffic or users before broader rollout. Its value comes from comparing real runtime evidence while limiting blast radius.", [
         { heading: "Define the observation", body: "A canary without measurable success criteria is just partial exposure. Decide which errors, latency, business behavior or operator signals would stop promotion." },
         { heading: "Know when it is premature", body: "Steward does not yet have the traffic scale or observability maturity to justify implementing a real canary. The concept becomes actionable later when Reliability Engineering adds stronger runtime signals." },
-    ], [, argoCanary]),
+    ], [argoCanary]),
     richLesson("feature-flags", "Feature Flag Concepts", "Feature flags decouple code deployment from feature exposure. They can reduce release coupling, but they introduce runtime configuration state that must be owned, tested and eventually removed.", [
         { heading: "Separate deployment from activation", body: "A compatible code path can be deployed dark, then enabled for selected users or conditions. This can reduce rollback pressure when feature activation is reversible independently of the binary." },
         { heading: "Control flag debt", body: "Temporary flags need owners and removal criteria. Stale flags multiply execution paths and make testing, debugging and reasoning harder." },
