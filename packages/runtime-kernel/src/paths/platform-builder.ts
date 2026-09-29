@@ -6,7 +6,7 @@ import { configurationManagementDeepLessons } from "./platform-builder-configura
 import { coreInfrastructureServicesDeepLessons } from "./platform-builder-core-infrastructure-services-deep";
 import { enterpriseFileAndDirectoryServicesDeepLessons } from "./platform-builder-enterprise-file-directory-services-deep";
 import { enterpriseStorageNasDeepLessons } from "./platform-builder-enterprise-storage-nas-deep";
-import { enterpriseFileIntegrationDeepLessons } from "./system-thinker-enterprise-file-integration-deep";
+import { enterpriseFileIntegrationImplementationDeepLessons } from "./platform-builder-enterprise-file-integration-deep";
 import { coreInfrastructureImplementationMilestone, osLifecycleImplementationMilestone, windowsEnterpriseImplementationMilestone } from "./platform-builder-implementation-milestones";
 import { linuxAdministrationQualityLessons } from "./platform-builder-linux-administration-quality";
 import { stewardHomelabV1DeepLessons } from "./platform-builder-milestone-deep";
@@ -35,7 +35,7 @@ export const platformConfigurationManagement = path("platform-configuration-mana
 export const osPatchingLifecycle = path("os-patching-lifecycle", "OS Patching and Lifecycle Operations", beforeClosingReview(osPatchingLifecycleDeepLessons, osLifecycleImplementationMilestone));
 export const windowsPowerShellEnterprise = path("windows-powershell-enterprise", "Windows and PowerShell Mixed-Enterprise Operations", beforeClosingReview(windowsPowerShellEnterpriseDeepLessons, windowsEnterpriseImplementationMilestone));
 export const enterpriseInfrastructureServices = path("enterprise-infrastructure-services", "Enterprise File and Directory Services", enterpriseFileAndDirectoryServicesDeepLessons);
-export const enterpriseFileIntegration = path("enterprise-file-integration", "Enterprise File and Batch Integration", enterpriseFileIntegrationDeepLessons);
+export const enterpriseFileIntegration = path("enterprise-file-integration", "Enterprise File and Batch Integration", enterpriseFileIntegrationImplementationDeepLessons);
 export const stewardHomelabV1 = path("steward-homelab-v1", "Platform Builder Milestone", stewardHomelabV1DeepLessons);
 
 export const platformBuilderPaths: AuthoredLearningPath[] = [
