@@ -6,6 +6,9 @@ const azureRegions: LearningResource = { title: "Microsoft Azure geographies and
 const cloudflareLearning: LearningResource = { title: "Cloudflare Learning Center — What is cloud computing?", url: "https://www.cloudflare.com/learning/cloud/what-is-the-cloud/" };
 const digitalOceanCloud: LearningResource = { title: "DigitalOcean — What is cloud computing?", url: "https://www.digitalocean.com/resources/articles/what-is-cloud-computing" };
 const finops: LearningResource = { title: "FinOps Foundation — What is FinOps?", url: "https://www.finops.org/introduction/what-is-finops/" };
+const ibmCloudVideo: LearningResource = { title: "IBM Technology — Cloud Computing Explained", url: "https://www.youtube.com/watch?v=M988_fsOSWo", purpose: "RECOMMENDED VIDEO — visual baseline for the ownership and consumption shift from homelab infrastructure to cloud services." };
+const ibmServiceModelsVideo: LearningResource = { title: "IBM Technology — IaaS, PaaS, SaaS", url: "https://www.youtube.com/watch?v=36zducUX16w", purpose: "RECOMMENDED VIDEO — visualize how provider versus customer responsibility changes across service models." };
+const awsGlobalInfrastructure: LearningResource = { title: "AWS — Global Infrastructure", url: "https://aws.amazon.com/about-aws/global-infrastructure/", read: "Use the region and Availability Zone diagrams.", purpose: "RECOMMENDED VISUAL RESOURCE — establish region/AZ failure-domain concepts using a concrete provider model." };
 
 interface LessonSpec {
     id: string;
@@ -63,7 +66,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Create a four-column comparison for Steward across homelab/on-prem, colocation, VPS and public cloud.", "Score each option on cost, setup speed, operational control, internet exposure, recovery options and scalability.", "Choose the best next-stage hosting model for Steward and state which future condition would justify changing that choice."],
         questions: ["Why is a VPS not simply the same thing as a full public-cloud architecture?", "Which requirement would justify moving Steward away from the homelab, and which requirement would not?"],
-        resources: [cloudflareLearning, digitalOceanCloud],
+        resources: [cloudflareLearning, digitalOceanCloud, ibmCloudVideo],
     },
     {
         id: "iaas-paas-saas",
@@ -76,7 +79,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Map Steward API, PostgreSQL, DNS, TLS and backups across one IaaS design and one more-managed design.", "For each component, record what the provider operates and what you still own.", "Identify one managed service that would meaningfully reduce toil and one that would currently add unnecessary complexity."],
         questions: ["What responsibility remains yours when using PaaS?", "Why can a mixed architecture use both IaaS and managed services without being inconsistent?"],
-        resources: [awsSharedResponsibility, digitalOceanCloud],
+        resources: [awsSharedResponsibility, digitalOceanCloud, ibmServiceModelsVideo],
     },
     {
         id: "regions-zones-availability",
@@ -89,7 +92,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Choose two plausible provider regions for Steward and compare latency to Mozambique, service availability and cost assumptions.", "Identify which current Steward components are single points of failure even if the VM itself moved to a second zone.", "Document whether the next Steward deployment needs one zone or multiple zones and justify the choice."],
         questions: ["Why does moving a VM to another availability zone not automatically make the whole application highly available?", "Which non-technical factor can legitimately determine region choice?"],
-        resources: [azureRegions],
+        resources: [azureRegions, awsGlobalInfrastructure],
     },
     {
         id: "shared-responsibility",
@@ -115,7 +118,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Describe one realistic Steward demand increase and decide whether vertical or horizontal scaling is the better first response.", "List the architectural changes required before Steward API could safely run multiple instances.", "Identify two cloud resources that could continue generating cost after an experiment if forgotten."],
         questions: ["What is the difference between scalability and elasticity?", "Why is horizontal scaling not simply 'start another container'?"],
-        resources: [digitalOceanCloud, finops],
+        resources: [digitalOceanCloud, finops, ibmCloudVideo],
     },
     {
         id: "cloud-cost-awareness",
