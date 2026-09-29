@@ -1,4 +1,14 @@
 import type { Activity } from "../activities";
+import type { LearningResource } from "../activities/content";
+const googleLeading = { title:"Google SRE — The Evolving SRE Engagement Model", url:"https://sre.google/workbook/engagement-model/", kind:"reference" } satisfies LearningResource;
+const adr = { title:"Architectural Decision Records", url:"https://adr.github.io/", kind:"reference" } satisfies LearningResource;
+const googlePostmortem = { title:"Google SRE — Postmortem Culture", url:"https://sre.google/sre-book/postmortem-culture/", kind:"reference" } satisfies LearningResource;
+const resourcesByLeadership:Record<string,LearningResource[]>={
+ "technical-leadership-technical-ownership":[googleLeading],"technical-leadership-influence-without-authority":[googleLeading],
+ "technical-leadership-decision-making":[adr],"technical-leadership-technical-communication":[adr],
+ "technical-leadership-mentoring":[googleLeading],"technical-leadership-engineering-reviews":[adr],
+ "technical-leadership-escalation-responsible-challenge":[googlePostmortem,googleLeading],
+};
 import type { Lesson } from "./lesson";
 
 function lesson(id: string, title: string, body: string, practice: string[]): Lesson {
@@ -6,7 +16,7 @@ function lesson(id: string, title: string, body: string, practice: string[]): Le
         id: `${id}-reading`,
         title,
         estimatedMinutes: 55,
-        content: { type: "reading", body },
+        content: { type: "reading", body, blocks: [{type:"resources",title:"Continue learning",resources:resourcesByLeadership[id] ?? [adr]}] },
     };
     const practical: Activity = {
         id: `${id}-practice`,
