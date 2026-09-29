@@ -1,8 +1,8 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
-const letsEncrypt: LearningResource = { title: "Let's Encrypt documentation", url: "https://letsencrypt.org/docs/" };
-const certbot: LearningResource = { title: "Certbot documentation", url: "https://eff-certbot.readthedocs.io/" };
+const letsEncrypt: LearningResource = { title: "Let's Encrypt — How It Works", url: "https://letsencrypt.org/how-it-works/", purpose: "RECOMMENDED VISUAL RESOURCE — use the issuance and renewal automation loop as the certificate-lifecycle mental model." };
+const certbot: LearningResource = { title: "Certbot — Instructions", url: "https://certbot.eff.org/instructions", purpose: "RECOMMENDED FIRST-PARTY WORKFLOW — use current renewal instructions rather than a version-sensitive walkthrough." };
 const openssl: LearningResource = { title: "OpenSSL documentation", url: "https://docs.openssl.org/" };
 
 const blocks: LessonBlock[] = [
