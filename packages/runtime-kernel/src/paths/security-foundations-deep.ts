@@ -257,13 +257,14 @@ const lab: Lesson = {
                 objective: "Convert the boundary map into prioritized security work.",
                 scenario: "Do not exploit vulnerabilities yet. Establish the risks, current controls and evidence gaps that the rest of Security Steward must investigate.",
                 instructions: [
+                    "Reopen the Quality Steward residual-risk register and the prior-school deferred-work/evidence gaps; classify which items create security hypotheses, unverified controls or threat-model inputs rather than silently starting a new risk list.",
                     "Write at least eight risk scenarios using asset, threat, weakness/exposure and consequence language.",
                     "Estimate likelihood and impact qualitatively and explain the reasoning.",
                     "Map preventive, detective and corrective controls already present.",
                     "Mark controls as verified, assumed or missing.",
                     "Record residual risk and the next module or activity that should investigate each item."],
-                deliverables: ["Initial Steward security risk register", "Control-evidence status", "Threat-modeling handoff"],
-                completionCriteria: ["Risks are prioritized rather than presented as an unranked checklist.", "Verified controls are distinguishable from assumptions.", "The register creates a clear handoff into Threat Modeling."],
+                deliverables: ["Prior-school residual-risk reconciliation", "Initial Steward security risk register", "Control-evidence status", "Threat-modeling handoff"],
+                completionCriteria: ["Quality/deferred-work risks are either carried forward, reframed with rationale or explicitly closed by current evidence.", "Risks are prioritized rather than presented as an unranked checklist.", "Verified controls are distinguishable from assumptions.", "The register creates a clear handoff into Threat Modeling."],
             },
         },
         {
