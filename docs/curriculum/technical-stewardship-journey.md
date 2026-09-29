@@ -632,90 +632,140 @@ Learn quality engineering deeply and build a real automation framework against t
 # 08 — Security Steward
 
 ## Purpose
-Understand common threats by safely observing and reproducing vulnerabilities in controlled labs, then secure the system built throughout TSA.
+Move from trustworthy quality evidence to adversarial security engineering: model assets and trust boundaries, reproduce weaknesses only in controlled systems, harden application/platform/supply-chain identity boundaries, verify controls, and defend residual risk.
+
+> Transition contract: [`security-steward-transition-audit.md`](./security-steward-transition-audit.md). Security Steward reuses HTTP/Linux/Docker/GitLab/JWT/testing mechanics learned earlier and applies them to attacker capability, exploitability, trust and layered controls rather than reteaching their functional operation.
 
 ## Module 1 — Security Foundations
 - Confidentiality, integrity and availability
-- Assets, threats, vulnerabilities and risk
-- Attack surface
-- Least privilege
-- Defense in depth
-- Trust boundaries
+- Assets, threats, vulnerabilities, controls and risk
+- Attack surface and trust boundaries
+- Least privilege and defense in depth
+- Preventive, detective and corrective controls
+- Risk treatment and residual risk
 
 ## Module 2 — Threat Modeling
 - Assets and actors
-- Data flows
-- Trust boundaries
-- Threat identification
-- STRIDE-style thinking
+- Data flows and trust boundaries
+- Threat identification and STRIDE-style thinking
+- Abuse cases
 - Risk prioritization
-- Mitigations
+- Mitigation design
+- Living threat models
 
 ## Module 3 — Web and API Threats
-- Injection and SQL injection
-- Cross-site scripting
-- CSRF
-- Broken authentication
+- Injection/SQL injection, XSS and CSRF
+- Broken authentication and token/session attacks
 - Broken authorization/IDOR
-- SSRF
-- Path traversal
-- File upload risks
-- Command injection
-- Insecure deserialization concepts
-- Security misconfiguration
-- Sensitive data/secrets exposure
-- API abuse
-- Rate limiting
-- Token/session attacks
+- SSRF, path traversal and file-upload risks
+- Command injection and insecure deserialization concepts
+- Security misconfiguration and secrets exposure
+- API abuse and rate limiting
 - Cryptographic failures
 - Vulnerable dependencies
 - Logging/monitoring failures
+- Mass assignment/excessive exposure
+- Exploit preconditions, impact and bypass paths—not only negative test cases
 
 ## Module 4 — Practical Vulnerability Laboratory
-- Isolated vulnerable applications
-- Safe lab networking
-- Observe vulnerability behavior
-- Reproduce representative attacks in the lab
-- Analyze evidence
-- Implement mitigation
-- Retest
+- Isolated vulnerable applications and safe lab networking
+- Intercepting/proxying and observing behavior
+- Reproduce representative attacks only in learner-controlled systems
+- Capture reproducible evidence
+- Develop mitigation hypotheses
+- Retest and write actionable findings
 
-## Module 5 — Linux and Network Security
-- Users/permissions
+## Module 5 — Application Security Engineering
+- Secure authentication lifecycle
+- Authorization design and object-level enforcement
+- Input validation and safe APIs
+- Secure error handling
+- Secrets lifecycle
+- Security headers/configuration
+- Security logging/audit evidence
+- Abuse resistance/rate limiting
+- Data protection
+- Security-focused code review
+- Abuse cases and negative security requirements
+- Durable security regression testing using the existing quality platform
+
+## Module 6 — Linux and Network Security
+- Users/groups/permissions and sudo boundaries
 - SSH hardening
-- Firewalling
-- Service exposure
-- Patch management
-- Privilege concepts
+- Host firewalling and service exposure
+- Patch/update windows
+- File/secret permissions
 - Logging/auditing
-- Network segmentation concepts
+- Segmentation and administrative boundaries
+- TLS/certificate configuration
 
-## Module 6 — Container and Delivery Security
-- Container attack surface
-- Image scanning
-- Minimal images
-- Runtime permissions
-- Secrets
-- CI/CD permissions
-- Dependency scanning
-- SAST/DAST concepts
-- Supply-chain risks
-- Security gates
+## Module 7 — Container and Delivery Security
+- Container attack surface and runtime permissions
+- Minimal/trusted base images and image scanning
+- Delivery secrets and GitLab CI identities/least privilege
+- Protected environments and approval boundaries
+- Dependency scanning and contextual remediation
+- SAST/DAST as complementary evidence
+- Software supply-chain threats
+- Dependency confusion, typosquatting and malicious packages
+- Nexus/internal repository trust boundaries
+- Package provenance/integrity
+- SBOMs
+- Security gates/exceptions
+- Protecting internal publishing credentials and `tsa-test-core` consumption
 
-## Module 7 — Application Security Engineering
-- Secure authentication
-- Authorization testing
-- Input validation
-- Secret management
-- Secure headers/configuration
-- Security logging
-- Abuse cases
+## Module 8 — Artifact Signing and Verification
+- Artifact identity, digests and signatures
+- Sigstore/Cosign concepts and trust model
+- Signing Steward artifacts
+- Consumer verification
+- Enforcement/failure behavior
+
+## Module 9 — Identity and Secrets Security
+- Identity/trust boundaries
+- OAuth 2.0 / OpenID Connect concepts
+- Keycloak/federated identity
+- Service/workload identity
+- Token validation and audience/issuer boundaries
+- Secret lifecycle and rotation
+- Gateway identity boundaries
+- Domain authorization remains in Steward
+
+## Module 10 — Vault and Dynamic Secrets
+- Vault architecture and trust
+- Authentication methods
+- Policies
+- Static versus dynamic secrets
+- Short-lived database/service credentials
+- Rotation/revocation and audit evidence
+
+## Module 11 — Internal PKI and Machine Trust
+- PKI hierarchy and trust roots
+- Certificates and key lifecycle
+- Internal issuance
+- TLS/mTLS concepts
+- Rotation and revocation
+- Machine/workload trust implementation
+
+## Module 12 — Enterprise Directory Federation
+- Enterprise directory concepts
+- Federation boundaries
+- Group/claim mapping
+- Authentication versus domain authorization
+- Failure/bypass analysis
+
+## Module 13 — Secure File Transfer Migration
+- FTP threat model
+- SFTP/SSH trust and host-key verification
+- Key lifecycle and least privilege
+- Migration/rollback evidence
+- Secure operational transfer design
 
 ## Labs
-Use deliberately vulnerable applications only in isolated learning infrastructure, then apply defensive lessons to Steward API and its platform.
+Use deliberately vulnerable applications only in isolated learning infrastructure. Apply findings to Steward through explicit requirements, code/configuration changes and positive/adversarial retest evidence. Reuse the Java quality platform where durable regression automation adds value.
 
 ## Milestone
-**Steward Security Assessment and Hardening** — threat model, controlled assessment, findings, remediation, Linux/container/application hardening, pipeline security controls, and retest evidence.
+**Steward Security Assessment and Hardening** — living threat model, controlled assessment, reproducible findings, application/host/container/delivery/identity hardening, supply-chain and machine-trust controls, durable regression evidence, and a defended residual-risk register.
 
 ---
 
