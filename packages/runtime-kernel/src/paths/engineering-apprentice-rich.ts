@@ -8,14 +8,6 @@ const googleTechnicalWriting: LearningResource = { title: "Google for Developers
 const learningScience: LearningResource = { title: "Nature Reviews Psychology — Science of effective learning", url: "https://doi.org/10.1038/s44159-022-00089-1" };
 const acmEthics: LearningResource = { title: "ACM Code of Ethics and Professional Conduct", url: "https://www.acm.org/code-of-ethics" };
 
-const systemsThinkingVideo: LearningResource = { title: "MIT OpenCourseWare — Information Flow / Feedback Loops", url: "https://ocw.mit.edu/courses/res-tll-004-stem-concept-videos-fall-2013/video_galleries/videos/information-flow/", purpose: "OPTIONAL VIDEO — visual reinforcement for feedback loops and information flow;
-
-const debuggingMindsetVideo: LearningResource = { title: "MIT Missing Semester — Lecture 7: Debugging and Profiling", url: "https://www.youtube.com/watch?v=l812pUnKxME", read: "Watch the debugging portion before the lecture moves into profiling.", purpose: "RECOMMENDED VIDEO — observe the transition from symptoms to logs, debuggers and inspection tools before applying TSA's hypothesis-driven method." };
-
-const engineeringDecisionsVideo: LearningResource = { title: "Architecture Decision Records (ADR): The Basics", url: "https://www.youtube.com/watch?v=7Gqn2dbt_JY", read: "Whole short video.", purpose: "OPTIONAL VIDEO — concrete reinforcement for preserving engineering decision context;
-
-const spacedRepetitionVideo: LearningResource = { title: "Osmosis — Spaced repetition in learning theory", url: "https://www.youtube.com/watch?v=cVf38y07cfk", read: "Whole short video.", purpose: "OPTIONAL VIDEO — visual reinforcement for spacing;
-
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
@@ -110,7 +102,6 @@ export const systemsThinkingRich = richLesson(
     "Build a system map that explains behavior and failure propagation rather than merely listing components.",
     ["Select a real application or work process.", "Define the question your system model should answer.", "Draw actors, components, dependencies and flows.", "Identify shared resources, delays and feedback loops.", "Trace two different failure paths to user-visible symptoms.", "Revise the boundary if the model cannot explain the observed behavior."],
     "Why is a system boundary a decision rather than an objective fact? Give an example of a symptom whose likely cause sits outside the component that reports the error. What information does an unlabeled architecture box-and-arrow diagram fail to communicate?",
-    [systemsThinkingVideo],
 );
 
 export const tradeOffsRich = richLesson(
@@ -148,7 +139,7 @@ export const debuggingMindsetRich = richLesson(
         { type: "list", items: ["Recency bias: assuming the latest change caused the issue because it is recent.", "Confirmation bias: collecting only evidence that fits the preferred explanation.", "Availability bias: blaming the subsystem you understand best.", "Premature closure: stopping when the symptom disappears rather than proving the mechanism."] },
         { type: "heading", id: "assignment", text: "Assignment" },
         { type: "list", ordered: true, items: ["Choose a safe defect or deliberately introduce one locally.", "Capture the exact failure and reproduction steps.", "Write at least three hypotheses before editing the code/configuration.", "Design an experiment that can falsify your favorite hypothesis.", "Record the evidence chronologically.", "After fixing it, recreate the causal condition and confirm that the failure returns."] },
-        { type: "resources", title: "Required and supporting reading", resources: [sreTroubleshooting, missingSemesterDebugging, debuggingMindsetVideo] },
+        { type: "resources", title: "Required and supporting reading", resources: [sreTroubleshooting, missingSemesterDebugging] },
     ],
     "Diagnose a technical failure using competing hypotheses, discriminating experiments and a preserved evidence trail.",
     ["Reproduce and capture the failure.", "Write three hypotheses before changing the system.", "Choose one high-information experiment.", "Record evidence and eliminate at least one hypothesis.", "Implement the smallest justified fix.", "Recreate the causal condition to verify the explanation."],
@@ -174,7 +165,6 @@ export const engineeringDecisionsRich = richLesson(
     "Write an engineering decision record whose context, alternatives, trade-offs and revisit conditions are understandable without chat history.",
     ["Pick a decision with at least two credible alternatives.", "Write context and drivers.", "Separate evidence and assumptions.", "Explain why the selected option wins now.", "List positive and negative consequences.", "Define one measurable or observable revisit condition."],
     "Why can reversing a decision later be evidence of good engineering rather than failure? What distinguishes an ADR-worthy choice from a routine implementation detail? Why should the disadvantages of the chosen option be documented?",
-    [engineeringDecisionsVideo],
 );
 
 export const evidenceAndTechnicalReasoningRich = richLesson(
@@ -213,7 +203,7 @@ export const learningAsEngineeringSkillRich = richLesson(
         { type: "callout", tone: "note", title: "Portfolio evidence is learning evidence", body: "A working lab, investigation log, benchmark, design review or explanation is useful before it ever appears in a job application. It tells you what you can genuinely reproduce." },
         { type: "heading", id: "assignment", text: "Assignment" },
         { type: "list", ordered: true, items: ["Choose one broad TSA learning goal.", "Rewrite it as an observable capability.", "Design a first attempt before you feel fully prepared.", "Define what evidence will count as success.", "Add one retrieval exercise with the material closed.", "Plan two spaced follow-up attempts with increasing difficulty.", "Write how feedback will determine what you study next."] },
-        { type: "resources", title: "Required and supporting reading", resources: [learningScience, spacedRepetitionVideo] },
+        { type: "resources", title: "Required and supporting reading", resources: [learningScience] },
     ],
     "Turn a broad learning goal into a demonstrable capability with retrieval, feedback, spacing and reviewable evidence.",
     ["Select a skill you genuinely want to improve.", "Write one observable capability statement.", "Design a first attempt and evidence criteria.", "Add a retrieval task with no notes open.", "Schedule two increasingly difficult follow-up attempts.", "Define how failure changes the next study step."],
