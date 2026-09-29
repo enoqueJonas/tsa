@@ -3,6 +3,7 @@ import type { Lesson } from "./lesson";
 
 const awsS3: LearningResource = { title: "Amazon S3 User Guide", url: "https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html" };
 const minio: LearningResource = { title: "MinIO documentation", url: "https://min.io/docs/minio/linux/index.html" };
+const ibmObjectStorageVideo: LearningResource = { title: "IBM Technology — Object Storage", url: "https://www.youtube.com/watch?v=eV7T3t2d-7E", purpose: "RECOMMENDED VIDEO — reuse the object/key/bucket mental model before implementing S3-compatible storage." };
 
 const blocks: LessonBlock[] = [
     { type: "paragraph", text: "Object storage is already part of the Cloud Engineer mental model. This path closes the implementation-depth gap: Steward must now use a real S3-compatible service for data that genuinely fits bucket/key/API semantics." },
@@ -14,7 +15,7 @@ const blocks: LessonBlock[] = [
         "S3-compatible object storage holds durable blobs such as generated exports, evidence bundles, report archives or selected backup artifacts."
     ] },
     { type: "callout", tone: "steward", title: "Primary learning implementation", body: "Run one learner-owned S3-compatible implementation in the homelab, using MinIO or another compatible implementation that exposes the required S3 semantics. Provider S3 can be compared later; the exercise must not depend on buying a cloud account." },
-    { type: "resources", title: "Continue learning", resources: [awsS3, minio] },
+    { type: "resources", title: "Continue learning", resources: [ibmObjectStorageVideo, awsS3, minio] },
 ];
 
 export const objectStorageImplementationDeepLessons: Lesson[] = [
