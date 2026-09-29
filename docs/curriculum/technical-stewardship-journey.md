@@ -480,15 +480,17 @@ Learn quality engineering deeply and build a real automation framework against t
 
 ## Module 3 — Java for Test Framework Engineering
 - Java/JVM execution model and Maven project structure
-- Classes, records, enums and immutability
+- Classes, records, enums, access modifiers and immutability
+- Object identity, `equals`, `hashCode` and safe diagnostic `toString`
 - Interfaces, composition and dependency direction
 - Constructor dependency injection before DI containers
-- Generics and collections
-- Exceptions and try-with-resources
-- Annotations and reflection
+- Generics, collections and type erasure
+- Exceptions, cause preservation and try-with-resources
+- Annotations, retention and reflection
+- JUnit Platform vs Jupiter, lifecycle, parameterization and extension boundaries
 - JUnit tags and governed test selection
 - Lambdas, functional interfaces, streams and Optional
-- Concurrency, shared state and thread-safety fundamentals
+- Concurrency, shared state, visibility/atomicity, `ThreadLocal` risks and thread-safety fundamentals
 - **Increment:** create `steward-tests`, establish Maven/JUnit, immutable configuration, constructor injection, tag policy and one raw Java HttpClient probe
 
 ## Module 4 — Unit and Component Testing
