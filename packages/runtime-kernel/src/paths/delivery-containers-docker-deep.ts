@@ -44,7 +44,7 @@ export const containersAndDockerDeepLessons: Lesson[] = [
     richLesson("dockerfiles", "Writing Dockerfiles", "A Dockerfile is executable build documentation. Its quality determines how reproducibly and safely the application image can be created.", [
         { heading: "Make the runtime explicit", body: "Pin an appropriate base-image family/version strategy, set a working directory, install dependencies deliberately, copy only required files, run as a non-root user when possible and define the process contract clearly." },
         { heading: "Avoid environment-specific builds", body: "The Steward image should not contain homelab secrets or environment-specific database URLs. Those belong to runtime configuration.", code: { language: "dockerfile", code: "FROM python:3.12-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nRUN useradd --system steward && chown -R steward:steward /app\nUSER steward\nCMD [\"gunicorn\", \"steward.wsgi:application\", \"--bind\", \"0.0.0.0:8000\"]" } },
-    ], [dockerDocs, dockerfileRef], [dockerfileRef, docker101Video]),
+    ], [dockerDocs, dockerfileRef, docker101Video]),
     richLesson("build-context", "Build Context", "Every Docker build receives a context: the set of files the builder is allowed to access. Oversized contexts slow builds and can accidentally expose sensitive material to build steps.", [
         { heading: "Control what enters the build", body: "Use .dockerignore to exclude virtual environments, Git metadata, logs, local databases, secrets and other irrelevant files." },
         { heading: "Context is part of reproducibility", body: "A Dockerfile that depends on undeclared files from a developer machine is not a reliable build. The build context should contain exactly the inputs required to create the image." },
@@ -52,7 +52,7 @@ export const containersAndDockerDeepLessons: Lesson[] = [
     richLesson("multistage", "Multi-stage Builds", "Multi-stage builds separate build-time tooling from runtime contents. They are useful when compilation or asset generation requires dependencies that the final container does not need.", [
         { heading: "Separate build and runtime concerns", body: "One stage can compile dependencies or assets; the final stage copies only the required result. This can reduce image size and attack surface." },
         { heading: "Use only when it buys something", body: "Do not add stages as decoration. For Steward, justify a second stage if it removes compilers, package caches or frontend build tooling from the runtime image." },
-    ], [dockerfileRef], [dockerfileRef, multiStageVideo]),
+    ], [dockerfileRef, multiStageVideo]),
     richLesson("volumes", "Volumes", "Containers are disposable; important state is not. Volumes and bind mounts move persistent or host-managed data outside the container writable layer.", [
         { heading: "Classify data before mounting", body: "Database files, uploaded assets and operational state have different persistence and backup needs. Source code bind mounts are convenient in development but usually inappropriate for immutable production-like deployment." },
         { heading: "Persistence still needs backup", body: "A named volume survives container replacement, but it can still be deleted, corrupted or lost with the host. Volume persistence is not a backup strategy." },
@@ -64,7 +64,7 @@ export const containersAndDockerDeepLessons: Lesson[] = [
     richLesson("compose", "Docker Compose", "Compose declares a small multi-container application: services, networks, volumes, configuration and dependency relationships. It is ideal for making Steward plus its database reproducible in the homelab.", [
         { heading: "Declare the topology", body: "Use Compose to express the application image, PostgreSQL dependency, persistent volume, network relationship and runtime configuration without turning a README into a sequence of manual docker run commands." },
         { heading: "Dependency order is not readiness", body: "A database container may have started before it is ready to accept connections. Add meaningful health checks or application retry behavior where startup ordering matters.", code: { language: "yaml", code: "services:\n  api:\n    build: .\n    depends_on:\n      db:\n        condition: service_healthy\n  db:\n    image: postgres:17\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U steward\"]\n      interval: 5s\n      timeout: 3s\n      retries: 10" } },
-    ], [composeDocs], [composeDocs, composeVideo]),
+    ], [composeDocs, composeVideo]),
     richLesson("health", "Health Checks", "A running process is not always a usable service. Health checks make one narrow operational claim testable, but poor checks can create false confidence.", [
         { heading: "Define what healthy means", body: "A liveness-style check asks whether the process is functioning enough to continue. A readiness-style check asks whether it can serve traffic. Do not make every dependency outage look like the process itself is dead." },
         { heading: "Keep checks cheap and specific", body: "For Steward, prefer a lightweight endpoint that verifies the application is responsive and only include database dependency if that matches the operational question being asked." },
