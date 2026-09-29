@@ -534,6 +534,13 @@ Learn quality engineering deeply and build a real automation framework against t
 - Test-data builders, isolation and deterministic cleanup
 - REST Assured API clients and request/response specifications
 - Jackson DTO/JSON mapping and AssertJ assertions
+- Decide whether each scenario actually requires browser evidence
+- Playwright Java runtime ownership: Playwright → Browser → BrowserContext → Page
+- BrowserContext session isolation versus shared backend-data isolation
+- DOM and accessibility-tree semantics; role/label/test-id locator policy
+- Playwright actionability, auto-waiting and web-first assertions
+- SPA navigation, network observation and application-readiness signals
+- Cookies, local/session storage and secure authentication-state reuse
 - Playwright Java browser/context lifecycle after the API/framework substrate exists
 - UI abstractions/Page Objects and component objects where appropriate
 - Logging, Allure reporting and diagnostic evidence
