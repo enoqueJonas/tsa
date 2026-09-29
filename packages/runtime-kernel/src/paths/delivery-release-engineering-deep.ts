@@ -5,7 +5,7 @@ import { releaseEngineeringReviewLesson } from "./delivery-release-engineering-r
 
 const semver: LearningResource = { title: "Semantic Versioning", url: "https://semver.org/" };
 const twelveFactor: LearningResource = { title: "The Twelve-Factor App — Build, release, run", url: "https://12factor.net/build-release-run" };
-const githubReleases: LearningResource = { title: "GitHub documentation — Managing releases", url: "https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository" };
+const gitlabReleases: LearningResource = { title: "GitLab — Releases", url: "https://docs.gitlab.com/user/project/releases/", purpose: "PRIMARY PLATFORM REFERENCE — record release metadata around the immutable artifacts already published to Nexus; GitLab release metadata does not replace Nexus artifact authority." };
 const dora: LearningResource = { title: "DORA — Software delivery performance", url: "https://dora.dev/" };
 const sre: LearningResource = { title: "Google SRE Book — Release Engineering", url: "https://sre.google/sre-book/release-engineering/" };
 
@@ -35,7 +35,7 @@ const coreReleaseLessons: Lesson[] = [
         { type: "heading", id: "runtime-proof", text: "Runtime proof beats pipeline optimism", level: 2 }, { type: "paragraph", text: "Combine deployment-system evidence with host/container state, health checks and a client-level verification. For Steward, a useful proof might include the deployed OCI digest, migration result, container health and a successful authenticated service-registry request." },
         { type: "code", language: "bash", caption: "Example post-deployment evidence", code: "docker inspect steward-api --format '{{.Image}} {{.State.Health.Status}}'\ncurl --fail https://steward.internal/health\ncurl --fail -H \"Authorization: Bearer $TOKEN\" https://steward.internal/api/services" },
         { type: "heading", id: "release-record", text: "The release record", level: 2 }, { type: "paragraph", text: "Keep a concise record linking release version, source commit, artifact digest, CI run, approval, target environment, deployment execution and verification result. This becomes the starting point for rollback and incident investigation." },
-    ], [githubReleases, dora, sre]),
+    ], [gitlabReleases, dora, sre]),
     reading("release-observability", "Release Observability", "Release observability is the ability to determine what changed, where it changed and whether system behavior changed with it. It is narrower than the full observability discipline taught later in Reliability Engineer.", [
         { type: "heading", id: "change-marker", text: "Make change visible", level: 2 }, { type: "paragraph", text: "When a deployment occurs, operators should be able to correlate the timestamp and release identity with health and behavior. At minimum, expose the running application version and preserve deployment timestamps and verification results." },
         { type: "heading", id: "before-after", text: "Compare before and after", level: 2 }, { type: "paragraph", text: "A post-deployment check should compare known baseline behavior with the new state. A health endpoint returning 200 is useful but insufficient if the service can no longer authenticate users, reach PostgreSQL or register services." },
@@ -53,7 +53,7 @@ const coreReleaseLessons: Lesson[] = [
         { type: "heading", id: "commands-with-context", text: "Commands need context", level: 2 }, { type: "paragraph", text: "A runbook is not a dump of shell commands. For every consequential action, explain the expected state, what success looks like and what should cause the operator to stop. This prevents a command from being blindly executed against the wrong environment or release." },
         { type: "heading", id: "exercise-runbook", text: "Exercise the runbook", level: 2 }, { type: "paragraph", text: "The strongest review is to have another engineer follow the procedure or to execute it yourself from a clean context. Record unclear assumptions and update the runbook. Documentation that has never been exercised is still a hypothesis." },
         { type: "callout", tone: "note", title: "Keep it close to the system", body: "Version the Steward release runbook with the delivery configuration or in an equally reviewable engineering repository. Changes to the release process should update the procedure in the same change where practical." },
-    ], [sre, githubReleases]),
+    ], [sre, gitlabReleases]),
 ];
 
 export const releaseEngineeringDeepLessons: Lesson[] = [...coreReleaseLessons, releaseEngineeringLab, releaseEngineeringReviewLesson];
