@@ -453,6 +453,8 @@ Operate a real internet-facing remote environment while learning the concepts be
 
 # 07 — Quality Steward
 
+> Implementation contract: [`quality-steward-repository-evolution.md`](./quality-steward-repository-evolution.md). Quality Steward lessons must evolve the same `steward-tests` artifact according to these checkpoints rather than introducing the finished framework early.
+
 ## Purpose
 Learn quality engineering deeply and build a real automation framework against the increasingly realistic Steward platform.
 
