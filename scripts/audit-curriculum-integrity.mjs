@@ -18,7 +18,7 @@ for (const [file, source] of sources) {
 
   for (const match of source.matchAll(/(?:const|export const)\s+(\w*[Mm]ilestone\w*)\s*(?::\s*(?:AuthoredLesson|Lesson))?\s*=/g)) {
     const symbol = match[1];
-    const uses = (source.match(new RegExp("\\b" + symbol + "\\b", "g")) || []).length;
+    const uses = (allRuntime.match(new RegExp("\\b" + symbol + "\\b", "g")) || []).length;
     if (uses < 2 && !/DeepLessons$/.test(symbol)) failures.push(`declared milestone not composed/exported: ${file} -> ${symbol}`);
   }
 }
