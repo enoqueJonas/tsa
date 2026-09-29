@@ -4,6 +4,21 @@ import type { Lesson } from "./lesson";
 const junit: LearningResource = { title: "JUnit 5 User Guide", url: "https://docs.junit.org/current/user-guide/" };
 const restAssured: LearningResource = { title: "REST Assured", url: "https://rest-assured.io/" };
 const pact: LearningResource = { title: "Pact — Contract Testing", url: "https://docs.pact.io/" };
+const mdnHttp: LearningResource = { title: "MDN — HTTP", url: "https://developer.mozilla.org/en-US/docs/Web/HTTP" };
+const jackson: LearningResource = { title: "Jackson Databind", url: "https://github.com/FasterXML/jackson-databind" };
+const assertj: LearningResource = { title: "AssertJ Core", url: "https://assertj.github.io/doc/" };
+const jsonSchema: LearningResource = { title: "JSON Schema", url: "https://json-schema.org/learn/getting-started-step-by-step" };
+
+const resourcesFor = (id: string): LearningResource[] => {
+    if (id === "http-semantics" || id === "negative-resilience") return [mdnHttp, restAssured];
+    if (id === "rest-assured-model" || id === "specifications" || id === "filters-observability" || id === "api-client-boundary" || id === "api-test-design" || id === "auth-testing") return [restAssured, junit];
+    if (id === "serialization-jackson") return [jackson, restAssured];
+    if (id === "schema-contract") return [jsonSchema, restAssured];
+    if (id === "contract-testing") return [pact];
+    if (id === "database-assertions" || id === "integration-boundaries" || id === "data-setup-cleanup") return [junit, assertj];
+    if (id === "mocking-virtualization") return [pact, restAssured];
+    return [restAssured, junit];
+};
 
 type Spec = { id: string; title: string; intro: string; sections: Array<{ title: string; body: string[]; list?: string[]; code?: string; language?: string }>; practice: string[]; questions: string[] };
 
@@ -16,7 +31,7 @@ function rich(spec: Spec): Lesson {
         if (section.code) blocks.push({ type: "code", language: section.language ?? "text", code: section.code });
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward integration checkpoint", body: "Use the smallest real boundary required by the risk. Do not mock away the very contract, database behavior, authentication rule or package compatibility you are trying to prove. Broad tests should add new evidence, not duplicate lower-level checks." });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [junit, restAssured, pact] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: resourcesFor(spec.id) });
     return { id: `api-integration-${spec.id}`, title: spec.title, activities: [
         { id: `api-integration-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: spec.intro, blocks } },
         { id: `api-integration-${spec.id}-002`, title: `Apply: ${spec.title}`, estimatedMinutes: 55, content: { type: "practical", objective: `Apply ${spec.title} to Steward.`, scenario: "Steward already has unit/component evidence. This module adds confidence at API, persistence, identity, package and service boundaries without turning every test into a full browser scenario.", instructions: spec.practice, deliverables: ["Executable integration evidence", "Boundary rationale", "Diagnostic findings"], completionCriteria: ["The test proves a real contract or integration risk.", "Assertions cover meaningful state and side effects.", "The test leaves the environment reproducible for subsequent execution."] } },
