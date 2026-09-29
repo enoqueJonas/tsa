@@ -136,7 +136,7 @@ const specs: Spec[] = [
         principles: ["Build and identify the package artifact once.", "Publish candidate versions to the internal Maven repository.", "Test consumers against explicit candidate/approved versions.", "Treat public API compatibility as a release concern."],
         steward: ["Steward remains the first real consumer. A tsa-test-core change should run package tests, publish a candidate artifact, install it through Nexus Maven repository and run a focused Steward compatibility suite.", "Steward-specific clients, workflows and assertions remain in the Steward repository."],
         practice: ["Design the CI path from tsa-test-core source to internal artifact to Steward consumer test.", "Define candidate version identity and promotion/approval expectations.", "Prove the consumer installs through the repository rather than a local path."],
-        code: "python -m build\npython -m twine upload --repository-url \"$INTERNAL_PYPI\" dist/*\npip install --index-url \"$INTERNAL_PYPI/simple\" tsa-test-core==0.2.0rc1\npytest -m compatibility",
+        code: "mvn -U clean deploy -Drevision=0.2.0-rc1\\nmvn -U test -Dtsa-test-core.version=0.2.0-rc1 -Dgroups=compatibility",
         language: "bash",
     },
 ];
