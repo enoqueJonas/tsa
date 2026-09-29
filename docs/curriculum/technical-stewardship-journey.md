@@ -534,14 +534,23 @@ Learn quality engineering deeply and build a real automation framework against t
 - BrowserStack or equivalent cloud test infrastructure
 - Local vs remote execution
 
-## Module 8 — Non-functional Quality
+## Module 8 — Reusable Test Infrastructure and Internal Distribution
+- Audit the proven API/browser/configuration/evidence infrastructure for genuine cross-project reuse
+- Keep Steward clients, contracts, page objects, workflows and business assertions local
+- Extract only approved generic capabilities into `tsa-test-core`
+- Define a small intentional public API and compatibility policy
+- Build a versioned Maven JAR
+- Publish to Nexus and consume it from `steward-tests`
+- Prove consumer compatibility before promotion
+
+## Module 9 — Non-functional Quality
 - Performance concepts
 - Load/stress/spike/endurance distinctions
 - Basic accessibility testing
 - Compatibility
 - Reliability-oriented tests
 
-## Module 9 — Quality in Containers and CI/CD
+## Module 10 — Quality in Containers and CI/CD
 - Test containers/environments
 - Running tests against Dockerized services
 - Ephemeral test environments concepts
