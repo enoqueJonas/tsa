@@ -45,6 +45,90 @@ function lessonFrom(spec: Spec): Lesson {
 
 const specs: Spec[] = [
     {
+        id: "testcontainers-lifecycle",
+        title: "Testcontainers Lifecycle, Wait Strategies and Failure Cleanup",
+        core: "A disposable dependency is useful only when its lifecycle is deterministic. Testcontainers startup, readiness, ownership and teardown must match the JUnit test boundary instead of relying on arbitrary sleeps or globally reused state.",
+        principles: ["Container started is not the same as service ready.", "Use a readiness signal that represents the dependency behavior the test needs.", "Choose per-test, per-class or suite-level lifetime deliberately based on isolation and cost.", "Cleanup must survive test assertion failures and setup failures.", "Container reuse is a developer optimization with isolation trade-offs, not the default CI correctness model."],
+        steward: ["A PostgreSQLContainer can be class-scoped for a focused integration class while each test gets isolated schema/data semantics through transactions or deterministic cleanup.", "CI should assume clean disposable state unless an explicit performance experiment proves another model safe."],
+        practice: ["Implement a PostgreSQLContainer lifecycle in JUnit.", "Replace any startup sleep with an appropriate wait/readiness strategy.", "Force setup/test failure and prove resources are cleaned up.", "Compare per-test and per-class container lifetime and document the trade-off.", "Inspect container logs when startup deliberately fails."],
+        warning: "Do not enable reusable containers merely to make slow integration tests look fast; first measure startup cost and prove state isolation."
+    },
+    {
+        id: "testcontainers-networking",
+        title: "Testcontainers Networking and Dynamic Connection Configuration",
+        core: "Container addresses and mapped ports are runtime values. Tests should consume connection details from the running container and understand host-to-container versus container-to-container networking instead of assuming localhost or fixed ports.",
+        principles: ["Never hard-code a mapped host port.", "Use container-derived host, mapped port, JDBC URL and credentials.", "Use a dedicated Testcontainers network/aliases when multiple containers must communicate directly.", "Distinguish the test JVM's network view from another container's network view.", "Expose only ports the test actually needs."],
+        steward: ["The Steward test JVM may connect to PostgreSQL through its mapped host port, while a containerized Steward service would address PostgreSQL by network alias on a shared Testcontainers network.", "Dynamic configuration should flow through explicit settings/dependency injection rather than mutating global environment state."],
+        practice: ["Read JDBC connection details directly from PostgreSQLContainer.", "Create a two-container networking experiment with a network alias.", "Explain why localhost means different things inside and outside a container.", "Remove one fixed-port assumption from the integration setup."],
+    },
+    {
+        id: "database-migrations-isolation",
+        title: "Database Migrations, Fixtures and Isolation with Real PostgreSQL",
+        core: "A real database container proves database semantics only when the schema matches the application contract and tests control data lifecycle. Migrations, constraints, transactions and cleanup are therefore part of integration-test architecture.",
+        principles: ["Apply the same migration source used by the application where practical.", "Do not replace relational behavior with an in-memory database when PostgreSQL-specific semantics matter.", "Generate collision-safe data and make cleanup deterministic.", "Choose transaction rollback, truncation/schema reset or disposable database lifetime based on the boundary being proven.", "Seed the minimum data necessary for the scenario."],
+        steward: ["Use real PostgreSQL to prove Steward uniqueness, foreign-key and transaction behavior.", "Keep migration failures distinguishable from product assertion failures and retain container/database diagnostics."],
+        practice: ["Start PostgreSQL with Testcontainers and apply Steward migrations.", "Prove one real constraint or transaction behavior.", "Run the same test repeatedly and demonstrate data isolation.", "Deliberately break a migration and capture useful diagnostics.", "Document the chosen reset strategy and why."],
+    },
+    {
+        id: "testcontainers-observability",
+        title: "Testcontainers Diagnostics and Reproducibility",
+        core: "When a container-backed integration test fails, the evidence must distinguish application assertion failure from image pull, startup, readiness, migration, network and dependency failures.",
+        principles: ["Pin dependency image versions intentionally.", "Capture relevant container logs on infrastructure/setup failure.", "Record image identity and runtime connection metadata without credentials.", "Make Docker/Testcontainers availability a visible prerequisite.", "Do not classify a missing container runtime as a passed or skipped product check without policy."],
+        steward: ["GitLab integration jobs should expose enough Testcontainers diagnostics to reproduce a failed PostgreSQL-backed test locally.", "The report should identify whether the failure occurred before or after the test behavior became executable."],
+        practice: ["Trigger image/startup/readiness and application-level failures separately.", "Compare their evidence and classification.", "Record dependency image identity in the run evidence.", "Write a short local reproduction path from a failed GitLab integration job."],
+    },
+    {
+        id: "gitlab-runners",
+        title: "GitLab Runners and Execution Environments",
+        core: "A GitLab job is executed by a runner, and runner executor choices determine filesystem, network, container and security behavior. Pipeline YAML cannot be reasoned about correctly without understanding where commands actually run.",
+        principles: ["Know whether the runner uses shell, Docker, Kubernetes or another executor.", "Treat runner tags as capability routing, not test taxonomy.", "Keep toolchain/runtime versions reproducible in the job image or managed runner environment.", "Understand workspace persistence assumptions and never rely on undeclared runner-local state.", "Separate trusted/protected execution capacity from untrusted merge-request workloads where necessary."],
+        steward: ["steward-tests needs Java/Maven and browser/container capabilities; runner design must make those dependencies explicit.", "A self-hosted runner can be valuable in the TSA homelab, but its credentials and Docker privileges become part of the threat model."],
+        practice: ["Document the intended GitLab Runner executor for steward-tests.", "Identify Java/Maven/Playwright/Testcontainers requirements.", "Run a job that prints safe runtime/toolchain identity.", "Demonstrate why an undeclared runner-local dependency harms reproducibility."],
+    },
+    {
+        id: "gitlab-container-execution",
+        title: "Running Testcontainers Safely in GitLab CI/CD",
+        core: "Testcontainers needs access to a compatible container runtime. GitLab runner architecture determines whether that comes from a Docker service/daemon, socket-style access or another supported runtime arrangement. The choice affects isolation, privileges and networking.",
+        principles: ["Do not copy a Docker-in-Docker recipe without understanding its privilege/security implications.", "Document which daemon the test JVM talks to and how containers are cleaned up.", "Prefer the least-privileged runner architecture that satisfies the test boundary.", "Treat privileged runner configuration as infrastructure/security configuration, not a test-framework convenience.", "Prove networking and cleanup on the actual runner type."],
+        steward: ["The integration pipeline must demonstrate PostgreSQLContainer execution on the selected GitLab runner architecture.", "Browser execution and Testcontainers may have different image/runtime requirements; combine them only when that improves the pipeline."],
+        practice: ["Draw the runner → job → container-runtime → Testcontainers dependency path.", "Implement one Testcontainers-backed GitLab job on the selected runner model.", "Verify cleanup after a failed job.", "Document privileges and risks of the chosen runtime access model.", "Compare it conceptually with one alternative and explain why it was not selected."],
+        warning: "Container-daemon access can be highly privileged. Do not expose it broadly to untrusted jobs merely to make Testcontainers work."
+    },
+    {
+        id: "gitlab-cache-artifacts",
+        title: "GitLab Cache, Artifacts and Test Reports",
+        core: "Caches optimize future work; artifacts preserve outputs and evidence. Mixing the two produces stale evidence, unnecessary downloads or pipelines that only work because a previous runner happened to leave files behind.",
+        principles: ["Cache Maven repository data for acceleration with an intentional key/invalidation strategy.", "Publish JUnit XML, Allure inputs/results and failure diagnostics as artifacts/reports.", "Use artifact dependencies/needs only where downstream jobs truly consume outputs.", "Use when: always or equivalent evidence retention where failed jobs must still publish diagnostics.", "Never cache secrets or mutable environment state."],
+        steward: ["Maven dependency cache should improve speed without determining correctness.", "Surefire/Failsafe reports, Playwright traces/screenshots and compatibility evidence must remain tied to the producing pipeline/job."],
+        practice: ["Add a Maven cache and measure cold versus warm behavior.", "Publish JUnit reports from a failing job.", "Publish failure diagnostics as artifacts.", "Demonstrate why a report belongs in artifacts rather than cache.", "Define cache invalidation when dependency/build assumptions change."],
+    },
+    {
+        id: "gitlab-dag-rules",
+        title: "GitLab rules, needs and Pipeline DAG Design",
+        core: "Stages give broad ordering, rules decide job inclusion, and needs expresses direct dependencies that can form a faster DAG. Use them to encode evidence dependencies—not to create an unreadable conditional-programming language.",
+        principles: ["Use workflow/rules to make pipeline-source behavior explicit.", "Use needs when a job can safely start without waiting for unrelated jobs in an earlier stage.", "Keep merge-request, default-branch, tag/release and schedule intent understandable.", "Avoid duplicate pipelines caused by overlapping rules.", "Record intentionally omitted portfolios so selection is auditable."],
+        steward: ["Fast API evidence can start after its required build/setup job while unrelated work continues; browser smoke should depend only on prerequisites it truly needs.", "Scheduled broader regression is selected from CI_PIPELINE_SOURCE rather than a separate hidden script."],
+        practice: ["Model the Steward pipeline as a dependency graph.", "Introduce one justified needs edge and measure feedback improvement.", "Create explicit merge-request and schedule rules.", "Test a rule case that intentionally excludes a job and prove the omission is visible by policy.", "Check for duplicate-pipeline behavior."],
+    },
+    {
+        id: "gitlab-security",
+        title: "GitLab CI/CD Variables, Protected Resources and Pipeline Security",
+        core: "CI executes repository-controlled code with access to infrastructure. Variables, tokens, runners, protected branches/tags and environments therefore form a security boundary, especially when pipelines can be triggered from merge requests.",
+        principles: ["Use masked/protected variables where appropriate and never echo secrets.", "Grant Nexus/environment credentials the minimum scope required by the job.", "Restrict protected runners/resources to trusted refs/workflows.", "Treat merge-request code as potentially capable of exfiltrating any credential exposed to its job.", "Pin/verify external images and templates according to supply-chain policy."],
+        steward: ["tsa-test-core publication needs different permissions from ordinary test consumption.", "UAT credentials and internal Nexus deploy credentials should not automatically be available to every merge-request job."],
+        practice: ["Create a credential-access matrix for merge request, default branch, release/tag and schedule jobs.", "Configure a safe CI variable and prove logs do not reveal it.", "Separate Nexus read from deploy permissions.", "Threat-model one malicious pipeline change and add a control.", "Document protected runner/environment assumptions."],
+        warning: "Masking a variable reduces accidental log exposure; it does not make a secret safe if untrusted job code can read and transmit it."
+    },
+    {
+        id: "gitlab-environments-approvals",
+        title: "GitLab Environments, Deployments and Manual Gates",
+        core: "GitLab environments and manual jobs can model promotion/approval boundaries, but a manual click is not quality evidence by itself. The gate should expose what artifact is being promoted, which evidence supports it and who/what is authorized to act.",
+        principles: ["Keep immutable artifact/release identity through promotion.", "Use environment metadata to identify the target rather than hiding it in shell scripts.", "Manual jobs are appropriate for controlled decisions, not for compensating for unreliable automation.", "Deployment jobs should consume prior evidence rather than silently rerunning a different build.", "Rollback/recovery paths need explicit identity and evidence."],
+        steward: ["Quality Steward can model a UAT validation/promotion gate without turning TSA into a production deployment project.", "The test pipeline should identify the exact Steward and tsa-test-core versions under evaluation."],
+        practice: ["Model one environment/promotion boundary in GitLab.", "Add a manual gate only after required automated evidence exists.", "Show the artifact/release identity presented at the gate.", "Demonstrate that a failed mandatory quality job prevents the intended promotion path."],
+    },
+
+    {
         id: "test-containers",
         title: "Testcontainers Java and Controlled Integration Dependencies",
         core: "Testcontainers lets JUnit tests own real disposable dependencies through Java code. Containers make test dependencies and runtime assumptions reproducible, but a container is not automatically a trustworthy test environment. The useful boundary is the set of dependencies and configuration required to prove a behavior consistently.",
