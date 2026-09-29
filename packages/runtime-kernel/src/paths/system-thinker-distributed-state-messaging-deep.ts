@@ -2,6 +2,7 @@ import type { Lesson } from "./lesson";
 import type { LearningResource, LessonBlock } from "../activities/content";
 
 const redisDocs: LearningResource = { title: "Redis Documentation", url: "https://redis.io/docs/latest/" };
+const redisCacheAsideVideo: LearningResource = { title: "Redis — Cache-Aside Pattern", url: "https://www.youtube.com/watch?v=AJhTduDOVCs", read: "Recommended — whole short video.", purpose: "RECOMMENDED VIDEO — visualize the cache-aside read flow before implementing it." };
 const rabbitmqDocs: LearningResource = { title: "RabbitMQ Documentation", url: "https://www.rabbitmq.com/docs" };
 const rabbitmqReliability: LearningResource = { title: "RabbitMQ Reliability Guide", url: "https://www.rabbitmq.com/docs/reliability" };
 const kafkaDocs: LearningResource = { title: "Apache Kafka Documentation", url: "https://kafka.apache.org/documentation/" };
@@ -102,7 +103,7 @@ export const distributedStateAndMessagingDeepLessons: Lesson[] = [
             completionCriteria: ["PostgreSQL remains authoritative.", "The cache addresses a measured access pattern.", "Freshness tolerance is explicit.", "The learner can remove Redis and explain the correctness behavior that remains."],
         },
         ["What remains authoritative in cache-aside?", "Why is a TTL not a complete invalidation strategy?", "Why should cache keys follow access patterns rather than tables?"],
-        [redisDocs],
+        [redisDocs, redisCacheAsideVideo],
     ),
     richLesson(
         "Cache Invalidation, Staleness and Failure",
