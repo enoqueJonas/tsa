@@ -11,7 +11,7 @@ export const deliveryEngineerMilestoneDeepLessons: Lesson[] = [
             content: {
                 type: "practical",
                 objective: "Integrate the Delivery Engineer school into one credible commit-to-runtime delivery platform for Steward.",
-                scenario: "Do not build parallel demo infrastructure. Reconcile the CI pipeline, container workflow, Nexus repositories, Ansible-managed host state, deployment automation and release process you already created into one evidence-backed system.",
+                scenario: "Do not build parallel demo infrastructure. Reconcile the CI pipeline, container workflow, Nexus repositories, the Platform Builder Ansible-managed host baseline, deployment automation and release process you already created into one evidence-backed system.",
                 instructions: [
                     "Choose one real Steward release candidate and freeze its source revision, package versions and OCI image identity.",
                     "Draw the authoritative delivery path from source change through CI, Nexus, promotion, deployment and runtime verification.",
