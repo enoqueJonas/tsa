@@ -895,96 +895,88 @@ Operate Steward under uncertainty and failure. Reliability is engineering of use
 # 10 — Architect
 
 ## Purpose
-Develop the ability to make and defend architecture decisions under competing constraints. Architecture is not synonymous with microservices or diagramming.
+Develop the ability to make, challenge and defend architecture decisions under competing constraints. Architecture is not synonymous with microservices, cloud products or diagramming. Simplifying or retaining the current system is a first-class architectural outcome.
 
 ## Module 1 — Architecture Fundamentals
 - Architecture vs design
-- Architecture characteristics
-- Constraints
-- Trade-offs
-- Fitness for purpose
+- Drivers, constraints and quality attributes
+- Trade-offs and fitness for purpose
+- Evolution and architecture documentation
 
-## Module 2 — Modularity
+## Module 2 — Domain Modeling
+- Business language and domain boundaries
+- Entities, value objects and aggregates
+- Invariants and transaction boundaries
+- Bounded contexts/context maps
+- When DDD is and is not worth its cost
+
+## Module 3 — Modularity
 - Coupling and cohesion
-- Components/modules
-- Dependency direction
-- Boundaries
+- Dependency direction and encapsulation
+- Package/module ownership
+- Shared-library boundaries
 - Modular monoliths
-- When distribution is justified
+- Service boundaries and distributed-monolith risk
 
-## Module 3 — Architectural Styles
-- Layered architecture
-- Hexagonal/ports-and-adapters concepts
+## Module 4 — Architectural Styles
+- Layered and hexagonal/ports-and-adapters concepts
+- Modular monoliths
+- SOA/microservices
 - Event-driven architecture
-- Service-oriented/microservices concepts
-- Serverless concepts
+- Serverless
+- Distribution cost
 - Choosing rather than collecting styles
 
-## Module 4 — Domain Modeling
-- Domain boundaries
-- Domain-Driven Design fundamentals
-- Entities/value objects/aggregates concepts
-- Bounded contexts
-- Ubiquitous language
-- When DDD is and is not worth the cost
-
 ## Module 5 — Data Architecture
-- Transactional boundaries
-- Consistency
+- Data ownership and schema boundaries
+- Transactional consistency
+- Duplication/derived views/read models
 - Caching
-- Replication concepts
-- Partitioning concepts
-- Data ownership
-- Eventual consistency
+- Database-per-service trade-offs
+- Migration/evolution and audit/history
 
 ## Module 6 — Integration and Messaging
-- Synchronous vs asynchronous integration
-- Messaging
-- Queues
-- Events
-- Delivery semantics concepts
-- Idempotency
-- Failure handling
+- Integration styles and synchronous APIs
+- Asynchronous messaging
+- Queues vs publish-subscribe
+- Commands vs events
+- Delivery semantics and idempotency
+- Contract evolution
+- Backpressure/failure
+- When not to add a broker
 
 ## Module 7 — Scalability and Distributed Systems
-- Horizontal/vertical scaling
-- Load balancing
-- Statelessness
-- Caching
-- Distributed-system constraints
-- CAP theorem as a reasoning tool
-- Consistency/availability trade-offs
-- Distributed failure
+- Vertical vs horizontal scaling
+- Statelessness and load distribution
+- Caching/contention
+- Replication and partitioning
+- CAP/consistency reasoning
+- Coordination/distributed failure
+- Measured demand before distribution
 
 ## Module 8 — Resilience Architecture
-- Redundancy
-- Isolation
-- Bulkheads
-- Timeouts/retries
-- Circuit breakers
-- Graceful degradation
-- Disaster scenarios
+- Designing for failure
+- Timeouts/retries and retry storms
+- isolation/bulkheads/circuit breakers
+- redundancy and graceful degradation
+- failure-domain and recovery consequences
+- architecture changes validated with Reliability evidence
 
 ## Module 9 — Architecture Evaluation and Governance
-- ADRs
-- Architecture reviews
-- Architecture fitness functions
-- Evolutionary architecture
-- Technical debt
-- Architecture katas
-- Cost/performance/security/reliability trade-offs
+- ADRs and architecture reviews
+- scenario-based evaluation
+- fitness functions and evolutionary architecture
+- standards with contextual exceptions
+- technology selection and build-vs-buy
+- architecture debt
+- governance without bottlenecks
+- dependency/package governance
+- steward-common and tsa-test-core review
 
-## Labs
-- Perform architecture katas
-- Re-evaluate Steward API characteristics
-- Identify scaling and reliability constraints
-- Prototype alternative designs
-- Introduce messaging/caching only where a scenario justifies them
-- Create architecture fitness checks where practical
-- Defend keep/change decisions
+## Module 10 — Architect Milestone
+**Steward Architecture Evolution** — reconstruct the current system, evaluate retain/change/simplify options, implement the smallest justified improvement and defend both retained and rejected complexity.
 
-## Milestone
-**Steward Architecture Evolution** — evidence-based architecture assessment and implemented evolution. Keeping a modular monolith is a valid outcome when justified; unnecessary microservices are a failure, not a badge.
+A valid outcome can retain a modular monolith, shared PostgreSQL, RabbitMQ or the current platform when evidence supports them. Unnecessary microservices, brokers, caches, databases, service meshes or orchestration layers are architecture failures rather than maturity badges.
 
 ---
 
