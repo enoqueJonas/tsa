@@ -59,12 +59,6 @@ function assertUniqueIds(scope: string, values: { id: string }[]): void {
     }
 }
 
-function assertUniqueLessonAndActivityIds(lessons: Lesson[]): void {
-    assertUniqueIds("lesson", lessons);
-    const activities = lessons.flatMap((lesson) => lesson.activities);
-    assertUniqueIds("activity", activities);
-}
-
 function validateRuntimeJourney(journey: LearningJourney): LearningJourney {
     assertUniqueIds("school", journey.schools);
 
