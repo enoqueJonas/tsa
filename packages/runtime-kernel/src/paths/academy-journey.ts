@@ -68,10 +68,19 @@ function assertUniqueLessonAndActivityIds(lessons: Lesson[]): void {
 function validateRuntimeJourney(journey: LearningJourney): LearningJourney {
     assertUniqueIds("school", journey.schools);
 
+    const allLessons: Lesson[] = [];
+    const allActivities: { id: string }[] = [];
+
     for (const school of journey.schools) {
         assertUniqueIds(`path in school ${school.id}`, school.paths);
-        for (const path of school.paths) assertUniqueLessonAndActivityIds(path.lessons);
+        for (const path of school.paths) {
+            allLessons.push(...path.lessons);
+            allActivities.push(...path.lessons.flatMap((lesson) => lesson.activities));
+        }
     }
+
+    assertUniqueIds("lesson across journey", allLessons);
+    assertUniqueIds("activity across journey", allActivities);
 
     const executableSchools = new Set([
         "system-thinker",
@@ -103,4 +112,4 @@ export const technicalStewardshipJourney: LearningJourney = validateRuntimeJourn
         if (school.id === "builder") return { ...school, paths: school.paths.map(extendBuilderPath) };
         return school;
     }),
-};
+});
