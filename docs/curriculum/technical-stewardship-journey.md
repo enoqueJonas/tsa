@@ -480,6 +480,9 @@ Learn quality engineering deeply and build a real automation framework against t
 
 ## Module 3 — Java for Test Framework Engineering
 - Java/JVM execution model and Maven project structure
+- Maven lifecycle phases vs plugin goals, effective POM and reproducible plugin configuration
+- Dependency graphs, scopes, mediation, `dependencyManagement`, local repository, Nexus and SNAPSHOT tradeoffs
+- Surefire vs Failsafe and test-discovery boundaries
 - Classes, records, enums, access modifiers and immutability
 - Object identity, `equals`, `hashCode` and safe diagnostic `toString`
 - Interfaces, composition and dependency direction
@@ -487,10 +490,14 @@ Learn quality engineering deeply and build a real automation framework against t
 - Generics, collections and type erasure
 - Exceptions, cause preservation and try-with-resources
 - Annotations, retention and reflection
-- JUnit Platform vs Jupiter, lifecycle, parameterization and extension boundaries
+- JUnit Platform vs Jupiter/TestEngine, discovery and the complete Maven → Surefire → Platform → Jupiter execution chain
+- JUnit test-instance lifecycle and resource ownership
+- Parameterized tests/MethodSource and diagnostic invocation naming
+- JUnit extension callbacks, `ParameterResolver` and extension-state boundaries
 - JUnit tags and governed test selection
 - Lambdas, functional interfaces, streams and Optional
 - Concurrency, shared state, visibility/atomicity, `ThreadLocal` risks and thread-safety fundamentals
+- **Execution milestone:** explain and debug `mvn test` end-to-end, inspect effective POM/dependency tree, prove tag selection/parameterization and build one deliberately narrow extension
 - **Increment:** create `steward-tests`, establish Maven/JUnit, immutable configuration, constructor injection, tag policy and one raw Java HttpClient probe
 
 ## Module 4 — Unit and Component Testing
