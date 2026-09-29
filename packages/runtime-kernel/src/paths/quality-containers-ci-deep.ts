@@ -237,6 +237,59 @@ const specs: Spec[] = [
     },
 ];
 
+const controlledIntegrationMilestone: Lesson = {
+    id: "quality-ci-controlled-integration-milestone",
+    title: "Milestone: Run Controlled Integration Evidence in GitLab",
+    activities: [{
+        id: "quality-ci-controlled-integration-milestone-001",
+        title: "Prove Testcontainers on the Real Runner Boundary",
+        estimatedMinutes: 180,
+        content: {
+            type: "practical",
+            objective: "Prove a PostgreSQL-backed Steward integration slice with deterministic lifecycle and diagnosable GitLab execution.",
+            scenario: "The same integration test must be reproducible locally and in GitLab without hard-coded ports, hidden runner state or a shared database.",
+            instructions: [
+                "Implement PostgreSQLContainer ownership and consume its runtime connection details.",
+                "Apply real Steward migrations and prove one database-specific constraint/transaction behavior.",
+                "Use an actual readiness strategy and deterministic data reset/cleanup.",
+                "Run the suite on the selected GitLab Runner/container-runtime architecture.",
+                "Publish JUnit results and container/startup diagnostics on failure.",
+                "Deliberately cause a container/readiness failure and a product assertion failure and classify them separately.",
+                "Document why this evidence differs from a regression against deployed UAT."
+            ],
+            deliverables: ["Testcontainers integration test", "Migration/isolation strategy", "Runner/runtime architecture diagram", "Passing GitLab job", "Controlled infrastructure failure evidence", "UAT-boundary comparison"],
+            completionCriteria: ["No fixed mapped port or shared database is required.", "Container readiness uses an observable condition.", "Repeated execution is isolated.", "Runner privileges/runtime access are documented.", "Infrastructure failure cannot masquerade as product success/failure.", "The learner can state what Testcontainers evidence cannot prove about UAT."]
+        }
+    }]
+};
+
+const gitlabPipelineMilestone: Lesson = {
+    id: "quality-ci-gitlab-pipeline-milestone",
+    title: "Milestone: Engineer the steward-tests GitLab Pipeline",
+    activities: [{
+        id: "quality-ci-gitlab-pipeline-milestone-001",
+        title: "Build a Secure Evidence-oriented GitLab Pipeline",
+        estimatedMinutes: 210,
+        content: {
+            type: "practical",
+            objective: "Build .gitlab-ci.yml as a secure orchestration layer around the already-proven Maven test commands.",
+            scenario: "Merge requests need fast evidence; default-branch/release work needs stronger compatibility evidence; schedules need broader regression. All must preserve diagnosable results.",
+            instructions: [
+                "Define jobs/stages and use needs only for real DAG dependencies.",
+                "Use rules for merge-request, default-branch/tag and schedule intent without duplicate pipelines.",
+                "Configure Maven cache separately from test/report artifacts.",
+                "Publish JUnit and diagnostic artifacts even for controlled failures.",
+                "Route jobs to runners by required capability and document executor/runtime assumptions.",
+                "Define protected/masked variables and a least-privilege credential matrix, including Nexus read versus deploy.",
+                "Prove one mandatory quality failure blocks the intended downstream gate.",
+                "Record commit/release/environment/pipeline-source identity in evidence."
+            ],
+            deliverables: [".gitlab-ci.yml", "Pipeline DAG", "Runner capability map", "Cache/artifact policy", "Credential-access matrix", "Passing and controlled-failing pipeline evidence"],
+            completionCriteria: ["Local Maven commands remain the execution contract.", "Rules are understandable and do not create accidental duplicate pipelines.", "Cache cannot determine correctness.", "Failure evidence survives failed jobs.", "Untrusted merge-request work does not receive unnecessary protected credentials.", "The exact artifact/environment under test is identifiable."]
+        }
+    }]
+};
+
 const pipelineLab: Lesson = {
     id: "quality-ci-steward-pipeline-lab",
     title: "Lab: Build the Steward Quality Pipeline",
