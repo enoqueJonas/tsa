@@ -134,7 +134,7 @@ const specs: Spec[] = [
         title: "Internal Test Package Publishing and Compatibility in CI",
         core: "Once tsa-test-core is a versioned internal dependency, CI must prove that candidate versions can be published, resolved and consumed without turning source copying or local paths into hidden coupling.",
         principles: ["Build and identify the package artifact once.", "Publish candidate versions to the internal Maven repository.", "Test consumers against explicit candidate/approved versions.", "Treat public API compatibility as a release concern."],
-        steward: ["Steward remains the first real consumer. A tsa-test-core change should run package tests, publish a candidate artifact, install it through Nexus/internal PyPI and run a focused Steward compatibility suite.", "Steward-specific clients, workflows and assertions remain in the Steward repository."],
+        steward: ["Steward remains the first real consumer. A tsa-test-core change should run package tests, publish a candidate artifact, install it through the internal Maven repository in Nexus and run a focused Steward compatibility suite.", "Steward-specific clients, workflows and assertions remain in the Steward repository."],
         practice: ["Design the CI path from tsa-test-core source to internal artifact to Steward consumer test.", "Define candidate version identity and promotion/approval expectations.", "Prove the consumer installs through the repository rather than a local path."],
         code: "mvn -B clean deploy -Drevision=0.2.0-rc1\nmvn -B -U test -Dtsa.test.core.version=0.2.0-rc1 -Dgroups=compatibility",
         language: "bash",
