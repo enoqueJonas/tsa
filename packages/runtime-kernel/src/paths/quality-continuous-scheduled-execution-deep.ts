@@ -41,7 +41,7 @@ export const continuousAndScheduledQualityExecutionDeepLessons: Lesson[] = [
                     objective: "Make Steward automated tests execute automatically when source changes require fast quality feedback.",
                     scenario: "Developers are merging Steward changes frequently. Waiting for a tester to start regression manually allows obvious failures to survive too long, but running the entire portfolio on every commit would make feedback unnecessarily slow.",
                     instructions: [
-                        "Configure the existing GitLab CI quality pipeline to start from the repository SCM integration for the agreed push and/or pull-request event; do not prove this by clicking Build Now.",
+                        "Configure the existing GitLab CI quality pipeline to start from the repository SCM integration for the agreed push and/or pull-request event; do not prove this by manually starting the pipeline.",
                         "Define a fast change-triggered portfolio using the existing markers/stages, including the mandatory unit/component and API/integration evidence plus only justified browser smoke coverage.",
                         "Record commit/release identity, environment, trigger type and selected suite in the run evidence.",
                         "Publish machine-readable test results and a useful human-readable report or equivalent GitLab test report view.",
@@ -58,7 +58,7 @@ export const continuousAndScheduledQualityExecutionDeepLessons: Lesson[] = [
                 estimatedMinutes: 120,
                 content: {
                     type: "practical",
-                    objective: "Run broader Steward regression automatically on a defined Jenkins schedule.",
+                    objective: "Run broader Steward regression automatically on a defined GitLab CI schedule.",
                     scenario: "Some integration, browser and environment risks are too expensive or too broad to infer reliably from each code change. Steward therefore needs scheduled regression that runs even when nobody remembers to start it.",
                     instructions: [
                         "Choose and justify a regression cadence, then configure a GitLab pipeline schedule trigger in source-controlled pipeline configuration where practical.",
