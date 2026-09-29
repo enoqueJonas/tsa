@@ -37,7 +37,7 @@ The primary learning path must remain practical for a learner without enterprise
 | Enterprise identity | Keycloak + OIDC/OAuth 2.0 concepts | managed IdPs and enterprise SSO alternatives |
 | API gateway | Kong | Nginx/reverse proxy, cloud gateways and other API-management products |
 | Source control | Git + GitHub | enterprise Git hosting alternatives |
-| CI/CD orchestration | Jenkins | GitHub Actions and other hosted CI/CD systems |
+| CI/CD orchestration | GitLab CI | Jenkins and other CI/CD systems |
 | Artifact/dependency repository | Nexus-style private repository | other artifact/package registries |
 | Containers | Docker, with Podman concepts where useful | OCI-compatible alternatives |
 | Infrastructure as Code | OpenTofu, teaching Terraform language/model concepts | Terraform and provider-managed IaC alternatives |
@@ -109,14 +109,14 @@ Networking depth must be sufficient to troubleshoot real service-to-service fail
 
 ### Delivery Engineer — CI/CD, configuration and artifact lifecycle
 
-CI/CD concepts remain tool-independent first, then **Jenkins** becomes the primary self-hosted enterprise implementation. GitHub Actions remains a comparison/secondary implementation rather than disappearing from the curriculum.
+CI/CD concepts remain tool-independent first, then **GitLab CI** becomes the primary self-hosted enterprise implementation. Jenkins remains bounded to the Quality Steward comparison/migration context rather than serving as TSA's primary implementation rather than disappearing from the curriculum.
 
-The Jenkins progression should cover:
+The GitLab CI progression should cover:
 
 - controller/agent architecture;
 - executors and build isolation;
 - jobs versus pipelines;
-- Pipeline as Code and `Jenkinsfile`;
+- Pipeline as Code and `GitLab CIfile`;
 - declarative versus scripted pipeline concepts;
 - stages, steps, conditions and parallelism;
 - credentials and secret injection;
@@ -154,7 +154,7 @@ Steward is exposed through Kong and the learner must prove that domain authoriza
 
 Kubernetes remains the orchestration foundation. **OpenShift** is taught after Kubernetes as an enterprise application platform, not as a duplicate Kubernetes course. Learners compare Projects/namespaces, Routes/Ingress, Operators/OLM, security controls such as SCC concepts, RBAC, registry/build/deployment integrations and the `oc` workflow. A practical migration/deployment of Steward should identify what remains standard Kubernetes, what OpenShift adds and what operational/security assumptions change.
 
-**Argo CD** introduces GitOps after the learner understands pipeline-driven deployment. Jenkins remains responsible for build/test/package/publish concerns; Argo CD reconciles declared environment state from Git to Kubernetes/OpenShift. The curriculum must explicitly compare push-based pipeline deployment with pull/reconciliation-based GitOps.
+**Argo CD** introduces GitOps after the learner understands pipeline-driven deployment. GitLab CI remains responsible for build/test/package/publish concerns; Argo CD reconciles declared environment state from Git to Kubernetes/OpenShift. The curriculum must explicitly compare push-based pipeline deployment with pull/reconciliation-based GitOps.
 
 ### Security Steward — enterprise identity and secrets lifecycle
 
@@ -179,7 +179,7 @@ Secrets work must progress beyond `.env`. Teach classification, storage, access 
 
 ### Reliability Engineer — operate the whole platform
 
-Observability must cover the expanded system, not only the Django process. Learners should observe and reason about Steward, PostgreSQL, Redis, RabbitMQ, Kong, Jenkins/deployment components and Kubernetes/OpenShift where present.
+Observability must cover the expanded system, not only the Django process. Learners should observe and reason about Steward, PostgreSQL, Redis, RabbitMQ, Kong, GitLab CI/deployment components and Kubernetes/OpenShift where present.
 
 Database operations deepen here into a practical **database stewardship / DBA-awareness** strand:
 
@@ -205,7 +205,7 @@ Architect must not assume every introduced component belongs in the final archit
 - whether asynchronous messaging is justified;
 - RabbitMQ versus Kafka for a stated workload;
 - whether Kong is needed or a simpler edge component is sufficient;
-- Jenkins versus hosted CI/CD trade-offs;
+- GitLab CI versus hosted CI/CD trade-offs;
 - Kubernetes versus OpenShift versus simpler hosting;
 - push deployment versus GitOps;
 - self-managed versus managed data/identity/secrets infrastructure;
@@ -231,7 +231,7 @@ Keycloak ---- OIDC ----> Kong
                                   |
                            background consumers
 
-Git ---> Jenkins ---> tests/scans ---> private artifact repository / registry
+Git ---> GitLab CI ---> tests/scans ---> private artifact repository / registry
                                             |
                                             v
 OpenTofu ---> infrastructure            OpenShift
