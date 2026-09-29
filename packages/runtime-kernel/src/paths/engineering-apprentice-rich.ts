@@ -104,7 +104,7 @@ export const systemsThinkingRich = richLesson(
         { type: "list", ordered: true, items: ["Choose one system you can observe safely.", "Draw its important actors, components and external dependencies.", "Label at least five flows or relationships.", "Mark one feedback loop and one delay.", "Trace how one dependency failure could become a user-visible symptom.", "Write one important element intentionally outside your model boundary and justify excluding it."] },
     ],
     "Build a system map that explains behavior and failure propagation rather than merely listing components.",
-    ["Select a real application or work process.", "Define the question your system model should answer.", "Draw actors, components, dependencies and flows.", "Identify shared resources, delays and feedback loops.", "Trace two different failure paths to user-visible symptoms.", "Revise the boundary if the model cannot explain the observed behavior.", systemsThinkingVideo],
+    ["Select a real application or work process.", "Define the question your system model should answer.", "Draw actors, components, dependencies and flows.", "Identify shared resources, delays and feedback loops.", "Trace two different failure paths to user-visible symptoms.", "Revise the boundary if the model cannot explain the observed behavior."],
     "Why is a system boundary a decision rather than an objective fact? Give an example of a symptom whose likely cause sits outside the component that reports the error. What information does an unlabeled architecture box-and-arrow diagram fail to communicate?",
 );
 
@@ -167,7 +167,7 @@ export const engineeringDecisionsRich = richLesson(
         { type: "list", ordered: true, items: ["Choose a real decision with meaningful future consequences.", "State context and drivers before the decision itself.", "Include at least two credible alternatives.", "Separate evidence from assumptions.", "Record drawbacks of the selected option.", "Define an observable revisit trigger rather than 'if needed'."] },
     ],
     "Write an engineering decision record whose context, alternatives, trade-offs and revisit conditions are understandable without chat history.",
-    ["Pick a decision with at least two credible alternatives.", "Write context and drivers.", "Separate evidence and assumptions.", "Explain why the selected option wins now.", "List positive and negative consequences.", "Define one measurable or observable revisit condition.", engineeringDecisionsVideo],
+    ["Pick a decision with at least two credible alternatives.", "Write context and drivers.", "Separate evidence and assumptions.", "Explain why the selected option wins now.", "List positive and negative consequences.", "Define one measurable or observable revisit condition."],
     "Why can reversing a decision later be evidence of good engineering rather than failure? What distinguishes an ADR-worthy choice from a routine implementation detail? Why should the disadvantages of the chosen option be documented?",
 );
 
