@@ -118,7 +118,7 @@ const practices: Record<string, PracticalContent> = {
     "Internet-facing Firewalls": {
         type: "practical",
         objective: "Prove a default-deny public network policy where users reach Kong over HTTPS while management and backend services follow separate paths.",
-        scenario: "Publishing Steward must not turn SSH, Django, PostgreSQL, Jenkins or Nexus into public internet services.",
+        scenario: "Publishing Steward must not turn SSH, Django, PostgreSQL, GitLab CI runner/management endpoints or Nexus into public internet services.",
         instructions: [
             "Create one matrix combining provider-firewall and Rocky firewalld intent for public, management and backend traffic.",
             "Allow the public HTTPS path to Kong and only the minimum optional HTTP path needed for redirect/ACME behavior.",
@@ -137,7 +137,7 @@ const practices: Record<string, PracticalContent> = {
             "Inventory every listening port on the VPS and classify it as public-user, management, internal/backend or unintended.",
             "Verify externally which of those ports are actually reachable rather than relying only on local listener output.",
             "Remove, rebind or firewall one unnecessary path if one exists.",
-            "Confirm Jenkins, Nexus, PostgreSQL and direct Steward backend access remain outside the public-user path.",
+            "Confirm GitLab CI runner/management endpoints, Nexus, PostgreSQL and direct Steward backend access remain outside the public-user path.",
             "Produce a boundary handoff for Security Steward that states what is public today, what is private, and which identities operate each boundary."
         ],
         deliverables: ["Exposure inventory", "Attack-surface reduction evidence", "Security-boundary handoff"],

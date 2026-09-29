@@ -59,7 +59,7 @@ const specs: LessonSpec[] = [
         intro: "Docker solved packaging and a small Compose topology solved local multi-container execution. Orchestration adds a control plane that continually reconciles desired workload state when one host, one process or one deployment script is no longer an adequate operating model.",
         sections: [
             { heading: "Start from the problem", paragraphs: ["Kubernetes earns its place when the system benefits from declarative scheduling, health-based replacement, controlled rollout, service discovery and a stable workload API across nodes.", "For Steward, the first goal is not hyperscale. It is to understand a reconciled runtime and the new failure and security boundaries that come with it."] },
-            { heading: "Do not confuse layers", paragraphs: ["OpenTofu creates infrastructure, Ansible manages host state, Jenkins builds and publishes artifacts, and Kubernetes reconciles application workload state. Overlap should be deliberate, not accidental."] },
+            { heading: "Do not confuse layers", paragraphs: ["OpenTofu creates infrastructure, Ansible manages host state, GitLab CI builds and publishes artifacts, and Kubernetes reconciles application workload state. Overlap should be deliberate, not accidental."] },
         ],
         practiceTitle: "Orchestration Adoption Gate: Prove What Kubernetes Solves",
         practice: ["List the current Steward runtime responsibilities handled by Docker/Compose or host services.", "Identify which of them Kubernetes would own and which remain outside the cluster.", "Name two concrete benefits and three new operational costs.", "Write an adopt/defer decision tied to a real Steward requirement."],
@@ -145,8 +145,8 @@ const specs: LessonSpec[] = [
             { heading: "Cluster admin should be exceptional", paragraphs: ["CI, GitOps controllers and application workloads should not share a human cluster-admin identity. Permissions should reflect the object types and namespaces each actor must manage."] },
             { heading: "Namespace is not a hard security boundary by itself", paragraphs: ["Namespaces support organization and policy scope, but network policy, RBAC and platform security controls determine effective isolation."] },
         ],
-        practiceTitle: "Cluster Least-Privilege Review: Separate Human, Jenkins, Argo and Workload Identity",
-        practice: ["List the Kubernetes actions required by an operator, Jenkins, Argo CD and the Steward workload.", "Create or design distinct service accounts and RBAC roles for those responsibilities.", "Attempt one action that should be denied to a restricted identity.", "Record why namespace separation alone would not protect an exposed service."],
+        practiceTitle: "Cluster Least-Privilege Review: Separate Human, GitLab CI, Argo and Workload Identity",
+        practice: ["List the Kubernetes actions required by an operator, GitLab CI, Argo CD and the Steward workload.", "Create or design distinct service accounts and RBAC roles for those responsibilities.", "Attempt one action that should be denied to a restricted identity.", "Record why namespace separation alone would not protect an exposed service."],
         deliverables: ["RBAC responsibility matrix", "Versioned role/binding manifests", "Denied-action evidence"],
         criteria: ["No routine actor depends on shared cluster-admin credentials.", "At least one least-privilege denial is proven.", "RBAC and network reachability are treated as different controls."],
         questions: ["Why should a deployment controller not use a human administrator token?", "What does a namespace provide, and what security property does it not guarantee?"]
@@ -185,14 +185,14 @@ const specs: LessonSpec[] = [
         title: "GitOps and Reconciliation",
         intro: "GitOps applies the reconciliation model to environment configuration: Git records the desired deployment state and a controller such as Argo CD continuously compares that desired state with the cluster.",
         sections: [
-            { heading: "Pull changes the deployment authority", paragraphs: ["In a push pipeline, Jenkins connects to the target and performs deployment. In GitOps, Jenkins can build, test and publish the artifact, then update or propose the environment declaration while Argo CD performs reconciliation inside the platform boundary."] },
+            { heading: "Pull changes the deployment authority", paragraphs: ["In a push pipeline, GitLab CI connects to the target and performs deployment. In GitOps, GitLab CI can build, test and publish the artifact, then update or propose the environment declaration while Argo CD performs reconciliation inside the platform boundary."] },
             { heading: "Git is desired state, not a secret vault", paragraphs: ["Environment manifests and release references are excellent Git material; raw production secrets are not. Secret delivery requires a separate secure mechanism."] },
         ],
-        practiceTitle: "Deployment Model Comparison: Jenkins Push vs Argo CD Reconciliation",
-        practice: ["Diagram the current Jenkins-driven deployment flow and the proposed Argo CD flow.", "Identify exactly where artifact build ends and environment reconciliation begins.", "Define the Git repository path that will own Steward environment state.", "List the credentials removed from Jenkins and the new permissions required by Argo CD.", "Choose a migration boundary that does not make both systems authoritative at once."],
+        practiceTitle: "Deployment Model Comparison: GitLab CI Push vs Argo CD Reconciliation",
+        practice: ["Diagram the current GitLab CI-driven deployment flow and the proposed Argo CD flow.", "Identify exactly where artifact build ends and environment reconciliation begins.", "Define the Git repository path that will own Steward environment state.", "List the credentials removed from GitLab CI and the new permissions required by Argo CD.", "Choose a migration boundary that does not make both systems authoritative at once."],
         deliverables: ["Push-vs-pull comparison", "Environment Git ownership contract", "Authority migration decision"],
-        criteria: ["Jenkins remains responsible for build/test/package/publish.", "Argo CD becomes the only reconciler for the chosen environment after migration.", "Secrets are not moved into Git for convenience."],
-        questions: ["What changes when deployment authority moves from Jenkins push to Argo CD pull?", "Why is running both as independent deployment authorities dangerous?"]
+        criteria: ["GitLab CI remains responsible for build/test/package/publish.", "Argo CD becomes the only reconciler for the chosen environment after migration.", "Secrets are not moved into Git for convenience."],
+        questions: ["What changes when deployment authority moves from GitLab CI push to Argo CD pull?", "Why is running both as independent deployment authorities dangerous?"]
     },
     {
         id: "argocd-operation",
@@ -222,7 +222,7 @@ const milestone: Lesson = {
                 type: "practical",
                 objective: "Define exactly which Steward runtime responsibilities move to Kubernetes/OpenShift and which remain with the existing delivery and infrastructure systems.",
                 scenario: "The migration is a platform evolution, not a rewrite. Preserve source, artifact, database ownership, Kong API policy and release traceability unless a documented requirement says otherwise.",
-                instructions: ["Create a responsibility matrix covering OpenTofu, Ansible, Jenkins, Nexus, Kubernetes/OpenShift, Kong and Argo CD.", "Choose the target cluster/environment and explain its cost and capacity assumptions.", "Define namespace/project, workload, service, routing and RBAC boundaries.", "Define the exact source commit → Jenkins → Nexus image digest → environment Git → Argo CD → running pod evidence chain."],
+                instructions: ["Create a responsibility matrix covering OpenTofu, Ansible, GitLab CI, Nexus, Kubernetes/OpenShift, Kong and Argo CD.", "Choose the target cluster/environment and explain its cost and capacity assumptions.", "Define namespace/project, workload, service, routing and RBAC boundaries.", "Define the exact source commit → GitLab CI → Nexus image digest → environment Git → Argo CD → running pod evidence chain."],
                 deliverables: ["Migration responsibility matrix", "Target topology", "End-to-end evidence chain"],
                 completionCriteria: ["No responsibility has two accidental authorities.", "The design reuses the existing artifact and release chain.", "Public, management and backend boundaries remain explicit."],
             },
@@ -246,11 +246,11 @@ const milestone: Lesson = {
             estimatedMinutes: 120,
             content: {
                 type: "practical",
-                objective: "Make environment Git and Argo CD the authoritative deployment path while keeping Jenkins responsible for producing releasable artifacts.",
-                scenario: "Avoid a split-brain deployment model. Once GitOps owns the environment, direct Jenkins deployment to that environment is retired or reduced to updating/proposing desired state.",
-                instructions: ["Create the Argo CD Application and repository boundary.", "Publish a new approved Steward image through Jenkins/Nexus.", "Update the environment declaration to the new immutable image identity.", "Observe reconciliation and verify the rollout.", "Perform a safe drift experiment and recover through GitOps.", "Document rollback by reverting desired state to a retained known-good artifact."],
+                objective: "Make environment Git and Argo CD the authoritative deployment path while keeping GitLab CI responsible for producing releasable artifacts.",
+                scenario: "Avoid a split-brain deployment model. Once GitOps owns the environment, direct GitLab CI deployment to that environment is retired or reduced to updating/proposing desired state.",
+                instructions: ["Create the Argo CD Application and repository boundary.", "Publish a new approved Steward image through GitLab CI/Nexus.", "Update the environment declaration to the new immutable image identity.", "Observe reconciliation and verify the rollout.", "Perform a safe drift experiment and recover through GitOps.", "Document rollback by reverting desired state to a retained known-good artifact."],
                 deliverables: ["Argo CD application", "Git-driven promotion evidence", "Drift recovery evidence", "Rollback evidence"],
-                completionCriteria: ["Jenkins and Argo CD have non-overlapping authoritative responsibilities.", "A release is traceable from source to live pod.", "Drift and rollback use declared state rather than ad-hoc cluster mutation."],
+                completionCriteria: ["GitLab CI and Argo CD have non-overlapping authoritative responsibilities.", "A release is traceable from source to live pod.", "Drift and rollback use declared state rather than ad-hoc cluster mutation."],
             },
         },
         {
@@ -259,7 +259,7 @@ const milestone: Lesson = {
             estimatedMinutes: 40,
             content: {
                 type: "reflection",
-                prompt: "Explain which problems Kubernetes/OpenShift and Argo CD now solve for Steward, which new failure and security boundaries they created, and why the final system still keeps Jenkins, Nexus, OpenTofu, Kong and Steward domain logic as separate responsibilities. Identify one case where simpler VPS hosting would still be the stronger architecture choice and one trigger that would justify keeping the enterprise platform.",
+                prompt: "Explain which problems Kubernetes/OpenShift and Argo CD now solve for Steward, which new failure and security boundaries they created, and why the final system still keeps GitLab CI, Nexus, OpenTofu, Kong and Steward domain logic as separate responsibilities. Identify one case where simpler VPS hosting would still be the stronger architecture choice and one trigger that would justify keeping the enterprise platform.",
                 minimumCharacters: 350,
             },
         },
