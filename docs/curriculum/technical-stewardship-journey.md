@@ -1103,7 +1103,14 @@ Prove independent engineering judgment. The learner now receives a problem and c
 
 This school deliberately reduces hand-holding.
 
-## Module 1 — Problem Discovery
+## Module 1 — Professional Practice and Ethics
+- Public interest and foreseeable harm
+- Privacy and responsible data practice
+- Limits of competence and uncertainty
+- Responsible escalation and professional dissent
+- Traceability and accountability
+
+## Module 2 — Problem Discovery
 - Stakeholders
 - Requirements
 - Constraints
@@ -1111,7 +1118,7 @@ This school deliberately reduces hand-holding.
 - Quality attributes
 - Risk
 
-## Module 2 — Engineering Proposal
+## Module 3 — Engineering Proposal
 - System design
 - Architecture decisions
 - Delivery plan
@@ -1122,10 +1129,10 @@ This school deliberately reduces hand-holding.
 - Cost model
 - Governance considerations
 
-## Module 3 — Independent Build
+## Module 4 — Independent Build
 The learner creates a **second substantial system from a blank repository**. It must not simply clone Steward API. The project should force meaningful decisions across software, data, infrastructure, delivery, quality, security and operations.
 
-## Module 4 — Production Readiness
+## Module 5 — Production Readiness
 - Deployment
 - Observability
 - Security assessment
@@ -1134,7 +1141,12 @@ The learner creates a **second substantial system from a blank repository**. It 
 - Runbooks
 - Risk/control evidence
 
-## Module 5 — Engineering Defence
+## Module 6 — Engineering Portfolio and Reflective Practice
+- Claim-to-evidence portfolio
+- Reflective practice and changed decisions
+- Continuing professional development based on evidence gaps
+
+## Module 7 — Engineering Defence
 - Present architecture
 - Explain trade-offs
 - Demonstrate evidence
