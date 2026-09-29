@@ -48,7 +48,7 @@ const profiles: Record<string, PracticeProfile> = {
         completionCriteria: ["A package is created only for a credible reuse case.", "Internal naming avoids accidental public collision.", "The consumer boundary is explicit rather than inferred from monorepo layout."],
     },
     "Container Registries": {
-        objective: "Define how the exact Steward image produced by Jenkins becomes retrievable from infrastructure rather than a developer-local Docker cache.",
+        objective: "Define how the exact Steward image produced by GitLab CI becomes retrievable from infrastructure rather than a developer-local Docker cache.",
         scenario: "The deployment host must retrieve the same bytes CI produced, even if the CI worker disappears.",
         deliverables: ["Image naming convention", "Tag-to-digest traceability", "Registry handoff diagram"],
         completionCriteria: ["Image digest is treated as immutable identity.", "The deployment path no longer depends on a workstation-local image.", "Build-once/promote-many remains intact."],
