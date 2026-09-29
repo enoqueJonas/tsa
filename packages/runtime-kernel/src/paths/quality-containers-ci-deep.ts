@@ -2,9 +2,9 @@ import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
 const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
-const pytest: LearningResource = { title: "pytest documentation", url: "https://docs.pytest.org/" };
+const junit: LearningResource = { title: "JUnit 5 User Guide", url: "https://docs.junit.org/current/user-guide/" };
 const githubActions: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
-const playwright: LearningResource = { title: "Playwright Python", url: "https://playwright.dev/python/" };
+const playwright: LearningResource = { title: "Playwright Java", url: "https://playwright.dev/java/" };
 
 type Spec = {
     id: string;
@@ -29,14 +29,14 @@ function lessonFrom(spec: Spec): Lesson {
     if (spec.code) blocks.push({ type: "code", language: spec.language ?? "text", code: spec.code });
     if (spec.warning) blocks.push({ type: "callout", tone: "warning", title: "Pipeline risk", body: spec.warning });
     blocks.push({ type: "callout", tone: "steward", title: "Quality pipeline checkpoint", body: "A pipeline is a decision system around evidence. It must preserve release/environment identity, make missing evidence visible and fail for reasons a human can triage. Green is meaningful only when the intended checks actually ran." });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [docker, pytest, githubActions, playwright] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: [docker, junit, githubActions, playwright] });
 
     return {
         id: `quality-ci-${spec.id}`,
         title: spec.title,
         activities: [
             { id: `quality-ci-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: spec.core, blocks } },
-            { id: `quality-ci-${spec.id}-002`, title: `Apply: ${spec.title}`, estimatedMinutes: 55, content: { type: "practical", objective: `Apply ${spec.title} to the Steward quality system.`, scenario: "Use Steward's existing pytest/Playwright framework, deployed environments and immutable release identity. Improve the pipeline without hiding failures or duplicating evidence at the wrong test level.", instructions: spec.practice, deliverables: ["Pipeline or container change", "Execution evidence", "Short decision/triage note"], completionCriteria: ["The change improves repeatability or decision quality.", "Missing/skipped evidence remains visible.", "The learner can explain why this stage belongs at this point in the pipeline."] } },
+            { id: `quality-ci-${spec.id}-002`, title: `Apply: ${spec.title}`, estimatedMinutes: 55, content: { type: "practical", objective: `Apply ${spec.title} to the Steward quality system.`, scenario: "Use Steward's existing JUnit/REST Assured/Playwright Java framework, deployed environments and immutable release identity. Improve the pipeline without hiding failures or duplicating evidence at the wrong test level.", instructions: spec.practice, deliverables: ["Pipeline or container change", "Execution evidence", "Short decision/triage note"], completionCriteria: ["The change improves repeatability or decision quality.", "Missing/skipped evidence remains visible.", "The learner can explain why this stage belongs at this point in the pipeline."] } },
             { id: `quality-ci-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: `Explain the main risk addressed by ${spec.title}, how it applies to Steward, and one way a poorly designed implementation could produce misleading green results.`, minimumCharacters: 200 } },
         ],
     };
@@ -133,8 +133,8 @@ const specs: Spec[] = [
         id: "internal-package-compatibility",
         title: "Internal Test Package Publishing and Compatibility in CI",
         core: "Once tsa-test-core is a versioned internal dependency, CI must prove that candidate versions can be published, resolved and consumed without turning source copying or local paths into hidden coupling.",
-        principles: ["Build and identify the package artifact once.", "Publish candidate versions to the internal Python repository.", "Test consumers against explicit candidate/approved versions.", "Treat public API compatibility as a release concern."],
-        steward: ["Steward remains the first real consumer. A tsa-test-core change should run package tests, publish a candidate artifact, install it through Nexus/internal PyPI and run a focused Steward compatibility suite.", "Steward-specific clients, workflows and assertions remain in the Steward repository."],
+        principles: ["Build and identify the package artifact once.", "Publish candidate versions to the internal Maven repository.", "Test consumers against explicit candidate/approved versions.", "Treat public API compatibility as a release concern."],
+        steward: ["Steward remains the first real consumer. A tsa-test-core change should run package tests, publish a candidate artifact, install it through Nexus Maven repository and run a focused Steward compatibility suite.", "Steward-specific clients, workflows and assertions remain in the Steward repository."],
         practice: ["Design the CI path from tsa-test-core source to internal artifact to Steward consumer test.", "Define candidate version identity and promotion/approval expectations.", "Prove the consumer installs through the repository rather than a local path."],
         code: "python -m build\npython -m twine upload --repository-url \"$INTERNAL_PYPI\" dist/*\npip install --index-url \"$INTERNAL_PYPI/simple\" tsa-test-core==0.2.0rc1\npytest -m compatibility",
         language: "bash",
@@ -167,7 +167,7 @@ const pipelineLab: Lesson = {
             id: "quality-ci-steward-pipeline-lab-004",
             title: "Prove tsa-test-core Compatibility in CI",
             estimatedMinutes: 75,
-            content: { type: "practical", objective: "Validate the shared test package as a normal internal dependency.", scenario: "Exercise the supply-chain path established in Delivery Engineer instead of importing package source directly.", instructions: ["Build a candidate tsa-test-core distribution.", "Publish it to the internal repository using a candidate version.", "Install the candidate in Steward through the internal repository.", "Run a focused compatibility suite and capture artifact/version evidence."], deliverables: ["Published candidate artifact", "Consumer compatibility run", "Version traceability note"], completionCriteria: ["No source copy or local-path dependency is used in the final consumer run.", "The exact package version is visible.", "A compatibility failure would block promotion of the shared package." ] },
+            content: { type: "practical", objective: "Validate the shared test package as a normal internal dependency.", scenario: "Exercise the supply-chain path established in Delivery Engineer instead of importing package source directly.", instructions: ["Build a candidate tsa-test-core JAR.", "Publish it to the internal repository using a candidate version.", "Install the candidate in Steward through the internal repository.", "Run a focused compatibility suite and capture artifact/version evidence."], deliverables: ["Published candidate artifact", "Consumer compatibility run", "Version traceability note"], completionCriteria: ["No source copy or local-path dependency is used in the final consumer run.", "The exact package version is visible.", "A compatibility failure would block promotion of the shared package." ] },
         },
         {
             id: "quality-ci-steward-pipeline-lab-005",
