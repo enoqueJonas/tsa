@@ -3,7 +3,7 @@ import type { Lesson } from "./lesson";
 
 const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
 const pytest: LearningResource = { title: "pytest documentation", url: "https://docs.pytest.org/" };
-const githubActions: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
+const gitlabCi: LearningResource = { title: "GitLab CI/CD pipelines", url: "https://docs.gitlab.com/ci/pipelines/" };
 const playwright: LearningResource = { title: "Playwright Python", url: "https://playwright.dev/python/" };
 
 type Spec = {
@@ -29,7 +29,7 @@ function lessonFrom(spec: Spec): Lesson {
     if (spec.code) blocks.push({ type: "code", language: spec.language ?? "text", code: spec.code });
     if (spec.warning) blocks.push({ type: "callout", tone: "warning", title: "Pipeline risk", body: spec.warning });
     blocks.push({ type: "callout", tone: "steward", title: "Quality pipeline checkpoint", body: "A pipeline is a decision system around evidence. It must preserve release/environment identity, make missing evidence visible and fail for reasons a human can triage. Green is meaningful only when the intended checks actually ran." });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [docker, pytest, githubActions, playwright] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: [docker, pytest, gitlabCi, playwright] });
 
     return {
         id: `quality-ci-${spec.id}`,
