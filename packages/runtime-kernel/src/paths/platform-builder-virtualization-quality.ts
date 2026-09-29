@@ -24,7 +24,7 @@ const practices: Record<string, PracticalContent> = {
     "VM CPU, Memory and Storage": {
         type: "practical",
         objective: "Size the Rocky Linux Steward VM from observed host capacity and create explicit headroom for the enterprise services that arrive later.",
-        scenario: "The homelab must eventually host delivery, data and platform components. Consuming the entire machine for the first VM would make later Jenkins, Nexus, Redis, RabbitMQ, Kong and observability work impossible or misleading.",
+        scenario: "The homelab must eventually host delivery, data and platform components. Consuming the entire machine for the first VM would make later GitLab CI/CD, Nexus, Redis, RabbitMQ, Kong and observability work impossible or misleading.",
         instructions: [
             "Capture physical-host CPU, memory, storage and current utilization.",
             "Choose the initial Steward VM vCPU, RAM and disk allocation and state the evidence behind each value.",

@@ -24,7 +24,7 @@ const practices: Record<string, PracticalContent> = {
     "Designing a Learning Homelab": {
         type: "practical",
         objective: "Design the smallest homelab topology that can host Steward now and grow into the later TSA enterprise platform without premature complexity.",
-        scenario: "You have limited hardware and money, but later schools will add Jenkins, Nexus, Redis, RabbitMQ, Kong, observability and security services. The design must reserve a path for them without installing them now.",
+        scenario: "You have limited hardware and money, but later schools will add GitLab CI/CD, Nexus, Redis, RabbitMQ, Kong, observability and security services. The design must reserve a path for them without installing them now.",
         instructions: ["Inventory the hardware and network equipment you actually own.", "Draw the smallest topology that separates administration, workload and future platform-service responsibilities.", "Mark the Rocky Linux compute boundary, Steward placement, management path and current single points of failure.", "Reserve logical space for later platform services without assigning a separate VM to every future tool.", "State three additions you deliberately defer and the requirement that would justify each."],
         deliverables: ["Physical and logical topology", "Current-versus-future capability map", "Deferred-complexity decisions"],
         completionCriteria: ["Every component has a current learning purpose.", "Future enterprise services have a plausible landing zone.", "The topology is small enough to operate with the learner's actual resources."],
@@ -40,7 +40,7 @@ const practices: Record<string, PracticalContent> = {
     "CPU, RAM, Storage and NIC Trade-offs": {
         type: "practical",
         objective: "Create a resource envelope for Steward and future enterprise services using real host measurements.",
-        scenario: "The host can run Steward today, but uncontrolled VM growth could leave no capacity for Jenkins, Nexus, Redis, RabbitMQ, Kong or observability later.",
+        scenario: "The host can run Steward today, but uncontrolled VM growth could leave no capacity for GitLab CI/CD, Nexus, Redis, RabbitMQ, Kong or observability later.",
         instructions: ["Measure current host CPU, memory, storage and NIC characteristics.", "Record current Rocky/Steward usage under an ordinary workload.", "Create conservative headroom targets for later services.", "Identify which resources may be overcommitted and which should not be.", "Define the measurements that would trigger a scale-up or new-host decision."],
         deliverables: ["Resource envelope", "Headroom table", "Capacity trigger criteria"],
         completionCriteria: ["Future capacity is reserved explicitly.", "The plan distinguishes burstable CPU from harder memory/storage constraints.", "Expansion decisions are linked to observed pressure."],
@@ -89,7 +89,7 @@ const practices: Record<string, PracticalContent> = {
         type: "practical",
         objective: "Operate the homelab remotely through the private WireGuard management path while preserving a local recovery route.",
         scenario: "SSH must be useful away from the server, but direct public SSH exposure is not the default TSA management model.",
-        instructions: ["Verify SSH key access to the Rocky host from the LAN.", "Verify the WireGuard management path from an authorized client.", "Confirm SSH is not intentionally exposed through the future/public application path.", "Document the recovery path if WireGuard or SSH configuration breaks.", "Record which later interfaces such as Jenkins, Nexus and operations dashboards will inherit the private-management rule."],
+        instructions: ["Verify SSH key access to the Rocky host from the LAN.", "Verify the WireGuard management path from an authorized client.", "Confirm SSH is not intentionally exposed through the future/public application path.", "Document the recovery path if WireGuard or SSH configuration breaks.", "Record which later interfaces such as GitLab CI/CD, Nexus and operations dashboards will inherit the private-management rule."],
         deliverables: ["LAN and VPN SSH evidence", "Negative exposure evidence", "Recovery runbook"],
         completionCriteria: ["Remote administration works without public SSH exposure.", "A broken VPN does not remove every recovery option.", "Future control-plane services inherit a clear access policy."],
     },
@@ -144,7 +144,7 @@ const practices: Record<string, PracticalContent> = {
     "Planning Capacity for Internal Platform Services": {
         type: "practical",
         objective: "Reserve a realistic capacity envelope for the enterprise capabilities that later TSA schools will add without installing them prematurely.",
-        scenario: "The same lab must eventually host or support Jenkins, Nexus, Redis, RabbitMQ, Kong, Keycloak and observability components while remaining usable on budget hardware.",
+        scenario: "The same lab must eventually host or support GitLab CI/CD, Nexus, Redis, RabbitMQ, Kong, Keycloak and observability components while remaining usable on budget hardware.",
         instructions: ["Record current steady-state CPU, RAM, storage and network use.", "Create provisional capacity buckets for delivery, data/integration, edge/identity and observability services.", "Mark which services may initially share compute and which would be first candidates for isolation.", "Define warning thresholds that would trigger right-sizing, shutdown of unused labs or another host.", "Reserve backup/storage growth separately from runtime capacity.", "State which capacity assumptions must be re-measured when each later service is actually introduced."],
         deliverables: ["Enterprise service capacity envelope", "Placement assumptions", "Growth/threshold plan"],
         completionCriteria: ["The plan covers the stamped enterprise path.", "No future tool is installed simply because capacity was reserved for it.", "Every estimate is explicitly provisional until measured under the real service."],

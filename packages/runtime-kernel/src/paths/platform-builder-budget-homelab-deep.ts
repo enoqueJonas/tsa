@@ -86,7 +86,7 @@ export const budgetHomelabDeepLessons: Lesson[] = [
     ]),
     reading("capacity", "Planning Capacity for Internal Platform Services", "Later TSA schools add CI runners, Nexus Repository, monitoring and security tooling. Platform Builder should reserve plausible capacity without installing those systems prematurely.", [
         { heading: "Create a capacity envelope", body: "Record current host resources, current Steward usage and a conservative reserve for later services. Include RAM, CPU, storage growth, backup space and network ports." },
-        { heading: "Do not build tomorrow's platform today", body: "Capacity planning is not permission to install Nexus, Jenkins, Prometheus or security scanners now. Preserve the learning sequence: reserve resources and document assumptions; later schools will justify and operate each service." },
+        { heading: "Do not build tomorrow's platform today", body: "Capacity planning is not permission to install Nexus, GitLab CI/CD, Prometheus or security scanners now. Preserve the learning sequence: reserve resources and document assumptions; later schools will justify and operate each service." },
     ]),
     {
         id: "budget-homelab-lab",
