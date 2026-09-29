@@ -353,6 +353,34 @@ const specs: Spec[] = [
     },
 ];
 
+const measurementMilestone: Lesson = {
+    id: "non-functional-measurement-milestone",
+    title: "Milestone: Build a Trustworthy Steward Measurement Baseline",
+    activities: [{
+        id: "non-functional-measurement-milestone-001",
+        title: "Defend the Measurement, Not Just the Number",
+        estimatedMinutes: 210,
+        content: {
+            type: "practical",
+            objective: "Produce non-functional evidence whose workload, environment, interpretation and limitations are explicit enough to support an engineering decision.",
+            scenario: "A release reviewer should be able to tell whether a changed number represents Steward behavior, experimental noise, an invalid comparison or a real regression.",
+            instructions: [
+                "Define a Steward performance hypothesis and choose a k6 executor/workload model that matches it.",
+                "Capture latency percentiles, successful throughput/request rate and error/check evidence together.",
+                "Define at least one justified threshold and document its source.",
+                "Create a run manifest containing release, environment, dataset, dependency and load-generator identity.",
+                "Repeat an equivalent run and discuss normal variation before interpreting regression.",
+                "Execute one critical accessibility flow with automated plus keyboard/manual evidence.",
+                "Build a risk-reduced compatibility matrix from an explicit support contract.",
+                "Execute one controlled dependency failure through recovery and verify state integrity.",
+                "Assign each check to merge-request, scheduled, release-review or manual cadence based on stability/cost."
+            ],
+            deliverables: ["k6 workload and results", "Threshold rationale", "Performance run manifest", "Repeatability comparison", "Accessibility evidence", "Compatibility matrix", "Controlled failure/recovery record", "Execution-cadence decision"],
+            completionCriteria: ["Performance conclusions include workload, errors and environment context.", "Checks and thresholds are not confused.", "The compared performance runs are demonstrably comparable or explicitly rejected as incomparable.", "Accessibility evidence includes human interaction checks.", "Compatibility selection is risk-based rather than Cartesian by default.", "Failure injection proves post-failure integrity and recovery without claiming general resilience."]
+        }
+    }]
+};
+
 const baselineLab: Lesson = {
     id: "non-functional-baseline-lab",
     title: "Lab: Establish Steward Non-functional Baselines",
@@ -407,5 +435,6 @@ const baselineLab: Lesson = {
 
 export const nonFunctionalQualityDeepLessons: Lesson[] = [
     ...specs.map(lessonFrom),
+    measurementMilestone,
     baselineLab,
 ];
