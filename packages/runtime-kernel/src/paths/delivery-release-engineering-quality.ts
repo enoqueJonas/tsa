@@ -76,7 +76,7 @@ const practices: Record<string, PracticalContent> = {
     "Release Runbooks": {
         type: "practical",
         objective: "Turn the current Steward release process into an exercised runbook that another competent engineer can follow without relying on tribal knowledge.",
-        scenario: "The release system now spans Jenkins, Nexus, migrations, deployment automation and runtime verification. If the process only works while its author is present, it is not yet an operational capability.",
+        scenario: "The release system now spans GitLab CI, Nexus, migrations, deployment automation and runtime verification. If the process only works while its author is present, it is not yet an operational capability.",
         instructions: [
             "Write or update a versioned Steward release runbook containing prerequisites, access boundaries, candidate checks, gates, deployment entry point, migration steps, verification and recovery criteria.",
             "For every consequential command or pipeline action, state the expected precondition, success evidence and stop condition.",
