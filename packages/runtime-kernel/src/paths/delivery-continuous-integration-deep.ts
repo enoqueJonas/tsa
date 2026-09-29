@@ -3,6 +3,425 @@ import type { Lesson } from "./lesson";
 
 const gha: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
 const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
+const gitlabCiCdVideo: LearningResource = { title: "GitLab — What is CI/CD?", url: "https://www.youtube.com/watch?v=scEDHsr3APg", purpose: "RECOMMENDED VIDEO — compact visual primer for the source-to-build-to-delivery lifecycle; TSA then separates CI, artifact and deployment authority explicitly." };
+const gitlabRunnerDocs: LearningResource = { title: "GitLab Runner documentation", url: "https://docs.gitlab.com/runner/", purpose: "RECOMMENDED SUPPORT — first-party runner architecture and self-managed runner guidance for TSA's learner-managed execution infrastructure." };
+const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+
+function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [gha]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward CI checkpoint", body: "Apply this concept to Steward's current source-to-image path. Ask what evidence the pipeline should produce, what failure should stop promotion, and whether another engineer could understand the result without rerunning the job manually." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const continuousIntegrationDeepLessons: Lesson[] = [
+    rich("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const gha: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
+const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
+const gitlabCiCdVideo: LearningResource = { title: "GitLab — What is CI/CD?", url: "https://www.youtube.com/watch?v=scEDHsr3APg", purpose: "RECOMMENDED VIDEO — compact visual primer for the source-to-build-to-delivery lifecycle; TSA then separates CI, artifact and deployment authority explicitly." };
+const gitlabRunnerDocs: LearningResource = { title: "GitLab Runner documentation", url: "https://docs.gitlab.com/runner/", purpose: "RECOMMENDED SUPPORT — first-party runner architecture and self-managed runner guidance for TSA's learner-managed execution infrastructure." };
+const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+
+function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [gha]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward CI checkpoint", body: "Apply this concept to Steward's current source-to-image path. Ask what evidence the pipeline should produce, what failure should stop promotion, and whether another engineer could understand the result without rerunning the job manually." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const continuousIntegrationDeepLessons: Lesson[] = [
+    rich("architecture", "CI Pipeline Architecture", "Continuous Integration is a feedback system around change integration. Its purpose is not to accumulate YAML; it is to turn each proposed change into fast, repeatable evidence about whether that change can safely join the main line.", [
+        { heading: "Design around feedback", body: "Model the pipeline as trigger → checkout → dependency restore → checks → build → publish evidence. Each stage should answer a risk question and fail visibly when that question cannot be answered." },
+        { heading: "Separate validation from deployment", body: "CI should produce confidence and artifacts. Deployment belongs to later delivery stages. Keeping these boundaries clear prevents a failed test from becoming an accidental infrastructure change." },
+    ]),
+    rich("jobs-stages", "Jobs, Stages and Dependencies", "Jobs define isolated units of work; dependencies define when they may run and what evidence they consume. A good graph maximizes useful parallel feedback without hiding ordering constraints.", [
+        { heading: "Build the dependency graph", body: "Linting, type checks and unit tests may run in parallel. Image build should depend on the checks that protect it. Avoid serializing independent work simply because it is easier to read." },
+        { heading: "Fail where the fault is", body: "Do not create a final generic job that discovers every problem late. Keep failure close to the check that detected it so the diagnostic signal remains strong." },
+    ]),
+    rich("runners",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const gha: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
+const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
+const gitlabCiCdVideo: LearningResource = { title: "GitLab — What is CI/CD?", url: "https://www.youtube.com/watch?v=scEDHsr3APg", purpose: "RECOMMENDED VIDEO — compact visual primer for the source-to-build-to-delivery lifecycle; TSA then separates CI, artifact and deployment authority explicitly." };
+const gitlabRunnerDocs: LearningResource = { title: "GitLab Runner documentation", url: "https://docs.gitlab.com/runner/", purpose: "RECOMMENDED SUPPORT — first-party runner architecture and self-managed runner guidance for TSA's learner-managed execution infrastructure." };
+const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+
+function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [gha]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward CI checkpoint", body: "Apply this concept to Steward's current source-to-image path. Ask what evidence the pipeline should produce, what failure should stop promotion, and whether another engineer could understand the result without rerunning the job manually." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const continuousIntegrationDeepLessons: Lesson[] = [
+    rich("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const gha: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
+const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
+const gitlabCiCdVideo: LearningResource = { title: "GitLab — What is CI/CD?", url: "https://www.youtube.com/watch?v=scEDHsr3APg", purpose: "RECOMMENDED VIDEO — compact visual primer for the source-to-build-to-delivery lifecycle; TSA then separates CI, artifact and deployment authority explicitly." };
+const gitlabRunnerDocs: LearningResource = { title: "GitLab Runner documentation", url: "https://docs.gitlab.com/runner/", purpose: "RECOMMENDED SUPPORT — first-party runner architecture and self-managed runner guidance for TSA's learner-managed execution infrastructure." };
+const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+
+function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [gha]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward CI checkpoint", body: "Apply this concept to Steward's current source-to-image path. Ask what evidence the pipeline should produce, what failure should stop promotion, and whether another engineer could understand the result without rerunning the job manually." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const continuousIntegrationDeepLessons: Lesson[] = [
+    rich("architecture", "CI Pipeline Architecture", "Continuous Integration is a feedback system around change integration. Its purpose is not to accumulate YAML; it is to turn each proposed change into fast, repeatable evidence about whether that change can safely join the main line.", [
+        { heading: "Design around feedback", body: "Model the pipeline as trigger → checkout → dependency restore → checks → build → publish evidence. Each stage should answer a risk question and fail visibly when that question cannot be answered." },
+        { heading: "Separate validation from deployment", body: "CI should produce confidence and artifacts. Deployment belongs to later delivery stages. Keeping these boundaries clear prevents a failed test from becoming an accidental infrastructure change." },
+    ]),
+    rich("jobs-stages", "Jobs, Stages and Dependencies", "Jobs define isolated units of work; dependencies define when they may run and what evidence they consume. A good graph maximizes useful parallel feedback without hiding ordering constraints.", [
+        { heading: "Build the dependency graph", body: "Linting, type checks and unit tests may run in parallel. Image build should depend on the checks that protect it. Avoid serializing independent work simply because it is easier to read." },
+        { heading: "Fail where the fault is", body: "Do not create a final generic job that discovers every problem late. Keep failure close to the check that detected it so the diagnostic signal remains strong." },
+    ]),
+    rich("runners", "Runners and Agents", "A CI runner is execution infrastructure. It checks out untrusted or semi-trusted source, receives credentials, consumes CPU/storage/network and therefore belongs in the threat and capacity model.", [
+        { heading: "Hosted versus self-hosted", body: "Hosted runners reduce administration burden; self-hosted runners offer local network access and control but transfer patching, isolation, cleanup and capacity responsibility to you." },
+        { heading: "Treat runners as disposable where possible", body: "Jobs should not depend on undocumented files left by previous executions. Persistent runner state is a source of false success, secret leakage and irreproducibility." },
+    ], [gitlab, gha]),
+    rich("gitlab-ci-platform",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const gha: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
+const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
+const gitlabCiCdVideo: LearningResource = { title: "GitLab — What is CI/CD?", url: "https://www.youtube.com/watch?v=scEDHsr3APg", purpose: "RECOMMENDED VIDEO — compact visual primer for the source-to-build-to-delivery lifecycle; TSA then separates CI, artifact and deployment authority explicitly." };
+const gitlabRunnerDocs: LearningResource = { title: "GitLab Runner documentation", url: "https://docs.gitlab.com/runner/", purpose: "RECOMMENDED SUPPORT — first-party runner architecture and self-managed runner guidance for TSA's learner-managed execution infrastructure." };
+const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+
+function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [gha]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward CI checkpoint", body: "Apply this concept to Steward's current source-to-image path. Ask what evidence the pipeline should produce, what failure should stop promotion, and whether another engineer could understand the result without rerunning the job manually." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const continuousIntegrationDeepLessons: Lesson[] = [
+    rich("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const gha: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
+const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
+const gitlabCiCdVideo: LearningResource = { title: "GitLab — What is CI/CD?", url: "https://www.youtube.com/watch?v=scEDHsr3APg", purpose: "RECOMMENDED VIDEO — compact visual primer for the source-to-build-to-delivery lifecycle; TSA then separates CI, artifact and deployment authority explicitly." };
+const gitlabRunnerDocs: LearningResource = { title: "GitLab Runner documentation", url: "https://docs.gitlab.com/runner/", purpose: "RECOMMENDED SUPPORT — first-party runner architecture and self-managed runner guidance for TSA's learner-managed execution infrastructure." };
+const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+
+function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [gha]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward CI checkpoint", body: "Apply this concept to Steward's current source-to-image path. Ask what evidence the pipeline should produce, what failure should stop promotion, and whether another engineer could understand the result without rerunning the job manually." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const continuousIntegrationDeepLessons: Lesson[] = [
+    rich("architecture", "CI Pipeline Architecture", "Continuous Integration is a feedback system around change integration. Its purpose is not to accumulate YAML; it is to turn each proposed change into fast, repeatable evidence about whether that change can safely join the main line.", [
+        { heading: "Design around feedback", body: "Model the pipeline as trigger → checkout → dependency restore → checks → build → publish evidence. Each stage should answer a risk question and fail visibly when that question cannot be answered." },
+        { heading: "Separate validation from deployment", body: "CI should produce confidence and artifacts. Deployment belongs to later delivery stages. Keeping these boundaries clear prevents a failed test from becoming an accidental infrastructure change." },
+    ]),
+    rich("jobs-stages", "Jobs, Stages and Dependencies", "Jobs define isolated units of work; dependencies define when they may run and what evidence they consume. A good graph maximizes useful parallel feedback without hiding ordering constraints.", [
+        { heading: "Build the dependency graph", body: "Linting, type checks and unit tests may run in parallel. Image build should depend on the checks that protect it. Avoid serializing independent work simply because it is easier to read." },
+        { heading: "Fail where the fault is", body: "Do not create a final generic job that discovers every problem late. Keep failure close to the check that detected it so the diagnostic signal remains strong." },
+    ]),
+    rich("runners",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const gha: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
+const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
+const gitlabCiCdVideo: LearningResource = { title: "GitLab — What is CI/CD?", url: "https://www.youtube.com/watch?v=scEDHsr3APg", purpose: "RECOMMENDED VIDEO — compact visual primer for the source-to-build-to-delivery lifecycle; TSA then separates CI, artifact and deployment authority explicitly." };
+const gitlabRunnerDocs: LearningResource = { title: "GitLab Runner documentation", url: "https://docs.gitlab.com/runner/", purpose: "RECOMMENDED SUPPORT — first-party runner architecture and self-managed runner guidance for TSA's learner-managed execution infrastructure." };
+const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+
+function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [gha]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward CI checkpoint", body: "Apply this concept to Steward's current source-to-image path. Ask what evidence the pipeline should produce, what failure should stop promotion, and whether another engineer could understand the result without rerunning the job manually." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const continuousIntegrationDeepLessons: Lesson[] = [
+    rich("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const gha: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
+const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
+const gitlabCiCdVideo: LearningResource = { title: "GitLab — What is CI/CD?", url: "https://www.youtube.com/watch?v=scEDHsr3APg", purpose: "RECOMMENDED VIDEO — compact visual primer for the source-to-build-to-delivery lifecycle; TSA then separates CI, artifact and deployment authority explicitly." };
+const gitlabRunnerDocs: LearningResource = { title: "GitLab Runner documentation", url: "https://docs.gitlab.com/runner/", purpose: "RECOMMENDED SUPPORT — first-party runner architecture and self-managed runner guidance for TSA's learner-managed execution infrastructure." };
+const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+
+function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [gha]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward CI checkpoint", body: "Apply this concept to Steward's current source-to-image path. Ask what evidence the pipeline should produce, what failure should stop promotion, and whether another engineer could understand the result without rerunning the job manually." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const continuousIntegrationDeepLessons: Lesson[] = [
+    rich("architecture", "CI Pipeline Architecture", "Continuous Integration is a feedback system around change integration. Its purpose is not to accumulate YAML; it is to turn each proposed change into fast, repeatable evidence about whether that change can safely join the main line.", [
+        { heading: "Design around feedback", body: "Model the pipeline as trigger → checkout → dependency restore → checks → build → publish evidence. Each stage should answer a risk question and fail visibly when that question cannot be answered." },
+        { heading: "Separate validation from deployment", body: "CI should produce confidence and artifacts. Deployment belongs to later delivery stages. Keeping these boundaries clear prevents a failed test from becoming an accidental infrastructure change." },
+    ]),
+    rich("jobs-stages", "Jobs, Stages and Dependencies", "Jobs define isolated units of work; dependencies define when they may run and what evidence they consume. A good graph maximizes useful parallel feedback without hiding ordering constraints.", [
+        { heading: "Build the dependency graph", body: "Linting, type checks and unit tests may run in parallel. Image build should depend on the checks that protect it. Avoid serializing independent work simply because it is easier to read." },
+        { heading: "Fail where the fault is", body: "Do not create a final generic job that discovers every problem late. Keep failure close to the check that detected it so the diagnostic signal remains strong." },
+    ]),
+    rich("runners", "Runners and Agents", "A CI runner is execution infrastructure. It checks out untrusted or semi-trusted source, receives credentials, consumes CPU/storage/network and therefore belongs in the threat and capacity model.", [
+        { heading: "Hosted versus self-hosted", body: "Hosted runners reduce administration burden; self-hosted runners offer local network access and control but transfer patching, isolation, cleanup and capacity responsibility to you." },
+        { heading: "Treat runners as disposable where possible", body: "Jobs should not depend on undocumented files left by previous executions. Persistent runner state is a source of false success, secret leakage and irreproducibility." },
+    ], [gitlab, gha]),
+    rich("gitlab-ci-platform", "GitLab CI as the Steward CI Platform", "GitLab CI is TSA's primary implementation while GitHub Actions remains a comparison point for repository-native CI. The important skill is understanding workflow semantics and runner ownership, not memorizing one vendor's syntax.", [
+        { heading: "Compare responsibility models", body: "GitLab CI integrates repository events, pipeline configuration and runner execution while still allowing learner-managed runners. GitHub Actions provides a useful comparison for hosted repository-native workflow semantics." },
+        { heading: "Use comparison deliberately", body: "Implement Steward in GitLab CI. Compare equivalent GitHub Actions concepts without maintaining a second mandatory release pipeline." },
+    ], [gitlab, gha]),
+    rich("self-hosted",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const gha: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
+const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
+const gitlabCiCdVideo: LearningResource = { title: "GitLab — What is CI/CD?", url: "https://www.youtube.com/watch?v=scEDHsr3APg", purpose: "RECOMMENDED VIDEO — compact visual primer for the source-to-build-to-delivery lifecycle; TSA then separates CI, artifact and deployment authority explicitly." };
+const gitlabRunnerDocs: LearningResource = { title: "GitLab Runner documentation", url: "https://docs.gitlab.com/runner/", purpose: "RECOMMENDED SUPPORT — first-party runner architecture and self-managed runner guidance for TSA's learner-managed execution infrastructure." };
+const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+
+function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [gha]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward CI checkpoint", body: "Apply this concept to Steward's current source-to-image path. Ask what evidence the pipeline should produce, what failure should stop promotion, and whether another engineer could understand the result without rerunning the job manually." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const continuousIntegrationDeepLessons: Lesson[] = [
+    rich("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const gha: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
+const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
+const gitlabCiCdVideo: LearningResource = { title: "GitLab — What is CI/CD?", url: "https://www.youtube.com/watch?v=scEDHsr3APg", purpose: "RECOMMENDED VIDEO — compact visual primer for the source-to-build-to-delivery lifecycle; TSA then separates CI, artifact and deployment authority explicitly." };
+const gitlabRunnerDocs: LearningResource = { title: "GitLab Runner documentation", url: "https://docs.gitlab.com/runner/", purpose: "RECOMMENDED SUPPORT — first-party runner architecture and self-managed runner guidance for TSA's learner-managed execution infrastructure." };
+const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+
+function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [gha]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward CI checkpoint", body: "Apply this concept to Steward's current source-to-image path. Ask what evidence the pipeline should produce, what failure should stop promotion, and whether another engineer could understand the result without rerunning the job manually." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const continuousIntegrationDeepLessons: Lesson[] = [
+    rich("architecture", "CI Pipeline Architecture", "Continuous Integration is a feedback system around change integration. Its purpose is not to accumulate YAML; it is to turn each proposed change into fast, repeatable evidence about whether that change can safely join the main line.", [
+        { heading: "Design around feedback", body: "Model the pipeline as trigger → checkout → dependency restore → checks → build → publish evidence. Each stage should answer a risk question and fail visibly when that question cannot be answered." },
+        { heading: "Separate validation from deployment", body: "CI should produce confidence and artifacts. Deployment belongs to later delivery stages. Keeping these boundaries clear prevents a failed test from becoming an accidental infrastructure change." },
+    ]),
+    rich("jobs-stages", "Jobs, Stages and Dependencies", "Jobs define isolated units of work; dependencies define when they may run and what evidence they consume. A good graph maximizes useful parallel feedback without hiding ordering constraints.", [
+        { heading: "Build the dependency graph", body: "Linting, type checks and unit tests may run in parallel. Image build should depend on the checks that protect it. Avoid serializing independent work simply because it is easier to read." },
+        { heading: "Fail where the fault is", body: "Do not create a final generic job that discovers every problem late. Keep failure close to the check that detected it so the diagnostic signal remains strong." },
+    ]),
+    rich("runners",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const gha: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
+const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
+const gitlabCiCdVideo: LearningResource = { title: "GitLab — What is CI/CD?", url: "https://www.youtube.com/watch?v=scEDHsr3APg", purpose: "RECOMMENDED VIDEO — compact visual primer for the source-to-build-to-delivery lifecycle; TSA then separates CI, artifact and deployment authority explicitly." };
+const gitlabRunnerDocs: LearningResource = { title: "GitLab Runner documentation", url: "https://docs.gitlab.com/runner/", purpose: "RECOMMENDED SUPPORT — first-party runner architecture and self-managed runner guidance for TSA's learner-managed execution infrastructure." };
+const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+
+function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [gha]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward CI checkpoint", body: "Apply this concept to Steward's current source-to-image path. Ask what evidence the pipeline should produce, what failure should stop promotion, and whether another engineer could understand the result without rerunning the job manually." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const continuousIntegrationDeepLessons: Lesson[] = [
+    rich("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const gha: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
+const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
+const gitlabCiCdVideo: LearningResource = { title: "GitLab — What is CI/CD?", url: "https://www.youtube.com/watch?v=scEDHsr3APg", purpose: "RECOMMENDED VIDEO — compact visual primer for the source-to-build-to-delivery lifecycle; TSA then separates CI, artifact and deployment authority explicitly." };
+const gitlabRunnerDocs: LearningResource = { title: "GitLab Runner documentation", url: "https://docs.gitlab.com/runner/", purpose: "RECOMMENDED SUPPORT — first-party runner architecture and self-managed runner guidance for TSA's learner-managed execution infrastructure." };
+const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+
+function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [gha]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward CI checkpoint", body: "Apply this concept to Steward's current source-to-image path. Ask what evidence the pipeline should produce, what failure should stop promotion, and whether another engineer could understand the result without rerunning the job manually." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const continuousIntegrationDeepLessons: Lesson[] = [
+    rich("architecture", "CI Pipeline Architecture", "Continuous Integration is a feedback system around change integration. Its purpose is not to accumulate YAML; it is to turn each proposed change into fast, repeatable evidence about whether that change can safely join the main line.", [
+        { heading: "Design around feedback", body: "Model the pipeline as trigger → checkout → dependency restore → checks → build → publish evidence. Each stage should answer a risk question and fail visibly when that question cannot be answered." },
+        { heading: "Separate validation from deployment", body: "CI should produce confidence and artifacts. Deployment belongs to later delivery stages. Keeping these boundaries clear prevents a failed test from becoming an accidental infrastructure change." },
+    ]),
+    rich("jobs-stages", "Jobs, Stages and Dependencies", "Jobs define isolated units of work; dependencies define when they may run and what evidence they consume. A good graph maximizes useful parallel feedback without hiding ordering constraints.", [
+        { heading: "Build the dependency graph", body: "Linting, type checks and unit tests may run in parallel. Image build should depend on the checks that protect it. Avoid serializing independent work simply because it is easier to read." },
+        { heading: "Fail where the fault is", body: "Do not create a final generic job that discovers every problem late. Keep failure close to the check that detected it so the diagnostic signal remains strong." },
+    ]),
+    rich("runners", "Runners and Agents", "A CI runner is execution infrastructure. It checks out untrusted or semi-trusted source, receives credentials, consumes CPU/storage/network and therefore belongs in the threat and capacity model.", [
+        { heading: "Hosted versus self-hosted", body: "Hosted runners reduce administration burden; self-hosted runners offer local network access and control but transfer patching, isolation, cleanup and capacity responsibility to you." },
+        { heading: "Treat runners as disposable where possible", body: "Jobs should not depend on undocumented files left by previous executions. Persistent runner state is a source of false success, secret leakage and irreproducibility." },
+    ], [gitlab, gha]),
+    rich("gitlab-ci-platform",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const gha: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
+const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
+const gitlabCiCdVideo: LearningResource = { title: "GitLab — What is CI/CD?", url: "https://www.youtube.com/watch?v=scEDHsr3APg", purpose: "RECOMMENDED VIDEO — compact visual primer for the source-to-build-to-delivery lifecycle; TSA then separates CI, artifact and deployment authority explicitly." };
+const gitlabRunnerDocs: LearningResource = { title: "GitLab Runner documentation", url: "https://docs.gitlab.com/runner/", purpose: "RECOMMENDED SUPPORT — first-party runner architecture and self-managed runner guidance for TSA's learner-managed execution infrastructure." };
+const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+
+function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [gha]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward CI checkpoint", body: "Apply this concept to Steward's current source-to-image path. Ask what evidence the pipeline should produce, what failure should stop promotion, and whether another engineer could understand the result without rerunning the job manually." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const continuousIntegrationDeepLessons: Lesson[] = [
+    rich("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const gha: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
+const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
+const gitlabCiCdVideo: LearningResource = { title: "GitLab — What is CI/CD?", url: "https://www.youtube.com/watch?v=scEDHsr3APg", purpose: "RECOMMENDED VIDEO — compact visual primer for the source-to-build-to-delivery lifecycle; TSA then separates CI, artifact and deployment authority explicitly." };
+const gitlabRunnerDocs: LearningResource = { title: "GitLab Runner documentation", url: "https://docs.gitlab.com/runner/", purpose: "RECOMMENDED SUPPORT — first-party runner architecture and self-managed runner guidance for TSA's learner-managed execution infrastructure." };
+const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+
+function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [gha]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward CI checkpoint", body: "Apply this concept to Steward's current source-to-image path. Ask what evidence the pipeline should produce, what failure should stop promotion, and whether another engineer could understand the result without rerunning the job manually." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const continuousIntegrationDeepLessons: Lesson[] = [
+    rich("architecture", "CI Pipeline Architecture", "Continuous Integration is a feedback system around change integration. Its purpose is not to accumulate YAML; it is to turn each proposed change into fast, repeatable evidence about whether that change can safely join the main line.", [
+        { heading: "Design around feedback", body: "Model the pipeline as trigger → checkout → dependency restore → checks → build → publish evidence. Each stage should answer a risk question and fail visibly when that question cannot be answered." },
+        { heading: "Separate validation from deployment", body: "CI should produce confidence and artifacts. Deployment belongs to later delivery stages. Keeping these boundaries clear prevents a failed test from becoming an accidental infrastructure change." },
+    ]),
+    rich("jobs-stages", "Jobs, Stages and Dependencies", "Jobs define isolated units of work; dependencies define when they may run and what evidence they consume. A good graph maximizes useful parallel feedback without hiding ordering constraints.", [
+        { heading: "Build the dependency graph", body: "Linting, type checks and unit tests may run in parallel. Image build should depend on the checks that protect it. Avoid serializing independent work simply because it is easier to read." },
+        { heading: "Fail where the fault is", body: "Do not create a final generic job that discovers every problem late. Keep failure close to the check that detected it so the diagnostic signal remains strong." },
+    ]),
+    rich("runners",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const gha: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
+const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
+const gitlabCiCdVideo: LearningResource = { title: "GitLab — What is CI/CD?", url: "https://www.youtube.com/watch?v=scEDHsr3APg", purpose: "RECOMMENDED VIDEO — compact visual primer for the source-to-build-to-delivery lifecycle; TSA then separates CI, artifact and deployment authority explicitly." };
+const gitlabRunnerDocs: LearningResource = { title: "GitLab Runner documentation", url: "https://docs.gitlab.com/runner/", purpose: "RECOMMENDED SUPPORT — first-party runner architecture and self-managed runner guidance for TSA's learner-managed execution infrastructure." };
+const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+
+function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [gha]): Lesson {
+    const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
+    for (const section of sections) {
+        const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
+        if (section.items) blocks.push({ type: "list", items: section.items });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward CI checkpoint", body: "Apply this concept to Steward's current source-to-image path. Ask what evidence the pipeline should produce, what failure should stop promotion, and whether another engineer could understand the result without rerunning the job manually." });
+    blocks.push({ type: "resources", title: "Continue learning", resources });
+    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+}
+
+export const continuousIntegrationDeepLessons: Lesson[] = [
+    rich("architecture",  type { LearningResource, LessonBlock } from "../activities/content";
+import type { Lesson } from "./lesson";
+
+const gha: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
+const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
+const gitlabCiCdVideo: LearningResource = { title: "GitLab — What is CI/CD?", url: "https://www.youtube.com/watch?v=scEDHsr3APg", purpose: "RECOMMENDED VIDEO — compact visual primer for the source-to-build-to-delivery lifecycle; TSA then separates CI, artifact and deployment authority explicitly." };
+const gitlabRunnerDocs: LearningResource = { title: "GitLab Runner documentation", url: "https://docs.gitlab.com/runner/", purpose: "RECOMMENDED SUPPORT — first-party runner architecture and self-managed runner guidance for TSA's learner-managed execution infrastructure." };
 const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
 
 function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [gha]): Lesson {
