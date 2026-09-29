@@ -56,17 +56,27 @@ The PKI path previously had no structured learning-resource layer. Every PKI les
 - Red Hat and Microsoft trust-store documentation for cross-platform trust distribution;
 - Vault PKI docs for the later ownership/reassessment decision.
 
-## Existing resources retained for later focused passes
+## Second-pass modules completed
 
-The following modules already use authoritative sources but still deserve finer activity-level routing in a subsequent pass:
-- Linux and Network Security;
-- Container and Delivery Security;
-- Vault implementation;
-- Enterprise Directory Federation;
-- secure file-transfer migration;
-- artifact signing/verification.
+### Linux and Network Security
+Removed the repeated secondary hardening bundle. Lessons now use authoritative Red Hat, systemd, OpenSSH, Microsoft, NIST and TLS/OpenSSL references according to the control being changed.
 
-Identity and Secrets already supports per-spec resource overrides and is structurally ahead of the older modules.
+### Container and Delivery Security
+Resources now follow the actual supply-chain decision: Docker build/runtime security, GitLab container/dependency scanning, SAST/DAST, protected environments, CI variables/job tokens, OWASP supply-chain guidance, SLSA, SPDX/CycloneDX and Sigstore/Cosign.
+
+### Vault
+The module now exposes the exact official documentation needed for production hardening, initialization, audit devices, policies, authentication, database dynamic secrets, leases/revocation and health. Practical activity schema remains unchanged.
+
+### Enterprise Directory Federation
+Federation-model lessons use OIDC and user-storage concepts; LDAP implementation uses Keycloak LDAP/OpenLDAP/RFC 4511; lifecycle lessons stay on federation behavior; Active Directory context uses Microsoft AD DS guidance plus the Keycloak federation boundary.
+
+### Secure File Transfer
+The SFTP path now includes the exact OpenSSH server/client/key/restriction references required to reason about chroot/SFTP-only behavior, host-key verification, client identity and key restrictions.
+
+### Artifact Signing and Verification
+The signing path now includes Sigstore's security model, exact Cosign sign/verify/keyless guidance, GitLab CI/CD ID-token documentation and SLSA provenance. Stale Jenkins implementation language discovered in the first pass remains removed.
+
+Identity and Secrets already supports per-spec resource overrides and remains structurally aligned with this approach.
 
 ## Correctness finding discovered during resource audit
 
@@ -85,14 +95,8 @@ When adding or editing a Security Steward lesson:
 - never make external offensive-security exercises depend on unauthorized targets;
 - keep resource selection aligned with the concrete Steward exercise.
 
-## Next resource targets
+## Completion state
 
-The remaining high-value resource work is to deepen:
-1. Linux/network lessons with authoritative OS/OpenSSH/firewall/audit/TLS references;
-2. supply-chain lessons with GitLab, Docker/OCI, Nexus, Sigstore and SBOM/provenance sources by topic;
-3. Vault activities with initialization, audit, policies, auth, leases and database-engine docs;
-4. federation with exact Keycloak LDAP/federation and OpenLDAP lifecycle sections;
-5. SFTP with sshd_config, sftp, authorized_keys and host-key verification references;
-6. signing with exact Cosign sign/verify/identity-policy documentation.
+The deep Security Steward resource audit is now complete at the module level. Future work is maintenance rather than a known structural gap: verify links during curriculum changes, keep resource targeting narrow, and split a module further only when a lesson genuinely requires a different authoritative source.
 
 The audit should favor depth and relevance over maximizing link count.
