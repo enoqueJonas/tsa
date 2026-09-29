@@ -3,7 +3,21 @@ import type { Lesson } from "./lesson";
 
 const vaultDocs: LearningResource = { title: "HashiCorp Vault Documentation", url: "https://developer.hashicorp.com/vault/docs" };
 const databaseEngine: LearningResource = { title: "Vault Database Secrets Engine", url: "https://developer.hashicorp.com/vault/docs/secrets/databases" };
-const authDocs: LearningResource = { title: "Vault Auth Methods", url: "https://developer.hashicorp.com/vault/docs/auth" };
+const authDocs: LearningResource = { title: "Vault Auth Methods", url: "https://developer.hashicorp.com/vault/docs/auth", kind: "documentation" };
+const productionHardening: LearningResource = { title: "Vault Production Hardening", url: "https://developer.hashicorp.com/vault/docs/concepts/production-hardening", kind: "documentation" };
+const initializeDocs: LearningResource = { title: "Vault Operator Init", url: "https://developer.hashicorp.com/vault/docs/commands/operator/init", kind: "documentation" };
+const auditDocs: LearningResource = { title: "Vault Audit Devices", url: "https://developer.hashicorp.com/vault/docs/audit", kind: "documentation" };
+const policyDocs: LearningResource = { title: "Vault Policies", url: "https://developer.hashicorp.com/vault/docs/concepts/policies", kind: "documentation" };
+const leaseDocs: LearningResource = { title: "Vault Lease, Renew and Revoke", url: "https://developer.hashicorp.com/vault/docs/concepts/lease", kind: "documentation" };
+const healthDocs: LearningResource = { title: "Vault /sys/health API", url: "https://developer.hashicorp.com/vault/api-docs/system/health", kind: "documentation" };
+
+const resourcesByVaultActivity: Record<string, LearningResource[]> = {
+    "security-vault-implementation-001": [vaultDocs, leaseDocs],
+    "security-vault-implementation-002": [productionHardening, initializeDocs, auditDocs, policyDocs],
+    "security-vault-implementation-003": [databaseEngine, authDocs, leaseDocs, policyDocs],
+    "security-vault-implementation-004": [healthDocs, leaseDocs, authDocs],
+    "security-vault-implementation-005": [productionHardening, vaultDocs],
+};
 
 const blocks: LessonBlock[] = [
     { type: "paragraph", text: "Steward has accumulated enough machine identities, database access and platform automation that manually rotating long-lived credentials is now a measurable security and operations burden. TSA therefore moves Vault from an optional design exercise to a mandatory learner-owned implementation." },
@@ -15,7 +29,7 @@ const blocks: LessonBlock[] = [
         "Vault availability, audit, unseal/recovery and backup responsibilities become part of operating the platform."
     ] },
     { type: "callout", tone: "steward", title: "Scenario-forced implementation", body: "The learning objective is not to install Vault because enterprises use it. Steward now has a concrete database-credential lifecycle problem that dynamic credentials solve. Architect may later retain, simplify or replace the platform after evaluating its operational cost." },
-    { type: "resources", title: "Continue learning", resources: [vaultDocs, databaseEngine, authDocs] },
+    { type: "resources", title: "Continue learning", resources: resourcesByVaultActivity["security-vault-implementation-001"] },
 ];
 
 export const vaultImplementationDeepLessons: Lesson[] = [
@@ -28,7 +42,9 @@ export const vaultImplementationDeepLessons: Lesson[] = [
                 id: "security-vault-implementation-002",
                 title: "Deploy and Initialize Vault Safely",
                 estimatedMinutes: 180,
-                content: { type: "practical", objective: "Operate a learner-owned Vault control plane without normalizing root-token application access.", scenario: "Steward needs centralized policy and auditable secret issuance. Deploy Vault as a security-sensitive platform component with an explicit recovery boundary.", instructions: [
+                content: { type: "reading", body: "Use the authoritative Vault references for this implementation step before changing the control plane.", blocks: [{ type: "resources", title: "Read before implementation", resources: resourcesByVaultActivity["security-vault-implementation-002"] }] },
+                resourceGuide: true,
+                implementationContent: { type: "practical", objective: "Operate a learner-owned Vault control plane without normalizing root-token application access.", scenario: "Steward needs centralized policy and auditable secret issuance. Deploy Vault as a security-sensitive platform component with an explicit recovery boundary.", instructions: [
                     "Deploy Vault in the learner-owned homelab/platform using persistent storage and TLS appropriate to the environment; development mode does not satisfy the final exercise.",
                     "Initialize the instance and handle recovery/unseal material according to a documented learner-safe procedure. Never commit root, recovery or unseal material to Git or ordinary evidence.",
                     "Use the root token only for bounded bootstrap/administrative setup, then create non-root operator and workload paths.",
@@ -41,7 +57,9 @@ export const vaultImplementationDeepLessons: Lesson[] = [
                 id: "security-vault-implementation-003",
                 title: "Issue Dynamic PostgreSQL Credentials",
                 estimatedMinutes: 240,
-                content: { type: "practical", objective: "Replace one Steward static database credential path with leased Vault-issued PostgreSQL credentials.", scenario: "A long-lived Steward database password is copied through deployment configuration and requires coordinated manual rotation. The organization requires shorter-lived credentials, centralized policy and revocation evidence.", instructions: [
+                content: { type: "reading", body: "Use the authoritative Vault references for this implementation step before changing the control plane.", blocks: [{ type: "resources", title: "Read before implementation", resources: resourcesByVaultActivity["security-vault-implementation-003"] }] },
+                resourceGuide: true,
+                implementationContent: { type: "practical", objective: "Replace one Steward static database credential path with leased Vault-issued PostgreSQL credentials.", scenario: "A long-lived Steward database password is copied through deployment configuration and requires coordinated manual rotation. The organization requires shorter-lived credentials, centralized policy and revocation evidence.", instructions: [
                     "Configure the Vault database secrets engine against the learner PostgreSQL environment using a bounded administrative credential appropriate for credential creation/revocation.",
                     "Define a database role that creates only the privileges Steward needs; do not issue database-superuser credentials to the application.",
                     "Configure a workload authentication method appropriate to the current Steward runtime. The application must not authenticate to Vault using the root token.",
@@ -56,7 +74,9 @@ export const vaultImplementationDeepLessons: Lesson[] = [
                 id: "security-vault-implementation-004",
                 title: "Break Vault and Rotate Trust",
                 estimatedMinutes: 180,
-                content: { type: "practical", objective: "Understand how a secrets control-plane failure affects an already-running and a newly-starting Steward workload.", scenario: "Vault becomes unavailable or a workload identity is revoked. Existing database sessions and leases may behave differently from new credential requests, so the failure boundary must be measured rather than assumed.", instructions: [
+                content: { type: "reading", body: "Use the authoritative Vault references for this implementation step before changing the control plane.", blocks: [{ type: "resources", title: "Read before implementation", resources: resourcesByVaultActivity["security-vault-implementation-004"] }] },
+                resourceGuide: true,
+                implementationContent: { type: "practical", objective: "Understand how a secrets control-plane failure affects an already-running and a newly-starting Steward workload.", scenario: "Vault becomes unavailable or a workload identity is revoked. Existing database sessions and leases may behave differently from new credential requests, so the failure boundary must be measured rather than assumed.", instructions: [
                     "Capture the healthy state: Vault authentication, credential issuance, lease duration and Steward database connectivity.",
                     "Stop or isolate Vault while Steward has a valid leased credential. Observe existing operation and separately test a path that requires a new/renewed secret.",
                     "Ensure failure to obtain a new credential is explicit and does not cause fallback to a hard-coded or overprivileged emergency password.",
