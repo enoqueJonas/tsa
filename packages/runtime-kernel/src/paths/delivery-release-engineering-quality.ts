@@ -8,7 +8,7 @@ const practices: Record<string, PracticalContent> = {
         objective: "Construct one Steward release candidate whose identity is strong enough that another engineer can prove exactly what is being evaluated without rebuilding anything.",
         scenario: "CI is green and Nexus contains multiple Steward packages/images. The team needs to nominate one candidate for release without confusing a branch, mutable tag or version label with immutable release evidence.",
         instructions: [
-            "Choose one real Steward source revision and identify the Jenkins run that produced its releasable outputs.",
+            "Choose one real Steward source revision and identify the GitLab CI pipeline run that produced its releasable outputs.",
             "Record the application version, steward-common version/hash, OCI image tag and digest, migration set and relevant configuration assumptions.",
             "Attempt to describe the candidate using only mutable labels, then identify which claims remain ambiguous until resolved to immutable hashes/digests.",
             "Prove that rebuilding the same source/version would create a different candidate identity even if behavior appears equivalent.",
@@ -33,14 +33,14 @@ const practices: Record<string, PracticalContent> = {
     },
     "Deployment Evidence": {
         type: "practical",
-        objective: "Produce a release record that proves the intended Steward artifact became the running, usable service rather than merely proving that a Jenkins deployment stage finished.",
+        objective: "Produce a release record that proves the intended Steward artifact became the running, usable service rather than merely proving that a GitLab CI deployment stage finished.",
         scenario: "A deployment job reports success, but that alone cannot establish which image is running, whether migrations completed, or whether a real client path works.",
         instructions: [
             "Deploy one known Steward candidate through the existing delivery path by immutable image identity.",
             "Capture the intended release identity, target, deployment execution, migration result and running container/image identity.",
             "Verify the health endpoint and one representative authenticated Steward API behavior from a client perspective.",
             "Create one safe mismatch or failed verification condition and show which evidence reveals that pipeline success is not enough.",
-            "Assemble a concise release record linking source commit, Jenkins run, Nexus artifact, approval state, deployment and runtime proof."
+            "Assemble a concise release record linking source commit, GitLab CI pipeline run, Nexus artifact, approval state, deployment and runtime proof."
         ],
         deliverables: ["Completed release record", "Runtime identity and client evidence", "Pipeline-success-vs-runtime-failure evidence"],
         completionCriteria: ["The running artifact is independently traceable to the approved candidate.", "Verification includes meaningful application behavior, not only process health.", "A deployment command finishing successfully is not treated as proof of release success."],
