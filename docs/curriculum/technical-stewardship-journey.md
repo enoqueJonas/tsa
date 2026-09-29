@@ -36,7 +36,7 @@ The learner does not wait for a final framework lab. Each module changes the sam
 4. **Browser Layer** — add Playwright Java, explicit browser/context ownership, direct-locator smoke flow, then extract page/component objects from repetition.
 5. **Reuse Boundary** — only now evaluate generic configuration/API/browser/evidence/JUnit infrastructure and extract justified pieces into `tsa-test-core`.
 6. **Internal Distribution** — publish the versioned `tsa-test-core` JAR to Nexus and make Steward consume it as a normal Maven dependency.
-7. **CI and Continuous Execution** — containerize dependencies, add Jenkins gates/selection/artifacts and scheduled regression.
+7. **CI and Continuous Execution** — containerize dependencies, add GitLab CI/CD gates/selection/artifacts and scheduled regression.
 8. **Quality Steward Milestone** — defend the completed quality platform, its evidence model, framework boundaries and unresolved risks.
 
 ## Labs
@@ -315,7 +315,9 @@ Make software reproducibly buildable, packageable, testable, releasable and depl
 - Pipeline architecture
 - Jobs, stages and dependencies
 - Runners/agents
-- GitHub Actions and/or Jenkins
+- GitLab CI/CD as the canonical CI implementation
+- `.gitlab-ci.yml`, jobs, stages, runners, `rules`, `needs`, variables, caches and artifacts
+- Merge request, branch/tag and scheduled pipeline sources
 - Self-hosted runners
 - Caching
 - Pipeline artifacts
@@ -586,6 +588,12 @@ Learn quality engineering deeply and build a real automation framework against t
 - Reliability-oriented tests
 
 ## Module 10 — Quality in Containers and CI/CD
+- Testcontainers Java lifecycle and JUnit integration
+- PostgreSQLContainer and container-derived connection configuration
+- Testcontainers vs Docker Compose vs deployed/UAT environment boundaries
+- Container readiness, cleanup, version pinning and test-data isolation
+- GitLab Runner execution model and runner/environment assumptions
+- GitLab CI/CD `rules`, `needs`, caches, artifacts, reports and protected/masked variables
 - Test containers/environments
 - Running tests against Dockerized services
 - Ephemeral test environments concepts
