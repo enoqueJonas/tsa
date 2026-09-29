@@ -1,8 +1,8 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
-const pytest: LearningResource = { title: "pytest documentation", url: "https://docs.pytest.org/" };
-const playwright: LearningResource = { title: "Playwright Python", url: "https://playwright.dev/python/" };
+const junit: LearningResource = { title: "JUnit 5 User Guide", url: "https://docs.junit.org/5.11.4/user-guide/" };
+const playwright: LearningResource = { title: "Playwright for Java", url: "https://playwright.dev/java/" };
 const k6: LearningResource = { title: "Grafana k6 documentation", url: "https://grafana.com/docs/k6/latest/" };
 
 const readingBlocks: LessonBlock[] = [
@@ -32,7 +32,7 @@ const readingBlocks: LessonBlock[] = [
     "What residual risks remain for Security Steward and Reliability Engineer?"
   ] },
   { type: "callout", tone: "steward", title: "Quality Steward completion standard", body: "The learner should leave this school with an operational quality platform around Steward, not a folder of disconnected scripts. The system should make quality risk visible before release and failures understandable after execution." },
-  { type: "resources", title: "Reference tools", resources: [pytest, playwright, k6] }
+  { type: "resources", title: "Reference tools", resources: [junit, playwright, k6] }
 ];
 
 export const qualityStewardMilestoneDeepLessons: Lesson[] = [
