@@ -550,6 +550,17 @@ Learn quality engineering deeply and build a real automation framework against t
 - Maintainability, public APIs and framework ownership
 - Extract reusable infrastructure into `tsa-test-core`
 - Publish/consume `tsa-test-core` as a versioned Maven artifact through Nexus
+- SLF4J logging architecture, levels, execution context and secret redaction
+- Stable run/test/attempt identity across logs, API evidence, browser artifacts and reports
+- Failure taxonomy: product, automation/framework, environment/infrastructure and precondition
+- Allure as evidence presentation: meaningful steps, metadata, sanitized attachments and stable history identity
+- Artifact capture, sensitivity, naming and retention policy
+- Retry eligibility with first-attempt evidence preservation and mutation safety
+- Flake measurement using first-pass/recovered outcomes
+- Quarantine ownership, visibility, aging and exit criteria
+- Operability indicators beyond pass percentage
+- **Operability milestone:** diagnose a simulated unattended mixed API/browser regression run from evidence alone
+
 
 ## Module 7 — Browser and Environment Testing
 - Browser differences
