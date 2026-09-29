@@ -587,6 +587,16 @@ Learn quality engineering deeply and build a real automation framework against t
 - Compatibility
 - Reliability-oriented tests
 
+- Performance measurement model: latency distributions, throughput, errors, saturation and warm-up
+- k6 VUs, iterations, scenarios, closed versus arrival-rate/open workload models
+- k6 checks versus thresholds and evidence-backed threshold selection
+- Performance experiment validity: release/environment/dataset/generator identity and comparable-run discipline
+- Accessibility automation plus keyboard/manual semantic evidence; no scanner-only accessibility claims
+- Compatibility-contract engineering and risk-based reduction of combinatorial matrices
+- Controlled dependency failure through recovery with post-failure state-integrity evidence
+- Non-functional execution cadence: merge request versus scheduled versus release/manual evidence
+- **Measurement milestone:** defend workload, environment, interpretation and limitations—not just the resulting number
+
 ## Module 10 — Quality in Containers and CI/CD
 - Testcontainers Java lifecycle and JUnit integration
 - PostgreSQLContainer and container-derived connection configuration
