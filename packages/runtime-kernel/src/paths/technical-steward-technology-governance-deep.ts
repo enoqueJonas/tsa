@@ -1,4 +1,17 @@
+import type { LearningResource } from "../activities/content";
 import type { Lesson } from "./lesson";
+const cobit={title:"ISACA — COBIT",url:"https://www.isaca.org/resources/cobit",kind:"reference"} satisfies LearningResource;
+const itil={title:"PeopleCert — ITIL",url:"https://www.peoplecert.org/browse-certifications/it-governance-and-service-management/ITIL-1",kind:"reference"} satisfies LearningResource;
+const iso38500={title:"ISO/IEC 38500 — Governance of IT overview",url:"https://www.iso.org/standard/62816.html",kind:"reference"} satisfies LearningResource;
+const isoMgmt={title:"ISO — Management System Standards",url:"https://www.iso.org/management-system-standards.html",kind:"reference"} satisfies LearningResource;
+const nistCsf={title:"NIST Cybersecurity Framework 2.0",url:"https://www.nist.gov/cyberframework",kind:"reference"} satisfies LearningResource;
+const resourcesByTechGovernance:Record<string,LearningResource[]>={
+ "technology-governance-business-technology-alignment":[cobit,iso38500],"technology-governance-value-delivery":[cobit],
+ "technology-governance-resource-stewardship":[cobit,iso38500],"technology-governance-performance-oversight":[cobit],
+ "technology-governance-governance-structures":[iso38500,cobit],"technology-governance-cobit-concepts":[cobit],
+ "technology-governance-itil-service-management":[itil],"technology-governance-iso-management-systems":[isoMgmt],
+ "technology-governance-nist-framework-landscape":[nistCsf],"technology-governance-frameworks-without-checklists":[iso38500,cobit],
+};
 
 function reading(id: string, title: string, body: string): Lesson {
     return {
@@ -8,7 +21,7 @@ function reading(id: string, title: string, body: string): Lesson {
             id: `${id}-001`,
             title,
             estimatedMinutes: 55,
-            content: { type: "reading", body },
+            content: { type: "reading", body, blocks:[{type:"resources",title:"Framework/reference",resources:resourcesByTechGovernance[id] ?? [iso38500]}] },
         }],
     };
 }
