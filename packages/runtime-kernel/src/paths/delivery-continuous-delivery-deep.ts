@@ -5,6 +5,12 @@ const gitlabEnvironments: LearningResource = { title: "GitLab — Environments",
 const djangoMigrations: LearningResource = { title: "Django migrations", url: "https://docs.djangoproject.com/en/stable/topics/migrations/" };
 const dockerCompose: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
 const twelveFactor: LearningResource = { title: "The Twelve-Factor App", url: "https://12factor.net/" };
+const gitlabCiCdVideo: LearningResource = { title: "GitLab — What is CI/CD?", url: "https://www.youtube.com/watch?v=scEDHsr3APg", purpose: "RECOMMENDED VIDEO — reuse the lifecycle primer to distinguish integration, delivery and deployment control boundaries." };
+const parallelChange: LearningResource = { title: "Martin Fowler — Parallel Change", url: "https://martinfowler.com/bliki/ParallelChange.html", purpose: "RECOMMENDED VISUAL/ARTICLE RESOURCE — model expand, migrate and contract compatibility during schema evolution." };
+const kubernetesDeployments: LearningResource = { title: "Kubernetes — Deployments", url: "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/", read: "Use the rolling-update diagrams.", purpose: "RECOMMENDED VISUAL RESOURCE — understand gradual replacement and coexistence requirements before later Kubernetes depth." };
+const blueGreen: LearningResource = { title: "Martin Fowler — BlueGreenDeployment", url: "https://martinfowler.com/bliki/BlueGreenDeployment.html", purpose: "RECOMMENDED VISUAL/ARTICLE RESOURCE — establish the two-environment traffic-switch model and rollback boundary." };
+const argoCanary: LearningResource = { title: "Argo Rollouts — Canary strategy", url: "https://argo-rollouts.readthedocs.io/en/stable/features/canary/", purpose: "RECOMMENDED VISUAL RESOURCE — model staged exposure before later Argo Rollouts implementation." };
+const featureToggles: LearningResource = { title: "Martin Fowler — Feature Toggles", url: "https://martinfowler.com/articles/feature-toggles.html", read: "Use the diagrams as supporting visual material.", purpose: "OPTIONAL VISUAL RESOURCE — show how deployment and feature exposure can be decoupled, including the cost of long-lived flags." };
 
 function richLesson(
     id: string,
@@ -112,7 +118,7 @@ export const continuousDeliveryDeploymentDeepLessons: Lesson[] = [
     richLesson("ci-cd-cd", "CI versus Continuous Delivery versus Continuous Deployment", "The terms are often collapsed into 'CI/CD', but they describe different control boundaries. Continuous integration validates and integrates change; continuous delivery keeps a releasable artifact ready to deploy; continuous deployment automatically moves eligible releases into the target environment.", [
         { heading: "Separate readiness from release", body: "A green CI run proves only the checks you designed. Continuous delivery adds packaging, release identity and deployment readiness. Continuous deployment removes a human release decision only when automated evidence is strong enough to justify doing so." },
         { heading: "Choose automation by risk", body: "Steward in a learning homelab does not need artificial enterprise ceremony, but it does need deliberate gates. Automate repetitive mechanics first; preserve human approval where a decision still requires judgment." },
-    ], [gitlabEnvironments]),
+    ], [gitlabEnvironments, gitlabCiCdVideo]),
     richLesson("environment-management", "Environment Management", "An environment is more than a hostname. It is a set of infrastructure, data, configuration, credentials, integrations and operational expectations in which a release runs.", [
         { heading: "Keep release identity stable", body: "Promote the same Steward image between environments. Differences should come from explicit environment inputs rather than rebuilding code with different values baked into the artifact." },
         { heading: "Inventory environment-specific state", body: "Record DNS names, ports, database endpoint, secret source, persistent volumes, external integrations and access policy. Hidden environment assumptions are a common cause of 'works in test, fails in production'." },
@@ -129,7 +135,7 @@ export const continuousDeliveryDeploymentDeepLessons: Lesson[] = [
         { heading: "Reason about compatibility windows", body: "Prefer migrations that allow old and new application versions to coexist during the transition when possible: add before remove, backfill deliberately, then clean up after consumers move." },
         { heading: "Treat migration failure as a release failure", body: "Run migrations as an explicit deployment step, capture their result and stop if they fail. A container reporting healthy while required schema changes did not apply is not a successful release." },
         { heading: "Separate application rollback from data rollback", body: "Reverse migrations can lose data or be impossible. Document whether a release is backward-compatible with the post-migration schema and what recovery actually means." },
-    ], [djangoMigrations]),
+    ], [djangoMigrations, parallelChange]),
     richLesson("rollback", "Rollback", "Rollback is the controlled restoration of a previously known-good release state. It depends on immutable release identity, compatible persistent state and a verification procedure.", [
         { heading: "Know what you can reverse", body: "Application image, runtime configuration and routing may be reversible quickly. Database writes, external side effects and irreversible migrations may not be. Define rollback boundaries before deployment." },
         { heading: "Verify after rollback", body: "A successful command is not proof of recovery. Confirm the previous image identity, health and at least one meaningful Steward behavior." },
@@ -137,18 +143,18 @@ export const continuousDeliveryDeploymentDeepLessons: Lesson[] = [
     richLesson("rolling-deployments", "Rolling Deployments", "A rolling deployment replaces instances gradually so some capacity remains available while new instances start. It is useful only when multiple interchangeable instances exist and versions can coexist safely.", [
         { heading: "Understand the prerequisites", body: "Rolling deployment assumes traffic can be distributed across replicas and that old/new application versions tolerate the same dependencies and schema during the rollout." },
         { heading: "Do not simulate scale for its own sake", body: "A single-node Steward homelab may not benefit from rolling deployment yet. Learn the mechanism and its requirements without inventing fake high availability." },
-    ], [dockerCompose]),
+    ], [dockerCompose, kubernetesDeployments]),
     richLesson("blue-green", "Blue-Green Deployments", "Blue-green deployment maintains two complete application environments so a release can be verified on the inactive side before traffic switches.", [
         { heading: "Shift traffic deliberately", body: "The technique reduces application switch-over risk because the previous environment can remain intact, but shared databases and external side effects still complicate rollback." },
         { heading: "Count the cost", body: "Blue-green requires duplicate runtime capacity and disciplined routing. In a budget homelab, the learner should understand the trade-off rather than force the pattern into every service." },
-    ], [dockerCompose]),
+    ], [dockerCompose, blueGreen]),
     richLesson("canary", "Canary Deployment Concepts", "Canary deployment exposes a new release to a limited slice of traffic or users before broader rollout. Its value comes from comparing real runtime evidence while limiting blast radius.", [
         { heading: "Define the observation", body: "A canary without measurable success criteria is just partial exposure. Decide which errors, latency, business behavior or operator signals would stop promotion." },
         { heading: "Know when it is premature", body: "Steward does not yet have the traffic scale or observability maturity to justify implementing a real canary. The concept becomes actionable later when Reliability Engineering adds stronger runtime signals." },
-    ], []),
+    ], [, argoCanary]),
     richLesson("feature-flags", "Feature Flag Concepts", "Feature flags decouple code deployment from feature exposure. They can reduce release coupling, but they introduce runtime configuration state that must be owned, tested and eventually removed.", [
         { heading: "Separate deployment from activation", body: "A compatible code path can be deployed dark, then enabled for selected users or conditions. This can reduce rollback pressure when feature activation is reversible independently of the binary." },
         { heading: "Control flag debt", body: "Temporary flags need owners and removal criteria. Stale flags multiply execution paths and make testing, debugging and reasoning harder." },
-    ], [twelveFactor]),
+    ], [twelveFactor, featureToggles]),
     practicalLesson(),
 ];
