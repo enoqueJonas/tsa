@@ -26,7 +26,7 @@ The learner must:
 - prove both positive and negative reachability: an allowed client can reach the resource while an untrusted/public path cannot;
 - keep database and other backend-only ports private.
 
-Suitable VPN-only resources include SSH administration, an internal diagnostic endpoint, a future GitLab CI runner\/management or Nexus interface, or another non-public control-plane service. The exercise is about access boundaries, not hiding insecure software behind a VPN.
+Suitable VPN-only resources include SSH administration, an internal diagnostic endpoint, a future GitLab CI runner/management or Nexus interface, or another non-public control-plane service. The exercise is about access boundaries, not hiding insecure software behind a VPN.
 
 ## Delivery Engineer — reproducible homelab deployment
 
