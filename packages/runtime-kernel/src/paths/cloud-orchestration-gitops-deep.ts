@@ -59,7 +59,7 @@ const specs: LessonSpec[] = [
         intro: "Docker solved packaging and a small Compose topology solved local multi-container execution. Orchestration adds a control plane that continually reconciles desired workload state when one host, one process or one deployment script is no longer an adequate operating model.",
         sections: [
             { heading: "Start from the problem", paragraphs: ["Kubernetes earns its place when the system benefits from declarative scheduling, health-based replacement, controlled rollout, service discovery and a stable workload API across nodes.", "For Steward, the first goal is not hyperscale. It is to understand a reconciled runtime and the new failure and security boundaries that come with it."] },
-            { heading: "Do not confuse layers", paragraphs: ["OpenTofu creates infrastructure, Ansible manages host state, Jenkins builds and publishes artifacts, and Kubernetes reconciles application workload state. Overlap should be deliberate, not accidental."] },
+            { heading: "Do not confuse layers", paragraphs: ["OpenTofu creates infrastructure, Ansible manages host state, GitLab CI builds, verifies and publishes artifacts, and Kubernetes reconciles application workload state. Overlap should be deliberate, not accidental."] },
         ],
         practiceTitle: "Orchestration Adoption Gate: Prove What Kubernetes Solves",
         practice: ["List the current Steward runtime responsibilities handled by Docker/Compose or host services.", "Identify which of them Kubernetes would own and which remain outside the cluster.", "Name two concrete benefits and three new operational costs.", "Write an adopt/defer decision tied to a real Steward requirement."],
@@ -145,8 +145,8 @@ const specs: LessonSpec[] = [
             { heading: "Cluster admin should be exceptional", paragraphs: ["CI, GitOps controllers and application workloads should not share a human cluster-admin identity. Permissions should reflect the object types and namespaces each actor must manage."] },
             { heading: "Namespace is not a hard security boundary by itself", paragraphs: ["Namespaces support organization and policy scope, but network policy, RBAC and platform security controls determine effective isolation."] },
         ],
-        practiceTitle: "Cluster Least-Privilege Review: Separate Human, Jenkins, Argo and Workload Identity",
-        practice: ["List the Kubernetes actions required by an operator, Jenkins, Argo CD and the Steward workload.", "Create or design distinct service accounts and RBAC roles for those responsibilities.", "Attempt one action that should be denied to a restricted identity.", "Record why namespace separation alone would not protect an exposed service."],
+        practiceTitle: "Cluster Least-Privilege Review: Separate Human, GitLab CI, Argo and Workload Identity",
+        practice: ["List the Kubernetes actions required by an operator, GitLab CI, Argo CD and the Steward workload.", "Create or design distinct service accounts and RBAC roles for those responsibilities.", "Attempt one action that should be denied to a restricted identity.", "Record why namespace separation alone would not protect an exposed service."],
         deliverables: ["RBAC responsibility matrix", "Versioned role/binding manifests", "Denied-action evidence"],
         criteria: ["No routine actor depends on shared cluster-admin credentials.", "At least one least-privilege denial is proven.", "RBAC and network reachability are treated as different controls."],
         questions: ["Why should a deployment controller not use a human administrator token?", "What does a namespace provide, and what security property does it not guarantee?"]
