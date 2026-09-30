@@ -266,6 +266,20 @@ System Thinker is **REMEDIATED, not VALIDATED**. Remaining school-exit gates are
 | `pnpm build` after remediation | PENDING LOCAL EXECUTION |
 | Representative rendered UI spot-check | NOT STARTED |
 
+## Platform Builder audit findings
+
+### Foundations through Bare Metal
+
+| Path | Classification | Finding |
+| --- | --- | --- |
+| Computer and Operating-System Foundations | PASS | Directly teaches CPU/memory/storage/I/O, OS responsibility, kernel/user boundary, processes/threads and filesystems before machine evidence. |
+| Linux Administration | PASS WITH SOURCE-DEBT NOTE | Learner-facing quality composition standardizes Rocky Linux and adds substantive SELinux/firewalld teaching plus RHEL-family practices. The underlying deep source remains Ubuntu-authored and is transformed at runtime; this is maintainability debt, not currently a learner-facing instructional gap. |
+| Networking Foundations | PASS | Substantive mechanism-first coverage from Ethernet/IP/ARP through TCP/UDP, sockets, routing, DHCP, DNS, NAT, firewall, TLS and diagnostic tools. |
+| Virtualization | PASS | Teaches host/guest/hypervisor boundaries, resource allocation, virtual networking and snapshot/recovery limits before operation. |
+| Budget Homelab | PASS | Design is capability/cost/failure driven and the quality overlay aligns learner-facing OS/VPN choices to Rocky Linux/WireGuard. |
+| Bare-Metal Platform Foundations | PASS | Boot chain, firmware/UEFI, SMART/hardware evidence, recovery/OOB/power boundaries and destructive Proxmox readiness are taught explicitly and safely. |
+| Packet Tracer Network Engineering | TARGETED IMPROVEMENT | Labs are strong and foundational networking is prerequisite, but new enterprise mechanisms such as 802.1Q trunking, STP/EtherChannel, OSPF and ACL evaluation are introduced mainly through one-paragraph briefs plus implementation commands. Add direct conceptual models before those labs. |
+
 ## Quality Steward detailed remediation
 
 Do not treat the recent Java migration as pedagogically complete merely because it is technically coherent.
