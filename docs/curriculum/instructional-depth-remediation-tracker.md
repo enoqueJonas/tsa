@@ -333,6 +333,44 @@ Platform Builder is **REMEDIATED, not VALIDATED**. Source-level audit found stro
 | Artifact / Dependency / Supply Chain | PASS | Nexus is justified by real distribution needs and teaches formats/protocols, hosted/proxy/group, least-privilege publication, clean consumption, OCI digest identity, retention, provenance and SBOM. Signing/enforcement remains correctly deferred to Security Steward. |
 | CI migration exercise | PASS | Jenkins appears only as an intentionally inherited source platform; migration maps guarantees to GitLab, bounds coexistence, preserves rollback during migration and ends by decommissioning Jenkins as a release path. |
 | Delivery milestone integration | REMEDIATED | Added explicit GitLab Runner execution/trust evidence and proof that a retired Jenkins migration path cannot remain a second release publisher after cutover (`9b6ca1a7`). |
+| Release Engineering | PASS | Teaches immutable release-candidate identity, build-once promotion, risk-question gates, runtime/client evidence, release observability boundary, rollback limits and executable runbooks. |
+| Production Database Schema Evolution | PASS | Strong expand→backfill→switch→contract model with old/new coexistence, restartable interrupted backfill, operational load observation, explicit recovery analysis and delayed destructive cleanup. |
+
+### Delivery Engineer source-level closure
+
+Delivery Engineer is **REMEDIATED, not VALIDATED**. The complete live path now forms one coherent state/evidence chain:
+
+```text
+reviewed source
+  ↓ GitLab CI/CD
+GitLab Runner execution + required checks
+  ↓
+immutable package / OCI artifacts
+  ↓ Nexus
+release candidate
+  ↓ evidence-bearing promotion gates
+same artifact + environment configuration
+  ↓
+deployment + compatible schema evolution
+  ↓
+runtime/client verification
+  ↓
+rollback or forward recovery
+```
+
+The intentional Jenkins migration exercise remains the sole legacy Jenkins teaching boundary: it starts from an inherited workflow, proves semantic equivalence during bounded coexistence, cuts over to GitLab CI/CD and decommissions Jenkins as a release publisher.
+
+A source consistency review found and corrected one missing instruction separator introduced during milestone editing (`6ef21ead`). This correction is **not** a substitute for an actual build.
+
+| Gate | Status |
+| --- | --- |
+| Source-level pedagogical audit | PASS |
+| Identified source remediation | PASS |
+| Cross-path prerequisite/sequence review | PASS |
+| Canonical GitLab/GitLab Runner delivery model | PASS |
+| `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
+| `pnpm build` after remediation | PENDING LOCAL EXECUTION |
+| Representative rendered UI spot-check | NOT STARTED |
 
 ## Quality Steward detailed remediation
 
