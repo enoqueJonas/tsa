@@ -773,3 +773,14 @@ implemented evidence-backed evolution + architecture defense
 | IT and Technology Governance | PASS | Connects technology to organizational outcomes, value, resource stewardship, service ownership and performance oversight. COBIT/ITIL/ISO/NIST are selectively mapped to governance problems and explicitly rejected as parallel checklist bureaucracies; documentation is distinguished from operating evidence. |
 | Technology Strategy and Capability Planning | REMEDIATED | Strong outcomes→capability→investment/non-investment model and explicit build/buy/learn/retire choices. Strengthened the 12–24 month roadmap lesson so commitment decreases with horizon, conditional items carry assumptions/evidence gates/owners/review-or-expiry points, and unsupported options are stopped rather than assigned false-precision dates (`42eb2dd0`). |
 
+
+### Technical Steward source-level closure
+
+The remaining paths are classified as follows: Technology Risk — PASS; Controls, Compliance and Assurance — PASS; Architecture Governance — PASS; Security and Data Governance — PASS; Change and Service Governance — PASS; Third-party and Technology Lifecycle Risk — PASS; Technical Debt and Engineering Health — REMEDIATED; Engineering Handbook and Standards — PASS; Technical Steward Milestone — PASS.
+
+Technical Debt had the material pedagogical gap: eight short reading-only lessons preceded the synthesis lab. Each concept now includes progressive evidence-based Steward practice requiring a real classification and treatment/tolerate/escalate decision, owner and reconsideration trigger before the final health review (`85d5e84c`).
+
+The milestone correctly reviews the actual current stack rather than preserving every technology encountered for learning. It requires operating control evidence, migration decommission decisions, lifecycle/continuity/provenance ownership, redundant-capability challenge, handbook usability, engineering-health decisions and updates to authoritative artifacts.
+
+Technical Steward is **REMEDIATED, not VALIDATED**. Source pedagogy, delegated decision rights, proportional governance, lifecycle/continuity and progressive engineering-health practice pass. `pnpm audit:curriculum`, `pnpm build` and representative rendered UI validation remain pending.
+
