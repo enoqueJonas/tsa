@@ -778,13 +778,18 @@ This path was introduced after the original multimedia pass. Media is used for e
 | Lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
 | Designing Unit Tests | RECOMMENDED VIDEO | Google unit-testing guidance reviewed | [Software Engineering at Google — Unit Testing](https://abseil.io/resources/swe-book/html/ch12.html) — use test structure/behavior examples | Strong engineering treatment of unit-test value and maintainability rather than framework syntax. |
-| Isolation | RECOMMENDED VIDEO | Isolation/test-double material reviewed | Reuse Google unit-testing guidance | Keeps isolation tied to behavior and feedback rather than maximizing mocks. |
+| Isolation | RECOMMENDED VIDEO | Isolation/test-double material reviewed | Reuse Google unit-testing guidance; JUnit remains the execution framework | Keeps isolation tied to behavior and feedback rather than maximizing mocks. The real Django/PostgreSQL boundary stays present when persistence semantics are the risk. |
 | Test Doubles | RECOMMENDED VIDEO | Test-double taxonomy reviewed | [Martin Fowler — Mocks Aren't Stubs](https://martinfowler.com/articles/mocksArentStubs.html) | Canonical visual/conceptual distinction between state verification and behavior verification. |
-| Mocks, Stubs and Fakes | RECOMMENDED VIDEO | Mock/stub/fake material reviewed | Reuse Fowler test-double material | Avoids redundant taxonomy resources. |
+| Mocks, Stubs and Fakes | RECOMMENDED VIDEO | Mock/stub/fake material reviewed | Reuse Fowler test-double material; implement examples in Java/JUnit | Avoids redundant taxonomy resources while keeping the automation stack consistent. |
 | Coverage and Its Limitations | RECOMMENDED VIDEO | Coverage guidance reviewed | [Google Testing Blog — Code Coverage Best Practices](https://testing.googleblog.com/2020/08/code-coverage-best-practices.html) | Reinforces coverage as feedback rather than a proxy for correctness. |
 | Component Boundaries | RECOMMENDED VIDEO | Component-test material reviewed | No candidate promoted | Boundary choice is architecture-specific and should be defended against Steward. |
 | Fast Feedback and Maintainability | NO VIDEO | — | — | Learner measures and reviews the actual test portfolio. |
-| Lab: Strengthen Steward Component Tests | NO VIDEO | — | — | Independent implementation evidence. |
+| Lab: Strengthen Steward Component Tests | NO VIDEO | — | — | Independent implementation evidence through Java/JUnit steward-tests against appropriate Steward component boundaries. |
+| Select the Evidence Boundary | NO VIDEO | — | — | Boundary selection must follow the existing risk model rather than a tutorial recipe. |
+| Implement High-value Unit Tests | NO VIDEO | — | — | The assessment is executable JUnit evidence for product behavior. |
+| Implement Component Evidence | NO VIDEO | — | — | Real framework/persistence collaboration is the evidence; Django/PostgreSQL may remain real SUT dependencies where relevant. |
+| Review Coverage and Feedback Cost | NO VIDEO | — | — | Learner evaluates the actual suite rather than optimizing to a generic percentage. |
+| Unit and Component Testing Review | NO VIDEO | — | — | Capability defense and handoff to API/integration testing. |
 
 ### API, Integration and Contract Testing
 
