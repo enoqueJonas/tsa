@@ -87,10 +87,11 @@ const gate3 = practicalLesson(
         "Demonstrate the intended SSH/VPN or cluster administrative path and show how it differs from public user ingress.",
         "Record the cloud, Kubernetes/OpenShift and GitOps identities used by a human operator, infrastructure automation, Argo CD and the running workload.",
         "Trace one runtime secret from its managed source to the workload without exposing its value in source, image, logs, environment Git or IaC output.",
+        "Prove the public certificate lifecycle, not only current TLS success: identify the certificate actually served by Kong, show automated renewal scheduling and reload/deployment behavior, and show independent expiry/renewal-health evidence.",
         "Prove that domain authorization remains in Steward rather than being moved into Kong policy.",
     ],
-    ["End-to-end network path", "Exposure matrix", "Identity responsibility map", "Secret-delivery evidence", "Gateway/domain authorization boundary"],
-    ["Public and administrative entry paths are distinct.", "No database, platform-admin or unnecessary backend port is public.", "Human, automation, GitOps and workload identities are not one shared administrator identity."],
+    ["End-to-end network path", "Exposure matrix", "Identity responsibility map", "Secret-delivery evidence", "Served-certificate and renewal-lifecycle evidence", "Gateway/domain authorization boundary"],
+    ["Public and administrative entry paths are distinct.", "No database, platform-admin or unnecessary backend port is public.", "Human, automation, GitOps and workload identities are not one shared administrator identity.", "TLS evidence proves both the currently served certificate and a tested renewal/expiry-detection path."],
 );
 
 const gate4 = practicalLesson(
@@ -119,9 +120,10 @@ const gate5 = practicalLesson(
         "Introduce the failure in a controlled manner and capture the first trustworthy symptom.",
         "Recover through the authoritative mechanism: OpenTofu for infrastructure intent, Kubernetes/OpenShift reconciliation for workload state, Argo CD for GitOps-managed environment drift, or the documented backup/recovery path for persistent data.",
         "Verify recovery from the client perspective and record actual recovery time and any data-loss implication.",
+        "Re-prove the selected Steward S3-compatible object workflow: the application can persist/retrieve through its bounded runtime identity, committed objects survive the exercised service lifecycle, and retention/recovery responsibility remains explicit.",
     ],
-    ["Failure hypothesis", "Detection evidence", "Recovery execution record", "Post-recovery client proof", "Observed recovery time"],
-    ["The drill is safe and reversible.", "Recovery does not depend on rebuilding an old release or undocumented manual cluster state.", "The final verification proves service recovery, not merely resource or pod recreation."],
+    ["Failure hypothesis", "Detection evidence", "Recovery execution record", "Post-recovery client proof", "Observed recovery time", "Object-storage workflow/recovery evidence"],
+    ["The drill is safe and reversible.", "Recovery does not depend on rebuilding an old release or undocumented manual cluster state.", "The final verification proves service recovery, not merely resource or pod recreation.", "The S3-compatible workflow remains a real bounded application dependency with explicit lifecycle/recovery behavior rather than an isolated storage demo."],
 );
 
 const gate6 = practicalLesson(
