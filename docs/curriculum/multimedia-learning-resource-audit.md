@@ -879,6 +879,20 @@ The browser path uses Playwright Java inside the existing steward-tests framewor
 | Build: Add the Browser Layer to steward-tests | NO VIDEO | — | — | Playwright Java is introduced into the existing Maven/JUnit framework, not as a second framework. |
 | Extract Page and Component Objects from Proven Repetition | NO VIDEO | — | — | Refactoring evidence is the assessment. |
 
+### Reusable Test Infrastructure and Internal Distribution
+
+This path replaces the old pytest-plugin reuse model. Reuse is introduced only after the learner has implemented enough Java/JUnit/REST Assured/Playwright infrastructure to distinguish stable generic capabilities from Steward product behavior.
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Reuse Audit: steward-tests vs tsa-test-core | RECOMMENDED VIDEO | Maven internal-library concepts; existing TSA artifact-supply-chain material | Reuse the existing Maven/Nexus artifact-flow model; no new framework tutorial | A visual producer → Nexus → consumer dependency flow helps establish that shared test infrastructure is a versioned product, not a copied utilities folder. |
+| Decide What Is Actually Generic | NO VIDEO | — | — | The learner must inspect real repetition and dependencies. A tutorial cannot decide which Steward code is genuinely product-agnostic. |
+| Produce the Extraction Decision | NO VIDEO | — | — | Accepted/deferred/rejected decisions and the proposed public API are the evidence. Deferring extraction is intentionally valid. |
+| Milestone: Extract tsa-test-core | NO VIDEO | — | — | Independent refactoring of only approved generic capabilities is the assessment. |
+| Extract Only the Approved Infrastructure | NO VIDEO | — | — | The learner must prove the library has no Steward dependency and that extraction reduces real duplication/coupling. |
+| Milestone: Publish and Consume tsa-test-core | RECOMMENDED VIDEO | Maven publication/resolution; Nexus artifact flow | Reuse Delivery Engineer Maven/Nexus publication material | The artifact-distribution mechanism has already been taught; this milestone applies it to an internal Java test library rather than reteaching Nexus. |
+| Use tsa-test-core as a Versioned Internal Dependency | NO VIDEO | — | — | Exact artifact version, Maven resolution and compatibility evidence must come from the real producer/consumer workflow. |
+
 ### Non-functional Quality
 
 | Lesson | Decision | Candidates checked | Selection / segment | Reason |
