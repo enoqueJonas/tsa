@@ -1289,15 +1289,18 @@ This audit follows every live Reliability Engineer deep path, including observab
 | --- | --- | --- | --- | --- |
 | Decision Gate: Select Steward's Tracing Backend | NO VIDEO | — | — | Backend selection must be defended from scale, integration and operations requirements. |
 | Evaluate Distributed Tracing Value and Select the Backend | NO VIDEO | — | — | Explicit value/tool decision. |
+| Defend the Tracing Decision | NO VIDEO | — | — | The backend decision must be defended from Steward's diagnostic needs, operational cost and collected evidence rather than vendor media. |
 | Distributed Tracing with OpenTelemetry and Tempo | RECOMMENDED VIDEO | OTel/Tempo material reviewed | [Grafana Tempo — Introduction](https://grafana.com/docs/tempo/latest/introduction/) plus OTel trace concepts | Connects instrumentation, trace transport/storage and Grafana exploration. |
 | Trace the Steward Request Path | RECOMMENDED VIDEO | OTel tracing material reviewed | [OpenTelemetry — Traces](https://opentelemetry.io/docs/concepts/signals/traces/) | Span/trace hierarchy is inherently visual. |
 | Deploy Tempo and Instrument Steward | RECOMMENDED VIDEO | Tempo deployment material reviewed | [Grafana Tempo — Getting started](https://grafana.com/docs/tempo/latest/getting-started/) | Current first-party implementation path. |
 | Investigate Cross-boundary Latency | NO VIDEO | — | — | Learner must diagnose a real trace. |
+| Investigate Cross-Boundary Latency | NO VIDEO | — | — | The learner must correlate real trace spans with service/dependency timing and explain the latency boundary from Steward evidence. |
 | Break the Tracing Pipeline | NO VIDEO | — | — | Controlled telemetry failure. |
 | Defend the Tracing Architecture | NO VIDEO | — | — | Architecture defense. |
 | Observability Stack Integration: Graylog, Prometheus and Grafana | RECOMMENDED VIDEO | cross-signal observability material reviewed | Reuse OpenTelemetry signals + product architecture resources | Integration value comes from correlating the learner's real signals. |
 | Implement the Steward Observability Stack | NO VIDEO | — | — | Independent stack integration. |
 | Run a Cross-signal Incident Investigation | NO VIDEO | — | — | Diagnosis exercise is the assessment. |
+| Run a Cross-Signal Incident Investigation | NO VIDEO | — | — | Logs, metrics and traces must be correlated against one real incident timeline; another tutorial would weaken the synthesis assessment. |
 | Defend the Observability Architecture | NO VIDEO | — | — | Final signal/tool/retention boundary defense. |
 
 ### Database Stewardship and Capacity
