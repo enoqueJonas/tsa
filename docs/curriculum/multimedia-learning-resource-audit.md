@@ -895,16 +895,30 @@ This path replaces the old pytest-plugin reuse model. Reuse is introduced only a
 
 ### Non-functional Quality
 
+The expanded path now teaches measurement validity before tool execution. Multimedia is most useful for workload models, accessibility interaction barriers and concurrency phenomena; baseline construction and gate decisions remain evidence-driven.
+
 | Lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
 | Decision Gate: Select the Steward Performance Tool | NO VIDEO | — | — | Tool selection must be defended from protocol, workload, scripting and CI requirements. |
-| Performance Testing | RECOMMENDED VIDEO | k6 performance material reviewed | [Grafana k6 — Documentation](https://grafana.com/docs/k6/latest/) and getting-started examples | Current first-party workload/metric model supports the learner's chosen baseline. |
-| Load, Stress, Spike and Endurance | RECOMMENDED VIDEO | Performance-test type material reviewed | [Grafana k6 — Test types](https://grafana.com/docs/k6/latest/testing-guides/test-types/) | The workload-shape diagrams make the distinctions concrete. |
+| Performance Measurement Model: Latency, Throughput, Errors and Saturation | RECOMMENDED VIDEO | Grafana k6 performance concepts; SRE measurement models | Reuse first-party k6 metric visualizations and existing SRE measurement concepts | Relationships between latency distribution, throughput, error rate and saturation benefit from graphs rather than isolated scalar examples. |
+| k6 Execution Model: VUs, Iterations and Scenarios | RECOMMENDED VIDEO | k6 scenarios/executors/workload-model documentation | Grafana k6 scenarios and open/closed workload-model diagrams | VU/iteration/executor behavior is temporal and strongly benefits from visual workload shapes. |
+| k6 Checks, Thresholds and Release Interpretation | RECOMMENDED VIDEO | k6 checks/thresholds documentation | Official k6 threshold/check examples | Makes the distinction between functional checks, measured metrics and pass/fail thresholds concrete. |
+| Performance Environment Validity and Comparative Baselines | NO VIDEO | — | — | Environment validity must be established from the actual test environment and comparative evidence. |
+| Accessibility Automation and Manual Evidence Boundaries | RECOMMENDED VIDEO | W3C WAI evaluation/keyboard material | W3C WAI evaluation and keyboard demonstrations | Human interaction barriers are inherently experiential; visual demonstrations complement but do not replace manual evidence. |
+| Compatibility Contracts, Matrices and Pairwise Risk | RECOMMENDED VIDEO | MDN compatibility data; existing pairwise material | Reuse MDN compatibility tables and earlier combinatorial-testing model | The learner combines explicit support contracts with risk-based matrix reduction rather than exhaustive execution. |
+| Controlled Dependency Failure and Recovery Evidence | NO VIDEO | — | — | Failure/recovery behavior must be observed against controlled dependencies; Reliability Engineer later deepens failure engineering. |
+| Performance Testing | RECOMMENDED VIDEO | Grafana k6 material reviewed | [Grafana k6 — Documentation](https://grafana.com/docs/k6/latest/) | Applies the measurement model to the selected performance tool. |
+| Load, Stress, Spike and Endurance | RECOMMENDED VIDEO | performance-test type material reviewed | [Grafana k6 — Test types](https://grafana.com/docs/k6/latest/testing-guides/test-types/) | Workload-shape diagrams make the distinctions concrete. |
 | Accessibility Fundamentals | RECOMMENDED VIDEO | W3C accessibility material reviewed | [W3C — Introduction to Web Accessibility](https://www.w3.org/WAI/fundamentals/accessibility-intro/) | Authoritative user/barrier model before automated accessibility checks. |
-| Compatibility Testing | RECOMMENDED VIDEO | MDN compatibility material reviewed | [MDN — Browser compatibility data](https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Page_structures/Compatibility_tables) | Connects compatibility claims to explicit platform support evidence. |
-| Reliability-oriented Testing | RECOMMENDED VIDEO | reliability-test material reviewed | No candidate promoted | Reliability Engineer later owns deep failure engineering; here tests should emerge from known quality risks. |
+| Compatibility Testing | RECOMMENDED VIDEO | MDN compatibility material reviewed | [MDN — Browser compatibility data](https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Page_structures/Compatibility_tables) | Connects compatibility claims to explicit platform-support evidence. |
+| Reliability-oriented Testing | RECOMMENDED VIDEO | reliability-test material reviewed | No additional candidate promoted | Reliability Engineer owns deeper failure engineering; Quality Steward applies known quality risks to controlled recovery evidence. |
 | Data Integrity and Concurrency Testing | RECOMMENDED VIDEO | PostgreSQL isolation/concurrency material reviewed | [PostgreSQL — Transaction Isolation](https://www.postgresql.org/docs/current/transaction-iso.html) | Isolation phenomena are subtle and need authoritative transaction semantics before concurrent test design. |
+| Milestone: Build a Trustworthy Steward Measurement Baseline | NO VIDEO | — | — | Independent synthesis of valid workload, environment and evidence. |
+| Defend the Measurement, Not Just the Number | NO VIDEO | — | — | The assessment is whether the learner can defend what a result actually means and its limitations. |
 | Lab: Establish Steward Non-functional Baselines | NO VIDEO | — | — | Baselines must be measured against the actual service. |
+| Define the Baseline Questions | NO VIDEO | — | — | Questions must come from product risk rather than tool defaults. |
+| Execute and Capture the Baselines | NO VIDEO | — | — | Real measurements and reproducible evidence are required. |
+| Decide What Becomes a Quality Gate | NO VIDEO | — | — | Gate policy must follow measurement validity and product risk. |
 
 ### Quality in Containers and CI/CD
 
