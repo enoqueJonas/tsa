@@ -793,18 +793,36 @@ This path was introduced after the original multimedia pass. Media is used for e
 
 ### API, Integration and Contract Testing
 
+The current path deliberately exposes HTTP mechanics before REST Assured abstraction. Multimedia therefore supports protocol and framework mental models; the milestones and lab remain evidence-driven.
+
 | Lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
-| API Test Design | RECOMMENDED VIDEO | Playwright API testing material reviewed | [Playwright Python — API testing](https://playwright.dev/python/docs/api-testing) — use request/context examples | Maps protocol-level automation to the same framework used later without replacing domain-oriented assertions. |
+| HTTP Semantics for Test Engineers | RECOMMENDED VIDEO | MDN HTTP material; RFC 9110; existing Builder HTTP media | Reuse the established HTTP request/response visual model; RFC 9110/MDN remain authoritative | Quality Steward should deepen semantics rather than receive a second beginner HTTP tutorial. |
+| REST Assured Request, Response and Assertion Model | RECOMMENDED VIDEO | REST Assured documentation/examples | Official REST Assured usage guide/examples; no generic course promoted | given / when / then, extraction and assertion responsibilities benefit from one concrete framework model before implementation. |
+| Request and Response Specifications | OPTIONAL VIDEO | REST Assured specification material | Official REST Assured examples | Reuse/composition is better learned by extracting only repeated transport defaults from the growing suite. |
+| Jackson, JSON and Typed API Contracts | RECOMMENDED VIDEO | Jackson documentation; JSON mapping material | Jackson documentation/examples plus the learner's actual Steward DTOs | Serialization/deserialization and typed-versus-tree models are structural concepts; product DTO evolution supplies the real evidence. |
+| Authentication Architecture for API Tests | RECOMMENDED VIDEO | OWASP authentication guidance; REST Assured auth material | OWASP authentication guidance plus REST Assured implementation reference | The important model is acquisition/use/redaction ownership, not a login-script walkthrough. |
+| REST Assured Filters, Correlation and Safe Diagnostics | RECOMMENDED VIDEO | REST Assured filter documentation | Official REST Assured filter examples | Filters are a cross-cutting execution hook; correlation and redaction must then be proven against actual failed requests. |
+| API Client Boundaries without a Generic REST God Client | NO VIDEO | — | — | Learner must derive thin product clients from repeated Steward endpoint behavior rather than copy a framework architecture. |
+| Negative API Testing, Idempotency and Resilience | RECOMMENDED VIDEO | HTTP semantics; OWASP API guidance | Reuse HTTP semantics and OWASP API guidance | Safety/idempotency/retry behavior depends on protocol and domain contracts, not REST Assured syntax. |
+| API Test Design | RECOMMENDED VIDEO | HTTP/API test-design material reviewed | Reuse HTTP semantics plus TSA risk/test-design models | Removes the obsolete Playwright-Python API dependency; REST Assured is the implementation tool, while design remains contract/risk driven. |
 | Authentication and Authorization Testing | RECOMMENDED VIDEO | OWASP authorization testing material reviewed | [OWASP WSTG — Authorization Testing](https://owasp.org/www-project-web-security-testing-guide/) | Provides systematic negative/role-boundary thinking; Security Steward later deepens attack-oriented testing. |
 | Schema and Contract Validation | RECOMMENDED VIDEO | Contract/schema material reviewed | [Pact — What is Contract Testing?](https://docs.pact.io/) | The consumer/provider contract model is highly visual and distinguishes compatibility from broad integration testing. |
 | Database Assertions | OPTIONAL VIDEO | DB assertion material reviewed | No candidate promoted | Steward's real transaction/persistence boundary is the better teacher. |
 | Integration Boundaries | RECOMMENDED VIDEO | Integration-test boundary material reviewed | No candidate promoted | The learner must name actual Steward boundaries rather than copy a test pyramid mechanically. |
 | Contract Testing Concepts | RECOMMENDED VIDEO | Pact contract-testing material reviewed | Reuse Pact documentation/diagrams | One coherent contract model is sufficient. |
 | Mocking and Service Virtualization | RECOMMENDED VIDEO | Mock/service virtualization material reviewed | Reuse Fowler test-double model plus Pact provider-state concepts | Reinforces controlled simulation without pretending virtualized dependencies prove full integration. |
-| Internal Package Compatibility | NO VIDEO | — | — | Compatibility is tested against the real consumed internal package. |
 | Data Setup and Cleanup | NO VIDEO | — | — | State ownership and deterministic cleanup are implemented directly. |
+| Milestone: Prove the HTTP Contract Before Framework Abstraction | NO VIDEO | — | — | The learner must demonstrate raw protocol evidence before relying on REST Assured abstractions. |
+| Milestone: Evolve REST Assured into a Steward API Architecture | NO VIDEO | — | — | Refactoring proven repetition is the assessment; a tutorial architecture would undermine the milestone. |
+| Build: Introduce REST Assured into steward-tests | NO VIDEO | — | — | Direct implementation step translating known HTTP mechanics into the framework. |
+| Build: Grow the Steward API Layer | NO VIDEO | — | — | Thin clients and typed models must emerge from actual Steward repetition. |
 | Lab: Test Steward API End-to-End at the Service Layer | NO VIDEO | — | — | Independent API/persistence/auth/contract evidence. |
+| Define the Service-layer Test Boundary | NO VIDEO | — | — | Boundary definition must follow Steward architecture and risk. |
+| Automate Core API and Persistence Flows | NO VIDEO | — | — | Executable service-layer evidence. |
+| Prove Authorization and Failure Boundaries | NO VIDEO | — | — | Negative evidence must come from the real authorization/failure behavior. |
+| Add Contract and Compatibility Evidence | NO VIDEO | — | — | Compatibility is demonstrated against real contracts rather than tutorial examples. |
+| API and Integration Testing Review | NO VIDEO | — | — | Capability defense and explicit handoff to framework engineering. |
 
 ### Automation Framework Engineering
 
