@@ -746,6 +746,33 @@ This audit follows every live Quality Steward deep path, including the browser-s
 | Traceability | NO VIDEO | — | — | Traceability must connect the learner's risks, requirements, tests and evidence. |
 | Lab: Design Risk-based Steward Test Coverage | NO VIDEO | — | — | Independent formal-technique + exploration synthesis. |
 
+### Java for Test Framework Engineering
+
+This path was introduced after the original multimedia pass. Media is used for execution-model concepts where a visual trace materially helps; Java language mechanics remain primarily documentation + executable practice.
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Java, the JVM and Maven Project Model | RECOMMENDED VIDEO | dev.java learning material; Apache Maven lifecycle guidance | No separate video promoted; use the TSA execution diagram plus official references | The important visual is source → bytecode/JVM and Maven's role around compilation/classpaths. TSA already owns the exact execution model the learner must later defend. |
+| Maven Lifecycle, Plugins and Goals | RECOMMENDED VIDEO | Apache Maven lifecycle/plugin guides | Official Maven lifecycle diagram/reference; no third-party walkthrough promoted | Phase-versus-goal-versus-plugin structure benefits from a lifecycle visual, while the learner must prove commands against the real project. |
+| Maven Dependency Resolution, Scopes and Nexus | RECOMMENDED VIDEO | Maven dependency mechanism; existing TSA Nexus material | Maven dependency graph/reference material | Dependency mediation and scope are graph concepts; the real dependency:tree/Nexus exercises provide the operational evidence. |
+| Surefire, Failsafe and Test Execution Boundaries | RECOMMENDED VIDEO | Maven Surefire/Failsafe documentation; JUnit execution material | TSA Maven → Surefire/Failsafe → JUnit execution-chain diagram plus official plugin references | The lifecycle boundary is easier to reason about visually and is central to diagnosing discovery/cleanup failures. |
+| JUnit Platform, Jupiter Engine and Discovery | RECOMMENDED VIDEO | JUnit User Guide architecture material | JUnit Platform/Jupiter architecture diagrams in the official guide plus TSA execution chain | Platform/Launcher/TestEngine/Jupiter are layered concepts; visualizing discovery and execution prevents treating “JUnit” as one opaque component. |
+| JUnit Test Instances and Lifecycle Ownership | RECOMMENDED VIDEO | JUnit lifecycle documentation | Official lifecycle examples; no separate video promoted | Callback order and PER_METHOD/PER_CLASS ownership benefit from a lifecycle model, but instrumentation in the lab is the decisive evidence. |
+| JUnit Parameterized Tests and Dynamic Inputs | OPTIONAL VIDEO | JUnit parameterized-test documentation | Official JUnit examples | Typed MethodSource and invocation identity are better learned by modifying real tests than watching a generic tutorial. |
+| JUnit Extension Model and Parameter Resolution | RECOMMENDED VIDEO | JUnit extension documentation | Official extension-model diagrams/examples | Extension callbacks and scoped context are non-obvious; visual structure helps before the learner builds one deliberately tiny extension. |
+| Classes, Records, Enums and Immutability | NO VIDEO | dev.java language material | — | Type-modeling skill is built by implementing immutable framework configuration/data models. |
+| Object Contracts: equals, hashCode and toString | NO VIDEO | dev.java language material | — | Direct executable examples with HashSet/records and failure diagnostics provide stronger feedback. |
+| Interfaces, Composition and Dependency Direction | RECOMMENDED VIDEO | Java interface material; dependency-direction concepts | No separate candidate promoted | TSA's own dependency diagram around TokenProvider/client composition is more relevant than a broad OOP tutorial. |
+| Constructor Dependency Injection | NO VIDEO | Java constructor/composition material | — | The lesson explicitly demystifies DI by constructing the object graph without a container. |
+| Generics and Collections | OPTIONAL VIDEO | dev.java collections/generics material | Official examples only | The target is enough fluency to read framework APIs; executable typed helpers are preferable to a long language course. |
+| Exceptions and Resource Management | NO VIDEO | dev.java exception/resource material | — | Failure classification and try-with-resources should be demonstrated directly in steward-tests. |
+| Annotations and Reflection | RECOMMENDED VIDEO | Java annotation/reflection material; JUnit discovery model | Reuse JUnit discovery architecture plus the lesson's reflection experiment | The key insight is that annotations are metadata interpreted by runtime machinery, not executable magic. |
+| JUnit 5 Architecture, Lifecycle and Tags | RECOMMENDED VIDEO | JUnit User Guide | Reuse the JUnit architecture/lifecycle material | This consolidates Platform/Jupiter/lifecycle/tag selection rather than introducing another source. |
+| Lambdas, Functional Interfaces, Streams and Optional | NO VIDEO | dev.java functional programming material | — | Small side-by-side imperative/functional exercises make readability trade-offs visible directly. |
+| Concurrency, Shared State and Thread Safety | RECOMMENDED VIDEO | dev.java concurrency material | Official Java concurrency material; pair with TSA race demonstration | Interleaving/shared-state behavior is difficult to infer from syntax alone; the controlled race makes the abstraction concrete. |
+| Milestone: Explain and Control the Maven → JUnit Execution Chain | NO VIDEO | — | — | Independent synthesis: the learner must narrate and debug the execution chain without tutorial scaffolding. |
+| Milestone: steward-tests Java Foundation | NO VIDEO | — | — | Independent construction of the framework substrate is the assessment. |
+
 ### Unit and Component Testing
 
 | Lesson | Decision | Candidates checked | Selection / segment | Reason |
