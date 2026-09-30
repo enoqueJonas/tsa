@@ -961,14 +961,16 @@ This path uses Testcontainers for Java and the canonical GitLab CI/CD architectu
 
 ### Continuous and Scheduled Quality Execution
 
+This path distinguishes event-triggered feedback from time-triggered regression. GitLab owns both execution modes; the learner must define why each exists, what it runs, how overlap is controlled, and how failures become actionable without notification noise.
+
 | Lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
-| Continuous and Scheduled Quality Execution | RECOMMENDED VIDEO | Jenkins trigger/schedule material reviewed | [Jenkins — Pipeline Syntax](https://www.jenkins.io/doc/book/pipeline/syntax/#triggers) | First-party trigger semantics support SCM-driven and scheduled execution without another broad Jenkins course. |
-| Design Triggered Quality Feedback | NO VIDEO | — | — | Trigger policy is a feedback-speed/cost/risk decision. |
-| Implement SCM-triggered Automated Testing | NO VIDEO | — | — | Real pipeline implementation evidence. |
-| Implement Jenkins CRON Regression | RECOMMENDED VIDEO | Jenkins cron syntax material reviewed | Reuse Jenkins trigger documentation | Exact syntax/reference is more useful than a walkthrough. |
-| Implement Failure Alerts and Reports | NO VIDEO | — | — | Learner must prove actionable failure delivery without notification noise. |
-| Defend the Quality Execution Policy | NO VIDEO | — | — | Policy defense based on actual pipeline behavior. |
+| Continuous and Scheduled Quality Execution | RECOMMENDED VIDEO | GitLab pipeline-trigger and scheduled-pipeline documentation | Reuse the canonical GitLab pipeline model plus [GitLab — Scheduled pipelines](https://docs.gitlab.com/ci/pipelines/schedules/) | A trigger/timeline model makes SCM events versus time-based execution concrete without introducing another CI platform. |
+| Design Triggered Quality Feedback | NO VIDEO | — | — | Trigger policy is a feedback-speed, cost, risk and evidence decision grounded in the actual suite. |
+| Implement SCM-triggered Automated Testing | NO VIDEO | — | — | Real GitLab pipeline implementation and JUnit selection evidence are the assessment. |
+| Implement GitLab Scheduled Regression | RECOMMENDED VIDEO | GitLab scheduled-pipeline documentation | [GitLab — Scheduled pipelines](https://docs.gitlab.com/ci/pipelines/schedules/) as exact configuration reference | Scheduling semantics and ownership deserve an authoritative reference; implementation must still prove environment/data prerequisites, overlap policy and produced evidence. |
+| Implement Failure Alerts and Reports | NO VIDEO | — | — | Learner must prove actionable failure delivery, useful reports and suppression of notification noise. |
+| Defend the Quality Execution Policy | NO VIDEO | — | — | Policy defense must explain trigger coverage, schedule ownership, cost, concurrency, escalation and failure handling from actual pipeline behavior. |
 
 ### Quality Steward Milestone
 
