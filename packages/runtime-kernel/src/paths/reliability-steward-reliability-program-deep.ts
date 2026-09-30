@@ -19,6 +19,7 @@ export const stewardReliabilityProgramDeepLessons: Lesson[] = [
             "Prove Graylog is receiving structured searchable logs from the Steward API and at least two additional runtime/platform sources, with correlation/context fields useful for investigation.",
             "Prove Prometheus is scraping Steward application metrics plus supporting targets and that core PromQL queries for traffic, error ratio and latency have been validated against known behavior.",
             "Prove Grafana is connected to Prometheus and exposes a Steward operational dashboard led by user-visible service symptoms rather than infrastructure vanity panels.",
+            "Prove OpenTelemetry trace context crosses the implemented synchronous and asynchronous Steward boundaries and that Tempo receives/queryable multi-span traces; include one trace-to-log or trace/correlation investigation path rather than treating tracing as an optional diagram.",
             "Summarize the current SLIs, SLOs and error-budget policy, including where measurement remains imperfect.",
             "Map page-worthy alerts to their runbooks, owners and tested firing/resolution evidence.",
             "Include the latest performance/capacity baseline and identified bottleneck/saturation boundaries.",
@@ -31,6 +32,7 @@ export const stewardReliabilityProgramDeepLessons: Lesson[] = [
           deliverables: [
             "Steward Reliability Evidence Index",
             "Graylog/Prometheus/Grafana implementation evidence",
+            "OpenTelemetry/Tempo tracing and cross-signal correlation evidence",
             "Enterprise dependency and failure map",
             "Reliability claim-to-evidence matrix",
             "Updated reliability risk register",
@@ -38,6 +40,7 @@ export const stewardReliabilityProgramDeepLessons: Lesson[] = [
           ],
           completionCriteria: [
             "Graylog, Prometheus and Grafana are all actually implemented and operational; design-only evidence is insufficient.",
+            "OpenTelemetry/Tempo tracing is actually operational across more than one real boundary, including the asynchronous handoff required earlier; an isolated single span is insufficient.",
             "Every major reliability claim points to concrete evidence or is explicitly marked as an assumption/gap.",
             "The learner can explain the distinct responsibilities of Graylog, Prometheus and Grafana.",
             "The evidence spans application, PostgreSQL, Redis, RabbitMQ, identity/gateway, orchestration/GitOps, Nexus and cloud infrastructure concerns.",
