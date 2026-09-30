@@ -54,6 +54,17 @@ A blog post may also be better than either a manual or a video. The resource mix
 | Communicating Technical Work | NO VIDEO | Google Technical Writing facilitator videos reviewed but not promoted | — | Google's learner-facing written course matches the objective better. The surfaced videos are primarily facilitator guides, so adding them would be resource noise. |
 | Milestone: Engineering Investigation | NO VIDEO | No search promoted | — | This is a synthesis milestone. New explanatory media would distract from demonstrating the capabilities already taught. |
 
+## Engineering Apprentice — Workbench delta audit
+
+These lessons were added after the original multimedia pass. They intentionally build workstation fluency only; deeper operating-system/network administration remains in Platform Builder and full HTTP/API engineering remains in Builder.
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Terminal, Shell and Filesystem | RECOMMENDED VIDEO | MIT Missing Semester — The Shell; MIT Missing Semester — Data Wrangling | [MIT Missing Semester — The Shell](https://missing.csail.mit.edu/2020/course-shell/); use the embedded lecture/demo alongside the lesson, with Data Wrangling retained as follow-on reference | Seeing navigation, quoting, pipes, redirection and command composition in a real terminal materially improves the learner's initial shell mental model. The TSA lab still provides the required evidence. |
+| Git and Version-Control Workflow | OPTIONAL VIDEO | Pro Git — Git Basics; Pro Git — Git Branching; existing Git learning material | No new video promoted | A visual commit graph can reinforce HEAD/branch/merge intuition, but the controlled branch/conflict lab plus Pro Git is sufficient. Avoid adding a generic copy-along Git tutorial merely to fill the slot. |
+| Developer Inspection: Processes, Ports and Text | NO VIDEO | MIT Missing Semester shell/data-wrangling material; MDN HTTP overview | — | The lesson is intentionally an inspection exercise rather than systems administration. Starting a process, locating its endpoint, capturing output and distinguishing failure modes directly is the stronger medium. |
+| HTTP from the Command Line | NO VIDEO | MDN HTTP overview; existing Builder HTTP multimedia decisions | — | The objective is the learner's first observable raw request, not another HTTP lecture. Direct command-line evidence prepares the later Builder HTTP lessons without duplicating them. |
+
 ## Builder — Programming with Python lesson audit
 
 | Lesson | Decision | Candidates checked | Selection / segment | Reason |
