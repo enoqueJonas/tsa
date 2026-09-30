@@ -127,8 +127,21 @@ Builder audit may proceed in parallel at source level, but Engineering Apprentic
 | --- | --- | --- |
 | Relational model through PostgreSQL practice | PASS | Strong progression from facts/keys through CRUD, predicates, aggregation, joins, subqueries/CTEs, transactions, constraints, schema design, normalization, indexes, plans, performance and direct PostgreSQL operation. |
 | Concurrency Fundamentals | PASS | Correctly introduces races, database constraints and selective row locking with two-session practice. |
-| Django ORM / ORM vs SQL / N+1 / Django migrations | RELOCATION REQUIRED | These lessons depended on Django before the following Django path taught the framework. Removed from learner-facing PostgreSQL composition in `3f6a5401`; source retained temporarily for deliberate relocation/reconciliation during Django audit. |
+| Django ORM / ORM vs SQL / N+1 / Django migrations | REMEDIATED | Removed from learner-facing PostgreSQL composition in `3f6a5401`; concepts are now taught after Django foundations/models through explicit ORM lifecycle, query-performance/N+1 and schema-evolution lessons (`b9785de9`, `b05c2867`). Legacy definitions remain temporarily non-rendered pending later source cleanup. |
 | Persist and Query Steward API Data lab | REMEDIATED | Removed premature Django/ORM/migration requirements. Lab now proves relational schema, SQL, constraints, plans, transactions and concurrency directly and hands reproducible schema/seed evidence to Django (`c3d2aec5`). |
+
+### Django and API Engineering
+
+| Lesson / area | Classification | Finding |
+| --- | --- | --- |
+| Django Foundations / DRF / application boundaries | PASS | Framework request lifecycle, DRF additions and architectural boundaries are taught before higher abstractions. |
+| Models and Domain Data | REMEDIATED | Added model-to-relational mapping, migration lifecycle, manager/QuerySet mechanics, lazy evaluation and generated-SQL inspection grounded in the prior PostgreSQL module (`b9785de9`). |
+| ORM Query Behavior and Performance | REMEDIATED | Relocated ORM-vs-SQL and N+1 concepts to the correct prerequisite position; teaches query evaluation, query counts, select_related/prefetch_related and parameterized SQL trade-offs (`b05c2867`). |
+| Schema Evolution with Django Migrations | REMEDIATED | Relocated migration teaching after Django model foundations and ties generated operations to existing data, compatibility and expand-contract reasoning (`b05c2867`). |
+| Serializers / views / validation / errors | PASS | Responsibilities and boundaries are explicit; domain rules are not collapsed into framework plumbing. |
+| Filtering / pagination / versioning / OpenAPI | PASS | API behavior, compatibility and query-boundary consequences are taught deliberately. |
+| Configuration / logging | PASS | Appropriate Builder-level operational boundary without stealing later platform/reliability depth. |
+| Steward API Skeleton lab | REMEDIATED | Removed stale claim that PostgreSQL comes later; lab now maps the prior PostgreSQL model, reviews migrations, inspects generated SQL/N+1 behavior and hands off to Identity/Auth (`d664dfd0`). |
 
 ## Quality Steward detailed remediation
 
