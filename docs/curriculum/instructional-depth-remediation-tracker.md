@@ -280,6 +280,16 @@ System Thinker is **REMEDIATED, not VALIDATED**. Remaining school-exit gates are
 | Bare-Metal Platform Foundations | PASS | Boot chain, firmware/UEFI, SMART/hardware evidence, recovery/OOB/power boundaries and destructive Proxmox readiness are taught explicitly and safely. |
 | Packet Tracer Network Engineering | REMEDIATED | Added direct mechanism teaching for VLAN/802.1Q forwarding, STP versus EtherChannel, OSPF adjacency/link-state route learning, and ordered/directional ACL evaluation before the existing evidence-driven labs (`c024ea36`, `d0f7b474`). |
 
+### Core Infrastructure through OS Lifecycle
+
+| Path | Classification | Finding |
+| --- | --- | --- |
+| Proxmox Homelab + implementation milestone | PASS | Strong host/hypervisor/guest boundaries, resource pressure, virtual-to-physical networking, storage mapping, actual backup restore, layered failure localization and single-host maintenance reality. |
+| Enterprise Storage / NAS | PASS | Teaches block→redundancy→LVM→filesystem→mount→NFS/SMB layers, destructive-change safety, capacity/inodes, degraded RAID/rebuild, cross-machine service operation, layered incidents and verified independent restore. |
+| Core Infrastructure Services: DNS, DHCP and Time | PASS | Services are operated as real dependencies with authority/scope/time-source boundaries, failure injection, TTL/cache, lease/exhaustion/relay and clock-skew diagnosis plus integrated bootstrap/recovery. |
+| Configuration Management with Ansible | REMEDIATED | Existing labs were strong but had no direct teaching layer. Added inventory→play→task→module execution model, desired state/idempotence, facts vs authority, roles/variables/templates/handlers, drift/check/diff, canary blast-radius control and secret-input boundaries before practice (`355a5f30`, `37b332dd`). |
+| OS Patching and Lifecycle Operations | PASS | Treats patching as controlled change: update classification, DNF evidence, installed-vs-running kernel, reboot/recovery, regression diagnosis, Ansible canaries, lifecycle visibility, hypervisor/guest separation and major-version migration. |
+
 ## Quality Steward detailed remediation
 
 Do not treat the recent Java migration as pedagogically complete merely because it is technically coherent.
