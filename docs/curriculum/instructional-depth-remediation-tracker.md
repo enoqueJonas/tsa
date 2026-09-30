@@ -57,7 +57,7 @@ The audit proceeds in learner progression order so later schools can rely only o
 | HTTP from the Command Line | REMEDIATED | Request/response model, pre-HTTP failure boundaries, controlled comparisons and reproducible evidence landed in `793bbac6`. |
 | Workbench labs | REMEDIATED | Each workbench lesson now progresses through direct teaching, guided practice, reasoning check and independent evidence-producing lab. |
 | Knowledge/assessment coverage | PASS | Rich foundations and remediated workbench use reflection/knowledge checks requiring explanation, prediction, diagnosis and trade-off reasoning rather than keyword recall. |
-| Rendered-platform validation | NOT STARTED | Inspect representative pages after deployment/refresh. |
+| Rendered-platform validation | NOT STARTED | Inspect representative pages after deployment/refresh. Source-level audit is complete; build/integrity validation is the remaining pre-render gate. |
 
 ## Engineering Apprentice audit findings
 
@@ -73,7 +73,7 @@ The audit proceeds in learner progression order so later schools can rely only o
 | Communicating Technical Work | PASS | Audience/action model, worked dual-audience example and truth-preserving adaptation practice. |
 | Engineering Investigation milestone | PASS | Appropriate synthesis/defence; does not reteach or prescribe the answer. |
 | Engineering workbench | REMEDIATED | Four thin generated lessons replaced with explicit taught lessons and progressive practice. |
-| Duplicate curriculum definitions | TARGETED IMPROVEMENT | Standalone files such as `thinking-like-an-engineer.ts`, `systems-thinking.ts`, `trade-offs.ts`, `debugging-mindset.ts` and `engineering-apprentice-lessons.ts` overlap conceptually with the live rich foundations. Confirm reachability and consolidate/deprecate safely so maintainers do not edit a non-authoritative copy. |
+| Duplicate curriculum definitions | REMEDIATED | Live reachability confirms `technical-stewardship-journey.ts` composes only `engineeringFoundations`, whose canonical sources are `engineering-apprentice-rich.ts` + `engineering-apprentice-workbench-deep.ts`. Legacy standalone modules remain barrel-exported for compatibility and are now explicitly marked non-canonical (`062d5f8c`, `3d9e41d0`, `48c1444b`, `957edcd5`, `8ae61daf`). Delete only after public/import reachability can be proven safe. |
 
 ## Quality Steward detailed remediation
 
