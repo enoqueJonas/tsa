@@ -24,7 +24,7 @@ This tracker is the source of truth for the remediation cycle. Do not mark a sch
 | ID | School / path | Finding | Severity | Status | Evidence / next action |
 | --- | --- | --- | --- | --- | --- |
 | PED-001 | Engineering Apprentice / Engineering Foundations / Terminal, Shell and Filesystem | Nominal 50-minute reading rendered essentially one scope paragraph, a boundary callout and external resources. Concepts were enumerated rather than taught. | Critical | REMEDIATED | Rewritten as the reference benchmark lesson in `0bed33af`; duplicate-export correction `80ca1458`. Source now teaches the mental model and adds guided practice, reasoning check and independent lab. Rendered validation still required. |
-| PED-002 | Engineering Apprentice / Engineering Foundations workbench delta | The four new workbench lessons are produced by a generator whose reading body is one short string plus a generic boundary/resource block. | Critical | REWRITE REQUIRED | Audit and rewrite Shell/Filesystem, Git workflow, Developer Inspection, and HTTP CLI individually. |
+| PED-002 | Engineering Apprentice / Engineering Foundations workbench delta | The four workbench lessons were produced by a generator whose reading body was one short string plus a generic boundary/resource block. | Critical | REMEDIATED | All four are now explicit rich lessons: Shell `0bed33af` (+ `80ca1458` fix), Git `f1344809`, Developer Inspection `ca9fbff0`, HTTP CLI `793bbac6`; obsolete generator removed in `9c2ebb77`. Build/integrity and rendered validation remain open. |
 | PED-003 | Quality Steward / recently remediated Java/JUnit stack | Source is materially richer than PED-001, but several lessons use compressed mechanics/checklists and generated structures. Instructional sufficiency has not been proven from the learner perspective. | High | AUDIT REQUIRED | Deep-audit Java, JUnit/component, API/integration and framework-engineering lessons before accepting them. |
 
 ## Remediation order
@@ -52,9 +52,9 @@ The audit proceeds in learner progression order so later schools can rely only o
 | --- | --- | --- |
 | Existing pre-workbench foundations | AUDIT REQUIRED | Inspect actual rendered teaching depth; do not assume older lessons are good. |
 | Terminal, Shell and Filesystem | REMEDIATED | Reference rewrite landed (`0bed33af`, structural fix `80ca1458`). Validate build/integrity and deployed rendering before marking VALIDATED. |
-| Git and Version-Control Workflow | REWRITE REQUIRED | Teach repository mental model, working tree/index/commit graph/HEAD/branches/diffs/remotes/conflicts with worked examples before lab. |
-| Developer Inspection: Processes, Ports and Text | REWRITE REQUIRED | Teach process/listener/output inspection model with OS-appropriate examples and diagnostic boundaries. |
-| HTTP from the Command Line | REWRITE REQUIRED | Teach request/response anatomy and transport-vs-HTTP failure reasoning with worked CLI examples before independent requests. |
+| Git and Version-Control Workflow | REMEDIATED | Repository state/graph model, worked transitions, conflicts/recovery, guided practice and independent lab landed in `f1344809`. |
+| Developer Inspection: Processes, Ports and Text | REMEDIATED | Process → listener → request → output evidence model and diagnostic ladder landed in `ca9fbff0`. |
+| HTTP from the Command Line | REMEDIATED | Request/response model, pre-HTTP failure boundaries, controlled comparisons and reproducible evidence landed in `793bbac6`. |
 | Workbench labs | AUDIT REQUIRED | Ensure guided practice precedes independent evidence and labs are not opaque command recipes. |
 | Knowledge/assessment coverage | AUDIT REQUIRED | Add reasoning/prediction/diagnosis checks where needed. |
 | Rendered-platform validation | NOT STARTED | Inspect representative pages after deployment/refresh. |
