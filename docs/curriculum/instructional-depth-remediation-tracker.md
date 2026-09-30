@@ -699,3 +699,15 @@ cross-stack reliability review and defense
 | `pnpm build` after remediation | PENDING LOCAL EXECUTION |
 | Representative rendered UI spot-check | NOT STARTED |
 
+
+## Architect audit findings
+
+### Drivers, domain and structure before architecture style
+
+| Path / area | Classification | Finding |
+| --- | --- | --- |
+| Architecture Fundamentals | PASS | Reconstructs the actual mature Steward ecosystem, then derives significant decisions from prioritized drivers, measurable quality scenarios, constraints, trade-offs and accumulated development/delivery/cloud/QA/security/reliability evidence. Diagrams are treated as views, not architecture proof; no-change is explicitly valid. |
+| Domain Modeling | PASS | Business language, bounded contexts, entity/value semantics, aggregates, invariants and transactions are taught from real Steward behavior. Aggregate boundaries follow consistency requirements rather than ORM relationships, eventual consistency must be justified, and DDD ceremony is explicitly rejected where simple CRUD is sufficient. |
+| Modularity | PASS | Evaluates semantic/data/release/operational coupling, encapsulation, shared-library governance, modular-monolith fitness, service-boundary pressure and distributed-monolith failure. `steward-common` and `tsa-test-core` are explicitly assessed separately because product semantics and QA infrastructure have different consumers/change lifecycles. |
+| Architectural Styles | PASS | Layered, ports/adapters, modular monolith, SOA, microservices, event-driven and serverless are compared as trade-off bundles rather than a maturity ladder. Distribution must justify its network/data/security/observability/operations cost against real Steward drivers; retaining the current style may win. |
+
