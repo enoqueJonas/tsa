@@ -1,7 +1,27 @@
 import type { Lesson } from "./lesson";
 
 function reading(id: string, title: string, body: string, minutes = 22): Lesson {
-  return { id, title, activities: [{ id: `${id}-001`, title, estimatedMinutes: minutes, content: { type: "reading", body } }] };
+  return { id, title, activities: [
+    { id: `${id}-001`, title, estimatedMinutes: minutes, content: { type: "reading", body } },
+    { id: `${id}-practice`, title: `Discovery work: ${title}`, estimatedMinutes: 45, content: {
+      type: "practical",
+      objective: `Apply ${title} to the evolving capstone discovery evidence before architecture is proposed.`,
+      scenario,
+      instructions: [
+        "Apply this concept to the current discovery brief or candidate problem using evidence available now; label stakeholder statements, observations, assumptions and inferences separately.",
+        "Record what changed in your understanding, including evidence that weakens or contradicts the current framing rather than only evidence that confirms it.",
+        "Update the relevant discovery artifact and identify any downstream requirement, constraint, quality attribute, risk, success measure or scope decision that must now be reconsidered.",
+        "State the next highest-value question or validation action. If current evidence is sufficient and nothing changes, record why retaining the current framing is justified."
+      ],
+      deliverables: ["Updated discovery artifact", "Evidence/assumption distinction", "Change-or-retain rationale", "Next validation question"],
+      completionCriteria: [
+        "The work is solution-neutral and does not select architecture or technology prematurely.",
+        "Contradictory or missing evidence is visible rather than normalized away.",
+        "New evidence is allowed to change the problem boundary or invalidate an earlier assumption.",
+        "The next discovery action is prioritized by uncertainty and consequence."
+      ]
+    } }
+  ] };
 }
 
 const scenario = "You are starting a new Professional Engineer capstone from a blank repository and a problem domain that is not Steward. The purpose is to prove transferable engineering judgment. Do not choose technologies, architecture or implementation patterns before the problem, stakeholders, constraints, quality attributes, risk and success evidence are understood well enough to justify those choices.";
