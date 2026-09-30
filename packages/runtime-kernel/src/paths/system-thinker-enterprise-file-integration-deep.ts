@@ -9,6 +9,7 @@ interface Spec {
     id: string;
     title: string;
     intro: string;
+    sections: { title: string; paragraphs: string[]; code?: { language: string; code: string; caption?: string } }[];
     practiceTitle: string;
     scenario: string;
     instructions: string[];
@@ -21,9 +22,18 @@ interface Spec {
 function lesson(spec: Spec): Lesson {
     const blocks: LessonBlock[] = [
         { type: "paragraph", text: spec.intro },
-        { type: "callout", tone: "steward", title: "Steward integration boundary", body: "This path adds a file-based integration channel because a legacy enterprise dependency cannot consume Steward's REST API. The file channel is not allowed to become a second source of truth: Steward remains authoritative for its domain state and must validate every imported change." },
-        { type: "resources", title: "Continue learning", resources: spec.resources ?? [rfc959, opensshSftp, pythonCsv] },
+        { type: "heading", id: `${spec.id}-outcomes`, text: "What you need to reason about", level: 2 },
+        { type: "list", items: spec.criteria },
     ];
+    for (const section of spec.sections) {
+        blocks.push({ type: "heading", id: `${spec.id}-${section.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`, text: section.title, level: 2 });
+        for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
+        if (section.code) blocks.push(section.code.caption
+            ? { type: "code", language: section.code.language, code: section.code.code, caption: section.code.caption }
+            : { type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push({ type: "callout", tone: "steward", title: "Steward integration boundary", body: "This path adds a file-based integration channel because a legacy enterprise dependency cannot consume Steward's REST API. The file channel is not allowed to become a second source of truth: Steward remains authoritative for its domain state and must validate every imported change." });
+    blocks.push({ type: "resources", title: "Continue learning", resources: spec.resources ?? [rfc959, opensshSftp, pythonCsv] });
 
     return {
         id: `system-thinker-enterprise-file-${spec.id}`,
