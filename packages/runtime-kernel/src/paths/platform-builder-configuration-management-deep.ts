@@ -1,12 +1,29 @@
-import type { LearningResource } from "../activities/content";
+import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 const ansibleIntro:LearningResource={title:"Ansible — Introduction to playbooks",url:"https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_intro.html",kind:"reference"};
 const ansibleInventory:LearningResource={title:"Ansible — Building inventory",url:"https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html",kind:"reference"};
 const ansibleVault:LearningResource={title:"Ansible Vault",url:"https://docs.ansible.com/ansible/latest/vault_guide/index.html",kind:"reference"};
 const defaultResources=[ansibleIntro,ansibleInventory,ansibleVault];
 
+type TeachingSection = { title: string; paragraphs: string[]; code?: { language: string; code: string; caption?: string } };
+const teachingByConfig: Record<string, TeachingSection[]> = {};
+
 function practical(id: string, title: string, objective: string, scenario: string, instructions: string[], deliverables: string[], completionCriteria: string[], estimatedMinutes = 120, resources: LearningResource[] = defaultResources): Lesson {
-    return { id, title, activities: [{ id: `${id}-lab`, title, estimatedMinutes, content: { type: "practical", objective, scenario, instructions, deliverables: [...deliverables, `Reference set: ${resources.map(r => r.title).join("; ")}`], completionCriteria } }] };
+    const sections = teachingByConfig[id] ?? [];
+    const activities: Lesson["activities"] = [];
+    if (sections.length) {
+        const blocks: LessonBlock[] = [{ type: "paragraph", text: objective }];
+        for (const section of sections) {
+            blocks.push({ type: "heading", id: `${id}-${section.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`, text: section.title, level: 2 });
+            for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
+            if (section.code) blocks.push(section.code.caption ? { type: "code", language: section.code.language, code: section.code.code, caption: section.code.caption } : { type: "code", language: section.code.language, code: section.code.code });
+        }
+        blocks.push({ type: "callout", tone: "steward", title: "Authority boundary", body: "Ansible should converge host configuration that it explicitly owns. VM images, application deployment, runtime orchestration and secret stores remain separate authorities unless the architecture deliberately assigns them otherwise." });
+        blocks.push({ type: "resources", title: "Reference documentation", resources });
+        activities.push({ id: `${id}-concepts`, title: `${title}: Concepts`, estimatedMinutes: 40, content: { type: "reading", body: objective, blocks } });
+    }
+    activities.push({ id: `${id}-lab`, title, estimatedMinutes, content: { type: "practical", objective, scenario, instructions, deliverables: [...deliverables, `Reference set: ${resources.map(r => r.title).join("; ")}`], completionCriteria } });
+    return { id, title, activities };
 }
 
 export const configurationManagementDeepLessons: Lesson[] = [
