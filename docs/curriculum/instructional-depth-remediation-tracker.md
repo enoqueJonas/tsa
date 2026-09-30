@@ -156,6 +156,18 @@ Builder audit may proceed in parallel at source level, but Engineering Apprentic
 | Common authn/authz mistakes | PASS | Strong deny-by-default and hostile-request/negative-test orientation. |
 | Secure Steward API lab | PASS AFTER REMEDIATION | Lab requirements are now preceded by both conceptual token teaching and concrete DRF JWT wiring; authorization evidence includes authenticated-but-unauthorized cases. |
 
+### Software Craft
+
+| Lesson / area | Classification | Finding |
+| --- | --- | --- |
+| Git / branching / collaboration | PASS | Teaches history and PRs as review/investigation evidence rather than branch ceremony. |
+| Readability / separation of concerns / refactoring | PASS | Concrete responsibility and behavior-preservation reasoning; explicitly resists abstraction and cleanup for their own sake. |
+| Testing as a Change Safety Net | REMEDIATED | Added missing prerequisite for later refactoring exercises: behavior-oriented tests, boundary selection, arrange-act-assert, regression fail-before-fix evidence and Builder-vs-Quality scope (`41da8114`, `e86793e3`). |
+| Dependencies / configuration | PASS | Treats dependencies/configuration as ownership contracts and prevents speculative shared-package extraction. |
+| Logging / documentation / error design | PASS | Operational evidence, executable documentation and deliberate public failure contracts are taught with security boundaries. |
+| Performance Awareness | PASS | Requires baseline/hypothesis/re-measurement and explicitly rejects speculative optimization/caching. |
+| Refine Steward API for Review lab | PASS AFTER REMEDIATION | Strong integrated maintenance/review exercise; its reliance on automated behavior evidence is now preceded by explicit Builder-level testing instruction. |
+
 ## Quality Steward detailed remediation
 
 Do not treat the recent Java migration as pedagogically complete merely because it is technically coherent.
