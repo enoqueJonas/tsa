@@ -1172,6 +1172,7 @@ This path assumes Docker and GitLab CI/CD mechanics are already known. Multimedi
 | From Legacy Compatibility to Secure Transfer | NO VIDEO | — | — | Migration contract and coexistence plan are the learning objective. |
 | Build the SFTP Trust and Identity Boundary | RECOMMENDED VIDEO | OpenSSH key-auth material reviewed | [OpenSSH manuals](https://www.openssh.com/manual.html) | First-party SSH identity/authorization semantics support the secure boundary. |
 | Prove File-contract Parity over SFTP | NO VIDEO | — | — | Actual producer/consumer file-contract evidence. |
+| Prove File-Contract Parity over SFTP | NO VIDEO | — | — | The assessment is preservation of the existing versioned file contract, idempotency, acknowledgement/rejection and complete-file handoff semantics across the transport change. |
 | Run Bounded FTP and SFTP Coexistence | NO VIDEO | — | — | Time-bounded migration exercise. |
 | Decommission FTP and Prove the Security End State | NO VIDEO | — | — | Removal/exposure evidence is the assessment. |
 | Defend the Secure Transfer Migration | NO VIDEO | — | — | Architecture and residual-risk defense. |
