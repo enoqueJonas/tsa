@@ -87,6 +87,26 @@ The audit proceeds in learner progression order so later schools can rely only o
 
 Builder audit may proceed in parallel at source level, but Engineering Apprentice must not be marked VALIDATED until the pending gates pass.
 
+## Builder audit findings
+
+### Programming with Python
+
+| Lesson / area | Classification | Finding |
+| --- | --- | --- |
+| Environment setup | PASS | Teaches interpreter/PATH/venv/pip boundaries and isolation-vs-reproducibility with observable commands. |
+| Python Syntax, Values and Types | PASS | Strong first-principles treatment of names/objects/types, mutability, equality/identity and boundary conversion. |
+| Control Flow | TARGETED IMPROVEMENT | Strong engineering framing, but assumes too much first-time fluency with condition/loop mechanics. Expand if/elif/else evaluation, boolean operators, for/range/enumerate, break/continue and iteration tracing before domain refactoring. |
+| Functions and Scope | TARGETED IMPROVEMENT | Jumps to contracts, LEGB and mutable-default pitfalls before sufficiently teaching function definition/call mechanics, parameters/arguments, return values and local call frames. |
+| Collections and Data Structures | TARGETED IMPROVEMENT | Good structure-selection reasoning but insufficient everyday mechanics for a learner new to list/tuple/dict/set creation, access, update and iteration. |
+| Modules and Packages | PASS | Appropriate after functions/collections; teaches import/dependency boundaries and side-effect discipline. |
+| Errors and Exceptions | PASS | Teaches propagation, specific catching, translation/chaining and boundary ownership. |
+| Object-Oriented Programming | PASS WITH PREREQUISITE | Appropriate engineering depth if functions/collections fundamentals are remediated first. |
+| Comprehensions / Iterators | PASS WITH PREREQUISITE | Correctly framed around readability and lazy consumption; depends on stronger loop/collection fundamentals. |
+| Type Hints | PASS | Clear static-feedback boundary and limitations. |
+| Dependency Management | PASS | Correct distinction among environment isolation, declarations, direct/transitive dependencies and version policy. |
+| Debugging | PASS | Evidence-driven traceback/hypothesis/debugger model. |
+| Python service-core lab | PASS WITH PREREQUISITE | Strong synthesis lab; should remain challenging after early-fundamental remediation. |
+
 ## Quality Steward detailed remediation
 
 Do not treat the recent Java migration as pedagogically complete merely because it is technically coherent.
