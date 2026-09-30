@@ -318,6 +318,22 @@ Platform Builder is **REMEDIATED, not VALIDATED**. Source-level audit found stro
 | `pnpm build` after remediation | PENDING LOCAL EXECUTION |
 | Representative rendered UI spot-check | NOT STARTED |
 
+## Delivery Engineer audit findings
+
+### Source through artifact and deployment flow
+
+| Path / area | Classification | Finding |
+| --- | --- | --- |
+| Software Delivery Foundations | PASS | Directly separates source, validation, artifact, release, deployment and verification states; build-once promotion and release evidence are established before tooling. |
+| Automation and Shell | PASS | Mechanism-first shell teaching covers inputs, quoting, exit status, pipefail, environment, repeatability and failure evidence before automation practice. |
+| Containers and Docker | PASS | Quality practices preserve VM/container/kernel/network/storage boundaries and require runtime evidence rather than treating containerization as magic packaging. |
+| Continuous Integration | REMEDIATED | Pedagogy is strong, but learner-facing terminology retained generic/controller-agent language inconsistent with TSA's GitLab-first architecture. Standardized execution to GitLab Runner, dedicated Runner identity/trust/capacity/cleanup, and GitHub Actions as conceptual comparison only (`3c143414`, `56bb201a`). |
+| Continuous Delivery / Deployment | PASS | Correctly separates CI, delivery and deployment; environment contract, immutable candidate approvals, deployment automation, migration compatibility, rollback boundaries and verification are evidence driven. |
+| Configuration Management | PASS | Builds on Platform Builder Ansible with delivery-specific host-vs-release ownership, drift, idempotence, inventory and role boundaries. |
+| Artifact / Dependency / Supply Chain | PASS | Nexus is justified by real distribution needs and teaches formats/protocols, hosted/proxy/group, least-privilege publication, clean consumption, OCI digest identity, retention, provenance and SBOM. Signing/enforcement remains correctly deferred to Security Steward. |
+| CI migration exercise | PASS | Jenkins appears only as an intentionally inherited source platform; migration maps guarantees to GitLab, bounds coexistence, preserves rollback during migration and ends by decommissioning Jenkins as a release path. |
+| Delivery milestone integration | REMEDIATED | Added explicit GitLab Runner execution/trust evidence and proof that a retired Jenkins migration path cannot remain a second release publisher after cutover (`9b6ca1a7`). |
+
 ## Quality Steward detailed remediation
 
 Do not treat the recent Java migration as pedagogically complete merely because it is technically coherent.
