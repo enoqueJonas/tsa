@@ -290,6 +290,15 @@ System Thinker is **REMEDIATED, not VALIDATED**. Remaining school-exit gates are
 | Configuration Management with Ansible | REMEDIATED | Existing labs were strong but had no direct teaching layer. Added inventory→play→task→module execution model, desired state/idempotence, facts vs authority, roles/variables/templates/handlers, drift/check/diff, canary blast-radius control and secret-input boundaries before practice (`355a5f30`, `37b332dd`). |
 | OS Patching and Lifecycle Operations | PASS | Treats patching as controlled change: update classification, DNF evidence, installed-vs-running kernel, reboot/recovery, regression diagnosis, Ansible canaries, lifecycle visibility, hypervisor/guest separation and major-version migration. |
 
+### Windows and Enterprise Directory sequence
+
+| Area | Classification | Finding |
+| --- | --- | --- |
+| Windows / PowerShell operational labs | TARGETED IMPROVEMENT | Labs are strong and evidence-driven, but the path is almost entirely exercise/practical activities. New Windows-specific mechanisms—PowerShell object pipeline, NTFS+share effective authorization, remoting trust, AD DS/DNS/domain identity and GPO processing—need direct TSA teaching before operation. |
+| AD / DNS / GPO sequencing | TARGETED IMPROVEMENT | The Windows path correctly builds a synthetic AD DS boundary, but the later Enterprise Directory lesson still says not to build Windows administration and independently positions LDAP as the workforce source. Align the later lesson to reuse/compare the already-operated AD boundary instead of creating contradictory authority. |
+| Enterprise File Services | PASS WITH DUPLICATION NOTE | NFS/SMB practice is sound but overlaps the earlier NAS implementation. Treat this as Steward integration/handoff semantics, not a second permanent file platform. |
+| LDAP / Directory interoperability | TARGETED IMPROVEMENT | Strong operational LDAP lab, but its role must be reframed as protocol/directory interoperability and Keycloak federation preparation alongside the existing synthetic AD lab, with one explicit identity authority per scenario. |
+
 ## Quality Steward detailed remediation
 
 Do not treat the recent Java migration as pedagogically complete merely because it is technically coherent.
