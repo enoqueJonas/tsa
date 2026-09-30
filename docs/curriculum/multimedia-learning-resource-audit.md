@@ -1440,6 +1440,7 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Styles — Serverless Concepts | RECOMMENDED VIDEO | serverless execution/event-flow demos reviewed | [AWS — Serverless](https://aws.amazon.com/serverless/) — use event-to-managed-runtime architecture examples | Trigger→managed runtime→managed services is easier to understand visually. |
 | Styles — Choosing Styles from Drivers | NO VIDEO | — | — | The learner must compare styles against actual drivers. |
 | Styles — The Cost of Distribution | RECOMMENDED VIDEO | distributed-systems/microservices failure talks reviewed | [Martin Fowler — Microservices](https://martinfowler.com/articles/microservices.html) — use service-boundary and distribution trade-offs | Latency, partial failure and operational multiplication benefit from concrete examples. |
+| Styles — Lab: Challenge the Steward Architectural Style | NO VIDEO | — | — | The exercise exists to test whether Steward's current style still follows its drivers; external walkthroughs would bias the decision. |
 | Styles — Establish Current Style and Drivers | NO VIDEO | — | — | Independent baseline. |
 | Styles — Compare Credible Target Styles | NO VIDEO | — | — | Decision exercise. |
 | Styles — Record Style Decision and Evolution Triggers | NO VIDEO | — | — | ADR/evolution evidence. |
@@ -1450,6 +1451,7 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Domain — Context Mapping Concepts | RECOMMENDED VIDEO | DDD context-map talks reviewed | [Martin Fowler — Domain-Driven Design](https://martinfowler.com/bliki/DomainDrivenDesign.html) — use tactical/domain-boundary references | Relationships between contexts are inherently visual. |
 | Domain — Domain Services | NO VIDEO | — | — | The learner should decide from behavior that does not naturally belong to an entity/value object. |
 | Domain — Avoiding Anemic and Over-engineered Models | OPTIONAL VIDEO | DDD critique/refactoring talks reviewed | No candidate promoted yet | Contrasting examples can help, but context matters more than doctrine. |
+| Domain — Lab: Revisit the Steward Domain Model | NO VIDEO | — | — | The lab requires reconstructing and challenging Steward's actual business model; the learner's evidence is the teaching medium. |
 | Domain — Recover the Current Domain Model | NO VIDEO | — | — | Independent model recovery. |
 | Domain — Challenge and Refine the Model | NO VIDEO | — | — | Independent challenge. |
 | Domain — Validate and Record the Domain Decision | NO VIDEO | — | — | Decision evidence. |
@@ -1462,6 +1464,7 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Modularity — Modular Monoliths | RECOMMENDED VIDEO | modular-monolith talks reviewed | [Microsoft — Common web application architectures](https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures) — use monolithic/modular boundary diagrams | Module boundaries within one deployment are useful to see contrasted with services. |
 | Modularity — When a Service Boundary Is Justified | NO VIDEO | — | — | The learner must prove independent lifecycle/ownership/scaling pressure. |
 | Modularity — Distributed Monoliths | RECOMMENDED VIDEO | distributed-monolith failure talks reviewed | [Martin Fowler — Microservices](https://martinfowler.com/articles/microservices.html) — use service-boundary and distribution trade-offs | Coupled services with distributed failure modes are best illustrated by a concrete architecture. |
+| Modularity — Lab: Evaluate Steward Module and Package Boundaries | NO VIDEO | — | — | Boundary value must be demonstrated from real change coupling, ownership and dependency evidence rather than copied from a reference architecture. |
 | Modularity — Map Current Boundaries and Change Coupling | NO VIDEO | — | — | Independent analysis. |
 | Modularity — Challenge Module, Package and Service Options | NO VIDEO | — | — | Decision exercise. |
 | Modularity — Record and Enforce the Boundary Decision | NO VIDEO | — | — | Decision/evidence work. |
@@ -1486,6 +1489,10 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Integration — Idempotency | NO VIDEO | Idempotent-consumer media already audited | Reuse earlier media if needed | Apply rather than reteach. |
 | Integration — Schema and Contract Evolution | RECOMMENDED VIDEO | schema-evolution/compatibility talks reviewed | [Confluent — Schema Evolution and Compatibility](https://docs.confluent.io/platform/current/schema-registry/fundamentals/schema-evolution.html) — use compatibility modes and producer/consumer evolution | Producer/consumer compatibility across versions is a timeline problem. |
 | Integration — Integration Failure and Backpressure | RECOMMENDED VIDEO | backpressure/failure talks reviewed | [Reactive Manifesto](https://www.reactivemanifesto.org/) plus Reactive Streams concepts — use demand/back-pressure relationship | Queue growth and dependency slowdown are temporal and visual. |
+| Integration — Lab: Evaluate Steward Integration Boundaries | NO VIDEO | — | — | This is an architecture decision sequence: baseline the real boundary, compare credible synchronous/asynchronous options, then govern the chosen trade-off. |
+| Integration — Establish the Integration Baseline | NO VIDEO | — | — | This is an architecture decision sequence: baseline the real boundary, compare credible synchronous/asynchronous options, then govern the chosen trade-off. |
+| Integration — Challenge Sync and Async Options | NO VIDEO | — | — | This is an architecture decision sequence: baseline the real boundary, compare credible synchronous/asynchronous options, then govern the chosen trade-off. |
+| Integration — Record and Govern the Integration Decision | NO VIDEO | — | — | This is an architecture decision sequence: baseline the real boundary, compare credible synchronous/asynchronous options, then govern the chosen trade-off. |
 | Integration — When Not to Add a Message Broker | NO VIDEO | — | — | The learner must justify the simpler option from actual pressure. |
 | Scale — Scaling Up and Scaling Out | RECOMMENDED VIDEO | vertical/horizontal scaling diagrams reviewed | [AWS Well-Architected — Performance Efficiency](https://docs.aws.amazon.com/wellarchitected/latest/performance-efficiency-pillar/welcome.html) — use scaling/resource trade-offs | Resource placement and topology changes are visual. |
 | Scale — Stateless Services | OPTIONAL VIDEO | stateless scaling demos reviewed | No candidate promoted yet | A load-balanced instance example can reinforce the concept. |
@@ -1497,6 +1504,8 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Scale — Distributed Coordination | RECOMMENDED VIDEO | consensus/coordination visual explainers reviewed | [Raft — Understandable Distributed Consensus](https://raft.github.io/) — use interactive/visual consensus material | Coordination under failure is difficult to learn from prose alone. |
 | Scale — Distributed Transactions and Sagas Concepts | RECOMMENDED VIDEO | saga/compensation talks reviewed | [Microsoft — Saga pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/saga) — use transaction/compensation sequence | Multi-step transaction/compensation sequences are ideal for diagrams. |
 | Scale — Capacity vs Architectural Complexity | NO VIDEO | — | — | Compare measured pressure with complexity cost. |
+| Scale — Lab: Model Steward Growth Scenarios | NO VIDEO | — | — | Growth scenarios must come from measured Steward pressure and explicit assumptions, not generic scale narratives. |
+| Scale — Define Evidence-backed Growth Scenarios | NO VIDEO | — | — | Growth scenarios must come from measured Steward pressure and explicit assumptions, not generic scale narratives. |
 | Scale — Compare Scale and Distribution Options | NO VIDEO | — | — | Decision exercise. |
 | Scale — Record the Growth Architecture Decision | NO VIDEO | — | — | Decision evidence. |
 | Resilience Architecture — Designing for Failure | RECOMMENDED VIDEO | SRE/resilience architecture talks reviewed | [AWS Well-Architected — Reliability Pillar](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html) — use failure-domain and recovery design | Failure-domain diagrams and dependency paths add value. |
@@ -1508,6 +1517,7 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Resilience Architecture — Dependency Isolation | RECOMMENDED VIDEO | dependency-isolation patterns reviewed | [Microsoft — Bulkhead pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/bulkhead) — resource-isolation diagrams | Failure containment is visual. |
 | Resilience Architecture — Redundancy and Failure Domains | RECOMMENDED VIDEO | failure-domain/redundancy talks reviewed | [AWS Well-Architected — Reliability Pillar](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html) — use failure-domain and recovery design | Zone/host/dependency failure boundaries are spatial. |
 | Resilience Architecture — Recovery Objectives as Architecture Drivers | RECOMMENDED VIDEO | RPO/RTO media already audited in Reliability | Reuse earlier media if review is needed | Apply recovery objectives architecturally without duplicate viewing. |
+| Resilience Architecture — Lab: Evolve a Steward Failure Path | NO VIDEO | — | — | The learner must evolve one real failure path and defend the resulting resilience trade-offs using prior Reliability evidence. |
 | Resilience Architecture — Select and Model the Failure Path | NO VIDEO | — | — | Independent modeling. |
 | Resilience Architecture — Compare Resilience Options | NO VIDEO | — | — | Decision exercise. |
 | Resilience Architecture — Validate and Record the Evolution | NO VIDEO | — | — | Evidence and ADR. |
