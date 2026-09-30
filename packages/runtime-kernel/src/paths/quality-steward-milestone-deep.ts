@@ -103,6 +103,7 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
           scenario: "Use the real Steward codebase and the environment-aware framework developed throughout Quality Steward.",
           instructions: [
             "Execute representative unit/component and API/integration suites.",
+            "Prove the Maven execution boundary: Surefire owns the intended fast unit/component selection in `test`, while Failsafe owns the intended integration selection through `integration-test`/`verify`, and a failing integration test makes `mvn verify` fail.",
             "Execute the selected browser/environment matrix rather than every test on every browser.",
             "Run the selected stable non-functional baselines that are appropriate for this environment.",
             "Capture reports, logs, traces or other diagnostics for a controlled failing case.",
@@ -123,6 +124,7 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
           instructions: [
             "Run the staged GitLab CI/CD quality pipeline against a known Steward release candidate.",
             "Prove at least one Testcontainers-backed integration slice on the intended GitLab Runner architecture and distinguish its evidence from shared/UAT regression.",
+            "Capture Surefire and Failsafe reports separately enough to prove which Maven lifecycle/test layer produced each result.",
             "Demonstrate merge-request/default-branch or release/scheduled pipeline selection through explicit GitLab rules.",
             "Verify cache is used only for acceleration while JUnit/Allure/browser diagnostics are retained as pipeline evidence/artifacts.",
             "Confirm reports and artifacts are retained for failed and successful stages where appropriate.",
