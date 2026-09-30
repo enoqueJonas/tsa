@@ -35,7 +35,7 @@ The audit proceeds in learner progression order so later schools can rely only o
 | ---: | --- | --- | --- | --- |
 | 1 | Engineering Apprentice | Thinking Like an Engineer; Systems Thinking; Trade-offs; Debugging Mindset; Engineering Foundations/workbench; milestone/checks | AUDIT IN PROGRESS | Every lesson classified; thin lessons rewritten; rendered spot-check; duration sanity check |
 | 2 | Builder | Builder fundamentals and implementation paths | REMEDIATED | Every live path classified and source-level gaps remediated; build/integrity and rendered UI validation remain pending |
-| 3 | System Thinker | contracts, integration semantics, distributed state and system reasoning | AUDIT IN PROGRESS | Same school exit gate |
+| 3 | System Thinker | contracts, integration semantics, distributed state and system reasoning | REMEDIATED | Every live path classified and source-level gaps remediated; build/integrity and rendered UI validation remain pending |
 | 4 | Platform Builder | OS/Linux/networking/virtualization/storage/core services/Ansible/patching/Windows | NOT STARTED | Same school exit gate |
 | 5 | Delivery Engineer | build/test/package/artifacts/GitLab CI/CD/release | NOT STARTED | Same school exit gate |
 | 6 | Cloud Engineer | provider abstractions/IaC/orchestration/GitOps/cloud operations | NOT STARTED | Same school exit gate |
@@ -240,6 +240,31 @@ Builder is **REMEDIATED, not VALIDATED**. Remaining school-exit gates are:
 | Transactional outbox | PASS | Correctly teaches DB→broker dual-write failure, durable publication intent and why outbox still does not create exactly-once delivery. |
 | RabbitMQ vs Kafka | PASS | Compares queue-first delivery with retained partitioned logs from workload drivers; does not create an unnecessary second implementation track. |
 | Integrated Redis/RabbitMQ lab | PASS AFTER REMEDIATION | Requires measured drivers, cache failure/staleness, redelivery, idempotency, DLQ, ordering and outbox evidence; local-effect idempotency now has an atomicity model. |
+
+### Failure Modes and Architecture Decisions
+
+| Path / area | Classification | Finding |
+| --- | --- | --- |
+| Failure Modes | PASS | Teaches cause→failure-mode→impact separation, dependency semantics, silent partial state, finite-resource saturation and human/operational failure. It deliberately analyzes resilience needs rather than prematurely implementing later-school reliability patterns. |
+| Failure Modes quality practices | PASS | Practices prioritize by impact/detectability/blast radius, distinguish authoritative dependencies, inject partial state, model nonlinear overload and replace blame/reminders with guardrails. |
+| Architecture Characteristics / Drivers | PASS | Converts vague qualities into scenarios and ranks actual decision forces before technology selection. |
+| ADRs / Trade-offs | PASS | Teaches alternatives, consequences, uncertainty, experiments, reversibility and revisit triggers; explicitly rejects architecture novelty as a goal. |
+| Steward System Design Portfolio | REMEDIATED | Strong integration milestone preserving the simple baseline and requiring Redis/RabbitMQ breakage/removal evidence. Added explicit consumer inbox/local-effect atomicity evidence so the distributed-state remediation is consumed at school exit (`b3cec4c2`). |
+
+### System Thinker source-level closure
+
+All live System Thinker paths have now been audited against the instructional-depth standard. Early reasoning paths and failure/decision paths pass without artificial expansion; enterprise file and SOAP/XML teaching defects were rewritten; distributed consumer atomicity was corrected and carried into the final milestone.
+
+System Thinker is **REMEDIATED, not VALIDATED**. Remaining school-exit gates are:
+
+| Gate | Status |
+| --- | --- |
+| Source-level pedagogical audit | PASS |
+| Identified source remediation | PASS |
+| Cross-path prerequisite/sequence review | PASS |
+| `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
+| `pnpm build` after remediation | PENDING LOCAL EXECUTION |
+| Representative rendered UI spot-check | NOT STARTED |
 
 ## Quality Steward detailed remediation
 
