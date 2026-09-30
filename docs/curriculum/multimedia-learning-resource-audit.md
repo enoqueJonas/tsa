@@ -826,7 +826,7 @@ The current path deliberately exposes HTTP mechanics before REST Assured abstrac
 
 ### Automation Framework Engineering
 
-This path now assumes the learner already understands Java, Maven, JUnit execution, REST Assured and basic test boundaries. It does not reteach pytest-era framework mechanics. Multimedia is reserved for observability/evidence concepts whose execution flow or UI is materially easier to understand visually.
+This path now assumes the learner already understands Java, Maven, JUnit execution, REST Assured and basic test boundaries. It does not reteach superseded framework mechanics. Multimedia is reserved for observability/evidence concepts whose execution flow or UI is materially easier to understand visually.
 
 | Lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
@@ -848,7 +848,7 @@ This path now assumes the learner already understands Java, Maven, JUnit executi
 
 ### Browser and Environment Testing
 
-The browser path uses Playwright Java inside the existing steward-tests framework. Browser concepts remain language-neutral, but implementation references must use the Java API and must not recreate a separate Python/pytest framework.
+The browser path uses Playwright Java inside the existing steward-tests framework. Browser concepts remain language-neutral, but implementation references must use the Java API and must remain part of the canonical Java/JUnit framework.
 
 | Lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
@@ -862,7 +862,7 @@ The browser path uses Playwright Java inside the existing steward-tests framewor
 | Page Objects and Component Objects from Proven Repetition | RECOMMENDED VIDEO | Playwright page-object guidance | Official Playwright page-object guidance, translated into Java implementation | Pattern examples are useful only after repetition exists; TSA explicitly prevents page-object generation before a stable capability boundary emerges. |
 | Uploads, Downloads, Frames, Popups and Dialogs | RECOMMENDED VIDEO | Playwright Java event/file/frame documentation | Official Playwright Java examples | Event-before-action ordering and multiple browser surfaces are easier to understand through concrete execution examples. |
 | Browser Diagnostics: Traces, Screenshots, Console and Network | RECOMMENDED VIDEO | Playwright Trace Viewer and diagnostics material | [Playwright — Trace Viewer](https://playwright.dev/java/docs/trace-viewer) | Trace Viewer is inherently visual and gives the learner a concrete model for failure reconstruction. |
-| Parallel Browser Execution and Isolation | RECOMMENDED VIDEO | Playwright browser-context material; Java/JUnit concurrency foundation | Reuse browser-context ownership plus the earlier Java concurrency model | Parallelism is now an ownership/isolation problem, not a pytest-xdist problem. |
+| Parallel Browser Execution and Isolation | RECOMMENDED VIDEO | Playwright browser-context material; Java/JUnit concurrency foundation | Reuse browser-context ownership plus the earlier Java concurrency model | Parallelism is now an ownership/isolation problem, an explicit Java/JUnit ownership and isolation problem. |
 | Browser Differences | RECOMMENDED VIDEO | Playwright browser-engine documentation | [Playwright Java — Browsers](https://playwright.dev/java/docs/browsers) | Maps Chromium/Firefox/WebKit to execution and configuration without Python-specific examples. |
 | Responsive Testing | RECOMMENDED VIDEO | Responsive-design/testing material reviewed | [MDN — Responsive Web Design](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design) | Establishes layout-state concepts before testing behavior at representative viewports. |
 | Cross-browser Testing | RECOMMENDED VIDEO | cross-browser strategy material reviewed | Browser/device matrix visuals plus Playwright browser-engine documentation | Makes environment diversity concrete while TSA requires risk-based selection rather than exhaustive combinations. |
@@ -881,7 +881,7 @@ The browser path uses Playwright Java inside the existing steward-tests framewor
 
 ### Reusable Test Infrastructure and Internal Distribution
 
-This path replaces the old pytest-plugin reuse model. Reuse is introduced only after the learner has implemented enough Java/JUnit/REST Assured/Playwright infrastructure to distinguish stable generic capabilities from Steward product behavior.
+This path uses versioned Java library distribution for reusable test infrastructure. Reuse is introduced only after the learner has implemented enough Java/JUnit/REST Assured/Playwright infrastructure to distinguish stable generic capabilities from Steward product behavior.
 
 | Lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
@@ -922,7 +922,7 @@ The expanded path now teaches measurement validity before tool execution. Multim
 
 ### Quality in Containers and CI/CD
 
-This path uses Testcontainers for Java and the canonical GitLab CI/CD architecture. JUnit tags provide test selection; GitLab Runner provides execution. Jenkins, pytest markers and pytest-xdist are not part of the active Quality pipeline.
+This path uses Testcontainers for Java and the canonical GitLab CI/CD architecture. JUnit tags provide test selection; GitLab Runner provides execution. Test selection and parallel execution remain within the canonical JUnit and GitLab execution model.
 
 | Lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
@@ -940,11 +940,11 @@ This path uses Testcontainers for Java and the canonical GitLab CI/CD architectu
 | Dockerized Test Dependencies | RECOMMENDED VIDEO | Dockerized testing material reviewed | Reuse Delivery Engineer Docker resources | Existing container knowledge is applied to deterministic test dependencies. |
 | Ephemeral Environment Concepts | RECOMMENDED VIDEO | ephemeral CI environment material reviewed | No separate candidate promoted | Learner's pipeline must prove create → test → destroy lifecycle directly. |
 | GitLab CI/CD: Pipelines, Jobs, Stages and Runners | RECOMMENDED VIDEO | GitLab CI/CD material | Reuse Delivery Engineer GitLab CI/CD media | Prevents duplicate CI instruction and keeps canonical terminology consistent. |
-| Test Pipeline Stages | RECOMMENDED VIDEO | GitLab pipeline material | Reuse GitLab stage/job/DAG material | Replaces the obsolete Jenkins execution reference. |
-| Parallelization | RECOMMENDED VIDEO | JUnit concurrency; GitLab parallel execution | Reuse Java/JUnit concurrency model and GitLab job model | Parallelism is an isolation and workload-partitioning problem, not a pytest-xdist feature. |
+| Test Pipeline Stages | RECOMMENDED VIDEO | GitLab pipeline material | Reuse GitLab stage/job/DAG material | Keeps test-stage execution aligned with the canonical GitLab pipeline model. |
+| Parallelization | RECOMMENDED VIDEO | JUnit concurrency; GitLab parallel execution | Reuse Java/JUnit concurrency model and GitLab job model | Parallelism is an isolation and workload-partitioning problem, an explicit isolation and workload-partitioning concern. |
 | Reports and Artifacts | OPTIONAL VIDEO | GitLab report/artifact material | Reuse GitLab artifact/report guidance | Diagnostic usefulness is judged from failed pipeline evidence. |
 | Quality Gates | NO VIDEO | — | — | Gate policy must be risk/evidence based. |
-| Test Selection | RECOMMENDED VIDEO | JUnit tags; Maven/Surefire selection; GitLab rules | Reuse the JUnit tag-selection material from the Java foundation | Replaces obsolete pytest-marker selection while avoiding a duplicate JUnit lesson. |
+| Test Selection | RECOMMENDED VIDEO | JUnit tags; Maven/Surefire selection; GitLab rules | Reuse the JUnit tag-selection material from the Java foundation | Uses the existing JUnit tag model while avoiding a duplicate JUnit lesson. |
 | Pipeline Failure Triage Integration | NO VIDEO | — | — | Real failed-pipeline evidence must drive diagnosis. |
 | Apply the Existing Flake and Quarantine Policy in GitLab | NO VIDEO | — | — | Existing framework policy is operationalized in CI rather than retaught. |
 | Internal Test Package Publishing and Compatibility in CI | NO VIDEO | — | — | Real tsa-test-core producer/consumer compatibility is the evidence. |
