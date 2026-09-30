@@ -34,7 +34,7 @@ The audit proceeds in learner progression order so later schools can rely only o
 | # | School | Scope / major paths | Status | Exit evidence |
 | ---: | --- | --- | --- | --- |
 | 1 | Engineering Apprentice | Thinking Like an Engineer; Systems Thinking; Trade-offs; Debugging Mindset; Engineering Foundations/workbench; milestone/checks | AUDIT IN PROGRESS | Every lesson classified; thin lessons rewritten; rendered spot-check; duration sanity check |
-| 2 | Builder | Builder fundamentals and implementation paths | NOT STARTED | Same school exit gate |
+| 2 | Builder | Builder fundamentals and implementation paths | AUDIT IN PROGRESS | Same school exit gate |
 | 3 | System Thinker | contracts, integration semantics, distributed state and system reasoning | NOT STARTED | Same school exit gate |
 | 4 | Platform Builder | OS/Linux/networking/virtualization/storage/core services/Ansible/patching/Windows | NOT STARTED | Same school exit gate |
 | 5 | Delivery Engineer | build/test/package/artifacts/GitLab CI/CD/release | NOT STARTED | Same school exit gate |
@@ -74,6 +74,18 @@ The audit proceeds in learner progression order so later schools can rely only o
 | Engineering Investigation milestone | PASS | Appropriate synthesis/defence; does not reteach or prescribe the answer. |
 | Engineering workbench | REMEDIATED | Four thin generated lessons replaced with explicit taught lessons and progressive practice. |
 | Duplicate curriculum definitions | REMEDIATED | Live reachability confirms `technical-stewardship-journey.ts` composes only `engineeringFoundations`, whose canonical sources are `engineering-apprentice-rich.ts` + `engineering-apprentice-workbench-deep.ts`. Legacy standalone modules remain barrel-exported for compatibility and are now explicitly marked non-canonical (`062d5f8c`, `3d9e41d0`, `48c1444b`, `957edcd5`, `8ae61daf`). Delete only after public/import reachability can be proven safe. |
+
+## Validation gate status
+
+| Gate | Status | Evidence |
+| --- | --- | --- |
+| Engineering Apprentice source-level pedagogical audit | PASS | All live foundations classified; workbench defects remediated; canonical source boundary established. |
+| GitHub commit status / Actions | NOT AVAILABLE | Current master commit `dabdf6d7` has no combined status checks and no associated workflow runs. Absence of checks is not a pass. |
+| `pnpm audit:curriculum` | PENDING LOCAL EXECUTION | Must be run from a checked-out workspace after the remediation changes. |
+| `pnpm build` | PENDING LOCAL EXECUTION | Must be run from a checked-out workspace after the remediation changes. |
+| Rendered UI spot-check | NOT STARTED | Perform after a build/deployment containing the remediated lessons. |
+
+Builder audit may proceed in parallel at source level, but Engineering Apprentice must not be marked VALIDATED until the pending gates pass.
 
 ## Quality Steward detailed remediation
 
