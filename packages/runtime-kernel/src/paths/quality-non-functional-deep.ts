@@ -200,7 +200,7 @@ const specs: Spec[] = [
         title: "Compatibility Contracts, Matrices and Pairwise Risk",
         intro: "Compatibility space grows combinatorially. Engineer a support contract first, then select combinations using usage, change risk, boundary divergence and representative interaction rather than multiplying every dimension blindly.",
         principles: [
-            "Separate dimensions: browser/OS, Java test platform, Python/Django runtime, PostgreSQL, tsa-test-core, API contract/version and deployment environment.",
+            "Separate dimensions: browser/OS, JDK/Maven/JUnit test platform, Playwright/browser-engine version, Testcontainers/container-runtime compatibility, PostgreSQL, tsa-test-core, API contract/version and deployment environment.",
             "Test all combinations only when the support contract/risk justifies it; otherwise use representative, boundary and pairwise-style selection.",
             "Always include changed/upgraded boundaries and minimum/maximum supported versions where those boundaries matter.",
             "Record unsupported combinations explicitly.",
