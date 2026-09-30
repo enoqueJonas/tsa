@@ -784,3 +784,21 @@ The milestone correctly reviews the actual current stack rather than preserving 
 
 Technical Steward is **REMEDIATED, not VALIDATED**. Source pedagogy, delegated decision rights, proportional governance, lifecycle/continuity and progressive engineering-health practice pass. `pnpm audit:curriculum`, `pnpm build` and representative rendered UI validation remain pending.
 
+
+
+### Professional Engineer source-level closure
+
+| Path / area | Classification | Finding |
+| --- | --- | --- |
+| Professional Practice and Ethics | PASS | Ethics, privacy, competence limits, professional dissent and accountability are applied to the independent capstone with affected-party, uncertainty and escalation evidence; legality or stakeholder pressure is not treated as sufficient justification. |
+| Capstone Problem Discovery | REMEDIATED | Strong solution-neutral discovery content and final brief existed, but ten reading-only topics deferred application too long. Each now updates the evolving discovery artifacts, distinguishes evidence/assumption/inference, permits contradictory evidence to change the problem boundary and prioritizes the next uncertainty-reduction action (`2e950a90`). |
+| Capstone Engineering Proposal | REMEDIATED | Proposal topics already required alternatives, simplicity, quality/security/reliability/operations/cost/governance reasoning, but application lived inside reading prose. Each major topic now produces an explicit practical proposal artifact traced to discovery evidence with assumptions, rejected alternatives or reversal triggers (`791d8dbe`). |
+| Independent Build | REMEDIATED | The blank-repository/new-domain standard, vertical build, quality/security/reliability and optional internal-product reuse were strong. Required build evidence is now an explicit practical gate for each major topic, with reproducible verification and authoritative decision/risk updates when implementation contradicts the proposal (`0a3adc6d`). |
+| Production Readiness | PASS | Reviews deployment, observability, security, performance, failure, recovery, operations, dependency/control and cost evidence. It can legitimately conclude release, conditional release, defer or redesign; configured controls without behavioral proof are insufficient. |
+| Engineering Portfolio and Reflective Practice | PASS | Curates claim-to-evidence rather than screenshots/certificates, requires mistakes and changed decisions, distinguishes decision quality from outcome hindsight and creates future development objectives with applied proof. |
+| Engineering Defence | PASS | Freezes a candidate/evidence snapshot, tests claims under multi-perspective challenge and changed constraints, rewards explicit uncertainty and decision revision, and requires reproducible evidence. Unsupported claims are downgraded rather than defended rhetorically. |
+| Final canonical scan | PASS | No stale Jenkins/GitHub Actions or mandatory Kubernetes/microservices wording appears under canonical `professional-engineer-*` paths. |
+
+Professional Engineer is **REMEDIATED, not VALIDATED**. The final progression is discovery → evidence-traced proposal → independent implementation → production-readiness decision → reflective evidence portfolio → adversarial engineering defence.
+
+The school-by-school source pedagogy remediation is now complete for all 12 schools. `pnpm audit:curriculum`, `pnpm build` and representative rendered UI validation remain a separate validation phase.
