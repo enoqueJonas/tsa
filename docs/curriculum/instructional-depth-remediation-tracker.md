@@ -711,3 +711,53 @@ cross-stack reliability review and defense
 | Modularity | PASS | Evaluates semantic/data/release/operational coupling, encapsulation, shared-library governance, modular-monolith fitness, service-boundary pressure and distributed-monolith failure. `steward-common` and `tsa-test-core` are explicitly assessed separately because product semantics and QA infrastructure have different consumers/change lifecycles. |
 | Architectural Styles | PASS | Layered, ports/adapters, modular monolith, SOA, microservices, event-driven and serverless are compared as trade-off bundles rather than a maturity ladder. Distribution must justify its network/data/security/observability/operations cost against real Steward drivers; retaining the current style may win. |
 
+
+### Architect data/distribution/governance sequence and source-level closure
+
+| Path / area | Classification | Finding |
+| --- | --- | --- |
+| Data Architecture | PASS | Makes authority, logical schema ownership, invariants and consistency explicit before considering duplication, caching, read models or database-per-service. Schema evolution is additive/staged/recoverable and audit history is separated from mutable operational state. |
+| Integration and Messaging | PASS | Compares in-process, synchronous API, file/platform and asynchronous interactions by temporal/availability/ownership coupling. Commands/events are semantically distinct; delivery guarantees reject magical exactly-once outcomes; retries depend on idempotency/durable state; backpressure and broker operational cost are explicit. |
+| Scalability and Distributed Systems | PASS | Begins from measured workload/capacity and distinguishes capacity pressure from architecture-boundary pressure. Horizontal scale, replication, partitioning, coordination and sagas must justify consistency/failure/operational costs. CAP is applied to explicit operation behavior during partition rather than slogan-level “pick two.” |
+| Resilience Architecture | PASS | Reuses Reliability SLO, incident, restore and controlled-failure evidence to make architecture decisions about latency budgets, retry amplification, isolation, degradation, redundancy and recovery objectives. Requires before/after bounded failure proof for an adopted evolution rather than reteaching operations as patterns. |
+| Architecture Evaluation and Governance | PASS | ADRs, scenario evaluation, fitness functions, technology selection, build/buy, debt and decision rights are proportional to risk and evidence. Governance creates guardrails/visibility rather than centralized approval theater; package governance distinguishes Nexus distribution from semantic ownership. |
+| Architect Milestone | REMEDIATED | Strong evidence-backed current/target-state review with retain/simplify options, enterprise-layer challenge, shared-package governance, identity/data authority, one implemented improvement and architecture defense. Tightened deployment authority: while GitOps is retained, GitLab builds/tests/publishes, environment Git is desired state and Argo CD is the sole reconciler; removing GitOps must be an explicit topology migration to another single authority, not split-brain deployment (`39bef2a7`). |
+
+Architect is **REMEDIATED, not VALIDATED**. Its source-level progression is:
+
+```text
+current architecture evidence
+  ↓
+drivers / constraints / quality scenarios
+  ↓
+domain language / invariants / transaction boundaries
+  ↓
+module, package and ownership boundaries
+  ↓
+style options and distribution cost
+  ↓
+data authority / consistency / evolution
+  ↓
+integration semantics / contracts / failure coupling
+  ↓
+measured scale pressure / distributed-system cost
+  ↓
+architecture response to demonstrated failure
+  ↓
+scenario evaluation / ADRs / fitness / governance
+  ↓
+implemented evidence-backed evolution + architecture defense
+```
+
+| Gate | Status |
+| --- | --- |
+| Source-level pedagogical audit | PASS |
+| Cross-school evidence synthesis | PASS |
+| Domain/data/integration authority progression | PASS |
+| Distribution/resilience trade-off discipline | PASS |
+| Canonical single deployment authority | PASS after remediation |
+| Identified source remediation | PASS |
+| `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
+| `pnpm build` after remediation | PENDING LOCAL EXECUTION |
+| Representative rendered UI spot-check | NOT STARTED |
+
