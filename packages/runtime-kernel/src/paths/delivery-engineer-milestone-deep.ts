@@ -35,13 +35,13 @@ export const deliveryEngineerMilestoneDeepLessons: Lesson[] = [
                 objective: "Prove that reviewed Steward source produces traceable internal package and container artifacts without workstation-local handoffs.",
                 scenario: "Use the existing CI and Nexus path. The goal is evidence, not adding more tools.",
                 instructions: [
-                    "Run the GitLab CI/CD pipeline for the chosen source revision from a clean GitLab Runner context and record the Runner identity/executor used."
+                    "Run the GitLab CI/CD pipeline for the chosen source revision from a clean GitLab Runner context and record the Runner identity/executor used.",
                     "Prove required checks and tests gate artifact production.",
                     "Publish steward-common through the approved internal package path when applicable.",
                     "Publish the Steward OCI image to Nexus and record its immutable digest.",
                     "Record source commit, CI run, package version/hash and image digest in one release candidate record.",
                     "Demonstrate one intentional CI failure that correctly prevents publish or promotion.",
-                    "If the Jenkins migration exercise has been completed, prove the retired Jenkins release path can no longer independently publish an accepted Steward release; GitLab CI/CD is authoritative after cutover.",
+                    "If the legacy CI migration exercise has been completed, prove the retired legacy release path can no longer independently publish an accepted Steward release; GitLab CI/CD is authoritative after cutover.",
                 ],
                 deliverables: ["GitLab CI/CD and Runner evidence", "Internal package identity", "OCI digest", "Source-to-artifact traceability record", "Blocked-failure evidence", "Post-migration authoritative-release evidence when applicable"],
                 completionCriteria: ["No consumer depends on producer filesystem state.", "Failed required checks cannot produce an accepted release candidate.", "The exact artifacts can be traced to the exact source revision.", "Runner execution identity/trust is visible in the release evidence.", "A retired migration source cannot silently remain a second release publisher."],
