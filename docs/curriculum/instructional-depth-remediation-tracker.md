@@ -211,12 +211,22 @@ Builder is **REMEDIATED, not VALIDATED**. Remaining school-exit gates are:
 
 | Area | Classification | Finding |
 | --- | --- | --- |
-| Reading layer | REWRITE REQUIRED | Each nominal 45-minute reading currently renders only an intro paragraph, generic Steward boundary callout and external resources; core protocol/batch teaching is outsourced to practice/reference material. |
-| File-Based Integration Contracts | REWRITE REQUIRED | Practice is strong, but TSA must directly teach file identity, versioning, encoding/record semantics, atomic handoff, acknowledgement, replay and authority before independent contract design. |
-| Legacy FTP Integration | REWRITE REQUIRED | Learner is asked to operate FTP active/passive/control/data behavior without a direct protocol mental model in the reading. |
-| Batch File Processing Lifecycle | REWRITE REQUIRED | Excellent crash/idempotency lab but lifecycle, claiming, partial processing and durable idempotency need worked teaching first. |
-| Shared Filesystem vs Managed File Transfer | REWRITE REQUIRED | Contains an invalid prerequisite: it says to use an existing Platform Builder NFS service even though Platform Builder follows System Thinker. |
-| Secure File Transfer Readiness | TARGETED IMPROVEMENT | Comparison exercise is useful, but SFTP/FTPS protocol distinctions need direct teaching before migration design. |
+| Reading layer | REMEDIATED | Lesson factory now supports substantive teaching sections; all five lessons teach their mechanism before practice (`898c5168`, `8355ca87`, `00e51ed9`, `54f36bc1`, `df701a4e`). |
+| File-Based Integration Contracts | REMEDIATED | Directly teaches envelope/record semantics, identity/authority, versioning, completion handoff, acknowledgement and replay before contract design (`8355ca87`). |
+| Legacy FTP Integration | REMEDIATED | Adds control/data connection model, active/passive direction, firewall implications, legacy-security boundary and transport-vs-business acceptance (`00e51ed9`). |
+| Batch File Processing Lifecycle | REMEDIATED | Adds explicit state machine, durable idempotency, layered validation, partial-processing and crash/recovery reasoning before the worker lab (`8355ca87`). |
+| Shared Filesystem vs Managed File Transfer | REMEDIATED | Teaches continuous shared-storage versus discrete-delivery coupling and removes the impossible dependency on a later Platform Builder NFS implementation (`54f36bc1`). |
+| Secure File Transfer Readiness | REMEDIATED | Directly teaches SFTP-as-SSH versus FTPS-as-FTP+TLS and preserves business-contract semantics across transport migration (`df701a4e`). |
+
+### SOAP and XML Enterprise Integration
+
+| Area | Classification | Finding |
+| --- | --- | --- |
+| Teaching layer | REWRITE REQUIRED | Current path is almost entirely long practical activities. XML namespaces, XSD, WSDL, SOAP envelopes/faults and contract-first integration are assigned before TSA provides a direct conceptual model. External W3C/OWASP references cannot carry the core teaching. |
+| XML document model / namespaces / parsing | REWRITE REQUIRED | Strong lab, missing prior teaching on well-formedness, namespace identity, qualified names, parser behavior and XML-vs-JSON differences. |
+| XSD contract | REWRITE REQUIRED | Learner is asked to author schemas before direct teaching of target namespace, element/type/cardinality validation and schema-vs-domain semantics. |
+| WSDL / SOAP contract and faults | REWRITE REQUIRED | Learner must trace WSDL and implement SOAP behavior without TSA first explaining WSDL layers, envelope/body/header/fault mechanics and binding/transport separation. |
+| Provider / consumer / contract testing | TARGETED IMPROVEMENT | Practical sequence is strong once protocol foundations exist; needs conceptual bridge into generated types, adapter boundary and failure classification. |
 
 ## Quality Steward detailed remediation
 
