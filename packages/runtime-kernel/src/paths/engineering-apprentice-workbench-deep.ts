@@ -42,7 +42,7 @@ const shellFilesystemLesson: Lesson = {
 
      {type:"heading",id:"shell-quoting",text:"5. Words, whitespace and quoting",level:2},
      {type:"paragraph",text:"The shell normally uses whitespace to separate words. Quoting lets spaces or shell-significant characters remain part of one argument. Single quotes preserve text literally in common Unix shells; double quotes keep text together while still allowing expansions such as $HOME. Unquoted variables can be split or expanded in surprising ways, so quote values when you mean one argument."},
-     {type:"code",language:"shell",caption:"Why quoting changes arguments",code:"mkdir -p 'release evidence'\nprintf '%s\\n' "$HOME"\nprintf '%s\\n' '$HOME'",output:"Double quotes expand HOME; single quotes print the characters $HOME literally."},
+     {type:"code",language:"shell",caption:"Why quoting changes arguments",code:`mkdir -p 'release evidence'\nprintf '%s\\n' "$HOME"\nprintf '%s\\n' '$HOME'`,output:"Double quotes expand HOME; single quotes print the characters $HOME literally."},
 
      {type:"heading",id:"shell-streams",text:"6. Standard input, output and error",level:2},
      {type:"paragraph",text:"A process normally starts with three standard streams. Standard input (stdin) is where input can arrive. Standard output (stdout) carries normal output. Standard error (stderr) carries diagnostics. Keeping stdout and stderr conceptually separate lets tools compose and lets failures remain visible."},
@@ -55,11 +55,11 @@ const shellFilesystemLesson: Lesson = {
 
      {type:"heading",id:"shell-environment",text:"8. Environment variables carry process configuration",level:2},
      {type:"paragraph",text:"Environment variables are named values inherited by child processes. They are commonly used for configuration such as PATH, environment names or tool settings. They are not a secure secret store. A shell variable and an exported environment variable are not always the same thing; export makes a value available to subsequently started child processes in common Unix shells."},
-     {type:"code",language:"shell",caption:"Create and inspect temporary process configuration",code:"export TSA_ENV=learning\nprintf '%s\\n' "$TSA_ENV"\nenv | grep '^TSA_ENV='",output:"The current shell expands TSA_ENV and a child process can receive the exported value."},
+     {type:"code",language:"shell",caption:"Create and inspect temporary process configuration",code:`export TSA_ENV=learning\nprintf '%s\\n' "$TSA_ENV"\nenv | grep '^TSA_ENV='`,output:"The current shell expands TSA_ENV and a child process can receive the exported value."},
 
      {type:"heading",id:"shell-exit-status",text:"9. Exit status is machine-readable success or failure",level:2},
      {type:"paragraph",text:"When a command finishes it returns an integer exit status. By convention, zero means success and non-zero means some form of failure. Shells, scripts and CI systems use that status to decide what happens next. Printed text and exit status are different signals: a program can print useful output and still fail."},
-     {type:"code",language:"shell",caption:"Inspect the previous command's status in zsh/bash",code:"test -f words.txt\nprintf 'status=%s\\n' "$?"\ntest -f missing.txt\nprintf 'status=%s\\n' "$?"",output:"The existing file produces status 0. The missing-file condition produces a non-zero status."},
+     {type:"code",language:"shell",caption:"Inspect the previous command's status in zsh/bash",code:`test -f words.txt\nprintf 'status=%s\\n' "$?"\ntest -f missing.txt\nprintf 'status=%s\\n' "$?"`,output:"The existing file produces status 0. The missing-file condition produces a non-zero status."},
 
      {type:"heading",id:"shell-help",text:"10. Discover commands instead of guessing",level:2},
      {type:"paragraph",text:"Professional command-line work includes discovering unfamiliar options safely. Start with command --help where supported, man command on Unix-like systems, or the tool's built-in help. Check usage before copying an option from memory, especially for commands that mutate files."},
@@ -68,7 +68,7 @@ const shellFilesystemLesson: Lesson = {
 
      {type:"heading",id:"shell-debugging",text:"11. Diagnose from evidence",level:2},
      {type:"paragraph",text:"When a command fails, resist changing several things at once. Ask: What directory am I in? What exact path did the shell construct? Does the target exist? Did quoting change the arguments? Did the program run and return an error, or could the shell not find the program? What exit status did it return? This turns terminal work from trial-and-error into engineering."},
-     {type:"code",language:"shell",caption:"A small diagnostic sequence",code:"pwd\nls -la\nprintf 'PATH=%s\\n' "$PATH"\ncommand -v git\ngit --version\nprintf 'status=%s\\n' "$?""},
+     {type:"code",language:"shell",caption:"A small diagnostic sequence",code:`pwd\nls -la\nprintf 'PATH=%s\\n' "$PATH"\ncommand -v git\ngit --version\nprintf 'status=%s\\n' "$?"`},
 
      {type:"heading",id:"shell-summary",text:"Mental model to keep",level:2},
      {type:"list",ordered:true,items:["The terminal carries text interaction; the shell interprets command syntax.","Your current working directory gives relative paths their meaning.","The shell resolves commands and prepares arguments, expansions, pipes and redirections.","Programs read input, change or inspect state, write stdout/stderr and return an exit status.","Inspect state before mutation and use help when you do not understand an option."]},
@@ -212,7 +212,7 @@ const developerInspectionLesson: Lesson = {
 
     {type:"heading",id:"inspect-output",text:"5. stdout, stderr and logs are execution evidence",level:2},
     {type:"paragraph",text:"Programs can write normal output and diagnostics to their standard streams, and applications may also write structured log files. Capture enough evidence to answer what happened without assuming every line is equally important. Timestamps, severity, request/correlation identity and the first causal error are often more useful than dumping thousands of lines."},
-    {type:"code",language:"shell",caption:"Capture both output streams for a disposable command",code:"some-command > run.out 2> run.err\nprintf 'exit=%s\\n' "$?"\nwc -l run.out run.err"},
+    {type:"code",language:"shell",caption:"Capture both output streams for a disposable command",code:`some-command > run.out 2> run.err\nprintf 'exit=%s\\n' "$?"\nwc -l run.out run.err`},
     {type:"paragraph",text:"Do not redirect a long-running server blindly during the first exercise if that makes its behavior harder to observe. The point is to understand where evidence goes."},
 
     {type:"heading",id:"inspect-text",text:"6. Search text to answer a question",level:2},
