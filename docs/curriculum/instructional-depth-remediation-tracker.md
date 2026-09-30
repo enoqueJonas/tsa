@@ -372,6 +372,19 @@ A source consistency review found and corrected one missing instruction separato
 | `pnpm build` after remediation | PENDING LOCAL EXECUTION |
 | Representative rendered UI spot-check | NOT STARTED |
 
+## Cloud Engineer audit findings
+
+### Hosting through storage foundations
+
+| Path | Classification | Finding |
+| --- | --- | --- |
+| Cloud and Hosting Models | PASS | Direct teaching covers hosting responsibility boundaries, IaaS/PaaS/SaaS, regions/zones, shared responsibility, elasticity and cost; practice starts from Steward constraints rather than cloud novelty. |
+| VPS Operations | PASS WITH SOURCE CLEANUP | Strong Rocky/VPS provisioning, exposure, SSH, provider-vs-host firewall, patching and out-of-band recovery teaching/practice. Replaced a stale Ubuntu security reference with RHEL 9 security-hardening documentation to match the canonical Rocky/RHEL platform (`6e0651a5`). |
+| Internet Networking | PASS | Mechanism-first public/private addressing, internet routing, DNS, TLS/reverse-proxy and layered external-path diagnosis build correctly on Platform Builder networking. |
+| Certificate Lifecycle Operations | PASS | Goes beyond issuance into served-certificate identity, SAN/trust validation, automated ACME renewal, gateway reload, endpoint-vs-job expiry monitoring and controlled renewal failure/recovery. |
+| Cloud Building Blocks | PASS | Compute, object/block storage, managed DB, virtual networking, routing/gateways, load balancing, IAM, secrets and monitoring are taught as responsibility/failure/cost boundaries rather than provider-product memorization. |
+| S3-Compatible Object Storage | PASS | Explicit PostgreSQL/NFS/Nexus/S3 placement model, learner-owned implementation, least privilege, real Steward integration, collision/integrity semantics, lifecycle and outage/credential failure practice. |
+
 ## Quality Steward detailed remediation
 
 Do not treat the recent Java migration as pedagogically complete merely because it is technically coherent.
