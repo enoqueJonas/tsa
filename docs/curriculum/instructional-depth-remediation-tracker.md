@@ -558,3 +558,16 @@ release-quality decision
 | `pnpm build` after remediation | PENDING LOCAL EXECUTION |
 | Representative rendered UI spot-check | NOT STARTED |
 
+
+## Security Steward audit findings
+
+### Security reasoning through application security
+
+| Path / area | Classification | Finding |
+| --- | --- | --- |
+| Security Foundations | PASS | Establishes CIA, precise risk language, attack surface, least privilege, defense in depth, trust boundaries, control types and residual-risk treatment against the real Steward ecosystem before introducing security tooling. |
+| Threat Modeling | PASS | Builds from the prior asset/trust inventory into concrete actor, boundary and attack-path reasoning; threats are tied to evidence and treatment rather than checklist labels. |
+| Web and API Threats | PASS | Applies threat reasoning to reachable web/API behavior and authorization/input/session classes without substituting OWASP category memorization for system evidence. |
+| Practical Vulnerability Laboratory | PASS | Requires controlled reproduction, evidence, impact reasoning, remediation and retest in learner-owned environments rather than scanner-output collection. |
+| Application Security | PASS | Converts earlier findings/threats into implementation and regression controls across authentication, authorization, validation, errors, secrets, headers, logging, abuse resistance, data protection, review and negative requirements. Django/DRF references are **intentional product-stack teaching**: Steward remains a Python/Django/DRF application from Builder; Java/JUnit is the Quality automation stack. Do not conflate these boundaries in later cleanup. |
+
