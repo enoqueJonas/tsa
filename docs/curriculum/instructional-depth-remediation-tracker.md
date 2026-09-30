@@ -34,7 +34,7 @@ The audit proceeds in learner progression order so later schools can rely only o
 | # | School | Scope / major paths | Status | Exit evidence |
 | ---: | --- | --- | --- | --- |
 | 1 | Engineering Apprentice | Thinking Like an Engineer; Systems Thinking; Trade-offs; Debugging Mindset; Engineering Foundations/workbench; milestone/checks | AUDIT IN PROGRESS | Every lesson classified; thin lessons rewritten; rendered spot-check; duration sanity check |
-| 2 | Builder | Builder fundamentals and implementation paths | AUDIT IN PROGRESS | Same school exit gate |
+| 2 | Builder | Builder fundamentals and implementation paths | REMEDIATED | Every live path classified and source-level gaps remediated; build/integrity and rendered UI validation remain pending |
 | 3 | System Thinker | contracts, integration semantics, distributed state and system reasoning | NOT STARTED | Same school exit gate |
 | 4 | Platform Builder | OS/Linux/networking/virtualization/storage/core services/Ansible/patching/Windows | NOT STARTED | Same school exit gate |
 | 5 | Delivery Engineer | build/test/package/artifacts/GitLab CI/CD/release | NOT STARTED | Same school exit gate |
@@ -167,6 +167,33 @@ Builder audit may proceed in parallel at source level, but Engineering Apprentic
 | Logging / documentation / error design | PASS | Operational evidence, executable documentation and deliberate public failure contracts are taught with security boundaries. |
 | Performance Awareness | PASS | Requires baseline/hypothesis/re-measurement and explicitly rejects speculative optimization/caching. |
 | Refine Steward API for Review lab | PASS AFTER REMEDIATION | Strong integrated maintenance/review exercise; its reliance on automated behavior evidence is now preceded by explicit Builder-level testing instruction. |
+
+### Steward API v1 milestone
+
+| Gate / area | Classification | Finding |
+| --- | --- | --- |
+| Milestone brief / canonical domain | PASS | Consolidates the continuing Steward system and explicitly freezes Builder-level domain, ownership and invariant expectations. |
+| Domain and Contract Review | PASS | Requires cardinality, invariant-enforcement mapping, API/failure contract and OpenAPI consistency before final implementation. |
+| Build Steward API v1 | REMEDIATED | Added focused automated behavior safety-net evidence and behavior-preservation across refactoring so Software Craft testing is consumed by the capstone (`9d0df2f`). |
+| Data Layer proof | PASS | Requires direct SQL, ORM-to-SQL reasoning, constraint failures, planner evidence, justified indexing and populated-state migration evidence. |
+| Security Boundaries proof | REMEDIATED | Expanded token evidence to rotation/revocation/logout policy, invalid/expired/revoked credential cases and automated negative security tests (`9d0df2f`). |
+| Engineering Handoff | PASS | Requires reproducible setup, API/auth exploration, known limitations and an evidence-based System Thinker handoff without speculative redesign. |
+| Milestone review | PASS | Exit questions require concrete evidence and boundary/trade-off reasoning rather than recall. |
+
+### Builder source-level closure
+
+All live Builder paths have now been classified against the instructional-depth standard and all identified source-level prerequisite/depth gaps are remediated. Cross-path sequencing is coherent: Python → Web/API → PostgreSQL → Django/DRF → Identity/Auth → Software Craft → Steward API v1. A consistency scan found no remaining learner-facing claims that PostgreSQL/ORM fundamentals belong after Django.
+
+Builder is **REMEDIATED, not VALIDATED**. Remaining school-exit gates are:
+
+| Gate | Status |
+| --- | --- |
+| Source-level pedagogical audit | PASS |
+| Identified source remediation | PASS |
+| Cross-path prerequisite/sequence review | PASS |
+| `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
+| `pnpm build` after remediation | PENDING LOCAL EXECUTION |
+| Representative rendered UI spot-check | NOT STARTED |
 
 ## Quality Steward detailed remediation
 
