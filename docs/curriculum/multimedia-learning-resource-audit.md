@@ -455,19 +455,19 @@ This pass audits the live deep-authored Delivery Engineer runtime paths, includi
 
 | Lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
-| CI Pipeline Architecture | RECOMMENDED VIDEO | Jenkins/GitHub Actions pipeline introductions reviewed | [Jenkins — Pipeline](https://www.jenkins.io/doc/book/pipeline/) plus [Jenkins Pipeline overview video](https://www.youtube.com/watch?v=7KCS70sCoK0) | The pipeline-as-code/stage model is strongly visual and maps to the self-hosted CI work. |
-| Jobs, Stages and Dependencies | RECOMMENDED VIDEO | Pipeline execution-model material reviewed | Reuse Jenkins Pipeline overview | One coherent execution model is preferable to unrelated CI tutorials. |
-| Runners and Agents | RECOMMENDED VIDEO | Jenkins agent architecture material reviewed | [Jenkins — Using Jenkins agents](https://www.youtube.com/watch?v=99DddJiH7lM) | Makes controller/agent execution boundaries concrete before installing the homelab agent. |
-| GitHub Actions and Jenkins | OPTIONAL VIDEO | Platform comparison material reviewed | No candidate promoted | TSA needs capability comparison and an explicit platform choice, not a vendor popularity comparison. |
-| Self-hosted Runners | RECOMMENDED VIDEO | Self-hosted runner/agent setup material reviewed | Reuse Jenkins agent media for execution boundary; setup remains learner-run | Keeps the conceptual and operational model aligned with the academy's Jenkins path. |
-| Caching | OPTIONAL VIDEO | CI cache demonstrations reviewed | No candidate promoted | Cache correctness is better learned by measuring cold/warm pipeline behavior. |
-| Pipeline Artifacts | RECOMMENDED VIDEO | CI artifact material reviewed | Reuse pipeline overview; later Nexus module owns durable artifact management | Avoids conflating temporary CI artifacts with repository-managed release artifacts. |
-| Secrets and Variables | RECOMMENDED VIDEO | Jenkins credential-handling material reviewed | [Jenkins — Using Credentials](https://www.jenkins.io/doc/book/using/using-credentials/) | First-party guidance establishes credential boundaries; secret-management depth remains later curriculum. |
-| Parallelism | OPTIONAL VIDEO | Parallel pipeline material reviewed | No candidate promoted | Learner should parallelize only after identifying independent work and measuring value. |
+| CI Pipeline Architecture | RECOMMENDED VIDEO | GitLab CI/CD pipeline material reviewed | [GitLab — What is CI/CD?](https://www.youtube.com/watch?v=scEDHsr3APg) for pipeline context; GitLab CI/CD documentation remains authoritative for implementation | The pipeline/stage model is visual, while TSA's practice maps each GitLab stage to a risk question and keeps deployment outside CI. |
+| Jobs, Stages and Dependencies | RECOMMENDED VIDEO | GitLab pipeline execution-model material reviewed | Reuse GitLab CI/CD lifecycle primer; use GitLab documentation for exact needs/dependency syntax | One coherent GitLab execution model supports the dependency-graph exercise without introducing another CI platform. |
+| Runners and Agents | RECOMMENDED VIDEO | GitLab Runner architecture/documentation reviewed | GitLab Runner documentation; no separate video promoted until a first-party visual source clears the quality bar | The controller/execution trust boundary is worth visualizing, but a stale Jenkins agent video would teach the wrong operating model. |
+| GitHub Actions and GitLab CI/CD | OPTIONAL VIDEO | GitLab CI/CD lifecycle material and GitHub Actions documentation reviewed | Reuse GitLab CI/CD primer for the implemented platform; GitHub Actions remains a conceptual comparison | TSA needs capability mapping and an explicit GitLab implementation choice, not two mandatory pipelines. |
+| Self-hosted Runners | RECOMMENDED VIDEO | GitLab Runner self-managed execution material reviewed | GitLab Runner documentation; setup remains learner-run | Keeps the conceptual and operational model aligned with TSA's GitLab CI/CD path and dedicated-agent trust boundary. |
+| Caching | OPTIONAL VIDEO | GitLab CI/CD cache material reviewed | No separate candidate promoted | Cache correctness is better learned by measuring cold/warm pipeline behavior. |
+| Pipeline Artifacts | RECOMMENDED VIDEO | GitLab CI/CD artifact material reviewed | Reuse GitLab pipeline context; GitLab artifact documentation for exact retention behavior | Avoids conflating temporary CI evidence with Nexus-managed release artifacts. |
+| Secrets and Variables | RECOMMENDED VIDEO | GitLab CI/CD variables/secrets guidance reviewed | GitLab CI/CD documentation; no separate video promoted | First-party implementation guidance is preferable to carrying forward Jenkins credential semantics; TSA practice still requires least privilege and leakage checks. |
+| Parallelism | OPTIONAL VIDEO | GitLab CI/CD parallel/dependency material reviewed | No candidate promoted | Learner should parallelize only after identifying independent work and measuring value. |
 | Automated Checks | NO VIDEO | — | — | Existing tests/linters are integrated directly. |
 | Test Stages | NO VIDEO | — | — | Pipeline composition practice. |
 | Quality Gates | NO VIDEO | — | — | Gate policy must be defended from real risk/evidence. |
-| Building Containers in CI | RECOMMENDED VIDEO | Jenkins+Docker build material reviewed | Reuse Jenkins Pipeline + Docker build resources | The value is integrating already-learned primitives into one traceable pipeline. |
+| Building Containers in CI | RECOMMENDED VIDEO | GitLab CI/CD + Docker build material reviewed | Reuse GitLab pipeline context and existing Docker build resources | The value is integrating already-learned primitives into one traceable GitLab pipeline. |
 
 ### Continuous Delivery and Deployment
 
