@@ -922,20 +922,42 @@ The expanded path now teaches measurement validity before tool execution. Multim
 
 ### Quality in Containers and CI/CD
 
+This path uses Testcontainers for Java and the canonical GitLab CI/CD architecture. JUnit tags provide test selection; GitLab Runner provides execution. Jenkins, pytest markers and pytest-xdist are not part of the active Quality pipeline.
+
 | Lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
-| Test Containers and Environments | RECOMMENDED VIDEO | Dockerized testing material reviewed | Reuse Delivery Engineer Docker resources | Quality Steward applies existing container knowledge to deterministic test dependencies. |
-| Dockerized Test Dependencies | RECOMMENDED VIDEO | Container dependency material reviewed | Reuse Docker Compose resource | No need to reteach Compose. |
-| Ephemeral Environment Concepts | RECOMMENDED VIDEO | Ephemeral CI environment material reviewed | No candidate promoted | The learner's pipeline should prove create→test→destroy lifecycle directly. |
-| Test Pipeline Stages | RECOMMENDED VIDEO | Jenkins pipeline material reviewed | Reuse Delivery Engineer Jenkins Pipeline media | Existing execution model is sufficient. |
-| Parallelization | RECOMMENDED VIDEO | pytest-xdist/CI parallel material reviewed | Reuse pytest-xdist documentation | Connects framework worker isolation to pipeline execution. |
-| Reports and Artifacts | OPTIONAL VIDEO | CI reporting material reviewed | No candidate promoted | Diagnostic usefulness is judged from failed pipeline evidence. |
+| Testcontainers Lifecycle, Wait Strategies and Failure Cleanup | RECOMMENDED VIDEO | Testcontainers Java/JUnit 5 documentation | Official Testcontainers lifecycle and wait-strategy examples | Container readiness and cleanup are temporal lifecycle concepts; a visual execution sequence helps before failure experiments. |
+| Testcontainers Networking and Dynamic Connection Configuration | RECOMMENDED VIDEO | Testcontainers networking documentation | Official Testcontainers networking examples | Host/port mapping and container-network identity are frequent sources of false assumptions and benefit from explicit topology. |
+| Database Migrations, Fixtures and Isolation with Real PostgreSQL | NO VIDEO | — | — | Real migration/schema/data isolation must be proven against the actual PostgreSQL test dependency. |
+| Testcontainers Diagnostics and Reproducibility | NO VIDEO | — | — | Learner must diagnose a deliberately broken containerized dependency and capture useful evidence. |
+| GitLab Runners and Execution Environments | RECOMMENDED VIDEO | GitLab Runner documentation; Delivery Engineer GitLab material | Reuse the canonical GitLab CI/CD → GitLab Runner execution model | Quality Steward applies the already-taught runner model to test dependencies rather than learning another CI platform. |
+| Running Testcontainers Safely in GitLab CI/CD | RECOMMENDED VIDEO | GitLab Runner + Testcontainers CI guidance | Official Testcontainers CI guidance plus GitLab Runner architecture | Docker access, privilege and isolation are environment/security decisions that must be understood before enabling containerized integration tests. |
+| GitLab Cache, Artifacts and Test Reports | RECOMMENDED VIDEO | GitLab cache/artifact/report documentation | Official GitLab pipeline artifact/report visuals | Cache and evidence artifacts have different ownership/lifetime semantics; visual pipeline flow helps distinguish them. |
+| GitLab rules, needs and Pipeline DAG Design | RECOMMENDED VIDEO | GitLab rules/needs documentation | Reuse Delivery Engineer GitLab DAG model | Job inclusion and dependency ordering are graph concepts; Quality applies them to evidence speed and gate placement. |
+| GitLab CI/CD Variables, Protected Resources and Pipeline Security | RECOMMENDED VIDEO | GitLab variable/protected-resource documentation | Official GitLab guidance; reuse Security boundaries later | Secrets/variables must be tied to trust boundaries rather than copied into YAML examples. |
+| GitLab Environments, Deployments and Manual Gates | RECOMMENDED VIDEO | GitLab environments/deployment documentation | Official GitLab environment/deployment model | Environment identity and gate placement are easier to reason about as a promotion flow. |
+| Testcontainers Java and Controlled Integration Dependencies | RECOMMENDED VIDEO | Testcontainers Java material | Reuse lifecycle/networking material | Consolidates the controlled-dependency model without another introductory tutorial. |
+| Dockerized Test Dependencies | RECOMMENDED VIDEO | Dockerized testing material reviewed | Reuse Delivery Engineer Docker resources | Existing container knowledge is applied to deterministic test dependencies. |
+| Ephemeral Environment Concepts | RECOMMENDED VIDEO | ephemeral CI environment material reviewed | No separate candidate promoted | Learner's pipeline must prove create → test → destroy lifecycle directly. |
+| GitLab CI/CD: Pipelines, Jobs, Stages and Runners | RECOMMENDED VIDEO | GitLab CI/CD material | Reuse Delivery Engineer GitLab CI/CD media | Prevents duplicate CI instruction and keeps canonical terminology consistent. |
+| Test Pipeline Stages | RECOMMENDED VIDEO | GitLab pipeline material | Reuse GitLab stage/job/DAG material | Replaces the obsolete Jenkins execution reference. |
+| Parallelization | RECOMMENDED VIDEO | JUnit concurrency; GitLab parallel execution | Reuse Java/JUnit concurrency model and GitLab job model | Parallelism is an isolation and workload-partitioning problem, not a pytest-xdist feature. |
+| Reports and Artifacts | OPTIONAL VIDEO | GitLab report/artifact material | Reuse GitLab artifact/report guidance | Diagnostic usefulness is judged from failed pipeline evidence. |
 | Quality Gates | NO VIDEO | — | — | Gate policy must be risk/evidence based. |
-| Test Selection | RECOMMENDED VIDEO | pytest marker/selection material reviewed | Reuse pytest marker documentation | Existing selection primitives are enough. |
-| Failure Triage | NO VIDEO | — | — | Learner must diagnose real failed CI evidence. |
-| Flaky-test Containment | RECOMMENDED VIDEO | retry/flakiness material reviewed | Reuse Playwright retry guidance | Reinforces containment/classification rather than hiding failures. |
+| Test Selection | RECOMMENDED VIDEO | JUnit tags; Maven/Surefire selection; GitLab rules | Reuse the JUnit tag-selection material from the Java foundation | Replaces obsolete pytest-marker selection while avoiding a duplicate JUnit lesson. |
+| Pipeline Failure Triage Integration | NO VIDEO | — | — | Real failed-pipeline evidence must drive diagnosis. |
+| Apply the Existing Flake and Quarantine Policy in GitLab | NO VIDEO | — | — | Existing framework policy is operationalized in CI rather than retaught. |
 | Internal Test Package Publishing and Compatibility in CI | NO VIDEO | — | — | Real tsa-test-core producer/consumer compatibility is the evidence. |
+| Milestone: Run Controlled Integration Evidence in GitLab | NO VIDEO | — | — | Independent proof that Testcontainers works on the actual runner boundary. |
+| Prove Testcontainers on the Real Runner Boundary | NO VIDEO | — | — | Runner/container behavior must be observed directly. |
+| Milestone: Engineer the steward-tests GitLab Pipeline | NO VIDEO | — | — | Secure evidence-oriented pipeline construction is the assessment. |
+| Build a Secure Evidence-oriented GitLab Pipeline | NO VIDEO | — | — | Variables, artifacts, selection and gates must be implemented coherently. |
 | Lab: Build the Steward Quality Pipeline | NO VIDEO | — | — | Independent pipeline/gate/diagnostic evidence. |
+| Design the Evidence Pipeline | NO VIDEO | — | — | Pipeline design follows the required evidence portfolio. |
+| Containerize and Execute the Test Dependencies | NO VIDEO | — | — | Executable Testcontainers evidence. |
+| Add Selection, Gates and Diagnostic Artifacts | NO VIDEO | — | — | Real JUnit/GitLab selection and failure evidence are required. |
+| Prove tsa-test-core Compatibility in CI | NO VIDEO | — | — | Versioned producer/consumer compatibility must be proven in the pipeline. |
+| Quality Pipeline Review | NO VIDEO | — | — | Final pipeline capability defense. |
 
 ### Continuous and Scheduled Quality Execution
 
