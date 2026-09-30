@@ -642,3 +642,60 @@ cross-stack assessment + residual-risk defense
 | Database Stewardship | REMEDIATED | Strong operational PostgreSQL path covers privilege separation, aggregate connection budgets, query plans, locks/deadlocks, safe rolling migrations, application-level restore proof and health/capacity. Strengthened the final health review to require autovacuum/ANALYZE and dead-tuple maintenance evidence rather than merely naming vacuum conceptually (`708da69b`). |
 | Performance and Capacity | PASS | Uses defined/reproducible workload, latency distributions, throughput, saturation, queueing, bottlenecks, recovery and measured headroom. Capacity/growth actions are tied to intervention lead time and evidence rather than arbitrary CPU thresholds. |
 
+
+### Reliability Engineer failure/recovery sequence and source-level closure
+
+| Path / area | Classification | Finding |
+| --- | --- | --- |
+| Resilience and Distributed Failure | PASS | Timeouts, retries, jitter, breakers, idempotency, partial failure, backpressure, degradation and dependency budgets are applied to explicit Steward failure modes with bounded work/latency and normal/failure/recovery telemetry. |
+| Data Protection and Disaster Recovery | PASS | Recovery is measured against RPO/RTO and verified through usable application/data state. Backup success, pod recreation, GitOps reconciliation and actual data recovery are kept distinct. |
+| Incident Management | PASS | Requires detection, triage, severity, ownership, communication, mitigation, timestamped decision/timeline evidence, recovery and post-incident corrective learning rather than root-cause theatre. |
+| Fault Injection and Reliability Experiments | PASS | Experiments begin from a falsifiable steady-state hypothesis, explicit blast radius/abort/recovery controls and learner-owned infrastructure. Findings preserve falsification/surprise and require post-recovery steady-state/integrity verification. |
+| Reliability Engineer Milestone | REMEDIATED | Strong cross-stack evidence baseline, controlled scenario, review and defense. Added mandatory OpenTelemetry/Tempo multi-boundary tracing and cross-signal correlation evidence at school exit so the required tracing implementation cannot disappear from the final reliability claim set (`990840bf`). |
+| Final consistency scan | PASS | No stale SLE-order phrase, Jenkins, GitHub Actions, Ubuntu/APT or random-chaos wording remains under canonical `reliability-*` paths after remediation. |
+
+Reliability Engineer is **REMEDIATED, not VALIDATED**. Its source-level progression is now:
+
+```text
+service capability + reliability risk
+  ↓
+SLI/SLO semantics + error budgets (backend-independent)
+  ↓
+observability questions and telemetry model
+  ↓
+Graylog logs + Prometheus metrics + Grafana views
+  ↓
+prior SLI contracts operationalized in PromQL
+  ↓
+OpenTelemetry context + Tempo traces
+  ↓
+cross-signal diagnosis
+  ↓
+SLO/action-driven alerts + Alertmanager delivery
+  ↓
+PostgreSQL operational stewardship
+  ↓
+measured performance / saturation / capacity
+  ↓
+bounded distributed-failure controls
+  ↓
+RPO/RTO recovery evidence
+  ↓
+incident operation
+  ↓
+hypothesis-driven fault experiments
+  ↓
+cross-stack reliability review and defense
+```
+
+| Gate | Status |
+| --- | --- |
+| Source-level pedagogical audit | PASS |
+| Reliability intent→telemetry sequencing | PASS |
+| Cross-signal implementation/diagnosis | PASS |
+| Failure/recovery evidence progression | PASS |
+| Identified source remediation | PASS |
+| `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
+| `pnpm build` after remediation | PENDING LOCAL EXECUTION |
+| Representative rendered UI spot-check | NOT STARTED |
+
