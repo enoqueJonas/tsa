@@ -86,7 +86,7 @@ function CodeBlock({ language, code, caption, output }: { language: string; code
           <div className="px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
             Output
           </div>
-          <pre className="overflow-x-auto px-5 pb-5 font-mono text-sm leading-6 text-slate-200">
+          <pre className="whitespace-pre-wrap break-words px-5 pb-5 font-mono text-sm leading-6 text-slate-200">
             <code>{output || "(no output)"}</code>
           </pre>
         </div>
