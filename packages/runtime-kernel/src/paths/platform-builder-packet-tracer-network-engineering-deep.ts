@@ -16,15 +16,25 @@ function lab(
     deliverables: string[],
     completionCriteria: string[],
     estimatedMinutes = 120,
+    teaching: { title: string; paragraphs: string[]; code?: { language: string; code: string; caption?: string } }[] = [],
 ): Lesson {
     const id = `packet-tracer-${slug(title)}`;
     const blocks: LessonBlock[] = [
         { type: "paragraph", text: body },
         { type: "heading", id: "learning-outcomes", text: "Learning outcomes", level: 2 },
         { type: "list", items: outcomes },
+    ];
+    for (const section of teaching) {
+        blocks.push({ type: "heading", id: slug(section.title), text: section.title, level: 2 });
+        for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
+        if (section.code) blocks.push(section.code.caption
+            ? { type: "code", language: section.code.language, code: section.code.code, caption: section.code.caption }
+            : { type: "code", language: section.code.language, code: section.code.code });
+    }
+    blocks.push(
         { type: "callout", tone: "steward", title: "Vendor syntax, transferable model", body: "Cisco IOS is the implementation medium for this lab. Treat commands as evidence of switching, routing and policy behavior rather than as trivia to memorize. The transferable skill is predicting packet behavior, proving it with device state, breaking it deliberately and localizing the fault." },
         { type: "resources", title: "Required and supporting resources", resources: [packetTracer, ciscoNetworking] },
-    ];
+    );
 
     return {
         id,
