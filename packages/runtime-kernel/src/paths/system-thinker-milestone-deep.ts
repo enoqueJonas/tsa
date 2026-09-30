@@ -92,11 +92,12 @@ export const stewardApiSystemDesignPortfolioDeep: LearningPath = {
                         "Implement post-commit invalidation or another justified strategy and prove Redis-unavailable fallback behavior.",
                         "Implement one RabbitMQ producer/consumer flow for the lifecycle side effect with a minimal stable event contract.",
                         "Demonstrate acknowledgement timing, consumer outage, bounded retry, duplicate delivery/idempotent effect and dead-letter handling.",
+                        "For a local database-backed consumer effect, prove that stable processed-event identity and the effect commit atomically in one local transaction; if the chosen effect is external, document the remaining ambiguity and boundary-supported idempotency mechanism.",
                         "Expose the database-commit/message-publication crash window and implement or design the recovery/outbox strategy appropriate to the exercise.",
                         "Record the operational evidence needed to distinguish API, PostgreSQL, Redis, broker and consumer failures."
                     ],
                     deliverables: ["Redis implementation/failure evidence", "RabbitMQ implementation/failure evidence", "Consistency/publication analysis", "Cross-referenced failure portfolio"],
-                    completionCriteria: ["The learner has actually implemented both primary technologies.", "PostgreSQL authority remains explicit.", "Staleness and cache outage are demonstrated.", "Duplicate/redelivery behavior is handled deliberately.", "The system does not claim exactly-once behavior without proof."],
+                    completionCriteria: ["The learner has actually implemented both primary technologies.", "PostgreSQL authority remains explicit.", "Staleness and cache outage are demonstrated.", "Duplicate/redelivery behavior is handled deliberately.", "Consumer-side idempotency does not leave an avoidable crash gap between local effect and processed-event identity.", "The system does not claim exactly-once behavior without proof."],
                 },
             },
             {
@@ -150,7 +151,7 @@ export const stewardApiSystemDesignPortfolioDeep: LearningPath = {
                         "2. Which simpler database/query fixes were considered before the Redis exercise?",
                         "3. What data remains authoritative when Redis is stale or unavailable?",
                         "4. What product behavior allowed the RabbitMQ side effect to complete asynchronously?",
-                        "5. Where can duplicate delivery occur and what makes the consumer effect safe?",
+                        "5. Where can duplicate delivery occur, what makes the consumer effect safe, and which part of that safety is atomic only within the local database?",
                         "6. Where can PostgreSQL commit while publication fails, and how is that gap recovered?",
                         "7. Why is RabbitMQ the primary implementation for this scenario instead of deploying RabbitMQ and Kafka together?",
                         "8. Under what future workload would Kafka become a credible migration candidate?",
