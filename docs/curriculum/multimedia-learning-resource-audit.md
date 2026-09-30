@@ -826,35 +826,25 @@ The current path deliberately exposes HTTP mechanics before REST Assured abstrac
 
 ### Automation Framework Engineering
 
+This path now assumes the learner already understands Java, Maven, JUnit execution, REST Assured and basic test boundaries. It does not reteach pytest-era framework mechanics. Multimedia is reserved for observability/evidence concepts whose execution flow or UI is materially easier to understand visually.
+
 | Lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
-| What Makes an Automation Framework | RECOMMENDED VIDEO | Framework-architecture material reviewed | No candidate promoted | TSA's framework requirements and later refactoring provide a stronger architecture exercise than a vendor tutorial. |
-| Framework Architecture | RECOMMENDED VIDEO | pytest/Playwright architecture material reviewed | No candidate promoted | Learner must derive boundaries from Steward's tests and reusable infrastructure. |
-| Playwright with Python | RECOMMENDED VIDEO | Official Playwright material reviewed | [Playwright — Getting Started](https://playwright.dev/python/docs/intro) and [Playwright YouTube](https://www.youtube.com/@Playwrightdev) | First-party material establishes locator, browser/context/page and debugging concepts. |
-| pytest Fundamentals | RECOMMENDED VIDEO | pytest material reviewed | [pytest — Get Started](https://docs.pytest.org/en/stable/getting-started.html) | Current first-party examples are preferable to a long framework course. |
-| Configuration | NO VIDEO | — | — | Framework configuration is designed and versioned directly. |
-| Fixtures | RECOMMENDED VIDEO | pytest fixture material reviewed | [pytest — Fixtures](https://docs.pytest.org/en/stable/how-to/fixtures.html) — use dependency/lifetime examples | Fixture dependency and scope are non-obvious and benefit from canonical diagrams/examples. |
-| Test Data | NO VIDEO | — | — | Data ownership is a framework/domain design exercise. |
-| API Clients | NO VIDEO | — | — | Learner builds a narrow client around the actual Steward contract. |
-| Page Objects and UI Abstractions | RECOMMENDED VIDEO | Playwright page-object material reviewed | [Playwright — Page Object Models](https://playwright.dev/python/docs/pom) | First-party pattern guidance supports abstraction without mandating a page object for every screen. |
-| Helpers and Utilities | NO VIDEO | — | — | Refactoring/reuse decision. |
-| Assertions | RECOMMENDED VIDEO | Playwright/pytest assertion material reviewed | [Playwright — Assertions](https://playwright.dev/python/docs/test-assertions) | Auto-retrying web assertions are materially different from immediate Python assertions. |
-| Markers and Tags | OPTIONAL VIDEO | pytest marker material reviewed | [pytest — Marking test functions](https://docs.pytest.org/en/stable/how-to/mark.html) | Reference examples are sufficient. |
-| Parameterization | RECOMMENDED VIDEO | pytest parameterization material reviewed | [pytest — Parametrize](https://docs.pytest.org/en/stable/how-to/parametrize.html) | Canonical examples show data variation without duplicated tests. |
-| Automation Logging | NO VIDEO | — | — | Logging must be designed around failure diagnosis. |
-| Reports | OPTIONAL VIDEO | pytest/CI reporting material reviewed | No candidate promoted | Pipeline consumption determines the useful report format. |
-| Screenshots, Traces and Video | RECOMMENDED VIDEO | Playwright trace/debug material reviewed | [Playwright — Trace Viewer](https://playwright.dev/python/docs/trace-viewer) | Trace Viewer is inherently visual and provides high diagnostic value. |
-| Parallel Execution | RECOMMENDED VIDEO | pytest-xdist/parallel material reviewed | [pytest-xdist documentation](https://pytest-xdist.readthedocs.io/) | Makes worker distribution explicit; learner must still prove isolation. |
-| Retries and Flaky-test Risk | RECOMMENDED VIDEO | Playwright retry/flakiness material reviewed | [Playwright — Test retries](https://playwright.dev/docs/test-retries) as conceptual support | Reinforces that retries classify/contain instability rather than fixing nondeterminism. |
-| Framework Maintainability | NO VIDEO | — | — | Maintainability is evaluated through change/refactoring evidence. |
-| Reusable Testing Infrastructure vs Domain Test Code | RECOMMENDED VIDEO | Python package/plugin architecture material reviewed | [pytest — Writing plugins](https://docs.pytest.org/en/stable/how-to/writing_plugins.html) | Gives the extension boundary needed for shared infrastructure without leaking Steward domain logic. |
-| Designing Public APIs for Test Libraries | NO VIDEO | — | — | API design is exercised through the actual reusable package. |
-| Reusable pytest Fixtures and Plugins | RECOMMENDED VIDEO | pytest plugin material reviewed | Reuse pytest plugin documentation | Direct continuation of the shared-infrastructure boundary. |
-| Versioning Shared Test Infrastructure | NO VIDEO | — | — | Apply existing SemVer/release-engineering discipline. |
-| Lab: Build the Steward Automation Framework | NO VIDEO | — | — | Independent framework construction evidence. |
-| Lab: Extract tsa-test-core | NO VIDEO | — | — | Refactoring/reuse boundary is the assessment. |
-| Lab: Publish and Consume tsa-test-core | NO VIDEO | — | — | Real package publication/consumption evidence. |
-| Automation Framework Engineering Review | NO VIDEO | — | — | Capability review. |
+| What Makes an Operable Automation Framework | RECOMMENDED VIDEO | framework architecture material; current JUnit/REST Assured/Playwright Java resources | No separate candidate promoted | TSA's own framework architecture is stronger than a generic “build a framework” tutorial because operability, evidence and failure diagnosis are explicit requirements. |
+| Framework Dependency and Evidence Architecture | RECOMMENDED VIDEO | Maven/JUnit/REST Assured/Playwright integration material | Reuse the Maven → JUnit execution model and current framework dependency graph | The learner needs to see how execution and evidence-producing components connect, without receiving a second Maven/JUnit introduction. |
+| SLF4J, Structured Logging and Secret Redaction | RECOMMENDED VIDEO | SLF4J manual; structured-logging guidance | SLF4J manual/examples; no broad logging course promoted | Logging APIs are straightforward; the difficult part is designing useful diagnostic context without leaking tokens or credentials. |
+| Failure Classification and Diagnostic Taxonomy | NO VIDEO | — | — | Classification must emerge from actual assertion, framework, dependency and environment failures in steward-tests. |
+| Allure as an Evidence Presentation Layer | RECOMMENDED VIDEO | Allure JUnit 5 documentation; Allure report examples | Official Allure JUnit 5 documentation and report UI examples | Report hierarchy, steps, attachments and history are inherently visual; TSA still owns what evidence is safe and useful. |
+| Evidence Artifacts, Retention and Sensitivity | OPTIONAL VIDEO | Allure attachments; CI artifact guidance | Reuse Allure attachment examples and Delivery artifact concepts | The new concept is evidence policy, not another artifact tutorial. |
+| Retries without Manufacturing Green Builds | RECOMMENDED VIDEO | JUnit retry/extension patterns; flakiness guidance | No implementation video promoted | Retry semantics are easy to misuse; TSA's controlled flaky-test experiment and failure classification are stronger than copyable retry code. |
+| Flake Measurement, Quarantine and Ownership | RECOMMENDED VIDEO | flaky-test engineering material reviewed | No candidate promoted | The important learning is measured recurrence, quarantine policy and ownership—not a tool-specific dashboard walkthrough. |
+| Framework Maintainability and Operability Review | NO VIDEO | — | — | Learner reviews the real framework for coupling, hidden state, diagnostic quality and maintenance cost. |
+| Milestone: Diagnose an Unattended Regression Run | NO VIDEO | — | — | Independent diagnosis from produced evidence is the assessment. |
+| Build the Evidence and Failure-triage Backbone | NO VIDEO | — | — | Logging, Allure, artifacts and classification must be integrated into the actual framework. |
+| Milestone: Consolidate steward-tests as a Coherent Framework | NO VIDEO | — | — | The milestone refactors already-proven components rather than generating a tutorial framework. |
+| Bootstrap the Framework from Existing Tests | NO VIDEO | — | — | Existing Java/JUnit/REST Assured work is the input; unnecessary regeneration would erase learning history. |
+| Add Data, JUnit Lifecycle and Extensions and Diagnostics | NO VIDEO | — | — | JUnit lifecycle/extensions are already learned; this step applies them only where repeated framework semantics justify abstraction. |
+| Add Selection, Parallelism and Flake Controls | NO VIDEO | — | — | Tagging, concurrency and quarantine controls must be defended from the actual suite and execution evidence. |
 
 ### Browser and Environment Testing
 
