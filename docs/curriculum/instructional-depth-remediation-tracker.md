@@ -95,9 +95,9 @@ Builder audit may proceed in parallel at source level, but Engineering Apprentic
 | --- | --- | --- |
 | Environment setup | PASS | Teaches interpreter/PATH/venv/pip boundaries and isolation-vs-reproducibility with observable commands. |
 | Python Syntax, Values and Types | PASS | Strong first-principles treatment of names/objects/types, mutability, equality/identity and boundary conversion. |
-| Control Flow | TARGETED IMPROVEMENT | Strong engineering framing, but assumes too much first-time fluency with condition/loop mechanics. Expand if/elif/else evaluation, boolean operators, for/range/enumerate, break/continue and iteration tracing before domain refactoring. |
-| Functions and Scope | TARGETED IMPROVEMENT | Jumps to contracts, LEGB and mutable-default pitfalls before sufficiently teaching function definition/call mechanics, parameters/arguments, return values and local call frames. |
-| Collections and Data Structures | TARGETED IMPROVEMENT | Good structure-selection reasoning but insufficient everyday mechanics for a learner new to list/tuple/dict/set creation, access, update and iteration. |
+| Control Flow | REMEDIATED | Added explicit branch-chain execution, boolean composition, iterable binding, range/enumerate and break/continue mechanics before domain-level refactoring (`14f3e7ca`). |
+| Functions and Scope | REMEDIATED | Added define/call/return execution model, parameters vs arguments, positional/keyword/default arguments, local call state and return-vs-print before contracts/LEGB (`63671e5d`). |
+| Collections and Data Structures | REMEDIATED | Added sequence/mapping/set access model, everyday mutation, missing-access behavior and collection-specific iteration before structure-selection trade-offs (`3949f739`). |
 | Modules and Packages | PASS | Appropriate after functions/collections; teaches import/dependency boundaries and side-effect discipline. |
 | Errors and Exceptions | PASS | Teaches propagation, specific catching, translation/chaining and boundary ownership. |
 | Object-Oriented Programming | PASS WITH PREREQUISITE | Appropriate engineering depth if functions/collections fundamentals are remediated first. |
