@@ -23,7 +23,7 @@ This tracker is the source of truth for the remediation cycle. Do not mark a sch
 
 | ID | School / path | Finding | Severity | Status | Evidence / next action |
 | --- | --- | --- | --- | --- | --- |
-| PED-001 | Engineering Apprentice / Engineering Foundations / Terminal, Shell and Filesystem | Nominal 50-minute reading renders essentially one scope paragraph, a boundary callout and external resources. Concepts are enumerated rather than taught. | Critical | REWRITE REQUIRED | Trigger defect for this remediation. Rewrite as the reference benchmark lesson. |
+| PED-001 | Engineering Apprentice / Engineering Foundations / Terminal, Shell and Filesystem | Nominal 50-minute reading rendered essentially one scope paragraph, a boundary callout and external resources. Concepts were enumerated rather than taught. | Critical | REMEDIATED | Rewritten as the reference benchmark lesson in `0bed33af`; duplicate-export correction `80ca1458`. Source now teaches the mental model and adds guided practice, reasoning check and independent lab. Rendered validation still required. |
 | PED-002 | Engineering Apprentice / Engineering Foundations workbench delta | The four new workbench lessons are produced by a generator whose reading body is one short string plus a generic boundary/resource block. | Critical | REWRITE REQUIRED | Audit and rewrite Shell/Filesystem, Git workflow, Developer Inspection, and HTTP CLI individually. |
 | PED-003 | Quality Steward / recently remediated Java/JUnit stack | Source is materially richer than PED-001, but several lessons use compressed mechanics/checklists and generated structures. Instructional sufficiency has not been proven from the learner perspective. | High | AUDIT REQUIRED | Deep-audit Java, JUnit/component, API/integration and framework-engineering lessons before accepting them. |
 
@@ -51,7 +51,7 @@ The audit proceeds in learner progression order so later schools can rely only o
 | Path / lesson group | Status | Required action |
 | --- | --- | --- |
 | Existing pre-workbench foundations | AUDIT REQUIRED | Inspect actual rendered teaching depth; do not assume older lessons are good. |
-| Terminal, Shell and Filesystem | REWRITE REQUIRED | Build the reference lesson defined in the pedagogy standard. |
+| Terminal, Shell and Filesystem | REMEDIATED | Reference rewrite landed (`0bed33af`, structural fix `80ca1458`). Validate build/integrity and deployed rendering before marking VALIDATED. |
 | Git and Version-Control Workflow | REWRITE REQUIRED | Teach repository mental model, working tree/index/commit graph/HEAD/branches/diffs/remotes/conflicts with worked examples before lab. |
 | Developer Inspection: Processes, Ports and Text | REWRITE REQUIRED | Teach process/listener/output inspection model with OS-appropriate examples and diagnostic boundaries. |
 | HTTP from the Command Line | REWRITE REQUIRED | Teach request/response anatomy and transport-vs-HTTP failure reasoning with worked CLI examples before independent requests. |
