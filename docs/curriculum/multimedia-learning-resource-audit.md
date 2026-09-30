@@ -1554,6 +1554,9 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Governance — Exceptions | OPTIONAL VIDEO | exception/waiver governance material reviewed | No candidate promoted yet | A worked exception can add context, but drafting one is primary. |
 | Governance — Evidence and Review Cadence | NO VIDEO | — | — | The learner should map actual operating evidence and cadence. |
 | Governance — Governance Without Bureaucracy | OPTIONAL VIDEO | paved-road/guardrail governance talks reviewed | No candidate promoted yet | Industry examples can show automation/defaults replacing approval theater. |
+| Governance — Map Steward Decisions and Accountability | NO VIDEO | — | — | The learner must turn governance principles into Steward decision rights, exceptions, evidence and cadence without copying a bureaucracy template. |
+| Governance — Design the Governance Artifact and Exception System | NO VIDEO | — | — | The learner must turn governance principles into Steward decision rights, exceptions, evidence and cadence without copying a bureaucracy template. |
+| Governance — Define Evidence, Cadence and Lightweight Oversight | NO VIDEO | — | — | The learner must turn governance principles into Steward decision rights, exceptions, evidence and cadence without copying a bureaucracy template. |
 | Governance — Lab: Design the Steward Engineering Governance Model | NO VIDEO | — | — | Independent governance design. |
 | Architecture Governance — Architecture Principles | OPTIONAL VIDEO | architecture-principles talks reviewed | No candidate promoted yet | Examples can show principle versus slogan. |
 | Architecture Governance — Technology Standards | NO VIDEO | — | — | Write/test standards against Steward context. |
@@ -1562,6 +1565,9 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Architecture Governance — Architecture Exceptions | NO VIDEO | — | — | Operate the actual exception model. |
 | Architecture Governance — Technology Lifecycle | RECOMMENDED VIDEO | technology lifecycle/EOL governance talks reviewed | [Thoughtworks — Technology Radar](https://www.thoughtworks.com/radar) — use Adopt/Trial/Assess/Hold lifecycle language as a decision example | Adopt→operate→upgrade→retire sequence and triggers are visual. |
 | Architecture Governance — Architecture Decision Ownership | NO VIDEO | — | — | Assign actual ownership. |
+| Architecture Governance — Establish the Governing Baseline | NO VIDEO | — | — | The exception lifecycle must be governed against Steward's own baseline, evidence and expiry/review conditions. |
+| Architecture Governance — Evaluate the Exception | NO VIDEO | — | — | The exception lifecycle must be governed against Steward's own baseline, evidence and expiry/review conditions. |
+| Architecture Governance — Operate and Learn from the Exception | NO VIDEO | — | — | The exception lifecycle must be governed against Steward's own baseline, evidence and expiry/review conditions. |
 | Architecture Governance — Lab: Govern a Steward Architecture Exception | NO VIDEO | — | — | Independent exception exercise. |
 | Technology Governance — Business and Technology Alignment | OPTIONAL VIDEO | COBIT/IT governance alignment material reviewed | No candidate promoted yet | A worked goal→capability→measure mapping can reinforce alignment. |
 | Technology Governance — Value Delivery | NO VIDEO | — | — | Tie actual investment to outcomes. |
@@ -1583,6 +1589,9 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Risk — Risk Registers | NO VIDEO | — | — | Build and operate the actual register. |
 | Risk — Key Risk Indicators | OPTIONAL VIDEO | KRI design talks reviewed | No candidate promoted yet | Examples can help distinguish leading exposure signals from vanity metrics. |
 | Risk — Risk Ownership | NO VIDEO | — | — | Assign accountable owners. |
+| Risk — Build the Risk Universe | NO VIDEO | — | — | Risk stewardship is demonstrated by operating the real register from identification through treatment and review. |
+| Risk — Assess Controls and Treatments | NO VIDEO | — | — | Risk stewardship is demonstrated by operating the real register from identification through treatment and review. |
+| Risk — Operationalize the Register | NO VIDEO | — | — | Risk stewardship is demonstrated by operating the real register from identification through treatment and review. |
 | Risk — Lab: Build the Steward Technology Risk Register | NO VIDEO | — | — | Independent synthesis. |
 | Engineering Health — Identifying Technical Debt | OPTIONAL VIDEO | Ward Cunningham/technical-debt explanations and modern talks reviewed | No candidate promoted yet | Historical metaphor/context can help prevent debt from becoming a label for disliked code. |
 | Engineering Health — Measuring and Communicating Debt | NO VIDEO | — | — | Use actual consequence evidence. |
@@ -1600,6 +1609,9 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Technical Leadership — Mentoring | OPTIONAL VIDEO | engineering mentoring talks reviewed | No candidate promoted yet | A good mentoring conversation can model questioning and feedback, but practice remains primary. |
 | Technical Leadership — Engineering Reviews | RECOMMENDED VIDEO | architecture/code review facilitation talks reviewed | [Google Engineering Practices — Reviewing a CL](https://google.github.io/eng-practices/review/reviewer/) — use evidence, scope and respectful challenge model | A real review demonstrates evidence-based challenge and decision closure. |
 | Technical Leadership — Escalation and Responsible Challenge | RECOMMENDED VIDEO | psychological-safety/escalation engineering talks reviewed | [Google re:Work — Psychological Safety](https://rework.withgoogle.com/blog/five-keys-to-a-successful-google-team/) — use speaking-up/team-safety findings as context | Scenario-based demonstrations add value for high-stakes disagreement. |
+| Technical Leadership — Activity 1: Prepare the Review | NO VIDEO | — | — | Leadership is assessed through preparation, facilitation, decision closure and follow-through on the learner's own review. |
+| Technical Leadership — Activity 2: Facilitate Decision and Challenge | NO VIDEO | — | — | Leadership is assessed through preparation, facilitation, decision closure and follow-through on the learner's own review. |
+| Technical Leadership — Activity 3: Close the Leadership Loop | NO VIDEO | — | — | Leadership is assessed through preparation, facilitation, decision closure and follow-through on the learner's own review. |
 | Technical Leadership — Lab: Lead a Steward Technical Review | NO VIDEO | — | — | Independent leadership exercise. |
 | Controls — Preventive, Detective and Corrective Controls | RECOMMENDED VIDEO | control-type explainers reviewed | [NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final) — use control-family examples and TSA incident mapping | A single incident mapped to prevent/detect/correct controls is well suited to visual explanation. |
 | Controls — Control Objectives | NO VIDEO | — | — | Write objectives against actual risks. |
@@ -1611,6 +1623,9 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Controls — Audit Fundamentals | OPTIONAL VIDEO | internal-audit lifecycle explainers reviewed | No candidate promoted yet | A concise audit lifecycle overview can orient scope/evidence/findings. |
 | Controls — Findings and Remediation | NO VIDEO | — | — | Draft and track actual findings. |
 | Controls — Designing Proportionate Controls | NO VIDEO | — | — | Proportionality is a contextual design decision. |
+| Controls — Build the Control Catalogue | NO VIDEO | — | — | Assurance requires learner-owned control evidence, effectiveness assessment and findings rather than another audit walkthrough. |
+| Controls — Assess Design and Operation | NO VIDEO | — | — | Assurance requires learner-owned control evidence, effectiveness assessment and findings rather than another audit walkthrough. |
+| Controls — Issue Findings and Improve Assurance | NO VIDEO | — | — | Assurance requires learner-owned control evidence, effectiveness assessment and findings rather than another audit walkthrough. |
 | Controls — Lab: Test Steward Engineering Controls | NO VIDEO | — | — | Independent assurance exercise. |
 | Security/Data — Security Governance | RECOMMENDED VIDEO | NIST CSF 2.0 official overview reviewed | [NIST — The Cybersecurity Framework (CSF) 2.0](https://www.youtube.com/watch?v=pPPiaGU12Og); whole short animation | The official CSF 2.0 overview explicitly includes the Govern function and gives concise governance context. |
 | Security/Data — Roles and Accountability | NO VIDEO | — | — | Map real security/data decision rights. |
@@ -1620,10 +1635,16 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Security/Data — Retention and Privacy Concepts | OPTIONAL VIDEO | privacy/data-lifecycle explainers reviewed | No candidate promoted yet | A data lifecycle visual can reinforce collection→use→retention→deletion. |
 | Security/Data — Access Governance | RECOMMENDED VIDEO | access-review/IGA demonstrations reviewed | [NIST SP 800-53 Rev. 5 — Access Control family](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final) — map provisioning, review and revocation to Steward | Joiner/mover/leaver and periodic review flows benefit from visualization. |
 | Security/Data — Security Exceptions and Risk Acceptance | NO VIDEO | — | — | Use the actual risk/exception mechanism. |
+| Security/Data — Map Accountability and Policy | NO VIDEO | — | — | Security/data governance is an operating-accountability exercise using Steward's actual policy, access and lifecycle boundaries. |
+| Security/Data — Govern Access and Lifecycle | NO VIDEO | — | — | Security/data governance is an operating-accountability exercise using Steward's actual policy, access and lifecycle boundaries. |
+| Security/Data — Test an Exception and Review Loop | NO VIDEO | — | — | Security/data governance is an operating-accountability exercise using Steward's actual policy, access and lifecycle boundaries. |
 | Security/Data — Lab: Define Steward Security and Data Accountability | NO VIDEO | — | — | Independent governance synthesis. |
 | Change/Service — Classify and Prepare the Change | OPTIONAL VIDEO | ITIL/change-enablement practitioner material reviewed | No candidate promoted yet | A real change-classification example can add context without creating CAB theater. |
 | Change/Service — Make the Release Decision | RECOMMENDED VIDEO | production-readiness/change-risk review talks reviewed | [Google SRE — Reliable Product Launches at Scale](https://sre.google/sre-book/reliable-product-launches/) — use launch review/readiness decision model | Watching a risk/evidence-based go/no-go discussion can model the decision process. |
 | Change/Service — Close the Service-governance Loop | RECOMMENDED VIDEO | Google Cloud Tech — Postmortems and Retrospectives | [Google Cloud Tech — Postmortems and Retrospectives](https://www.youtube.com/watch?v=UBe7U2b3tsA); whole video | The Google SRE discussion directly demonstrates learning after incidents and turning operational evidence into improvement. |
+| Change/Service — Classify and Prepare the Change | NO VIDEO | — | — | The learner must make and close a real evidence-based change decision; media is not a substitute for the governance record. |
+| Change/Service — Make the Release Decision | NO VIDEO | — | — | The learner must make and close a real evidence-based change decision; media is not a substitute for the governance record. |
+| Change/Service — Close the Service-governance Loop | NO VIDEO | — | — | The learner must make and close a real evidence-based change decision; media is not a substitute for the governance record. |
 | Change/Service — Lab: Govern a Steward Production Change | NO VIDEO | — | — | Independent change-governance exercise. |
 | Third-party — Vendor Assessment | OPTIONAL VIDEO | third-party risk assessment material reviewed | No candidate promoted yet | A worked assessment can reinforce evidence-based vendor questions. |
 | Third-party — Dependency Risk | NO VIDEO | — | — | Assess actual dependencies and their ownership/lifecycle. |
@@ -1636,6 +1657,9 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Third-party — Repository Retention and Lifecycle | OPTIONAL VIDEO | artifact-repository lifecycle material reviewed | No candidate promoted yet | A lifecycle example can reinforce retention versus recoverability. |
 | Third-party — Dependency Exceptions | NO VIDEO | — | — | Operate the actual exception mechanism. |
 | Third-party — Supply-chain Ownership and Provenance Requirements | RECOMMENDED VIDEO | SLSA/software supply-chain provenance talks reviewed | [SLSA — Supply-chain Levels for Software Artifacts](https://slsa.dev/) — use provenance/build/verification diagrams | Build→artifact→provenance→verification flow is visual and cross-cutting. |
+| Third-party — Establish Dependency and Product Governance | NO VIDEO | — | — | Internal product/dependency governance must be operated across provenance, lifecycle, exceptions and continuity using the real TSA ecosystem. |
+| Third-party — Govern Provenance, Retention and Exceptions | NO VIDEO | — | — | Internal product/dependency governance must be operated across provenance, lifecycle, exceptions and continuity using the real TSA ecosystem. |
+| Third-party — Review Continuity and Ecosystem Health | NO VIDEO | — | — | Internal product/dependency governance must be operated across provenance, lifecycle, exceptions and continuity using the real TSA ecosystem. |
 | Third-party — Lab: Govern steward-common and tsa-test-core | NO VIDEO | — | — | Independent product-governance exercise. |
 | Handbook — Writing Usable Standards | OPTIONAL VIDEO | engineering standards/paved-road talks reviewed | No candidate promoted yet | Industry examples can show outcome standards versus personal tool preferences. |
 | Handbook — Runbooks and Playbooks | RECOMMENDED VIDEO | SRE runbook/incident-playbook material reviewed | [Google SRE — Managing Incidents](https://sre.google/sre-book/managing-incidents/) — use role/procedure/escalation model alongside a TSA runbook | A worked operational procedure shows prerequisites, stop conditions, verification and escalation better than definitions alone. |
