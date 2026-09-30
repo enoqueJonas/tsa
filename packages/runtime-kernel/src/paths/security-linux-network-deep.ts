@@ -151,7 +151,7 @@ const specs: Spec[] = [
         principles: ["Know which packages and kernels are security-relevant.", "Separate update availability from successful remediation.", "Test restart and rollback requirements.", "Track exceptions instead of silently deferring updates."],
         steward: ["A patched package that has not been loaded because the service was never restarted may leave Steward exposed.", "Repository, reverse-proxy, PostgreSQL and runtime updates can have different maintenance risks and should be handled intentionally."],
         practice: ["Identify pending security updates on a Steward host.", "Choose one update and document expected restart/compatibility impact.", "Apply it in the learner environment.", "Verify the new version, service health and whether reboot/restart is still required."],
-        reflection: "Why is 'apt upgrade completed' insufficient evidence that a vulnerability window is closed?",
+        reflection: "Why is 'dnf upgrade completed' insufficient evidence that a vulnerability window is closed?",
     },
     {
         id: "file-secret-permissions",
