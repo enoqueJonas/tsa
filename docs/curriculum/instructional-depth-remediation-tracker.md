@@ -222,11 +222,24 @@ Builder is **REMEDIATED, not VALIDATED**. Remaining school-exit gates are:
 
 | Area | Classification | Finding |
 | --- | --- | --- |
-| Teaching layer | REWRITE REQUIRED | Current path is almost entirely long practical activities. XML namespaces, XSD, WSDL, SOAP envelopes/faults and contract-first integration are assigned before TSA provides a direct conceptual model. External W3C/OWASP references cannot carry the core teaching. |
-| XML document model / namespaces / parsing | REWRITE REQUIRED | Strong lab, missing prior teaching on well-formedness, namespace identity, qualified names, parser behavior and XML-vs-JSON differences. |
-| XSD contract | REWRITE REQUIRED | Learner is asked to author schemas before direct teaching of target namespace, element/type/cardinality validation and schema-vs-domain semantics. |
-| WSDL / SOAP contract and faults | REWRITE REQUIRED | Learner must trace WSDL and implement SOAP behavior without TSA first explaining WSDL layers, envelope/body/header/fault mechanics and binding/transport separation. |
-| Provider / consumer / contract testing | TARGETED IMPROVEMENT | Practical sequence is strong once protocol foundations exist; needs conceptual bridge into generated types, adapter boundary and failure classification. |
+| Teaching layer | REMEDIATED | Added a substantive TSA reading layer before practical work; external specifications are now references rather than the primary teacher (`4ae8714f`, `e8539cd1`, `84b70084`). |
+| XML document model / namespaces / parsing | REMEDIATED | Now teaches well-formedness, structured parsing, namespace URI identity, prefix independence, XML-vs-JSON differences and parser security boundary before the lab (`e8539cd1`). |
+| XSD contract | REMEDIATED | Now teaches target namespace, types/cardinality, compatibility and schema-vs-domain validation before schema authoring (`e8539cd1`). |
+| WSDL / SOAP contract and faults | REMEDIATED | Now teaches XSD→message→portType→binding→service/endpoint plus Envelope/Header/Body/Fault and diagnostic-layer separation (`e8539cd1`). |
+| Provider / consumer / contract testing | REMEDIATED | Added contract-first provider, contract-aware client, anti-corruption adapter, explicit failure mapping and empirical compatibility-testing concepts before implementation (`84b70084`). |
+
+### Distributed State and Messaging
+
+| Area | Classification | Finding |
+| --- | --- | --- |
+| Distribution decision / Redis cache | PASS | Starts from measured pressure and authority boundaries; teaches cache-aside, staleness, invalidation timing, fallback and stampede risk without making Redis authoritative. |
+| RabbitMQ topology / acknowledgements / retries | PASS | Exchange/queue/consumer roles, manual ACK crash windows, at-least-once semantics and bounded retry are taught directly before failure labs. |
+| Idempotent consumers | REMEDIATED | Existing duplicate-delivery teaching was strong but its simplified check→effect→record sequence left a consumer-side crash gap. Added inbox/processed-event identity atomically with local DB effects and explicit limits for external irreversible effects (`e2216e4d`, `7e058b2d`). |
+| DLQ / poison messages | PASS | Dead-lettering is treated as an owned recovery state with safe replay rather than a trash queue. |
+| Ordering / eventual consistency | PASS | Authority, convergence window, scoped ordering and stale-version rejection are concrete and product-visible. |
+| Transactional outbox | PASS | Correctly teaches DB→broker dual-write failure, durable publication intent and why outbox still does not create exactly-once delivery. |
+| RabbitMQ vs Kafka | PASS | Compares queue-first delivery with retained partitioned logs from workload drivers; does not create an unnecessary second implementation track. |
+| Integrated Redis/RabbitMQ lab | PASS AFTER REMEDIATION | Requires measured drivers, cache failure/staleness, redelivery, idempotency, DLQ, ordering and outbox evidence; local-effect idempotency now has an atomicity model. |
 
 ## Quality Steward detailed remediation
 
