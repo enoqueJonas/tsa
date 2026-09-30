@@ -627,3 +627,14 @@ cross-stack assessment + residual-risk defense
 | `pnpm build` after remediation | PENDING LOCAL EXECUTION |
 | Representative rendered UI spot-check | NOT STARTED |
 
+
+## Reliability Engineer audit findings
+
+### Reliability intent before telemetry implementation
+
+| Path / area | Classification | Finding |
+| --- | --- | --- |
+| Reliability and SRE Foundations | PASS | Defines reliability from user/service capability, distinguishes component health from useful service, introduces failure/recovery, toil, ownership and investment trade-offs, then produces a risk/evidence agenda before observability tooling. |
+| Service Level Engineering | REMEDIATED | Core SLI/SLO/error-budget/window/release-policy reasoning is strong, but the path contradicted its own intended ordering by requiring already-built Prometheus/Grafana/PromQL before Metrics is taught. Reworked the path so learners first define exact event populations/formulas, targets, windows and budgets and validate them against known-event data; later Metrics implementation owns PromQL/Grafana (`7e946faf`, `aa2e8ad5`). |
+| Observability | PASS | Starts from reliability questions and diagnostic hypotheses, teaches logs/metrics/traces roles, telemetry design, correlation, instrumentation, OpenTelemetry concepts, golden signals and telemetry cost/cardinality before backend implementation. The tracing backend gate justifies Tempo from cross-boundary diagnostic pressure rather than stack completeness. |
+
