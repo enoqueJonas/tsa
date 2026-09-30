@@ -1327,6 +1327,9 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Performance Baselines | NO VIDEO | — | — | Must be measured on Steward. |
 | Queueing and Contention Concepts | RECOMMENDED VIDEO | queueing/backpressure material reviewed | [AWS Builders' Library — Avoiding overload](https://aws.amazon.com/builders-library/avoiding-insurmountable-queue-backlogs/) | Strong production framing for queues, overload and recovery. |
 | Storage Growth and Artifact Capacity | NO VIDEO | — | — | Nexus/storage growth plan uses actual repository evidence. |
+| Define Representative Workloads | NO VIDEO | — | — | Capacity lab execution must be derived from Steward's representative workloads, measured saturation and actual growth evidence. |
+| Measure Baseline, Saturation and Bottlenecks | NO VIDEO | — | — | Capacity lab execution must be derived from Steward's representative workloads, measured saturation and actual growth evidence. |
+| Create the Capacity and Growth Plan | NO VIDEO | — | — | Capacity lab execution must be derived from Steward's representative workloads, measured saturation and actual growth evidence. |
 | Lab: Establish Steward Capacity Baselines | NO VIDEO | — | — | Independent workload/measurement/growth evidence. |
 
 ### Resilience and Distributed Failure
@@ -1345,6 +1348,9 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Graceful Degradation | RECOMMENDED VIDEO | reliability-pattern material reviewed | [Azure Architecture Center — Graceful Degradation](https://learn.microsoft.com/en-us/azure/well-architected/reliability/graceful-degradation) | Connects reduced functionality to preserving critical user outcomes. |
 | Retry Storms and Amplification | RECOMMENDED VIDEO | retry amplification material reviewed | Reuse AWS timeout/retry/backoff resource | Explicit production warning against layered retries. |
 | Dependency Availability Budgets | NO VIDEO | — | — | Learner computes/defends dependency assumptions from Steward SLOs. |
+| Select and Model a Failure Path | NO VIDEO | — | — | Resilience lab work should use the selected Steward failure path and measured control behavior rather than a generic walkthrough. |
+| Implement and Exercise the Controls | NO VIDEO | — | — | Resilience lab work should use the selected Steward failure path and measured control behavior rather than a generic walkthrough. |
+| Publish the Steward Resilience Decision Record | NO VIDEO | — | — | Resilience lab work should use the selected Steward failure path and measured control behavior rather than a generic walkthrough. |
 | Lab: Harden Steward Against Dependency Failure | NO VIDEO | — | — | Independent failure/control/recovery evidence. |
 
 ### Incident Management and Fault Injection
@@ -1362,6 +1368,9 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Blameless Postmortems | RECOMMENDED VIDEO | Google postmortem material reviewed | Reuse Google postmortem guidance | Canonical organizational-learning framing. |
 | Corrective Actions | NO VIDEO | — | — | Actions must trace to actual contributing factors and owners. |
 | Learning from Near Misses | RECOMMENDED VIDEO | incident-learning material reviewed | Reuse postmortem culture guidance | Extends learning beyond outages. |
+| Prepare the Incident Scenario | NO VIDEO | — | — | Incident execution and learning must come from the learner's own timeline, mitigation evidence and corrective actions. |
+| Detect, Triage and Mitigate | NO VIDEO | — | — | Incident execution and learning must come from the learner's own timeline, mitigation evidence and corrective actions. |
+| Postmortem and Corrective Actions | NO VIDEO | — | — | Incident execution and learning must come from the learner's own timeline, mitigation evidence and corrective actions. |
 | Lab: Run a Steward Incident Exercise | NO VIDEO | — | — | Independent detect→triage→mitigate→postmortem evidence. |
 | Hypothesis-driven Reliability Experiments | RECOMMENDED VIDEO | chaos-engineering principles reviewed | [Principles of Chaos Engineering](https://principlesofchaos.org/) | Starts from steady-state hypothesis rather than random breakage. |
 | Controlled Failure Injection | RECOMMENDED VIDEO | chaos material reviewed | Reuse Principles of Chaos | Safety and hypothesis remain primary. |
@@ -1373,6 +1382,9 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Artifact Repository Failure Scenarios | NO VIDEO | — | — | Controlled Nexus dependency failure. |
 | Recovery Verification | NO VIDEO | — | — | Recovery evidence is the objective. |
 | Chaos Engineering Principles and Safety | RECOMMENDED VIDEO | chaos principles reviewed | Reuse Principles of Chaos Engineering | Avoids tool-first chaos engineering. |
+| Design the Experiment | NO VIDEO | — | — | Fault injection is an evidence-producing experiment; hypothesis, blast radius, observations and recovery must be learner-owned. |
+| Inject, Observe and Recover | NO VIDEO | — | — | Fault injection is an evidence-producing experiment; hypothesis, blast radius, observations and recovery must be learner-owned. |
+| Publish Findings and Improve Steward | NO VIDEO | — | — | Fault injection is an evidence-producing experiment; hypothesis, blast radius, observations and recovery must be learner-owned. |
 | Lab: Run a Steward Reliability Experiment | NO VIDEO | — | — | Independent hypothesis/injection/observation/improvement evidence. |
 
 ### Data Protection and Disaster Recovery
@@ -1389,6 +1401,9 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Artifact Repository Backup and Restore | NO VIDEO | — | — | Must prove Nexus recovery directly. |
 | Configuration and Infrastructure Recovery | NO VIDEO | — | — | Existing Git/IaC/configuration assets must reconstruct the environment. |
 | Recovery Evidence | NO VIDEO | — | — | Evidence is the lesson. |
+| Plan the Recovery Exercise | NO VIDEO | — | — | Recovery competence requires planning, performing and reviewing the learner's own restore against explicit RPO/RTO and integrity evidence. |
+| Restore and Verify Steward | NO VIDEO | — | — | Recovery competence requires planning, performing and reviewing the learner's own restore against explicit RPO/RTO and integrity evidence. |
+| Publish the Recovery Review | NO VIDEO | — | — | Recovery competence requires planning, performing and reviewing the learner's own restore against explicit RPO/RTO and integrity evidence. |
 | Lab: Run a Steward Restore Drill | NO VIDEO | — | — | Independent destructive/recovery verification. |
 
 ### Reliability Engineer Milestone
