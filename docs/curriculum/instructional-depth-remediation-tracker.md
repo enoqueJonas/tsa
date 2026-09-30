@@ -50,14 +50,30 @@ The audit proceeds in learner progression order so later schools can rely only o
 
 | Path / lesson group | Status | Required action |
 | --- | --- | --- |
-| Existing pre-workbench foundations | AUDIT REQUIRED | Inspect actual rendered teaching depth; do not assume older lessons are good. |
+| Existing pre-workbench foundations | PASS | Live `engineering-apprentice-rich.ts` lessons teach explicit mental models, worked examples, evidence-producing practice and reasoning checks. No length-only rewrite warranted. Standalone duplicate lesson definitions remain a maintenance follow-up. |
 | Terminal, Shell and Filesystem | REMEDIATED | Reference rewrite landed (`0bed33af`, structural fix `80ca1458`). Validate build/integrity and deployed rendering before marking VALIDATED. |
 | Git and Version-Control Workflow | REMEDIATED | Repository state/graph model, worked transitions, conflicts/recovery, guided practice and independent lab landed in `f1344809`. |
 | Developer Inspection: Processes, Ports and Text | REMEDIATED | Process → listener → request → output evidence model and diagnostic ladder landed in `ca9fbff0`. |
 | HTTP from the Command Line | REMEDIATED | Request/response model, pre-HTTP failure boundaries, controlled comparisons and reproducible evidence landed in `793bbac6`. |
-| Workbench labs | AUDIT REQUIRED | Ensure guided practice precedes independent evidence and labs are not opaque command recipes. |
-| Knowledge/assessment coverage | AUDIT REQUIRED | Add reasoning/prediction/diagnosis checks where needed. |
+| Workbench labs | REMEDIATED | Each workbench lesson now progresses through direct teaching, guided practice, reasoning check and independent evidence-producing lab. |
+| Knowledge/assessment coverage | PASS | Rich foundations and remediated workbench use reflection/knowledge checks requiring explanation, prediction, diagnosis and trade-off reasoning rather than keyword recall. |
 | Rendered-platform validation | NOT STARTED | Inspect representative pages after deployment/refresh. |
+
+## Engineering Apprentice audit findings
+
+| Area | Classification | Finding |
+| --- | --- | --- |
+| Thinking Like an Engineer | PASS | Explicit engineering reasoning loop, worked problem-framing example, constrained practice and reasoning check. |
+| Systems Thinking | PASS | Teaches boundaries, relationships, feedback/failure propagation and requires a purposeful system map. |
+| Trade-offs | PASS | Teaches decision drivers, reversibility, false precision and contextual comparison with applied practice. |
+| Debugging Mindset | PASS | Hypothesis-driven investigation, evidence log, cognitive-bias awareness and falsification-oriented practice. |
+| Engineering Decisions | PASS | Durable decision-record model, worked ADR-style example, proportionality and revisit conditions. |
+| Evidence and Technical Reasoning | PASS | Observation/inference/assumption/hypothesis distinctions plus disconfirming-evidence practice. |
+| Learning as an Engineering Skill | PASS | Capability/evidence/retrieval/feedback loop taught directly and applied. |
+| Communicating Technical Work | PASS | Audience/action model, worked dual-audience example and truth-preserving adaptation practice. |
+| Engineering Investigation milestone | PASS | Appropriate synthesis/defence; does not reteach or prescribe the answer. |
+| Engineering workbench | REMEDIATED | Four thin generated lessons replaced with explicit taught lessons and progressive practice. |
+| Duplicate curriculum definitions | TARGETED IMPROVEMENT | Standalone files such as `thinking-like-an-engineer.ts`, `systems-thinking.ts`, `trade-offs.ts`, `debugging-mindset.ts` and `engineering-apprentice-lessons.ts` overlap conceptually with the live rich foundations. Confirm reachability and consolidate/deprecate safely so maintainers do not edit a non-authoritative copy. |
 
 ## Quality Steward detailed remediation
 
