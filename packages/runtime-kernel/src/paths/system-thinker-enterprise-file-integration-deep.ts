@@ -146,6 +146,11 @@ const specs: Spec[] = [
         id: "secure-transfer-readiness",
         title: "Secure File Transfer Readiness: SFTP and FTPS",
         intro: "SFTP and FTPS both protect file transfer but are different protocols. SFTP runs over SSH and usually uses a single connection model; FTPS adds TLS to FTP and retains FTP's protocol shape. Security Steward will perform the actual migration after the legacy baseline is understood.",
+        sections: [
+            { title: "SFTP belongs to SSH, not FTP", paragraphs: ["SFTP is a file-transfer subsystem carried by SSH. It uses SSH authentication and channel semantics and commonly operates through one TCP connection. It does not inherit FTP commands, active/passive modes or the FTP control/data split.", "This often simplifies firewall behavior, while adding SSH host-key trust and user/key lifecycle responsibilities. Similar naming does not make SFTP wire-compatible with FTP."] },
+            { title: "FTPS keeps FTP semantics and adds TLS", paragraphs: ["FTPS protects FTP with TLS. Explicit FTPS starts as FTP and negotiates TLS; implicit FTPS expects TLS at connection establishment. Because the underlying protocol remains FTP, its control/data connection shape and passive-port concerns remain relevant.", "TLS adds certificate/trust and cryptographic configuration responsibilities; it does not erase account or authorization concerns."] },
+            { title: "Preserve business semantics across transport migration", paragraphs: ["Moving from FTP to SFTP should not casually change file fields, delivery identity, idempotency, acknowledgement or processing lifecycle. Keeping those contracts stable isolates the transport migration and makes coexistence, rollback and cutover testable.", "System Thinker defines that migration boundary and its acceptance evidence. Security Steward later performs the security-focused implementation and hardening."] },
+        ],
         practiceTitle: "Prepare the FTP-to-SFTP Migration Contract",
         scenario: "Security policy will prohibit the legacy clear-text FTP path. Prepare a bounded migration design that preserves the Steward file contract and batch semantics while changing only the transport responsibility.",
         instructions: [
