@@ -294,10 +294,10 @@ System Thinker is **REMEDIATED, not VALIDATED**. Remaining school-exit gates are
 
 | Area | Classification | Finding |
 | --- | --- | --- |
-| Windows / PowerShell operational labs | TARGETED IMPROVEMENT | Labs are strong and evidence-driven, but the path is almost entirely exercise/practical activities. New Windows-specific mechanisms—PowerShell object pipeline, NTFS+share effective authorization, remoting trust, AD DS/DNS/domain identity and GPO processing—need direct TSA teaching before operation. |
-| AD / DNS / GPO sequencing | TARGETED IMPROVEMENT | The Windows path correctly builds a synthetic AD DS boundary, but the later Enterprise Directory lesson still says not to build Windows administration and independently positions LDAP as the workforce source. Align the later lesson to reuse/compare the already-operated AD boundary instead of creating contradictory authority. |
+| Windows / PowerShell operational labs | REMEDIATED | Added direct teaching before the relevant labs for PowerShell object pipelines/discovery, NTFS+share effective authorization, remoting layers, AD DS forest/domain/DC/OU boundaries, DNS/time/Kerberos/LDAP relationships, domain join and GPO scope/result processing (`2fa34610`). |
+| AD / DNS / GPO sequencing | REMEDIATED | The later directory lesson now explicitly reuses the already-operated synthetic AD boundary and treats OpenLDAP as a bounded protocol/implementation comparison rather than a second permanent workforce authority (`fffd8434`). |
 | Enterprise File Services | PASS WITH DUPLICATION NOTE | NFS/SMB practice is sound but overlaps the earlier NAS implementation. Treat this as Steward integration/handoff semantics, not a second permanent file platform. |
-| LDAP / Directory interoperability | TARGETED IMPROVEMENT | Strong operational LDAP lab, but its role must be reframed as protocol/directory interoperability and Keycloak federation preparation alongside the existing synthetic AD lab, with one explicit identity authority per scenario. |
+| LDAP / Directory interoperability | REMEDIATED | Reframed as LDAP protocol/directory interoperability and federation preparation alongside existing AD DS; each scenario must name one authoritative workforce directory and keep Steward authorization separate (`fffd8434`). |
 
 ## Quality Steward detailed remediation
 
