@@ -299,6 +299,25 @@ System Thinker is **REMEDIATED, not VALIDATED**. Remaining school-exit gates are
 | Enterprise File Services | PASS WITH DUPLICATION NOTE | NFS/SMB practice is sound but overlaps the earlier NAS implementation. Treat this as Steward integration/handoff semantics, not a second permanent file platform. |
 | LDAP / Directory interoperability | REMEDIATED | Reframed as LDAP protocol/directory interoperability and federation preparation alongside existing AD DS; each scenario must name one authoritative workforce directory and keep Steward authorization separate (`fffd8434`). |
 
+### Platform Builder milestone and source-level closure
+
+| Area | Classification | Finding |
+| --- | --- | --- |
+| Platform Builder Milestone: original Linux/network/storage gates | PASS | Strong current-state topology, Rocky/systemd/SELinux administration, WireGuard/firewalld policy, persistence/restore, failure diagnosis and capacity handoff. |
+| Cross-path capability consumption | REMEDIATED | Original milestone predated several live school capabilities. Added Gate 7 for DNS/DHCP/time, Ansible drift/idempotence and staged OS lifecycle; added Gate 8 for shared storage plus bounded Windows/AD/LDAP interoperability and explicit directory authority (`20251f91`). |
+| School sequencing | PASS AFTER REMEDIATION | Progression now moves from machine/OS/network mechanisms → virtualization/bare metal → operated Proxmox/storage/core services → configuration/lifecycle → bounded mixed-enterprise operation → integrated platform evidence. |
+
+Platform Builder is **REMEDIATED, not VALIDATED**. Source-level audit found strong foundations and operational labs, with targeted remediation required for Packet Tracer mechanism teaching, Ansible conceptual teaching, Windows-specific conceptual teaching, AD/OpenLDAP authority sequencing and milestone integration. Those source gaps are now remediated.
+
+| Gate | Status |
+| --- | --- |
+| Source-level pedagogical audit | PASS |
+| Identified source remediation | PASS |
+| Cross-path prerequisite/sequence review | PASS |
+| `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
+| `pnpm build` after remediation | PENDING LOCAL EXECUTION |
+| Representative rendered UI spot-check | NOT STARTED |
+
 ## Quality Steward detailed remediation
 
 Do not treat the recent Java migration as pedagogically complete merely because it is technically coherent.
