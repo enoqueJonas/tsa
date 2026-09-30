@@ -35,7 +35,7 @@ The audit proceeds in learner progression order so later schools can rely only o
 | ---: | --- | --- | --- | --- |
 | 1 | Engineering Apprentice | Thinking Like an Engineer; Systems Thinking; Trade-offs; Debugging Mindset; Engineering Foundations/workbench; milestone/checks | AUDIT IN PROGRESS | Every lesson classified; thin lessons rewritten; rendered spot-check; duration sanity check |
 | 2 | Builder | Builder fundamentals and implementation paths | REMEDIATED | Every live path classified and source-level gaps remediated; build/integrity and rendered UI validation remain pending |
-| 3 | System Thinker | contracts, integration semantics, distributed state and system reasoning | NOT STARTED | Same school exit gate |
+| 3 | System Thinker | contracts, integration semantics, distributed state and system reasoning | AUDIT IN PROGRESS | Same school exit gate |
 | 4 | Platform Builder | OS/Linux/networking/virtualization/storage/core services/Ansible/patching/Windows | NOT STARTED | Same school exit gate |
 | 5 | Delivery Engineer | build/test/package/artifacts/GitLab CI/CD/release | NOT STARTED | Same school exit gate |
 | 6 | Cloud Engineer | provider abstractions/IaC/orchestration/GitOps/cloud operations | NOT STARTED | Same school exit gate |
@@ -194,6 +194,29 @@ Builder is **REMEDIATED, not VALIDATED**. Remaining school-exit gates are:
 | `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
 | `pnpm build` after remediation | PENDING LOCAL EXECUTION |
 | Representative rendered UI spot-check | NOT STARTED |
+
+## System Thinker audit findings
+
+### Requirements through Data Flow and Integration
+
+| Path | Classification | Finding |
+| --- | --- | --- |
+| Requirements and Problem Framing | PASS | Teaching and quality practice both distinguish need, evidence, assumptions, quality requirements and acceptance from implementation-shaped requests. |
+| System Boundaries and Context | PASS | Teaches context, actor/external-system classification, responsibility boundaries and trust/ownership boundaries before diagram exercises. |
+| Modeling Software Systems | PASS | Models are explicitly decision-oriented simplifications; C4 levels, state/lifecycle models and visual communication are taught without diagram-for-diagram's-sake behavior. |
+| Components and Dependencies | PASS | Responsibility, coupling/cohesion, dependency direction and internal/external dependency consequences are taught as change-cost concepts rather than package aesthetics. |
+| Data Flow and Integration | PASS | Teaches intent-to-state flow, synchronous/asynchronous semantics, integration contracts and cross-boundary failure before enterprise protocol implementations. |
+
+### Enterprise File and Batch Integration
+
+| Area | Classification | Finding |
+| --- | --- | --- |
+| Reading layer | REWRITE REQUIRED | Each nominal 45-minute reading currently renders only an intro paragraph, generic Steward boundary callout and external resources; core protocol/batch teaching is outsourced to practice/reference material. |
+| File-Based Integration Contracts | REWRITE REQUIRED | Practice is strong, but TSA must directly teach file identity, versioning, encoding/record semantics, atomic handoff, acknowledgement, replay and authority before independent contract design. |
+| Legacy FTP Integration | REWRITE REQUIRED | Learner is asked to operate FTP active/passive/control/data behavior without a direct protocol mental model in the reading. |
+| Batch File Processing Lifecycle | REWRITE REQUIRED | Excellent crash/idempotency lab but lifecycle, claiming, partial processing and durable idempotency need worked teaching first. |
+| Shared Filesystem vs Managed File Transfer | REWRITE REQUIRED | Contains an invalid prerequisite: it says to use an existing Platform Builder NFS service even though Platform Builder follows System Thinker. |
+| Secure File Transfer Readiness | TARGETED IMPROVEMENT | Comparison exercise is useful, but SFTP/FTPS protocol distinctions need direct teaching before migration design. |
 
 ## Quality Steward detailed remediation
 
