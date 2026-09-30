@@ -6,8 +6,9 @@ const scenario = "Use the approved Capstone Discovery Brief as the source of tru
 const completion = ["The proposal traces important engineering choices to discovered needs, constraints, risks or evidence requirements.", "Alternatives, trade-offs, assumptions and unresolved risks are explicit rather than hidden behind diagrams or tool names.", "The proposal is sufficiently concrete to guide an independent build while remaining revisable when implementation evidence disproves assumptions."];
 
 function reading(id: string, title: string, body: string, practice: string[]): Lesson {
-    const activity: Activity = { id: `${pathId}-${id}-001`, title, estimatedMinutes: 50, content: { type: "reading", body: `${body}\n\nCapstone application:\n${practice.map((item) => `- ${item}`).join("\n")}\n\nReview standard: explain why the proposal is appropriate for this capstone, what evidence supports it, what alternatives were considered, and what would cause the decision to change.` } };
-    return { id: `${pathId}-${id}`, title, activities: [activity] };
+    const readingActivity: Activity = { id: `${pathId}-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: `${body}\n\nReview standard: explain why the proposal is appropriate for this capstone, what evidence supports it, what alternatives were considered, and what would cause the decision to change.` } };
+    const applicationActivity: Activity = { id: `${pathId}-${id}-application`, title: `Proposal work: ${title}`, estimatedMinutes: 50, content: { type: "practical", objective: `Produce the ${title} portion of the evolving capstone proposal from discovery evidence.`, scenario, instructions: [...practice, "Link the result to discovery evidence and record at least one assumption, rejected alternative or reversal trigger where material.", "Update the proposal rather than creating a disconnected exercise artifact."], deliverables: [`${title} proposal artifact`, "Discovery/evidence trace", "Assumption, alternative or reversal record"], completionCriteria: completion } };
+    return { id: `${pathId}-${id}`, title, activities: [readingActivity, applicationActivity] };
 }
 
 export const capstoneEngineeringProposalDeepLessons: Lesson[] = [
