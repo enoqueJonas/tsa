@@ -505,3 +505,56 @@ A school reaches **VALIDATED** only when:
 ## Immediate next task
 
 **PED-001 / PED-002:** deeply audit Engineering Apprentice and rewrite **Terminal, Shell and Filesystem** first as the reference implementation. Use what is learned from that rewrite to calibrate the remaining Apprentice lessons before moving to Builder.
+
+### Quality Steward final segment and source-level closure
+
+| Path / area | Classification | Finding |
+| --- | --- | --- |
+| Browser and Environment Testing | REMEDIATED | Playwright runtime/isolation, semantic locators, synchronization, state, diagnostics, parallelism and risk-based browser matrices are substantive. Converted two surviving Python-style Playwright examples to Playwright Java (`6c6615c7`). |
+| Reusable Test Infrastructure | PASS | Extraction occurs only after proven repetition; Steward clients/DTOs/pages/workflows/assertions remain product-local. `tsa-test-core` is a normal Maven library published to Nexus and consumed by version, with deferral allowed when reuse is not proven. |
+| Non-functional Quality | REMEDIATED | Strong bounded Quality treatment of performance, accessibility, compatibility, integrity/concurrency and controlled failure evidence while explicitly deferring deep Security/Reliability ownership. Removed obsolete Python/Django compatibility dimension and replaced it with JDK/Maven/JUnit, Playwright, Testcontainers and PostgreSQL compatibility surfaces (`00a34e8f`). |
+| Quality in Containers and CI | REMEDIATED | Strong GitLab Runner/container trust, Testcontainers, cache/artifact, credential and failure-evidence teaching. Added direct Maven Surefire `test` versus Failsafe `integration-test`/`verify` lifecycle teaching and failure proof (`48e36a89`). |
+| Continuous and Scheduled Quality Execution | PASS | Separates SCM-triggered fast evidence from broader GitLab scheduled regression, requires real non-manual trigger proof, preserves environment/infrastructure failures, and proves alert/report delivery on deterministic failure. |
+| Quality Steward Milestone | REMEDIATED | Integrates risk→test-level→environment→pipeline→release evidence and now requires explicit Surefire/Failsafe lifecycle/report proof at school exit (`449f25a9`). |
+| Final canonical-stack scan | PASS | No Jenkins, GitHub Actions, Django, Python, TestNG, Python-style `get_by_` or `set_viewport_` remnants found under canonical `quality-*` path files. |
+
+Quality Steward is **REMEDIATED, not VALIDATED**. The source-level learning progression now forms one canonical system:
+
+```text
+quality risk + test analysis
+  ↓
+Java / Maven / JUnit Platform + Jupiter
+  ↓
+unit/component: JUnit + AssertJ
+  ↓
+real component dependencies: Testcontainers + PostgreSQL
+  ↓
+API/integration: REST Assured + Jackson
+  ↓
+operable framework: SLF4J + Allure
+  ↓
+justified browser evidence: Playwright Java
+  ↓
+proven generic extraction: tsa-test-core → Nexus
+  ↓
+bounded non-functional evidence
+  ↓
+GitLab CI/CD + GitLab Runner
+  ↓
+Surefire(test) / Failsafe(integration-test→verify)
+  ↓
+SCM-triggered + scheduled evidence
+  ↓
+release-quality decision
+```
+
+| Gate | Status |
+| --- | --- |
+| Source-level pedagogical audit | PASS |
+| Canonical Java-stack consistency | PASS |
+| Identified source remediation | PASS |
+| Cross-path prerequisite/sequence review | PASS |
+| `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
+| `pnpm build` after remediation | PENDING LOCAL EXECUTION |
+| Representative rendered UI spot-check | NOT STARTED |
+
