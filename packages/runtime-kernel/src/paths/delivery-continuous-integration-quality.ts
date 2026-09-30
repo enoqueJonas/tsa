@@ -32,20 +32,20 @@ const practices: Record<string, PracticalContent> = {
         deliverables: ["Dependency graph", "Parallelism decision", "Failure-propagation expectation"],
         completionCriteria: ["Ordering reflects real dependencies rather than visual preference.", "Independent feedback is not serialized unnecessarily.", "A failed prerequisite blocks only the work that depends on it."],
     },
-    "Runners and Agents": {
+    "GitLab Runners and Execution Infrastructure": {
         type: "practical",
-        objective: "Design a GitLab CI/CD controller/agent execution model for the Rocky Linux homelab with explicit trust, capacity and cleanup boundaries.",
+        objective: "Design a GitLab CI/CD GitLab server/Runner execution model for the Rocky Linux homelab with explicit trust, capacity and cleanup boundaries.",
         scenario: "GitLab CI/CD needs somewhere to execute Steward builds, but allowing the controller or a general-purpose server to run arbitrary build workloads would blur privilege and failure boundaries.",
         instructions: [
-            "Choose where the GitLab CI/CD controller and first agent will run in the homelab and justify the placement.",
-            "Record CPU, RAM, storage and network requirements for the agent.",
+            "Choose where the GitLab CI/CD GitLab server and first Runner will run in the homelab and justify the placement.",
+            "Record CPU, RAM, storage and network requirements for the Runner.",
             "Define the dedicated service identity and filesystem/workspace ownership.",
-            "List which internal resources the agent must reach and which it must not reach.",
+            "List which internal resources the Runner must reach and which it must not reach.",
             "Define workspace cleanup and rebuild expectations so jobs do not depend on residue.",
-            "Identify the consequence of granting Docker access to the agent account."
+            "Identify the consequence of granting Docker access to the Runner service account."
         ],
-        deliverables: ["Controller/agent topology", "Agent privilege matrix", "Capacity and cleanup plan"],
-        completionCriteria: ["Controller and build execution responsibilities are distinguishable.", "Agent privileges are no broader than required.", "Persistent workspace state is not part of the build contract."],
+        deliverables: ["GitLab/Runner topology", "Runner privilege matrix", "Capacity and cleanup plan"],
+        completionCriteria: ["GitLab orchestration and Runner execution responsibilities are distinguishable.", "Runner privileges are no broader than required.", "Persistent workspace state is not part of the build contract."],
     },
     "GitHub Actions and GitLab CI/CD": {
         type: "practical",
@@ -56,7 +56,7 @@ const practices: Record<string, PracticalContent> = {
             "Choose GitLab CI/CD as the implementation platform for Steward and state why that fits the enterprise learning objective.",
             "Write a minimal .gitlab-ci.yml skeleton for checkout -> checks -> test -> image build.",
             "Describe how the same semantic stages would map to GitHub Actions without implementing a duplicate production pipeline.",
-            "Record which responsibilities GitLab CI/CD ownership adds: controller/agent lifecycle, plugins, upgrades, backups, credentials and capacity."
+            "Record which responsibilities GitLab CI/CD ownership adds: GitLab/Runner lifecycle, integrations, upgrades, backups, credentials and capacity."
         ],
         deliverables: ["GitLab CI/CD-first implementation decision", ".gitlab-ci.yml skeleton", "GitLab CI/CD/GitHub Actions concept mapping"],
         completionCriteria: ["GitLab CI/CD is the actual Steward CI implementation.", "GitHub Actions is understood as an alternative, not a second mandatory pipeline.", "Operational ownership differences are explicit."],
@@ -66,14 +66,14 @@ const practices: Record<string, PracticalContent> = {
         objective: "Provision a dedicated GitLab CI/CD agent path into the Steward homelab without turning CI into unrestricted administration infrastructure.",
         scenario: "The build agent needs source access, Docker build capability and later access to Nexus, but it should not inherit general WireGuard/SSH administrator authority.",
         instructions: [
-            "Create or plan a dedicated GitLab CI/CD agent identity on Rocky Linux.",
-            "Define how the agent connects to the GitLab CI/CD controller and how that path is restricted.",
+            "Create or plan a dedicated GitLab CI/CD Runner identity on Rocky Linux.",
+            "Define how the Runner connects to the GitLab CI/CD controller and how that path is restricted.",
             "Record required filesystem, Docker and network permissions.",
             "Prove or design that ordinary build work cannot use the administrator SSH identity.",
-            "Define patching, workspace cleanup, disk monitoring and agent replacement procedures."
+            "Define patching, workspace cleanup, disk monitoring and Runner replacement procedures."
         ],
-        deliverables: ["Agent identity/configuration", "Required-access matrix", "Agent lifecycle runbook"],
-        completionCriteria: ["CI execution has its own identity.", "Administrative credentials are not reused by jobs.", "The agent can be replaced without relying on undocumented state."],
+        deliverables: ["Runner identity/configuration", "Required-access matrix", "Runner lifecycle runbook"],
+        completionCriteria: ["CI Runner execution has its own identity.", "Administrative credentials are not reused by jobs.", "The agent can be replaced without relying on undocumented state."],
     },
     "Caching": {
         type: "practical",
