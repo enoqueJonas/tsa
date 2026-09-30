@@ -848,16 +848,36 @@ This path now assumes the learner already understands Java, Maven, JUnit executi
 
 ### Browser and Environment Testing
 
+The browser path uses Playwright Java inside the existing steward-tests framework. Browser concepts remain language-neutral, but implementation references must use the Java API and must not recreate a separate Python/pytest framework.
+
 | Lesson | Decision | Candidates checked | Selection / segment | Reason |
 | --- | --- | --- | --- | --- |
-| Decision Gate: Does Steward Need Browser Testing? | NO VIDEO | — | — | Browser automation must be justified by an actual user-facing browser surface. |
-| Browser Differences | RECOMMENDED VIDEO | Browser engine/cross-browser material reviewed | [Playwright — Browsers](https://playwright.dev/python/docs/browsers) | Maps Chromium/Firefox/WebKit to execution and configuration directly. |
+| Decision Gate: Does Steward Need Browser Testing? | NO VIDEO | — | — | Browser automation must be justified by an actual user-facing browser surface and unique evidence need. |
+| Playwright Runtime and Browser Ownership | RECOMMENDED VIDEO | Playwright Java browser/context/page documentation; official Playwright visual material | Official Playwright browser/context material, using Java examples for implementation | Browser → context → page ownership is spatial/lifecycle-oriented and benefits from a visual model before resource-lifetime implementation. |
+| DOM, Accessibility Tree and Locator Strategy | RECOMMENDED VIDEO | Playwright locator documentation; accessibility material | Official Playwright locator guidance | Locator semantics are central to stable UI evidence; the learner should see why role/label contracts differ from brittle DOM selectors. |
+| Actionability, Auto-waiting and Synchronization | RECOMMENDED VIDEO | Playwright actionability/auto-waiting documentation | Official Playwright actionability guidance | The actionability state machine is non-obvious and directly explains why arbitrary sleeps are usually wrong. |
+| Navigation, Network and Application Readiness | RECOMMENDED VIDEO | Playwright navigation/network material | Official Playwright navigation guidance | Visualizing browser lifecycle versus application readiness helps prevent load/network signals from becoming universal readiness proxies. |
+| Cookies, Storage and Authentication State | RECOMMENDED VIDEO | Playwright authentication/browser-context documentation | Official Playwright Java authentication/state guidance | Browser state ownership and reuse have security/isolation consequences that benefit from an explicit lifecycle model. |
+| Choosing What Deserves a Browser Test | NO VIDEO | — | — | Browser evidence must be justified against cheaper API/component boundaries from the actual Steward risk model. |
+| Page Objects and Component Objects from Proven Repetition | RECOMMENDED VIDEO | Playwright page-object guidance | Official Playwright page-object guidance, translated into Java implementation | Pattern examples are useful only after repetition exists; TSA explicitly prevents page-object generation before a stable capability boundary emerges. |
+| Uploads, Downloads, Frames, Popups and Dialogs | RECOMMENDED VIDEO | Playwright Java event/file/frame documentation | Official Playwright Java examples | Event-before-action ordering and multiple browser surfaces are easier to understand through concrete execution examples. |
+| Browser Diagnostics: Traces, Screenshots, Console and Network | RECOMMENDED VIDEO | Playwright Trace Viewer and diagnostics material | [Playwright — Trace Viewer](https://playwright.dev/java/docs/trace-viewer) | Trace Viewer is inherently visual and gives the learner a concrete model for failure reconstruction. |
+| Parallel Browser Execution and Isolation | RECOMMENDED VIDEO | Playwright browser-context material; Java/JUnit concurrency foundation | Reuse browser-context ownership plus the earlier Java concurrency model | Parallelism is now an ownership/isolation problem, not a pytest-xdist problem. |
+| Browser Differences | RECOMMENDED VIDEO | Playwright browser-engine documentation | [Playwright Java — Browsers](https://playwright.dev/java/docs/browsers) | Maps Chromium/Firefox/WebKit to execution and configuration without Python-specific examples. |
 | Responsive Testing | RECOMMENDED VIDEO | Responsive-design/testing material reviewed | [MDN — Responsive Web Design](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design) | Establishes layout-state concepts before testing behavior at representative viewports. |
-| Cross-browser Testing | RECOMMENDED VIDEO | Cross-browser strategy material reviewed | [BrowserStack — Cross Browser Testing](https://www.browserstack.com/cross-browser-testing) — use browser/device matrix visuals | Makes environment diversity concrete; TSA still requires risk-based selection. |
-| BrowserStack or Equivalent | OPTIONAL VIDEO | BrowserStack platform material reviewed | No separate candidate promoted | Provider UI walkthroughs age quickly; the execution contract matters more. |
-| Local vs Remote Execution | RECOMMENDED VIDEO | Playwright/remote grid material reviewed | No candidate promoted | Learner compares the same claim across actual local and remote environments. |
+| Cross-browser Testing | RECOMMENDED VIDEO | cross-browser strategy material reviewed | Browser/device matrix visuals plus Playwright browser-engine documentation | Makes environment diversity concrete while TSA requires risk-based selection rather than exhaustive combinations. |
+| BrowserStack or Equivalent | OPTIONAL VIDEO | remote-browser provider material reviewed | No provider UI walkthrough promoted | Provider interfaces age quickly; the execution contract, identity and diagnostic evidence matter more. |
+| Local vs Remote Execution | RECOMMENDED VIDEO | local/remote browser execution material | No separate candidate promoted | Learner compares the same claim across actual execution locations and records changed dependencies. |
 | Environment Parity and Configuration Risk | NO VIDEO | — | — | Configuration drift is diagnosed from real environment evidence. |
 | Lab: Run Steward Tests Across Environments | NO VIDEO | — | — | Independent cross-environment evidence. |
+| Design the Browser and Environment Matrix | NO VIDEO | — | — | Matrix selection must come from product/environment risk. |
+| Execute Critical Browser Evidence | NO VIDEO | — | — | Real browser execution is the assessment. |
+| Compare Environments and Diagnose Drift | NO VIDEO | — | — | Learner must diagnose observed configuration/environment differences. |
+| Browser and Environment Testing Review | NO VIDEO | — | — | Capability defense and boundary review. |
+| Milestone: Prove Browser Ownership and User-level Evidence | NO VIDEO | — | — | Independent proof of Playwright lifecycle ownership and unique browser-level evidence. |
+| Milestone: Evolve the Browser Layer from Proven Repetition | NO VIDEO | — | — | Abstractions must be extracted from observed repetition rather than tutorial architecture. |
+| Build: Add the Browser Layer to steward-tests | NO VIDEO | — | — | Playwright Java is introduced into the existing Maven/JUnit framework, not as a second framework. |
+| Extract Page and Component Objects from Proven Repetition | NO VIDEO | — | — | Refactoring evidence is the assessment. |
 
 ### Non-functional Quality
 
