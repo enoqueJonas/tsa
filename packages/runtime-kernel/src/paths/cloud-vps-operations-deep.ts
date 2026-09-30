@@ -4,7 +4,7 @@ import type { Lesson } from "./lesson";
 const digitalOceanDroplets: LearningResource = { title: "DigitalOcean Droplet documentation", url: "https://docs.digitalocean.com/products/droplets/" };
 const linodeCompute: LearningResource = { title: "Akamai Cloud Computing documentation", url: "https://techdocs.akamai.com/cloud-computing/docs" };
 const openssh: LearningResource = { title: "OpenSSH manual pages", url: "https://www.openssh.com/manual.html" };
-const ubuntuSecurity: LearningResource = { title: "Ubuntu Server security documentation", url: "https://documentation.ubuntu.com/server/how-to/security/" };
+const rhelSecurity: LearningResource = { title: "Red Hat Enterprise Linux 9 — Security hardening", url: "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/security_hardening/index" };
 const systemd: LearningResource = { title: "systemd manual", url: "https://www.freedesktop.org/software/systemd/man/latest/" };
 
 interface LessonSpec {
@@ -76,7 +76,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Write the exact provisioning inputs for the chosen Steward VPS before creating it.", "Provision the server and record provider resource ID, hostname, region and IP addresses.", "Connect with the intended administrative identity and capture the operating-system baseline.", "Identify which remaining host state belongs in Ansible rather than one-off bootstrap commands."],
         questions: ["Why should bootstrap remain smaller than ongoing configuration management?", "Which provisioning values must remain stable enough for later DNS and deployment automation?"],
-        resources: [digitalOceanDroplets, ubuntuSecurity],
+        resources: [digitalOceanDroplets, rhelSecurity],
     },
     {
         id: "public-ip-addressing",
@@ -89,7 +89,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Record the Steward VPS public and private addresses if present.", "List every listening TCP socket and classify whether it should be local-only, administratively reachable or public application traffic.", "Test one intentionally allowed path and one intentionally denied path from an external client."],
         questions: ["Why does a public IP not automatically make every process reachable?", "Which layers can block an inbound request before it reaches Steward?"],
-        resources: [ubuntuSecurity],
+        resources: [rhelSecurity],
     },
     {
         id: "securing-ssh-access",
@@ -102,7 +102,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Create or confirm a named administrative account with key-based SSH access.", "Prove a second session works before changing authentication policy.", "Document direct-root and password-authentication policy and justify each choice.", "Verify the provider console or rescue path that would recover from an SSH misconfiguration."],
         questions: ["Why is testing a second SSH session before closing the first operationally important?", "Why should administrative identities not share one SSH private key?"],
-        resources: [openssh, ubuntuSecurity],
+        resources: [openssh, rhelSecurity],
     },
     {
         id: "provider-firewalls",
@@ -115,7 +115,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Define the minimum provider-firewall rules required before Steward is publicly published.", "Apply the rules and record source ranges, protocols and ports.", "Test the intended SSH path from an external client.", "Test an unapproved port and preserve the rejection/timeout evidence."],
         questions: ["Why keep a host firewall if the provider already offers one?", "What evidence demonstrates that a denied path is actually denied?"],
-        resources: [digitalOceanDroplets, ubuntuSecurity],
+        resources: [digitalOceanDroplets, rhelSecurity],
     },
     {
         id: "os-lifecycle-patching",
@@ -128,7 +128,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Record the VPS distribution version and support status.", "List available updates and classify whether the host needs immediate security maintenance.", "Apply updates through a documented maintenance procedure.", "Verify SSH, Docker and Steward runtime behavior after patching and after any required reboot."],
         questions: ["Why is OS patching still your responsibility on an ordinary VPS?", "What should be verified after a host reboot besides 'the VM is online'?"],
-        resources: [ubuntuSecurity, systemd],
+        resources: [rhelSecurity, systemd],
     },
     {
         id: "remote-recovery",
@@ -154,7 +154,7 @@ const specs: LessonSpec[] = [
         ],
         practice: ["Inventory persistent Steward state on the VPS and classify what requires application-aware backup versus host-level snapshot.", "Configure the minimum provider snapshot/backup capability justified by the current stage.", "Perform one safe restore test to a temporary target or isolated location.", "Record restore duration, recovered identity/state and cleanup of temporary paid resources."],
         questions: ["Why can a VM snapshot be insufficient as a PostgreSQL backup strategy?", "What evidence proves a backup is usable?"],
-        resources: [digitalOceanDroplets, ubuntuSecurity],
+        resources: [digitalOceanDroplets, rhelSecurity],
     },
 ];
 
