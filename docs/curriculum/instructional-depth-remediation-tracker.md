@@ -385,6 +385,48 @@ A source consistency review found and corrected one missing instruction separato
 | Cloud Building Blocks | PASS | Compute, object/block storage, managed DB, virtual networking, routing/gateways, load balancing, IAM, secrets and monitoring are taught as responsibility/failure/cost boundaries rather than provider-product memorization. |
 | S3-Compatible Object Storage | PASS | Explicit PostgreSQL/NFS/Nexus/S3 placement model, learner-owned implementation, least privilege, real Steward integration, collision/integrity semantics, lifecycle and outage/credential failure practice. |
 
+### Cloud orchestration through school closure
+
+| Path / area | Classification | Finding |
+| --- | --- | --- |
+| Infrastructure as Code | PASS | Teaches desired state, provider boundary, configuration/state/provider reality, plan/apply review, replacement risk, dependencies, modules, drift, remote state, secrets and recovery before HCL syntax becomes the focus. |
+| Kubernetes / OpenShift / GitOps | PASS | Strong reconciliation/control-plane model, replaceable pods, service discovery, configuration/secrets boundary, probe/resource semantics, RBAC, OpenShift delta and explicit GitLab CI/CD → environment Git → Argo CD authority transfer. The migration milestone proves one reconciler rather than allowing CI and Argo to mutate the same environment independently. |
+| Progressive Delivery / Canary | PASS | Argo Rollouts is correctly a progressive-rollout state machine under Argo CD desired-state authority; Prometheus supplies promotion/abort evidence, loss of analysis fails safe, and state compatibility constrains canary/rollback. |
+| Cloud Architecture and Cost | PASS | Integrates availability, capacity, trust paths, RPO/RTO, failure domains, cost modeling/guardrails, right-sizing, managed-vs-self-managed and hybrid dependency decisions without forcing hyperscale architecture. |
+| Cloud Engineer Milestone | REMEDIATED | Existing gates strongly integrated hosting, OpenTofu, identity/network, GitOps release, recovery, cost and handoff. Added explicit exit evidence for served-certificate renewal/expiry lifecycle and the real S3-compatible Steward workflow so newer substantive paths cannot remain disconnected side exercises (`ddb8c7c8`). |
+
+Cloud Engineer is **REMEDIATED, not VALIDATED**. Its source-level progression is coherent:
+
+```text
+hosting responsibility and internet operation
+  ↓
+DNS / TLS / Kong + certificate lifecycle
+  ↓
+cloud capability and S3 data placement
+  ↓
+OpenTofu infrastructure intent
+  ↓
+Kubernetes/OpenShift reconciled runtime
+  ↓
+environment Git → Argo CD
+  ↓
+bounded Argo Rollouts canary + Prometheus evidence
+  ↓
+architecture / recovery / cost review
+  ↓
+integrated Cloud Engineer exit evidence
+```
+
+| Gate | Status |
+| --- | --- |
+| Source-level pedagogical audit | PASS |
+| Identified source remediation | PASS |
+| Cross-path prerequisite/sequence review | PASS |
+| GitLab CI/CD → environment Git → Argo CD authority model | PASS |
+| `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
+| `pnpm build` after remediation | PENDING LOCAL EXECUTION |
+| Representative rendered UI spot-check | NOT STARTED |
+
 ## Quality Steward detailed remediation
 
 Do not treat the recent Java migration as pedagogically complete merely because it is technically coherent.
