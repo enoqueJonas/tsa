@@ -1,3 +1,16 @@
+/**
+ * LEGACY CURRICULUM DEFINITION
+ *
+ * This module is retained for compatibility with existing imports but is not the
+ * authoritative learner-facing Engineering Apprentice curriculum. The live TSA
+ * journey composes Engineering Foundations from engineering-apprentice-rich.ts
+ * plus engineering-apprentice-workbench-deep.ts via engineering-foundations.ts.
+ *
+ * Do not add or remediate learner-facing Apprentice content here. Make curriculum
+ * changes in the canonical sources above, then remove this compatibility module
+ * only after its public/import reachability has been proven safe to retire.
+ */
+
 import type { Lesson } from "./lesson";
 
 export const thinkingLikeAnEngineer: Lesson = {
