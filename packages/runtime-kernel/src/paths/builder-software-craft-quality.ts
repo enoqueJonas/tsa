@@ -75,6 +75,22 @@ const practices: Record<string, PracticeSpec> = {
         deliverables: ["Named hotspot/problem", "Pre-refactor behavior evidence", "Small-step refactor evidence", "Stopping-condition note"],
         completionCriteria: ["The original behavior remains stable.", "The named maintainability problem is measurably reduced.", "Feature changes are not smuggled into cleanup.", "You can explain why further refactoring is not justified yet."]
     },
+    "software-craft-testing-as-a-change-safety-net": {
+        objective: "Build a small Steward safety net that proves a refactor preserves behavior and that a regression test can detect a real defect.",
+        scenario: "A maintainability change is justified, but 'the endpoint still looks fine' is not sufficient evidence. Establish focused automated checks before changing structure, then use the same checks to prove the refactor did not alter the contract.",
+        instructions: [
+            "Choose one real Steward behavior and state the observable contract in domain language before writing assertions.",
+            "Choose the narrowest honest test boundary: pure domain logic, database behavior or HTTP/API behavior; explain why a narrower boundary would not prove enough.",
+            "Write one positive case and one meaningful negative case using clear arrange-act-assert structure.",
+            "Run the tests against the current implementation and preserve the green baseline.",
+            "Perform one small behavior-preserving refactor and rerun the same focused tests.",
+            "Reproduce one known defect or create a disposable controlled defect; demonstrate that a regression test fails for the expected reason before the fix and passes after the fix.",
+            "Review assertions and remove any that couple the test to private helper structure without protecting observable behavior.",
+            "Record which important behavior remains uncovered and why adding more tests is or is not justified now."
+        ],
+        deliverables: ["Behavior contract and boundary choice", "Positive/negative automated tests", "Pre/post-refactor test evidence", "Fail-before-fix regression evidence", "Coverage limitation note"],
+        completionCriteria: ["The tests protect observable Steward behavior rather than private implementation trivia.", "The same safety net remains green across a structural refactor.", "At least one regression check is proven capable of failing.", "The learner can explain why each chosen test boundary is appropriate.", "Testing depth remains Builder-sized rather than becoming a premature automation framework."]
+    },
     "software-craft-managing-dependencies": {
         objective: "Audit Steward's dependency ownership and make one evidence-based keep, remove or reuse decision.",
         scenario: "Steward has accumulated packages across Builder. Before later CI, artifact-repository and supply-chain work, the team needs to know which dependencies are intentional and whether any code truly deserves an internal-package boundary.",
