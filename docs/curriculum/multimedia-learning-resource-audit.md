@@ -1122,6 +1122,33 @@ This audit follows every live Security Steward deep path. It includes foundation
 | Security Regression Testing | NO VIDEO | — | — | Learner converts closed findings into durable automated evidence. |
 | Lab: Harden Steward API | NO VIDEO | — | — | Independent requirements→controls→retest evidence. |
 
+### Container and Delivery Security
+
+This path assumes Docker and GitLab CI/CD mechanics are already known. Multimedia therefore focuses on security trust models and attack surfaces rather than reteaching container builds or pipeline syntax.
+
+| Lesson | Decision | Candidates checked | Selection / segment | Reason |
+| --- | --- | --- | --- | --- |
+| Container Attack Surface | RECOMMENDED VIDEO | Docker security architecture; OWASP supply-chain material | Reuse Docker runtime/security model | Names the kernel, image, mount, socket, capability and orchestration trust boundaries without another Docker tutorial. |
+| Minimal and Trusted Base Images | OPTIONAL VIDEO | Docker build/security guidance | Official Docker best-practice documentation | Base-image provenance and maintenance matter more than a generic image-minimization walkthrough. |
+| Image Scanning | RECOMMENDED VIDEO | GitLab container scanning; Docker security material | GitLab container-scanning workflow/visuals | Shows where scan evidence enters the delivery path; findings still require contextual triage. |
+| Container Runtime Permissions | RECOMMENDED VIDEO | Docker runtime-security material | Reuse Docker security model | User, capabilities, writable paths and privilege escalation benefit from an explicit runtime boundary model. |
+| Secrets in Delivery | RECOMMENDED VIDEO | GitLab variables; OWASP supply-chain guidance | Reuse GitLab protected-variable model | Applies existing pipeline knowledge to exposure paths in logs, artifacts, images and runner state. |
+| CI/CD Identities and Least Privilege | RECOMMENDED VIDEO | GitLab job-token/identity guidance | GitLab job-token trust model | Pipeline jobs are machine actors; authority separation is easier to reason about visually. |
+| Protected Environments and Approval Boundaries | RECOMMENDED VIDEO | GitLab protected-environment guidance | Reuse GitLab environment/promotion model | Security Steward adds authority and approval analysis rather than reteaching environments. |
+| Dependency Scanning | RECOMMENDED VIDEO | GitLab dependency scanning; OWASP supply-chain material | GitLab dependency-scanning workflow | Connects direct/transitive findings to the delivery evidence path. |
+| SAST and DAST Concepts | RECOMMENDED VIDEO | GitLab SAST/DAST; OWASP material | First-party GitLab SAST/DAST diagrams | Static versus running-system observation is a structural distinction that benefits from side-by-side visualization. |
+| Software Supply-chain Security | RECOMMENDED VIDEO | OWASP supply-chain; SLSA | SLSA/OWASP supply-chain diagrams | Makes source → identity → build → repository → verification → deployment trust transitions explicit. |
+| Dependency Confusion | RECOMMENDED VIDEO | OWASP Dependency Confusion | OWASP attack model | Resolver/source-precedence attacks are non-obvious and directly relevant to internal packages. |
+| Typosquatting and Malicious Packages | OPTIONAL VIDEO | OWASP supply-chain material | No additional candidate promoted | Package identity/provenance review is better performed against actual dependency changes. |
+| Internal Repository Trust Boundaries | RECOMMENDED VIDEO | Nexus/internal repository model; SLSA | Reuse TSA Nexus artifact-flow model with security overlays | Shows consumer/publisher/admin authority concentration without reteaching repository mechanics. |
+| Package Provenance and Integrity | RECOMMENDED VIDEO | SLSA; Sigstore | SLSA provenance model | Integrity and provenance are distinct concepts; visual lineage helps prevent checksum-only reasoning. |
+| SBOMs as Security Evidence | RECOMMENDED VIDEO | SPDX; CycloneDX | SPDX/CycloneDX component models | Useful for visualizing artifact composition and release-linked component evidence. |
+| Signing and Verification Concepts | RECOMMENDED VIDEO | Sigstore/Cosign | Sigstore trust/sign/verify model | Signature value depends on identity/trust root and consumer verification, not the signing command itself. |
+| Security Gates and Exceptions | NO VIDEO | — | — | Gate/exception policy must be derived from actual findings, exploitability and business context. |
+| Protecting Internal Publishing Credentials | NO VIDEO | — | — | Credential scope and exposure must be proven against the real Nexus/GitLab publishing path. |
+| Securing steward-common and tsa-test-core Consumption | NO VIDEO | — | — | Trusted source/version resolution must be demonstrated against the actual internal packages. |
+| Lab: Harden the Steward Software Supply Chain | NO VIDEO | — | — | Independent trust-map, hardening, scanning, provenance and policy evidence. |
+
 ### Software Supply Chain and Artifact Trust
 
 | Lesson | Decision | Candidates checked | Selection / segment | Reason |
