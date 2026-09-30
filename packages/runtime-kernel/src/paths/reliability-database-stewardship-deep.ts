@@ -290,7 +290,7 @@ const lessons: DatabaseLessonSpec[] = [
         principles: [
             "Review service symptoms together with database resource signals.",
             "Track storage and table/index growth before exhaustion.",
-            "Watch connection, lock and query trends over time.",
+            "Watch connection, lock, query and vacuum/dead-tuple maintenance trends over time.",
             "Turn findings into prioritized operational actions rather than dashboard decoration.",
         ],
         stewardContext: [
@@ -300,12 +300,12 @@ const lessons: DatabaseLessonSpec[] = [
         objective: "Produce a reviewable Steward database-health assessment and operational backlog.",
         scenario: "Before the Reliability milestone, the team needs evidence that PostgreSQL capacity and recovery risks are visible rather than hidden behind application-level green checks.",
         instructions: [
-            "Collect a representative snapshot of latency, connections, locks, storage growth and backup/restore state.",
-            "Identify at least three trends or thresholds that deserve ongoing observation.",
+            "Collect a representative snapshot of latency, connections, locks, storage growth, autovacuum/ANALYZE activity, dead-tuple pressure and backup/restore state using PostgreSQL statistics appropriate to the deployed version."
+            "Identify at least three trends or thresholds that deserve ongoing observation, including whether table churn or dead-tuple growth is outpacing effective vacuum/maintenance."
             "Classify findings by immediate risk, growth risk and evidence gap.",
             "Create a prioritized backlog with ownership and remeasurement triggers.",
         ],
-        deliverables: ["Database health review", "Trend/threshold set", "Prioritized database operations backlog", "Escalation criteria"],
+        deliverables: ["Database health review", "Vacuum/dead-tuple maintenance evidence", "Trend/threshold set", "Prioritized database operations backlog", "Escalation criteria"],
         completionCriteria: [
             "The assessment combines application and database evidence.",
             "Capacity/recovery risks are distinguishable from ordinary utilization.",
