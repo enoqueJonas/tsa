@@ -152,7 +152,7 @@ export const deliveryEngineerMilestoneDeepLessons: Lesson[] = [
                 scenario: "Cloud Engineer will later move the now-containerized and automated system onto cloud/VPS infrastructure. The handoff should make the current delivery contract explicit without prematurely solving cloud architecture.",
                 instructions: [
                     "Document the authoritative source-to-runtime path and major trust boundaries.",
-                    "Record GitLab Runner placement/executor/trust assumptions, Nexus endpoints, repository roles, artifact naming/versioning and Ansible inventory boundaries."
+                    "Record GitLab Runner placement/executor/trust assumptions, Nexus endpoints, repository roles, artifact naming/versioning and Ansible inventory boundaries.",
                     "Reference the release runbook and recovery procedure.",
                     "List current capacity/failure-domain constraints that matter when moving to cloud infrastructure.",
                     "List security, quality and reliability work intentionally deferred to later schools."],
