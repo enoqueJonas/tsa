@@ -1,13 +1,13 @@
 # Multimedia Learning Resource — Final Cross-school Quality Audit
 
 **Status:** complete  
-**Scope:** all 12 TSA schools, the shared multimedia matrix, and the completed per-school audit branches.
+**Scope:** all 12 TSA schools, the shared multimedia matrix, and the post-remediation curriculum on `master`.
 
 ## Executive conclusion
 
 The multimedia strategy is aligned with TSA's evidence-first, Microverse-style learning model: media is supporting material, not the curriculum itself. Labs, milestones, reviews, architecture decisions, operational drills and the Professional Engineer capstone remain dominated by direct evidence.
 
-The audit did identify one repository-structure defect: the school audit branches were not a single linear chain, so the Professional Engineer branch contained older placeholder-heavy copies of several earlier school sections. The branch `curriculum/multimedia-final-quality-audit` now consolidates the completed Delivery Engineer through Professional Engineer school audits into one working branch. Historical sections remain in the append-only audit file and must not be interpreted as the latest decision when a later `complete school multimedia audit` section exists.
+The post-remediation delta audit has now been consolidated directly on `master`. The shared matrix was reconciled against the live runtime paths after curriculum remediation, including newly added practical sub-lessons and renamed milestones. Historical rows may remain where they document earlier decisions, but the latest complete-school section and current live lesson titles are authoritative.
 
 ## Quality checks performed
 
@@ -19,7 +19,7 @@ The audit did identify one repository-structure defect: the school audit branche
 - Checked that higher schools progressively reduce tutorial dependence.
 - Checked that milestones, operational drills, reviews and defences are not replaced by passive media.
 - Checked authoritative-source preference and cross-school reuse.
-- Checked branch lineage and whether the final branch actually contained the latest school decisions.
+- Reconciled the matrix against live runtime lesson titles after curriculum remediation and verified that the current `master` lineage contains the latest decisions.
 
 ## Consolidated completed-school snapshot
 
@@ -27,12 +27,12 @@ The audit did identify one repository-structure defect: the school audit branche
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Delivery Engineer | 105 | 49 | 21 | 35 | 5 |
 | Cloud Engineer | 99 | 63 | 9 | 27 | 6 |
-| Quality Steward | 106 | 57 | 5 | 44 | 8 |
-| Security Steward | 129 | 76 | 3 | 50 | 1 |
-| Reliability Engineer | 153 | 82 | 1 | 70 | 2 |
-| Architect | 112 | 45 | 18 | 49 | 0 |
-| Technical Steward | 100 | 22 | 33 | 45 | 0 |
-| Professional Engineer | 69 | 0 | 2 | 67 | 0 |
+| Quality Steward | 192 | 91 | 7 | 94 | — |
+| Security Steward | 150 | 90 | 5 | 55 | — |
+| Reliability Engineer | 171 | 82 | 1 | 88 | — |
+| Architect | 122 | 45 | 18 | 59 | — |
+| Technical Steward | 124 | 22 | 33 | 69 | — |
+| Professional Engineer | 74 | 0 | 4 | 70 | — |
 
 A recommended row without a promoted candidate is not automatically a defect. In the completed audits these are explicit gaps where a visual resource would add value but no candidate met the quality bar. A weak video must not be promoted merely to eliminate a blank.
 
@@ -48,7 +48,7 @@ System Thinker and Platform Builder legitimately carry more visual material beca
 
 ### Delivery through Reliability
 
-These schools have the highest legitimate media density because they introduce many operational systems and cross-cutting mechanisms. Reuse is preferred when the concept is already taught: Docker, Jenkins, Ansible, identity, TLS, pytest/Playwright, Prometheus and SRE concepts should not receive a second introductory tutorial simply because another school touches them.
+These schools have the highest legitimate media density because they introduce many operational systems and cross-cutting mechanisms. Reuse is preferred when the concept is already taught: Docker, GitLab CI/CD, Ansible, identity, TLS, JUnit/REST Assured/Playwright Java, Prometheus and SRE concepts should not receive a second introductory tutorial simply because another school touches them.
 
 ### Architect and Technical Steward
 
@@ -56,7 +56,7 @@ Tutorial dependence correctly falls. Media is useful mainly for visual architect
 
 ### Professional Engineer
 
-The final capstone correctly contains no recommended video. Its 67/69 `NO VIDEO` decisions are a feature, not a coverage gap: the learner must retrieve prior knowledge, identify genuine gaps, and independently discover, design, build, operate and defend a new system.
+The final capstone correctly contains no recommended video. Its 70/74 `NO VIDEO` decisions are a feature, not a coverage gap: the learner must retrieve prior knowledge, identify genuine gaps, and independently discover, design, build, operate and defend a new system.
 
 ## Duplicate and reuse policy
 
@@ -77,26 +77,21 @@ A recommendation may intentionally remain without a candidate. `No candidate pro
 
 ## Repository-structure finding and closure
 
-The multimedia audit file evolved as an append-only working log. This preserved decisions but created repeated historical school sections, and parallel school branches meant later branches did not automatically contain every completed predecessor.
+The audit cycle is consolidated on `master`. Delta remediation was performed against the live runtime paths rather than by replaying historical audit branches. The matrix now includes the newly introduced practical sub-lessons in Quality, Security, Reliability, Architect, Technical Steward and Professional Engineer while preserving evidence-first treatment of labs, decisions and defences.
 
-For this reason:
-
-- `curriculum/multimedia-final-quality-audit` is the consolidation branch for this audit cycle.
-- A heading ending in `complete school multimedia audit` is authoritative over an older generic `lesson audit` heading for the same school.
-- Historical rows should be retained only as audit history until a future documentation-cleanup pass moves them to an archive.
-- Future multimedia changes should branch from the consolidation branch (or its eventual merged successor), not from an individual school branch.
+Future multimedia maintenance should start from current `master`, compare against live runtime composition, and make narrow delta changes rather than restarting a school-wide media search.
 
 ## Closure criteria
 
 This audit cycle is closed when:
 
 - all school classifications use the controlled vocabulary;
-- completed school sections are present on the consolidation branch;
+- completed school sections and post-remediation deltas are present on `master`;
 - no recommended candidate is promoted merely to fill a slot;
 - labs and milestones remain evidence-first;
 - cross-school reuse is intentional and labeled as reuse/refresh;
 - Professional Engineer remains an independent transfer-and-defence capstone;
-- future multimedia maintenance starts from the consolidated lineage.
+- future multimedia maintenance starts from current `master` and the live runtime composition.
 
 ## Maintenance rule
 
