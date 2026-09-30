@@ -427,6 +427,18 @@ integrated Cloud Engineer exit evidence
 | `pnpm build` after remediation | PENDING LOCAL EXECUTION |
 | Representative rendered UI spot-check | NOT STARTED |
 
+## Quality Steward audit findings
+
+### Quality reasoning through component testing
+
+| Path | Classification | Finding |
+| --- | --- | --- |
+| Quality Engineering | PASS | Starts from product/system quality, risk, strategy, evidence boundaries, shift-left/right, testability and defect evidence rather than tool counts. |
+| Test Analysis and Design | PASS | Provides deliberate test-design techniques and risk-to-evidence reasoning before automation implementation. |
+| Java for Test Framework Engineering | PASS | Substantive Java/Maven/JUnit Platform/Jupiter teaching establishes the execution model, lifecycle, assertions, parameterization and extension mechanics needed by later framework work. |
+| Unit and Component Testing | REMEDIATED | Concepts were strong but the live implementation layer still contained Django resources, Python examples and Django/PostgreSQL component assumptions. Converted examples/resources/labs to JUnit 5 + AssertJ + Testcontainers Java + PostgreSQL while preserving boundary/isolation/double/coverage reasoning (`254877bf`). |
+| Quality-wide stale-stack scan | PASS SO FAR | Literal code searches after the remediation found no remaining Django/django, pytest, `def test_` or “Playwright Python” references under canonical `quality-*` path files. Later Quality paths still require pedagogical review independent of this syntax scan. |
+
 ## Quality Steward detailed remediation
 
 Do not treat the recent Java migration as pedagogically complete merely because it is technically coherent.
