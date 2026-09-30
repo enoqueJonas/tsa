@@ -576,3 +576,54 @@ release-quality decision
 | Identity and Secrets Security | PASS | Separates human, CI, GitOps and workload identities; teaches issuer/audience/token validation, machine least privilege, full secret lifecycle, gateway-vs-domain authorization and explicit denial/revocation evidence. |
 | Vault and Dynamic Secrets | PASS | Mandatory implementation is scenario-forced by accumulated credential lifecycle pressure, not product fashion. Learner deploys non-dev Vault, establishes non-root policy/audit, issues leased least-privilege PostgreSQL credentials, proves renewal/revocation, breaks Vault safely and measures existing-vs-new-secret failure behavior. |
 
+
+### Security Steward final sequence and source-level closure
+
+| Path / area | Classification | Finding |
+| --- | --- | --- |
+| Internal PKI and Machine Trust | PASS | Teaches root/intermediate/leaf responsibility, SAN/EKU identity, Rocky/Windows trust distribution, mTLS, leaf rotation, revocation, issuer replacement and broken-chain diagnosis. Public ACME remains separate; machine authentication never replaces domain authorization. The milestone proves an operated lifecycle rather than isolated OpenSSL commands. |
+| Enterprise Directory Federation | PASS | Treats LDAP/directory federation as an identity-source/trust problem and preserves the boundary between enterprise identity, Keycloak/OIDC token issuance and Steward domain authorization. |
+| FTP to SFTP Secure Transfer Migration | PASS | Preserves the existing file/batch contract and idempotency semantics while changing transport trust. Requires host-key/client identity evidence, interrupted-transfer handling, bounded dual-transport coexistence, rehearsed rollback and final FTP credential/listener/firewall decommission. |
+| Security Steward Milestone | PASS | Rebaselines the evolved system, verifies representative controls across application/infrastructure/delivery/supply-chain/identity/Vault/PKI/SFTP, closes high-priority gaps with retest, publishes verified-controls separately from recommendations and requires a technical defense of residual risk. |
+| Final canonical/security scan | PASS | Literal scans found no stale APT/Ubuntu, Jenkins, GitHub Actions, TLS-disable, “any valid signer” or permanent-dual-authority wording under canonical `security-*` paths after remediation. |
+
+Security Steward is **REMEDIATED, not VALIDATED**. Its source-level progression is coherent:
+
+```text
+assets / risk / trust boundaries
+  ↓
+threat paths
+  ↓
+web/API vulnerability evidence
+  ↓
+application controls + security regression
+  ↓
+Rocky host/network hardening
+  ↓
+GitLab/Nexus/container supply-chain controls
+  ↓
+immutable artifact signing + trusted-signer enforcement
+  ↓
+human / automation / workload identity + secret lifecycle
+  ↓
+Vault dynamic PostgreSQL credentials
+  ↓
+internal PKI / mTLS / rotation / revocation
+  ↓
+enterprise directory federation
+  ↓
+bounded FTP→SFTP migration and FTP removal
+  ↓
+cross-stack assessment + residual-risk defense
+```
+
+| Gate | Status |
+| --- | --- |
+| Source-level pedagogical audit | PASS |
+| Canonical platform/delivery/security alignment | PASS |
+| Identified source remediation | PASS |
+| Cross-path prerequisite/sequence review | PASS |
+| `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
+| `pnpm build` after remediation | PENDING LOCAL EXECUTION |
+| Representative rendered UI spot-check | NOT STARTED |
+
