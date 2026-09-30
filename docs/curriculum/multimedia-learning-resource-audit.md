@@ -1537,7 +1537,7 @@ This audit follows every live Reliability Engineer deep path, including observab
 | Evaluation — Prepare the Review | NO VIDEO | — | — | Review preparation. |
 | Evaluation — Run the Review | NO VIDEO | — | — | Interactive architecture review. |
 | Evaluation — Turn Decisions into Guardrails | NO VIDEO | — | — | Implement actual guardrails. |
-| Architect Milestone — Architecture Review and Evolution Decision | NO VIDEO | — | — | School synthesis milestone. |
+| Architect Milestone — Milestone: Steward Architecture Evolution | NO VIDEO | — | — | School synthesis milestone. |
 | Architect Milestone — Reconstruct and Defend the Current Architecture | NO VIDEO | — | — | Independent evidence. |
 | Architect Milestone — Challenge the Architecture with New Drivers | NO VIDEO | — | — | Independent scenario. |
 | Architect Milestone — Produce the Evolution Decision | NO VIDEO | — | — | Decision artifact. |
