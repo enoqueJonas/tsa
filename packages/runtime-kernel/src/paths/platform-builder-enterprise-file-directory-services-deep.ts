@@ -47,20 +47,20 @@ const directoryFoundations = practicalLesson(
     "platform-enterprise-directory-services",
     "Enterprise Directory Services: LDAP",
     "LDAP is both a protocol and a directory-oriented way of organizing/querying identity data. Enterprise identity integration requires understanding distinguished names, entries, attributes, object classes, groups, bind/search behavior and trust boundaries rather than treating a directory as a flat user table.",
-    "Deploy and administer a real LDAP directory in the TSA homelab as the workforce identity source that later Keycloak federation will consume.",
-    "The organization already maintains workforce identities and engineering groups in a corporate directory. Build a small learner-owned LDAP equivalent so Steward can later stop duplicating workforce credentials while still retaining its own domain authorization model.",
+    "Operate LDAP as a directory-protocol interoperability boundary and prepare a directory source for later Keycloak federation without creating two competing permanent workforce authorities."
+    "The preceding Windows path already established a synthetic AD DS domain, which exposes LDAP-compatible directory semantics alongside Kerberos and AD-integrated DNS. Use that environment to understand enterprise directory integration, and run a bounded OpenLDAP implementation only where it adds protocol/schema/administration contrast. For each federation scenario, name exactly one authoritative workforce directory; Steward retains its own application authorization model."
     [
-        "Deploy an LDAP directory service in the homelab with a documented DNS name, persistence boundary and administrative recovery path.",
+        "Inspect the existing synthetic AD directory through LDAP-aware tooling, then deploy a bounded OpenLDAP service only as the Linux/open-standard comparison implementation with a documented DNS name, persistence boundary and administrative recovery path; do not present both as simultaneous authoritative workforce sources.
         "Design a small directory information tree with people, groups and service/bind-account areas; explain DN and RDN choices.",
         "Populate synthetic users and engineering groups through LDIF or equivalent repeatable administration and inspect the object classes/attributes used.",
         "Perform authenticated binds and searches using explicit base DN, scope and filters. Capture successful and failed examples without exposing credentials.",
         "Create a least-privilege bind/service account intended for federation reads instead of using the directory administrator.",
         "Protect directory traffic with TLS/StartTLS or the supported secure mechanism for the chosen implementation and validate certificate/trust behavior.",
         "Deliberately test an invalid bind credential, wrong base DN/filter, unavailable directory and broken certificate/trust condition; record diagnosis and recovery.",
-        "Document essential Active Directory relationships: domains/domain controllers, LDAP, Kerberos, users/groups, organizational units and DNS dependency. Do not build an unnecessary Windows administration environment for this exercise.",
+        "Compare the already-operated AD DS boundary with OpenLDAP: directory tree/schema, LDAP bind/search, groups, authentication integration, DNS/time dependencies and operational ownership. State which directory is authoritative in each exercise and which one is deliberately only the comparison/interoperability target."
     ],
     ["LDAP homelab topology", "Repeatable directory bootstrap/LDIF", "Synthetic people/groups evidence", "Least-privilege bind account evidence", "Secure LDAP evidence", "Failure investigation record", "AD/LDAP/Kerberos concept map"],
-    ["A real directory service is running and queryable from another homelab component.", "The learner can explain DN/RDN, attributes, object classes, groups, bind and search filters from the implemented directory.", "Federation access does not require the directory administrator identity.", "Directory transport and trust are protected and tested.", "At least three distinct directory failure modes are reproduced and diagnosed.", "Active Directory is understood at the integration architecture level without expanding TSA into a Windows Server course."],
+    ["A real directory service is running and queryable from another homelab component.", "The learner can explain DN/RDN, attributes, object classes, groups, bind and search filters from the implemented directory.", "Federation access does not require the directory administrator identity.", "Directory transport and trust are protected and tested.", "At least three distinct directory failure modes are reproduced and diagnosed.", "The existing AD DS and bounded OpenLDAP environments have explicit non-competing roles, and the learner can explain which directory is authoritative for a given federation scenario."],
     [openLdapAdmin, keycloakFederation],
 );
 
