@@ -191,8 +191,8 @@ Builder is **REMEDIATED, not VALIDATED**. Remaining school-exit gates are:
 | Source-level pedagogical audit | PASS |
 | Identified source remediation | PASS |
 | Cross-path prerequisite/sequence review | PASS |
-| `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
-| `pnpm build` after remediation | PENDING LOCAL EXECUTION |
+| `pnpm audit:curriculum` after remediation | PASS — 196 runtime path files checked on remediated master |
+| `pnpm build` after remediation | PASS — runtime-kernel TypeScript and production Next.js build; 2/2 tasks successful |
 | Representative rendered UI spot-check | NOT STARTED |
 
 ## System Thinker audit findings
@@ -262,8 +262,8 @@ System Thinker is **REMEDIATED, not VALIDATED**. Remaining school-exit gates are
 | Source-level pedagogical audit | PASS |
 | Identified source remediation | PASS |
 | Cross-path prerequisite/sequence review | PASS |
-| `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
-| `pnpm build` after remediation | PENDING LOCAL EXECUTION |
+| `pnpm audit:curriculum` after remediation | PASS — 196 runtime path files checked on remediated master |
+| `pnpm build` after remediation | PASS — runtime-kernel TypeScript and production Next.js build; 2/2 tasks successful |
 | Representative rendered UI spot-check | NOT STARTED |
 
 ## Platform Builder audit findings
@@ -314,8 +314,8 @@ Platform Builder is **REMEDIATED, not VALIDATED**. Source-level audit found stro
 | Source-level pedagogical audit | PASS |
 | Identified source remediation | PASS |
 | Cross-path prerequisite/sequence review | PASS |
-| `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
-| `pnpm build` after remediation | PENDING LOCAL EXECUTION |
+| `pnpm audit:curriculum` after remediation | PASS — 196 runtime path files checked on remediated master |
+| `pnpm build` after remediation | PASS — runtime-kernel TypeScript and production Next.js build; 2/2 tasks successful |
 | Representative rendered UI spot-check | NOT STARTED |
 
 ## Delivery Engineer audit findings
@@ -368,8 +368,8 @@ A source consistency review found and corrected one missing instruction separato
 | Identified source remediation | PASS |
 | Cross-path prerequisite/sequence review | PASS |
 | Canonical GitLab/GitLab Runner delivery model | PASS |
-| `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
-| `pnpm build` after remediation | PENDING LOCAL EXECUTION |
+| `pnpm audit:curriculum` after remediation | PASS — 196 runtime path files checked on remediated master |
+| `pnpm build` after remediation | PASS — runtime-kernel TypeScript and production Next.js build; 2/2 tasks successful |
 | Representative rendered UI spot-check | NOT STARTED |
 
 ## Cloud Engineer audit findings
@@ -423,8 +423,8 @@ integrated Cloud Engineer exit evidence
 | Identified source remediation | PASS |
 | Cross-path prerequisite/sequence review | PASS |
 | GitLab CI/CD → environment Git → Argo CD authority model | PASS |
-| `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
-| `pnpm build` after remediation | PENDING LOCAL EXECUTION |
+| `pnpm audit:curriculum` after remediation | PASS — 196 runtime path files checked on remediated master |
+| `pnpm build` after remediation | PASS — runtime-kernel TypeScript and production Next.js build; 2/2 tasks successful |
 | Representative rendered UI spot-check | NOT STARTED |
 
 ## Quality Steward audit findings
@@ -554,8 +554,8 @@ release-quality decision
 | Canonical Java-stack consistency | PASS |
 | Identified source remediation | PASS |
 | Cross-path prerequisite/sequence review | PASS |
-| `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
-| `pnpm build` after remediation | PENDING LOCAL EXECUTION |
+| `pnpm audit:curriculum` after remediation | PASS — 196 runtime path files checked on remediated master |
+| `pnpm build` after remediation | PASS — runtime-kernel TypeScript and production Next.js build; 2/2 tasks successful |
 | Representative rendered UI spot-check | NOT STARTED |
 
 
@@ -623,8 +623,8 @@ cross-stack assessment + residual-risk defense
 | Canonical platform/delivery/security alignment | PASS |
 | Identified source remediation | PASS |
 | Cross-path prerequisite/sequence review | PASS |
-| `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
-| `pnpm build` after remediation | PENDING LOCAL EXECUTION |
+| `pnpm audit:curriculum` after remediation | PASS — 196 runtime path files checked on remediated master |
+| `pnpm build` after remediation | PASS — runtime-kernel TypeScript and production Next.js build; 2/2 tasks successful |
 | Representative rendered UI spot-check | NOT STARTED |
 
 
@@ -695,8 +695,8 @@ cross-stack reliability review and defense
 | Cross-signal implementation/diagnosis | PASS |
 | Failure/recovery evidence progression | PASS |
 | Identified source remediation | PASS |
-| `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
-| `pnpm build` after remediation | PENDING LOCAL EXECUTION |
+| `pnpm audit:curriculum` after remediation | PASS — 196 runtime path files checked on remediated master |
+| `pnpm build` after remediation | PASS — runtime-kernel TypeScript and production Next.js build; 2/2 tasks successful |
 | Representative rendered UI spot-check | NOT STARTED |
 
 
@@ -757,8 +757,8 @@ implemented evidence-backed evolution + architecture defense
 | Distribution/resilience trade-off discipline | PASS |
 | Canonical single deployment authority | PASS after remediation |
 | Identified source remediation | PASS |
-| `pnpm audit:curriculum` after remediation | PENDING LOCAL EXECUTION |
-| `pnpm build` after remediation | PENDING LOCAL EXECUTION |
+| `pnpm audit:curriculum` after remediation | PASS — 196 runtime path files checked on remediated master |
+| `pnpm build` after remediation | PASS — runtime-kernel TypeScript and production Next.js build; 2/2 tasks successful |
 | Representative rendered UI spot-check | NOT STARTED |
 
 
@@ -782,7 +782,7 @@ Technical Debt had the material pedagogical gap: eight short reading-only lesson
 
 The milestone correctly reviews the actual current stack rather than preserving every technology encountered for learning. It requires operating control evidence, migration decommission decisions, lifecycle/continuity/provenance ownership, redundant-capability challenge, handbook usability, engineering-health decisions and updates to authoritative artifacts.
 
-Technical Steward is **REMEDIATED, not VALIDATED**. Source pedagogy, delegated decision rights, proportional governance, lifecycle/continuity and progressive engineering-health practice pass. `pnpm audit:curriculum`, `pnpm build` and representative rendered UI validation remain pending.
+Technical Steward is **REMEDIATED, not VALIDATED**. Source pedagogy, delegated decision rights, proportional governance, lifecycle/continuity and progressive engineering-health practice pass. `pnpm audit:curriculum` and `pnpm build` PASS on the remediated master; representative rendered UI validation remains pending.
 
 
 
@@ -801,4 +801,13 @@ Technical Steward is **REMEDIATED, not VALIDATED**. Source pedagogy, delegated d
 
 Professional Engineer is **REMEDIATED, not VALIDATED**. The final progression is discovery → evidence-traced proposal → independent implementation → production-readiness decision → reflective evidence portfolio → adversarial engineering defence.
 
-The school-by-school source pedagogy remediation is now complete for all 12 schools. `pnpm audit:curriculum`, `pnpm build` and representative rendered UI validation remain a separate validation phase.
+The school-by-school source pedagogy remediation is now complete for all 12 schools. `pnpm audit:curriculum` and `pnpm build` PASS on the remediated master; representative rendered UI validation remains the final validation phase.
+
+### Repository-wide executable validation
+
+On the remediated master, local execution confirmed:
+
+- `pnpm audit:curriculum` — **PASS**: 196 runtime path files checked; school wiring, lesson-array reachability, milestone composition and canonical CI architecture clean.
+- `pnpm build` — **PASS**: `@tsa/runtime-kernel` TypeScript build and production Next.js web build completed successfully; 2/2 Turbo tasks successful.
+
+These gates validate source integrity/buildability. They do not replace representative rendered-UI pedagogical inspection, which remains required before schools move from REMEDIATED to VALIDATED.
