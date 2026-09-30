@@ -143,6 +143,19 @@ Builder audit may proceed in parallel at source level, but Engineering Apprentic
 | Configuration / logging | PASS | Appropriate Builder-level operational boundary without stealing later platform/reliability depth. |
 | Steward API Skeleton lab | REMEDIATED | Removed stale claim that PostgreSQL comes later; lab now maps the prior PostgreSQL model, reviews migrations, inspects generated SQL/N+1 behavior and hands off to Identity/Auth (`d664dfd0`). |
 
+### Identity, Authentication and Authorization
+
+| Lesson / area | Classification | Finding |
+| --- | --- | --- |
+| Identity model / Authentication vs Authorization | PASS | Clear subject/account/credential/session distinctions and request-flow separation before policy design. |
+| Password Storage and Hashing | REMEDIATED | Added verifier-record/KDF mental model covering salt, work parameters, derived verifier and verification without recovery while retaining framework-managed cryptography (`af98bea9`). |
+| JWT Structure / access-refresh / expiry-rotation | PASS | Strong semantic treatment of claims, confidentiality limits, token purposes, staleness, revocation and statefulness trade-offs. |
+| Implementing JWT Authentication in DRF | REMEDIATED | Added missing bridge from token semantics to Simple JWT/DRF settings, routes, JWTAuthentication request flow, explicit lifetimes, rotation/blacklist state and authentication-boundary tests (`d7aaf787`). |
+| Authentication Flows | PASS | Registration/login/refresh/logout are modeled as security-state transitions with negative paths. |
+| Roles / object authorization / ownership | PASS | Team-scoped membership, resource-aware policy, ownership transfer and nested-resource bypass risks are explicitly taught. |
+| Common authn/authz mistakes | PASS | Strong deny-by-default and hostile-request/negative-test orientation. |
+| Secure Steward API lab | PASS AFTER REMEDIATION | Lab requirements are now preceded by both conceptual token teaching and concrete DRF JWT wiring; authorization evidence includes authenticated-but-unauthorized cases. |
+
 ## Quality Steward detailed remediation
 
 Do not treat the recent Java migration as pedagogically complete merely because it is technically coherent.
