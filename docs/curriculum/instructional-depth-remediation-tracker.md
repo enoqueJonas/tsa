@@ -107,6 +107,20 @@ Builder audit may proceed in parallel at source level, but Engineering Apprentic
 | Debugging | PASS | Evidence-driven traceback/hypothesis/debugger model. |
 | Python service-core lab | PASS WITH PREREQUISITE | Strong synthesis lab; should remain challenging after early-fundamental remediation. |
 
+### Web and API Foundations
+
+| Lesson / area | Classification | Finding |
+| --- | --- | --- |
+| How the Web Works | REMEDIATED | Expanded DNS/TCP/TLS prerequisites, success evidence and failure boundaries before HTTP (`9d810021`). |
+| Client-Server Architecture | PASS | Clear role model, network-boundary consequences, state ownership and distribution trade-offs. |
+| HTTP Requests and Responses | PASS | Teaches raw message anatomy, headers/body distinction and body-optional responses before practice. |
+| Methods, Headers and Status Codes | REMEDIATED | Added concrete 400/401/403/404/500 semantics and authentication-vs-authorization distinction (`fa6c086b`). |
+| JSON and Content Types | PASS | Separates representation syntax, Content-Type/Accept and domain validation. |
+| REST Principles and Trade-offs | PASS | Treats REST as architectural constraints rather than URL aesthetics and explicitly discusses CRUD trade-offs. |
+| Modeling Resources and API Contracts | PASS | Strong representation/domain/storage separation and compatibility reasoning. |
+| Errors and Status Design | PASS | Failure taxonomy, stable codes, retryability and public-vs-internal evidence are directly taught. |
+| curl/Postman lab | PASS | Strong protocol-level synthesis after the targeted teaching gaps were remediated. |
+
 ## Quality Steward detailed remediation
 
 Do not treat the recent Java migration as pedagogically complete merely because it is technically coherent.
