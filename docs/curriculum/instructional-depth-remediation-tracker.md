@@ -278,7 +278,7 @@ System Thinker is **REMEDIATED, not VALIDATED**. Remaining school-exit gates are
 | Virtualization | PASS | Teaches host/guest/hypervisor boundaries, resource allocation, virtual networking and snapshot/recovery limits before operation. |
 | Budget Homelab | PASS | Design is capability/cost/failure driven and the quality overlay aligns learner-facing OS/VPN choices to Rocky Linux/WireGuard. |
 | Bare-Metal Platform Foundations | PASS | Boot chain, firmware/UEFI, SMART/hardware evidence, recovery/OOB/power boundaries and destructive Proxmox readiness are taught explicitly and safely. |
-| Packet Tracer Network Engineering | TARGETED IMPROVEMENT | Labs are strong and foundational networking is prerequisite, but new enterprise mechanisms such as 802.1Q trunking, STP/EtherChannel, OSPF and ACL evaluation are introduced mainly through one-paragraph briefs plus implementation commands. Add direct conceptual models before those labs. |
+| Packet Tracer Network Engineering | REMEDIATED | Added direct mechanism teaching for VLAN/802.1Q forwarding, STP versus EtherChannel, OSPF adjacency/link-state route learning, and ordered/directional ACL evaluation before the existing evidence-driven labs (`c024ea36`, `d0f7b474`). |
 
 ## Quality Steward detailed remediation
 
