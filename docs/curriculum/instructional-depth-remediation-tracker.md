@@ -121,6 +121,15 @@ Builder audit may proceed in parallel at source level, but Engineering Apprentic
 | Errors and Status Design | PASS | Failure taxonomy, stable codes, retryability and public-vs-internal evidence are directly taught. |
 | curl/Postman lab | PASS | Strong protocol-level synthesis after the targeted teaching gaps were remediated. |
 
+### Relational Data and PostgreSQL
+
+| Lesson / area | Classification | Finding |
+| --- | --- | --- |
+| Relational model through PostgreSQL practice | PASS | Strong progression from facts/keys through CRUD, predicates, aggregation, joins, subqueries/CTEs, transactions, constraints, schema design, normalization, indexes, plans, performance and direct PostgreSQL operation. |
+| Concurrency Fundamentals | PASS | Correctly introduces races, database constraints and selective row locking with two-session practice. |
+| Django ORM / ORM vs SQL / N+1 / Django migrations | RELOCATION REQUIRED | These lessons depended on Django before the following Django path taught the framework. Removed from learner-facing PostgreSQL composition in `3f6a5401`; source retained temporarily for deliberate relocation/reconciliation during Django audit. |
+| Persist and Query Steward API Data lab | REMEDIATED | Removed premature Django/ORM/migration requirements. Lab now proves relational schema, SQL, constraints, plans, transactions and concurrency directly and hands reproducible schema/seed evidence to Django (`c3d2aec5`). |
+
 ## Quality Steward detailed remediation
 
 Do not treat the recent Java migration as pedagogically complete merely because it is technically coherent.
