@@ -84,6 +84,11 @@ export const packetTracerNetworkEngineeringDeepLessons: Lesson[] = [
         ["Build two access switches with users from at least two departments/VLANs.", "Generate traffic and inspect learned MAC addresses before adding segmentation.", "Create the VLANs consistently and assign access ports according to the topology plan.", "Configure an 802.1Q trunk between switches and explicitly control the VLANs that must traverse it.", "Prove same-VLAN communication across the trunk and prove different VLANs remain isolated before routing exists.", "Break one access VLAN or trunk allowance/native setting, use show vlan brief, show interfaces trunk and MAC-table evidence to localize it, then restore service."],
         ["VLAN/port matrix", "Switching .pkt topology", "MAC/VLAN/trunk evidence", "Layer-2 fault record"],
         ["Broadcast domains match the VLAN design.", "The trunk carries only intended VLANs.", "Isolation is tested as well as reachability.", "The injected fault is localized at Layer 2 before repair."],
+        120,
+        [
+            { title: "A VLAN creates a separate Layer-2 broadcast domain", paragraphs: ["An access port assigns ordinary untagged endpoint frames to one VLAN. The switch learns MAC addresses within that VLAN and does not bridge the frame into another VLAN merely because both VLANs exist on the same chassis. Communication between VLANs therefore requires a Layer-3 gateway.", "This is a forwarding boundary, not just a label in configuration. A host in VLAN 10 and a host in VLAN 20 can have healthy links while remaining intentionally isolated at Layer 2."] },
+            { title: "An 802.1Q trunk carries VLAN identity between switches", paragraphs: ["A trunk lets one physical link carry frames for multiple VLANs by associating VLAN identity with frames on the trunk. Both ends must agree about which VLANs are permitted and about any untagged/native-VLAN behavior. An access port and a trunk solve different problems.", "If VLAN 20 exists on both switches but is not allowed across the trunk, local VLAN 20 hosts can work while same-VLAN communication across switches fails. That symptom should send you to VLAN/trunk state before Layer-3 routing."] },
+        ],
     ),
     lab(
         "Inter-VLAN Routing and Default Gateways",
@@ -101,6 +106,10 @@ export const packetTracerNetworkEngineeringDeepLessons: Lesson[] = [
         ["Redundant-switch .pkt topology", "STP root/port-role evidence", "EtherChannel evidence", "Failure/convergence record"],
         ["The topology contains intentional redundancy without uncontrolled loops.", "Root placement is deliberate.", "EtherChannel members have compatible configuration.", "The learner distinguishes STP behavior from link-bundle behavior."],
         150,
+        [
+            { title: "Ethernet redundancy creates a loop unless forwarding is constrained", paragraphs: ["Layer-2 Ethernet frames have no IP-style hop limit. In a physical loop, broadcasts and unknown-unicast frames can circulate and multiply while switches repeatedly relearn source MAC locations. Redundant links therefore cannot all forward independently as one flat bridged topology.", "Spanning Tree elects a root bridge, calculates loop-free paths and places redundant ports into non-forwarding roles. Root placement matters because it influences which links become preferred forwarding paths."] },
+            { title: "STP and EtherChannel solve different problems", paragraphs: ["STP keeps redundant Layer-2 paths without allowing a forwarding loop. EtherChannel bundles compatible physical links into one logical link so STP can treat the bundle as one relationship while traffic can use the member capacity/redundancy.", "Bundle members must agree on relevant Layer-2 parameters. A mismatched VLAN/trunk or channel configuration can prevent formation or create unexpected forwarding; inspect channel and STP state rather than assuming every physical up/up link is participating correctly."] },
+        ],
     ),
     lab(
         "Static, Default and OSPF Routing",
@@ -110,6 +119,10 @@ export const packetTracerNetworkEngineeringDeepLessons: Lesson[] = [
         ["Multi-router .pkt topology", "Static/default route baseline", "OSPF neighbor and route evidence", "Routing failure diagnosis", "Static-versus-OSPF trade-off note"],
         ["Every remote subnet has an explainable route and return route.", "OSPF adjacency and learned routes are proven from device state.", "The default route is not confused with internal dynamic routing.", "The learner can identify a control-plane failure before testing applications."],
         160,
+        [
+            { title: "OSPF separates neighbor formation from route installation", paragraphs: ["Routers first discover compatible OSPF neighbors on participating links and form adjacencies. They then exchange link-state information, build a view of the topology and calculate preferred paths. A missing route can therefore originate from a failed adjacency, missing advertisement, or path-selection/input problem; ping alone does not identify which.", "Connected routes remain locally known, static routes remain operator-declared, and a default route represents a catch-all next hop. OSPF-learned internal routes should not be mentally collapsed with those route sources."] },
+            { title: "Link-state routing trades manual route maintenance for control-plane state", paragraphs: ["Static routes are explicit and predictable at small scale but create maintenance pressure as topology grows. OSPF distributes topology knowledge and reconverges after changes, but now adjacency parameters, advertisements, areas and route calculation become operational state that must be observed.", "TSA keeps this to single-area OSPF here: enough to understand dynamic-routing control-plane behavior without turning Platform Builder into a routing-specialist curriculum."] },
+        ],
     ),
     lab(
         "DHCP, Relay and NAT/PAT",
@@ -128,6 +141,10 @@ export const packetTracerNetworkEngineeringDeepLessons: Lesson[] = [
         ["Traffic-policy matrix", "ACL configuration/evidence", "Positive and negative test results", "ACL fault diagnosis"],
         ["Policy begins as source/destination/protocol intent rather than IOS syntax.", "Allowed and denied paths are both evidenced.", "Implicit deny and rule ordering are understood.", "A policy failure is distinguished from missing routing."],
         130,
+        [
+            { title: "An ACL is an ordered first-match policy", paragraphs: ["Packets are compared with ACL entries in order. The first matching rule decides the result, so a broad deny placed before a narrow permit can make the later permit unreachable. If no explicit rule matches, the implicit deny determines the outcome.", "Write the traffic policy as source, destination, protocol/port and intended action before IOS syntax. That makes rule ordering reviewable independently of the device command format."] },
+            { title: "Placement and direction determine which traffic is evaluated", paragraphs: ["An ACL attached inbound evaluates packets as they enter an interface; outbound evaluates them before they leave. Applying a correct rule set to the wrong interface or direction can make it ineffective or block unrelated traffic.", "Standard ACLs primarily match source address, while extended ACLs can express source, destination and protocol/port. Choose the smallest policy that expresses the requirement, then prove both permitted and denied flows and inspect counters to show the intended rule actually matched."] },
+        ],
     ),
     lab(
         "IPv6 Addressing and Routing Fundamentals",
