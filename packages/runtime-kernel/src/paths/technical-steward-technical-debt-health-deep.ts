@@ -11,7 +11,27 @@ const resourcesByHealth:Record<string,LearningResource[]>={
 };
 
 function reading(id: string, title: string, body: string): Lesson {
-  return { id, title, activities: [{ id: `${id}-001`, title, estimatedMinutes: 18, content: { type: "reading", body, blocks:[{type:"resources",title:"Engineering health reference",resources:resourcesByHealth[id] ?? [fowlerDebt]}] } }] };
+  return { id, title, activities: [
+    { id: `${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body, blocks:[{type:"resources",title:"Engineering health reference",resources:resourcesByHealth[id] ?? [fowlerDebt]}] } },
+    { id: `${id}-practice`, title: `Practice: ${title}`, estimatedMinutes: 45, content: {
+      type: "practical",
+      objective: `Apply ${title} to current Steward engineering-health evidence.`,
+      scenario,
+      instructions: [
+        "Select one concrete Steward example supported by an existing artifact, metric, incident, dependency record, exception or delivery observation.",
+        "Apply the lesson concept and separate observed evidence from interpretation or assumption.",
+        "Make one explicit decision: remediate, contain, schedule, tolerate/monitor, reject the proposed debt label, or escalate where authority is insufficient.",
+        "Record the owner, decision consequence and evidence/review trigger that would cause the decision to change."
+      ],
+      deliverables: ["Focused engineering-health analysis", "Evidence reference", "Decision and rationale", "Owner and reconsideration trigger"],
+      completionCriteria: [
+        "The example is grounded in current Steward evidence rather than a hypothetical dislike of code.",
+        "Debt, defect, risk, maintenance and feature work are not conflated.",
+        "The decision has an engineering or organizational consequence rather than ending at classification.",
+        "Uncertainty and reconsideration evidence are explicit."
+      ]
+    } }
+  ] };
 }
 
 const scenario = "Steward is a mature organization-owned service spanning application code, PostgreSQL, cloud/VPS infrastructure, Nexus, steward-common, tsa-test-core, CI/CD, security controls, observability and operational ownership. Engineering-health decisions must use evidence and connect debt to delivery, reliability, security, cost or maintainability outcomes rather than treating every imperfection as debt.";
