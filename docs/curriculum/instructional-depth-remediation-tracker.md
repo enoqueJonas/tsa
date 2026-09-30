@@ -761,3 +761,15 @@ implemented evidence-backed evolution + architecture defense
 | `pnpm build` after remediation | PENDING LOCAL EXECUTION |
 | Representative rendered UI spot-check | NOT STARTED |
 
+
+## Technical Steward audit findings
+
+### Technical direction, governance and capability strategy
+
+| Path / area | Classification | Finding |
+| --- | --- | --- |
+| Technical Leadership | PASS | Leadership is exercised through explicit technical ownership, evidence-based decisions, audience-aware communication, mentoring for independent judgment, proportionate engineering reviews and responsible escalation. The lab requires durable decisions, dissent/risk records, follow-through and retrospective evidence rather than generic interpersonal reflection. |
+| Engineering Governance | PASS | Clearly separates governance, management and engineering execution; defines delegated decision rights, accountability, policy/standard/procedure/guideline levels, exception lifecycle and evidence review. Governance mechanisms are proportional to risk and deliberately avoid approval-heavy centralization. |
+| IT and Technology Governance | PASS | Connects technology to organizational outcomes, value, resource stewardship, service ownership and performance oversight. COBIT/ITIL/ISO/NIST are selectively mapped to governance problems and explicitly rejected as parallel checklist bureaucracies; documentation is distinguished from operating evidence. |
+| Technology Strategy and Capability Planning | REMEDIATED | Strong outcomes→capability→investment/non-investment model and explicit build/buy/learn/retire choices. Strengthened the 12–24 month roadmap lesson so commitment decreases with horizon, conditional items carry assumptions/evidence gates/owners/review-or-expiry points, and unsupported options are stopped rather than assigned false-precision dates (`42eb2dd0`). |
+
