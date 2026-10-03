@@ -6,53 +6,92 @@ interface PracticeSpec extends Omit<PracticalContent, "type"> {}
 
 const practices: Record<string, PracticeSpec> = {
     "programming-with-python-setting-up-a-python-engineering-environment": {
-        objective: "Establish the first reproducible Python development environment for Steward and prove which interpreter and package location are actually in use.",
-        scenario: "You have joined the Steward team. The repository exists, but the setup guidance is only: 'install Python and run pip install; it works on my machine.' Before feature work begins, you must turn that assumption into a reproducible engineering setup another developer can verify.",
+        objective: "Create the local Python workspace that every following Programming with Python Steward increment will use.",
+        scenario: "You are starting Steward from zero. The long-term product will become an Engineering Service Registry, but today there is no application to refactor and no hidden starter code. Your first job is to create a small, reproducible Python workspace named steward-core so later exercises have a real artifact to extend.",
         instructions: [
-            "Before changing anything, capture which Python executable your shell resolves, its version, sys.executable and python -m pip --version.",
-            "Create a project-local .venv, activate it and repeat the same observations. Explain exactly what changed.",
-            "Install one small dependency with python -m pip and prove where it was installed.",
-            "Deactivate the environment and attempt to import the dependency again. Preserve the result rather than merely stating that isolation works.",
-            "Delete .venv and recreate it. Identify what information is still missing if another engineer wants the same dependency set.",
-            "Write a concise setup procedure that starts from a machine with Python installed but no Steward environment."
+            "Create a new directory named steward-core and initialize it as a Git repository.",
+            "Inside it, create and activate a project-local .venv. Capture python --version, python -c \"import sys; print(sys.executable)\" and python -m pip --version.",
+            "Create steward/ with an empty __init__.py and create steward/services.py. For now, services.py may contain only a short module docstring explaining that it will hold Steward service behavior.",
+            "Create main.py that imports steward.services and prints \"Steward workspace ready\". Run it from the repository root.",
+            "Deactivate the environment, reactivate it and run main.py again. The goal is to prove that you can return to the project deliberately.",
+            "Add a .gitignore that excludes .venv, __pycache__ and other generated Python files, then commit this checkpoint."
         ],
-        deliverables: ["Interpreter and pip evidence before/after activation", "Isolation failure evidence", "Reproducible Steward setup note", "Short note explaining the remaining dependency-reproducibility gap"],
-        completionCriteria: ["You can prove which interpreter executes Steward code.", "The dependency is isolated from the system interpreter.", "The setup can be repeated from a deleted .venv.", "You can explain why a virtual environment alone is not a dependency specification."]
+        deliverables: ["steward-core repository with steward/services.py and main.py", "Interpreter and pip evidence from the active .venv", "Successful main.py output", "Initial Git commit"],
+        completionCriteria: ["steward-core exists as a Git repository.", "steward/services.py is importable.", "Running main.py prints Steward workspace ready.", ".venv and generated Python files are not committed.", "This repository is the starting point for the next Steward increment."]
     },
     "programming-with-python-python-syntax-values-and-types": {
-        objective: "Turn raw service-registration values into deliberate Python representations and expose where type-correct data can still violate Steward rules.",
-        scenario: "A prototype sends Steward service data as loosely typed values. Your task is to inspect what Python actually represents, then separate language-level validity from domain validity before this data ever reaches an API framework.",
-        instructions: ["Model one realistic Service record using scalar values and collections.", "Use type() and repr() to inspect the values rather than assuming their representation.", "Create two equal dependency collections and demonstrate the difference between equality and identity, then create an alias and mutate through it.", "Parse external text representing a review interval and owner identifier; preserve one successful conversion and one failure.", "Create one value that is valid Python but invalid Steward data and write the rule that should reject it."],
-        deliverables: ["Runnable representation experiment", "Equality/identity and aliasing evidence", "Boundary-conversion evidence", "Domain-rule note"],
-        completionCriteria: ["The experiment distinguishes value, type, identity and mutability.", "At least one conversion failure remains observable.", "You can explain why Python type correctness does not guarantee Steward domain correctness."]
+        objective: "Create Steward's first concrete Service representation using Python values you can inspect and explain.",
+        scenario: "The Steward workspace now exists, but it stores nothing. The first useful capability is deliberately small: hold basic information about one engineering service. A service needs a name, an API endpoint, whether it is active, and its age in days.",
+        instructions: [
+            "Open steward/services.py from the previous checkpoint.",
+            "Create a dictionary named payments_api with name \"Payments API\", endpoint \"https://payments.internal/api\", active True and age_days 184.",
+            "Print each field from main.py, then use type() and repr() to inspect at least two values.",
+            "Create a second service dictionary for \"Authentication API\" with different values.",
+            "Create one deliberately invalid service whose age_days is the string \"old\". Observe that Python can still store it and write down why language-level validity is not the same as a Steward business rule.",
+            "Commit the checkpoint without adding validation yet; validation belongs to a later increment."
+        ],
+        deliverables: ["Two valid-looking Service dictionaries in steward/services.py", "Runnable field/type inspection from main.py", "One deliberately invalid representation and a short observation"],
+        completionCriteria: ["Running main.py shows the fields of Payments API.", "active is represented as a boolean and age_days as an integer in the valid examples.", "You can explain why Python accepts the invalid age_days value.", "No validation framework or class has been introduced prematurely."]
     },
     "programming-with-python-control-flow": {
-        objective: "Implement and review a production-eligibility rule whose branches correspond to explicit Steward business decisions.",
-        scenario: "Operations reports that retired, unowned or incompletely configured services must never be promoted to production. You receive the rule in prose and must translate it into behavior that a reviewer can reason about path by path.",
-        instructions: ["Write the eligibility rule in plain language before coding.", "Implement a deliberately nested first version and exercise every meaningful branch.", "Refactor it using guard clauses or clearer branch ordering without changing behavior.", "Add one boundary case where Python truthiness could hide an important distinction.", "List the future test cases implied by the final branch structure."],
-        deliverables: ["Before/after implementations", "Behavior table covering allowed and rejected paths", "Boundary-case evidence", "Future test-case list"],
-        completionCriteria: ["Every branch represents an explainable domain decision.", "The refactor preserves behavior.", "A truthiness ambiguity is identified and resolved deliberately.", "You can justify the final branch order."]
+        objective: "Add the first Steward business decision: determine whether a Service is eligible to be shown as active.",
+        scenario: "Steward can now represent Services, but raw data alone does not express decisions. For this increment, a Service is operationally eligible only when it is marked active, has a non-empty endpoint, and has a non-negative age_days value. Implement that rule before introducing functions in the next lesson.",
+        instructions: [
+            "Continue from the Service dictionaries created in the previous checkpoint.",
+            "In main.py, use if/elif/else to evaluate payments_api against the three eligibility conditions: active is True, endpoint is not empty, and age_days is an integer greater than or equal to zero.",
+            "Print either \"Payments API is eligible\" or a specific rejection reason.",
+            "Change one field at a time to exercise inactive, missing-endpoint and invalid-age paths. Record the observed output for each case.",
+            "Restore the valid Payments API data before finishing.",
+            "Write the rule as a small decision table in your notes. Do not extract a function yet; the next increment will make that refactor purposeful."
+        ],
+        deliverables: ["Working conditional eligibility logic", "Observed output for the valid path and three rejected paths", "Small eligibility decision table"],
+        completionCriteria: ["Every stated rule has an observable branch.", "The valid Payments API is accepted.", "Each invalid variation is rejected for an understandable reason.", "The checkpoint still uses explicit control flow so the next refactor has real code to improve."]
     },
     "programming-with-python-functions-and-scope": {
-        objective: "Refactor a mixed Steward script into functions with visible contracts, controlled state and one reproducible scope-related defect.",
-        scenario: "The first Steward experiment has grown into one script that parses input, normalizes lifecycle values, mutates dependency data and prints output. A teammate cannot tell which functions change state or fail. Refactor it for reviewability without inventing unnecessary architecture.",
-        instructions: ["Start from a script containing at least three responsibilities and identify them in writing.", "Extract functions whose names communicate one coherent responsibility.", "For one public function, record inputs, output, side effects and failure behavior before implementation.", "Reproduce the mutable-default-argument bug or another scope/state bug and capture the surprising result.", "Fix the bug by making ownership explicit.", "Remove one unnecessary global dependency and explain why the new version is easier to reason about."],
-        deliverables: ["Refactored script/module", "Function contract", "Bug reproduction and fix evidence", "Short state-ownership note"],
-        completionCriteria: ["Responsibilities are visible from function boundaries.", "Hidden mutable global state is reduced.", "The reproduced bug has an explained cause, not only a fix.", "You can describe where each changed piece of state is owned."]
+        objective: "Turn the Service behavior you already built into named functions with explicit inputs, outputs and state changes.",
+        scenario: "Your current main.py contains Service data plus eligibility logic. That was useful while learning control flow, but the next feature will need to reuse the behavior. Refactor code that actually exists, then add deliberate status-changing operations.",
+        instructions: [
+            "Start from your previous checkpoint. Do not invent a separate sample script.",
+            "Move Service-related behavior into steward/services.py.",
+            "Implement create_service(name, endpoint, age_days) so a newly created Service starts with active set to True.",
+            "Extract is_service_eligible(service) from the eligibility logic you already wrote. It must return a boolean and must not modify the Service.",
+            "Implement deactivate_service(service) and activate_service(service). These functions deliberately mutate the Service's active status.",
+            "Implement service_summary(service) so it returns a readable string containing the Service name, endpoint and status without modifying the Service.",
+            "In main.py, create Payments API, print its eligibility, deactivate it, print eligibility again, reactivate it and print service_summary().",
+            "For is_service_eligible() and deactivate_service(), write down inputs, return value and whether the function changes caller-owned state."
+        ],
+        deliverables: ["Updated steward/services.py", "main.py demonstrating the complete status flow", "Two short function contracts"],
+        completionCriteria: ["create_service() creates an active Service.", "is_service_eligible() returns True for the valid active Payments API and does not mutate it.", "deactivate_service() changes active from True to False.", "activate_service() changes active back to True.", "service_summary() reports the Service without changing it.", "Every function operates on artifacts created in this curriculum rather than a fictional prior script."]
     },
     "programming-with-python-collections-and-data-structures": {
-        objective: "Choose Python collection types from Steward's required guarantees instead of convenience or habit.",
-        scenario: "A prototype represents every multi-value concern as a list. Reviewers have already found duplicate dependencies and slow, awkward lookups. Redesign only the in-memory structures that benefit from stronger guarantees.",
-        instructions: ["Model lifecycle history, service coordinates, a keyed service record and unique dependencies using different built-in structures.", "For each choice, write the guarantee you are relying on: order, keyed lookup, uniqueness, fixed grouping or mutability.", "Demonstrate duplicate insertion behavior for both a list and a set.", "Demonstrate one lookup-oriented operation using two candidate structures and compare clarity.", "Identify one place where a built-in collection is becoming too weak and note what later abstraction may replace it."],
-        deliverables: ["Runnable collection comparison", "Structure/guarantee decision table", "Duplicate-behavior evidence", "Future modeling note"],
-        completionCriteria: ["Every structure has a stated reason for existing.", "At least one alternative is rejected with evidence.", "You distinguish an in-memory guarantee from a future database constraint."]
+        objective: "Grow Steward from one Service into an in-memory registry that can add, find and filter Services.",
+        scenario: "Steward can create and update one Service. An engineering registry becomes useful only when it can manage several. Build the smallest registry needed to answer concrete questions without introducing a database or framework.",
+        instructions: [
+            "Continue using create_service() from the previous checkpoint to create Payments API, Authentication API and Notifications API.",
+            "Store the Services in a list named services.",
+            "Implement find_service_by_name(services, name). Return the matching Service or None when it does not exist.",
+            "Implement active_services(services) to return only Services whose active field is True.",
+            "Create a set of dependency names for Payments API and demonstrate that adding the same dependency twice does not create a duplicate.",
+            "From main.py, deactivate Notifications API, then print the names returned by active_services().",
+            "Attempt to find an unknown Service and preserve the observed None result. Do not turn it into an exception yet."
+        ],
+        deliverables: ["Three-Service in-memory registry", "find_service_by_name() and active_services()", "Dependency uniqueness experiment", "Runnable lookup/filter demonstration"],
+        completionCriteria: ["The registry contains three Services.", "Finding Payments API returns the expected Service.", "Finding an unknown name returns None.", "After Notifications API is deactivated, it is absent from active_services().", "The dependency set demonstrates uniqueness without pretending that an in-memory set is a future database constraint."]
     },
     "programming-with-python-modules-and-packages": {
-        objective: "Turn a growing Steward script into a small package with understandable dependency direction and no import-time surprises.",
-        scenario: "The Steward core now has enough behavior that one file is slowing review. A teammate proposes creating one module per noun. Your task is to design boundaries from responsibilities instead and prove the resulting imports remain understandable.",
-        instructions: ["Inventory the current responsibilities before creating files.", "Propose two package layouts and choose one based on cohesion and dependency direction.", "Move code into the chosen modules while keeping the public import surface small.", "Sketch dependency arrows and identify any cycle or near-cycle.", "Keep demo execution behind an explicit entry point and prove importing the package does not execute the demo.", "Record one boundary you deliberately refuse to extract into a reusable package yet."],
-        deliverables: ["Working package structure", "Alternative-boundary sketch", "Dependency-direction diagram", "Import-side-effect evidence", "Deferred extraction decision"],
-        completionCriteria: ["File boundaries follow responsibilities rather than nouns mechanically.", "Imports can be explained directionally.", "Importing the package has no surprising execution side effects.", "No reusable package is invented without a demonstrated consumer need."]
+        objective: "Split the Steward code only now that the growing implementation has real responsibilities worth separating.",
+        scenario: "steward/services.py now creates Services, changes status, evaluates eligibility, searches a registry and experiments with dependencies. The file has earned a refactor. Separate responsibilities while preserving every behavior from the previous checkpoints.",
+        instructions: [
+            "Before moving code, list the responsibilities currently present in steward/services.py.",
+            "Create steward/registry.py and move registry-oriented behavior such as find_service_by_name() and active_services() into it.",
+            "Keep Service creation, status changes, summaries and eligibility in steward/services.py.",
+            "If dependency-specific code has become more than a tiny experiment, create steward/dependencies.py; otherwise leave it where it is and record why another module is not yet justified.",
+            "Update main.py imports and rerun every behavior demonstrated in the previous checkpoint.",
+            "Run python -c \"import steward.services; import steward.registry\" and verify that importing the modules does not print demo output.",
+            "Sketch the import direction between main.py, services.py and registry.py and check that you have not created a circular import."
+        ],
+        deliverables: ["Refactored Steward package", "Responsibility inventory", "Successful regression run", "Import-side-effect evidence", "Small dependency-direction sketch"],
+        completionCriteria: ["Existing Service creation, status, eligibility, lookup and filtering behavior still works.", "Registry behavior has a clear home.", "Importing Steward modules does not execute the demo.", "No circular import was introduced.", "A new module exists only where accumulated behavior justified it."]
     },
     "programming-with-python-errors-exceptions-and-defensive-programming": {
         objective: "Design Steward failure behavior so invalid operations remain distinguishable and diagnostic evidence is not accidentally erased.",
