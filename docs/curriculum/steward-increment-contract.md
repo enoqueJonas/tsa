@@ -273,9 +273,22 @@ Result: Steward has an evidence-producing quality system around a known release,
 
 ### 7. Security Steward — attack and harden what exists
 
-Threat modeling, access-control testing, secrets, delivery/infrastructure security and hardening operate against the accumulated Steward system.
+Security Steward begins from a **security assessment baseline** assembled from the actual accumulated system, not from a generic web-application scenario. The learner records:
 
-Result: security changes correspond to demonstrated risks and controls.
+- the exact Steward application release and deployed environment under assessment;
+- the current Cloud topology, public/private/management boundaries and authoritative data stores;
+- the Delivery source-to-artifact chain, CI identities and immutable artifact coordinates;
+- the current authentication and domain-authorization model;
+- the Quality risk/evidence map and security-relevant regression capabilities;
+- internal packages and shared test libraries only when they actually exist;
+- current secrets/credentials by purpose and ownership, never secret values;
+- known residual risks and open architecture decisions from earlier schools.
+
+Threat modeling, access-control testing, secrets, delivery/infrastructure security and hardening operate against that baseline. Security findings must identify affected asset/boundary, reproducible evidence, current control, remediation or accepted residual risk, and retest evidence where a change is implemented.
+
+Security Steward must not invent infrastructure merely to satisfy a security topic. Keycloak, Vault, internal PKI, federation or other controls are adopted when the accumulated system creates a defensible requirement; otherwise the learner records a defer decision and trigger. Likewise, optional artifacts such as `tsa-test-core` cannot appear in threat models or supply-chain diagrams unless the Quality Steward path actually produced them.
+
+Result: security changes correspond to demonstrated risks and controls on a known Steward release, and the final assessment clearly distinguishes verified controls, findings, recommendations and accepted/deferred risk.
 
 ### 8. Reliability Engineer — operate measurable behavior
 
