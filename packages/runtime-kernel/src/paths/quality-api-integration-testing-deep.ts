@@ -117,6 +117,34 @@ const specs: Spec[] = [
     ], practice: ["Design reusable data builders for teams, users, services and dependencies.", "Make two integration tests safe to run in parallel.", "Demonstrate cleanup or transaction isolation even when a test fails midway."], questions: ["Why are globally shared fixtures dangerous in integration suites?", "What makes a test-data helper expressive rather than opaque?"] },
 ];
 
+const asyncLifecycleIntegration: Lesson = {
+  id: "api-integration-async-lifecycle",
+  title: "Asynchronous Lifecycle Integration",
+  activities: [
+    {
+      id: "api-integration-async-lifecycle-001",
+      title: "Prove Steward's Committed Lifecycle Side Effect",
+      estimatedMinutes: 120,
+      content: {
+        type: "practical",
+        objective: "Prove the product-level contract that a committed Steward lifecycle mutation produces its required asynchronous side effect without confusing eventual completion with synchronous HTTP success.",
+        scenario: "Cloud Engineer handed over a deployed Steward release with API, transactional outbox publisher, RabbitMQ and lifecycle consumer. Quality now needs repeatable evidence for the behavior clients and operators rely on, not tests of Kubernetes or Argo CD internals.",
+        instructions: [
+          "Select one lifecycle mutation whose committed state creates durable outbox publication intent and a consumer-owned observable effect.",
+          "Record the exact release/environment identity and call the public Steward API through its supported Kong route.",
+          "Assert the synchronous response and authoritative PostgreSQL state separately from the asynchronous outcome.",
+          "Poll the owned observable outcome with a bounded deadline and diagnostic interval; do not use an arbitrary fixed sleep.",
+          "On timeout, preserve correlation/event identity plus sanitized evidence that distinguishes missing outbox intent, unpublished intent, queued/redelivered work and consumer failure where the environment exposes those diagnostics.",
+          "Repeat one controlled duplicate/redelivery case and prove the product's idempotency rule prevents a duplicate owned effect.",
+          "Run one negative case where the API mutation is rejected and prove no corresponding asynchronous effect is eventually produced."
+        ],
+        deliverables: ["Executable lifecycle integration test", "Bounded eventual-assertion helper kept inside steward-tests", "Correlation/event evidence", "Duplicate/idempotency evidence", "Rejected-mutation non-effect evidence"],
+        completionCriteria: ["HTTP success is not treated as proof of asynchronous completion.", "The test asserts product-observable behavior rather than Kubernetes/Argo implementation details.", "Waiting is bounded and diagnostic rather than a fixed sleep.", "Duplicate delivery cannot create duplicate owned effects.", "Rejected authoritative mutations do not leak side effects.", "Any generic-looking eventual-assertion helper remains in steward-tests until the later two-consumer tsa-test-core gate."]
+      }
+    }
+  ]
+};
+
 const httpMilestone: Lesson = { id: "api-http-engineering-milestone", title: "Milestone: Prove the HTTP Contract Before Framework Abstraction", activities: [
  { id: "api-http-engineering-milestone-001", title: "Build the Protocol Evidence Baseline", estimatedMinutes: 120, content: { type: "practical", objective: "Demonstrate protocol-level reasoning using the existing raw HTTP capability before REST Assured hides transport ceremony.", scenario: "The learner must be able to inspect a request/response and explain its semantics independently of any testing DSL.", instructions: ["Select one read and one mutation endpoint.", "Document method safety/idempotency, authentication, Content-Type/Accept, expected status semantics and side effects.", "Capture a sanitized real request/response including a correlation/request identifier where available.", "Design one retry/duplicate-delivery risk scenario.", "Separate protocol assertions from Steward domain assertions."], deliverables: ["HTTP contract note", "Sanitized wire evidence", "Idempotency/retry analysis", "Protocol-vs-domain assertion map"], completionCriteria: ["HTTP semantics are explained without REST Assured terminology.", "No credential appears in evidence.", "Retry safety is not assumed from status codes.", "Domain claims are distinguishable from protocol claims."] } }
 ] };
