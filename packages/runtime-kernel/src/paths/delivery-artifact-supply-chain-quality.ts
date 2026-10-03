@@ -6,8 +6,8 @@ type PracticeProfile = Pick<PracticalContent, "objective" | "scenario" | "delive
 
 const profiles: Record<string, PracticeProfile> = {
     "Why Organizations Use Internal Artifact Repositories": {
-        objective: "Prove that Steward has a real distribution problem that source control and developer-local files do not solve.",
-        scenario: "steward-common and Steward images can be built, but another repository or clean CI worker still depends on producer-local state. Decide what an internal repository must remove from that path.",
+        objective: "Prove that Steward has a real artifact-distribution problem that source control and developer-local files do not solve.",
+        scenario: "Steward images already need to move from CI to deployment independently of producer-local state. If a real internal package also exists, include it as a second artifact type; do not create steward-common merely to justify a repository manager.",
         deliverables: ["Producer-to-consumer dependency map", "Local-state failure points", "Repository capability decision"],
         completionCriteria: ["The repository is justified by an actual cross-machine or cross-repository need.", "Version control and artifact distribution are not conflated.", "At least one current local-only dependency is identified for removal."],
     },
@@ -36,8 +36,8 @@ const profiles: Record<string, PracticeProfile> = {
         completionCriteria: ["Publishing targets hosted repositories.", "Consumers use an intentional group/proxy path.", "Repository grouping simplifies clients without obscuring artifact origin."],
     },
     "Python and PyPI Package Distribution": {
-        objective: "Turn steward-common into an independently buildable Python distribution whose identity can survive outside the source tree.",
-        scenario: "A clean CI worker must install steward-common without editable installs, copied source or filesystem links.",
+        objective: "Package an internal Python library only when an actual cross-repository Steward reuse boundary exists; otherwise record why this artifact type is deferred.",
+        scenario: "If the learner has already extracted a real internal Python library, a clean CI worker must install it without editable installs, copied source or filesystem links. If no such library exists, use the lesson to define the distribution contract and defer publication rather than manufacture steward-common.",
         deliverables: ["Wheel and source distribution", "Package metadata inspection", "Name/version-to-artifact evidence"],
         completionCriteria: ["The package builds from versioned source.", "The artifact exposes intentional name and version metadata.", "No consumer-local source path is required to understand the distribution contract."],
     },
@@ -66,14 +66,14 @@ const profiles: Record<string, PracticeProfile> = {
         completionCriteria: ["GitLab CI/CD can publish without administrative rights.", "A read-only identity cannot upload or mutate artifacts.", "Secrets are not stored in repository source or plaintext inventory."],
     },
     "Publishing Internal Python Packages": {
-        objective: "Publish an immutable steward-common version from a verified build and preserve source-to-artifact evidence.",
-        scenario: "A package that passes locally should not become an internal release unless GitLab CI/CD can verify, build and publish it reproducibly with a non-admin identity.",
+        objective: "Publish an immutable internal Python package from a verified build when such a package exists, and preserve source-to-artifact evidence.",
+        scenario: "When a real internal Python package exists, it should not become an internal release unless GitLab CI/CD can verify, build and publish it reproducibly with a non-admin identity. Otherwise record this package flow as not applicable while continuing with the required container artifact path.",
         deliverables: ["Published steward-common version", "Source/build/publication trace", "Rejected invalid or duplicate publication evidence"],
         completionCriteria: ["Verification precedes publication.", "Published bytes map to one source revision and version.", "A failed verification or disallowed overwrite fails closed."],
     },
     "Consuming Internal Packages with pip": {
-        objective: "Prove Steward API can install steward-common from the approved Nexus index on a clean consumer with no producer-local state.",
-        scenario: "The consumer must behave as if the steward-common source repository is unavailable and only Nexus remains.",
+        objective: "Prove a real Steward consumer can install an internal Python package from the approved Nexus index with no producer-local state, when that package exists.",
+        scenario: "For an existing internal Python package, the consumer must behave as if the producer source repository is unavailable and only Nexus remains. If no internal Python package exists, preserve the conditional decision and do not invent a consumer.",
         deliverables: ["Consumer index configuration", "Clean-install evidence", "Version-resolution decision"],
         completionCriteria: ["No workspace link, copied wheel or editable install is required.", "The selected version policy is explicit.", "Failure of the approved repository path is visible rather than silently bypassed by a local artifact."],
     },
