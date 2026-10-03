@@ -94,47 +94,96 @@ const practices: Record<string, PracticeSpec> = {
         completionCriteria: ["Existing Service creation, status, eligibility, lookup and filtering behavior still works.", "Registry behavior has a clear home.", "Importing Steward modules does not execute the demo.", "No circular import was introduced.", "A new module exists only where accumulated behavior justified it."]
     },
     "programming-with-python-errors-exceptions-and-defensive-programming": {
-        objective: "Design Steward failure behavior so invalid operations remain distinguishable and diagnostic evidence is not accidentally erased.",
-        scenario: "A prototype catches every Exception and returns an empty result so the demo can keep running. Reviewers can no longer distinguish invalid service input from programmer defects. Replace this with deliberate failure contracts.",
-        instructions: ["Implement two invalid Steward operations that should be rejected explicitly.", "Show the broad-catch version and capture how it hides at least one real defect.", "Replace it with specific handling or propagation and explain the decision.", "Translate one low-level failure at an abstraction boundary using exception chaining.", "For each failure, state what the caller should do: retry, correct input, propagate or stop."],
-        deliverables: ["Failure-contract table", "Broad-catch failure evidence", "Corrected exception strategy", "Exception-chaining example"],
-        completionCriteria: ["Domain rejection and unexpected defects remain distinguishable.", "No failure is swallowed merely to keep execution moving.", "Translated failures retain causal context.", "Caller behavior is explicit for each case."]
+        objective: "Replace ambiguous registry failures with explicit Steward validation and exception contracts.",
+        scenario: "The current registry can create, activate, deactivate, find and filter Services, but invalid data is still easy to introduce and an unknown lookup simply returns None. Now that those behaviors exist, make failure deliberate without hiding programmer defects.",
+        instructions: [
+            "Continue from the refactored steward package from the previous checkpoint.",
+            "Add validation to create_service(): name and endpoint must be non-empty strings and age_days must be an integer greater than or equal to zero.",
+            "Create a ServiceValidationError exception for invalid Service input and raise it with a useful message.",
+            "Change find_service_by_name() so an unknown Service raises a ServiceNotFoundError instead of returning None.",
+            "In main.py, demonstrate one invalid create_service() call and one missing lookup. Catch only the expected domain exception at the boundary where you can print a useful message.",
+            "Deliberately introduce a programmer defect inside a temporary copy of the demo and prove that catch-all Exception handling would hide it. Remove the broad catch and restore the working code.",
+            "Write down what callers should do for ServiceValidationError, ServiceNotFoundError and an unexpected exception."
+        ],
+        deliverables: ["Explicit Steward exception types", "Validated create_service()", "Missing-Service failure behavior", "Expected-failure demo", "Short caller-response table"],
+        completionCriteria: ["Invalid Service data is rejected at creation.", "Unknown lookup no longer silently returns None.", "Expected domain failures are handled specifically.", "Unexpected programmer defects are not swallowed.", "Existing valid Service and registry behavior still works."]
     },
     "programming-with-python-object-oriented-programming": {
-        objective: "Decide whether a Steward concept deserves an object by comparing an invariant-owning class with a simpler functional representation.",
-        scenario: "The team is split: one engineer wants classes for every domain noun; another wants dictionaries and functions everywhere. Build both approaches for one narrow Steward concept and make the decision from behavior and changeability rather than ideology.",
-        instructions: ["Choose Service, Team or Environment and identify one invariant plus one meaningful behavior.", "Implement a class that owns that invariant.", "Represent one relationship through composition rather than inheritance.", "Build a simpler dictionary/function alternative that supports the same small use case.", "Exercise the same valid and invalid scenarios against both versions.", "Write a short decision explaining which version you would keep now and what future evidence could reverse the decision."],
-        deliverables: ["Class-based implementation", "Simpler alternative", "Shared behavior comparison", "Design decision note"],
-        completionCriteria: ["The class exists to protect behavior or invariants, not merely to wrap fields.", "Inheritance is not used without a true subtype relationship.", "The selected design is justified against a real alternative."]
+        objective: "Evolve the existing dictionary-based Service into an object only after the accumulated behavior gives the object a reason to exist.",
+        scenario: "Service now has data, validation, eligibility rules and state transitions spread across functions. This is enough evidence to test whether Service should own some of that behavior. Refactor the implementation you already built rather than creating an unrelated OOP example.",
+        instructions: [
+            "List the Service fields and behaviors currently distributed across create_service(), activate_service(), deactivate_service(), is_service_eligible() and service_summary().",
+            "Implement a Service class that owns name, endpoint, active and age_days. Keep the validation rules from the previous checkpoint.",
+            "Move activate(), deactivate(), is_eligible() and summary() onto Service where doing so improves cohesion.",
+            "Update registry functions to work with Service instances without changing their externally observable lookup/filter behavior.",
+            "Create a small Team class with a name, then give Service an optional owner_team through composition. Do not use inheritance between Team and Service.",
+            "Update main.py to reproduce the same Payments API lifecycle demonstrated before the refactor.",
+            "Record one reason the class is now justified and one reason you would reject creating a class for a concept that has only passive data."
+        ],
+        deliverables: ["Service class", "Small Team composition example", "Updated registry integration", "Before/after behavior comparison", "Design rationale"],
+        completionCriteria: ["Service protects the validation rules already established.", "Activation/deactivation and eligibility behavior is preserved.", "Registry lookup/filtering works with Service objects.", "Team is composed with Service rather than forced into inheritance.", "The refactor changes structure without silently changing established behavior."]
     },
     "programming-with-python-comprehensions-iterators-and-pythonic-tools": {
-        objective: "Improve a small Steward data-processing task with Python iteration tools while preserving readability and observable behavior.",
-        scenario: "A service-audit script works but contains several repetitive loops. Refactor the parts where Python's iteration tools clarify intent, and deliberately leave alone any transformation that becomes harder to read when compressed.",
-        instructions: ["Start with explicit loops for filtering and transforming service data.", "Convert one simple transformation into a comprehension and compare both versions.", "Use a generator for a sequence that does not need to exist fully in memory and demonstrate that it is consumed.", "Use any() or all() for one meaningful registry question.", "Sort services using an explicit key.", "Identify one loop you refuse to compress and explain why."],
-        deliverables: ["Before/after iteration code", "Generator-consumption evidence", "Built-in function example", "Readability decision note"],
-        completionCriteria: ["Refactoring preserves behavior.", "Concise syntax is used only where intent remains clear.", "You can explain the behavioral difference between a list comprehension and generator expression."]
+        objective: "Improve real registry queries with Python iteration tools while keeping the existing behavior readable.",
+        scenario: "The registry now contains Service objects. Several operations use explicit loops, which gives you real code to evaluate rather than synthetic comprehension drills. Refactor only the operations that become clearer.",
+        instructions: [
+            "Create at least five Service instances with mixed active states, ages and owner teams.",
+            "Implement or rewrite active_services() using a list comprehension and compare it with the explicit-loop version.",
+            "Add service_names() as a simple transformation and use a comprehension where it remains readable.",
+            "Add has_inactive_services() using any() and all_services_owned() using all().",
+            "Add services_by_age() using sorted() with an explicit key.",
+            "Create iter_active_services() as a generator and demonstrate that it yields Services on demand rather than building a list immediately.",
+            "Choose one non-trivial registry operation and deliberately keep the explicit loop if a comprehension would obscure the business rule. Record the reason."
+        ],
+        deliverables: ["Registry query refactor", "any()/all() examples", "Sorted Service query", "Generator demonstration", "Readability decision"],
+        completionCriteria: ["Existing active filtering behavior is preserved.", "Each Pythonic construct has a concrete registry purpose.", "The generator can be iterated without changing Service state.", "At least one loop is retained deliberately when compression would reduce clarity."]
     },
     "programming-with-python-type-hints-and-static-feedback": {
-        objective: "Use type annotations as executable design feedback for the Steward core and demonstrate both their value and their limits.",
-        scenario: "A teammate changes a function to accept an optional owner identifier, and another call site still assumes an integer. The code path is not exercised in the demo, so the mismatch reaches review. Introduce static feedback before runtime becomes the first detector.",
-        instructions: ["Annotate the public boundary of two existing Steward operations.", "Represent at least one optional value explicitly.", "Run mypy or an equivalent checker and preserve a clean baseline.", "Introduce a real type mismatch deliberately and capture the diagnostic.", "Fix the mismatch without weakening the type to Any.", "Identify one important Steward rule the checker still cannot prove and explain what mechanism should cover it instead."],
-        deliverables: ["Annotated code", "Static-check baseline", "Captured mismatch diagnostic and fix", "Type-system limit note"],
-        completionCriteria: ["Annotations make a public contract clearer.", "The checker detects a mismatch before runtime.", "The fix preserves useful type information.", "You distinguish type guarantees from domain validation."]
+        objective: "Add static contracts to the Steward core and use the checker to expose a real mismatch before runtime.",
+        scenario: "Service and registry behavior now spans several modules. The code works, but function contracts still live mostly in the reader's head. Add type information to the implementation you already own, then prove what static analysis can and cannot guarantee.",
+        instructions: [
+            "Add type hints to the Service and Team constructors and to the public registry functions.",
+            "Represent owner_team explicitly as Team | None (or Optional[Team] if required by your supported Python version).",
+            "Type the Service collections used by active_services(), find_service_by_name() and iter_active_services().",
+            "Add mypy as a development dependency for this checkpoint and run it against steward and main.py. Preserve the first clean result.",
+            "Deliberately pass a string where a list of Service objects is expected and capture the mypy diagnostic before fixing it.",
+            "Do not weaken the contract to Any to silence the checker.",
+            "Write down one existing Steward rule, such as non-empty endpoint or non-negative age_days, that type hints alone cannot prove."
+        ],
+        deliverables: ["Typed Steward public boundaries", "Clean mypy run", "Captured deliberate type error and fix", "Static-analysis limitation note"],
+        completionCriteria: ["mypy checks the current Steward code successfully after the fix.", "The deliberate mismatch is detected before runtime.", "Optional ownership is represented explicitly.", "Useful types are preserved rather than replaced with Any.", "You can distinguish static type guarantees from domain validation."]
     },
     "programming-with-python-virtual-environments-and-dependency-management": {
-        objective: "Make the framework-free Steward core installable from declared project metadata and test that claim from a clean environment.",
-        scenario: "The team can recreate .venv, but package installation still depends on remembering commands from chat history. Convert those private assumptions into project metadata and evaluate how much reproducibility you actually achieved.",
-        instructions: ["List the packages Steward imports directly and distinguish them from transitive dependencies.", "Declare the direct requirements in project metadata with deliberate version constraints.", "Explain the trade-off behind at least one chosen constraint.", "Delete .venv, recreate it and install Steward only from repository metadata.", "Run the demo from the clean environment.", "Inspect the resolved dependency graph and record one source of variation that still exists without a lock strategy."],
-        deliverables: ["Project dependency declaration", "Clean-room install transcript", "Direct/transitive dependency note", "Version-constraint rationale", "Remaining reproducibility gap"],
-        completionCriteria: ["The project installs without relying on remembered manual package commands.", "Direct dependencies are intentionally declared.", "At least one versioning decision is justified.", "You do not claim perfect reproducibility when unresolved variation remains."]
+        objective: "Convert the accumulated Steward workspace into an installable Python project whose dependencies are declared in repository metadata.",
+        scenario: "The first lesson created .venv manually and later work introduced mypy. Recreating the project still depends partly on remembered commands. Turn that history into explicit project metadata and prove the repository can bootstrap a clean environment.",
+        instructions: [
+            "Create pyproject.toml at the steward-core repository root and declare the project metadata intentionally.",
+            "Declare runtime dependencies separately from development-only tooling. If the current Steward core has no third-party runtime dependency, keep that list empty rather than adding a package merely to populate it.",
+            "Declare mypy as development tooling using the dependency mechanism selected for the project.",
+            "Configure the package so the steward module can be installed from the repository.",
+            "Delete .venv, create a new one and install the project using only commands justified by repository metadata.",
+            "Run main.py and the mypy check from the clean environment.",
+            "Inspect the resolved environment and explain what is reproducible now and what would still require a lock strategy for stronger reproducibility."
+        ],
+        deliverables: ["pyproject.toml", "Installable steward package", "Clean-environment installation transcript", "Successful demo and type-check evidence", "Reproducibility note"],
+        completionCriteria: ["A new developer does not need chat history to discover the project's declared dependencies.", "Steward installs from repository metadata.", "The existing demo still runs in a recreated environment.", "Static checking still passes.", "No unnecessary runtime dependency was invented."]
     },
     "programming-with-python-debugging-python-programs": {
-        objective: "Diagnose a Steward defect through competing hypotheses and chronological evidence instead of edit-and-retry guessing.",
-        scenario: "A service promotion fails while converting an owner identifier. The traceback points at int(), but the invalid value may have entered the system much earlier. Treat the bug as an investigation and determine where the state first became wrong.",
-        instructions: ["Reproduce the failure and capture the original traceback before editing code.", "Write at least two plausible hypotheses about where the invalid value originated.", "Choose the smallest observation that can distinguish the hypotheses.", "Use breakpoint(), pdb, logging or targeted inspection to falsify at least one hypothesis.", "Fix the earliest responsible cause rather than suppressing the final exception.", "Rerun the original reproduction and write a chronological evidence log from symptom to conclusion."],
-        deliverables: ["Original traceback", "Hypothesis list", "Diagnostic observations", "Root-cause fix", "Chronological evidence log"],
-        completionCriteria: ["At least one hypothesis is falsified with evidence.", "The fix addresses the cause rather than hiding the symptom.", "The original reproduction is rerun successfully.", "Another engineer can follow your evidence chain without guessing your thought process."]
-    }
+        objective: "Diagnose a defect in the Steward implementation through evidence and competing hypotheses rather than edit-and-retry guessing.",
+        scenario: "A new import path supplies age_days as text. Creating a Service now fails during validation. The visible exception tells you where the value was rejected, not necessarily where it first became wrong. Use the existing Steward codebase as the debugging target.",
+        instructions: [
+            "Add a temporary import_service(payload) boundary that receives a dictionary shaped like external data and calls the existing Service creation path.",
+            "Use a payload where age_days is the string \"184\" and reproduce the failure. Capture the original traceback before changing code.",
+            "Write at least two hypotheses: for example, the Service validator is wrong, or the import boundary failed to convert external text.",
+            "Use breakpoint(), pdb, targeted logging or temporary inspection to observe the value and type immediately before Service construction.",
+            "Fix the earliest responsible boundary by converting and validating external age_days before constructing Service. Do not weaken the Service invariant to accept arbitrary strings.",
+            "Add one invalid payload such as age_days \"unknown\" and preserve the useful failure behavior.",
+            "Rerun the original valid-text payload and the rest of the Steward demo, then record the evidence chain from symptom to root cause."
+        ],
+        deliverables: ["Original traceback", "Competing hypotheses", "Diagnostic observation", "Boundary-level fix", "Invalid-payload evidence", "Chronological debugging log"],
+        completionCriteria: ["At least one hypothesis is falsified by observation.", "The fix occurs at the external-data boundary rather than weakening the Service model.", "The string \"184\" can be imported as integer age 184.", "The string \"unknown\" still fails deliberately.", "Previously established Steward behavior continues to run."]
+    },
+
 };
 
 function firstTeachingParagraph(lesson: Lesson): string | undefined {
