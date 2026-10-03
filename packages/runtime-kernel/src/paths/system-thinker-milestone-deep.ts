@@ -13,10 +13,10 @@ export const stewardApiSystemDesignPortfolioDeep: LearningPath = {
                 estimatedMinutes: 30,
                 content: {
                     type: "reading",
-                    body: "Turn Steward API v1 into one coherent system-design portfolio, then analyze the deliberately introduced cache and asynchronous-delivery pressures used by TSA to teach distributed state. The goal is to connect requirements, boundaries, models, dependencies, data flow, failure reasoning and architecture decisions without pretending the technologies are free.",
+                    body: "Continue from the exact Steward API v1 Builder checkpoint and the System Thinker artifacts created against it. Turn that same system into one coherent system-design portfolio, then analyze the deliberately introduced cache and asynchronous-delivery pressures used by TSA to teach distributed state. The goal is to connect requirements, boundaries, models, dependencies, data flow, failure reasoning and architecture decisions without pretending the technologies are free.",
                     blocks: [
                         { type: "heading", id: "mission", text: "Mission", level: 2 },
-                        { type: "paragraph", text: "Begin from the simpler PostgreSQL-backed Steward baseline. Reconcile what already exists before adding anything. TSA then supplies two credible learning scenarios: a high-volume catalogue read remains expensive after ordinary database/query improvements, and post-commit lifecycle side effects must survive slow or unavailable consumers without delaying the authoritative transaction." },
+                        { type: "paragraph", text: "Begin from the PostgreSQL-backed Steward repository you completed in Builder. Record its commit/tag and current runtime topology before adding anything. Reconcile what already exists before adding anything. TSA then supplies two credible learning scenarios: a high-volume catalogue read remains expensive after ordinary database/query improvements, and post-commit lifecycle side effects must survive slow or unavailable consumers without delaying the authoritative transaction." },
                         { type: "heading", id: "technology-contract", text: "Technology learning contract", level: 2 },
                         { type: "paragraph", text: "Redis is TSA's primary cache implementation and RabbitMQ is TSA's primary broker implementation for these scenarios. You will implement them to learn the operational and correctness consequences. You must still compare the simpler baseline and credible alternatives. Kafka is a comparison technology here, not a second permanent broker." },
                         { type: "heading", id: "required-evidence", text: "Required evidence set", level: 2 },
@@ -44,9 +44,9 @@ export const stewardApiSystemDesignPortfolioDeep: LearningPath = {
                 content: {
                     type: "practical",
                     objective: "Create one consistent system baseline before distributed learning scenarios change the topology.",
-                    scenario: "Your earlier artifacts were produced incrementally. Establish what Steward v1 actually is before attributing problems or solutions to new infrastructure.",
+                    scenario: "Your earlier artifacts were produced against the Builder v1 system incrementally. Establish one traceable baseline from the actual repository commit/tag, requirements and diagrams before attributing problems or solutions to new infrastructure.",
                     instructions: [
-                        "Review the problem statement and remove implementation language that defines the product in terms of Django folders or endpoints.",
+                        "Record the exact Builder v1 repository commit/tag, database baseline and run instructions that this portfolio analyzes.", "Review the problem statement and remove implementation language that defines the product in terms of Django folders or endpoints.",
                         "Reconcile stakeholders, actors and external systems.",
                         "Reconcile functional requirements around ownership, lifecycle, criticality, environments, dependencies, membership/access and reviews.",
                         "Rank important quality requirements using scenarios rather than adjectives.",
@@ -54,8 +54,8 @@ export const stewardApiSystemDesignPortfolioDeep: LearningPath = {
                         "Create a canonical Steward vocabulary.",
                         "Record the pre-Redis/pre-RabbitMQ baseline so later evidence can show exactly what changed."
                     ],
-                    deliverables: ["Reconciled problem + requirements baseline", "Canonical vocabulary", "Reviewed context/boundaries", "Pre-distribution baseline"],
-                    completionCriteria: ["Requirements describe needed behavior rather than code structure.", "Actors and boundaries are coherent.", "The baseline can be compared with later distributed topology.", "Vocabulary is consistent."],
+                    deliverables: ["Traceable Builder v1 code/runtime checkpoint", "Reconciled problem + requirements baseline", "Canonical vocabulary", "Reviewed context/boundaries", "Pre-distribution baseline"],
+                    completionCriteria: ["Every System Thinker artifact can be traced to the same Builder v1 baseline or explicitly marked as a later proposed/implemented change.", "Requirements describe needed behavior rather than code structure.", "Actors and boundaries are coherent.", "The baseline can be compared with later distributed topology.", "Vocabulary is consistent."],
                 },
             },
             {
