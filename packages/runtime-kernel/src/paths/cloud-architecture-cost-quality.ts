@@ -4,10 +4,12 @@ import { cloudArchitectureAndCostDeepLessons } from "./cloud-architecture-cost-d
 const practiceTitles: Record<string, string> = {
     "Availability in Cloud Environments": "Availability Review: Remove the Highest-Impact Single Failure",
     "Scalability and Capacity": "Capacity Investigation: Scale the Bottleneck, Not the Diagram",
+    "Dependency Resilience and Degraded Operation": "Dependency Failure Review: Bound Failure Before It Cascades",
     "Security Boundaries": "Trust-Path Review: Separate Public, Operator, Runtime and Control Plane",
     "Backup and Recovery": "Recovery Design: Prove Steward Can Be Reconstructed",
     "Failure Domains": "Correlated-Failure Audit: Test Whether Redundancy Is Real",
     "Cost Estimation": "Cost Model: Make Steward Spend Explainable",
+    "Cost Allocation and Unit Economics": "Cost Efficiency Review: Allocate Shared Spend and Normalize Useful Output",
     "Cost Controls and Budgets": "Spend Guardrail Design: Assign Ownership and Teardown Rules",
     "Resource Right-sizing": "Right-Sizing Experiment: Change Capacity with Evidence",
     "Managed vs Self-managed Trade-offs": "Operating-Model Decision: Pay for Service or Own the Toil",
