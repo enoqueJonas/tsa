@@ -192,7 +192,7 @@ const lab: Lesson = {
             content: {
                 type: "practical",
                 objective: "Produce a reviewable architecture-centered Steward threat model.",
-                scenario: "Model the real Steward ecosystem: internet-facing API, authentication flows, PostgreSQL, CI/CD, Nexus/internal repositories, steward-common, tsa-test-core, test automation, administrator access and external trust boundaries.",
+                scenario: "Model only the Steward ecosystem that exists in the assessment baseline: internet-facing API, authentication flows, PostgreSQL, CI/CD, Nexus/internal repositories, test automation, administrator access and external trust boundaries. Include optional internal packages such as tsa-test-core only when prior-school evidence proves they were actually created and consumed.",
                 instructions: ["Import/refine the asset and actor inventory from Security Foundations.", "Draw data/control flows and trust boundaries.", "Annotate identities, sensitive data, validation points and privilege changes.", "Record assumptions separately from verified controls."],
                 deliverables: ["Threat-model scope", "Annotated flow diagram", "Trust-boundary map", "Assumption register"],
                 completionCriteria: ["The model reflects the actual Steward ecosystem.", "Security-relevant delivery/package flows are included.", "Trust boundaries show what must be verified at each crossing."],
