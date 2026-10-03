@@ -11,11 +11,11 @@ const practices: Record<string, PracticeSpec> = {
     scenario: "You now have three real inputs: a Python Steward domain history, an HTTP contract designed before frameworks, and a PostgreSQL schema you can query directly. Django does not exist yet. In this increment you will create it deliberately and trace one request through the framework without pretending a starter project was already provided.",
     instructions: [
       "From the steward-core repository, create a new working branch or checkpoint before introducing Django.",
-      "Add Django as an explicit project dependency, then create the Steward Django project and a registry app. Record the generated files instead of treating them as magic.",
+      "Add Django as an explicit project dependency, then create the Steward Django project and a registry app. Record the generated files and explain manage.py, settings.py, urls.py, asgi.py/wsgi.py, apps.py and migrations instead of treating them as magic.",
       "Configure a local PostgreSQL connection using environment-owned configuration rather than embedding credentials in committed source.",
       "Create the minimum model/migration mapping needed for one existing Service concept. Where the Django model differs from your earlier SQL design, record the reason instead of silently replacing the design.",
       "Implement GET /services/health as the first narrow endpoint and return a small JSON response.",
-      "Send a real request and trace URL resolution, middleware, view execution and response creation.",
+      "Send a real request and trace ordered URL resolution, middleware request/response traversal, HttpRequest/view execution and HttpResponse creation.",
       "Annotate the important project files as framework configuration, HTTP orchestration, persistence mapping or domain/application behavior.",
       "Commit this checkpoint: later Django exercises may now rely on an actual Steward Django project."
     ],
@@ -30,8 +30,8 @@ const practices: Record<string, PracticeSpec> = {
       "Add Django REST Framework as an explicit dependency.",
       "Keep the existing plain Django health endpoint as a reference point.",
       "Implement a narrow read-only GET /services endpoint with DRF using persisted Service data from the current PostgreSQL-backed model.",
-      "Compare plain Django JsonResponse with DRF Response for request handling, rendering and content negotiation.",
-      "Send an unsupported method or representation and capture the behavior.",
+      "Compare plain Django HttpRequest/JsonResponse with DRF Request/Response for parsing, rendering and content negotiation; vary Content-Type and Accept independently.",
+      "Send an unsupported method and unsupported request/response representation and capture the behavior. Identify where authentication, permission and throttling would occur even if those policies are not all implemented yet.",
       "Map the response fields back to the Service response contract created in Web/API Foundations and record any justified contract adjustment.",
       "Do not introduce a ViewSet merely because DRF provides one; later exercises will evaluate routing/view abstractions."
     ],
@@ -50,7 +50,7 @@ const practices: Record<string, PracticeSpec> = {
     scenario: "The Django foundation checkpoint mapped enough Service data to prove the stack. PostgreSQL work already established Team, Service, Environment, ServiceDependency and ServiceReview relationships. Now bring those established facts into Django while deciding which invariants belong in database constraints and which remain operation-level behavior.",
     instructions: [
       "Place the PostgreSQL schema from the previous school beside the current Django models and create a field/relationship mapping.",
-      "Implement or refine Team, Service, Environment and ServiceDependency using domain-language names.",
+      "Implement or refine Team, Service, Environment and ServiceDependency using domain-language names. Explain null versus blank on one field, on_delete on each ForeignKey and whether any relationship needs an explicit through model.",
       "Generate and inspect migrations before applying them. Identify any SQL/schema effect that differs materially from the earlier relational design.",
       "Preserve at least one database-enforced invariant such as uniqueness and demonstrate a rejected invalid write.",
       "Keep one state/operation rule in application/domain behavior where a field constraint alone cannot express it correctly.",
@@ -63,42 +63,42 @@ const practices: Record<string, PracticeSpec> = {
   "django-and-api-engineering-serializers-and-representation": {
     objective: "Treat serializers as a trust boundary and deliberately control what external clients can send and receive.",
     scenario: "A generated ModelSerializer exposes every model field as writable. Before clients depend on that contract, review the representation as untrusted input rather than a convenient mirror of the database.",
-    instructions: ["Create separate examples of accepted input, syntactically valid but rejected input, and server-controlled output.", "Mark at least one field read-only and prove client input cannot override it.", "Add one field-level and one cross-field validation example.", "Move one rule out of the serializer if it clearly belongs to reusable domain/application logic.", "Compare serializer representation with the underlying model and note one intentional difference."],
+    instructions: ["Create separate examples of accepted input, syntactically valid but rejected input, and server-controlled output. Trace initial_data → is_valid() → validated_data → save()/instance → serialized .data for one request.", "Mark at least one field read-only and prove client input cannot override it.", "Add one validate_<field> hook and one validate(attrs) cross-field example; then perform a partial=True update and prove omitted fields are preserved rather than treated as null/reset.", "Move one rule out of the serializer if it clearly belongs to reusable domain/application logic.", "Compare serializer representation with the underlying model and note one intentional difference."],
     deliverables: ["Serializer implementation", "Accepted/rejected payload evidence", "Writable/read-only field table", "Validation-boundary decision"],
     completionCriteria: ["The serializer does not expose fields merely because the model has them.", "Representation validation and reusable domain rules are distinguished.", "Rejected client control is demonstrated with evidence."]
   },
   "django-and-api-engineering-views-viewsets-and-routing": {
     objective: "Keep HTTP orchestration thin and choose view abstractions that make Steward behavior easier, not harder, to understand.",
     scenario: "The /services endpoint has started accumulating queries, validation, domain rules and response shaping in one method. Refactor it while comparing explicit views with generic/ViewSet abstractions.",
-    instructions: ["Implement or inspect list/create and detail operations.", "Mark every line that belongs to HTTP orchestration, persistence, authorization, domain behavior or representation.", "Move at least one non-HTTP responsibility out of the view.", "Inspect router-generated routes if using a ViewSet.", "Add a custom action only if it represents a genuine domain operation, then justify why ordinary CRUD was insufficient."],
+    instructions: ["Implement or inspect list/create and detail operations using at least two levels of the DRF view abstraction ladder (for example APIView and a generic/ViewSet) before choosing one.", "Mark every line that belongs to HTTP orchestration, persistence, authorization, domain behavior or representation.", "Move at least one non-HTTP responsibility out of the view.", "Inspect router-generated routes/actions if using a ViewSet and map list/create/retrieve/update/partial_update/destroy to HTTP methods and collection/detail URLs.", "Add a custom action only if it represents a genuine domain operation, then justify why ordinary CRUD was insufficient."],
     deliverables: ["Responsibility-marked view review", "Refactored endpoint", "Route inventory", "View abstraction decision"],
     completionCriteria: ["Views coordinate rather than own business behavior.", "Generated routes can be explained.", "Any custom action has a domain reason rather than framework convenience."]
   },
   "django-and-api-engineering-validation-and-business-rules": {
     objective: "Place Steward rules where every caller can rely on them and reinforce critical invariants at appropriate lower layers.",
     scenario: "Self-dependency is rejected in one REST endpoint, but a management command can still create it. Treat this as a rule-placement defect rather than another serializer patch.",
-    instructions: ["Reproduce self-dependency through two different entry paths.", "Move or implement the rule in a reusable application/domain boundary.", "Add duplicate-dependency protection and decide whether a database constraint should reinforce it.", "Exercise one valid and two invalid operations outside a single view.", "Document how each rejection becomes an API error without making HTTP the owner of the rule."],
+    instructions: ["Reproduce self-dependency through two different entry paths and verify which validation hooks actually run; explicitly demonstrate that model save() does not automatically imply full_clean().", "Move or implement the rule in a reusable application/domain boundary.", "Add duplicate-dependency protection and decide whether a database constraint should reinforce it.", "Exercise one valid and two invalid operations outside a single view.", "Document how each rejection becomes an API error without making HTTP the owner of the rule."],
     deliverables: ["Multi-entry-point reproduction", "Reusable rule implementation", "Constraint decision", "Rule-to-API translation evidence"],
     completionCriteria: ["The same rule holds across more than one caller.", "Critical invariants are reinforced where justified.", "HTTP error translation is separated from domain-rule ownership."]
   },
   "django-and-api-engineering-api-error-handling": {
     objective: "Build a stable error contract that preserves the distinction between client mistakes, domain rejection and unexpected server failure.",
     scenario: "Steward currently returns framework-default errors for validation and a different shape for custom exceptions. A client team cannot implement reliable handling. Normalize deliberate failures without hiding server defects.",
-    instructions: ["Define a stable error body with machine-readable code and human-readable message.", "Map malformed input, validation failure, missing resource, conflict and unexpected failure to deliberate status semantics.", "Trigger each category locally and capture the public response.", "Trigger one unexpected exception and verify sensitive internals are absent from the client response.", "Record what diagnostic evidence remains available to operators."],
+    instructions: ["Define a stable error body with machine-readable code and human-readable message.", "Map malformed input, validation failure, missing resource, conflict and unexpected failure to deliberate status semantics.", "Trigger each category locally and capture the public response.", "Trigger one unexpected exception and verify sensitive internals are absent from the client response; route known application exceptions through a central DRF exception-translation boundary without swallowing unexpected defects.", "Record what diagnostic evidence remains available to operators."],
     deliverables: ["Error-contract specification", "Failure/status matrix", "Captured public responses", "Operator-evidence note"],
     completionCriteria: ["Distinct failure categories remain distinguishable.", "Clients do not receive stack traces or database internals.", "Unexpected failures are not disguised as client errors."]
   },
   "django-and-api-engineering-filtering-searching-and-ordering": {
     objective: "Expose query capabilities that answer real Steward questions without accidentally publishing an unbounded query language.",
     scenario: "A generic filter backend makes every field searchable and orderable. It is convenient, but nobody has decided whether those capabilities belong to the public contract or what they cost.",
-    instructions: ["List the actual collection questions Steward clients need to ask.", "Implement explicit lifecycle, criticality and owner-team filters.", "Add limited name/slug search and deliberate ordering fields.", "Attempt one unsupported query and confirm it is rejected or ignored predictably.", "Inspect at least one generated SQL query and identify a future performance concern."],
+    instructions: ["List the actual collection questions Steward clients need to ask.", "Implement explicit lifecycle, criticality and owner-team filters using an allowlisted FilterSet/backend contract rather than passing arbitrary query parameters into ORM lookups.", "Add limited name/slug search and deliberate ordering_fields; inspect the actual public query-parameter conventions and generated SQL.", "Attempt one unsupported query and confirm it is rejected or ignored predictably.", "Inspect at least one generated SQL query and identify a future performance concern."],
     deliverables: ["Supported-query matrix", "Implemented filters/search/order", "Unsupported-query evidence", "SQL observation note"],
     completionCriteria: ["Every exposed query capability maps to a known use case.", "Search, filtering and ordering are distinguished.", "The public surface is intentionally bounded."]
   },
   "django-and-api-engineering-pagination": {
     objective: "Make collection pagination deterministic, bounded and understandable under changing data.",
     scenario: "A client reports seeing duplicate services while paging through /services. The API uses framework-default pagination but never defined ordering or maximum size.",
-    instructions: ["Create enough services to require multiple pages.", "Demonstrate the current ordering behavior and identify whether it is deterministic.", "Set explicit ordering, a sensible default page size and a maximum.", "Test empty, one-page and multi-page collections.", "Insert or modify data between page requests and document what consistency guarantee the chosen pagination style does and does not provide."],
+    instructions: ["Create enough services to require multiple pages.", "Demonstrate the current ordering behavior and identify whether it is deterministic.", "Set explicit ordering, a sensible default page size and a maximum. Implement/compare page-number or limit-offset behavior with cursor pagination on the same changing collection.", "Test empty, one-page and multi-page collections.", "Insert or modify data between page requests and document what consistency guarantee the chosen pagination style does and does not provide."],
     deliverables: ["Pagination configuration", "Multi-page evidence", "Ordering/consistency experiment", "Client-contract note"],
     completionCriteria: ["Pagination uses deterministic ordering.", "Response size is bounded.", "You can explain the consistency limitations of the chosen approach."]
   },
@@ -112,7 +112,7 @@ const practices: Record<string, PracticeSpec> = {
   "django-and-api-engineering-openapi-and-swagger-documentation": {
     objective: "Use OpenAPI as contract evidence and detect drift between generated documentation and real runtime behavior.",
     scenario: "Swagger UI looks complete, but it documents only success responses and one field is writable in the schema even though runtime rejects it. Treat generated documentation as something to verify, not trust automatically.",
-    instructions: ["Generate the Steward OpenAPI schema.", "Inspect /services request and response schemas field by field.", "Document at least two non-2xx responses with stable error shapes.", "Compare one documented request/response with a real curl exchange.", "Find and fix at least one meaningful schema/runtime mismatch."],
+    instructions: ["Generate the Steward OpenAPI schema and identify its paths, operations, parameters/requestBody, responses, components/schemas and securitySchemes where applicable.", "Inspect /services request and response schemas field by field.", "Document at least two non-2xx responses with stable error shapes.", "Compare one documented request/response with a real curl exchange.", "Find and fix at least one meaningful schema/runtime mismatch."],
     deliverables: ["Generated OpenAPI schema", "Contract review notes", "Documented failure responses", "Before/after drift evidence"],
     completionCriteria: ["Documentation includes important failures, not only happy paths.", "At least one runtime comparison is performed.", "Generated output is reviewed as contract evidence rather than accepted blindly."]
   },
@@ -126,7 +126,7 @@ const practices: Record<string, PracticeSpec> = {
   "django-and-api-engineering-application-logging": {
     objective: "Design application logs around diagnostic questions while keeping expected domain rejection distinct from unexpected failure.",
     scenario: "Current logs say 'request received' and 'something went wrong'. During an incident, neither line answers what operation failed, for which service, or whether the event was expected. Replace narration with useful operational evidence.",
-    instructions: ["Choose one successful and one rejected Steward operation.", "Define the diagnostic question each log event should answer before adding logging.", "Add contextual fields such as service identifier, operation and reason without logging credentials or tokens.", "Exercise multiple log levels and justify them.", "Add or propagate a request/correlation identifier where practical.", "Trigger an unexpected exception and compare its log evidence with an expected domain rejection."],
+    instructions: ["Choose one successful and one rejected Steward operation.", "Define the diagnostic question each log event should answer before adding logging.", "Add contextual fields such as service identifier, operation and reason without logging credentials or tokens.", "Exercise multiple log levels and justify them. Inspect logger/handler hierarchy and propagation so you can explain where each record is emitted and avoid duplicate output.", "Add or propagate a request/correlation identifier where practical.", "Trigger an unexpected exception and compare its log evidence with an expected domain rejection."],
     deliverables: ["Logging event design", "Captured success/rejection/failure logs", "Sensitive-data review", "Log-level rationale"],
     completionCriteria: ["Logs answer concrete diagnostic questions.", "Expected rejection is not automatically treated as an application error.", "Sensitive authentication material is absent.", "Unexpected failure remains operationally distinguishable."]
   }
