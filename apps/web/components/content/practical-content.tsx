@@ -60,12 +60,12 @@ export function PracticalContent({
 
                 <ol className="mt-2 divide-y divide-zinc-200">
                     {instructions.map((instruction, index) => (
-                        <li key=<InlineTechnicalText text={instruction} /> className="grid gap-3 py-6 sm:grid-cols-[44px_1fr]">
+                        <li key={instruction} className="grid gap-3 py-6 sm:grid-cols-[44px_1fr]">
                             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-950 text-sm font-semibold text-white">
                                 {index + 1}
                             </span>
                             <div>
-                                <p className="text-lg leading-8 text-zinc-900">{instruction}</p>
+                                <p className="text-lg leading-8 text-zinc-900"><InlineTechnicalText text={instruction} /></p>
                                 <p className="mt-2 text-sm text-zinc-500">
                                     Preserve useful observations as you work. Evidence matters more than a polished final answer.
                                 </p>
@@ -85,9 +85,9 @@ export function PracticalContent({
                 </p>
                 <ul className="mt-6 grid gap-3 md:grid-cols-2">
                     {deliverables.map((deliverable) => (
-                        <li key=<InlineTechnicalText text={deliverable} /> className="flex gap-3 rounded-xl border border-zinc-700 bg-zinc-900 p-4">
+                        <li key={deliverable} className="flex gap-3 rounded-xl border border-zinc-700 bg-zinc-900 p-4">
                             <span aria-hidden="true" className="mt-0.5 text-zinc-400">□</span>
-                            <span>{deliverable}</span>
+                            <span><InlineTechnicalText text={deliverable} /></span>
                         </li>
                     ))}
                 </ul>
@@ -105,9 +105,9 @@ export function PracticalContent({
                 </p>
                 <ul className="mt-6 space-y-3">
                     {completionCriteria.map((criterion) => (
-                        <li key=<InlineTechnicalText text={criterion} /> className="flex gap-4 rounded-xl border border-zinc-200 p-4">
+                        <li key={criterion} className="flex gap-4 rounded-xl border border-zinc-200 p-4">
                             <span aria-hidden="true" className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded border border-zinc-300 text-xs">✓</span>
-                            <span className="text-zinc-900">{criterion}</span>
+                            <span className="text-zinc-900"><InlineTechnicalText text={criterion} /></span>
                         </li>
                     ))}
                 </ul>
