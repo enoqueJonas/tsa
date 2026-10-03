@@ -110,6 +110,76 @@ const specs: LessonSpec[] = [
         questions: ["Why is a Service needed when pod IPs already exist?", "Why is ClusterIP usually a safer default for backend services?"]
     },
     {
+        id: "scheduling-placement",
+        title: "Scheduling, Placement and Failure Domains",
+        intro: "The scheduler does not simply find a node with spare CPU. It filters and scores eligible nodes using resource requests, taints and tolerations, affinity rules, topology constraints and other scheduling requirements. Replica count alone therefore says little about failure-domain resilience.",
+        sections: [
+            { heading: "Schedulable is a set of constraints", paragraphs: ["A pod can remain Pending even while the cluster has free aggregate capacity if no individual node satisfies its requests and placement constraints. Taints repel pods unless tolerated; node affinity constrains eligible placement; pod anti-affinity and topology spread can reduce correlated placement." ] },
+            { heading: "Replicas on one failure domain are not redundancy", paragraphs: ["Three replicas placed on one node or one zone can disappear together. Availability claims must inspect where replicas actually landed and what happens when a node or zone becomes unavailable.", "Hard placement rules can themselves reduce availability when the cluster cannot satisfy them. Prefer the weakest rule that meets the real resilience requirement." ] },
+        ],
+        practiceTitle: "Scheduler Drill: Prove Steward Replica Placement",
+        practice: ["Inspect node labels, taints, allocatable resources and current Steward pod placement.", "Create one safe scheduling constraint and predict which nodes remain eligible before applying it.", "Demonstrate a Pending pod caused by an unsatisfied scheduling constraint and diagnose the scheduler event rather than changing random settings.", "Define a topology-spread or anti-affinity policy for a replicated Steward role and prove the actual placement matches the intended failure-domain assumption."],
+        deliverables: ["Scheduling eligibility analysis", "Pending-pod diagnostic evidence", "Replica placement evidence"],
+        criteria: ["The learner distinguishes aggregate cluster capacity from per-node schedulability.", "Placement evidence supports the stated resilience claim.", "Tolerations are not treated as commands that force a pod onto a node."],
+        questions: ["Why can a pod remain Pending when the cluster appears to have spare capacity?", "Why does three replicas not necessarily mean three independent failure domains?"]
+    },
+    {
+        id: "dns-network-policy",
+        title: "Cluster DNS, Service Routing and NetworkPolicy",
+        intro: "Kubernetes DNS, Services and NetworkPolicy solve different problems. DNS resolves names, a Service provides a stable traffic abstraction over changing endpoints, and NetworkPolicy can restrict allowed pod traffic when the cluster network plugin actually enforces it.",
+        sections: [
+            { heading: "DNS does not make a backend reachable", paragraphs: ["CoreDNS normally gives Services predictable names such as service.namespace.svc.cluster.local. Successful name resolution proves only that the name resolved; it does not prove endpoints exist, the application is listening or network policy allows the connection.", "A Service with no ready matching endpoints can resolve perfectly while requests still fail." ] },
+            { heading: "NetworkPolicy is allow-list behavior only after isolation applies", paragraphs: ["By default, pods are generally non-isolated for ingress and egress. Once a policy selects a pod for a direction, allowed traffic is the union of applicable policies for that direction; policies are additive rather than ordered firewall rules.", "NetworkPolicy behavior also depends on a network plugin that implements it. A manifest existing in Git is not proof that packets are being filtered." ] },
+        ],
+        practiceTitle: "Network Path Drill: Resolve, Route and Restrict Steward Traffic",
+        practice: ["Resolve the Steward API Service from a client pod and separately inspect the Service endpoints.", "Create a controlled case where DNS succeeds but the application path fails, then identify whether the failure is endpoint selection, listening, readiness or policy.", "Apply a default-deny policy in the learning namespace and add only the minimum required allow paths for a chosen Steward flow.", "Prove both an allowed connection and a denied connection, and identify the cluster network implementation responsible for enforcement."],
+        deliverables: ["DNS and endpoint evidence", "NetworkPolicy manifests", "Allowed/denied traffic evidence", "CNI enforcement note"],
+        criteria: ["DNS success is not treated as service-health proof.", "Policies express required communication rather than broad namespace-wide convenience.", "Enforcement is tested rather than inferred from YAML."],
+        questions: ["What can DNS resolution prove that a successful TCP connection proves more strongly?", "Why can two NetworkPolicies not be interpreted as first-match firewall rules?"]
+    },
+    {
+        id: "persistent-storage",
+        title: "Persistent Volumes, Claims and Storage Lifecycle",
+        intro: "A container filesystem is ephemeral, but attaching a PersistentVolume does not automatically make an application durable. Kubernetes storage separates a workload's claim from the underlying storage implementation, while application consistency, backup and recovery remain separate responsibilities.",
+        sections: [
+            { heading: "PVC is a claim, not a backup", paragraphs: ["A PersistentVolumeClaim requests storage with properties such as capacity and access mode. A StorageClass can dynamically provision a matching volume. The reclaim policy determines what may happen to the backing volume after the claim is released.", "Deleting a pod should not delete data held on an appropriately persistent volume, but deleting claims, changing StatefulSet storage or relying on a Delete reclaim policy can have very different consequences." ] },
+            { heading: "Stateful workload identity is more than a mounted disk", paragraphs: ["StatefulSets can provide stable ordinal identity and per-pod volume claims, but they do not make arbitrary databases safely clustered. Replication, quorum, backup, restore and upgrade semantics still belong to the database or stateful system." ] },
+        ],
+        practiceTitle: "Storage Lifecycle Drill: Prove What Survives Steward Workload Replacement",
+        practice: ["Inspect the available StorageClasses and document provisioner, binding behavior and reclaim policy.", "Create a disposable PVC-backed workload, write test data, replace the pod and prove what persists.", "Delete only resources that are safe to delete and observe the PVC/PV lifecycle without risking real data.", "For PostgreSQL, Redis or RabbitMQ, state whether Kubernetes storage would solve persistence, high availability, backup, all three or only part of the problem."],
+        deliverables: ["StorageClass/PVC/PV lifecycle evidence", "Pod-replacement persistence evidence", "Stateful-service responsibility note"],
+        criteria: ["Persistent storage is not described as backup or database HA.", "Reclaim behavior is understood before destructive testing.", "The learner can distinguish pod identity, volume identity and application-level data safety."],
+        questions: ["Why does a PVC not prove that a database is recoverable?", "What operational consequence can a volume reclaim policy have after a claim is deleted?"]
+    },
+    {
+        id: "termination-disruption",
+        title: "Graceful Termination and Workload Disruption",
+        intro: "Kubernetes replacement is not instantaneous disappearance. During normal termination the platform removes a pod from service, invokes lifecycle handling where configured, sends termination signals and eventually force-kills processes that exceed the grace period. Applications must cooperate with that lifecycle.",
+        sections: [
+            { heading: "SIGTERM is part of the application contract", paragraphs: ["A worker that stops accepting new work but fails to finish or safely return an in-flight message can still lose correctness during an otherwise healthy rollout. HTTP servers, queue consumers and publishers need role-specific shutdown behavior.", "preStop hooks and terminationGracePeriodSeconds can provide time, but arbitrary sleeps are not a substitute for the application handling shutdown correctly." ] },
+            { heading: "Voluntary disruption needs capacity", paragraphs: ["PodDisruptionBudgets limit how many matching pods may be unavailable during voluntary disruptions such as node drain. They do not protect against every involuntary failure and they do not create spare capacity.", "A strict PDB can block maintenance when replica count or cluster capacity cannot satisfy it." ] },
+        ],
+        practiceTitle: "Termination Drill: Drain Steward Without Losing Correctness",
+        practice: ["Define expected SIGTERM behavior separately for the Steward API, publisher and consumer roles.", "Terminate one pod normally and capture the sequence from readiness withdrawal through process exit.", "Run or simulate a node drain with a realistic PodDisruptionBudget and observe whether eviction proceeds or blocks.", "Identify one in-flight request or message failure mode that graceful shutdown must prevent."],
+        deliverables: ["Role-specific shutdown contract", "Termination evidence", "PDB/drain evidence", "In-flight work risk note"],
+        criteria: ["Shutdown behavior is application-aware rather than a generic sleep.", "The learner distinguishes voluntary eviction from involuntary pod/node failure.", "A PDB is not described as a guarantee that replicas remain available under every outage."],
+        questions: ["Why can a successful rolling update still lose in-flight work?", "What does a PodDisruptionBudget constrain, and what does it not provide?"]
+    },
+    {
+        id: "pressure-eviction-rollout",
+        title: "Node Pressure, Eviction and Rollout Capacity",
+        intro: "A cluster can be healthy enough to run while still lacking the capacity to complete a rollout. Memory pressure, disk pressure, pod limits, scheduling constraints and rollout surge can turn a routine release into Pending pods or evictions.",
+        sections: [
+            { heading: "Requests influence both placement and eviction risk", paragraphs: ["Kubernetes derives pod QoS classes from requests and limits. Under node pressure, eviction decisions consider resource pressure, priority and usage relative to requests; an OOM kill inside a container is a different failure from kubelet eviction.", "Diagnose status, events, node conditions and container termination reasons before calling every disappearance a crash." ] },
+            { heading: "RollingUpdate temporarily changes capacity demand", paragraphs: ["maxSurge permits extra pods above the desired replica count during rollout; maxUnavailable controls how many desired replicas may be unavailable. A rollout can stall when the cluster cannot schedule the surge or when new pods never become Ready.", "Deployment progress and application correctness are separate. A rollout controller can complete while a release still violates business or SLO expectations." ] },
+        ],
+        practiceTitle: "Capacity Failure Drill: Diagnose a Stalled Steward Rollout",
+        practice: ["Record node allocatable capacity, current requests and the Deployment rollout strategy before changing the release.", "Create a safe lab condition where a rollout cannot schedule or cannot become Ready.", "Use pod status, events, node conditions and rollout status to identify the actual bottleneck.", "Explain whether changing maxSurge, maxUnavailable, resource requests or cluster capacity is the correct fix and what trade-off each introduces.", "Differentiate an OOMKilled container from a pod evicted under node pressure using evidence."],
+        deliverables: ["Pre-rollout capacity evidence", "Stalled-rollout diagnosis", "Recovery decision", "OOM-versus-eviction evidence"],
+        criteria: ["The diagnosis uses scheduler/node/runtime evidence rather than generic restart advice.", "Rollout settings are related to available capacity and availability requirements.", "Deployment completion is not treated as proof of release success."],
+        questions: ["How can maxSurge make a rollout fail in a cluster that can run the old replica count?", "Why are OOMKilled and Evicted different diagnoses?"]
+    },
+    {
         id: "config-secrets",
         title: "ConfigMaps, Secrets and Runtime Configuration",
         intro: "Kubernetes separates workload images from runtime configuration through objects such as ConfigMaps and Secrets, but a Secret object is not automatically a complete secrets-management strategy.",
