@@ -6,18 +6,36 @@ type PracticeSpec = Omit<PracticalContent, "type">;
 
 const practices: Record<string, PracticeSpec> = {
   "django-and-api-engineering-django-foundations": {
-    objective: "Trace a real request through Django and establish where framework configuration ends and Steward domain behavior begins.",
-    scenario: "A teammate can make Django return JSON but cannot explain which layer handled the request or where a service-registry rule should live. Before the codebase grows, produce a request-flow map and prove the boundary with a small endpoint.",
-    instructions: ["Create or reuse the Steward Django project and one registry app.", "Send a request to a small health or registry endpoint and trace URL resolution, middleware, view execution and response creation.", "Annotate the project files as configuration, HTTP orchestration or domain/application behavior.", "Move one deliberately misplaced rule out of a view or configuration file into a more appropriate boundary.", "Capture one request that never reaches domain behavior and explain why."],
-    deliverables: ["Request-flow diagram", "Annotated project-boundary map", "Before/after rule-placement example", "Captured request evidence"],
-    completionCriteria: ["You can explain the request path without relying on Django magic.", "Framework configuration and domain behavior are visibly separated.", "At least one failure or short-circuit path is demonstrated."]
+    objective: "Create Steward's first Django application and connect it to artifacts the learner already designed: the HTTP contract and PostgreSQL-backed domain.",
+    scenario: "You now have three real inputs: a Python Steward domain history, an HTTP contract designed before frameworks, and a PostgreSQL schema you can query directly. Django does not exist yet. In this increment you will create it deliberately and trace one request through the framework without pretending a starter project was already provided.",
+    instructions: [
+      "From the steward-core repository, create a new working branch or checkpoint before introducing Django.",
+      "Add Django as an explicit project dependency, then create the Steward Django project and a registry app. Record the generated files instead of treating them as magic.",
+      "Configure a local PostgreSQL connection using environment-owned configuration rather than embedding credentials in committed source.",
+      "Create the minimum model/migration mapping needed for one existing Service concept. Where the Django model differs from your earlier SQL design, record the reason instead of silently replacing the design.",
+      "Implement GET /services/health as the first narrow endpoint and return a small JSON response.",
+      "Send a real request and trace URL resolution, middleware, view execution and response creation.",
+      "Annotate the important project files as framework configuration, HTTP orchestration, persistence mapping or domain/application behavior.",
+      "Commit this checkpoint: later Django exercises may now rely on an actual Steward Django project."
+    ],
+    deliverables: ["Created Steward Django project and registry app", "Declared Django/PostgreSQL dependencies", "Environment-based database configuration", "Initial model/migration mapping", "Working health endpoint", "Request-flow diagram"],
+    completionCriteria: ["The Django project is created in this exercise rather than assumed to pre-exist.", "The application can connect to the learner's Steward PostgreSQL environment.", "GET /services/health returns the expected JSON.", "The learner can trace the request path through Django.", "Framework configuration, persistence and domain responsibilities are distinguishable.", "Later Django lessons have an explicit checkpoint to continue from."]
   },
   "django-and-api-engineering-django-rest-framework": {
-    objective: "Compare plain Django and DRF at the HTTP boundary and choose abstractions from understood behavior rather than convenience.",
-    scenario: "The Steward team is considering DRF. One engineer argues that every endpoint should become a ViewSet immediately. Build the same narrow endpoint with plain Django and DRF, then make the trade-off visible.",
-    instructions: ["Implement the same GET behavior once with JsonResponse and once with DRF Response.", "Inspect request parsing, response rendering and content negotiation behavior.", "Add one invalid-method or unsupported-representation case and compare responses.", "List what DRF removes, what it adds and what it can hide.", "Choose the abstraction you would keep for this endpoint and justify it."],
-    deliverables: ["Two runnable endpoint implementations", "Behavior comparison table", "Failure-case evidence", "Abstraction decision note"],
-    completionCriteria: ["The comparison is based on observed behavior.", "You can explain what DRF contributes beyond Django.", "The chosen abstraction is justified rather than selected by habit."]
+    objective: "Introduce Django REST Framework only after observing plain Django HTTP behavior, then use it to begin implementing the Service contract designed earlier.",
+    scenario: "The previous checkpoint created a real Django project and a plain JSON health endpoint. Web/API Foundations already defined the intended Service contract. Now evaluate what DRF contributes before using it for the first contract-backed Service endpoint.",
+    instructions: [
+      "Continue from the Django project created in the previous checkpoint; do not create another project.",
+      "Add Django REST Framework as an explicit dependency.",
+      "Keep the existing plain Django health endpoint as a reference point.",
+      "Implement a narrow read-only GET /services endpoint with DRF using persisted Service data from the current PostgreSQL-backed model.",
+      "Compare plain Django JsonResponse with DRF Response for request handling, rendering and content negotiation.",
+      "Send an unsupported method or representation and capture the behavior.",
+      "Map the response fields back to the Service response contract created in Web/API Foundations and record any justified contract adjustment.",
+      "Do not introduce a ViewSet merely because DRF provides one; later exercises will evaluate routing/view abstractions."
+    ],
+    deliverables: ["DRF dependency declaration", "Working GET /services endpoint", "Plain Django versus DRF comparison", "Failure-case evidence", "Contract traceability note"],
+    completionCriteria: ["DRF is added to an existing Django application rather than appearing as hidden setup.", "GET /services reads real persisted Service data.", "The learner can explain what DRF contributes beyond JsonResponse.", "The endpoint is checked against the earlier HTTP contract.", "No framework abstraction is adopted before its trade-off is understood."]
   },
   "django-and-api-engineering-projects-applications-and-boundaries": {
     objective: "Design Django app boundaries for Steward from cohesion and dependency direction rather than database nouns.",
@@ -27,11 +45,19 @@ const practices: Record<string, PracticeSpec> = {
     completionCriteria: ["Boundaries follow responsibilities rather than one-app-per-model convention.", "The selected design avoids unexplained circular dependencies.", "A rejected alternative is documented with a concrete cost."]
   },
   "django-and-api-engineering-models-and-domain-data": {
-    objective: "Model Steward data so persistence constraints reinforce domain meaning without pretending the database owns every business rule.",
-    scenario: "The first models were generated quickly and mostly mirror request JSON. Review them as a domain model: decide what the database must guarantee and what remains operation-level behavior.",
-    instructions: ["Implement or refine Team, Service and Environment with domain-language names and deliberate field types.", "Add at least one database-enforced invariant such as uniqueness.", "Represent lifecycle or criticality with constrained values.", "Identify one rule that depends on operation/state and should not exist only as a field constraint.", "Attempt one invalid write that the database should reject and one invalid operation that application logic should reject."],
-    deliverables: ["Revised models", "Invariant placement table", "Database-rejection evidence", "Application-rule example"],
-    completionCriteria: ["Database and application responsibilities are explicit.", "At least one invariant is protected below the HTTP layer.", "Model names and relationships reflect Steward rather than generic storage structures."]
+    objective: "Complete Steward's Django persistence model by mapping the relational design already built in PostgreSQL rather than inventing a new framework-shaped domain.",
+    scenario: "The Django foundation checkpoint mapped enough Service data to prove the stack. PostgreSQL work already established Team, Service, Environment and ServiceDependency relationships. Now bring those established facts into Django while deciding which invariants belong in database constraints and which remain operation-level behavior.",
+    instructions: [
+      "Place the PostgreSQL schema from the previous school beside the current Django models and create a field/relationship mapping.",
+      "Implement or refine Team, Service, Environment and ServiceDependency using domain-language names.",
+      "Generate and inspect migrations before applying them. Identify any SQL/schema effect that differs materially from the earlier relational design.",
+      "Preserve at least one database-enforced invariant such as uniqueness and demonstrate a rejected invalid write.",
+      "Keep one state/operation rule in application/domain behavior where a field constraint alone cannot express it correctly.",
+      "Query the resulting model through Django and directly through PostgreSQL to verify that both views describe the same persisted facts.",
+      "Record any intentional divergence from the earlier schema as a design decision rather than accidental framework drift."
+    ],
+    deliverables: ["SQL-to-Django mapping table", "Completed core models", "Reviewed migrations", "Database-rejection evidence", "Application-rule example", "Cross-check query evidence"],
+    completionCriteria: ["Django models trace back to the relational model the learner actually built.", "Core relationships are not silently redesigned by framework convenience.", "At least one invariant is protected below the HTTP layer.", "Operation-level behavior is not forced into an inappropriate field constraint.", "Intentional schema changes are documented."]
   },
   "django-and-api-engineering-serializers-and-representation": {
     objective: "Treat serializers as a trust boundary and deliberately control what external clients can send and receive.",
