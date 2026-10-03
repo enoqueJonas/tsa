@@ -199,9 +199,9 @@ Authoritative documentation remains the source of truth for exact commands, APIs
 
 Learner-facing prose must visually distinguish code and syntax from ordinary language.
 
-- The shared renderer automatically styles only high-confidence reserved/syntactic tokens whose ordinary-English ambiguity is low.
-- Authors MUST wrap contextual code tokens in backticks when prose refers to them as code: identifiers, ambiguous language keywords such as `return` or `class`, commands, filenames/paths, annotations, configuration keys, literal values, API routes and similar machine-readable terms.
-- Do not mark a word merely because it also exists in a programming language. For example, ordinary English uses of “return”, “class”, “for” or “while” remain prose.
+- The shared renderer does **not** infer technical meaning from words. Inline-code styling is applied only to text explicitly wrapped in backticks by the curriculum author.
+- Authors MUST wrap a token in backticks when the sentence is referring to that token as code or machine-readable notation: language keywords such as `def` or `return`, identifiers, commands, filenames/paths, annotations, configuration keys, operators, literal values, API routes and similar terms.
+- Decide from the **meaning of the sentence**, not from a keyword list. A word is not technical merely because a programming language reserves it. For example, JavaScript `let` is inline code in “declare the variable with `let`”, but remains ordinary prose in “default values let callers omit an argument.” Likewise ordinary English uses of “return”, “class”, “for”, “while”, “interface”, “package”, “import”, “select” and “post” remain prose.
 - Inline technical notation is semantic, not decorative emphasis. Use ordinary emphasis for conceptual stress.
 - Full commands or multi-line examples belong in code blocks rather than a sequence of inline chips.
 - The rendered convention is monospace text with a subtle background, border and radius; authors should not encode presentation classes in curriculum source.
