@@ -8,7 +8,7 @@ const practices: Record<string, PracticalContent> = {
         objective: "Choose a virtualization boundary for Steward because it solves an operational problem, not because more VMs look more enterprise.",
         scenario: "The Rocky Linux Steward host must become independently bootable and recoverable from the development workstation while still sharing a finite physical machine with future TSA platform services.",
         instructions: [
-            "Identify the physical host, virtualization implementation and the guest boundary you will use.",
+            "Identify the physical host, virtualization implementation and the guest boundary you will use.", "Classify the virtualization boundary as bare-metal/type-1-like or hosted/type-2-like and identify which layer owns hardware/driver lifecycle.", "Compare the VM boundary with a container boundary for Steward and state one requirement that would make each the stronger fit.",
             "List the state isolated by the Steward VM: kernel, packages, processes, filesystem and reboot lifecycle.",
             "List at least three dependencies that remain shared with the physical host.",
             "Compare one-VM and multi-VM designs for the current Steward stage and reject any VM that has no distinct lifecycle, security or failure-boundary reason.",
@@ -29,7 +29,7 @@ const practices: Record<string, PracticalContent> = {
             "Capture physical-host CPU, memory, storage and current utilization.",
             "Choose the initial Steward VM vCPU, RAM and disk allocation and state the evidence behind each value.",
             "Reserve explicit host headroom for the host OS and future TSA platform services rather than allocating every available resource.",
-            "Define the guest and host signals that would show CPU contention, memory pressure or storage pressure.",
+            "Define the guest and host signals that would show CPU contention, memory pressure or storage pressure.", "Explain the current CPU/memory overcommit assumptions and identify guest/host evidence such as scheduling steal/wait, ballooning or swapping that would show those assumptions failing.",
             "Run one controlled workload or observation and compare guest-visible resources with host-side allocation/pressure.",
             "State which change would be scale-up, which would be workload optimization, and which would require a topology decision instead of simply adding resources.",
         ],

@@ -48,6 +48,13 @@ export const proxmoxHomelabDeepLessons: AuthoredLesson[] = [
         objectives: ["Map Proxmox storage abstractions to physical devices.", "Distinguish hypervisor-local VM storage from guest filesystems and NAS storage.", "Measure capacity and identify the single-host storage failure domain."],
         activities: [{ type: "practical", title: "VM disk mapping", objective: "Trace a guest virtual disk down to its physical storage boundary.", scenario: "A VM reports a disk, Proxmox reports a volume and the host owns finite physical storage; all three views must be reconciled.", instructions: ["Inventory Proxmox storage definitions and the physical device(s) beneath them.", "Create/attach a disposable virtual disk and inspect it from Proxmox and the Rocky guest.", "Record capacity at physical, Proxmox-pool and guest levels.", "Fill only a safe disposable guest volume enough to observe pressure without threatening the host.", "Document what loss of the physical storage device would affect and which later Z4/NAS responsibility is intentionally not solved here."], deliverables: ["Physical→pool→virtual-disk→guest map", "Capacity evidence", "Failure-domain statement"], completionCriteria: ["Storage layers are distinguishable.", "Guest free space is not treated as host free space.", "The lab does not prematurely turn Proxmox storage into the NAS or backup solution."] }],
     },
+        {
+            id: "proxmox-storage-allocation-mechanics",
+            title: "Thin Provisioning and Storage Overcommit",
+            summary: "Separate guest-visible virtual capacity from physically allocated and safely available host capacity.",
+            objectives: ["Explain thick versus thin allocation.", "Recognize storage overcommit as a capacity promise rather than free space.", "Define evidence and thresholds before pool exhaustion affects multiple guests."],
+            activities: [{ type: "exercise", title: "Storage allocation decision", description: "For the current Proxmox pool, identify whether virtual disks are thin or thick provisioned, compare total guest-promised capacity with physical/pool capacity, and define the monitoring plus headroom rule that prevents thin-provisioned growth from exhausting the shared pool." }],
+        },
     {
         id: "proxmox-backup-restore",
         title: "VM Backup, Restore and Recovery Boundaries",
