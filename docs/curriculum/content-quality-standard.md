@@ -193,3 +193,17 @@ Video selection is lesson-driven, not quota-driven. Basic syntax or a small fact
 Before adding a video, record it in the multimedia resource audit and compare plausible candidates. For long videos, assign the exact timestamp range to watch and state what the learner should notice. Use a timestamped link when possible. Do not require an hour-long course lecture for a ten-minute learning objective.
 
 Authoritative documentation remains the source of truth for exact commands, APIs, configuration, standards, and version-specific behavior; a video complements rather than silently replaces it.
+
+
+## Inline technical notation
+
+Learner-facing prose must visually distinguish code and syntax from ordinary language.
+
+- The shared renderer automatically styles only high-confidence reserved/syntactic tokens whose ordinary-English ambiguity is low.
+- Authors MUST wrap contextual code tokens in backticks when prose refers to them as code: identifiers, ambiguous language keywords such as `return` or `class`, commands, filenames/paths, annotations, configuration keys, literal values, API routes and similar machine-readable terms.
+- Do not mark a word merely because it also exists in a programming language. For example, ordinary English uses of “return”, “class”, “for” or “while” remain prose.
+- Inline technical notation is semantic, not decorative emphasis. Use ordinary emphasis for conceptual stress.
+- Full commands or multi-line examples belong in code blocks rather than a sequence of inline chips.
+- The rendered convention is monospace text with a subtle background, border and radius; authors should not encode presentation classes in curriculum source.
+
+Example: `def` binds a function name; `return` sends a value to the caller; run `git status` before changing the working tree.
