@@ -28,7 +28,7 @@ const practiceByLesson: Record<string, PracticeSpec> = {
             "Record latency, availability and consistency coupling for a synchronous design.",
             "For asynchronous candidates, define what 'accepted' means, how status becomes visible and what delay is acceptable.",
             "Specify retry, duplicate-delivery and ordering requirements for one asynchronous candidate.",
-            "Conclude which interactions remain synchronous, which may become asynchronous and why a queue is not justified for the rest.",
+            "Conclude which interactions remain synchronous, which may become asynchronous and why a queue is not justified for the rest.", "Allocate a rough end-to-end latency/timeout budget for the synchronous critical path and compare sequential versus parallel required calls.", "Add a concurrent-request case and state whether ordering matters globally, per resource or not at all.", "For one asynchronous candidate, model producer rate exceeding consumer capacity and define a backlog signal plus one backpressure, shedding or bounded-work response.",
         ],
         deliverables: ["Interaction classification matrix", "Critical-path rationale", "Asynchronous contract for one justified candidate", "Queue/no-queue decision note"],
         completionCriteria: ["Correctness-critical work is not deferred merely to introduce messaging.", "Every asynchronous choice defines acceptance, visibility and consistency expectations.", "Retry and duplicate semantics are explicit for the chosen candidate.", "At least one proposed asynchronous interaction is rejected with a reason."],
