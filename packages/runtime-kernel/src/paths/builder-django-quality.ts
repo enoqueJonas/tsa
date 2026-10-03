@@ -1,6 +1,7 @@
 import type { PracticalContent } from "../activities";
 import type { Lesson } from "./lesson";
 import { djangoAndApiRichLessons } from "./builder-django-rich";
+import { djangoDependentPostgresqlDeepLessons } from "./builder-postgresql-deep";
 
 type PracticeSpec = Omit<PracticalContent, "type">;
 
@@ -131,7 +132,7 @@ const practices: Record<string, PracticeSpec> = {
   }
 };
 
-export const djangoAndApiQualityLessons: Lesson[] = djangoAndApiRichLessons.map((lesson) => ({
+const djangoCoreQualityLessons: Lesson[] = djangoAndApiRichLessons.map((lesson) => ({
   ...lesson,
   activities: lesson.activities.map((activity) => {
     if (activity.content.type !== "practical") return activity;
@@ -139,3 +140,10 @@ export const djangoAndApiQualityLessons: Lesson[] = djangoAndApiRichLessons.map(
     return practice ? { ...activity, content: { type: "practical", ...practice } } : activity;
   }),
 }));
+
+// These data lessons require the Django project created above. They were authored
+// with PostgreSQL material but belong here in learner-facing order.
+export const djangoAndApiQualityLessons: Lesson[] = [
+  ...djangoCoreQualityLessons,
+  ...djangoDependentPostgresqlDeepLessons,
+];
