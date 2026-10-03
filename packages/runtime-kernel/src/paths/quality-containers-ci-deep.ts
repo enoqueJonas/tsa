@@ -298,7 +298,7 @@ const gitlabPipelineMilestone: Lesson = {
         estimatedMinutes: 210,
         content: {
             type: "practical",
-            objective: "Build .gitlab-ci.yml as a secure orchestration layer around the already-proven Maven test commands.",
+            objective: "Build `.gitlab-ci.yml` as a secure orchestration layer around the already-proven Maven test commands.",
             scenario: "Merge requests need fast evidence; default-branch/release work needs stronger compatibility evidence; schedules need broader regression. All must preserve diagnosable results.",
             instructions: [
                 "Define jobs/stages and use needs only for real DAG dependencies.",
