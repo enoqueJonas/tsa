@@ -12,7 +12,7 @@ export const stewardReliabilityProgramDeepLessons: Lesson[] = [
         content: {
           type: "practical",
           objective: "Assemble the evidence produced across the Reliability Engineer school into one coherent operational baseline for the full Steward enterprise platform.",
-          scenario: "You are preparing Steward for a formal reliability review. The reviewers do not want screenshots of tools; they want evidence for the exact Steward release/environment under review and every application, data, identity, gateway, delivery or optional platform dependency that actually belongs to it. The required observability baseline includes Graylog for centralized logs, Prometheus for metrics and Grafana for operational metrics dashboards.",
+          scenario: "You are preparing Steward for a formal reliability review. The reviewers do not want screenshots of tools; they want evidence for the exact Steward release/environment under review and every application, data, identity, gateway, delivery and platform dependency that belongs to the canonical accumulated path, plus any explicitly retained or retired variation recorded by an evidence-backed architecture decision. The required observability baseline includes Graylog for centralized logs, Prometheus for metrics and Grafana for operational metrics dashboards.",
           instructions: [
             "Record the exact Steward release/environment and link the Security assessment baseline, current topology and Quality evidence that remain valid.", "Collect the latest Steward Reliability Risk Map and identify which risks have evidence-backed controls versus unresolved exposure.",
             "Link the service questions from Observability to concrete Graylog searches/streams, Prometheus metrics and Grafana dashboards.",
@@ -23,7 +23,7 @@ export const stewardReliabilityProgramDeepLessons: Lesson[] = [
             "Summarize the current SLIs, SLOs and error-budget policy, including where measurement remains imperfect.",
             "Map page-worthy alerts to their runbooks, owners and tested firing/resolution evidence.",
             "Include the latest performance/capacity baseline and identified bottleneck/saturation boundaries.",
-            "Build an explicit dependency map beginning with PostgreSQL and the required observability stack. Add Redis, RabbitMQ, Keycloak, Kong, OpenShift/Kubernetes, Argo CD, Nexus or other components only when the accumulated Steward baseline proves they exist. For each actual dependency record user-visible consequence, health evidence, degradation expectations and recovery ownership.",
+            "Build an explicit dependency map beginning with PostgreSQL and the required observability stack. In the canonical path, reconcile Redis and RabbitMQ from System Thinker, Nexus from Delivery, Kong plus OpenShift/Kubernetes and Argo CD from Cloud, and Keycloak from Security. If any required hands-on component was later retired, require the explicit retirement ADR and migration evidence rather than silently omitting it. For each active dependency record user-visible consequence, health evidence, degradation expectations and recovery ownership.",
             "Where asynchronous or cache paths actually exist, separate them from synchronous authorization/integrity dependencies so failure policy matches business semantics; otherwise record those patterns as not applicable rather than inventing them.",
             "Include demonstrated backup/restore evidence and measured RPO/RTO outcomes for critical persistent state; do not treat pod recreation, snapshots or GitOps resync as database recovery.",
             "Include the incident exercise and reliability experiment evidence packs.",
@@ -43,7 +43,7 @@ export const stewardReliabilityProgramDeepLessons: Lesson[] = [
             "OpenTelemetry/Tempo tracing is actually operational across more than one real boundary, including the asynchronous handoff required earlier; an isolated single span is insufficient.",
             "Every major reliability claim points to concrete evidence or is explicitly marked as an assumption/gap.",
             "The learner can explain the distinct responsibilities of Graylog, Prometheus and Grafana.",
-            "The evidence spans the application, PostgreSQL, cloud/runtime infrastructure and every optional identity, gateway, messaging, cache, orchestration/GitOps or artifact dependency that is actually present.",
+            "The evidence spans the application, PostgreSQL, cloud/runtime infrastructure and the active identity, gateway, messaging, cache, orchestration/GitOps and artifact dependencies accumulated by the canonical path, with explicit retirement evidence for anything intentionally removed.",
             "Tool screenshots alone are not accepted as proof without an explained reliability question and conclusion.",
             "A healthy pod, successful GitOps sync or green pipeline is never treated as sufficient proof of user-visible service health."
           ]
@@ -56,7 +56,7 @@ export const stewardReliabilityProgramDeepLessons: Lesson[] = [
         content: {
           type: "practical",
           objective: "Demonstrate that Steward can be detected, diagnosed, protected and recovered across application and enterprise-platform boundaries using the required observability stack.",
-          scenario: "Run one bounded end-to-end reliability scenario in learner-owned infrastructure. Choose a real dependency or platform risk from the current baseline—for example PostgreSQL saturation, or Redis/RabbitMQ/Keycloak/Kong/orchestration/Nexus failure only when that component actually exists—rather than random chaos.",
+          scenario: "Run one bounded end-to-end reliability scenario in learner-owned infrastructure. Choose a real dependency or platform risk from the current baseline—for example PostgreSQL saturation or a failure of an active Redis/RabbitMQ/Keycloak/Kong/orchestration/Nexus dependency selected from the verified baseline—rather than random chaos.",
           instructions: [
             "Define the steady-state SLI/SLO expectation and experiment/incident boundary before starting.",
             "Capture the healthy baseline in Prometheus/Grafana and confirm Graylog is receiving the relevant correlated application/platform events.",
