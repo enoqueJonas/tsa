@@ -10,7 +10,7 @@ const practices: Record<string, PracticalContent> = {
         instructions: [
             "Inventory the VPS public/private addresses, loopback addresses, container networks and every Steward-related listener.",
             "Classify each listener as public-user, management, backend-only or unintended.",
-            "Draw the intended HTTPS path from the public address to Kong and then to the Steward backend.",
+            "Draw the current HTTPS path using the existing simple reverse proxy; Kong has not been earned yet at this point.",
             "Test one address/listener pair that should be reachable and one that should not be reachable from an external client.",
             "Record any listener whose binding scope is broader than its actual requirement and decide whether to narrow it."
         ],
@@ -61,7 +61,7 @@ const practices: Record<string, PracticalContent> = {
     },
     "TLS Certificates and Certificate Authorities": {
         type: "practical",
-        objective: "Establish an automated certificate lifecycle for the public Steward hostname at the Kong gateway boundary.",
+        objective: "Establish an automated certificate lifecycle for the public Steward hostname at the current simple reverse-proxy boundary before the later Kong migration.",
         scenario: "Steward is ready for public HTTPS. A certificate that works only until its first expiry is not an operational solution.",
         instructions: [
             "Define the certificate subject/hostname requirements for the Steward public endpoint.",
@@ -75,28 +75,28 @@ const practices: Record<string, PracticalContent> = {
     },
     "HTTPS and TLS Termination": {
         type: "practical",
-        objective: "Make Kong the Steward public TLS termination boundary while keeping the application backend on a private/local path.",
-        scenario: "The enterprise progression needs one deliberate API edge. Kong should own public HTTP/TLS policy; Django should not become its own internet-facing gateway.",
+        objective: "Prove TLS termination and forwarded-trust behavior on the simple reverse-proxy edge before introducing an API gateway.",
+        scenario: "Steward needs a correct public HTTPS boundary first. Keep Django private and demonstrate the proxy mechanics independently of Kong so the later gateway migration has a known-good baseline.",
         instructions: [
-            "Configure the intended public 443 listener at Kong and route only the required Steward API service/path to the backend.",
+            "Configure the intended public 443 listener on the current simple reverse proxy and route only the required Steward API path to the backend.",
             "Keep the Steward application listener local or on a tightly controlled private/container network.",
             "Configure the minimum trusted forwarded-header behavior required by Django and identify which source is allowed to supply those headers.",
             "Verify the certificate and one HTTPS request externally, then attempt direct external access to the backend port and prove it is denied.",
-            "Compare Kong with a simpler NGINX reverse-proxy design and explain why Kong is retained here: later gateway policy, routing and enterprise API controls—not because NGINX is incapable of TLS proxying."
+            "Record the working TLS/routing/forwarded-header baseline that a later Kong migration must preserve."
         ],
-        deliverables: ["Kong TLS/service-route configuration", "External HTTPS evidence", "Denied backend-access evidence", "Kong-vs-NGINX decision"],
-        completionCriteria: ["Kong is the public edge implementation.", "The backend cannot be reached directly from the public internet.", "Forwarded trust is scoped to the known gateway boundary."],
+        deliverables: ["Simple reverse-proxy TLS configuration", "External HTTPS evidence", "Denied backend-access evidence", "Gateway-migration baseline"],
+        completionCriteria: ["The simple reverse proxy is the known-good public edge baseline.", "The backend cannot be reached directly from the public internet.", "Forwarded trust is scoped to the known gateway boundary."],
     },
     "Reverse Proxies": {
         type: "practical",
-        objective: "Use Kong as the implemented Steward reverse-proxy/API-gateway edge and learn NGINX as a valid simpler alternative rather than building two competing public edges.",
-        scenario: "The learner already understands reverse-proxy mechanics. The enterprise path now needs one authoritative public edge that can later carry gateway policy without duplicating infrastructure.",
+        objective: "Migrate the known-good Steward reverse-proxy edge to Kong because the product now requires a policy-capable API gateway.",
+        scenario: "The simple reverse proxy already proves TLS and routing. Steward now has multiple client surfaces and needs centralized API routing/policy controls that the curriculum will exercise later. Migrate rather than operate two competing public edges.",
         instructions: [
-            "Model the reverse-proxy responsibility separately from the Steward application responsibility.",
+            "Capture the existing reverse-proxy behavior and define the new gateway requirement: preserve TLS/routing while creating a policy-capable API edge for multiple Steward clients."
             "Configure a Kong Service and Route for the current Steward backend using the narrowest useful public path.",
             "Stop the Steward backend deliberately and capture the gateway-visible failure; then restore it and verify recovery.",
             "Compare that failure with a closed public 443 path so the gateway layer and network layer remain distinguishable.",
-            "Document which NGINX capabilities overlap with this design and which future Kong capabilities justify keeping Kong as the chosen implementation."
+            "Retire the old public proxy path after Kong passes equivalent routing/TLS checks; record the Kong capabilities that justify the migration and the rollback path."
         ],
         deliverables: ["Kong service/route evidence", "Gateway failure/recovery evidence", "Reverse-proxy alternative comparison"],
         completionCriteria: ["Only one authoritative public reverse-proxy/gateway implementation is operated.", "Gateway failure is distinguished from transport failure.", "The technology choice is justified by the journey, not by fashion."],
