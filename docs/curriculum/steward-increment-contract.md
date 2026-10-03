@@ -211,7 +211,7 @@ Platform Builder begins from a **System Thinker handoff**, not from an undefined
 - application, database and management ports plus intended exposure;
 - filesystem paths or data classes that are persistent versus reproducible;
 - the current topology and authoritative-state model;
-- Redis/RabbitMQ only if the System Thinker milestone actually retained them as implemented dependencies;
+- Redis/RabbitMQ are required System Thinker implementations after their evidence gates are satisfied; later schools include them when still active, or carry explicit retirement/migration evidence when a later architecture decision removed them;
 - one known-good health/request check;
 - architecture decisions or open risks that materially constrain hosting.
 
@@ -267,7 +267,7 @@ The learner creates `steward-tests` as a Java/Maven project and grows it increme
 
 The learner must not generate an abstract "enterprise test framework" before product tests exist. Every abstraction must point to repetition, isolation, diagnostic or execution risk demonstrated by `steward-tests`.
 
-Reusable automation is extracted into `tsa-test-core` only after repetition demonstrates a boundary **and** the candidate is independent of Steward domain behavior. A second real consumer is preferred evidence; when one does not yet exist, extraction may be explicitly deferred. Curriculum completion must not force a library whose reuse case is still hypothetical.
+Reusable automation is extracted into `tsa-test-core` only after repetition demonstrates a boundary **and** the candidate is independent of Steward domain behavior. A genuine second compatible consumer is mandatory evidence. Quality Steward therefore defers extraction; Professional Engineer must deliberately create or encounter the genuine second-consumer prerequisite before curriculum completion, without distorting an otherwise non-Java capstone merely to manufacture reuse.
 
 Result: Steward has an evidence-producing quality system around a known release, while framework and library boundaries are consequences of proven testing needs rather than preselected architecture.
 
@@ -286,7 +286,7 @@ Security Steward begins from a **security assessment baseline** assembled from t
 
 Threat modeling, access-control testing, secrets, delivery/infrastructure security and hardening operate against that baseline. Security findings must identify affected asset/boundary, reproducible evidence, current control, remediation or accepted residual risk, and retest evidence where a change is implemented.
 
-Security Steward must not invent infrastructure merely to satisfy a security topic. Keycloak, Vault, internal PKI, federation or other controls are adopted when the accumulated system creates a defensible requirement; otherwise the learner records a defer decision and trigger. Likewise, optional artifacts such as `tsa-test-core` cannot appear in threat models or supply-chain diagrams unless the Quality Steward path actually produced them.
+Security Steward must not invent infrastructure merely to satisfy a security topic. Keycloak, Vault, internal PKI, federation or other controls are adopted when the accumulated system creates a defensible requirement; otherwise the learner records a defer decision and trigger. Likewise, future artifacts such as `tsa-test-core` cannot appear in threat models or supply-chain diagrams before their required evidence gate has been satisfied and the artifact actually exists.
 
 Result: security changes correspond to demonstrated risks and controls on a known Steward release, and the final assessment clearly distinguishes verified controls, findings, recommendations and accepted/deferred risk.
 
@@ -298,7 +298,7 @@ Logs, metrics, traces where justified, SLIs/SLOs, alerts, incidents, recovery an
 
 Reliability controls follow **question → measurement → decision → control → exercise**. A dashboard, metric, alert, tracing backend or resilience mechanism must answer an identified operational question or mitigate a demonstrated risk. Tool installation alone is not progress.
 
-Required observability capabilities must be distinguished from conditionally adopted products. Prometheus/Grafana may be required by the curriculum's metrics implementation, but optional infrastructure and dependencies must not be invented to make a reliability scenario interesting. Redis, RabbitMQ, Keycloak, orchestration/GitOps components, tsa-test-core and similar elements appear in reliability evidence only when the accumulated Steward system actually contains them.
+Required observability capabilities must be distinguished from technologies that have not yet reached their implementation gate or that were later retired through explicit architecture evidence. Infrastructure and dependencies must not be invented early to make a reliability scenario interesting. Redis, RabbitMQ, Keycloak and orchestration/GitOps components are expected once their required hands-on gates have been completed unless later retirement evidence exists; `tsa-test-core` remains absent until its later two-consumer gate is genuinely satisfied.
 
 SLIs/SLOs start from user-visible semantics. Alerts require an owner and actionable response. Incident and fault exercises originate from reachable Steward failure modes and run only in learner-controlled environments.
 
@@ -310,7 +310,7 @@ Architect begins by reconstructing the **architecture that actually exists** for
 
 The learner evaluates the accumulated architecture. Boundaries may be retained, strengthened or changed based on demonstrated drivers. Distribution is never required merely to make the architecture appear advanced. A modular monolith, synchronous interaction, single authoritative PostgreSQL store or existing deployment model may remain the correct decision.
 
-Optional components and packages are conditional throughout Architect. `steward-common`, `tsa-test-core`, Redis, RabbitMQ, Keycloak, Kong, Kubernetes/OpenShift, GitOps tooling and similar elements appear in the architecture baseline only when prior-school evidence proves they exist.
+Architect starts from evidence, not from a timeless mandatory stack. Technologies required earlier in TSA—such as `steward-common`, Redis, RabbitMQ, Keycloak, Kong, Kubernetes/OpenShift and GitOps tooling—should have implementation history by this point, but the active baseline may omit one only when explicit migration/retirement evidence explains why. `tsa-test-core` is different: it remains a future required extraction until Professional Engineer satisfies the genuine two-consumer gate.
 
 Every proposed architecture change must state:
 
@@ -331,7 +331,7 @@ Steward expands toward technology risks, standards, controls, exceptions, debt, 
 
 A governance requirement states the outcome it protects, scope, accountable decision owner, exception authority, operating evidence, review/expiry condition and trigger for reconsidering the rule itself.
 
-Technology inventory is historical as well as current: a removed component may remain relevant as a decision or migration record, but it is never represented as an active dependency. Optional components, internal packages and enterprise platforms are governed only when they actually exist or when a documented proposal is under decision.
+Technology inventory is historical as well as current: a removed component may remain relevant as a decision or migration record, but it is never represented as an active dependency. Current components and internal packages are governed when they actually exist; future evidence-gated components are tracked as pending requirements or proposals rather than fictional active estate.
 
 Result: the product reaches its natural stewardship purpose using the system history accumulated across TSA, with governance acting as a thin decision/evidence layer over engineering reality rather than a second fictional system of record.
 
