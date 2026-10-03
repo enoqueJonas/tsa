@@ -27,7 +27,7 @@ const practices: Record<string, PracticalContent> = {
             "Model unavailable, slow and semantically incorrect behavior for both dependencies.",
             "For each failure, decide whether Steward must fail closed, degrade explicitly, or can continue safely.",
             "Define timeout ownership and whether retry is allowed; justify the decision using idempotency and ambiguity of outcome.",
-            "Trace one retry-storm or cascade path and identify the point where blast radius can be bounded.",
+            "Trace one retry-storm or cascade path and identify the point where blast radius can be bounded.", "Count the maximum downstream attempts if two layers each retry independently, then assign one clear retry owner and a bounded retry budget.", "Identify any shared dependency that makes apparently separate failure paths correlated rather than independent.",
             "Record the signal that distinguishes dependency failure from an application defect during diagnosis.",
         ],
         deliverables: ["Dependency failure-semantics matrix", "Cascade/retry trace", "Fail-closed/degrade decision note"],
