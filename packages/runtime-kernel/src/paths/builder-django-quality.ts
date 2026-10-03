@@ -1,7 +1,7 @@
 import type { PracticalContent } from "../activities";
 import type { Lesson } from "./lesson";
 import { djangoAndApiRichLessons } from "./builder-django-rich";
-import { djangoDependentPostgresqlDeepLessons } from "./builder-postgresql-deep";
+import { djangoDependentPostgresqlQualityLessons } from "./builder-postgresql-quality";
 
 type PracticeSpec = Omit<PracticalContent, "type">;
 
@@ -145,5 +145,5 @@ const djangoCoreQualityLessons: Lesson[] = djangoAndApiRichLessons.map((lesson) 
 // with PostgreSQL material but belong here in learner-facing order.
 export const djangoAndApiQualityLessons: Lesson[] = [
   ...djangoCoreQualityLessons,
-  ...djangoDependentPostgresqlDeepLessons,
+  ...djangoDependentPostgresqlQualityLessons,
 ];
