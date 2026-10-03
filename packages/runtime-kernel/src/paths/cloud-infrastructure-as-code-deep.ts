@@ -96,6 +96,40 @@ const specs: LessonSpec[] = [
         resources: [terraformStateDocs, openTofuDocs]
     },
     {
+        id: "state-locking-concurrency",
+        title: "State Locking and Concurrent Writers",
+        intro: "Shared state is safe only when competing writers cannot update it at the same time. A remote backend is not automatically a concurrency guarantee: the chosen backend must support locking, and operators must treat lock failures as a safety signal rather than an obstacle to bypass.",
+        sections: [
+            { heading: "One state needs one writer", paragraphs: ["OpenTofu automatically locks state for write-capable operations when the backend supports locking. If the lock cannot be acquired, the operation should stop rather than race another apply.", "Disabling locking or force-unlocking a live operation can create multiple writers and corrupt the relationship between configuration, state and provider reality."] },
+            { heading: "Stale locks require evidence", paragraphs: ["A failed process can leave a lock that requires intervention. Before force-unlocking, prove that the original writer is no longer active, identify the lock ID and preserve enough evidence to reconstruct what happened. Force unlock is recovery, not a routine retry mechanism." ] },
+        ],
+        practice: ["Verify whether the proposed Steward remote-state backend actually supports locking.", "Simulate or reason through two concurrent apply attempts and record which operation must be rejected or wait.", "Write the evidence required before using force-unlock after an interrupted run."],
+        questions: ["Why is remote state without concurrency protection still unsafe for a team?", "What must you prove before force-unlocking state?"],
+        resources: [openTofuDocs, terraformStateDocs]
+    },
+    {
+        id: "import-adoption-refactoring",
+        title: "Import, Adoption and Resource Address Refactoring",
+        intro: "Not every real resource begins life in IaC, and not every configuration address stays unchanged. Safe adoption and refactoring preserve the one-to-one binding between a real object and the resource address that manages it.",
+        sections: [
+            { heading: "Import adopts; it does not prove configuration correctness", paragraphs: ["Import binds an existing provider object to an OpenTofu resource address. Configuration must still describe the intended object, and the first plan after adoption must be reviewed for unintended mutation or destruction.", "A real object should be managed by one resource address. Binding the same object more than once creates ambiguous ownership." ] },
+            { heading: "A configuration rename can look like destroy and create", paragraphs: ["Resource addresses are part of state identity. Renaming a resource block or moving it into a module without declaring the refactor can make the plan propose destroying the old address and creating the new one.", "Use configuration-driven refactoring such as moved blocks where appropriate, or deliberate state movement for exceptional workflows, then prove that the plan preserves the real object."], code: { language: "hcl", caption: "Preserve identity during a resource rename", code: "moved {\n  from = example_server.api\n  to   = example_server.steward_api\n}" } },
+        ],
+        practice: ["Choose one disposable provider resource created outside OpenTofu and design its adoption into configuration.", "Review the first post-import plan and identify any attributes OpenTofu would change.", "Rename or move a disposable resource address while preserving the real object, then prove the plan does not propose accidental replacement."],
+        questions: ["Why is a successful import not enough to prove that an adopted resource is safe to apply?", "Why can a harmless-looking HCL rename become a destructive infrastructure change?"]
+    },
+    {
+        id: "replacement-partial-apply-recovery",
+        title: "Replacement and Partial Apply Recovery",
+        intro: "An apply is not a database transaction across the whole infrastructure graph. Some operations can succeed before a later operation fails, so recovery begins by discovering what changed rather than assuming the environment rolled back.",
+        sections: [
+            { heading: "Replacement is an operational event", paragraphs: ["Some attribute changes cannot be performed in place and therefore require a resource to be replaced. The plan must distinguish intentional replacement from accidental replacement caused by address changes or configuration mistakes.", "A forced replacement can be useful for repairing a disposable resource, but it should be explicit and reviewed rather than hidden behind manual deletion." ] },
+            { heading: "Failure can leave a partially changed world", paragraphs: ["When an apply fails after earlier graph operations succeeded, those successful provider changes may remain. State may already contain some updates, and a backend write failure can require special recovery handling.", "After failure, preserve logs and state evidence, inspect provider reality, refresh/re-plan, and decide from the new observed state. Do not blindly rerun the original plan or restore an old state snapshot over newer successful changes." ] },
+        ],
+        practice: ["Create a disposable change where one resource can succeed before a later operation fails, then inspect state and provider reality.", "Generate a fresh plan after the failure and explain how it differs from the original plan.", "Write a recovery runbook covering logs, state backup, provider verification and the conditions under which manual state intervention would be justified."],
+        questions: ["Why should you not assume a failed apply rolled back earlier successful operations?", "What evidence should exist before manually pushing or modifying state?"]
+    },
+    {
         id: "variables-outputs",
         title: "Variables and Outputs",
         intro: "Variables make intended differences explicit; outputs expose useful results from managed infrastructure. They should clarify configuration rather than turn every literal into abstraction.",
