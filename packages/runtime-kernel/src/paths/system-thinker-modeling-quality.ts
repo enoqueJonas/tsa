@@ -7,9 +7,9 @@ type PracticeSpec = Omit<PracticalContent, "type">;
 const practices: Record<string, PracticeSpec> = {
     "Why We Model Systems": {
         objective: "Choose the smallest Steward model that can answer a real engineering question without hiding a decision-relevant assumption.",
-        scenario: "Two engineers bring competing Steward diagrams to a review. One mirrors the repository tree in exhaustive detail; the other is a simple context view. Neither has stated the question the diagram is supposed to answer. You must decide what should actually be modeled before redrawing anything.",
+        scenario: "You now have a requirements baseline tied to the concrete Builder v1 checkpoint. Two engineers bring competing Steward diagrams to a review: one mirrors that repository tree in exhaustive detail; the other is a simple context view. Neither states the question the diagram should answer. Decide what to model before drawing a replacement.",
         instructions: [
-            "Choose one unresolved question from the requirements or boundary work.",
+            "Choose one unresolved question from the requirements artifacts you created in the previous module and cite the artifact/checkpoint that raised it.",
             "Write the audience and decision the model must support before selecting a notation.",
             "List the minimum concepts and relationships required to answer the question.",
             "List implementation detail that should be deliberately omitted at this level.",
@@ -35,9 +35,9 @@ const practices: Record<string, PracticeSpec> = {
     },
     "Containers and Components as Models": {
         objective: "Model Steward responsibilities without promoting Docker units, folders or framework constructs into architecture by accident.",
-        scenario: "The current codebase has obvious Django apps, modules and deployment units. A reviewer has started treating those names as the architecture. You need a responsibility model that can be challenged independently from the source tree.",
+        scenario: "Open the Builder v1 repository you actually produced. It has concrete Django apps, Python modules, PostgreSQL persistence and deployment assumptions. A reviewer has started treating those implementation names as the architecture. Derive a responsibility model from real use cases and then compare it back to the code.",
         instructions: [
-            "Inventory candidate runtime/data units and decide which qualify as C4 containers.",
+            "Inventory candidate runtime/data units from the Builder v1 repository and its run/deployment evidence; decide which qualify as C4 containers.",
             "Choose the Steward API as the component zoom target unless current evidence justifies another choice.",
             "Derive candidate components from cohesive responsibilities and use cases, not folder names.",
             "Trace at least three dependency relationships and label why the source depends on the target.",
@@ -49,13 +49,13 @@ const practices: Record<string, PracticeSpec> = {
     },
     "State and Lifecycle Modeling": {
         objective: "Use a Steward lifecycle model to expose rules that are invisible in a status field or CRUD endpoint list.",
-        scenario: "Steward stores lifecycle values, but different engineers disagree about which transitions are legal, who may trigger them and what conditions must hold. The `enum` looks simple while the real policy is scattered across assumptions and code.",
+        scenario: "Builder v1 already contains lifecycle/status behavior and authorization rules. Different engineers disagree about which transitions are legal, who may trigger them and what conditions must hold. Use the implementation and requirements as evidence; do not invent a lifecycle detached from the system.",
         instructions: [
             "Choose Service or ServiceReview as the lifecycle under investigation.",
             "Define each state in business terms rather than copying enum labels only.",
             "For every allowed transition, record trigger, actor, authorization requirement and domain guard.",
             "Mark forbidden transitions explicitly and explain the risk each rule prevents.",
-            "Compare the lifecycle model with current implementation evidence.",
+            "Compare the lifecycle model with the actual Builder v1 model/view/domain code and the functional-requirements baseline.",
             "Record one missing, inconsistent or ambiguous rule and decide whether it belongs in requirements, authorization policy or domain validation.",
         ],
         deliverables: ["Steward lifecycle model", "Transition/guard table", "One classified lifecycle-rule gap"],
