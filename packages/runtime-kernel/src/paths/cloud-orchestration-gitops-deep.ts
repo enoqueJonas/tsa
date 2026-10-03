@@ -26,7 +26,7 @@ function richLesson(spec: LessonSpec): Lesson {
         if (section.list) blocks.push({ type: "list", items: section.list });
         if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code, caption: section.code.caption });
     }
-    blocks.push({ type: "callout", tone: "steward", title: "Steward orchestration checkpoint", body: "Orchestration is introduced because Steward now needs a declarative runtime that can reconcile workload state, not because Kubernetes is fashionable. Preserve the existing release identity, Kong edge, data ownership and infrastructure boundaries while learning what the platform actually changes." });
+    blocks.push({ type: "callout", tone: "steward", title: "Steward orchestration checkpoint", body: "TSA deliberately evolves Steward from a single-host container runtime to a reconciled multi-workload platform exercise. The learner must first document the operational requirement and costs, then implement the orchestration checkpoint using the existing immutable release. Preserve only edge and dependency components actually earned earlier; do not add unrelated products to make the topology look cloud-native." });
     blocks.push({ type: "resources", title: "Continue learning", resources: spec.resources ?? [kubernetesDocs, openshiftDocs, argoDocs] });
 
     return {
@@ -61,10 +61,10 @@ const specs: LessonSpec[] = [
             { heading: "Start from the problem", paragraphs: ["Kubernetes earns its place when the system benefits from declarative scheduling, health-based replacement, controlled rollout, service discovery and a stable workload API across nodes.", "For Steward, the first goal is not hyperscale. It is to understand a reconciled runtime and the new failure and security boundaries that come with it."] },
             { heading: "Do not confuse layers", paragraphs: ["OpenTofu creates infrastructure, Ansible manages host state, GitLab CI/CD builds and publishes artifacts, and Kubernetes reconciles application workload state. Overlap should be deliberate, not accidental."] },
         ],
-        practiceTitle: "Orchestration Adoption Gate: Prove What Kubernetes Solves",
-        practice: ["List the current Steward runtime responsibilities handled by Docker/Compose or host services.", "Identify which of them Kubernetes would own and which remain outside the cluster.", "Name two concrete benefits and three new operational costs.", "Write an adopt/defer decision tied to a real Steward requirement."],
-        deliverables: ["Runtime responsibility map", "Kubernetes adopt/defer decision", "New failure-boundary list"],
-        criteria: ["The decision is problem-driven.", "Kubernetes is not presented as a replacement for CI, IaC or the database.", "The learner can explain what reconciliation means operationally."],
+        practiceTitle: "Orchestration Requirement Gate: Prove What Kubernetes Must Solve",
+        practice: ["List the current Steward runtime responsibilities handled by Docker/Compose or host services.", "Introduce the TSA orchestration requirement: run the immutable Steward release in a declarative reconciled environment where workload replacement and controlled rollout are platform responsibilities.", "Identify which responsibilities Kubernetes will own and which remain outside the cluster.", "Name two concrete benefits and at least three new operational costs.", "Define success evidence for reconciliation, rollout and failure recovery before creating the cluster."],
+        deliverables: ["Runtime responsibility map", "Orchestration requirement and acceptance evidence", "New failure-boundary list"],
+        criteria: ["The implementation is preceded by an explicit operating requirement.", "Kubernetes is not presented as a replacement for CI, IaC or the database.", "The learner can explain what reconciliation must prove operationally before proceeding."],
         questions: ["What problem does a Kubernetes control loop solve that Docker packaging does not?", "Why can adding Kubernetes reduce some toil while increasing total system responsibility?"]
     },
     {
@@ -101,7 +101,7 @@ const specs: LessonSpec[] = [
         intro: "Pods are ephemeral and their addresses change. Kubernetes Services provide stable discovery and traffic distribution to selected pods without turning every workload into a public endpoint.",
         sections: [
             { heading: "Stable name, replaceable endpoints", paragraphs: ["A Service selects pods by labels and exposes a stable virtual address and DNS name. Internal consumers depend on the service contract rather than pod IPs."] },
-            { heading: "Public exposure remains a separate decision", paragraphs: ["ClusterIP is internal by default. NodePort, LoadBalancer, Ingress and gateways change reachability and should not be chosen casually. Kong remains the Steward public API edge in this curriculum."] },
+            { heading: "Public exposure remains a separate decision", paragraphs: ["ClusterIP is internal by default. NodePort, LoadBalancer, Ingress and gateways change reachability and should not be chosen casually. The public API edge remains whichever implementation the earlier Cloud edge checkpoint actually established; in the canonical required path this is Kong after its earned migration."] },
         ],
         practiceTitle: "Service Discovery Drill: Keep Steward Backends Private",
         practice: ["Create a ClusterIP Service for the Steward API.", "Verify discovery from an allowed in-cluster client.", "Prove the pod IP can change without changing the service name.", "Confirm PostgreSQL and other backend-only services are not made public merely because they are represented in Kubernetes."],
