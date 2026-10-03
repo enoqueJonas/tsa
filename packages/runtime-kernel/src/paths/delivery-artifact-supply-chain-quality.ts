@@ -73,7 +73,7 @@ const profiles: Record<string, PracticeProfile> = {
     },
     "Consuming Internal Packages with pip": {
         objective: "Prove steward-cli and steward-release-check can each install the same steward-common version from the approved Nexus index with no producer-local state.",
-        scenario: "Run both external consumers independently as if the steward-common producer repository is unavailable and only Nexus remains; then execute their real operator and release-verification workflows."
+        scenario: "Run both external consumers independently as if the steward-common producer repository is unavailable and only Nexus remains; then execute their real operator and release-verification workflows.",
         deliverables: ["Consumer index configuration", "Clean-install evidence", "Version-resolution decision"],
         completionCriteria: ["No workspace link, copied wheel or editable install is required.", "The selected version policy is explicit.", "Failure of the approved repository path is visible rather than silently bypassed by a local artifact."],
     },
