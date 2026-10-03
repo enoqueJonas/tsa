@@ -28,7 +28,7 @@ const practices: Record<string, PracticeSpec> = {
             "Define what currently qualifies as a Steward container and justify each candidate by runtime or data responsibility.",
             "Choose one container that deserves component-level zoom and explain why another does not.",
             "Write relationship labels before drawing arrows so direction and purpose are explicit.",
-            "Reject at least one unnecessary C4 view and document why omitting it is the stronger choice.",
+            "Reject at least one unnecessary C4 view and document why omitting it is the stronger choice.", "Cross-check the selected views for contradictions in system boundary, ownership and relationship direction.", "Classify each selected view as primarily structural, behavioral/temporal or lifecycle-oriented and explain why that representation fits the question.",
         ],
         deliverables: ["Steward C4 zoom plan", "Question-to-view matrix", "Explicit omitted-view decision"],
         completionCriteria: ["No view exists only to complete the C4 hierarchy.", "Each selected level answers a distinct question.", "Relationship semantics are written rather than implied by connectivity alone."],
