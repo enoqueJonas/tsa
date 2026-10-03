@@ -49,7 +49,7 @@ const practices: Record<string, PracticeSpec> = {
     },
     "State and Lifecycle Modeling": {
         objective: "Use a Steward lifecycle model to expose rules that are invisible in a status field or CRUD endpoint list.",
-        scenario: "Steward stores lifecycle values, but different engineers disagree about which transitions are legal, who may trigger them and what conditions must hold. The enum looks simple while the real policy is scattered across assumptions and code.",
+        scenario: "Steward stores lifecycle values, but different engineers disagree about which transitions are legal, who may trigger them and what conditions must hold. The `enum` looks simple while the real policy is scattered across assumptions and code.",
         instructions: [
             "Choose Service or ServiceReview as the lifecycle under investigation.",
             "Define each state in business terms rather than copying enum labels only.",
