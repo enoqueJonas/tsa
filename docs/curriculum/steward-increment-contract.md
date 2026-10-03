@@ -306,9 +306,22 @@ Result: the learner can reason about a known Steward release as an operated serv
 
 ### 9. Architect — evolve from evidence
 
-The learner evaluates the accumulated architecture. Boundaries may be retained or changed based on evidence. Distribution is never required merely to make the architecture appear advanced.
+Architect begins by reconstructing the **architecture that actually exists** for the exact Steward baseline inherited from Reliability. Repository structure, deployed topology, data ownership, integration mechanisms, internal packages, operational dependencies, quality/security evidence, SLOs, incidents, capacity measurements and ADRs are evidence; diagrams or curriculum examples are not substitutes for that evidence.
 
-Result: architectural decisions are consequences of system forces.
+The learner evaluates the accumulated architecture. Boundaries may be retained, strengthened or changed based on demonstrated drivers. Distribution is never required merely to make the architecture appear advanced. A modular monolith, synchronous interaction, single authoritative PostgreSQL store or existing deployment model may remain the correct decision.
+
+Optional components and packages are conditional throughout Architect. `steward-common`, `tsa-test-core`, Redis, RabbitMQ, Keycloak, Kong, Kubernetes/OpenShift, GitOps tooling and similar elements appear in the architecture baseline only when prior-school evidence proves they exist.
+
+Every proposed architecture change must state:
+
+1. the observed pressure or quality-attribute scenario;
+2. the current evidence supporting that pressure;
+3. credible alternatives, including retaining the current design;
+4. data, consistency, security, delivery, reliability and operational consequences;
+5. validation/fitness evidence that would show the change helped;
+6. rollback/reconsideration triggers.
+
+Result: architectural decisions are consequences of system forces. The Architect milestone may legitimately conclude that the strongest near-term architecture is a better-governed version of the existing system rather than a more distributed one.
 
 ### 10. Technical Steward — govern the technology
 
