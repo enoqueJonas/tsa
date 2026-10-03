@@ -14,7 +14,7 @@ const readingBlocks: LessonBlock[] = [
   { type: "list", items: [
     "The quality strategy names important Steward risks and the evidence used to investigate them.",
     "Unit and component checks prove focused behavior at low feedback cost.",
-    "API and integration checks prove service contracts, persistence and integration boundaries.",
+    "API and integration checks prove service contracts, persistence and integration boundaries; asynchronous lifecycle checks prove committed publication intent reaches its owned side effect with bounded eventual assertions and idempotency evidence.",
     "Browser and environment checks cover browser behavior and meaningful environment differences without duplicating all service-layer tests.",
     "Selected non-functional baselines provide comparable evidence for performance, accessibility, compatibility and integrity risks.",
     "GitLab CI/CD jobs publish reports and artifacts, preserve commit/release/environment/pipeline-source identity and apply quality gates that reflect real release risk.",
@@ -58,7 +58,7 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
           objective: "Audit the full Steward quality portfolio before final milestone execution.",
           scenario: "Treat previous modules as one system. Find gaps, duplication, hidden assumptions and evidence that cannot yet support a release decision.",
           instructions: [
-            "Map the highest-priority Steward risks to current unit/component, API/integration, browser/environment and non-functional evidence.",
+            "Map the highest-priority Steward risks to current unit/component, API/integration, asynchronous lifecycle, browser/environment and non-functional evidence.",
             "Identify duplicate tests that add cost without a distinct claim.",
             "Identify critical risks with no credible evidence or with evidence at the wrong test level.",
             "Verify the test target is an exact Steward release/environment from the Delivery or Cloud handoff and that reports preserve test, environment and immutable release identity.",
@@ -102,7 +102,7 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
           objective: "Run the integrated automated portfolio and prove that failures are actionable.",
           scenario: "Use the real Steward codebase and the environment-aware framework developed throughout Quality Steward. Every result must identify the exact release/environment under test.",
           instructions: [
-            "Execute representative unit/component and API/integration suites.",
+            "Execute representative unit/component and API/integration suites, including the lifecycle test that separates synchronous API success from eventual outbox → RabbitMQ → consumer completion.",
             "Prove the Maven execution boundary: Surefire owns the intended fast unit/component selection in `test`, while Failsafe owns the intended integration selection through `integration-test`/`verify`, and a failing integration test makes `mvn verify` fail.",
             "Execute the selected browser/environment matrix rather than every test on every browser.",
             "Run the selected stable non-functional baselines that are appropriate for this environment.",
@@ -122,7 +122,7 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
           objective: "Demonstrate that CI quality gates influence release decisions without hiding uncertainty.",
           scenario: "The pipeline is the operational expression of the Quality Steward strategy.",
           instructions: [
-            "Run the staged GitLab CI/CD quality pipeline against a known Steward release candidate.",
+            "Run the staged GitLab CI/CD quality pipeline against a known Steward release candidate and preserve the exact immutable release/environment identity used by synchronous and asynchronous tests.",
             "Prove at least one Testcontainers-backed integration slice on the intended GitLab Runner architecture and distinguish its evidence from shared/UAT regression.",
             "Capture Surefire and Failsafe reports separately enough to prove which Maven lifecycle/test layer produced each result.",
             "Demonstrate merge-request/default-branch or release/scheduled pipeline selection through explicit GitLab rules.",
