@@ -169,4 +169,4 @@ const lab: Lesson = { id: "api-integration-steward-e2e-service-layer", title: "L
     { id: "api-integration-lab-005", title: "API and Integration Testing Review", estimatedMinutes: 30, content: { type: "reflection", prompt: "Defend the Steward API/integration portfolio. Which risks required real PostgreSQL, identity, package or service boundaries; where did virtualization add useful control; what evidence is deliberately left for browser/environment or non-functional testing; and which tests should block a release when they fail?", minimumCharacters: 300 } },
 ] };
 
-export const apiAndIntegrationTestingDeepLessons: Lesson[] = [httpMilestone, restAssuredBuild, ...specs.map(rich), apiArchitectureMilestone, apiClientBuild, lab];
+export const apiAndIntegrationTestingDeepLessons: Lesson[] = [httpMilestone, restAssuredBuild, ...specs.map(rich), apiArchitectureMilestone, apiClientBuild, asyncLifecycleIntegration, lab];
