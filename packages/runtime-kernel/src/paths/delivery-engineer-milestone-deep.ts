@@ -32,7 +32,7 @@ export const deliveryEngineerMilestoneDeepLessons: Lesson[] = [
             estimatedMinutes: 120,
             content: {
                 type: "practical",
-                objective: "Prove that reviewed Steward source produces traceable required artifacts without workstation-local handoffs; internal package evidence is conditional on a package having been genuinely earned."
+                objective: "Prove that reviewed Steward source produces traceable required artifacts without workstation-local handoffs; internal package evidence is conditional on a package having been genuinely earned.",
                 scenario: "Use the existing CI and Nexus path. The goal is evidence, not adding more tools.",
                 instructions: [
                     "Run the GitLab CI/CD pipeline for the chosen source revision from a clean GitLab Runner context and record the Runner identity/executor used.",
