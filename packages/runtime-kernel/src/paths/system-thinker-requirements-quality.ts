@@ -7,9 +7,9 @@ type PracticeSpec = Omit<PracticalContent, "type">;
 const practices: Record<string, PracticeSpec> = {
     "From Requests to Problems": {
         objective: "Turn solution-shaped requests into evidence-backed problem statements before Steward acquires unnecessary architecture.",
-        scenario: "A platform lead asks for three additions to Steward: an ownership dashboard, automatic email notifications and a new reporting endpoint. The requests sound reasonable, but nobody has documented the underlying failures, affected actors or success measures. You are the engineer asked to frame the work before a backlog is created.",
+        scenario: "Begin from the Steward API v1 repository and Builder release evidence you just completed. A platform lead asks for three additions: an ownership dashboard, automatic email notifications and a new reporting endpoint. The requests sound reasonable, but none exists in v1 and nobody has documented the underlying failures, affected actors or success measures. Frame the work before changing the backlog or code.",
         instructions: [
-            "Treat each requested feature as a hypothesis about a problem rather than an approved solution.",
+            "Create a system-thinker/requirements directory beside the existing Steward project artifacts; this school will add analysis evidence before it adds architecture.", "Record the Builder v1 commit/tag or checkpoint you are analyzing so later diagrams and decisions refer to a concrete system.", "Treat each requested feature as a hypothesis about a problem rather than an approved solution.",
             "For each request, identify the affected actor, observed pain, consequence and evidence currently available.",
             "Write a solution-neutral problem statement and an observable outcome for each request.",
             "Identify which parts are facts, stakeholder claims and assumptions that still need validation.",
@@ -33,9 +33,9 @@ const practices: Record<string, PracticeSpec> = {
     },
     "Functional Requirements": {
         objective: "Create a behavioral contract for Steward that can survive a framework or implementation change.",
-        scenario: "A future team may replace parts of Steward's implementation. They need to know which behaviors must survive without treating today's Django views, serializers and tables as the specification.",
+        scenario: "The Builder v1 implementation now gives you concrete Django views, serializers, models and tests to inspect. A future team may replace parts of that implementation. Extract which behaviors must survive without promoting today's framework structure into the specification.",
         instructions: [
-            "Select ownership, dependency, environment and lifecycle behavior from the current Steward evidence.",
+            "Inspect the current Steward API v1 routes, models, authorization rules and Builder milestone evidence; select ownership, dependency, environment and lifecycle behavior that is actually implemented.",
             "Write at least eight requirements using observable system behavior rather than framework terminology.",
             "Include preconditions or state where behavior changes depending on context.",
             "Add at least two forbidden behaviors or negative requirements, including one authorization-related case.",
@@ -60,7 +60,7 @@ const practices: Record<string, PracticeSpec> = {
     },
     "Constraints and Assumptions": {
         objective: "Prevent today's implementation choices and untested beliefs from becoming permanent architecture by accident.",
-        scenario: "During planning, people say Steward 'must use PostgreSQL', 'must remain a single Django application', 'will stay small', and 'will always be maintained directly by service teams'. Some statements may be genuine constraints; others are current facts or risky assumptions.",
+        scenario: "The current Builder v1 really does use PostgreSQL and a Django application, but implementation facts are not automatically permanent constraints. During planning, people say Steward 'must use PostgreSQL', 'must remain a single Django application', 'will stay small', and 'will always be maintained directly by service teams'. Classify those claims before they harden into architecture folklore.",
         instructions: [
             "Build a register containing at least five constraints and five assumptions visible in Steward's current direction.",
             "Classify constraints by source and mark whether they are hard or negotiable.",
