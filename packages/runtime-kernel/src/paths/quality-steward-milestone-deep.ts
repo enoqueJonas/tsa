@@ -61,7 +61,7 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
             "Map the highest-priority Steward risks to current unit/component, API/integration, browser/environment and non-functional evidence.",
             "Identify duplicate tests that add cost without a distinct claim.",
             "Identify critical risks with no credible evidence or with evidence at the wrong test level.",
-            "Verify reports preserve test, environment and release identity.",
+            "Verify the test target is an exact Steward release/environment from the Delivery or Cloud handoff and that reports preserve test, environment and immutable release identity.",
             "Review skipped, quarantined and flaky tests and ensure their risk remains visible."
           ],
           deliverables: ["Quality evidence map", "Gap and duplication list", "Milestone remediation plan"],
@@ -86,7 +86,7 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
             "Document product risks, test levels, environment strategy and execution cadence.",
             "Define which checks are blocking, advisory or manually reviewed.",
             "Document test-data, isolation, retry, quarantine and diagnostic policies.",
-            "Record the boundary between Steward domain test code and reusable tsa-test-core infrastructure.",
+            "Record the boundary between Steward domain test code and reusable infrastructure; if tsa-test-core was deferred, record the evidence and revisit trigger instead of inventing a library boundary.",
             "List residual quality risks deliberately handed to later Security and Reliability work."
           ],
           deliverables: ["Final Steward quality strategy", "Risk-to-evidence matrix", "Residual-risk register"],
@@ -100,7 +100,7 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
         content: {
           type: "practical",
           objective: "Run the integrated automated portfolio and prove that failures are actionable.",
-          scenario: "Use the real Steward codebase and the environment-aware framework developed throughout Quality Steward.",
+          scenario: "Use the real Steward codebase and the environment-aware framework developed throughout Quality Steward. Every result must identify the exact release/environment under test.",
           instructions: [
             "Execute representative unit/component and API/integration suites.",
             "Prove the Maven execution boundary: Surefire owns the intended fast unit/component selection in `test`, while Failsafe owns the intended integration selection through `integration-test`/`verify`, and a failing integration test makes `mvn verify` fail.",
