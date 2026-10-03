@@ -253,11 +253,23 @@ Result: Steward has a controlled remote environment without becoming a new appli
 
 ### 6. Quality Steward — build confidence around real behavior
 
-Quality Steward starts from the working Steward API. The learner incrementally builds `steward-tests`, first proving API behavior and later adding browser coverage only when a legitimate UI exists.
+Quality Steward starts from the immutable Steward release and environment contract produced by Delivery/Cloud. The test project must identify which release and environment produced its evidence; "test the current version" is not a sufficient target.
 
-Reusable automation is extracted into `tsa-test-core` only after repetition demonstrates the boundary.
+The learner creates `steward-tests` as a Java/Maven project and grows it incrementally:
 
-Result: Steward has an evidence-producing quality platform rather than a framework created in isolation.
+1. JUnit 5 and the Maven execution chain are understood before framework abstraction;
+2. a small raw Java HTTP probe establishes protocol mechanics;
+3. REST Assured is introduced only when repeated HTTP ceremony justifies it;
+4. Steward-specific API clients, DTOs, data builders and diagnostics emerge from real tests;
+5. API, persistence, identity and failure-boundary coverage grows from the actual Steward risk model;
+6. Playwright Java is added only if Steward has a genuine browser-facing workflow with browser-specific risk;
+7. CI/scheduled execution consumes the same release/environment identity and preserves diagnostic evidence.
+
+The learner must not generate an abstract "enterprise test framework" before product tests exist. Every abstraction must point to repetition, isolation, diagnostic or execution risk demonstrated by `steward-tests`.
+
+Reusable automation is extracted into `tsa-test-core` only after repetition demonstrates a boundary **and** the candidate is independent of Steward domain behavior. A second real consumer is preferred evidence; when one does not yet exist, extraction may be explicitly deferred. Curriculum completion must not force a library whose reuse case is still hypothetical.
+
+Result: Steward has an evidence-producing quality system around a known release, while framework and library boundaries are consequences of proven testing needs rather than preselected architecture.
 
 ### 7. Security Steward — attack and harden what exists
 
