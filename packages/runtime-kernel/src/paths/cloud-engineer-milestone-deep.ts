@@ -70,7 +70,8 @@ const gate2 = practicalLesson(
         "Generate a fresh plan and review create, update, replace and destroy actions before apply.",
         "Apply the exact reviewed plan using the intended provider identity and record the resulting infrastructure identifiers and outputs.",
         "Re-run plan after apply and prove the configuration converges to no unintended changes.",
-        "Verify that state is protected according to the remote-state design and that secrets are not committed or printed as ordinary outputs.",
+        "Verify that state is protected according to the remote-state design, concurrent writes are locked or otherwise safely serialized, and secrets are not committed or printed as ordinary outputs.",
+        "Prove one lifecycle edge case from the IaC module: safe import/adoption, address-preserving refactor, replacement review or recovery from a partial apply."
         "State which responsibilities remain outside OpenTofu: host configuration, artifact build, cluster workload reconciliation and application/domain configuration.",
     ],
     ["Reviewed OpenTofu plan", "Apply evidence", "Post-apply convergence evidence", "State protection note", "IaC responsibility boundary"],
@@ -103,6 +104,8 @@ const gate4 = practicalLesson(
         "Keep GitLab CI/CD responsible for build/test/package/publish; update or approve environment Git so Argo CD reconciles that exact artifact into Kubernetes/OpenShift.",
         "Verify that direct GitLab CI/CD push deployment is not simultaneously authoritative for the same GitOps-managed environment.",
         "Record API, outbox-publisher and lifecycle-consumer role commands, PostgreSQL/Redis/RabbitMQ placement, configuration and migration assumptions separately from artifact identity.",
+        "Prove scheduler placement/failure-domain intent for replicated roles, the required Service/DNS path, and at least one enforced network-policy allow/deny boundary.",
+        "Prove graceful termination for one synchronous or asynchronous role and record the disruption/rollout-capacity behavior expected during node drain or release replacement."
         "Verify DNS resolution, certificate validity, Kong routing, HTTPS response and a representative authenticated Steward API request from an external client.",
         "Capture the running image identity for API, outbox-publisher and lifecycle-consumer pods and prove all three match the same environment-Git-selected Nexus digest.", "Execute a lifecycle mutation through the public API and prove its committed outbox intent is published through RabbitMQ and completed by the consumer in the reconciled environment.",
     ],
@@ -119,6 +122,7 @@ const gate5 = practicalLesson(
         "Before creating the failure, predict which signal should detect it and which evidence should distinguish infrastructure, cluster, gateway and application causes.",
         "Introduce the failure in a controlled manner and capture the first trustworthy symptom.",
         "Recover through the authoritative mechanism: OpenTofu for infrastructure intent, Kubernetes/OpenShift reconciliation for workload state, Argo CD for GitOps-managed environment drift, or the documented backup/recovery path for persistent data.",
+        "If GitOps participates in the scenario, prove which controller owns the changed field and show how an emergency live intervention returns to declared state without creating a reconciliation fight."
         "Verify recovery from the client perspective and record actual recovery time and any data-loss implication.",
         "Re-prove the selected Steward S3-compatible object workflow: the application can persist/retrieve through its bounded runtime identity, committed objects survive the exercised service lifecycle, and retention/recovery responsibility remains explicit.",
     ],
@@ -136,10 +140,26 @@ const gate6 = practicalLesson(
         "Produce the expected monthly baseline using current provider pricing assumptions and record the date/source of those assumptions in your project notes.",
         "Compare actual or forecast spend with the budget threshold defined earlier in Cloud Engineer.",
         "Identify idle, oversized or redundant resources and either remove/right-size them or justify their retention.",
+        "Allocate at least one shared platform cost using a documented rule and report one normalized cost indicator such as environment-hour, request volume or completed lifecycle operation."
         "Document which provider, cluster, Kong and Argo CD health signals an operator should review before later Reliability work begins.",
     ],
     ["Monthly cost model", "Budget threshold and response", "Right-sizing decision", "Minimal cloud/platform operations checklist"],
     ["Every persistent paid resource has an owner and reason to exist.", "Kubernetes/OpenShift cost is justified by a capability requirement rather than assumed as mandatory production architecture.", "The review does not prematurely duplicate Reliability Engineer's deeper observability work."],
+);
+
+const gateCanary = practicalLesson(
+    "gate-progressive-delivery",
+    "Gate 7: Progressive Delivery Safety",
+    "Prove that one Steward release can progress from limited exposure to stable release using evidence rather than pod health alone.",
+    [
+        "Select a release compatible with stable database, queue, cache and public-contract state during coexistence.",
+        "Use the versioned Argo Rollouts/GitOps path and prove the chosen routing mechanism's actual stable-versus-candidate request distribution.",
+        "Define a contemporaneous stable baseline, observation window, minimum request/event evidence and explicit low-traffic behavior before promotion.",
+        "Run one healthy candidate through promotion and one safe defective candidate through automated pause/abort.",
+        "Prove that loss of analysis evidence fails safe and that rollback restores traffic/application authority without pretending to roll back irreversible persistent-state changes.",
+    ],
+    ["Canary routing evidence", "Baseline and evidence-volume record", "Healthy promotion evidence", "Bad-candidate abort evidence", "Analysis-unavailable behavior"],
+    ["Traffic exposure is measured rather than inferred only from replica counts.", "Promotion requires sufficient evidence.", "A readiness-passing bad release can still be rejected.", "Insufficient analysis evidence does not silently promote."],
 );
 
 const gate7 = practicalLesson(
@@ -176,4 +196,4 @@ const review: Lesson = {
     ],
 };
 
-export const cloudEngineerMilestoneDeepLessons: Lesson[] = [brief, gate1, gate2, gate3, gate4, gate5, gate6, gate7, review];
+export const cloudEngineerMilestoneDeepLessons: Lesson[] = [brief, gate1, gate2, gate3, gate4, gate5, gate6, gateCanary, gate7, review];
