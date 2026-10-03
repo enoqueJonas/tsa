@@ -8,7 +8,7 @@ const practices: Record<string, PracticalContent> = {
         objective: "Build and prioritize a small failure portfolio for critical Steward capabilities using cause, system behavior, impact, detectability and blast radius.",
         scenario: "A design review has a long list of things that could go wrong with Steward, but the list mixes triggers, symptoms and consequences. The team needs a smaller evidence-backed set of failure modes that deserves attention now.",
         instructions: [
-            "Choose three critical Steward capabilities from the requirements and flow artifacts.",
+            "Choose three implemented Steward v1 capabilities from the requirements and flow artifacts; cite the request or data-flow evidence for each.",
             "For each capability, separate triggering condition, system failure mode and user or operational effect.",
             "Score each scenario qualitatively for impact, detectability, duration and blast radius.",
             "Identify the current detection signal and expected way the failure would first become visible.",
@@ -23,7 +23,7 @@ const practices: Record<string, PracticalContent> = {
         objective: "Define failure semantics for one authoritative and one non-authoritative Steward dependency, including timeout, retry, degradation and cascade behavior.",
         scenario: "Steward depends on systems with different authority levels. A generic 'retry on failure' rule would make some incidents worse and could allow correctness decisions to continue without trustworthy evidence.",
         instructions: [
-            "Use PostgreSQL as the authoritative dependency and choose one non-authoritative current or plausible dependency.",
+            "Use PostgreSQL as the authoritative dependency. Choose a non-authoritative dependency from the current inventory; if you must use a future dependency, label that case explicitly as proposed-state.",
             "Model unavailable, slow and semantically incorrect behavior for both dependencies.",
             "For each failure, decide whether Steward must fail closed, degrade explicitly, or can continue safely.",
             "Define timeout ownership and whether retry is allowed; justify the decision using idempotency and ambiguity of outcome.",
@@ -53,7 +53,7 @@ const practices: Record<string, PracticalContent> = {
         objective: "Model how one Steward request path behaves as a finite resource saturates and choose bounded-work controls before introducing capacity as the only answer.",
         scenario: "Steward remains technically healthy, but a large query or traffic burst increases database and worker occupancy until latency rises, timeouts appear and clients begin retrying.",
         instructions: [
-            "Choose a list/search or mutation endpoint with meaningful database work.",
+            "Choose an implemented Builder v1 list/search or mutation endpoint with meaningful database work.",
             "Trace the finite resources it consumes: request workers, memory, connections, locks, query work and queues where relevant.",
             "Identify one unbounded input, result, concurrency or work dimension.",
             "Describe the user-visible progression from normal utilization to saturation and then timeout or rejection.",
