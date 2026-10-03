@@ -455,11 +455,20 @@ Current curriculum intent:
 | Keycloak/workforce federation | Required implementation when the Security identity progression reaches the existing homelab directory scenario |
 | Kubernetes/OpenShift-compatible orchestration | Required hands-on migration exercise after the containerized release exists; the learner may later simplify/remove it |
 | Argo CD/GitOps | Required within the retained orchestration learning scenario; it must have one deployment-authority boundary |
-| Redis | Conditional on demonstrated cache/read-path pressure |
-| RabbitMQ | Conditional on a demonstrated asynchronous-side-effect requirement |
+| Redis | Required implementation after Steward reaches the designed catalogue/read workload and measured cache-worthy pressure |
+| RabbitMQ | Required implementation after Steward adds a durable asynchronous side-effect requirement that must not block authoritative mutations |
 | Kafka | Comparison/context unless a Kafka-shaped requirement is independently demonstrated |
-| `steward-common` | Conditional on a real reusable application boundary |
-| `tsa-test-core` | Conditional on demonstrated cross-product test reuse |
+| `steward-common` | Required extraction after Steward develops a second real application/consumer that repeats a stable domain-independent client/contract capability |
+| `tsa-test-core` | Required extraction after the curriculum deliberately creates a second real test consumer and demonstrates a stable product-independent testing capability |
+
+For required technologies, TSA must deliberately evolve Steward until the prerequisite is real before asking the learner to implement the technology. The curriculum may not fabricate a benchmark result, duplicate code, second consumer or operational pain; the learner must create/measure the prerequisite through preceding exercises.
+
+The four previously conditional arcs therefore become explicit product evolution:
+
+- **Redis:** grow representative catalogue/query usage, establish an uncached baseline, exhaust query/index/ORM improvements first, then demonstrate a read path that misses its target and implement cache-aside without changing PostgreSQL authority.
+- **RabbitMQ:** add a real post-commit capability such as lifecycle notifications/audit projection whose external latency/failure must not block the authoritative Service mutation; establish synchronous failure evidence, then implement messaging, redelivery, idempotency, poison handling and outbox recovery.
+- **steward-common:** introduce a second real Steward-owned consumer/tool that needs a stable non-domain-specific API/client capability already present in the primary codebase; first tolerate local duplication long enough to prove the boundary, then extract/version/publish/consume it.
+- **tsa-test-core:** keep Steward-specific automation inside steward-tests initially; later create a second real TSA test consumer with overlapping infrastructure concerns, prove the repeated capability is product-independent, then extract/version/publish it and prove both consumers remain compatible.
 
 This table expresses curriculum intent, not permanent Steward architecture. Architect and Technical Steward may later retain, simplify, replace or remove technologies using evidence.
 
