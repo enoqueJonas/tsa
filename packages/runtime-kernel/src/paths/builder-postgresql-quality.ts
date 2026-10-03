@@ -28,7 +28,7 @@ const practices: Record<string, PracticeSpec> = {
             "Seed at least five service rows including one disposable test record.",
             "For every UPDATE or DELETE, first run the exact predicate as a SELECT and save the result.",
             "Use SELECT expressions/aliases and INSERT ... RETURNING, then use UPDATE ... RETURNING to change one precisely identified service.",
-            "Insert more than one row in one statement and demonstrate one intentional ON CONFLICT behavior against a declared uniqueness rule."
+            "Insert more than one row in one statement and demonstrate one intentional ON CONFLICT behavior against a declared uniqueness rule.",
             "Delete only the disposable row after proving the target set.",
             "Intentionally write, but do not execute, one dangerous predicate-free mutation and annotate why PostgreSQL would accept it.",
             "Compare before/after row sets and record the evidence."
@@ -45,7 +45,7 @@ const practices: Record<string, PracticeSpec> = {
             "Create one deliberately incorrect NULL comparison and capture the unexpected result; explain it using SQL TRUE/FALSE/UNKNOWN rather than only memorizing IS NULL.",
             "Create one ambiguous AND/OR predicate, then add parentheses to make the intended truth conditions explicit.",
             "Add deterministic ordering with an explicit tie-breaker and demonstrate stable output across repeated runs.",
-            "Use one range/pattern predicate and a bounded LIMIT query; explain why LIMIT without deterministic ORDER BY is not a stable page."
+            "Use one range/pattern predicate and a bounded LIMIT query; explain why LIMIT without deterministic ORDER BY is not a stable page.",
             "Write the expected truth conditions for each query before comparing them with PostgreSQL output."
         ],
         deliverables: ["Query catalogue", "NULL failure evidence", "Boolean-precedence correction", "Deterministic ordering evidence"],
@@ -60,7 +60,7 @@ const practices: Record<string, PracticeSpec> = {
             "Add a HAVING threshold for teams with at least two qualifying services.",
             "Join environments in a way that deliberately inflates COUNT and inspect the pre-aggregation row shape.",
             "Correct the metric using an appropriate query shape and verify it manually against source rows.",
-            "Compare COUNT(*) with COUNT(nullable_column) on data containing NULL and explain the population each metric counts."
+            "Compare COUNT(*) with COUNT(nullable_column) on data containing NULL and explain the population each metric counts.",
             "Explain which filters belong in WHERE and which are genuinely group-level conditions for HAVING."
         ],
         deliverables: ["Correct aggregation queries", "Inflated-count reproduction", "Manual verification table", "Metric-grain explanation"],
@@ -131,7 +131,7 @@ const practices: Record<string, PracticeSpec> = {
             "List candidate invariants and classify which belong in PostgreSQL, application code, or both.",
             "Add UNIQUE protection for service slug and a CHECK for allowed criticality values.",
             "Protect ServiceDependency from self-reference and duplicate source-target pairs.",
-            "Choose and justify surrogate/natural/composite key usage where applicable, then choose and justify referential actions for at least one foreign key rather than accepting defaults blindly."
+            "Choose and justify surrogate/natural/composite key usage where applicable, then choose and justify referential actions for at least one foreign key rather than accepting defaults blindly.",
             "Attempt each invalid write directly in SQL and capture PostgreSQL's rejection.",
             "Identify one important Steward rule that cannot be represented safely as a simple row constraint and explain where it remains enforced."
         ],
@@ -158,7 +158,7 @@ const practices: Record<string, PracticeSpec> = {
         instructions: [
             "Reproduce the ownership-name update anomaly in a deliberately flawed schema or sample table.",
             "Refactor ownership into an authoritative Team relation and prove a rename now has one source of truth.",
-            "Identify which remaining values are authoritative facts and which are derived values. For one composite-key relation, check whether every non-key fact depends on the whole key; for one ordinary table, identify any transitive non-key dependency."
+            "Identify which remaining values are authoritative facts and which are derived values. For one composite-key relation, check whether every non-key fact depends on the whole key; for one ordinary table, identify any transitive non-key dependency.",
             "Choose one hypothetical derived field such as dependency_count and define the read benefit it might provide.",
             "Document how that value would be kept synchronized, what stale behavior would look like and how failures would be repaired.",
             "Decide whether to denormalize now; a justified 'no' is a valid result."
@@ -172,7 +172,7 @@ const practices: Record<string, PracticeSpec> = {
         instructions: [
             "Generate enough representative service data that scan choice is meaningful.",
             "Choose one real predicate/join/order pattern and capture EXPLAIN ANALYZE before adding an index.",
-            "Create one candidate single or composite B-tree index based on that access pattern; for a composite index, test a leading-column query and a non-leading-column query and compare planner choices."
+            "Create one candidate single or composite B-tree index based on that access pattern; for a composite index, test a leading-column query and a non-leading-column query and compare planner choices.",
             "Capture the new plan and compare scan type, estimated/actual rows, timing and buffers where available.",
             "Run an INSERT/UPDATE workload or reason from measured evidence about the additional maintenance/storage cost.",
             "Test one query where PostgreSQL still chooses a sequential scan and explain why that can be correct."
@@ -186,7 +186,7 @@ const practices: Record<string, PracticeSpec> = {
         instructions: [
             "Choose a meaningful query with at least one join and aggregation or sort.",
             "Run EXPLAIN first, then EXPLAIN (ANALYZE, BUFFERS) when it is safe to execute.",
-            "Annotate the major scan, join, sort and aggregate nodes from leaves to root; identify the specific scan/join strategy names PostgreSQL chose and multiply rows by loops where relevant."
+            "Annotate the major scan, join, sort and aggregate nodes from leaves to root; identify the specific scan/join strategy names PostgreSQL chose and multiply rows by loops where relevant.",
             "Compare estimated rows with actual rows and identify the largest mismatch.",
             "Identify where most time or buffer work appears to occur without immediately changing the query.",
             "Write one next investigation that follows from the plan evidence and one tempting but unsupported optimization you are deliberately not doing."
@@ -213,9 +213,9 @@ const practices: Record<string, PracticeSpec> = {
         scenario: "A direct Steward database operation is failing and the Python-side error does not establish the database cause. You have shell access to the learner-owned database host and must inspect PostgreSQL directly without using superuser privileges for the application.",
         instructions: [
             "Connect with psql using an administrative learning account and separately identify the application's non-superuser role.",
-            "Inspect databases/schemas, tables, columns, constraints and indexes using psql metadata commands or catalog queries. Demonstrate at least \\l, \\dn, \\dt, \\d and \\du and explain which are psql commands rather than SQL."
+            "Inspect databases/schemas, tables, columns, constraints and indexes using psql metadata commands or catalog queries. Demonstrate at least \\l, \\dn, \\dt, \\d and \\du and explain which are psql commands rather than SQL.",
             "Inspect current connections and identify which role/database the Steward application uses.",
-            "Create or document the minimum database/schema/table privileges the application role needs and name at least two privileges it should not have. Distinguish object ownership from granted application privileges."
+            "Create or document the minimum database/schema/table privileges the application role needs and name at least two privileges it should not have. Distinguish object ownership from granted application privileges.",
             "Take a logical backup of the local Steward database using the PostgreSQL tooling appropriate to your setup and verify that the backup artifact exists and is readable by the intended operator.",
             "Write a short handoff note listing what a future DBA/reliability investigation would still need to cover: restore testing, pooling, locks, replication/HA, capacity and operational monitoring."
         ],
