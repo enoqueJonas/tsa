@@ -413,7 +413,7 @@ const specs: DataLessonSpec[] = [
     },
 ];
 
-const djangoDependentDataLessonIds = new Set(["django-orm", "orm-vs-sql", "n-plus-one", "migrations"]);
+export const djangoDependentDataLessonIds = new Set(["django-orm", "orm-vs-sql", "n-plus-one", "migrations"]);
 
 /**
  * Builder sequencing boundary:
@@ -422,6 +422,10 @@ const djangoDependentDataLessonIds = new Set(["django-orm", "orm-vs-sql", "n-plu
  * following Django and API Engineering path; framework-dependent data lessons must
  * not become prerequisites for learning the framework itself.
  */
+export const djangoDependentPostgresqlDeepLessons: Lesson[] = specs
+    .filter((spec) => djangoDependentDataLessonIds.has(spec.id))
+    .map(lesson);
+
 export const relationalDataAndPostgresqlDeepLessons: Lesson[] = specs
     .filter((spec) => !djangoDependentDataLessonIds.has(spec.id))
     .map(lesson);
