@@ -5,7 +5,7 @@ const awsS3: LearningResource = { title: "Amazon S3 User Guide", url: "https://d
 const minio: LearningResource = { title: "MinIO documentation", url: "https://min.io/docs/minio/linux/index.html" };
 
 const blocks: LessonBlock[] = [
-    { type: "paragraph", text: "Object storage is already part of the Cloud Engineer mental model. This path closes the implementation-depth gap: Steward must now use a real S3-compatible service for data that genuinely fits bucket/key/API semantics." },
+    { type: "paragraph", text: "Object storage is already part of the Cloud Engineer mental model. This path closes the implementation-depth gap: Steward must now use a real S3-compatible service for data that genuinely fits `bucket`/`key`/API semantics." },
     { type: "heading", id: "object-storage-boundary", text: "Choose the storage model deliberately", level: 2 },
     { type: "list", items: [
         "PostgreSQL remains authoritative relational application state.",
