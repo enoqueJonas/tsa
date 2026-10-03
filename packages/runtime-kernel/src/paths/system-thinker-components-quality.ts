@@ -7,10 +7,10 @@ type PracticeSpec = Omit<PracticalContent, "type">;
 const practices: Record<string, PracticeSpec> = {
     "Components and Responsibilities": {
         objective: "Turn Steward's current code structure into an evidence-backed responsibility model without treating folders as architecture.",
-        scenario: "A new engineer opens Steward and assumes each Django app or directory is an architectural component. During review, however, several use cases cross those boundaries and important rules appear in multiple places. You need to identify the responsibility model before anyone proposes a refactor.",
+        scenario: "A new engineer opens the Builder v1 Steward checkpoint and assumes each Django app or directory is an architectural component. During review, however, several use cases cross those boundaries and important rules appear in multiple places. You need to identify the responsibility model before anyone proposes a refactor.",
         instructions: [
-            "Choose three representative Steward use cases that exercise different domain responsibilities.",
-            "Trace where their rules, orchestration and persistence behavior currently live.",
+            "Choose three implemented Steward v1 use cases from the functional-requirements baseline that exercise different domain responsibilities.",
+            "Trace where their rules, orchestration and persistence behavior currently live in the v1 repository.",
             "Group the observed behavior by reason for change rather than by file or package location.",
             "Name candidate components using domain responsibility language and write one sentence defining what each owns and does not own.",
             "Identify one current code boundary that aligns well with the responsibility model and one that does not.",
