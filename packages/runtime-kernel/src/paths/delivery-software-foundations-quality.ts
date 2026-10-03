@@ -45,6 +45,24 @@ const practices: Record<string, PracticalContent> = {
         deliverables: ["Risk-oriented PR brief", "Delivery-impact review checklist", "Merge/block evidence criteria"],
         completionCriteria: ["Review scope reflects delivery impact, not only code size.", "Evidence expectations are explicit.", "The change can be reviewed without verbal context from its author."],
     },
+    "Earn steward-common Through a Second Consumer": {
+        type: "practical",
+        objective: "Create a second real Steward-owned Python consumer, prove a stable product-independent capability is duplicated, and extract only that earned boundary into steward-common.",
+        scenario: "Delivery now needs to teach independent package distribution. Before Nexus can publish a meaningful Python package, Steward must have two real consumers. Add a small operator-facing Steward CLI that calls the existing HTTP API to inspect service ownership/lifecycle and perform one safe operator workflow. Build the first slice without a shared library so the repeated client/config/error-handling capability becomes observable.",
+        instructions: [
+            "Create a separate steward-cli Python project/repository with its own pyproject.toml and executable entry point.",
+            "Implement a useful operator workflow against the existing Steward HTTP API, such as listing services and inspecting one service's owner/lifecycle state.",
+            "Keep Steward domain rules in the API; the CLI is a client, not a second domain implementation.",
+            "Initially implement API base-URL configuration, HTTP request setup and public error decoding locally in steward-cli.",
+            "Compare that code with the equivalent stable client/config/error-contract behavior already needed by another Steward consumer or automation path.",
+            "Record concrete duplication and define the smallest product-independent Python boundary shared by both consumers.",
+            "Create steward-common as its own Python package and move only the proven generic capability.",
+            "Update both consumers to use steward-common locally and run their verification suites.",
+            "Prove steward-common imports neither Django application internals nor CLI-specific code."
+        ],
+        deliverables: ["Working steward-cli repository", "Pre-extraction duplication evidence", "steward-common package with explicit public API", "Two-consumer verification evidence", "Boundary decision record"],
+        completionCriteria: ["The CLI solves a real operator use case through Steward's public API.", "Two consumers exist before extraction.", "The extracted capability is demonstrated in both consumers and contains no Steward domain rules.", "Both consumers pass after extraction.", "The resulting package is ready for independent versioning and later Nexus publication."],
+    },
     "Semantic Versioning": {
         type: "practical",
         objective: "Version Steward and its internal packages from explicit compatibility contracts rather than arbitrary number increments.",
