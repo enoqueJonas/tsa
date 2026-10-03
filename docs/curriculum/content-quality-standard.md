@@ -55,6 +55,48 @@ In particular, substantial implementation work must not depend on fictional prio
 
 Acceptance criteria should describe behavior the learner can verify. Narrative continuity is not evidence that an implementation exists.
 
+
+## Foundational concept completeness
+
+A lesson marked or treated as deep-authored is not complete merely because it has several headings, code examples and an engineering exercise. For foundational concepts, the authored teaching must leave the learner with a durable working model that supports later independent research.
+
+Where applicable, a foundational lesson should teach:
+
+- **purpose and mental model** — what problem the concept solves and how to reason about it;
+- **core mechanics** — how to create, read/access, update, delete and iterate over it;
+- **common operations and vocabulary** — the methods, operators and standard-library tools a working engineer will encounter regularly;
+- **real use cases** — several representative situations, including at least one outside the continuing Steward example when that improves transfer;
+- **guarantees and limitations** — ordering, uniqueness, mutability, identity, typing/schema behavior, concurrency or persistence implications as relevant;
+- **failure modes and traps** — common exceptions, surprising behavior, misuse and boundary conditions;
+- **trade-offs and alternatives** — when to choose the concept and when a neighboring abstraction is a better fit;
+- **performance intuition** — the important relative cost model when it materially affects normal engineering decisions, without turning an introductory lesson into an algorithms course;
+- **worked comparison** — when several related concepts are taught together, compare them explicitly rather than expecting the learner to infer the decision rule;
+- **transfer check** — practice or questions that require choosing or explaining the concept in a new situation rather than repeating the worked example.
+
+Not every bullet applies to every topic. The author must decide deliberately rather than omit coverage because the lesson already looks substantial.
+
+### Foundation-complete does not mean encyclopedic
+
+TSA should teach the stable, high-frequency knowledge that makes later documentation useful. It does not need to reproduce an entire language reference or product manual.
+
+A useful boundary is:
+
+> After this lesson, can the learner solve ordinary problems with the concept, explain its important constraints, recognize common mistakes, and know what narrower detail to research when an unfamiliar case appears?
+
+If the answer is no, external resources are compensating for missing TSA teaching and the lesson is still thin.
+
+### Related-concept comparison rule
+
+When a lesson introduces several alternatives—such as list/tuple/dict/set, process/thread, authentication/authorization, queue/stream, or cache/database—it must include an explicit decision model. At minimum, show:
+
+1. what guarantee or access pattern distinguishes each option;
+2. one strong use case for each;
+3. one poor-fit case or limitation for each;
+4. the high-frequency operations the learner will actually perform;
+5. a scenario where choosing the wrong option causes a concrete problem.
+
+A comparison table is appropriate when it reduces cognitive load, but the lesson must still explain the reasoning behind the table.
+
 ## Practice standard
 
 Practice must be authored around the engineering capability being developed. Reusable code helpers are acceptable, but they must not flatten every lesson into the same scenario, deliverables and completion criteria.
