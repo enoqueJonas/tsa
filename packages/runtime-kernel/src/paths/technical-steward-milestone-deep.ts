@@ -53,7 +53,7 @@ export const technicalStewardMilestoneDeepLessons: Lesson[] = [
           "At least one material risk receives a defensible treatment, acceptance, escalation or monitoring decision with clear authority and follow-up.",
           "Control effectiveness is demonstrated through operating evidence rather than tool presence.",
           "No redundant pair of active technologies is justified merely by curriculum exposure; separate responsibilities or a migration end-state are explicit.",
-          "Every actually completed migration includes a decommission/retention decision for the superseded technology; evaluated-only migrations are clearly classified as decision history."
+          "Every actually completed migration includes a decommission/retention decision for the superseded technology; evaluated-only migrations are clearly classified as decision history.",
           "Governance recommendations are proportionate and remove unnecessary ceremony as readily as they add justified guardrails.",
           "Architecture and lifecycle recommendations respond to evidence rather than fashion or historical permanence.",
           "Active enterprise platform responsibilities have named owners, lifecycle/support expectations, recovery assumptions and exception paths.",
