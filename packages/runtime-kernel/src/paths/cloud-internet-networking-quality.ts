@@ -92,7 +92,7 @@ const practices: Record<string, PracticalContent> = {
         objective: "Migrate the known-good Steward reverse-proxy edge to Kong because the product now requires a policy-capable API gateway.",
         scenario: "The simple reverse proxy already proves TLS and routing. Steward now has multiple client surfaces and needs centralized API routing/policy controls that the curriculum will exercise later. Migrate rather than operate two competing public edges.",
         instructions: [
-            "Capture the existing reverse-proxy behavior and define the new gateway requirement: preserve TLS/routing while creating a policy-capable API edge for multiple Steward clients."
+            "Capture the existing reverse-proxy behavior and define the new gateway requirement: preserve TLS/routing while creating a policy-capable API edge for multiple Steward clients.",
             "Configure a Kong Service and Route for the current Steward backend using the narrowest useful public path.",
             "Stop the Steward backend deliberately and capture the gateway-visible failure; then restore it and verify recovery.",
             "Compare that failure with a closed public 443 path so the gateway layer and network layer remain distinguishable.",
