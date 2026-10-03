@@ -13,6 +13,8 @@ const blocks: LessonBlock[] = [
         "Argo Rollouts is introduced for one concrete canary requirement, not as a second GitOps controller replacing Argo CD.",
         "Argo CD remains responsible for reconciling desired deployment configuration from Git; Argo Rollouts controls the progressive rollout state machine.",
         "Prometheus supplies automated analysis signals when the environment can support them; manual promotion alone does not satisfy the final exercise.",
+        "A traffic percentage is meaningful only if the routing mechanism can actually enforce or approximate it. Replica ratios are not equivalent to request percentages when connection reuse, uneven load or external routing skew exists.",
+        "Promotion needs enough observations to support the decision. A five-minute green window with three requests is not strong evidence merely because the dashboard is green.",
         "Blue/green is compared as an alternative but is not permanently implemented beside canary merely for exposure."
     ] },
     { type: "callout", tone: "steward", title: "State compatibility comes first", body: "A canary is unsafe if candidate and stable versions cannot share the current schema, queues, caches or contracts. Reuse the production schema-evolution discipline before exposing two application versions to live traffic." },
@@ -35,8 +37,10 @@ export const progressiveDeliveryCanaryDeepLessons: Lesson[] = [
                     "Compare canary and blue/green for this scenario, then select canary as the primary implementation unless a documented technical constraint makes it infeasible.",
                     "Define an exposure sequence such as 5% -> 20% -> 50% -> 100%, or an equivalent bounded progression justified by the environment.",
                     "Define minimum observation windows and promotion/abort criteria using release-relevant indicators such as HTTP error ratio, latency, readiness and one meaningful Steward business/functional check.",
+                    "Define a stable baseline for the same indicators so the decision compares candidate behavior with contemporaneous stable behavior where possible rather than relying only on static absolute thresholds.",
+                    "Define a minimum evidence rule: observation duration plus enough requests/events for the metric to be meaningful. State what happens when traffic is too low to satisfy that rule.",
                     "Define what happens to the candidate on abort, what stable version remains authoritative, and which database/data changes cannot be undone by traffic rollback."
-                ], deliverables: ["Progressive-delivery justification", "Stable/candidate compatibility proof", "Canary-vs-blue-green comparison", "Exposure plan", "Promotion/abort criteria", "State-aware rollback contract"], completionCriteria: ["Canary is justified by a concrete release risk.", "Stable and candidate coexistence is proven safe before traffic splitting.", "Promotion criteria are measurable rather than 'looks healthy'.", "Abort behavior distinguishes traffic/application rollback from persistent-state rollback." ] },
+                ], deliverables: ["Progressive-delivery justification", "Stable/candidate compatibility proof", "Canary-vs-blue-green comparison", "Exposure plan", "Stable baseline and promotion/abort criteria", "Minimum-evidence/low-traffic rule", "State-aware rollback contract"], completionCriteria: ["Canary is justified by a concrete release risk.", "Stable and candidate coexistence is proven safe before traffic splitting.", "Promotion criteria are measurable rather than 'looks healthy'.", "Abort behavior distinguishes traffic/application rollback from persistent-state rollback." ] },
             },
             {
                 id: "cloud-progressive-delivery-canary-003",
@@ -46,7 +50,7 @@ export const progressiveDeliveryCanaryDeepLessons: Lesson[] = [
                     "Install/configure Argo Rollouts in the learner-owned Kubernetes/OpenShift environment and document the controller/RBAC footprint it adds.",
                     "Convert only the selected Steward workload from Deployment rollout behavior to an Argo Rollout; do not migrate unrelated workloads merely for tool exposure.",
                     "Keep the desired Rollout/service configuration versioned in Git and reconciled through the existing Argo CD workflow.",
-                    "Configure stable and canary service/traffic behavior using the simplest mechanism the current cluster can support reliably. If weighted ingress/service-mesh routing is unavailable, use replica-weighted basic canary and document its limitations.",
+                    "Configure stable and canary service/traffic behavior using the simplest mechanism the current cluster can support reliably. Prefer explicit weighted traffic routing when supported. If only replica-weighted basic canary is available, prove the actual observed request distribution and document why replica ratio is only an approximation of traffic share.",
                     "Configure multiple canary steps with bounded pauses/analysis rather than an immediate 0-to-100 replacement.",
                     "Expose release identity in evidence so requests/results can be attributed to stable versus candidate versions.",
                     "Run a healthy candidate through the complete progression and prove the approved immutable image becomes the stable version without rebuilding it."
@@ -60,11 +64,13 @@ export const progressiveDeliveryCanaryDeepLessons: Lesson[] = [
                     "Connect the canary analysis to Prometheus metrics already owned by the Steward observability environment, using an Argo Rollouts AnalysisTemplate/AnalysisRun or equivalent automated gate.",
                     "Include at least one service indicator such as error ratio or latency and one release-specific functional/business check where technically reasonable.",
                     "Deploy a deliberately defective but safe candidate that passes startup/readiness yet violates one configured analysis criterion.",
-                    "Send representative traffic and prove the rollout pauses/fails/aborts before reaching 100% exposure.",
+                    "Send enough representative traffic to satisfy the previously defined minimum-evidence rule and prove the rollout pauses/fails/aborts before reaching 100% exposure.",
+                    "Compare candidate and stable observations over the same decision window where technically possible, and capture the sample count/event volume alongside ratios or latency summaries.",
                     "Verify stable traffic remains available and capture the exact telemetry and rollout evidence that caused the decision.",
+                    "Repeat or tabletop the decision under very low traffic and prove that insufficient evidence pauses or requires an explicit alternative validation path rather than silently promoting.",
                     "Fix the defect, publish a new immutable candidate through the normal GitLab CI/CD/Nexus release chain, and prove the new candidate can progress successfully.",
                     "Document alert/notification handoff for an aborted progressive rollout without creating a duplicate alerting stack."
-                ], deliverables: ["Automated analysis configuration", "Defective candidate", "Prometheus failure evidence", "Automatic pause/abort evidence", "Stable-service evidence", "Fixed-candidate promotion", "Notification handoff"], completionCriteria: ["A candidate that passes readiness can still be rejected by release analysis.", "At least one promotion/abort decision is driven automatically by real telemetry.", "The bad candidate does not reach full exposure.", "Stable service remains available during abort.", "The recovery uses a newly built fixed candidate or known-good immutable artifact, not an ad-hoc in-cluster patch." ] },
+                ], deliverables: ["Automated analysis configuration", "Defective candidate", "Prometheus failure evidence", "Automatic pause/abort evidence", "Stable-service evidence", "Fixed-candidate promotion", "Notification handoff"], completionCriteria: ["A candidate that passes readiness can still be rejected by release analysis.", "At least one promotion/abort decision is driven automatically by real telemetry.", "The decision records observation window and evidence volume rather than treating a percentage alone as statistically meaningful.", "Insufficient traffic cannot silently satisfy the promotion gate.", "The bad candidate does not reach full exposure.", "Stable service remains available during abort.", "The recovery uses a newly built fixed candidate or known-good immutable artifact, not an ad-hoc in-cluster patch." ] },
             },
             {
                 id: "cloud-progressive-delivery-canary-005",
