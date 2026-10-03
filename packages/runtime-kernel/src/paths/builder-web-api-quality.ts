@@ -98,7 +98,7 @@ const practices: Record<string, PracticeSpec> = {
       "Define GET /services, POST /services and GET /services/{id-or-slug} at contract level. You are designing requests/responses, not implementing Django.",
       "Add one future field such as criticality or ownerTeamId as explicitly deferred if it is not yet present in steward-core; do not rewrite history and claim it already exists.",
       "Define a collection response for GET /services including supported filter/sort/pagination behavior.",
-      "Classify four proposed changes—optional response field, new enum value, required request field, removed field—by compatibility risk and define how one breaking change would be deprecated/migrated rather than reflexively adding /v2."
+      "Classify four proposed changes—optional response field, new enum value, required request field, removed field—by compatibility risk and define how one breaking change would be deprecated/migrated rather than reflexively adding /v2.",
       "Write one compatibility risk for a future contract change."
     ],
     deliverables: ["Current-domain inventory", "Create request contract", "Service response contract", "Initial endpoint contract", "Failure mapping", "Deferred-field note"],
