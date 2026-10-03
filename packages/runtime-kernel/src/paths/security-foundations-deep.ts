@@ -237,7 +237,7 @@ const lab: Lesson = {
                 objective: "Create the first complete security inventory for Steward.",
                 scenario: "This artifact becomes the input to Threat Modeling. It must reflect the real system built in prior schools rather than a generic web-app diagram.",
                 instructions: [
-                    "Record the exact Steward release/environment under assessment and link the Cloud/Delivery handoff plus Quality risk/evidence map.", "Inventory critical data, identities, services, hosts, repositories, credentials and deployment components that actually exist in those handoffs."
+                    "Record the exact Steward release/environment under assessment and link the Cloud/Delivery handoff plus Quality risk/evidence map.",, "Inventory critical data, identities, services, hosts, repositories, credentials and deployment components that actually exist in those handoffs."
                     "For each asset, record confidentiality, integrity and availability concerns.",
                     "Identify human, service and external actors.",
                     "Mark which assets have especially high integrity or administrative consequence."],
