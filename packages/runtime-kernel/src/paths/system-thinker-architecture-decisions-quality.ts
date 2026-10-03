@@ -58,7 +58,7 @@ const practices: Record<string, PracticalContent> = {
             "Evaluate each option against the previously ranked drivers and write both benefits and costs for every important driver.",
             "Mark claims as evidence, assumption or unknown so opinion is not presented as fact.",
             "Select one factual uncertainty that could be reduced by a small measurement, prototype or experiment and define the evidence the experiment should produce.",
-            "Classify the decision as easy, moderate or expensive to reverse and explain how reversibility affects the amount of analysis justified now.",
+            "Classify the decision as easy, moderate or expensive to reverse and explain how reversibility affects the amount of analysis justified now; include migration, persisted-data, consumer-coordination and operational lock-in costs.", "Identify whether one option preserves useful future choice under current uncertainty and whether keeping that option open has a real cost.",
             "Make a provisional choice or explicitly defer the decision if the available evidence is insufficient; state what new evidence would change that status.",
         ],
         deliverables: ["Trade-off comparison matrix", "Evidence/assumption/unknown classification", "Experiment or measurement proposal", "Provisional decision with reversibility note"],
