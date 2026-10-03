@@ -1,6 +1,6 @@
 import type { PracticalContent } from "../activities";
 import type { Lesson } from "./lesson";
-import { relationalDataAndPostgresqlDeepLessons } from "./builder-postgresql-deep";
+import { djangoDependentPostgresqlDeepLessons, relationalDataAndPostgresqlDeepLessons } from "./builder-postgresql-deep";
 
 type PracticeSpec = Omit<PracticalContent, "type">;
 
@@ -290,6 +290,17 @@ const practices: Record<string, PracticeSpec> = {
 };
 
 export const relationalDataAndPostgresqlQualityLessons: Lesson[] = relationalDataAndPostgresqlDeepLessons.map((lesson) => ({
+    ...lesson,
+    activities: lesson.activities.map((activity) => {
+        if (activity.content.type !== "practical") return activity;
+        const practice = practices[activity.id];
+        if (!practice) return activity;
+        return { ...activity, content: { type: "practical", ...practice } };
+    }),
+}));
+
+
+export const djangoDependentPostgresqlQualityLessons: Lesson[] = djangoDependentPostgresqlDeepLessons.map((lesson) => ({
     ...lesson,
     activities: lesson.activities.map((activity) => {
         if (activity.content.type !== "practical") return activity;
