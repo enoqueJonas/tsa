@@ -6,18 +6,20 @@ type PracticeSpec = Omit<PracticalContent, "type">;
 
 const practices: Record<string, PracticeSpec> = {
     "relational-data-and-postgresql-relational-model-practice": {
-        objective: "Turn a tempting document-shaped Steward design into a relational model whose facts, identities and relationships can survive change.",
-        scenario: "A teammate proposes storing each Steward service as one large JSON object containing the owning team name, environments and a comma-separated dependency list because it looks like the API response. Review the proposal before it becomes the database design.",
+        objective: "Give the existing Steward domain durable relational storage and deliberately expand it with the relationships needed by the Builder product.",
+        scenario: "steward-core currently keeps Services in memory, and Web/API Foundations defined a future HTTP contract without inventing persistence. Now persistence becomes real. Design the first PostgreSQL schema from the Service behavior you already own, then add the Team, Environment and dependency facts needed for the registry to grow.",
         instructions: [
-            "Write down the facts Steward must preserve independently: teams, services, environments and directed dependencies.",
-            "Model those facts as relations with primary keys, foreign keys and cardinalities before writing SQL.",
-            "Create the tables in PostgreSQL and seed two teams, three services, multiple environments and at least two dependency edges.",
-            "Rename one team and show why normalized ownership changes in one authoritative place.",
-            "Write one query that reconstructs a useful API-facing view from the normalized facts.",
-            "Record one inconsistency that the original JSON/comma-separated design would make easy to create."
+            "Inventory the current Service fields and Team ownership concept from steward-core before drawing a table.",
+            "Model Team and Service first. Preserve the domain meaning already established instead of copying a hypothetical API response.",
+            "Add Environment as a separate relation so one Service can exist in multiple environments without repeating the Service record.",
+            "Add directed ServiceDependency relationships using Service identities rather than comma-separated names.",
+            "Choose primary keys, foreign keys and cardinalities explicitly, then create the schema in PostgreSQL.",
+            "Seed at least two Teams, three Services, multiple Environments and two dependency edges using names already familiar from the Python exercises where practical.",
+            "Rename one Team and prove Service ownership still has one authoritative source.",
+            "Write one JOIN that reconstructs a useful Service catalogue view and compare that relational result with the in-memory representation you started from."
         ],
-        deliverables: ["Relational diagram or schema sketch", "Working PostgreSQL schema and seed SQL", "Relationship query output", "Short modeling decision note"],
-        completionCriteria: ["Each stored relation represents a clear kind of fact.", "Ownership and dependencies are modeled with keys rather than duplicated text.", "The learner can explain why storage structure does not need to mirror API JSON."],
+        deliverables: ["Current-domain inventory", "Relational schema sketch", "Working PostgreSQL schema and seed SQL", "Team-rename evidence", "Catalogue JOIN output", "Persistence-boundary note"],
+        completionCriteria: ["PostgreSQL is introduced here rather than assumed in earlier exercises.", "Existing Service concepts survive the move to persistence.", "Team, Environment and ServiceDependency have explicit relational meaning.", "Ownership and dependencies use keys rather than duplicated text.", "The learner can explain why database rows do not need to mirror API JSON or Python objects exactly."]
     },
     "relational-data-and-postgresql-sql-crud-practice": {
         objective: "Perform data changes with a disciplined preview-mutate-verify workflow that makes accidental broad updates difficult.",
