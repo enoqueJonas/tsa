@@ -186,6 +186,33 @@ export const softwareCraftDeepLessons: Lesson[] = [
         [twelveFactor, djangoSettings],
     ),
     lesson(
+        "Static Analysis and Automated Feedback",
+        "Formatting, linting, type checking and framework checks turn repeatable review rules into fast feedback. Their purpose is not to replace engineering judgment; it is to remove avoidable noise and catch classes of defects before a human reviewer spends attention on them.",
+        [
+            { title: "Different tools answer different questions", paragraphs: ["A formatter makes layout deterministic. A linter detects configured code patterns and possible defects. A static type checker reasons about declared types without executing ordinary runtime paths. Django's system checks validate framework configuration/model concerns. Tests execute behavior. One green tool does not imply the others are redundant." ] },
+            { title: "Automate rules that are objective and repeatable", paragraphs: ["If every reviewer repeatedly comments on formatting/import order or a known unsafe pattern, encode that rule in tooling where practical. Keep configuration versioned with the repository so local and CI feedback agree. Avoid enabling hundreds of rules nobody understands and then suppressing them everywhere." ] },
+            { title: "Warnings need an ownership policy", paragraphs: ["A warning baseline that only grows becomes background noise. New code should not casually add warnings; existing debt should be explicit and reduced deliberately. Suppress a diagnostic only when you can explain why it is false-positive or intentionally accepted, and keep the suppression as narrow as possible." ] },
+        ],
+        "Create a fast, reproducible local quality-check command for Steward.",
+        ["Inventory formatter, linter, type checker, Django checks and test commands already available.", "Add only missing high-value tooling that fits the current Python/Django project rather than collecting tools.", "Make one documented command or small sequence reproduce the expected local checks.", "Introduce one safe example defect and prove the appropriate tool catches it, then remove/fix it.", "Review any suppressions and justify one or remove it.", "Record which important defects these tools still cannot prove."],
+        ["How does a linter differ from a formatter and type checker?", "Why should local and CI rules use the same configuration?", "Why can a completely green static-analysis run still contain business defects?"],
+        [refactoringGuru],
+    ),
+    lesson(
+        "Code Review and Technical Debt",
+        "Code review is risk analysis and shared understanding, not a style contest. Technical debt is a future change cost created by a current design or delivery choice; managing it means making that cost visible enough to decide when repayment is worthwhile.",
+        [
+            { title: "Review from behavior and risk inward", paragraphs: ["Start with the change's purpose and contract: what behavior changes, which invariants/security boundaries are touched, what data/migration/configuration consequences exist, and what evidence proves it. Then inspect implementation structure. A beautifully named function can still implement the wrong authorization rule." ] },
+            { title: "Classify review feedback", paragraphs: ["Separate correctness/security blockers from maintainability concerns, questions and optional suggestions. Explain the consequence behind a requested change. 'I prefer this shape' is weaker than 'this duplicates ownership policy, so the two endpoints can diverge'." ] },
+            { title: "Technical debt should name the consequence", paragraphs: ["'This code is ugly' is not a useful debt record. State the shortcut/problem, evidence, expected future cost/risk, affected area and trigger for revisiting it. Some debt is rational when delivery value exceeds current repayment cost; accidental permanent ambiguity is not." ] },
+            { title: "Repay debt when it intersects real work or risk", paragraphs: ["Prioritize debt that repeatedly slows changes, creates incidents/security risk, blocks required architecture or has increasing carrying cost. Avoid large cleanup projects whose benefit cannot be connected to actual work. The Boy Scout instinct is useful only when the nearby improvement is safe, scoped and owned." ] },
+        ],
+        "Review one real Steward diff and turn its findings into actionable engineering decisions.",
+        ["Read the change goal and validation evidence before reviewing implementation.", "Inspect behavior/API, authorization/data integrity, migrations/configuration, tests, observability and maintainability in that order or another explicit risk order.", "Write at least one blocker-level finding if one genuinely exists, one question and one optional suggestion; do not manufacture severity.", "Identify one piece of technical debt in Steward and record consequence, evidence, affected area and revisit trigger.", "Decide whether to repay that debt now or defer it and defend the choice.", "Re-read the final diff after fixes as a complete change rather than only reviewing the edited lines."],
+        ["What should a reviewer understand before debating implementation style?", "What makes review feedback actionable?", "When is technical debt rational?", "Why should a debt item include a revisit trigger?"],
+        [refactoringGuru],
+    ),
+    lesson(
         "Useful Logging",
         "Logs are operational evidence. A useful log helps an engineer reconstruct what the system did without exposing secrets or forcing them to read source code for every incident.",
         [
