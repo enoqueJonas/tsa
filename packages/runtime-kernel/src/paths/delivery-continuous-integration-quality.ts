@@ -186,8 +186,8 @@ const practices: Record<string, PracticalContent> = {
             "Prove a failed required check prevents the image build.",
             "Record the future publish step that Nexus will satisfy, but do not use a laptop-only cache as the final shared repository."
         ],
-        deliverables: ["GitLab CI/CD image-build stage", "Commit/build/image traceability", "Blocked-build proof", "Nexus publication handoff"],
-        completionCriteria: ["Image creation follows successful required evidence.", "Exact image identity maps to exact source.", "The pipeline is ready for a durable shared registry without pretending one already exists."],
+        deliverables: ["GitLab CI/CD image-build stage", "Three-role image-contract evidence", "Commit/build/image traceability", "Blocked-build proof", "Nexus publication handoff"],
+        completionCriteria: ["Image creation follows successful required evidence.", "Exact image identity maps to exact source.", "The candidate image exposes valid API, outbox-publisher and lifecycle-consumer process roles before publication.", "The pipeline is ready for a durable shared registry without pretending one already exists."],
     },
 };
 
@@ -198,7 +198,7 @@ const gitlabLabPractice: PracticalContent = {
     instructions: [
         "Provision a GitLab CI/CD controller and at least one dedicated agent on the learner-managed Rocky Linux/homelab platform, documenting identities, network access, storage and maintenance ownership.",
         "Store the pipeline as a versioned .gitlab-ci.yml in the Steward repository.",
-        "Create separate source-check/test and container-build stages, using parallel branches only for genuinely independent checks.",
+        "Create separate source-check/test and container-build stages, using parallel branches only for genuinely independent checks.", "Add a post-build image-contract job that proves the exact candidate can invoke/start the API, outbox-publisher and lifecycle-consumer roles without rebuilding.",
         "Ensure image creation depends on all required gates and does not run after a controlled failing check.",
         "Record commit SHA, GitLab CI/CD build number, image tag and immutable image ID/digest.",
         "Archive useful test/build evidence in GitLab CI/CD and define what later belongs in Nexus instead.",
@@ -206,7 +206,7 @@ const gitlabLabPractice: PracticalContent = {
         "Trigger a controlled failure, prove fail-closed behavior, then restore and rerun successfully.",
         "Document the remaining human handoff from successful image to deployment; that becomes input to Continuous Delivery and Deployment."
     ],
-    deliverables: ["Versioned .gitlab-ci.yml", "GitLab CI/CD controller/agent topology and privilege notes", "Successful pipeline evidence", "Blocked-pipeline evidence", "Commit -> GitLab CI/CD build -> image identity traceability", "Artifact/retention note", "CD handoff"],
+    deliverables: ["Versioned .gitlab-ci.yml", "GitLab CI/CD controller/agent topology and privilege notes", "Successful pipeline evidence", "Blocked-pipeline evidence", "Commit -> GitLab CI/CD build -> image identity traceability", "API/publisher/consumer image-contract evidence", "Artifact/retention note", "CD handoff"],
     completionCriteria: ["GitLab CI/CD is the actual Steward CI implementation.", "A repository change can produce repeatable CI without developer-workstation build commands.", "Required checks fail closed.", "The image maps to an exact source revision and GitLab CI/CD run.", "The agent does not depend on undocumented residue or general administrator credentials.", "The learner can distinguish CI, Nexus artifact storage and later deployment responsibilities."],
 };
 
