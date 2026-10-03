@@ -221,7 +221,7 @@ const milestone: Lesson = {
             content: {
                 type: "practical",
                 objective: "Define exactly which Steward runtime responsibilities move to Kubernetes/OpenShift and which remain with the existing delivery and infrastructure systems.",
-                scenario: "The migration is a platform evolution, not a rewrite. Preserve source, artifact, database ownership, the actual edge policy and release traceability unless a documented requirement says otherwise."
+                scenario: "The migration is a platform evolution, not a rewrite. Preserve source, artifact, database ownership, the actual edge policy and release traceability unless a documented requirement says otherwise.",
                 instructions: ["Create a responsibility matrix covering OpenTofu, Ansible, GitLab CI/CD, Nexus, Kubernetes/OpenShift, Kong and Argo CD.", "Choose the target cluster/environment and explain its cost and capacity assumptions.", "Define namespace/project, workload, service, routing and RBAC boundaries.", "Define the exact source commit → GitLab CI/CD → Nexus image digest → environment Git → Argo CD → running `pod` evidence chain."],
                 deliverables: ["Migration responsibility matrix", "Target topology", "End-to-end evidence chain"],
                 completionCriteria: ["No responsibility has two accidental authorities.", "The design reuses the existing artifact and release chain.", "Public, management and backend boundaries remain explicit."],
