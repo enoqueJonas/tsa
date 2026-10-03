@@ -22,7 +22,7 @@ const practices: Record<string, PracticalContent> = {
         objective: "Create an environment contract for Steward that keeps release identity immutable while making configuration, credentials, state and access differences explicit.",
         scenario: "The same Steward image should be deployable without rebuilding it for each target, but the Rocky homelab still has environment-specific database endpoints, volumes, secrets, DNS and access policy.",
         instructions: [
-            "Inventory the current deployment target: host/VM, network path, DNS/name, application port, database endpoint, persistent storage and administrative route.",
+            "Inventory the current deployment target: host/VM, network path, DNS/name, API port, API/publisher/consumer role commands, PostgreSQL/Redis/RabbitMQ endpoints, persistent/durable storage and administrative route.",
             "Classify each value as release identity, ordinary runtime configuration, secret, persistent state or infrastructure property.",
             "Identify any value currently baked into the image that should move to runtime configuration.",
             "Define how GitLab CI/CD receives only the deployment inputs it needs without exposing backend/admin services publicly.",
@@ -38,7 +38,7 @@ const practices: Record<string, PracticalContent> = {
         instructions: [
             "Document the current manual deployment sequence before changing it.",
             "Define preconditions: target reachable through the approved private path, required configuration present, previous release identifiable and candidate image available.",
-            "Implement the smallest GitLab CI/CD deployment stage or versioned deployment script that performs image selection, target update and service start without rebuilding the artifact.",
+            "Implement the smallest GitLab CI/CD deployment stage or versioned deployment script that selects one immutable Steward image, updates the target and starts API, outbox-publisher and lifecycle-consumer roles from that same digest without rebuilding the artifact.",
             "Use a dedicated deployment identity rather than a general homelab administrator identity.",
             "Force one safe precondition or health-verification failure and prove the workflow stops non-zero instead of continuing.",
             "Compare the automated workflow with the original manual sequence and identify what remains intentionally outside it.",
@@ -67,7 +67,7 @@ const practices: Record<string, PracticalContent> = {
         instructions: [
             "Choose or create a safe representative Steward schema change in a non-production dataset.",
             "Record the pre-migration application and schema state.",
-            "Apply the migration as an explicit deployment step and capture its result.",
+            "Apply the migration, including any outbox schema change, as an explicit deployment step before dependent publisher/consumer roles become authoritative and capture its result.",
             "Test the new application against the migrated schema and, where safe, test whether the previous application can still function against it.",
             "Classify the change as backward-compatible, forward-only or requiring a more deliberate transition.",
             "Write the deployment and recovery rule that follows from the evidence.",
@@ -83,7 +83,7 @@ const practices: Record<string, PracticalContent> = {
             "Record the current known-good version, source commit and image digest/immutable image identifier.",
             "Deploy a safe candidate that fails a predefined verification condition.",
             "Execute the documented rollback path to the known-good image without rebuilding it.",
-            "Verify image identity, health and one meaningful Steward API behavior after recovery.",
+            "Verify the same known-good image identity across API, outbox-publisher and lifecycle-consumer roles, then prove one meaningful API behavior and one lifecycle event reaches the consumer through the recovered async path.",
             "List persistent effects that were not reverted automatically, including database or external side effects where applicable.",
             "Decide whether the failure class is genuinely rollback-safe or should prefer a forward fix in future.",
         ],

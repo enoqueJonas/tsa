@@ -14,7 +14,7 @@ const readingBlocks: LessonBlock[] = [
   { type: "list", items: [
     "The quality strategy names important Steward risks and the evidence used to investigate them.",
     "Unit and component checks prove focused behavior at low feedback cost.",
-    "API and integration checks prove service contracts, persistence and integration boundaries.",
+    "API and integration checks prove service contracts, persistence and integration boundaries; asynchronous lifecycle checks prove committed publication intent reaches its owned side effect with bounded eventual assertions and idempotency evidence.",
     "Browser and environment checks cover browser behavior and meaningful environment differences without duplicating all service-layer tests.",
     "Selected non-functional baselines provide comparable evidence for performance, accessibility, compatibility and integrity risks.",
     "GitLab CI/CD jobs publish reports and artifacts, preserve commit/release/environment/pipeline-source identity and apply quality gates that reflect real release risk.",
@@ -23,7 +23,7 @@ const readingBlocks: LessonBlock[] = [
   { type: "heading", id: "milestone-traceability", text: "Trace decisions back to risk", level: 2 },
   { type: "paragraph", text: "The milestone should make it possible to start from a release risk and follow the chain to its test design, automated or manual evidence, execution environment, result and release interpretation. A large suite without this traceability is weaker than a smaller suite whose purpose is explicit." },
   { type: "heading", id: "milestone-maintainability", text: "Maintainability is part of quality", level: 2 },
-  { type: "paragraph", text: "Framework code must remain simpler than the tests it supports. Shared infrastructure belongs in tsa-test-core only where reuse has been proven. Steward ownership rules, lifecycle behavior, service registration workflows and domain assertions remain in Steward so the suite continues to read like the product it tests." },
+  { type: "paragraph", text: "Framework code must remain simpler than the tests it supports. Quality Steward deliberately leaves reusable infrastructure candidates inside steward-tests because a second real product does not exist yet. Steward ownership rules, lifecycle behavior, service registration workflows and domain assertions remain in Steward so the suite continues to read like the product it tests." },
   { type: "callout", tone: "warning", title: "Do not optimize for green", body: "Retries, quarantines, skipped tests and selective execution must remain visible. A pipeline that produces green by hiding missing or unstable evidence is less trustworthy than one that clearly reports uncertainty." },
   { type: "heading", id: "milestone-review", text: "What the final review should answer", level: 2 },
   { type: "list", ordered: true, items: [
@@ -58,10 +58,10 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
           objective: "Audit the full Steward quality portfolio before final milestone execution.",
           scenario: "Treat previous modules as one system. Find gaps, duplication, hidden assumptions and evidence that cannot yet support a release decision.",
           instructions: [
-            "Map the highest-priority Steward risks to current unit/component, API/integration, browser/environment and non-functional evidence.",
+            "Map the highest-priority Steward risks to current unit/component, API/integration, asynchronous lifecycle, browser/environment and non-functional evidence.",
             "Identify duplicate tests that add cost without a distinct claim.",
             "Identify critical risks with no credible evidence or with evidence at the wrong test level.",
-            "Verify reports preserve test, environment and release identity.",
+            "Verify the test target is an exact Steward release/environment from the Delivery or Cloud handoff and that reports preserve test, environment and immutable release identity.",
             "Review skipped, quarantined and flaky tests and ensure their risk remains visible."
           ],
           deliverables: ["Quality evidence map", "Gap and duplication list", "Milestone remediation plan"],
@@ -86,7 +86,7 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
             "Document product risks, test levels, environment strategy and execution cadence.",
             "Define which checks are blocking, advisory or manually reviewed.",
             "Document test-data, isolation, retry, quarantine and diagnostic policies.",
-            "Record the boundary between Steward domain test code and reusable tsa-test-core infrastructure.",
+            "Record the boundary between Steward domain test code and reusable-infrastructure candidates, and attach the Professional Engineer transfer criteria. tsa-test-core must not exist yet.",
             "List residual quality risks deliberately handed to later Security and Reliability work."
           ],
           deliverables: ["Final Steward quality strategy", "Risk-to-evidence matrix", "Residual-risk register"],
@@ -100,9 +100,9 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
         content: {
           type: "practical",
           objective: "Run the integrated automated portfolio and prove that failures are actionable.",
-          scenario: "Use the real Steward codebase and the environment-aware framework developed throughout Quality Steward.",
+          scenario: "Use the real Steward codebase and the environment-aware framework developed throughout Quality Steward. Every result must identify the exact release/environment under test.",
           instructions: [
-            "Execute representative unit/component and API/integration suites.",
+            "Execute representative unit/component and API/integration suites, including the lifecycle test that separates synchronous API success from eventual outbox → RabbitMQ → consumer completion.",
             "Prove the Maven execution boundary: Surefire owns the intended fast unit/component selection in `test`, while Failsafe owns the intended integration selection through `integration-test`/`verify`, and a failing integration test makes `mvn verify` fail.",
             "Execute the selected browser/environment matrix rather than every test on every browser.",
             "Run the selected stable non-functional baselines that are appropriate for this environment.",
@@ -122,7 +122,7 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
           objective: "Demonstrate that CI quality gates influence release decisions without hiding uncertainty.",
           scenario: "The pipeline is the operational expression of the Quality Steward strategy.",
           instructions: [
-            "Run the staged GitLab CI/CD quality pipeline against a known Steward release candidate.",
+            "Run the staged GitLab CI/CD quality pipeline against a known Steward release candidate and preserve the exact immutable release/environment identity used by synchronous and asynchronous tests.",
             "Prove at least one Testcontainers-backed integration slice on the intended GitLab Runner architecture and distinguish its evidence from shared/UAT regression.",
             "Capture Surefire and Failsafe reports separately enough to prove which Maven lifecycle/test layer produced each result.",
             "Demonstrate merge-request/default-branch or release/scheduled pipeline selection through explicit GitLab rules.",
@@ -130,10 +130,10 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
             "Confirm reports and artifacts are retained for failed and successful stages where appropriate.",
             "Demonstrate one meaningful quality gate blocking a deliberately invalid candidate.",
             "Demonstrate that skipped/quarantined evidence remains visible rather than becoming a silent pass.",
-            "If tsa-test-core was legitimately extracted, prove Steward consumes a versioned package from the internal repository and executes a compatibility check."
+            "Publish the tsa-test-core candidate/handoff evidence as a pipeline artifact or repository document so Professional Engineer can compare it with the future capstone test suite; do not publish a library yet."
           ],
-          deliverables: ["GitLab pipeline execution evidence", "Testcontainers/runner evidence", "Pipeline-source/rules evidence", "Quality-gate failure evidence", "Reports/artifacts", "tsa-test-core compatibility evidence when applicable"],
-          completionCriteria: ["The GitLab pipeline can stop an unacceptable candidate for a stated risk reason.", "A Testcontainers infrastructure failure is distinguishable from a product assertion failure.", "Pipeline source and selected portfolio are visible.", "Missing evidence is not silently green.", "Shared test infrastructure is consumed as a normal versioned dependency where applicable."]
+          deliverables: ["GitLab pipeline execution evidence", "Testcontainers/runner evidence", "Pipeline-source/rules evidence", "Quality-gate failure evidence", "Reports/artifacts", "tsa-test-core candidate/handoff evidence"],
+          completionCriteria: ["The GitLab pipeline can stop an unacceptable candidate for a stated risk reason.", "A Testcontainers infrastructure failure is distinguishable from a product assertion failure.", "Pipeline source and selected portfolio are visible.", "Missing evidence is not silently green.", "No shared test library has been fabricated before a genuine second product exists."]
         }
       },
       {
@@ -142,7 +142,7 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
         estimatedMinutes: 45,
         content: {
           type: "reflection",
-          prompt: "Defend the final Steward quality platform. Explain the highest risks, why each is tested at its chosen level, how the framework and pipeline preserve evidence quality, where tsa-test-core reuse is justified or rejected, how flaky or missing evidence is kept visible, and which unresolved risks intentionally move to Security Steward and Reliability Engineer.",
+          prompt: "Defend the final Steward quality platform. Explain the highest risks, why each is tested at its chosen level, how the framework and pipeline preserve evidence quality, which tsa-test-core candidates are plausible and what second-consumer evidence is still required, how flaky or missing evidence is kept visible, and which unresolved risks intentionally move to Security Steward and Reliability Engineer.",
           minimumCharacters: 500
         }
       }

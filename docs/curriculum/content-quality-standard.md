@@ -47,6 +47,14 @@ Review / reflection
 
 This is a progression, not a mandatory visual template. Some lessons are primarily conceptual, investigative, operational, design-oriented or reflective and should use the structure that best serves the objective.
 
+## Cumulative implementation contract
+
+When an exercise changes the continuing Steward system, it must follow the canonical [Steward Increment Contract](./steward-increment-contract.md).
+
+In particular, substantial implementation work must not depend on fictional prior work. The exercise must make the current artifact, requested change and observable completion state clear enough for the learner's present level. Early Builder work should be highly concrete; later schools deliberately reduce scaffolding as capability grows.
+
+Acceptance criteria should describe behavior the learner can verify. Narrative continuity is not evidence that an implementation exists.
+
 ## Practice standard
 
 Practice must be authored around the engineering capability being developed. Reusable code helpers are acceptable, but they must not flatten every lesson into the same scenario, deliverables and completion criteria.

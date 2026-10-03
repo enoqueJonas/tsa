@@ -19,17 +19,18 @@ const practices: Record<string, PracticeSpec> = {
     completionCriteria: ["DNS, TCP/TLS and HTTP/application failures are not conflated.", "Every diagnosis points to observable evidence rather than intuition.", "You can identify when an HTTP status proves that the request reached an HTTP server.", "Another engineer could follow your triage sequence without knowing the answer in advance."]
   },
   "web-and-api-foundations-client-server-architecture": {
-    objective: "Define client/server responsibilities for Steward and expose the assumptions that become unsafe when a local call crosses a network boundary.",
-    scenario: "The current Steward prototype is mostly local Python code. The team is about to introduce a portal calling a Steward API. Before anyone splits code into services, you must make the new boundary explicit and decide which responsibilities must remain server-owned.",
+    objective: "Design the first network boundary for the Steward core you already built and identify what must remain authoritative on the server.",
+    scenario: "Your steward-core package is now installable and its domain behavior is understood locally. The next major increment is to expose that capability to clients. Before choosing Django or DRF, decide what changes when the existing local Service operations cross an HTTP boundary.",
     instructions: [
-      "Draw the interaction Engineering Portal → Steward API → PostgreSQL and label the client/server role at each edge.",
-      "Take one existing local function call and list what changes when it becomes an HTTP call: latency, serialization, authentication, timeout, partial failure and version compatibility.",
-      "Decide where the rule 'a service cannot depend on itself' belongs and defend the decision.",
-      "Invent one design where the browser incorrectly owns a server/domain responsibility and explain how a second client could bypass it.",
-      "Write one reason not to introduce an additional network boundary yet."
+      "Start from the completed steward-core checkpoint; use Service creation, lookup and status change as the concrete behavior under discussion.",
+      "Draw a proposed interaction Engineering Client → Steward HTTP API → Steward domain core. PostgreSQL is a later increment, so do not pretend it exists yet.",
+      "Take the existing Service lookup and deactivation operations and compare local function calls with future HTTP calls: serialization, latency, authentication, timeout, partial failure and compatibility.",
+      "Decide which existing validation and Service invariants must remain authoritative behind the server boundary even if a future client also validates them.",
+      "Sketch one bad design where a client alone enforces an important Service rule and explain how another client could bypass it.",
+      "Record why this lesson designs the boundary but does not yet introduce a web framework."
     ],
-    deliverables: ["Interaction/boundary diagram", "Local-call versus network-call risk table", "Domain-ownership decision", "Responsibility-leak example", "Boundary restraint note"],
-    completionCriteria: ["Client and server are treated as interaction roles, not device types.", "The network boundary introduces explicit engineering consequences.", "Domain enforcement remains authoritative on the server side.", "Distribution is justified as a trade-off rather than assumed to be architectural progress."]
+    deliverables: ["Boundary diagram grounded in steward-core", "Local-call versus HTTP-call comparison", "Server-authority decision", "Client-bypass example", "Framework-deferral note"],
+    completionCriteria: ["The design starts from Steward behavior the learner actually built.", "No database or framework is assumed to exist yet.", "Network-specific failure modes are explicit.", "Domain rules remain authoritative on the server side.", "The learner can explain why HTTP design precedes framework implementation."]
   },
   "web-and-api-foundations-http-requests-and-responses": {
     objective: "Read an HTTP exchange directly enough to explain what happened without relying on a framework debugger or API-client UI.",
@@ -84,17 +85,19 @@ const practices: Record<string, PracticeSpec> = {
     completionCriteria: ["Resources are modeled from domain concepts rather than URL aesthetics.", "A non-CRUD workflow is evaluated honestly rather than forced into a preferred style.", "The chosen design has explicit trade-offs.", "REST is treated as an architectural constraint set, not a maturity score."]
   },
   "web-and-api-foundations-modeling-resources-and-api-contracts": {
-    objective: "Write a Steward service contract that is deliberately independent from persistence details and test how proposed changes affect consumers over time.",
-    scenario: "The database model for Service already exists, and a teammate suggests returning the table almost unchanged as JSON to save time. Before clients depend on that shape, you must define the API contract as a separate public decision.",
+    objective: "Turn the existing Steward Service capability into an explicit HTTP contract without coupling the contract to a database or framework that has not been built yet.",
+    scenario: "You already have a Service model and registry behavior in steward-core. Clients now need a stable way to create and read Services over HTTP. Define that public contract before PostgreSQL or Django can accidentally dictate it.",
     instructions: [
-      "Draft separate create-service request and service-response representations.",
-      "For every field, mark required, optional, nullable or server-generated and explain at least three choices.",
-      "Define validation and meaning for lifecycle, criticality and ownerTeamId without referring to database column types as the justification.",
-      "Propose three future changes such as renaming a field, adding an enum value or changing nullability and classify each consumer-compatibility risk.",
-      "Identify one database detail you deliberately refuse to expose and explain the coupling it would create."
+      "Inventory the Service fields and behavior that exist at the end of Programming with Python.",
+      "Draft a create-service JSON request using the existing concepts. Mark each field required, optional or server-controlled.",
+      "Draft a service-response representation and decide whether internal implementation details such as Python class names should appear. They should not appear merely because they exist.",
+      "Map the existing Service validation failures and missing-Service failure to proposed HTTP status/error semantics.",
+      "Define GET /services, POST /services and GET /services/{id-or-slug} at contract level. You are designing requests/responses, not implementing Django.",
+      "Add one future field such as criticality or ownerTeamId as explicitly deferred if it is not yet present in steward-core; do not rewrite history and claim it already exists.",
+      "Write one compatibility risk for a future contract change."
     ],
-    deliverables: ["Create request contract", "Service response contract", "Field-semantics table", "Compatibility-risk analysis", "Persistence-decoupling note"],
-    completionCriteria: ["Request and response shapes are designed for their consumers rather than copied from storage.", "Field optionality and nullability are explicit.", "Compatibility is evaluated from the client's perspective.", "At least one persistence detail is intentionally kept behind the API boundary."]
+    deliverables: ["Current-domain inventory", "Create request contract", "Service response contract", "Initial endpoint contract", "Failure mapping", "Deferred-field note"],
+    completionCriteria: ["The API contract grows from the current Steward implementation.", "Request and response semantics are explicit.", "Future fields are labeled as future rather than treated as existing state.", "No persistence detail leaks into the public contract.", "A later framework can implement this contract without defining it retroactively."]
   },
   "web-and-api-foundations-errors-and-status-design": {
     objective: "Design a Steward failure contract that lets clients distinguish correction, authentication, authorization, conflict, retry and unexpected server failure without leaking internal diagnostics.",

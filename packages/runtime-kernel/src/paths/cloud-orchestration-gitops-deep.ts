@@ -26,7 +26,7 @@ function richLesson(spec: LessonSpec): Lesson {
         if (section.list) blocks.push({ type: "list", items: section.list });
         if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code, caption: section.code.caption });
     }
-    blocks.push({ type: "callout", tone: "steward", title: "Steward orchestration checkpoint", body: "Orchestration is introduced because Steward now needs a declarative runtime that can reconcile workload state, not because Kubernetes is fashionable. Preserve the existing release identity, Kong edge, data ownership and infrastructure boundaries while learning what the platform actually changes." });
+    blocks.push({ type: "callout", tone: "steward", title: "Steward orchestration checkpoint", body: "TSA deliberately evolves Steward from a single-host container runtime to a reconciled multi-workload platform exercise. The learner must first document the operational requirement and costs, then implement the orchestration checkpoint using the existing immutable release. Preserve only edge and dependency components actually earned earlier; do not add unrelated products to make the topology look cloud-native." });
     blocks.push({ type: "resources", title: "Continue learning", resources: spec.resources ?? [kubernetesDocs, openshiftDocs, argoDocs] });
 
     return {
@@ -41,7 +41,7 @@ function richLesson(spec: LessonSpec): Lesson {
                 content: {
                     type: "practical",
                     objective: spec.practiceTitle,
-                    scenario: "Steward already runs as an immutable containerized release and is exposed through Kong. Move only the runtime responsibility that orchestration can justify; do not redesign the application or move PostgreSQL, Redis or RabbitMQ merely to make the diagram look cloud-native.",
+                    scenario: "Steward already runs as an immutable containerized release. Preserve its actual public-edge and dependency model. Move only runtime responsibility that orchestration can justify; do not add Kong, Redis, RabbitMQ or other components merely to make the diagram look cloud-native.",
                     instructions: spec.practice,
                     deliverables: spec.deliverables,
                     completionCriteria: spec.criteria,
@@ -61,10 +61,10 @@ const specs: LessonSpec[] = [
             { heading: "Start from the problem", paragraphs: ["Kubernetes earns its place when the system benefits from declarative scheduling, health-based replacement, controlled rollout, service discovery and a stable workload API across nodes.", "For Steward, the first goal is not hyperscale. It is to understand a reconciled runtime and the new failure and security boundaries that come with it."] },
             { heading: "Do not confuse layers", paragraphs: ["OpenTofu creates infrastructure, Ansible manages host state, GitLab CI/CD builds and publishes artifacts, and Kubernetes reconciles application workload state. Overlap should be deliberate, not accidental."] },
         ],
-        practiceTitle: "Orchestration Adoption Gate: Prove What Kubernetes Solves",
-        practice: ["List the current Steward runtime responsibilities handled by Docker/Compose or host services.", "Identify which of them Kubernetes would own and which remain outside the cluster.", "Name two concrete benefits and three new operational costs.", "Write an adopt/defer decision tied to a real Steward requirement."],
-        deliverables: ["Runtime responsibility map", "Kubernetes adopt/defer decision", "New failure-boundary list"],
-        criteria: ["The decision is problem-driven.", "Kubernetes is not presented as a replacement for CI, IaC or the database.", "The learner can explain what reconciliation means operationally."],
+        practiceTitle: "Orchestration Requirement Gate: Prove What Kubernetes Must Solve",
+        practice: ["List the current Steward runtime responsibilities handled by Docker/Compose or host services.", "Introduce the TSA orchestration requirement: run the immutable Steward release in a declarative reconciled environment where workload replacement and controlled rollout are platform responsibilities.", "Identify which responsibilities Kubernetes will own and which remain outside the cluster.", "Name two concrete benefits and at least three new operational costs.", "Define success evidence for reconciliation, rollout and failure recovery before creating the cluster."],
+        deliverables: ["Runtime responsibility map", "Orchestration requirement and acceptance evidence", "New failure-boundary list"],
+        criteria: ["The implementation is preceded by an explicit operating requirement.", "Kubernetes is not presented as a replacement for CI, IaC or the database.", "The learner can explain what reconciliation must prove operationally before proceeding."],
         questions: ["What problem does a Kubernetes control loop solve that Docker packaging does not?", "Why can adding Kubernetes reduce some toil while increasing total system responsibility?"]
     },
     {
@@ -89,10 +89,10 @@ const specs: LessonSpec[] = [
             { heading: "Pods are replaceable", paragraphs: ["A pod should not be treated as a durable server. Stable identity belongs in services, persistent storage or application data stores, while the pod itself can be recreated."] },
             { heading: "Deployment owns rollout intent", paragraphs: ["A Deployment declares image identity, replica count, update strategy and pod template. The controller then creates ReplicaSets and converges toward the desired rollout."] },
         ],
-        practiceTitle: "Workload Migration: Run Steward as a Kubernetes Deployment",
-        practice: ["Create a namespace for the Steward learning environment.", "Define a Deployment using the existing immutable Steward image from Nexus.", "Set resource requests/limits and non-secret runtime configuration deliberately.", "Delete one pod and prove the controller restores desired state.", "Update to another approved image tag/digest and observe rollout behavior."],
-        deliverables: ["Versioned Deployment manifest", "Pod-replacement evidence", "Release rollout evidence"],
-        criteria: ["The image is reused from the existing release chain rather than rebuilt in-cluster.", "Pod loss is recovered by the controller.", "The learner can distinguish pod identity from application release identity."],
+        practiceTitle: "Workload Migration: Run Every Steward Application Role",
+        practice: ["Create a namespace for the Steward learning environment.", "Define separate Deployments for the API, outbox publisher and lifecycle-event consumer using the same existing immutable Steward image digest from Nexus with role-specific commands.", "Set resource requests/limits and non-secret runtime configuration deliberately for each role.", "Keep PostgreSQL, Redis and RabbitMQ placement explicit: they may remain external or move only through a separate justified stateful-service decision.", "Delete one pod from each application role and prove the controller restores desired state.", "Update the declared application digest and observe rollout behavior across all three roles."],
+        deliverables: ["Versioned API/publisher/consumer Deployment manifests", "Three-role pod-replacement evidence", "Release rollout evidence", "Dependency-placement decision"],
+        criteria: ["All three application roles reuse the same image digest from the existing release chain rather than rebuilding in-cluster.", "Pod loss is recovered by the controller for every role.", "PostgreSQL, Redis and RabbitMQ are not silently dropped or moved merely because Kubernetes exists.", "The learner can distinguish pod identity, process role and application release identity."],
         questions: ["Why should application data not depend on pod filesystem lifetime?", "What does a Deployment add beyond directly creating a Pod?"]
     },
     {
@@ -101,7 +101,7 @@ const specs: LessonSpec[] = [
         intro: "Pods are ephemeral and their addresses change. Kubernetes Services provide stable discovery and traffic distribution to selected pods without turning every workload into a public endpoint.",
         sections: [
             { heading: "Stable name, replaceable endpoints", paragraphs: ["A Service selects pods by labels and exposes a stable virtual address and DNS name. Internal consumers depend on the service contract rather than pod IPs."] },
-            { heading: "Public exposure remains a separate decision", paragraphs: ["ClusterIP is internal by default. NodePort, LoadBalancer, Ingress and gateways change reachability and should not be chosen casually. Kong remains the Steward public API edge in this curriculum."] },
+            { heading: "Public exposure remains a separate decision", paragraphs: ["ClusterIP is internal by default. NodePort, LoadBalancer, Ingress and gateways change reachability and should not be chosen casually. The public API edge remains whichever implementation the earlier Cloud edge checkpoint actually established; in the canonical required path this is Kong after its earned migration."] },
         ],
         practiceTitle: "Service Discovery Drill: Keep Steward Backends Private",
         practice: ["Create a ClusterIP Service for the Steward API.", "Verify discovery from an allowed in-cluster client.", "Prove the pod IP can change without changing the service name.", "Confirm PostgreSQL and other backend-only services are not made public merely because they are represented in Kubernetes."],
@@ -221,7 +221,7 @@ const milestone: Lesson = {
             content: {
                 type: "practical",
                 objective: "Define exactly which Steward runtime responsibilities move to Kubernetes/OpenShift and which remain with the existing delivery and infrastructure systems.",
-                scenario: "The migration is a platform evolution, not a rewrite. Preserve source, artifact, database ownership, Kong API policy and release traceability unless a documented requirement says otherwise.",
+                scenario: "The migration is a platform evolution, not a rewrite. Preserve source, artifact, database ownership, the actual edge policy and release traceability unless a documented requirement says otherwise.",
                 instructions: ["Create a responsibility matrix covering OpenTofu, Ansible, GitLab CI/CD, Nexus, Kubernetes/OpenShift, Kong and Argo CD.", "Choose the target cluster/environment and explain its cost and capacity assumptions.", "Define namespace/project, workload, service, routing and RBAC boundaries.", "Define the exact source commit → GitLab CI/CD → Nexus image digest → environment Git → Argo CD → running `pod` evidence chain."],
                 deliverables: ["Migration responsibility matrix", "Target topology", "End-to-end evidence chain"],
                 completionCriteria: ["No responsibility has two accidental authorities.", "The design reuses the existing artifact and release chain.", "Public, management and backend boundaries remain explicit."],
@@ -235,8 +235,8 @@ const milestone: Lesson = {
                 type: "practical",
                 objective: "Run the approved Steward release on OpenShift-compatible Kubernetes and verify the application through the intended public API path.",
                 scenario: "Use the existing image and external service dependencies. Do not manufacture in-cluster stateful migrations merely to use more Kubernetes objects.",
-                instructions: ["Create the `project`/`namespace` and least-privilege identities.", "Deploy Steward through versioned manifests or the chosen packaging boundary.", "Configure services and the deliberate Kong/platform routing path.", "Verify readiness, liveness, resources and rollout behavior.", "Verify a representative authenticated Steward request externally and capture the running image digest."],
-                deliverables: ["Versioned environment manifests", "OpenShift/Kubernetes runtime evidence", "External verification", "Image-digest traceability"],
+                instructions: ["Create the `project`/`namespace` and least-privilege identities.", "Deploy API, outbox publisher and lifecycle-event consumer through versioned manifests or the chosen packaging boundary, all referencing the same approved image digest with role-specific commands.", "Reconcile PostgreSQL, Redis and RabbitMQ endpoints/placement from the incoming release contract and record any justified placement change.", "Run database/outbox migrations through an explicit versioned mechanism before dependent roles become authoritative.", "Configure a ClusterIP Service for the API and the deliberate Kong/platform routing path; do not expose publisher/consumer as public services.", "Verify readiness/liveness/resources/rollout behavior appropriate to each application role.", "Execute a representative authenticated lifecycle mutation externally and prove outbox → publisher → RabbitMQ → consumer completion while capturing the running image digest for all three roles."],
+                deliverables: ["Versioned three-role environment manifests", "Migration/dependency-placement evidence", "OpenShift/Kubernetes runtime evidence", "External synchronous and asynchronous verification", "Three-role image-digest traceability"],
                 completionCriteria: ["The workload runs under platform security constraints.", "The backend is not directly public.", "The externally verified release matches the approved artifact."],
             },
         },

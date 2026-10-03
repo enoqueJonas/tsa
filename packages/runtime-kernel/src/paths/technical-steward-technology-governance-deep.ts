@@ -63,7 +63,7 @@ export const technologyGovernanceDeepLessons: Lesson[] = [
         "Design an evidence-based technology-governance map for Steward that connects organizational outcomes, decision rights, service ownership, risk, resources, performance and selected framework concepts.",
         [
             "Identify Steward's primary stakeholders, consumers and organizational outcomes, then trace each outcome to technology capabilities and measurable success signals.",
-            "Map the major technology domains: application, PostgreSQL/data, delivery pipeline, cloud/VPS hosting, Nexus, steward-common, tsa-test-core, observability, security and operational support.",
+            "Start from the final Architect actual-stack inventory. Map only current or explicitly transitional technology domains: application/API and background roles, PostgreSQL/outbox, Redis and RabbitMQ if retained, delivery pipeline, hosting/orchestration/GitOps if retained, Kong/Keycloak/Vault where active, Nexus, steward-common, observability components actually retained, security and operational support. Record tsa-test-core only as a future Professional Engineer extraction candidate, not as current estate.",
             "For each domain, assign an accountable owner, key decision rights, required consultations, escalation path and review cadence.",
             "Select only relevant concepts from COBIT, ITIL, ISO management-system thinking and the NIST landscape. For every selected concept, state the governance problem it helps solve.",
             "Define a compact performance-oversight set. Each measure must have a purpose, source, owner, threshold or interpretation rule, and expected action.",
@@ -84,7 +84,7 @@ export const technologyGovernanceDeepLessons: Lesson[] = [
             "Governance and management responsibilities are distinguishable.",
             "Framework concepts are tailored rather than copied wholesale.",
             "Performance measures have owners and decision consequences.",
-            "Steward's internal packages and Nexus have explicit governance ownership.",
+            "Every active technology domain and the existing steward-common/Nexus supply-chain boundary have explicit governance ownership; future tsa-test-core work is not governed as though the package already exists.",
             "The model remains proportionate: local reversible decisions stay local while material cross-cutting decisions receive appropriate oversight."
         ]
     ),

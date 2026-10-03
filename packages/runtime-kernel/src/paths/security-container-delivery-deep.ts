@@ -220,7 +220,7 @@ function lessonFrom(topic: Topic): Lesson {
                 content: {
                     type: "practical",
                     objective: `Apply ${topic} to the real learner-controlled Steward delivery ecosystem.`,
-                    scenario: "Use Steward source, CI/CD, Nexus/internal repositories, container images, steward-common, tsa-test-core and deployment targets. Change only systems you are authorized to administer and capture before/after evidence.",
+                    scenario: "Use Steward source, CI/CD, Nexus/internal repositories, container images, deployment targets and only those internal packages/shared test libraries that the Delivery/Quality evidence shows actually exist. Change only systems you are authorized to administer and capture before/after evidence.",
                     instructions: item.practice,
                     deliverables: ["Supply-chain/security evidence", "Configuration or policy change", "Verification and residual-risk note"],
                     completionCriteria: ["The work addresses a real Steward trust boundary or threat.", "The security claim is backed by observable evidence.", "Normal build, test, publish or deployment behavior is retested after the change."],
@@ -247,7 +247,7 @@ const lab: Lesson = {
             content: {
                 type: "practical",
                 objective: "Produce an evidence-backed model of how Steward code and internal dependencies become trusted running artifacts.",
-                scenario: "Start from the existing Steward threat model and Linux/network hardening evidence. Include source, CI identities, Nexus, steward-common, tsa-test-core, container images and deployment targets.",
+                scenario: "Start from the existing Steward threat model and Linux/network hardening evidence. Include source, CI identities, Nexus, container images and deployment targets. Add internal packages or tsa-test-core only when they exist in the release/dependency evidence.",
                 instructions: ["Draw the source-to-deployment chain.", "Mark read, publish, promote, deploy and administer identities.", "Record repository routing and internal package resolution.", "Capture current scanning, provenance, SBOM and verification evidence."],
                 deliverables: ["Supply-chain map", "Identity/permission matrix", "Artifact trust baseline", "Prioritized gaps"],
                 completionCriteria: ["The model reflects the actual Steward delivery path.", "Internal dependency trust is explicit.", "Assumptions are separated from verified controls."],

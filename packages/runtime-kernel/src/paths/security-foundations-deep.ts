@@ -237,12 +237,13 @@ const lab: Lesson = {
                 objective: "Create the first complete security inventory for Steward.",
                 scenario: "This artifact becomes the input to Threat Modeling. It must reflect the real system built in prior schools rather than a generic web-app diagram.",
                 instructions: [
-                    "Inventory critical data, identities, services, hosts, repositories, credentials and deployment components.",
+                    "Record the exact Steward release/environment under assessment and link the Cloud/Delivery handoff plus Quality risk/evidence map.",
+                    "Inventory critical data, identities, services, hosts, repositories, credentials and deployment components that actually exist in those handoffs.",
                     "For each asset, record confidentiality, integrity and availability concerns.",
                     "Identify human, service and external actors.",
                     "Mark which assets have especially high integrity or administrative consequence."],
-                deliverables: ["Steward asset inventory", "CIA impact notes", "Actor inventory"],
-                completionCriteria: ["The inventory includes application, infrastructure and software-supply-chain assets.", "Important assets have explicit security consequences.", "Actors are specific enough to support later threat scenarios."],
+                deliverables: ["Security assessment baseline", "Steward asset inventory", "CIA impact notes", "Actor inventory"],
+                completionCriteria: ["The assessment is tied to an exact Steward release/environment.", "Optional components are included only when prior-school evidence shows they exist.", "The inventory includes application, infrastructure and software-supply-chain assets.", "Important assets have explicit security consequences.", "Actors are specific enough to support later threat scenarios."],
             },
         },
         {

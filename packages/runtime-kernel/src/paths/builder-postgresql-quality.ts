@@ -1,23 +1,25 @@
 import type { PracticalContent } from "../activities";
 import type { Lesson } from "./lesson";
-import { relationalDataAndPostgresqlDeepLessons } from "./builder-postgresql-deep";
+import { djangoDependentPostgresqlDeepLessons, relationalDataAndPostgresqlDeepLessons } from "./builder-postgresql-deep";
 
 type PracticeSpec = Omit<PracticalContent, "type">;
 
 const practices: Record<string, PracticeSpec> = {
     "relational-data-and-postgresql-relational-model-practice": {
-        objective: "Turn a tempting document-shaped Steward design into a relational model whose facts, identities and relationships can survive change.",
-        scenario: "A teammate proposes storing each Steward service as one large JSON object containing the owning team name, environments and a comma-separated dependency list because it looks like the API response. Review the proposal before it becomes the database design.",
+        objective: "Give the existing Steward domain durable relational storage and deliberately expand it with the relationships needed by the Builder product.",
+        scenario: "steward-core currently keeps Services in memory, and Web/API Foundations defined a future HTTP contract without inventing persistence. Now persistence becomes real. Design the first PostgreSQL schema from the Service behavior you already own, then add the Team, Environment and dependency facts needed for the registry to grow.",
         instructions: [
-            "Write down the facts Steward must preserve independently: teams, services, environments and directed dependencies.",
-            "Model those facts as relations with primary keys, foreign keys and cardinalities before writing SQL.",
-            "Create the tables in PostgreSQL and seed two teams, three services, multiple environments and at least two dependency edges.",
-            "Rename one team and show why normalized ownership changes in one authoritative place.",
-            "Write one query that reconstructs a useful API-facing view from the normalized facts.",
-            "Record one inconsistency that the original JSON/comma-separated design would make easy to create."
+            "Inventory the current Service fields and Team ownership concept from steward-core before drawing a table.",
+            "Model Team and Service first. Preserve the domain meaning already established instead of copying a hypothetical API response.",
+            "Add Environment as a separate relation so one Service can exist in multiple environments without repeating the Service record.",
+            "Add directed ServiceDependency relationships using Service identities rather than comma-separated names.",
+            "Choose primary keys, foreign keys and cardinalities explicitly, then create the schema in PostgreSQL.",
+            "Seed at least two Teams, three Services, multiple Environments and two dependency edges using names already familiar from the Python exercises where practical.",
+            "Rename one Team and prove Service ownership still has one authoritative source.",
+            "Write one JOIN that reconstructs a useful Service catalogue view and compare that relational result with the in-memory representation you started from."
         ],
-        deliverables: ["Relational diagram or schema sketch", "Working PostgreSQL schema and seed SQL", "Relationship query output", "Short modeling decision note"],
-        completionCriteria: ["Each stored relation represents a clear kind of fact.", "Ownership and dependencies are modeled with keys rather than duplicated text.", "The learner can explain why storage structure does not need to mirror API JSON."],
+        deliverables: ["Current-domain inventory", "Relational schema sketch", "Working PostgreSQL schema and seed SQL", "Team-rename evidence", "Catalogue JOIN output", "Persistence-boundary note"],
+        completionCriteria: ["PostgreSQL is introduced here rather than assumed in earlier exercises.", "Existing Service concepts survive the move to persistence.", "Team, Environment and ServiceDependency have explicit relational meaning.", "Ownership and dependencies use keys rather than duplicated text.", "The learner can explain why database rows do not need to mirror API JSON or Python objects exactly."]
     },
     "relational-data-and-postgresql-sql-crud-practice": {
         objective: "Perform data changes with a disciplined preview-mutate-verify workflow that makes accidental broad updates difficult.",
@@ -119,7 +121,7 @@ const practices: Record<string, PracticeSpec> = {
     },
     "relational-data-and-postgresql-constraints-keys-practice": {
         objective: "Move durable Steward invariants from comments and application checks into PostgreSQL where the database can enforce them for every writer.",
-        scenario: "A second import process will soon write to the same database as Django. Rules currently enforced only in serializer validation could be bypassed by the importer or race under concurrent requests.",
+        scenario: "The database is about to gain more than one writer when the following Django module maps the schema. Any invariant protected only by the current Python application boundary could then be bypassed by direct SQL, imports or concurrent writers.",
         instructions: [
             "List candidate invariants and classify which belong in PostgreSQL, application code, or both.",
             "Add UNIQUE protection for service slug and a CHECK for allowed criticality values.",
@@ -129,7 +131,7 @@ const practices: Record<string, PracticeSpec> = {
             "Identify one important Steward rule that cannot be represented safely as a simple row constraint and explain where it remains enforced."
         ],
         deliverables: ["Invariant classification", "Constraint DDL/migration", "Negative-case database errors", "Boundary note for application-only rule"],
-        completionCriteria: ["Durable row/relationship invariants are protected independently of Django validation.", "Invalid writes are demonstrated directly against PostgreSQL.", "The learner can explain both the power and limits of database constraints."],
+        completionCriteria: ["Durable row/relationship invariants are protected independently of any future framework or writer.", "Invalid writes are demonstrated directly against PostgreSQL.", "The learner can explain both the power and limits of database constraints."],
     },
     "relational-data-and-postgresql-schema-design-practice": {
         objective: "Design the complete Builder-level Steward schema from product questions and change scenarios, not from framework convenience.",
@@ -189,7 +191,7 @@ const practices: Record<string, PracticeSpec> = {
     },
     "relational-data-and-postgresql-query-performance-practice": {
         objective: "Run a controlled database-performance investigation with a measurable symptom, representative data and a defensible before/after comparison.",
-        scenario: "Steward's service-search endpoint has a p95 target of 300 ms but is exceeding it on a larger catalogue. You are asked to improve it without introducing cargo-cult indexes or rewriting everything in raw SQL.",
+        scenario: "A representative Steward catalogue SQL query is exceeding a provisional 300 ms database-query budget on the larger seeded dataset. Investigate the database access path before the later Django/API module turns it into an HTTP endpoint.",
         instructions: [
             "Define the exact query, representative parameters, data volume and measurable symptom before tuning.",
             "Capture baseline timing, row count and EXPLAIN ANALYZE evidence under repeatable conditions.",
@@ -203,7 +205,7 @@ const practices: Record<string, PracticeSpec> = {
     },
     "relational-data-and-postgresql-postgresql-practice-practice": {
         objective: "Operate Steward's PostgreSQL instance directly enough to distinguish application behavior from database facts and to collaborate intelligently with a DBA later.",
-        scenario: "The API is reporting database errors, but the Django logs are inconclusive. You have shell access to the learner-owned database host and must inspect PostgreSQL directly without using superuser privileges for the application.",
+        scenario: "A direct Steward database operation is failing and the Python-side error does not establish the database cause. You have shell access to the learner-owned database host and must inspect PostgreSQL directly without using superuser privileges for the application.",
         instructions: [
             "Connect with psql using an administrative learning account and separately identify the application's non-superuser role.",
             "Inspect databases/schemas, tables, columns, constraints and indexes using psql metadata commands or catalog queries.",
@@ -288,6 +290,17 @@ const practices: Record<string, PracticeSpec> = {
 };
 
 export const relationalDataAndPostgresqlQualityLessons: Lesson[] = relationalDataAndPostgresqlDeepLessons.map((lesson) => ({
+    ...lesson,
+    activities: lesson.activities.map((activity) => {
+        if (activity.content.type !== "practical") return activity;
+        const practice = practices[activity.id];
+        if (!practice) return activity;
+        return { ...activity, content: { type: "practical", ...practice } };
+    }),
+}));
+
+
+export const djangoDependentPostgresqlQualityLessons: Lesson[] = djangoDependentPostgresqlDeepLessons.map((lesson) => ({
     ...lesson,
     activities: lesson.activities.map((activity) => {
         if (activity.content.type !== "practical") return activity;

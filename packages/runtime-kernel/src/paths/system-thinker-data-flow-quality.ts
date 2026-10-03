@@ -7,9 +7,9 @@ type PracticeSpec = Omit<PracticalContent, "type">;
 const practiceByLesson: Record<string, PracticeSpec> = {
     "Following Data Through a System": {
         objective: "Trace one Steward mutation from actor intent to durable state and expose where meaning, trust and state change.",
-        scenario: "A review of Steward's create-service flow shows a neat endpoint-to-database diagram, but nobody can point to where ownership evidence becomes an authorization decision, where input becomes trusted domain state, or which reads affect the mutation. Reconstruct the flow from evidence.",
+        scenario: "Use the Builder v1 implementation, not a hypothetical sequence. A review of its create-service flow shows a neat endpoint-to-database diagram, but nobody can point to where ownership evidence becomes an authorization decision, where input becomes trusted domain state, or which reads affect the mutation. Reconstruct the flow from code, requests and persisted state.",
         instructions: [
-            "Choose create service, add dependency or lifecycle change and write the actor's intent before naming endpoints.",
+            "Choose an implemented create-service, add-dependency or lifecycle-change path from Builder v1 and write the actor's intent before naming endpoints.",
             "Trace authentication context, authorization evidence, validation, domain rules and all reads that influence the decision.",
             "Mark every point where data changes meaning or assurance, including identifiers, ownership claims and lifecycle values.",
             "Mark the database transaction boundary and distinguish reads, writes and non-transactional side effects.",
@@ -21,7 +21,7 @@ const practiceByLesson: Record<string, PracticeSpec> = {
     },
     "Synchronous and Asynchronous Boundaries": {
         objective: "Decide which Steward interactions belong on the synchronous critical path and which may become asynchronous without weakening correctness.",
-        scenario: "A design proposal suggests putting several Steward interactions behind a queue 'for scalability': authorization checks, lifecycle validation and post-change notifications. Review the proposal by semantics rather than technology preference.",
+        scenario: "The current Steward v1 path is synchronous and has no broker. A proposal suggests moving authorization checks, lifecycle validation and post-change notifications behind a queue 'for scalability'. Start from the existing flow and decide which semantics, if any, justify changing it.",
         instructions: [
             "Select at least three interactions around a lifecycle change: one correctness-critical, one user-visible integration and one side effect.",
             "For each interaction, state whether downstream success is required before the caller can receive a correct response.",

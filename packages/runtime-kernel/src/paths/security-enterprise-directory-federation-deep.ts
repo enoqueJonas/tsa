@@ -31,7 +31,7 @@ interface Spec {
 function lesson(spec: Spec): Lesson {
     const blocks: LessonBlock[] = [
         { type: "paragraph", text: spec.intro },
-        { type: "callout", tone: "steward", title: "Identity ownership boundary", body: "LDAP is the workforce identity source, Keycloak is the authentication/federation boundary, and Steward still owns domain authorization such as service ownership and governance permissions. Do not collapse these responsibilities." },
+        { type: "callout", tone: "steward", title: "Identity ownership boundary", body: "The authoritative workforce directory selected in Platform Builder (AD DS or the bounded OpenLDAP path for the relevant scenario) owns workforce identity data; Keycloak becomes Steward's authentication/federation boundary; Steward still owns domain authorization such as service ownership and governance permissions. Do not collapse these responsibilities or run two competing workforce authorities." },
         { type: "resources", title: "Continue learning", resources: resourcesByFederationTopic[spec.id] ?? [keycloakDocs, ldapRfc] },
     ];
 
@@ -52,9 +52,9 @@ const specs: Spec[] = [
         title: "Directory Federation Architecture",
         intro: "Enterprise SSO often sits between an authoritative workforce directory and applications. Federation avoids creating separate credentials in every application while preserving a protocol boundary between directory administration and application authentication.",
         practiceTitle: "Model LDAP -> Keycloak -> Steward",
-        scenario: "Steward has local application identities today, but the organization already maintains employees and engineering groups in the homelab LDAP directory. Replace duplicate workforce credential ownership without coupling Steward directly to LDAP.",
+        scenario: "Steward still authenticates locally, while Platform Builder produced a real learner-owned workforce directory boundary. Select the authoritative directory for this scenario and replace duplicate Steward credential ownership without coupling Steward directly to LDAP.",
         instructions: [
-            "Inventory which identity attributes are authoritative in LDAP, which authentication/session concerns belong to Keycloak, and which authorization facts remain authoritative in Steward.",
+            "Record the exact Platform Builder directory checkpoint and state whether AD DS or OpenLDAP is authoritative for this federation scenario.", "Inventory which workforce identity attributes are authoritative in that directory, which authentication/session concerns belong to Keycloak, and which authorization facts remain authoritative in Steward.",
             "Draw the authentication path from a user entry in LDAP through Keycloak to an OIDC access token consumed by Steward.",
             "Define the expected behavior for users that exist in LDAP but have no valid Steward membership or domain permission.",
             "Define which LDAP groups, if any, are useful as coarse identity claims and explicitly reject mappings that would duplicate Steward's service/team ownership model.",
@@ -69,9 +69,9 @@ const specs: Spec[] = [
         title: "Keycloak LDAP Federation",
         intro: "Keycloak can federate users from LDAP through a configured user-storage provider. Correct federation depends on base DN, bind identity, search scope, username/UUID attributes, group mappings, edit mode and transport trust.",
         practiceTitle: "Federate the Homelab LDAP Directory into Keycloak",
-        scenario: "Use the real LDAP service created in Platform Builder as Keycloak's workforce identity source. The goal is a functioning enterprise identity chain, not a mock directory or hard-coded user import.",
+        scenario: "Use the real authoritative directory selected from the Platform Builder checkpoint as Keycloak's workforce identity source. OpenLDAP and AD DS are both valid LDAP federation targets, but only the selected authority is active for this scenario. The goal is a functioning enterprise identity chain, not a mock directory or hard-coded user import.",
         instructions: [
-            "Configure a Keycloak LDAP user-federation provider against the homelab directory using the least-privilege bind account created earlier.",
+            "Configure a Keycloak LDAP user-federation provider against the selected Platform Builder directory using its least-privilege federation bind account.",
             "Set the users/base DN, username attribute, unique identifier attribute, object classes/search behavior and edit mode deliberately; record why each value matches the directory schema.",
             "Configure TLS trust so Keycloak does not fall back to insecure directory access.",
             "Federate at least three synthetic users and two groups and prove their identities are visible through Keycloak without creating duplicate local passwords for those users.",
@@ -79,7 +79,7 @@ const specs: Spec[] = [
             "Capture evidence of a successful federated login and token issuance without exposing passwords or tokens.",
         ],
         deliverables: ["Keycloak LDAP provider configuration evidence", "TLS/trust configuration evidence", "Federated users/groups proof", "Claim mapping", "Successful OIDC login/token evidence"],
-        criteria: ["Keycloak queries the real homelab LDAP service.", "The federation bind identity is not the LDAP administrator.", "Directory traffic is protected and trusted.", "At least one LDAP-originated identity can authenticate through Keycloak.", "Steward domain authorization remains independent of LDAP group membership."],
+        criteria: ["Keycloak queries the real authoritative Platform Builder directory selected for this scenario.", "The federation bind identity is not the LDAP administrator.", "Directory traffic is protected and trusted.", "At least one LDAP-originated identity can authenticate through Keycloak.", "Steward domain authorization remains independent of LDAP group membership."],
         questions: ["Why should federation use a read-scoped bind account instead of the LDAP administrator?", "What does Keycloak add between LDAP and Steward beyond simply copying users?"],
     },
     {
