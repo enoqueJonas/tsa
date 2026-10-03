@@ -292,9 +292,17 @@ Result: security changes correspond to demonstrated risks and controls on a know
 
 ### 8. Reliability Engineer — operate measurable behavior
 
-Logs, metrics, traces where justified, SLIs/SLOs, alerts, incidents, recovery and capacity work use real Steward behavior and failure modes.
+Reliability Engineer begins from a **reliability baseline** for the exact Steward release/environment that survived Quality and Security work. Carry forward user-visible capabilities, current topology and authoritative dependencies, still-valid quality evidence, runtime-affecting security changes, known failure modes/residual risks, existing telemetry gaps, recovery evidence and operational ownership.
 
-Result: the learner can reason about Steward as an operated service, not a dashboard exercise.
+Logs, metrics, traces where justified, SLIs/SLOs, alerts, incidents, recovery and capacity work then use real Steward behavior and failure modes.
+
+Reliability controls follow **question → measurement → decision → control → exercise**. A dashboard, metric, alert, tracing backend or resilience mechanism must answer an identified operational question or mitigate a demonstrated risk. Tool installation alone is not progress.
+
+Required observability capabilities must be distinguished from conditionally adopted products. Prometheus/Grafana may be required by the curriculum's metrics implementation, but optional infrastructure and dependencies must not be invented to make a reliability scenario interesting. Redis, RabbitMQ, Keycloak, orchestration/GitOps components, tsa-test-core and similar elements appear in reliability evidence only when the accumulated Steward system actually contains them.
+
+SLIs/SLOs start from user-visible semantics. Alerts require an owner and actionable response. Incident and fault exercises originate from reachable Steward failure modes and run only in learner-controlled environments.
+
+Result: the learner can reason about a known Steward release as an operated service whose reliability claims, limits and recovery mechanisms are evidence-backed rather than inferred from tool presence.
 
 ### 9. Architect — evolve from evidence
 
