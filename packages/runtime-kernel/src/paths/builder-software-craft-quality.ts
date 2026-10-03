@@ -37,7 +37,7 @@ const practices: Record<string, PracticeSpec> = {
         objective: "Reduce the mental reconstruction cost of one difficult Steward code path without changing behavior.",
         scenario: "A teammate can make the code pass tests but cannot quickly explain what one authorization or lifecycle path means. Your job is to improve domain readability while resisting cosmetic churn.",
         instructions: [
-            "Choose one difficult function or request path and write what makes it hard to understand before editing it; assess its cohesion and the coupling it creates to neighboring code."
+            "Choose one difficult function or request path and write what makes it hard to understand before editing it; assess its cohesion and the coupling it creates to neighboring code.",
             "Capture current success and failure behavior with focused tests or reproducible requests.",
             "Rename ambiguous variables/functions using Steward domain language.",
             "Extract at most one concept that has a real domain or responsibility name; do not create abstraction only to shorten the function.",
@@ -53,7 +53,7 @@ const practices: Record<string, PracticeSpec> = {
         instructions: [
             "Trace one write request from DRF entry point to database and label representation, authentication/authorization, domain-rule and persistence responsibilities.",
             "Identify the single most harmful responsibility leak and explain why it makes change harder.",
-            "Move only that responsibility to a more appropriate boundary and draw the dependency direction before/after.", "Use SOLID as diagnostic questions against the path, but reject any interface/class extraction that lacks a concrete variation or responsibility."
+            "Move only that responsibility to a more appropriate boundary and draw the dependency direction before/after.", "Use SOLID as diagnostic questions against the path, but reject any interface/class extraction that lacks a concrete variation or responsibility.",
             "Keep database constraints as integrity backstops where applicable rather than duplicating or removing them casually.",
             "Run focused behavior checks and inspect the resulting call path.",
             "Explain why at least one other mixed concern is acceptable to leave in place for now."
@@ -67,7 +67,7 @@ const practices: Record<string, PracticeSpec> = {
         instructions: [
             "Name the maintainability problem in operational terms: duplicated policy, confusing coupling, repeated branching, hidden side effects or similar.",
             "Capture the current behavior with tests or reproducible API evidence before structural changes.",
-            "Name the first refactoring transformation (for example Rename, Extract Function, Move Function or Introduce Parameter Object), perform it, and rerun the safety net.", "If behavior is poorly understood, add a characterization test before restructuring it."
+            "Name the first refactoring transformation (for example Rename, Extract Function, Move Function or Introduce Parameter Object), perform it, and rerun the safety net.", "If behavior is poorly understood, add a characterization test before restructuring it.",
             "Continue only while each step clearly reduces the named problem.",
             "If you discover a behavior change that is actually needed, stop and record it as separate feature work rather than hiding it inside the refactor.",
             "Write the stopping condition that tells you the refactor is complete enough."
@@ -85,7 +85,7 @@ const practices: Record<string, PracticeSpec> = {
             "Run the tests against the current implementation and preserve the green baseline.",
             "Perform one small behavior-preserving refactor and rerun the same focused tests.",
             "Reproduce one known defect or create a disposable controlled defect; demonstrate that a regression test fails for the expected reason before the fix and passes after the fix.",
-            "Review assertions and remove any that couple the test to private helper structure without protecting observable behavior.", "If the behavior crosses an external/slow collaborator, choose deliberately among real collaborator, stub, fake or mock/spy and explain why; inject the collaborator through the smallest useful boundary."
+            "Review assertions and remove any that couple the test to private helper structure without protecting observable behavior.", "If the behavior crosses an external/slow collaborator, choose deliberately among real collaborator, stub, fake or mock/spy and explain why; inject the collaborator through the smallest useful boundary.",
             "Record which important behavior remains uncovered and why adding more tests is or is not justified now."
         ],
         deliverables: ["Behavior contract and boundary choice", "Positive/negative automated tests", "Pre/post-refactor test evidence", "Fail-before-fix regression evidence", "Coverage limitation note"],
@@ -99,7 +99,7 @@ const practices: Record<string, PracticeSpec> = {
             "Choose one transitive dependency and prove whether Steward code imports or relies on it directly.",
             "Find one dependency that can plausibly be removed, replaced by the standard library/framework, or retained; test the decision rather than arguing from preference.",
             "Inspect current reusable-code candidates and identify whether there is more than one real consumer with a stable boundary.",
-            "For one important dependency, inspect maintenance/release expectations, license/security/compatibility signals and transitive footprint, then define version/upgrade validation expectations."
+            "For one important dependency, inspect maintenance/release expectations, license/security/compatibility signals and transitive footprint, then define version/upgrade validation expectations.",
             "Write a short decision separating external dependency ownership, local application code and a genuinely justified future internal package."
         ],
         deliverables: ["Dependency ownership table", "Transitive-dependency evidence", "One keep/remove decision with validation", "Internal-package boundary assessment"],
@@ -113,7 +113,7 @@ const practices: Record<string, PracticeSpec> = {
             "Move one inappropriate hard-coded deployment value out of code if such a case exists.",
             "Choose one required variable and make startup fail clearly when it is missing.",
             "Demonstrate the failure and confirm the diagnostic does not print the secret value.",
-            "Parse at least one non-string setting into a validated typed value at startup and demonstrate invalid input failure.", "Document local-development defaults separately from production requirements and state configuration-source precedence where multiple sources exist."
+            "Parse at least one non-string setting into a validated typed value at startup and demonstrate invalid input failure.", "Document local-development defaults separately from production requirements and state configuration-source precedence where multiple sources exist.",
             "Identify one tempting environment variable that should remain domain policy in code and explain why."
         ],
         deliverables: ["Configuration classification", "Validated configuration change", "Safe startup-failure evidence", "Configuration contract documentation"],
@@ -170,7 +170,7 @@ const practices: Record<string, PracticeSpec> = {
             "Rewrite the setup path from clone to environment configuration, database migration and first useful request using concrete commands.",
             "Describe Steward's domain at the level needed to understand Team, Service, Environment, dependency and review relationships.",
             "Link to the generated OpenAPI/schema instead of manually duplicating the entire API contract.",
-            "Add one ADR-style decision/rationale note (context, decision, alternatives/consequences) and one known limitation or next-stage concern.", "State which information belongs in README, generated API docs, decision record or future runbook so mutable facts are not duplicated blindly."
+            "Add one ADR-style decision/rationale note (context, decision, alternatives/consequences) and one known limitation or next-stage concern.", "State which information belongs in README, generated API docs, decision record or future runbook so mutable facts are not duplicated blindly.",
             "Walk the instructions from a clean checkout or have another engineer simulate them; record every step that proved ambiguous or false and correct it."
         ],
         deliverables: ["Updated runnable setup documentation", "Domain orientation section", "Decision/limitation note", "Documentation verification evidence"],
