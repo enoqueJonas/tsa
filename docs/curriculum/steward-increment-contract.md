@@ -325,9 +325,15 @@ Result: architectural decisions are consequences of system forces. The Architect
 
 ### 10. Technical Steward — govern the technology
 
-Steward expands toward technology risks, standards, controls, exceptions, debt, lifecycle governance and engineering-health reviews.
+Technical Steward begins from the **actual architecture and evidence baseline** produced by Architect, including what was deliberately retained, simplified, deferred or removed. Governance operates on that estate; it must not recreate previously rejected complexity merely to populate standards, risk registers or review templates.
 
-Result: the product reaches its natural stewardship purpose using the system history accumulated across TSA.
+Steward expands toward technology risks, standards, controls, exceptions, debt, lifecycle governance and engineering-health reviews. Governance artifacts point to authoritative engineering sources wherever those already exist instead of copying facts into parallel paperwork.
+
+A governance requirement states the outcome it protects, scope, accountable decision owner, exception authority, operating evidence, review/expiry condition and trigger for reconsidering the rule itself.
+
+Technology inventory is historical as well as current: a removed component may remain relevant as a decision or migration record, but it is never represented as an active dependency. Optional components, internal packages and enterprise platforms are governed only when they actually exist or when a documented proposal is under decision.
+
+Result: the product reaches its natural stewardship purpose using the system history accumulated across TSA, with governance acting as a thin decision/evidence layer over engineering reality rather than a second fictional system of record.
 
 ### 11. Professional Engineer — prove transfer
 
