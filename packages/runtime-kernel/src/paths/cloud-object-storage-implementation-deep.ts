@@ -45,7 +45,7 @@ export const objectStorageImplementationDeepLessons: Lesson[] = [
                     "Implement or adapt one bounded Steward workflow that writes the generated export/evidence object through the S3 API.",
                     "Keep business metadata and authorization decisions in Steward/PostgreSQL where appropriate; store the blob and object-specific metadata in object storage.",
                     "Persist the object key/reference needed to retrieve the blob without exposing storage administrator credentials to clients.",
-                    "Retrieve the object through an authorized Steward path and prove an unauthorized user cannot obtain another team's protected export.",
+                    "Retrieve the object through an authorized Steward path and prove an unauthorized user cannot obtain another team's protected export.", "If direct client download is justified, use a short-lived signed object URL only after Steward authorization, verify that it expires, and document that possession temporarily grants access; otherwise keep download proxying behind Steward.",
                     "Upload two objects with intentionally similar human names and prove stable keys/identities avoid accidental overwrite.",
                     "Define integrity verification using checksums/ETag semantics appropriate to the client and implementation rather than assuming an ETag is always a simple MD5.", "Document the consistency guarantees of the chosen S3-compatible implementation and test the application behavior that depends on them rather than assuming every object store behaves identically.",
                     "Capture end-to-end evidence from request/generation through object persistence and retrieval."
