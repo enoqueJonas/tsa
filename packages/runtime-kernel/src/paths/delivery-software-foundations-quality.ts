@@ -45,23 +45,24 @@ const practices: Record<string, PracticalContent> = {
         deliverables: ["Risk-oriented PR brief", "Delivery-impact review checklist", "Merge/block evidence criteria"],
         completionCriteria: ["Review scope reflects delivery impact, not only code size.", "Evidence expectations are explicit.", "The change can be reviewed without verbal context from its author."],
     },
-    "Earn steward-common Through a Second Consumer": {
+    "Earn steward-common Through Two External Consumers": {
         type: "practical",
-        objective: "Create a second real Steward-owned Python consumer, prove a stable product-independent capability is duplicated, and extract only that earned boundary into steward-common.",
-        scenario: "Delivery now needs to teach independent package distribution. Before Nexus can publish a meaningful Python package, Steward must have two real consumers. Add a small operator-facing Steward CLI that calls the existing HTTP API to inspect service ownership/lifecycle and perform one safe operator workflow. Build the first slice without a shared library so the repeated client/config/error-handling capability becomes observable.",
+        objective: "Create two real external Steward Python consumers, prove a stable product-independent API-client capability is duplicated, and extract only that earned boundary into steward-common.",
+        scenario: "Delivery needs both a human operator client and automated post-deployment verification for the already-running Steward HTTP API. Build steward-cli and steward-release-check independently before extracting anything so reuse evidence comes from genuine external consumers rather than making the Steward server pretend to consume itself.",
         instructions: [
-            "Create a separate steward-cli Python project/repository with its own pyproject.toml and executable entry point.",
+            "Create steward-cli as a separate Python project/repository with its own pyproject.toml and executable entry point.",
             "Implement a useful operator workflow against the existing Steward HTTP API, such as listing services and inspecting one service's owner/lifecycle state.",
-            "Keep Steward domain rules in the API; the CLI is a client, not a second domain implementation.",
-            "Initially implement API base-URL configuration, HTTP request setup and public error decoding locally in steward-cli.",
-            "Compare that code with the equivalent stable client/config/error-contract behavior already needed by another Steward consumer or automation path.",
-            "Record concrete duplication and define the smallest product-independent Python boundary shared by both consumers.",
-            "Create steward-common as its own Python package and move only the proven generic capability.",
+            "Create steward-release-check as a separate Python project or independently packaged automation client used after deployment to call the deployed Steward health/read API and fail verification when the expected release or representative API behavior is wrong.",
+            "Keep Steward domain rules in the API; both projects are clients, not alternate domain implementations.",
+            "Initially implement base-URL configuration, HTTP request setup and public error decoding independently in both clients; do not import one client project from the other.",
+            "Run steward-release-check from a real delivery verification path against a deployed Steward release.",
+            "Record the concrete repeated transport/configuration/error-contract behavior and define the smallest product-independent Python boundary shared by both consumers.",
+            "Create steward-common as its own Python package and move only that proven generic capability.",
             "Update both consumers to use steward-common locally and run their verification suites.",
-            "Prove steward-common imports neither Django application internals nor CLI-specific code."
+            "Prove steward-common imports neither Django application internals nor CLI/release-check-specific code."
         ],
-        deliverables: ["Working steward-cli repository", "Pre-extraction duplication evidence", "steward-common package with explicit public API", "Two-consumer verification evidence", "Boundary decision record"],
-        completionCriteria: ["The CLI solves a real operator use case through Steward's public API.", "Two consumers exist before extraction.", "The extracted capability is demonstrated in both consumers and contains no Steward domain rules.", "Both consumers pass after extraction.", "The resulting package is ready for independent versioning and later Nexus publication."],
+        deliverables: ["Working steward-cli repository", "Working steward-release-check automation", "Post-deployment verification evidence", "Pre-extraction duplication evidence", "steward-common package with explicit public API", "Two-consumer verification evidence", "Boundary decision record"],
+        completionCriteria: ["The CLI solves a real operator use case through Steward's public API.", "The release-check client participates in a real delivery verification path.", "Two external consumers exist before extraction and neither is the Steward server consuming itself.", "The extracted capability is demonstrated in both consumers and contains no Steward domain rules.", "Both consumers pass after extraction.", "The resulting package is ready for independent versioning and later Nexus publication."],
     },
     "Semantic Versioning": {
         type: "practical",
