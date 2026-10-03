@@ -37,9 +37,9 @@ export const deliveryEngineerMilestoneDeepLessons: Lesson[] = [
                 instructions: [
                     "Run the GitLab CI/CD pipeline for the chosen source revision from a clean GitLab Runner context and record the Runner identity/executor used.",
                     "Prove required checks and tests gate artifact production.",
-                    "If steward-common was genuinely earned, publish it through the approved internal package path; if extraction was deferred, include that decision and do not manufacture a package for this gate."
+                    "If steward-common was genuinely earned, publish it through the approved internal package path; if extraction was deferred, include that decision and do not manufacture a package for this gate.",
                     "Publish the single Steward application OCI image to Nexus, record its immutable digest, and prove that digest is the image used for API, outbox-publisher and lifecycle-consumer roles.",
-                    "Record source commit, CI run and image digest in one release candidate record; include internal package version/hash only when such a package exists."
+                    "Record source commit, CI run and image digest in one release candidate record; include internal package version/hash only when such a package exists.",
                     "Demonstrate one intentional CI failure that correctly prevents publish or promotion.",
                     "If the legacy CI migration exercise has been completed, prove the retired legacy release path can no longer independently publish an accepted Steward release; GitLab CI/CD is authoritative after cutover.",
                 ],
