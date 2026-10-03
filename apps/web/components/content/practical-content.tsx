@@ -1,3 +1,5 @@
+import { InlineTechnicalText } from "./inline-technical-text";
+
 interface PracticalContentProps {
     title?: string;
     objective: string;
@@ -31,7 +33,7 @@ export function PracticalContent({
                 <h1 className="mt-3 text-3xl font-bold tracking-tight text-zinc-950">
                     {practiceTitle}
                 </h1>
-                <p className="mt-5 max-w-3xl text-xl leading-8 text-zinc-800">{objective}</p>
+                <p className="mt-5 max-w-3xl text-xl leading-8 text-zinc-800"><InlineTechnicalText text={objective} /></p>
             </header>
 
             <section className="mt-10">
@@ -39,7 +41,7 @@ export function PracticalContent({
                     The situation
                 </p>
                 <div className="mt-3 border-l-4 border-zinc-950 bg-zinc-50 px-6 py-5">
-                    <p className="text-lg leading-8 text-zinc-900">{scenario}</p>
+                    <p className="text-lg leading-8 text-zinc-900"><InlineTechnicalText text={scenario} /></p>
                 </div>
             </section>
 
@@ -58,7 +60,7 @@ export function PracticalContent({
 
                 <ol className="mt-2 divide-y divide-zinc-200">
                     {instructions.map((instruction, index) => (
-                        <li key={instruction} className="grid gap-3 py-6 sm:grid-cols-[44px_1fr]">
+                        <li key=<InlineTechnicalText text={instruction} /> className="grid gap-3 py-6 sm:grid-cols-[44px_1fr]">
                             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-950 text-sm font-semibold text-white">
                                 {index + 1}
                             </span>
@@ -83,7 +85,7 @@ export function PracticalContent({
                 </p>
                 <ul className="mt-6 grid gap-3 md:grid-cols-2">
                     {deliverables.map((deliverable) => (
-                        <li key={deliverable} className="flex gap-3 rounded-xl border border-zinc-700 bg-zinc-900 p-4">
+                        <li key=<InlineTechnicalText text={deliverable} /> className="flex gap-3 rounded-xl border border-zinc-700 bg-zinc-900 p-4">
                             <span aria-hidden="true" className="mt-0.5 text-zinc-400">□</span>
                             <span>{deliverable}</span>
                         </li>
@@ -103,7 +105,7 @@ export function PracticalContent({
                 </p>
                 <ul className="mt-6 space-y-3">
                     {completionCriteria.map((criterion) => (
-                        <li key={criterion} className="flex gap-4 rounded-xl border border-zinc-200 p-4">
+                        <li key=<InlineTechnicalText text={criterion} /> className="flex gap-4 rounded-xl border border-zinc-200 p-4">
                             <span aria-hidden="true" className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded border border-zinc-300 text-xs">✓</span>
                             <span className="text-zinc-900">{criterion}</span>
                         </li>
