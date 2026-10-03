@@ -3,6 +3,7 @@
 import type { LessonBlock, LearningResource } from "@tsa/runtime-kernel";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { InlineTechnicalText } from "./inline-technical-text";
 
 interface ReadingContentProps {
   body: string;
@@ -16,26 +17,6 @@ function resourceLabel(resource: LearningResource) {
   if (resource.kind === "documentation") return "Docs";
   if (resource.kind === "reference") return "Reference";
   return "Read";
-}
-
-function InlineText({ text }: { text: string }) {
-  const parts = text.split(/(`[^`]+`)/g);
-  return (
-    <>
-      {parts.map((part, index) =>
-        part.startsWith("`") && part.endsWith("`") ? (
-          <code
-            key={index}
-            className="mx-0.5 inline rounded-md border border-zinc-200 bg-zinc-100 px-1.5 py-0.5 font-mono text-[0.88em] font-medium text-zinc-900"
-          >
-            {part.slice(1, -1)}
-          </code>
-        ) : (
-          <span key={index}>{part}</span>
-        ),
-      )}
-    </>
-  );
 }
 
 function Resources({ resources, title = "Resources" }: { resources: LearningResource[]; title?: string }) {
@@ -119,7 +100,7 @@ export function ReadingContent({ body, resources, blocks }: ReadingContentProps)
   if (!blocks?.length) {
     return (
       <div className="mt-8 space-y-8">
-        <p className="text-xl leading-9 text-zinc-800">{body}</p>
+        <p className="text-xl leading-9 text-zinc-800"><InlineTechnicalText text={body} /></p>
         {resources?.length ? <Resources resources={resources} title="Additional resources" /> : null}
       </div>
     );
@@ -145,13 +126,13 @@ export function ReadingContent({ body, resources, blocks }: ReadingContentProps)
           );
         }
 
-        if (block.type === "paragraph") return <p key={index} className="my-5"><InlineText text={block.text} /></p>;
+        if (block.type === "paragraph") return <p key={index} className="my-5"><InlineTechnicalText text={block.text} /></p>;
 
         if (block.type === "list") {
           const Tag = block.ordered ? "ol" : "ul";
           return (
             <Tag key={index} className={`my-5 space-y-2 pl-7 ${block.ordered ? "list-decimal" : "list-disc"}`}>
-              {block.items.map((item) => <li key={item}><InlineText text={item} /></li>)}
+              {block.items.map((item) => <li key={item}><InlineTechnicalText text={item} /></li>)}
             </Tag>
           );
         }
@@ -167,7 +148,7 @@ export function ReadingContent({ body, resources, blocks }: ReadingContentProps)
           return (
             <aside key={index} className={`my-8 border-l-4 p-5 ${styles}`}>
               <p className="font-bold text-zinc-950">{block.title}</p>
-              <p className="mt-2"><InlineText text={block.body} /></p>
+              <p className="mt-2"><InlineTechnicalText text={block.body} /></p>
             </aside>
           );
         }
