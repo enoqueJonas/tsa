@@ -41,7 +41,7 @@ function richLesson(spec: LessonSpec): Lesson {
                 content: {
                     type: "practical",
                     objective: spec.practiceTitle,
-                    scenario: "Steward already runs as an immutable containerized release and is exposed through Kong. Move only the runtime responsibility that orchestration can justify; do not redesign the application or move PostgreSQL, Redis or RabbitMQ merely to make the diagram look cloud-native.",
+                    scenario: "Steward already runs as an immutable containerized release. Preserve its actual public-edge and dependency model. Move only runtime responsibility that orchestration can justify; do not add Kong, Redis, RabbitMQ or other components merely to make the diagram look cloud-native."
                     instructions: spec.practice,
                     deliverables: spec.deliverables,
                     completionCriteria: spec.criteria,
@@ -221,7 +221,7 @@ const milestone: Lesson = {
             content: {
                 type: "practical",
                 objective: "Define exactly which Steward runtime responsibilities move to Kubernetes/OpenShift and which remain with the existing delivery and infrastructure systems.",
-                scenario: "The migration is a platform evolution, not a rewrite. Preserve source, artifact, database ownership, Kong API policy and release traceability unless a documented requirement says otherwise.",
+                scenario: "The migration is a platform evolution, not a rewrite. Preserve source, artifact, database ownership, the actual edge policy and release traceability unless a documented requirement says otherwise."
                 instructions: ["Create a responsibility matrix covering OpenTofu, Ansible, GitLab CI/CD, Nexus, Kubernetes/OpenShift, Kong and Argo CD.", "Choose the target cluster/environment and explain its cost and capacity assumptions.", "Define namespace/project, workload, service, routing and RBAC boundaries.", "Define the exact source commit → GitLab CI/CD → Nexus image digest → environment Git → Argo CD → running `pod` evidence chain."],
                 deliverables: ["Migration responsibility matrix", "Target topology", "End-to-end evidence chain"],
                 completionCriteria: ["No responsibility has two accidental authorities.", "The design reuses the existing artifact and release chain.", "Public, management and backend boundaries remain explicit."],
