@@ -67,13 +67,13 @@ const profiles: Record<string, PracticeProfile> = {
     },
     "Publishing Internal Python Packages": {
         objective: "Publish steward-common from a verified build only if its two-consumer extraction was actually earned; otherwise prove the package-publication workflow with a disposable/non-product fixture without inventing a production shared library.",
-        scenario: "Nexus must support controlled Python package publication, but Steward may or may not have earned steward-common yet. Product architecture must not be distorted to satisfy repository training."
+        scenario: "Nexus must support controlled Python package publication, but Steward may or may not have earned steward-common yet. Product architecture must not be distorted to satisfy repository training.",
         deliverables: ["Published earned steward-common version or explicitly labeled training fixture", "Reuse/extraction status", "Source/build/publication trace", "Rejected invalid or duplicate publication evidence"],
         completionCriteria: ["Verification precedes publication.", "Published bytes map to one source revision and version.", "A failed verification or disallowed overwrite fails closed.", "No product package is created merely to make the repository exercise possible."],
     },
     "Consuming Internal Packages with pip": {
-        objective: "Prove real consumers can install an earned internal Python package from the approved Nexus index with no producer-local state, or use an explicitly disposable consumer fixture when Steward has not yet earned such a package."
-        scenario: "If steward-common exists, run its real independent consumers with only Nexus available. If extraction was deferred, test repository consumption without pretending a training fixture is part of Steward architecture."
+        objective: "Prove real consumers can install an earned internal Python package from the approved Nexus index with no producer-local state, or use an explicitly disposable consumer fixture when Steward has not yet earned such a package.",
+        scenario: "If steward-common exists, run its real independent consumers with only Nexus available. If extraction was deferred, test repository consumption without pretending a training fixture is part of Steward architecture.",
         deliverables: ["Consumer index configuration", "Clean-install evidence", "Version-resolution decision"],
         completionCriteria: ["No workspace link, copied wheel or editable install is required.", "The selected version policy is explicit.", "Failure of the approved repository path is visible rather than silently bypassed by a local artifact.", "Fixture consumption, when used, is clearly separated from product architecture."],
     },
