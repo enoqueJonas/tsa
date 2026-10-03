@@ -20,7 +20,7 @@ export const reusableInternalPackageLesson: Lesson = {
 
 export const extractStewardCommonLesson: Lesson = {
     id: "software-craft-extract-steward-common",
-    title: "Lab: Extract steward-common",
+    title: "Lab: Evaluate steward-common Extraction",
     activities: [
         {
             id: "software-craft-extract-steward-common-001",
@@ -28,28 +28,28 @@ export const extractStewardCommonLesson: Lesson = {
             estimatedMinutes: 60,
             content: {
                 type: "practical",
-                objective: "Create a small reusable Python package from genuinely shared Steward behavior and consume it without copying its source into the application.",
-                scenario: "A second internal Steward component is expected to need behavior currently owned by Steward API. Treat this as a package-design problem now; private repository distribution will be solved during Delivery Engineer.",
+                objective: "Evaluate whether Steward has genuinely earned a reusable Python package; extract it only when independently useful consumers already demonstrate stable shared behavior.",
+                scenario: "Expected future reuse is not enough evidence for extraction. Inspect real consumers and duplication first; private repository distribution is a separate Delivery concern that Nexus can satisfy when a package actually exists.",
                 instructions: [
-                    "Identify behavior that is genuinely reusable and explain why it belongs outside the API application boundary.",
-                    "Define the package public API and keep framework-specific coupling out unless it is intentional.",
-                    "Create a buildable Python distribution provisionally named steward-common.",
-                    "Assign an initial semantic version and document its compatibility expectations.",
-                    "Consume the package locally from Steward API without duplicating its source code.",
-                    "Demonstrate what happens when the consumer depends on a version or API that is incompatible.",
-                    "Record the distribution problem that remains: another repository should not need filesystem access or copied source to install the package.",
+                    "Inventory independently useful external Steward consumers and the capabilities each currently implements.",
+                    "Identify concrete duplicated behavior, if any, and explain why it is stable and product-independent enough to share.",
+                    "Do not count the Steward server consuming its own extracted code as evidence of an external reuse boundary.",
+                    "If fewer than two real consumers demonstrate the same stable capability, record steward-common as deferred and stop without creating the package.",
+                    "If the threshold is met, define the smallest public API and keep framework/domain coupling out unless explicitly justified.",
+                    "Create a buildable Python distribution provisionally named steward-common, assign an initial semantic version and update the real consumers to use it.",
+                    "Demonstrate an incompatible consumer/version case and record the remaining independent-distribution problem that Nexus must solve.",
                 ],
                 deliverables: [
-                    "steward-common package source",
-                    "Package metadata and version",
-                    "Steward API consuming the package",
+                    "Consumer and duplication inventory",
+                    "Extraction-or-defer decision",
                     "Short package-boundary and compatibility note",
+                    "steward-common source/version and real-consumer evidence only if extraction is earned",
                 ],
                 completionCriteria: [
-                    "The extracted code has a credible reuse case rather than existing only to satisfy the lab.",
-                    "The package can be built and installed independently.",
-                    "Steward API consumes the package through its package interface.",
-                    "The learner can explain why an internal package repository becomes necessary as consumers move to separate repositories and CI environments.",
+                    "The decision is based on observed consumers and duplication rather than predicted reuse.",
+                    "Deferral is accepted as complete when the extraction threshold is not met.",
+                    "If extracted, the package builds independently and both real consumers pass through its public interface.",
+                    "The learner can explain when an internal package repository becomes necessary as consumers move to separate repositories and CI environments.",
                 ],
             },
         },

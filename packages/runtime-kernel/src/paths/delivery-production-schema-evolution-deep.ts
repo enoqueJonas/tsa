@@ -14,6 +14,12 @@ const blocks: LessonBlock[] = [
         "Contract: remove obsolete schema only after old application versions and rollback paths no longer depend on it."
     ] },
     { type: "callout", tone: "steward", title: "Recovery rule", body: "Rolling back application bytes is not the same as rolling back persistent data. Before release, classify whether recovery is safe application rollback, migration rollback, restore, or forward-fix. Prefer compatible forward evolution over destructive reverse migrations." },
+    { type: "heading", id: "ddl-concurrency", text: "Schema changes compete with live traffic", level: 2 },
+    { type: "paragraph", text: "DDL participates in PostgreSQL locking. The lock level, duration and rewrite cost depend on the operation, PostgreSQL version and table/data state. A migration that is fast on an empty development table can wait behind long transactions or block application reads/writes on a populated system." },
+    { type: "paragraph", text: "Before production execution, identify the operation's documented lock/rewrite behavior, test it on representative data, bound lock waiting where appropriate and observe blocked sessions plus application latency. Do not label a migration zero-downtime merely because the SQL statement is short." },
+    { type: "heading", id: "backfill-concurrency", text: "Backfills run beside normal writes", level: 2 },
+    { type: "paragraph", text: "A restartable backfill must define which rows are eligible, how progress is checkpointed and what happens when the application modifies the same row concurrently. Prefer bounded batches and idempotent updates; use predicates, version checks or another explicit conflict rule when overwriting newer application state would be unsafe." },
+    { type: "paragraph", text: "Throttle from evidence such as transaction duration, lock waits, replication lag where applicable and application latency rather than an arbitrary sleep alone. Completion means both coverage and consistency are proven." },
     { type: "resources", title: "Continue learning", resources: [postgresAlter, djangoMigrations] },
 ];
 
@@ -44,7 +50,7 @@ export const productionSchemaEvolutionDeepLessons: Lesson[] = [
                     "Seed a non-production PostgreSQL database with enough representative Steward rows to make partial backfill observable.",
                     "Run the expand migration while the old application version is still serving representative read/write traffic and prove it remains functional.",
                     "Deploy or run the compatibility-capable new application version while the old version remains available, and exercise both versions against the expanded schema.",
-                    "Execute the backfill in bounded batches or another restartable mechanism rather than one opaque application-startup mutation.",
+                    "Execute the backfill in bounded batches or another restartable mechanism rather than one opaque application-startup mutation; define how concurrent application writes are detected or safely reconciled.",
                     "Interrupt the backfill deliberately after partial progress, inspect state, restart it and prove already-migrated rows are not corrupted or duplicated.",
                     "Measure/observe database locks, query latency or resource pressure sufficiently to identify whether the migration threatens normal service.",
                     "Run deterministic verification that identifies missing, inconsistent or invalid migrated rows before cutover."
