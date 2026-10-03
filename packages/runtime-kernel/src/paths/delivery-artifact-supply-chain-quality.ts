@@ -37,7 +37,7 @@ const profiles: Record<string, PracticeProfile> = {
     },
     "Python and PyPI Package Distribution": {
         objective: "Package the steward-common library after its two-consumer extraction boundary has been proven.",
-        scenario: "A second real Steward-owned consumer now repeats a stable product-independent Python capability from the API codebase. The preceding extraction work must create steward-common before this distribution lesson; a clean CI worker must install it without editable installs, copied source or filesystem links.",
+        scenario: "steward-cli and steward-release-check now repeat a stable product-independent HTTP-client capability. The preceding extraction work must create steward-common before this distribution lesson; clean CI workers for both consumers must install it without editable installs, copied source or filesystem links.",
         deliverables: ["Wheel and source distribution", "Package metadata inspection", "Name/version-to-artifact evidence"],
         completionCriteria: ["The package builds from versioned source.", "The artifact exposes intentional name and version metadata.", "No consumer-local source path is required to understand the distribution contract."],
     },
@@ -72,8 +72,8 @@ const profiles: Record<string, PracticeProfile> = {
         completionCriteria: ["Verification precedes publication.", "Published bytes map to one source revision and version.", "A failed verification or disallowed overwrite fails closed."],
     },
     "Consuming Internal Packages with pip": {
-        objective: "Prove both steward-common consumers can install the package from the approved Nexus index with no producer-local state.",
-        scenario: "The consumers must behave as if the steward-common producer repository is unavailable and only Nexus remains.",
+        objective: "Prove steward-cli and steward-release-check can each install the same steward-common version from the approved Nexus index with no producer-local state.",
+        scenario: "Run both external consumers independently as if the steward-common producer repository is unavailable and only Nexus remains; then execute their real operator and release-verification workflows."
         deliverables: ["Consumer index configuration", "Clean-install evidence", "Version-resolution decision"],
         completionCriteria: ["No workspace link, copied wheel or editable install is required.", "The selected version policy is explicit.", "Failure of the approved repository path is visible rather than silently bypassed by a local artifact."],
     },
