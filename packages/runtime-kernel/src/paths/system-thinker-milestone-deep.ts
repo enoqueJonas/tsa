@@ -93,7 +93,7 @@ export const stewardApiSystemDesignPortfolioDeep: LearningPath = {
                         "Implement one RabbitMQ producer/consumer flow for the lifecycle side effect with a minimal stable event contract.",
                         "Demonstrate acknowledgement timing, consumer outage, bounded retry, duplicate delivery/idempotent effect and dead-letter handling.",
                         "For a local database-backed consumer effect, prove that stable processed-event identity and the effect commit atomically in one local transaction; if the chosen effect is external, document the remaining ambiguity and boundary-supported idempotency mechanism.",
-                        "Expose the database-commit/message-publication crash window and implement or design the recovery/outbox strategy appropriate to the exercise.",
+                        "Carry forward the implemented PostgreSQL transactional outbox, restartable publisher and RabbitMQ consumer; reproduce the database-commit/message-publication crash window and prove restart recovery from durable publication intent.",
                         "Record the operational evidence needed to distinguish API, PostgreSQL, Redis, broker and consumer failures."
                     ],
                     deliverables: ["Redis implementation/failure evidence", "RabbitMQ implementation/failure evidence", "Consistency/publication analysis", "Cross-referenced failure portfolio"],
@@ -134,10 +134,10 @@ export const stewardApiSystemDesignPortfolioDeep: LearningPath = {
                         "For every diagram/model state the question, audience, evidence, assumptions and omissions.",
                         "Show current-state versus future/migration possibilities explicitly.",
                         "Remove redundant artifacts that do not add a useful perspective.",
-                        "Finish with a Platform Builder handoff describing what operating PostgreSQL, Redis, RabbitMQ and Steward on real hosts now requires."
+                        "Finish with a Platform Builder handoff that identifies the exact Steward revision and every runtime process now required: API, PostgreSQL, Redis, RabbitMQ, outbox publisher and lifecycle-event consumer. Include start/stop commands, configuration-key names without secret values, listeners/ports, persistent or durable state, Redis key/TTL/invalidation contract, RabbitMQ exchange/queue/DLQ topology, PostgreSQL migration/outbox state, process dependencies, one known-good request/event flow and the failure/recovery evidence Platform must preserve."
                     ],
-                    deliverables: ["Portfolio index", "Curated evidence set", "Consistency checklist", "Platform Builder handoff"],
-                    completionCriteria: ["A reviewer can navigate without oral guidance.", "The original simple baseline remains visible.", "The reasons for Redis/RabbitMQ are traceable.", "Future alternatives are not confused with current deployed components."],
+                    deliverables: ["Portfolio index", "Curated evidence set", "Consistency checklist", "Executable Platform Builder runtime handoff"],
+                    completionCriteria: ["A reviewer can navigate without oral guidance.", "The original simple baseline remains visible.", "The reasons for Redis/RabbitMQ are traceable.", "Future alternatives are not confused with current deployed components.", "Another engineer can identify and start every current Steward runtime process from the handoff without reconstructing topology from lesson history."],
                 },
             },
             {
