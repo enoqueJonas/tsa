@@ -121,7 +121,7 @@ const practices: Record<string, PracticeSpec> = {
     },
     "relational-data-and-postgresql-constraints-keys-practice": {
         objective: "Move durable Steward invariants from comments and application checks into PostgreSQL where the database can enforce them for every writer.",
-        scenario: "A second import process will soon write to the same database as Django. Rules currently enforced only in serializer validation could be bypassed by the importer or race under concurrent requests.",
+        scenario: "The database is about to gain more than one writer when the following Django module maps the schema. Any invariant protected only by the current Python application boundary could then be bypassed by direct SQL, imports or concurrent writers.",
         instructions: [
             "List candidate invariants and classify which belong in PostgreSQL, application code, or both.",
             "Add UNIQUE protection for service slug and a CHECK for allowed criticality values.",
@@ -131,7 +131,7 @@ const practices: Record<string, PracticeSpec> = {
             "Identify one important Steward rule that cannot be represented safely as a simple row constraint and explain where it remains enforced."
         ],
         deliverables: ["Invariant classification", "Constraint DDL/migration", "Negative-case database errors", "Boundary note for application-only rule"],
-        completionCriteria: ["Durable row/relationship invariants are protected independently of Django validation.", "Invalid writes are demonstrated directly against PostgreSQL.", "The learner can explain both the power and limits of database constraints."],
+        completionCriteria: ["Durable row/relationship invariants are protected independently of any future framework or writer.", "Invalid writes are demonstrated directly against PostgreSQL.", "The learner can explain both the power and limits of database constraints."],
     },
     "relational-data-and-postgresql-schema-design-practice": {
         objective: "Design the complete Builder-level Steward schema from product questions and change scenarios, not from framework convenience.",
@@ -191,7 +191,7 @@ const practices: Record<string, PracticeSpec> = {
     },
     "relational-data-and-postgresql-query-performance-practice": {
         objective: "Run a controlled database-performance investigation with a measurable symptom, representative data and a defensible before/after comparison.",
-        scenario: "Steward's service-search endpoint has a p95 target of 300 ms but is exceeding it on a larger catalogue. You are asked to improve it without introducing cargo-cult indexes or rewriting everything in raw SQL.",
+        scenario: "A representative Steward catalogue SQL query is exceeding a provisional 300 ms database-query budget on the larger seeded dataset. Investigate the database access path before the later Django/API module turns it into an HTTP endpoint.",
         instructions: [
             "Define the exact query, representative parameters, data volume and measurable symptom before tuning.",
             "Capture baseline timing, row count and EXPLAIN ANALYZE evidence under repeatable conditions.",
@@ -205,7 +205,7 @@ const practices: Record<string, PracticeSpec> = {
     },
     "relational-data-and-postgresql-postgresql-practice-practice": {
         objective: "Operate Steward's PostgreSQL instance directly enough to distinguish application behavior from database facts and to collaborate intelligently with a DBA later.",
-        scenario: "The API is reporting database errors, but the Django logs are inconclusive. You have shell access to the learner-owned database host and must inspect PostgreSQL directly without using superuser privileges for the application.",
+        scenario: "A direct Steward database operation is failing and the Python-side error does not establish the database cause. You have shell access to the learner-owned database host and must inspect PostgreSQL directly without using superuser privileges for the application.",
         instructions: [
             "Connect with psql using an administrative learning account and separately identify the application's non-superuser role.",
             "Inspect databases/schemas, tables, columns, constraints and indexes using psql metadata commands or catalog queries.",
