@@ -337,7 +337,25 @@ Result: the product reaches its natural stewardship purpose using the system his
 
 ### 11. Professional Engineer — prove transfer
 
-Steward remains portfolio evidence. The learner builds a second substantial system from a blank repository so TSA can distinguish transferable engineering capability from familiarity with one codebase.
+Professional Engineer deliberately breaks Steward implementation continuity. Steward remains evidence, reference material and a source of lessons learned, but the learner must discover, propose and build a **second substantial system in a different problem domain from a blank repository**.
+
+The capstone must not be a renamed Steward, a tutorial clone or an exercise whose architecture is predetermined by TSA. Its technology choices, domain model, delivery model, quality strategy, security controls and reliability mechanisms must be earned again from its own stakeholders, constraints, risks and evidence.
+
+Transfer does not mean refusing all reuse. Generic libraries, templates, practices or internal products may be reused when their contracts genuinely fit, but the learner must explain the decision and preserve independent ownership of capstone-specific code and architecture. Copying Steward structure by default is evidence against transfer, not evidence for it.
+
+The Professional Engineer progression is:
+
+1. discover several credible problems and select one from evidence;
+2. produce a solution-neutral discovery baseline;
+3. propose architecture and engineering strategy from that baseline;
+4. make an explicit go, conditional-go or redesign decision;
+5. create the system from a blank repository and deliver vertical increments;
+6. revise decisions when implementation evidence contradicts the proposal;
+7. conduct a production-readiness review that may legitimately block release;
+8. defend the system and its limitations under cross-functional challenge;
+9. use Steward + capstone evidence to demonstrate what capability transferred and what still needs development.
+
+Result: TSA can distinguish familiarity with one accumulated system from transferable engineering judgment.
 
 ## Builder increment ledger
 
