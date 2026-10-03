@@ -225,13 +225,31 @@ Result: Steward is a managed service on learner-owned infrastructure with a trac
 
 The existing Steward application becomes containerized, versioned and delivered through GitLab CI/CD. Ansible and release/rollback work operate on the system already hosted by the learner.
 
-Result: a commit can produce a versioned artifact and a reproducible deployment.
+Delivery Engineer begins from the Platform Builder handoff: the exact Steward version, host/runtime topology, PostgreSQL state, configuration contract, exposure boundaries, recovery evidence and known-good verification. Containerization may change how Steward is packaged and started, but it must not silently change the application's domain contract or erase the platform assumptions being replaced.
+
+Delivery Engineer closes with a **release handoff** containing:
+
+- the exact source commit and human release version;
+- immutable container image identity, preferably including digest;
+- the GitLab CI/CD pipeline/run that produced and validated it;
+- Nexus coordinates or repository location for durable artifacts;
+- database migration state and compatibility/rollback constraints;
+- environment configuration contract with secret names only;
+- deployment procedure and target topology;
+- known-good runtime/client verification;
+- rollback procedure and the last verified recoverable release;
+- infrastructure/configuration version needed to host the release;
+- unresolved delivery risks and intentionally deferred mechanisms.
+
+Result: a commit can produce a versioned artifact and a reproducible deployment, and the next school can identify exactly which release it is moving.
 
 ### 5. Cloud Engineer — move the same release to a remote environment
 
-The learner provisions a budget-conscious remote environment and deploys the existing release with DNS, TLS, IaC, backup/recovery and cost evidence.
+Cloud Engineer begins from the Delivery release handoff. It moves the **same immutable Steward release** to a budget-conscious remote environment; it does not rebuild the application merely because the hosting model changes.
 
-Result: Steward has a controlled remote environment without becoming a new application.
+The learner provisions the remote environment and deploys the existing release with DNS, TLS, IaC, backup/recovery and cost evidence. Any unavoidable application or packaging change becomes a new traceable release through the Delivery path before cloud deployment.
+
+Result: Steward has a controlled remote environment without becoming a new application, and local/homelab versus remote differences are explicit rather than hidden in rebuilt artifacts.
 
 ### 6. Quality Steward — build confidence around real behavior
 
