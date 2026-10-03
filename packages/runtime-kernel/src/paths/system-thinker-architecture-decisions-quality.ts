@@ -23,7 +23,7 @@ const practices: Record<string, PracticalContent> = {
         objective: "Build a ranked decision-driver model for one real Steward architecture question before comparing implementation options.",
         scenario: "A proposed architecture discussion has already drifted toward product names and patterns. Before the team debates a queue, service split, cache or other solution, it needs to expose the forces that would make one option preferable to another.",
         instructions: [
-            "Choose one unresolved Steward architecture question from the failure, dependency or data-flow work.",
+            "Choose one unresolved Steward architecture question from an artifact you produced in the failure, dependency or data-flow work and link that evidence as its source.",
             "List the functional requirements, architecture characteristics, constraints, operational risks, cost factors and team capabilities that bear on the question.",
             "Separate hard constraints from preferences and remove any item that is merely a disguised solution choice.",
             "Rank the remaining drivers as high, medium or low and explain the top three in evidence-based terms.",
@@ -38,7 +38,7 @@ const practices: Record<string, PracticalContent> = {
         objective: "Create one concise Steward ADR that preserves why a decision is reasonable now, which alternatives were credible and what future evidence should trigger reconsideration.",
         scenario: "A future engineer can inspect Steward code and discover what was built, but cannot reconstruct why a significant boundary or integration choice was made. The missing information is decision history, not implementation documentation.",
         instructions: [
-            "Choose one Steward decision significant enough that a future engineer could reasonably question it.",
+            "Choose one Steward decision raised by an artifact you produced in this school and state whether it describes current architecture, an approved change or a proposed change.",
             "Write the context and ranked drivers before writing the chosen option.",
             "Describe at least two credible alternatives in terms their advocates would recognize as fair.",
             "State the selected decision in one unambiguous sentence.",
@@ -54,7 +54,7 @@ const practices: Record<string, PracticalContent> = {
         objective: "Compare credible Steward architecture options against ranked drivers, expose uncertainty and decide where measurement or reversibility should change the level of analysis.",
         scenario: "Two Steward design options both solve the immediate problem but shift complexity to different places. The team needs a decision that makes gains, losses and uncertainty visible instead of declaring one architecture universally better.",
         instructions: [
-            "Choose one decision question with at least two genuinely credible options.",
+            "Choose one decision question from the accumulated Steward evidence with at least two genuinely credible options.",
             "Evaluate each option against the previously ranked drivers and write both benefits and costs for every important driver.",
             "Mark claims as evidence, assumption or unknown so opinion is not presented as fact.",
             "Select one factual uncertainty that could be reduced by a small measurement, prototype or experiment and define the evidence the experiment should produce.",
