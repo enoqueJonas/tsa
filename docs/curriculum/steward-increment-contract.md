@@ -428,6 +428,41 @@ For each module:
 
 Builder is migrated first because it creates the substrate consumed by every later school. System Thinker migration resumes only after the Builder implementation chain is coherent.
 
+## Technology implementation classification
+
+TSA distinguishes learning a technology from pretending the accumulated system already needs it.
+
+- **Required implementation** — TSA intentionally creates a credible engineering requirement, the learner evaluates the fit, implements the technology, verifies behavior/failure/recovery, and later schools may rely on it while it remains active.
+- **Conditional implementation** — the learner must evaluate the technology, but implementation occurs only when evidence crosses the stated adoption threshold. Reject/defer is a successful outcome when justified.
+- **Comparison/context** — the learner must understand the capability and trade-offs but does not implement it unless their independent evidence creates a new requirement.
+
+A technology classified as required still needs an earned prerequisite. “Required” never means “install this because enterprises use it.” A later lesson may state that a technology exists only after the implementation checkpoint that created it, and must respect any later removal/migration decision.
+
+Current curriculum intent:
+
+| Capability / technology | Intent |
+| --- | --- |
+| PostgreSQL | Required implementation |
+| Linux/systemd | Required implementation |
+| Docker/OCI containerization | Required implementation |
+| GitLab CI/CD | Required implementation |
+| Ansible/configuration management | Required implementation |
+| Nexus/artifact repository | Required implementation, justified first by immutable container distribution; language-package flows are conditional on real packages |
+| OpenTofu/IaC | Required implementation |
+| Public DNS/TLS/API edge with Kong | Required implementation through an explicit edge-management scenario |
+| Prometheus/Grafana metrics | Required implementation after SLI/operational questions are defined |
+| Vault dynamic secrets | Required implementation after the static credential-lifecycle problem is demonstrated |
+| Keycloak/workforce federation | Required implementation when the Security identity progression reaches the existing homelab directory scenario |
+| Kubernetes/OpenShift-compatible orchestration | Required hands-on migration exercise after the containerized release exists; the learner may later simplify/remove it |
+| Argo CD/GitOps | Required within the retained orchestration learning scenario; it must have one deployment-authority boundary |
+| Redis | Conditional on demonstrated cache/read-path pressure |
+| RabbitMQ | Conditional on a demonstrated asynchronous-side-effect requirement |
+| Kafka | Comparison/context unless a Kafka-shaped requirement is independently demonstrated |
+| `steward-common` | Conditional on a real reusable application boundary |
+| `tsa-test-core` | Conditional on demonstrated cross-product test reuse |
+
+This table expresses curriculum intent, not permanent Steward architecture. Architect and Technical Steward may later retain, simplify, replace or remove technologies using evidence.
+
 ## Authoring regression questions
 
 Before merging a practical curriculum change, ask:
