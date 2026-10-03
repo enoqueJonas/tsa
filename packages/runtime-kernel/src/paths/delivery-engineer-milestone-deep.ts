@@ -38,7 +38,7 @@ export const deliveryEngineerMilestoneDeepLessons: Lesson[] = [
                     "Run the GitLab CI/CD pipeline for the chosen source revision from a clean GitLab Runner context and record the Runner identity/executor used.",
                     "Prove required checks and tests gate artifact production.",
                     "Publish steward-common through the approved internal package path when applicable.",
-                    "Publish the Steward OCI image to Nexus and record its immutable digest.",
+                    "Publish the single Steward application OCI image to Nexus, record its immutable digest, and prove that digest is the image used for API, outbox-publisher and lifecycle-consumer roles.",
                     "Record source commit, CI run, package version/hash and image digest in one release candidate record.",
                     "Demonstrate one intentional CI failure that correctly prevents publish or promotion.",
                     "If the legacy CI migration exercise has been completed, prove the retired legacy release path can no longer independently publish an accepted Steward release; GitLab CI/CD is authoritative after cutover.",
@@ -153,7 +153,7 @@ export const deliveryEngineerMilestoneDeepLessons: Lesson[] = [
                 instructions: [
                     "Record the exact source commit, human release version, immutable OCI image digest and GitLab CI/CD run that produced the candidate.", "Document the authoritative source-to-runtime path and major trust boundaries.",
                     "Record GitLab Runner placement/executor/trust assumptions, Nexus endpoints, repository roles, artifact naming/versioning and Ansible inventory boundaries.",
-                    "Record Nexus artifact coordinates, database migration state, compatibility/rollback constraints and the last verified recoverable release.", "Reference the release runbook and recovery procedure.",
+                    "Record Nexus artifact coordinates, database/outbox migration state, Redis/RabbitMQ runtime contract, API/publisher/consumer role commands, compatibility/rollback constraints and the last verified recoverable release.", "Reference the release runbook and recovery procedure.",
                     "Record the environment configuration contract using secret names only, the target topology, known-good runtime/client verification and the infrastructure/configuration version required to host this release.", "List current capacity/failure-domain constraints that matter when moving to cloud infrastructure.",
                     "List security, quality and reliability work intentionally deferred to later schools."],
                 deliverables: ["Versioned Steward release handoff", "Delivery platform architecture/handoff", "Runbook and recovery references", "Environment and capacity assumptions", "Deferred-work register"],
