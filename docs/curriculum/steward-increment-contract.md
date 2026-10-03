@@ -202,9 +202,24 @@ Feature changes are allowed only when a modeling exercise exposes a justified re
 
 The same application moves from the development workstation onto learner-managed Linux infrastructure.
 
+Platform Builder begins from a **System Thinker handoff**, not from an undefined phrase such as "the current Steward". Before host work begins, the learner records:
+
+- the exact Steward repository commit/tag being operated;
+- the application start command and supported runtime version;
+- the PostgreSQL version, schema/migration state and data that must survive redeployment;
+- required configuration keys and secrets by name only, never secret values;
+- application, database and management ports plus intended exposure;
+- filesystem paths or data classes that are persistent versus reproducible;
+- the current topology and authoritative-state model;
+- Redis/RabbitMQ only if the System Thinker milestone actually retained them as implemented dependencies;
+- one known-good health/request check;
+- architecture decisions or open risks that materially constrain hosting.
+
+This handoff is the canonical starting state for Platform Builder. If a later lab changes one of these facts, the learner updates the handoff or creates a versioned successor rather than allowing operational assumptions to drift.
+
 The learner creates the host, users, permissions, service process, PostgreSQL runtime, networking and operational access needed by Steward.
 
-Result: Steward is a managed service on learner-owned infrastructure.
+Result: Steward is a managed service on learner-owned infrastructure with a traceable application-to-platform contract.
 
 ### 4. Delivery Engineer — make changes reproducible
 
