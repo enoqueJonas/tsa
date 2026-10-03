@@ -82,7 +82,7 @@ const environment = lesson(
         { type: "callout", tone: "note", title: "Why this matters", body: "The same discipline will later matter in CI, Docker images and production. If the application API only works because your laptop happens to contain the right package versions, the environment is not an engineering artifact yet." },
         { type: "resources", title: "Required and supporting reading", resources: [venvDocs, packagingGuide] },
     ],
-    "Create a clean the application Python workspace and prove exactly which interpreter and package location it uses.",
+    "Create a clean Python workspace and prove exactly which interpreter and package location it uses.",
     ["Inspect your system Python executable and version.", "Create .venv and activate it.", "Prove that python now resolves inside .venv.", "Install one small dependency with python -m pip.", "Deactivate the environment and prove the dependency is isolated.", "Write a five-command setup note another engineer could follow."],
     "Explain why these are different: installing Python, choosing an interpreter, activating a virtual environment, installing a package, and declaring project dependencies.",
     [venvDocs, packagingGuide]
@@ -93,18 +93,18 @@ const valuesTypes = lesson(
     45,
     [
         { type: "heading", id: "introduction", text: "Introduction" },
-        { type: "paragraph", text: "the application will catalogue technical services, teams, environments and dependencies. Before those concepts reach Django or PostgreSQL, Python needs to represent their values correctly. Names refer to objects, objects have types, mutable state can be shared accidentally, and external representations must be parsed before they become trusted domain data." },
+        { type: "paragraph", text: "The service registry will catalogue technical services, teams, environments and dependencies. Before those concepts reach Django or PostgreSQL, Python needs to represent their values correctly. Names refer to objects, objects have types, mutable state can be shared accidentally, and external representations must be parsed before they become trusted domain data." },
         { type: "callout", tone: "note", title: "Why this matters", body: "A future service-registration request may contain a service slug, criticality, lifecycle and technical-owner identifier. JSON can carry those values, but JSON does not decide whether they are valid application domain values." },
         { type: "heading", id: "outcomes", text: "Learning outcomes" },
         { type: "list", items: ["Explain names, objects, values and types.", "Use core scalar types deliberately.", "Distinguish equality from identity.", "Explain mutability and aliasing.", "Parse external text deliberately.", "Recognize technically valid Python values that should still be constrained by the domain."] },
         { type: "heading", id: "names", text: "Names reference objects" },
-        { type: "code", language: "python", caption: "Representing a application service", code: "service_name = \"Payments API\"\nservice_slug = \"payments-api\"\ncriticality = \"high\"\nproduction = True\ntechnical_owner_id = None\n\nprint(type(service_name))\nprint(type(production))\nprint(type(technical_owner_id))" },
+        { type: "code", language: "python", caption: "Representing an application service", code: "service_name = \"Payments API\"\nservice_slug = \"payments-api\"\ncriticality = \"high\"\nproduction = True\ntechnical_owner_id = None\n\nprint(type(service_name))\nprint(type(production))\nprint(type(technical_owner_id))" },
         { type: "paragraph", text: "The type tells us what operations an object supports. It does not tell us whether a value is valid for the application domain. The string 'extremely-important' is a valid str even if the application permits only low, medium, high and critical." },
         { type: "heading", id: "mutability", text: "Mutability and aliasing" },
         { type: "code", language: "python", caption: "Two names, one list", code: "dependencies = [\"authentication-service\"]\nservice_dependencies = dependencies\nservice_dependencies.append(\"notification-service\")\nprint(dependencies)" },
         { type: "callout", tone: "warning", title: "Assignment is not copying", body: "If two names refer to one mutable object, a mutation through either name changes that object. Shared mutable state is a source of subtle defects when ownership is unclear." },
         { type: "heading", id: "types", text: "Strings, numbers, booleans and None" },
-        { type: "code", language: "python", caption: "Different kinds of the application state", code: "review_interval_days = 90\navailability_target = 99.9\nproduction = False\nopen_risk_count = 0\ntechnical_owner_id = None" },
+        { type: "code", language: "python", caption: "Different kinds of application state", code: "review_interval_days = 90\navailability_target = 99.9\nproduction = False\nopen_risk_count = 0\ntechnical_owner_id = None" },
         { type: "paragraph", text: "`False`, zero, an empty string and `None` are not interchangeable. A service can be non-production, have zero open risks and have no technical owner assigned; each communicates a different state." },
         { type: "heading", id: "equality", text: "Equality is not identity" },
         { type: "code", language: "python", caption: "Value equality and object identity", code: "first = [\"auth-service\"]\nsecond = [\"auth-service\"]\nalias = first\n\nprint(first == second)\nprint(first is second)\nprint(first is alias)\n\nif technical_owner_id is None:\n    print(\"Owner still needs to be assigned\")" },
@@ -112,9 +112,9 @@ const valuesTypes = lesson(
         { type: "code", language: "python", caption: "Parsing external text", code: "raw_review_interval = \"90\"\nreview_interval_days = int(raw_review_interval)\n\ntry:\n    technical_owner_id = int(\"not-a-number\")\nexcept ValueError as error:\n    print(f\"Invalid owner id: {error}\")" },
         { type: "resources", title: "Required and supporting reading", resources: [pythonTutorial, pythonReference] },
     ],
-    "Model representative application service-registry values and prove how type, equality, identity, conversion and mutability affect them.",
+    "Model representative service-registry values and prove how type, equality, identity, conversion and mutability affect them.",
     ["Create representative service, team, environment and dependency values.", "Inspect them with type() and repr().", "Demonstrate aliasing with a dependency list.", "Compare == and is.", "Convert two external strings and preserve one conversion failure.", "Define a constrained lifecycle or criticality set and reject an invalid option."],
-    "Explain names vs objects, dynamic typing, equality vs identity, aliasing and boundary conversion using the application examples.",
+    "Explain names vs objects, dynamic typing, equality vs identity, aliasing and boundary conversion using the service-registry examples.",
     [pythonTutorial, pythonReference]
 );
 
@@ -145,7 +145,7 @@ const controlFlow = lesson(
         { type: "paragraph", text: "Python treats empty collections, zero, `None` and `False` as falsey. That is useful, but use explicit comparisons when the domain distinguishes those states. 'No owner assigned' is clearer as `owner_id is None` than as `not owner_id` if zero could ever be a valid identifier." },
         { type: "resources", title: "Required reading", resources: [pythonTutorial] },
     ],
-    "Implement a the application lifecycle or eligibility rule with explicit happy, rejected and boundary paths.",
+    "Implement a service lifecycle or eligibility rule with explicit happy, rejected and boundary paths.",
     ["Write the rule first in plain language.", "Implement it with if/elif/else or early returns.", "Exercise each meaningful path.", "Create a deliberately over-nested version and refactor it.", "List the test cases the branching structure implies."],
     "How do branch order, early return and truthiness affect readability and correctness? Describe the behavioral paths in your implementation."
 );
@@ -176,7 +176,7 @@ const functions = lesson(
         { type: "code", language: "python", caption: "Explicit ownership", code: "def register_dependency(service, dependencies=None):\n    if dependencies is None:\n        dependencies = []\n    dependencies.append(service)\n    return dependencies" },
         { type: "resources", title: "Required reading", resources: [pythonTutorial, pythonReference] },
     ],
-    "Refactor mixed the application script logic into functions with explicit contracts and controlled state.",
+    "Refactor mixed service-registry script logic into functions with explicit contracts and controlled state.",
     ["Start with a script performing at least three responsibilities.", "Extract coherent functions.", "Remove unnecessary mutable global state.", "Reproduce a scope or mutable-default bug.", "Fix it and explain the ownership model.", "Document one function in terms of inputs, output, side effects and failures."],
     "Explain LEGB, function contracts, side effects and the mutable-default-argument problem. Which hidden dependency in your original script was most dangerous?",
     [pythonTutorial, pythonReference]
@@ -262,11 +262,11 @@ const modules = lesson(
         { type: "heading", id: "introduction", text: "Files become dependency boundaries" },
         { type: "paragraph", text: "Splitting code into modules can improve clarity, but more files do not automatically mean better architecture. A useful module groups concepts that change for related reasons and exposes a small, deliberate surface to the rest of the system." },
         { type: "heading", id: "imports", text: "Imports create dependencies" },
-        { type: "code", language: "text", caption: "A small the application core", code: "the application_core/\n├── __init__.py\n├── services.py\n├── teams.py\n├── lifecycle.py\n└── errors.py" },
-        { type: "code", language: "python", caption: "Import a public operation", code: "from the application_core.lifecycle import normalize_lifecycle\n\nlifecycle = normalize_lifecycle(\" Production \")" },
+        { type: "code", language: "text", caption: "A small application core", code: "application_core/\n├── __init__.py\n├── services.py\n├── teams.py\n├── lifecycle.py\n└── errors.py" },
+        { type: "code", language: "python", caption: "Import a public operation", code: "from application_core.lifecycle import normalize_lifecycle\n\nlifecycle = normalize_lifecycle(\" Production \")" },
         { type: "paragraph", text: "Every import points from one module toward another. When imports become circular, the code is often revealing a confused responsibility or a dependency direction that needs redesign rather than another import trick." },
         { type: "heading", id: "entrypoints", text: "Importable modules vs executable modules" },
-        { type: "code", language: "python", caption: "Keep demo execution explicit", code: "def main():\n    print(\"the application core experiment\")\n\nif __name__ == \"__main__\":\n    main()" },
+        { type: "code", language: "python", caption: "Keep demo execution explicit", code: "def main():\n    print(\"application core experiment\")\n\nif __name__ == \"__main__\":\n    main()" },
         { type: "callout", tone: "warning", title: "Avoid import side effects", body: "Importing a module should not unexpectedly start services, mutate global state or execute expensive work. Hidden import-time behavior makes tests and later framework integration harder to reason about." },
         { type: "heading", id: "packages", text: "Packages are not automatically reusable libraries" },
         { type: "paragraph", text: "A Python package organizes importable code. Publishing a reusable internal distribution is a separate decision with versioning, ownership and compatibility consequences. We will not extract application-common until a real reuse boundary exists." },
@@ -317,7 +317,7 @@ const oop = lesson(
         { type: "callout", tone: "note", title: "Classes are not a maturity badge", body: "A clear function and dictionary can be better than a class when there is little behavior or lifecycle to protect. Use objects where they clarify ownership and invariants." },
         { type: "resources", title: "Required reading", resources: [pythonTutorial, stdlib] },
     ],
-    "Model one the application concept as an object, protect at least one invariant, and compare it with a simpler representation.",
+    "Model one service-registry concept as an object, protect at least one invariant, and compare it with a simpler representation.",
     ["Choose Service, Team or Environment.", "Implement state plus meaningful behavior.", "Protect one invariant in the object API.", "Use composition for one relationship.", "Build a functional/dictionary alternative.", "Write a comparison explaining which version you would keep today."],
     "When does a class improve the design? When is it unnecessary? Why can inheritance increase coupling?"
 );
@@ -339,7 +339,7 @@ const comprehensions = lesson(
         { type: "callout", tone: "warning", title: "Do not golf production code", body: "A one-line expression that requires rereading is not more Pythonic than a clear five-line loop. Optimize for the next engineer's understanding." },
         { type: "resources", title: "Required reading", resources: [pythonTutorial, stdlib] },
     ],
-    "Transform and inspect application data using comprehensions, generators and built-ins without sacrificing clarity.",
+    "Transform and inspect service-registry data using comprehensions, generators and built-ins without sacrificing clarity.",
     ["Write an explicit loop that filters services.", "Rewrite it as a comprehension and compare readability.", "Create a generator expression and demonstrate that it is consumed.", "Use any() or all() for a meaningful rule.", "Use sorted() with a key to order services.", "Identify one expression you deliberately leave as a loop."],
     "When is a comprehension clearer than a loop? What changes when you use a generator expression instead of a list comprehension?"
 );
@@ -360,9 +360,9 @@ const typeHints = lesson(
         { type: "callout", tone: "note", title: "Types are evidence, not proof", body: "A type checker can tell you that a value is a str, but it cannot prove that 'productionnn' is a valid lifecycle unless the type model encodes that constraint. Business rules still need domain validation and tests." },
         { type: "resources", title: "Required and supporting reading", resources: [typingDocs, mypyDocs] },
     ],
-    "Add useful type annotations to the application core and use a static checker to expose a real mismatch.",
+    "Add useful type annotations to the service-registry core and use a static checker to expose a real mismatch.",
     ["Annotate public functions and return values.", "Represent at least one optional value explicitly.", "Run mypy or another checker.", "Introduce a mismatch deliberately and capture the diagnostic.", "Fix it.", "Document one important domain rule that the type checker still cannot prove."],
-    "What does static typing add to a dynamically typed language? What can a checker prove, and what important the application constraints remain outside its reach?",
+    "What does static typing add to a dynamically typed language? What can a checker prove, and what important domain constraints remain outside its reach?",
     [typingDocs, mypyDocs]
 );
 
@@ -378,11 +378,11 @@ const dependencies = lesson(
         { type: "code", language: "toml", caption: "Illustrative project metadata", code: "[project]\nname = \"application-core\"\nversion = \"0.1.0\"\nrequires-python = \">=3.12\"\ndependencies = [\n  \"rich>=13,<15\",\n]" },
         { type: "paragraph", text: "An unbounded dependency maximizes update freedom but also allows unexpected change. An exact pin maximizes repeatability for one environment but increases update maintenance. Later Delivery Engineer work will deepen lockfiles, internal repositories, SBOMs and provenance." },
         { type: "heading", id: "clean-room", text: "The clean-environment test" },
-        { type: "code", language: "bash", caption: "Recreate instead of trusting your machine", code: "deactivate 2>/dev/null || true\nrm -rf .venv\npython3 -m venv .venv\nsource .venv/bin/activate\npython -m pip install -e .\npython -m the application_core.demo" },
+        { type: "code", language: "bash", caption: "Recreate instead of trusting your machine", code: "deactivate 2>/dev/null || true\nrm -rf .venv\npython3 -m venv .venv\nsource .venv/bin/activate\npython -m pip install -e .\npython -m application_core.demo" },
         { type: "callout", tone: "note", title: "Future internal distribution", body: "Later, genuinely reusable packages such as application-common will be versioned and published through the internal Nexus/PyPI path. Do not manufacture that package now; first build enough real code to discover a reuse boundary." },
         { type: "resources", title: "Required reading", resources: [packagingGuide, venvDocs] },
     ],
-    "Make the application Python core reproducible from a clean environment and explain its dependency constraints.",
+    "Make the service-registry Python core reproducible from a clean environment and explain its dependency constraints.",
     ["Declare direct dependencies in project metadata.", "Identify at least one transitive dependency.", "Delete and recreate .venv.", "Install the project from its declaration.", "Experiment with one version constraint.", "Record why you chose the constraint and what still prevents perfect reproducibility."],
     "Why is a virtual environment not a dependency specification? Compare a broad version range, a narrow range and an exact pin as engineering trade-offs.",
     [packagingGuide, venvDocs]
@@ -406,7 +406,7 @@ const debugging = lesson(
         { type: "paragraph", text: "Record symptom, timestamp/order, hypothesis, experiment, observation and conclusion. This prevents circular investigation and creates evidence you can later use in incident work." },
         { type: "resources", title: "Required and supporting reading", resources: [pdbDocs, pythonTutorial] },
     ],
-    "Diagnose a non-trivial the application Python defect using a traceback, competing hypotheses and debugger/inspection evidence.",
+    "Diagnose a non-trivial service-registry Python defect using a traceback, competing hypotheses and debugger/inspection evidence.",
     ["Introduce or select a defect crossing at least two function calls.", "Capture the traceback before editing.", "Write at least two hypotheses.", "Use breakpoint(), pdb, logging or targeted prints to falsify one.", "Fix the root cause rather than suppressing the symptom.", "Rerun the original reproduction and record the evidence chain."],
     "Why can the final traceback frame differ from the true origin of invalid state? Describe how one experiment falsified a hypothesis in your investigation.",
     [pdbDocs, pythonTutorial]
