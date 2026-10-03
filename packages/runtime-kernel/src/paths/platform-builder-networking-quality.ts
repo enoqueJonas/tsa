@@ -47,7 +47,7 @@ const practices: Record<string, PracticalContent> = {
         type: "practical",
         objective: "Connect transport semantics to real Steward and DNS sockets instead of reducing TCP/UDP to memorized definitions.",
         scenario: "Ping works, but Steward does not. Determine what transport evidence is actually required to prove the application port is reachable.",
-        instructions: ["Inventory relevant listening TCP and UDP sockets.", "Identify Steward's transport endpoint and the resolver's likely transport use.", "Demonstrate a successful TCP connection to Steward.", "Compare connection-refused and timeout behavior using safe tests.", "Explain why ICMP reachability does not prove TCP service reachability."],
+        instructions: ["Inventory relevant listening TCP and UDP sockets.", "Identify Steward's transport endpoint and the resolver's likely transport use.", "Demonstrate a successful TCP connection to Steward.", "Compare connection-refused and timeout behavior using safe tests.", "Observe TCP connection lifecycle/socket states for one connection and map establishment to SYN, SYN-ACK and ACK conceptually.", "Explain separately what receiver flow control and network congestion control protect and why either can constrain throughput.", "Explain why ICMP reachability does not prove TCP service reachability."],
         deliverables: ["Socket inventory", "Transport failure comparison", "Steward transport explanation"],
         completionCriteria: ["TCP/UDP are explained from semantics and evidence.", "Refusal and timeout are distinguished.", "Ping is not treated as an application-health test."],
     },
