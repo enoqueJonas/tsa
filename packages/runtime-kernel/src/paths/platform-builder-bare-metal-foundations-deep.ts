@@ -50,6 +50,9 @@ export const bareMetalFoundationsDeepLessons: Lesson[] = [
                     body: "A production-like homelab needs a small hardware-health baseline. SMART is evidence about supported storage devices, not a guarantee against failure. Temperatures, memory symptoms, firmware inventory and kernel hardware messages help separate degrading hardware from application defects. RAID, snapshots and backups solve different problems and will be treated separately in the storage path.",
                     blocks: [
                         { type: "heading", id: "health-boundaries", text: "Observe before replacing", level: 2 },
+                        { type: "heading", id: "memory-power-durability", text: "Memory and power faults can violate storage assumptions", level: 2 },
+                        { type: "paragraph", text: "ECC memory can detect and correct some memory errors and surface others; non-ECC memory provides less protection against silent corruption. Do not turn ECC into a universal homelab purchasing requirement, but understand why memory integrity matters more as one host concentrates VMs and storage." },
+                        { type: "paragraph", text: "Drive/controller write caches and filesystems may acknowledge work before every bit reaches non-volatile media. Power-loss protection, barriers/flush semantics and a UPS participate in durability. A clean application response therefore does not make sudden power loss harmless." },
                         { type: "paragraph", text: "Record device identity, SMART overall status and relevant error/health counters where the device exposes them. Do not interpret one vendor-specific attribute mechanically. Combine device evidence with OS/kernel logs and the observed symptom." },
                         { type: "resources", title: "Supporting reference", resources: [{ title: "smartmontools", url: "https://www.smartmontools.org/" }] },
                     ],
