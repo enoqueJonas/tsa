@@ -59,10 +59,12 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
           scenario: "Treat previous modules as one system. Find gaps, duplication, hidden assumptions and evidence that cannot yet support a release decision.",
           instructions: [
             "Map the highest-priority Steward risks to current unit/component, API/integration, asynchronous lifecycle, browser/environment and non-functional evidence.",
+            "For critical automated claims, record the oracle source and challenge whether assertions could pass while the protected invariant or side effect is wrong.",
             "Identify duplicate tests that add cost without a distinct claim.",
             "Identify critical risks with no credible evidence or with evidence at the wrong test level.",
             "Verify the test target is an exact Steward release/environment from the Delivery or Cloud handoff and that reports preserve test, environment and immutable release identity.",
-            "Review skipped, quarantined and flaky tests and ensure their risk remains visible."
+            "Review skipped, quarantined and flaky tests and ensure their risk remains visible.",
+            "Review shared mutable test data and prove which suites are safe for parallel execution, which resources are partitioned per worker and which tests intentionally remain serialized."
           ],
           deliverables: ["Quality evidence map", "Gap and duplication list", "Milestone remediation plan"],
           completionCriteria: ["Every high-priority risk has an explicit evidence status.", "Missing evidence is visible rather than implied green.", "The remediation plan prioritizes risk rather than test count."]
@@ -85,7 +87,8 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
           instructions: [
             "Document product risks, test levels, environment strategy and execution cadence.",
             "Define which checks are blocking, advisory or manually reviewed.",
-            "Document test-data, isolation, retry, quarantine and diagnostic policies.",
+            "Document test-data, parallel-isolation, oracle/assertion, retry, quarantine and diagnostic policies.",
+            "For independently delivered consumers/providers, document where compatibility contracts are verified before promotion and how obsolete contracts are retired safely."
             "Record the boundary between Steward domain test code and reusable-infrastructure candidates, and attach the Professional Engineer transfer criteria. tsa-test-core must not exist yet.",
             "List residual quality risks deliberately handed to later Security and Reliability work."
           ],
@@ -103,6 +106,8 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
           scenario: "Use the real Steward codebase and the environment-aware framework developed throughout Quality Steward. Every result must identify the exact release/environment under test.",
           instructions: [
             "Execute representative unit/component and API/integration suites, including the lifecycle test that separates synchronous API success from eventual outbox → RabbitMQ → consumer completion.",
+            "For one high-risk test, defend the expected-result oracle independently from the implementation and prove the assertions would detect an intentionally wrong side effect or invariant.",
+            "Run a parallel-safe slice concurrently and prove test-data ownership/cleanup prevents worker interference; keep one explicitly unsafe scenario serialized with rationale."
             "Prove the Maven execution boundary: Surefire owns the intended fast unit/component selection in `test`, while Failsafe owns the intended integration selection through `integration-test`/`verify`, and a failing integration test makes `mvn verify` fail.",
             "Execute the selected browser/environment matrix rather than every test on every browser.",
             "Run the selected stable non-functional baselines that are appropriate for this environment.",
@@ -129,6 +134,7 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
             "Verify cache is used only for acceleration while JUnit/Allure/browser diagnostics are retained as pipeline evidence/artifacts.",
             "Confirm reports and artifacts are retained for failed and successful stages where appropriate.",
             "Demonstrate one meaningful quality gate blocking a deliberately invalid candidate.",
+            "Where contract testing is justified by independent delivery, demonstrate provider compatibility verification against the currently supported consumer contract set before promotion."
             "Demonstrate that skipped/quarantined evidence remains visible rather than becoming a silent pass.",
             "Publish the tsa-test-core candidate/handoff evidence as a pipeline artifact or repository document so Professional Engineer can compare it with the future capstone test suite; do not publish a library yet."
           ],
