@@ -47,7 +47,7 @@ const practices: Record<string, PracticeSpec> = {
   },
   "django-and-api-engineering-models-and-domain-data": {
     objective: "Complete Steward's Django persistence model by mapping the relational design already built in PostgreSQL rather than inventing a new framework-shaped domain.",
-    scenario: "The Django foundation checkpoint mapped enough Service data to prove the stack. PostgreSQL work already established Team, Service, Environment and ServiceDependency relationships. Now bring those established facts into Django while deciding which invariants belong in database constraints and which remain operation-level behavior.",
+    scenario: "The Django foundation checkpoint mapped enough Service data to prove the stack. PostgreSQL work already established Team, Service, Environment, ServiceDependency and ServiceReview relationships. Now bring those established facts into Django while deciding which invariants belong in database constraints and which remain operation-level behavior.",
     instructions: [
       "Place the PostgreSQL schema from the previous school beside the current Django models and create a field/relationship mapping.",
       "Implement or refine Team, Service, Environment and ServiceDependency using domain-language names.",
