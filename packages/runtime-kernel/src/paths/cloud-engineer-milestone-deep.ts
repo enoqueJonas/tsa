@@ -102,12 +102,12 @@ const gate4 = practicalLesson(
         "Choose one existing release candidate and record its source revision, application version and immutable image digest in Nexus.",
         "Keep GitLab CI/CD responsible for build/test/package/publish; update or approve environment Git so Argo CD reconciles that exact artifact into Kubernetes/OpenShift.",
         "Verify that direct GitLab CI/CD push deployment is not simultaneously authoritative for the same GitOps-managed environment.",
-        "Record configuration and migration assumptions separately from artifact identity.",
+        "Record API, outbox-publisher and lifecycle-consumer role commands, PostgreSQL/Redis/RabbitMQ placement, configuration and migration assumptions separately from artifact identity.",
         "Verify DNS resolution, certificate validity, Kong routing, HTTPS response and a representative authenticated Steward API request from an external client.",
-        "Capture the running pod image identity and prove it matches environment Git and the selected Nexus artifact.",
+        "Capture the running image identity for API, outbox-publisher and lifecycle-consumer pods and prove all three match the same environment-Git-selected Nexus digest.", "Execute a lifecycle mutation through the public API and prove its committed outbox intent is published through RabbitMQ and completed by the consumer in the reconciled environment.",
     ],
-    ["Release identity record", "Environment Git change", "Argo CD reconciliation evidence", "External client verification", "Running image-digest proof"],
-    ["The deployed bytes are traceable source → GitLab CI/CD → Nexus → environment Git → Argo CD → running pod.", "Success is demonstrated from a real external client rather than inferred from pipeline or sync success.", "There is one authoritative deployment model for the environment."],
+    ["Release identity record", "Environment Git change", "Argo CD reconciliation evidence", "External API and asynchronous-flow verification", "Three-role running image-digest proof"],
+    ["The deployed bytes are traceable source → GitLab CI/CD → Nexus → environment Git → Argo CD → all three Steward application roles.", "Success is demonstrated from a real external client rather than inferred from pipeline or sync success.", "There is one authoritative deployment model for the environment."],
 );
 
 const gate5 = practicalLesson(
@@ -149,7 +149,7 @@ const gate7 = practicalLesson(
     [
         "Document the authoritative architecture and the public request path through Kong.",
         "Reference the OpenTofu root, state backend assumptions, provider identity boundaries and destructive-change rules.",
-        "Reference the Kubernetes/OpenShift manifests, environment Git repository, Argo CD Application and deployment-authority rules.",
+        "Reference the Kubernetes/OpenShift manifests for API, outbox publisher and lifecycle consumer, the PostgreSQL/Redis/RabbitMQ placement contract, environment Git repository, Argo CD Application and deployment-authority rules.",
         "Reference the GitLab CI/CD/Nexus release path and immutable artifact source.",
         "Document DNS/TLS ownership, backup/recovery method, cost baseline and current failure domains.",
         "Separate completed Cloud Engineer concerns from work intentionally deferred to Quality Steward, Security Steward and Reliability Engineer.",
