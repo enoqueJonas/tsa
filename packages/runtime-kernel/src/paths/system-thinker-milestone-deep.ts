@@ -87,13 +87,13 @@ export const stewardApiSystemDesignPortfolioDeep: LearningPath = {
                     objective: "Gain hands-on experience with Redis and RabbitMQ while proving their correctness and failure boundaries.",
                     scenario: "The organization approved bounded implementations for the two supplied pressures. You must now prove what happens in normal operation and when the new dependencies fail.",
                     instructions: [
-                        "Implement a cache-aside Redis slice for the selected catalogue read and capture uncached, miss, hit, expiry and eviction evidence; prove the key includes every input dimension that changes the representation."
+                        "Implement a cache-aside Redis slice for the selected catalogue read and capture uncached, miss, hit, expiry and eviction evidence; prove the key includes every input dimension that changes the representation.",
                         "Define freshness tolerance and demonstrate a stale-read case after an authoritative change.",
                         "Implement post-commit invalidation or another justified strategy and prove Redis-unavailable fallback behavior.",
-                        "Implement one RabbitMQ producer/consumer flow for the lifecycle side effect with a minimal stable event contract; configure and prove the intended durability/publisher-confirm semantics, bounded consumer prefetch and one backward-compatible contract evolution."
+                        "Implement one RabbitMQ producer/consumer flow for the lifecycle side effect with a minimal stable event contract; configure and prove the intended durability/publisher-confirm semantics, bounded consumer prefetch and one backward-compatible contract evolution.",
                         "Demonstrate acknowledgement timing, consumer outage, bounded retry, duplicate delivery/idempotent effect and dead-letter handling.",
                         "For a local database-backed consumer effect, prove that stable processed-event identity and the effect commit atomically in one local transaction; if the chosen effect is external, document the remaining ambiguity and boundary-supported idempotency mechanism.",
-                        "Carry forward the implemented PostgreSQL transactional outbox, restartable publisher and RabbitMQ consumer; reproduce the database-commit/message-publication crash window, prove restart recovery from durable publication intent, demonstrate concurrent publisher claiming/coordination and define dispatched-row retention plus oldest-pending observability."
+                        "Carry forward the implemented PostgreSQL transactional outbox, restartable publisher and RabbitMQ consumer; reproduce the database-commit/message-publication crash window, prove restart recovery from durable publication intent, demonstrate concurrent publisher claiming/coordination and define dispatched-row retention plus oldest-pending observability.",
                         "Record the operational evidence needed to distinguish API, PostgreSQL, Redis, broker and consumer failures."
                     ],
                     deliverables: ["Redis implementation/failure evidence", "RabbitMQ implementation/failure evidence", "Consistency/publication analysis", "Cross-referenced failure portfolio"],
