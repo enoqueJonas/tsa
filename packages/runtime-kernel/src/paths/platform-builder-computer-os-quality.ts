@@ -9,7 +9,7 @@ const practices: Record<string, PracticalContent> = {
         scenario: "Steward feels responsive on the current machine, but the team has no baseline for CPU, memory or storage behavior. Before buying hardware or tuning software, establish what the host actually has and how Steward uses it.",
         instructions: [
             "Record CPU architecture, logical CPU count and current load, then explain what those numbers do and do not tell you about application capacity.",
-            "Record total, available and swap memory; explain why low free memory alone is not evidence of memory pressure.",
+            "Record total, available and swap memory; explain why low free memory alone is not evidence of memory pressure.", "Inspect one process virtual/resident memory view and explain why virtual address space is not equivalent to physical RAM consumed.", "Observe page-fault or reclaim/swap evidence and distinguish normal cache/fault activity from sustained pressure.",
             "Map storage devices, mounted filesystems, capacity and filesystem type for the paths Steward and PostgreSQL use.",
             "Exercise one representative Steward workflow while observing process CPU and memory consumption plus host-level activity.",
             "Choose the resource you currently expect to constrain Steward first and write the evidence for that hypothesis.",
@@ -53,7 +53,7 @@ const practices: Record<string, PracticalContent> = {
         scenario: "The source repository looks like one application, but production behavior depends on the runtime process tree. The team needs to know which process owns work, which process supervises others and what a partial process failure looks like.",
         instructions: [
             "Start Steward in the environment used for Platform Builder and capture its process tree with PIDs and parent-child relationships.",
-            "Inspect one representative process for state, credentials and open file descriptors.",
+            "Inspect one representative process for state, credentials and open file descriptors.", "Record the process open-file limit and explain one failure mode caused by exhausting descriptors.",
             "If workers or threads exist, identify them from OS evidence rather than framework assumptions.",
             "Choose one non-destructive process to stop deliberately and record the immediate service behavior.",
             "Observe whether the process stays down, is restarted by a supervisor or causes sibling processes to fail.",
