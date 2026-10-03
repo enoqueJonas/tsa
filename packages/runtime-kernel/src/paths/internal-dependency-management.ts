@@ -29,7 +29,7 @@ export const extractStewardCommonLesson: Lesson = {
             content: {
                 type: "practical",
                 objective: "Evaluate whether Steward has genuinely earned a reusable Python package; extract it only when independently useful consumers already demonstrate stable shared behavior.",
-                scenario: "Expected future reuse is not enough evidence for extraction. Inspect real consumers and duplication first; private repository distribution is a separate Delivery concern that Nexus can satisfy when a package actually exists."
+                scenario: "Expected future reuse is not enough evidence for extraction. Inspect real consumers and duplication first; private repository distribution is a separate Delivery concern that Nexus can satisfy when a package actually exists.",
                 instructions: [
                     "Inventory independently useful external Steward consumers and the capabilities each currently implements.",
                     "Identify concrete duplicated behavior, if any, and explain why it is stable and product-independent enough to share.",
