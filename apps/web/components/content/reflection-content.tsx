@@ -1,3 +1,5 @@
+import { InlineTechnicalText } from "./inline-technical-text";
+
 interface ReflectionContentProps {
     prompt: string;
     value: string;
@@ -12,7 +14,7 @@ export function ReflectionContent({
     return (
         <div className="mt-8">
             <p className="text-3xl leading-relaxed italic">
-                {prompt}
+                <InlineTechnicalText text={prompt} />
             </p>
 
             <label className="mt-8 block text-sm font-medium text-zinc-700">
