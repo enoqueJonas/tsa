@@ -41,7 +41,7 @@ function richLesson(spec: LessonSpec): Lesson {
                 content: {
                     type: "practical",
                     objective: spec.practiceTitle,
-                    scenario: "Steward already runs as an immutable containerized release. Preserve its actual public-edge and dependency model. Move only runtime responsibility that orchestration can justify; do not add Kong, Redis, RabbitMQ or other components merely to make the diagram look cloud-native."
+                    scenario: "Steward already runs as an immutable containerized release. Preserve its actual public-edge and dependency model. Move only runtime responsibility that orchestration can justify; do not add Kong, Redis, RabbitMQ or other components merely to make the diagram look cloud-native.",
                     instructions: spec.practice,
                     deliverables: spec.deliverables,
                     completionCriteria: spec.criteria,
