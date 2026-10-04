@@ -1,6 +1,6 @@
 # Curriculum Dependency and Milestone Progression Audit — Closure
 
-Status: **remediation complete; final build verification pending**
+Status: **remediation complete; build verification passed**
 
 This document closes the curriculum-wide audit stamped in `curriculum-dependency-and-milestone-progression-audit.md`. The audit was triggered by two concrete defects: Proxmox appearing before the homelab it was supposed to inhabit, and infrastructure paths ending psychologically on reassessment/ADR work instead of making the implemented capability the achievement.
 
@@ -70,7 +70,7 @@ The audit also did not add more products merely to make milestones look larger. 
 
 ## Final gate
 
-Curriculum progression remediation is considered complete when current `master` passes:
+Curriculum progression remediation passed its structural build gate with:
 
 ```bash
 pnpm build
