@@ -629,7 +629,8 @@ Move from trustworthy quality evidence to adversarial security engineering: mode
 - Package provenance/integrity
 - SBOMs
 - Security gates/exceptions
-- Protecting internal publishing credentials and `tsa-test-core` consumption
+- Protect internal publishing credentials and consumption of internal artifacts that actually exist at this stage (for example `steward-common`)
+- Do not invent `tsa-test-core` in supply-chain models or controls before Professional Engineer satisfies its genuine two-consumer extraction gate
 
 ## Module 8 — Artifact Signing and Verification
 - Artifact identity, digests and signatures
