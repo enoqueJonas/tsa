@@ -304,7 +304,9 @@ The learner must defend why each browser test belongs in a browser rather than a
 
 Audit the now-real framework for infrastructure that is genuinely reusable across more than Steward.
 
-## Candidate extraction
+## Candidate future extraction shape
+
+The following tree is a design sketch only. It must not exist as a separate project during Quality Steward.
 
 ```text
 tsa-test-core/
@@ -343,10 +345,10 @@ Only proven generic infrastructure such as:
 ## Required evidence
 
 - Written reuse-boundary decision for every extraction candidate.
-- `tsa-test-core` has no dependency on Steward packages.
-- Steward remains readable after extraction.
-- Public API is intentionally small.
-- Semantic versioning/compatibility policy is documented.
+- Candidate capabilities are demonstrably independent of Steward packages/domain behavior.
+- Steward would remain readable if a later extraction is earned.
+- The proposed public API is intentionally small.
+- A future semantic-versioning/compatibility policy is documented.
 
 ## Review gate
 
@@ -360,29 +362,35 @@ A helper being used twice inside Steward is not, by itself, proof that it belong
 
 Do not create `tsa-test-core` yet. Record the candidate product-independent boundary and the evidence required from a genuine second consumer. Professional Engineer owns the later extraction gate; copied shared source remains prohibited.
 
-## Required build
+## Future distribution contract
+
+Quality Steward designs, but does not execute, the later extraction/publication flow:
 
 ```text
-tsa-test-core
-   │
-   ├── mvn test
-   ├── mvn package
-   └── mvn deploy
+second genuine compatible consumer
+          +
+proven candidate inside steward-tests
+          │
+          ▼
+   earn extraction gate
+          │
+          ▼
+     tsa-test-core
+      mvn test/package/deploy
           │
           ▼
         Nexus
-          │
-          ▼
-steward-tests pom.xml
-   └── com.tsa:tsa-test-core:<version>
+       /     \\
+      ▼       ▼
+steward-tests  second consumer
 ```
 
 ## Required evidence
 
 - Proposed Maven coordinates, semantic-versioning policy and Nexus publication contract for the future library.
-- Steward resolves the artifact through Maven.
-- No source-copy or local-path final integration.
-- Candidate upgrade is tested before promotion.
+- A written compatibility/upgrade strategy for both future consumers.
+- No source-copy or local-path workaround is introduced to simulate reuse.
+- The learner can explain how Maven/Nexus resolution will be proven after Professional Engineer earns the extraction gate.
 - Breaking/additive change policy is documented.
 
 ---
@@ -413,7 +421,7 @@ steward-tests/
 3. integration evidence
 4. selected browser smoke
 5. reports/diagnostic artifacts
-6. tsa-test-core compatibility where relevant
+6. internal dependency compatibility evidence; `tsa-test-core` compatibility only after its later extraction gate exists
 7. scheduled broader regression
 
 ## Required controls
@@ -458,7 +466,7 @@ The learner must demonstrate:
 2. Which code was deliberately kept Steward-specific?
 3. What prevents a failed test from becoming an unexplained green result?
 4. How are credentials and sensitive evidence protected?
-5. How does a `tsa-test-core` change reach Steward safely?
+5. If Professional Engineer later earns `tsa-test-core`, how would a versioned change reach Steward safely through Nexus without source copying?
 6. What breaks if tests execute concurrently?
 7. Why does each browser test require browser-level evidence?
 8. Which quality risks remain outside automation, and why?
