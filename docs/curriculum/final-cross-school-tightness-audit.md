@@ -1,5 +1,8 @@
 # TSA Final Cross-School Tightness Audit
 
+
+> **Historical audit snapshot:** This document intentionally preserves the findings and verdict from the cross-school pass that triggered later remediation. Its `NOT YET TIGHT` verdict and Jenkins-as-primary references describe that point in TSA's history; they are not the current canonical architecture or closure status. Current authority lives in the curriculum README, enterprise capability progression, executable school registries, integrity audit, and subsequent closure records.
+
 ## Purpose
 
 This audit is intentionally stricter than earlier completeness reviews. It does not ask only whether a topic exists somewhere in TSA. It asks whether the learner encounters each capability at the right time, implements important enterprise capabilities deeply enough, carries their evidence into the school milestone, and reaches later architecture/governance work without contradictory ownership or permanent duplicate infrastructure.
