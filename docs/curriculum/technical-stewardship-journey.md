@@ -889,7 +889,7 @@ Develop the ability to make, challenge and defend architecture decisions under c
 - architecture debt
 - governance without bottlenecks
 - dependency/package governance
-- steward-common and tsa-test-core review
+- review internal packages that actually exist in the evidence-backed current state; `steward-common` should have implementation history, while `tsa-test-core` remains absent unless its later genuine two-consumer extraction gate has already been satisfied
 
 ## Module 10 — Architect Milestone
 **Steward Architecture Evolution** — reconstruct the current system, evaluate retain/change/simplify options, implement the smallest justified improvement and defend both retained and rejected complexity.
@@ -1144,8 +1144,8 @@ The continuing Steward system evolves approximately as follows:
 
 # Status
 
-**Specification:** v1 draft
+**Specification:** v1 living curriculum specification
 
-**Current implementation:** Engineering Apprentice / Engineering Foundations skeleton and core learning-runtime capabilities.
+**Current implementation:** all twelve schools have executable runtime paths and have completed the school-by-school deep-content pass. Cross-school integrity work now reconciles executable ordering, prerequisite/milestone continuity, technology ownership, artifact lifecycle and canonical documentation.
 
-**Current strategy:** finish the curriculum and product hierarchy wide, then build lessons deep from the beginning of the journey.
+**Authority:** executable school registries and the curriculum integrity audit govern runtime path composition/order; canonical progression/evolution contracts govern cross-school architecture and artifact lifecycle; historical audit documents remain evidence of earlier findings rather than current-state authority.
