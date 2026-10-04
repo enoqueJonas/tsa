@@ -44,11 +44,11 @@ For every consequential architecture decision:
 
 ## Increment 1 — Architecture baseline
 
-Reconstruct Steward from evidence accumulated in earlier schools:
+Reconstruct Steward from evidence accumulated in earlier schools. This is an evidence-backed current-state inventory, not a timeless mandatory stack: a component may be absent only when it was never introduced yet or explicit migration/retirement evidence explains its removal:
 - application/module boundaries
 - PostgreSQL/data ownership
 - APIs/integrations
-- shared packages and Nexus
+- actually introduced shared packages and Nexus; `steward-common` should have history here, while `tsa-test-core` remains absent unless its later two-consumer gate has genuinely been satisfied
 - GitLab CI/CD and GitOps/deployment authority
 - infrastructure/platform boundaries
 - Kong/Keycloak/security boundaries
