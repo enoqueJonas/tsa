@@ -37,7 +37,7 @@ The primary learning path must remain practical for a learner without enterprise
 | Enterprise identity | Keycloak + OIDC/OAuth 2.0 concepts | managed IdPs and enterprise SSO alternatives |
 | API gateway | Kong | Nginx/reverse proxy, cloud gateways and other API-management products |
 | Source control | Git + GitHub | enterprise Git hosting alternatives |
-| CI/CD orchestration | Jenkins | GitHub Actions and other hosted CI/CD systems |
+| CI/CD orchestration | GitLab CI/CD | Jenkins as a bounded legacy-migration source; other hosted/self-hosted CI/CD systems as alternatives |
 | Artifact/dependency repository | Nexus-style private repository | other artifact/package registries |
 | Containers | Docker, with Podman concepts where useful | OCI-compatible alternatives |
 | Infrastructure as Code | OpenTofu, teaching Terraform language/model concepts | Terraform and provider-managed IaC alternatives |
@@ -191,7 +191,7 @@ Architect must not assume every introduced component belongs in the final archit
 - whether asynchronous messaging is justified;
 - RabbitMQ versus Kafka for a stated workload;
 - whether Kong is needed or a simpler edge component is sufficient;
-- Jenkins versus hosted CI/CD trade-offs;
+- GitLab CI/CD versus alternative hosted/self-hosted CI/CD trade-offs, including legacy Jenkins migration considerations;
 - Kubernetes versus OpenShift versus simpler hosting;
 - push deployment versus GitOps;
 - self-managed versus managed data/identity/secrets infrastructure;
@@ -217,7 +217,7 @@ Keycloak ---- OIDC ----> Kong
                                   |
                            background consumers
 
-Git ---> Jenkins ---> tests/scans ---> private artifact repository / registry
+Git ---> GitLab CI/CD ---> tests/scans ---> private artifact repository / registry
                                             |
                                             v
 OpenTofu ---> infrastructure            OpenShift
