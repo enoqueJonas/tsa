@@ -109,7 +109,7 @@ Artifacts:
 - CI identity/permission matrix
 - dependency/image scan triage
 - internal repository trust policy
-- deterministic `steward-common` / `tsa-test-core` consumption
+- deterministic `steward-common` consumption; `tsa-test-core` enters the supply-chain model only after Professional Engineer satisfies its genuine two-consumer extraction gate
 - SBOM/provenance evidence
 - security gate + time-bounded exception policy
 
