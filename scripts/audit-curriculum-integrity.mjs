@@ -59,6 +59,17 @@ for (const required of ["Earn and Publish tsa-test-core from Two Real Products",
   }
 }
 
+// Preserve the System Thinker -> Platform Builder file-integration ownership boundary.
+// System Thinker may model shared-filesystem semantics, but must not require the later NFS implementation.
+const systemFileIntegration = sources.get("system-thinker-enterprise-file-integration-deep.ts") ?? "";
+const platformFileServices = sources.get("platform-builder-enterprise-file-directory-services-deep.ts") ?? "";
+for (const required of ["do not deploy NFS yet", "Platform Builder implementation handoff note"]) {
+  if (!systemFileIntegration.includes(required)) failures.push(`System Thinker file integration must preserve pre-NFS handoff evidence: ${required}`);
+}
+for (const required of ["NFS is actually served and consumed across the network.", "Enterprise File Services: NFS and SMB"]) {
+  if (!platformFileServices.includes(required)) failures.push(`Platform Builder must own implemented network file services: ${required}`);
+}
+
 // Compare reconciled school path IDs and order against executable registries.
 const planned = sources.get("technical-stewardship-journey.ts") ?? "";
 
@@ -107,4 +118,4 @@ if (failures.length) {
   console.error("Curriculum integrity audit failed:\n- " + failures.join("\n- "));
   process.exit(1);
 }
-console.log(`Curriculum integrity audit passed: ${files.length} runtime path files checked; school wiring, planned/runtime path parity, lesson-array reachability, milestone composition, canonical CI architecture and deferred shared-test-library gates are clean.`);
+console.log(`Curriculum integrity audit passed: ${files.length} runtime path files checked; school wiring, planned/runtime path parity, lesson-array reachability, milestone composition, canonical CI architecture, deferred shared-test-library gates and cross-school file-integration ownership are clean.`);
