@@ -1,5 +1,8 @@
 # Enterprise Implementation Depth Audit
 
+
+> **Historical audit note:** This document preserves findings from the implementation-depth pass. Jenkins-specific permanent-state requirements below are superseded by the canonical GitLab CI/CD implementation. They remain useful as historical evidence of the capability requirements; current runtime uses GitLab pipelines/runners/schedules, with Jenkins only in the bounded migration exercise.
+
 ## Purpose
 
 This audit extends TSA's Steward requirements audit with a stricter question: for each important enterprise capability, does the learner merely learn or design it, or must they actually implement, integrate, break, operate and reassess it?
