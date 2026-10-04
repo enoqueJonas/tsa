@@ -89,7 +89,7 @@ SSH / GitLab Runner administration / Nexus / private operations
 
 The learner must prove the boundary with reachability evidence rather than only a diagram.
 
-The **Cloud Engineer content-quality pass must add an explicit Public Edge and API Gateway learning path** if the currently published Cloud Engineer paths do not already contain it. That path is where Kong, local-to-public Steward exposure, DNS/TLS, CGNAT-aware designs and separation of public ingress from VPN-only administration become learner-facing implementation rather than remaining a curriculum note.
+The Cloud Engineer `internet-networking` path owns the Public Edge and API Gateway progression. It first establishes a known-good simple reverse-proxy/DNS/TLS baseline, then earns Kong from a concrete policy-capable API-edge requirement, migrates the public boundary to Kong, retires the competing proxy path, and proves separation of public ingress from private administration/backend services. The Cloud Engineer milestone must preserve end-to-end Kong/DNS/TLS/exposure evidence; a second standalone gateway path is unnecessary unless future scope becomes materially distinct.
 
 ## Security Steward — enterprise identity on the public path
 
