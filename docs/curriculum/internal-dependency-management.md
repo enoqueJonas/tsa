@@ -14,7 +14,7 @@ During Builder, the learner extracts a small genuinely reusable Python package f
 
 During Delivery Engineer, a second internal consumer needs the package. Copying source code between repositories is explicitly rejected. The learner deploys and operates an internal artifact repository in the homelab, with Sonatype Nexus Repository as the reference implementation unless a later curriculum decision selects an equivalent product.
 
-During Quality Steward, the same principle is applied to test engineering. The Steward automation framework is built first as a Java 17+ Maven project using JUnit 5, REST Assured and Playwright Java. Only after generic testing infrastructure has demonstrated a legitimate reuse boundary does the learner extract a reusable Maven library named `tsa-test-core`. Steward-specific API clients, page/workflow objects and domain assertions remain in the Steward test project.
+During Quality Steward, the same principle is applied to test engineering. The Steward automation framework is built first as a Java 17+ Maven project using JUnit 5, REST Assured and Playwright Java. Quality Steward identifies and documents candidate generic testing infrastructure, but keeps it inside `steward-tests`. Extraction into a reusable Maven library named `tsa-test-core` is deferred until Professional Engineer supplies a genuine second compatible test consumer. Steward-specific API clients, page/workflow objects and domain assertions always remain in the Steward test project.
 
 The target flow becomes:
 
@@ -76,8 +76,8 @@ Add to Automation Framework Engineering:
 - reusable HTTP/client foundations
 - shared assertions and evidence/reporting helpers
 - versioning test infrastructure
-- Lab: Extract `tsa-test-core`
-- Lab: Publish and Consume `tsa-test-core` from the Internal Maven Repository
+- Lab: Audit the Candidate `tsa-test-core` Reuse Boundary
+- Lab: Design the Future Maven/Nexus Publication and Compatibility Contract
 
 Candidate `tsa-test-core` capabilities may include:
 - validated environment/configuration loading
@@ -90,7 +90,7 @@ Candidate `tsa-test-core` capabilities may include:
 
 Steward domain clients, workflows, page/component models and business assertions stay outside the shared library.
 
-A second test project must eventually consume `tsa-test-core`. The Professional Engineer capstone is a strong candidate. This provides evidence that the package is actually reusable rather than an artificial curriculum extraction.
+A second real test project is a prerequisite for creating `tsa-test-core`, not merely a later validation. Professional Engineer deliberately provides that evidence when its independently designed system has overlapping product-independent test infrastructure. Only then does the learner extract, version, publish and consume the library from both projects.
 
 Quality Steward must also test package compatibility and consumer contracts, verify package publishing in CI, and reason about how dependency changes affect downstream test suites.
 
