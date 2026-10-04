@@ -65,7 +65,7 @@ for (const [schoolId, registryFile] of Object.entries(registryFiles)) {
   if (!arrayMatch) { failures.push(`school registry array not found: ${registryFile}`); continue; }
   const symbols = arrayMatch[1].split(",").map((x) => x.trim()).filter(Boolean);
   const actualIds = symbols.map((symbol) => {
-    const escaped = symbol.replace(/[.*+?^${}()|[\]\\]/g, "\\if (failures.length) {");
+    const escaped = symbol;
     const match = registry.match(new RegExp(`(?:export const )?${escaped}[^=]*=\\s*(?:path\\(|\\{\\s*id:\\s*)["']([^"']+)/`));
     return match?.[1] ?? null;
   });
