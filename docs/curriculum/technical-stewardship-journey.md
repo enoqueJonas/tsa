@@ -192,82 +192,89 @@ Move from writing endpoints to understanding systems, boundaries, dependencies, 
 # 04 — Platform Builder
 
 ## Purpose
-Understand the computing platform beneath applications, progressing from a virtual Linux machine to a budget physical homelab.
+Build and operate the learner-owned infrastructure substrate beneath Steward, progressing from computing/OS fundamentals through Linux, network engineering, virtualization, bare metal and a serviceable mixed-estate homelab.
+
+The executable path registry in `platform-builder.ts` is authoritative for path composition and order. This specification describes the intended capability progression.
 
 ## Module 1 — Computer and Operating-System Foundations
 - CPU, memory, storage and I/O
 - Operating-system responsibilities
-- Kernel/user space concepts
-- Processes and threads
-- Filesystems
+- Kernel/user space, processes and threads
+- Filesystems and host resource reasoning
 
 ## Module 2 — Linux Administration
-- Ubuntu Server installation
-- Shell fluency
-- Files and directories
-- Users and groups
-- Permissions
-- Packages
-- Processes
-- systemd and services
-- Environment and configuration
-- Logs and journal
-- Scheduled tasks
-- Storage and mounts
-- SSH and key authentication
+- Rocky Linux as the primary server distribution
+- Shell, users/groups, permissions and packages
+- Processes, systemd, logs and scheduled work
+- Storage/mounts, SSH and host administration
 
 ## Module 3 — Networking Foundations
-- OSI/TCP-IP mental models
-- Ethernet
-- IP addressing and subnetting
-- ARP
-- TCP and UDP
-- Ports and sockets
-- Routing
-- DHCP
-- DNS
-- NAT
-- Firewalls
+- Ethernet, IP addressing/subnetting and ARP
+- TCP/UDP, ports/sockets and routing
+- DHCP, DNS, NAT and firewalls
 - HTTP/TLS from the network perspective
-- Network troubleshooting tools
+- Evidence-driven troubleshooting
 
-## Module 4 — Virtualization
+## Module 4 — Packet Tracer Network Engineering
+- Build and inspect routed/switched topologies
+- Addressing, segmentation and reachability
+- Failure isolation before touching application configuration
+
+## Module 5 — Virtualization
 - Hypervisors and virtual machines
-- VM networking modes
-- Virtual disks/resources
-- Snapshots and recovery
-- Create and administer Ubuntu VMs
+- VM networking, disks/resources and snapshots
+- Failure/recovery and workload placement
 
-## Module 5 — Building the Budget Homelab
-- Selecting used/budget hardware
-- CPU/RAM/storage/NIC trade-offs
-- Power and reliability considerations
-- Ethernet switching
-- Cabling
-- Basic network topology
-- Static addressing
-- Multiple machines/VMs
-- Remote administration
-- Firewalling
-- Local DNS concepts
-- Reverse proxy
-- Backups
-- Safe exposure and isolation
-- VLAN concepts where hardware permits
+## Module 6 — Bare-Metal Foundations
+- Physical compute/storage/network constraints
+- Firmware/boot and hardware inventory
+- Failure domains, power and recoverability
 
-## Labs
-- Create Ubuntu Server VM
-- SSH and harden basic remote access
-- Diagnose processes/networking
-- Run PostgreSQL and Steward API
-- Run Steward API as a system service
-- Design homelab topology
-- Acquire/configure budget homelab hardware
-- Connect hosts through a switch
-- Move workloads from laptop-only VM into the lab
+## Module 7 — Budget Homelab
+- Select budget/used hardware from requirements
+- Design topology, addressing, switching and isolation
+- Establish remote administration and backup expectations
+- Move Steward from laptop-only execution into learner-owned infrastructure
 
-## Milestone
-**Steward Homelab v1** — Steward API operating as a service on learner-managed Linux infrastructure with documented topology, access, networking, service management and backup approach.
+## Module 8 — Proxmox Homelab Platform
+- Operate the homelab as a virtualization platform
+- VM lifecycle, networking, storage and recovery
+- Separate platform administration from application operation
+
+## Module 9 — Enterprise Storage and NAS
+- Storage roles, filesystems and network storage
+- Capacity, permissions, durability and backup boundaries
+- Operate shared storage without treating replication as backup
+
+## Module 10 — Core Infrastructure Services
+- DNS, DHCP and time synchronization
+- Service ownership, configuration and troubleshooting
+- Build stable infrastructure dependencies for later schools
+
+## Module 11 — Platform Configuration Management
+- Repeatable host configuration
+- Idempotency and inventory
+- Configuration drift and verification
+- Establish the automation substrate later Delivery work consumes
+
+## Module 12 — OS Patching Lifecycle
+- Package/update policy
+- Maintenance, reboot and rollback/recovery planning
+- Patch evidence and operational risk
+
+## Module 13 — Windows and PowerShell Enterprise
+- Windows administration fundamentals
+- PowerShell automation
+- Mixed Linux/Windows estate reasoning
+- Identity/network/service-management boundaries
+
+## Module 14 — Enterprise Infrastructure Services
+- Operate enterprise-style shared infrastructure from the accumulated homelab
+- File/directory/service boundaries and access
+- Produce the infrastructure prerequisites consumed by later integration and security work
+
+## Module 15 — Steward Homelab v1
+Demonstrate Steward on learner-managed infrastructure with documented topology, host/platform ownership, networking, core services, configuration management, patching, storage, recovery and mixed-estate boundaries. The milestone proves an operable substrate for Delivery Engineer rather than merely a collection of installed products.
 
 ---
 
