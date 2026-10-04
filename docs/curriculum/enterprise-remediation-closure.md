@@ -1,5 +1,8 @@
 # Enterprise Remediation Closure
 
+
+> **Historical architecture note:** This closure records the architecture at the time of that remediation pass. References below to Jenkins as the permanent CI/quality execution platform are superseded by the canonical GitLab CI/CD architecture in `README.md` and `enterprise-capability-progression.md`. Jenkins is now retained only for the bounded legacy-to-GitLab migration exercise.
+
 ## Status
 
 The implementation-depth remediation pass is complete. The original audit standard remains: important enterprise capabilities should progress through learn, design, implement, integrate, break, operate and reassess/migrate to the depth justified by the learning objective.
