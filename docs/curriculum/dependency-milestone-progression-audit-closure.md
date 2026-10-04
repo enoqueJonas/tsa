@@ -40,7 +40,9 @@ Reassessment remains important, but it is not a substitute for implementation.
 
 The major platform sequence is now intentionally:
 
-`Computer/OS → Linux → Networking → Packet Tracer → Virtualization → Bare Metal → Build Homelab → Proxmox → Storage/NAS → DNS/DHCP/Time → Configuration Management → OS Lifecycle → Windows/Mixed Estate → Enterprise File/Directory → File/Batch Integration → Platform Builder Milestone`
+`Computer/OS → Linux → Networking → Packet Tracer → Virtualization → Bare Metal → Build Homelab → Proxmox → Storage/NAS → DNS/DHCP/Time → Configuration Management → OS Lifecycle → Windows/Mixed Estate → Enterprise File/Directory → Platform Builder Milestone`
+
+`Enterprise File and Batch Integration` is a **System Thinker** path, where it follows general data-flow/integration reasoning and precedes SOAP/XML and distributed messaging. Platform Builder later supplies the learner-operated file/directory infrastructure that can support subsequent enterprise integration exercises; it does not own the System Thinker integration path.
 
 This makes the physical/topology/capacity decision before installing the concrete hypervisor.
 
