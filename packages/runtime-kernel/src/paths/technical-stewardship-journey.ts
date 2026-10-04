@@ -17,8 +17,12 @@ export const technicalStewardshipJourney: LearningJourney = {
             module("modeling-software-systems", "Modeling Software Systems", ["Why We Model Systems", "C4-Style Thinking", "Containers and Components as Models", "State and Lifecycle Modeling", "Communicating Architecture Visually"]),
             module("components-and-dependencies", "Components and Dependencies", ["Components and Responsibilities", "Coupling and Cohesion Foundations", "Dependency Direction", "Internal and External Dependencies", "Lab: Map Steward API Dependencies"]),
             module("data-flow-and-integration", "Data Flow and Integration", ["Following Data Through a System", "Synchronous and Asynchronous Boundaries", "Integration Contracts", "Failure Across Integrations", "Lab: Model Steward API Data Flows"]),
+            module("enterprise-file-integration", "Enterprise File and Batch Integration", ["File Contracts", "Batch Boundaries", "Acknowledgement and Reconciliation", "Failure and Replay"]),
+            module("soap-xml-enterprise-integration", "SOAP and XML Enterprise Integration", ["WSDL and XML Contracts", "Synchronous Integration Boundaries", "Fault Handling and Evidence"]),
+            module("distributed-state-and-messaging", "Distributed State and Messaging", ["Cache Ownership", "Asynchronous Delivery", "Outbox and Idempotency", "State Consistency and Failure"]),
             module("failure-modes", "Failure Modes", ["Thinking in Failure Modes", "Dependency Failure", "Invalid and Partial State", "Resource Exhaustion", "Human and Operational Failure", "Lab: Analyze Steward API Failure Scenarios"]),
-            module("architecture-decisions", "Architecture Decisions and Trade-offs", ["Architecture Characteristics Introduction", "Decision Drivers", "Architecture Decision Records", "Evaluating Trade-offs", "Lab: Write Steward API ADRs", "Milestone: Steward API System Design Portfolio"]),
+            module("architecture-decisions", "Architecture Decisions and Trade-offs", ["Architecture Characteristics Introduction", "Decision Drivers", "Architecture Decision Records", "Evaluating Trade-offs", "Lab: Write Steward API ADRs"]),
+            module("steward-api-system-design-portfolio", "System Thinker Milestone", ["Requirements and Boundaries", "Integration and Distributed-state Reasoning", "Failure Analysis", "Architecture Decision Portfolio"]),
         ]},
         { id: "platform-builder", title: "Platform Builder", paths: [
             module("computer-and-os-foundations", "Computer and Operating-System Foundations", ["CPU, Memory, Storage and I/O", "What an Operating System Does", "Kernel Space and User Space", "Processes and Threads", "Filesystems"]),
