@@ -50,6 +50,7 @@ if (!/GitLab CI\/CD/.test(migrationExercise) || !/Jenkins/.test(migrationExercis
 // Compare reconciled school path IDs and order against executable registries.
 const planned = sources.get("technical-stewardship-journey.ts") ?? "";
 const schoolRegistries = {
+  "platform-builder": ["platform-builder.ts", "platformBuilderPaths"],
   "system-thinker": ["system-thinker.ts", "systemThinkerPaths"],
   "delivery-engineer": ["delivery-engineer.ts", "deliveryEngineerPaths"],
   "cloud-engineer": ["cloud-engineer.ts", "cloudEngineerPaths"],
