@@ -49,7 +49,16 @@ if (!/GitLab CI\/CD/.test(migrationExercise) || !/Jenkins/.test(migrationExercis
 
 // Compare reconciled school path IDs and order against executable registries.
 const planned = sources.get("technical-stewardship-journey.ts") ?? "";
+
+// The first two schools are wired directly rather than replaced in academy-journey.ts.
+if (!planned.includes('{ id: "engineering-apprentice", title: "Engineering Apprentice", paths: [engineeringFoundations] }')) {
+  failures.push("Engineering Apprentice must remain wired to engineeringFoundations in the canonical journey");
+}
+if (!planned.includes('{ id: "builder", title: "Builder", paths: builderPaths }')) {
+  failures.push("Builder must remain wired to builderPaths in the canonical journey");
+}
 const schoolRegistries = {
+  builder: ["builder.ts", "builderPaths"],
   "platform-builder": ["platform-builder.ts", "platformBuilderPaths"],
   "system-thinker": ["system-thinker.ts", "systemThinkerPaths"],
   "delivery-engineer": ["delivery-engineer.ts", "deliveryEngineerPaths"],
