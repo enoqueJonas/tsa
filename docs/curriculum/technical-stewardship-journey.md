@@ -34,8 +34,8 @@ The learner does not wait for a final framework lab. Each module changes the sam
 2. **API Foundation** — introduce REST Assured, typed contracts, API client, test-data builders and service-layer evidence.
 3. **Framework Consolidation** — refactor only proven repetition; add diagnostics, Allure, selection and maintainability controls.
 4. **Browser Layer** — add Playwright Java, explicit browser/context ownership, direct-locator smoke flow, then extract page/component objects from repetition.
-5. **Reuse Boundary** — only now evaluate generic configuration/API/browser/evidence/JUnit infrastructure and extract justified pieces into `tsa-test-core`.
-6. **Internal Distribution** — publish the versioned `tsa-test-core` JAR to Nexus and make Steward consume it as a normal Maven dependency.
+5. **Reuse Boundary** — evaluate candidate generic configuration/API/browser/evidence/JUnit infrastructure, document the proposed boundary, and keep it inside `steward-tests` until a genuine second consumer proves reuse.
+6. **Internal Distribution Preparation** — exercise Maven/Nexus publication mechanics with appropriate artifacts, but defer `tsa-test-core` extraction/publication until Professional Engineer creates a genuine second compatible consumer.
 7. **CI and Continuous Execution** — containerize dependencies, add GitLab CI/CD gates/selection/artifacts and scheduled regression.
 8. **Quality Steward Milestone** — defend the completed quality platform, its evidence model, framework boundaries and unresolved risks.
 
@@ -550,8 +550,8 @@ Learn quality engineering deeply and build a real automation framework against t
 - Parallel execution, collision-safe data and test isolation
 - Retry/quarantine strategy and flaky-test risks
 - Maintainability, public APIs and framework ownership
-- Extract reusable infrastructure into `tsa-test-core`
-- Publish/consume `tsa-test-core` as a versioned Maven artifact through Nexus
+- Identify candidate reusable infrastructure for a future `tsa-test-core` extraction; do not extract before the two-consumer gate
+- Define the future versioned Maven/Nexus publication and compatibility contract for `tsa-test-core`
 - SLF4J logging architecture, levels, execution context and secret redaction
 - Stable run/test/attempt identity across logs, API evidence, browser artifacts and reports
 - Failure taxonomy: product, automation/framework, environment/infrastructure and precondition
@@ -574,10 +574,10 @@ Learn quality engineering deeply and build a real automation framework against t
 ## Module 8 — Reusable Test Infrastructure and Internal Distribution
 - Audit the proven API/browser/configuration/evidence infrastructure for genuine cross-project reuse
 - Keep Steward clients, contracts, page objects, workflows and business assertions local
-- Extract only approved generic capabilities into `tsa-test-core`
+- Keep approved generic candidates inside `steward-tests` until a genuine second consumer proves the boundary
 - Define a small intentional public API and compatibility policy
 - Build a versioned Maven JAR
-- Publish to Nexus and consume it from `steward-tests`
+- Prepare Nexus coordinates, versioning and compatibility evidence for later extraction/publication
 - Prove consumer compatibility before promotion
 
 ## Module 9 — Non-functional Quality
