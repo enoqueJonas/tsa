@@ -47,6 +47,18 @@ if (!/GitLab CI\/CD/.test(migrationExercise) || !/Jenkins/.test(migrationExercis
   failures.push("legacy CI migration exercise must explicitly preserve Jenkins-to-GitLab migration semantics");
 }
 
+// Preserve the deferred shared-test-library architecture across executable schools.
+const qualityRuntime = sources.get("quality-steward.ts") ?? "";
+const professionalBuild = sources.get("professional-engineer-independent-build-deep.ts") ?? "";
+if (/Extract tsa-test-core|Publish tsa-test-core|Create tsa-test-core/i.test(qualityRuntime)) {
+  failures.push("Quality Steward must not extract tsa-test-core before a genuine second consumer exists");
+}
+for (const required of ["Earn and Publish tsa-test-core from Two Real Products", "pre-extraction capstone test baseline", "Versioned Nexus artifact"]) {
+  if (!professionalBuild.includes(required)) {
+    failures.push(`Professional Engineer tsa-test-core two-consumer gate is missing required evidence: ${required}`);
+  }
+}
+
 // Compare reconciled school path IDs and order against executable registries.
 const planned = sources.get("technical-stewardship-journey.ts") ?? "";
 
@@ -95,4 +107,4 @@ if (failures.length) {
   console.error("Curriculum integrity audit failed:\n- " + failures.join("\n- "));
   process.exit(1);
 }
-console.log(`Curriculum integrity audit passed: ${files.length} runtime path files checked; school wiring, lesson-array reachability, milestone composition and canonical CI architecture are clean.`);
+console.log(`Curriculum integrity audit passed: ${files.length} runtime path files checked; school wiring, planned/runtime path parity, lesson-array reachability, milestone composition, canonical CI architecture and deferred shared-test-library gates are clean.`);
