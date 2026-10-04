@@ -107,9 +107,9 @@ export const technicalStewardshipJourney: LearningJourney = {
         ]},
         { id: "architect", title: "Architect", paths: [
             module("architecture-fundamentals", "Architecture Fundamentals", ["Architecture vs Design", "Architecture Drivers and Characteristics", "Constraints", "Trade-offs", "Organization and Architecture Boundaries", "Fitness and Evolution", "Architecture Documentation"]),
+            module("domain-modeling", "Domain Modeling", ["Domain Boundaries", "DDD Fundamentals", "Entities and Value Objects", "Aggregates Concepts", "Bounded Contexts", "Ubiquitous Language", "When DDD Is and Is Not Worth the Cost"]),
             module("modularity", "Modularity", ["Coupling and Cohesion", "Components and Modules", "Dependency Direction", "Boundaries", "Modular Monoliths", "When Distribution Is Justified"]),
             module("architecture-styles", "Architecture Styles", ["Layered Architecture", "Hexagonal and Ports-and-Adapters Concepts", "Event-driven Architecture", "SOA and Microservices Concepts", "Serverless Concepts", "Choosing an Architecture Style"]),
-            module("domain-modeling", "Domain Modeling", ["Domain Boundaries", "DDD Fundamentals", "Entities and Value Objects", "Aggregates Concepts", "Bounded Contexts", "Ubiquitous Language", "When DDD Is and Is Not Worth the Cost"]),
             module("data-architecture", "Data Architecture", ["Transactional Boundaries", "Consistency", "Caching", "Replication Concepts", "Partitioning Concepts", "Data Ownership", "Eventual Consistency"]),
             module("integration-and-messaging", "Integration and Messaging", ["Synchronous vs Asynchronous Integration", "Messaging", "Queues", "Events", "Delivery Semantics Concepts", "Idempotency", "Integration Failure Handling"]),
             module("scalability-and-distributed-systems", "Scalability and Distributed Systems", ["Vertical and Horizontal Scaling", "Load Distribution", "Statelessness", "Caching and Contention", "Replication and Partitioning", "Consistency and Availability", "Distributed Coordination", "Time and Ordering", "Sagas", "Capacity vs Architectural Complexity"]),
