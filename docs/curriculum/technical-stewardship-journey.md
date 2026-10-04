@@ -81,22 +81,7 @@ Build a serious backend system locally and develop practical software craft. The
 - API contracts
 - curl and Postman
 
-## Module 3 — Django and API Engineering
-- Django fundamentals
-- Django REST Framework
-- Project/application structure
-- Models
-- Serializers
-- Views/viewsets and routing
-- Validation
-- Error handling
-- Filtering, searching, ordering and pagination
-- API versioning concepts
-- OpenAPI/Swagger documentation
-- Configuration and environments
-- Logging
-
-## Module 4 — Relational Data and PostgreSQL
+## Module 3 — Relational Data and PostgreSQL
 - Relational model
 - SQL fundamentals
 - SELECT/INSERT/UPDATE/DELETE
@@ -120,6 +105,21 @@ Build a serious backend system locally and develop practical software craft. The
 - N+1 query problems
 - Migrations
 - Concurrency fundamentals
+
+## Module 4 — Django and API Engineering
+- Django fundamentals
+- Django REST Framework
+- Project/application structure
+- Models
+- Serializers
+- Views/viewsets and routing
+- Validation
+- Error handling
+- Filtering, searching, ordering and pagination
+- API versioning concepts
+- OpenAPI/Swagger documentation
+- Configuration and environments
+- Logging
 
 ## Module 5 — Identity, Authentication and Authorization
 - Identity concepts
