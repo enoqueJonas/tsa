@@ -281,182 +281,84 @@ Demonstrate Steward on learner-managed infrastructure with documented topology, 
 # 05 — Delivery Engineer
 
 ## Purpose
-Make software reproducibly buildable, packageable, testable, releasable and deployable.
+Make Steward reproducibly buildable, testable, packageable, releasable, deployable and recoverable through one canonical delivery system.
+
+The executable path registry in `delivery-engineer.ts` is authoritative for path composition and order.
 
 ## Module 1 — Software Delivery Foundations
-- Source-to-production lifecycle
-- Git workflows
-- Pull requests and reviews
-- Semantic Versioning
-- Conventional Commits
-- Release notes and changelogs
-- Build artifacts
-- Environment promotion
+Source-to-production lifecycle, Git/review workflows, release identity, semantic versioning, changelogs, artifacts and environment promotion.
 
 ## Module 2 — Automation and Shell
-- Shell scripting
-- Exit codes and pipes
-- Environment variables
-- Repeatable scripts
-- Make/Task-style automation
-- Idempotency concepts
+Shell automation, exit behavior, environment/configuration, repeatability and idempotency.
 
 ## Module 3 — Containers and Docker
-- Containers vs VMs
-- Namespaces/cgroups concepts
-- Docker architecture
-- Images and layers
-- Dockerfiles
-- Build context
-- Multi-stage builds
-- Volumes
-- Container networking
-- Docker Compose
-- Health checks
-- Registries
-- Image tagging
-- Image optimization
-- Container debugging
+Images, containers, build context/layers, networking, volumes, registries, Compose and production-minded containerization of Steward.
 
 ## Module 4 — Continuous Integration
-- Pipeline architecture
-- Jobs, stages and dependencies
-- Runners/agents
-- GitLab CI/CD as the canonical CI implementation
-- `.gitlab-ci.yml`, jobs, stages, runners, `rules`, `needs`, variables, caches and artifacts
-- Merge request, branch/tag and scheduled pipeline sources
-- Self-hosted runners
-- Caching
-- Pipeline artifacts
-- Secrets and variables
-- Parallelism
-- Automated checks
-- Test stages
-- Quality gates
-- Container builds in CI
+Tool-independent pipeline architecture followed by GitLab CI/CD as the canonical implementation: stages/jobs, runners, dependencies, rules, caches, artifacts, reports, variables, failure diagnosis and recovery.
 
 ## Module 5 — Continuous Delivery and Deployment
-- CI vs continuous delivery vs deployment
-- Environment management
-- Deployment automation
-- Release approvals
-- Database migrations in releases
-- Rollback
-- Rolling deployments
-- Blue/green deployments
-- Canary concepts
-- Feature flags concepts
+Promotion, deployment strategies, environment configuration, verification, rollback/recovery and separation of release from deployment.
 
 ## Module 6 — Configuration Management
-- Configuration drift
-- Desired state and idempotency
-- Ansible fundamentals
-- Inventories
-- Playbooks
-- Roles concepts
-- Automating homelab/server configuration
+Apply repeatable host/application configuration through the platform automation substrate and preserve ownership boundaries between infrastructure configuration and application release.
 
 ## Module 7 — Artifact and Supply-Chain Foundations
-- Container registries
-- Artifact retention
-- Dependency provenance concepts
-- SBOM introduction
-- Signing/provenance concepts
-- Dependency and image scanning foundations
+Immutable artifacts, Nexus, provenance, dependency sources, credentials, retention and traceability from source revision to running release.
 
 ## Module 8 — Release Engineering
-- Release candidates
-- Promotion and gates
-- Deployment evidence
-- Release observability
-- Failure handling
-- Release runbooks
+Release criteria, compatibility, change communication, rollback planning and evidence-backed release decisions.
 
-## Labs
-- Containerize Steward API
-- Build production-oriented Dockerfile
-- Compose application and dependencies
-- Publish images
-- Install self-hosted CI runner in homelab
-- Build multi-stage CI pipeline
-- Automate server configuration with Ansible
-- Automate deployment and rollback
+## Module 9 — Production Schema Evolution
+Evolve PostgreSQL safely across independently deployable application releases, including compatibility windows, expand/contract thinking, migration execution and recovery.
 
-## Milestone
-**Steward Delivery Platform** — commit-to-deployment pipeline producing versioned artifacts/images and reproducibly deploying Steward API to learner-managed infrastructure.
+## Module 10 — Delivery Platform Migration
+Perform a bounded legacy Jenkins-to-GitLab CI/CD migration exercise: establish parity, coexist only where needed, cut over, prove rollback/recovery and decommission the legacy CI authority. Jenkins is not retained as a second permanent CI platform.
+
+## Module 11 — Steward Delivery Platform
+Demonstrate the complete source-to-release path through GitLab CI/CD, immutable artifacts/Nexus, deployment automation, schema compatibility and operational recovery evidence.
 
 ---
 
 # 06 — Cloud Engineer
 
 ## Purpose
-Operate a real internet-facing remote environment while learning the concepts behind cloud infrastructure. Begin with an affordable VPS before relying heavily on managed cloud abstractions.
+Move the delivered Steward release onto deliberately designed public/cloud infrastructure while preserving reproducibility, security boundaries, recovery and cost awareness.
+
+The executable path registry in `cloud-engineer.ts` is authoritative for path composition and order.
 
 ## Module 1 — Cloud and Hosting Models
-- On-premises, colocation, VPS and cloud
-- IaaS/PaaS/SaaS
-- Regions and availability concepts
-- Shared responsibility
-- Cost awareness
+Responsibility boundaries, IaaS/PaaS/SaaS, regions/zones, managed versus self-managed trade-offs and workload placement.
 
 ## Module 2 — VPS Operations
-- Selecting a budget VPS
-- Provisioning
-- Public addressing
-- SSH
-- Provider firewall/security controls
-- OS lifecycle
-- Remote recovery concepts
+Provision and operate the first public-hosting substrate with controlled administration, recovery and cost evidence.
 
 ## Module 3 — Internet Networking
-- Public/private addressing
-- Routing
-- DNS
-- Domains and records
-- TLS certificates
-- Reverse proxies
-- Ingress concepts
-- Firewalls
+Public/private addressing, DNS, TLS, firewalls and ingress. Establish a simple reverse-proxy baseline, then earn and migrate to Kong as Steward's policy-capable API edge while retiring the competing public proxy path.
 
-## Module 4 — Cloud Building Blocks
-- Compute
-- Storage
-- Managed databases
-- Virtual networks
-- Load balancers
-- IAM
-- Secrets
-- Monitoring
-- Backups
+## Module 4 — Certificate Lifecycle Operations
+Treat certificates as expiring operational dependencies: issuance, storage, renewal, reload/deployment, expiry detection and recovery.
 
-## Module 5 — Infrastructure as Code
-- Declarative infrastructure concepts
-- Terraform/OpenTofu fundamentals
-- State
-- Variables and outputs
-- Modules concepts
-- Plan/apply lifecycle
+## Module 5 — Cloud Building Blocks
+Compute, networking, storage, managed-service concepts, availability boundaries and provider responsibility trade-offs.
 
-## Module 6 — Cloud Architecture and Cost
-- Availability
-- Scalability
-- Security boundaries
-- Backup/recovery
-- Cost estimation
-- Cost controls
-- Managed vs self-managed trade-offs
+## Module 6 — Object Storage Implementation
+Implement object-storage behavior against a real use case, including access, lifecycle, consistency expectations, failure behavior and cost.
 
-## Labs
-- Purchase/provision a budget VPS
-- Secure administrative access
-- Configure DNS/TLS
-- Deploy containerized Steward API
-- Automate VPS deployment
-- Compare self-managed VPS components with AWS/Azure/cloud equivalents
-- Introduce IaC where supported/useful
+## Module 7 — Infrastructure as Code
+Use OpenTofu as the canonical hands-on IaC implementation while preserving transferable Terraform concepts; plan/apply/state/change/recovery evidence must be reproducible.
 
-## Milestone
-**Steward Internet Environment** — publicly reachable, TLS-protected, documented deployment on a budget VPS with automated delivery, backups and operational controls.
+## Module 8 — Cloud Orchestration and GitOps
+Migrate the existing containerized release into Kubernetes/OpenShift-compatible orchestration and introduce Argo CD only after pipeline-driven deployment is understood. GitLab CI/CD remains build/test/package/publish authority; Argo CD owns reconciliation of declared environment state.
+
+## Module 9 — Progressive Delivery and Canary
+Exercise controlled rollout, observation, decision thresholds, rollback and authority boundaries without creating a second deployment control plane.
+
+## Module 10 — Cloud Architecture and Cost
+Evaluate availability, failure domains, responsibility shifts, capacity, monthly run-rate and when simpler hosting is preferable.
+
+## Module 11 — Steward Internet Environment
+Demonstrate the complete public environment from GitLab CI/CD/Nexus release identity through OpenTofu infrastructure, Kubernetes/OpenShift and Argo CD state to Kong/DNS/TLS external verification, recovery and cost evidence.
 
 ---
 
