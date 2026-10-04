@@ -109,23 +109,7 @@ Networking depth must be sufficient to troubleshoot real service-to-service fail
 
 ### Delivery Engineer — CI/CD, configuration and artifact lifecycle
 
-CI/CD concepts remain tool-independent first, then **Jenkins** becomes the primary self-hosted enterprise implementation. GitHub Actions remains a comparison/secondary implementation rather than disappearing from the curriculum.
-
-The Jenkins progression should cover:
-
-- controller/agent architecture;
-- executors and build isolation;
-- jobs versus pipelines;
-- Pipeline as Code and `Jenkinsfile`;
-- declarative versus scripted pipeline concepts;
-- stages, steps, conditions and parallelism;
-- credentials and secret injection;
-- webhooks/triggers;
-- caching and artifacts;
-- test/report publication;
-- shared libraries concepts;
-- failure diagnosis and recovery;
-- pipeline security and least privilege.
+CI/CD concepts remain tool-independent first, then **GitLab CI/CD** is the canonical CI implementation. The learner first understands tool-independent pipeline architecture, then operates `.gitlab-ci.yml` pipelines with stages, jobs, `needs`, `rules`, runners, variables, caches, artifacts, test/report publication, security boundaries, failure diagnosis and recovery. Self-hosted runners provide the learner-owned execution environment.\n\nJenkins is retained only in the bounded legacy-to-GitLab migration exercise so the learner can reason about parity, coexistence, cutover, rollback and decommissioning of a real legacy CI platform. It is not a second permanent CI implementation.
 
 Steward's delivery pipeline should build, test, scan, package, publish internal dependencies to the private artifact repository, build the container image and produce deployment evidence.
 
