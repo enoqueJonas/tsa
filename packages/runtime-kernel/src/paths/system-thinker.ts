@@ -28,7 +28,8 @@ export const failureModes = path("failure-modes", "Failure Modes", failureModesQ
 export const architectureDecisionsAndTradeOffs = path("architecture-decisions", "Architecture Decisions and Trade-offs", architectureDecisionsAndTradeOffsQualityLessons);
 export const stewardApiSystemDesignPortfolio = stewardApiSystemDesignPortfolioDeep;
 
-// File/batch integration follows general data-flow reasoning as the simplest explicit enterprise boundary.\n// SOAP/XML then adds a contract-heavy synchronous protocol so the learner first
+// File/batch integration follows general data-flow reasoning as the simplest explicit enterprise boundary.
+// SOAP/XML then adds a contract-heavy synchronous protocol so the learner first
 // understands boundaries and semantics, then implements a concrete enterprise
 // protocol. Distributed messaging follows afterward as a different interaction
 // model; general failure analysis and architecture decisions then reassess both.
