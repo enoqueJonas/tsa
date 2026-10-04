@@ -109,7 +109,9 @@ Networking depth must be sufficient to troubleshoot real service-to-service fail
 
 ### Delivery Engineer — CI/CD, configuration and artifact lifecycle
 
-CI/CD concepts remain tool-independent first, then **GitLab CI/CD** is the canonical CI implementation. The learner first understands tool-independent pipeline architecture, then operates `.gitlab-ci.yml` pipelines with stages, jobs, `needs`, `rules`, runners, variables, caches, artifacts, test/report publication, security boundaries, failure diagnosis and recovery. Self-hosted runners provide the learner-owned execution environment.\n\nJenkins is retained only in the bounded legacy-to-GitLab migration exercise so the learner can reason about parity, coexistence, cutover, rollback and decommissioning of a real legacy CI platform. It is not a second permanent CI implementation.
+CI/CD concepts remain tool-independent first, then **GitLab CI/CD** is the canonical CI implementation. The learner first understands tool-independent pipeline architecture, then operates `.gitlab-ci.yml` pipelines with stages, jobs, `needs`, `rules`, runners, variables, caches, artifacts, test/report publication, security boundaries, failure diagnosis and recovery. Self-hosted runners provide the learner-owned execution environment.
+
+Jenkins is retained only in the bounded legacy-to-GitLab migration exercise so the learner can reason about parity, coexistence, cutover, rollback and decommissioning of a real legacy CI platform. It is not a second permanent CI implementation.
 
 Steward's delivery pipeline should build, test, scan, package, publish internal dependencies to the private artifact repository, build the container image and produce deployment evidence.
 
@@ -138,7 +140,7 @@ Steward is exposed through Kong and the learner must prove that domain authoriza
 
 Kubernetes remains the orchestration foundation. **OpenShift** is taught after Kubernetes as an enterprise application platform, not as a duplicate Kubernetes course. Learners compare Projects/namespaces, Routes/Ingress, Operators/OLM, security controls such as SCC concepts, RBAC, registry/build/deployment integrations and the `oc` workflow. A practical migration/deployment of Steward should identify what remains standard Kubernetes, what OpenShift adds and what operational/security assumptions change.
 
-**Argo CD** introduces GitOps after the learner understands pipeline-driven deployment. Jenkins remains responsible for build/test/package/publish concerns; Argo CD reconciles declared environment state from Git to Kubernetes/OpenShift. The curriculum must explicitly compare push-based pipeline deployment with pull/reconciliation-based GitOps.
+**Argo CD** introduces GitOps after the learner understands pipeline-driven deployment. GitLab CI/CD remains responsible for build/test/package/publish concerns; Argo CD reconciles declared environment state from Git to Kubernetes/OpenShift. The curriculum must explicitly compare push-based pipeline deployment with pull/reconciliation-based GitOps.
 
 ### Security Steward — enterprise identity and secrets lifecycle
 
@@ -163,7 +165,7 @@ Secrets work must progress beyond `.env`. Teach classification, storage, access 
 
 ### Reliability Engineer — operate the whole platform
 
-Observability must cover the expanded system, not only the Django process. Learners should observe and reason about Steward, PostgreSQL, Redis, RabbitMQ, Kong, Jenkins/deployment components and Kubernetes/OpenShift where present.
+Observability must cover the expanded system, not only the Django process. Learners should observe and reason about Steward, PostgreSQL, Redis, RabbitMQ, Kong, GitLab CI/CD/deployment components and Kubernetes/OpenShift where present.
 
 Database operations deepen here into a practical **database stewardship / DBA-awareness** strand:
 
