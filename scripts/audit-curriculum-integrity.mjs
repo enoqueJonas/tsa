@@ -47,6 +47,33 @@ if (!/GitLab CI\/CD/.test(migrationExercise) || !/Jenkins/.test(migrationExercis
   failures.push("legacy CI migration exercise must explicitly preserve Jenkins-to-GitLab migration semantics");
 }
 
+// Keep planned journey IDs/order aligned with the executable school registries.
+// The runtime overrides these school paths in academy-journey.ts, so drift otherwise stays invisible to the build.
+const planned = sources.get("technical-stewardship-journey.ts") ?? "";
+const registryFiles = {
+  "platform-builder": "platform-builder.ts",
+  "reliability-engineer": "reliability-engineer.ts",
+  "professional-engineer": "professional-engineer.ts",
+};
+for (const [schoolId, registryFile] of Object.entries(registryFiles)) {
+  const start = planned.indexOf(`{ id: "${schoolId}", title:`);
+  const end = start < 0 ? -1 : planned.indexOf("]},", start);
+  if (end < 0) { failures.push(`planned school missing: ${schoolId}`); continue; }
+  const plannedIds = [...planned.slice(start, end).matchAll(/module\("([^"]+)"/g)].map((m) => m[1]);
+  const registry = sources.get(registryFile) ?? "";
+  const arrayMatch = registry.match(new RegExp(`export const ${schoolId === "platform-builder" ? "platformBuilderPaths" : schoolId === "reliability-engineer" ? "reliabilityEngineerPaths" : "professionalEngineerPaths"}[^=]*=\\s*\\[([\\s\\S]*?)\\];`));
+  if (!arrayMatch) { failures.push(`school registry array not found: ${registryFile}`); continue; }
+  const symbols = arrayMatch[1].split(",").map((x) => x.trim()).filter(Boolean);
+  const actualIds = symbols.map((symbol) => {
+    const escaped = symbol.replace(/[.*+?^${}()|[\]\\]/g, "\\if (failures.length) {");
+    const match = registry.match(new RegExp(`(?:export const )?${escaped}[^=]*=\\s*(?:path\\(|\\{\\s*id:\\s*)["']([^"']+)/`));
+    return match?.[1] ?? null;
+  });
+  if (actualIds.some((x) => x === null) || JSON.stringify(plannedIds) !== JSON.stringify(actualIds)) {
+    failures.push(`planned/runtime path drift in ${schoolId}: planned=${plannedIds.join(",")} runtime=${actualIds.join(",")}`);
+  }
+}
+
 if (failures.length) {
   console.error("Curriculum integrity audit failed:\n- " + failures.join("\n- "));
   process.exit(1);
