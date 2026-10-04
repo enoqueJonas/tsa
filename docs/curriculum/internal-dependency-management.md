@@ -16,7 +16,7 @@ During Delivery Engineer, a second internal consumer needs the package. Copying 
 
 During Quality Steward, the same principle is applied to test engineering. The Steward automation framework is built first as a Java 17+ Maven project using JUnit 5, REST Assured and Playwright Java. Quality Steward identifies and documents candidate generic testing infrastructure, but keeps it inside `steward-tests`. Extraction into a reusable Maven library named `tsa-test-core` is deferred until Professional Engineer supplies a genuine second compatible test consumer. Steward-specific API clients, page/workflow objects and domain assertions always remain in the Steward test project.
 
-The target flow becomes:
+The eventual end-of-journey flow becomes the following. `tsa-test-core` is shown only as the post-Professional-Engineer state after the genuine two-consumer gate has been satisfied:
 
 ```text
 Application and test source repositories
@@ -48,8 +48,8 @@ Add to Software Craft:
 - package boundaries and public APIs
 - avoiding accidental coupling
 - semantic versioning for a library
-- building a versioned Maven JAR
-- consuming a local/private source package during development
+- building/versioning a Python distribution package
+- consuming a local/private Python package during development
 - Lab: Extract `steward-common` from Steward API
 
 Builder milestone evidence should include a small internal package only when the extracted behavior is genuinely reusable. The learner must not create a shared library merely to satisfy the curriculum.
@@ -92,7 +92,7 @@ Steward domain clients, workflows, page/component models and business assertions
 
 A second real test project is a prerequisite for creating `tsa-test-core`, not merely a later validation. Professional Engineer deliberately provides that evidence when its independently designed system has overlapping product-independent test infrastructure. Only then does the learner extract, version, publish and consume the library from both projects.
 
-Quality Steward must also test package compatibility and consumer contracts, verify package publishing in CI, and reason about how dependency changes affect downstream test suites.
+Quality Steward must design the future compatibility/consumer contract and CI publication checks for `tsa-test-core`, but must not execute them against a fabricated library. It can exercise real package compatibility and publishing mechanics with internal artifacts that legitimately exist at this stage, such as `steward-common`, while reasoning about how a later shared test-library change would affect downstream suites.
 
 ## Later-school progression
 
@@ -106,10 +106,10 @@ Secure repository access, credentials and CI publishing permissions; scan applic
 Monitor repository availability, storage growth, failed publishing/download operations and backup/restore. Treat the artifact repository as a real internal service on which both delivery and quality pipelines can depend.
 
 ### Architect
-Reason about shared-library coupling, version compatibility, ownership boundaries and when a shared package is preferable to a service/API boundary. Evaluate whether `tsa-test-core` remains cohesive as additional consumers appear.
+Reason about shared-library coupling, version compatibility, ownership boundaries and when a shared package is preferable to a service/API boundary. `steward-common` is available as implemented evidence; `tsa-test-core` remains a future candidate and must not be evaluated as an existing shared library before Professional Engineer earns its extraction gate.
 
 ### Technical Steward
-Define approved-source policy, internal package ownership, version/lifecycle policy, retention, third-party dependency governance, end-of-life handling, provenance requirements and exception processes. Include ownership and compatibility policy for shared engineering libraries such as `tsa-test-core`.
+Define approved-source policy, internal package ownership, version/lifecycle policy, retention, third-party dependency governance, end-of-life handling, provenance requirements and exception processes. Apply concrete governance to shared artifacts that actually exist, and define a conditional ownership/compatibility policy for `tsa-test-core` that activates only if Professional Engineer later earns its extraction gate.
 
 ### Professional Engineer
 Use the independent capstone as a second real consumer of appropriate internal platform capabilities. Where justified, its automation project consumes an approved version of `tsa-test-core` from the internal repository and provides compatibility evidence. The capstone must remain independently designed; consuming a shared engineering foundation does not make it a clone of Steward.
