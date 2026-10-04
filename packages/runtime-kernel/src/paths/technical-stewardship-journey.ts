@@ -72,12 +72,12 @@ export const technicalStewardshipJourney: LearningJourney = {
         ]},
         { id: "reliability-engineer", title: "Reliability Engineer", paths: [
             module("reliability-and-sre", "Reliability and SRE Foundations", ["Reliability as a Quality Attribute", "Availability", "Failure and Recovery", "SRE Principles", "Toil", "Reliability and Risk Trade-offs"]),
+            module("service-level-engineering", "Service Level Engineering", ["SLIs", "SLOs", "SLAs", "Error Budgets", "Multi-window Burn-rate Alerts", "User-visible Reliability", "Lab: Define Steward SLOs"]),
             module("observability", "Observability", ["Observability vs Monitoring", "Logs, Metrics and Traces", "Telemetry Design", "Correlation and Context", "Instrumentation", "OpenTelemetry Concepts"]),
             module("distributed-tracing", "Distributed Tracing with OpenTelemetry and Tempo", ["Trace Context Propagation", "Synchronous and Asynchronous Spans", "Sampling", "Tempo Query Evidence", "Trace-to-log Correlation"]),
             module("logging", "Production Logging", ["Structured Logs", "Log Levels", "Correlation IDs", "Centralized Logging", "Useful vs Noisy Logs", "Privacy and Security in Logs"]),
             module("metrics-prometheus-grafana", "Metrics, Prometheus and Grafana", ["Counters, Gauges and Histograms", "Cardinality Economics", "Application and Infrastructure Metrics", "Prometheus Architecture", "Exporters", "PromQL", "Grafana", "Dashboard Design", "Lab: Instrument Steward API"]),
             module("observability-stack-integration", "Observability Stack Integration", ["Graylog, Prometheus, Grafana and Tempo Responsibilities", "Cross-signal Correlation", "Operational Investigation Paths"]),
-            module("service-level-engineering", "Service Level Engineering", ["SLIs", "SLOs", "SLAs", "Error Budgets", "Multi-window Burn-rate Alerts", "User-visible Reliability", "Lab: Define Steward SLOs"]),
             module("alerting-and-on-call", "Alerting and On-call", ["Symptoms vs Causes", "Actionable Alerts", "Alert Fatigue", "Severity", "Escalation", "Runbooks"]),
             module("alertmanager-implementation", "Prometheus Alertmanager Operations", ["Alert Routing", "Grouping and Inhibition", "Receivers", "Silences", "Failure and Delivery Evidence"]),
             module("database-stewardship", "Database Stewardship", ["PostgreSQL Operational Health", "Connections and Locks", "Query Behavior", "Maintenance", "Database Failure and Recovery"]),
