@@ -298,7 +298,7 @@ The learner must defend why each browser test belongs in a browser rather than a
 
 ---
 
-# Increment 5 — Reuse Boundary and tsa-test-core
+# Increment 5 — Reuse Boundary Candidate
 
 ## Goal
 
@@ -358,7 +358,7 @@ A helper being used twice inside Steward is not, by itself, proof that it belong
 
 ## Goal
 
-Turn `tsa-test-core` into a normal internal dependency rather than copied source.
+Do not create `tsa-test-core` yet. Record the candidate product-independent boundary and the evidence required from a genuine second consumer. Professional Engineer owns the later extraction gate; copied shared source remains prohibited.
 
 ## Required build
 
@@ -379,7 +379,7 @@ steward-tests pom.xml
 
 ## Required evidence
 
-- Versioned JAR in Nexus.
+- Proposed Maven coordinates, semantic-versioning policy and Nexus publication contract for the future library.
 - Steward resolves the artifact through Maven.
 - No source-copy or local-path final integration.
 - Candidate upgrade is tested before promotion.
@@ -447,7 +447,7 @@ The learner must demonstrate:
 - useful diagnostics and Allure evidence
 - controlled tags and execution portfolios
 - safe parallelism or an explicit reason it remains disabled
-- justified `tsa-test-core` extraction
+- justified `tsa-test-core` candidate boundary with extraction explicitly deferred to the two-consumer gate
 - Maven/Nexus dependency lifecycle
 - GitLab CI/CD continuous/scheduled execution
 - explicit unresolved risks that move to Security Steward or Reliability Engineer
