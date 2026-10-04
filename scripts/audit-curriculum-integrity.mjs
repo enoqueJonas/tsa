@@ -47,22 +47,38 @@ if (!/GitLab CI\/CD/.test(migrationExercise) || !/Jenkins/.test(migrationExercis
   failures.push("legacy CI migration exercise must explicitly preserve Jenkins-to-GitLab migration semantics");
 }
 
-// Compare the capstone plan with its executable registry. Other school outlines still
-// contain historical summaries and must be reconciled before enabling strict parity.
+// Compare reconciled school path IDs and order against executable registries.
 const planned = sources.get("technical-stewardship-journey.ts") ?? "";
-const professionalSection = planned.split('{ id: "professional-engineer", title:')[1]?.split("]},")[0] ?? "";
-const plannedCapstoneIds = [...professionalSection.matchAll(/module\("([^"]+)"/g)].map((m) => m[1]);
-const professionalRegistry = sources.get("professional-engineer.ts") ?? "";
-const registrySection = professionalRegistry.split("export const professionalEngineerPaths:")[1] ?? "";
-const registeredSymbols = registrySection.match(/=\s*\[([^\]]+)\]/)?.[1]?.split(",").map((s) => s.trim()).filter(Boolean) ?? [];
-const runtimeCapstoneIds = registeredSymbols.map((symbol) => {
-  const definition = professionalRegistry.split(`export const ${symbol}:`)[1] ?? "";
-  return definition.match(/\bid:\s*"([^"]+)"/)?.[1] ?? null;
-});
-if (!plannedCapstoneIds.length || !runtimeCapstoneIds.length ||
-    runtimeCapstoneIds.includes(null) ||
-    JSON.stringify(plannedCapstoneIds) !== JSON.stringify(runtimeCapstoneIds)) {
-  failures.push(`Professional Engineer plan/runtime path drift: planned=${plannedCapstoneIds.join(",")} runtime=${runtimeCapstoneIds.join(",")}`);
+const schoolRegistries = {
+  "system-thinker": ["system-thinker.ts", "systemThinkerPaths"],
+  "delivery-engineer": ["delivery-engineer.ts", "deliveryEngineerPaths"],
+  "cloud-engineer": ["cloud-engineer.ts", "cloudEngineerPaths"],
+  "quality-steward": ["quality-steward.ts", "qualityStewardPaths"],
+  "security-steward": ["security-steward.ts", "securityStewardPaths"],
+  "reliability-engineer": ["reliability-engineer.ts", "reliabilityEngineerPaths"],
+  architect: ["architect.ts", "architectPaths"],
+  "technical-steward": ["technical-steward.ts", "technicalStewardPaths"],
+  "professional-engineer": ["professional-engineer.ts", "professionalEngineerPaths"],
+};
+for (const [schoolId, [file, arrayName]] of Object.entries(schoolRegistries)) {
+  const section = planned.split(`{ id: "${schoolId}", title:`)[1]?.split("]},")[0] ?? "";
+  const expected = [...section.matchAll(/module\("([^"]+)"/g)].map((m) => m[1]);
+  const registry = sources.get(file) ?? "";
+  const tail = registry.split(`export const ${arrayName}:`)[1] ?? "";
+  const symbols = tail.match(/=\s*\[([^\]]+)\]/)?.[1]?.split(",").map((s) => s.trim()).filter(Boolean) ?? [];
+  const actual = symbols.map((symbol) => {
+    const definition = registry.split(`export const ${symbol}`)[1] ?? "";
+    const direct = definition.match(/\bid:\s*"([^"]+)"/)?.[1];
+    const viaPath = definition.match(/=\s*path\("([^"]+)"/)?.[1];
+    if (direct || viaPath) return direct ?? viaPath;
+    // Some milestones are imported as already-authored paths.
+    const importSource = registry.match(new RegExp(`import\\s*\\{[^}]*\\b${symbol}\\b[^}]*\\}\\s*from\\s*"([^"]+)"`))?.[1];
+    const imported = importSource ? sources.get(importSource.replace("./", "") + ".ts") ?? "" : "";
+    return imported.match(new RegExp(`(?:export const )?${symbol}[^=]*=\\s*\\{\\s*id:\\s*"([^"]+)"`))?.[1] ?? null;
+  });
+  if (!expected.length || !actual.length || actual.includes(null) || JSON.stringify(expected) !== JSON.stringify(actual)) {
+    failures.push(`planned/runtime path drift in ${schoolId}: planned=${expected.join(",")} runtime=${actual.join(",")}`);
+  }
 }
 
 if (failures.length) {
