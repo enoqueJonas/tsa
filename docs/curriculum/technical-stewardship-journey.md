@@ -480,14 +480,14 @@ Learn quality engineering deeply and build a real automation framework against t
 - BrowserStack or equivalent cloud test infrastructure
 - Local vs remote execution
 
-## Module 8 — Reusable Test Infrastructure and Internal Distribution
+## Module 8 — Reusable Test Infrastructure and Internal Distribution Preparation
 - Audit the proven API/browser/configuration/evidence infrastructure for genuine cross-project reuse
 - Keep Steward clients, contracts, page objects, workflows and business assertions local
 - Keep approved generic candidates inside `steward-tests` until a genuine second consumer proves the boundary
 - Define a small intentional public API and compatibility policy
-- Build a versioned Maven JAR
-- Prepare Nexus coordinates, versioning and compatibility evidence for later extraction/publication
-- Prove consumer compatibility before promotion
+- Design the future Maven artifact boundary and exercise publication mechanics only with artifacts that already legitimately exist
+- Prepare proposed `tsa-test-core` Nexus coordinates, versioning and compatibility expectations for later extraction/publication
+- Defer creation, publication and consumer migration of `tsa-test-core` until Professional Engineer proves the genuine second-consumer gate
 
 ## Module 9 — Non-functional Quality
 - Performance concepts
@@ -522,6 +522,14 @@ Learn quality engineering deeply and build a real automation framework against t
 - Quality gates
 - Test selection
 - Failure triage
+
+## Module 11 — Continuous and Scheduled Quality Execution
+- Separate merge-request feedback from scheduled/deeper regression evidence
+- Define governed suites/tags and execution cadence from risk and runtime cost
+- Run unattended API/browser quality evidence through GitLab CI/CD
+- Preserve first-attempt evidence across retries and distinguish product, framework, environment and precondition failures
+- Track flake, quarantine ownership/aging and operability signals rather than hiding instability behind retries
+- Make scheduled execution diagnosable by another engineer without local workstation state
 
 ## Labs
 - Write Steward API quality strategy
