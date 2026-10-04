@@ -80,7 +80,7 @@ Connect debt/health to delivery, security, reliability, cost and strategic capab
 Turn decisions into discoverable organizational memory that engineers can actually use and challenge.
 
 ### 13. Technical Stewardship Review
-Synthesize actual-stack inventory, strategy/capability choices, risk, controls, architecture/service governance, lifecycle, debt/health and ownership into a defensible planning-cycle review.
+Synthesize the evidence-backed actual-stack inventory, strategy/capability choices, risk, controls, architecture/service governance, lifecycle, debt/health and ownership into a defensible planning-cycle review. The inventory must preserve explicit introduction, migration and retirement history; it must not resurrect a product or shared artifact merely because an earlier school once required or proposed it.
 
 ## Boundary with Architect
 
