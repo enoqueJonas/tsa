@@ -146,9 +146,11 @@ Build a serious backend system locally and develop practical software craft. The
 - Documentation
 - Error design
 - Basic performance awareness
+- Dependency ownership and transitive-dependency reasoning
+- Evidence-gated internal-package boundaries: assess `steward-common`, but extract it only when multiple real consumers prove a stable domain-independent capability
 
 ## Labs
-The learner incrementally constructs Steward API rather than completing disconnected exercises.
+The learner incrementally constructs Steward API rather than completing disconnected exercises. Software Craft includes an internal-package boundary assessment; a defer decision is correct when the reuse gate is not satisfied.
 
 ## Milestone — Steward API v1
 A multi-user, documented REST API with meaningful domain rules, PostgreSQL persistence, relational queries, JWT authentication, authorization/permissions, validation, robust errors, filtering/search/pagination, migrations, configuration, logging, and API documentation. The domain must be complex enough to require relationships, non-trivial queries, and authorization rules.
@@ -158,34 +160,61 @@ A multi-user, documented REST API with meaningful domain rules, PostgreSQL persi
 # 03 — System Thinker
 
 ## Purpose
-Move from writing endpoints to understanding systems, boundaries, dependencies, behavior and decisions.
+Move from writing endpoints to understanding systems, boundaries, dependencies, behavior and decisions. The school introduces enterprise integration as system-boundary reasoning before later schools provide the production infrastructure and security controls.
 
-## Modules
-- Requirements and problem framing
+The executable path registry in `system-thinker.ts` is authoritative for path composition and order. This specification describes the intended capability progression.
+
+## Module 1 — Requirements and Problem Framing
 - Functional and quality requirements
-- System boundaries and context
-- Modeling software systems
-- Components and dependencies
-- Data flow and integration
-- State and lifecycle thinking
-- Failure modes
-- Coupling and cohesion foundations
-- Architecture characteristics introduction
-- C4-style system communication
-- Architecture Decision Records
-- Trade-off analysis
+- Actors, constraints, assumptions and measurable outcomes
+- Problem framing before solution selection
 
-## Labs
-- Create Steward API system context
-- Identify actors and boundaries
-- Model components and dependencies
-- Map important data flows
-- Analyze failure scenarios
-- Identify quality attributes
-- Write ADRs for real decisions
+## Module 2 — System Boundaries and Context
+- System context and external actors
+- Trust/ownership boundaries and dependencies
+- C4-style communication
 
-## Milestone
-**Steward API System Design Portfolio** — diagrams, requirements, failure analysis, quality attributes, ADRs, and justified design decisions for the existing application.
+## Module 3 — Modeling Software Systems
+- Static and dynamic views
+- State/lifecycle reasoning
+- Model selection for engineering questions
+
+## Module 4 — Components and Dependencies
+- Responsibility boundaries
+- Coupling/cohesion foundations
+- Dependency direction and failure implications
+
+## Module 5 — Data Flow and Integration
+- Synchronous/asynchronous interactions
+- Data ownership and authority
+- Integration contracts and failure semantics
+
+## Module 6 — Enterprise File and Batch Integration
+- File interfaces as versioned contracts
+- Controlled legacy FTP baseline and batch lifecycle/idempotency
+- Shared-filesystem versus managed-transfer semantics
+- Model NFS semantics without deploying NFS; hand implementation to Platform Builder
+- Prepare the later FTP-to-SFTP security migration without performing it early
+
+## Module 7 — SOAP and XML Enterprise Integration
+- Contract-heavy synchronous enterprise protocols
+- XML/SOAP boundaries, validation and failure evidence
+
+## Module 8 — Distributed State and Messaging
+- Asynchronous messaging and distributed state
+- Delivery semantics, ownership and failure trade-offs
+
+## Module 9 — Failure Modes
+- Dependency and integration failure analysis
+- Degraded behavior and recovery reasoning
+
+## Module 10 — Architecture Decisions and Trade-offs
+- Architecture characteristics
+- ADRs and explicit alternatives
+- Evidence-backed trade-off analysis
+
+## Module 11 — Steward API System Design Portfolio
+**Milestone:** diagrams, requirements, enterprise-integration boundaries, failure analysis, quality attributes, ADRs and justified design decisions for the existing application. This remains a design milestone; later schools implement and operate the required infrastructure.
 
 ---
 
