@@ -10,9 +10,9 @@ TSA will practice this as a cross-journey capability using the continuing Stewar
 
 ## Continuing scenario
 
-During Builder, the learner extracts a small genuinely reusable Python package from Steward API, provisionally named `steward-common`. It remains a normal locally consumed package at this stage. The purpose is to create a real producer/consumer dependency that later creates the need for internal distribution.
+During Builder, the learner audits Steward for a genuinely reusable Python-package boundary, provisionally named `steward-common`. The package is extracted only if more than one real consumer already demonstrates a stable domain-independent capability; otherwise Builder records the candidate/defer decision. The curriculum must not manufacture a shared library merely to create later artifact-management work.
 
-During Delivery Engineer, a second internal consumer needs the package. Copying source code between repositories is explicitly rejected. The learner deploys and operates an internal artifact repository in the homelab, with Sonatype Nexus Repository as the reference implementation unless a later curriculum decision selects an equivalent product.
+During Delivery Engineer, Nexus is independently earned by immutable container distribution and is deployed/operated as the internal artifact repository. If `steward-common` has already earned extraction through real consumers, Delivery also publishes and consumes it through Nexus. Otherwise Python/npm package mechanics use explicitly labeled training fixtures without inventing permanent Steward architecture.
 
 During Quality Steward, the same principle is applied to test engineering. The Steward automation framework is built first as a Java 17+ Maven project using JUnit 5, REST Assured and Playwright Java. Quality Steward identifies and documents candidate generic testing infrastructure, but keeps it inside `steward-tests`. Extraction into a reusable Maven library named `tsa-test-core` is deferred until Professional Engineer supplies a genuine second compatible test consumer. Steward-specific API clients, page/workflow objects and domain assertions always remain in the Steward test project.
 
@@ -39,7 +39,7 @@ CI -> test -> build -> version -> publish
                                       future system tests
 ```
 
-## Builder — create an internal dependency
+## Builder — evaluate an internal dependency boundary
 
 Builder introduces the software-design side of the problem before repository infrastructure exists.
 
@@ -50,11 +50,11 @@ Add to Software Craft:
 - semantic versioning for a library
 - building/versioning a Python distribution package
 - consuming a local/private Python package during development
-- Lab: Extract `steward-common` from Steward API
+- Lab: Audit the `steward-common` Boundary; extract only if the real-consumer gate is satisfied
 
 Builder milestone evidence should include a small internal package only when the extracted behavior is genuinely reusable. The learner must not create a shared library merely to satisfy the curriculum.
 
-The package is not yet published to Nexus. Builder establishes the dependency and the design problem; Delivery Engineer solves distribution and lifecycle management.
+If the package earns extraction, it is not yet published to Nexus. Builder establishes the justified boundary; Delivery Engineer later solves durable distribution and lifecycle management. If the gate is not met, the defer decision is the correct Builder outcome.
 
 ## Delivery Engineer — own the artifact platform
 
