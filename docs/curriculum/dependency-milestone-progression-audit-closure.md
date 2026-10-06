@@ -28,7 +28,7 @@ Reassessment remains important, but it is not a substitute for implementation.
 | Delivery Engineer | No blocking ordering defect confirmed | Delivery milestone already proves source→CI→Nexus→promotion→runtime→failure/recovery; no replacement needed. |
 | Cloud Engineer | No blocking ordering defect confirmed | Cloud milestone already provisions and operates the real internet environment; reassessment/cost work follows implementation evidence. |
 | Quality Steward | No blocking ordering defect confirmed | Quality milestone is an evidence-producing quality platform, not a review-only artifact. |
-| Security Steward | Dependency chain remains coherent: foundations/threats → host/delivery → identity/secrets/Vault → PKI/federation → migration/application hardening. | **Remediated** — internal PKI now has a live machine-trust milestone before the ownership/Vault-PKI ADR. |
+| Security Steward | Dependency chain remains coherent: foundations → threat modeling → web/API threats → vulnerability laboratory → application security → Linux/network → container/delivery → artifact signing → identity/secrets → Vault → PKI → federation → secure-file migration → milestone. | **Remediated** — internal PKI now has a live machine-trust milestone before the ownership/Vault-PKI ADR. |
 | Reliability Engineer | **Remediated** — logging, metrics and distributed tracing are implemented before Observability Stack Integration. | Reliability program remains implementation/operations driven. |
 | Architect | **Remediated** — Domain Modeling now precedes Modularity/Architectural Styles so structure follows understood domain boundaries. | Architect milestone remains an architecture-evolution milestone; its product is an evidence-backed architecture decision/evolution, appropriate to the school. |
 | Technical Steward | No blocking ordering defect confirmed | Governance/standards/leadership outputs are the actual capability of the school; they are not mistaken for infrastructure implementation. |
@@ -72,10 +72,4 @@ The audit also did not add more products merely to make milestones look larger. 
 
 ## Final gate
 
-Curriculum progression remediation passed its structural build gate with:
-
-```bash
-pnpm build
-```
-
-A clean build is the final structural gate. It does not replace the pedagogical audit above; both must be satisfied.
+Curriculum progression remediation passed its executable integrity and structural build gates with `pnpm audit:curriculum` and `pnpm build`. The integrity audit protects runtime/path parity and selected cross-school lifecycle boundaries; the build protects structural/type integration. Neither replaces the pedagogical audit above.
