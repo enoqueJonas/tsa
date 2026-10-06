@@ -35,7 +35,7 @@ See [Technical Stewardship Journey](./technical-stewardship-journey.md) for the 
 
 Some engineering capabilities deliberately begin in one school and mature across several later schools. They are recorded separately when reducing them to a single module would lose that progression.
 
-- [Internal Dependency and Artifact Management](./internal-dependency-management.md) — Builder creates a genuinely reusable internal package; Delivery Engineer builds the private artifact/package platform and CI publication flow; later schools secure, test, observe, architect and govern the dependency ecosystem.
+- [Internal Dependency and Artifact Management](./internal-dependency-management.md) — Builder evaluates an evidence-gated internal-package boundary and extracts only when real consumers justify it; Delivery Engineer builds the private artifact/package platform independently through real artifact-distribution needs; later schools secure, test, observe, architect and govern artifacts that actually exist.
 - [Enterprise Capability Progression](./enterprise-capability-progression.md) — defines the budget-conscious enterprise reference stack and the cross-school progression for Rocky Linux, Ansible, OpenTofu/Terraform concepts, GitLab CI/CD, Redis, RabbitMQ/Kafka comparison, Kong, Keycloak, Kubernetes/OpenShift, Argo CD, secrets management, database operations and the way Steward must evolve only when a real engineering need justifies new infrastructure.
 - [Network Access and Exposure Progression](./network-access-and-exposure-progression.md) — defines the public application path, private service path and VPN/private management path across Platform Builder, Delivery Engineer, Cloud Engineer, Security Steward and Reliability Engineer, including learner-owned homelab exposure through a controlled public edge.
 - [Curriculum Breadth Audit](./breadth-audit.md) — records the transition from Build Wide to Build Deep, the curriculum-wide continuity review, deep-authoring watch items and the lesson/milestone evidence standards.
@@ -43,7 +43,16 @@ Some engineering capabilities deliberately begin in one school and mature across
 - [Steward Increment Contract](./steward-increment-contract.md) — defines the canonical build order for the continuing Steward system and the starting-state, assignment, observable-behavior and acceptance-criteria contract for cumulative exercises.
 - [Content Quality and Enterprise Alignment Audit](./content-quality-audit.md) — records the completed first curriculum-wide Content Quality baseline pass, enterprise-capability coverage, closure of the original breadth-audit watch items and the remaining evidence-driven maintenance model.
 
-When an older module summary in `technical-stewardship-journey.md` conflicts with a later cross-journey capability specification, the newer capability specification is authoritative until the summary is synchronized. Runtime learner-facing paths must follow the authoritative capability specifications rather than preserve stale tool choices.
+## Specification authority
+
+TSA uses an explicit authority hierarchy so documentation drift cannot silently redefine the learner journey:
+
+1. **Executable school/path registries plus `pnpm audit:curriculum`** are authoritative for runtime path inventory, composition and order.
+2. **Canonical cross-journey progression/evolution contracts** are authoritative for technology ownership, capability handoffs and artifact lifecycle gates.
+3. **`technical-stewardship-journey.md`** describes curriculum-wide pedagogical intent and must be synchronized to the two layers above.
+4. **Historical audit/closure documents** preserve evidence about what was found and remediated; they do not override current runtime or canonical contracts.
+
+When these layers disagree, repair the stale lower-authority representation rather than changing working runtime merely to match old prose. A newer document is not automatically authoritative simply because it was written later.
 
 ## Learning model
 
@@ -90,9 +99,9 @@ Not every lesson needs every block. Structure follows the learning objective rat
 
 ## Curriculum phase
 
-**Build Wide is complete. Build Deep is complete. The first Content Quality and Enterprise Alignment baseline pass is complete.**
+**Build Wide is complete. Build Deep is complete across all 12 schools. The first Content Quality and Enterprise Alignment baseline pass is complete.**
 
-The academy now moves into an **evidence-driven maintenance and product-development phase**. Curriculum changes should be triggered by learner evidence, technical correction, real Steward evolution or a newly demonstrated capability gap rather than by a desire to add more modules or more tools.
+The academy is now in a **cross-school integrity, evidence-driven maintenance and product-development phase**. Structural audits protect runtime ordering, capability handoffs and lifecycle gates while learner evidence and technical correction continue to drive content maintenance. Curriculum changes should be triggered by learner evidence, technical correction, real Steward evolution or a newly demonstrated capability gap rather than by a desire to add more modules or more tools.
 
 The progression is now:
 
