@@ -77,6 +77,21 @@ for (const required of ["Earn and Publish tsa-test-core from Two Real Products",
   }
 }
 
+// Security Steward may secure internal packages only when earlier evidence says they exist.
+const securitySupplyChain = sources.get("security-container-delivery-deep.ts") ?? "";
+for (const forbidden of [
+  "downloads tsa-test-core",
+  "Steward's chain includes source control, CI, Nexus, steward-common, tsa-test-core",
+  "Credentials that publish steward-common or tsa-test-core",
+  "resolve steward-common and tsa-test-core from approved internal sources",
+  "Verify steward-common and tsa-test-core resolve from intended repositories and versions",
+]) {
+  if (securitySupplyChain.includes(forbidden)) failures.push(`Security Steward must not assume deferred shared packages exist: ${forbidden}`);
+}
+for (const required of ["only the internal packages whose earlier extraction gates were actually earned", "only internal packages that actually exist", "only when they exist in the release/dependency evidence"]) {
+  if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
+}
+
 // Preserve the System Thinker -> Platform Builder file-integration ownership boundary.
 // System Thinker may model shared-filesystem semantics, but must not require the later NFS implementation.
 const systemFileIntegration = sources.get("system-thinker-enterprise-file-integration-deep.ts") ?? "";
@@ -136,4 +151,4 @@ if (failures.length) {
   console.error("Curriculum integrity audit failed:\n- " + failures.join("\n- "));
   process.exit(1);
 }
-console.log(`Curriculum integrity audit passed: ${files.length} runtime path files checked; school wiring, planned/runtime path parity, lesson-array reachability, milestone composition, canonical CI architecture, evidence-gated shared-library lifecycles, deferred shared-test-library gates across Quality runtime and cross-school file-integration ownership are clean.`);
+console.log(`Curriculum integrity audit passed: ${files.length} runtime path files checked; school wiring, planned/runtime path parity, lesson-array reachability, milestone composition, canonical CI architecture, evidence-gated shared-library lifecycles across Builder, Delivery, Quality and Security, plus cross-school file-integration ownership, are clean.`);
