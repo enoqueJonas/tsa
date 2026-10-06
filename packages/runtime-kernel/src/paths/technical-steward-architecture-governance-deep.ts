@@ -8,7 +8,7 @@ const resourcesByArchGov:Record<string,LearningResource[]>={
  exceptions:[adr],lifecycle:[techRadar,adr],"decision-ownership":[adr],context:[atam,adr],
 };
 
-const scenario = "Treat Steward as a mature organization-owned technology service with established architecture evidence, ADRs, technical-risk records, control evidence, internal packages, Nexus, cloud/VPS infrastructure, PostgreSQL, delivery pipelines and operational history. Architecture governance must preserve decision quality and lifecycle accountability without becoming a duplicate architecture school or approval bureaucracy.";
+const scenario = "Treat Steward as a mature organization-owned technology service with established architecture evidence, ADRs, technical-risk records, control evidence, any internal packages that actually exist, Nexus, the infrastructure and hosting model retained by Architect, PostgreSQL, delivery pipelines and operational history. Architecture governance must preserve decision quality and lifecycle accountability without becoming a duplicate architecture school or approval bureaucracy.";
 const deliverables = ["Architecture-governance artifact", "Evidence and rationale", "Ownership, exception or lifecycle record"];
 const criteria = ["The governance mechanism is tied to a real decision or risk.", "Ownership and decision rights are explicit.", "The mechanism is proportionate and avoids unnecessary approval gates."];
 function readingPractice(id: string, title: string, body: string, instructions: string[]): Lesson {
