@@ -113,6 +113,16 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Technical Steward governs only internal packages that actually exist; tsa-test-core remains future-gated.
+const thirdPartyLifecycle = sources.get("technical-steward-third-party-lifecycle-risk-deep.ts") ?? "";
+const handbookStandards = sources.get("technical-steward-handbook-standards-deep.ts") ?? "";
+for (const required of ["final Architect actual-stack inventory", "`steward-common` is an internal product only if its earlier extraction gate was earned", "`tsa-test-core` does not exist yet at Technical Steward", "future Professional Engineer candidate"]) {
+  if (!thirdPartyLifecycle.includes(required)) failures.push(`Technical Steward package-estate invariant is missing: ${required}`);
+}
+for (const required of ["internal packages that actually exist", "Include `steward-common` only if its earlier extraction gate was earned", "do not write support policy for a package that does not exist yet"]) {
+  if (!handbookStandards.includes(required)) failures.push(`Technical Steward handbook package invariant is missing: ${required}`);
+}
+
 // Source recovery does not substitute for recovery of an immutable promoted artifact identity.
 const drArtifactRecovery = sources.get("reliability-data-protection-disaster-recovery-deep.ts") ?? "";
 for (const required of ["Git source at the same commit is not proof", "previously promoted OCI digest", "signature, SBOM and provenance identity", "same required release identity"]) {
