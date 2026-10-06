@@ -47,7 +47,8 @@ The primary learning path must remain practical for a learner without enterprise
 | Secrets management | secrets-lifecycle concepts plus a self-hosted Vault-style implementation where practical | cloud secret managers and platform-native secret stores |
 | Metrics | Prometheus | managed metrics platforms |
 | Visualization | Grafana | enterprise observability suites |
-| Logs | TSA-selected centralized logging stack | Loki/ELK/OpenSearch-style alternatives |
+| Logs | Graylog | Loki/ELK/OpenSearch-style alternatives |
+| Distributed tracing | OpenTelemetry instrumentation/context + one deliberately selected tracing backend | alternative tracing backends and managed observability platforms |
 
 The table identifies teaching defaults, not permanent architectural mandates. Architect and Technical Steward must be able to challenge these choices using evidence.
 
@@ -165,7 +166,7 @@ Secrets work must progress beyond `.env`. Teach classification, storage, access 
 
 ### Reliability Engineer — operate the whole platform
 
-Observability must cover the expanded system, not only the Django process. Learners should observe and reason about Steward, PostgreSQL, Redis, RabbitMQ, Kong, GitLab CI/CD/deployment components and Kubernetes/OpenShift where present.
+Observability must cover the expanded system, not only the Django process. Reliability starts from SLIs and diagnostic questions, then implements Graylog for centralized logging, Prometheus for metrics, Grafana for operational visualization, and OpenTelemetry plus one deliberately selected tracing backend for distributed tracing. Learners should observe and reason about Steward, PostgreSQL, Redis, RabbitMQ, Kong, GitLab CI/CD/deployment components and Kubernetes/OpenShift where present.
 
 Database operations deepen here into a practical **database stewardship / DBA-awareness** strand:
 
@@ -225,8 +226,9 @@ Ansible  ---> host/configuration            ^
                                              |
 Environment Git ---> Argo CD ----------------+
 
-Prometheus ---> Grafana
-central logs / traces ---> operational investigation
+Graylog --------------------\
+Prometheus ---> Grafana -----+--> operational investigation
+OpenTelemetry ---> tracing --/
 ```
 
 This diagram is a capability map, **not a requirement that every component must remain in the final production architecture**. Steward stays a credible product rather than a technology demo. Each addition needs a curriculum-established reason, measurable or inspectable evidence, documented trade-offs and an explicit failure model.
