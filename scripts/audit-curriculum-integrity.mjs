@@ -120,15 +120,15 @@ for (const required of ["scope follows the inherited active Security baseline", 
 }
 
 // Canonical contracts distinguish earned implementation checkpoints from the retained post-Architect estate.
-const networkExposureCanonical = await readFile(join(curriculumDocsDir, "network-access-and-exposure-progression.md"), "utf8");
+const networkExposureCanonical = fs.readFileSync(path.join(docsDir, "network-access-and-exposure-progression.md"), "utf8");
 for (const required of ["inherited active topology", "Required earlier implementation history does not require Reliability to recreate a component", "actual retained estate"]) {
   if (!networkExposureCanonical.includes(required)) failures.push(`Canonical exposure lifecycle invariant is missing: ${required}`);
 }
-const incrementSecurityCanonical = await readFile(join(curriculumDocsDir, "steward-increment-contract.md"), "utf8");
+const incrementSecurityCanonical = fs.readFileSync(path.join(docsDir, "steward-increment-contract.md"), "utf8");
 for (const required of ["self-hosted Vault checkpoint with real leased/dynamic credentials is required", "Keycloak/federation checkpoint is required", "a defer decision is valid only where the canonical progression has not made the earned checkpoint mandatory"]) {
   if (!incrementSecurityCanonical.includes(required)) failures.push(`Canonical Security earned-gate invariant is missing: ${required}`);
 }
-const stewardshipJourneyCanonical = await readFile(join(curriculumDocsDir, "technical-stewardship-journey.md"), "utf8");
+const stewardshipJourneyCanonical = fs.readFileSync(path.join(docsDir, "technical-stewardship-journey.md"), "utf8");
 if (!stewardshipJourneyCanonical.includes("actual architecture and evidence baseline produced by Architect")) failures.push("Canonical journey must hand Technical Steward the actual Architect estate.");
 
 // Technical Steward governance must follow the final Architect estate and never invent package/repository ownership.
@@ -165,9 +165,9 @@ for (const required of ["Include Redis, RabbitMQ, Nexus and `steward-common` onl
 if (architectFundamentals.includes("At this point steward-common should exist") || architectFundamentals.includes("the published steward-common package")) failures.push("Architect Fundamentals must not assume steward-common extraction.");
 
 // Architect governance follows the actual inherited estate rather than a timeless fixed stack.
-const architectGovernance = sources.get("architect-evaluation-governance-deep.ts") ?? "";
+const architectActualEstateGovernance = sources.get("architect-evaluation-governance-deep.ts") ?? "";
 for (const required of ["current architecture must be reconstructed from the inherited Reliability baseline", "capabilities that actually remain active", "retired or deferred capabilities as historical evidence", "Nexus when retained, or the explicitly migrated replacement"]) {
-  if (!architectGovernance.includes(required)) failures.push(`Architect actual-estate governance invariant is missing: ${required}`);
+  if (!architectActualEstateGovernance.includes(required)) failures.push(`Architect actual-estate governance invariant is missing: ${required}`);
 }
 
 // Security threat-model scope preserves the earned steward-common gate and future tsa-test-core boundary.
@@ -184,9 +184,9 @@ for (const required of ["Cloud-stage system", "currently implemented Kong edge",
 if (cloudGitOps.includes("why the final system still keeps GitLab CI/CD, Nexus, OpenTofu, Kong")) failures.push("Cloud must not project its checkpoint topology as the permanent final system.");
 
 // Professional tsa-test-core extraction keeps a non-Java capstone independent while still requiring a genuine Java second consumer.
-const professionalBuild = sources.get("professional-engineer-independent-build-deep.ts") ?? "";
+const professionalQualifyingBuild = sources.get("professional-engineer-independent-build-deep.ts") ?? "";
 for (const required of ["preferred genuine second consumer", "separate genuine Java test-consumer increment", "qualifying second Java consumer", "Two-consumer compatibility runs"]) {
-  if (!professionalBuild.includes(required)) failures.push(`Professional qualifying-consumer invariant is missing: ${required}`);
+  if (!professionalQualifyingBuild.includes(required)) failures.push(`Professional qualifying-consumer invariant is missing: ${required}`);
 }
 
 // Technical Steward risk, leadership and debt operate on the actual estate and preserve future package gates.
