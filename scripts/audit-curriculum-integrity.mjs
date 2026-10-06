@@ -113,6 +113,12 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Security threat-model scope preserves the earned steward-common gate and future tsa-test-core boundary.
+const securityMilestone = sources.get("security-steward-milestone-deep.ts") ?? "";
+for (const required of ["Include steward-common only if its earlier extraction gate was earned", "preserve the defer evidence otherwise", "Record tsa-test-core as future work rather than an existing component"]) {
+  if (!securityMilestone.includes(required)) failures.push(`Security package-scope invariant is missing: ${required}`);
+}
+
 // Cloud implementation history is a checkpoint, not a permanent post-Architect topology.
 const cloudGitOps = sources.get("cloud-orchestration-gitops-deep.ts") ?? "";
 for (const required of ["Cloud-stage system", "currently implemented Kong edge", "later architecture work may retain, simplify, replace or retire components"]) {
