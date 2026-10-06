@@ -119,6 +119,12 @@ for (const required of ["two competing workforce authorities", "Steward is not d
   if (!directoryFederation.includes(required)) failures.push(`Directory federation authority invariant is missing: ${required}`);
 }
 
+// Preserve public-TLS and internal workload-PKI ownership boundaries.
+const internalPki = sources.get("security-internal-pki-machine-trust-deep.ts") ?? "";
+for (const required of ["Public ACME remains responsible for the internet-facing Kong certificate", "one authoritative internal workload-PKI design, not two permanent issuers"]) {
+  if (!internalPki.includes(required)) failures.push(`Internal PKI authority invariant is missing: ${required}`);
+}
+
 // Preserve the Cloud -> Security secrets handoff and evidence-earned Vault implementation.
 const cloudSecretsBoundary = sources.get("cloud-orchestration-gitops-deep.ts") ?? "";
 const securityIdentitySecrets = sources.get("security-identity-secrets-deep.ts") ?? "";
