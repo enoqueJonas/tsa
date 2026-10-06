@@ -113,6 +113,12 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Professional tsa-test-core extraction keeps a non-Java capstone independent while still requiring a genuine Java second consumer.
+const professionalBuild = sources.get("professional-engineer-independent-build-deep.ts") ?? "";
+for (const required of ["preferred genuine second consumer", "separate genuine Java test-consumer increment", "qualifying second Java consumer", "Two-consumer compatibility runs"]) {
+  if (!professionalBuild.includes(required)) failures.push(`Professional qualifying-consumer invariant is missing: ${required}`);
+}
+
 // Technical Steward risk, leadership and debt operate on the actual estate and preserve future package gates.
 const technicalRisk = sources.get("technical-steward-technology-risk-deep.ts") ?? "";
 const technicalLeadership = sources.get("technical-steward-technical-leadership-deep.ts") ?? "";
