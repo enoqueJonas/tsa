@@ -104,7 +104,7 @@ const guidance: Record<Topic, Guidance> = {
     },
     "CI/CD Identities and Least Privilege": {
         intro: "Pipelines are machine actors with real authority. Their identities should be scoped to the smallest repositories, environments and actions required for each stage.",
-        steward: "A test job that only downloads tsa-test-core should not share the same credentials as a release job that can publish packages or deploy production Steward.",
+        steward: "A test job that only reads an earned internal package should not share the same credentials as a release job that can publish packages or deploy production Steward. If no shared test library exists yet, preserve that absence.",
         practice: ["Inventory CI identities and permissions.", "Separate read, publish and deploy capabilities.", "Reduce one overbroad credential or permission.", "Verify the intended pipeline still succeeds."],
         reflection: "Why should CI jobs be treated as separate actors instead of one trusted pipeline?",
     },
@@ -152,7 +152,7 @@ const guidance: Record<Topic, Guidance> = {
     },
     "Package Provenance and Integrity": {
         intro: "Integrity answers whether an artifact changed; provenance answers where it came from and how it was produced. Strong release evidence connects artifact identity back to an expected build process and source revision.",
-        steward: "A steward-common version should be traceable to source and pipeline execution rather than trusted only because a file with that version exists in Nexus.",
+        steward: "When an internal package exists, its version should be traceable to source and pipeline execution rather than trusted only because a file with that version exists in Nexus.",
         practice: ["Select one internal package release.", "Trace it to source revision and build job.", "Capture digest or immutable artifact identity.", "Document any provenance gap."],
         reflection: "Why is a checksum useful but insufficient as full provenance evidence?",
     },
@@ -176,7 +176,7 @@ const guidance: Record<Topic, Guidance> = {
     },
     "Protecting Internal Publishing Credentials": {
         intro: "Publishing credentials can alter what every downstream consumer trusts. They deserve narrow scope, short lifetime where possible, protected storage and strong auditability.",
-        steward: "Credentials that publish steward-common or tsa-test-core should be available only to the release job and must not also provide Nexus administration capability.",
+        steward: "Credentials that publish an earned internal package should be available only to the release job and must not also provide Nexus administration capability.",
         practice: ["Inspect how internal publishing credentials are stored and injected.", "Verify scope and repository permissions.", "Reduce one exposure or excessive permission.", "Confirm logs and artifacts do not contain the secret."],
         reflection: "Why are internal package-publishing credentials potentially more dangerous than ordinary package-read credentials?",
     },
