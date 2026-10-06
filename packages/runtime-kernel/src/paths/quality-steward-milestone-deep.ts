@@ -88,7 +88,7 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
             "Document product risks, test levels, environment strategy and execution cadence.",
             "Define which checks are blocking, advisory or manually reviewed.",
             "Document test-data, parallel-isolation, oracle/assertion, retry, quarantine and diagnostic policies.",
-            "For independently delivered consumers/providers, document where compatibility contracts are verified before promotion and how obsolete contracts are retired safely."
+            "For independently delivered consumers/providers, document where compatibility contracts are verified before promotion and how obsolete contracts are retired safely.",
             "Record the boundary between Steward domain test code and reusable-infrastructure candidates, and attach the Professional Engineer transfer criteria. tsa-test-core must not exist yet.",
             "List residual quality risks deliberately handed to later Security and Reliability work."
           ],
@@ -107,7 +107,7 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
           instructions: [
             "Execute representative unit/component and API/integration suites, including the lifecycle test that separates synchronous API success from eventual outbox → RabbitMQ → consumer completion.",
             "For one high-risk test, defend the expected-result oracle independently from the implementation and prove the assertions would detect an intentionally wrong side effect or invariant.",
-            "Run a parallel-safe slice concurrently and prove test-data ownership/cleanup prevents worker interference; keep one explicitly unsafe scenario serialized with rationale."
+            "Run a parallel-safe slice concurrently and prove test-data ownership/cleanup prevents worker interference; keep one explicitly unsafe scenario serialized with rationale.",
             "Prove the Maven execution boundary: Surefire owns the intended fast unit/component selection in `test`, while Failsafe owns the intended integration selection through `integration-test`/`verify`, and a failing integration test makes `mvn verify` fail.",
             "Execute the selected browser/environment matrix rather than every test on every browser.",
             "Run the selected stable non-functional baselines that are appropriate for this environment.",
@@ -134,7 +134,7 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
             "Verify cache is used only for acceleration while JUnit/Allure/browser diagnostics are retained as pipeline evidence/artifacts.",
             "Confirm reports and artifacts are retained for failed and successful stages where appropriate.",
             "Demonstrate one meaningful quality gate blocking a deliberately invalid candidate.",
-            "Where contract testing is justified by independent delivery, demonstrate provider compatibility verification against the currently supported consumer contract set before promotion."
+            "Where contract testing is justified by independent delivery, demonstrate provider compatibility verification against the currently supported consumer contract set before promotion.",
             "Demonstrate that skipped/quarantined evidence remains visible rather than becoming a silent pass.",
             "Publish the tsa-test-core candidate/handoff evidence as a pipeline artifact or repository document so Professional Engineer can compare it with the future capstone test suite; do not publish a library yet."
           ],
