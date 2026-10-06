@@ -92,7 +92,7 @@ const specs: LessonSpec[] = [
         title: "Public and Private Dependencies",
         intro: "Modern software almost always combines organization-owned packages with third-party dependencies. Delivery engineering must make the distinction visible because ownership, publication and trust differ.",
         sections: [
-            { heading: "Ownership changes responsibility", paragraphs: ["A private dependency is not automatically safer than a public one; it is simply under different ownership. The organization controls release, compatibility and retention for steward-common, while it consumes Django, PostgreSQL drivers and other public packages under external release processes."] },
+            { heading: "Ownership changes responsibility", paragraphs: ["A private dependency is not automatically safer than a public one; it is simply under different ownership. When an internal package such as an earned steward-common exists, the organization controls its release, compatibility and retention; otherwise the same ownership reasoning is practiced with an explicit training fixture. Django, PostgreSQL drivers and other public packages remain externally released dependencies."] },
             { heading: "One resolution path, different trust", paragraphs: ["Repository groups can give clients one URL that resolves internal and proxied public content. The convenience is valuable, but the architecture must still preserve which artifacts were produced internally and which came from upstream."] },
         ],
         practice: ["Inventory ten Steward dependencies and classify each as internal, public direct or public transitive.", "Record the owner and source of each.", "Identify one dependency whose disappearance upstream would currently break a clean build."],
@@ -116,7 +116,7 @@ const specs: LessonSpec[] = [
         title: "Hosted, Proxy and Group Repositories",
         intro: "Hosted, proxy and group repositories solve different problems and are most useful when their responsibilities remain distinct.",
         sections: [
-            { heading: "Hosted", paragraphs: ["A hosted repository stores artifacts your organization publishes, such as steward-common or a Steward container image. It is the authoritative internal distribution location for those releases."] },
+            { heading: "Hosted", paragraphs: ["A hosted repository stores artifacts your organization publishes, such as the Steward container image and, only when its extraction gate was earned, steward-common. It is the authoritative internal distribution location for those releases."] },
             { heading: "Proxy and group", paragraphs: ["A proxy repository fetches from an upstream source and caches what clients request. A group repository gives clients a single resolution endpoint spanning multiple hosted and proxy repositories.", "A clean design often gives publishers a hosted endpoint and consumers a group endpoint. That prevents ordinary consumers from accidentally publishing into the path they use for installs."] },
         ],
         practice: ["Design hosted, proxy and group repositories for Python, npm and container use.", "Document which URL publishers use and which URL consumers use.", "Explain how the group repository reduces client configuration without hiding ownership."],
@@ -129,7 +129,7 @@ const specs: LessonSpec[] = [
         intro: "Python package distribution is based on built distributions and metadata, not on copying source folders between applications.",
         sections: [
             { heading: "Buildable distributions", paragraphs: ["A modern Python project declares package metadata in pyproject.toml and can produce artifacts such as wheels and source distributions. A wheel is generally the preferred install artifact because the consumer does not need to rebuild the package from raw source when a compatible wheel exists."] , code: { language: "bash", caption: "Build a Python distribution", code: "python -m build\nls dist/" } },
-            { heading: "Index-based consumption", paragraphs: ["pip resolves package names and versions from an index. Internal distribution therefore means publishing steward-common to a private PyPI-format repository and configuring clients to resolve it through an approved index rather than a filesystem path."] },
+            { heading: "Index-based consumption", paragraphs: ["pip resolves package names and versions from an index. When steward-common has earned extraction, internal distribution means publishing it to a private PyPI-format repository and configuring real consumers to resolve it through an approved index rather than a filesystem path. If it has not, use the explicit training fixture to learn the same index mechanics without inventing Steward architecture."] },
         ],
         practice: ["If steward-common has been earned, build it as a wheel and source distribution; otherwise use an explicitly labeled minimal training package without adding it to Steward architecture.", "Inspect the resulting filenames and metadata.", "Explain which metadata links the artifact to name and version."],
         questions: ["What does a wheel give a consumer that a copied source directory does not?", "Why is an index protocol more useful than a shared folder for CI?"],
