@@ -37,8 +37,8 @@ Steward should be deployed to the learner-managed Rocky Linux/homelab environmen
 The learner should preserve a topology in which:
 
 - Steward application ingress has a defined user-facing path;
-- GitLab Runner administration, Nexus and SSH remain on the private/VPN management path unless a later exercise establishes a stronger justified control;
-- PostgreSQL, Redis and RabbitMQ remain backend-only;
+- GitLab Runner administration, the active artifact-repository administration interface (Nexus at the Delivery checkpoint) and SSH remain on the private/VPN management path unless a later exercise establishes a stronger justified control;
+- PostgreSQL and any active Redis/RabbitMQ data-plane services remain backend-only;
 - deployment automation can reach the target through a deliberate trusted path.
 
 ## Cloud Engineer — public edge, gateway and local-to-public exposure
@@ -105,7 +105,7 @@ VPN/private placement does not replace authentication, authorization, least priv
 
 ## Reliability Engineer — operate both public and private paths
 
-Reliability work must observe the complete request and control paths: public DNS/TLS/gateway behavior, VPN/private management reachability, Steward, PostgreSQL, Redis, RabbitMQ and the delivery components that support recovery.
+Reliability work must observe the complete request and control paths for the inherited active topology: public DNS/TLS/gateway behavior, VPN/private management reachability, Steward, PostgreSQL, any retained Redis/RabbitMQ paths and the delivery components that support recovery. Required earlier implementation history does not require Reliability to recreate a component that was explicitly retired or migrated.
 
 Failure exercises should include at least one network-boundary incident, such as gateway failure, broken tunnel/VPN routing, incorrect firewall policy or DNS/TLS failure, and should distinguish public-user impact from administrative/control-plane impact.
 
@@ -118,15 +118,18 @@ The default exposure model is:
 | Component | Default exposure |
 | --- | --- |
 | Steward HTTPS API through the designed edge | Public when the exercise requires it |
-| Kong public listener | Public when acting as the internet edge |
+| Kong public listener | Public when acting as the internet edge at its implementation checkpoint or while retained |
 | SSH | VPN/private management path |
 | GitLab Runner administration | VPN/private management path; GitLab CI/CD is the canonical pipeline control plane |
-| Nexus | VPN/private management path |
+| Nexus / active artifact-repository administration | VPN/private management path while that capability is active |
 | Grafana/operations UI | Private by default; deliberate authenticated exposure only when justified |
 | PostgreSQL | Backend/private only |
-| Redis | Backend/private only |
-| RabbitMQ application ports | Backend/private only |
-| RabbitMQ management UI | VPN/private management path |
-| Keycloak | Public only for the identity endpoints required by the chosen authentication flow; administration remains restricted |
+| Redis | Backend/private only while retained |
+| RabbitMQ application ports | Backend/private only while retained |
+| RabbitMQ management UI | VPN/private management path while retained |
+| Keycloak | Public only for the identity endpoints required by the chosen authentication flow while retained; administration remains restricted |
 
 Every exception requires a stated user/system need, authentication/authorization model, network policy, TLS decision, evidence and rollback path.
+
+
+After Architect, apply these exposure classes to the **actual retained estate**. Earlier required implementation checkpoints establish history and security expectations; they do not force retired or replaced products back into the active topology.
