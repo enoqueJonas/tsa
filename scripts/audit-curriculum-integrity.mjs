@@ -106,6 +106,16 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Preserve the legacy FTP -> secure SFTP migration as a real cross-school evolution.
+const systemFileIntegrationMigration = sources.get("system-thinker-enterprise-file-integration-deep.ts") ?? "";
+const securityFileMigration = sources.get("security-secure-file-transfer-migration-deep.ts") ?? "";
+for (const required of ["Implement a Controlled Legacy FTP Exchange", "Prepare the FTP-to-SFTP Migration Contract", "Temporary coexistence has an explicit end state"]) {
+  if (!systemFileIntegrationMigration.includes(required)) failures.push(`System Thinker secure-transfer handoff is missing: ${required}`);
+}
+for (const required of ["SFTP becomes the authoritative transfer path", "Run Bounded FTP and SFTP Coexistence", "Decommission FTP and Prove the Security End State", "FTP is no longer an available production-compatible transfer path."]) {
+  if (!securityFileMigration.includes(required)) failures.push(`Security Steward FTP-to-SFTP migration lifecycle is missing: ${required}`);
+}
+
 // Preserve the System Thinker -> Platform Builder file-integration ownership boundary.
 // System Thinker may model shared-filesystem semantics, but must not require the later NFS implementation.
 const systemFileIntegration = sources.get("system-thinker-enterprise-file-integration-deep.ts") ?? "";
