@@ -113,6 +113,20 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Architect residual modules must reason from the active estate, not assume Nexus or steward-common remain current.
+const architectStyles = sources.get("architect-architectural-styles-deep.ts") ?? "";
+const architectModularity = sources.get("architect-modularity-deep.ts") ?? "";
+const architectResilience = sources.get("architect-resilience-architecture-deep.ts") ?? "";
+const architectScale = sources.get("architect-scalability-distributed-systems-deep.ts") ?? "";
+for (const required of ["Nexus is the implemented Delivery checkpoint", "any retained artifact-repository capability"]) {
+  if (!architectStyles.includes(required)) failures.push(`Architect style lifecycle invariant is missing: ${required}`);
+}
+for (const required of ["If `steward-common` exists because its earlier extraction gate was earned", "otherwise preserve its defer or retirement evidence"]) {
+  if (!architectModularity.includes(required)) failures.push(`Architect modularity package invariant is missing: ${required}`);
+}
+if (!architectResilience.includes("include Nexus only if it remains active in the current architecture")) failures.push("Architect resilience must condition Nexus on the current estate.");
+if (!architectScale.includes("Include Nexus usage only if Nexus remains active")) failures.push("Architect scalability must condition Nexus usage on the current estate.");
+
 // Architect Fundamentals preserves conditional shared-package existence and the future tsa-test-core gate.
 const architectFundamentals = sources.get("architect-architecture-fundamentals-deep.ts") ?? "";
 for (const required of ["Include Redis, RabbitMQ, Nexus and `steward-common` only when the inherited baseline proves they remain active", "`steward-common` exists only if its earlier real-consumer extraction gate was earned", "`tsa-test-core` should not yet exist"]) {
