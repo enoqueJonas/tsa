@@ -73,7 +73,6 @@ for (const [file, source, required] of [
 
 // Preserve the deferred shared-test-library architecture across executable schools.
 const qualityRuntimeFiles = [...sources.entries()].filter(([file]) => file.startsWith("quality-"));
-const qualityRuntime = qualityRuntimeFiles.map(([, source]) => source).join("\n");
 const professionalBuild = sources.get("professional-engineer-independent-build-deep.ts") ?? "";
 const prematureTestCorePatterns = [
   /(?:extract|create|publish|deploy)\\s+(?:the\\s+)?`?tsa-test-core`?/i,
@@ -84,6 +83,14 @@ for (const [file, source] of qualityRuntimeFiles) {
   if (prematureTestCorePatterns.some((pattern) => pattern.test(source)) && !/do not (?:extract|create|publish)|must not exist yet|does not exist yet|before tsa-test-core can exist|candidate|future/i.test(source)) {
     failures.push(`Quality Steward must not materialize tsa-test-core before a genuine second consumer exists: ${file}`);
   }
+}
+const qualityReuseBoundary = sources.get("quality-reuse-internal-library-deep.ts") ?? "";
+const qualityMilestone = sources.get("quality-steward-milestone-deep.ts") ?? "";
+for (const required of ["tsa-test-core does not exist yet.", "before tsa-test-core can exist"]) {
+  if (!qualityReuseBoundary.includes(required)) failures.push(`Quality reuse boundary must explicitly preserve deferred tsa-test-core state: ${required}`);
+}
+for (const required of ["tsa-test-core must not exist yet.", "do not publish a library yet."]) {
+  if (!qualityMilestone.includes(required)) failures.push(`Quality milestone must explicitly preserve deferred tsa-test-core state: ${required}`);
 }
 for (const required of ["Earn and Publish tsa-test-core from Two Real Products", "pre-extraction capstone test baseline", "Versioned Nexus artifact"]) {
   if (!professionalBuild.includes(required)) {
