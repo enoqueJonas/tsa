@@ -113,6 +113,14 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Pre-Reliability schools may define/test telemetry needs, but production observability and SLO ownership remain with Reliability Engineer.
+const qualityNonFunctional = sources.get("quality-non-functional-deep.ts") ?? "";
+const deliveryReleaseEngineering = sources.get("delivery-release-engineering-deep.ts") ?? "";
+for (const required of ["deep production capacity/SLO engineering remains for Reliability Engineer", "production observability, SLOs, incident engineering and resilience architecture to the later Reliability Engineer school"]) {
+  if (!qualityNonFunctional.includes(required)) failures.push(`Quality-to-Reliability observability handoff is missing: ${required}`);
+}
+if (!deliveryReleaseEngineering.includes("narrower than the full observability discipline taught later in Reliability Engineer")) failures.push("Delivery release observability must remain narrower than Reliability Engineer observability.");
+
 // Cloud progressive delivery may use bounded release-analysis telemetry but must not assume the later Reliability observability stack already exists.
 const progressiveCanary = sources.get("cloud-progressive-delivery-canary-deep.ts") ?? "";
 for (const required of ["does not pre-empt the later Reliability Engineer observability stack", "Treat it as release-analysis telemetry, not as the later Reliability Engineer production observability implementation.", "Argo CD remains responsible for reconciling desired deployment configuration from Git"]) {
