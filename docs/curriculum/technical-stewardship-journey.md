@@ -918,7 +918,7 @@ Develop the ability to make, challenge and defend architecture decisions under c
 - architecture debt
 - governance without bottlenecks
 - dependency/package governance
-- review internal packages that actually exist in the evidence-backed current state; `steward-common` should have implementation history, while `tsa-test-core` remains absent unless its later genuine two-consumer extraction gate has already been satisfied
+- review internal packages that actually exist in the evidence-backed current state; `steward-common` has implementation history only if its earlier real-consumer gate earned extraction; otherwise its defer record is the evidence. `tsa-test-core` remains absent unless its later genuine two-consumer extraction gate has already been satisfied
 
 ## Module 10 — Architect Milestone
 **Steward Architecture Evolution** — reconstruct the current system, evaluate retain/change/simplify options, implement the smallest justified improvement and defend both retained and rejected complexity.
