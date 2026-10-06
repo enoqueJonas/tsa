@@ -113,6 +113,12 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Infrastructure/configuration recreation is not a substitute for persistent-state backup and restore.
+const drRecovery = sources.get("reliability-data-protection-disaster-recovery-deep.ts") ?? "";
+for (const required of ["Treat this as environment reconstruction, not as restoration of persistent application/platform data.", "Restore PostgreSQL from the selected recovery point.", "Why does having Infrastructure as Code not automatically mean the whole Steward environment is recoverable?"]) {
+  if (!drRecovery.includes(required)) failures.push(`Recovery/recreation boundary invariant is missing: ${required}`);
+}
+
 // Pre-Reliability schools may define/test telemetry needs, but production observability and SLO ownership remain with Reliability Engineer.
 const qualityNonFunctional = sources.get("quality-non-functional-deep.ts") ?? "";
 const deliveryReleaseEngineering = sources.get("delivery-release-engineering-deep.ts") ?? "";
