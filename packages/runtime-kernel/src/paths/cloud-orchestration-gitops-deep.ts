@@ -330,7 +330,7 @@ const milestone: Lesson = {
             estimatedMinutes: 40,
             content: {
                 type: "reflection",
-                prompt: "Explain which problems Kubernetes/OpenShift and Argo CD now solve for Steward, which new failure and security boundaries they created, and why the final system still keeps GitLab CI/CD, Nexus, OpenTofu, Kong and Steward domain logic as separate responsibilities. Identify one case where simpler VPS hosting would still be the stronger architecture choice and one trigger that would justify keeping the enterprise platform.",
+                prompt: "Explain which problems Kubernetes/OpenShift and Argo CD now solve for Steward, which new failure and security boundaries they created, and why the Cloud-stage system keeps GitLab CI/CD, Nexus, OpenTofu, the currently implemented Kong edge and Steward domain logic as separate responsibilities at this checkpoint; later architecture work may retain, simplify, replace or retire components when evidence justifies it. Identify one case where simpler VPS hosting would still be the stronger architecture choice and one trigger that would justify keeping the enterprise platform.",
                 minimumCharacters: 350,
             },
         },
