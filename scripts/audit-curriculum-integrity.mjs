@@ -113,6 +113,12 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Vault is required once its evidence gate is earned, while remaining reassessable by Architect later.
+const enterpriseProgressionForVault = await readFile(join(curriculumDocsDir, "enterprise-capability-progression.md"), "utf8");
+for (const required of ["implements the self-hosted Vault path with real leased/dynamic credentials", "This is a required hands-on checkpoint", "Architect may later reassess whether Vault remains the appropriate active implementation"]) {
+  if (!enterpriseProgressionForVault.includes(required)) failures.push(`Vault implementation-history invariant is missing: ${required}`);
+}
+
 // Required hands-on technology checkpoints establish implementation history, not immutable post-Architect topology.
 const enterpriseProgression = await readFile(join(curriculumDocsDir, "enterprise-capability-progression.md"), "utf8");
 for (const required of ["At the Kong implementation checkpoint", "not a permanent architecture mandate", "Architect may later retain, simplify, replace or retire the gateway"]) {
