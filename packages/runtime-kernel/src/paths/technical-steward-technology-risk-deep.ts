@@ -9,7 +9,7 @@ const resourcesByRisk:Record<string,LearningResource[]>={
  registers:[isoRisk],kri:[isoRisk],ownership:[isoRisk,nistRmf],
 };
 
-const scenario = "Treat Steward as a mature organization-owned technology service spanning application code, PostgreSQL, cloud/VPS infrastructure, Nexus, internal packages, CI/CD, security controls, reliability practices and operational ownership. Risk statements must describe uncertain events and consequences, not merely list vulnerabilities, defects or controls.";
+const scenario = "Treat Steward as a mature organization-owned technology service whose risk universe starts from the final Architect actual-stack inventory and current operational evidence. Assess application, authoritative data, retained platform/delivery dependencies, security, reliability and ownership as they actually exist; retired or deferred technologies remain historical evidence, not active risk assets. Risk statements must describe uncertain events and consequences, not merely list vulnerabilities, defects or controls.";
 const deliverables = ["Risk analysis artifact", "Evidence and rationale", "Owner, treatment or review record"];
 const criteria = ["Risk is expressed in terms of cause/event/consequence and linked to evidence.", "Scoring and treatment are proportionate rather than false precision.", "Ownership, acceptance authority and review triggers are explicit."];
 function lesson(id: string, title: string, body: string, instructions: string[]): Lesson {
