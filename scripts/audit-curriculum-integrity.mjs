@@ -113,6 +113,16 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Preserve evidence-earned distributed-state semantics without freezing later technology choices.
+const distributedState = sources.get("system-thinker-distributed-state-messaging-deep.ts") ?? "";
+for (const required of ["technologies are required outcomes of earned pressure, not badges of architectural maturity", "PostgreSQL remains authoritative.", "Authorization/domain correctness remains synchronous.", "authoritative domain update and outbox insert commit in the same PostgreSQL transaction", "outbox does not claim distributed exactly-once semantics"]) {
+  if (!distributedState.includes(required)) failures.push(`Distributed-state lifecycle invariant is missing: ${required}`);
+}
+const architectMessaging = sources.get("architect-integration-and-messaging-deep.ts") ?? "";
+for (const required of ["Do not add one to make architecture appear advanced", "Record a no-broker decision when evidence is insufficient.", "No unnecessary broker is introduced."]) {
+  if (!architectMessaging.includes(required)) failures.push(`Architect messaging reassessment invariant is missing: ${required}`);
+}
+
 // Preserve workforce identity authority through directory federation.
 const directoryFederation = sources.get("security-enterprise-directory-federation-deep.ts") ?? "";
 for (const required of ["two competing workforce authorities", "Steward is not designed to authenticate directly against LDAP.", "only the selected authority is active for this scenario"]) {
