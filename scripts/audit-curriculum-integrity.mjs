@@ -113,6 +113,12 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Canonical increment contract must keep conditional shared artifacts distinct from required implementation history.
+const incrementContract = await readFile(join(curriculumDocsDir, "steward-increment-contract.md"), "utf8");
+for (const required of ["steward-common is conditional", "earned extraction history or the evidence-backed defer decision", "tsa-test-core is different"]) {
+  if (!incrementContract.includes(required)) failures.push(`Canonical shared-artifact lifecycle invariant is missing: ${required}`);
+}
+
 // Preserve schema-evolution and recovery semantics across Delivery, Reliability and Architecture.
 const schemaEvolution = sources.get("delivery-production-schema-evolution-deep.ts") ?? "";
 const databaseStewardship = sources.get("reliability-database-stewardship-deep.ts") ?? "";
