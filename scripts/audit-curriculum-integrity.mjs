@@ -113,6 +113,12 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Preserve workforce identity authority through directory federation.
+const directoryFederation = sources.get("security-enterprise-directory-federation-deep.ts") ?? "";
+for (const required of ["two competing workforce authorities", "Steward is not designed to authenticate directly against LDAP.", "only the selected authority is active for this scenario"]) {
+  if (!directoryFederation.includes(required)) failures.push(`Directory federation authority invariant is missing: ${required}`);
+}
+
 // Preserve the Cloud -> Security secrets handoff and evidence-earned Vault implementation.
 const cloudSecretsBoundary = sources.get("cloud-orchestration-gitops-deep.ts") ?? "";
 const securityIdentitySecrets = sources.get("security-identity-secrets-deep.ts") ?? "";
