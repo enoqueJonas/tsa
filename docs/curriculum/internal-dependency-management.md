@@ -106,7 +106,7 @@ Secure repository access, credentials and CI publishing permissions; scan applic
 Monitor repository availability, storage growth, failed publishing/download operations and backup/restore. Treat the artifact repository as a real internal service on which both delivery and quality pipelines can depend.
 
 ### Architect
-Reason about shared-library coupling, version compatibility, ownership boundaries and when a shared package is preferable to a service/API boundary. `steward-common` is available as implemented evidence; `tsa-test-core` remains a future candidate and must not be evaluated as an existing shared library before Professional Engineer earns its extraction gate.
+Reason about shared-library coupling, version compatibility, ownership boundaries and when a shared package is preferable to a service/API boundary. `steward-common` is implemented evidence only when its real-consumer gate previously earned extraction; otherwise use the recorded defer decision as architecture evidence. `tsa-test-core` remains a future candidate and must not be evaluated as an existing shared library before Professional Engineer earns its extraction gate.
 
 ### Technical Steward
 Define approved-source policy, internal package ownership, version/lifecycle policy, retention, third-party dependency governance, end-of-life handling, provenance requirements and exception processes. Apply concrete governance to shared artifacts that actually exist, and define a conditional ownership/compatibility policy for `tsa-test-core` that activates only if Professional Engineer later earns its extraction gate.
