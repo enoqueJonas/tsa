@@ -12,7 +12,7 @@ const blocks: LessonBlock[] = [
         "Kubernetes Deployment rolling updates remain the baseline rollout mechanism.",
         "Argo Rollouts is introduced for one concrete canary requirement, not as a second GitOps controller replacing Argo CD.",
         "Argo CD remains responsible for reconciling desired deployment configuration from Git; Argo Rollouts controls the progressive rollout state machine.",
-        "Prometheus supplies automated analysis signals when the environment can support them; manual promotion alone does not satisfy the final exercise.",
+        "A bounded Prometheus instance or equivalent learner-owned metrics source may supply release-analysis signals here when the environment supports it; this does not pre-empt the later Reliability Engineer observability stack. Manual promotion alone does not satisfy the final exercise.",
         "A traffic percentage is meaningful only if the routing mechanism can actually enforce or approximate it. Replica ratios are not equivalent to request percentages when connection reuse, uneven load or external routing skew exists.",
         "Promotion needs enough observations to support the decision. A five-minute green window with three requests is not strong evidence merely because the dashboard is green.",
         "Blue/green is compared as an alternative but is not permanently implemented beside canary merely for exposure."
@@ -61,7 +61,7 @@ export const progressiveDeliveryCanaryDeepLessons: Lesson[] = [
                 title: "Automate Analysis and Abort a Bad Canary",
                 estimatedMinutes: 210,
                 content: { type: "practical", objective: "Prove that a bad Steward candidate can be detected and stopped before full exposure using real telemetry.", scenario: "A candidate is technically ready and healthy enough to receive traffic but produces elevated errors or latency under the canary path. The rollout must stop on evidence rather than operator intuition.", instructions: [
-                    "Connect the canary analysis to Prometheus metrics already owned by the Steward observability environment, using an Argo Rollouts AnalysisTemplate/AnalysisRun or equivalent automated gate.",
+                    "Connect the canary analysis to a bounded Prometheus/metrics source available in the Cloud environment, using an Argo Rollouts AnalysisTemplate/AnalysisRun or equivalent automated gate. Treat it as release-analysis telemetry, not as the later Reliability Engineer production observability implementation.",
                     "Include at least one service indicator such as error ratio or latency and one release-specific functional/business check where technically reasonable.",
                     "Deploy a deliberately defective but safe candidate that passes startup/readiness yet violates one configured analysis criterion.",
                     "Send enough representative traffic to satisfy the previously defined minimum-evidence rule and prove the rollout pauses/fails/aborts before reaching 100% exposure.",
