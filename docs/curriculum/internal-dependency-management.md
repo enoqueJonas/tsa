@@ -92,7 +92,7 @@ Steward domain clients, workflows, page/component models and business assertions
 
 A second real test project is a prerequisite for creating `tsa-test-core`, not merely a later validation. Professional Engineer deliberately provides that evidence when its independently designed system has overlapping product-independent test infrastructure. Only then does the learner extract, version, publish and consume the library from both projects.
 
-Quality Steward must design the future compatibility/consumer contract and CI publication checks for `tsa-test-core`, but must not execute them against a fabricated library. It can exercise real package compatibility and publishing mechanics with internal artifacts that legitimately exist at this stage, such as `steward-common`, while reasoning about how a later shared test-library change would affect downstream suites.
+Quality Steward must design the future compatibility/consumer contract and CI publication checks for `tsa-test-core`, but must not execute them against a fabricated library. It can exercise real package compatibility and publishing mechanics with internal artifacts that legitimately exist at this stage. If `steward-common` earned its earlier extraction gate, it is one valid example; otherwise use an explicitly labeled training fixture rather than manufacturing permanent architecture. The learner can still reason about how a later shared test-library change would affect downstream suites.
 
 ## Later-school progression
 
