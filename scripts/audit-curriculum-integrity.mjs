@@ -113,6 +113,12 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Reliability broker exercises follow the active inherited broker state rather than resurrecting RabbitMQ after explicit retirement.
+const reliabilityResilience = sources.get("reliability-resilience-distributed-failure-deep.ts") ?? "";
+for (const required of ["If RabbitMQ remains active in the inherited Reliability baseline", "if explicit migration/retirement evidence replaced it", "RabbitMQ when retained, otherwise the explicitly migrated replacement"]) {
+  if (!reliabilityResilience.includes(required)) failures.push(`Reliability broker-lifecycle invariant is missing: ${required}`);
+}
+
 // Reliability must not consume the future Professional Engineer tsa-test-core artifact.
 const reliabilityPerformance = sources.get("reliability-performance-capacity-deep.ts") ?? "";
 const reliabilityFaultInjection = sources.get("reliability-fault-injection-deep.ts") ?? "";
