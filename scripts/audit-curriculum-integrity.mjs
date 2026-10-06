@@ -113,6 +113,16 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Technical Steward governance follows the final Architect actual estate.
+const actualEstateGovernance = [
+  sources.get("technical-steward-change-service-governance-deep.ts") ?? "",
+  sources.get("technical-steward-controls-compliance-assurance-deep.ts") ?? "",
+  sources.get("technical-steward-security-data-governance-deep.ts") ?? "",
+];
+for (const source of actualEstateGovernance) {
+  if (!source.includes("final Architect actual-stack inventory")) failures.push("Technical Steward governance must follow the final Architect actual estate.");
+}
+
 // Technical Steward governs only internal packages that actually exist; tsa-test-core remains future-gated.
 const thirdPartyLifecycle = sources.get("technical-steward-third-party-lifecycle-risk-deep.ts") ?? "";
 const handbookStandards = sources.get("technical-steward-handbook-standards-deep.ts") ?? "";
