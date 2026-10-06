@@ -1,7 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
-const githubEnvironments: LearningResource = { title: "GitHub Actions environments", url: "https://docs.github.com/en/actions/deployment/targeting-different-environments/managing-environments-for-deployment" };
+const gitlabEnvironments: LearningResource = { title: "GitLab deployment environments", url: "https://docs.gitlab.com/ci/environments/" };
 const djangoMigrations: LearningResource = { title: "Django migrations", url: "https://docs.djangoproject.com/en/stable/topics/migrations/" };
 const dockerCompose: LearningResource = { title: "Docker Compose documentation", url: "https://docs.docker.com/compose/" };
 const twelveFactor: LearningResource = { title: "The Twelve-Factor App", url: "https://12factor.net/" };
@@ -112,7 +112,7 @@ export const continuousDeliveryDeploymentDeepLessons: Lesson[] = [
     richLesson("ci-cd-cd", "CI versus Continuous Delivery versus Continuous Deployment", "The terms are often collapsed into 'CI/CD', but they describe different control boundaries. Continuous integration validates and integrates change; continuous delivery keeps a releasable artifact ready to deploy; continuous deployment automatically moves eligible releases into the target environment.", [
         { heading: "Separate readiness from release", body: "A green CI run proves only the checks you designed. Continuous delivery adds packaging, release identity and deployment readiness. Continuous deployment removes a human release decision only when automated evidence is strong enough to justify doing so." },
         { heading: "Choose automation by risk", body: "Steward in a learning homelab does not need artificial enterprise ceremony, but it does need deliberate gates. Automate repetitive mechanics first; preserve human approval where a decision still requires judgment." },
-    ], [githubEnvironments]),
+    ], [gitlabEnvironments]),
     richLesson("environment-management", "Environment Management", "An environment is more than a hostname. It is a set of infrastructure, data, configuration, credentials, integrations and operational expectations in which a release runs.", [
         { heading: "Keep release identity stable", body: "Promote the same Steward image between environments. Differences should come from explicit environment inputs rather than rebuilding code with different values baked into the artifact." },
         { heading: "Inventory environment-specific state", body: "Record DNS names, ports, database endpoint, secret source, persistent volumes, external integrations and access policy. Hidden environment assumptions are a common cause of 'works in test, fails in production'." },
@@ -124,7 +124,7 @@ export const continuousDeliveryDeploymentDeepLessons: Lesson[] = [
     richLesson("release-approvals", "Release Approvals", "An approval gate should represent a decision that cannot yet be trusted entirely to automation. The approver needs a defined question and evidence, not a generic 'approve' button.", [
         { heading: "Design the decision", body: "Examples include confirming a risky migration window, accepting a known limitation or approving promotion after UAT evidence. If nobody can explain what risk the approval controls, the gate is ceremony." },
         { heading: "Keep approval separate from artifact creation", body: "Build and validate before approval so the decision refers to one immutable candidate. Rebuilding after approval invalidates part of the evidence the approver reviewed." },
-    ], [githubEnvironments]),
+    ], [gitlabEnvironments]),
     richLesson("database-migrations", "Database Migrations During Deployment", "Schema changes make deployment stateful. Application versions and database versions can become temporarily incompatible, which means migration design is part of release engineering, not a post-deployment afterthought.", [
         { heading: "Reason about compatibility windows", body: "Prefer migrations that allow old and new application versions to coexist during the transition when possible: add before remove, backfill deliberately, then clean up after consumers move." },
         { heading: "Treat migration failure as a release failure", body: "Run migrations as an explicit deployment step, capture their result and stop if they fail. A container reporting healthy while required schema changes did not apply is not a successful release." },
