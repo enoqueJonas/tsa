@@ -84,7 +84,7 @@ export const technologyGovernanceDeepLessons: Lesson[] = [
             "Governance and management responsibilities are distinguishable.",
             "Framework concepts are tailored rather than copied wholesale.",
             "Performance measures have owners and decision consequences.",
-            "Every active technology domain and the existing steward-common/Nexus supply-chain boundary have explicit governance ownership; future tsa-test-core work is not governed as though the package already exists.",
+            "Every active technology domain and the Nexus supply-chain boundary have explicit governance ownership; steward-common is governed only if it actually exists, and future tsa-test-core work is not governed as though the package already exists.",
             "The model remains proportionate: local reversible decisions stay local while material cross-cutting decisions receive appropriate oversight."
         ]
     ),
