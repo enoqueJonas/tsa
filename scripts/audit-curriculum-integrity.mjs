@@ -113,6 +113,18 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Canonical contracts distinguish earned implementation checkpoints from the retained post-Architect estate.
+const networkExposureCanonical = await readFile(join(curriculumDocsDir, "network-access-and-exposure-progression.md"), "utf8");
+for (const required of ["inherited active topology", "Required earlier implementation history does not require Reliability to recreate a component", "actual retained estate"]) {
+  if (!networkExposureCanonical.includes(required)) failures.push(`Canonical exposure lifecycle invariant is missing: ${required}`);
+}
+const incrementSecurityCanonical = await readFile(join(curriculumDocsDir, "steward-increment-contract.md"), "utf8");
+for (const required of ["self-hosted Vault checkpoint with real leased/dynamic credentials is required", "Keycloak/federation checkpoint is required", "a defer decision is valid only where the canonical progression has not made the earned checkpoint mandatory"]) {
+  if (!incrementSecurityCanonical.includes(required)) failures.push(`Canonical Security earned-gate invariant is missing: ${required}`);
+}
+const stewardshipJourneyCanonical = await readFile(join(curriculumDocsDir, "technical-stewardship-journey.md"), "utf8");
+if (!stewardshipJourneyCanonical.includes("actual architecture and evidence baseline produced by Architect")) failures.push("Canonical journey must hand Technical Steward the actual Architect estate.");
+
 // Technical Steward governance must follow the final Architect estate and never invent package/repository ownership.
 const technicalThirdParty = sources.get("technical-steward-third-party-lifecycle-risk-deep.ts") ?? "";
 const technicalEngineeringGovernance = sources.get("technical-steward-engineering-governance-deep.ts") ?? "";
