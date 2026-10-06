@@ -137,7 +137,7 @@ The learner must distinguish a reverse proxy, load balancer, API gateway, Kubern
 - gateway failure modes;
 - what must remain application/domain logic.
 
-Steward is exposed through Kong and the learner must prove that domain authorization and business invariants remain owned by Steward rather than being misplaced into gateway configuration.
+At the Kong implementation checkpoint, Steward is exposed through Kong and the learner must prove that domain authorization and business invariants remain owned by Steward rather than being misplaced into gateway configuration. This establishes implementation history, not a permanent architecture mandate: Architect may later retain, simplify, replace or retire the gateway when evidence justifies the change and migration/retirement evidence preserves the history.
 
 Kubernetes remains the orchestration foundation. **OpenShift** is taught after Kubernetes as an enterprise application platform, not as a duplicate Kubernetes course. Learners compare Projects/namespaces, Routes/Ingress, Operators/OLM, security controls such as SCC concepts, RBAC, registry/build/deployment integrations and the `oc` workflow. A practical migration/deployment of Steward should identify what remains standard Kubernetes, what OpenShift adds and what operational/security assumptions change.
 
