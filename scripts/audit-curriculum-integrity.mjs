@@ -106,6 +106,16 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Preserve the simple reverse-proxy -> Kong edge migration without permanent dual ingress.
+const cloudInternetNetworking = sources.get("cloud-internet-networking-deep.ts") ?? "";
+const cloudInternetQuality = sources.get("cloud-internet-networking-quality.ts") ?? "";
+for (const required of ["migrates that public boundary to Kong", "initial reverse proxy", "Kong API edge"]) {
+  if (!cloudInternetNetworking.includes(required)) failures.push(`Cloud public-edge progression is missing: ${required}`);
+}
+for (const required of ["Kong has not been earned yet at this point.", "Migrate rather than operate two competing public edges.", "Retire the old public proxy path after Kong passes equivalent routing/TLS checks", "Only one authoritative public reverse-proxy/gateway implementation is operated."]) {
+  if (!cloudInternetQuality.includes(required)) failures.push(`Cloud Kong migration lifecycle is missing: ${required}`);
+}
+
 // Preserve the GitLab -> Argo CD deployment-authority migration without dual control.
 const cloudGitOps = sources.get("cloud-orchestration-gitops-deep.ts") ?? "";
 const cloudMilestone = sources.get("cloud-engineer-milestone-deep.ts") ?? "";
