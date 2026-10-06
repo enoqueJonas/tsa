@@ -113,6 +113,12 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Canonical dependency guidance must match the required Professional tsa-test-core completion gate.
+const dependencyManagement = await readFile(join(curriculumDocsDir, "internal-dependency-management.md"), "utf8");
+for (const required of ["extraction/publication of `tsa-test-core` is required", "do not distort it merely to force reuse", "separate real Java test-consumer increment"]) {
+  if (!dependencyManagement.includes(required)) failures.push(`Canonical tsa-test-core completion invariant is missing: ${required}`);
+}
+
 // Professional Engineer must earn tsa-test-core from genuine independent two-consumer evidence without distorting the capstone.
 const capstoneProposal = sources.get("professional-engineer-capstone-engineering-proposal-deep.ts") ?? "";
 const independentBuild = sources.get("professional-engineer-independent-build-deep.ts") ?? "";
