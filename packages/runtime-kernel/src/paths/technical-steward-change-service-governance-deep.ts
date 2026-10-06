@@ -9,7 +9,7 @@ const resourcesByChange:Record<string,LearningResource[]>={
  "emergency-change":[itil,sreIncident],"evidence-release":[sreRelease],
 };
 
-const scenario = "Treat Steward as a mature organization-owned service with production users, releases, incidents, service dependencies, PostgreSQL, cloud/VPS infrastructure, Nexus, internal packages, CI/CD, security controls and reliability evidence. Governance should make risky change accountable without slowing low-risk engineering work unnecessarily.";
+const scenario = "Treat Steward as a mature organization-owned service with production users, releases, incidents and the application, data, platform, delivery, security and reliability dependencies present in the final Architect actual-stack inventory. Components such as cloud/VPS infrastructure, Nexus or internal packages belong to the active service-governance scope only when retained; retired components remain historical change/migration evidence. Governance should make risky change accountable without slowing low-risk engineering work unnecessarily.";
 const deliverables = ["Governance artifact", "Evidence and rationale", "Owner, approval or follow-up record"];
 const completion = ["The governance mechanism is proportionate to change/service risk.", "Ownership and decision authority are explicit.", "Approval depends on evidence, not ceremony alone."];
 function moduleLesson(id: string, title: string, body: string, instructions: string[]): Lesson {
