@@ -113,6 +113,20 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Preserve the Cloud -> Security secrets handoff and evidence-earned Vault implementation.
+const cloudSecretsBoundary = sources.get("cloud-orchestration-gitops-deep.ts") ?? "";
+const securityIdentitySecrets = sources.get("security-identity-secrets-deep.ts") ?? "";
+const securityVault = sources.get("security-vault-implementation-deep.ts") ?? "";
+for (const required of ["Kubernetes Secret is not equivalent to Vault-style secret management.", "Git is desired state, not a secret vault", "Secrets are not moved into Git for convenience."]) {
+  if (!cloudSecretsBoundary.includes(required)) failures.push(`Cloud secrets handoff is missing: ${required}`);
+}
+for (const required of ["Vault Requirement Gate: Prove the Dynamic-Credential Need", "measured lifecycle problem becomes the prerequisite", "secret zero"]) {
+  if (!securityIdentitySecrets.includes(required)) failures.push(`Security Vault requirement gate is missing: ${required}`);
+}
+for (const required of ["Steward uses a real Vault-issued PostgreSQL credential.", "leased/dynamic rather than a static value merely stored in Vault KV", "does not silently fall back to an unmanaged permanent credential"]) {
+  if (!securityVault.includes(required)) failures.push(`Vault implementation evidence contract is missing: ${required}`);
+}
+
 // Preserve infrastructure/configuration/workload ownership across Delivery and Cloud.
 const deliveryConfiguration = sources.get("delivery-configuration-management-deep.ts") ?? "";
 const cloudInfrastructure = sources.get("cloud-infrastructure-as-code-deep.ts") ?? "";
