@@ -113,6 +113,12 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Required hands-on technology checkpoints establish implementation history, not immutable post-Architect topology.
+const enterpriseProgression = await readFile(join(curriculumDocsDir, "enterprise-capability-progression.md"), "utf8");
+for (const required of ["At the Kong implementation checkpoint", "not a permanent architecture mandate", "Architect may later retain, simplify, replace or retire the gateway"]) {
+  if (!enterpriseProgression.includes(required)) failures.push(`Kong implementation-history invariant is missing: ${required}`);
+}
+
 // Canonical dependency guidance must match the required Professional tsa-test-core completion gate.
 const dependencyManagement = await readFile(join(curriculumDocsDir, "internal-dependency-management.md"), "utf8");
 for (const required of ["extraction/publication of `tsa-test-core` is required", "do not distort it merely to force reuse", "separate real Java test-consumer increment"]) {
