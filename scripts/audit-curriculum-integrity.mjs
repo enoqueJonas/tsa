@@ -113,6 +113,20 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Preserve infrastructure/configuration/workload ownership across Delivery and Cloud.
+const deliveryConfiguration = sources.get("delivery-configuration-management-deep.ts") ?? "";
+const cloudInfrastructure = sources.get("cloud-infrastructure-as-code-deep.ts") ?? "";
+const cloudOrchestration = sources.get("cloud-orchestration-gitops-deep.ts") ?? "";
+for (const required of ["host-level assumptions", "Ansible"]) {
+  if (!deliveryConfiguration.includes(required)) failures.push(`Delivery configuration-management ownership is missing: ${required}`);
+}
+for (const required of ["One state needs one writer", "A real object should be managed by one resource address"]) {
+  if (!cloudInfrastructure.includes(required)) failures.push(`OpenTofu ownership invariant is missing: ${required}`);
+}
+for (const required of ["OpenTofu creates infrastructure, Ansible manages host state, GitLab CI/CD builds and publishes artifacts, and Kubernetes reconciles application workload state.", "No responsibility has two accidental authorities.", "One field should have one deliberate owner"]) {
+  if (!cloudOrchestration.includes(required)) failures.push(`Cloud responsibility-boundary invariant is missing: ${required}`);
+}
+
 // Preserve the simple reverse-proxy -> Kong edge migration without permanent dual ingress.
 const cloudInternetNetworking = sources.get("cloud-internet-networking-deep.ts") ?? "";
 const cloudInternetQuality = sources.get("cloud-internet-networking-quality.ts") ?? "";
