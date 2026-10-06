@@ -113,6 +113,13 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Cloud progressive delivery may use bounded release-analysis telemetry but must not assume the later Reliability observability stack already exists.
+const progressiveCanary = sources.get("cloud-progressive-delivery-canary-deep.ts") ?? "";
+for (const required of ["does not pre-empt the later Reliability Engineer observability stack", "Treat it as release-analysis telemetry, not as the later Reliability Engineer production observability implementation.", "Argo CD remains responsible for reconciling desired deployment configuration from Git"]) {
+  if (!progressiveCanary.includes(required)) failures.push(`Cloud progressive-delivery chronology/authority invariant is missing: ${required}`);
+}
+if (progressiveCanary.includes("Prometheus metrics already owned by the Steward observability environment")) failures.push("Cloud progressive delivery must not assume Reliability-owned observability exists before Reliability Engineer.");
+
 // Preserve immutable release identity from Delivery through Security and Reliability evidence.
 const artifactSupplyChain = sources.get("delivery-artifact-supply-chain-deep.ts") ?? "";
 const artifactSigning = sources.get("security-artifact-signing-verification-deep.ts") ?? "";
