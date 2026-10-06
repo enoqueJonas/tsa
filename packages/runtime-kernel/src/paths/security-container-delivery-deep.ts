@@ -37,7 +37,7 @@ const resourcesByDeliveryTopic: Partial<Record<Topic, LearningResource[]>> = {
     "Signing and Verification Concepts": [cosignDocs, sigstore],
     "Security Gates and Exceptions": [gitlabContainerScanning, gitlabDependencyScanning],
     "Protecting Internal Publishing Credentials": [gitlabJobTokens, gitlabVariables],
-    "Securing steward-common and tsa-test-core Consumption": [owaspSupplyChain, slsa],
+    "Securing Earned Internal-Package Consumption": [owaspSupplyChain, slsa],
 };
 
 const titles = [
@@ -59,7 +59,7 @@ const titles = [
     "Signing and Verification Concepts",
     "Security Gates and Exceptions",
     "Protecting Internal Publishing Credentials",
-    "Securing steward-common and tsa-test-core Consumption",
+    "Securing Earned Internal-Package Consumption",
 ] as const;
 
 type Topic = (typeof titles)[number];
@@ -116,7 +116,7 @@ const guidance: Record<Topic, Guidance> = {
     },
     "Dependency Scanning": {
         intro: "Dependency scanning identifies known issues in third-party libraries and transitive packages. Useful triage considers version, reachability, exploit conditions and available fixes.",
-        steward: "Steward and tsa-test-core should produce dependency evidence that distinguishes direct and transitive risk and avoids upgrading blindly without compatibility testing.",
+        steward: "Steward and any internal packages that actually exist should produce dependency evidence that distinguishes direct and transitive risk and avoids upgrading blindly without compatibility testing.",
         practice: ["Scan Steward application dependencies.", "Classify direct versus transitive findings.", "Remediate one meaningful finding.", "Run regression tests after the dependency change."],
         reflection: "Why can an uncritical automated dependency upgrade itself create risk?",
     },
@@ -134,7 +134,7 @@ const guidance: Record<Topic, Guidance> = {
     },
     "Dependency Confusion": {
         intro: "Dependency confusion occurs when a package resolver can be tricked into selecting an unintended package from a less-trusted repository, often because internal names also exist externally.",
-        steward: "Internal packages such as steward-common and tsa-test-core must resolve from the intended internal repository with deliberate namespace and repository-ordering policy.",
+        steward: "Any earned internal package must resolve from the intended internal repository with deliberate namespace and repository-ordering policy. A deferred package must not be invented merely to populate the threat model.",
         practice: ["Inspect current package-source configuration.", "Document where internal package names can resolve from.", "Harden repository routing or namespace policy.", "Verify resolution uses the intended source."],
         reflection: "How can a perfectly legitimate public package become dangerous when its name collides with an internal package?",
     },
@@ -180,7 +180,7 @@ const guidance: Record<Topic, Guidance> = {
         practice: ["Inspect how internal publishing credentials are stored and injected.", "Verify scope and repository permissions.", "Reduce one exposure or excessive permission.", "Confirm logs and artifacts do not contain the secret."],
         reflection: "Why are internal package-publishing credentials potentially more dangerous than ordinary package-read credentials?",
     },
-    "Securing steward-common and tsa-test-core Consumption": {
+    "Securing Earned Internal-Package Consumption": {
         intro: "Shared internal packages amplify both engineering consistency and security impact. Consumers must know which repository, package version and integrity/provenance evidence they are trusting.",
         steward: "Steward and its tests should resolve steward-common and tsa-test-core from approved internal sources, pin versions intentionally and make unexpected source/version changes observable in review and CI.",
         practice: ["Trace how Steward resolves both internal packages.", "Verify repository source and selected versions.", "Identify how an unauthorized version change would be detected.", "Record a reproducible trusted-consumption policy."],
