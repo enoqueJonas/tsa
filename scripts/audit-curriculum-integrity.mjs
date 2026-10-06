@@ -113,6 +113,18 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Preserve immutable release identity from Delivery through Security and Reliability evidence.
+const artifactSupplyChain = sources.get("delivery-artifact-supply-chain-deep.ts") ?? "";
+const artifactSigning = sources.get("security-artifact-signing-verification-deep.ts") ?? "";
+const incidentManagement = sources.get("reliability-incident-management-deep.ts") ?? "";
+for (const required of ["Record source SHA, release version, tag and digest together.", "Build once, deploy many"]) {
+  if (!artifactSupplyChain.includes(required)) failures.push(`Delivery release-identity invariant is missing: ${required}`);
+}
+for (const required of ["The signed subject is an immutable artifact identity such as an OCI digest", "SBOM/provenance evidence should remain bound to the same release identity."]) {
+  if (!artifactSigning.includes(required)) failures.push(`Security artifact-identity invariant is missing: ${required}`);
+}
+if (!incidentManagement.includes("source revision, release version and deployed OCI digest")) failures.push("Reliability incident triage must resolve deployments to immutable release identity.");
+
 // Preserve the cross-school network exposure model: public application edge, private backends and restricted administration.
 const exposureProgression = await readFile(join(curriculumDocsDir, "network-access-and-exposure-progression.md"), "utf8");
 for (const required of ["the public edge exposes only the HTTPS application path", "administrative access remains separate from public ingress", "PostgreSQL | Backend/private only", "Keycloak | Public only for the identity endpoints required by the chosen authentication flow; administration remains restricted"]) {
