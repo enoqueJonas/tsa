@@ -113,6 +113,13 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Cloud implementation history is a checkpoint, not a permanent post-Architect topology.
+const cloudGitOps = sources.get("cloud-orchestration-gitops-deep.ts") ?? "";
+for (const required of ["Cloud-stage system", "currently implemented Kong edge", "later architecture work may retain, simplify, replace or retire components"]) {
+  if (!cloudGitOps.includes(required)) failures.push(`Cloud topology-lifecycle invariant is missing: ${required}`);
+}
+if (cloudGitOps.includes("why the final system still keeps GitLab CI/CD, Nexus, OpenTofu, Kong")) failures.push("Cloud must not project its checkpoint topology as the permanent final system.");
+
 // Professional tsa-test-core extraction keeps a non-Java capstone independent while still requiring a genuine Java second consumer.
 const professionalBuild = sources.get("professional-engineer-independent-build-deep.ts") ?? "";
 for (const required of ["preferred genuine second consumer", "separate genuine Java test-consumer increment", "qualifying second Java consumer", "Two-consumer compatibility runs"]) {
