@@ -44,7 +44,7 @@ The primary learning path must remain practical for a learner without enterprise
 | Container orchestration | Kubernetes | managed Kubernetes offerings |
 | Enterprise application platform | OpenShift | vanilla/managed Kubernetes and other platforms |
 | GitOps | Argo CD | pipeline-push deployment and other reconciliation tools |
-| Secrets management | secrets-lifecycle concepts plus a self-hosted Vault-style implementation where practical | cloud secret managers and platform-native secret stores |
+| Secrets management | secrets-lifecycle concepts plus a self-hosted Vault implementation after the static-credential lifecycle gate is demonstrated | cloud secret managers and platform-native secret stores |
 | Metrics | Prometheus | managed metrics platforms |
 | Visualization | Grafana | enterprise observability suites |
 | Logs | Graylog | Loki/ELK/OpenSearch-style alternatives |
@@ -162,7 +162,7 @@ Application authentication from Builder evolves into enterprise identity.
 
 A target architecture may evolve toward `User → Keycloak → Kong → Steward`, while Steward retains domain authorization such as team membership, ownership and object-level permissions.
 
-Secrets work must progress beyond `.env`. Teach classification, storage, access control, injection, rotation, revocation, auditability, short-lived credentials/workload identity concepts, and avoiding secrets in Git, images, CI logs and artifacts. A self-hosted Vault-style implementation may be used where practical, but no paid secrets service is a completion requirement.
+Secrets work must progress beyond `.env`. Teach classification, storage, access control, injection, rotation, revocation, auditability, short-lived credentials/workload identity concepts, and avoiding secrets in Git, images, CI logs and artifacts. Once the curriculum has demonstrated the static-credential lifecycle problem, the learner implements the self-hosted Vault path with real leased/dynamic credentials, workload authentication, revocation and reissue evidence. This is a required hands-on checkpoint, while no paid secrets service is a completion requirement; Architect may later reassess whether Vault remains the appropriate active implementation.
 
 ### Reliability Engineer — operate the whole platform
 
