@@ -450,7 +450,9 @@ Current curriculum intent:
 | Nexus/artifact repository | Required implementation, justified first by immutable container distribution; language-package flows are conditional on real packages |
 | OpenTofu/IaC | Required implementation |
 | Public DNS/TLS/API edge with Kong | Required implementation through an explicit edge-management scenario |
+| Graylog centralized logging | Required implementation after operational logging/search/correlation questions are defined |
 | Prometheus/Grafana metrics | Required implementation after SLI/operational questions are defined |
+| OpenTelemetry + selected tracing backend | Required implementation after a distributed diagnostic question justifies end-to-end tracing; backend choice remains evidence-driven |
 | Vault dynamic secrets | Required implementation after the static credential-lifecycle problem is demonstrated |
 | Keycloak/workforce federation | Required implementation when the Security identity progression reaches the existing homelab directory scenario |
 | Kubernetes/OpenShift-compatible orchestration | Required hands-on migration exercise after the containerized release exists; the learner may later simplify/remove it |
@@ -458,7 +460,7 @@ Current curriculum intent:
 | Redis | Required implementation after Steward reaches the designed catalogue/read workload and measured cache-worthy pressure |
 | RabbitMQ | Required implementation after Steward adds a durable asynchronous side-effect requirement that must not block authoritative mutations |
 | Kafka | Comparison/context unless a Kafka-shaped requirement is independently demonstrated |
-| `steward-common` | Required extraction after Steward develops a second real application/consumer that repeats a stable domain-independent client/contract capability |
+| `steward-common` | Required extraction only after more than one real consumer demonstrates a stable domain-independent capability; otherwise defer |
 | `tsa-test-core` | Required extraction after the curriculum deliberately creates a second real test consumer and demonstrates a stable product-independent testing capability |
 
 For required technologies, TSA must deliberately evolve Steward until the prerequisite is real before asking the learner to implement the technology. The curriculum may not fabricate a benchmark result, duplicate code, second consumer or operational pain; the learner must create/measure the prerequisite through preceding exercises.
