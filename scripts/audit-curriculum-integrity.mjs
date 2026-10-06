@@ -113,6 +113,18 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Technical Steward governance must follow the final Architect estate and never invent package/repository ownership.
+const technicalThirdParty = sources.get("technical-steward-third-party-lifecycle-risk-deep.ts") ?? "";
+const technicalEngineeringGovernance = sources.get("technical-steward-engineering-governance-deep.ts") ?? "";
+const technicalHandbook = sources.get("technical-steward-handbook-standards-deep.ts") ?? "";
+for (const required of ["govern Nexus only if it remains active", "version/support policy only for internal packages that actually exist", "`tsa-test-core` only as a future Professional extraction candidate with no current support policy", "source-to-artifact-repository provenance evidence"]) {
+  if (!technicalThirdParty.includes(required)) failures.push(`Technical Steward lifecycle actual-estate invariant is missing: ${required}`);
+}
+for (const required of ["Include Nexus only if retained", "`steward-common` only if its extraction gate was earned and it remains active", "`tsa-test-core` only as a future Professional Engineer extraction gate"]) {
+  if (!technicalEngineeringGovernance.includes(required)) failures.push(`Technical Steward accountability invariant is missing: ${required}`);
+}
+if (!technicalHandbook.includes("internal packages that actually exist to be published through the approved artifact repository")) failures.push("Technical Steward standards must govern only packages that actually exist.");
+
 // Architect residual modules must reason from the active estate, not assume Nexus or steward-common remain current.
 const architectStyles = sources.get("architect-architectural-styles-deep.ts") ?? "";
 const architectModularity = sources.get("architect-modularity-deep.ts") ?? "";
