@@ -106,6 +106,20 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Preserve the GitLab -> Argo CD deployment-authority migration without dual control.
+const cloudGitOps = sources.get("cloud-orchestration-gitops-deep.ts") ?? "";
+const cloudMilestone = sources.get("cloud-engineer-milestone-deep.ts") ?? "";
+const progressiveDelivery = sources.get("cloud-progressive-delivery-canary-deep.ts") ?? "";
+for (const required of ["GitLab CI/CD remains responsible for build/test/package/publish.", "Argo CD becomes the only reconciler for the chosen environment after migration.", "does not make both systems authoritative at once"]) {
+  if (!cloudGitOps.includes(required)) failures.push(`Cloud GitOps deployment-authority contract is missing: ${required}`);
+}
+for (const required of ["direct GitLab CI/CD push deployment is not simultaneously authoritative", "There is one authoritative deployment model for the environment."]) {
+  if (!cloudMilestone.includes(required)) failures.push(`Cloud milestone deployment-authority proof is missing: ${required}`);
+}
+for (const required of ["Argo Rollouts is introduced for one concrete canary requirement, not as a second GitOps controller replacing Argo CD.", "Argo CD remains responsible for reconciling desired deployment configuration from Git"]) {
+  if (!progressiveDelivery.includes(required)) failures.push(`Progressive delivery must preserve Argo CD authority: ${required}`);
+}
+
 // Preserve the legacy FTP -> secure SFTP migration as a real cross-school evolution.
 const systemFileIntegrationMigration = sources.get("system-thinker-enterprise-file-integration-deep.ts") ?? "";
 const securityFileMigration = sources.get("security-secure-file-transfer-migration-deep.ts") ?? "";
