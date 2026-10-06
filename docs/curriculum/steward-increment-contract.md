@@ -310,7 +310,7 @@ Architect begins by reconstructing the **architecture that actually exists** for
 
 The learner evaluates the accumulated architecture. Boundaries may be retained, strengthened or changed based on demonstrated drivers. Distribution is never required merely to make the architecture appear advanced. A modular monolith, synchronous interaction, single authoritative PostgreSQL store or existing deployment model may remain the correct decision.
 
-Architect starts from evidence, not from a timeless mandatory stack. Technologies required earlier in TSA—such as `steward-common`, Redis, RabbitMQ, Keycloak, Kong, Kubernetes/OpenShift and GitOps tooling—should have implementation history by this point, but the active baseline may omit one only when explicit migration/retirement evidence explains why. `tsa-test-core` is different: it remains a future required extraction until Professional Engineer satisfies the genuine two-consumer gate.
+Architect starts from evidence, not from a timeless mandatory stack. Technologies whose earlier implementation gates were required—such as Redis, RabbitMQ, Keycloak, Kong, Kubernetes/OpenShift and GitOps tooling—should have implementation history by this point, but the active baseline may omit one when explicit migration/retirement evidence explains why. `steward-common` is conditional: Architect reviews either its earned extraction history or the evidence-backed defer decision if its real-consumer gate was never satisfied. `tsa-test-core` is different: it remains a future required extraction until Professional Engineer satisfies the genuine two-consumer gate.
 
 Every proposed architecture change must state:
 
