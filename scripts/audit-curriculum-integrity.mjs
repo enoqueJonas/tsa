@@ -113,6 +113,12 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Source recovery does not substitute for recovery of an immutable promoted artifact identity.
+const drArtifactRecovery = sources.get("reliability-data-protection-disaster-recovery-deep.ts") ?? "";
+for (const required of ["Git source at the same commit is not proof", "previously promoted OCI digest", "signature, SBOM and provenance identity", "same required release identity"]) {
+  if (!drArtifactRecovery.includes(required)) failures.push(`Immutable artifact recovery invariant is missing: ${required}`);
+}
+
 // Durable S3-compatible application blobs require state recovery; recreating object-store infrastructure is insufficient.
 const drObjectRecovery = sources.get("reliability-data-protection-disaster-recovery-deep.ts") ?? "";
 for (const required of ["object store holds the authoritative blob copies", "recreating the bucket/service does not restore those committed objects", "recreating an empty bucket is not recovery"]) {
