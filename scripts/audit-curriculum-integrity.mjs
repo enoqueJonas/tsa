@@ -113,6 +113,12 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Reliability observability instruments the inherited active topology instead of recreating retired dependencies.
+const observabilityIntegration = sources.get("reliability-observability-stack-integration-deep.ts") ?? "";
+for (const required of ["supporting dependencies still active in the inherited reliability baseline", "observe those components when they remain active", "explicit retirement/migration evidence rather than recreating them for this lab"]) {
+  if (!observabilityIntegration.includes(required)) failures.push(`Reliability active-topology observability invariant is missing: ${required}`);
+}
+
 // Vault is required once its evidence gate is earned, while remaining reassessable by Architect later.
 const enterpriseProgressionForVault = await readFile(join(curriculumDocsDir, "enterprise-capability-progression.md"), "utf8");
 for (const required of ["implements the self-hosted Vault path with real leased/dynamic credentials", "This is a required hands-on checkpoint", "Architect may later reassess whether Vault remains the appropriate active implementation"]) {
