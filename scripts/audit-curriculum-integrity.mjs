@@ -57,6 +57,20 @@ for (const required of ["If steward-common has independently earned extraction",
   if (!deliveryArtifacts.includes(required)) failures.push(`Delivery steward-common lifecycle must preserve conditional distribution semantics: ${required}`);
 }
 
+// Later schools must preserve the actual steward-common state rather than assuming extraction occurred.
+const reliabilityMetrics = sources.get("reliability-metrics-prometheus-grafana-deep.ts") ?? "";
+const architectGovernance = sources.get("architect-evaluation-governance-deep.ts") ?? "";
+const architectMilestone = sources.get("architect-milestone-deep.ts") ?? "";
+const technicalGovernance = sources.get("technical-steward-technology-governance-deep.ts") ?? "";
+for (const [file, source, required] of [
+  ["reliability-metrics-prometheus-grafana-deep.ts", reliabilityMetrics, "internal packages whose extraction gates were earned"],
+  ["architect-evaluation-governance-deep.ts", architectGovernance, "steward-common exists only if its earlier real-consumer gate earned extraction"],
+  ["architect-milestone-deep.ts", architectMilestone, "steward-common is present only if its evidence gate earned extraction"],
+  ["technical-steward-technology-governance-deep.ts", technicalGovernance, "steward-common is governed only if it actually exists"],
+]) {
+  if (!source.includes(required)) failures.push(`Later-school steward-common lifecycle drift: ${file} is missing: ${required}`);
+}
+
 // Preserve the deferred shared-test-library architecture across executable schools.
 const qualityRuntimeFiles = [...sources.entries()].filter(([file]) => file.startsWith("quality-"));
 const qualityRuntime = qualityRuntimeFiles.map(([, source]) => source).join("\n");
