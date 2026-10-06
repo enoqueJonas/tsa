@@ -47,6 +47,16 @@ if (!/GitLab CI\/CD/.test(migrationExercise) || !/Jenkins/.test(migrationExercis
   failures.push("legacy CI migration exercise must explicitly preserve Jenkins-to-GitLab migration semantics");
 }
 
+// Preserve the evidence-gated steward-common lifecycle across Builder and Delivery.
+const builderSoftwareCraft = sources.get("builder-software-craft-quality.ts") ?? "";
+const deliveryArtifacts = sources.get("delivery-artifact-supply-chain-deep.ts") ?? "";
+for (const required of ["more than one real consumer", "Internal-package boundary assessment"]) {
+  if (!builderSoftwareCraft.includes(required)) failures.push(`Builder steward-common gate is missing required evidence: ${required}`);
+}
+for (const required of ["If steward-common has independently earned extraction", "otherwise use an explicitly labeled minimal training package", "If extraction was deferred, use an explicit fixture"]) {
+  if (!deliveryArtifacts.includes(required)) failures.push(`Delivery steward-common lifecycle must preserve conditional distribution semantics: ${required}`);
+}
+
 // Preserve the deferred shared-test-library architecture across executable schools.
 const qualityRuntimeFiles = [...sources.entries()].filter(([file]) => file.startsWith("quality-"));
 const qualityRuntime = qualityRuntimeFiles.map(([, source]) => source).join("\n");
@@ -126,4 +136,4 @@ if (failures.length) {
   console.error("Curriculum integrity audit failed:\n- " + failures.join("\n- "));
   process.exit(1);
 }
-console.log(`Curriculum integrity audit passed: ${files.length} runtime path files checked; school wiring, planned/runtime path parity, lesson-array reachability, milestone composition, canonical CI architecture, deferred shared-test-library gates across Quality runtime and cross-school file-integration ownership are clean.`);
+console.log(`Curriculum integrity audit passed: ${files.length} runtime path files checked; school wiring, planned/runtime path parity, lesson-array reachability, milestone composition, canonical CI architecture, evidence-gated shared-library lifecycles, deferred shared-test-library gates across Quality runtime and cross-school file-integration ownership are clean.`);
