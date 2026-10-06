@@ -113,6 +113,13 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Reliability must not consume the future Professional Engineer tsa-test-core artifact.
+const reliabilityPerformance = sources.get("reliability-performance-capacity-deep.ts") ?? "";
+const reliabilityFaultInjection = sources.get("reliability-fault-injection-deep.ts") ?? "";
+for (const [name, source] of [["performance/capacity", reliabilityPerformance], ["fault injection", reliabilityFaultInjection]]) {
+  if (!source.includes("`tsa-test-core` does not exist")) failures.push(`Reliability ${name} must preserve the future tsa-test-core gate.`);
+}
+
 // Reliability observability instruments the inherited active topology instead of recreating retired dependencies.
 const observabilityIntegration = sources.get("reliability-observability-stack-integration-deep.ts") ?? "";
 for (const required of ["supporting dependencies still active in the inherited reliability baseline", "observe those components when they remain active", "explicit retirement/migration evidence rather than recreating them for this lab"]) {
