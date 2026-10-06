@@ -113,6 +113,16 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Preserve distinct observability signal ownership while allowing evidence-driven backend evolution.
+const reliabilityTracing = sources.get("reliability-distributed-tracing-implementation-deep.ts") ?? "";
+const reliabilityObservability = sources.get("reliability-observability-stack-integration-deep.ts") ?? "";
+for (const required of ["OpenTelemetry is the instrumentation and telemetry propagation standard used by Steward.", "Grafana Tempo is TSA's primary tracing backend for the implementation exercise.", "Prometheus/Grafana remain the primary metrics and dashboard path; Graylog remains the primary centralized log-management path."]) {
+  if (!reliabilityTracing.includes(required)) failures.push(`Tracing ownership invariant is missing: ${required}`);
+}
+for (const required of ["Graylog owns centralized log ingestion/search/retention; Prometheus owns metric time series and PromQL evaluation; Grafana owns metrics-oriented dashboards/exploration.", "without turning Graylog into a second metrics backend or Grafana into the authoritative log-management system", "rather than duplicating the same capability"]) {
+  if (!reliabilityObservability.includes(required)) failures.push(`Observability ownership invariant is missing: ${required}`);
+}
+
 // Preserve evidence-earned distributed-state semantics without freezing later technology choices.
 const distributedState = sources.get("system-thinker-distributed-state-messaging-deep.ts") ?? "";
 for (const required of ["technologies are required outcomes of earned pressure, not badges of architectural maturity", "PostgreSQL remains authoritative.", "Authorization/domain correctness remains synchronous.", "authoritative domain update and outbox insert commit in the same PostgreSQL transaction", "outbox does not claim distributed exactly-once semantics"]) {
