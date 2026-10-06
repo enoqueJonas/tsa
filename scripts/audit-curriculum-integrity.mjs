@@ -113,6 +113,16 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Professional Engineer must earn tsa-test-core from genuine independent two-consumer evidence without distorting the capstone.
+const capstoneProposal = sources.get("professional-engineer-capstone-engineering-proposal-deep.ts") ?? "";
+const independentBuild = sources.get("professional-engineer-independent-build-deep.ts") ?? "";
+for (const required of ["steward-common is available only if its earlier real-consumer extraction gate was earned", "tsa-test-core is different: it does not exist yet"]) {
+  if (!capstoneProposal.includes(required)) failures.push(`Professional reuse-boundary invariant is missing: ${required}`);
+}
+for (const required of ["passing independent capstone test baseline with no tsa-test-core dependency", "do not rewrite the capstone merely to manufacture a second Maven consumer", "A dummy consumer whose only purpose is importing the library does not satisfy the gate.", "Both consumers resolve the same published tsa-test-core version from Nexus"]) {
+  if (!independentBuild.includes(required)) failures.push(`Professional tsa-test-core extraction invariant is missing: ${required}`);
+}
+
 // Technical Steward governs Architect's resulting actual estate; governance must not resurrect retired or never-earned technologies.
 const technicalArchitectureGovernance = sources.get("technical-steward-architecture-governance-deep.ts") ?? "";
 const technicalTechnologyGovernance = sources.get("technical-steward-technology-governance-deep.ts") ?? "";
