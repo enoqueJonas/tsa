@@ -113,6 +113,13 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Architect Fundamentals preserves conditional shared-package existence and the future tsa-test-core gate.
+const architectFundamentals = sources.get("architect-architecture-fundamentals-deep.ts") ?? "";
+for (const required of ["Include Redis, RabbitMQ, Nexus and `steward-common` only when the inherited baseline proves they remain active", "`steward-common` exists only if its earlier real-consumer extraction gate was earned", "`tsa-test-core` should not yet exist"]) {
+  if (!architectFundamentals.includes(required)) failures.push(`Architect package-baseline invariant is missing: ${required}`);
+}
+if (architectFundamentals.includes("At this point steward-common should exist") || architectFundamentals.includes("the published steward-common package")) failures.push("Architect Fundamentals must not assume steward-common extraction.");
+
 // Architect governance follows the actual inherited estate rather than a timeless fixed stack.
 const architectGovernance = sources.get("architect-evaluation-governance-deep.ts") ?? "";
 for (const required of ["current architecture must be reconstructed from the inherited Reliability baseline", "capabilities that actually remain active", "retired or deferred capabilities as historical evidence", "Nexus when retained, or the explicitly migrated replacement"]) {
