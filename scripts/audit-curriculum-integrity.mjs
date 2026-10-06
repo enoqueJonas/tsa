@@ -113,6 +113,12 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Preserve the cross-school network exposure model: public application edge, private backends and restricted administration.
+const exposureProgression = await readFile(join(curriculumDocsDir, "network-access-and-exposure-progression.md"), "utf8");
+for (const required of ["the public edge exposes only the HTTPS application path", "administrative access remains separate from public ingress", "PostgreSQL | Backend/private only", "Keycloak | Public only for the identity endpoints required by the chosen authentication flow; administration remains restricted"]) {
+  if (!exposureProgression.includes(required)) failures.push(`Network exposure invariant is missing: ${required}`);
+}
+
 // Canonical increment contract must keep conditional shared artifacts distinct from required implementation history.
 const incrementContract = await readFile(join(curriculumDocsDir, "steward-increment-contract.md"), "utf8");
 for (const required of ["steward-common is conditional", "earned extraction history or the evidence-backed defer decision", "tsa-test-core is different"]) {
