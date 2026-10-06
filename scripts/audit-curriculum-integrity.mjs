@@ -113,6 +113,20 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Preserve schema-evolution and recovery semantics across Delivery, Reliability and Architecture.
+const schemaEvolution = sources.get("delivery-production-schema-evolution-deep.ts") ?? "";
+const databaseStewardship = sources.get("reliability-database-stewardship-deep.ts") ?? "";
+const disasterRecovery = sources.get("reliability-data-protection-disaster-recovery-deep.ts") ?? "";
+for (const required of ["Expand: add backward-compatible schema/state", "Switch: make the new application behavior authoritative only after compatibility and data conditions are proven.", "Contract: remove obsolete schema only after old application versions and rollback paths no longer depend on it.", "Rolling back application bytes is not the same as rolling back persistent data."]) {
+  if (!schemaEvolution.includes(required)) failures.push(`Schema-evolution invariant is missing: ${required}`);
+}
+for (const required of ["Separate application runtime privileges from migration/administration privileges.", "Recovery is demonstrated through restore, not inferred from backup success."]) {
+  if (!databaseStewardship.includes(required)) failures.push(`Database stewardship invariant is missing: ${required}`);
+}
+for (const required of ["any internal packages whose earlier extraction gates were actually earned", "include an internal package only if its extraction gate was actually earned"]) {
+  if (!disasterRecovery.includes(required)) failures.push(`Disaster-recovery artifact lifecycle invariant is missing: ${required}`);
+}
+
 // Preserve distinct observability signal ownership while allowing evidence-driven backend evolution.
 const reliabilityTracing = sources.get("reliability-distributed-tracing-implementation-deep.ts") ?? "";
 const reliabilityObservability = sources.get("reliability-observability-stack-integration-deep.ts") ?? "";
