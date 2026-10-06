@@ -9,7 +9,7 @@ const resourcesBySecData:Record<string,LearningResource[]>={
  access:[nistZeroTrust,nistCsf],exceptions:[nistCsf,nistPrivacy],
 };
 
-const scenario = "Treat Steward as an organization-owned service whose security and data responsibilities span application code, PostgreSQL, cloud/VPS infrastructure, CI/CD, Nexus, internal packages, operators and business stakeholders. Reuse Security Steward evidence; this module governs accountability and decisions rather than reteaching attack techniques.";
+const scenario = "Treat Steward as an organization-owned service whose security and data responsibilities follow the final Architect actual-stack inventory: application code, authoritative data stores, retained platform/delivery dependencies, operators and business stakeholders. Cloud/VPS infrastructure, Nexus and internal packages are governed here only when they remain active; retired components remain historical security/migration evidence. Reuse Security Steward evidence; this module governs accountability and decisions rather than reteaching attack techniques.";
 const deliverables = ["Governance artifact", "Evidence and rationale", "Owner, exception or review record"];
 const criteria = ["Security or data accountability is explicit.", "Policy intent is separated from implementation detail.", "Exceptions and residual risk follow defined authority and review rules."];
 function lesson(id: string, title: string, body: string, instructions: string[]): Lesson {
