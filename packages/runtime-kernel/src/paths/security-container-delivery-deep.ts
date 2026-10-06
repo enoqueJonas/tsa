@@ -128,7 +128,7 @@ const guidance: Record<Topic, Guidance> = {
     },
     "Software Supply-chain Security": {
         intro: "The software supply chain includes source, dependencies, build systems, internal repositories, images, signatures, deployment and every identity allowed to modify those artifacts.",
-        steward: "Steward's chain includes source control, CI, Nexus, steward-common, tsa-test-core, container images and deployment targets. A compromise at any authoritative step can become trusted downstream.",
+        steward: "Steward's chain includes source control, CI, Nexus, container images, deployment targets and only the internal packages whose earlier extraction gates were actually earned. A compromise at any authoritative step can become trusted downstream.",
         practice: ["Draw Steward's source-to-deployment supply chain.", "Mark identities and trust boundaries.", "Identify one high-impact tampering point.", "Define preventive and detective controls for it."],
         reflection: "Why is securing source code alone insufficient to secure the Steward release?",
     },
@@ -182,7 +182,7 @@ const guidance: Record<Topic, Guidance> = {
     },
     "Securing Earned Internal-Package Consumption": {
         intro: "Shared internal packages amplify both engineering consistency and security impact. Consumers must know which repository, package version and integrity/provenance evidence they are trusting.",
-        steward: "Steward and its tests should resolve steward-common and tsa-test-core from approved internal sources, pin versions intentionally and make unexpected source/version changes observable in review and CI.",
+        steward: "Steward and its tests should resolve only internal packages that actually exist from approved internal sources, pin versions intentionally and make unexpected source/version changes observable in review and CI.",
         practice: ["Trace how Steward resolves both internal packages.", "Verify repository source and selected versions.", "Identify how an unauthorized version change would be detected.", "Record a reproducible trusted-consumption policy."],
         reflection: "Why does introducing reusable internal packages increase the importance of supply-chain controls?",
     },
@@ -261,7 +261,7 @@ const lab: Lesson = {
                 type: "practical",
                 objective: "Reduce the highest-impact Steward delivery and dependency risks while preserving usable engineering flow.",
                 scenario: "Prioritize controls that constrain publisher/deployer authority and make artifact identity, source and contents observable.",
-                instructions: ["Apply least privilege to CI and internal repository credentials.", "Harden dependency resolution against confusion or unintended sources.", "Scan dependencies and images and remediate at least one meaningful issue.", "Generate provenance, digest and/or SBOM evidence where supported.", "Verify steward-common and tsa-test-core resolve from intended repositories and versions."],
+                instructions: ["Apply least privilege to CI and internal repository credentials.", "Harden dependency resolution against confusion or unintended sources.", "Scan dependencies and images and remediate at least one meaningful issue.", "Generate provenance, digest and/or SBOM evidence where supported.", "For each internal package that actually exists, verify resolution from the intended repository and version; preserve an earlier defer decision instead of fabricating a package."],
                 deliverables: ["Security control changes", "Scan evidence", "Provenance/SBOM evidence", "Trusted-consumption verification"],
                 completionCriteria: ["Controls protect named threats or trust boundaries.", "Internal package consumption is deterministic and evidenced.", "The delivery pipeline still performs its intended work."],
             },
