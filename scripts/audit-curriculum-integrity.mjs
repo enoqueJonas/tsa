@@ -48,10 +48,18 @@ if (!/GitLab CI\/CD/.test(migrationExercise) || !/Jenkins/.test(migrationExercis
 }
 
 // Preserve the deferred shared-test-library architecture across executable schools.
-const qualityRuntime = sources.get("quality-steward.ts") ?? "";
+const qualityRuntimeFiles = [...sources.entries()].filter(([file]) => file.startsWith("quality-"));
+const qualityRuntime = qualityRuntimeFiles.map(([, source]) => source).join("\n");
 const professionalBuild = sources.get("professional-engineer-independent-build-deep.ts") ?? "";
-if (/Extract tsa-test-core|Publish tsa-test-core|Create tsa-test-core/i.test(qualityRuntime)) {
-  failures.push("Quality Steward must not extract tsa-test-core before a genuine second consumer exists");
+const prematureTestCorePatterns = [
+  /(?:extract|create|publish|deploy)\\s+(?:the\\s+)?`?tsa-test-core`?/i,
+  /com\\.tsa:tsa-test-core/i,
+  /(?:consume|resolve|import)\\s+(?:the\\s+)?`?tsa-test-core`?/i,
+];
+for (const [file, source] of qualityRuntimeFiles) {
+  if (prematureTestCorePatterns.some((pattern) => pattern.test(source)) && !/do not (?:extract|create|publish)|must not exist yet|does not exist yet|before tsa-test-core can exist|candidate|future/i.test(source)) {
+    failures.push(`Quality Steward must not materialize tsa-test-core before a genuine second consumer exists: ${file}`);
+  }
 }
 for (const required of ["Earn and Publish tsa-test-core from Two Real Products", "pre-extraction capstone test baseline", "Versioned Nexus artifact"]) {
   if (!professionalBuild.includes(required)) {
@@ -118,4 +126,4 @@ if (failures.length) {
   console.error("Curriculum integrity audit failed:\n- " + failures.join("\n- "));
   process.exit(1);
 }
-console.log(`Curriculum integrity audit passed: ${files.length} runtime path files checked; school wiring, planned/runtime path parity, lesson-array reachability, milestone composition, canonical CI architecture, deferred shared-test-library gates and cross-school file-integration ownership are clean.`);
+console.log(`Curriculum integrity audit passed: ${files.length} runtime path files checked; school wiring, planned/runtime path parity, lesson-array reachability, milestone composition, canonical CI architecture, deferred shared-test-library gates across Quality runtime and cross-school file-integration ownership are clean.`);
