@@ -112,7 +112,7 @@ Reason about shared-library coupling, version compatibility, ownership boundarie
 Define approved-source policy, internal package ownership, version/lifecycle policy, retention, third-party dependency governance, end-of-life handling, provenance requirements and exception processes. Apply concrete governance to shared artifacts that actually exist, and define a conditional ownership/compatibility policy for `tsa-test-core` that activates only if Professional Engineer later earns its extraction gate.
 
 ### Professional Engineer
-Use the independent capstone as a second real consumer of appropriate internal platform capabilities. Where justified, its automation project consumes an approved version of `tsa-test-core` from the internal repository and provides compatibility evidence. The capstone must remain independently designed; consuming a shared engineering foundation does not make it a clone of Steward.
+Use the independent capstone as the preferred genuine second consumer when its independently justified test stack is compatible with the Quality candidate. Once two real compatible consumers demonstrate a stable product-independent testing capability, extraction/publication of `tsa-test-core` is required and both consumers must resolve the approved version from the internal repository with compatibility evidence. If the capstone is not a genuine compatible consumer, do not distort it merely to force reuse; establish the required second-consumer evidence through a separate real Java test-consumer increment with its own testing purpose and passing pre-extraction baseline. The capstone must remain independently designed; consuming a shared engineering foundation when it genuinely fits does not make it a clone of Steward.
 
 ## Capability evidence
 
