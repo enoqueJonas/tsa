@@ -109,7 +109,7 @@ Artifacts:
 - CI identity/permission matrix
 - dependency/image scan triage
 - internal repository trust policy
-- deterministic `steward-common` consumption; `tsa-test-core` enters the supply-chain model only after Professional Engineer satisfies its genuine two-consumer extraction gate
+- deterministic consumption/provenance for `steward-common` only if its earlier real-consumer extraction gate was earned; if extraction was deferred, preserve that recorded absence rather than manufacturing a package; `tsa-test-core` enters the supply-chain model only after Professional Engineer satisfies its genuine two-consumer extraction gate
 - SBOM/provenance evidence
 - security gate + time-bounded exception policy
 
@@ -145,6 +145,7 @@ Constraints:
 - Keycloak authenticates/federates; it does not own Steward business authorization
 - gateway identity controls do not justify bypassing backend authorization
 - do not record secret/token values in evidence
+- the selected workforce directory owns workforce identity data, Keycloak owns federation/authentication, and Steward remains authoritative for domain authorization; do not create competing identity authorities
 
 ## Increment 8 — Vault and dynamic secrets
 
@@ -169,8 +170,9 @@ Artifacts:
 - TLS/mTLS use where justified
 - failure evidence for expired/untrusted/wrong-identity certificates
 
-Constraint:
-TLS success alone is not sufficient; the learner must explain what identity was verified and by which trust root/policy.
+Constraints:
+- TLS success alone is not sufficient; the learner must explain what identity was verified and by which trust root/policy.
+- public ACME/Kong certificate lifecycle and internal workload PKI remain distinct unless an explicit later architecture decision migrates ownership; internal PKI evolution must end with one authoritative issuer design rather than permanent competing issuers.
 
 ## Increment 10 — Enterprise federation
 
