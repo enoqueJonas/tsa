@@ -113,6 +113,16 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Technical Steward governs Architect's resulting actual estate; governance must not resurrect retired or never-earned technologies.
+const technicalArchitectureGovernance = sources.get("technical-steward-architecture-governance-deep.ts") ?? "";
+const technicalTechnologyGovernance = sources.get("technical-steward-technology-governance-deep.ts") ?? "";
+for (const required of ["any internal packages that actually exist", "the infrastructure and hosting model retained by Architect"]) {
+  if (!technicalArchitectureGovernance.includes(required)) failures.push(`Architect-to-Technical-Steward estate handoff is missing: ${required}`);
+}
+for (const required of ["final Architect actual-stack inventory", "Map only current or explicitly transitional technology domains", "steward-common only if its extraction gate was earned"]) {
+  if (!technicalTechnologyGovernance.includes(required)) failures.push(`Technical Steward actual-stack governance invariant is missing: ${required}`);
+}
+
 // Infrastructure/configuration recreation is not a substitute for persistent-state backup and restore.
 const drRecovery = sources.get("reliability-data-protection-disaster-recovery-deep.ts") ?? "";
 for (const required of ["Treat this as environment reconstruction, not as restoration of persistent application/platform data.", "Restore PostgreSQL from the selected recovery point.", "Why does having Infrastructure as Code not automatically mean the whole Steward environment is recoverable?"]) {
