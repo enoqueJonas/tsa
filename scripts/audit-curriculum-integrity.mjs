@@ -113,6 +113,12 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Architect governance follows the actual inherited estate rather than a timeless fixed stack.
+const architectGovernance = sources.get("architect-evaluation-governance-deep.ts") ?? "";
+for (const required of ["current architecture must be reconstructed from the inherited Reliability baseline", "capabilities that actually remain active", "retired or deferred capabilities as historical evidence", "Nexus when retained, or the explicitly migrated replacement"]) {
+  if (!architectGovernance.includes(required)) failures.push(`Architect actual-estate governance invariant is missing: ${required}`);
+}
+
 // Security threat-model scope preserves the earned steward-common gate and future tsa-test-core boundary.
 const securityMilestone = sources.get("security-steward-milestone-deep.ts") ?? "";
 for (const required of ["Include steward-common only if its earlier extraction gate was earned", "preserve the defer evidence otherwise", "Record tsa-test-core as future work rather than an existing component"]) {
