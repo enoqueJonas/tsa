@@ -113,6 +113,12 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Durable S3-compatible application blobs require state recovery; recreating object-store infrastructure is insufficient.
+const drObjectRecovery = sources.get("reliability-data-protection-disaster-recovery-deep.ts") ?? "";
+for (const required of ["object store holds the authoritative blob copies", "recreating the bucket/service does not restore those committed objects", "recreating an empty bucket is not recovery"]) {
+  if (!drObjectRecovery.includes(required)) failures.push(`Object-storage recovery invariant is missing: ${required}`);
+}
+
 // Reliability broker exercises follow the active inherited broker state rather than resurrecting RabbitMQ after explicit retirement.
 const reliabilityResilience = sources.get("reliability-resilience-distributed-failure-deep.ts") ?? "";
 for (const required of ["If RabbitMQ remains active in the inherited Reliability baseline", "if explicit migration/retirement evidence replaced it", "RabbitMQ when retained, otherwise the explicitly migrated replacement"]) {
