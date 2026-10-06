@@ -113,6 +113,12 @@ for (const required of ["only the internal packages whose earlier extraction gat
   if (!securitySupplyChain.includes(required)) failures.push(`Security Steward package lifecycle guard is missing conditional evidence: ${required}`);
 }
 
+// Cross-school closure: Security consumes the inherited active topology without resurrecting retired components.
+const securityClosureMilestone = sources.get("security-steward-milestone-deep.ts") ?? "";
+for (const required of ["scope follows the inherited active Security baseline", "explicit migration/retirement evidence is preserved rather than reconstructing a retired component", "Reconstruct the inherited active Security baseline from evidence", "preserve explicit migration/retirement evidence otherwise"]) {
+  if (!securityClosureMilestone.includes(required)) failures.push(`Security closure-handoff invariant is missing: ${required}`);
+}
+
 // Canonical contracts distinguish earned implementation checkpoints from the retained post-Architect estate.
 const networkExposureCanonical = await readFile(join(curriculumDocsDir, "network-access-and-exposure-progression.md"), "utf8");
 for (const required of ["inherited active topology", "Required earlier implementation history does not require Reliability to recreate a component", "actual retained estate"]) {
