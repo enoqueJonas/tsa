@@ -1036,7 +1036,7 @@ Expand from engineering systems to stewarding technology over time: strategy, ca
 - Knowledge stewardship
 
 ## Labs
-The learner governs the platform built in previous schools: create policies/standards, risk register, controls, evidence, architecture review, change process, vendor assessment scenario, technical-debt assessment and handbook entries.
+The learner governs the actual architecture and evidence baseline produced by Architect: create policies/standards, risk register, controls, evidence, architecture review, change process, vendor assessment scenario, technical-debt assessment and handbook entries for capabilities that remain active, while retaining retired/deferred technologies as decision history rather than active governance targets.
 
 ## Milestone
 **Technical Stewardship Review** — governance pack and simulated review of the Steward platform covering architecture, risk, controls, change, security, reliability, technical debt, ownership and evidence.
