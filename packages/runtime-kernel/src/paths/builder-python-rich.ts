@@ -6,7 +6,9 @@ const pythonTutorial: LearningResource = { title: "Python Tutorial", url: "https
 const pythonReference: LearningResource = { title: "Python Language Reference", url: "https://docs.python.org/3/reference/" };
 const stdlib: LearningResource = { title: "Python Standard Library", url: "https://docs.python.org/3/library/" };
 const venvDocs: LearningResource = { title: "venv — Creation of virtual environments", url: "https://docs.python.org/3/library/venv.html" };
-const packagingGuide: LearningResource = { title: "Python Packaging User Guide", url: "https://packaging.python.org/en/latest/" };
+const packagingGuide: LearningResource = { title: "Python Packaging User Guide — Packaging Python Projects", url: "https://packaging.python.org/en/latest/tutorials/packaging-projects/" };
+const pythonModulesTutorial: LearningResource = { title: "Python Tutorial — Modules", url: "https://docs.python.org/3/tutorial/modules.html" };
+const pythonPackagesTutorial: LearningResource = { title: "Python Tutorial — Packages", url: "https://docs.python.org/3/tutorial/modules.html#packages" };
 const typingDocs: LearningResource = { title: "typing — Support for type hints", url: "https://docs.python.org/3/library/typing.html" };
 const mypyDocs: LearningResource = { title: "mypy documentation", url: "https://mypy.readthedocs.io/en/stable/" };
 const pdbDocs: LearningResource = { title: "pdb — The Python Debugger", url: "https://docs.python.org/3/library/pdb.html" };
@@ -293,38 +295,54 @@ const collections = lesson(
 );
 const modules = lesson(
     "Modules and Packages",
-    45,
+    55,
     [
-        { type: "heading", id: "introduction", text: "Files become dependency boundaries" },
-        { type: "paragraph", text: "Splitting code into modules can improve clarity, but more files do not automatically mean better architecture. A useful module groups concepts that change for related reasons and exposes a small, deliberate surface to the rest of the system." },
-        { type: "heading", id: "imports", text: "Imports create dependencies" },
-        { type: "code", language: "text", caption: "A small application core", code: "application_core/\n├── __init__.py\n├── services.py\n├── teams.py\n├── lifecycle.py\n└── errors.py" },
-        { type: "code", language: "python", caption: "Import a public operation", code: "from application_core.lifecycle import normalize_lifecycle\n\nlifecycle = normalize_lifecycle(\" Production \")" },
-        { type: "paragraph", text: "Every import points from one module toward another. When imports become circular, the code is often revealing a confused responsibility or a dependency direction that needs redesign rather than another import trick." },
-        { type: "heading", id: "entrypoints", text: "Importable modules vs executable modules" },
-        { type: "code", language: "python", caption: "Keep demo execution explicit", code: "def main():\n    print(\"application core experiment\")\n\nif __name__ == \"__main__\":\n    main()" },
-        { type: "callout", tone: "warning", title: "Avoid import side effects", body: "Importing a module should not unexpectedly start services, mutate global state or execute expensive work. Hidden import-time behavior makes tests and later framework integration harder to reason about." },
-        { type: "heading", id: "packages", text: "Packages are not automatically reusable libraries" },
-        { type: "paragraph", text: "A Python package organizes importable code. Publishing a reusable internal distribution is a separate decision with versioning, ownership and compatibility consequences. We will not extract steward-common until a real reuse boundary exists." },
-        { type: "heading", id: "module-package", text: "Module, package and distribution are different things" },
-        { type: "paragraph", text: "A module is normally one importable `.py` file. A package groups importable modules under a package namespace. A distribution is the installable artifact/metadata that a package manager installs. One distribution can expose one or more packages. Keeping these terms separate makes import and packaging failures much easier to diagnose." },
-        { type: "code", language: "text", caption: "Source layout and import names", code: "project/\n├── pyproject.toml\n├── main.py\n└── steward/\n    ├── __init__.py\n    ├── services.py\n    └── registry.py\n\nfrom steward.services import Service\nfrom steward import registry" },
-        { type: "heading", id: "import-resolution", text: "Imports resolve names through Python's module search path" },
-        { type: "paragraph", text: "When Python executes `import steward.services`, it searches locations represented by `sys.path`, loads the module once for that interpreter process, and caches it in `sys.modules`. The current working directory, installed distributions and environment configuration can therefore affect what gets imported. Avoid naming your own file `json.py`, `typing.py` or after another dependency because it can shadow the module you intended to import." },
-        { type: "code", language: "python", caption: "Inspect what Python imported", code: "import sys\nimport steward.services\n\nprint(steward.services.__file__)\nprint(sys.path)" },
-        { type: "heading", id: "absolute-relative", text: "Absolute and relative imports communicate boundaries" },
-        { type: "paragraph", text: "Absolute imports such as `from steward.services import Service` show the package path explicitly. Relative imports such as `from .services import Service` express a relationship inside the current package. Both are valid; consistency and understandable dependency direction matter more than dogma." },
-        { type: "heading", id: "public-surface", text: "Keep the public surface intentional" },
-        { type: "paragraph", text: "A leading underscore convention marks implementation details such as `_normalize_slug` as non-public. Package `__init__.py` can expose a small convenient API, but re-exporting everything makes ownership and dependency direction harder to see. Import from the module that owns a concept unless a deliberate package API exists." },
-        { type: "callout", tone: "warning", title: "Circular imports are a design signal", body: "If `services.py` imports `registry.py` while `registry.py` imports `services.py` during module initialization, one module may observe the other only partially initialized. Moving an import inside a function can mask the symptom; first ask whether responsibilities or dependency direction should change." },
-        { type: "resources", title: "Required reading", resources: [pythonTutorial, packagingGuide] },
+        { type: "heading", id: "what-is-module", text: "What is a Python module?" },
+        { type: "paragraph", text: "A module is a Python file that contains code you can reuse from another Python file. Instead of keeping every function, class and constant in one growing script, you can move related code into its own `.py` file and import what you need." },
+        { type: "paragraph", text: "Modules help organize a program by responsibility. A small program may need only one file. As the program grows, separate modules make related code easier to find, test and reuse. Creating more files is not automatically better; split code when the separation makes the program easier to understand." },
+        { type: "heading", id: "first-module", text: "Create and use your first module" },
+        { type: "code", language: "python", caption: "calculator.py", code: "def add(a, b):\n    return a + b" },
+        { type: "paragraph", text: "The file `calculator.py` is now a module. It defines one function named `add`. Another Python file can import that function instead of defining it again." },
+        { type: "code", language: "python", caption: "main.py", code: "from calculator import add\n\nresult = add(5, 3)\nprint(result)" },
+        { type: "code", language: "text", caption: "Output", code: "8" },
+        { type: "paragraph", text: "In `from calculator import add`, `calculator` is the module name and `add` is the name imported from it. After the import, `main.py` can call `add(5, 3)` like any other function in scope." },
+        { type: "heading", id: "import-forms", text: "Common ways to import modules" },
+        { type: "code", language: "python", caption: "Import the module or import a name", code: "import calculator\nprint(calculator.add(5, 3))  # 8\n\nfrom calculator import add\nprint(add(10, 2))            # 12" },
+        { type: "paragraph", text: "With `import calculator`, you keep the module name visible when calling `calculator.add`. With `from calculator import add`, the imported name is available directly. The explicit module prefix is often useful when it makes the owner of a name clearer." },
+        { type: "heading", id: "what-is-package", text: "What is a Python package?" },
+        { type: "paragraph", text: "A package groups related modules under a shared import namespace. If one directory contains several modules that belong to the same part of an application, a package lets callers address them together instead of treating every file as unrelated." },
+        { type: "code", language: "text", caption: "A small package", code: "shop/\n├── __init__.py\n├── prices.py\n└── discounts.py\n\nmain.py" },
+        { type: "code", language: "python", caption: "Import from a package", code: "from shop.prices import calculate_total\n\ntotal = calculate_total(10, 3)\nprint(total)" },
+        { type: "paragraph", text: "Here, `shop` is the package, `prices` is a module inside that package, and `calculate_total` is a name defined by the module. The dotted import path describes that hierarchy." },
+        { type: "heading", id: "when-to-use", text: "When should you create modules and packages?" },
+        { type: "list", items: ["Keep a small script in one file while that remains easy to understand.", "Create a module when a group of functions, classes or constants has a clear responsibility that is useful to separate.", "Create a package when several related modules belong under one namespace.", "Do not split code only to create a large folder tree. A boundary should make ownership, navigation or reuse clearer."] },
+        { type: "heading", id: "module-package-distribution", text: "Module, package and distribution are different things" },
+        { type: "paragraph", text: "A module is usually one importable `.py` file. A package groups importable modules under a package namespace. A distribution is an installable project artifact with metadata that a package-management tool can install. A package in your source tree is therefore not automatically a reusable library that other projects should depend on." },
+        { type: "callout", tone: "note", title: "What makes a package reusable?", body: "A reusable library needs more than a package directory. Its public behavior must make sense outside the original application, its interface needs deliberate compatibility expectations, and real consumers should justify the shared boundary. Later TSA work adds versioning and distribution. We will not manufacture steward-common merely because Python can package code." },
+        { type: "heading", id: "entrypoints", text: "Importable modules can also be executable" },
+        { type: "code", language: "python", caption: "Run demo code only when this file is executed directly", code: "def main():\n    print(\"application core experiment\")\n\nif __name__ == \"__main__\":\n    main()" },
+        { type: "code", language: "text", caption: "Output when the file is executed directly", code: "application core experiment" },
+        { type: "paragraph", text: "Python sets `__name__` to \"__main__\" when a file is executed directly. When the same file is imported, that condition is false, so `main()` does not run just because another module imported the file." },
+        { type: "callout", tone: "warning", title: "Avoid surprising import side effects", body: "Importing a module should normally make definitions available, not unexpectedly start services, mutate unrelated global state or perform expensive work. Keep demo or command-line execution behind an explicit entry point." },
+        { type: "heading", id: "import-resolution", text: "How does Python find a module?" },
+        { type: "paragraph", text: "When Python evaluates an import, it searches locations on its module search path. Installed distributions, the current execution context and environment configuration can affect what name is found. This is why naming your own file `json.py` can accidentally shadow the standard-library `json` module." },
+        { type: "code", language: "python", caption: "Inspect the imported module", code: "import json\n\nprint(json.__file__)  # path varies by Python installation" },
+        { type: "heading", id: "absolute-relative", text: "Absolute and relative imports" },
+        { type: "paragraph", text: "An absolute import such as `from shop.prices import calculate_total` starts from the package namespace. Inside a package, a relative import such as `from .prices import calculate_total` refers to a neighboring module relative to the current package. Both forms are useful; choose imports that keep the package structure understandable." },
+        { type: "heading", id: "dependencies", text: "Imports also create dependencies" },
+        { type: "paragraph", text: "Once module A imports something from module B, A depends on B's available names and behavior. That is a normal consequence of reuse, but dependency direction becomes important as an application grows." },
+        { type: "callout", tone: "warning", title: "Circular imports are a design signal", body: "If `services.py` imports `registry.py` while `registry.py` imports `services.py` during initialization, one module may see the other before it has finished loading. An import inside a function can sometimes avoid the immediate cycle, but first check whether the two modules have confused responsibilities." },
+        { type: "heading", id: "steward-application", text: "Apply the idea to the service registry" },
+        { type: "paragraph", text: "Now apply the same mechanics to the service-registry code you have been evolving. Identify responsibilities that already exist in the code before deciding where files should be split. The goal is not to invent an enterprise package tree; it is to make the current Python program easier to understand." },
+        { type: "code", language: "text", caption: "One possible starting shape", code: "application_core/\n├── __init__.py\n├── services.py\n├── lifecycle.py\n└── errors.py" },
+        { type: "paragraph", text: "This is a candidate structure, not a required architecture. If the current code does not justify one of these modules, do not create it just to match the diagram." },
+        { type: "resources", title: "Learning resources", resources: [pythonModulesTutorial, pythonPackagesTutorial, packagingGuide] },
     ],
-    "Split the evolving service-registry core into coherent Python modules while keeping dependency direction understandable.",
-    ["Identify at least three responsibilities in the current code.", "Create a package and move responsibilities into coherent modules.", "Expose only the imports callers actually need.", "Use __name__ == '__main__' for a demo entry point if needed.", "Sketch module dependency arrows.", "Try one circular design on paper and explain how you would remove it."],
-    "How can splitting code into more modules make architecture worse? What evidence would justify extracting a reusable internal package later?",
-    [pythonTutorial, packagingGuide]
+    "Organize the existing service-registry Python code into understandable modules and a package after first proving that you can create, import and explain a simple module yourself.",
+    ["Create a tiny two-file experiment such as calculator.py and main.py and prove the import works.", "In one sentence each, explain module, package and distribution without using the terms interchangeably.", "Inspect the current service-registry code and identify responsibilities that genuinely benefit from separate modules.", "Create the smallest package/module structure justified by those responsibilities.", "Run the application after the refactor and capture its observable result.", "Sketch the import direction between your modules.", "Check for one naming/shadowing risk and one possible circular-dependency risk.", "Explain why the current package is or is not ready to become a reusable library for another project."],
+    "Explain the difference between a module and a package to a teammate. When would adding another module improve the code, and when would it merely create more files? What additional evidence would you want before extracting part of the application as a reusable library?",
+    [pythonModulesTutorial, pythonPackagesTutorial, packagingGuide]
 );
-
 const errors = lesson(
     "Errors, Exceptions and Defensive Programming",
     50,
