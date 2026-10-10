@@ -47,6 +47,51 @@ Review / reflection
 
 This is a progression, not a mandatory visual template. Some lessons are primarily conceptual, investigative, operational, design-oriented or reflective and should use the structure that best serves the objective.
 
+## Concept-first teaching contract
+
+Technical depth must not displace basic teaching. A lesson should introduce a concept in the order a learner needs in order to understand and use it, not in the order an architect might review its consequences.
+
+For foundational technical topics, prefer this progression when it fits:
+
+1. define the concept in plain technical language;
+2. explain the problem it solves and when it is useful;
+3. show the smallest working example;
+4. explain the important lines, syntax, or moving parts;
+5. show the expected result when the example has a useful observable result;
+6. let the learner make a small change or use the concept;
+7. introduce nearby concepts and compare them explicitly;
+8. explain common mistakes and failure modes;
+9. introduce deeper engineering implications such as dependency direction, lifecycle, security, performance, or operability;
+10. apply the concept to the continuing Steward system only after the learner understands it independently.
+
+Do not begin an introductory lesson with an architectural consequence when the underlying mechanism has not yet been taught. For example, teach what Python modules and imports are and let the learner use them before discussing circular dependencies and dependency direction.
+
+### Simple example before domain example
+
+When a concept is new, the first example should minimize unrelated cognitive load. Prefer a tiny domain-neutral example when a Steward-specific example would require the learner to understand unfamiliar domain functions, package structure, or architecture at the same time.
+
+A later Steward example should then demonstrate transfer into the continuing project. The simple example is not disposable filler: it isolates the new idea so the learner can see what changed.
+
+### Explain examples, do not merely display them
+
+Code blocks are teaching material, not decoration. Surrounding prose should tell the learner what unfamiliar syntax does, what to notice, and how the example demonstrates the concept. Avoid presenting a code block and immediately jumping to an architectural conclusion that the learner has not yet been shown how to derive.
+
+### Observable output rule
+
+When seeing the result materially helps understanding, show the expected result.
+
+- Use an inline source comment for a short, local result where keeping cause and result together is clearer, such as `print(total)  # 8`.
+- Use a distinct output/terminal block for multiline output, structured data, tracebacks, command output, or any result the learner should inspect separately.
+- Do not duplicate the same output both inline and in a separate block without a teaching reason.
+- Do not add output mechanically to definitions or fragments that have no meaningful immediate result.
+- Expected output must agree with the code. Environment-dependent output must be labelled representative.
+
+### Authoritative-source adaptation
+
+TSA should not reinvent established introductory explanations merely to sound distinctive. Authors should consult authoritative documentation and high-quality educational sources for terminology, topic ordering, and canonical examples, then write an original TSA explanation adapted to the learner's stage and the continuing curriculum. Do not copy substantial protected prose.
+
+The TSA value is the combination of accurate teaching, deliberate sequencing, exercises, engineering context, and cumulative application—not unusual wording for familiar concepts.
+
 ## Cumulative implementation contract
 
 When an exercise changes the continuing Steward system, it must follow the canonical [Steward Increment Contract](./steward-increment-contract.md).
