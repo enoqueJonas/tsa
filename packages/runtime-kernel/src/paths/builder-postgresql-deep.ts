@@ -73,8 +73,8 @@ function lesson(spec: DataLessonSpec): Lesson {
                     objective: spec.practiceObjective,
                     scenario: "Use the evolving Steward service-registry data model. Preserve useful SQL, schema notes and evidence so later Builder modules can build on the same system.",
                     instructions: spec.practiceInstructions,
-                    deliverables: ["Working SQL or schema change", "Observed output", "Short engineering note explaining the result and trade-offs"],
-                    completionCriteria: ["The result is demonstrated against realistic Steward data.", "At least one failure, edge case or alternative is examined.", "The learner can explain what PostgreSQL is doing rather than only copy syntax."],
+                    deliverables: ["Working SQL or schema change", "Reproducible evidence containing setup/query and observed output", "Short engineering note explaining the result and trade-offs"],
+                    completionCriteria: ["Another learner could reproduce the result against the recorded Steward data/setup.", "At least one failure, edge case or alternative is executed and its observed result is recorded.", "The learner can explain what PostgreSQL is doing rather than only copy syntax."],
                 },
             },
             {
