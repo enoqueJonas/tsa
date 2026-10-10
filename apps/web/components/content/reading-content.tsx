@@ -101,7 +101,7 @@ export function ReadingContent({ body, resources, blocks }: ReadingContentProps)
     return (
       <div className="mt-8 space-y-8">
         <p className="text-xl leading-9 text-zinc-800"><InlineTechnicalText text={body} /></p>
-        {resources?.length ? <Resources resources={resources} title="Additional resources" /> : null}
+        {resources?.length ? <Resources resources={resources} title="Learning resources" /> : null}
       </div>
     );
   }
@@ -156,7 +156,7 @@ export function ReadingContent({ body, resources, blocks }: ReadingContentProps)
         if (block.type === "resources") return <Resources key={index} resources={block.resources} title={block.title} />;
         return null;
       })}
-      {resources?.length ? <Resources resources={resources} title="Additional resources" /> : null}
+      {!blocks.some((block) => block.type === "resources") && resources?.length ? <Resources resources={resources} title="Learning resources" /> : null}
     </article>
   );
 }
