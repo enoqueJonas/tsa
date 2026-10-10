@@ -22,7 +22,9 @@ function lesson(title: string, estimatedMinutes: number, blocks: LessonBlock[], 
 export const webAndApiFoundationsDeepLessons: Lesson[] = [
   lesson("How the Web Works", 40, [
     { type: "heading", id: "introduction", text: "From a URL to a response" },
-    { type: "paragraph", text: "When a client calls an API, several systems cooperate before application code receives a request. A useful mental model is: identify the destination, establish a network path, negotiate a secure connection when HTTPS is used, send an HTTP message, let the server application process it, and return another HTTP message." },
+    { type: "paragraph", text: "At the simplest useful level, the web is a request/response interaction: a client sends an HTTP request to a server, and the server returns an HTTP response. The request says what resource or operation the client wants; the response carries a status plus any returned representation or metadata." },
+    { type: "code", language: "text", caption: "The basic HTTP interaction", code: "Client  ── HTTP request ──>  Server\nClient  <─ HTTP response ──  Server" },
+    { type: "paragraph", text: "That simple model remains true even when the real path has more layers. Before an HTTPS request can reach application code, the client normally has to resolve a host name, establish transport connectivity and negotiate TLS. We will add those layers one at a time rather than treating them as one opaque 'API call'." },
     { type: "code", language: "text", caption: "A simplified request path", code: "Client\n  ↓ DNS lookup\nIP address\n  ↓ TCP connection\nTransport channel\n  ↓ TLS handshake for HTTPS\nSecure channel\n  ↓ HTTP request\nReverse proxy / web server\n  ↓\nSteward API\n  ↓\nHTTP response" },
     { type: "callout", tone: "note", title: "Layers matter", body: "DNS, TCP, TLS and HTTP solve different problems. A DNS failure is not an HTTP `404`. A refused TCP connection is not an application validation error. Good debugging starts by identifying the failing layer." },
     { type: "heading", id: "dns-tcp-tls", text: "DNS, TCP and TLS establish different prerequisites" },
