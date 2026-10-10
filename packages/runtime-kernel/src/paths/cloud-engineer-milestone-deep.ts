@@ -164,7 +164,7 @@ const gateCanary = practicalLesson(
 
 const gate7 = practicalLesson(
     "gate-7-handoff",
-    "Gate 7: Cloud Platform Handoff",
+    "Gate 8: Cloud Platform Handoff",
     "Produce a concise handoff that another engineer could use to understand, reproduce and safely operate the Steward internet and application-platform environment.",
     [
         "Document the authoritative architecture and the public request path through Kong.",
