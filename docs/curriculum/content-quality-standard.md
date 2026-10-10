@@ -66,6 +66,22 @@ For foundational technical topics, prefer this progression when it fits:
 
 Do not begin an introductory lesson with an architectural consequence when the underlying mechanism has not yet been taught. For example, teach what Python modules and imports are and let the learner use them before discussing circular dependencies and dependency direction.
 
+### Clarity is not simplification
+
+The goal is not to make every lesson beginner-level. Preserve the technical depth appropriate to the learner's current stage while removing avoidable difficulty in how that depth is presented.
+
+An advanced lesson may assume concepts already taught earlier in the curriculum. It should still:
+
+- define new terminology before relying on it;
+- make the reasoning chain visible instead of compressing several ideas into one abstract sentence;
+- use concrete evidence or examples when they make an advanced idea easier to inspect;
+- explain why an operation, design choice or trade-off matters;
+- distinguish prerequisite knowledge from concepts introduced by the current lesson;
+- avoid jargon whose only effect is to make a straightforward idea sound more sophisticated;
+- retain nuance, trade-offs, failure modes and production implications appropriate to the stage.
+
+Do not remove an important advanced concept merely because it is difficult. Improve the explanation until the difficulty comes from the concept itself rather than from missing context, unexplained vocabulary or opaque examples.
+
 ### Simple example before domain example
 
 When a concept is new, the first example should minimize unrelated cognitive load. Prefer a tiny domain-neutral example when a Steward-specific example would require the learner to understand unfamiliar domain functions, package structure, or architecture at the same time.
