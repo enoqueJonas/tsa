@@ -13,6 +13,15 @@ const pythonPackagesTutorial: LearningResource = { title: "Python Tutorial — P
 const typingDocs: LearningResource = { title: "typing — Support for type hints", url: "https://docs.python.org/3/library/typing.html" };
 const mypyDocs: LearningResource = { title: "mypy documentation", url: "https://mypy.readthedocs.io/en/stable/" };
 const pdbDocs: LearningResource = { title: "pdb — The Python Debugger", url: "https://docs.python.org/3/library/pdb.html" };
+const pythonBasicsTutorial: LearningResource = { title: "Python Tutorial — An Informal Introduction", url: "https://docs.python.org/3/tutorial/introduction.html", kind: "documentation", read: "Read 3.1 Using Python as a Calculator and 3.1.2 Text.", purpose: "Reinforce core values, numbers, strings and basic expression behavior." };
+const pythonControlFlowTutorial: LearningResource = { title: "Python Tutorial — More Control Flow Tools", url: "https://docs.python.org/3/tutorial/controlflow.html", kind: "documentation", read: "Read the if, for, range and break/continue sections.", purpose: "Reinforce Python's decision and iteration syntax with official examples." };
+const pythonFunctionsTutorial: LearningResource = { title: "Python Tutorial — Defining Functions", url: "https://docs.python.org/3/tutorial/controlflow.html#defining-functions", kind: "documentation", read: "Read 4.8 Defining Functions and the argument forms immediately below it.", purpose: "Reinforce parameters, arguments, return behavior and function-definition syntax." };
+const pythonDataStructuresTutorial: LearningResource = { title: "Python Tutorial — Data Structures", url: "https://docs.python.org/3/tutorial/datastructures.html", kind: "documentation", read: "Read 5.1 through 5.6 for lists, del, tuples, sets, dictionaries and looping techniques.", purpose: "Compare Python's core collection types and their common operations." };
+const pythonErrorsTutorial: LearningResource = { title: "Python Tutorial — Errors and Exceptions", url: "https://docs.python.org/3/tutorial/errors.html", kind: "documentation", read: "Read Syntax Errors, Exceptions, Handling Exceptions, Raising Exceptions and Defining Clean-up Actions.", purpose: "Reinforce exception propagation, handling, raising and cleanup." };
+const pythonClassesTutorial: LearningResource = { title: "Python Tutorial — Classes", url: "https://docs.python.org/3/tutorial/classes.html", kind: "documentation", read: "Read 9.1 through 9.4 before the inheritance sections.", purpose: "Reinforce class definitions, instances, attributes, methods and class/instance variables." };
+const pythonComprehensionsTutorial: LearningResource = { title: "Python Tutorial — List Comprehensions", url: "https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions", kind: "documentation", read: "Read 5.1.3 List Comprehensions and 5.1.4 Nested List Comprehensions.", purpose: "Reinforce comprehension syntax after comparing it with explicit loops." };
+const pythonVenvTutorial: LearningResource = { title: "Python Tutorial — Virtual Environments and Packages", url: "https://docs.python.org/3/tutorial/venv.html", kind: "documentation", read: "Read 12.1 Introduction, 12.2 Creating Virtual Environments and 12.3 Managing Packages with pip.", purpose: "Connect interpreter isolation with package installation and environment recreation." };
+const pythonDebuggingDocs: LearningResource = { title: "Python Debugger — breakpoint() and pdb", url: "https://docs.python.org/3/library/pdb.html", kind: "documentation", read: "Read the introduction and Debugger Commands; focus on where, list, p/pp, next, step, continue, up/down and quit.", purpose: "Use a small debugger command vocabulary to inspect hypotheses rather than browse state aimlessly." };
 
 function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -94,7 +103,7 @@ const environment = lesson(
         { type: "heading", id: "install-location", text: "Know where packages are installed" },
         { type: "paragraph", text: "`python -m pip install package` installs into the environment associated with that exact interpreter. `python -m pip show package` reveals package metadata and location; `python -c 'import package; print(package.__file__)'` can show which import Python resolved. These commands answer different questions: what pip installed versus what Python imported." },
         { type: "callout", tone: "warning", title: "Common environment failures", body: "Typical failures include activating one environment but running another interpreter, invoking a standalone `pip` from a different installation, forgetting to reactivate after opening a new shell, committing `.venv`, and assuming an IDE uses the same interpreter as the terminal. Diagnose executable and import locations before reinstalling packages." },
-        { type: "resources", title: "Required and supporting reading", resources: [venvDocs, packagingGuide] },
+        { type: "resources", title: "Learning resources", resources: [pythonVenvTutorial, venvDocs, packagingGuide] },
     ],
     "Create a clean Python workspace and prove exactly which interpreter and package location it uses.",
     ["Inspect your system Python executable and version.", "Create .venv and activate it.", "Prove that python now resolves inside .venv.", "Install one small dependency with python -m pip.", "Deactivate the environment and prove the dependency is isolated.", "Write a five-command setup note another engineer could follow."],
@@ -141,7 +150,7 @@ const valuesTypes = lesson(
         { type: "heading", id: "operators-comparison", text: "Comparison and logical operators produce decisions" },
         { type: "code", language: "python", caption: "Comparison is separate from assignment", code: "age_days = 184\nactive = True\n\nis_recent = age_days < 365\nis_visible = active and is_recent\n\nprint(age_days == 184)\nprint(age_days != 0)\nprint(is_visible)", output: "True\nTrue\nTrue" },
         { type: "callout", tone: "note", title: "Dynamic typing does not mean no types", body: "Names are not permanently declared with one runtime type, but every object still has a type and operations remain type-sensitive. Python will let a name later refer to another type; that flexibility does not make arbitrary type changes a good domain design." },
-        { type: "resources", title: "Required and supporting reading", resources: [pythonTutorial, pythonReference] },
+        { type: "resources", title: "Learning resources", resources: [pythonBasicsTutorial, pythonReference] },
     ],
     "Model representative service-registry values and prove how type, equality, identity, conversion and mutability affect them.",
     ["Create representative service, team, environment and dependency values.", "Inspect them with type() and repr().", "Demonstrate aliasing with a dependency list.", "Compare == and is.", "Convert two external strings and preserve one conversion failure.", "Define a constrained lifecycle or criticality set and reject an invalid option."],
@@ -183,7 +192,7 @@ const controlFlow = lesson(
         { type: "heading", id: "loop-else", text: "Loop else means no break occurred" },
         { type: "code", language: "python", caption: "Search without a separate flag", code: "for service in services:\n    if service[\"slug\"] == target_slug:\n        print(\"found\")\n        break\nelse:\n    print(\"not found\")" },
         { type: "paragraph", text: "A loop's `else` block runs when the loop finishes normally rather than through `break`. It is less common than ordinary loops, so use it only when that meaning is clearer than a flag or helper function." },
-        { type: "resources", title: "Required reading", resources: [pythonTutorial] },
+        { type: "resources", title: "Learning resources", resources: [pythonControlFlowTutorial] },
     ],
     "Implement a service lifecycle or eligibility rule with explicit happy, rejected and boundary paths.",
     ["Write the rule first in plain language.", "Implement it with if/elif/else or early returns.", "Exercise each meaningful path.", "Create a deliberately over-nested version and refactor it.", "List the test cases the branching structure implies."],
@@ -225,7 +234,7 @@ const functions = lesson(
         { type: "paragraph", text: "A useful docstring explains behavior a caller needs to know: purpose, non-obvious parameters, return meaning, mutation/side effects and important failures. It should not narrate each line of straightforward code." },
         { type: "heading", id: "pure-side-effects", text: "Pure computation and side effects compose differently" },
         { type: "paragraph", text: "A function whose result depends only on its inputs and that does not mutate external state is easier to test and reuse. Real programs still need side effects—files, databases, logs, network calls and deliberate mutation. The goal is not purity everywhere; it is to keep side effects explicit and near appropriate boundaries." },
-        { type: "resources", title: "Required reading", resources: [pythonTutorial, pythonReference] },
+        { type: "resources", title: "Learning resources", resources: [pythonFunctionsTutorial, pythonReference] },
     ],
     "Refactor mixed service-registry script logic into functions with explicit contracts and controlled state.",
     ["Start with a script performing at least three responsibilities.", "Extract coherent functions.", "Remove unnecessary mutable global state.", "Reproduce a scope or mutable-default bug.", "Fix it and explain the ownership model.", "Document one function in terms of inputs, output, side effects and failures."],
@@ -300,7 +309,7 @@ const collections = lesson(
         { type: "code", language: "text", caption: "Scenario → structure → reason", code: "Deployment steps in execution order      → list   → order matters and steps may change\n(latitude, longitude) coordinate          → tuple  → fixed two-value grouping\nHTTP headers parsed by normalized name    → dict   → lookup by meaningful key\nUser permissions                          → set    → uniqueness + membership/set algebra\nService registry keyed by service slug    → dict   → direct lookup by unique slug\nAudit events where duplicates are valid   → list   → ordered history; duplicates may be meaningful" },
         { type: "paragraph", text: "Notice that the domain noun does not determine the structure. 'Services' could be a list when displaying ordered search results, a dictionary when indexing by slug, or a set when comparing unique service identifiers. The operation and guarantee decide." },
 
-        { type: "resources", title: "Required reading", resources: [pythonTutorial, stdlib] },
+        { type: "resources", title: "Learning resources", resources: [pythonDataStructuresTutorial, stdlib] },
     ],
     "Grow Steward from one Service into an in-memory registry while proving that each collection is chosen from a concrete guarantee rather than habit.",
     ["Continue from the existing Service functions and create Payments API, Authentication API and Notifications API.", "Store the ordered registry in a list and explain why duplicates/order are currently allowed at this boundary.", "Implement find_service_by_name(services, name), then explain the cost difference between scanning this list and maintaining a dictionary keyed by name. Do not introduce the dictionary index unless you can justify the added state.", "Implement active_services(services) and verify that deactivating Notifications API removes it from the result.", "Represent Payments API dependency names with a set. Add the same dependency twice and prove uniqueness.", "Create one fixed two-value tuple representing a service/environment coordinate and unpack it into named variables.", "Create a small dictionary keyed by service name for one lookup experiment. Compare the API and semantics with the list-based lookup; decide which representation Steward should keep at this stage.", "Demonstrate one aliasing mistake with a mutable collection, then correct it deliberately.", "Exercise at least three negative/boundary cases: missing dictionary key versus get(), removing an absent set member with remove() versus discard(), and an invalid list index.", "Finish with a four-row decision note: one real use case, one limitation and the most-used operations for list, tuple, dict and set."],
@@ -386,7 +395,7 @@ const errors = lesson(
         { type: "heading", id: "exception-vs-return", text: "Not every negative result is exceptional" },
         { type: "paragraph", text: "Use ordinary return values for expected alternatives when they are naturally part of the operation's result; use exceptions when the function cannot honor its contract normally. A lookup API may deliberately return `None` for 'not found', while a command that promises to deactivate an existing Service may raise `ServiceNotFoundError`. Consistency at the API boundary matters." },
         { type: "callout", tone: "note", title: "Assertions are not input validation", body: "`assert` is useful for developer assumptions and tests, but assertions can be disabled and normally produce the wrong contract for untrusted input. Validate external/domain input explicitly and raise an appropriate exception." },
-        { type: "resources", title: "Required reading", resources: [pythonTutorial, pythonReference] },
+        { type: "resources", title: "Learning resources", resources: [pythonErrorsTutorial, pythonReference] },
     ],
     "Design explicit failure behavior for application domain operations and preserve useful evidence.",
     ["Choose two invalid domain conditions such as self-dependency or unsupported lifecycle.", "Raise deliberate exceptions.", "Demonstrate a broad catch that hides a defect, then replace it with a specific strategy.", "Translate one exception while preserving its cause.", "Document what callers should do with each failure."],
@@ -423,7 +432,7 @@ const oop = lesson(
         { type: "paragraph", text: "Inheritance is strongest when a subtype can stand in for its parent while preserving the parent's behavioral expectations. If you only want to reuse a helper, composition or a function is often clearer. Deep hierarchies couple behavior across levels and make changes harder to predict." },
         { type: "heading", id: "dunder", text: "Special methods integrate objects with Python" },
         { type: "paragraph", text: "Methods such as `__repr__`, `__eq__` and `__len__` let an object participate in standard Python operations. Implement them when the semantics are meaningful, not because every class needs them. Dataclasses can generate common value-object behavior when the class is primarily structured data." },
-        { type: "resources", title: "Required reading", resources: [pythonTutorial, stdlib] },
+        { type: "resources", title: "Learning resources", resources: [pythonClassesTutorial, stdlib] },
     ],
     "Model one service-registry concept as an object, protect at least one invariant, and compare it with a simpler representation.",
     ["Choose Service, Team or Environment.", "Implement state plus meaningful behavior.", "Protect one invariant in the object API.", "Use composition for one relationship.", "Build a functional/dictionary alternative.", "Write a comparison explaining which version you would keep today."],
@@ -463,7 +472,7 @@ const comprehensions = lesson(
         { type: "heading", id: "builtins-more", text: "Know the high-frequency iteration built-ins" },
         { type: "paragraph", text: "`enumerate` pairs positions with values; `zip` walks iterables together; `sorted` returns a new list and accepts `key`/reverse ordering; `min` and `max` choose extrema; `sum` aggregates numbers; `any` and `all` short-circuit boolean checks. These often communicate intent better than manual index/counter code." },
         { type: "callout", tone: "warning", title: "Laziness changes when work and failure happen", body: "With a generator, expensive work or an exception may occur during iteration rather than when the generator was created. Do not return a lazy iterator from an API unless that lifetime and failure behavior are acceptable to the caller." },
-        { type: "resources", title: "Required reading", resources: [pythonTutorial, stdlib] },
+        { type: "resources", title: "Learning resources", resources: [pythonComprehensionsTutorial, stdlib] },
     ],
     "Transform and inspect service-registry data using comprehensions, generators and built-ins without sacrificing clarity.",
     ["Write an explicit loop that filters services.", "Rewrite it as a comprehension and compare readability.", "Create a generator expression and demonstrate that it is consumed.", "Use any() or all() for a meaningful rule.", "Use sorted() with a key to order services.", "Identify one expression you deliberately leave as a loop."],
@@ -502,7 +511,7 @@ const typeHints = lesson(
         { type: "heading", id: "runtime", text: "Annotations usually do not validate runtime input" },
         { type: "code", language: "python", caption: "A hint is not a runtime guard", code: "def double(value: int) -> int:\n    return value * 2\n\nprint(double(\"ha\"))", output: "haha" },
         { type: "paragraph", text: "Python stores annotations as metadata used by tools and frameworks, but ordinary function calls do not enforce them. Static checking, runtime validation and domain validation solve different problems." },
-        { type: "resources", title: "Required and supporting reading", resources: [typingDocs, mypyDocs] },
+        { type: "resources", title: "Learning resources", resources: [typingDocs, mypyDocs] },
     ],
     "Add useful type annotations to the service-registry core and use a static checker to expose a real mismatch.",
     ["Annotate public functions and return values.", "Represent at least one optional value explicitly.", "Run mypy or another checker.", "Introduce a mismatch deliberately and capture the diagnostic.", "Fix it.", "Document one important domain rule that the type checker still cannot prove."],
@@ -540,7 +549,7 @@ const dependencies = lesson(
         { type: "heading", id: "dependency-failures", text: "Dependency failures have recognizable categories" },
         { type: "list", items: ["Resolution conflict: declared constraints cannot be satisfied together.", "Import failure: the environment lacks the distribution or Python resolves a different module.", "Build/install failure: a package cannot build or install for the current interpreter/platform.", "Runtime incompatibility: installation succeeds but behavior/API is incompatible.", "Reproducibility drift: two environments resolve different acceptable transitive versions."] },
         { type: "callout", tone: "warning", title: "pip freeze is evidence, not automatically a design", body: "`pip freeze` reports installed distributions in the current environment. It can help capture/debug state, but blindly using that output as the project's intentional dependency model mixes direct and transitive packages and may preserve unrelated environment history." },
-        { type: "resources", title: "Required reading", resources: [packagingGuide, venvDocs] },
+        { type: "resources", title: "Learning resources", resources: [pythonVenvTutorial, packagingGuide, venvDocs] },
     ],
     "Make the service-registry Python core reproducible from a clean environment and explain its dependency constraints.",
     ["Declare direct dependencies in project metadata.", "Identify at least one transitive dependency.", "Delete and recreate .venv.", "Install the project from its declaration.", "Experiment with one version constraint.", "Record why you chose the constraint and what still prevents perfect reproducibility."],
@@ -581,7 +590,7 @@ const debugging = lesson(
         { type: "heading", id: "bisect", text: "Reduce the search space" },
         { type: "paragraph", text: "Compare a known-good and failing input, remove irrelevant code/data, inspect recent changes, or use version-control bisection when the failure appeared between known commits. Good debugging repeatedly turns a large possibility space into a smaller one." },
         { type: "callout", tone: "note", title: "The fix is not finished at symptom disappearance", body: "After changing code, rerun the original reproduction, add/adjust an automated regression test where appropriate, and check nearby behavior. Otherwise you know only that one observation changed—not that the root cause is controlled." },
-        { type: "resources", title: "Required and supporting reading", resources: [pdbDocs, pythonTutorial] },
+        { type: "resources", title: "Learning resources", resources: [pythonDebuggingDocs] },
     ],
     "Diagnose a non-trivial service-registry Python defect using a traceback, competing hypotheses and debugger/inspection evidence.",
     ["Introduce or select a defect crossing at least two function calls.", "Capture the traceback before editing.", "Write at least two hypotheses.", "Use breakpoint(), pdb, logging or targeted prints to falsify one.", "Fix the root cause rather than suppressing the symptom.", "Rerun the original reproduction and record the evidence chain."],
@@ -608,7 +617,7 @@ const lab: Lesson = {
                     { type: "callout", tone: "note", title: "Do not build Django yet", body: "This lab is about Python domain behavior and package boundaries. Django/DRF arrives later as a framework around the appropriate parts of this core, not as the source of every business rule." },
                     { type: "heading", id: "quality", text: "What good looks like" },
                     { type: "paragraph", text: "A reviewer should be able to run the package, create valid service data, observe rejected invalid states, inspect type annotations, understand module boundaries and reproduce the environment from project metadata." },
-                    { type: "resources", title: "Supporting reading", resources: [pythonTutorial, packagingGuide, typingDocs] },
+                    { type: "resources", title: "Learning resources", resources: [pythonTutorial, packagingGuide, typingDocs] },
                 ],
             },
         },
