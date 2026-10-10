@@ -145,7 +145,7 @@ export const webAndApiFoundationsDeepLessons: Lesson[] = [
   lesson("REST Principles and Trade-offs", 50, [
     { type: "heading", id: "rest", text: "Start with resources and representations" },
     { type: "paragraph", text: "A resource is something the API gives a stable conceptual identity to, such as a service or team. A representation is the data sent to describe a resource at a particular moment, often JSON. The resource is not the JSON document itself: the same service can have different representations for different media types, fields or consumers." },
-    { type: "code", language: "text", caption: "Resource versus representation", code: "Resource: Service 42\nURI:      /services/42\n\nOne JSON representation:\n{\\"id\\": 42, \\"name\\": \\"Payments API\\"}" },
+    { type: "code", language: "text", caption: "Resource versus representation", code: "Resource: Service 42\nURI:      /services/42\n\nOne JSON representation:\n{\"id\": 42, \"name\": \"Payments API\"}" },
     { type: "heading", id: "rest-constraints", text: "REST adds constraints to this resource model" },
     { type: "paragraph", text: "REST is an architectural style built around constraints including client/server separation, stateless interactions, cacheability and a uniform interface over resources and representations. In everyday API work, teams often use 'REST API' more loosely. TSA keeps the architectural meaning visible while focusing on the design consequences that are useful for Steward rather than treating the label as a purity score." },
     { type: "heading", id: "resources", text: "Model stable resources before actions" },
