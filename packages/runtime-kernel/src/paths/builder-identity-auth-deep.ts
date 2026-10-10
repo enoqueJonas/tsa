@@ -69,7 +69,7 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
     richLesson(
         "identity-authentication-authorization-identity-in-software-systems",
         "Identity in Software Systems",
-        "Before a system can decide what a caller may do, it needs a trustworthy representation of who or what that caller is. Identity is therefore not a username field; it is the set of claims the system is prepared to bind to an actor and use in later decisions.",
+        "In security, an actor or subject is the person, service or other entity attempting to interact with the system. Identity is the set of attributes or claims the system uses to distinguish and refer to that subject—for example a stable internal user or service identifier. Before Steward can decide what a caller may do, it must establish which subject the request represents and which identity claims it is prepared to trust.",
         ["Distinguish identity, account, credential and session.", "Model human and service identities separately.", "Explain why stable identifiers matter more than display names.", "Connect identity records to Steward team membership and ownership."],
         [
             { id: "identity-model", title: "Identity is a security subject", paragraphs: ["A user account is a local record. An identity is the subject the system believes it is interacting with. Credentials are evidence used to establish that belief. A session or token carries the authenticated result forward for some period of time.", "Use stable internal identifiers for authorization decisions. Email addresses, names and team labels can change. Authorization tied directly to mutable display data becomes fragile and difficult to audit."] },
@@ -84,7 +84,7 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
     richLesson(
         "identity-authentication-authorization-authentication-versus-authorization",
         "Authentication versus Authorization",
-        "Authentication answers who the caller is. Authorization answers whether that authenticated subject may perform a specific action on a specific resource. Treating them as the same concern produces APIs that are logged-in but still over-permissive.",
+        "Authentication and authorization are two separate decisions. Authentication verifies acceptable credentials to establish which principal a request represents. Authorization takes that established principal plus the requested action and relevant resource or scope, then decides whether the operation is permitted. A request can therefore authenticate successfully and still be correctly denied.",
         ["Separate authentication from authorization in request processing.", "Explain authentication failure versus permission denial.", "Design allow/deny decisions around resource and action.", "Recognize why authenticated does not mean trusted for every operation."],
         [
             { id: "two-decisions", title: "Two different decisions", paragraphs: ["Authentication verifies evidence and establishes a principal. Authorization evaluates policy using that principal, the requested action, resource state and sometimes context. A valid token can still receive 403 because identity proof does not grant ownership or role.", "In Steward, a user may be authenticated and allowed to read the service registry while still being forbidden to edit a Service owned by another Team."] },
@@ -116,7 +116,7 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
     richLesson(
         "identity-authentication-authorization-jwt-structure-and-lifecycle",
         "JWT Structure and Lifecycle",
-        "A JSON Web Token is a signed container for claims. Its signature can protect integrity, but a JWT is not automatically confidential, revocable, correctly scoped or safe merely because a library can decode it.",
+        "A JSON Web Token (JWT) is a compact token format that carries claims. In the common signed form used for API authentication, it contains an encoded header and payload plus a cryptographic signature. The payload is normally readable by whoever possesses the token; the signature lets a verifier detect modification and check that an accepted signer produced it. Decoding only reads the data. Verification is the security decision that determines whether those claims can be trusted under the server's configured policy.",
         ["Describe JWT header, payload and signature.", "Distinguish signed from encrypted data.", "Identify standard lifecycle claims such as exp, iat and sub.", "Explain why token verification must constrain algorithm, issuer and audience as appropriate."],
         [
             { id: "structure", title: "Three encoded parts", paragraphs: ["A compact JWS-style JWT contains base64url-encoded header and payload plus a signature. Anyone who holds the token can usually decode the payload. Never put passwords, secrets or sensitive personal data there simply because the string looks opaque.", "The verifier must validate the signature and relevant claims. Decoding without verification is not authentication."] },
@@ -207,7 +207,7 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
     richLesson(
         "identity-authentication-authorization-object-level-authorization",
         "Object-Level Authorization",
-        "Endpoint-level permission checks are insufficient when access depends on the specific object being manipulated. Object-level authorization asks whether this principal may perform this action on this particular resource.",
+        "Some permissions can be decided from the endpoint and action alone; others depend on the particular resource. A user might be allowed to update services in general but only services owned by a Team they maintain. Object-level authorization is that second decision: given the authenticated principal, requested action and actual resource, is this specific operation allowed?",
         ["Recognize object-level authorization requirements.", "Implement checks against loaded resource ownership.", "Cover list/queryset leakage as well as detail operations.", "Test negative cross-team cases."],
         [
             { id: "object-check", title: "The resource changes the answer", paragraphs: ["A maintainer may be allowed to update /services/{id}, but not every Service. Once the resource is loaded, Steward must compare its owning_team with current Membership state. The same endpoint and same HTTP method can therefore produce allow or deny depending on the object.", "Be careful with collection endpoints too. Object permission hooks on retrieve/update do not automatically prevent list endpoints from returning records the caller should never see in systems with private data."], code: { language: "python", code: "def can_modify_service(user, service) -> bool:\n    return Membership.objects.filter(\n        user=user,\n        team=service.owning_team,\n        role=Membership.Role.MAINTAINER,\n    ).exists()", caption: "Authorization derives from current domain state." } },
