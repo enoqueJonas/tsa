@@ -500,25 +500,45 @@ for (const [schoolId, [file, arrayName]] of Object.entries(schoolRegistries)) {
   }
 }
 
-// Preserve the pedagogical reference lesson and resource rendering contract.
+// Preserve the pedagogical reference lesson without coupling the audit to unrelated Python lessons.
 const pythonRich = sources.get("builder-python-rich.ts") ?? "";
-const conceptFirstMarkers = [
-  'id: "what-is-module"',
-  'id: "first-module"',
-  'id: "what-is-package"',
-  'id: "when-to-use"',
-  'id: "dependencies"',
-  'id: "steward-application"',
-];
-let previousConceptIndex = -1;
-for (const required of conceptFirstMarkers) {
-  const currentIndex = pythonRich.indexOf(required);
-  if (currentIndex < 0) failures.push(`Python Modules and Packages reference lesson is missing: ${required}`);
-  if (currentIndex >= 0 && currentIndex <= previousConceptIndex) failures.push(`Python Modules and Packages concept-first ordering drifted at: ${required}`);
-  previousConceptIndex = currentIndex;
-}
-for (const required of ['caption: "main.py"', 'output: "8"', 'output: "application core experiment"', 'Python Tutorial — Packages', 'url: "https://docs.python.org/3/tutorial/modules.html#packages"', 'read: "Read 6.4 Packages']) {
-  if (!pythonRich.includes(required)) failures.push(`Python pedagogical reference invariant is missing: ${required}`);
+const modulesStart = pythonRich.indexOf('lesson("Modules and Packages"');
+const modulesEnd = modulesStart >= 0 ? pythonRich.indexOf('\n  lesson(', modulesStart + 1) : -1;
+const modulesLesson = modulesStart >= 0
+  ? pythonRich.slice(modulesStart, modulesEnd >= 0 ? modulesEnd : pythonRich.length)
+  : "";
+
+if (!modulesLesson) {
+  failures.push("Python Modules and Packages pedagogical reference lesson is missing");
+} else {
+  const conceptFirstMarkers = [
+    'id: "what-is-module"',
+    'id: "first-module"',
+    'id: "what-is-package"',
+    'id: "when-to-use"',
+    'id: "dependencies"',
+    'id: "steward-application"',
+  ];
+  let previousConceptIndex = -1;
+  for (const required of conceptFirstMarkers) {
+    const currentIndex = modulesLesson.indexOf(required);
+    if (currentIndex < 0) failures.push(`Python Modules and Packages reference lesson is missing: ${required}`);
+    if (currentIndex >= 0 && currentIndex <= previousConceptIndex) failures.push(`Python Modules and Packages concept-first ordering drifted at: ${required}`);
+    previousConceptIndex = currentIndex;
+  }
+  for (const required of [
+    'caption: "calculator.py"',
+    'caption: "main.py"',
+    'output: "8"',
+    'caption: "shop/prices.py"',
+    'output: "30"',
+    'output: "application core experiment"',
+    'Python Tutorial — Packages',
+    'url: "https://docs.python.org/3/tutorial/modules.html#packages"',
+    'read: "Read 6.4 Packages',
+  ]) {
+    if (!modulesLesson.includes(required)) failures.push(`Python pedagogical reference invariant is missing: ${required}`);
+  }
 }
 
 if (failures.length) {
