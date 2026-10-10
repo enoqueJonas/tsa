@@ -563,8 +563,7 @@ const debugging = lesson(
     [
         { type: "heading", id: "introduction", text: "Debugging means finding why observed behavior differs from expected behavior" },
         { type: "paragraph", text: "A bug is not fixed merely because you changed code until the symptom disappeared. Debugging starts by stating what you expected, what actually happened, and how to reproduce the difference. Then you gather evidence to locate the first point where the program's state or behavior becomes wrong." },
-        { type: "code", language: "python", caption: "Start with a tiny reproducible defect", code: "def average(total, count):\n    return total / count\n\nprint(average(10, 0))" },
-        { type: "code", language: "text", caption: "Observed result", code: "ZeroDivisionError: division by zero" },
+        { type: "code", language: "python", caption: "Start with a tiny reproducible defect", code: "def average(total, count):\n    return total / count\n\nprint(average(10, 0))", output: "ZeroDivisionError: division by zero" },
         { type: "paragraph", text: "The exception gives us evidence rather than just 'the program failed'. In a real program, the traceback also shows the chain of calls that led to the failing line. Debugging tools help us inspect that evidence instead of guessing." },
         { type: "heading", id: "workflow", text: "Use a repeatable debugging loop" },
         { type: "list", items: ["Reproduce the problem reliably.", "State the expected and observed behavior.", "Read the error/traceback or inspect the wrong output.", "Form a small number of plausible hypotheses.", "Run the smallest experiment that distinguishes them.", "Fix the cause, then rerun the original reproduction.", "Add a regression test when the defect could return."] },
