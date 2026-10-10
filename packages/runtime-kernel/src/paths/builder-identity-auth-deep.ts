@@ -132,7 +132,7 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
     richLesson(
         "identity-authentication-authorization-access-and-refresh-tokens",
         "Access and Refresh Tokens",
-        "Access and refresh tokens serve different risk and usability goals. Short-lived access tokens limit exposure; refresh tokens allow a session to continue without repeatedly asking for the user's password.",
+        "After login, an API needs a way for later requests to prove that authentication already happened without resending the password each time. An access token is the credential presented to ordinary protected API calls. A refresh token has a narrower job: it can obtain replacement access credentials when permitted. Giving those jobs different credentials lets Steward keep frequently used access tokens short-lived without forcing a password login every few minutes.",
         ["Explain the roles of access and refresh tokens.", "Choose different lifetimes based on risk.", "Keep refresh endpoints narrowly scoped.", "Understand why refresh tokens deserve stronger protection than access tokens."],
         [
             { id: "two-token-model", title: "Separate frequent use from session continuation", paragraphs: ["Access tokens travel to ordinary protected endpoints and should usually be short-lived. Refresh tokens are used less frequently to obtain new access tokens and often live longer. Because a stolen refresh token can extend an attacker's access, it deserves careful storage and rotation policy.", "A refresh token should not behave like a general access token. Its audience and endpoint usage should be narrow."] },
@@ -148,7 +148,7 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
     richLesson(
         "identity-authentication-authorization-expiration-and-token-rotation",
         "Expiration and Token Rotation",
-        "Token expiry limits how long a credential remains useful. Rotation goes further by replacing refresh credentials as they are used, creating an opportunity to detect reuse and reduce the value of copied tokens.",
+        "A token remains usable only while the server's validation policy accepts it. Expiration puts a time boundary on that acceptance. Revocation adds a server-controlled decision to reject a credential before its natural expiry. Refresh-token rotation changes the credential after successful use so an older copy can become invalid and its later reuse can be treated as evidence worth investigating.",
         ["Separate expiry, revocation and rotation.", "Explain replay risk for refresh tokens.", "Design logout and compromise responses deliberately.", "Identify trade-offs between stateless simplicity and server-side control."],
         [
             { id: "three-controls", title: "Expiry, revocation and rotation solve different problems", paragraphs: ["Expiration is time-based. Revocation invalidates a token before its natural expiry. Rotation replaces refresh credentials after successful use. A purely stateless design makes revocation difficult; server-side blacklists or token-family state add control but also persistence and operational complexity.", "Steward does not need to pretend these trade-offs disappear. The Builder goal is to choose and document a defensible lifecycle."] },
@@ -163,7 +163,7 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
     richLesson(
         "identity-authentication-authorization-authentication-flows",
         "Authentication Flows",
-        "Authentication is a protocol flow, not a single login endpoint. Registration, login, refresh, logout, password change and credential failure each modify security state and need consistent contracts.",
+        "Login is only one transition in an authentication lifecycle. Registration creates credential-bearing identity state; login verifies credentials and issues session/token state; refresh extends an authenticated session under a different credential; logout/revocation invalidates session state according to policy; password change modifies future credential verification and may also affect existing sessions. Treating these as a connected protocol makes their preconditions and failure behavior explicit.",
         ["Map end-to-end authentication flows.", "Avoid account-enumeration leaks where appropriate.", "Define state transitions for password change and logout.", "Separate credential verification from token issuance."],
         [
             { id: "flow-design", title: "Design flows as state transitions", paragraphs: ["Login begins with credentials and ends with authenticated session material or a deliberately limited failure response. Refresh begins with an existing refresh credential. Password change should normally require an authenticated session and current-password or equivalent assurance depending on risk. Each flow has different preconditions.", "Do not let response wording, timing or status design accidentally reveal more identity information than necessary on public authentication endpoints."] },
@@ -191,7 +191,7 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
     richLesson(
         "identity-authentication-authorization-roles-and-permissions",
         "Roles and Permissions",
-        "Roles are useful when they compress a set of permissions, but role names alone are not a complete authorization model. The important question is which action a principal may perform within which scope.",
+        "A permission describes an allowed action such as reading a service or updating one. A role groups permissions into a job-relevant bundle such as viewer or maintainer. The authorization decision still needs scope: being a maintainer of Team A should not automatically grant the same actions over Team B's services. Roles simplify policy vocabulary; they do not replace resource and scope checks.",
         ["Distinguish roles from permissions.", "Scope permissions to teams and resources.", "Avoid a single global role field when domain membership is contextual.", "Design least-privilege Steward roles."],
         [
             { id: "role-compression", title: "Roles are permission bundles", paragraphs: ["A role such as maintainer is shorthand for allowed actions. In Steward that role belongs on a Membership because the same user can be a maintainer of one Team and only a viewer or non-member of another. A global user.role field cannot represent that safely.", "Start with the smallest role set that expresses real work. Avoid creating many decorative roles before concrete permission differences exist."] },
