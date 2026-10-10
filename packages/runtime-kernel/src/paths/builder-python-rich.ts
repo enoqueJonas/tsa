@@ -6,9 +6,9 @@ const pythonTutorial: LearningResource = { title: "Python Tutorial", url: "https
 const pythonReference: LearningResource = { title: "Python Language Reference", url: "https://docs.python.org/3/reference/" };
 const stdlib: LearningResource = { title: "Python Standard Library", url: "https://docs.python.org/3/library/" };
 const venvDocs: LearningResource = { title: "venv — Creation of virtual environments", url: "https://docs.python.org/3/library/venv.html" };
-const packagingGuide: LearningResource = { title: "Python Packaging User Guide — Packaging Python Projects", url: "https://packaging.python.org/en/latest/tutorials/packaging-projects/" };
-const pythonModulesTutorial: LearningResource = { title: "Python Tutorial — Modules", url: "https://docs.python.org/3/tutorial/modules.html" };
-const pythonPackagesTutorial: LearningResource = { title: "Python Tutorial — Packages", url: "https://docs.python.org/3/tutorial/modules.html#packages" };
+const packagingGuide: LearningResource = { title: "Python Packaging User Guide — Packaging Python Projects", url: "https://packaging.python.org/en/latest/tutorials/packaging-projects/", kind: "documentation", read: "Read A simple project, Creating the package files and Configuring metadata.", purpose: "See how an importable package becomes part of an installable project/distribution; later TSA lessons cover the full build and publication lifecycle." };
+const pythonModulesTutorial: LearningResource = { title: "Python Tutorial — Modules", url: "https://docs.python.org/3/tutorial/modules.html", kind: "documentation", read: "Read 6. Modules through 6.1.1 Executing modules as scripts.", purpose: "Use the official tutorial to reinforce module creation, import forms, module namespaces and direct execution.", recommended: true };
+const pythonPackagesTutorial: LearningResource = { title: "Python Tutorial — Packages", url: "https://docs.python.org/3/tutorial/modules.html#packages", kind: "documentation", read: "Read 6.4 Packages, focusing on 6.4.1 Importing * From a Package and 6.4.2 Intra-package References.", purpose: "Reinforce package namespaces and absolute/relative imports after the TSA examples.", recommended: true };
 const typingDocs: LearningResource = { title: "typing — Support for type hints", url: "https://docs.python.org/3/library/typing.html" };
 const mypyDocs: LearningResource = { title: "mypy documentation", url: "https://mypy.readthedocs.io/en/stable/" };
 const pdbDocs: LearningResource = { title: "pdb — The Python Debugger", url: "https://docs.python.org/3/library/pdb.html" };
@@ -303,8 +303,7 @@ const modules = lesson(
         { type: "heading", id: "first-module", text: "Create and use your first module" },
         { type: "code", language: "python", caption: "calculator.py", code: "def add(a, b):\n    return a + b" },
         { type: "paragraph", text: "The file `calculator.py` is now a module. It defines one function named `add`. Another Python file can import that function instead of defining it again." },
-        { type: "code", language: "python", caption: "main.py", code: "from calculator import add\n\nresult = add(5, 3)\nprint(result)" },
-        { type: "code", language: "text", caption: "Output", code: "8" },
+        { type: "code", language: "python", caption: "main.py", code: "from calculator import add\n\nresult = add(5, 3)\nprint(result)", output: "8" },
         { type: "paragraph", text: "In `from calculator import add`, `calculator` is the module name and `add` is the name imported from it. After the import, `main.py` can call `add(5, 3)` like any other function in scope." },
         { type: "heading", id: "import-forms", text: "Common ways to import modules" },
         { type: "code", language: "python", caption: "Import the module or import a name", code: "import calculator\nprint(calculator.add(5, 3))  # 8\n\nfrom calculator import add\nprint(add(10, 2))            # 12" },
@@ -312,7 +311,7 @@ const modules = lesson(
         { type: "heading", id: "what-is-package", text: "What is a Python package?" },
         { type: "paragraph", text: "A package groups related modules under a shared import namespace. If one directory contains several modules that belong to the same part of an application, a package lets callers address them together instead of treating every file as unrelated." },
         { type: "code", language: "text", caption: "A small package", code: "shop/\n├── __init__.py\n├── prices.py\n└── discounts.py\n\nmain.py" },
-        { type: "code", language: "python", caption: "Import from a package", code: "from shop.prices import calculate_total\n\ntotal = calculate_total(10, 3)\nprint(total)" },
+        { type: "code", language: "python", caption: "Import from a package", code: "from shop.prices import calculate_total\n\ntotal = calculate_total(10, 3)\nprint(total)", output: "30" },
         { type: "paragraph", text: "Here, `shop` is the package, `prices` is a module inside that package, and `calculate_total` is a name defined by the module. The dotted import path describes that hierarchy." },
         { type: "heading", id: "when-to-use", text: "When should you create modules and packages?" },
         { type: "list", items: ["Keep a small script in one file while that remains easy to understand.", "Create a module when a group of functions, classes or constants has a clear responsibility that is useful to separate.", "Create a package when several related modules belong under one namespace.", "Do not split code only to create a large folder tree. A boundary should make ownership, navigation or reuse clearer."] },
