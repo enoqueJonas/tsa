@@ -156,7 +156,13 @@ export function ReadingContent({ body, resources, blocks }: ReadingContentProps)
         if (block.type === "resources") return <Resources key={index} resources={block.resources} title={block.title} />;
         return null;
       })}
-      {!blocks.some((block) => block.type === "resources") && resources?.length ? <Resources resources={resources} title="Learning resources" /> : null}
+      {resources?.length ? (() => {
+        const embeddedUrls = new Set(
+          blocks.flatMap((block) => block.type === "resources" ? block.resources.map((resource) => resource.url) : []),
+        );
+        const additionalResources = resources.filter((resource) => !embeddedUrls.has(resource.url));
+        return additionalResources.length ? <Resources resources={additionalResources} title="Additional resources" /> : null;
+      })() : null}
     </article>
   );
 }
