@@ -494,7 +494,7 @@ for (const [schoolId, [file, arrayName]] of Object.entries(schoolRegistries)) {
     const viaPath = definition.match(/=\s*path\("([^"]+)"/)?.[1];
     if (direct || viaPath) return direct ?? viaPath;
     // Some milestones are imported as already-authored paths.
-    const alias = definition.match(/=\\s*([A-Za-z_$][\\w$]*)\\s*;/)?.[1] ?? symbol;
+    const alias = definition.match(/=\s*([A-Za-z_$][\w$]*)\s*;/)?.[1] ?? symbol;
     const importSource = registry.match(new RegExp(`import\\s*\\{[^}]*\\b${alias}\\b[^}]*\\}\\s*from\\s*"([^"]+)"`))?.[1];
     const imported = importSource ? sources.get(importSource.replace("./", "") + ".ts") ?? "" : "";
     return imported.match(new RegExp(`export\\s+const\\s+${alias}[^=]*=\\s*\\{[\\s\\S]{0,300}?\\bid:\\s*"([^"]+)"`))?.[1] ?? null;
