@@ -60,7 +60,7 @@ Platform Builder was aligned to the enterprise-Linux path using Rocky Linux with
 
 ### 05 — Delivery Engineer
 
-Delivery Engineer was aligned around one strong enterprise implementation per capability: Jenkins for CI/CD orchestration, Ansible for configuration management, Docker/OCI concepts for containers, and the Nexus-style private artifact/dependency platform for internal packages and images.
+Delivery Engineer is aligned around GitLab CI/CD as the authoritative delivery control plane, Ansible for configuration management, Docker/OCI concepts for containers, and the Nexus-style private artifact/dependency platform for internal packages and images. Jenkins appears only in the bounded migration exercise so the learner practices parity, cutover and retirement without creating two authoritative CI/CD systems.
 
 The obsolete generic lesson scaffold was removed after authored content-quality paths became authoritative.
 
@@ -150,7 +150,7 @@ The primary enterprise-capability progression is now represented in the learner-
 | Enterprise identity | Keycloak + OIDC/OAuth 2.0 |
 | API gateway | Kong |
 | Source control | Git + GitHub |
-| CI/CD | Jenkins, with hosted CI comparison |
+| CI/CD | GitLab CI/CD, with a bounded Jenkins-to-GitLab migration exercise |
 | Artifact/dependency repository | Nexus-style private repository |
 | Containers | Docker/OCI, with Podman concepts where useful |
 | Infrastructure as Code | OpenTofu with Terraform/HCL model concepts |
