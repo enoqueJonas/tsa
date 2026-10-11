@@ -128,7 +128,7 @@ const specs: Spec[] = [
         principles: [
             "Virtual users model concurrent independent execution contexts; an iteration is one execution of the scenario function.",
             "Closed-model executors primarily control VUs/iterations and allow achieved request rate to fall as the system slows.",
-            "Arrival-rate/open-model executors schedule new iterations at a target rate independently of response time, subject to available VUs.",
+            "Arrival-rate/open-model executors schedule new iterations at a target rate independently of response time, subject to available VUs. This avoids a common closed-model distortion: when the system slows, fixed VUs wait longer and generate fewer new requests, so the offered load falls precisely when the service is struggling. That effect is often discussed as coordinated omission. An open model does not make a test automatically valid, but it can preserve the intended arrival pressure when that is the behavior you need to measure.",
             "Use scenarios to represent distinct workloads rather than forcing unrelated behavior into one default function.",
             "Parameterize target URL/credentials/test data through controlled configuration; do not bake environment secrets into scripts."
         ],
