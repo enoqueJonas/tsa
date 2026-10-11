@@ -17,6 +17,12 @@ const blocks: LessonBlock[] = [
         "Promotion needs enough observations to support the decision. A five-minute green window with three requests is not strong evidence merely because the dashboard is green.",
         "Blue/green is compared as an alternative but is not permanently implemented beside canary merely for exposure."
     ] },
+    { type: "heading", id: "analysis-contract", text: "Promotion is an evidence decision, not a timer", level: 2 },
+    { type: "paragraph", text: "A canary step should define what evidence is collected, over what observation window, and what result permits promotion or requires abort. Readiness answers whether the candidate can receive traffic; release analysis asks whether its behavior under representative traffic is acceptable compared with an explicit threshold or stable baseline." },
+    { type: "paragraph", text: "A percentage alone is not enough evidence. Ten percent of ten requests and ten percent of ten thousand requests carry very different confidence. Define a minimum observation duration and evidence volume. If traffic is too low or the metrics source is unavailable, the safe result is normally pause/inconclusive or an explicit alternative validation path—not silent promotion." },
+    { type: "heading", id: "rollback-boundary", text: "Traffic rollback and state rollback are different operations", level: 2 },
+    { type: "paragraph", text: "Aborting a canary can route traffic back to the stable application artifact, but it does not automatically undo database migrations, emitted messages, external side effects or cache/data-format changes already produced by the candidate. Stable and candidate versions must therefore be able to coexist with the current persistent state for the duration of the rollout." },
+    { type: "paragraph", text: "Prefer backward-compatible schema and contract evolution so the stable version remains viable during the canary. If a release contains an irreversible state transition, progressive traffic control cannot manufacture a safe rollback; the deployment plan needs a separate migration/recovery strategy." },
     { type: "callout", tone: "steward", title: "State compatibility comes first", body: "A canary is unsafe if candidate and stable versions cannot share the current schema, queues, caches or contracts. Reuse the production schema-evolution discipline before exposing two application versions to live traffic." },
     { type: "resources", title: "Continue learning", resources: [k8sDeployment, argoRollouts, prometheus] },
 ];

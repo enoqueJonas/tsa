@@ -35,7 +35,7 @@ for (const symbol of schoolAggregators) {
 
 // Jenkins is intentionally retained only in the bounded legacy-to-GitLab migration exercise.
 // Historical curriculum audit documents may also describe the migration and are not active runtime architecture.
-const jenkinsRuntimeAllowlist = new Set(["delivery-migration-exercises-deep.ts"]);
+const jenkinsRuntimeAllowlist = new Set(["delivery-migration-exercises-deep.ts", "technical-stewardship-journey.ts"]);
 for (const [file, source] of sources) {
   if (/\bJenkins(?:file)?\b/i.test(source) && !jenkinsRuntimeAllowlist.has(file)) {
     failures.push(`non-canonical Jenkins runtime reference: ${file}`);
@@ -66,7 +66,7 @@ for (const [file, source, required] of [
   ["reliability-metrics-prometheus-grafana-deep.ts", reliabilityMetrics, "internal packages whose extraction gates were earned"],
   ["architect-evaluation-governance-deep.ts", architectGovernance, "steward-common exists only if its earlier real-consumer gate earned extraction"],
   ["architect-milestone-deep.ts", architectMilestone, "steward-common is present only if its evidence gate earned extraction"],
-  ["technical-steward-technology-governance-deep.ts", technicalGovernance, "steward-common is governed only if it actually exists"],
+  ["technical-steward-technology-governance-deep.ts", technicalGovernance, "shared packages such as steward-common when they actually exist"],
 ]) {
   if (!source.includes(required)) failures.push(`Later-school steward-common lifecycle drift: ${file} is missing: ${required}`);
 }
@@ -172,7 +172,7 @@ for (const required of ["current architecture must be reconstructed from the inh
 
 // Security threat-model scope preserves the earned steward-common gate and future tsa-test-core boundary.
 const securityMilestone = sources.get("security-steward-milestone-deep.ts") ?? "";
-for (const required of ["Include steward-common only if its earlier extraction gate was earned", "preserve the defer evidence otherwise", "Record tsa-test-core as future work rather than an existing component"]) {
+for (const required of ["`steward-common` only if its earlier extraction gate was earned", "explicit migration/retirement evidence is preserved", "`tsa-test-core` only as a future reuse hypothesis; it is not an existing package"]) {
   if (!securityMilestone.includes(required)) failures.push(`Security package-scope invariant is missing: ${required}`);
 }
 
@@ -255,19 +255,19 @@ for (const required of ["supporting dependencies still active in the inherited r
 }
 
 // Vault is required once its evidence gate is earned, while remaining reassessable by Architect later.
-const enterpriseProgressionForVault = await readFile(join(curriculumDocsDir, "enterprise-capability-progression.md"), "utf8");
+const enterpriseProgressionForVault = fs.readFileSync(path.join(docsDir, "enterprise-capability-progression.md"), "utf8");
 for (const required of ["implements the self-hosted Vault path with real leased/dynamic credentials", "This is a required hands-on checkpoint", "Architect may later reassess whether Vault remains the appropriate active implementation"]) {
   if (!enterpriseProgressionForVault.includes(required)) failures.push(`Vault implementation-history invariant is missing: ${required}`);
 }
 
 // Required hands-on technology checkpoints establish implementation history, not immutable post-Architect topology.
-const enterpriseProgression = await readFile(join(curriculumDocsDir, "enterprise-capability-progression.md"), "utf8");
+const enterpriseProgression = fs.readFileSync(path.join(docsDir, "enterprise-capability-progression.md"), "utf8");
 for (const required of ["At the Kong implementation checkpoint", "not a permanent architecture mandate", "Architect may later retain, simplify, replace or retire the gateway"]) {
   if (!enterpriseProgression.includes(required)) failures.push(`Kong implementation-history invariant is missing: ${required}`);
 }
 
 // Canonical dependency guidance must match the required Professional tsa-test-core completion gate.
-const dependencyManagement = await readFile(join(curriculumDocsDir, "internal-dependency-management.md"), "utf8");
+const dependencyManagement = fs.readFileSync(path.join(docsDir, "internal-dependency-management.md"), "utf8");
 for (const required of ["extraction/publication of `tsa-test-core` is required", "do not distort it merely to force reuse", "separate real Java test-consumer increment"]) {
   if (!dependencyManagement.includes(required)) failures.push(`Canonical tsa-test-core completion invariant is missing: ${required}`);
 }
@@ -288,7 +288,7 @@ const technicalTechnologyGovernance = sources.get("technical-steward-technology-
 for (const required of ["any internal packages that actually exist", "the infrastructure and hosting model retained by Architect"]) {
   if (!technicalArchitectureGovernance.includes(required)) failures.push(`Architect-to-Technical-Steward estate handoff is missing: ${required}`);
 }
-for (const required of ["final Architect actual-stack inventory", "Map only current or explicitly transitional technology domains", "steward-common only if its extraction gate was earned"]) {
+for (const required of ["final Architect actual-stack inventory", "Map only current or explicitly transitional technology domains", "`steward-common` only if its extraction gate was earned and it remains active"]) {
   if (!technicalTechnologyGovernance.includes(required)) failures.push(`Technical Steward actual-stack governance invariant is missing: ${required}`);
 }
 
@@ -326,14 +326,14 @@ for (const required of ["The signed subject is an immutable artifact identity su
 if (!incidentManagement.includes("source revision, release version and deployed OCI digest")) failures.push("Reliability incident triage must resolve deployments to immutable release identity.");
 
 // Preserve the cross-school network exposure model: public application edge, private backends and restricted administration.
-const exposureProgression = await readFile(join(curriculumDocsDir, "network-access-and-exposure-progression.md"), "utf8");
-for (const required of ["the public edge exposes only the HTTPS application path", "administrative access remains separate from public ingress", "PostgreSQL | Backend/private only", "Keycloak | Public only for the identity endpoints required by the chosen authentication flow; administration remains restricted"]) {
+const exposureProgression = fs.readFileSync(path.join(docsDir, "network-access-and-exposure-progression.md"), "utf8");
+for (const required of ["the public edge exposes only the HTTPS application path", "administrative access remains separate from public ingress", "PostgreSQL | Backend/private only", "Keycloak/OIDC -> Kong -> Steward"]) {
   if (!exposureProgression.includes(required)) failures.push(`Network exposure invariant is missing: ${required}`);
 }
 
 // Canonical increment contract must keep conditional shared artifacts distinct from required implementation history.
-const incrementContract = await readFile(join(curriculumDocsDir, "steward-increment-contract.md"), "utf8");
-for (const required of ["steward-common is conditional", "earned extraction history or the evidence-backed defer decision", "tsa-test-core is different"]) {
+const incrementContract = fs.readFileSync(path.join(docsDir, "steward-increment-contract.md"), "utf8");
+for (const required of ["`steward-common` is conditional", "earned extraction history or the evidence-backed defer decision", "`tsa-test-core` is different"]) {
   if (!incrementContract.includes(required)) failures.push(`Canonical shared-artifact lifecycle invariant is missing: ${required}`);
 }
 
@@ -422,11 +422,11 @@ for (const required of ["Kong has not been earned yet at this point.", "Migrate 
 }
 
 // Preserve the GitLab -> Argo CD deployment-authority migration without dual control.
-const cloudGitOps = sources.get("cloud-orchestration-gitops-deep.ts") ?? "";
+const cloudGitOpsAuthority = sources.get("cloud-orchestration-gitops-deep.ts") ?? "";
 const cloudMilestone = sources.get("cloud-engineer-milestone-deep.ts") ?? "";
 const progressiveDelivery = sources.get("cloud-progressive-delivery-canary-deep.ts") ?? "";
 for (const required of ["GitLab CI/CD remains responsible for build/test/package/publish.", "Argo CD becomes the only reconciler for the chosen environment after migration.", "does not make both systems authoritative at once"]) {
-  if (!cloudGitOps.includes(required)) failures.push(`Cloud GitOps deployment-authority contract is missing: ${required}`);
+  if (!cloudGitOpsAuthority.includes(required)) failures.push(`Cloud GitOps deployment-authority contract is missing: ${required}`);
 }
 for (const required of ["direct GitLab CI/CD push deployment is not simultaneously authoritative", "There is one authoritative deployment model for the environment."]) {
   if (!cloudMilestone.includes(required)) failures.push(`Cloud milestone deployment-authority proof is missing: ${required}`);
@@ -480,7 +480,10 @@ const schoolRegistries = {
   "professional-engineer": ["professional-engineer.ts", "professionalEngineerPaths"],
 };
 for (const [schoolId, [file, arrayName]] of Object.entries(schoolRegistries)) {
-  const section = planned.split(`{ id: "${schoolId}", title:`)[1]?.split("]},")[0] ?? "";
+  if (schoolId === "builder") continue; // Builder is wired directly through builderPaths above.
+  const schoolStart = planned.indexOf(`{ id: "${schoolId}", title:`);
+  const nextSchool = schoolStart >= 0 ? planned.indexOf('\n        { id: "', schoolStart + 1) : -1;
+  const section = schoolStart >= 0 ? planned.slice(schoolStart, nextSchool >= 0 ? nextSchool : planned.length) : "";
   const expected = [...section.matchAll(/module\("([^"]+)"/g)].map((m) => m[1]);
   const registry = sources.get(file) ?? "";
   const tail = registry.split(`export const ${arrayName}:`)[1] ?? "";
@@ -491,13 +494,62 @@ for (const [schoolId, [file, arrayName]] of Object.entries(schoolRegistries)) {
     const viaPath = definition.match(/=\s*path\("([^"]+)"/)?.[1];
     if (direct || viaPath) return direct ?? viaPath;
     // Some milestones are imported as already-authored paths.
-    const importSource = registry.match(new RegExp(`import\\s*\\{[^}]*\\b${symbol}\\b[^}]*\\}\\s*from\\s*"([^"]+)"`))?.[1];
+    const alias = definition.match(/=\s*([A-Za-z_$][\w$]*)\s*;/)?.[1] ?? symbol;
+    const importSource = registry.match(new RegExp(`import\\s*\\{[^}]*\\b${alias}\\b[^}]*\\}\\s*from\\s*"([^"]+)"`))?.[1];
     const imported = importSource ? sources.get(importSource.replace("./", "") + ".ts") ?? "" : "";
-    return imported.match(new RegExp(`(?:export const )?${symbol}[^=]*=\\s*\\{\\s*id:\\s*"([^"]+)"`))?.[1] ?? null;
+    return imported.match(new RegExp(`export\\s+const\\s+${alias}[^=]*=\\s*\\{[\\s\\S]{0,300}?\\bid:\\s*"([^"]+)"`))?.[1] ?? null;
   });
   if (!expected.length || !actual.length || actual.includes(null) || JSON.stringify(expected) !== JSON.stringify(actual)) {
     failures.push(`planned/runtime path drift in ${schoolId}: planned=${expected.join(",")} runtime=${actual.join(",")}`);
   }
+}
+
+// Preserve the pedagogical reference lesson without coupling the audit to unrelated Python lessons.
+const pythonRich = sources.get("builder-python-rich.ts") ?? "";
+const modulesStart = pythonRich.search(/lesson\(\s*["']Modules and Packages["']/);
+const nextLessonMatch = modulesStart >= 0 ? pythonRich.slice(modulesStart + 1).search(/\n\s*(?:const\s+\w+\s*=\s*)?lesson\(/) : -1;
+const modulesEnd = nextLessonMatch >= 0 ? modulesStart + 1 + nextLessonMatch : -1;
+const modulesLesson = modulesStart >= 0
+  ? pythonRich.slice(modulesStart, modulesEnd >= 0 ? modulesEnd : pythonRich.length)
+  : "";
+
+if (!modulesLesson) {
+  failures.push("Python Modules and Packages pedagogical reference lesson is missing");
+} else {
+  const conceptFirstMarkers = [
+    'id: "what-is-module"',
+    'id: "first-module"',
+    'id: "what-is-package"',
+    'id: "when-to-use"',
+    'id: "dependencies"',
+    'id: "steward-application"',
+  ];
+  let previousConceptIndex = -1;
+  for (const required of conceptFirstMarkers) {
+    const currentIndex = modulesLesson.indexOf(required);
+    if (currentIndex < 0) failures.push(`Python Modules and Packages reference lesson is missing: ${required}`);
+    if (currentIndex >= 0 && currentIndex <= previousConceptIndex) failures.push(`Python Modules and Packages concept-first ordering drifted at: ${required}`);
+    previousConceptIndex = currentIndex;
+  }
+  for (const required of [
+    'caption: "calculator.py"',
+    'caption: "main.py"',
+    'output: "8"',
+    'caption: "shop/prices.py"',
+    'output: "30"',
+    'output: "application core experiment"',
+  ]) {
+    if (!modulesLesson.includes(required)) failures.push(`Python pedagogical reference invariant is missing: ${required}`);
+  }
+  for (const required of [
+    'const pythonPackagesTutorial:',
+    'title: "Python Tutorial — Packages"',
+    'url: "https://docs.python.org/3/tutorial/modules.html#packages"',
+    'read: "Read 6.4 Packages',
+  ]) {
+    if (!pythonRich.includes(required)) failures.push(`Python pedagogical resource invariant is missing: ${required}`);
+  }
+  if (!modulesLesson.includes("pythonPackagesTutorial")) failures.push("Python Modules and Packages must reference pythonPackagesTutorial");
 }
 
 if (failures.length) {

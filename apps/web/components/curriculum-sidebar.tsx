@@ -24,12 +24,12 @@ export function CurriculumSidebar({
     onSelectActivity,
 }: CurriculumSidebarProps) {
     return (
-        <aside className="self-start border-r border-zinc-200 pr-8 xl:sticky xl:top-8 xl:max-h-[calc(100vh-4rem)] xl:overflow-y-auto">
+        <aside className="self-start border-r border-zinc-200 pr-5 xl:sticky xl:top-8 xl:max-h-[calc(100vh-4rem)] xl:overflow-y-auto">
             <p className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
                 Curriculum
             </p>
 
-            <div className="mt-6 space-y-8 pb-8">
+            <div className="mt-5 space-y-6 pb-8">
                 {path.lessons.map((lesson) => {
                     const isCurrentLesson = lesson.id === currentLesson.id;
                     const isUnlocked = unlockedLessonIds.includes(lesson.id);
@@ -40,10 +40,10 @@ export function CurriculumSidebar({
                                 <h2
                                     className={
                                         isCurrentLesson
-                                            ? "text-lg font-semibold text-zinc-900"
+                                            ? "text-[15px] font-semibold leading-5 text-zinc-900"
                                             : isUnlocked
-                                              ? "text-lg font-semibold text-zinc-500"
-                                              : "text-lg font-semibold text-zinc-400"
+                                              ? "text-[15px] font-semibold leading-5 text-zinc-500"
+                                              : "text-[15px] font-semibold leading-5 text-zinc-400"
                                     }
                                 >
                                     {lesson.title}
@@ -56,7 +56,7 @@ export function CurriculumSidebar({
                                 )}
                             </div>
 
-                            <div className="mt-3 space-y-2">
+                            <div className="mt-2 space-y-1">
                                 {lesson.activities.map((activity) => {
                                     const isCurrent =
                                         activity.id === currentActivity.id;
@@ -75,10 +75,10 @@ export function CurriculumSidebar({
                                             }
                                             className={
                                                 !isActivityUnlocked
-                                                    ? "block w-full cursor-not-allowed rounded-lg px-4 py-3 text-left text-sm text-zinc-300"
+                                                    ? "block w-full cursor-not-allowed rounded-md px-3 py-2 text-left text-[13px] leading-5 text-zinc-300"
                                                     : isCurrent
-                                                      ? "block w-full rounded-lg bg-zinc-900 px-4 py-3 text-left text-sm text-white"
-                                                      : "block w-full rounded-lg px-4 py-3 text-left text-sm text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
+                                                      ? "block w-full rounded-md bg-zinc-900 px-3 py-2 text-left text-[13px] leading-5 text-white"
+                                                      : "block w-full rounded-md px-3 py-2 text-left text-[13px] leading-5 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
                                             }
                                         >
                                             <span className="mr-2">

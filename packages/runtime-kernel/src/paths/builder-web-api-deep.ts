@@ -14,7 +14,7 @@ function lesson(title: string, estimatedMinutes: number, blocks: LessonBlock[], 
   const id = `web-and-api-foundations-${slug(title)}`;
   return { id, title, activities: [
     { id: `${id}-concepts`, title: `${title}: Concepts and Mental Model`, estimatedMinutes, content: { type: "reading", body: blocks.find((b) => b.type === "paragraph")?.text ?? title, resources, blocks } },
-    { id: `${id}-practice`, title: `${title}: Engineering Practice`, estimatedMinutes: 45, content: { type: "practical", objective, scenario: "Use real HTTP exchanges and the evolving Steward service-registry domain. Inspect what actually crosses the wire rather than relying only on framework abstractions.", instructions, deliverables: ["Captured request/response evidence", "Short engineering note explaining the observed behavior"], completionCriteria: ["The learner can explain the protocol behavior without relying on Postman screenshots alone.", "At least one failure, boundary or alternative case is examined.", "The explanation separates application semantics from transport details."] } },
+    { id: `${id}-practice`, title: `${title}: Engineering Practice`, estimatedMinutes: 45, content: { type: "practical", objective, scenario: "Use real HTTP exchanges and the evolving Steward service-registry domain. Inspect what actually crosses the wire rather than relying only on framework abstractions.", instructions, deliverables: ["Reproducible request/response evidence including method, URL, relevant headers/body and observed response", "Short engineering note explaining the observed behavior"], completionCriteria: ["Another learner could reproduce the exchange without relying on a Postman screenshot alone.", "At least one failure, boundary or alternative case is executed and its observed response is recorded.", "The explanation separates application semantics from transport details."] } },
     { id: `${id}-check`, title: `${title}: Knowledge Check`, estimatedMinutes: 10, content: { type: "reflection", prompt: check } },
   ] };
 }
@@ -22,7 +22,9 @@ function lesson(title: string, estimatedMinutes: number, blocks: LessonBlock[], 
 export const webAndApiFoundationsDeepLessons: Lesson[] = [
   lesson("How the Web Works", 40, [
     { type: "heading", id: "introduction", text: "From a URL to a response" },
-    { type: "paragraph", text: "When a client calls an API, several systems cooperate before application code receives a request. A useful mental model is: identify the destination, establish a network path, negotiate a secure connection when HTTPS is used, send an HTTP message, let the server application process it, and return another HTTP message." },
+    { type: "paragraph", text: "At the simplest useful level, the web is a request/response interaction: a client sends an HTTP request to a server, and the server returns an HTTP response. The request says what resource or operation the client wants; the response carries a status plus any returned representation or metadata." },
+    { type: "code", language: "text", caption: "The basic HTTP interaction", code: "Client  ── HTTP request ──>  Server\nClient  <─ HTTP response ──  Server" },
+    { type: "paragraph", text: "That simple model remains true even when the real path has more layers. Before an HTTPS request can reach application code, the client normally has to resolve a host name, establish transport connectivity and negotiate TLS. We will add those layers one at a time rather than treating them as one opaque 'API call'." },
     { type: "code", language: "text", caption: "A simplified request path", code: "Client\n  ↓ DNS lookup\nIP address\n  ↓ TCP connection\nTransport channel\n  ↓ TLS handshake for HTTPS\nSecure channel\n  ↓ HTTP request\nReverse proxy / web server\n  ↓\nSteward API\n  ↓\nHTTP response" },
     { type: "callout", tone: "note", title: "Layers matter", body: "DNS, TCP, TLS and HTTP solve different problems. A DNS failure is not an HTTP `404`. A refused TCP connection is not an application validation error. Good debugging starts by identifying the failing layer." },
     { type: "heading", id: "dns-tcp-tls", text: "DNS, TCP and TLS establish different prerequisites" },
@@ -141,8 +143,11 @@ export const webAndApiFoundationsDeepLessons: Lesson[] = [
   ], "Why can a request contain valid JSON and still be invalid for Steward? Explain the difference between Content-Type and Accept, and distinguish an omitted property from an explicit null value.", [jsonSpec, jsonVideo]),
 
   lesson("REST Principles and Trade-offs", 50, [
-    { type: "heading", id: "rest", text: "REST is an architectural style, not a URL naming recipe" },
-    { type: "paragraph", text: "REST emphasizes resources, representations, uniform interfaces, stateless interactions and cache-aware constraints. In everyday API work, teams often use 'REST API' more loosely. TSA focuses on the useful design consequences rather than policing labels." },
+    { type: "heading", id: "rest", text: "Start with resources and representations" },
+    { type: "paragraph", text: "A resource is something the API gives a stable conceptual identity to, such as a service or team. A representation is the data sent to describe a resource at a particular moment, often JSON. The resource is not the JSON document itself: the same service can have different representations for different media types, fields or consumers." },
+    { type: "code", language: "text", caption: "Resource versus representation", code: "Resource: Service 42\nURI:      /services/42\n\nOne JSON representation:\n{\"id\": 42, \"name\": \"Payments API\"}" },
+    { type: "heading", id: "rest-constraints", text: "REST adds constraints to this resource model" },
+    { type: "paragraph", text: "REST is an architectural style built around constraints including client/server separation, stateless interactions, cacheability and a uniform interface over resources and representations. In everyday API work, teams often use 'REST API' more loosely. TSA keeps the architectural meaning visible while focusing on the design consequences that are useful for Steward rather than treating the label as a purity score." },
     { type: "heading", id: "resources", text: "Model stable resources before actions" },
     { type: "paragraph", text: "Steward naturally exposes resources such as services, teams, environments and dependencies. Resource-oriented design tends to produce APIs whose behavior can be understood through common HTTP semantics." },
     { type: "code", language: "text", caption: "Resource-oriented Steward surface", code: "/teams\n/teams/7\n/services\n/services/42\n/services/42/environments\n/services/42/dependencies" },

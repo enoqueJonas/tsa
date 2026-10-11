@@ -128,7 +128,7 @@ const specs: Spec[] = [
         principles: [
             "Virtual users model concurrent independent execution contexts; an iteration is one execution of the scenario function.",
             "Closed-model executors primarily control VUs/iterations and allow achieved request rate to fall as the system slows.",
-            "Arrival-rate/open-model executors schedule new iterations at a target rate independently of response time, subject to available VUs.",
+            "Arrival-rate/open-model executors schedule new iterations at a target rate independently of response time, subject to available VUs. This avoids a common closed-model distortion: when the system slows, fixed VUs wait longer and generate fewer new requests, so the offered load falls precisely when the service is struggling. That effect is often discussed as coordinated omission. An open model does not make a test automatically valid, but it can preserve the intended arrival pressure when that is the behavior you need to measure.",
             "Use scenarios to represent distinct workloads rather than forcing unrelated behavior into one default function.",
             "Parameterize target URL/credentials/test data through controlled configuration; do not bake environment secrets into scripts."
         ],
@@ -146,7 +146,7 @@ const specs: Spec[] = [
         title: "k6 Checks, Thresholds and Release Interpretation",
         intro: "Checks record functional observations inside workload execution; thresholds evaluate aggregated metrics and can make a k6 run fail. They solve different problems and should not be confused.",
         principles: [
-            "A check records whether an individual response/iteration satisfied a condition; failed checks do not automatically mean the process exits unsuccessfully.",
+            "A check records whether an individual response/iteration satisfied a condition. For example, check(res, { 'status is 200': r => r.status === 200 }) can record that some requests returned 500 while the k6 process still completes normally. A threshold evaluates the accumulated metric across the run and can turn that evidence into a failing test decision—for example, requiring http_req_failed to stay below 1%. Failed checks therefore do not automatically mean the process exits unsuccessfully unless a threshold or other failure policy makes them decisive.",
             "Thresholds evaluate metric aggregates such as error rate or p95 latency and can enforce a test-level performance criterion.",
             "Threshold values need a source: requirement, SLO/SLA input, established baseline plus agreed tolerance, or explicit experiment objective.",
             "Segment/tag metrics when one aggregate would mix endpoints with very different risk/latency expectations.",

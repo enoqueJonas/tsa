@@ -69,7 +69,7 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
     richLesson(
         "identity-authentication-authorization-identity-in-software-systems",
         "Identity in Software Systems",
-        "Before a system can decide what a caller may do, it needs a trustworthy representation of who or what that caller is. Identity is therefore not a username field; it is the set of claims the system is prepared to bind to an actor and use in later decisions.",
+        "In security, an actor or subject is the person, service or other entity attempting to interact with the system. Identity is the set of attributes or claims the system uses to distinguish and refer to that subject—for example a stable internal user or service identifier. Before Steward can decide what a caller may do, it must establish which subject the request represents and which identity claims it is prepared to trust.",
         ["Distinguish identity, account, credential and session.", "Model human and service identities separately.", "Explain why stable identifiers matter more than display names.", "Connect identity records to Steward team membership and ownership."],
         [
             { id: "identity-model", title: "Identity is a security subject", paragraphs: ["A user account is a local record. An identity is the subject the system believes it is interacting with. Credentials are evidence used to establish that belief. A session or token carries the authenticated result forward for some period of time.", "Use stable internal identifiers for authorization decisions. Email addresses, names and team labels can change. Authorization tied directly to mutable display data becomes fragile and difficult to audit."] },
@@ -84,7 +84,7 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
     richLesson(
         "identity-authentication-authorization-authentication-versus-authorization",
         "Authentication versus Authorization",
-        "Authentication answers who the caller is. Authorization answers whether that authenticated subject may perform a specific action on a specific resource. Treating them as the same concern produces APIs that are logged-in but still over-permissive.",
+        "Authentication and authorization are two separate decisions. Authentication verifies acceptable credentials to establish which principal a request represents. Authorization takes that established principal plus the requested action and relevant resource or scope, then decides whether the operation is permitted. A request can therefore authenticate successfully and still be correctly denied.",
         ["Separate authentication from authorization in request processing.", "Explain authentication failure versus permission denial.", "Design allow/deny decisions around resource and action.", "Recognize why authenticated does not mean trusted for every operation."],
         [
             { id: "two-decisions", title: "Two different decisions", paragraphs: ["Authentication verifies evidence and establishes a principal. Authorization evaluates policy using that principal, the requested action, resource state and sometimes context. A valid token can still receive 403 because identity proof does not grant ownership or role.", "In Steward, a user may be authenticated and allowed to read the service registry while still being forbidden to edit a Service owned by another Team."] },
@@ -116,7 +116,7 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
     richLesson(
         "identity-authentication-authorization-jwt-structure-and-lifecycle",
         "JWT Structure and Lifecycle",
-        "A JSON Web Token is a signed container for claims. Its signature can protect integrity, but a JWT is not automatically confidential, revocable, correctly scoped or safe merely because a library can decode it.",
+        "A JSON Web Token (JWT) is a compact token format that carries claims. In the common signed form used for API authentication, it contains an encoded header and payload plus a cryptographic signature. The payload is normally readable by whoever possesses the token; the signature lets a verifier detect modification and check that an accepted signer produced it. Decoding only reads the data. Verification is the security decision that determines whether those claims can be trusted under the server's configured policy.",
         ["Describe JWT header, payload and signature.", "Distinguish signed from encrypted data.", "Identify standard lifecycle claims such as exp, iat and sub.", "Explain why token verification must constrain algorithm, issuer and audience as appropriate."],
         [
             { id: "structure", title: "Three encoded parts", paragraphs: ["A compact JWS-style JWT contains base64url-encoded header and payload plus a signature. Anyone who holds the token can usually decode the payload. Never put passwords, secrets or sensitive personal data there simply because the string looks opaque.", "The verifier must validate the signature and relevant claims. Decoding without verification is not authentication."] },
@@ -132,7 +132,7 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
     richLesson(
         "identity-authentication-authorization-access-and-refresh-tokens",
         "Access and Refresh Tokens",
-        "Access and refresh tokens serve different risk and usability goals. Short-lived access tokens limit exposure; refresh tokens allow a session to continue without repeatedly asking for the user's password.",
+        "After login, an API needs a way for later requests to prove that authentication already happened without resending the password each time. An access token is the credential presented to ordinary protected API calls. A refresh token has a narrower job: it can obtain replacement access credentials when permitted. Giving those jobs different credentials lets Steward keep frequently used access tokens short-lived without forcing a password login every few minutes.",
         ["Explain the roles of access and refresh tokens.", "Choose different lifetimes based on risk.", "Keep refresh endpoints narrowly scoped.", "Understand why refresh tokens deserve stronger protection than access tokens."],
         [
             { id: "two-token-model", title: "Separate frequent use from session continuation", paragraphs: ["Access tokens travel to ordinary protected endpoints and should usually be short-lived. Refresh tokens are used less frequently to obtain new access tokens and often live longer. Because a stolen refresh token can extend an attacker's access, it deserves careful storage and rotation policy.", "A refresh token should not behave like a general access token. Its audience and endpoint usage should be narrow."] },
@@ -148,7 +148,7 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
     richLesson(
         "identity-authentication-authorization-expiration-and-token-rotation",
         "Expiration and Token Rotation",
-        "Token expiry limits how long a credential remains useful. Rotation goes further by replacing refresh credentials as they are used, creating an opportunity to detect reuse and reduce the value of copied tokens.",
+        "A token remains usable only while the server's validation policy accepts it. Expiration puts a time boundary on that acceptance. Revocation adds a server-controlled decision to reject a credential before its natural expiry. Refresh-token rotation changes the credential after successful use so an older copy can become invalid and its later reuse can be treated as evidence worth investigating.",
         ["Separate expiry, revocation and rotation.", "Explain replay risk for refresh tokens.", "Design logout and compromise responses deliberately.", "Identify trade-offs between stateless simplicity and server-side control."],
         [
             { id: "three-controls", title: "Expiry, revocation and rotation solve different problems", paragraphs: ["Expiration is time-based. Revocation invalidates a token before its natural expiry. Rotation replaces refresh credentials after successful use. A purely stateless design makes revocation difficult; server-side blacklists or token-family state add control but also persistence and operational complexity.", "Steward does not need to pretend these trade-offs disappear. The Builder goal is to choose and document a defensible lifecycle."] },
@@ -163,7 +163,7 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
     richLesson(
         "identity-authentication-authorization-authentication-flows",
         "Authentication Flows",
-        "Authentication is a protocol flow, not a single login endpoint. Registration, login, refresh, logout, password change and credential failure each modify security state and need consistent contracts.",
+        "Login is only one transition in an authentication lifecycle. Registration creates credential-bearing identity state; login verifies credentials and issues session/token state; refresh extends an authenticated session under a different credential; logout/revocation invalidates session state according to policy; password change modifies future credential verification and may also affect existing sessions. Treating these as a connected protocol makes their preconditions and failure behavior explicit.",
         ["Map end-to-end authentication flows.", "Avoid account-enumeration leaks where appropriate.", "Define state transitions for password change and logout.", "Separate credential verification from token issuance."],
         [
             { id: "flow-design", title: "Design flows as state transitions", paragraphs: ["Login begins with credentials and ends with authenticated session material or a deliberately limited failure response. Refresh begins with an existing refresh credential. Password change should normally require an authenticated session and current-password or equivalent assurance depending on risk. Each flow has different preconditions.", "Do not let response wording, timing or status design accidentally reveal more identity information than necessary on public authentication endpoints."] },
@@ -191,7 +191,7 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
     richLesson(
         "identity-authentication-authorization-roles-and-permissions",
         "Roles and Permissions",
-        "Roles are useful when they compress a set of permissions, but role names alone are not a complete authorization model. The important question is which action a principal may perform within which scope.",
+        "A permission describes an allowed action such as reading a service or updating one. A role groups permissions into a job-relevant bundle such as viewer or maintainer. The authorization decision still needs scope: being a maintainer of Team A should not automatically grant the same actions over Team B's services. Roles simplify policy vocabulary; they do not replace resource and scope checks.",
         ["Distinguish roles from permissions.", "Scope permissions to teams and resources.", "Avoid a single global role field when domain membership is contextual.", "Design least-privilege Steward roles."],
         [
             { id: "role-compression", title: "Roles are permission bundles", paragraphs: ["A role such as maintainer is shorthand for allowed actions. In Steward that role belongs on a Membership because the same user can be a maintainer of one Team and only a viewer or non-member of another. A global user.role field cannot represent that safely.", "Start with the smallest role set that expresses real work. Avoid creating many decorative roles before concrete permission differences exist."] },
@@ -207,7 +207,7 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
     richLesson(
         "identity-authentication-authorization-object-level-authorization",
         "Object-Level Authorization",
-        "Endpoint-level permission checks are insufficient when access depends on the specific object being manipulated. Object-level authorization asks whether this principal may perform this action on this particular resource.",
+        "Some permissions can be decided from the endpoint and action alone; others depend on the particular resource. A user might be allowed to update services in general but only services owned by a Team they maintain. Object-level authorization is that second decision: given the authenticated principal, requested action and actual resource, is this specific operation allowed?",
         ["Recognize object-level authorization requirements.", "Implement checks against loaded resource ownership.", "Cover list/queryset leakage as well as detail operations.", "Test negative cross-team cases."],
         [
             { id: "object-check", title: "The resource changes the answer", paragraphs: ["A maintainer may be allowed to update /services/{id}, but not every Service. Once the resource is loaded, Steward must compare its owning_team with current Membership state. The same endpoint and same HTTP method can therefore produce allow or deny depending on the object.", "Be careful with collection endpoints too. Object permission hooks on retrieve/update do not automatically prevent list endpoints from returning records the caller should never see in systems with private data."], code: { language: "python", code: "def can_modify_service(user, service) -> bool:\n    return Membership.objects.filter(\n        user=user,\n        team=service.owning_team,\n        role=Membership.Role.MAINTAINER,\n    ).exists()", caption: "Authorization derives from current domain state." } },

@@ -21,11 +21,11 @@ function resourceLabel(resource: LearningResource) {
 
 function Resources({ resources, title = "Resources" }: { resources: LearningResource[]; title?: string }) {
   return (
-    <section className="my-10 rounded-xl border border-zinc-200 bg-zinc-50 p-6">
-      <h3 className="text-lg font-bold text-zinc-950">{title}</h3>
-      <ul className="mt-4 space-y-4">
+    <section className="my-10 border-y border-zinc-200 py-6">
+      <h3 className="text-base font-bold text-zinc-950">{title}</h3>
+      <ul className="mt-4 grid gap-3 md:grid-cols-2">
         {resources.map((resource) => (
-          <li key={resource.url} className="rounded-lg border border-zinc-200 bg-white p-4">
+          <li key={resource.url} className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm">
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full bg-zinc-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-zinc-600">
                 {resourceLabel(resource)}
@@ -40,7 +40,7 @@ function Resources({ resources, title = "Resources" }: { resources: LearningReso
               href={resource.url}
               target="_blank"
               rel="noreferrer"
-              className="mt-3 block font-medium text-blue-700 underline underline-offset-4 hover:text-blue-900"
+              className="mt-3 block text-[15px] font-semibold leading-6 text-blue-700 hover:text-blue-900 hover:underline hover:underline-offset-4"
             >
               {resource.title} ↗
             </a>
@@ -101,7 +101,7 @@ export function ReadingContent({ body, resources, blocks }: ReadingContentProps)
     return (
       <div className="mt-8 space-y-8">
         <p className="text-xl leading-9 text-zinc-800"><InlineTechnicalText text={body} /></p>
-        {resources?.length ? <Resources resources={resources} title="Additional resources" /> : null}
+        {resources?.length ? <Resources resources={resources} title="Learning resources" /> : null}
       </div>
     );
   }
@@ -156,7 +156,13 @@ export function ReadingContent({ body, resources, blocks }: ReadingContentProps)
         if (block.type === "resources") return <Resources key={index} resources={block.resources} title={block.title} />;
         return null;
       })}
-      {resources?.length ? <Resources resources={resources} title="Additional resources" /> : null}
+      {resources?.length ? (() => {
+        const embeddedUrls = new Set(
+          blocks.flatMap((block) => block.type === "resources" ? block.resources.map((resource) => resource.url) : []),
+        );
+        const additionalResources = resources.filter((resource) => !embeddedUrls.has(resource.url));
+        return additionalResources.length ? <Resources resources={additionalResources} title="Additional resources" /> : null;
+      })() : null}
     </article>
   );
 }

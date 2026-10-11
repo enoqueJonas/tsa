@@ -10,6 +10,7 @@ const windowsTrust: LearningResource = { title: "Microsoft — Certificate Store
 const vaultPki: LearningResource = { title: "Vault PKI Secrets Engine", url: "https://developer.hashicorp.com/vault/docs/secrets/pki", kind: "documentation" };
 
 const resourcesByPkiLesson: Record<string, LearningResource[]> = {
+    "pki-verification-model": [rfc5280, opensslVerify, opensslX509],
     "pki-trust-model": [rfc5280, opensslVerify],
     "pki-ca-hierarchy": [rfc5280, opensslCa, opensslX509],
     "pki-workload-certificates": [rfc5280, opensslX509],
@@ -32,6 +33,28 @@ function withPkiResources(lesson: AuthoredLesson): AuthoredLesson {
 }
 
 const pkiLessons: AuthoredLesson[] = [
+    {
+        id: "pki-verification-model",
+        title: "Understand Certificate Trust and Verification",
+        summary: "Build the mental model required for the PKI labs: what a certificate asserts, where trust begins and which checks turn a signed certificate into an accepted workload identity.",
+        objectives: ["Explain leaf, intermediate and root responsibilities.", "Explain why chain validation, service identity and certificate purpose are separate checks.", "Separate machine authentication from application authorization."],
+        activities: [
+            { type: "reading", title: "How certificate verification works", body: "An X.509 certificate binds a public key to identity information and constraints. A service normally presents a leaf certificate issued by an intermediate CA. The verifier checks the chain until it reaches a CA that the verifier already trusts locally. Valid signatures inside an otherwise unknown chain do not create trust by themselves.", blocks: [
+                { type: "heading", id: "chain-to-anchor", text: "Trust starts at the verifier", level: 2 },
+                { type: "paragraph", text: "A root CA is normally distributed as a trust anchor rather than sent as proof that it should be trusted. An intermediate CA performs routine issuance so the root key does not need to remain online. The leaf identifies the workload. A verifier validates signatures and constraints along that path, but acceptance ultimately depends on a trust anchor already configured at the verifier." },
+                { type: "heading", id: "identity-and-purpose", text: "A trusted issuer is only one check", level: 2 },
+                { type: "paragraph", text: "The verifier must also check time validity, certificate constraints, intended purpose and the identity expected for the connection. For a server connection, a DNS identity is normally matched against the leaf certificate's Subject Alternative Name. Extended Key Usage can distinguish purposes such as server authentication and client authentication. A certificate from a trusted CA can therefore still be wrong for this service or this purpose." },
+                { type: "heading", id: "proof-of-possession", text: "The private key proves possession", level: 2 },
+                { type: "paragraph", text: "The certificate itself is public. During TLS, the endpoint proves that it controls the private key corresponding to the certificate's public key. Protecting that private key therefore protects the machine identity. Reusing one private key across unrelated workloads collapses identities that should have remained separate." },
+                { type: "heading", id: "mtls-boundary", text: "mTLS authenticates both machines, not every application action", level: 2 },
+                { type: "paragraph", text: "Normal server-authenticated TLS lets a client authenticate the server. Mutual TLS additionally makes the server verify a client certificate and proof of its private key. A successful handshake establishes machine identity at the TLS boundary. Steward must still decide whether that authenticated workload is authorized to perform a particular domain action." },
+                { type: "heading", id: "certificate-lifecycle", text: "Expiry, rotation and revocation are different controls", level: 2 },
+                { type: "paragraph", text: "Expiry limits the certificate's normal acceptance period. Rotation replaces certificate and usually key material while preserving the intended workload identity. Revocation attempts to invalidate a credential before expiry, for example after private-key compromise. Revocation affects real connections only when verifiers obtain and enforce sufficiently current status information." },
+                { type: "callout", tone: "warning", title: "Do not bypass failed verification", body: "A chain, identity or purpose failure is evidence that the verifier cannot establish the expected trust relationship. Disabling certificate verification removes the control instead of repairing it." }
+            ] },
+            { type: "exercise", title: "Trace the future Steward trust decision", description: "For the private Steward machine-to-machine boundary used in the next lesson, identify the expected leaf identity, issuing intermediate, locally trusted root, certificate purpose and private-key owner. Then state which Steward authorization decision still remains after TLS authentication succeeds." }
+        ],
+    },
     {
         id: "pki-trust-model",
         title: "Model Internal PKI and Machine Trust",
