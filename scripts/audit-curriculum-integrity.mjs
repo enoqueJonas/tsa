@@ -496,7 +496,7 @@ for (const [schoolId, [file, arrayName]] of Object.entries(schoolRegistries)) {
     // Some milestones are imported as already-authored paths.
     const importSource = registry.match(new RegExp(`import\\s*\\{[^}]*\\b${symbol}\\b[^}]*\\}\\s*from\\s*"([^"]+)"`))?.[1];
     const imported = importSource ? sources.get(importSource.replace("./", "") + ".ts") ?? "" : "";
-    return imported.match(new RegExp(`(?:export const )?${symbol}[^=]*=\\s*\\{\\s*id:\\s*"([^"]+)"`))?.[1] ?? null;
+    return imported.match(new RegExp(`export\\s+const\\s+${symbol}[^=]*=\\s*\\{[\\s\\S]{0,300}?\\bid:\\s*"([^"]+)"`))?.[1] ?? null;
   });
   if (!expected.length || !actual.length || actual.includes(null) || JSON.stringify(expected) !== JSON.stringify(actual)) {
     failures.push(`planned/runtime path drift in ${schoolId}: planned=${expected.join(",")} runtime=${actual.join(",")}`);
@@ -537,12 +537,18 @@ if (!modulesLesson) {
     'caption: "shop/prices.py"',
     'output: "30"',
     'output: "application core experiment"',
-    'Python Tutorial — Packages',
-    'url: "https://docs.python.org/3/tutorial/modules.html#packages"',
-    'read: "Read 6.4 Packages',
   ]) {
     if (!modulesLesson.includes(required)) failures.push(`Python pedagogical reference invariant is missing: ${required}`);
   }
+  for (const required of [
+    'const pythonPackagesTutorial:',
+    'title: "Python Tutorial — Packages"',
+    'url: "https://docs.python.org/3/tutorial/modules.html#packages"',
+    'read: "Read 6.4 Packages',
+  ]) {
+    if (!pythonRich.includes(required)) failures.push(`Python pedagogical resource invariant is missing: ${required}`);
+  }
+  if (!modulesLesson.includes("pythonPackagesTutorial")) failures.push("Python Modules and Packages must reference pythonPackagesTutorial");
 }
 
 if (failures.length) {
