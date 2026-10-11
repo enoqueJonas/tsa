@@ -10,6 +10,7 @@ const windowsTrust: LearningResource = { title: "Microsoft — Certificate Store
 const vaultPki: LearningResource = { title: "Vault PKI Secrets Engine", url: "https://developer.hashicorp.com/vault/docs/secrets/pki", kind: "documentation" };
 
 const resourcesByPkiLesson: Record<string, LearningResource[]> = {
+    "pki-verification-model": [rfc5280, opensslVerify, opensslX509],
     "pki-trust-model": [rfc5280, opensslVerify],
     "pki-ca-hierarchy": [rfc5280, opensslCa, opensslX509],
     "pki-workload-certificates": [rfc5280, opensslX509],
@@ -38,7 +39,6 @@ const pkiLessons: AuthoredLesson[] = [
         summary: "Build the mental model required for the PKI labs: what a certificate asserts, where trust begins and which checks turn a signed certificate into an accepted workload identity.",
         objectives: ["Explain leaf, intermediate and root responsibilities.", "Explain why chain validation, service identity and certificate purpose are separate checks.", "Separate machine authentication from application authorization."],
         activities: [
-            { type: "resources", title: "Read before the exercise", resources: [rfc5280, opensslVerify, opensslX509] },
             { type: "reading", title: "How certificate verification works", body: "An X.509 certificate binds a public key to identity information and constraints. A service normally presents a leaf certificate issued by an intermediate CA. The verifier checks the chain until it reaches a CA that the verifier already trusts locally. Valid signatures inside an otherwise unknown chain do not create trust by themselves.", blocks: [
                 { type: "heading", id: "chain-to-anchor", text: "Trust starts at the verifier", level: 2 },
                 { type: "paragraph", text: "A root CA is normally distributed as a trust anchor rather than sent as proof that it should be trusted. An intermediate CA performs routine issuance so the root key does not need to remain online. The leaf identifies the workload. A verifier validates signatures and constraints along that path, but acceptance ultimately depends on a trust anchor already configured at the verifier." },
