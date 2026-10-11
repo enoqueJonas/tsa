@@ -7,6 +7,9 @@ const openssl: LearningResource = { title: "OpenSSL documentation", url: "https:
 
 const blocks: LessonBlock[] = [
     { type: "paragraph", text: "Cloud Engineer already establishes HTTPS for Steward. This path closes the operational gap between obtaining a certificate once and owning a certificate lifecycle: identity, trust chain, renewal, reload, expiry monitoring, failed-renewal diagnosis and recovery." },
+    { type: "heading", id: "trust-chain-mechanics", text: "What the client actually validates", level: 2 },
+    { type: "paragraph", text: "During TLS, the public edge presents a leaf certificate for the Steward hostname and normally the intermediate certificates needed to build a path toward a CA root already trusted by the client. The root usually does not need to be sent by the server because it is a local trust anchor. A valid signature chain alone is not enough: the client also checks the requested hostname against the certificate SANs and checks validity time and other applicable constraints." },
+    { type: "paragraph", text: "This separates three failures that can look similar in a browser: the server may present the wrong hostname identity, it may present an incomplete/untrusted chain, or it may present an expired/not-yet-valid certificate. Inspect those properties independently instead of treating every TLS error as 'the certificate is bad'." },
     { type: "heading", id: "lifecycle", text: "Certificate lifecycle", level: 2 },
     { type: "list", items: [
         "Issue: prove control of the intended hostname and obtain the certificate from the chosen CA.",
