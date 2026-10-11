@@ -255,19 +255,19 @@ for (const required of ["supporting dependencies still active in the inherited r
 }
 
 // Vault is required once its evidence gate is earned, while remaining reassessable by Architect later.
-const enterpriseProgressionForVault = await readFile(join(curriculumDocsDir, "enterprise-capability-progression.md"), "utf8");
+const enterpriseProgressionForVault = fs.readFileSync(path.join(docsDir, "enterprise-capability-progression.md"), "utf8");
 for (const required of ["implements the self-hosted Vault path with real leased/dynamic credentials", "This is a required hands-on checkpoint", "Architect may later reassess whether Vault remains the appropriate active implementation"]) {
   if (!enterpriseProgressionForVault.includes(required)) failures.push(`Vault implementation-history invariant is missing: ${required}`);
 }
 
 // Required hands-on technology checkpoints establish implementation history, not immutable post-Architect topology.
-const enterpriseProgression = await readFile(join(curriculumDocsDir, "enterprise-capability-progression.md"), "utf8");
+const enterpriseProgression = fs.readFileSync(path.join(docsDir, "enterprise-capability-progression.md"), "utf8");
 for (const required of ["At the Kong implementation checkpoint", "not a permanent architecture mandate", "Architect may later retain, simplify, replace or retire the gateway"]) {
   if (!enterpriseProgression.includes(required)) failures.push(`Kong implementation-history invariant is missing: ${required}`);
 }
 
 // Canonical dependency guidance must match the required Professional tsa-test-core completion gate.
-const dependencyManagement = await readFile(join(curriculumDocsDir, "internal-dependency-management.md"), "utf8");
+const dependencyManagement = fs.readFileSync(path.join(docsDir, "internal-dependency-management.md"), "utf8");
 for (const required of ["extraction/publication of `tsa-test-core` is required", "do not distort it merely to force reuse", "separate real Java test-consumer increment"]) {
   if (!dependencyManagement.includes(required)) failures.push(`Canonical tsa-test-core completion invariant is missing: ${required}`);
 }
@@ -326,13 +326,13 @@ for (const required of ["The signed subject is an immutable artifact identity su
 if (!incidentManagement.includes("source revision, release version and deployed OCI digest")) failures.push("Reliability incident triage must resolve deployments to immutable release identity.");
 
 // Preserve the cross-school network exposure model: public application edge, private backends and restricted administration.
-const exposureProgression = await readFile(join(curriculumDocsDir, "network-access-and-exposure-progression.md"), "utf8");
+const exposureProgression = fs.readFileSync(path.join(docsDir, "network-access-and-exposure-progression.md"), "utf8");
 for (const required of ["the public edge exposes only the HTTPS application path", "administrative access remains separate from public ingress", "PostgreSQL | Backend/private only", "Keycloak | Public only for the identity endpoints required by the chosen authentication flow; administration remains restricted"]) {
   if (!exposureProgression.includes(required)) failures.push(`Network exposure invariant is missing: ${required}`);
 }
 
 // Canonical increment contract must keep conditional shared artifacts distinct from required implementation history.
-const incrementContract = await readFile(join(curriculumDocsDir, "steward-increment-contract.md"), "utf8");
+const incrementContract = fs.readFileSync(path.join(docsDir, "steward-increment-contract.md"), "utf8");
 for (const required of ["steward-common is conditional", "earned extraction history or the evidence-backed defer decision", "tsa-test-core is different"]) {
   if (!incrementContract.includes(required)) failures.push(`Canonical shared-artifact lifecycle invariant is missing: ${required}`);
 }
