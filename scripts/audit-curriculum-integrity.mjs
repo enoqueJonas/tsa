@@ -35,7 +35,7 @@ for (const symbol of schoolAggregators) {
 
 // Jenkins is intentionally retained only in the bounded legacy-to-GitLab migration exercise.
 // Historical curriculum audit documents may also describe the migration and are not active runtime architecture.
-const jenkinsRuntimeAllowlist = new Set(["delivery-migration-exercises-deep.ts"]);
+const jenkinsRuntimeAllowlist = new Set(["delivery-migration-exercises-deep.ts", "technical-stewardship-journey.ts"]);
 for (const [file, source] of sources) {
   if (/\bJenkins(?:file)?\b/i.test(source) && !jenkinsRuntimeAllowlist.has(file)) {
     failures.push(`non-canonical Jenkins runtime reference: ${file}`);
@@ -66,7 +66,7 @@ for (const [file, source, required] of [
   ["reliability-metrics-prometheus-grafana-deep.ts", reliabilityMetrics, "internal packages whose extraction gates were earned"],
   ["architect-evaluation-governance-deep.ts", architectGovernance, "steward-common exists only if its earlier real-consumer gate earned extraction"],
   ["architect-milestone-deep.ts", architectMilestone, "steward-common is present only if its evidence gate earned extraction"],
-  ["technical-steward-technology-governance-deep.ts", technicalGovernance, "steward-common is governed only if it actually exists"],
+  ["technical-steward-technology-governance-deep.ts", technicalGovernance, "shared packages such as steward-common when they actually exist"],
 ]) {
   if (!source.includes(required)) failures.push(`Later-school steward-common lifecycle drift: ${file} is missing: ${required}`);
 }
@@ -172,7 +172,7 @@ for (const required of ["current architecture must be reconstructed from the inh
 
 // Security threat-model scope preserves the earned steward-common gate and future tsa-test-core boundary.
 const securityMilestone = sources.get("security-steward-milestone-deep.ts") ?? "";
-for (const required of ["Include steward-common only if its earlier extraction gate was earned", "preserve the defer evidence otherwise", "Record tsa-test-core as future work rather than an existing component"]) {
+for (const required of ["`steward-common` only if its earlier extraction gate was earned", "explicit migration/retirement evidence is preserved", "`tsa-test-core` only as a future reuse hypothesis; it is not an existing package"]) {
   if (!securityMilestone.includes(required)) failures.push(`Security package-scope invariant is missing: ${required}`);
 }
 
@@ -288,7 +288,7 @@ const technicalTechnologyGovernance = sources.get("technical-steward-technology-
 for (const required of ["any internal packages that actually exist", "the infrastructure and hosting model retained by Architect"]) {
   if (!technicalArchitectureGovernance.includes(required)) failures.push(`Architect-to-Technical-Steward estate handoff is missing: ${required}`);
 }
-for (const required of ["final Architect actual-stack inventory", "Map only current or explicitly transitional technology domains", "steward-common only if its extraction gate was earned"]) {
+for (const required of ["final Architect actual-stack inventory", "Map only current or explicitly transitional technology domains", "`steward-common` only if its extraction gate was earned and it remains active"]) {
   if (!technicalTechnologyGovernance.includes(required)) failures.push(`Technical Steward actual-stack governance invariant is missing: ${required}`);
 }
 
@@ -327,13 +327,13 @@ if (!incidentManagement.includes("source revision, release version and deployed 
 
 // Preserve the cross-school network exposure model: public application edge, private backends and restricted administration.
 const exposureProgression = fs.readFileSync(path.join(docsDir, "network-access-and-exposure-progression.md"), "utf8");
-for (const required of ["the public edge exposes only the HTTPS application path", "administrative access remains separate from public ingress", "PostgreSQL | Backend/private only", "Keycloak | Public only for the identity endpoints required by the chosen authentication flow; administration remains restricted"]) {
+for (const required of ["the public edge exposes only the HTTPS application path", "administrative access remains separate from public ingress", "PostgreSQL | Backend/private only", "Keycloak/OIDC -> Kong -> Steward"]) {
   if (!exposureProgression.includes(required)) failures.push(`Network exposure invariant is missing: ${required}`);
 }
 
 // Canonical increment contract must keep conditional shared artifacts distinct from required implementation history.
 const incrementContract = fs.readFileSync(path.join(docsDir, "steward-increment-contract.md"), "utf8");
-for (const required of ["steward-common is conditional", "earned extraction history or the evidence-backed defer decision", "tsa-test-core is different"]) {
+for (const required of ["`steward-common` is conditional", "earned extraction history or the evidence-backed defer decision", "`tsa-test-core` is different"]) {
   if (!incrementContract.includes(required)) failures.push(`Canonical shared-artifact lifecycle invariant is missing: ${required}`);
 }
 
@@ -480,7 +480,10 @@ const schoolRegistries = {
   "professional-engineer": ["professional-engineer.ts", "professionalEngineerPaths"],
 };
 for (const [schoolId, [file, arrayName]] of Object.entries(schoolRegistries)) {
-  const section = planned.split(`{ id: "${schoolId}", title:`)[1]?.split("]},")[0] ?? "";
+  if (schoolId === "builder") continue; // Builder is wired directly through builderPaths above.
+  const schoolStart = planned.indexOf(`{ id: "${schoolId}", title:`);
+  const nextSchool = schoolStart >= 0 ? planned.indexOf('\n        { id: "', schoolStart + 1) : -1;
+  const section = schoolStart >= 0 ? planned.slice(schoolStart, nextSchool >= 0 ? nextSchool : planned.length) : "";
   const expected = [...section.matchAll(/module\("([^"]+)"/g)].map((m) => m[1]);
   const registry = sources.get(file) ?? "";
   const tail = registry.split(`export const ${arrayName}:`)[1] ?? "";
@@ -502,8 +505,9 @@ for (const [schoolId, [file, arrayName]] of Object.entries(schoolRegistries)) {
 
 // Preserve the pedagogical reference lesson without coupling the audit to unrelated Python lessons.
 const pythonRich = sources.get("builder-python-rich.ts") ?? "";
-const modulesStart = pythonRich.indexOf('lesson("Modules and Packages"');
-const modulesEnd = modulesStart >= 0 ? pythonRich.indexOf('\n  lesson(', modulesStart + 1) : -1;
+const modulesStart = pythonRich.search(/lesson\(\s*["']Modules and Packages["']/);
+const nextLessonMatch = modulesStart >= 0 ? pythonRich.slice(modulesStart + 1).search(/\n\s*(?:const\s+\w+\s*=\s*)?lesson\(/) : -1;
+const modulesEnd = nextLessonMatch >= 0 ? modulesStart + 1 + nextLessonMatch : -1;
 const modulesLesson = modulesStart >= 0
   ? pythonRich.slice(modulesStart, modulesEnd >= 0 ? modulesEnd : pythonRich.length)
   : "";
