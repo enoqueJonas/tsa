@@ -126,7 +126,7 @@ export function LearningExperience({
         <p className="text-sm text-zinc-500">{activity.estimatedMinutes} min</p>
       </div>
 
-      <div className={`mt-8 grid gap-10 ${readingContent && headings.length ? "xl:grid-cols-[270px_minmax(0,780px)_220px]" : "lg:grid-cols-[280px_1fr]"}`}>
+      <div className={`mt-8 grid gap-10 ${readingContent && headings.length ? "xl:grid-cols-[230px_minmax(0,920px)_190px]" : "lg:grid-cols-[240px_minmax(0,1fr)]"}`}>
         <CurriculumSidebar
           path={activePath}
           currentLesson={lesson}
@@ -137,7 +137,7 @@ export function LearningExperience({
           onSelectActivity={select}
         />
 
-        <main className="min-w-0 pb-20">
+        <main className="min-w-0 max-w-[920px] pb-20">
           {readingContent ? (
             <>
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">Lesson</p>
@@ -193,9 +193,9 @@ export function LearningExperience({
 
         {readingContent && headings.length > 0 && (
           <aside className="hidden xl:block">
-            <div className="sticky top-8 border-l border-zinc-200 pl-5">
-              <p className="mb-4 font-semibold text-zinc-950">Lesson contents</p>
-              <nav className="space-y-3 text-sm text-zinc-600">
+            <div className="sticky top-8 border-l border-zinc-200 pl-4">
+              <p className="mb-3 text-sm font-semibold text-zinc-950">Lesson contents</p>
+              <nav className="space-y-2.5 text-[13px] leading-5 text-zinc-500">
                 {headings.map((heading) => (
                   <a
                     key={heading.type === "heading" ? heading.id : ""}
