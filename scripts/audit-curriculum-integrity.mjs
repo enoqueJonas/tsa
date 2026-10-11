@@ -422,11 +422,11 @@ for (const required of ["Kong has not been earned yet at this point.", "Migrate 
 }
 
 // Preserve the GitLab -> Argo CD deployment-authority migration without dual control.
-const cloudGitOps = sources.get("cloud-orchestration-gitops-deep.ts") ?? "";
+const cloudGitOpsAuthority = sources.get("cloud-orchestration-gitops-deep.ts") ?? "";
 const cloudMilestone = sources.get("cloud-engineer-milestone-deep.ts") ?? "";
 const progressiveDelivery = sources.get("cloud-progressive-delivery-canary-deep.ts") ?? "";
 for (const required of ["GitLab CI/CD remains responsible for build/test/package/publish.", "Argo CD becomes the only reconciler for the chosen environment after migration.", "does not make both systems authoritative at once"]) {
-  if (!cloudGitOps.includes(required)) failures.push(`Cloud GitOps deployment-authority contract is missing: ${required}`);
+  if (!cloudGitOpsAuthority.includes(required)) failures.push(`Cloud GitOps deployment-authority contract is missing: ${required}`);
 }
 for (const required of ["direct GitLab CI/CD push deployment is not simultaneously authoritative", "There is one authoritative deployment model for the environment."]) {
   if (!cloudMilestone.includes(required)) failures.push(`Cloud milestone deployment-authority proof is missing: ${required}`);
