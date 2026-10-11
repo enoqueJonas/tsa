@@ -6,7 +6,7 @@ const shellcheck: LearningResource = { title: "ShellCheck", url: "https://www.sh
 const make: LearningResource = { title: "GNU Make manual", url: "https://www.gnu.org/software/make/manual/" };
 const twelveFactor: LearningResource = { title: "The Twelve-Factor App — Config", url: "https://12factor.net/config" };
 
-function richLesson(id: string, title: string, intro: string, outcomes: string[], sections: Array<{ heading: string; paragraphs: string[]; code?: { language: string; code: string } }>, practice: string[], questions: string[], resources: LearningResource[]): Lesson {
+function richLesson(id: string, title: string, intro: string, outcomes: string[], sections: Array<{ heading: string; paragraphs: string[]; code?: { language: string; code: string; output?: string; caption?: string } }>, practice: string[], questions: string[], resources: LearningResource[]): Lesson {
     const blocks: LessonBlock[] = [
         { type: "paragraph", text: intro },
         { type: "heading", id: "learning-outcomes", text: "Learning outcomes", level: 2 },
@@ -16,7 +16,7 @@ function richLesson(id: string, title: string, intro: string, outcomes: string[]
         const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
         blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
-        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code });
+        if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code, caption: section.code.caption, output: section.code.output });
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward automation rule", body: "Automate a repeated Steward developer or operator task only when the automation makes intent, failure and rerun behavior clearer than the manual sequence it replaces." });
     blocks.push({ type: "resources", title: "Required and supporting reading", resources });
@@ -57,7 +57,7 @@ export const automationAndShellDeepLessons: Lesson[] = [
     ], ["Create a small task interface for two or three current Steward workflows.", "Ensure at least one target depends on another meaningful prerequisite.", "Keep complex logic in a script instead of embedding it in the task file.", "Document how a new engineer discovers available tasks."], ["Why are stable task names useful?", "When should logic move out of a Makefile into a script?", "What does .PHONY communicate?"], [make, bash]),
     richLesson("idempotency", "Idempotency Concepts", "Idempotent automation can be applied repeatedly without accumulating unintended changes. It is a central property of reliable delivery and configuration work because reruns are inevitable after partial failure.", ["Define idempotency operationally.", "Distinguish idempotent from merely successful reruns.", "Use observe-before-change patterns.", "Recognize operations that need guards or unique identifiers."], [
         { heading: "Converge toward intended state", paragraphs: ["An idempotent operation asks what state exists and changes only what is necessary. Appending the same line on every run is repeatable execution but not idempotent behavior."] },
-        { heading: "Reruns happen after uncertainty", paragraphs: ["Network timeouts and interrupted deployments can leave unknown partial state. Automation that tolerates safe rerun reduces the pressure to diagnose every partial step manually before continuing."], code: { language: "bash", code: "if ! grep -qxF 'STEWARD_ENV=uat' \"$config\"; then\n  printf '%s\\n' 'STEWARD_ENV=uat' >> \"$config\"\nfi" } },
+        { heading: "Reruns happen after uncertainty", paragraphs: ["Network timeouts and interrupted deployments can leave unknown partial state. Automation that tolerates safe rerun reduces the pressure to diagnose every partial step manually before continuing."], code: { language: "bash", caption: "Converge a configuration line instead of appending blindly", code: "config=$(mktemp)\nprintf '%s\\n' 'APP_NAME=steward' > \"$config\"\n\nif ! grep -qxF 'STEWARD_ENV=uat' \"$config\"; then\n  printf '%s\\n' 'STEWARD_ENV=uat' >> \"$config\"\nfi\n\ncat \"$config\"\n\n# Run the guarded block again, then inspect the file:\nif ! grep -qxF 'STEWARD_ENV=uat' \"$config\"; then\n  printf '%s\\n' 'STEWARD_ENV=uat' >> \"$config\"\nfi\ncat \"$config\"\nrm -f \"$config\"", output: "APP_NAME=steward\nSTEWARD_ENV=uat\nAPP_NAME=steward\nSTEWARD_ENV=uat" } },
     ], ["Find one non-idempotent step in a Steward setup/deployment procedure.", "Rewrite it to inspect current state before mutation.", "Execute it three times.", "Compare state after each run and explain why later runs converge rather than accumulate changes."], ["What is the difference between repeatable and idempotent?", "Why does idempotency help after partial failure?", "Can every operation be made naturally idempotent?"], [bash]),
     {
         id: "automation-and-shell-lab",
