@@ -146,7 +146,7 @@ const specs: Spec[] = [
         title: "k6 Checks, Thresholds and Release Interpretation",
         intro: "Checks record functional observations inside workload execution; thresholds evaluate aggregated metrics and can make a k6 run fail. They solve different problems and should not be confused.",
         principles: [
-            "A check records whether an individual response/iteration satisfied a condition; failed checks do not automatically mean the process exits unsuccessfully.",
+            "A check records whether an individual response/iteration satisfied a condition. For example, check(res, { 'status is 200': r => r.status === 200 }) can record that some requests returned 500 while the k6 process still completes normally. A threshold evaluates the accumulated metric across the run and can turn that evidence into a failing test decision—for example, requiring http_req_failed to stay below 1%. Failed checks therefore do not automatically mean the process exits unsuccessfully unless a threshold or other failure policy makes them decisive.",
             "Thresholds evaluate metric aggregates such as error rate or p95 latency and can enforce a test-level performance criterion.",
             "Threshold values need a source: requirement, SLO/SLA input, established baseline plus agreed tolerance, or explicit experiment objective.",
             "Segment/tag metrics when one aggregate would mix endpoints with very different risk/latency expectations.",
