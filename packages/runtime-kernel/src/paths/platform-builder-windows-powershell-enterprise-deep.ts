@@ -24,20 +24,41 @@ function concepts(id: string, title: string, sections: Array<{ title: string; bo
 }
 
 
+const windowsFoundationConcepts: Record<string, Array<{ title: string; body: string }>> = {
+    "windows-enterprise-boundary": [
+        { title: "Transfer the operating model, not Linux commands", body: "Windows and Rocky expose many of the same operational questions through different mechanisms: what process owns a workload, what starts it after boot, where configuration lives, which identity executes it, how access is authorized, where failures are logged and how remote administration is constrained. Windows Services/SCM are not systemd units, Event Log is not journald, and NTFS ACLs are not POSIX mode bits. Use the familiar questions to orient yourself without assuming implementation equivalence." },
+        { title: "Local identity and domain identity are separate scopes", body: "A local Windows account is defined and authenticated by one machine. A domain identity is defined by Active Directory and can be recognized across joined systems according to domain trust and policy. The same visible username string does not make those identities equivalent. This distinction becomes important for services, SMB permissions and later AD exercises." },
+    ],
+    "windows-server-vm": [
+        { title: "Baseline before roles so later change has a reference point", body: "A Windows Server VM initially has operating-system, network, time, service and security state before AD DS, DNS or file-server roles are added. Capturing edition/build, interfaces/routes/DNS, time source, running services and relevant events gives you a known-good comparison. If domain promotion later breaks name resolution, you can distinguish a role/configuration change from a problem that already existed in the base VM." },
+        { title: "Windows still sits inside the Proxmox failure hierarchy", body: "The guest owns Windows services, registry/configuration, NTFS and guest networking, while Proxmox owns VM power state, virtual hardware and the host-side bridge/storage path. A Windows service failure should not trigger hypervisor repair, and a disconnected virtual NIC cannot be fixed by restarting an application service. Preserve the same layer-first diagnosis used for Rocky guests." },
+    ],
+    "windows-services-events": [
+        { title: "Service state, process state and client reachability are different evidence", body: "A Windows service is a lifecycle-managed workload registered with the Service Control Manager. Running means the service manager believes it is started; it does not prove the expected process is healthy, listening on the intended socket or successfully serving a remote client. Correlate Get-Service/service configuration with process/socket evidence and the client symptom." },
+        { title: "Event logs are structured channels, not one global logfile", body: "Windows records events into channels such as System and Application, and many roles expose additional operational channels. Events have provider/source, event ID, level and timestamp fields that can be filtered with PowerShell. Start from the failing component and time window rather than reading every event or treating every red entry as causal." },
+    ],
+};
+
+function teachWindowsFoundation(id: string, activities: AuthoredLesson["activities"]): AuthoredLesson["activities"] {
+    const sections = windowsFoundationConcepts[id];
+    if (!sections) return activities;
+    return [concepts(id, "Foundation", sections), ...activities];
+}
+
 export const windowsPowerShellEnterpriseDeepLessons: AuthoredLesson[] = [
     {
         id: "windows-enterprise-boundary",
         title: "Windows in a Linux-Primary Enterprise Platform",
         summary: "Build enough Windows Server literacy to operate mixed estates without turning TSA into a second operating-system certification track.",
         objectives: ["Compare Windows and Rocky administration boundaries.", "Identify Windows services, registry, event logs, NTFS, shares and domain identity as distinct operational layers.", "Design a disposable Windows lab on Proxmox."],
-        activities: [{ type: "exercise", title: "Mixed-estate responsibility map", description: "Design a bounded Proxmox lab with one Windows Server evaluation VM and, where resources permit, one Windows client/member VM. Map equivalents and non-equivalents between systemd/services, journald/Event Log, POSIX/NTFS permissions, SSH/WinRM, local/domain identity and Linux/Windows DNS behavior. Record licensing/evaluation constraints and do not make Windows the TSA primary server OS." }],
+        activities: teachWindowsFoundation("windows-enterprise-boundary", [{ type: "exercise", title: "Mixed-estate responsibility map", description: "Design a bounded Proxmox lab with one Windows Server evaluation VM and, where resources permit, one Windows client/member VM. Map equivalents and non-equivalents between systemd/services, journald/Event Log, POSIX/NTFS permissions, SSH/WinRM, local/domain identity and Linux/Windows DNS behavior. Record licensing/evaluation constraints and do not make Windows the TSA primary server OS." }]),
     },
     {
         id: "windows-server-vm",
         title: "Build and Baseline Windows Server",
         summary: "Provision Windows Server as a managed Proxmox guest and establish a recoverable administrative baseline.",
         objectives: ["Install and identify a Windows Server guest correctly.", "Configure stable networking, naming and time.", "Capture system and service evidence before adding enterprise roles."],
-        activities: [{ type: "practical", title: "Windows Server baseline", objective: "Create a disposable but repeatable Windows infrastructure VM.", scenario: "The TSA homelab needs a Windows boundary for mixed-enterprise administration and directory-service exercises.", instructions: ["Install a legally available Windows Server evaluation image on Proxmox and document edition/evaluation expiry.", "Apply an intentional hostname, stable lab addressing and the existing homelab time source.", "Install Proxmox guest integration components where appropriate and capture CPU/RAM/disk/network evidence.", "Inspect services, processes, network configuration and Event Viewer before role installation.", "Create a recovery point consistent with the Proxmox snapshot-versus-backup lessons and state its limitations."], deliverables: ["VM specification", "Windows baseline evidence", "Evaluation/licensing note", "Recovery-point decision"], completionCriteria: ["The VM is reachable only through intended lab boundaries.", "Baseline state is evidenced before AD/DNS changes.", "A recovery path exists without calling a snapshot a backup."] }],
+        activities: teachWindowsFoundation("windows-server-vm", [{ type: "practical", title: "Windows Server baseline", objective: "Create a disposable but repeatable Windows infrastructure VM.", scenario: "The TSA homelab needs a Windows boundary for mixed-enterprise administration and directory-service exercises.", instructions: ["Install a legally available Windows Server evaluation image on Proxmox and document edition/evaluation expiry.", "Apply an intentional hostname, stable lab addressing and the existing homelab time source.", "Install Proxmox guest integration components where appropriate and capture CPU/RAM/disk/network evidence.", "Inspect services, processes, network configuration and Event Viewer before role installation.", "Create a recovery point consistent with the Proxmox snapshot-versus-backup lessons and state its limitations."], deliverables: ["VM specification", "Windows baseline evidence", "Evaluation/licensing note", "Recovery-point decision"], completionCriteria: ["The VM is reachable only through intended lab boundaries.", "Baseline state is evidenced before AD/DNS changes.", "A recovery path exists without calling a snapshot a backup."] }]),
     },
     {
         id: "powershell-administration",
@@ -56,7 +77,7 @@ export const windowsPowerShellEnterpriseDeepLessons: AuthoredLesson[] = [
         title: "Services, Processes and Event Logs",
         summary: "Diagnose Windows workload failures through service state, process evidence and event channels rather than GUI-only trial and error.",
         objectives: ["Inspect/start/stop services with PowerShell.", "Query relevant event logs programmatically.", "Correlate a failed service with observable host symptoms."],
-        activities: [{ type: "practical", title: "Windows service incident", objective: "Break and diagnose a safe Windows service.", scenario: "A Windows-hosted dependency becomes unavailable while the VM itself remains online.", instructions: ["Select a non-critical lab service whose stop/start is safe.", "Capture healthy process/service/network evidence.", "Stop or misconfigure the bounded test service, observe client symptom and query relevant events with PowerShell.", "Recover the service and verify the client path.", "Record a Windows diagnostic sequence analogous to the Linux service runbook without assuming identical internals."], deliverables: ["Healthy/failing/recovered evidence", "Event-log query evidence", "Windows service runbook"], completionCriteria: ["The failed layer is identified before recovery.", "PowerShell evidence is included.", "The exercise is not GUI-only."] }],
+        activities: teachWindowsFoundation("windows-services-events", [{ type: "practical", title: "Windows service incident", objective: "Break and diagnose a safe Windows service.", scenario: "A Windows-hosted dependency becomes unavailable while the VM itself remains online.", instructions: ["Select a non-critical lab service whose stop/start is safe.", "Capture healthy process/service/network evidence.", "Stop or misconfigure the bounded test service, observe client symptom and query relevant events with PowerShell.", "Recover the service and verify the client path.", "Record a Windows diagnostic sequence analogous to the Linux service runbook without assuming identical internals."], deliverables: ["Healthy/failing/recovered evidence", "Event-log query evidence", "Windows service runbook"], completionCriteria: ["The failed layer is identified before recovery.", "PowerShell evidence is included.", "The exercise is not GUI-only."] }]),
     },
     {
         id: "ntfs-smb-permissions",
