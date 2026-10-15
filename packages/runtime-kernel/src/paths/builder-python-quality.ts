@@ -116,12 +116,25 @@ const practices: Record<string, PracticeSpec> = {
             "Implement a Service class that owns name, endpoint, active and age_days. Keep the validation rules from the previous checkpoint.",
             "Move activate(), deactivate(), is_eligible() and summary() onto Service where doing so improves cohesion.",
             "Update registry functions to work with Service instances without changing their externally observable lookup/filter behavior.",
-            "Create a small Team class with a name, then give Service an optional owner_team through composition. Do not use inheritance between Team and Service.",
             "Update main.py to reproduce the same Payments API lifecycle demonstrated before the refactor.",
             "Record one reason the class is now justified and one reason you would reject creating a class for a concept that has only passive data."
         ],
-        deliverables: ["Service class", "Small Team composition example", "Updated registry integration", "Before/after behavior comparison", "Design rationale"],
-        completionCriteria: ["Service protects the validation rules already established.", "Activation/deactivation and eligibility behavior is preserved.", "Registry lookup/filtering works with Service objects.", "Team is composed with Service rather than forced into inheritance.", "The refactor changes structure without silently changing established behavior."]
+        deliverables: ["Service class", "Updated registry integration", "Before/after behavior comparison", "Design rationale"],
+        completionCriteria: ["Service protects the validation rules already established.", "Activation/deactivation and eligibility behavior is preserved.", "Registry lookup/filtering works with Service objects.", "The refactor changes structure without silently changing established behavior."]
+    },
+    "programming-with-python-composition-and-collaboration": {
+        objective: "Add an owning Team collaborator to the existing Service registry without changing the Service's identity or lifecycle rules.",
+        scenario: "The Service class is already responsible for its own lifecycle. Ownership is a separate concern, so represent a Team as a collaborating object rather than a subclass.",
+        instructions: [
+            "Create a Team class with a name and a readable description method.",
+            "Give Service an optional owner_team reference through its constructor and explain why this is a has-a relationship.",
+            "Implement a Service method that delegates to Team to describe ownership.",
+            "Create two services with the same Team instance and demonstrate reference identity.",
+            "Replace the Team collaborator with a test double and show that the Service delegates without changing its class.",
+            "Record what changes when a shared Team instance is mutated and why that matters."
+        ],
+        deliverables: ["Team collaborator", "Service composition integration", "Delegation evidence", "Shared-reference test", "Design note"],
+        completionCriteria: ["Service has a Team rather than inherits from Team.", "Delegation is observable.", "The existing registry behavior still works.", "Shared references and their trade-offs are explained."]
     },
     "programming-with-python-comprehensions-iterators-and-pythonic-tools": {
         objective: "Improve real registry queries with Python iteration tools while keeping the existing behavior readable.",
