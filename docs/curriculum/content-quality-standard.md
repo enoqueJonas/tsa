@@ -318,3 +318,16 @@ Learner-facing prose must visually distinguish code and syntax from ordinary lan
 - The rendered convention is monospace text with a subtle background, border and radius; authors should not encode presentation classes in curriculum source.
 
 Example: `def` binds a function name; `return` sends a value to the caller; run `git status` before changing the working tree.
+
+## Lesson granularity and prerequisite sequencing
+
+Conceptual depth determines lesson boundaries. Split a broad topic into separate lessons when the mechanisms cannot each be taught adequately in one reading and practice cycle. Do not split mechanically by length or make advanced material artificially introductory.
+
+- Each lesson needs a coherent learning objective and sufficient explanation of each new mechanism.
+- Teach prerequisites before using them in code or examples.
+- Where appropriate, move from a concrete problem to a definition, mechanism, runnable worked example, expected output, execution trace, and application.
+- Show real code that exercises the mechanism, not merely an inspection of values produced elsewhere.
+- Mark code blocks that depend on earlier blocks; otherwise make them independently executable.
+- Prefer familiar examples first and transfer the learning to the evolving TSA engineering domain.
+- Audit lesson boundaries and concept order, not only whether required keywords appear.
+- Passing structural audits and builds does not establish pedagogical completeness; inspect the rendered learner experience.
