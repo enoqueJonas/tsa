@@ -52,7 +52,7 @@ function richLesson(
                 estimatedMinutes: 45,
                 content: {
                     type: "reading",
-                    body: `Deep TSA lesson for ${title}.`,
+                    body: blocks.filter((block) => block.type === "paragraph").map((block) => block.text).join("\n\n"),
                     ...(resources.length ? { resources } : {}),
                     blocks,
                 },
@@ -64,7 +64,7 @@ function richLesson(
                 content: {
                     type: "practical",
                     objective,
-                    scenario: "Use a real technical system, project or controlled local scenario. The goal is to produce evidence that another engineer could inspect, not merely to state the right vocabulary.",
+                    scenario: "Use a real technical system you can safely inspect, or a bounded hypothetical with explicitly labeled invented evidence when no system is available. Do not present hypothetical measurements as performed experiments. The goal is an independently inspectable chain of reasoning, not merely vocabulary.",
                     instructions,
                     deliverables: ["Working investigation or analysis evidence", "Concise engineering note explaining the reasoning and one uncertainty"],
                     completionCriteria: ["Claims are tied to observations or explicit assumptions.", "At least one alternative explanation, option or failure path is considered.", "The learner can defend the conclusion without relying on the lesson text."],
@@ -99,7 +99,7 @@ export const thinkingLikeAnEngineerRich = richLesson(
         { type: "resources", title: "Required and supporting reading", resources: [sweGoogle, acmEthics] },
     ],
     "Frame a real technical problem using explicit outcomes, constraints, unknowns, options and evidence before proposing a solution.",
-    ["Choose a problem that is not already solved in your head.", "Create a one-page problem frame with outcome, stakeholders and constraints.", "Separate observations, assumptions and unknowns.", "Generate three plausible next moves.", "Rank the next evidence-gathering step by information value and cost.", "Write what would make you change your current view."],
+    ["Choose a problem that is not already solved in your head; if you lack a project, use the hypothetical slow /services API from the reading and label its observations illustrative.", "Create a one-page problem frame with outcome, stakeholders and constraints.", "Separate observations, assumptions and unknowns.", "Generate three plausible next moves.", "Rank the next evidence-gathering step by information value and cost.", "Write what would make you change your current view."],
     "Explain the difference between programming and engineering. Why is 'what should we build?' often a later question than 'what problem are we solving?' Give an example where the technically strongest solution would still be the wrong engineering choice.",
     [sweGoogle, acmEthics],
 );
