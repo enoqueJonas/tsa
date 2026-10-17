@@ -74,10 +74,12 @@ const practices: Record<string, PracticalContent> = {
             "Use become only on tasks or plays that genuinely require it.",
             "Manage one configuration file or template and notify a handler only when that resource changes.",
             "Run once, run again unchanged, then modify the managed input and prove the handler fires only on the meaningful change.",
+            "Deliberately introduce an invalid managed configuration in a disposable environment; use a validation command before replacement so the handler is not triggered by invalid input.",
+            "Record whether the failed candidate left the previous working configuration and running service intact, and explain what Ansible cannot automatically roll back.",
             "Review the playbook and remove any task that actually belongs to the GitLab CI/CD deployment pipeline or application release process."
         ],
         deliverables: ["Focused playbook", "Handler/change evidence", "Boundary review"],
-        completionCriteria: ["Task names communicate intent.", "Handlers respond to real changes instead of restarting services on every run.", "Host configuration remains distinct from application deployment."],
+        completionCriteria: ["Task names communicate intent.", "Handlers respond to real changes instead of restarting services on every run.", "Invalid configuration is rejected before replacement and the last valid file remains available.", "Host configuration remains distinct from application deployment."],
     },
     "Roles Concepts": {
         type: "practical",
