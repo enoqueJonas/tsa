@@ -23,12 +23,12 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | engineering-apprentice | **Engineering Foundations: 9 conceptual lessons + 4 Workbench lessons** | In review | — | — | — | — | In review; first shell example corrected; full enumeration pending |
 | builder | `builder-python-quality` | In review | In review | In review | — | — | Source-path triage: 20 lessons / 19 explicit practical overrides; rendered and execution review pending |
-| builder | `builder-web-api-quality` | — | — | — | — | — | Not started |
-| builder | `builder-django-quality` | — | — | — | — | — | Not started |
-| builder | `builder-postgresql-quality` | — | — | — | — | — | Not started |
-| builder | `builder-identity-auth-deep` | — | — | — | — | — | Not started |
-| builder | `builder-software-craft-quality` | — | — | — | — | — | Not started |
-| builder | `builder-milestone-deep` | — | — | — | — | — | Not started |
+| builder | `builder-web-api-quality` | In review | In review | In review | — | — | Source triage completed; full learner verification pending |
+| builder | `builder-django-quality` | In review | In review | In review | — | — | Source triage completed; full learner verification pending |
+| builder | `builder-postgresql-quality` | In review | In review | In review | — | — | Source triage completed; full learner verification pending |
+| builder | `builder-identity-auth-deep` | In review | In review | In review | — | — | Source triage completed; full learner verification pending |
+| builder | `builder-software-craft-quality` | In review | In review | In review | — | — | Source triage completed; full learner verification pending |
+| builder | `builder-milestone-deep` | In review | In review | In review | — | — | Source triage completed; full learner verification pending |
 | system-thinker | `system-thinker-requirements-quality` | — | — | — | — | — | Not started |
 | system-thinker | `system-thinker-boundaries-quality` | — | — | — | — | — | Not started |
 | system-thinker | `system-thinker-modeling-quality` | — | — | — | — | — | Not started |
@@ -216,3 +216,11 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - **Practical completion defect corrected (`cf2eb75`):** six OOP practicals used the identical generic test \"runs in steward-core / behavior evidence captured / explains tradeoffs\" despite teaching distinct mechanisms. Replaced with verifiable module-specific criteria for encapsulation, inheritance, polymorphism, decorators, class features and design choices. Composition already has appropriately targeted criteria.
 - **Progression observation:** the practicals explicitly grow a `steward-core` workspace from dictionaries to validated functions, registry modules, objects, collaborating teams, static contracts, installable metadata and a debugging scenario. This is desirable progressive project continuity. Do not treat a key-count alone as proof of instruction quality.
 - **Acceptance limit:** all module stages and quality-layer activity contracts were triaged at source level, but this was not complete manual study of every code/explanation block nor execution of the 20 lessons. Full syntax/output verification, learner rendered UX, source-to-browser consistency and actual independent lab completion remain open. **Status: In review, not Accepted.**
+
+### 2026-10-17 — Builder: all seven learning paths — source-level acceptance pass
+
+- **Path order verified in `builder.ts`:** Programming with Python → Web/API Foundations → Relational Data and PostgreSQL → Django and API Engineering (including Django-dependent data topics) → Identity, Authentication and Authorization → Software Craft → Steward API v1 milestone. The canonical boundaries intentionally teach SQL before Django ORM and move ORM-specific PostgreSQL lessons into the Django path.
+- **Practical scope inspected:** Web/API has 8 explicit quality-layer practical contracts; PostgreSQL quality layer has 20 mappings (including Django-dependent exercises); Django quality layer 14; Software Craft quality layer 14. Python has 19 named overrides plus its integrated lab. Identity/Auth and milestone have directly authored reading/practical activities. All are wired from actual deep/rich sources, not independent placeholder modules.
+- **Confirmed cross-path reading defects corrected:** Web/API lesson factory used only its *first paragraph* as reading body while authoring subsequent explanation in structured blocks (`b5b7be7`). Django rich lesson factory stored only introductory prose in `body` although detailed explanatory paragraphs followed in blocks (`8e7f982`). Software Craft lesson factory exhibited the same omission (`a43db9a`). Those factories now preserve full paragraph sequences in body, without changing their structured rendering blocks.
+- **Existing strengths, not certification:** Builder's sequence retains domain/project continuity across Python registry, HTTP contract, PostgreSQL schema, Django implementation, authentication boundaries, software craftsmanship and final Steward API. Identity/Auth directly specifies security negative outcomes, and the final milestone requests reproducible technical evidence. Presence and wording alone do not prove execution or comprehension.
+- **Outstanding blockers to acceptance:** follow every rendered teaching page and its practical in the browser; exercise all environment-dependent examples in a safe learner setup; inspect low-level code/example correctness and expected-output accuracy; verify resource links and usability; independently execute cross-team access denials and Builder capstone from a clean checkout. The present pass is an **entire Builder source/wiring/teaching-contract triage**, not 100% detailed prose/code verification. All seven Builder paths remain **In review**.
