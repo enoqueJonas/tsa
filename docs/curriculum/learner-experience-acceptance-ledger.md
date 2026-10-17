@@ -29,17 +29,17 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 | builder | `builder-identity-auth-deep` | In review | In review | In review | — | — | Source triage completed; full learner verification pending |
 | builder | `builder-software-craft-quality` | In review | In review | In review | — | — | Source triage completed; full learner verification pending |
 | builder | `builder-milestone-deep` | In review | In review | In review | — | — | Source triage completed; full learner verification pending |
-| system-thinker | `system-thinker-requirements-quality` | — | — | — | — | — | Not started |
-| system-thinker | `system-thinker-boundaries-quality` | — | — | — | — | — | Not started |
-| system-thinker | `system-thinker-modeling-quality` | — | — | — | — | — | Not started |
-| system-thinker | `system-thinker-components-quality` | — | — | — | — | — | Not started |
-| system-thinker | `system-thinker-data-flow-quality` | — | — | — | — | — | Not started |
-| system-thinker | `system-thinker-soap-xml-deep` | — | — | — | — | — | Not started |
-| system-thinker | `system-thinker-enterprise-file-integration-deep` | — | — | — | — | — | Not started |
-| system-thinker | `system-thinker-distributed-state-messaging-deep` | — | — | — | — | — | Not started |
-| system-thinker | `system-thinker-failure-quality` | — | — | — | — | — | Not started |
-| system-thinker | `system-thinker-architecture-decisions-quality` | — | — | — | — | — | Not started |
-| system-thinker | `system-thinker-milestone-deep` | — | — | — | — | — | Not started |
+| system-thinker | `system-thinker-requirements-quality` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
+| system-thinker | `system-thinker-boundaries-quality` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
+| system-thinker | `system-thinker-modeling-quality` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
+| system-thinker | `system-thinker-components-quality` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
+| system-thinker | `system-thinker-data-flow-quality` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
+| system-thinker | `system-thinker-soap-xml-deep` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
+| system-thinker | `system-thinker-enterprise-file-integration-deep` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
+| system-thinker | `system-thinker-distributed-state-messaging-deep` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
+| system-thinker | `system-thinker-failure-quality` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
+| system-thinker | `system-thinker-architecture-decisions-quality` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
+| system-thinker | `system-thinker-milestone-deep` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
 | platform-builder | `platform-builder-bare-metal-foundations-deep` | — | — | — | — | — | Not started |
 | platform-builder | `platform-builder-budget-homelab-quality` | — | — | — | — | — | Not started |
 | platform-builder | `platform-builder-computer-os-quality` | — | — | — | — | — | Not started |
@@ -224,3 +224,10 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - **Confirmed cross-path reading defects corrected:** Web/API lesson factory used only its *first paragraph* as reading body while authoring subsequent explanation in structured blocks (`b5b7be7`). Django rich lesson factory stored only introductory prose in `body` although detailed explanatory paragraphs followed in blocks (`8e7f982`). Software Craft lesson factory exhibited the same omission (`a43db9a`). Those factories now preserve full paragraph sequences in body, without changing their structured rendering blocks.
 - **Existing strengths, not certification:** Builder's sequence retains domain/project continuity across Python registry, HTTP contract, PostgreSQL schema, Django implementation, authentication boundaries, software craftsmanship and final Steward API. Identity/Auth directly specifies security negative outcomes, and the final milestone requests reproducible technical evidence. Presence and wording alone do not prove execution or comprehension.
 - **Outstanding blockers to acceptance:** follow every rendered teaching page and its practical in the browser; exercise all environment-dependent examples in a safe learner setup; inspect low-level code/example correctness and expected-output accuracy; verify resource links and usability; independently execute cross-team access denials and Builder capstone from a clean checkout. The present pass is an **entire Builder source/wiring/teaching-contract triage**, not 100% detailed prose/code verification. All seven Builder paths remain **In review**.
+
+### 2026-10-17 — System Thinker: all eleven modules — source-level triage
+
+- **Canonical order reviewed:** requirements, boundaries, modeling, components, data flow, enterprise file/batch, SOAP/XML, distributed state/messaging, failure modes, architecture decisions, final Steward system-design portfolio. The final milestone inherits a specific Builder v1 checkpoint and requires explicit integration and state ownership analysis.
+- **Substantive cross-module finding:** all **ten teaching-source factories** for the non-milestone modules stored only a brief introduction/objective in the `reading.body` even while authoring substantial paragraph explanations as rich blocks. Corrected each source to retain the entire authored paragraph sequence in the fallback reader text: requirements `cd55082`; boundaries `0e685e6`; modeling `227a6a1`; data flow `d90c67c`; architecture decisions `e7dfe46`; components `237235a`; failure modes `42ee802`; file integration `0202d5a`; SOAP/XML `f544aab`; distributed state/messaging `2412286`.
+- **Exercise wiring:** quality-layer contracts are present for requirements, boundaries, modeling, components, data flow, failures and architecture decisions. Enterprise file/batch, SOAP/XML and distributed-state have dedicated deep implementation material. These exercises have not been executed by this source-level pass.
+- **Acceptance limits:** resource URL reachability, exact example output, infrastructure lab execution (Redis/RabbitMQ and file/SOAP scenarios), rendered website usability, and independent portfolio quality remain unverified. No module is marked accepted based on source inspection alone.
