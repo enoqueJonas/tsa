@@ -31,7 +31,7 @@ function richLesson(
             id: `continuous-delivery-deployment-${id}-001`,
             title,
             estimatedMinutes: 40,
-            content: { type: "reading", body: intro, blocks },
+            content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || intro, blocks },
         }],
     };
 }
