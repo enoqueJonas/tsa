@@ -48,6 +48,8 @@ jobs:
         run: python scripts/check-platform-process-recovery.py
       - name: Validate isolated systemd unit definition
         run: python scripts/check-platform-systemd-unit.py
+      - name: Parse dedicated-VM systemd recovery lab
+        run: bash -n scripts/platform-systemd-recovery-lab.sh
       - name: Build applications
         run: pnpm build
 
