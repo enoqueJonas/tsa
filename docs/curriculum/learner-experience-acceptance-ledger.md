@@ -522,3 +522,11 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - Reviewed the learner-authored Proxmox module. Hardened bare-metal installation acceptance to demand *observed host/kernel identity, administrative reachability and bounded negative access test, plus non-destructive physical-console recovery evidence* (`67d8e27`).
 - Hardened Proxmox maintenance acceptance to demand an advance dependency/rollback plan, actual before-and-after host, bridge, guest and application-level health evidence, and an accurate single-host failure-domain statement (`c15bbff`). Neither change treats an unexecuted physical-server lab as verified.
 - These modifications are committed but await the next local `pnpm test` and `pnpm build`. User-requested learner progress/navigation/persistence testing remains deferred.
+
+### 2026-10-18 — Platform Builder school-wide instructional pass
+
+- User verified **8/8 smoke tests** and an uncached production build at `6a85774e`.
+- Audited the Platform Builder path inventory: **15 named paths**, covering computing/OS foundations, Linux, networking, Packet Tracer, virtualization, bare metal, budget homelab, Proxmox, NAS, infrastructure services, Ansible, OS patching, Windows/PowerShell, file/directory services and the capstone.
+- Added an **individual domain-specific operational readiness reading to the start of each of the 15 paths** (`90e425c`). Each provides an initial mental model, concrete evidence/inspection approach, common misdiagnosis and lab safety/recovery boundary. These are authored learner-facing lessons, not a checklist hidden in documentation.
+- Extended the resolved practical check to assert that all 15 paths contain the first readiness lesson with substantive reading content (`490c634`); corrected paragraph rendering (`ff004d7`). Earlier improvements to individual labs remain intact.
+- The latest changes have not yet been independently compiled or run. Smoke and production build verification are pending. **Pedagogical acceptance remains qualified:** the 15-path coverage pass does not prove every instruction/example is independently executable, nor substitute for hands-on host/lab evidence. Do not claim physical lab execution or progress/navigation testing.
