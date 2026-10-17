@@ -29,7 +29,7 @@ function withPkiResources(lesson: AuthoredLesson): AuthoredLesson {
         resources: resourcesByPkiLesson[lesson.id] ?? [rfc5280],
     };
     // A resource collection is not a separate lesson when a substantive
-    // reading exists. The old wrapper created 10 near-empty navigation steps.
+    // reading exists. The old wrapper created an unnecessary resource-only navigation step before this reading; exercise-only lessons retain a separate references step.
     const firstReading = lesson.activities.findIndex((activity) =>
         "type" in activity && activity.type === "reading");
     if (firstReading < 0) {
