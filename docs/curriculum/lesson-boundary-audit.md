@@ -453,3 +453,7 @@ Inspected the Security Steward trust-boundary lesson and practical. Commit `719c
 ## Review batch 41 — Virtual networking prerequisite ordering
 
 Revisited the Platform Builder virtualization lesson and fixed a teaching-order regression. The worked guest reachability diagnosis referred to bridging before the lesson explained the bridging mechanism. Commit `1fd08c0` places Bridging before the worked scenario, preserving the NAT → bridging → comparative diagnosis progression. This source-level sequencing correction still requires current audit/build and rendered inspection.
+
+## Review batch 41 — School-level inventory wiring validation
+
+Compared import declarations in Academy and all ten school aggregators against the 134-entry logical lesson-module inventory. All directly imported module sources with `-quality`, `-rich`, `-deep`, `-milestone(s)` or `-decision` suffixes appear in the checklist; no other missing direct school imports were found. The indirect `delivery-artifact-supply-chain-quality` path is independently checked through the supply-chain composition guards. Commit `81acbce` enforces direct aggregator-to-inventory parity in the curriculum integrity audit, preventing recurrence of the previously omitted Supply Chain logical module. This is broad **structural wiring coverage**, not 134 pedagogical approvals.
