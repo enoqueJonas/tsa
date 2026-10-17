@@ -599,3 +599,11 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - All **13 Technical Steward paths** now have introductory decision-rights, accountable-owner and counterexample material; each existing practical has a preceding scenario-specific preparation on scope, steps, measured operating evidence, rejected alternatives and exception handling.
 - The resolved-runtime validation now examines all 13 path foundations and the preparation directly preceding every practical. Static path registry preserved.
 - **Outstanding:** local `pnpm test`/`pnpm build` validation and independent review of individual governance deliverables. A source-level instructional pass does not prove controls actually operate, that risks are mitigated or that an audit has independently verified evidence. Learner completion/navigation remains deferred.
+
+### 2026-10-18 — Professional Engineer complete source-level school pass
+
+- User verified Technical Steward at `dcf0ca91`: eight passing tests and two successful uncached build tasks.
+- Enhanced all **seven Professional Engineer paths**, from professional ethics and capstone problem discovery to independent implementation, production readiness, portfolio reflection and engineering defence.
+- Each path begins with a concept, worked evidence case and counterargument. Every practical receives a preceding scenario-specific reading with first actions, independently inspectable acceptance conditions, failure limits and non-fabrication expectations.
+- Resolved-runtime checks now cover all seven path introductions and each practical's immediate preparation.
+- **Pending:** local `pnpm test`/`pnpm build`; independent demonstration of capstone implementation, deployment and defence. Source-coverage completion does not prove learner proficiency or real artifact execution. Navigation and progress UI acceptance still deferred.
