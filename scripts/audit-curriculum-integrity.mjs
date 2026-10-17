@@ -108,6 +108,25 @@ for (const [sourceFile, qualityFile, titlePattern] of deliveryQualityPairs) {
   }
 }
 
+// Guard against a real school lesson silently disappearing from the audit checklist.
+// Backing deep/rich modules used through a quality wrapper are not separate logical paths.
+const inventoryText = fs.readFileSync(path.join(docsDir, "lesson-boundary-audit.md"), "utf8").split("## Known findings")[0];
+const listedModules = new Set(inventoryText.split("\n").filter((line) => line.startsWith("- [")).map((line) => line.split(String.fromCharCode(96))[1]).filter(Boolean));
+for (const schoolFile of [
+  "academy-journey.ts", "system-thinker.ts", "platform-builder.ts",
+  "delivery-engineer.ts", "cloud-engineer.ts", "quality-steward.ts",
+  "security-steward.ts", "reliability-engineer.ts", "architect.ts",
+  "technical-steward.ts", "professional-engineer.ts"
+]) {
+  const schoolSource = sources.get(schoolFile) ?? "";
+  for (const match of schoolSource.matchAll(/from "\.\/([^"]+)"/g)) {
+    const moduleName = match[1];
+    if (/-(?:quality|rich|deep|milestone|milestones|decision)$/.test(moduleName) && !listedModules.has(moduleName)) {
+      failures.push("Wired school lesson absent from audit inventory: " + schoolFile + " -> " + moduleName);
+    }
+  }
+}
+
 // The learner receives the quality-enriched practical for 23 normal Supply Chain lessons.
 // The two integrated lab lessons retain their specialized deep-source contract instead.
 const artifactQuality = sources.get("delivery-artifact-supply-chain-quality.ts") ?? "";
