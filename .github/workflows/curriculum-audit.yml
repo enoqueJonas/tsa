@@ -28,8 +28,6 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Execute curriculum smoke test suite
-        run: pnpm test
       - name: Audit curriculum integrity
         run: pnpm audit:curriculum
       - uses: actions/setup-python@v6
@@ -43,6 +41,8 @@ jobs:
           java-version: '17'
       - name: Execute Java teaching example
         run: pnpm check:java-examples
+      - name: Execute curriculum smoke test suite
+        run: pnpm test
       - name: Report cross-school code example evidence
         run: pnpm report:curriculum-examples
       - name: Execute isolated Platform service recovery drill
