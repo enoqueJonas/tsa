@@ -17,7 +17,7 @@ function lesson(id: string, title: string, intro: string, sections: Array<{ head
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward delivery checkpoint", body: "Apply this concept to the current Steward repository and homelab. Preserve evidence that another engineer could use to identify exactly what source became what release and where it was promoted." });
     blocks.push({ type: "resources", title: "Continue learning", resources });
-    return { id: `software-delivery-foundations-${id}`, title, activities: [{ id: `software-delivery-foundations-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+    return { id: `software-delivery-foundations-${id}`, title, activities: [{ id: `software-delivery-foundations-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || intro, blocks } }] };
 }
 
 export const softwareDeliveryFoundationsDeepLessons: Lesson[] = [
