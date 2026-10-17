@@ -180,6 +180,12 @@ for (const phrase of [
   if (!migrationExercise.includes(phrase)) failures.push(`Delivery CI migration teaching missing: ${phrase}`);
 }
 
+// Release lab must not manufacture a shared Python package when extraction was deferred.
+const releaseLab = sources.get("delivery-release-engineering-lab-deep.ts") ?? "";
+for (const phrase of ["only if earlier Builder evidence justified extracting", "record the deferred-extraction decision"]) {
+  if (!releaseLab.includes(phrase)) failures.push(`Release Engineering lab missing conditional package guidance: ${phrase}`);
+}
+
 // Every authored Shell lesson has its own explicit practical evidence contract.
 const shellModule = sources.get("delivery-automation-shell-deep.ts") ?? "";
 const shellLessonIds = [...shellModule.matchAll(/richLesson\("([^"]+)", "([^"]+)"/g)].map((m) => m[1]);
