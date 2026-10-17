@@ -254,3 +254,7 @@ Confirmed a gap in `reliability-observability-deep`: each lesson offered princip
 ## Review batch 7 — Python OOP practical progression
 
 Confirmed a major gap: after splitting Python OOP into individual lessons, the quality-layer practical mapping covered Composition but not the six other new lessons. Those lessons therefore retained generic practical instructions instead of progressive, domain-specific engineering tasks. Commit `75c20ed` adds targeted practical activities for Encapsulation, Inheritance, Polymorphism, Decorators, Python Class Features and OOP Design, with runnable evidence and negative tests. Commit `1b5f61c` labels inheritance snippets that depend on the earlier Vehicle definition as continuations. The broader Python curriculum still requires review outside OOP.
+
+## Review batch 8 — Application Security
+
+Confirmed that the twelve application-security conceptual lessons presented principles and practical tasks without an explicit worked case connecting threat scenario, control, positive/negative verification and reasoning. Commit `f733a55` adds a concrete control-and-verification case to each lesson. The cases distinguish authentication from authorization, validation from access control, generic errors from protected diagnostics, and configuration from verified security properties. This does not imply security assurance for the actual Steward implementation; learners must still implement and test controls in their own environment.
