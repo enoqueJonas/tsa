@@ -488,3 +488,7 @@ Revisited Platform Builder Virtual Networking from the earlier worked-example re
 ## Review batch 44 — Governance metrics interpretation
 
 Reviewed Technical Steward Engineering Health's KPI-vs-KRI learning activity. Commit `ca5d9ef` adds a quantified hypothetical where change lead time improves while the fraction of deployed services with unsupported critical dependencies worsens. The example teaches why a positive delivery-performance trend cannot by itself certify lower technology risk, and explicitly calls for denominator, period, ownership and escalation rules. No observed Steward KPI/KRI figures are asserted. No GitHub Actions workflow run was returned for the newest commit when checked; current automated build/audit and rendered teaching verification remain open.
+
+## Review batch 43 — Shell concept-first sequencing
+
+Revisited the Delivery shell pipeline lesson and found the worked `pipefail` failure trace was presented before the section explaining the underlying pipeline exit-status mechanism. Commit `129dd48` reorders the two blocks so the explanation precedes the executable comparison; commit `18b137f` adds a static curriculum-audit guard against recurrence. Current rendered, audit and build results remain unverified after these source changes.
