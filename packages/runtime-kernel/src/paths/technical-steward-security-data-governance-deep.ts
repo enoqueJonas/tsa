@@ -14,7 +14,7 @@ const deliverables = ["Governance artifact", "Evidence and rationale", "Owner, e
 const criteria = ["Security or data accountability is explicit.", "Policy intent is separated from implementation detail.", "Exceptions and residual risk follow defined authority and review rules."];
 function lesson(id: string, title: string, body: string, instructions: string[]): Lesson {
   return { id: `security-data-governance-${id}`, title, activities: [
-    { id: `security-data-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 60, content: { type: "reading", body, blocks:[{type:"resources",title:"Governance reference",resources:resourcesBySecData[id] ?? [nistCsf]}] } },
+    { id: `security-data-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 60, content: { type: "reading", body, blocks:[{type:"paragraph",text:body},{type:"resources",title:"Governance reference",resources:resourcesBySecData[id] ?? [nistCsf]}] } },
     { id: `security-data-governance-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward governance.`, scenario, instructions, deliverables, completionCriteria: criteria } },
   ] };
 }
