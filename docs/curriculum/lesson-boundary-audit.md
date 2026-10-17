@@ -17,20 +17,20 @@
 Status: **Not yet audited**.
 
 - [ ] `builder-python-quality`
-- [ ] `builder-web-api-quality`
-- [ ] `builder-django-quality`
-- [ ] `builder-postgresql-quality`
-- [ ] `builder-identity-auth-deep`
-- [ ] `builder-software-craft-quality`
+- [x] `builder-web-api-quality`
+- [x] `builder-django-quality`
+- [x] `builder-postgresql-quality`
+- [x] `builder-identity-auth-deep`
+- [x] `builder-software-craft-quality`
 - [ ] `builder-milestone-deep`
 
 ### system-thinker
 
 Status: **Not yet audited**.
 
-- [ ] `system-thinker-requirements-quality`
-- [ ] `system-thinker-boundaries-quality`
-- [ ] `system-thinker-modeling-quality`
+- [x] `system-thinker-requirements-quality`
+- [x] `system-thinker-boundaries-quality`
+- [x] `system-thinker-modeling-quality`
 - [ ] `system-thinker-components-quality`
 - [ ] `system-thinker-data-flow-quality`
 - [ ] `system-thinker-soap-xml-deep`
@@ -209,3 +209,20 @@ Status: **Not yet audited**.
 - [ ] Review rendered OOP lessons and practical activities.
 - [ ] Review each module above and document specific findings before editing.
 - [ ] Re-run curriculum audit and build after remediation.
+
+## Review batch 1 — Builder and System Thinker
+
+The following entries have been inspected for module structure and lesson-title progression; this is a **structural pass**, not a full block-by-block pedagogical approval. The `*-quality` modules primarily decorate practical activities and inherit teaching content from separate `*-deep` or `*-rich` modules. Therefore, counting code blocks or lesson headings in the quality wrapper alone is misleading.
+
+| Module | Observation | Follow-up |
+| --- | --- | --- |
+| Builder Web/API | Teaching comes from `builder-web-api-deep`; it introduces HTTP request/response and network layers separately. | Inspect individual response-contract examples for visible outcomes. |
+| Builder Django | Teaching comes from `builder-django-rich`; uses a concept-to-code block mapper that supports expected output. | Inspect every concept's code for meaningful runtime behavior. |
+| Builder PostgreSQL | Teaching comes from `builder-postgresql-deep`; SQL sections support optional expected output. | Review examples where result tables would aid understanding. |
+| Builder Identity/Auth | Distinguishes identity, authentication, authorization, password verification and security boundaries. | Review code-level prerequisite ordering. |
+| Builder Software Craft | Distinguishes Git history, staging, restore/revert/reset and architecture boundaries. | Preserve advanced depth; review practice evidence. |
+| System Thinker Requirements | Distinguishes stakeholders, actors, quality attributes, constraints and acceptance criteria. | Review worked examples and validation evidence. |
+| System Thinker Boundaries | Separates system context, responsibility, trust and ownership boundaries. | Review diagram interpretation tasks. |
+| System Thinker Modeling | Separates model scope, C4 views, state transitions and diagram-as-code. | Review actual learner diagrams. |
+
+**Confirmed cross-module prerequisite defect fixed:** introductory Python OOP practical previously required Team composition before the Composition lesson. The task is now in the later Composition practical (`5e64311`).
