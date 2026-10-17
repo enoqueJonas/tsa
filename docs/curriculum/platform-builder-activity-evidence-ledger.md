@@ -218,3 +218,8 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 - Confirmed Batch 100 [39038426147](https://github.com/enoqueJonas/tsa/actions/runs/39038426147) passed both CI jobs, including bash syntax checking for the dedicated-VM systemd lab.
 - Extended the **unexecuted** Rocky Linux systemd recovery lab to require systemd's own `NRestarts >= 1` after forced process failure and an observed `Restart=on-failure` policy, in addition to a changed PID and independently successful HTTP response (`1dd3598`). This closes an evidence loophole where a new process could otherwise appear without a recorded systemd restart.
 - Added an early sudo authorization check and a named operator prerequisite (`90d33ea`). The lab still writes and removes its own temporary service unit, and must only be run on a dedicated VM with authorization. The test remains syntax-checked in CI; **no running systemd manager was exercised** by this batch.
+
+## Batch 102 — Disposable TCP/UDP and local resolver execution (2026-10-17)
+
+- Added `scripts/check-platform-network-foundations.py` to execute independent loopback TCP connection/request/response, UDP datagram request/response, and local hostname resolution via the runner's configured resolver. Connections bind only to `127.0.0.1`, with no external dependency. Commits `6efd42c`, `92d27f5`.
+- This evidence addresses foundational differences between connection-oriented TCP, datagram UDP and hostname-to-address resolution. It does **not** certify routed traffic, firewalld rules, authoritative DNS, DHCP, WireGuard, real Proxmox networking or remote clients. The new test's CI validation result must be checked before acceptance.
