@@ -15,6 +15,9 @@ export const deliveryMigrationExerciseDeepLessons: Lesson[] = [
           blocks: [
             { type: "heading", id: "scenario", text: "Scenario", level: 2 },
             { type: "paragraph", text: "The organization is evaluating a move of one representative Steward CI workflow from an inherited Jenkins implementation to GitLab CI/CD. Leadership does not authorize a permanent duplicate CI architecture. You must prove semantic equivalence, define a bounded coexistence/cutover window, preserve rollback and finish with one primary implementation." },
+            { type: "heading", id: "worked-gate-mapping", text: "Worked migration: preserve a failed authorization gate", level: 2 },
+            { type: "paragraph", text: "Suppose the inherited Jenkins workflow runs unit tests, then an integration test for cross-team service mutation, and publishes only if both pass. In GitLab, an equivalent check stage must fail when Team A can modify Team B\u0027s service, and its failure must prevent the publish job. A green Docker build after a failed integration check is not equivalent behavior. Compare job dependencies, allowed-failure settings, trigger context, credentials, and the recorded source/image identity, not merely job names." },
+            { type: "paragraph", text: "If there is no real inherited Jenkins system, use an explicitly labeled legacy pipeline fixture or documented Jenkinsfile for this bounded comparison. Do not introduce Jenkins as a permanent Steward dependency just to complete the exercise; simulated cutover evidence must be labeled simulation rather than a production migration." },
             { type: "callout", tone: "warning", title: "Migration, not duplication", body: "Do not maintain both full pipelines indefinitely. Temporary duplication exists only to validate migration and must end in an explicit primary-platform decision." },
           ],
         },
@@ -28,7 +31,7 @@ export const deliveryMigrationExerciseDeepLessons: Lesson[] = [
           objective: "Migrate one representative Steward CI workflow while preserving its engineering guarantees and proving rollback/decommission behavior.",
           scenario: "The inherited Jenkins pipeline protects source checks, tests, artifact identity and fail-closed image creation. An alternative platform is being evaluated. A successful migration must preserve those semantics rather than merely produce a green job in another UI.",
           instructions: [
-            "Inventory the selected Jenkins workflow: triggers, stages, dependencies, agents, credentials, caches, artifacts, gates, evidence and failure behavior.",
+            "Inventory the inherited Jenkins workflow or an explicitly labeled legacy Jenkinsfile fixture when no inherited system exists: triggers, stages, dependencies, agents, credentials, caches, artifacts, gates, evidence and failure behavior. Label fixture-only observations instead of claiming a real production cutover.",
             "Treat GitLab CI/CD as the target platform and map semantic equivalents before writing .gitlab-ci.yml.",
             "Identify features that do not map directly and decide whether to redesign, emulate or explicitly accept a changed behavior.",
             "Implement the representative workflow in GitLab CI/CD without removing the legacy Jenkins path yet.",
