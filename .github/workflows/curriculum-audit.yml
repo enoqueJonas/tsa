@@ -40,6 +40,8 @@ jobs:
         run: pnpm report:curriculum-examples
       - name: Execute isolated Platform service recovery drill
         run: python scripts/check-platform-loopback-drill.py
+      - name: Execute Platform OS observation examples
+        run: python scripts/check-platform-os-observations.py
       - name: Build applications
         run: pnpm build
 
