@@ -39,3 +39,7 @@ test("all-school source code evidence report runs and inventories modules", () =
 test("practical contract inventory runs across all curriculum schools", () => {
   runAudit("scripts/report-curriculum-practicals.mjs", /Practical source audit: \d+ path files; \d+ explicit practical content objects; \d+ use computed fields; 0 literal missing\/empty candidates\./);
 });
+
+test("resolved curriculum practical contracts are present across all 12 schools", () => {
+  runAudit("scripts/check-resolved-practical-contracts.mjs", /Resolved practical contracts: 12 schools, \d+ paths, \d+ lessons, \d+ practical activities; 0 missing\/empty contract findings\./);
+});
