@@ -45,5 +45,5 @@ test("resolved curriculum practical contracts are present across all 12 schools"
 });
 
 test("curriculum object literals do not contain duplicate static property keys", () => {
-  runAudit("scripts/check-duplicate-curriculum-object-keys.mjs", /Duplicate curriculum object keys: \\d+ path files, \\d+ object literals, 0 duplicate keys\\./);
+  runAudit("scripts/check-duplicate-curriculum-object-keys.mjs", /Duplicate curriculum object keys: \d+ path files, \d+ object literals, 0 duplicate keys\./);
 });
