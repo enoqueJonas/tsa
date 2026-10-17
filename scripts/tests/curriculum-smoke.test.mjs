@@ -45,7 +45,7 @@ test("resolved curriculum practical contracts are present across all 12 schools"
 });
 
 test("learner-facing curriculum audit covers all 12 assembled schools", () => {
-  runAudit("scripts/audit-learner-facing-curriculum.mjs", /Learner-facing audit: 12 schools, \\d+ paths, \\d+ lessons, \\d+ activities, \\d+ practicals, \\d+ embedded code blocks\\./);
+  runAudit("scripts/audit-learner-facing-curriculum.mjs", /Learner-facing audit: 12 schools, \d+ paths, \d+ lessons, \d+ activities, \d+ practicals, \d+ embedded code blocks\.[\s\S]*Learner-facing structural findings: 0(?:\r?\n|$)/);
 });
 
 test("curriculum object literals do not contain duplicate static property keys", () => {
