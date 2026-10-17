@@ -296,3 +296,7 @@ Inspected the System Thinker milestone artifact gates. The milestone already req
 ## Review batch 15 — Platform Builder homelab capacity
 
 Inspected the budget-homelab, computer/OS and virtualization quality wrappers and their source lesson relationships. These modules include applied resource and operating-system investigations; the wrappers alone cannot establish reading quality. The budget-homelab CPU/RAM/storage/NIC lesson stated memory constraints but provided no worked resource-allocation calculation. Commit `f9878a9` adds an explicitly hypothetical 16 GiB host budget, separating host reserve, guest allocation and remaining headroom; it warns that allocation arithmetic does not substitute for monitoring. Remaining lesson mechanisms and generated rendered content have not received a full review; automated audit and build are not yet run.
+
+## Review batch 16 — Platform Builder virtualization networking
+
+Inspected the teaching content in `platform-builder-virtualization-deep.ts`, not only its quality wrapper. The Virtual Networking Modes lesson already contrasts NAT and bridging and includes diagnostic commands, but it did not connect those commands into a clear troubleshooting sequence. Commit `b1394b6` adds an illustrative connection-failure trace separating application listening, guest address/route, NAT or bridged topology, and firewall/upstream policy. The content is not represented as actual learner output. This is one targeted improvement; remaining Platform modules and rendered/build checks still require review.
