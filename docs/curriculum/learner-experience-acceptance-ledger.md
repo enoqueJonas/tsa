@@ -126,16 +126,16 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 | reliability-engineer | `reliability-service-level-engineering-deep` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
 | reliability-engineer | `reliability-steward-reliability-program-deep` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
 | reliability-engineer | `reliability-tracing-backend-decision` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
-| architect | `architect-evaluation-governance-deep` | — | — | — | — | — | Not started |
-| architect | `architect-architecture-fundamentals-deep` | — | — | — | — | — | Not started |
-| architect | `architect-milestone-deep` | — | — | — | — | — | Not started |
-| architect | `architect-architectural-styles-deep` | — | — | — | — | — | Not started |
-| architect | `architect-data-architecture-deep` | — | — | — | — | — | Not started |
-| architect | `architect-domain-modeling-deep` | — | — | — | — | — | Not started |
-| architect | `architect-integration-and-messaging-deep` | — | — | — | — | — | Not started |
-| architect | `architect-modularity-deep` | — | — | — | — | — | Not started |
-| architect | `architect-resilience-architecture-deep` | — | — | — | — | — | Not started |
-| architect | `architect-scalability-distributed-systems-deep` | — | — | — | — | — | Not started |
+| architect | `architect-evaluation-governance-deep` | In review | In review | In review | — | — | Source-level audit; real learner portfolio and UX pending |
+| architect | `architect-architecture-fundamentals-deep` | In review | In review | In review | — | — | Source-level audit; real learner portfolio and UX pending |
+| architect | `architect-milestone-deep` | In review | In review | In review | — | — | Source-level audit; real learner portfolio and UX pending |
+| architect | `architect-architectural-styles-deep` | In review | In review | In review | — | — | Source-level audit; real learner portfolio and UX pending |
+| architect | `architect-data-architecture-deep` | In review | In review | In review | — | — | Source-level audit; real learner portfolio and UX pending |
+| architect | `architect-domain-modeling-deep` | In review | In review | In review | — | — | Source-level audit; real learner portfolio and UX pending |
+| architect | `architect-integration-and-messaging-deep` | In review | In review | In review | — | — | Source-level audit; real learner portfolio and UX pending |
+| architect | `architect-modularity-deep` | In review | In review | In review | — | — | Source-level audit; real learner portfolio and UX pending |
+| architect | `architect-resilience-architecture-deep` | In review | In review | In review | — | — | Source-level audit; real learner portfolio and UX pending |
+| architect | `architect-scalability-distributed-systems-deep` | In review | In review | In review | — | — | Source-level audit; real learner portfolio and UX pending |
 | technical-steward | `technical-steward-architecture-governance-deep` | — | — | — | — | — | Not started |
 | technical-steward | `technical-steward-change-service-governance-deep` | — | — | — | — | — | Not started |
 | technical-steward | `technical-steward-controls-compliance-assurance-deep` | — | — | — | — | — | Not started |
@@ -272,3 +272,9 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - **Verified repository state after interrupted call:** 10 sources (SRE foundations, SLOs, observability, production logging, metrics, alerting, database, performance, resilience and recovery) already contain the full-paragraph reading-body fix. These edits were present on the branch despite the previous interruption; no new commits were needed for those files.
 - **Completed remaining fixes:** incident management (`d8aacea`) and fault injection (`7881019`) now also expose all authored paragraph text, rather than only an introduction, in fallback reading bodies.
 - **Acceptance remains open:** Prometheus/Grafana/Tempo/Alertmanager labs, telemetry signal fidelity, SLO mathematics, PostgreSQL recovery evidence, fault injection blast-radius controls, reproducible incident simulation, reference links, rendered learner UX and final reliability milestone have not been exercised/verified. No school modules marked Accepted from source edits alone.
+
+### 2026-10-17 — Architect: all ten path sources inspected
+
+- Verified canonical `architect.ts` progression: fundamentals, domain modeling, modularity, architecture styles, data architecture, integration and messaging, scalability, resilience, architecture evaluation/governance and final Steward Architecture Evolution. Domain boundaries precede selection of architecture styles.
+- Inspected source shape of all ten modules. Data, integration, scalability, resilience and evaluation modules already construct a full reading body, while four lesson factories used only introductions despite extensive paragraph blocks. Corrected these in fundamentals (`a5b3289`), domain modeling (`d7cad80`), modularity (`66fd2cf`) and architecture styles (`012286f`).
+- **Limits:** individual architecture alternatives, diagrams, decisions, measurable quality attributes and capstone evidence still need line-by-line and learner-level verification. Resource checking, browser page usability, independent execution and final portfolio review not performed. No path accepted from source inspection alone.
