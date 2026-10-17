@@ -211,6 +211,35 @@ if (!reliability || reliability.paths.length !== 16) {
     }
   }
 }
+const architect = journey.schools.find((school) => school.id === "architect");
+if (!architect || architect.paths.length !== 10) {
+  problems.push("Architect must expose 10 learning paths");
+} else {
+  for (const path of architect.paths) {
+    const foundation = path.lessons[0];
+    const blocks = foundation?.activities?.[0]?.content?.blocks;
+    if (foundation?.id !== `${path.id}-architecture-model` ||
+        !Array.isArray(blocks) ||
+        !blocks.some((block) => block.type === "heading" && block.id === "worked-choice") ||
+        !blocks.some((block) => block.type === "heading" && block.id === "counterexample")) {
+      problems.push(`Architect missing worked decision model: ${path.id}`);
+    }
+    for (const lesson of path.lessons) {
+      lesson.activities.forEach((activity, i) => {
+        if (activity.content.type !== "practical") return;
+        const before = lesson.activities[i - 1];
+        const evidence = before?.content?.blocks;
+        if (!before?.id?.endsWith("-architecture-preparation") ||
+            before?.content?.type !== "reading" ||
+            !Array.isArray(evidence) ||
+            !evidence.some((block) => block.type === "heading" && block.id === "decision-evidence") ||
+            !evidence.some((block) => block.type === "heading" && block.id === "rejected-case")) {
+          problems.push(`Architect practical lacks tradeoff preparation: ${path.id}/${lesson.id}/${activity.id}`);
+        }
+      });
+    }
+  }
+}
 const nonEmpty = (value) => typeof value === "string" && value.trim().length > 0;
 const detailedList = (value) => Array.isArray(value) && value.length > 0 &&
   value.every((entry) => nonEmpty(entry));
