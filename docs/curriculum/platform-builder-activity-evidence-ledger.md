@@ -250,3 +250,9 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 - Strengthened Delivery Engineer `Jobs, Stages and Dependencies` to require an *executed* failed-job rehearsal proving GitLab dependency propagation and prevention of image publication after a required check fails. Previous requirements allowed a prediction alone (`f0d9fb9`).
 - Strengthened `Secrets and Variables` to test log/artifact leakage with a disposable canary (never real credentials), and require an untrusted merge-request pipeline to demonstrate it cannot access protected release secrets or publish images (`f0d9fb9`). These are learner lab requirements and are not assertions that a private GitLab instance has been exercised by the audit.
 - Latest source/browser CI is pending; see the latest GitHub Actions run for exact-head verification.
+
+## Batch 108 — Delivery release digest drift and running-role identity (2026-10-17)
+
+- Strengthened `Promotion and Gates`: a disposable mutable-tag replacement must be detected by immutable image digest comparison and must block the promotion, even if a human-readable tag remains unchanged (`f705389`).
+- Strengthened `Deployment Evidence`: the accepted image digest must be independently verified on API, outbox-publisher and lifecycle-consumer; a mixed-role rollout cannot be counted as successful merely because the API is healthy (`f705389`).
+- This is a learner practical-evidence requirement, not a claim that Nexus/GitLab or live Steward roles were exercised by the curriculum audit. Exact-head validation and learner-browser results still need confirmation.
