@@ -81,10 +81,13 @@ def check_all_activity_pages(page):
         page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
         # The sidebar lists all activities, although later ones may be locked.
         # Test only those exposed as selectable, without circumventing gates.
-        links = page.locator("aside button").all()
+        sidebar = page.locator("aside").filter(has=page.get_by_text("Curriculum", exact=True)).first
+        activity_buttons = sidebar.locator("button")
+        assert activity_buttons.count() >= 1, f"Missing activity navigation in module {module_index + 1}"
+        assert activity_buttons.first.is_enabled(), "Current activity must be navigable"
         assert page.locator("main h1").first.inner_text().strip()
-        visited += 1
-    print(f"PASS inspected learner navigation for {visited} Platform modules")
+        visited += activity_buttons.count()
+    print(f"PASS inspected {visited} Platform sidebar activity entries across {count} modules")
 
 
 with sync_playwright() as playwright:
