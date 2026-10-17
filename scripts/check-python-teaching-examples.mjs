@@ -29,6 +29,12 @@ const required = new Set([
   "Run as a self-contained example: rejected assignment leaves the prior temperature intact",
   "Class methods receive the class; static methods do not",
   "Dataclasses generate boilerplate",
+  "An unsafe account allows invalid state",
+  "Validate before changing account state",
+  "Inherit an existing behavior",
+  "Different implementations of the same operation",
+  "The same method name is not a sufficient contract",
+  "Separate ownership from lifecycle rules",
 ]);
 const extracted = new Map();
 const literal = (obj, key) => {
