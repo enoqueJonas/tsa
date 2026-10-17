@@ -34,6 +34,9 @@ def check_learner_activity(page, width):
     assert page.locator("main h1").first.inner_text().strip()
     assert page.locator("main").count() >= 1
     assert page.get_by_role("button", name="Next").count() + page.get_by_role("button", name="Next lesson").count() >= 1
+    if width == 390:
+        horizontal_overflow = page.evaluate("document.documentElement.scrollWidth > window.innerWidth + 2")
+        assert not horizontal_overflow, "Learner reading creates horizontal page overflow on mobile"
     page.screenshot(path=str(OUT / f"reading-{width}.png"), full_page=True)
     # The first reading should permit movement to its follow-up practical.
     next_button = page.get_by_role("button", name="Next", exact=True)
@@ -42,6 +45,9 @@ def check_learner_activity(page, width):
         page.get_by_text("Engineering Practice", exact=True).first.wait_for(timeout=20000)
         assert page.get_by_text("Evidence to keep", exact=True).count() > 0
         assert page.get_by_text("Work through the problem", exact=True).count() > 0
+        if width == 390:
+            overflow = page.evaluate("document.documentElement.scrollWidth > window.innerWidth + 2")
+            assert not overflow, "Learner practical creates horizontal page overflow on mobile"
         page.screenshot(path=str(OUT / f"practical-{width}.png"), full_page=True)
 
 
