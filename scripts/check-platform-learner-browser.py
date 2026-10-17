@@ -6,6 +6,7 @@ Screenshots are review artifacts, not claims of manual visual approval.
 """
 import os
 import re
+import json
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -106,6 +107,7 @@ def check_complete_modules(page):
     module_button = re.compile(r"^(Start|Continue|Review) module$")
     modules = page.get_by_role("button", name=module_button).count()
     visited_total = 0
+    evidence = []
     assert modules >= 10
     for module_index in range(modules):
         page.goto(BASE + "/?view=curriculum&school=platform-builder", wait_until="networkidle")
@@ -126,9 +128,12 @@ def check_complete_modules(page):
             else:
                 assert page.get_by_placeholder("Write your response here...").is_visible()
             # Confirm the rendered activity has meaningful type-specific content.
+            activity_type = "reading"
             if page.get_by_placeholder("Write your response here...").count():
+                activity_type = "reflection"
                 assert page.locator("main").last.get_by_text("Your reflection", exact=True).count() >= 1
             elif page.get_by_text("Engineering Practice", exact=True).count():
+                activity_type = "practical"
                 assert page.get_by_text("Work through the problem", exact=True).count() >= 1
                 assert page.get_by_text("Evidence to keep", exact=True).count() >= 1
             else:
@@ -144,6 +149,7 @@ def check_complete_modules(page):
                 )
                 copy = block.get_by_role("button", name="Copy")
                 assert copy.is_visible(), f"Code block has no visible copy control at {activity_id}"
+            evidence.append({"module": module_index + 1, "activity_id": activity_id, "activity_type": activity_type, "code_blocks": code_blocks.count()})
             # Exercise the user-facing copy control in Chromium, not only its appearance.
             if code_blocks.count() and index == 0:
                 page.context.grant_permissions(["clipboard-read", "clipboard-write"])
@@ -177,6 +183,9 @@ def check_complete_modules(page):
         visited_total += len(visited)
         print(f"PASS module {module_index + 1}/{modules}: traversed {len(visited)} activities", flush=True)
     assert visited_total == 328, f"Platform Builder activity count changed: {visited_total}; update audit census deliberately"
+    (OUT / "activity-coverage.json").write_text(
+        json.dumps({"modules": modules, "activities": evidence}, indent=2), encoding="utf-8"
+    )
     print(f"PASS full synthetic learner progression: {visited_total} activities across {modules} modules")
 
 
