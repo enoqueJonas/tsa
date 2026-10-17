@@ -219,6 +219,28 @@ for (const id of qualityProofIds) {
 if (!qualityCiSource.includes("deliverables: [\"Versioned pipeline or container change\", proof[0]")) failures.push("Quality CI practical proof must be wired");
 if (qualityCiSource.includes('code: "quality:\\nstages:')) failures.push("Quality CI must use top-level GitLab stages");
 
+// Python examples used in the first lessons must not assume a variable from a prior block.
+const pythonLearner = sources.get("builder-python-rich.ts") ?? "";
+const controlReading = pythonLearner.split("const controlFlow = lesson(")[1]?.split("const functions = lesson(")[0] ?? "";
+if (controlReading.includes("def can_promote_to_production(")) failures.push("Python Control Flow introduces def before Functions and Scope");
+for (const caption of [
+  "Make the decision visible",
+  "Find unowned critical services",
+  "Search without a separate flag",
+  "Iterate with the information you need",
+  "Generate matching services lazily",
+  "Critical production services",
+  "Choose the result structure intentionally",
+]) {
+  const start = pythonLearner.indexOf(`caption: "${caption}"`);
+  const line = start >= 0 ? pythonLearner.slice(start, pythonLearner.indexOf("\n", start)) : "";
+  if (!line.includes("output:")) failures.push(`Python worked example missing trace: ${caption}`);
+}
+const workbenchSource = sources.get("engineering-apprentice-workbench-deep.ts") ?? "";
+if (workbenchSource.includes("some-command > run.out")) failures.push("Apprentice stderr example still uses a non-executable placeholder");
+const platformNetwork = sources.get("platform-builder-networking-deep.ts") ?? "";
+if (platformNetwork.includes("sudo ufw status verbose")) failures.push("Rocky Linux networking example must not assume Ubuntu ufw");
+
 // Every authored Shell lesson has its own explicit practical evidence contract.
 const shellModule = sources.get("delivery-automation-shell-deep.ts") ?? "";
 const shellLessonIds = [...shellModule.matchAll(/richLesson\("([^"]+)", "([^"]+)"/g)].map((m) => m[1]);
