@@ -488,3 +488,8 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - User attempted `pnpm check:resolved-practicals` on Node 25.2.1. It failed before examining any activities: `ReferenceError: exports is not defined in ES module scope` because `.ts` sources live in an ESM package and the script tried to execute CommonJS-transpiled code in that scope.
 - Replaced the unsafe `.ts` require hook with a temporary, isolated CommonJS compilation of the runtime-kernel TypeScript source tree outside the ESM package, then imports the generated `paths/academy-journey.js`. Temporary files are removed on completion (`9b93f42`, extension fix `40df95c`). This avoids changing the application build or the user's workspace.
 - This fix **awaits user execution**. The resolved-activity audit cannot be marked successful until its output is confirmed. Prior five smoke checks remain passed.
+
+### 2026-10-17 — Node 25 temporary JS format explicitly pinned
+
+- User's second run of `pnpm check:resolved-practicals` reproduced `exports is not defined in ES module scope`, this time in the temporary compiled `.js` tree. The prior fix isolated the files but did not declare the generated package's module format; Node 25 still interpreted a compiled file as ESM.
+- Fixed by writing a **temporary `package.json` with `type: "commonjs"`** beside the generated modules before requiring the assembled journey (`4e70869`). This specifies the format for every generated `.js` module independently of Node's module-detection heuristics. Nothing is changed in TSA's actual package manifests. Await fresh execution before claiming success.
