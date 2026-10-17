@@ -42,6 +42,8 @@ jobs:
         run: python scripts/check-platform-loopback-drill.py
       - name: Execute Platform OS observation examples
         run: python scripts/check-platform-os-observations.py
+      - name: Exercise isolated TCP UDP and local name resolution
+        run: python scripts/check-platform-network-foundations.py
       - name: Execute isolated Platform filesystem and symlink drill
         run: python scripts/check-platform-filesystem-drill.py
       - name: Execute isolated process failure and HTTP recovery
