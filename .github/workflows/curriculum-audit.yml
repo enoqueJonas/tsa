@@ -46,6 +46,8 @@ jobs:
         run: python scripts/check-platform-network-foundations.py
       - name: Execute isolated Platform filesystem and symlink drill
         run: python scripts/check-platform-filesystem-drill.py
+      - name: Verify disposable backup restore and integrity
+        run: python scripts/check-platform-backup-restore.py
       - name: Execute isolated process failure and HTTP recovery
         run: python scripts/check-platform-process-recovery.py
       - name: Validate isolated systemd unit definition
