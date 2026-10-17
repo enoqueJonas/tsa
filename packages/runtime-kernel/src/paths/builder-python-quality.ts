@@ -232,11 +232,11 @@ const practices: Record<string, PracticeSpec> = {
             "Write at least two hypotheses: for example, the Service validator is wrong, or the import boundary failed to convert external text.",
             "Use breakpoint(), pdb, targeted logging or temporary inspection to observe the value and type immediately before Service construction.",
             "Fix the earliest responsible boundary: accept only a decimal integer string matching the agreed import format, convert it with int(), then pass the resulting integer into Service validation. Reject booleans, non-string/non-integer source types and malformed text explicitly. Do not weaken the Service invariant to accept arbitrary strings.",
-            "Add one invalid payload such as age_days \"unknown\" and preserve the useful failure behavior.",
+            "Add invalid payloads age_days=\"unknown\", age_days=True and age_days=\"184.5\"; require each to fail without silent coercion. Distinguish text parsing errors from validly parsed values that violate the domain rule.",
             "Rerun the original valid-text payload and the rest of the Steward demo, then record the evidence chain from symptom to root cause."
         ],
         deliverables: ["Original traceback", "Competing hypotheses", "Diagnostic observation", "Boundary-level fix", "Invalid-payload evidence", "Chronological debugging log"],
-        completionCriteria: ["At least one hypothesis is falsified by observation.", "The fix occurs at the external-data boundary rather than weakening the Service model.", "The string \"184\" can be imported as integer age 184.", "The string \"unknown\" still fails deliberately.", "Previously established Steward behavior continues to run."]
+        completionCriteria: ["At least one hypothesis is falsified by observation.", "The fix occurs at the external-data boundary rather than weakening the Service model.", "The string \"184\" can be imported as integer age 184.", "The string \"unknown\", boolean True and decimal text \"184.5\" still fail deliberately, without silent coercion.", "Previously established Steward behavior continues to run."]
     },
 
 };
