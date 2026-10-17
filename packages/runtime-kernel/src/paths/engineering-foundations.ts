@@ -2,6 +2,10 @@ import { engineeringApprenticeRichLessons } from "./engineering-apprentice-rich"
 import type { LearningPath } from "./learning-path";
 import { engineeringApprenticeWorkbenchDeepLessons } from "./engineering-apprentice-workbench-deep";
 
+// Fail explicitly if the expected capstone is absent; never compose an undefined lesson.
+const capstone = engineeringApprenticeRichLessons.at(-1);
+if (!capstone) throw new Error("Engineering Apprentice is missing its capstone lesson");
+
 export const engineeringFoundations: LearningPath = {
     id: "engineering-foundations",
     title: "Engineering Foundations",
@@ -10,6 +14,6 @@ export const engineeringFoundations: LearningPath = {
     lessons: [
         ...engineeringApprenticeRichLessons.slice(0, -1),
         ...engineeringApprenticeWorkbenchDeepLessons,
-        engineeringApprenticeRichLessons[engineeringApprenticeRichLessons.length - 1],
+        capstone,
     ],
 };
