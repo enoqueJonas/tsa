@@ -244,3 +244,9 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 
 - Strengthened the `Database Migrations During Deployment` practical in `delivery-continuous-delivery-quality.ts` to require an additive expand phase with old and new API/workers, deferral of destructive schema changes until consumers have migrated, and a simulated failed or partial backfill with evidenced restart/repair semantics (`917b07b`).
 - Acceptance criteria now distinguish observed old/new compatibility, resumable backfills and schema rollback from application rollback. This is a curriculum exercise specification, **not an executed database migration on Steward**. Check the final GitHub Actions validation/browser run before acceptance.
+
+## Batch 107 — Delivery CI failure propagation and credential trust boundaries (2026-10-17)
+
+- Strengthened Delivery Engineer `Jobs, Stages and Dependencies` to require an *executed* failed-job rehearsal proving GitLab dependency propagation and prevention of image publication after a required check fails. Previous requirements allowed a prediction alone (`f0d9fb9`).
+- Strengthened `Secrets and Variables` to test log/artifact leakage with a disposable canary (never real credentials), and require an untrusted merge-request pipeline to demonstrate it cannot access protected release secrets or publish images (`f0d9fb9`). These are learner lab requirements and are not assertions that a private GitLab instance has been exercised by the audit.
+- Latest source/browser CI is pending; see the latest GitHub Actions run for exact-head verification.
