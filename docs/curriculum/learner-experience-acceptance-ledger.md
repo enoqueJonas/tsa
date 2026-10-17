@@ -503,3 +503,8 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 
 - User successfully ran `pnpm check:resolved-practicals` after `332e263`: **12 schools, 128 paths, 1,225 lessons, 1,331 practical activities, 0 missing/empty contract findings**. This confirms field completeness on the assembled curriculum, including computed/spread content, not educational depth or usability.
 - Added the resolved-curriculum verification as a **sixth** `pnpm test` smoke assertion requiring 12 schools and zero missing/empty contracts (`851f84d`). The new full-suite check itself awaits execution. Separate substantive review of detailed task instructions, deliverable quality and realistic acceptance criteria remains open. Learner navigation, completion tracking and progress persistence remain deferred at user request.
+
+### 2026-10-17 — Planned path parity regression after CommonJS alias rename
+
+- User ran six smoke checks: five passed (including fully resolved 12-school practical validation); **curriculum integrity failed** because its source-level planned/runtime parity detector matched only `module("...")`, while the planned helper had been renamed to `plannedModule("...")` to avoid the CommonJS `module` binding collision. This caused empty *planned* IDs for ten schools, not evidence that those 10 schools had disappeared.
+- Updated source-level detector to match `plannedModule("...")` (`485817d`), preserving the actual authored paths and their order. The six-test suite requires another run before claiming all green. This regression demonstrates why audits must evolve alongside source refactors.
