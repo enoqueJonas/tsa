@@ -5,6 +5,7 @@ Start an HTTP server serving apps/web/out, then set TSA_BASE_URL.
 Screenshots are review artifacts, not claims of manual visual approval.
 """
 import os
+import re
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -44,6 +45,26 @@ def check_learner_activity(page, width):
         page.screenshot(path=str(OUT / f"practical-{width}.png"), full_page=True)
 
 
+
+def check_all_module_entries(page):
+    """Open every live Platform Builder module, not just the first module."""
+    page.set_viewport_size({"width": 1440, "height": 900})
+    page.goto(BASE + "/?view=curriculum&school=platform-builder", wait_until="networkidle")
+    selector = page.get_by_role("button", name=re.compile(r"^(Start|Continue|Review) module$"))
+    count = selector.count()
+    assert count >= 10
+    for index in range(count):
+        page.goto(BASE + "/?view=curriculum&school=platform-builder", wait_until="networkidle")
+        button = page.get_by_role("button", name=re.compile(r"^(Start|Continue|Review) module$")).nth(index)
+        button.click()
+        page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+        headline = page.locator("main h1").first
+        headline.wait_for(timeout=30000)
+        assert headline.inner_text().strip(), f"Empty learner heading for module {index + 1}"
+        assert page.locator("main").count() > 0
+        page.screenshot(path=str(OUT / f"module-{index + 1:02d}.png"), full_page=True)
+    print(f"PASS opened and screenshotted all {count} Platform Builder modules")
+
 with sync_playwright() as playwright:
     browser = playwright.chromium.launch(headless=True)
     for width in (390, 1440):
@@ -56,4 +77,7 @@ with sync_playwright() as playwright:
         assert not failures, f"Client-side error(s): {failures}"
         print(f"PASS Platform Builder at {width}px; {count} modules, rendered reading and practical inspected")
         context.close()
+    context = browser.new_context(viewport={"width": 1440, "height": 900})
+    check_all_module_entries(context.new_page())
+    context.close()
     browser.close()
