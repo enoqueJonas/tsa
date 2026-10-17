@@ -20,6 +20,7 @@ for (const name of files) {
       const code = getProperty(node, "code");
       const language = getProperty(node, "language");
       const output = getProperty(node, "output");
+      const captionText = valueOf(getProperty(node, "caption")) ?? "";
       const type = valueOf(getProperty(node, "type"));
       const codeText = valueOf(code);
       // Include direct code blocks and embedded teaching-section samples.
@@ -36,6 +37,7 @@ for (const name of files) {
           language: valueOf(language) ?? "dynamic",
           kind: codeText === undefined ? "dynamic-example" : "literal-example",
           expected: Boolean(output || inline),
+          captionGuidance: /(?:expected|on success|on failure|should (?:print|show|report)|reports?|prints?|shows?|lists?|displays?|produces?|depends on|variable|template|not (?:an? )?executable|illustrative|read-only|diagnostic|provide|set the|replace|supply)/i.test(captionText),
           likelyObservable: Boolean(prints),
         });
       }
@@ -44,9 +46,10 @@ for (const name of files) {
   }
   visit(file);
 }
-const missing = cases.filter((entry) => entry.kind === "literal-example" && entry.likelyObservable && !entry.expected);
-console.log(`Source-level code block inventory: ${files.length} path files; ${cases.length} code records; ${missing.length} potentially observable literal examples without adjacent output evidence.`);
-console.log("Candidates for human pedagogical review (not automatic failures):");
+const missing = cases.filter((entry) => entry.kind === "literal-example" && entry.likelyObservable && !entry.expected && !entry.captionGuidance);
+const contextual = cases.filter((entry) => entry.kind === "literal-example" && entry.likelyObservable && !entry.expected && entry.captionGuidance);
+console.log(`Source-level code block inventory: ${files.length} path files; ${cases.length} code records; ${missing.length} potentially observable literal examples without adjacent output or caption guidance; ${contextual.length} examples with descriptive guidance but no fixed output.`);
+console.log("Priority candidates lacking both fixed output and contextual caption guidance (not automatic failures):");
 for (const item of missing) console.log(`  ${item.file}:${item.line} [${item.language}]`);
 // Surface where review work is concentrated instead of printing only a flat list.
 const byLanguage = new Map();
@@ -68,6 +71,7 @@ for (const item of missing) {
   const fileSummary = byFile.get(item.file);
   if (fileSummary) fileSummary.reviewCandidates += 1;
 }
+console.log(`Environment-dependent examples with descriptive guidance rather than fixed outputs: ${contextual.length}. These still require human review where appropriate.`);
 console.log("Code evidence by language (source-level, not runtime pass rates):");
 for (const [language, summary] of [...byLanguage.entries()].sort(([a], [b]) => a.localeCompare(b))) {
   console.log(`  ${language}: ${summary.total} code records, ${summary.literal} literal, ${summary.outputEvidence} with output evidence, ${summary.reviewCandidates} review candidates`);
