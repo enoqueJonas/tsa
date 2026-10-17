@@ -85,14 +85,25 @@ for (const sequence of sequences) {
     failures.push(`Stateful sequence has missing Python example: ${sequence.join(" -> ")}`);
     continue;
   }
-  const code = samples.map((sample) => sample.code).join("\n\n");
-  const expected = samples.map((sample) => sample.expected).join("\n");
+  // Emit a distinct boundary after each block. A concatenated output check can
+  // falsely pass when one block prints another block's expected lines.
+  const boundary = "__TSA_EXAMPLE_BLOCK_END__";
+  const code = samples.map((sample) => `${sample.code}\nprint(${JSON.stringify(boundary)})`).join("\n\n");
   const result = spawnSync("python3", ["-I", "-c", code], { encoding: "utf8", timeout: 8000 });
   if (result.error || result.status !== 0) {
     failures.push(`Stateful sequence ${sequence.join(" -> ")} failed: ${result.error ?? result.stderr}`);
-  } else if (normalize(result.stdout) !== normalize(expected)) {
-    failures.push(`Stateful sequence ${sequence.join(" -> ")} output mismatch: expected ${JSON.stringify(expected)}, got ${JSON.stringify(result.stdout)}`);
+    continue;
   }
+  const segments = result.stdout.replace(/\r\n/g, "\n").split(`${boundary}\n`);
+  if (segments.length !== samples.length + 1 || segments.at(-1) !== "") {
+    failures.push(`Stateful sequence ${sequence.join(" -> ")} emitted unexpected block boundaries: ${JSON.stringify(result.stdout)}`);
+    continue;
+  }
+  samples.forEach((sample, index) => {
+    if (normalize(segments[index]) !== normalize(sample.expected)) {
+      failures.push(`Stateful block ${sequence[index]} output mismatch: expected ${JSON.stringify(sample.expected)}, got ${JSON.stringify(segments[index])}`);
+    }
+  });
 }
 if (failures.length) {
   console.error("Python learner-example validation failed:\n- " + failures.join("\n- "));
