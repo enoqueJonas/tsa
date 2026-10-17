@@ -73,10 +73,12 @@ const practices: Record<string, PracticalContent> = {
             "Apply the migration, including any outbox schema change, as an explicit deployment step before dependent publisher/consumer roles become authoritative and capture its result.",
             "Test the new application against the migrated schema and, where safe, test whether the previous application can still function against it.",
             "Classify the change as backward-compatible, forward-only or requiring a more deliberate transition.",
+            "Rehearse an additive expand phase while old and new application roles coexist; defer destructive column removal until all readers and workers have migrated.",
+            "Simulate a partially applied or failed data backfill and show whether rerunning the operation is safe, observable and resumable.",
             "Write the deployment and recovery rule that follows from the evidence.",
         ],
         deliverables: ["Migration rehearsal evidence", "Compatibility result", "Deployment/recovery rule"],
-        completionCriteria: ["Migration success is not inferred from container health alone.", "Application rollback and data/schema rollback are distinguished.", "The release decision follows observed compatibility."],
+        completionCriteria: ["Migration success is not inferred from container health alone.", "Old API and asynchronous workers remain compatible throughout the expand phase, or deployment is explicitly blocked.", "A failed backfill has an evidenced retry or repair procedure without double-applying effects.", "Application rollback and data/schema rollback are distinguished.", "The release decision follows observed compatibility."],
     },
     "Rollback": {
         type: "practical",
