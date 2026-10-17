@@ -388,3 +388,7 @@ The 133-module inventory remains a progress checklist, not a certification. A la
 ## Review batch 27 — Build confirmation and Delivery rollback
 
 User reports a successful local build on the working branch. Record this as **user-reported `pnpm build` success**, not independently observed assistant execution; the exact commit and whether `pnpm audit:curriculum` was run are not established. In the Continuous Delivery rollback lesson, commit `25c7988` adds an explicit decision trace for application image rollback when schema versions coexist, including asynchronous publisher/consumer compatibility, client-level recovery verification and when forward repair is required. Continue individual activity review; successful compilation alone does not establish pedagogical quality or completed curriculum coverage.
+
+## Review batch 28 — Blue-green rollback boundary
+
+Inspected Continuous Delivery's Blue-Green teaching and associated practical contract. Commit `c1dcd3b` adds a concrete sequence of direct candidate verification, traffic switch, observed client verification, failure detection, route reversal and shared-database/external-event caveats. It avoids conflating duplicated application processes with independent persistent state. Automated audit and rendered inspection are not yet independently verified after these commits.
