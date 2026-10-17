@@ -74,7 +74,7 @@ Status: **Not yet audited**.
 - [ ] `delivery-engineer-milestone-deep`
 - [ ] `delivery-migration-exercises-deep`
 - [ ] `delivery-production-schema-evolution-deep`
-- [ ] `delivery-release-engineering-quality`
+- [x] `delivery-release-engineering-quality`
 - [ ] `delivery-software-foundations-quality`
 
 ### cloud-engineer
@@ -336,3 +336,37 @@ Inspected the 15 source Docker lesson titles and confirmed that all 15 have corr
 Remediations committed: `7591086` and `1e24027` strengthen Docker volume lifecycle and add a disposable executable persistence demonstration with expected output; `2de93f3` adds a worked release regression decision distinguishing process health, functional failure, backwards-compatible rollback and forward repair; `ce9c279` adds an explicit expand/backfill/switch/contract field migration through old/new application coexistence.
 
 **Outstanding:** individual lesson activity-level depth verification, prerequisite sequencing, example-output review, full school and 133-module curriculum review, automated `pnpm audit:curriculum`, `pnpm build`, and rendered inspection. The connected GitHub editor cannot run local `pnpm` here; attempted Git access from local container failed due unavailable network resolution. Do not infer passing build or whole-school approval from successful source commits.
+
+## Review batch 25 — Activity inventory: Docker and Release Engineering
+
+Inspected the complete 15-title Docker source/quality pairing and 6-title core Release Engineering source/quality pairing, plus the three release-lab practices and final review. Each of the 21 core lesson/practical pairs has a practical contract with objective, scenario, instructions, deliverables and completion criteria; this does **not** prove the instructions will succeed in a learner environment. The matrix records the strongest source-level teaching question or implemented correction for each activity rather than pretending the labs were executed.
+
+| Lesson/activity | Source-level audit focus | Unresolved validation |
+| --- | --- | --- |
+| Docker: Containers vs VMs | Boundary and failure scope; worked guest/container comparison added | Runtime evidence and rendered-content verification pending |
+| Docker: Namespaces/cgroups | Kernel-visibility versus resource-enforcement distinction and practical | Runtime evidence and rendered-content verification pending |
+| Docker: Architecture | CLI/daemon privilege path and practical | Runtime evidence and rendered-content verification pending |
+| Docker: Images/Layers | Image/container distinction; cache-invalidation scenario added | Runtime evidence and rendered-content verification pending |
+| Docker: Dockerfiles | PID 1/process contract; representative Dockerfile, not assumed repo build | Runtime evidence and rendered-content verification pending |
+| Docker: Build Context | `.dockerignore` file pattern example and build-context risk added | Runtime evidence and rendered-content verification pending |
+| Docker: Multi-stage Builds | Build-time versus runtime responsibility; decision practical | Runtime evidence and rendered-content verification pending |
+| Docker: Volumes | Executable disposable named-volume lifecycle and expected output | Runtime evidence and rendered-content verification pending |
+| Docker: Networking | Client/host/bridge and inter-container DNS path walkthrough | Runtime evidence and rendered-content verification pending |
+| Docker: Compose | Startup order versus readiness worked race | Runtime evidence and rendered-content verification pending |
+| Docker: Health Checks | Liveness-versus-readiness observation and failure case | Runtime evidence and rendered-content verification pending |
+| Docker: Registries | Internal artifact authority and reproduction contract | Runtime evidence and rendered-content verification pending |
+| Docker: Image Tags | Mutable-tag/digest mismatch worked scenario | Runtime evidence and rendered-content verification pending |
+| Docker: Optimization | Measure/rebuild/comparison practical rather than size fetish | Runtime evidence and rendered-content verification pending |
+| Docker: Debugging | Boundary-first investigation and failure injection | Runtime evidence and rendered-content verification pending |
+| Release: Candidates | Immutable candidate manifest and mutation ambiguity practical | Runtime evidence and rendered-content verification pending |
+| Release: Promotion/Gates | Exact-digest approval invalidation and reject path | Runtime evidence and rendered-content verification pending |
+| Release: Deployment Evidence | Client checks; corrected local image ID versus registry digest and required URL/token inputs | Runtime evidence and rendered-content verification pending |
+| Release: Observability | Before/after, release identity, health versus behavior | Runtime evidence and rendered-content verification pending |
+| Release: Failure Handling | Compatible/incompatible data-state recovery walkthrough | Runtime evidence and rendered-content verification pending |
+| Release: Runbooks | Command preconditions, expected evidence, stop and exercised-runbook practice | Runtime evidence and rendered-content verification pending |
+| Release Lab: Release Plan | Candidate/version/gates/recovery plan exercise | Runtime evidence and rendered-content verification pending |
+| Release Lab: Promote/Verify | Same artifact, deployment and client evidence exercise | Runtime evidence and rendered-content verification pending |
+| Release Lab: Fail/Recover | Controlled negative scenario and recovery exercise | Runtime evidence and rendered-content verification pending |
+| Release Review | Reflective readiness/recovery/identity distinctions | Runtime evidence and rendered-content verification pending |
+
+Additional committed corrections after batch 24: `77b4e06` (networking/Compose/health traces), `3520658` (isolation, caching and digest examples), `89db687` (build-context example), `05b588b` (promotion gate), `fba936f` and `ec3d3ac` (release verification script and OCI digest provenance). An attempted `b867c6a` edit was a no-op and must not be counted as remediation. All 25 listed activities were reviewed for intended learning objective and evidence contract; learner run, TypeScript compilation, full visual check, and deeper source review across other modules remain outstanding.
