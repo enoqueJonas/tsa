@@ -516,3 +516,7 @@ Corrected the Docker integrated lab's premature demand for a registry digest: `b
 ## Review batch 49 — Bounded CI migration worked equivalence
 
 Audited the Jenkins-to-GitLab migration exercise: it was behavior-focused but lacked a concrete side-by-side failure-gate example and assumed access to a real inherited Jenkins installation. Commit `8c4025c` adds an authorization-regression gate migration trace (tests must block publishing, not just show green builds), identifies stage dependency/credentials/source identity as equivalence dimensions, and explicitly permits a labeled Jenkinsfile fixture when no inherited system exists. Simulated cutover evidence must not be represented as a production migration. This source change awaits refreshed audit/build and rendered validation.
+
+## Review batch 50 — Concurrent schema backfill example
+
+Added a concrete stale-read versus ownership-transfer race to Production Schema Evolution (`aa02e02`). The illustrative guarded SQL distinguishes one updated row from zero eligible rows, states its compatibility-writer assumptions and explains why this is not a complete concurrency protocol. Strengthened the backfill practical to require testing this interleaving and reconciling conflicts (`456bfe9`). Source-level corrections need latest build/audit and rendered validation.
