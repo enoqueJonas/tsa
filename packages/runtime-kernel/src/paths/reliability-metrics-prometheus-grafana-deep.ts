@@ -32,7 +32,7 @@ function lessonFrom(spec: Spec): Lesson {
         { type: "resources", title: "Continue learning", resources: resourcesByMetricsTopic[spec.id] ?? [prometheus, promql] },
     ];
     return { id: `metrics-prometheus-grafana-${spec.id}`, title: spec.title, activities: [
-        { id: `metrics-prometheus-grafana-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: spec.intro, blocks } },
+        { id: `metrics-prometheus-grafana-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks } },
         { id: `metrics-prometheus-grafana-${spec.id}-002`, title: `Measure: ${spec.title}`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${spec.title} to Steward telemetry.`, scenario: "Start from the operational questions and logging model already created. Add or query metrics only when they improve measurement of service behavior, dependency health, resource pressure or delivery reliability.", instructions: spec.practice, deliverables: ["Metric/query/dashboard evidence", "Meaning and label definition", "Operational interpretation"], completionCriteria: ["The signal has defined semantics.", "Labels avoid uncontrolled cardinality.", "The learner can explain what decision the result supports and what it does not prove."] } },
         { id: `metrics-prometheus-grafana-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.reflection, minimumCharacters: 200 } },
     ] };
