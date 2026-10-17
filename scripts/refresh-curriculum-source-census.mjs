@@ -15,7 +15,7 @@ const refreshed = original.split("\n").map((line) => {
   const source = fs.readFileSync(sourcePath, "utf8");
   const count = (pattern) => [...source.matchAll(pattern)].length;
   visited++;
-  return `| ${school} | \`${module}\` | ${status} | ${source.length} | ${count(/type:\\s*["']reading["']/g)} | ${count(/type:\\s*["']practical["']/g)} | ${count(/type:\\s*["']code["']/g)} | ${count(/\\boutput\\s*:/g)} |`;
+  return `| ${school} | \`${module}\` | ${status} | ${source.length} | ${count(/type:\s*["']reading["']/g)} | ${count(/type:\s*["']practical["']/g)} | ${count(/type:\s*["']code["']/g)} | ${count(/\boutput\s*:/g)} |`;
 }).join("\n");
 if (visited !== 134) throw new Error(`Expected 134 module rows; found ${visited}. Verify the authoritative inventory first.`);
 fs.writeFileSync(censusPath, refreshed, "utf8");
