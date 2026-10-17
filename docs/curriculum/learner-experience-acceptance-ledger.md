@@ -93,21 +93,21 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 | quality-steward | `quality-reuse-internal-library-deep` | In review | In review | In review | — | — | Source-level school triage; learner execution and UX outstanding |
 | quality-steward | `quality-test-analysis-design-deep` | In review | In review | In review | — | — | Source-level school triage; learner execution and UX outstanding |
 | quality-steward | `quality-unit-component-testing-deep` | In review | In review | In review | — | — | Source-level school triage; learner execution and UX outstanding |
-| security-steward | `security-application-deep` | — | — | — | — | — | Not started |
-| security-steward | `security-artifact-signing-verification-deep` | — | — | — | — | — | Not started |
-| security-steward | `security-container-delivery-deep` | — | — | — | — | — | Not started |
-| security-steward | `security-enterprise-directory-federation-deep` | — | — | — | — | — | Not started |
-| security-steward | `security-foundations-deep` | — | — | — | — | — | Not started |
-| security-steward | `security-identity-secrets-deep` | — | — | — | — | — | Not started |
-| security-steward | `security-internal-pki-machine-trust-deep` | — | — | — | — | — | Not started |
-| security-steward | `security-internal-pki-milestone` | — | — | — | — | — | Not started |
-| security-steward | `security-linux-network-deep` | — | — | — | — | — | Not started |
-| security-steward | `security-secure-file-transfer-migration-deep` | — | — | — | — | — | Not started |
-| security-steward | `security-steward-milestone-deep` | — | — | — | — | — | Not started |
-| security-steward | `security-threat-modeling-deep` | — | — | — | — | — | Not started |
-| security-steward | `security-vault-implementation-deep` | — | — | — | — | — | Not started |
-| security-steward | `security-vulnerability-laboratory-deep` | — | — | — | — | — | Not started |
-| security-steward | `security-web-api-threats-deep` | — | — | — | — | — | Not started |
+| security-steward | `security-application-deep` | In review | In review | In review | — | — | School-wide source composition inspected; operational lab validation outstanding |
+| security-steward | `security-artifact-signing-verification-deep` | In review | In review | In review | — | — | School-wide source composition inspected; operational lab validation outstanding |
+| security-steward | `security-container-delivery-deep` | In review | In review | In review | — | — | School-wide source composition inspected; operational lab validation outstanding |
+| security-steward | `security-enterprise-directory-federation-deep` | In review | In review | In review | — | — | School-wide source composition inspected; operational lab validation outstanding |
+| security-steward | `security-foundations-deep` | In review | In review | In review | — | — | School-wide source composition inspected; operational lab validation outstanding |
+| security-steward | `security-identity-secrets-deep` | In review | In review | In review | — | — | School-wide source composition inspected; operational lab validation outstanding |
+| security-steward | `security-internal-pki-machine-trust-deep` | In review | In review | In review | — | — | School-wide source composition inspected; operational lab validation outstanding |
+| security-steward | `security-internal-pki-milestone` | In review | In review | In review | — | — | School-wide source composition inspected; operational lab validation outstanding |
+| security-steward | `security-linux-network-deep` | In review | In review | In review | — | — | School-wide source composition inspected; operational lab validation outstanding |
+| security-steward | `security-secure-file-transfer-migration-deep` | In review | In review | In review | — | — | School-wide source composition inspected; operational lab validation outstanding |
+| security-steward | `security-steward-milestone-deep` | In review | In review | In review | — | — | School-wide source composition inspected; operational lab validation outstanding |
+| security-steward | `security-threat-modeling-deep` | In review | In review | In review | — | — | School-wide source composition inspected; operational lab validation outstanding |
+| security-steward | `security-vault-implementation-deep` | In review | In review | In review | — | — | School-wide source composition inspected; operational lab validation outstanding |
+| security-steward | `security-vulnerability-laboratory-deep` | In review | In review | In review | — | — | School-wide source composition inspected; operational lab validation outstanding |
+| security-steward | `security-web-api-threats-deep` | In review | In review | In review | — | — | School-wide source composition inspected; operational lab validation outstanding |
 | reliability-engineer | `reliability-alerting-on-call-deep` | — | — | — | — | — | Not started |
 | reliability-engineer | `reliability-alertmanager-implementation-deep` | — | — | — | — | — | Not started |
 | reliability-engineer | `reliability-central-logging-decision` | — | — | — | — | — | Not started |
@@ -258,3 +258,10 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - **Canonical lesson path composition reviewed in `quality-steward.ts`:** Quality Engineering, Test Analysis/Design, Java for Test Framework Engineering, Unit/Component Testing, API/Integration Testing, Automation Framework Engineering, Browser/Environment Testing (with browser-surface decision), Reusable Test Infrastructure, Non-functional Quality (with tool selection), Quality in Containers/CI, Continuous/Scheduled Execution, final Quality platform milestone. 12 learning paths / 14 source-module entries.
 - **Reading integrity corrections:** full authored explanatory paragraphs now available in fallback reading body for API/Integration (`098d056`), Automation Framework (`2c88ec7`), Browser (`00e0b56`), Containers/CI (`56ff9b2`), Java (`9404d65`), Quality Engineering (`7805ef6`), Unit/Component (`c196b21`), Test Analysis (`377bf96`) and Non-functional Quality (`7bfce99`). Structured blocks remain intact.
 - **Outstanding learner-level acceptance:** verify executable Java/Python test examples, environment/container prerequisites and reproducible outputs, browser UI testing and data handling, meaningful CI quality gates, trade-offs of performance tooling, failure diagnostics and final portfolio, source links, visible experience at realistic breakpoints. Source-level study is NOT equivalent to learner verification; none of the school modules is marked Accepted.
+
+### 2026-10-17 — Security Steward: full school source-composition audit
+
+- Inspected canonical `security-steward.ts` composition: 14 teaching paths and 15 logical source entries, including an intermediate internal PKI milestone before its closing review.
+- The learning journey covers foundational reasoning, system threat modeling, web/API risks, controlled vulnerability exercises, application security, host/network security, container and artifact controls, identity and secrets, certificate trust, directory federation, secure transfers, and the final Steward assessment.
+- **Reading-body concern confirmed:** multiple factories contain extended explanatory rich blocks but only their initial paragraph in fallback `body` text. Candidate sources include foundations, threat modeling, web/API, application, container delivery, Linux/network, vulnerability lab, enterprise federation and secrets. Remediation not yet applied in this pass.
+- **Acceptance outstanding:** laboratory isolation and ethical scope, safety of examples, actual reproducibility of certificate and identity exercises, command correctness, resource relevance, visual reading experience, and independent final security assessment. No execution evidence collected in this pass. Modules are in review, not accepted.
