@@ -158,6 +158,10 @@ def check_complete_modules(page):
                 f"Unfinished editorial placeholder at {activity_id}"
             )
             evidence.append({"module": module_index + 1, "activity_id": activity_id, "activity_type": activity_type, "code_blocks": code_blocks.count(), "visible_characters": len(learner_text)})
+            if activity_id == "computer-and-os-foundations-cpu-memory-storage-and-i-o-reading":
+                assert page.get_by_text("Illustrative excerpts (not captured from your host):").count() >= 1, (
+                    "CPU example output missing from the learner rendering"
+                )
             # Exercise the user-facing copy control in Chromium, not only its appearance.
             if code_blocks.count() and index == 0:
                 page.context.grant_permissions(["clipboard-read", "clipboard-write"])
