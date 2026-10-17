@@ -48,6 +48,37 @@ const missing = cases.filter((entry) => entry.kind === "literal-example" && entr
 console.log(`Source-level code block inventory: ${files.length} path files; ${cases.length} code records; ${missing.length} potentially observable literal examples without adjacent output evidence.`);
 console.log("Candidates for human pedagogical review (not automatic failures):");
 for (const item of missing) console.log(`  ${item.file}:${item.line} [${item.language}]`);
+// Surface where review work is concentrated instead of printing only a flat list.
+const byLanguage = new Map();
+const byFile = new Map();
+for (const item of cases) {
+  const language = item.language.toLowerCase();
+  const languageSummary = byLanguage.get(language) ?? { total: 0, literal: 0, outputEvidence: 0, reviewCandidates: 0 };
+  languageSummary.total += 1;
+  if (item.kind === "literal-example") languageSummary.literal += 1;
+  if (item.expected) languageSummary.outputEvidence += 1;
+  byLanguage.set(language, languageSummary);
+  const fileSummary = byFile.get(item.file) ?? { codeBlocks: 0, reviewCandidates: 0 };
+  fileSummary.codeBlocks += 1;
+  byFile.set(item.file, fileSummary);
+}
+for (const item of missing) {
+  const languageSummary = byLanguage.get(item.language.toLowerCase());
+  if (languageSummary) languageSummary.reviewCandidates += 1;
+  const fileSummary = byFile.get(item.file);
+  if (fileSummary) fileSummary.reviewCandidates += 1;
+}
+console.log("Code evidence by language (source-level, not runtime pass rates):");
+for (const [language, summary] of [...byLanguage.entries()].sort(([a], [b]) => a.localeCompare(b))) {
+  console.log(`  ${language}: ${summary.total} code records, ${summary.literal} literal, ${summary.outputEvidence} with output evidence, ${summary.reviewCandidates} review candidates`);
+}
+console.log("Source modules with the most unresolved observable examples:");
+for (const [name, summary] of [...byFile.entries()]
+  .filter(([, info]) => info.reviewCandidates > 0)
+  .sort((a, b) => b[1].reviewCandidates - a[1].reviewCandidates || a[0].localeCompare(b[0]))
+  .slice(0, 30)) {
+  console.log(`  ${name}: ${summary.reviewCandidates} review candidates / ${summary.codeBlocks} code records`);
+}
 console.log("Generated/dynamic code blocks require rendered activity inspection; the source-only inventory is not evidence of completeness.");
 
 console.log(`Potentially unsafe literal teaching commands: ${pedagogicalHazards.length} (human triage required).`);
