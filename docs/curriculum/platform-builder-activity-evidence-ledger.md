@@ -239,3 +239,8 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 - Delivery `Release Approvals` practical now requires testing approval invalidation after a candidate digest change, recording protected approval/deployment roles, and tracing the approver to the actually deployed candidate (`f00a508`). This prevents a generic approval from authorizing a subsequently altered image.
 - Delivery `Deployment Automation` practical now requires deliberately interrupting the multi-role rollout and proving that a partial deployment is detected, recovered or clearly blocked—not silently accepted as success (`105964d`).
 - These are improved learner evidence requirements, **not** claims that a real GitLab promotion or Steward deployment was executed. Both await completed CI verification.
+
+## Batch 106 — Delivery Engineer expand/contract migration rehearsal (2026-10-17)
+
+- Strengthened the `Database Migrations During Deployment` practical in `delivery-continuous-delivery-quality.ts` to require an additive expand phase with old and new API/workers, deferral of destructive schema changes until consumers have migrated, and a simulated failed or partial backfill with evidenced restart/repair semantics (`917b07b`).
+- Acceptance criteria now distinguish observed old/new compatibility, resumable backfills and schema rollback from application rollback. This is a curriculum exercise specification, **not an executed database migration on Steward**. Check the final GitHub Actions validation/browser run before acceptance.
