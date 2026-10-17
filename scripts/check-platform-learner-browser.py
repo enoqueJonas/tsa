@@ -229,7 +229,31 @@ def check_cross_school_first_reading(page):
         heading.wait_for(timeout=30000)
         assert heading.inner_text().strip(), f"Empty first reading title for school {slug}"
         assert page.locator("main").last.inner_text().strip(), f"Empty first reading content for school {slug}"
-        print(f"PASS school entry and first reading: {slug}", flush=True)
+        # Check the complete first module of every school, while retaining Platform's
+        # separate exhaustive 328-activity test for its complete curriculum.
+        sidebar = page.locator("aside").filter(has=page.get_by_text("Curriculum", exact=True)).first
+        count = sidebar.locator("button").count()
+        assert count >= 1, f"Missing learner activity navigation for {slug}"
+        visited = set()
+        for _ in range(count):
+            activity_id = page.evaluate("new URLSearchParams(location.search).get('activity')")
+            assert activity_id and activity_id not in visited, f"Stuck navigating {slug}: {activity_id}"
+            visited.add(activity_id)
+            body = page.locator("main").last.inner_text().strip()
+            assert len(body) >= 90, f"Empty or unusually short content for {slug}/{activity_id}"
+            assert not re.search(r"\\b(?:TODO|TBD|Lorem ipsum)\\b", body, re.I), (
+                f"Unfinished editorial marker in {slug}/{activity_id}"
+            )
+            note = page.get_by_placeholder("Write your response here...")
+            if note.count():
+                note.fill("Synthetic browser-only module progression for navigation checks. "
+                          "This is not evidence of practical engineering competence or lab execution.")
+            next_button = page.get_by_role("button", name=re.compile(r"^(Next|Next lesson|Complete path)$"))
+            assert next_button.count() == 1 and next_button.is_enabled(), (
+                f"Cannot advance from {slug}/{activity_id}"
+            )
+            next_button.click()
+        print(f"PASS school first module progression: {slug}, {len(visited)} activities", flush=True)
 
 
 
