@@ -212,6 +212,27 @@ def check_complete_modules(page):
 
 
 
+def check_cross_school_first_reading(page):
+    """Open the first available learning module in each school, not just Platform Builder."""
+    schools = (
+        "system-thinker", "platform-builder", "delivery-engineer", "cloud-engineer",
+        "quality-steward", "security-steward", "reliability-engineer",
+        "architect", "technical-steward", "professional-engineer",
+    )
+    for slug in schools:
+        page.goto(BASE + "/?view=curriculum&school=" + slug, wait_until="networkidle")
+        launch = page.get_by_role("button", name=re.compile(r"^(Start|Continue|Review) module$"))
+        assert launch.count() > 0, f"No accessible module entry for school {slug}"
+        launch.first.click()
+        page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+        heading = page.locator("main h1").first
+        heading.wait_for(timeout=30000)
+        assert heading.inner_text().strip(), f"Empty first reading title for school {slug}"
+        assert page.locator("main").inner_text().strip(), f"Empty first reading content for school {slug}"
+        print(f"PASS school entry and first reading: {slug}", flush=True)
+
+
+
 with sync_playwright() as playwright:
     browser = playwright.chromium.launch(headless=True)
     for width in (390, 1440):
@@ -226,6 +247,7 @@ with sync_playwright() as playwright:
         context.close()
     context = browser.new_context(viewport={"width": 1440, "height": 900})
     page = context.new_page()
+    check_cross_school_first_reading(page)
     check_all_module_entries(page)
     check_all_activity_pages(page)
     check_complete_modules(page)
