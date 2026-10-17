@@ -147,3 +147,9 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 - Added a full-journey browser assertion that CPU output is rendered as separate terminal lines rather than escaped text. The source examples remain clearly labeled illustrative, not generated from the learner host. Commit `7660596`.
 - Added an isolated filesystem practical exercise (`scripts/check-platform-filesystem-drill.py`) and CI step that create a temporary file, symlink it, inspect `stat`/`ls`, set and independently verify POSIX mode 0640, determine backing storage with `df` and `findmnt`, and observe a dangling symlink when the disposable target is deleted. No real host files are altered. Commits `3779119`, `960aa02`.
 - The filesystem execution job's passing status must be checked on [run 39034636184](https://github.com/enoqueJonas/tsa/actions/runs/39034636184) before marking the new lab evidence validated. As always, this is Ubuntu Actions runner execution, not real NAS, Windows, Rocky, or Proxmox sign-off.
+
+## Batch 90 — CPU/load interpretation and filesystem worked output (2026-10-17)
+
+- Expanded the Computer/OS CPU worked example's caption to explain that Linux one-/five-/fifteen-minute load averages are not CPU utilization percentages and must be compared with available CPU capacity, command behavior and observations over time (`23b4bf4`).
+- Added a labeled illustrative filesystem output block and explained the distinct purposes of `findmnt`, `lsblk -f`, `df -hT`, `du` and `stat` (`2385e4f`); revised the example to avoid referencing a command not displayed (`bb4dd74`). Illustrative device names and capacities are **not** observations of the learner's machine.
+- Added a browser check that the Filesystems reading actually renders its worked output (`2b353c8`). Full CI for the newest commit is required before claiming that new check has passed. These are targeted pedagogical improvements, not full lesson-by-lesson qualitative certification.
