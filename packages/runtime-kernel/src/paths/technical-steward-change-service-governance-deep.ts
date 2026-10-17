@@ -14,7 +14,7 @@ const deliverables = ["Governance artifact", "Evidence and rationale", "Owner, a
 const completion = ["The governance mechanism is proportionate to change/service risk.", "Ownership and decision authority are explicit.", "Approval depends on evidence, not ceremony alone."];
 function moduleLesson(id: string, title: string, body: string, instructions: string[]): Lesson {
   return { id: `change-service-governance-${id}`, title, activities: [
-    { id: `change-service-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 55, content: { type: "reading", body, blocks:[{type:"resources",title:"Service/change reference",resources:resourcesByChange[id] ?? [itil]}] } },
+    { id: `change-service-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 55, content: { type: "reading", body, blocks:[{type:"paragraph",text:body},{type:"resources",title:"Service/change reference",resources:resourcesByChange[id] ?? [itil]}] } },
     { id: `change-service-governance-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward.`, scenario, instructions, deliverables, completionCriteria: completion } },
   ]};
 }
