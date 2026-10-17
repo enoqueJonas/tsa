@@ -79,20 +79,20 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 | cloud-engineer | `cloud-infrastructure-as-code-quality` | In review | In review | In review | — | — | School-wide source triage, rendered labs unverified |
 | cloud-engineer | `cloud-internet-networking-quality` | In review | In review | In review | — | — | School-wide source triage, rendered labs unverified |
 | cloud-engineer | `cloud-vps-operations-quality` | In review | In review | In review | — | — | School-wide source triage, rendered labs unverified |
-| quality-steward | `quality-api-integration-testing-deep` | — | — | — | — | — | Not started |
-| quality-steward | `quality-automation-framework-engineering-deep` | — | — | — | — | — | Not started |
-| quality-steward | `quality-browser-environment-testing-deep` | — | — | — | — | — | Not started |
-| quality-steward | `quality-browser-surface-decision` | — | — | — | — | — | Not started |
-| quality-steward | `quality-performance-tool-decision` | — | — | — | — | — | Not started |
-| quality-steward | `quality-containers-ci-deep` | — | — | — | — | — | Not started |
-| quality-steward | `quality-java-test-engineering-deep` | — | — | — | — | — | Not started |
-| quality-steward | `quality-continuous-scheduled-execution-deep` | — | — | — | — | — | Not started |
-| quality-steward | `quality-non-functional-deep` | — | — | — | — | — | Not started |
-| quality-steward | `quality-engineering-deep` | — | — | — | — | — | Not started |
-| quality-steward | `quality-steward-milestone-deep` | — | — | — | — | — | Not started |
-| quality-steward | `quality-reuse-internal-library-deep` | — | — | — | — | — | Not started |
-| quality-steward | `quality-test-analysis-design-deep` | — | — | — | — | — | Not started |
-| quality-steward | `quality-unit-component-testing-deep` | — | — | — | — | — | Not started |
+| quality-steward | `quality-api-integration-testing-deep` | In review | In review | In review | — | — | Source-level school triage; learner execution and UX outstanding |
+| quality-steward | `quality-automation-framework-engineering-deep` | In review | In review | In review | — | — | Source-level school triage; learner execution and UX outstanding |
+| quality-steward | `quality-browser-environment-testing-deep` | In review | In review | In review | — | — | Source-level school triage; learner execution and UX outstanding |
+| quality-steward | `quality-browser-surface-decision` | In review | In review | In review | — | — | Source-level school triage; learner execution and UX outstanding |
+| quality-steward | `quality-performance-tool-decision` | In review | In review | In review | — | — | Source-level school triage; learner execution and UX outstanding |
+| quality-steward | `quality-containers-ci-deep` | In review | In review | In review | — | — | Source-level school triage; learner execution and UX outstanding |
+| quality-steward | `quality-java-test-engineering-deep` | In review | In review | In review | — | — | Source-level school triage; learner execution and UX outstanding |
+| quality-steward | `quality-continuous-scheduled-execution-deep` | In review | In review | In review | — | — | Source-level school triage; learner execution and UX outstanding |
+| quality-steward | `quality-non-functional-deep` | In review | In review | In review | — | — | Source-level school triage; learner execution and UX outstanding |
+| quality-steward | `quality-engineering-deep` | In review | In review | In review | — | — | Source-level school triage; learner execution and UX outstanding |
+| quality-steward | `quality-steward-milestone-deep` | In review | In review | In review | — | — | Source-level school triage; learner execution and UX outstanding |
+| quality-steward | `quality-reuse-internal-library-deep` | In review | In review | In review | — | — | Source-level school triage; learner execution and UX outstanding |
+| quality-steward | `quality-test-analysis-design-deep` | In review | In review | In review | — | — | Source-level school triage; learner execution and UX outstanding |
+| quality-steward | `quality-unit-component-testing-deep` | In review | In review | In review | — | — | Source-level school triage; learner execution and UX outstanding |
 | security-steward | `security-application-deep` | — | — | — | — | — | Not started |
 | security-steward | `security-artifact-signing-verification-deep` | — | — | — | — | — | Not started |
 | security-steward | `security-container-delivery-deep` | — | — | — | — | — | Not started |
@@ -252,3 +252,9 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - Inspected all 11 teaching/deep sources represented by the school, along with actual canonical path imports and the quality-wrapper layering. Existing sequencing generally builds operational vocabulary before orchestration and canary releases.
 - **Teaching fallback defects corrected:** seven factories provided only `spec.intro` as fallback reading body despite long authored explanatory blocks. Full paragraph prose is now available in Hosting (`7d75f09`), VPS (`8179926`), networking (`2c0d030`), cloud building blocks (`e5aaadd`), Kubernetes/GitOps (`85a16bd`), cost (`c4210ab`) and IaC (`908643d`).
 - **Still unverified:** real VPS provisioning, DNS/TLS renewal, object storage access policies, IaC plan/apply/destroy, cluster resource constraints, canary rollback decision, security/cost trade-offs, link relevance, learner-facing UX and final internet milestone. No completion certification from source inspection.
+
+### 2026-10-17 — Quality Steward: full school source-composition review
+
+- **Canonical lesson path composition reviewed in `quality-steward.ts`:** Quality Engineering, Test Analysis/Design, Java for Test Framework Engineering, Unit/Component Testing, API/Integration Testing, Automation Framework Engineering, Browser/Environment Testing (with browser-surface decision), Reusable Test Infrastructure, Non-functional Quality (with tool selection), Quality in Containers/CI, Continuous/Scheduled Execution, final Quality platform milestone. 12 learning paths / 14 source-module entries.
+- **Reading integrity corrections:** full authored explanatory paragraphs now available in fallback reading body for API/Integration (`098d056`), Automation Framework (`2c88ec7`), Browser (`00e0b56`), Containers/CI (`56ff9b2`), Java (`9404d65`), Quality Engineering (`7805ef6`), Unit/Component (`c196b21`), Test Analysis (`377bf96`) and Non-functional Quality (`7bfce99`). Structured blocks remain intact.
+- **Outstanding learner-level acceptance:** verify executable Java/Python test examples, environment/container prerequisites and reproducible outputs, browser UI testing and data handling, meaningful CI quality gates, trade-offs of performance tooling, failure diagnostics and final portfolio, source links, visible experience at realistic breakpoints. Source-level study is NOT equivalent to learner verification; none of the school modules is marked Accepted.
