@@ -590,3 +590,9 @@ Curriculum-wide quality work also includes 18 distinct Java practical evidence c
 - Revisited the OS lifecycle milestone after the no-update correction. Its regression instruction still assumed a real update had occurred even when supported updates were unavailable.
 - Fixed in `cefaee3`: when a supported update is applied, investigate a controlled regression on a disposable canary and verify recovery; otherwise, conduct a separate clearly labeled fault-injection drill, never represented as post-update evidence.
 - This resolves the internal milestone contradiction at source level. It does not prove actual patch deployment, real lab execution or rendered activity quality. Current-head CI must be verified separately.
+
+## Review batches 66–67 — Platform milestone exit-gate reconciliation (2026-10-17)
+
+- Windows member milestone (`6f817e2`): require evidence from a distinct member VM for synthetic domain login and applied GPO. A licensing/resource constraint permits honest deferral, not a pass based on domain-controller-local policy evidence.
+- Final Homelab Gate 7 and Gate 8, and overall exit acceptance (`dc21782`): removed contradictions with the implementation milestones. The final Platform assessment must not treat a no-update maintenance report as executed live patching or a missing Windows member as completed interoperability. Labeled controlled drills and explicit pending gates are preserved without fabricating execution.
+- Source-level cross-file review covered Platform Windows lesson, implementation milestones, final Homelab gates, and core infrastructure teaching. Rendered pages and real exercises are not verified; current-head CI needs separate confirmation.
