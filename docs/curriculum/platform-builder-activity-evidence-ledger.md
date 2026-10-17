@@ -333,3 +333,8 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 - **Platform Builder Linux Administration:** explained how pipeline exit status can mask an upstream failure, and clarified metadata/symlink evidence and cleanup boundaries in the temporary-file sample (`e306158`).
 - **Quality Engineer CI:** distinguished an illustrative GitLab stage list from jobs that actually run and required visible failing Failsafe/JUnit/GitLab evidence and downstream publication blocking (`18e89d9`, `18e8249`).
 - These are source-content corrections based on specific code-evidence inventory candidates; they are not a complete audit of all 196 path files or evidence of live GitLab execution. Exact-head CI verification pending.
+
+## Batch 123 — First-render browser smoke for all ten academy schools (2026-10-17)
+
+- Expanded the existing Playwright learner-browser script to navigate from each of the ten runtime school slugs to its first available module and assert a nonempty actual learner heading/content (`247472f`). This supplements, rather than replaces, the full 328-activity Platform Builder progression. It catches broken first-module navigation or empty pages outside Platform Builder without falsely claiming complete activity traversal for those nine schools.
+- CI execution is the acceptance gate; until that workflow passes, the cross-school browser test is implemented but unverified. Longer-term exhaustive traversal and concept-order pedagogical review remain open.
