@@ -325,3 +325,11 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 
 - Reviewed cross-school code-evidence candidate `platform-builder-virtualization-deep.ts` (guest networking inspection). Expanded its caption to explain IP/interface, route, neighbor-cache and listener evidence, empty neighbor caches, permission-dependent `ss -p` output, and why a loopback-only listener cannot accept guest-LAN connections (`eb26a98`). Actual command output remains dependent on the learner's guest and is not fabricated.
 - This is a teaching correction; actual virtualization/network verification remains the learner's lab. Source-head CI requires separate confirmation.
+
+## Batch 122 — Reviewed and corrected five observable examples across three schools (2026-10-17)
+
+- Confirmed Batch 121 final workflow [39041581176](https://github.com/enoqueJonas/tsa/actions/runs/39041581176) passed both jobs.
+- **Engineering Apprentice:** documented expected shell-workspace output and overwrite caution, explained why `$?` applies only to the immediately preceding command, and added prerequisite/observable Git history guidance for a disposable practice repo (`2193009`).
+- **Platform Builder Linux Administration:** explained how pipeline exit status can mask an upstream failure, and clarified metadata/symlink evidence and cleanup boundaries in the temporary-file sample (`e306158`).
+- **Quality Engineer CI:** distinguished an illustrative GitLab stage list from jobs that actually run and required visible failing Failsafe/JUnit/GitLab evidence and downstream publication blocking (`18e89d9`, `18e8249`).
+- These are source-content corrections based on specific code-evidence inventory candidates; they are not a complete audit of all 196 path files or evidence of live GitLab execution. Exact-head CI verification pending.
