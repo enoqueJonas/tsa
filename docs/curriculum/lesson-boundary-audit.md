@@ -238,3 +238,7 @@ Inspected selected Cloud, Quality, Security and Architecture modules. The Cloud 
 Inspected lesson sequences in Cloud Hosting, Cloud Cost, IaC, Security Application, Reliability Observability, Technical Risk, Professional Practice, Platform Networking and Delivery CI/Docker. Most of these already separate major named concepts, but a lesson-title scan does not establish conceptual depth. `*-quality` wrappers may import content from corresponding `*-deep` modules. Keep advanced subject matter advanced while checking prerequisite order.
 
 **Architect remediation extended:** commit `e925ee5` adds runnable, output-bearing Python examples to the three newly split identity, value-object and aggregate lessons. Each demonstrates a specific mechanism and explains the observed result.
+
+## Review batch 4 — Technology Risk
+
+Confirmed a teaching-quality issue: Technology Risk lessons used substantial prose in the reading body but supplied only a resources block, with no worked reasoning sequence. Commit `94d0132` places the lesson explanation into reading blocks and adds worked risk scenarios for identification, likelihood/impact, inherent/residual exposure, appetite/tolerance, treatment and acceptance. The examples distinguish observation, uncertainty, consequence, evidence, control effectiveness and authority. Remaining risk lessons still need detailed review.
