@@ -131,6 +131,34 @@ if (!cloud || cloud.paths.length !== 11) {
     }
   }
 }
+const quality = journey.schools.find((school) => school.id === "quality-steward");
+if (!quality || quality.paths.length !== 12) {
+  problems.push("Quality Steward must have 12 learning paths");
+} else {
+  for (const path of quality.paths) {
+    const first = path.lessons[0];
+    const headings = first?.activities?.[0]?.content?.blocks;
+    if (first?.id !== `${path.id}-worked-quality-model` ||
+        !Array.isArray(headings) ||
+        !headings.some((item) => item.type === "heading" && item.id === "quality-worked")) {
+      problems.push(`Quality path lacks worked test model: ${path.id}`);
+    }
+    for (const lesson of path.lessons) {
+      lesson.activities.forEach((activity, index) => {
+        if (activity.content.type !== "practical") return;
+        const before = lesson.activities[index - 1];
+        const blocks = before?.content?.blocks;
+        if (!before?.id?.endsWith("-quality-preparation") ||
+            before?.content?.type !== "reading" ||
+            !Array.isArray(blocks) ||
+            !blocks.some((block) => block.type === "heading" && block.id === "quality-evidence") ||
+            !blocks.some((block) => block.type === "heading" && block.id === "quality-negative")) {
+          problems.push(`Quality lab missing explicit oracle/negative preparation: ${path.id}/${lesson.id}/${activity.id}`);
+        }
+      });
+    }
+  }
+}
 const nonEmpty = (value) => typeof value === "string" && value.trim().length > 0;
 const detailedList = (value) => Array.isArray(value) && value.length > 0 &&
   value.every((entry) => nonEmpty(entry));
