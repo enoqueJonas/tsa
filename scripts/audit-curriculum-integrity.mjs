@@ -84,6 +84,30 @@ if (!deliveryArtifacts.includes("objective: practicalContracts[spec.id].objectiv
   failures.push("Artifact Supply Chain practicals must use lesson-specific objectives and acceptance criteria");
 }
 
+// Delivery quality wrappers must cover every normal source lesson by exact title.
+// Title drift can silently drop substantive learner exercises when the wrapper maps by title.
+const deliveryQualityPairs = [
+  ["delivery-software-foundations-deep.ts", "delivery-software-foundations-quality.ts", /lesson\(\s*"[^"]+",\s*"([^"]+)"/g],
+  ["delivery-containers-docker-deep.ts", "delivery-containers-docker-quality.ts", /richLesson\(\s*"[^"]+",\s*"([^"]+)"/g],
+  ["delivery-continuous-integration-deep.ts", "delivery-continuous-integration-quality.ts", /rich\(\s*"[^"]+",\s*"([^"]+)"/g],
+  ["delivery-continuous-delivery-deep.ts", "delivery-continuous-delivery-quality.ts", /richLesson\(\s*"[^"]+",\s*"([^"]+)"/g],
+  ["delivery-configuration-management-deep.ts", "delivery-configuration-management-quality.ts", /reading\(\s*"[^"]+",\s*"([^"]+)"/g],
+  ["delivery-release-engineering-deep.ts", "delivery-release-engineering-quality.ts", /reading\(\s*"[^"]+",\s*"([^"]+)"/g],
+];
+for (const [sourceFile, qualityFile, titlePattern] of deliveryQualityPairs) {
+  const source = sources.get(sourceFile) ?? "";
+  const quality = sources.get(qualityFile) ?? "";
+  const titles = [...source.matchAll(titlePattern)].map((m) => m[1]);
+  const profiles = [...quality.matchAll(/^    "([^"]+)": \{/gm)].map((m) => m[1]);
+  if (!titles.length || !profiles.length) failures.push("Delivery lesson/profile inventory empty: " + sourceFile);
+  for (const title of titles) {
+    if (profiles.filter((item) => item === title).length !== 1) failures.push("Delivery quality profile missing or duplicated: " + qualityFile + " -> " + title);
+  }
+  for (const title of profiles) {
+    if (!titles.includes(title)) failures.push("Delivery quality profile orphaned: " + qualityFile + " -> " + title);
+  }
+}
+
 // The learner receives the quality-enriched practical for 23 normal Supply Chain lessons.
 // The two integrated lab lessons retain their specialized deep-source contract instead.
 const artifactQuality = sources.get("delivery-artifact-supply-chain-quality.ts") ?? "";
