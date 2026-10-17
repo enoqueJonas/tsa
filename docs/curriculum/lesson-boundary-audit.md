@@ -414,3 +414,9 @@ Inspected Delivery Artifact Supply Chain's retention exercise and the CI Quality
 ## Review batch 33 — SBOM-to-deployment interpretation
 
 Inspected the Software Bill of Materials lesson and practical. Commit `77443c4` adds a worked trace from image digest A and component X version 1.2 to an advisory, explicitly separating component presence from exploitability and release-B state. The lesson now requires correlating artifact identity, affected-version information and actual deployments rather than treating an SBOM or scan result as a verdict. This source edit is not a verified learner execution or current build result.
+
+## Review batch 34 — Artifact Supply Chain source inventory
+
+Inspected all 25 authored Artifact Supply Chain lesson specifications: repository roles and architecture; Python/npm/OCI distribution; Nexus setup and permissions; producer/consumer mechanics; cache, version and retention policy; provenance, SBOM, signing, scanning; and two integrated labs. Each spec supplies a reading with sections, a practical task and a knowledge check. This is source-content coverage only, not successful execution of its lab.
+
+Commits `ff06a3b` and `40ef07a` improve Python-package publication prerequisites/results and immutable image-digest handoff. Prior batches remediated proxy authority, deployed-artifact retention, and SBOM interpretation. Remaining: live Nexus/configuration tests, package-publish and clean-consumer tests, security failure exercises, UI inspection, latest audit/build. Do not represent source review as operational completion.
