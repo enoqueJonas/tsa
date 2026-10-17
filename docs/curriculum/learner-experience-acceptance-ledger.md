@@ -314,3 +314,10 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - **Executed local HTTP comparisons:** bound Python's static HTTP server to `127.0.0.1:8765`; `curl` returned GET existing 200, GET missing 404, static-server JSON POST 501, and an absent-port connection failure with curl's `000` reporting value (not an HTTP status). Verified commands with `--noproxy '*'` to avoid proxy configuration interfering with local observations; used `--max-time` for failure-boundary examples.
 - **Curriculum changes** (`9a0fecdf`): clarify fast-forward versus merge-commit outcomes in the Git guided lab; use direct localhost curl for process and HTTP examples; explicitly address occupied ports and safe Ctrl+C stopping of a foreground server.
 - This is a command-level partial reproduction, not evidence that the whole novice exercise, independent assessment, or rendered website was validated. **Engineering Apprentice remains In Review.**
+
+### 2026-10-17 — Second verification pass, independent disposable reproduction
+
+- Executed a fresh temporary Git repository: untracked file behavior, empty unstaged diff before tracking, staging, three commits, branch switch, fast-forward merge, `git restore` of an unstaged edit, and final clean working tree. These checkpoints passed.
+- Executed a local loopback-only Python static server with `curl`: GET existing resource **200**, missing path **404**, POST JSON **501**, and connection to unused adjacent port `curl` **000** with nonzero client status. Verified listener with Linux `ss`.
+- **Process inspection lesson improvement**: clarify port collision handling, loopback scope, multiple `pgrep` matches and ownership verification before termination (commit `1fca03a`).
+- **Verification caveat**: the disposable shell driver exited with signal 15 during cleanup because of shell background process bookkeeping, even though the Git and HTTP assertions had produced successful observations. Treat this as a harness cleanup issue, not evidence that the full lesson lab passed. OS-specific `lsof`/macOS behavior and actual student-submission flow remain unverified.
