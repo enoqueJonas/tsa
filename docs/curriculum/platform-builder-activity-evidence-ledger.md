@@ -1,0 +1,58 @@
+# Platform Builder — evidence-based module review ledger
+
+**Status (2026-10-17):** all 22 `platform-builder-*.ts` path source files identified and structurally/source-triaged. This is **not** a claim that every authored activity was manually executed, rendered, or approved. The canonical learner-visible composition includes quality wrappers, deep sources and milestone imports. Check off an evidence gate only for the evidence actually available.
+
+## Evidence categories
+
+- **S — Source triage:** inspected source contracts for concept order, prerequisites, safe exercises and assessment evidence. This may be a family-level pass, not a per-activity reading.
+- **A — Activity review:** each learner activity in the composed path individually examined for prerequisite-first explanation, runnable examples, observable output and concrete completion criteria.
+- **R — Rendered:** representative/necessary activities opened as a learner in the actual web application, including resource links and code presentation.
+- **E — Executed:** command examples, recovery drills, or homelab exercises actually run in a controlled relevant environment with evidence.
+- **C — CI:** integrity audit/examples/build pass for the exact reviewed commit.
+
+The four first categories **must not** be collapsed into a single green checkbox. A successful CI workflow cannot substitute for E or R.
+
+## 17 logical module families
+
+| Module | Source checked | Specific source-level teaching / evaluation focus | Remaining direct evidence |
+| --- | --- | --- | --- |
+| Computer and OS Foundations | S | Kernel/userspace, memory/processes, storage and limits before service architecture; deep+quality composition | A, R, representative E |
+| Linux Administration | S | Rocky/systemd/SELinux/firewalld, service permissions, safe shell and DNF; fix invalid shell placeholders and former Ubuntu reference drift | A, R, more E |
+| Networking | S | L2/L3 routing, TCP/UDP, DNS/TLS and private management boundary; later CI/Nexus surfaces kept future-tense | A, R, actual permitted/denied-path E |
+| Cisco Packet Tracer | S | Router/switch mechanics before routed DHCP and multi-subnet infrastructure | A, R, Packet Tracer E |
+| Virtualization | S | Guest/hypervisor boundary, vCPU/RAM/storage, bridged/NAT and recovery | A, R, VM E |
+| Bare Metal | S | Firmware/boot, device health, power and out-of-band recovery without claiming unavailable telemetry | A, R, physical/OOB E where available |
+| Budget Homelab | S | Capacity, private management, failure-domain honesty, migration to learner-owned infra | A, R, homelab E |
+| Proxmox Homelab | S | Template/bootstrap, network, storage, backup/restore, host maintenance and failure localization | A, R, Proxmox E |
+| Enterprise Storage/NAS | S | Block vs file vs object/artifact boundaries; LVM, filesystem, NFS/SMB, authorization, outage/restore | A, R, NAS E |
+| DNS/DHCP/Time | S | Authority/resolver and cache, isolated DHCP and routed relay, chrony and bounded clock skew | A, R, controlled failure E |
+| Configuration Management | S | Ansible inventory, desired state, drift, canary changes and secrets; correct premature claims about Kubernetes/Vault | A, R, Ansible E |
+| OS Patching/Lifecycle | S | Risk/errata, DNF, kernel runtime, staged changes and no-update honesty; report posture before later-school monitoring | A, R, live update E when available |
+| Windows/PowerShell | S | Windows baseline, object pipelines, WinRM, NTFS/SMB, AD/domain GPO and cross-OS identity | A, R, legal separate-member E |
+| Enterprise File/Directory | S | NFS atomic publication, identity UID/GID, bounded LDAP/AD and directory-authority ownership | A, R, file/LDAP E |
+| Platform Implementation Milestones | S | Core services; patch fleet; Windows member. No-op, simulation and constraint are not graduation evidence | A, R, cross-system E |
+| Proxmox Implementation Milestone | S | Actual repeatable Rocky template, VM network and recovery beyond diagram claims | A, R, recovery E |
+| Final Steward Homelab Milestone | S | 8 operational gates; host/network/storage/identity/recovery/capacity and future-school handoff | A, R, comprehensive E |
+
+The 17 family labels above map to the 22 deep/quality/implementation source files. Count source files and logical module imports separately; these are not counts of verified individual lessons.
+
+## Confirmed defects remediated in this sequence
+
+1. Patch posture mistakenly required Prometheus/Grafana before Reliability Engineer → Shell/Ansible posture report and explicit later handoff (`46fc0b3`).
+2. Patch milestone demanded real updates when none might exist → conditional live-update gate and honest pending state (`7e8a6b1`).
+3. Regression exercise could be mistaken for a post-update incident without an update → controlled-drill labeling (`cefaee3`).
+4. Windows policy evidence could be substituted from the domain controller → separate-member requirement and honest constraint deferral (`6f817e2`).
+5. Final homelab exit text could implicitly award missing patch/member competence → exit gates now require execution evidence (`dc21782`).
+6. Ansible reassessment asserted later Kubernetes/Vault capabilities are already in use → future capability handoff stated explicitly (`d98c33d`).
+7. Deep Linux/Budget Homelab resources pointed at Ubuntu/APT despite Rocky learner contract → Rocky and DNF resource links (`8d6aff5`, `04264ea`).
+8. Rockyized DNF lesson included `dnf info <package>`, whose angle-bracket placeholder is not safely runnable as a command → concrete `dnf info bash` (`bba4540`).
+9. Explain `dnf check-update` status 100 as available updates, not automatically an installation failure (`d7928b8`).
+10. Linux examples used an unsafe raw `kill -KILL <pid>` suggestion and non-existent `/path/to/file` targets → isolated, safely runnable process and temporary-file demonstrations (`4a6862c`, `9ab4618`).
+
+## Concrete remaining approval procedure
+
+1. Resolve the canonical **composed** module activity inventory; do not trust literal counts in quality wrappers alone.
+2. Inspect each reading, code block, practical, check and milestone criterion sequentially as delivered to the learner. Record individual IDs and exact defects with remediation commit.
+3. Check rendered OOP and Platform representative pages across desktop/mobile widths; verify that URLs, diagrams, output blocks and instructions are not lost by transformation.
+4. Execute selected Linux/Rocky, networking, DHCP/time, Ansible, Proxmox, NAS, Windows and final Steward gates on appropriately controlled equipment. Mark impossible or expensive labs **pending**, not passed.
+5. Run exact-head `pnpm audit:curriculum`, example checks and build in CI; only then make a merge recommendation.
