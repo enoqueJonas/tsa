@@ -288,3 +288,8 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 
 - Confirmed Batch 113 final run [39040562482](https://github.com/enoqueJonas/tsa/actions/runs/39040562482) passed CI validation and learner-browser jobs.
 - Updated the Artifact Supply Chain `scanning` exercise to require exact image digest, scanner version/advisory-database freshness, component/exposure/available-fix evidence and an explicit accountable decision. Any suppressed or accepted finding must have an owner and expiration/reassessment condition; a before/after rescan or time-bound exception remains visible (`a556632`). This is an improved practical evidence contract, not a claim to have scanned a real Steward image.
+
+## Batch 115 — Automated Delivery curriculum regression gates (2026-10-17)
+
+- Verified the preceding Batch 114 final workflow [39040759411](https://github.com/enoqueJonas/tsa/actions/runs/39040759411) status in CI separately; the present batch extends `scripts/audit-curriculum-integrity.mjs` with cross-lesson guards for Delivery's CI publish failure, untrusted credential scope, partial deployment, changed-digest approval, failed backfill, Ansible check-mode and configuration validation, tag drift, rollback artifact retention, untrusted signing and time-bound vulnerability exceptions (`9c86e47`).
+- These checks detect **removal of explicit exercise evidence clauses** in authored source; they cannot assess whether the prose is sufficiently clear, that students achieve competence, or that a real lab was executed. Exact-head CI must finish before acceptance.
