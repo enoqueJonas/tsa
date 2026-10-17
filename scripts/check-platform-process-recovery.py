@@ -36,7 +36,7 @@ code = textwrap.dedent("""
 def request_ok():
     try:
         with urllib.request.urlopen(url, timeout=0.3) as response:
-            return response.status == 200 and response.read() == b"synthetic-child-ok\\n"
+            return response.status == 200 and response.read() == b"synthetic-child-ok\n"
     except (urllib.error.URLError, TimeoutError, OSError):
         return False
 
