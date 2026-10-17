@@ -223,3 +223,8 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 
 - Added `scripts/check-platform-network-foundations.py` to execute independent loopback TCP connection/request/response, UDP datagram request/response, and local hostname resolution via the runner's configured resolver. Connections bind only to `127.0.0.1`, with no external dependency. Commits `6efd42c`, `92d27f5`.
 - This evidence addresses foundational differences between connection-oriented TCP, datagram UDP and hostname-to-address resolution. It does **not** certify routed traffic, firewalld rules, authoritative DNS, DHCP, WireGuard, real Proxmox networking or remote clients. The new test's CI validation result must be checked before acceptance.
+
+## Batch 103 — Disposable backup, restore, and corrupted-backup detection (2026-10-17)
+
+- Added `scripts/check-platform-backup-restore.py`, executed as part of the Linux CI validation job (`688633f`, `176d37e`). It creates disposable configuration and records files; stores SHA-256 fingerprints; copies the files to a distinct backup directory; deliberately changes and deletes live files; restores independently from the backup; verifies file inventory, exact hashes and expected record count; then corrupts the backup and confirms the checksum mismatch is detected.
+- Source validation including this drill passed in [39038924538](https://github.com/enoqueJonas/tsa/actions/runs/39038924538). The same run's learner-browser job had not finished when this entry was written. The script demonstrates a local file backup/restore lifecycle on a disposable Ubuntu runner, **not** real NAS, database-consistent snapshots, Proxmox backups, offsite durability or disaster recovery.
