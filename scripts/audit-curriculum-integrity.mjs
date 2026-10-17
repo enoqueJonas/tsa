@@ -849,6 +849,23 @@ for (const [label, source, marker] of deliveryGuardrails) {
   if (!source.includes(marker)) failures.push(`${label}: missing evidence marker "${marker}"`);
 }
 
+// Ensure recently strengthened assessment contracts retain executable evidence rather
+// than reverting to generic knowledge-only completion criteria.
+const evidenceContracts = [
+  ["quality-containers-ci-deep.ts", "The submitted transcript identifies the exact"],
+  ["quality-java-test-engineering-deep.ts", "The submitted ${spec.title} implementation demonstrates"],
+  ["cloud-infrastructure-as-code-deep.ts", "The ${spec.title} submission links each declared resource"],
+  ["security-web-api-threats-deep.ts", "the submission identifies the specific entry point"],
+  ["security-container-delivery-deep.ts", "Capture before-and-after evidence"],
+  ["quality-api-integration-testing-deep.ts", "At least one negative or boundary case"],
+  ["quality-browser-environment-testing-deep.ts", "the browser or environment scenario states the user-visible risk"],
+];
+for (const [file, marker] of evidenceContracts) {
+  if (!(sources.get(file) ?? "").includes(marker)) {
+    failures.push(`School practical evidence criterion missing: ${file} — ${marker}`);
+  }
+}
+
 if (failures.length) {
   console.error("Curriculum integrity audit failed:\n- " + failures.join("\n- "));
   process.exit(1);
