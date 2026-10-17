@@ -33,7 +33,7 @@ const observabilityWorked: Record<string, {question:string;signals:string;interp
   "telemetry-cost-noise": {question:"Why not record every request payload and every trace?",signals:"Estimate event volume, retention, label cardinality and sensitive-data exposure before choosing sampling and aggregation.",interpretation:"High-cardinality labels and unbounded retention can make telemetry expensive and unsafe. Keep rare failure evidence while avoiding credentials and personal payloads."}
 };
 function blocksFor(spec: Spec): LessonBlock[] {
-  const worked = worked;
+  const worked = observabilityWorked[spec.id];
   return [
     { type: "paragraph", text: spec.intro },
     ...(worked ? [{type:"heading" as const,id:`${spec.id}-worked`,text:"Worked diagnostic reasoning",level:2 as const},{type:"paragraph" as const,text:`Question: ${worked.question}`},{type:"paragraph" as const,text:`Evidence: ${worked.signals}`},{type:"paragraph" as const,text:`Interpretation: ${worked.interpretation}`}] : []),
