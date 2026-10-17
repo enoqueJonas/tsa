@@ -327,3 +327,10 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - Executed an isolated Python baseline in a disposable environment: `python3 -m venv .venv`, `.venv/bin/python -m pip --version`, importable `steward/services.py`, and `main.py` output `Steward workspace ready` all succeeded in the Linux test runtime (Python 3.13). This confirms only the **happy-path setup** on that runtime.
 - Inspected Builder's *Setting Up a Python Engineering Environment* learner reading and quality-layer practical. Previously the lesson explained choosing interpreters but did not teach how to distinguish an incomplete virtual environment from pip bootstrap/ensurepip failure. Added staged diagnosis, verification of active interpreter and pip, notes for `--without-pip` diagnostic isolation, and an explicit stop condition before installing dependencies (commit `637a026`).
 - This does not validate macOS Homebrew Python or diagnose any particular user machine; venv failure cases and other Builder Python lessons are still unexecuted. School acceptance remains open.
+
+### 2026-10-17 — Builder Python: Control Flow business-rule edge case
+
+- Reviewed the composed Control Flow reading and quality-layer practical against its previous Service dictionary checkpoint and next Functions checkpoint.
+- **Defect:** the practical required an integer `age_days` but did not test the surprising `bool` subtype behavior: `isinstance(True, int)` is true, meaning naive validator implementations accept a boolean as one day old.
+- Added a mechanism-first teaching paragraph and an explicit runnable comparison of `184`, `-1`, `'old'`, and `True` (commits `aeec01d`, `b421b17`). Updated the practical and observable acceptance criterion to reject `age_days=True` (`9ee70f4`).
+- **Executed the exact edge-case logic locally** with Python: results `184: True`, `-1: False`, `'old': False`, `True: False`; assertions passed. This verifies this example, not the complete Python module. Other learner labs, full capstone, browser UX and build remain open.
