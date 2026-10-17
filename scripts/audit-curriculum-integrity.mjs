@@ -204,6 +204,21 @@ if (!javaSource.includes('deliverables:["Committed steward-tests increment",evid
 const soapSource = sources.get("system-thinker-soap-xml-deep.ts") ?? "";
 if (!soapSource.includes("the same lookup must return no match")) failures.push("XML namespace lesson missing negative URI identity case");
 
+// Every Quality CI source lesson needs its own observed proof and release-gate rule.
+const qualityCiSource = sources.get("quality-containers-ci-deep.ts") ?? "";
+const qualityCiSpecs = qualityCiSource.split("const specs: Spec[] = [")[1]?.split("const controlledIntegrationMilestone:")[0] ?? "";
+const qualityCiIds = [...qualityCiSpecs.matchAll(/^\s*id: "([^"]+)",/gm)].map((m) => m[1]);
+const qualityProofRegion = qualityCiSource.split("const practicalProofs: Record<string, [string, string]> = {")[1]?.split("\n};")[0] ?? "";
+const qualityProofIds = [...qualityProofRegion.matchAll(/^    "([^"]+)":/gm)].map((m) => m[1]);
+for (const id of qualityCiIds) {
+  if (qualityProofIds.filter((value) => value === id).length !== 1) failures.push(`Quality CI practical proof missing/duplicated: ${id}`);
+}
+for (const id of qualityProofIds) {
+  if (!qualityCiIds.includes(id)) failures.push(`Quality CI orphan practical proof: ${id}`);
+}
+if (!qualityCiSource.includes("deliverables: [\"Versioned pipeline or container change\", proof[0]")) failures.push("Quality CI practical proof must be wired");
+if (qualityCiSource.includes('code: "quality:\\nstages:')) failures.push("Quality CI must use top-level GitLab stages");
+
 // Every authored Shell lesson has its own explicit practical evidence contract.
 const shellModule = sources.get("delivery-automation-shell-deep.ts") ?? "";
 const shellLessonIds = [...shellModule.matchAll(/richLesson\("([^"]+)", "([^"]+)"/g)].map((m) => m[1]);
