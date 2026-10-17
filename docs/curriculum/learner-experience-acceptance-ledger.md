@@ -21,7 +21,7 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 
 | School | Module | Concepts | Practicals | Continuity | Resources | UX | Overall / evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| engineering-apprentice | **School entry and entire displayed lesson sequence (inventory pending)** | — | — | — | — | — | Not started; enumerate composed activities |
+| engineering-apprentice | **School entry and entire displayed lesson sequence (inventory pending)** | In review | — | — | — | — | In review; first shell example corrected; full enumeration pending |
 | builder | `builder-python-quality` | — | — | — | — | — | Not started |
 | builder | `builder-web-api-quality` | — | — | — | — | — | Not started |
 | builder | `builder-django-quality` | — | — | — | — | — | Not started |
@@ -178,3 +178,10 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - External labs: executed evidence OR explicitly unverified
 - Overall: Blocked / In review / Accepted (with rationale)
 ```
+
+### 2026-10-17 — Engineering Apprentice / Shell and Filesystem: first learner-path finding
+
+- **Inspected:** first reading, guided practice and knowledge check in `engineering-apprentice-workbench-deep.ts`; this is a **partial** reading review, not a full module acceptance.
+- **Finding:** first demonstrative command was `ls -la ~/tsa`, though that directory had not been created or explained as a prerequisite. A novice executing the first example could receive a missing-path error despite following the lesson. Later path-example commands also assumed `~/projects/notes/todo.txt` exists without labeling the snippet illustrative.
+- **Fix:** `00fe495` changes the first command to `ls -la ~` (existing home directory), explains variable output, and explicitly labels the later sample as requiring pre-existing files.
+- **Pending:** enumerate the Apprentice school's composed lessons, review all reading/practical/reflection activities and render the affected page; no live learner or browser execution claimed for this edit.
