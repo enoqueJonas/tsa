@@ -1,11 +1,11 @@
 import type { Lesson } from "./lesson";
 import type { LearningResource, LessonBlock } from "../activities/content";
 
-const ubuntuServerGuide: LearningResource = { title: "Ubuntu Server documentation", url: "https://documentation.ubuntu.com/server/" };
+const ubuntuServerGuide: LearningResource = { title: "Rocky Linux documentation", url: "https://docs.rockylinux.org/" };
 const systemdMan: LearningResource = { title: "systemd.service manual", url: "https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html" };
 const journalctlMan: LearningResource = { title: "journalctl manual", url: "https://www.freedesktop.org/software/systemd/man/latest/journalctl.html" };
 const bashManual: LearningResource = { title: "GNU Bash manual", url: "https://www.gnu.org/software/bash/manual/bash.html" };
-const aptGuide: LearningResource = { title: "Ubuntu package management", url: "https://documentation.ubuntu.com/server/how-to/software/package-management/" };
+const aptGuide: LearningResource = { title: "DNF documentation", url: "https://dnf.readthedocs.io/en/latest/" };
 const sshDocs: LearningResource = { title: "OpenSSH manual", url: "https://man.openbsd.org/ssh" };
 const fhs: LearningResource = { title: "Filesystem Hierarchy Standard", url: "https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html" };
 const cronMan: LearningResource = { title: "crontab(5) manual", url: "https://man7.org/linux/man-pages/man5/crontab.5.html" };
