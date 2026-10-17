@@ -271,3 +271,7 @@ Inspected the source lessons behind `system-thinker-components-quality` and `sys
 - Commit `2198260` adds a positive and negative registration-flow walkthrough distinguishing authentication, authorization, domain validation, persistence and observed contract outcomes. It makes clear these are expected outcomes, not asserted runtime test results.
 
 This is a **targeted content improvement**, not a full pass over either module. Remaining lessons, practice/rendering, the complete school sequence, and actual local audit/build still require validation.
+
+## Review batch 11 — Distributed messaging outbox
+
+Inspected the distributed-state and messaging module's lesson sequence, particularly transactional outbox. The module already splits distributed-state justification, caching, queueing, idempotency, dead-lettering, ordering and outbox into distinct lessons; this is useful structural granularity, not evidence that every lesson is complete. The outbox lesson described the dual-write failure but lacked a stepwise explanation of specific crash windows and the resulting committed/pending/duplicate states. Commit `c19fa77` adds a worked event-ID trace covering rollback, committed pending intent, published-but-not-marked duplication and ambiguous broker outcomes. The example distinguishes publisher recovery from consumer idempotency and avoids unsupported exactly-once claims. Remaining lessons and actual behavior/rendering still need review.
