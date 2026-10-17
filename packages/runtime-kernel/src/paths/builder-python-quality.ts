@@ -98,15 +98,15 @@ const practices: Record<string, PracticeSpec> = {
         scenario: "The current registry can create, activate, deactivate, find and filter Services, but invalid data is still easy to introduce and an unknown lookup simply returns None. Now that those behaviors exist, make failure deliberate without hiding programmer defects.",
         instructions: [
             "Continue from the refactored steward package from the previous checkpoint.",
-            "Add validation to create_service(): name and endpoint must be non-empty strings and age_days must be an integer greater than or equal to zero.",
-            "Create a ServiceValidationError exception for invalid Service input and raise it with a useful message.",
+            "Add validation to create_service(): name and endpoint must be non-empty strings after stripping surrounding whitespace; age_days must be a non-negative integer, explicitly rejecting boolean values even though bool subclasses int. Preserve the rules already discovered in Control Flow.",
+            "Create a ServiceValidationError exception for invalid Service input and raise it with a useful message. Place the exception type where create_service() can import or reference it without circular dependencies.",
             "Change find_service_by_name() so an unknown Service raises a ServiceNotFoundError instead of returning None.",
-            "In main.py, demonstrate one invalid create_service() call and one missing lookup. Catch only the expected domain exception at the boundary where you can print a useful message.",
+            "In main.py, demonstrate invalid name, whitespace-only endpoint, negative age, string age and boolean True age; each must raise ServiceValidationError. Demonstrate an unknown lookup raising ServiceNotFoundError. Catch only the expected exception types at the main.py boundary and show the messages.",
             "Deliberately introduce a programmer defect inside a temporary copy of the demo and prove that catch-all Exception handling would hide it. Remove the broad catch and restore the working code.",
             "Write down what callers should do for ServiceValidationError, ServiceNotFoundError and an unexpected exception."
         ],
         deliverables: ["Explicit Steward exception types", "Validated create_service()", "Missing-Service failure behavior", "Expected-failure demo", "Short caller-response table"],
-        completionCriteria: ["Invalid Service data is rejected at creation.", "Unknown lookup no longer silently returns None.", "Expected domain failures are handled specifically.", "Unexpected programmer defects are not swallowed.", "Existing valid Service and registry behavior still works."]
+        completionCriteria: ["Invalid Service data is rejected at creation, including blank/whitespace-only strings and age_days=True; valid age_days=0 remains accepted.", "Unknown lookup no longer silently returns None.", "Expected domain failures are handled specifically.", "Unexpected programmer defects are not swallowed.", "Existing valid Service and registry behavior still works."]
     },
     "programming-with-python-object-oriented-programming": {
         objective: "Evolve the existing dictionary-based Service into an object only after the accumulated behavior gives the object a reason to exist.",
