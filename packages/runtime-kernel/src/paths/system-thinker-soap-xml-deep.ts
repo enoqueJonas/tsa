@@ -73,7 +73,7 @@ function practical(id: string, title: string, objective: string, scenario: strin
     blocks.push({ type: "callout", tone: "steward", title: "Integration boundary", body: "SOAP/XML belongs at the enterprise integration boundary. Steward's domain model remains independent of generated SOAP types and raw XML representation." });
     blocks.push({ type: "resources", title: "Reference specifications", resources });
     const activities: Lesson["activities"] = [];
-    if (sections.length) activities.push({ id: `${id}-reading`, title: `${title}: Concepts`, estimatedMinutes: 45, content: { type: "reading", body: objective, blocks } });
+    if (sections.length) activities.push({ id: `${id}-reading`, title: `${title}: Concepts`, estimatedMinutes: 45, content: { type: "reading", body: blocks.filter((block) => block.type === "paragraph").map((block) => block.text).join("\n\n") || objective, blocks } });
     activities.push({ id: `${id}-lab`, title, estimatedMinutes, content: { type: "practical", objective, scenario, instructions, deliverables: [...deliverables, `Reference set: ${resources.map(r => r.title).join("; ")}`], completionCriteria } });
     return { id, title, activities };
 }
