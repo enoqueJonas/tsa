@@ -1,6 +1,6 @@
 # Curriculum-wide source census — structural scan, not pedagogical certification
 
-A review aid across the **134 logical module entries** in `lesson-boundary-audit.md`. These are literal source-token counts. Factory-generated lessons and quality wrappers mean that a zero does not necessarily mean a missing learner activity. The checklisted field reflects historical tracking only; it is not a full pedagogical approval.
+A refreshable snapshot across the **134 logical module entries** in `lesson-boundary-audit.md`. Regenerate the numeric columns from the current checkout with `pnpm census:curriculum` after source edits; committed counts can lag behind later changes. These are literal source-token counts. Factory-generated lessons and quality wrappers mean that a zero does not necessarily mean a missing learner activity. The checklisted field reflects historical tracking only; it is not a full pedagogical approval.
 
 | School | Module | Checklist | Characters | Reading literals | Practical literals | Code literals | Output literals |
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
