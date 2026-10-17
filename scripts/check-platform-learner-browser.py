@@ -96,43 +96,55 @@ def check_all_activity_pages(page):
 
 
 
-def check_complete_first_module(page):
-    """Traverse every activity in the first module in a disposable browser profile.
+def check_complete_modules(page):
+    """Traverse all Platform Builder activities with synthetic browser-only progress.
 
-    Generated reflection text is a navigation fixture, not learner evidence.
+    Progress is isolated to the CI browser profile and must never be presented
+    as real infrastructure execution or learner competence.
     """
     page.goto(BASE + "/?view=curriculum&school=platform-builder", wait_until="networkidle")
-    page.get_by_role("button", name="Start module").first.click()
-    page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
-    sidebar = page.locator("aside").filter(has=page.get_by_text("Curriculum", exact=True)).first
-    total = sidebar.locator("button").count()
-    assert total >= 3, f"Unexpected first module activity count: {total}"
-    visited = set()
-    for index in range(total):
-        activity_id = page.evaluate("new URLSearchParams(window.location.search).get('activity')")
-        assert activity_id, f"Missing activity URL at step {index}"
-        assert activity_id not in visited, f"Navigation stuck at {activity_id}"
-        visited.add(activity_id)
-        # Reflection activities have a prompt and textarea, but no h1.
-        assert page.locator("main").last.is_visible()
-        if page.locator("main h1").count():
-            assert page.locator("main h1").first.inner_text().strip()
-        else:
-            assert page.get_by_placeholder("Write your response here...").is_visible()
-        if page.get_by_placeholder("Write your response here...").count():
-            page.get_by_placeholder("Write your response here...").fill(
-                "This synthetic browser fixture records a controlled observation and "
-                "differentiates cause, symptom, evidence and recovery. "
-                "It is not an actual learner submission or infrastructure proof."
+    module_button = re.compile(r"^(Start|Continue|Review) module$")
+    modules = page.get_by_role("button", name=module_button).count()
+    visited_total = 0
+    assert modules >= 10
+    for module_index in range(modules):
+        page.goto(BASE + "/?view=curriculum&school=platform-builder", wait_until="networkidle")
+        page.get_by_role("button", name=module_button).nth(module_index).click()
+        page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+        sidebar = page.locator("aside").filter(has=page.get_by_text("Curriculum", exact=True)).first
+        total = sidebar.locator("button").count()
+        assert total >= 1, f"No activities in Platform module {module_index + 1}"
+        visited = set()
+        for index in range(total):
+            activity_id = page.evaluate("new URLSearchParams(window.location.search).get('activity')")
+            assert activity_id, f"Missing URL activity in module {module_index + 1}"
+            assert activity_id not in visited, f"Navigation stuck at {activity_id}"
+            visited.add(activity_id)
+            assert page.locator("main").last.is_visible()
+            if page.locator("main h1").count():
+                assert page.locator("main h1").first.inner_text().strip()
+            else:
+                assert page.get_by_placeholder("Write your response here...").is_visible()
+            reflection = page.get_by_placeholder("Write your response here...")
+            if reflection.count():
+                reflection.fill(
+                    "Synthetic CI browser traversal only: this response is not engineering evidence. "
+                    "Actual infrastructure testing must establish baseline conditions, observed symptoms, "
+                    "root cause, recovery actions and independent end-to-end verification. "
+                    "The selected system and evidence must be examined in a controlled live lab. "
+                    "No production, customer or external infrastructure changes were carried out."
+                )
+            next_button = page.get_by_role(
+                "button", name=re.compile(r"^(Next|Next lesson|Complete path)$")
             )
-        next_button = page.get_by_role(
-            "button", name=re.compile(r"^(Next|Next lesson|Complete path)$")
-        )
-        assert next_button.count() == 1, f"Missing progression control at {activity_id}"
-        assert next_button.is_enabled(), f"Activity completion blocked at {activity_id}"
-        next_button.click()
-    assert len(visited) == total
-    print(f"PASS traversed all {total} first-module learner activities in isolated browser")
+            assert next_button.count() == 1, f"No progression button at {activity_id}"
+            assert next_button.is_enabled(), f"Progression blocked at {activity_id}"
+            next_button.click()
+        visited_total += len(visited)
+        print(f"PASS module {module_index + 1}/{modules}: traversed {len(visited)} activities", flush=True)
+    assert visited_total >= 300, f"Unexpected school activity coverage: {visited_total}"
+    print(f"PASS full synthetic learner progression: {visited_total} activities across {modules} modules")
+
 
 
 with sync_playwright() as playwright:
@@ -151,6 +163,6 @@ with sync_playwright() as playwright:
     page = context.new_page()
     check_all_module_entries(page)
     check_all_activity_pages(page)
-    check_complete_first_module(page)
+    check_complete_modules(page)
     context.close()
     browser.close()
