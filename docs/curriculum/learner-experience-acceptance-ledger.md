@@ -482,3 +482,9 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - User reconfirmed `pnpm test`: **5/5 passing**, including zero missing/empty literal source candidates. This is reliable source-level evidence but not a resolved-content check.
 - Added `scripts/check-resolved-practical-contracts.mjs` (`f5a1618`) and `pnpm check:resolved-practicals` (`1426850`). The script loads the actual assembled `technicalStewardshipJourney` through a local TypeScript-to-CommonJS require hook, traverses all schools/paths/lessons/activities, and checks every **resolved** `practical` activity for nonempty objective, scenario, instructions, deliverables and completion criteria. This directly addresses shorthand/computed/spread practical definitions that source-level heuristics cannot check.
 - **Not yet executed:** failures could expose actual content defects or a module-loading issue; do not claim green until script returns successfully. This script inspects content contracts only, NOT learner navigation, completion state or persistence (all deferred by user).
+
+### 2026-10-17 — Resolved-practical checker Node ESM/CJS failure repaired
+
+- User attempted `pnpm check:resolved-practicals` on Node 25.2.1. It failed before examining any activities: `ReferenceError: exports is not defined in ES module scope` because `.ts` sources live in an ESM package and the script tried to execute CommonJS-transpiled code in that scope.
+- Replaced the unsafe `.ts` require hook with a temporary, isolated CommonJS compilation of the runtime-kernel TypeScript source tree outside the ESM package, then imports the generated `paths/academy-journey.js`. Temporary files are removed on completion (`9b93f42`, extension fix `40df95c`). This avoids changing the application build or the user's workspace.
+- This fix **awaits user execution**. The resolved-activity audit cannot be marked successful until its output is confirmed. Prior five smoke checks remain passed.
