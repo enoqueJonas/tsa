@@ -457,3 +457,7 @@ Revisited the Platform Builder virtualization lesson and fixed a teaching-order 
 ## Review batch 41 — School-level inventory wiring validation
 
 Compared import declarations in Academy and all ten school aggregators against the 134-entry logical lesson-module inventory. All directly imported module sources with `-quality`, `-rich`, `-deep`, `-milestone(s)` or `-decision` suffixes appear in the checklist; no other missing direct school imports were found. The indirect `delivery-artifact-supply-chain-quality` path is independently checked through the supply-chain composition guards. Commit `81acbce` enforces direct aggregator-to-inventory parity in the curriculum integrity audit, preventing recurrence of the previously omitted Supply Chain logical module. This is broad **structural wiring coverage**, not 134 pedagogical approvals.
+
+## Review batch 42 — Cloud TLS and Quality decision-table coverage
+
+Inspected the Cloud certificate lifecycle practical and Quality Steward decision-table example. Commit `00710f6` adds a client-side OpenSSL certificate/SNI/hostname verification walkthrough with an intentional wrong-hostname negative case and machine-specific result interpretation. Commit `57a6229` repairs an incomplete three-condition decision table: all eight binary combinations are now represented, rather than four examples that could be mistaken for exhaustive rule coverage. Both teach observable evidence before claiming system correctness. New source edits require fresh audit/build and learner rendering.
