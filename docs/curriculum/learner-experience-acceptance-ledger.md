@@ -515,3 +515,10 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - Replaced reused generic completion criteria in the Web/API Threats practical factory with topic-specific scope, reproducible observed evidence or justified no-finding, and targeted regression verification when a control is modified (`3d2e3e1`).
 - Replaced reused generic criteria in Container and Delivery Security with the actual asset/owner/trust boundary, before-and-after evidence and an unauthorized-action negative control, plus rerun of the relevant delivery path and residual-risk note (`6704045`).
 - These curriculum changes are committed but have not yet undergone the local test/build suite. Navigation, completion and progress-persistence tests remain deferred.
+
+### Platform Builder Proxmox evidence review — 2026-10-17
+
+- User confirmed six smoke tests and successful cached production build following the seven-module evidence regression guards.
+- Reviewed the learner-authored Proxmox module. Hardened bare-metal installation acceptance to demand *observed host/kernel identity, administrative reachability and bounded negative access test, plus non-destructive physical-console recovery evidence* (`67d8e27`).
+- Hardened Proxmox maintenance acceptance to demand an advance dependency/rollback plan, actual before-and-after host, bridge, guest and application-level health evidence, and an accurate single-host failure-domain statement (`c15bbff`). Neither change treats an unexecuted physical-server lab as verified.
+- These modifications are committed but await the next local `pnpm test` and `pnpm build`. User-requested learner progress/navigation/persistence testing remains deferred.
