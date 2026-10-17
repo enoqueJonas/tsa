@@ -3,30 +3,34 @@ import path from "node:path";
 import { createRequire } from "node:module";
 import ts from "typescript";
 
-const require = createRequire(import.meta.url);
-const Module = require("node:module");
-const original = Module._extensions[".ts"];
-Module._extensions[".ts"] = (module, filename) => {
-  const source = fs.readFileSync(filename, "utf8");
-  const js = ts.transpileModule(source, {
-    fileName: filename,
-    compilerOptions: {
-      module: ts.ModuleKind.CommonJS,
-      target: ts.ScriptTarget.ES2022,
-      esModuleInterop: true,
-    },
-    reportDiagnostics: false,
-  }).outputText;
-  module._compile(js, filename);
-};
+import os from "node:os";
 
-const entry = path.join(process.cwd(), "packages/runtime-kernel/src/paths/academy-journey.ts");
+const sourceRoot = path.join(process.cwd(), "packages/runtime-kernel/src");
+const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "tsa-resolved-curriculum-"));
+function compileDirectory(relative = "") {
+  const dir = path.join(sourceRoot, relative);
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const child = path.join(relative, entry.name);
+    if (entry.isDirectory()) {
+      compileDirectory(child);
+    } else if (entry.isFile() && entry.name.endsWith(".ts")) {
+      const outputPath = path.join(temporaryRoot, child.replace(/\\.ts$/, ".js"));
+      fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+      const js = ts.transpileModule(fs.readFileSync(path.join(sourceRoot, child), "utf8"), {
+        fileName: child,
+        compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true },
+      }).outputText;
+      fs.writeFileSync(outputPath, js);
+    }
+  }
+}
 let journey;
 try {
-  journey = require(entry).technicalStewardshipJourney;
+  compileDirectory();
+  const requireTemp = createRequire(path.join(temporaryRoot, "entry.cjs"));
+  journey = requireTemp("./paths/academy-journey.js").technicalStewardshipJourney;
 } finally {
-  if (original) Module._extensions[".ts"] = original;
-  else delete Module._extensions[".ts"];
+  fs.rmSync(temporaryRoot, { recursive: true, force: true });
 }
 if (!journey || !Array.isArray(journey.schools)) throw new Error("No resolved curriculum journey");
 const problems = [];
