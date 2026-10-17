@@ -95,6 +95,43 @@ def check_all_activity_pages(page):
     print(f"PASS inspected {visited} Platform sidebar activity entries across {count} modules")
 
 
+
+def check_complete_first_module(page):
+    """Traverse every activity in the first module in a disposable browser profile.
+
+    Generated reflection text is a navigation fixture, not learner evidence.
+    """
+    page.goto(BASE + "/?view=curriculum&school=platform-builder", wait_until="networkidle")
+    page.get_by_role("button", name="Start module").first.click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+    sidebar = page.locator("aside").filter(has=page.get_by_text("Curriculum", exact=True)).first
+    total = sidebar.locator("button").count()
+    assert total >= 3, f"Unexpected first module activity count: {total}"
+    visited = set()
+    for index in range(total):
+        activity_id = page.evaluate("new URLSearchParams(window.location.search).get('activity')")
+        assert activity_id, f"Missing activity URL at step {index}"
+        assert activity_id not in visited, f"Navigation stuck at {activity_id}"
+        visited.add(activity_id)
+        title = page.locator("main h1").first
+        title.wait_for(timeout=10000)
+        assert title.inner_text().strip()
+        if page.locator("textarea").count():
+            page.locator("textarea").fill(
+                "This synthetic browser fixture records a controlled observation and "
+                "differentiates cause, symptom, evidence and recovery. "
+                "It is not an actual learner submission or infrastructure proof."
+            )
+        next_button = page.get_by_role(
+            "button", name=re.compile(r"^(Next|Next lesson|Complete path)$")
+        )
+        assert next_button.count() == 1, f"Missing progression control at {activity_id}"
+        assert next_button.is_enabled(), f"Activity completion blocked at {activity_id}"
+        next_button.click()
+    assert len(visited) == total
+    print(f"PASS traversed all {total} first-module learner activities in isolated browser")
+
+
 with sync_playwright() as playwright:
     browser = playwright.chromium.launch(headless=True)
     for width in (390, 1440):
@@ -111,5 +148,6 @@ with sync_playwright() as playwright:
     page = context.new_page()
     check_all_module_entries(page)
     check_all_activity_pages(page)
+    check_complete_first_module(page)
     context.close()
     browser.close()
