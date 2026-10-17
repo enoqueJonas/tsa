@@ -12,9 +12,47 @@ const resourcesByRisk:Record<string,LearningResource[]>={
 const scenario = "Treat Steward as a mature organization-owned technology service whose risk universe starts from the final Architect actual-stack inventory and current operational evidence. Assess application, authoritative data, retained platform/delivery dependencies, security, reliability and ownership as they actually exist; retired or deferred technologies remain historical evidence, not active risk assets. Risk statements must describe uncertain events and consequences, not merely list vulnerabilities, defects or controls.";
 const deliverables = ["Risk analysis artifact", "Evidence and rationale", "Owner, treatment or review record"];
 const criteria = ["Risk is expressed in terms of cause/event/consequence and linked to evidence.", "Scoring and treatment are proportionate rather than false precision.", "Ownership, acceptance authority and review triggers are explicit."];
+const workedRiskExamples: Record<string, {title:string;problem:string;example:string;reasoning:string}> = {
+  identification: {
+    title:"From a technology observation to a decision-grade risk",
+    problem:"Observation: Steward runs PostgreSQL on one host. A single host is not itself a complete risk statement.",
+    example:"Condition: the database host is a single failure domain. Event: the host fails before a verified restore is available. Consequence: service registration data is unavailable beyond the agreed recovery objective.",
+    reasoning:"The condition is present now; the event is uncertain; the consequence explains why a decision is needed. If the host is already down, record an incident as well as any remaining future risk."
+  },
+  "likelihood-impact": {
+    title:"Assess a scenario without false precision",
+    problem:"Consider the risk of a database restore exceeding the recovery objective over the next twelve months.",
+    example:"Likelihood: Possible (a restore has not been rehearsed). Impact: High (prolonged unavailability of authoritative records). Confidence: Low (no measured restore duration). Next evidence: perform a timed restore exercise.",
+    reasoning:"Possible and High are category judgments, not probabilities. Define the category thresholds in your organization before comparing scenarios. A successful timed restore could reduce uncertainty or change the assessment."
+  },
+  "inherent-residual": {
+    title:"Distinguish the control from proof it works",
+    problem:"A backup job exists, but nobody has tested recovery.",
+    example:"Inherent scenario: loss of the database could cause prolonged data unavailability. Control claimed: daily backup. Evidence: backup job logs only. Residual concern: the copy may not be restorable within the recovery objective.",
+    reasoning:"Backup success logs demonstrate a write operation, not end-to-end recovery. Credit the control according to observed restore evidence; document the remaining uncertainty."
+  },
+  "appetite-tolerance": {
+    title:"Translate approved direction into a threshold",
+    problem:"Management requires recovery within four hours, but a proposed design relies on a manual restore process with unknown duration.",
+    example:"Appetite direction: limited tolerance for prolonged unavailability. Operational tolerance: RTO <= 4 hours. Evidence: last rehearsal took 6 hours. Decision: escalate or improve recovery before claiming compliance.",
+    reasoning:"The team can measure the gap but should not invent or silently relax management-approved thresholds. RTO is a recovery-time objective, not a guarantee."
+  },
+  treatment: {
+    title:"Compare treatment options and their secondary risks",
+    problem:"A shared administrator account creates untraceable privileged actions.",
+    example:"Reduce: move to named accounts with audited elevation. Avoid: eliminate the privileged workflow if feasible. Transfer: contractual allocation cannot remove operational responsibility. Accept: only by an authorized decision-maker with evidence and review date.",
+    reasoning:"Treatments differ in cost, effectiveness and secondary consequences. An option is not effective merely because it appears in a register."
+  },
+  acceptance: {
+    title:"Make acceptance explicit and reviewable",
+    problem:"A low-frequency dependency outage remains after reasonable controls.",
+    example:"Risk owner: platform operations. Acceptance authority: designated governance role. Rationale: remaining exposure within approved limits. Evidence: monitoring and incident history. Review: 90 days or after a material outage.",
+    reasoning:"Ownership of remediation is not automatically authority to accept risk. The record should identify the actual delegated decision-maker."
+  }
+};
 function lesson(id: string, title: string, body: string, instructions: string[]): Lesson {
   return { id: `technology-risk-${id}`, title, activities: [
-    { id: `technology-risk-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 60, content: { type: "reading", body, blocks:[{type:"resources",title:"Risk reference",resources:resourcesByRisk[id] ?? [nistRisk]}] } },
+    { id: `technology-risk-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 60, content: { type: "reading", body, blocks:[{type:"paragraph",text:body},...(workedRiskExamples[id] ? [{type:"heading" as const,id:`${id}-worked`,text:workedRiskExamples[id].title,level:2 as const},{type:"paragraph" as const,text:workedRiskExamples[id].problem},{type:"callout" as const,tone:"note" as const,title:"Worked scenario",body:workedRiskExamples[id].example},{type:"paragraph" as const,text:workedRiskExamples[id].reasoning}] : []),{type:"resources" as const,title:"Risk reference",resources:resourcesByRisk[id] ?? [nistRisk]}] } },
     { id: `technology-risk-${id}-practice`, title: `${title}: Steward risk exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to a real Steward technology-risk decision.`, scenario, instructions, deliverables, completionCriteria: criteria } },
   ] };
 }
