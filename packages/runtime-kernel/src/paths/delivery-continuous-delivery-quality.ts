@@ -56,9 +56,11 @@ const practices: Record<string, PracticalContent> = {
             "Define the minimum evidence presented to the approver.",
             "Define what change to the candidate or evidence invalidates the approval and requires a new decision.",
             "Walk through one approve and one reject scenario and record the resulting pipeline behavior.",
+            "Change the candidate image digest after approval in a non-production rehearsal and demonstrate that the earlier approval cannot authorize the modified candidate.",
+            "Identify who can grant approval and who can change deployment code or protected environment settings; document how role separation prevents self-approval or bypass.",
         ],
         deliverables: ["Approval policy", "Candidate/evidence packet", "Approve/reject behavior record"],
-        completionCriteria: ["The gate controls a named risk.", "Approval is bound to one immutable candidate.", "A rejected candidate cannot continue through an invisible bypass."],
+        completionCriteria: ["The gate controls a named risk.", "Approval is bound to one immutable candidate and invalidated by a digest change.", "Protected permissions and audit records identify the approver and deployed candidate.", "A rejected candidate cannot continue through an invisible bypass."],
     },
     "Database Migrations During Deployment": {
         type: "practical",
