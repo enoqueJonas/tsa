@@ -793,6 +793,30 @@ if (platformConfig.includes("TSA now uses Proxmox templates, Ansible, container/
   failures.push("Platform configuration management must not claim later-school runtime capabilities already exist");
 }
 
+// Cross-school regression gates for Delivery learner assessment contracts.
+// These check that key negative controls cannot silently disappear in later edits.
+const deliveryCIQuality = sources.get("delivery-continuous-integration-quality.ts") ?? "";
+const deliveryCDQuality = sources.get("delivery-continuous-delivery-quality.ts") ?? "";
+const deliveryConfigQuality = sources.get("delivery-configuration-management-quality.ts") ?? "";
+const deliveryReleaseQuality = sources.get("delivery-release-engineering-quality.ts") ?? "";
+const deliverySupplyChain = sources.get("delivery-artifact-supply-chain-deep.ts") ?? "";
+const deliveryGuardrails = [
+  ["Delivery CI failed check must block publication", deliveryCIQuality, "failed required check cannot result in a published release image"],
+  ["Delivery CI protected credentials require untrusted-pipeline test", deliveryCIQuality, "untrusted merge-request pipeline"],
+  ["Delivery CD needs partial deployment test", deliveryCDQuality, "partial multi-role deployment"],
+  ["Delivery approvals must be invalidated by digest changes", deliveryCDQuality, "approval cannot authorize the modified candidate"],
+  ["Delivery migration must rehearse a failed backfill", deliveryCDQuality, "partially applied or failed data backfill"],
+  ["Delivery Ansible requires actual check-mode comparison", deliveryConfigQuality, "compare predicted changes with the subsequent real run"],
+  ["Delivery Ansible must validate candidate config", deliveryConfigQuality, "validation command before replacement"],
+  ["Delivery release promotion must reject tag drift", deliveryReleaseQuality, "digest mismatch blocks deployment"],
+  ["Delivery supply chain must preserve rollback artifacts", deliverySupplyChain, "dry-run deletion plan"],
+  ["Delivery supply chain must reject unauthorized signer", deliverySupplyChain, "untrusted signer"],
+  ["Delivery vulnerability exceptions need accountable expiry", deliverySupplyChain, "expiration or reassessment condition"],
+];
+for (const [label, source, marker] of deliveryGuardrails) {
+  if (!source.includes(marker)) failures.push(`${label}: missing evidence marker "${marker}"`);
+}
+
 if (failures.length) {
   console.error("Curriculum integrity audit failed:\n- " + failures.join("\n- "));
   process.exit(1);
