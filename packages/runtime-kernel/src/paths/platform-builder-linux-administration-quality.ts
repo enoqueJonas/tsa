@@ -13,7 +13,7 @@ function replaceRockyStrings(value: string): string {
         .replaceAll("Ubuntu Server", "Rocky Linux")
         .replaceAll("Ubuntu host", "Rocky Linux host")
         .replaceAll("Ubuntu", "Rocky Linux")
-        .replaceAll("sudo apt update", "sudo dnf check-update")
+        .replaceAll("sudo apt update", "sudo dnf check-update # exit 100 means updates are available, not a failed package-manager operation")
         .replaceAll("apt policy postgresql", "dnf info postgresql-server")
         .replaceAll("dpkg -l | grep -E 'python|postgresql'", "rpm -qa | grep -E 'python|postgresql'")
         .replaceAll("apt show <package>", "dnf info bash")
