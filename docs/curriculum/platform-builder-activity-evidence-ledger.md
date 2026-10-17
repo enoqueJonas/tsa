@@ -261,3 +261,8 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 
 - Updated `Desired State and Idempotency` in Delivery Configuration Management. Beyond first-run, second-run and repair evidence, the learner must compare Ansible check-mode predictions with actual repair, document unsupported/inaccurate check-mode behavior, and deliberately introduce an invalid desired state in a disposable test resource to prove that the play fails visibly rather than falsely reporting convergence (`6841fb3`).
 - This updates practical teaching/acceptance criteria; it does **not** claim a learner-owned Rocky host or Ansible control node was operated. Exact-head CI remains a separate acceptance gate.
+
+## Batch 110 — Ansible template validation before handler changes (2026-10-17)
+
+- Updated the Delivery Engineer `Playbooks` exercise to test an invalid configuration in a disposable lab, use a validation command before installing a managed file, and verify that the previous valid configuration is preserved without triggering a service restart (`4dc38af`). This distinguishes handler change detection from safe configuration application and does not claim Ansible provides general transactional rollback.
+- Evidence remains a learner practical requirement, not an executed Rocky Linux/Ansible exercise. CI validation is necessary but does not certify host behavior.
