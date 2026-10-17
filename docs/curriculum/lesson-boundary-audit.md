@@ -54,7 +54,7 @@ Status: **Not yet audited**.
 - [ ] `platform-builder-implementation-milestones`
 - [ ] `platform-builder-linux-administration-quality`
 - [ ] `platform-builder-milestone-deep`
-- [ ] `platform-builder-networking-quality`
+- [x] `platform-builder-networking-quality`
 - [ ] `platform-builder-os-patching-lifecycle-deep`
 - [ ] `platform-builder-packet-tracer-network-engineering-deep`
 - [ ] `platform-builder-proxmox-homelab-deep`
@@ -67,9 +67,9 @@ Status: **Not yet audited**.
 Status: **Not yet audited**.
 
 - [ ] `delivery-automation-shell-deep`
-- [ ] `delivery-containers-docker-quality`
+- [x] `delivery-containers-docker-quality`
 - [ ] `delivery-continuous-delivery-quality`
-- [ ] `delivery-continuous-integration-quality`
+- [x] `delivery-continuous-integration-quality`
 - [ ] `delivery-configuration-management-quality`
 - [ ] `delivery-engineer-milestone-deep`
 - [ ] `delivery-migration-exercises-deep`
@@ -81,15 +81,15 @@ Status: **Not yet audited**.
 
 Status: **Not yet audited**.
 
-- [ ] `cloud-architecture-cost-quality`
-- [ ] `cloud-hosting-models-quality`
-- [ ] `cloud-building-blocks-quality`
+- [x] `cloud-architecture-cost-quality`
+- [x] `cloud-hosting-models-quality`
+- [x] `cloud-building-blocks-quality`
 - [ ] `cloud-certificate-lifecycle-operations-deep`
 - [ ] `cloud-engineer-milestone-deep`
 - [ ] `cloud-orchestration-gitops-deep`
 - [ ] `cloud-progressive-delivery-canary-deep`
 - [ ] `cloud-object-storage-implementation-deep`
-- [ ] `cloud-infrastructure-as-code-quality`
+- [x] `cloud-infrastructure-as-code-quality`
 - [ ] `cloud-internet-networking-quality`
 - [ ] `cloud-vps-operations-quality`
 
@@ -97,8 +97,8 @@ Status: **Not yet audited**.
 
 Status: **Not yet audited**.
 
-- [ ] `quality-api-integration-testing-deep`
-- [ ] `quality-automation-framework-engineering-deep`
+- [x] `quality-api-integration-testing-deep`
+- [x] `quality-automation-framework-engineering-deep`
 - [ ] `quality-browser-environment-testing-deep`
 - [ ] `quality-browser-surface-decision`
 - [ ] `quality-performance-tool-decision`
@@ -116,7 +116,7 @@ Status: **Not yet audited**.
 
 Status: **Not yet audited**.
 
-- [ ] `security-application-deep`
+- [x] `security-application-deep`
 - [ ] `security-artifact-signing-verification-deep`
 - [ ] `security-container-delivery-deep`
 - [ ] `security-enterprise-directory-federation-deep`
@@ -145,7 +145,7 @@ Status: **Not yet audited**.
 - [ ] `reliability-fault-injection-deep`
 - [ ] `reliability-incident-management-deep`
 - [ ] `reliability-metrics-prometheus-grafana-deep`
-- [ ] `reliability-observability-deep`
+- [x] `reliability-observability-deep`
 - [ ] `reliability-observability-stack-integration-deep`
 - [ ] `reliability-performance-capacity-deep`
 - [ ] `reliability-production-logging-deep`
@@ -185,7 +185,7 @@ Status: **Not yet audited**.
 - [ ] `technical-steward-technical-leadership-deep`
 - [ ] `technical-steward-third-party-lifecycle-risk-deep`
 - [ ] `technical-steward-technology-governance-deep`
-- [ ] `technical-steward-technology-risk-deep`
+- [x] `technical-steward-technology-risk-deep`
 - [ ] `technical-steward-strategy-capability-deep`
 
 ### professional-engineer
@@ -197,7 +197,7 @@ Status: **Not yet audited**.
 - [ ] `professional-engineer-independent-build-deep`
 - [ ] `professional-engineer-production-readiness-deep`
 - [ ] `professional-engineer-defence-deep`
-- [ ] `professional-engineer-professional-practice-deep`
+- [x] `professional-engineer-professional-practice-deep`
 - [ ] `professional-engineer-portfolio-reflection-deep`
 
 ## Known findings and actions
@@ -232,3 +232,9 @@ The following entries have been inspected for module structure and lesson-title 
 Inspected selected Cloud, Quality, Security and Architecture modules. The Cloud quality wrappers delegate teaching to deep source modules. Quality API and framework modules separate HTTP semantics, contracts, authentication, logging and retry policy. Security application modules distinguish authentication, authorization and validation. These observations do not establish complete pedagogical quality.
 
 **Confirmed and fixed:** `architect-domain-modeling-deep` combined entities, value objects and aggregates into one brief lesson. Commit `c1019ec` splits them into three substantive lessons on identity, value equality and consistency boundaries, with Steward examples and exercises.
+
+## Review batch 3 — cross-school sampling
+
+Inspected lesson sequences in Cloud Hosting, Cloud Cost, IaC, Security Application, Reliability Observability, Technical Risk, Professional Practice, Platform Networking and Delivery CI/Docker. Most of these already separate major named concepts, but a lesson-title scan does not establish conceptual depth. `*-quality` wrappers may import content from corresponding `*-deep` modules. Keep advanced subject matter advanced while checking prerequisite order.
+
+**Architect remediation extended:** commit `e925ee5` adds runnable, output-bearing Python examples to the three newly split identity, value-object and aggregate lessons. Each demonstrates a specific mechanism and explains the observed result.
