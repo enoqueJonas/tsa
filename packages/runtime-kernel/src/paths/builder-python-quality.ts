@@ -241,17 +241,21 @@ const practices: Record<string, PracticeSpec> = {
 
 };
 
-function firstTeachingParagraph(lesson: Lesson): string | undefined {
+function fullTeachingBody(lesson: Lesson): string | undefined {
     const reading = lesson.activities.find((activity) => activity.content.type === "reading");
     if (!reading || reading.content.type !== "reading") return undefined;
-    return reading.content.blocks?.find((block) => block.type === "paragraph")?.text;
+    const paragraphs = reading.content.blocks
+        ?.filter((block) => block.type === "paragraph")
+        .map((block) => block.text.trim())
+        .filter(Boolean);
+    return paragraphs?.length ? paragraphs.join("\n\n") : reading.content.body;
 }
 
 export const programmingWithPythonQualityLessons: Lesson[] = programmingWithPythonRichLessons.map((lesson) => ({
     ...lesson,
     activities: lesson.activities.map((activity) => {
         if (activity.content.type === "reading") {
-            const teachingBody = firstTeachingParagraph(lesson);
+            const teachingBody = fullTeachingBody(lesson);
             return teachingBody ? { ...activity, content: { ...activity.content, body: teachingBody } } : activity;
         }
         if (activity.content.type === "practical") {
