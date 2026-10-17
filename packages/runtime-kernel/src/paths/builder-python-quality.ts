@@ -127,42 +127,42 @@ const practices: Record<string, PracticeSpec> = {
         scenario: "The Service registry already supports lifecycle transitions. Prevent callers from bypassing its domain rules through direct attribute mutation.",
         instructions: ["Introduce a private-by-convention lifecycle field and expose a read-only property.","Route activation through a method that rejects a missing service name or invalid state.","Demonstrate an attempted invalid transition and assert that the previous state remains unchanged.","Explain why a leading underscore is a convention rather than access-control security.","Retest registry creation, eligibility and lookup after the refactor."],
         deliverables: ["Service invariant implementation","Passing and failing transition tests","Encapsulation trade-off note"],
-        completionCriteria: ["The result runs in steward-core.", "Behavior and failure evidence are captured.", "The learner explains the mechanism and its trade-offs."]
+        completionCriteria: ["A rejected lifecycle transition leaves state unchanged, with an assertion showing it.","A read-only property refuses assignment; the learner explains Python's privacy conventions.","Registry lookup and eligibility remain correct after encapsulation."]
     },
     "programming-with-python-inheritance-and-overriding": {
         objective: "Compare inherited behavior and overrides without confusing inheritance with ownership.",
         scenario: "Extend a small notification/reporting abstraction in steward-core while keeping the existing Service/Team composition intact.",
         instructions: ["Define a base Reporter with a method and a derived JsonReporter that overrides it.","Call both implementations and record which method runs.","Use super() in an override that genuinely extends base behavior and trace the call order.","Demonstrate a case where a Team should remain a collaborator rather than a Service subclass.","Write a short test verifying base and overridden behavior."],
         deliverables: ["Reporter classes","Method lookup and super() trace","Inheritance versus composition rationale"],
-        completionCriteria: ["The result runs in steward-core.", "Behavior and failure evidence are captured.", "The learner explains the mechanism and its trade-offs."]
+        completionCriteria: ["Both Reporter outputs are demonstrated and asserted.","The super() call order is recorded and explained.","Team remains a collaborator, and the is-a/has-a choice is justified."]
     },
     "programming-with-python-polymorphism-and-duck-typing": {
         objective: "Use one interface with multiple implementations and observable dispatch.",
         scenario: "The registry needs a summary exporter but should not depend on a single output format.",
         instructions: ["Implement two exporters that each provide export(services) without sharing a base class.","Write a caller that accepts any compatible exporter and demonstrate both outputs.","Add a third implementation that returns a different format without changing the caller.","Pass an object missing export and capture the failure; distinguish a contract failure from a type hierarchy requirement.","Test the output for each exporter."],
         deliverables: ["Exporter implementations","Dispatch and failure evidence","Contract decision"],
-        completionCriteria: ["The result runs in steward-core.", "Behavior and failure evidence are captured.", "The learner explains the mechanism and its trade-offs."]
+        completionCriteria: ["Two unrelated exporter implementations work with one caller.","A third exporter works without modifying the caller.","An incompatible object produces an explained contract failure."]
     },
     "programming-with-python-decorators-and-function-wrapping": {
         objective: "Implement transparent instrumentation around an existing registry operation.",
         scenario: "Measure or log a registry function while preserving its arguments, return value and metadata.",
         instructions: ["Write a decorator using a nested wrapper and *args/**kwargs.","Apply functools.wraps and verify the decorated function's __name__ is preserved.","Decorate a lookup function, call it with positional and keyword arguments, and show that results are unchanged.","Demonstrate and test how exceptions propagate through the wrapper.","Explain which concern belongs in the decorator and which remains in the domain function."],
         deliverables: ["Reusable decorator","Output and exception tests","Function metadata evidence"],
-        completionCriteria: ["The result runs in steward-core.", "Behavior and failure evidence are captured.", "The learner explains the mechanism and its trade-offs."]
+        completionCriteria: ["Positional and keyword calls preserve the original lookup result.","functools.wraps preserves function metadata.","Domain exceptions propagate unchanged through the wrapper."]
     },
     "programming-with-python-properties-class-methods-and-dataclasses": {
         objective: "Choose class features based on their semantics rather than convenience.",
         scenario: "The registry needs a derived display label, an alternate construction path and a compact immutable value representation.",
         instructions: ["Add a read-only @property that derives a Service display label without storing duplicate state.","Create a @classmethod constructor that validates and builds a Service from a mapping.","Define a frozen dataclass for a repository coordinate and compare two equal instances.","Demonstrate the difference between classmethod and staticmethod with a concrete example, or explain why no staticmethod is needed.","Test invalid input, equality and attempted mutation."],
         deliverables: ["Derived property and alternate constructor","Value-object dataclass","Behavior and failure tests"],
-        completionCriteria: ["The result runs in steward-core.", "Behavior and failure evidence are captured.", "The learner explains the mechanism and its trade-offs."]
+        completionCriteria: ["The derived property reflects changing source state.","Alternate construction enforces invalid-input rejection.","Equal frozen dataclass values compare equal and reject reassignment."]
     },
     "programming-with-python-object-oriented-design-decisions": {
         objective: "Make an explicit design decision using behavior, invariants and collaboration.",
         scenario: "The registry now has Service, Team, exporters and decorators. Review the model for unnecessary inheritance, mutable shared state and duplicated policy.",
         instructions: ["Draw the object collaboration graph with has-a and is-a relationships labelled.","Identify two invariants and show where each is enforced.","Compare a composition-based exporter with an inheritance-based alternative.","Refactor one design problem without changing external behavior and prove it with tests.","Record the rejected alternative and a trigger that would justify revisiting the decision."],
         deliverables: ["Object model diagram","Refactor with regression tests","Decision record"],
-        completionCriteria: ["The result runs in steward-core.", "Behavior and failure evidence are captured.", "The learner explains the mechanism and its trade-offs."]
+        completionCriteria: ["The diagram distinguishes has-a and is-a relationships.","Two invariants have explicit enforcement points and negative tests.","The refactor preserves external behavior and records a rejected alternative and revisit trigger."]
     },
     "programming-with-python-composition-and-collaboration": {
         objective: "Add an owning Team collaborator to the existing Service registry without changing the Service's identity or lifecycle rules.",
