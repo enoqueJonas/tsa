@@ -291,7 +291,7 @@ export const networkingFoundationsDeepLessons: Lesson[] = [
                         "Write a short incident-style timeline including symptom, evidence, root cause and corrective action.",
                     ],
                     deliverables: ["Healthy network baseline", "Failure hypothesis and controlled change", "Command/output diagnostic transcript", "Root-cause explanation at the correct network boundary", "Recovery evidence", "Updated network troubleshooting runbook"],
-                    completionCriteria: ["The failure is deliberate and recoverable.", "Diagnosis identifies a specific boundary instead of saying 'network issue'.", "The chosen commands are justified by hypotheses.", "Recovery returns the environment to the documented baseline.", "The learner can explain why nearby layers were not the root cause."],
+                    completionCriteria: ["The failure is induced only in an authorized disposable environment, with an independently available recovery path documented before the change.", "The transcript records the healthy baseline, actual fault injection, last confirmed-good layer and first confirmed-bad layer with commands and observed outputs.", "At least two competing failure hypotheses are checked; the evidence rules out an adjacent DNS, routing, firewall, transport or application layer.", "The original configuration is restored and the same end-to-end Steward request used for baseline verification succeeds afterward.", "The runbook identifies the exact symptom, failed boundary, diagnostic commands and a reproducible rollback procedure."],
                 },
             },
             {
