@@ -33,9 +33,10 @@ const observabilityWorked: Record<string, {question:string;signals:string;interp
   "telemetry-cost-noise": {question:"Why not record every request payload and every trace?",signals:"Estimate event volume, retention, label cardinality and sensitive-data exposure before choosing sampling and aggregation.",interpretation:"High-cardinality labels and unbounded retention can make telemetry expensive and unsafe. Keep rare failure evidence while avoiding credentials and personal payloads."}
 };
 function blocksFor(spec: Spec): LessonBlock[] {
+  const worked = worked;
   return [
     { type: "paragraph", text: spec.intro },
-    ...(observabilityWorked[spec.id] ? [{type:"heading" as const,id:`${spec.id}-worked`,text:"Worked diagnostic reasoning",level:2 as const},{type:"paragraph" as const,text:`Question: ${observabilityWorked[spec.id].question}`},{type:"paragraph" as const,text:`Evidence: ${observabilityWorked[spec.id].signals}`},{type:"paragraph" as const,text:`Interpretation: ${observabilityWorked[spec.id].interpretation}`}] : []),
+    ...(worked ? [{type:"heading" as const,id:`${spec.id}-worked`,text:"Worked diagnostic reasoning",level:2 as const},{type:"paragraph" as const,text:`Question: ${worked.question}`},{type:"paragraph" as const,text:`Evidence: ${worked.signals}`},{type:"paragraph" as const,text:`Interpretation: ${worked.interpretation}`}] : []),
     { type: "heading", id: `${spec.id}-principles`, text: "Observability principles", level: 2 },
     { type: "list", items: spec.principles },
     { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
