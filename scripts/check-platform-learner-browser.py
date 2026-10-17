@@ -272,6 +272,11 @@ with sync_playwright() as playwright:
     context = browser.new_context(viewport={"width": 1440, "height": 900})
     page = context.new_page()
     check_cross_school_first_reading(page)
+    # Isolate synthetic completion from the pre-existing exhaustive Platform audit.
+    # Completed modules can enter Review mode instead of the initial lesson page.
+    context.close()
+    context = browser.new_context(viewport={"width": 1440, "height": 900})
+    page = context.new_page()
     check_all_module_entries(page)
     check_all_activity_pages(page)
     check_complete_modules(page)
