@@ -110,3 +110,8 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 - Added code-snippet rendering assertions during the 328-activity Chromium journey: where the actual reading shows a code figure with a Copy button, its preformatted code must be present and the copy control visible. Commit `0676a17`.
 - Added a strict regression check that the composed Platform Builder journey has exactly **328** activities rather than quietly accepting an accidental coverage reduction to 300. Commits `6538cde` and `44c45f3`.
 - Last confirmed CI was `7306e40` (GitHub Actions 39032567789, success). Exact latest browser checks require the subsequent CI result. The browser checks verify presentation structures, not the output of all code or real infrastructure lab execution.
+
+## Batch 84 — Learner code Copy button exercised in Chromium (2026-10-17)
+
+- Beyond checking that code blocks have visible preformatted source and a Copy control, exercised the clipboard interaction for an available example during the full synthetic progression. The browser grants clipboard permissions in its isolated CI context, activates Copy, then checks for nonempty clipboard contents. The test does not execute arbitrary learner code from the browser and must not be counted as infrastructure evidence.
+- GitHub Actions run [39032853924](https://github.com/enoqueJonas/tsa/actions/runs/39032853924) passed both validation and learner-browser jobs on commit `c7a598e`, including all 328 synthetic activity visits. A later documentation-only commit needs its own CI result.
