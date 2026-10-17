@@ -16,7 +16,7 @@ function replaceRockyStrings(value: string): string {
         .replaceAll("sudo apt update", "sudo dnf check-update")
         .replaceAll("apt policy postgresql", "dnf info postgresql-server")
         .replaceAll("dpkg -l | grep -E 'python|postgresql'", "rpm -qa | grep -E 'python|postgresql'")
-        .replaceAll("apt show <package>", "dnf info <package>")
+        .replaceAll("apt show <package>", "dnf info bash")
         .replaceAll("apt update", "dnf check-update")
         .replaceAll("apt upgrade", "dnf upgrade")
         .replaceAll("apt workflow", "DNF/RPM workflow")
