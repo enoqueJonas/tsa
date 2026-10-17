@@ -141,3 +141,9 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 - Improved Rocky Linux package-manager teaching: the DNF package-check command and caption now distinguish `dnf check-update` status 0 (no updates), 100 (updates available) and 1 (error), so beginners do not treat a normal update-detection result as a failed command (`5f656da`, `d84fb95`).
 - Added `scripts/check-platform-os-observations.py` and a CI step to execute actual non-destructive examples on the disposable Linux Actions runner: `nproc`, bounded `vmstat 1 5`, `/proc/<current PID>/status`, `/proc/<current PID>/fd` and `stat /var` (`ac6ad61`, `68e6dd9`). This supplies actual execution evidence from CI's Ubuntu runner, not certification of the user's Rocky Linux/Proxmox homelab.
 - The latest source execution CI must be checked before asserting acceptance. Activity-level qualitative review and real lab sign-off remain pending.
+
+## Batch 89 — Disposable filesystem exercise and worked-output line-break verification (2026-10-17)
+
+- Added a full-journey browser assertion that CPU output is rendered as separate terminal lines rather than escaped text. The source examples remain clearly labeled illustrative, not generated from the learner host. Commit `7660596`.
+- Added an isolated filesystem practical exercise (`scripts/check-platform-filesystem-drill.py`) and CI step that create a temporary file, symlink it, inspect `stat`/`ls`, set and independently verify POSIX mode 0640, determine backing storage with `df` and `findmnt`, and observe a dangling symlink when the disposable target is deleted. No real host files are altered. Commits `3779119`, `960aa02`.
+- The filesystem execution job's passing status must be checked on [run 39034636184](https://github.com/enoqueJonas/tsa/actions/runs/39034636184) before marking the new lab evidence validated. As always, this is Ubuntu Actions runner execution, not real NAS, Windows, Rocky, or Proxmox sign-off.
