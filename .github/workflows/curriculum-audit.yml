@@ -30,6 +30,12 @@ jobs:
           python-version: '3.12'
       - name: Execute Python teaching examples
         run: pnpm check:python-examples
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Execute Java teaching example
+        run: pnpm check:java-examples
       - name: Report cross-school code example evidence
         run: pnpm report:curriculum-examples
       - name: Build applications
