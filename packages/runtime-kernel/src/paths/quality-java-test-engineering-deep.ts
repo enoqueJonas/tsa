@@ -21,11 +21,34 @@ const resourcesFor = (id: string): LearningResource[] => {
  return [java, junit];
 };
 
+const javaPracticeEvidence: Record<string, string> = {
+ "jvm-maven": "JVM bytecode and clean Maven test evidence",
+ "maven-lifecycle": "Maven phase and goal failure trace",
+ "maven-dependencies": "Direct/transitive dependency tree and scope evidence",
+ "surefire-failsafe": "Separated unit and integration test gate results",
+ "junit-platform": "JUnit engine discovery execution trace",
+ "junit-lifecycle": "Instance lifecycle state-isolation test result",
+ "junit-parameterization": "Parameterized boundary case execution",
+ "junit-extensions": "Extension callback or parameter injection trace",
+ "types-modeling": "Validated immutable fixture and rejected invalid input",
+ "equality-object-contracts": "Equality/hashCode contract tests and set behavior",
+ "interfaces-composition": "Two implementations verified against one interface",
+ "dependency-injection": "Constructor-injected test double interaction result",
+ "generics-collections": "Typed collection contract with observed iteration",
+ "exceptions-resources": "Exception handling and resource closure evidence",
+ "annotations-reflection": "Annotation discovery and missing case evidence",
+ "junit-tags": "Tagged inclusion and exclusion run outputs",
+ "functional-java": "Stream/Optional transform and empty-case results",
+ "concurrency": "Repeatable shared-state race or thread-safety evidence",
+};
+
 type Spec = {
  id: string; title: string; principle: string; mechanics: string[]; frameworkUse: string[];
  antiPatterns: string[]; practice: string[]; questions: string[]; code?: string;
 };
 function lesson(spec: Spec): Lesson {
+ const evidence = javaPracticeEvidence[spec.id];
+ if (!evidence) throw new Error(`Missing Java practical evidence: ${spec.id}`);
  const blocks: LessonBlock[]=[
   {type:"paragraph",text:spec.principle},
   {type:"heading",id:`${spec.id}-mechanics`,text:"Mechanics you must understand",level:2},
@@ -39,7 +62,7 @@ function lesson(spec: Spec): Lesson {
  blocks.push({type:"heading",id:`${spec.id}-check`,text:"Check your understanding",level:2},{type:"list",items:spec.questions},{type:"resources",title:"Continue learning",resources:resourcesFor(spec.id)});
  return {id:`quality-java-${spec.id}`,title:spec.title,activities:[
   {id:`quality-java-${spec.id}-001`,title:spec.title,estimatedMinutes:55,content:{type:"reading",body:spec.principle,blocks}},
-  {id:`quality-java-${spec.id}-002`,title:`Build: ${spec.title}`,estimatedMinutes:65,content:{type:"practical",objective:`Apply ${spec.title} while growing steward-tests.`,scenario:"Every exercise changes the real test project. Small isolated experiments are allowed only to expose a Java mechanism before applying it to steward-tests.",instructions:spec.practice,deliverables:["Committed steward-tests increment","Executable example or test","Short design note answering the lesson questions"],completionCriteria:["The learner can explain the Java mechanism without framework magic.","The increment compiles and tests execute.","The design keeps dependencies explicit.","The learner can identify the lesson anti-patterns in a code review."]}}
+  {id:`quality-java-${spec.id}-002`,title:`Build: ${spec.title}`,estimatedMinutes:65,content:{type:"practical",objective:`Apply ${spec.title} while growing steward-tests.`,scenario:"Every exercise changes the real test project. Small isolated experiments are allowed only to expose a Java mechanism before applying it to steward-tests.",instructions:spec.practice,deliverables:["Committed steward-tests increment",evidence,"Relevant executed test or command output","Short design note answering the lesson questions"],completionCriteria:["The learner can explain the Java mechanism without framework magic.","The increment compiles and tests execute.","The design keeps dependencies explicit.","The learner can identify the lesson anti-patterns in a code review."]}}
  ]};
 }
 
