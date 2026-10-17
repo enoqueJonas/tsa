@@ -66,6 +66,33 @@ for (const required of ["If steward-common has independently earned extraction",
   if (!deliveryArtifacts.includes(required)) failures.push(`Delivery steward-common lifecycle must preserve conditional distribution semantics: ${required}`);
 }
 
+// Every Artifact Supply Chain reading should have a distinct practical evidence contract.
+// A single generic objective/acceptance list makes unrelated exercises look complete.
+const artifactSpecIds = [...deliveryArtifacts.matchAll(/^\s*id: "([^"]+)",\s*\n\s*title: "[^"]+"/gm)].map((match) => match[1]);
+const contractSource = deliveryArtifacts.match(/const practicalContracts: Record<string, PracticalContract> = \{([\s\S]*?)\n\};/)?.[1] ?? "";
+const contractedIds = [...contractSource.matchAll(/^\s*"([^"]+)": \{ objective: "[^"]+", deliverables: \[[^\]]+\], completionCriteria: \[[^\]]+\] \},?$/gm)].map((match) => match[1]);
+for (const id of artifactSpecIds) {
+  if (contractedIds.filter((candidate) => candidate === id).length !== 1) {
+    failures.push(`Artifact Supply Chain lesson ${id} must have exactly one tailored practical contract`);
+  }
+}
+for (const id of contractedIds) {
+  if (!artifactSpecIds.includes(id)) failures.push(`orphan Artifact Supply Chain practical contract: ${id}`);
+}
+if (!deliveryArtifacts.includes("objective: practicalContracts[spec.id].objective") ||
+    !deliveryArtifacts.includes("completionCriteria: practicalContracts[spec.id].completionCriteria")) {
+  failures.push("Artifact Supply Chain practicals must use lesson-specific objectives and acceptance criteria");
+}
+
+// Steward's chosen CI executor is GitLab. A comparison lesson may teach other providers,
+// but its canonical container-build walkthrough must not silently switch to GitHub Actions.
+const ciExamples = sources.get("delivery-continuous-integration-deep.ts") ?? "";
+const containerBuildSection = ciExamples.split('rich("container-build"')[1]?.split('id: "continuous-integration-lab"')[0] ?? "";
+if (!containerBuildSection.includes("Example GitLab CI pipeline shape") ||
+    containerBuildSection.includes("actions/checkout@")) {
+  failures.push("Delivery CI container-build lesson must use a GitLab CI/CD example");
+}
+
 // Later schools must preserve the actual steward-common state rather than assuming extraction occurred.
 const reliabilityMetrics = sources.get("reliability-metrics-prometheus-grafana-deep.ts") ?? "";
 const architectGovernance = sources.get("architect-evaluation-governance-deep.ts") ?? "";
