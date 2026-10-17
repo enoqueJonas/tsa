@@ -520,3 +520,7 @@ Audited the Jenkins-to-GitLab migration exercise: it was behavior-focused but la
 ## Review batch 50 — Concurrent schema backfill example
 
 Added a concrete stale-read versus ownership-transfer race to Production Schema Evolution (`aa02e02`). The illustrative guarded SQL distinguishes one updated row from zero eligible rows, states its compatibility-writer assumptions and explains why this is not a complete concurrency protocol. Strengthened the backfill practical to require testing this interleaving and reconciling conflicts (`456bfe9`). Source-level corrections need latest build/audit and rendered validation.
+
+## Review batch 51 — Release lab conditional package identity
+
+Reviewed the Release Engineering integrated lab and found an unconditional instruction to record `steward-common` version/hash, which contradicted the evidence-gated package-extraction policy and could push learners to fabricate a package. Commit `fb707c9` makes internal-package evidence conditional upon actual Builder extraction and otherwise requires a documented deferral. Commit `71cad9a` adds a curriculum integrity guard for that rule. Build and rendered validation are outstanding for these new commits.
