@@ -32,10 +32,8 @@ const deliveryFieldwork: Record<string, { model: string; example: string; expect
  */
 function prepareLabSequence(lessons: Lesson[], model: { model: string; failure: string }): Lesson[] {
     return lessons.map((lesson) => {
-        let encounteredReading = false;
         const activities = lesson.activities.flatMap((activity) => {
             if (activity.content.type === "reading") {
-                encounteredReading = true;
                 return [activity];
             }
             if (activity.content.type !== "practical") return [activity];
@@ -63,12 +61,10 @@ function prepareLabSequence(lessons: Lesson[], model: { model: string; failure: 
                     ],
                 },
             };
-            encounteredReading = true;
             // Always insert the experiment-specific reading immediately before
             // the lab, including in lessons whose existing reading is broad.
             return [guidance, activity];
         });
-        void encounteredReading;
         return { ...lesson, activities };
     });
 }
