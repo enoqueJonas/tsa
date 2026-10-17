@@ -343,3 +343,8 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 
 - Fixed a strict-mode Playwright locator error uncovered in initial cross-school smoke: two nested `<main>` elements exist in the lesson view, so the learner content assertion must target the inner `main` (`63ce518`). That fix passed both CI jobs, including all ten school entry checks and full 328-activity Platform traversal: [39042044242](https://github.com/enoqueJonas/tsa/actions/runs/39042044242).
 - Expanded the all-ten-school smoke further: it now visits each activity of the **first module** in each school, checks nonempty content/placeholder absence and traversable Next progression; reflection input is synthetic and explicitly not treated as practical evidence (`ef10278`). It does **not** yet certify all modules or genuine infrastructure outcomes across those schools. Exact-head browser CI pending.
+
+## Batch 125 — Executable synthetic release-identity gate (2026-10-17)
+
+- Added standard-library Python CI drill `scripts/check-delivery-release-identity.py` (`bc06997`) and wired it into the curriculum workflow (`e845959`). It constructs immutable SHA-256 fixture digests for Steward's API, outbox publisher and lifecycle consumer. A valid approved tuple passes; mutable-tag repoint, missing runtime role, mismatched CI run/source revision and a tag passed instead of a digest all **must** fail closed.
+- This is deliberately a **synthetic contract verifier**, not actual Docker/Nexus/GitLab verification; it adds executable negative-control evidence beyond merely requiring learners to collect release digests. Current CI status is to be confirmed.
