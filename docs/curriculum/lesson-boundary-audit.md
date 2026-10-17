@@ -512,3 +512,7 @@ User reported the previous build successful. Reviewed Delivery Engineer mileston
 ## Review batch 48 — Docker integrated lab identity and authorization
 
 Corrected the Docker integrated lab's premature demand for a registry digest: `bc3fb3d` now asks for source commit and local image ID during local image work, with registry digest captured after the later Artifact Supply Chain publication step. Commit `b2bf8e7` strengthens the end-to-end container exercise with a forbidden cross-team mutation that must not create an outbox event. These source edits postdate the prior successful build and need fresh build and UI validation.
+
+## Review batch 49 — Bounded CI migration worked equivalence
+
+Audited the Jenkins-to-GitLab migration exercise: it was behavior-focused but lacked a concrete side-by-side failure-gate example and assumed access to a real inherited Jenkins installation. Commit `8c4025c` adds an authorization-regression gate migration trace (tests must block publishing, not just show green builds), identifies stage dependency/credentials/source identity as equivalence dimensions, and explicitly permits a labeled Jenkinsfile fixture when no inherited system exists. Simulated cutover evidence must not be represented as a production migration. This source change awaits refreshed audit/build and rendered validation.
