@@ -43,6 +43,8 @@ const sequences = [
   ["An Engine is an independent object", "Car holds an Engine and delegates starting", "A Car can use a different Engine instance", "A small test double proves delegation"],
   ["Inherit an existing behavior", "Override and reuse parent behavior (run after the Vehicle definition above)", "Extend initialization carefully (run after the Vehicle definition above)"],
   ["Different implementations of the same operation", "A missing method fails at runtime"],
+  ["Create two objects and trace self through their methods", "Observe separate object identities and stored attributes"],
+  ["Separate ownership from lifecycle rules", "Reject a bad transition without corrupting state"],
 ];
 const extracted = new Map();
 const availableExamples = [];
