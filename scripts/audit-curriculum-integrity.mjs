@@ -700,7 +700,7 @@ for (const [schoolId, [file, arrayName]] of Object.entries(schoolRegistries)) {
   const schoolStart = planned.indexOf(`{ id: "${schoolId}", title:`);
   const nextSchool = schoolStart >= 0 ? planned.indexOf('\n        { id: "', schoolStart + 1) : -1;
   const section = schoolStart >= 0 ? planned.slice(schoolStart, nextSchool >= 0 ? nextSchool : planned.length) : "";
-  const expected = [...section.matchAll(/module\("([^"]+)"/g)].map((m) => m[1]);
+  const expected = [...section.matchAll(/plannedModule\("([^"]+)"/g)].map((m) => m[1]);
   const registry = sources.get(file) ?? "";
   const tail = registry.split(`export const ${arrayName}:`)[1] ?? "";
   const symbols = tail.match(/=\s*\[([^\]]+)\]/)?.[1]?.split(",").map((s) => s.trim()).filter(Boolean) ?? [];
