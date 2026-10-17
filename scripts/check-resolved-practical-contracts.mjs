@@ -53,6 +53,21 @@ if (!builder || builder.paths.length !== 15) {
     }
   }
 }
+const builderMilestones = [
+  "core-infrastructure-operated-services-milestone",
+  "os-lifecycle-operated-fleet-milestone",
+  "windows-mixed-estate-operated-milestone",
+];
+for (const id of builderMilestones) {
+  const lesson = builder?.paths.flatMap((path) => path.lessons).find((item) => item.id === id);
+  const [first, second] = lesson?.activities ?? [];
+  if (first?.content?.type !== "reading" ||
+      typeof first.content.body !== "string" ||
+      first.content.body.length < 200 ||
+      second?.content?.type !== "practical") {
+    problems.push(`Platform Builder milestone is missing its prerequisite worked reading: ${id}`);
+  }
+}
 const nonEmpty = (value) => typeof value === "string" && value.trim().length > 0;
 const detailedList = (value) => Array.isArray(value) && value.length > 0 &&
   value.every((entry) => nonEmpty(entry));
