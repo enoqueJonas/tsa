@@ -108,24 +108,24 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 | security-steward | `security-vault-implementation-deep` | In review | In review | In review | — | — | School-wide source composition inspected; operational lab validation outstanding |
 | security-steward | `security-vulnerability-laboratory-deep` | In review | In review | In review | — | — | School-wide source composition inspected; operational lab validation outstanding |
 | security-steward | `security-web-api-threats-deep` | In review | In review | In review | — | — | School-wide source composition inspected; operational lab validation outstanding |
-| reliability-engineer | `reliability-alerting-on-call-deep` | — | — | — | — | — | Not started |
-| reliability-engineer | `reliability-alertmanager-implementation-deep` | — | — | — | — | — | Not started |
-| reliability-engineer | `reliability-central-logging-decision` | — | — | — | — | — | Not started |
-| reliability-engineer | `reliability-database-stewardship-deep` | — | — | — | — | — | Not started |
-| reliability-engineer | `reliability-data-protection-disaster-recovery-deep` | — | — | — | — | — | Not started |
-| reliability-engineer | `reliability-distributed-tracing-implementation-deep` | — | — | — | — | — | Not started |
-| reliability-engineer | `reliability-fault-injection-deep` | — | — | — | — | — | Not started |
-| reliability-engineer | `reliability-incident-management-deep` | — | — | — | — | — | Not started |
-| reliability-engineer | `reliability-metrics-prometheus-grafana-deep` | — | — | — | — | — | Not started |
-| reliability-engineer | `reliability-observability-deep` | — | — | — | — | — | Not started |
-| reliability-engineer | `reliability-observability-stack-integration-deep` | — | — | — | — | — | Not started |
-| reliability-engineer | `reliability-performance-capacity-deep` | — | — | — | — | — | Not started |
-| reliability-engineer | `reliability-production-logging-deep` | — | — | — | — | — | Not started |
-| reliability-engineer | `reliability-sre-foundations-deep` | — | — | — | — | — | Not started |
-| reliability-engineer | `reliability-resilience-distributed-failure-deep` | — | — | — | — | — | Not started |
-| reliability-engineer | `reliability-service-level-engineering-deep` | — | — | — | — | — | Not started |
-| reliability-engineer | `reliability-steward-reliability-program-deep` | — | — | — | — | — | Not started |
-| reliability-engineer | `reliability-tracing-backend-decision` | — | — | — | — | — | Not started |
+| reliability-engineer | `reliability-alerting-on-call-deep` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
+| reliability-engineer | `reliability-alertmanager-implementation-deep` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
+| reliability-engineer | `reliability-central-logging-decision` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
+| reliability-engineer | `reliability-database-stewardship-deep` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
+| reliability-engineer | `reliability-data-protection-disaster-recovery-deep` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
+| reliability-engineer | `reliability-distributed-tracing-implementation-deep` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
+| reliability-engineer | `reliability-fault-injection-deep` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
+| reliability-engineer | `reliability-incident-management-deep` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
+| reliability-engineer | `reliability-metrics-prometheus-grafana-deep` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
+| reliability-engineer | `reliability-observability-deep` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
+| reliability-engineer | `reliability-observability-stack-integration-deep` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
+| reliability-engineer | `reliability-performance-capacity-deep` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
+| reliability-engineer | `reliability-production-logging-deep` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
+| reliability-engineer | `reliability-sre-foundations-deep` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
+| reliability-engineer | `reliability-resilience-distributed-failure-deep` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
+| reliability-engineer | `reliability-service-level-engineering-deep` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
+| reliability-engineer | `reliability-steward-reliability-program-deep` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
+| reliability-engineer | `reliability-tracing-backend-decision` | In review | In review | In review | — | — | Curriculum source and reading integrity triage; practical labs pending |
 | architect | `architect-evaluation-governance-deep` | — | — | — | — | — | Not started |
 | architect | `architect-architecture-fundamentals-deep` | — | — | — | — | — | Not started |
 | architect | `architect-milestone-deep` | — | — | — | — | — | Not started |
@@ -265,3 +265,10 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - The learning journey covers foundational reasoning, system threat modeling, web/API risks, controlled vulnerability exercises, application security, host/network security, container and artifact controls, identity and secrets, certificate trust, directory federation, secure transfers, and the final Steward assessment.
 - **Reading-body concern confirmed:** multiple factories contain extended explanatory rich blocks but only their initial paragraph in fallback `body` text. Candidate sources include foundations, threat modeling, web/API, application, container delivery, Linux/network, vulnerability lab, enterprise federation and secrets. Remediation not yet applied in this pass.
 - **Acceptance outstanding:** laboratory isolation and ethical scope, safety of examples, actual reproducibility of certificate and identity exercises, command correctness, resource relevance, visual reading experience, and independent final security assessment. No execution evidence collected in this pass. Modules are in review, not accepted.
+
+### 2026-10-17 — Reliability Engineer: completed reading-body restoration and school inventory
+
+- Reviewed the canonical 16-path order in `reliability-engineer.ts`: SRE/SLIs → observability + logs + metrics + tracing → integrated stack → alerting/Alertmanager → DB stewardship, performance, resilience, recovery, incidents → fault injection → milestone. The logical source census holds 18 module entries because decision lessons are composed into paths.
+- **Verified repository state after interrupted call:** 10 sources (SRE foundations, SLOs, observability, production logging, metrics, alerting, database, performance, resilience and recovery) already contain the full-paragraph reading-body fix. These edits were present on the branch despite the previous interruption; no new commits were needed for those files.
+- **Completed remaining fixes:** incident management (`d8aacea`) and fault injection (`7881019`) now also expose all authored paragraph text, rather than only an introduction, in fallback reading bodies.
+- **Acceptance remains open:** Prometheus/Grafana/Tempo/Alertmanager labs, telemetry signal fidelity, SLO mathematics, PostgreSQL recovery evidence, fault injection blast-radius controls, reproducible incident simulation, reference links, rendered learner UX and final reliability milestone have not been exercised/verified. No school modules marked Accepted from source edits alone.
