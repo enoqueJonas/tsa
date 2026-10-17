@@ -127,9 +127,36 @@ def inspect_school(page):
     print(f"PASS {SCHOOL}: traversed {len(evidence)} real rendered activities", flush=True)
 
 
+def check_mobile_first_module(page):
+    """Check actual mobile layout for reading/practical in the first school module."""
+    page.goto(f"{BASE}/?view=curriculum&school={SCHOOL}", wait_until="networkidle")
+    page.get_by_role("button", name=MODULE).first.click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+    main = page.locator("main").last
+    main.wait_for(timeout=30000)
+    assert main.inner_text().strip(), f"Blank mobile lesson for {SCHOOL}"
+    assert not page.evaluate("document.documentElement.scrollWidth > innerWidth + 2"), (
+        f"Horizontal mobile overflow on first activity in {SCHOOL}"
+    )
+    next_button = page.get_by_role("button", name=NEXT)
+    assert next_button.count() == 1 and next_button.is_enabled(), (
+        f"Mobile next control unavailable for {SCHOOL}"
+    )
+    next_button.click()
+    main.wait_for(timeout=30000)
+    assert main.inner_text().strip(), f"Blank mobile follow-up for {SCHOOL}"
+    assert not page.evaluate("document.documentElement.scrollWidth > innerWidth + 2"), (
+        f"Horizontal mobile overflow on follow-up activity in {SCHOOL}"
+    )
+    print(f"PASS {SCHOOL} mobile first two activities at 390px", flush=True)
+
+
 with sync_playwright() as playwright:
     browser = playwright.chromium.launch(headless=True)
     context = browser.new_context(viewport={"width": 1440, "height": 900})
     inspect_school(context.new_page())
     context.close()
+    mobile = browser.new_context(viewport={"width": 390, "height": 844})
+    check_mobile_first_module(mobile.new_page())
+    mobile.close()
     browser.close()
