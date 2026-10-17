@@ -41,10 +41,11 @@ const practices: Record<string, PracticalContent> = {
             "Implement the smallest GitLab CI/CD deployment stage or versioned deployment script that selects one immutable Steward image, updates the target and starts API, outbox-publisher and lifecycle-consumer roles from that same digest without rebuilding the artifact.",
             "Use a dedicated deployment identity rather than a general homelab administrator identity.",
             "Force one safe precondition or health-verification failure and prove the workflow stops non-zero instead of continuing.",
+            "Interrupt deployment after one role updates but before the remaining roles converge, then verify the procedure either restores the known-good release or blocks traffic and reports a partial deployment explicitly.",
             "Compare the automated workflow with the original manual sequence and identify what remains intentionally outside it.",
         ],
         deliverables: ["Versioned deployment automation", "Dedicated deployment-identity note", "Successful execution evidence", "Fail-closed evidence"],
-        completionCriteria: ["The artifact is selected, not rebuilt, during deployment.", "The deployment does not require undocumented interactive commands.", "Failure prevents the workflow from claiming success."],
+        completionCriteria: ["The artifact is selected, not rebuilt, during deployment.", "The deployment does not require undocumented interactive commands.", "A partial multi-role deployment is detected and leaves no false claim of successful release.", "Failure prevents the workflow from claiming success."],
     },
     "Release Approvals": {
         type: "practical",
