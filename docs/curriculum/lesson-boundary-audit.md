@@ -392,3 +392,7 @@ User reports a successful local build on the working branch. Record this as **us
 ## Review batch 28 — Blue-green rollback boundary
 
 Inspected Continuous Delivery's Blue-Green teaching and associated practical contract. Commit `c1dcd3b` adds a concrete sequence of direct candidate verification, traffic switch, observed client verification, failure detection, route reversal and shared-database/external-event caveats. It avoids conflating duplicated application processes with independent persistent state. Automated audit and rendered inspection are not yet independently verified after these commits.
+
+## Review batch 29 — Canary and feature flags
+
+Inspected the Continuous Delivery canary and feature-flag reading/practical pairs. Commit `9d71e56` adds an evidence-limited 5%-traffic/ten-request example explaining why zero observed errors cannot justify promotion, and a reversible feature-activation example that explicitly excludes irreversible data/external effects. The practical contracts already require a defer decision when traffic/observability is insufficient and flag ownership/removal conditions. This is content remediation, not evidence of production canary execution. User-reported earlier successful build predates this edit; curriculum audit and current build remain unverified.
