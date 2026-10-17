@@ -65,7 +65,7 @@ export const configurationManagementDeepLessons: Lesson[] = [
         [
             { type: "heading", id: "control-node-and-managed-nodes", text: "Control node and managed nodes", level: 2 },
             { type: "paragraph", text: "The control node contains the inventory and playbooks. Managed nodes are reached using SSH and receive module operations. Authentication, privilege escalation and host-key trust therefore remain part of the system design rather than disappearing behind the tool." },
-            { type: "code", language: "bash", caption: "First connectivity proof", code: "ansible steward_hosts -m ansible.builtin.ping\nansible steward_hosts -m ansible.builtin.setup" },
+            { type: "code", language: "bash", caption: "First connectivity proof", code: "ansible -i inventory.ini steward_api -m ansible.builtin.ping\nansible -i inventory.ini steward_api -m ansible.builtin.setup" },
             { type: "heading", id: "modules-before-shell", text: "Prefer modules over shell commands", level: 2 },
             { type: "paragraph", text: "Purpose-built modules understand resource state and often provide safer idempotency than arbitrary shell commands. Use shell or command only when there is no suitable module or when the command itself is genuinely the resource boundary." },
         ],
