@@ -774,8 +774,10 @@ const platformComputer = sources.get("platform-builder-computer-os-deep.ts") ?? 
 const platformLinux = sources.get("platform-builder-linux-administration-deep.ts") ?? "";
 const platformLinuxQuality = sources.get("platform-builder-linux-administration-quality.ts") ?? "";
 const platformConfig = sources.get("platform-builder-configuration-management-deep.ts") ?? "";
-if (platformComputer.includes("sample_pid=$
-") || platformComputer.includes("stat /path/to/steward")) {\n  failures.push("Platform OS foundations has malformed PID expansion or nonexistent stat target");\n}\nif (platformComputer.includes("/proc/<PID>/status") || platformComputer.includes("/proc/<PID>/fd")) {
+if (platformComputer.includes("sample_pid=$\\n") || platformComputer.includes("stat /path/to/steward")) {
+  failures.push("Platform OS foundations has malformed PID expansion or nonexistent stat target");
+}
+if (platformComputer.includes("/proc/<PID>/status") || platformComputer.includes("/proc/<PID>/fd")) {
   failures.push("Platform computer/OS teaching has an unbound /proc/<PID> shell placeholder");
 }
 if (platformLinux.includes("kill -TERM <pid>") || platformLinux.includes("kill -KILL <pid>")) {
