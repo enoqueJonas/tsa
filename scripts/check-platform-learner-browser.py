@@ -151,7 +151,13 @@ def check_complete_modules(page):
                 )
                 copy = block.get_by_role("button", name="Copy")
                 assert copy.is_visible(), f"Code block has no visible copy control at {activity_id}"
-            evidence.append({"module": module_index + 1, "activity_id": activity_id, "activity_type": activity_type, "code_blocks": code_blocks.count()})
+            # Catch unreadable, empty, or placeholder-only learner text.
+            learner_text = page.locator("main").last.inner_text().strip()
+            assert len(learner_text) >= 90, f"Insufficient learner content at {activity_id}"
+            assert not re.search(r"\\b(?:TODO|TBD|Lorem ipsum)\\b", learner_text, re.IGNORECASE), (
+                f"Unfinished editorial placeholder at {activity_id}"
+            )
+            evidence.append({"module": module_index + 1, "activity_id": activity_id, "activity_type": activity_type, "code_blocks": code_blocks.count(), "visible_characters": len(learner_text)})
             # Exercise the user-facing copy control in Chromium, not only its appearance.
             if code_blocks.count() and index == 0:
                 page.context.grant_permissions(["clipboard-read", "clipboard-write"])
