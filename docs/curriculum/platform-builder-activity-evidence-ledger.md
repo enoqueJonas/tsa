@@ -104,3 +104,9 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 - Extended the full Chromium synthetic progression test to assert activity-type-specific visible content: reflection editor and label, practical assignment and evidence requirements, or reading paragraphs. Browser traversal still uses isolated synthetic responses, never real student submissions.
 - GitHub Actions run [39032411812](https://github.com/enoqueJonas/tsa/actions/runs/39032411812) passed both the standard validation and learner-browser jobs for `67d5be1`. Earlier run [39032253329](https://github.com/enoqueJonas/tsa/actions/runs/39032253329) confirmed actual sequential navigation of all **328 activities in 15 Platform Builder modules**.
 - This establishes browser navigation and basic type-specific rendering coverage for all activities. It does not establish a human qualitative approval of all instructions, nor actual Proxmox/Rocky/Windows/NAS/DNS/VPN lab performance. Those gates remain distinct and pending.
+
+## Batch 83 — Full-activity code presentation regression checks (2026-10-17)
+
+- Added code-snippet rendering assertions during the 328-activity Chromium journey: where the actual reading shows a code figure with a Copy button, its preformatted code must be present and the copy control visible. Commit `0676a17`.
+- Added a strict regression check that the composed Platform Builder journey has exactly **328** activities rather than quietly accepting an accidental coverage reduction to 300. Commits `6538cde` and `44c45f3`.
+- Last confirmed CI was `7306e40` (GitHub Actions 39032567789, success). Exact latest browser checks require the subsequent CI result. The browser checks verify presentation structures, not the output of all code or real infrastructure lab execution.
