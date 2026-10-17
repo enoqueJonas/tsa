@@ -6,6 +6,7 @@ const root = path.join(process.cwd(), "packages/runtime-kernel/src/paths");
 const files = fs.readdirSync(root).filter((file) => file.endsWith(".ts"));
 const findings = [];
 const computed = [];
+const spreadContracts = [];
 const stats = { files: files.length, explicit: 0, dynamic: 0 };
 const keys = ["objective", "scenario", "instructions", "deliverables", "completionCriteria"];
 const prop = (obj, key) => obj.properties.find((p) =>
@@ -19,13 +20,16 @@ for (const name of files) {
     if (ts.isObjectLiteralExpression(node) && literal(prop(node, "type")?.initializer) === "practical") {
       stats.explicit++;
       const line = file.getLineAndCharacterOfPosition(node.getStart(file)).line + 1;
+      const spreads = node.properties.some((item) => ts.isSpreadAssignment(item));
       const absent = [];
       const weak = [];
       const indirect = [];
       for (const key of keys) {
         const value = prop(node, key)?.initializer;
         if (!value) {
-          absent.push(key);
+          const shorthand = node.properties.some((item) => ts.isShorthandPropertyAssignment(item) && item.name.text === key);
+          if (shorthand || spreads) indirect.push(key);
+          else absent.push(key);
           continue;
         }
         const str = literal(value);
@@ -43,6 +47,7 @@ for (const name of files) {
       if (indirect.length) {
         stats.dynamic++;
         computed.push({ file: name, line, fields: indirect });
+        if (spreads) spreadContracts.push({ file: name, line });
       }
       if (absent.length || weak.length) findings.push({ file: name, line, absent, weak });
     }
@@ -53,7 +58,7 @@ for (const name of files) {
 console.log(`Practical source audit: ${stats.files} path files; ${stats.explicit} explicit practical content objects; ${computed.length} use computed fields; ${findings.length} literal missing/empty candidates.`);
 console.log("Literal missing/empty candidates (manual triage required):");
 for (const item of findings) console.log(`  ${item.file}:${item.line}: missing=[${item.absent.join(", ")}] weak=[${item.weak.join(", ")}]`);
-console.log(`Computed-field practicals requiring resolved lesson inspection: ${computed.length} (not classified as missing).`);
+console.log(`Computed-field practicals requiring resolved lesson inspection: ${computed.length} (not classified as missing); ${spreadContracts.length} include object spreads.`);
 const byFile = new Map();
 for (const item of findings) byFile.set(item.file, (byFile.get(item.file) ?? 0) + 1);
 console.log("Modules ranked by literal-contract findings:");
