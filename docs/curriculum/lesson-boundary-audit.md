@@ -406,3 +406,7 @@ Compared the Delivery Engineer Ansible Fundamentals connectivity snippet with it
 ## Review batch 31 — CI cache and Nexus dependency authority
 
 Reviewed the CI Caching lesson and the Artifact Supply Chain public-proxy activity. Commit `a210f5a` adds a warm-cache versus clean-runner failure diagnosis, requiring missing inputs be declared rather than silently preserved in mutable workspace state. Commit `4a066b7` adds a dependency-confusion scenario showing that Nexus group/proxy caching is not equivalent to authority for an internal package and requires source, namespace, version and checksum verification. Further lesson-level curriculum review, learner execution, render validation and post-change build evidence remain pending.
+
+## Review batch 32 — Artifact retention and quality-gate decisions
+
+Inspected Delivery Artifact Supply Chain's retention exercise and the CI Quality Gates lesson. Commit `5bf5ce1` introduces a concrete release-in-use scenario that prevents age-only cleanup from deleting a still-deployed or rollback-required image and makes dependency retention/retrieval explicit. Commit `3459d22` traces a mandatory failing authorization test, rejecting promotion despite a green build, and differentiates a controlled release-scoped exception from silently weakening future policy. Source edits remain unverified in current build and rendered lessons; user-reported earlier build predates these commits.
