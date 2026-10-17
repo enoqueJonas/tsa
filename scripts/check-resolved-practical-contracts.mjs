@@ -102,6 +102,35 @@ if (delivery) {
     }
   }
 }
+const cloud = journey.schools.find((school) => school.id === "cloud-engineer");
+if (!cloud || cloud.paths.length !== 11) {
+  problems.push("Cloud Engineer must expose 11 learning paths");
+} else {
+  for (const path of cloud.paths) {
+    const first = path.lessons?.[0];
+    const blocks = first?.activities?.[0]?.content?.blocks;
+    if (first?.id !== `${path.id}-operational-model` ||
+        !Array.isArray(blocks) ||
+        !blocks.some((block) => block.type === "heading" && block.id === "worked-experiment") ||
+        !blocks.some((block) => block.type === "heading" && block.id === "failure-analysis")) {
+      problems.push(`Missing Cloud Engineer worked foundation: ${path.id}`);
+    }
+    for (const lesson of path.lessons) {
+      lesson.activities.forEach((activity, index) => {
+        if (activity.content.type !== "practical") return;
+        const intro = lesson.activities[index - 1];
+        const teaching = intro?.content?.blocks;
+        if (intro?.content?.type !== "reading" ||
+            !intro.id.endsWith("-cloud-preparation") ||
+            !Array.isArray(teaching) ||
+            !teaching.some((block) => block.type === "heading" && block.id === "acceptance") ||
+            !teaching.some((block) => block.type === "heading" && block.id === "failure")) {
+          problems.push(`Cloud lab missing preparation: ${path.id}/${lesson.id}/${activity.id}`);
+        }
+      });
+    }
+  }
+}
 const nonEmpty = (value) => typeof value === "string" && value.trim().length > 0;
 const detailedList = (value) => Array.isArray(value) && value.length > 0 &&
   value.every((entry) => nonEmpty(entry));
