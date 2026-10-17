@@ -4,7 +4,7 @@ Updated: 2026-10-17. Branch: `curriculum/oop-depth-reconstruction`.
 
 ## What CI proves
 
-Workflow [39043938019](https://github.com/enoqueJonas/tsa/actions/runs/39043938019) completed successfully for all eleven jobs: source/build validation, the exhaustive Platform Builder browser job and the nine-school browser matrix. The tests traverse **2,816 learner activities across all ten schools** using isolated **synthetic** browser progress. These checks verify navigation, nontrivial rendered text, reading paragraphs, practical instruction/evidence sections, displayed code blocks, absence of obvious TODO markers and absence of JavaScript page errors. They do **not** certify the truth or clarity of the subject matter, mastery, real infrastructure execution, or external tool availability.
+Workflow [39043938019](https://github.com/enoqueJonas/tsa/actions/runs/39043938019) completed successfully for all eleven jobs: source/build validation, the exhaustive Platform Builder browser job and the nine-school browser matrix. The tests traverse **2,815 learner activities across all ten schools** using isolated **synthetic** browser progress. These checks verify navigation, nontrivial rendered text, reading paragraphs, practical instruction/evidence sections, displayed code blocks, absence of obvious TODO markers and absence of JavaScript page errors. They do **not** certify the truth or clarity of the subject matter, mastery, real infrastructure execution, or external tool availability.
 
 | School | Synthetic browser activities traversed |
 | --- | ---: |
@@ -13,12 +13,12 @@ Workflow [39043938019](https://github.com/enoqueJonas/tsa/actions/runs/390439380
 | Delivery Engineer | 248 |
 | Cloud Engineer | 297 |
 | Quality Steward | 405 |
-| Security Steward | 371 |
+| Security Steward | 370 |
 | Reliability Engineer | 397 |
 | Architect | 242 |
 | Technical Steward | 212 |
 | Professional Engineer | 126 |
-| **Total** | **2,816** |
+| **Total** | **2,815** |
 
 ## Confirmed defects corrected
 
@@ -49,3 +49,14 @@ Do not mark a school pedagogically certified solely because its browser matrix i
 - Reconstructed **ten** Integration and Messaging readings with source-of-truth, queue/fan-out, message identity, durable delivery, backpressure and fail-closed contract examples (`41e47fc`).
 
 These **49** lesson-depth changes go beyond browser remediation. They materially expand concepts and reasoning, but are **not** a human certification of every Architect reading and do not imply infrastructure tests were run. The structure-driven Architect Fundamentals/Styles/Domain/Modularity lessons already contain distinct `intro`, `principles`, `steward`, `practice` and `reflection` components and were not flattened into short generic descriptions. The next acceptance gate is exact-head CI followed by representative human review for clarity and factual consistency.
+
+## Further pedagogical and rendering repairs (2026-10-17)
+
+- Reconstructed all eight readings in **Technical Steward Change/Service Governance** and all eight in **Security/Data Governance** with real decision owners, change-risk tests, service readiness, data classification, retention and exceptions (`7a6ea0d`, `0295ebc`).
+- Expanded all three **Professional Engineer Portfolio/Reflection** readings to distinguish real execution, synthetic tests, reflective learning and measurable professional development (`2648d6a`).
+- Preserved newline-separated explanatory paragraphs as distinct UI blocks in five Architect and ten Technical Steward lesson-family files; otherwise expanded multi-paragraph text could collapse into one wall of text.
+- Found a **normalization defect** while triaging the Security Steward browser report: compact authored reading `body` and structured `blocks` were discarded, reducing a substantive PKI verification lesson to a nearly empty page. Fixed `normalize-authored-curriculum.ts` to preserve body, blocks and reference activity content (`68f8dc4`, `8f334b6`) and added a browser regression check asserting that PKI verification's actual explanatory headings and 1,800+ characters are rendered (`9bd6e04`). The PKI resource wrapper now attaches references to an existing reading when available instead of creating an extra resource-only page (`d5dcd8f`).
+- The Security school browser matrix after the PKI wrapper change traversed **370** activities rather than 371; the academy-wide census is therefore **2,815** activities. This reflects elimination of one redundant navigation step, not removal of a conceptual lesson. Synthetic browser completion remains distinct from practical competence.
+- Added an explicit source-order regression gate for **Python OOP**, requiring class/instance/`__init__`/`self` teaching before encapsulation, composition, inheritance, polymorphism, decorators and class features (`abcc821`).
+
+A completed CI workflow applies to its exact source SHA. Later source/documentation edits require their own workflow completion and cannot inherit earlier CI status.
