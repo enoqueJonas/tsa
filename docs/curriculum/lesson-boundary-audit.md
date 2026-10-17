@@ -284,3 +284,7 @@ Reviewed source teaching sections in `system-thinker-soap-xml-deep` and `system-
 - Commit `bf51432`: the enterprise file-contract lesson now traces incomplete .part delivery, final-name handoff, accepted delivery, identical replay and conflicting replay. It explicitly bounds atomic-rename assumptions and distinguishes expected behavior from observed tests.
 
 These are targeted instructional improvements, **not** full module clearance. Still required: inspect other SOAP/file lessons and practicals, check rendered content, perform curriculum audit/build and record learner validation.
+
+## Review batch 13 — Failure Modes and Architecture Decisions remediation
+
+After inspecting both source lesson modules and their quality activities, addressed the two pending teaching gaps. Commit `ffda281` adds a worked stale-ownership failure chain, distinguishing trigger, incorrect behavior, impact and candidate prevention/detection/containment/recovery controls. Commit `efdf06e` adds an end-to-end hypothetical synchronous-versus-asynchronous notification trade-off, with evidence requirements, costs, and reconsideration triggers. These are source-content remediations, not evidence that the complete modules have passed learner testing. Build, automated audit and rendered-content validation remain pending.
