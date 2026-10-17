@@ -508,3 +508,10 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 
 - User ran six smoke checks: five passed (including fully resolved 12-school practical validation); **curriculum integrity failed** because its source-level planned/runtime parity detector matched only `module("...")`, while the planned helper had been renamed to `plannedModule("...")` to avoid the CommonJS `module` binding collision. This caused empty *planned* IDs for ten schools, not evidence that those 10 schools had disappeared.
 - Updated source-level detector to match `plannedModule("...")` (`485817d`), preserving the actual authored paths and their order. The six-test suite requires another run before claiming all green. This regression demonstrates why audits must evolve alongside source refactors.
+
+### 2026-10-17 — Security Steward practical acceptance specificity
+
+- User confirmed six curriculum smoke checks passed and production build succeeded (both Turbo build tasks served from cache) after prior Java and Cloud assessment edits.
+- Replaced reused generic completion criteria in the Web/API Threats practical factory with topic-specific scope, reproducible observed evidence or justified no-finding, and targeted regression verification when a control is modified (`3d2e3e1`).
+- Replaced reused generic criteria in Container and Delivery Security with the actual asset/owner/trust boundary, before-and-after evidence and an unauthorized-action negative control, plus rerun of the relevant delivery path and residual-risk note (`6704045`).
+- These curriculum changes are committed but have not yet undergone the local test/build suite. Navigation, completion and progress-persistence tests remain deferred.
