@@ -31,3 +31,7 @@ test("Python curriculum examples execute and match published outputs", () => {
 test("Java dependency-injection lesson executes and matches published output", () => {
   runAudit("scripts/check-java-teaching-examples.mjs", /Java learner-example validation passed:/);
 });
+
+test("all-school source code evidence report runs and inventories modules", () => {
+  runAudit("scripts/report-curriculum-code-evidence.mjs", /Source-level code block inventory: \d+ path files; \d+ code records;/);
+});
