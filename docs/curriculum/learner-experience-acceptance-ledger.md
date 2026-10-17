@@ -577,3 +577,11 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - Added prerequisite preparation immediately before authored practical activities: scope, controlled example, first observations, objective evidence, expected rejection and recovery. This applies to compact and full-format security activities.
 - Extended resolved practical audit to require the 14 orientations and preceding security lab instruction in the normalized school.
 - Latest modifications are **unverified until the user runs `pnpm test` and `pnpm build`**. This is source-level coverage, not independent verification of security exploits, TLS/PKI, vault deployments, directory federation or real infrastructure; those need authorized lab execution evidence. Learner progress/navigation acceptance remains deferred.
+
+### 2026-10-18 — Reliability Engineer whole-school source-level pass
+
+- User verified Security Steward at `f4e6bdf6`: 8/8 smoke tests and two uncached successful build tasks.
+- Covered all **16 Reliability Engineer learning paths** with concept-before-tool operational explanations, worked Steward trials and explicit failure interpretation.
+- Inserted a task-specific reading immediately before each practical: scenario and hypothesis, first observations, accepted evidence, measurable abort condition and recovery procedure.
+- Added resolved-runtime checks for each path foundation and every practical. The registry remains a static ordered path list to preserve integrity parser compatibility.
+- **New commits not locally verified yet:** run `pnpm test` and `pnpm build`. Source coverage does not prove real telemetry backends, alert routing, backup restoration, incident response or fault-injection execution. Learner navigation and progress controls remain deferred.
