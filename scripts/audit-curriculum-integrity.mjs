@@ -793,6 +793,17 @@ if (platformConfig.includes("TSA now uses Proxmox templates, Ansible, container/
   failures.push("Platform configuration management must not claim later-school runtime capabilities already exist");
 }
 
+// Rendering invariant: when a reading uses blocks, the UI renders those blocks.
+// Putting only a resources card into blocks while keeping the explanation in
+// the body field makes the actual conceptual teaching invisible to learners.
+// The browser matrix exposed this across Architect and Technical Steward.
+for (const [file, source] of sources) {
+  if (/blocks\s*:\s*resources\s*\(/.test(source) ||
+      /blocks\s*:\s*\[\s*\{\s*type\s*:\s*["']resources["']/.test(source)) {
+    failures.push(`Potentially hidden reading body: ${file} attaches resources-only blocks; include the paragraph text in rendered blocks`);
+  }
+}
+
 // Cross-school regression gates for Delivery learner assessment contracts.
 // These check that key negative controls cannot silently disappear in later edits.
 const deliveryCIQuality = sources.get("delivery-continuous-integration-quality.ts") ?? "";
