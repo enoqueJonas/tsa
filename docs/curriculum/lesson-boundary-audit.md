@@ -160,7 +160,7 @@ Status: **Not yet audited**.
 Status: **Not yet audited**.
 
 - [ ] `architect-evaluation-governance-deep`
-- [ ] `architect-architecture-fundamentals-deep`
+- [x] `architect-architecture-fundamentals-deep`
 - [ ] `architect-milestone-deep`
 - [ ] `architect-architectural-styles-deep`
 - [ ] `architect-data-architecture-deep`
@@ -258,3 +258,7 @@ Confirmed a major gap: after splitting Python OOP into individual lessons, the q
 ## Review batch 8 — Application Security
 
 Confirmed that the twelve application-security conceptual lessons presented principles and practical tasks without an explicit worked case connecting threat scenario, control, positive/negative verification and reasoning. Commit `f733a55` adds a concrete control-and-verification case to each lesson. The cases distinguish authentication from authorization, validation from access control, generic errors from protected diagnostics, and configuration from verified security properties. This does not imply security assurance for the actual Steward implementation; learners must still implement and test controls in their own environment.
+
+## Review batch 9 — Architecture Fundamentals
+
+Confirmed that nine architecture-fundamentals lessons provided principles and exercises but lacked a worked decision showing why the concept matters to a concrete system. Commit `3588615` adds situation/reasoning/evidence walkthroughs for architectural significance, design boundaries, drivers, quality attributes, constraints, trade-offs, ownership, fitness checks and ADR documentation. These are illustrative decisions; learners still need to evaluate their actual Steward architecture.
