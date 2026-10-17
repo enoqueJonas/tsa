@@ -39,7 +39,7 @@ function practical(id: string, title: string, objective: string, scenario: strin
         }
         blocks.push({ type: "callout", tone: "steward", title: "Authority boundary", body: "Ansible should converge host configuration that it explicitly owns. VM images, application deployment, runtime orchestration and secret stores remain separate authorities unless the architecture deliberately assigns them otherwise." });
         blocks.push({ type: "resources", title: "Reference documentation", resources });
-        activities.push({ id: `${id}-concepts`, title: `${title}: Concepts`, estimatedMinutes: 40, content: { type: "reading", body: objective, blocks } });
+        activities.push({ id: `${id}-concepts`, title: `${title}: Concepts`, estimatedMinutes: 40, content: { type: "reading", body: blocks.filter((block) => block.type === "paragraph").map((block) => block.text).join("\n\n") || objective, blocks } });
     }
     activities.push({ id: `${id}-lab`, title, estimatedMinutes, content: { type: "practical", objective, scenario, instructions, deliverables: [...deliverables, `Reference set: ${resources.map(r => r.title).join("; ")}`], completionCriteria } });
     return { id, title, activities };
