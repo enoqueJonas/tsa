@@ -42,6 +42,15 @@ for (const [file, source] of sources) {
   }
 }
 
+// Delivery configuration examples must use the Rocky Linux package-management baseline.
+const deliveryConfigExamples = sources.get("delivery-configuration-management-deep.ts") ?? "";
+if (/ansible\.builtin\.apt\b|\bapt install\b/.test(deliveryConfigExamples)) {
+  failures.push("Delivery configuration management must not teach Ubuntu apt on Rocky Linux hosts");
+}
+if (!deliveryConfigExamples.includes("ansible.builtin.dnf")) {
+  failures.push("Delivery configuration management must include the Rocky Linux DNF Ansible module");
+}
+
 const migrationExercise = sources.get("delivery-migration-exercises-deep.ts") ?? "";
 if (!/GitLab CI\/CD/.test(migrationExercise) || !/Jenkins/.test(migrationExercise)) {
   failures.push("legacy CI migration exercise must explicitly preserve Jenkins-to-GitLab migration semantics");
