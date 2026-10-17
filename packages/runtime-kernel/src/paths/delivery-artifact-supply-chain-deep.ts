@@ -49,6 +49,8 @@ const practicalContracts: Record<string, PracticalContract> = {
 };
 
 function richLesson(spec: LessonSpec): Lesson {
+    const contract = practicalContracts[spec.id];
+    if (!contract) throw new Error(`Missing Artifact Supply Chain practical contract: ${spec.id}`);
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
     for (const section of spec.sections) {
         blocks.push({ type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 });
@@ -74,11 +76,11 @@ function richLesson(spec: LessonSpec): Lesson {
                 estimatedMinutes: 45,
                 content: {
                     type: "practical",
-                    objective: practicalContracts[spec.id].objective,
+                    objective: contract.objective,
                     scenario: "Use the existing Steward API, homelab, CI pipeline and internal-package work. Keep the exercise inside the Delivery Engineer boundary rather than prematurely solving later security or reliability work.",
                     instructions: spec.practice,
-                    deliverables: practicalContracts[spec.id].deliverables,
-                    completionCriteria: practicalContracts[spec.id].completionCriteria,
+                    deliverables: contract.deliverables,
+                    completionCriteria: contract.completionCriteria,
                 },
             },
             {
