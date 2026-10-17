@@ -124,8 +124,8 @@ console.log(
 );
 if (outputBearingExcluded.length) {
   console.log(
-    "Unverified published-output examples (require standalone eligibility or a stateful fixture):\\n- " +
-      outputBearingExcluded.map((item) => item.caption ?? "<untitled>").join("\\n- "),
+    "Unverified published-output examples (require standalone eligibility or a stateful fixture):\n- " +
+      outputBearingExcluded.map((item) => item.caption ?? "<untitled>").join("\n- "),
   );
 }
 console.log(`Python learner-example validation passed: ${required.size} independently executed snippets and ${sequences.length} stateful lesson sequences produced their documented output.`);
