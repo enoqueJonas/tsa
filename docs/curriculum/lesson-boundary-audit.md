@@ -396,3 +396,9 @@ Inspected Continuous Delivery's Blue-Green teaching and associated practical con
 ## Review batch 29 — Canary and feature flags
 
 Inspected the Continuous Delivery canary and feature-flag reading/practical pairs. Commit `9d71e56` adds an evidence-limited 5%-traffic/ten-request example explaining why zero observed errors cannot justify promotion, and a reversible feature-activation example that explicitly excludes irreversible data/external effects. The practical contracts already require a defer decision when traffic/observability is insufficient and flag ownership/removal conditions. This is content remediation, not evidence of production canary execution. User-reported earlier successful build predates this edit; curriculum audit and current build remain unverified.
+
+## Review batch 30 — Delivery shell and Ansible executable evidence
+
+Compared the Delivery Engineer Ansible Fundamentals connectivity snippet with its immediately subsequent Inventory example. The teaching used the nonexistent `steward_hosts` group while the demonstrated inventory names `steward_api` and `ci_runners`; commit `fb8fce1` aligns command group and explicit `inventory.ini` filename. In Shell Pipes/Exit Codes, commit `0f43547` supplies a self-contained producer-failure pipeline demonstration with expected exit-status output (0 without pipefail, 1 with pipefail), before introducing network/JSON dependencies. The Make lesson previously referenced project-specific scripts without demonstrating the order; commit `9b88e4c` adds a minimal executable Makefile and expected output while explicitly distinguishing orchestration demonstration from real project validation.
+
+**Validation:** these are source edits on the existing audit branch and postdate the user's last reported successful build. Local execution, application build and rendered activity behavior on the new commits are not yet evidenced.
