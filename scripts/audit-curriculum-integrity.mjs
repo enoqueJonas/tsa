@@ -160,6 +160,21 @@ if (natIndex < 0 || bridgeIndex <= natIndex || diagnosisIndex <= bridgeIndex) {
   failures.push("Platform virtual networking must teach NAT and bridging before the worked reachability diagnosis");
 }
 
+// Every authored Shell lesson has its own explicit practical evidence contract.
+const shellModule = sources.get("delivery-automation-shell-deep.ts") ?? "";
+const shellLessonIds = [...shellModule.matchAll(/richLesson\("([^"]+)", "([^"]+)"/g)].map((m) => m[1]);
+const shellContractBody = shellModule.split("const shellPracticeEvidence: Record<string, ShellPracticeEvidence> = {")[1]?.split("\n};")[0] ?? "";
+const shellContracts = [...shellContractBody.matchAll(/^    "([^"]+)": \{/gm)].map((m) => m[1]);
+for (const id of shellLessonIds) {
+  if (shellContracts.filter((name) => name === id).length !== 1) failures.push(`Missing or duplicated Shell practical evidence contract: ${id}`);
+}
+for (const id of shellContracts) {
+  if (!shellLessonIds.includes(id)) failures.push(`Orphan Shell practical evidence contract: ${id}`);
+}
+if (!shellModule.includes("objective: evidence.objective") || !shellModule.includes("completionCriteria: evidence.completionCriteria")) {
+  failures.push("Shell lesson practicals must use their subject-specific evidence contract");
+}
+
 // Shell failure traces must follow the explanation of pipeline status and pipefail.
 const shellTeaching = sources.get("delivery-automation-shell-deep.ts") ?? "";
 const pipelineExplanation = shellTeaching.indexOf('heading: "Pipelines need special attention"');
