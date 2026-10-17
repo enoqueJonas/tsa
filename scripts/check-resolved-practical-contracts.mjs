@@ -27,6 +27,9 @@ function compileDirectory(relative = "") {
 let journey;
 try {
   compileDirectory();
+  // Node 25 may classify generated .js as ESM via syntax detection unless the
+  // temporary module tree explicitly declares its CommonJS package boundary.
+  fs.writeFileSync(path.join(temporaryRoot, "package.json"), JSON.stringify({ type: "commonjs" }));
   const requireTemp = createRequire(path.join(temporaryRoot, "entry.cjs"));
   journey = requireTemp("./paths/academy-journey.js").technicalStewardshipJourney;
 } finally {
