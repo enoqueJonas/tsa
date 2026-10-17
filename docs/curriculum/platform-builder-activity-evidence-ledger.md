@@ -165,3 +165,9 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 - Aligned the actual learner-facing process/thread commands with the teaching narrative: print the current shell PID, inspect precisely `Name`, `Pid`, `PPid`, and `Threads` in that shell's `/proc` status, and inspect its file descriptors. This explicitly avoids conflating the shell with the Steward process. Source commit `c61f636` fixes an escaped replacement regression that initially removed the second `$` from `sample_pid=$$`; the curriculum integrity audit caught the defect.
 - Extended the non-destructive Linux CI drill to execute a real `grep` against `/proc/<current Python PID>/status` and assert all four fields are present (`ff6c169`). Evidence comes from the ephemeral Linux runner, not a live Steward, Proxmox or Rocky lab.
 - The earlier intermediate CI builds were not all green because the integrity guard correctly rejected the malformed shell PID. Verify the final run before marking this batch accepted. Subsequent browser traversal remains required.
+
+## Batch 93 — Journal evidence preconditions and bounded output (2026-10-17)
+
+- Confirmed the Batch 92 final Actions run [39036438990](https://github.com/enoqueJonas/tsa/actions/runs/39036438990) completed successfully for validation and browser checks after the corrected `sample_pid=$$` shell expansion.
+- Reviewed Linux Administration 'Logs and journalctl'. Removed an outcome that prescribed follow-mode while the worked command intentionally uses bounded output. Clarified `--since`, `-n 30`, `--no-pager`, `-b`, and the prerequisite of using an existing service unit; an empty journal is not evidence that a service is healthy. Source commit `cf8d715`.
+- The lesson remains a host-level lab requiring the learner's actual systemd unit and a controlled failure event; the GitHub Actions Ubuntu runner cannot certify a real Steward service journal.
