@@ -194,3 +194,9 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 - Added `scripts/check-platform-systemd-unit.py`, which writes an isolated `tsa-steward-synthetic.service` file in a temporary directory, invokes real `systemd-analyze verify`, and checks that the sample explicitly declares `Restart=on-failure` and `NoNewPrivileges=true`. The test does not install, enable, or start units on the CI host. Commits `1d16653`, `50d5bfc`.
 - The source validation job passed on [39037782353](https://github.com/enoqueJonas/tsa/actions/runs/39037782353), including the new systemd syntax check. Full learner-browser completion is required for an overall green run.
 - Syntax validation, restart-policy configuration, disposable SIGTERM process recovery, and systemd-managed recovery are **distinct claims**. The real systemd manager, Rocky Linux, Steward health endpoint and VM boot/restart behavior remain unverified until controlled lab execution.
+
+## Batch 98 — systemd validator negative control (2026-10-17)
+
+- Extended `scripts/check-platform-systemd-unit.py` to verify that the same `systemd-analyze verify` invocation rejects a deliberately nonexistent `ExecStart` binary in an otherwise valid disposable unit. This negative control demonstrates the audit can detect a real unit error rather than merely reporting positive results. Commit `6e72538`.
+- The isolated CI validation job passed on [run 39037931106](https://github.com/enoqueJonas/tsa/actions/runs/39037931106), including the new negative control; full browser completion is a separate gate.
+- This remains static systemd-manager tooling verification, not an actual daemon lifecycle or automatically supervised recovery test.
