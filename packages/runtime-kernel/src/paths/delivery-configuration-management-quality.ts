@@ -27,10 +27,12 @@ const practices: Record<string, PracticalContent> = {
             "Run the playbook once and record changed tasks.",
             "Run it again without changing inputs and record the second result.",
             "Introduce a safe drift condition, rerun, and identify exactly which task repairs it.",
+            "Run Ansible check mode before applying the drift repair, compare predicted changes with the subsequent real run, and record any module that cannot predict accurately.",
+            "Use an isolated test file to introduce an invalid desired state and prove the play fails without silently leaving the host compliant on paper.",
             "Explain one case where idempotent automation could still enforce the wrong state consistently."
         ],
         deliverables: ["Minimal desired-state play", "First/second-run comparison", "Drift-repair evidence"],
-        completionCriteria: ["Rocky/RHEL package management uses DNF-aware Ansible behavior rather than Ubuntu apt assumptions.", "The unchanged second run converges without unnecessary mutation.", "The learner can separate idempotency from correctness."],
+        completionCriteria: ["Rocky/RHEL package management uses DNF-aware Ansible behavior rather than Ubuntu apt assumptions.", "The unchanged second run converges without unnecessary mutation.", "Check-mode predictions are compared with actual drift repair, including documented limitations.", "A deliberately invalid desired state fails visibly rather than claiming convergence.", "The learner can separate idempotency from correctness."],
     },
     "Ansible Fundamentals": {
         type: "practical",
