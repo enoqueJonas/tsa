@@ -8,6 +8,11 @@ on:
 permissions:
   contents: read
 
+# Superseded curriculum commits should not consume 11 concurrent CI jobs each.
+concurrency:
+  group: curriculum-audit-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
