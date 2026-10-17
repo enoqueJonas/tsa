@@ -5,5 +5,11 @@ import { engineeringApprenticeWorkbenchDeepLessons } from "./engineering-apprent
 export const engineeringFoundations: LearningPath = {
     id: "engineering-foundations",
     title: "Engineering Foundations",
-    // The independent Engineering Investigation is the school's capstone: it follows both\n    // conceptual foundations and hands-on terminal/Git/process/HTTP work.\n    lessons: [\n        ...engineeringApprenticeRichLessons.slice(0, -1),\n        ...engineeringApprenticeWorkbenchDeepLessons,\n        engineeringApprenticeRichLessons[engineeringApprenticeRichLessons.length - 1],\n    ],
+    // The independent Engineering Investigation is the school's capstone: it follows both
+    // conceptual foundations and hands-on terminal/Git/process/HTTP work.
+    lessons: [
+        ...engineeringApprenticeRichLessons.slice(0, -1),
+        ...engineeringApprenticeWorkbenchDeepLessons,
+        engineeringApprenticeRichLessons[engineeringApprenticeRichLessons.length - 1],
+    ],
 };
