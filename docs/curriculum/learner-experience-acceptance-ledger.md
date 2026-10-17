@@ -21,7 +21,7 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 
 | School | Module | Concepts | Practicals | Continuity | Resources | UX | Overall / evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| engineering-apprentice | **School entry and entire displayed lesson sequence (inventory pending)** | In review | — | — | — | — | In review; first shell example corrected; full enumeration pending |
+| engineering-apprentice | **Engineering Foundations: 9 conceptual lessons + 4 Workbench lessons** | In review | — | — | — | — | In review; first shell example corrected; full enumeration pending |
 | builder | `builder-python-quality` | — | — | — | — | — | Not started |
 | builder | `builder-web-api-quality` | — | — | — | — | — | Not started |
 | builder | `builder-django-quality` | — | — | — | — | — | Not started |
@@ -193,3 +193,10 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - **Confirmed corrected instructional defects:** nonexistent `~/tsa` target in the first shell example (`00fe495`); first Git `git diff` incorrectly promised an untracked-file diff, plus unconfigured local commit identity, platform-inconsistent `pgrep -af`, and misleading POST success expectation from a static `http.server` (`d02da7b`); re-running a pre-existing practice Git directory could replace README, `git fetch origin` was shown without a configured remote, and the public HTTP GET had no offline alternative (`df47b0f`).
 - **Unverified:** code examples have been inspected for source-level coherence but not all run in a controlled macOS/Linux setup; no full rendered reading/practical UX review; no actual learner independent lab submissions; no live remote Git or external endpoint evidence.
 - **Disposition:** Workbench source-activity triage completed with targeted fixes, **NOT accepted** as a learner-tested module. The Apprentice school remains **In review** until the other composed school activities and website experience are covered.
+
+### 2026-10-17 — Engineering Apprentice canonical composition and foundations first pass
+
+- Verified canonical wiring in `engineering-foundations.ts`: `engineering-apprentice-rich.ts` has **nine** conceptual lessons (Thinking Like an Engineer, Systems Thinking, Trade-offs, Debugging Mindset, Engineering Decisions, Evidence and Technical Reasoning, Learning as an Engineering Skill, Communicating Technical Work, Engineering Investigation) followed by **four** Workbench lessons. `engineering-apprentice-lessons.ts` is explicitly legacy, not the canonical learner-facing source.
+- **Source-level finding:** the nine conceptual `richLesson` reading activities carried the generic fallback body `Deep TSA lesson for ${title}` even though substantial structured blocks existed. This risks misleading fallback/alternate consumers and weakens content integrity. Commit `e48be3e` derives the body from actual explanatory paragraph blocks.
+- **Beginner access finding:** generic practical scenario could push a novice toward a real project and imply an experiment without access to one; it now permits a bounded, explicitly hypothetical exercise and warns against presenting illustrative measurements as observed. The first problem-framing practical names the slow API example as a fallback.
+- **Remaining:** detailed review of nine lessons' individual examples/checks and Engineering Investigation milestone, actual rendered pages, navigation/progress and learner lab verification. These nine are **not pedagogically accepted** by this first pass.
