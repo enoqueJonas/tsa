@@ -242,3 +242,7 @@ Inspected lesson sequences in Cloud Hosting, Cloud Cost, IaC, Security Applicati
 ## Review batch 4 — Technology Risk
 
 Confirmed a teaching-quality issue: Technology Risk lessons used substantial prose in the reading body but supplied only a resources block, with no worked reasoning sequence. Commit `94d0132` places the lesson explanation into reading blocks and adds worked risk scenarios for identification, likelihood/impact, inherent/residual exposure, appetite/tolerance, treatment and acceptance. The examples distinguish observation, uncertainty, consequence, evidence, control effectiveness and authority. Remaining risk lessons still need detailed review.
+
+## Review batch 5 — Professional Practice
+
+Confirmed a lack of worked decision sequences in `professional-engineer-professional-practice-deep`: lessons supplied substantive conceptual prose and practice tasks but no specific case connecting a situation, defensible decision, evidence and trade-off. Commit `3a272ee` adds one worked decision to each of the six lessons, preserving their existing advanced content and exercises. This is a targeted instructional improvement, not a claim that the entire school is audited.
