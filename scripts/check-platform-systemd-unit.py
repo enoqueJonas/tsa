@@ -46,4 +46,14 @@ with tempfile.TemporaryDirectory(prefix="tsa-systemd-") as folder:
         "systemd-analyze unexpectedly accepted a nonexistent ExecStart binary"
     )
     print("PASS systemd-analyze rejects deliberately invalid ExecStart target")
+    # A syntactically valid unit can still be unsafe if it runs as root.
+    # Independently reject dangerous policy drift in the inspected sample.
+    assert "User=root" not in contents and "User=nobody" in contents, (
+        "Example unit must run under a non-root synthetic identity"
+    )
+    assert "Restart=always" not in contents, (
+        "Exercise assumes failure-triggered recovery, not unconditional restarts"
+    )
+    print("PASS sample policy keeps a non-root identity and failure-only restart")
+
 
