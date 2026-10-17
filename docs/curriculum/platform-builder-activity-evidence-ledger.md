@@ -283,3 +283,8 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 - Confirmed Batch 112 [39040353269](https://github.com/enoqueJonas/tsa/actions/runs/39040353269) passed complete CI validation and learner-browser coverage.
 - Strengthened Delivery `sbom` practical to require generator and immutable image digest, verification of at least five installed components against the artifact and investigation of a missing/mismatched SBOM entry.
 - Strengthened `signing-provenance` to require disposable-key signature validation with tampered-content rejection and a separate unauthorized-signer rejection, distinguishing valid cryptography from authorized release provenance (`494c2a2`). These are learner exercise contracts, not an executed image signing or SBOM verification on live infrastructure.
+
+## Batch 114 — Supply-chain vulnerability scan evidence quality (2026-10-17)
+
+- Confirmed Batch 113 final run [39040562482](https://github.com/enoqueJonas/tsa/actions/runs/39040562482) passed CI validation and learner-browser jobs.
+- Updated the Artifact Supply Chain `scanning` exercise to require exact image digest, scanner version/advisory-database freshness, component/exposure/available-fix evidence and an explicit accountable decision. Any suppressed or accepted finding must have an owner and expiration/reassessment condition; a before/after rescan or time-bound exception remains visible (`a556632`). This is an improved practical evidence contract, not a claim to have scanned a real Steward image.
