@@ -41,7 +41,7 @@ function path(id: string, title: string, lessons: AuthoredLesson[]): AuthoredLea
     const readiness: AuthoredLesson = {
         id: `${id}-operational-readiness`,
         title: `Operational readiness: ${guide.title}`,
-        activities: [{ type: "reading", title: guide.title, description: guide.notes.join("\\n\\n") }],
+        activities: [{ type: "reading", title: guide.title, description: guide.notes.join("\n\n") }],
     };
     return { id, title, lessons: [readiness, ...lessons] };
 }
