@@ -186,6 +186,24 @@ for (const phrase of ["only if earlier Builder evidence justified extracting", "
   if (!releaseLab.includes(phrase)) failures.push(`Release Engineering lab missing conditional package guidance: ${phrase}`);
 }
 
+// Java test-engineering readings must have a concrete, distinct verification artifact per lesson.
+const javaSource = sources.get("quality-java-test-engineering-deep.ts") ?? "";
+const javaSpecRegion = javaSource.split("const specs: Spec[]=")[1]?.split("\n];")[0] ?? "";
+const javaIds = [...javaSpecRegion.matchAll(/\{id:"([^"]+)",title:/g)].map((m) => m[1]);
+const javaEvidenceRegion = javaSource.split("const javaPracticeEvidence: Record<string, string> = {")[1]?.split("\n};")[0] ?? "";
+const javaEvidenceIds = [...javaEvidenceRegion.matchAll(/^ "([^"]+)":/gm)].map((m) => m[1]);
+for (const id of javaIds) {
+  if (javaEvidenceIds.filter((entry) => entry === id).length !== 1) failures.push(`Java practical needs one distinct evidence contract: ${id}`);
+}
+for (const id of javaEvidenceIds) {
+  if (!javaIds.includes(id)) failures.push(`Orphan Java practical evidence contract: ${id}`);
+}
+if (!javaSource.includes('deliverables:["Committed steward-tests increment",evidence')) failures.push("Java practice must expose lesson-specific executed evidence");
+
+// XML namespace teaching must contrast a cosmetic prefix change with a semantic URI change.
+const soapSource = sources.get("system-thinker-soap-xml-deep.ts") ?? "";
+if (!soapSource.includes("the same lookup must return no match")) failures.push("XML namespace lesson missing negative URI identity case");
+
 // Every authored Shell lesson has its own explicit practical evidence contract.
 const shellModule = sources.get("delivery-automation-shell-deep.ts") ?? "";
 const shellLessonIds = [...shellModule.matchAll(/richLesson\("([^"]+)", "([^"]+)"/g)].map((m) => m[1]);
