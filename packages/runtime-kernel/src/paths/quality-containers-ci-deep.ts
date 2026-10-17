@@ -45,7 +45,34 @@ type Spec = {
     warning?: string;
 };
 
+const practicalProofs: Record<string, [string, string]> = {
+    "testcontainers-lifecycle": ["Executed test-owned container lifecycle trace","A failed setup cannot leave an unnoticed running dependency"],
+    "testcontainers-networking": ["Host-to-container mapped-port connection and failure trace","Tests use resolved mapped ports rather than assuming host port constants"],
+    "database-migrations-isolation": ["Fresh database migration, seed and teardown execution evidence","Two independent test runs prove schema and data do not leak"],
+    "testcontainers-observability": ["Startup/wait/log timeline from a controlled container failure","A timeout is diagnosable from a captured readiness signal"],
+    "gitlab-runners": ["Actual runner executor/capabilities and trust boundary record","Job placement and Docker capability assumptions are explicit"],
+    "gitlab-container-execution": ["Runner-local Testcontainers smoke execution and daemon evidence","The test fails visibly when its container runtime is unavailable"],
+    "gitlab-cache-artifacts": ["Cache reuse contrasted with immutable test report artifact","Cache eviction cannot erase required release-gate evidence"],
+    "gitlab-dag-rules": ["Merge-request/default-branch/schedule DAG and rule traces","A failed dependency cannot be bypassed by a needs/rules mismatch"],
+    "gitlab-security": ["Masked/protected variable and least-privilege execution check","A pipeline from an untrusted ref cannot access protected credentials"],
+    "gitlab-environments-approvals": ["Promotion rule, approval and environment identity record","An unapproved job cannot promote a candidate into the protected environment"],
+    "test-containers": ["Deterministic container-backed integration suite evidence","Tests recreate their dependency state and isolate failed runs"],
+    "dockerized-dependencies": ["PostgreSQL dependency health and preserved test database boundary","The test rejects an unready dependency rather than racing startup"],
+    "ephemeral-environments": ["Temporary test environment creation, identity and cleanup record","Cleanup occurs after normal success and controlled failure"],
+    "gitlab-ci-foundations": ["Runnable GitLab Maven job with stored JUnit report","A failed test exits nonzero and its report remains accessible"],
+    "pipeline-stages": ["Quality stage matrix with fast checks and expensive checks","A stage cannot accidentally skip a required verification gate"],
+    "parallelization": ["Serial-versus-parallel timings and state-isolation failures","Concurrent tests cannot contaminate another worker's state"],
+    "reports-artifacts": ["JUnit/Allure evidence linkable to commit and CI run","Missing or unreadable test reports are treated as missing evidence"],
+    "quality-gates": ["Explicit pass/fail/no-evidence decision table and examples","A skipped or not-run critical check cannot yield release approval"],
+    "test-selection": ["Changed-scope and full-suite selection matrix with risk rationale","Critical regressions remain covered across schedule and merge gates"],
+    "failure-triage": ["Failure classification backed by logs, test output and runner state","A real product regression is not mislabeled as infrastructure flakiness"],
+    "flake-containment": ["Reproduction count, cause hypothesis and quarantine expiry","Quarantine does not silently count a known failing check as green"],
+    "internal-package-compatibility": ["Nexus-resolved candidate package and consumer compatibility trace or justified deferral","No internal test package is fabricated when extraction lacks evidence"],
+};
+
 function lessonFrom(spec: Spec): Lesson {
+    const proof = practicalProofs[spec.id];
+    if (!proof) throw new Error(`Missing Quality CI practical evidence: ${spec.id}`);
     const blocks: LessonBlock[] = [
         { type: "paragraph", text: spec.core },
         { type: "heading", id: `${spec.id}-principles`, text: "Core principles", level: 2 },
@@ -63,7 +90,7 @@ function lessonFrom(spec: Spec): Lesson {
         title: spec.title,
         activities: [
             { id: `quality-ci-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: spec.core, blocks } },
-            { id: `quality-ci-${spec.id}-002`, title: `Apply: ${spec.title}`, estimatedMinutes: 55, content: { type: "practical", objective: `Apply ${spec.title} to the Steward quality system.`, scenario: "Use Steward's existing JUnit/REST Assured/Playwright Java framework, deployed environments and immutable release identity. Improve the pipeline without hiding failures or duplicating evidence at the wrong test level.", instructions: spec.practice, deliverables: ["Pipeline or container change", "Execution evidence", "Short decision/triage note"], completionCriteria: ["The change improves repeatability or decision quality.", "Missing/skipped evidence remains visible.", "The learner can explain why this stage belongs at this point in the pipeline."] } },
+            { id: `quality-ci-${spec.id}-002`, title: `Apply: ${spec.title}`, estimatedMinutes: 55, content: { type: "practical", objective: `Prove ${spec.title} with this concrete outcome: ${proof[0]}.`, scenario: "Use Steward's existing JUnit/REST Assured/Playwright Java framework, deployed environments and immutable release identity. Improve the pipeline without hiding failures or duplicating evidence at the wrong test level.", instructions: spec.practice, deliverables: ["Versioned pipeline or container change", proof[0], "Observed success/failure transcript", "Short decision/triage note"], completionCriteria: [proof[1], "Missing/skipped evidence remains visible.", "The learner can explain this control’s specific stage and failure boundaries."] } },
             { id: `quality-ci-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: `Explain the main risk addressed by ${spec.title}, how it applies to Steward, and one way a poorly designed implementation could produce misleading green results.`, minimumCharacters: 200 } },
         ],
     };
