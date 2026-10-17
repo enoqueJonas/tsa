@@ -496,3 +496,7 @@ Revisited the Delivery shell pipeline lesson and found the worked `pipefail` fai
 ## Review batch 44 — Software Delivery Foundations scenarios
 
 Inspected Git Workflows and Environment Promotion source/practical pairings. Commits `05ea447` and `ac9bd99` add concrete Steward authorization-regression merge gating and a build-once, immutable-digest UAT-to-production-like promotion trace with explicit runtime configuration, approvals and post-deployment client verification. The edits deepen reasoning about why a green build does not establish an authorized merge or a verified release. New changes require current `pnpm audit:curriculum`, `pnpm build`, and rendered lesson checks before closure.
+
+## Review batch 45 — Delivery consistency and validation limitation
+
+Confirmed two subtle teaching mismatches during the Delivery Engineer pass. The Configuration Management desired-state explanation still said `nginx` after the earlier Rocky DNF example had changed to `python3` and `git`; fixed in `2195951`. The Continuous Integration container-build lesson now uses GitLab CI syntax, but its attached resources still favored GitHub Actions; corrected to canonical GitLab documentation in `77c12fb`. Tried to inspect branch workflow runs through the connected GitHub API, but the connector rejected the Actions endpoint. Neither a passing GitHub Actions workflow nor a local build on the newest commits can be asserted.
