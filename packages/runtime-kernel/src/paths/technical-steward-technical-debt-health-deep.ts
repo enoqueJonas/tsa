@@ -12,7 +12,7 @@ const resourcesByHealth:Record<string,LearningResource[]>={
 
 function reading(id: string, title: string, body: string): Lesson {
   return { id, title, activities: [
-    { id: `${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body, blocks:[{type:"resources",title:"Engineering health reference",resources:resourcesByHealth[id] ?? [fowlerDebt]}] } },
+    { id: `${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body, blocks:[{type:"paragraph",text:body},{type:"resources",title:"Engineering health reference",resources:resourcesByHealth[id] ?? [fowlerDebt]}] } },
     { id: `${id}-practice`, title: `Practice: ${title}`, estimatedMinutes: 45, content: {
       type: "practical",
       objective: `Apply ${title} to current Steward engineering-health evidence.`,
