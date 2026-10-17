@@ -31,3 +31,19 @@ with tempfile.TemporaryDirectory(prefix="tsa-systemd-") as folder:
     contents = unit.read_text(encoding="utf-8")
     assert "Restart=on-failure" in contents and "NoNewPrivileges=true" in contents
     print("PASS explicit restart and privilege policy present in sample unit")
+    # Compare a genuine invalid unit with the known-good example. This verifies
+    # that the checker can reject a missing executable, not just accept syntax.
+    invalid = Path(folder) / "tsa-invalid-synthetic.service"
+    invalid.write_text(contents.replace(
+        "/usr/bin/python3 -m http.server 8765 --bind 127.0.0.1",
+        "/nonexistent/tsa-intentionally-missing-binary",
+    ), encoding="utf-8")
+    rejected = subprocess.run(
+        [binary, "verify", str(invalid)],
+        capture_output=True, text=True, timeout=15,
+    )
+    assert rejected.returncode != 0, (
+        "systemd-analyze unexpectedly accepted a nonexistent ExecStart binary"
+    )
+    print("PASS systemd-analyze rejects deliberately invalid ExecStart target")
+
