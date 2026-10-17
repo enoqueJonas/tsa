@@ -25,7 +25,7 @@ test("curriculum structure and wiring satisfy integrity invariants", () => {
 });
 
 test("Python curriculum examples execute and match published outputs", () => {
-  runAudit("scripts/check-python-teaching-examples.mjs", /Python learner-example validation passed: 28 independently executed snippets/);
+  runAudit("scripts/check-python-teaching-examples.mjs", /Python learner-example validation passed: 28 independently executed snippets and 6 stateful lesson sequences/);
 });
 
 test("Java dependency-injection lesson executes and matches published output", () => {
