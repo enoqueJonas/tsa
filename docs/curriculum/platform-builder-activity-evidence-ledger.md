@@ -315,3 +315,8 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 
 - Reviewed two additional cross-school code-evidence candidates in Networking. Firewall caption now distinguishes the default zone from active interface zones (`firewall-cmd --get-active-zones`), local sockets from authorized remote reachability, and cautions against disabling firewalld as a diagnostic shortcut. TLS caption distinguishes TLS handshake from certificate hostname/chain verification and from meaningful HTTP health; bypassing verification with curl `-k` is not accepted as success (`39d88f0`).
 - These are learner-facing explanatory corrections, not a live firewalld or TLS endpoint certification. Verify current CI before acceptance.
+
+## Batch 120 — Network troubleshooting observable outcomes (2026-10-17)
+
+- Acted on the cross-school code inventory finding in Platform Networking `Network Troubleshooting Tools`. Expanded the example caption to explain `ip` address/route/neighbor evidence, local `ss` socket scope, DNS isolation with `dig`, why blocked ICMP or traceroute asterisks are not definitive failures, and three *hypothetical* symptom-to-cause interpretations without presenting fabricated runtime captures (`aa7f1e4`).
+- These teaching notes do not prove any live Steward endpoint was diagnosed; exact-head CI and broader cross-school review remain separate tasks.
