@@ -569,3 +569,11 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - Each Quality Steward practical is now preceded by **scenario-specific preparation**: testing boundary, initial operations, explicit completion evidence and negative diagnosis. Existing labs remain unchanged.
 - Added resolved-runtime checks for all twelve path overviews and every practical's immediately preceding preparation. This is source-level instructional coverage, not proof that each tool, container, environment or browser workflow has been executed.
 - These new changes await full user-run `pnpm test` and `pnpm build`; UI completion/navigation/persistence checks remain deferred.
+
+### 2026-10-18 — Security Steward school-wide source review
+
+- User verified Quality Steward at `5d132206`: **8/8 automated tests and successful uncached production build**.
+- Applied trust-boundary, synthetic-experiment and negative-path guidance across all **14 Security Steward paths**, with a dedicated first learning activity per path.
+- Added prerequisite preparation immediately before authored practical activities: scope, controlled example, first observations, objective evidence, expected rejection and recovery. This applies to compact and full-format security activities.
+- Extended resolved practical audit to require the 14 orientations and preceding security lab instruction in the normalized school.
+- Latest modifications are **unverified until the user runs `pnpm test` and `pnpm build`**. This is source-level coverage, not independent verification of security exploits, TLS/PKI, vault deployments, directory federation or real infrastructure; those need authorized lab execution evidence. Learner progress/navigation acceptance remains deferred.
