@@ -228,3 +228,8 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 
 - Added `scripts/check-platform-backup-restore.py`, executed as part of the Linux CI validation job (`688633f`, `176d37e`). It creates disposable configuration and records files; stores SHA-256 fingerprints; copies the files to a distinct backup directory; deliberately changes and deletes live files; restores independently from the backup; verifies file inventory, exact hashes and expected record count; then corrupts the backup and confirms the checksum mismatch is detected.
 - Source validation including this drill passed in [39038924538](https://github.com/enoqueJonas/tsa/actions/runs/39038924538). The same run's learner-browser job had not finished when this entry was written. The script demonstrates a local file backup/restore lifecycle on a disposable Ubuntu runner, **not** real NAS, database-consistent snapshots, Proxmox backups, offsite durability or disaster recovery.
+
+## Batch 104 — Delivery Engineer rollback compatibility gate (2026-10-17)
+
+- Began the outstanding Delivery Engineer pedagogical audit rather than extending only Platform Builder. The Continuous Delivery `Rollback` practical now requires inspecting database migration history, acknowledged asynchronous messages and writes since deployment **before** reverting to the previous application image. It also requires explicit compatibility evidence for database/schema and asynchronous paths, and a named recovery owner for non-reversible side effects (`26d2f45`).
+- This is a curriculum acceptance-criteria change, not an executed Steward release rollback. The full Delivery Engineer lesson-by-lesson and curriculum-wide reviews remain in progress. Check the new commit's CI before accepting it.
