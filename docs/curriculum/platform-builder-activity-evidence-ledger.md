@@ -320,3 +320,8 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 
 - Acted on the cross-school code inventory finding in Platform Networking `Network Troubleshooting Tools`. Expanded the example caption to explain `ip` address/route/neighbor evidence, local `ss` socket scope, DNS isolation with `dig`, why blocked ICMP or traceroute asterisks are not definitive failures, and three *hypothetical* symptom-to-cause interpretations without presenting fabricated runtime captures (`aa7f1e4`).
 - These teaching notes do not prove any live Steward endpoint was diagnosed; exact-head CI and broader cross-school review remain separate tasks.
+
+## Batch 121 — Virtualization guest network output interpretation (2026-10-17)
+
+- Reviewed cross-school code-evidence candidate `platform-builder-virtualization-deep.ts` (guest networking inspection). Expanded its caption to explain IP/interface, route, neighbor-cache and listener evidence, empty neighbor caches, permission-dependent `ss -p` output, and why a loopback-only listener cannot accept guest-LAN connections (`eb26a98`). Actual command output remains dependent on the learner's guest and is not fabricated.
+- This is a teaching correction; actual virtualization/network verification remains the learner's lab. Source-head CI requires separate confirmation.
