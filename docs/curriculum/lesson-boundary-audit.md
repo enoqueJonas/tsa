@@ -13,8 +13,8 @@ The audit is tracked in GitHub Issue #314. **Source presence is not pedagogical 
 | Delivery practical enrichment | 82 title-to-quality-practical pairs matched; automated parity guard added. |
 | Artifact Supply Chain source-level reading/practical audit | 25 authored lesson specifications and 23 quality override profiles examined; specific fixes committed. |
 | Lesson-by-lesson pedagogical approval across schools | Not complete; historical checkboxes are progress markers, not approval of every activity. |
-| Executable examples and expected outputs | Selected examples corrected; comprehensive per-code-block verification open. |
-| Automated `pnpm audit:curriculum` and latest `pnpm build` | Not confirmed after latest changes. Earlier build success was reported by the user. |
+| Executable examples and expected outputs | Cross-school TypeScript source scan found 407 code records; Python runnable-example CI now executes 12 curated snippets and compares real stdout to published outputs. Remaining generated/dynamic examples and contextual command outputs still require inspection. |
+| Automated `pnpm audit:curriculum` and latest `pnpm build` | GitHub Actions run 39025220429 at commit `03d45689c` passed integrity audit (196 path files), 12 executable Python examples, cross-school code-evidence report and full runtime/web build. Later audit-log-only edits must be checked separately. |
 | Rendered lesson checks and real learner labs | Open; actual Steward infrastructure and exercise execution have not been verified. |
 
 ## Review criteria
@@ -536,3 +536,23 @@ Resolved the outstanding Continuous Delivery recovery lab finding. Commit `21afb
 ## Review batch 54 — Configuration Management full-runtime handoff
 
 Reviewed the Ansible integrated lab and strengthened the host-preparation verification: instead of accepting a healthy API alone, the learner must prove publisher/consumer readiness and an end-to-end outbox lifecycle event after deploying to an Ansible-prepared host (`02b10c9`). This checks that host configuration really supports the complete Steward runtime. Source correction committed; latest audit/build and rendered verification remain pending.
+
+## Review batches 55–60 — cross-school example execution and Quality CI assessment
+
+**System-wide evidence:** The 134 logical modules remain accounted for in the source census; this is not the same as reading and validating every rendered activity. Added repeatable census refresh (`pnpm census:curriculum`) and a TypeScript AST-based code-evidence report (`pnpm report:curriculum-examples`), both independent of manual checkboxes. The cross-school report saw 407 static source code records and identified 32 potentially observable literal examples without an adjacent recognized output at the first measured run. After corrections, 16 remain as review candidates; most are environment-dependent diagnostic commands, declarative GitLab YAML or clearly labeled HTTP templates, not automatically confirmed defects.
+
+**Builder:** Fixed self-contained inputs and added expected outputs for Python control flow, dictionary mutations, iteration, exceptions, generators and comprehensions; removed use of `def`/`return` before the Functions lesson. Environment-dependent interpreter examples now show labeled output shapes. The HTTP lab explicitly marks `example.test` as a non-runnable template and explains real response evidence. Executable CI now runs **12** curated Python examples via Python 3.12 and compares actual stdout against authored outputs, failing on drift.
+
+**System Thinker:** Added a positive and negative namespace-URI identity counterexample to XML teaching; changing a prefix is not the same as changing the URI.
+
+**Platform Builder:** Replaced invalid Bash built-in help syntax, aligned firewall inspection with Rocky Linux (`firewall-cmd`/nft instead of Ubuntu ufw) and replaced shell angle-bracket placeholder commands with guarded environment variable inputs.
+
+**Delivery Engineer:** Reviewed the source structures for all 11 logical modules plus their associated deep sources and integrated labs in prior batches; repeated verification of the three runtime roles, image identity, async end-to-end flow, bounded migration and evidence-gated packages. Added output shapes to Shell examples and an observed Docker volume-persistence trace. This is a completed **source-level triage pass**, not a claim of successful real homelab exercises or of rendered UI approval.
+
+**Quality Steward:** Replaced the generic evidence acceptance artifact in 18 Java engineering lessons with specific observable proof contracts; corrected a Maven snippet incorrectly rendered as Java, supplied a fully executable constructor-injection example with expected stdout, replaced an empty JUnit-tag test with a genuine assertion and labeled a non-runnable interface fragment. Corrected invalid GitLab `stages:` nesting in the CI examples, supplied a Maven runner image, fixed an improperly joined Maven command sample and added 22 lesson-specific Quality CI proof and failure criteria. Internal test-package publishing now remains conditional on genuine evidence for shared-package extraction.
+
+**Engineering Apprentice:** Replaced a non-executable `some-command` shell example with a deterministic stderr/stdout/exit-status trace, validated its output and recorded it in the source.
+
+**Regression/CI:** The curriculum integrity audit protects the new Shell/Java/Quality-CI contracts, XML counterexample, Python worked output traces and platform shell constraints. GitHub Actions now runs the curriculum integrity check, 12 Python example executions, cross-school code-evidence reporting, TypeScript compilation and Next.js build. The last verified source commit before this documentation update is `03d45689c` (Actions run 39025220429, successful).
+
+**Still required for honest full pedagogical sign-off:** Activity-by-activity reading and practical review across every school, independent execution/verification for remaining runnable blocks beyond the 12 curated Python checks, manual assessment of the 16 context-dependent source report candidates and dynamically composed code, rendered learner navigation/reading layouts, and real Steward homelab/CI/Nexus exercises. The audit cannot be marked globally complete on the basis of structural counts or green builds alone.
