@@ -43,16 +43,18 @@ const workedCases: Record<string, { question: string; example: string; challenge
   }
 };
 function make(s:Spec):Lesson {
+  const worked = workedCases[s.id];
+  if (!worked) throw new Error(`Missing worked strategy case for ${s.id}`);
   const blocks:LessonBlock[]=[
     {type:"paragraph",text:s.body},
-    {type:"heading",id:"worked-strategy-case",text:workedCases[s.id].question,level:2},
-    {type:"paragraph",text:workedCases[s.id].example},
-    {type:"callout",tone:"note",title:"Reason from the case",body:workedCases[s.id].challenge},
+    {type:"heading",id:"worked-strategy-case",text:worked.question,level:2},
+    {type:"paragraph",text:worked.example},
+    {type:"callout",tone:"note",title:"Reason from the case",body:worked.challenge},
     {type:"callout",tone:"steward",title:"Strategy is a coherent set of choices",body:"A technology strategy is not a wishlist, tool catalogue or multi-year prediction. It connects organizational outcomes to a small set of technology choices, capability investments, deliberate non-investments, sequencing and evidence that would cause the strategy to change."},
     {type:"resources",title:"Continue learning",resources:s.resources},
   ];
   return {id:`technical-strategy-${s.id}`,title:s.title,activities:[
-    {id:`technical-strategy-${s.id}-reading`,title:s.title,estimatedMinutes:55,content:{type:"reading",body:[s.body, workedCases[s.id].example].join("\n\n"),blocks}},
+    {id:`technical-strategy-${s.id}-reading`,title:s.title,estimatedMinutes:55,content:{type:"reading",body:[s.body, worked.example].join("\n\n"),blocks}},
     {id:`technical-strategy-${s.id}-practice`,title:`Practice: ${s.title}`,estimatedMinutes:75,content:{type:"practical",objective:`Apply ${s.title} to Steward's next planning horizon.`,scenario:"Use the accumulated Steward evidence and current organizational assumptions. Make explicit choices about what to strengthen, simplify, defer or stop. Do not invent growth or transformation merely to justify investment.",instructions:s.practice,deliverables:["Strategy/capability decision artifact","Evidence and trade-offs","Owner, horizon and review trigger"],completionCriteria:["Choices trace to organizational outcomes and evidence.","At least one credible non-investment or stop/defer choice is explicit.","Capability and operating consequences are considered, not only technology acquisition."]}},
   ]};
 }
