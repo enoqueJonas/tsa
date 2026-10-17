@@ -164,7 +164,7 @@ Status: **Not yet audited**.
 - [ ] `architect-milestone-deep`
 - [ ] `architect-architectural-styles-deep`
 - [ ] `architect-data-architecture-deep`
-- [ ] `architect-domain-modeling-deep`
+- [x] `architect-domain-modeling-deep`
 - [ ] `architect-integration-and-messaging-deep`
 - [ ] `architect-modularity-deep`
 - [ ] `architect-resilience-architecture-deep`
@@ -226,3 +226,9 @@ The following entries have been inspected for module structure and lesson-title 
 | System Thinker Modeling | Separates model scope, C4 views, state transitions and diagram-as-code. | Review actual learner diagrams. |
 
 **Confirmed cross-module prerequisite defect fixed:** introductory Python OOP practical previously required Team composition before the Composition lesson. The task is now in the later Composition practical (`5e64311`).
+
+## Review batch 2
+
+Inspected selected Cloud, Quality, Security and Architecture modules. The Cloud quality wrappers delegate teaching to deep source modules. Quality API and framework modules separate HTTP semantics, contracts, authentication, logging and retry policy. Security application modules distinguish authentication, authorization and validation. These observations do not establish complete pedagogical quality.
+
+**Confirmed and fixed:** `architect-domain-modeling-deep` combined entities, value objects and aggregates into one brief lesson. Commit `c1019ec` splits them into three substantive lessons on identity, value equality and consistency boundaries, with Steward examples and exercises.
