@@ -107,6 +107,9 @@ jobs:
       fail-fast: false
       matrix:
         school:
+          - engineering-apprentice
+          - builder
+          - platform-builder
           - system-thinker
           - delivery-engineer
           - cloud-engineer
