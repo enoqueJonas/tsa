@@ -160,6 +160,14 @@ if (natIndex < 0 || bridgeIndex <= natIndex || diagnosisIndex <= bridgeIndex) {
   failures.push("Platform virtual networking must teach NAT and bridging before the worked reachability diagnosis");
 }
 
+// Shell failure traces must follow the explanation of pipeline status and pipefail.
+const shellTeaching = sources.get("delivery-automation-shell-deep.ts") ?? "";
+const pipelineExplanation = shellTeaching.indexOf('heading: "Pipelines need special attention"');
+const pipelineWorkedTrace = shellTeaching.indexOf('heading: "Worked failure trace:');
+if (pipelineExplanation < 0 || pipelineWorkedTrace <= pipelineExplanation) {
+  failures.push("Delivery shell must explain pipeline status before the worked pipefail trace");
+}
+
 // Steward's chosen CI executor is GitLab. A comparison lesson may teach other providers,
 // but its canonical container-build walkthrough must not silently switch to GitHub Actions.
 const ciExamples = sources.get("delivery-continuous-integration-deep.ts") ?? "";
