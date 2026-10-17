@@ -86,7 +86,6 @@ if (!delivery || delivery.paths.length !== 11) {
 }
 if (delivery) {
   for (const path of delivery.paths) {
-    if (path.id === "artifact-and-supply-chain") continue;
     for (const lesson of path.lessons) {
       lesson.activities.forEach((activity, index) => {
         if (activity.content.type !== "practical") return;
