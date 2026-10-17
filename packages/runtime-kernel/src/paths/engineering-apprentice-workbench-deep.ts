@@ -37,7 +37,7 @@ const shellFilesystemLesson: Lesson = {
 
      {type:"heading",id:"shell-safe-file-operations",text:"4. Read state before you mutate it",level:2},
      {type:"paragraph",text:"mkdir creates directories; touch can create an empty file or update timestamps; cp copies; mv moves or renames; rm removes. These operations are simple, but their path arguments determine their scope. Unlike a graphical trash workflow, command-line removal may be immediate. Treat destructive commands as state changes that require inspection."},
-     {type:"code",language:"shell",caption:"A disposable workspace",code:"mkdir -p ~/tsa-shell-lab/notes\ncd ~/tsa-shell-lab\nprintf 'first note\\n' > notes/one.txt\ncp notes/one.txt notes/backup.txt\nls -la notes\ncat notes/backup.txt"},
+     {type:"code",language:"shell",caption:"Disposable workspace: mkdir -p creates notes, printf writes one known line, cp duplicates the file, ls lists both paths, and cat should print exactly 'first note'. The ~/tsa-shell-lab path is reusable; inspect it before running because the example overwrites notes/one.txt and notes/backup.txt.",code:"mkdir -p ~/tsa-shell-lab/notes\ncd ~/tsa-shell-lab\nprintf 'first note\\n' > notes/one.txt\ncp notes/one.txt notes/backup.txt\nls -la notes\ncat notes/backup.txt"},
      {type:"paragraph",text:"Notice the sequence: create a bounded workspace, move into it, write known data, copy it, then inspect the result. The commands are evidence-producing steps, not a magic sequence to memorize."},
 
      {type:"heading",id:"shell-quoting",text:"5. Words, whitespace and quoting",level:2},
@@ -68,7 +68,7 @@ const shellFilesystemLesson: Lesson = {
 
      {type:"heading",id:"shell-debugging",text:"11. Diagnose from evidence",level:2},
      {type:"paragraph",text:"When a command fails, resist changing several things at once. Ask: What directory am I in? What exact path did the shell construct? Does the target exist? Did quoting change the arguments? Did the program run and return an error, or could the shell not find the program? What exit status did it return? This turns terminal work from trial-and-error into engineering."},
-     {type:"code",language:"shell",caption:"A small diagnostic sequence",code:`pwd\nls -la\nprintf 'PATH=%s\\n' "$PATH"\ncommand -v git\ngit --version\nprintf 'status=%s\\n' "$?"`},
+     {type:"code",language:"shell",caption:"Expected evidence: pwd prints your current directory; ls lists entries; PATH contains your shell's command-search directories; command -v git prints the resolved executable path (or fails if Git is absent); git --version prints the installed version. The final status=0 reports ONLY whether git --version succeeded, not whether all previous commands passed.",code:`pwd\nls -la\nprintf 'PATH=%s\\n' "$PATH"\ncommand -v git\ngit --version\nprintf 'status=%s\\n' "$?"`},
 
      {type:"heading",id:"shell-summary",text:"Mental model to keep",level:2},
      {type:"list",ordered:true,items:["The terminal carries text interaction; the shell interprets command syntax.","Your current working directory gives relative paths their meaning.","The shell resolves commands and prepares arguments, expansions, pipes and redirections.","Programs read input, change or inspect state, write stdout/stderr and return an exit status.","Inspect state before mutation and use help when you do not understand an option."]},
@@ -154,7 +154,7 @@ const gitVersionControlLesson: Lesson = {
 
     {type:"heading",id:"git-branches",text:"4. Branches let history diverge safely",level:2},
     {type:"paragraph",text:"Creating a branch creates another reference to a commit. New commits advance the currently checked-out branch. Switching branches changes which committed snapshot is checked out and may update working-tree files. Keep uncommitted work visible with git status before switching."},
-    {type:"code",language:"shell",caption:"Create a feature line of history",code:"git switch -c feature/runbook\nprintf 'Runbook draft\\n' > RUNBOOK.md\ngit add RUNBOOK.md && git commit -m 'docs: add runbook draft'\ngit log --oneline --graph --decorate --all"},
+    {type:"code",language:"shell",caption:"Run inside a disposable Git repository with an existing commit and a configured commit identity. The new branch must not exist already. On success, git log shows the newly created docs commit at the tip of feature/runbook; commit SHA and timestamps vary. If RUNBOOK.md already exists, this command overwrites it: use an isolated practice repository.",code:"git switch -c feature/runbook\nprintf 'Runbook draft\\n' > RUNBOOK.md\ngit add RUNBOOK.md && git commit -m 'docs: add runbook draft'\ngit log --oneline --graph --decorate --all"},
 
     {type:"heading",id:"git-diffs",text:"5. Diff is your inspection instrument",level:2},
     {type:"paragraph",text:"git status summarizes state; git diff shows content differences. Learn to ask a precise question: What did I change but not stage? What is staged for the next commit? What changed between two commits or branches? Inspection before mutation is as important in Git as it is in the shell."},
