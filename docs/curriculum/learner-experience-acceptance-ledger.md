@@ -615,3 +615,11 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - Introduced **nonblocking** inventory into the smoke suite; `node scripts/audit-learner-facing-curriculum.mjs --strict` exits nonzero on structural findings. Nonblocking mode is deliberate until the initial findings are triaged; it is not a declaration that findings are absent.
 - This is an initial cross-school structural/content-health audit, **not** proof of prerequisite correctness or independent example execution. Next audit work: inspect real output, resolve any findings, then add strict regression enforcement where safe, review short body-only readings and conduct controlled exercise execution. Progress persistence and learner navigation remain deferred.
 - New changes await user-run `pnpm test`/`pnpm build`; do not claim verified beforehand.
+
+## Verification checkpoint — 2026-10-18
+
+**User-executed on `curriculum/oop-depth-reconstruction` at `70d00bc2`:** `pnpm test` passed 9/9; `pnpm build` succeeded (Turbo returned cached build outputs); `node scripts/audit-learner-facing-curriculum.mjs --strict` reported 12 schools, 128 paths, 1,334 lessons, 4,293 activities, 1,331 practicals, 408 reading code blocks and **0 structural findings**. The smoke-test matcher was corrected in `70d00bc2` to assert the zero-findings footer. This closes the particular regex failure observed at `66604c90`.
+
+**Limits:** The zero-findings result only covers the checks implemented in this script (IDs, empty reading/code/list fields, heading anchors). It does **not** establish correct prerequisite order, adequate code demonstrations, independent lab execution, resource accuracy, progress persistence or rendered UX. Several schools have zero code *blocks within reading content*; that count is not necessarily zero code presented elsewhere, and warrants investigation rather than a blanket assertion. No module is promoted to Accepted from this checkpoint. Cached build output is not evidence of a fresh end-to-end browser run.
+
+**Next gate:** Independently inspect the composed learner-visible content and actual exercise execution in each module, including schools with zero reading code blocks; record precise lesson-level failures and evidence of remediation in this ledger. Test UX and persistence with actual browser interaction before learner acceptance.
