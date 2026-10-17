@@ -160,6 +160,17 @@ if (natIndex < 0 || bridgeIndex <= natIndex || diagnosisIndex <= bridgeIndex) {
   failures.push("Platform virtual networking must teach NAT and bridging before the worked reachability diagnosis");
 }
 
+// Delivery milestone verifies all runtime roles and behavior, not only an HTTP health check.
+const deliveryMilestone = sources.get("delivery-engineer-milestone-deep.ts") ?? "";
+for (const evidence of [
+  "unauthorized cross-team mutation is denied",
+  "outbox publisher and lifecycle consumer process it through RabbitMQ",
+  "API, publisher and consumer run the approved image digest",
+  "recovered async path",
+]) {
+  if (!deliveryMilestone.includes(evidence)) failures.push(`Delivery milestone missing runtime verification: ${evidence}`);
+}
+
 // Every authored Shell lesson has its own explicit practical evidence contract.
 const shellModule = sources.get("delivery-automation-shell-deep.ts") ?? "";
 const shellLessonIds = [...shellModule.matchAll(/richLesson\("([^"]+)", "([^"]+)"/g)].map((m) => m[1]);
