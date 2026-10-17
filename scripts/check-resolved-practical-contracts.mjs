@@ -68,6 +68,22 @@ for (const id of builderMilestones) {
     problems.push(`Platform Builder milestone is missing its prerequisite worked reading: ${id}`);
   }
 }
+const delivery = journey.schools.find((school) => school.id === "delivery-engineer");
+if (!delivery || delivery.paths.length !== 11) {
+  problems.push("Delivery Engineer must expose 11 learning paths");
+} else {
+  for (const path of delivery.paths) {
+    const first = path.lessons?.[0];
+    const activity = first?.activities?.[0];
+    const blocks = activity?.content?.blocks;
+    if (first?.id !== `${path.id}-fieldwork-orientation` ||
+        activity?.content?.type !== "reading" ||
+        !Array.isArray(blocks) || blocks.length < 8 ||
+        !blocks.some((block) => block.type === "heading" && block.id === "failure-analysis")) {
+      problems.push(`Delivery Engineer worked instruction is missing: ${path.id}`);
+    }
+  }
+}
 const nonEmpty = (value) => typeof value === "string" && value.trim().length > 0;
 const detailedList = (value) => Array.isArray(value) && value.length > 0 &&
   value.every((entry) => nonEmpty(entry));
