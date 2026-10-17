@@ -16,7 +16,7 @@ function lesson(id: string, title: string, body: string, practice: string[]): Le
         id: `${id}-reading`,
         title,
         estimatedMinutes: 55,
-        content: { type: "reading", body, blocks:[{type:"paragraph",text:body},{type:"resources",title:"Continue learning",resources:resourcesByLeadership[id] ?? [adr]}] },
+        content: { type: "reading", body, blocks:[...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),{type:"resources",title:"Continue learning",resources:resourcesByLeadership[id] ?? [adr]}] },
     };
     const practical: Activity = {
         id: `${id}-practice`,
