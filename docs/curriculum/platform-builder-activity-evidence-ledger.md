@@ -277,3 +277,9 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 
 - Strengthened Delivery Artifact Supply Chain practical contracts for `consume-pip` and `consume-npm-pnpm`: a fresh consumer with no producer checkout/workspace link or cached package must prove effective approved registry origin, pinned version and cryptographic content hash/integrity, and a negative test where the approved registry is unavailable must not silently resolve from unapproved sources (`288ffff`).
 - These are learner evidence requirements, not actual Nexus/PyPI/npm pipeline execution by the audit. Previous batch 111 exact-head CI [39039938120](https://github.com/enoqueJonas/tsa/actions/runs/39039938120) passed both jobs. Check current exact-head CI separately.
+
+## Batch 113 — Supply-chain SBOM and signing trust-negative tests (2026-10-17)
+
+- Confirmed Batch 112 [39040353269](https://github.com/enoqueJonas/tsa/actions/runs/39040353269) passed complete CI validation and learner-browser coverage.
+- Strengthened Delivery `sbom` practical to require generator and immutable image digest, verification of at least five installed components against the artifact and investigation of a missing/mismatched SBOM entry.
+- Strengthened `signing-provenance` to require disposable-key signature validation with tampered-content rejection and a separate unauthorized-signer rejection, distinguishing valid cryptography from authorized release provenance (`494c2a2`). These are learner exercise contracts, not an executed image signing or SBOM verification on live infrastructure.
