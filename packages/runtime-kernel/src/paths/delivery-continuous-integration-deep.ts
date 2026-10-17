@@ -15,7 +15,7 @@ function rich(id: string, title: string, intro: string, sections: Array<{ headin
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward CI checkpoint", body: "Apply this concept to Steward's current source-to-image path. Ask what evidence the pipeline should produce, what failure should stop promotion, and whether another engineer could understand the result without rerunning the job manually." });
     blocks.push({ type: "resources", title: "Continue learning", resources });
-    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || intro, blocks } }] };
 }
 
 export const continuousIntegrationDeepLessons: Lesson[] = [
