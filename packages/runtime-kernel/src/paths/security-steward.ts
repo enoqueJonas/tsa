@@ -36,7 +36,7 @@ function path(id: string, title: string, lessons: AuthoredLesson[]): AuthoredLea
     const guide = securityModels[id];
     if (!guide) throw new Error(`Missing Security Steward model for ${id}`);
     const prepared = lessons.map((lesson) => ({ ...lesson, activities: lesson.activities.flatMap((activity) => {
-        const content = "content" in activity ? activity.content : activity;
+        const content = ("content" in activity ? activity.content : activity) as Record<string, unknown>;
         if (!content || content.type !== "practical") return [activity];
         const instructions = Array.isArray(content.instructions) ? content.instructions : [];
         const criteria = Array.isArray(content.completionCriteria) ? content.completionCriteria : [];
