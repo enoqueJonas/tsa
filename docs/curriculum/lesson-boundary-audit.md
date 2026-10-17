@@ -324,3 +324,7 @@ Inspected Platform Builder Windows/PowerShell and OS patching sources beyond the
 ## Review batch 22 — Platform milestone handoff and Delivery shell example
 
 Inspected Platform Builder's integrated milestone gates (core infrastructure, patch lifecycle, Windows estate, Proxmox, and the main Steward homelab portfolio). The gates require observed cross-system and recovery evidence rather than completion by diagram alone; this is structural review, not a completed learner run. Began Delivery Engineer content review. In `delivery-automation-shell-deep.ts`, the `set -euo pipefail` health-check example referenced `health_url` without defining it, which makes the snippet fail under `set -u` when copied independently. Commit `bd6ebe2` supplies an explicit positional-argument/default URL before use. This remedies a concrete independently-runnable-example defect; build and learner rendering remain unverified.
+
+## Review batch 23 — Delivery CI dependency behavior
+
+Inspected Delivery Engineer continuous-integration, Docker and release-engineering lesson sources. The Jobs, Stages and Dependencies section discussed parallel work and prerequisite relationships but did not give learners a complete passing/failing execution trace. Commit `c040d6c` adds a worked Steward job graph, independent versus gated work, a failed unit-test outcome, explicit policy-dependent lint gating, and immutable image handoff. This is targeted source improvement only; remaining lessons, rendered content, automated curriculum audit and local build are unverified.
