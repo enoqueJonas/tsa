@@ -100,7 +100,22 @@ def inspect_school(page):
             nxt.click()
         print(f"PASS {SCHOOL} module {module_index+1}/{module_count}: {count} activities", flush=True)
     assert not errors, f"Browser exceptions in {SCHOOL}: {errors}"
-    output = {"school": SCHOOL, "modules": module_count, "activities": evidence}
+    # A readable page is not automatically a sufficiently developed explanation.
+    # Report the shortest conceptual readings for qualitative review; these are
+    # not automatic failures because code, tables and graphics vary by lesson.
+    short_readings = sorted(
+        (item for item in evidence if item["activity_type"] == "reading"),
+        key=lambda item: item["visible_characters"],
+    )[:12]
+    output = {
+        "school": SCHOOL,
+        "modules": module_count,
+        "activities": evidence,
+        "shortest_readings_for_manual_review": short_readings,
+    }
+    print(f"REVIEW {SCHOOL} shortest rendered readings (not CI failures):", flush=True)
+    for item in short_readings:
+        print(f"  {item['visible_characters']:5} chars {item['activity_id']}", flush=True)
     path = ARTIFACTS / f"{SCHOOL}.json"
     path.write_text(json.dumps(output, indent=2), encoding="utf-8")
     print(f"PASS {SCHOOL}: traversed {len(evidence)} real rendered activities", flush=True)
