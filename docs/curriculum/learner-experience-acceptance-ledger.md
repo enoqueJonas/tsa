@@ -592,3 +592,10 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - Enhanced **all 10 Architect learning paths** with worked design decisions, explicit architectural constraints, trade-offs, and counterexamples. Every authored practical has its own immediately preceding preparation lesson with the task's scenario, first analysis steps, evidence requirements and rejected alternative/falsification analysis.
 - Added resolved curriculum checks for all ten foundations and every practical's preceding tradeoff reading. Preserved the static school registry to avoid curriculum-integrity parser drift.
 - **Pending:** local test/build verification, substantive per-example execution and independent architecture review. The source-level pass is not proof of a live architecture migration or production adoption. Learner progress and navigation testing remain deferred.
+
+### 2026-10-18 — Technical Steward whole-school instructional coverage pass
+
+- The user verified Architect at `85896615`: 8/8 tests passed and two uncached production build tasks succeeded.
+- All **13 Technical Steward paths** now have introductory decision-rights, accountable-owner and counterexample material; each existing practical has a preceding scenario-specific preparation on scope, steps, measured operating evidence, rejected alternatives and exception handling.
+- The resolved-runtime validation now examines all 13 path foundations and the preparation directly preceding every practical. Static path registry preserved.
+- **Outstanding:** local `pnpm test`/`pnpm build` validation and independent review of individual governance deliverables. A source-level instructional pass does not prove controls actually operate, that risks are mitigated or that an audit has independently verified evidence. Learner completion/navigation remains deferred.
