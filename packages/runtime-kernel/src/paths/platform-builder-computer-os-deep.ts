@@ -15,7 +15,7 @@ function richLesson(
     title: string,
     introduction: string,
     outcomes: string[],
-    sections: { title: string; paragraphs: string[]; code?: { language: string; code: string; caption?: string } }[],
+    sections: { title: string; paragraphs: string[]; code?: { language: string; code: string; caption?: string; output?: string } }[],
     objective: string,
     instructions: string[],
     questions: string[],
@@ -32,9 +32,7 @@ function richLesson(
         blocks.push({ type: "heading", id: slug(section.title), text: section.title, level: 2 });
         for (const text of section.paragraphs) blocks.push({ type: "paragraph", text });
         if (section.code) {
-            blocks.push(section.code.caption
-                ? { type: "code", language: section.code.language, code: section.code.code, caption: section.code.caption }
-                : { type: "code", language: section.code.language, code: section.code.code });
+            blocks.push({ type: "code", language: section.code.language, code: section.code.code, ...(section.code.caption ? { caption: section.code.caption } : {}), ...(section.code.output ? { output: section.code.output } : {}) });
         }
     }
 
@@ -70,7 +68,7 @@ export const computerAndOsFoundationsDeepLessons: Lesson[] = [
         "Applications do not run on abstract compute. They consume finite CPU time, memory, storage capacity and I/O bandwidth. Platform engineering starts by understanding these resources well enough to explain why an application is fast, slow, blocked or unstable.",
         ["Explain the role of CPU, memory, persistent storage and I/O.", "Distinguish capacity from throughput and latency.", "Recognize that a bottleneck is workload-dependent.", "Connect resource pressure to application symptoms."],
         [
-            { title: "CPU executes work", paragraphs: ["A CPU executes instructions on behalf of processes and threads. More CPU cores can increase concurrency, but only when the workload can use them. A single blocked thread, lock-heavy code path or database wait can remain slow even on a machine with many cores.", "Useful questions are not only 'How many CPUs do I have?' but also 'Who is consuming CPU?', 'Is the process runnable or waiting?', and 'Is the workload parallel enough to benefit from more cores?'"], code: { language: "bash", code: "nproc\nlscpu\nuptime\nps -eo pid,comm,%cpu,%mem --sort=-%cpu | head", caption: "Start with inventory, then observe actual consumption." } },
+            { title: "CPU executes work", paragraphs: ["A CPU executes instructions on behalf of processes and threads. More CPU cores can increase concurrency, but only when the workload can use them. A single blocked thread, lock-heavy code path or database wait can remain slow even on a machine with many cores.", "Useful questions are not only 'How many CPUs do I have?' but also 'Who is consuming CPU?', 'Is the process runnable or waiting?', and 'Is the workload parallel enough to benefit from more cores?'"], code: { language: "bash", code: "nproc\nlscpu\nuptime\nps -eo pid,comm,%cpu,%mem --sort=-%cpu | head", caption: "Start with inventory, then observe actual consumption. Example output varies by host.", output: "Illustrative excerpts (not captured from your host):\\n$ nproc\\n4\\n$ uptime\\n 14:05:12 up 2 days,  1 user,  load average: 0.20, 0.15, 0.10\\n$ ps -eo pid,comm,%cpu,%mem --sort=-%cpu | head\\n PID COMMAND         %CPU %MEM\\n 834 python            3.2  1.7" } },
             { title: "Memory is working state", paragraphs: ["RAM holds active code and data close to the CPU. The operating system also uses otherwise free memory for caches, so low 'free' memory is not automatically a problem. The stronger signal is whether the system is under pressure: reclaiming aggressively, swapping, killing processes or forcing the application to wait.", "For Steward, memory demand may come from the Django process, Python objects, connection pools, PostgreSQL, filesystem cache and other services sharing the host."] },
             { title: "Virtual memory separates address space from physical RAM", paragraphs: ["Each process operates in a virtual address space that the kernel maps to physical memory and other backing such as files. Pages can be resident, reclaimed or swapped; therefore a process's virtual size is not the same as physical RAM currently consumed.", "Page faults are not automatically errors: a minor fault may map an already available page, while a major fault requires storage I/O. Under pressure, fault/reclaim/swap behavior is more informative than one memory percentage."] },
             { title: "The page cache makes storage and memory interact", paragraphs: ["Linux uses RAM to cache file-backed data so repeated reads can avoid slower storage. Cached memory is generally reclaimable, which is why available memory is more useful than insisting that free memory remain high.", "A cold-cache read and a warm-cache read can have different latency without any application-code change. Platform measurements should state which condition they represent."] },
