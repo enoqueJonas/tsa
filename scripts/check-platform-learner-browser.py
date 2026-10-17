@@ -108,6 +108,8 @@ def check_complete_modules(page):
     modules = page.get_by_role("button", name=module_button).count()
     visited_total = 0
     evidence = []
+    client_errors = []
+    page.on("pageerror", lambda error: client_errors.append(str(error)))
     assert modules >= 10
     for module_index in range(modules):
         page.goto(BASE + "/?view=curriculum&school=platform-builder", wait_until="networkidle")
@@ -182,6 +184,7 @@ def check_complete_modules(page):
             next_button.click()
         visited_total += len(visited)
         print(f"PASS module {module_index + 1}/{modules}: traversed {len(visited)} activities", flush=True)
+    assert not client_errors, f"Browser exceptions during full traversal: {client_errors}"
     assert visited_total == 328, f"Platform Builder activity count changed: {visited_total}; update audit census deliberately"
     (OUT / "activity-coverage.json").write_text(
         json.dumps({"modules": modules, "activities": evidence}, indent=2), encoding="utf-8"
