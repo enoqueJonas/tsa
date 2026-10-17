@@ -5,6 +5,7 @@ import ts from "typescript";
 const directory = path.join(process.cwd(), "packages/runtime-kernel/src/paths");
 const files = fs.readdirSync(directory).filter((name) => name.endsWith(".ts"));
 const cases = [];
+const pedagogicalHazards = [];
 const getProperty = (node, key) => node.properties.find((p) => ts.isPropertyAssignment(p) && p.name.getText().replaceAll('"', "").replaceAll("'", "") === key);
 const valueOf = (property) => {
   if (!property) return undefined;
@@ -26,6 +27,9 @@ for (const name of files) {
         const location = file.getLineAndCharacterOfPosition(node.getStart(file));
         const prints = codeText && /(?:\bprint\s*\(|\bconsole\.log\s*\(|\bprintf\b|\becho\b|\bcurl\b|\bmvn\s+|\bSELECT\b)/i.test(codeText);
         const inline = codeText && /(?:^|\n)\s*(?:#|\/\/|--)\s*(?:expected\s+)?output\b/i.test(codeText);
+        if (codeText && /\b(?:rm\s+-rf\s+\/|chmod\s+777\s+\/|curl\s+[^\n]*\|\s*(?:sudo\s+)?(?:ba)?sh\b)/i.test(codeText)) {
+          pedagogicalHazards.push(`${name}:${location.line + 1} potentially destructive or unverified pipeline command`);
+        }
         cases.push({
           file: name,
           line: location.line + 1,
@@ -45,3 +49,6 @@ console.log(`Source-level code block inventory: ${files.length} path files; ${ca
 console.log("Candidates for human pedagogical review (not automatic failures):");
 for (const item of missing) console.log(`  ${item.file}:${item.line} [${item.language}]`);
 console.log("Generated/dynamic code blocks require rendered activity inspection; the source-only inventory is not evidence of completeness.");
+
+console.log(`Potentially unsafe literal teaching commands: ${pedagogicalHazards.length} (human triage required).`);
+for (const hazard of pedagogicalHazards) console.log(`  ${hazard}`);
