@@ -43,3 +43,7 @@ test("practical contract inventory runs across all curriculum schools", () => {
 test("resolved curriculum practical contracts are present across all 12 schools", () => {
   runAudit("scripts/check-resolved-practical-contracts.mjs", /Resolved practical contracts: 12 schools, \d+ paths, \d+ lessons, \d+ practical activities; 0 missing\/empty contract findings\./);
 });
+
+test("curriculum object literals do not contain duplicate static property keys", () => {
+  runAudit("scripts/check-duplicate-curriculum-object-keys.mjs", /Duplicate curriculum object keys: \\d+ path files, \\d+ object literals, 0 duplicate keys\\./);
+});
