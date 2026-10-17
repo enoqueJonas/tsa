@@ -41,7 +41,7 @@ function make(spec: Spec): Lesson { const worked = architectureWorked[spec.id];
     id: `architecture-fundamentals-${spec.id}`,
     title: spec.title,
     activities: [
-      { id: `architecture-fundamentals-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: spec.intro, blocks } },
+      { id: `architecture-fundamentals-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks } },
       { id: `architecture-fundamentals-${spec.id}-002`, title: `Evaluate: ${spec.title}`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${spec.title} to the mature Steward ecosystem.`, scenario: "Use the actual Steward system and evidence accumulated from development, delivery, cloud, QA, security and reliability. Do not redesign the platform to showcase a pattern; reason from present constraints and observed quality-attribute needs.", instructions: spec.practice, deliverables: ["Architecture evidence", "Driver/trade-off analysis", "Decision or explicitly justified non-change"], completionCriteria: ["The problem is stated before the solution.", "The conclusion uses explicit architecture drivers and evidence.", "Keeping the current structure is accepted when it remains the strongest option."] } },
       { id: `architecture-fundamentals-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.reflection, minimumCharacters: 200 } },
     ],
