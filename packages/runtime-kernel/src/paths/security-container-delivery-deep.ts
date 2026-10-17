@@ -223,7 +223,7 @@ function lessonFrom(topic: Topic): Lesson {
                     scenario: "Use Steward source, CI/CD, Nexus/internal repositories, container images, deployment targets and only those internal packages/shared test libraries that the Delivery/Quality evidence shows actually exist. Change only systems you are authorized to administer and capture before/after evidence.",
                     instructions: item.practice,
                     deliverables: ["Supply-chain/security evidence", "Configuration or policy change", "Verification and residual-risk note"],
-                    completionCriteria: ["The work addresses a real Steward trust boundary or threat.", "The security claim is backed by observable evidence.", "Normal build, test, publish or deployment behavior is retested after the change."],
+                    completionCriteria: [`The ${topic} artifact identifies the actual delivery asset, responsible owner, affected trust boundary and risk.`, `Capture before-and-after evidence and a negative control that demonstrates rejection of an unauthorized or unsafe action.`, `Rerun the relevant authorized build, test, publication or deployment path and record the observed outcome and residual risk.`],
                 },
             },
             {
