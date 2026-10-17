@@ -428,3 +428,9 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 
 - Reviewed the four newly added Python stateful sequences and identified a false-positive hazard: comparison of a **single concatenated stdout string** could pass even when an earlier block printed output attributed to a later block. Modified the checker to emit a boundary after each executed block and compare **each block's output** against its own published output (`b4938ca`). Sequences still share interpreter state within each lesson but run independently of one another.
 - This change has not yet been verified by a fresh `pnpm test` run. User explicitly deferred UI navigation/completion/progress-persistence tests; no such tests were introduced.
+
+### 2026-10-17 — Python checker coverage transparency (content audit)
+
+- Audited the executable example checker itself and identified an evidence blind spot: reporting 28 standalone samples and four stateful sequences could be mistaken for verification of **every** Python example. Added an AST-based census of all literal `language: "python"` code blocks; after checking, it prints total source blocks, distinct targeted captions and **unverified blocks with published output**, including their captions (`5ef84d5`, formatting `9457697`). This is a review report, not an assertion that every remaining example is broken.
+- The four stateful sequences compare per-block stdout to published output (prior commit `b4938ca`). Current content checks and the new coverage report require a fresh `pnpm test` result. We do not mark all Python examples audited solely because the curated subset passes.
+- As directed, learner navigation, completion and progress-persistence tests are **deferred**, not silently declared passed; full curriculum-wide acceptance still requires separate practical/infrastructure and rendered content evidence.
