@@ -34,6 +34,17 @@ with tempfile.TemporaryDirectory(prefix="tsa-platform-fs-") as sandbox:
     mode = stat.S_IMODE(original.stat().st_mode)
     assert mode == 0o640
     print("PASS POSIX file mode changed and independently observed")
+    # Directory mode and file mode are different checks: traverse requires x.
+    nested = root / "private"
+    nested.mkdir(mode=0o700)
+    payload = nested / "evidence.txt"
+    payload.write_text("verified\\n", encoding="utf-8")
+    nested.chmod(0o600)
+    assert stat.S_IMODE(nested.stat().st_mode) == 0o600
+    nested.chmod(0o700)
+    assert payload.read_text(encoding="utf-8") == "verified\\n"
+    print("PASS directory traversal bits inspected and restored in isolated directory")
+
 
     mount = check("df", "-hT", str(root))
     assert "Filesystem" in mount
