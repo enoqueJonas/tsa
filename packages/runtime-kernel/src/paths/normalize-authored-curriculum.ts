@@ -1,4 +1,5 @@
 import type { Activity } from "../activities";
+import type { LearningResource, LessonBlock } from "../activities/content";
 import type { LearningJourney } from "./learning-journey";
 import type { LearningPath } from "./learning-path";
 import type { Lesson } from "./lesson";
@@ -45,11 +46,42 @@ function normalizeActivity(lessonId: string, input: AuthoredActivity, index: num
     }
 
     if (compact.type === "reading") {
+        // Compact authored readings can carry the entire lesson narrative in
+        // `body`, plus structured headings, examples and references in `blocks`.
+        // Dropping these fields silently rendered a title-only page in PKI.
+        const blocks = Array.isArray(compact.blocks)
+            ? compact.blocks.filter((value): value is LessonBlock =>
+                !!value && typeof value === "object" && "type" in value && typeof value.type === "string")
+            : undefined;
         return {
             id,
             title,
-            estimatedMinutes: 30,
-            content: { type: "reading", body: typeof compact.description === "string" ? compact.description : title },
+            estimatedMinutes: typeof compact.estimatedMinutes === "number" ? compact.estimatedMinutes : 30,
+            content: {
+                type: "reading",
+                body: typeof compact.body === "string"
+                    ? compact.body
+                    : typeof compact.description === "string" ? compact.description : title,
+                ...(blocks?.length ? { blocks } : {}),
+            },
+        };
+    }
+
+    if (compact.type === "resources") {
+        const resources: LearningResource[] = Array.isArray(compact.resources)
+            ? compact.resources.filter((value): value is LearningResource =>
+                !!value && typeof value === "object" &&
+                typeof value.title === "string" && typeof value.url === "string")
+            : [];
+        return {
+            id,
+            title,
+            estimatedMinutes: 15,
+            content: {
+                type: "reading",
+                body: "Review these references before proceeding to the practical exercise. Note which source supports each concept or command.",
+                blocks: [{ type: "resources", title, resources }],
+            },
         };
     }
 
