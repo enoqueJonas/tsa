@@ -561,3 +561,11 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - Updated resolved practical contracts audit to walk all 11 Cloud Engineer paths and every practical, checking both operational model and preparation order.
 - **Scope distinction:** instructional source coverage does not prove execution of VPS provisioning, internet DNS/TLS, object-storage uploads, Terraform/IaC, Kubernetes/GitOps, canary analysis, costs or live Internet environment. Those need learner-controlled infrastructure and logs before real-world lab acceptance. Progress/completion UI testing remains deferred.
 - These commits have **not** been verified through local `pnpm test` or `pnpm build` yet.
+
+### 2026-10-18 — Quality Steward whole-school instructional coverage pass
+
+- User confirmed Cloud Engineer at `4cf6888c`: **8/8 automated tests and successful uncached production build**.
+- Applied test-oracle, risk, evidence and negative-path teaching across **all 12 Quality Steward paths**, including test analysis/design, Java frameworks, unit/integration/API/browser testing, automation design, shared test infrastructure, non-functional quality, CI containers, scheduled testing and milestone.
+- Each Quality Steward practical is now preceded by **scenario-specific preparation**: testing boundary, initial operations, explicit completion evidence and negative diagnosis. Existing labs remain unchanged.
+- Added resolved-runtime checks for all twelve path overviews and every practical's immediately preceding preparation. This is source-level instructional coverage, not proof that each tool, container, environment or browser workflow has been executed.
+- These new changes await full user-run `pnpm test` and `pnpm build`; UI completion/navigation/persistence checks remain deferred.
