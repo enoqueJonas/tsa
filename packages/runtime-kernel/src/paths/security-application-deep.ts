@@ -61,9 +61,10 @@ const securityWorkedCases: Record<string, {situation:string;control:string;verif
 };
 
 function blocksFor(spec: Spec): LessonBlock[] {
+    const worked = securityWorkedCases[spec.id];
     const blocks: LessonBlock[] = [
         { type: "paragraph", text: spec.intro },
-        ...(securityWorkedCases[spec.id] ? [{type:"heading" as const,id:`${spec.id}-worked`,text:"Worked control and verification",level:2 as const},{type:"paragraph" as const,text:`Situation: ${securityWorkedCases[spec.id].situation}`},{type:"paragraph" as const,text:`Control: ${securityWorkedCases[spec.id].control}`},{type:"paragraph" as const,text:`Verification: ${securityWorkedCases[spec.id].verification}`},{type:"paragraph" as const,text:`Why: ${securityWorkedCases[spec.id].reasoning}`}] : []),
+        ...(worked ? [{type:"heading" as const,id:`${spec.id}-worked`,text:"Worked control and verification",level:2 as const},{type:"paragraph" as const,text:`Situation: ${worked.situation}`},{type:"paragraph" as const,text:`Control: ${worked.control}`},{type:"paragraph" as const,text:`Verification: ${worked.verification}`},{type:"paragraph" as const,text:`Why: ${worked.reasoning}`}] : []),
         { type: "heading", id: `${spec.id}-principles`, text: "Security engineering principles", level: 2 },
         { type: "list", items: spec.principles },
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
