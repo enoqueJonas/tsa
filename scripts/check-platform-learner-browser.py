@@ -144,6 +144,15 @@ def check_complete_modules(page):
                 )
                 copy = block.get_by_role("button", name="Copy")
                 assert copy.is_visible(), f"Code block has no visible copy control at {activity_id}"
+            # Exercise the user-facing copy control in Chromium, not only its appearance.
+            if code_blocks.count() and index == 0:
+                page.context.grant_permissions(["clipboard-read", "clipboard-write"])
+                first = code_blocks.first
+                source = first.locator("pre").first.inner_text().strip()
+                assert source, f"Empty displayed code source at {activity_id}"
+                first.get_by_role("button", name="Copy").click()
+                clipboard_text = page.evaluate("navigator.clipboard.readText()")
+                assert clipboard_text.strip(), f"Copy produced empty clipboard at {activity_id}"
             reflection = page.get_by_placeholder("Write your response here...")
             if reflection.count():
                 reflection.fill(
