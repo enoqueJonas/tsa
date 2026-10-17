@@ -272,3 +272,8 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 - Audited the Delivery Artifact Supply Chain practical contracts. `retention-cleanup` now requires a digest-based inventory of live and rollback dependencies, a dry-run deletion policy that **rejects** deletion of active/rollback images, and safe deletion proof only for an unreferenced disposable artifact (`477fa35`). Age-only cleanup is insufficient.
 - `provenance` now requires actual source revision, trusted build-run/runner and publisher evidence, an independent registry digest lookup, and a **negative test** where a mismatched source/run/digest tuple must be rejected (`30b9e24`). Mutable tags are not accepted as provenance.
 - These are strengthened learner acceptance criteria; they do not claim live Nexus/GitLab verification. Exact-head CI success must be checked before accepting this batch.
+
+## Batch 112 — Independent Python/npm package consumption and registry fail-closed evidence (2026-10-17)
+
+- Strengthened Delivery Artifact Supply Chain practical contracts for `consume-pip` and `consume-npm-pnpm`: a fresh consumer with no producer checkout/workspace link or cached package must prove effective approved registry origin, pinned version and cryptographic content hash/integrity, and a negative test where the approved registry is unavailable must not silently resolve from unapproved sources (`288ffff`).
+- These are learner evidence requirements, not actual Nexus/PyPI/npm pipeline execution by the audit. Previous batch 111 exact-head CI [39039938120](https://github.com/enoqueJonas/tsa/actions/runs/39039938120) passed both jobs. Check current exact-head CI separately.
