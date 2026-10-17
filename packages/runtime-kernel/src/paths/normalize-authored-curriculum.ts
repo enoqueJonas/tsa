@@ -80,7 +80,10 @@ function normalizeActivity(lessonId: string, input: AuthoredActivity, index: num
             content: {
                 type: "reading",
                 body: "Review these references before proceeding to the practical exercise. Note which source supports each concept or command.",
-                blocks: [{ type: "resources", title, resources }],
+                blocks: [
+                    { type: "paragraph", text: "Use these references to distinguish verified protocol and implementation behavior from assumptions. Record the specific source supporting the next lab decision." },
+                    { type: "resources", title, resources },
+                ],
             },
         };
     }
