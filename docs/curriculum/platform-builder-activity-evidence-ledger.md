@@ -293,3 +293,9 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 
 - Verified the preceding Batch 114 final workflow [39040759411](https://github.com/enoqueJonas/tsa/actions/runs/39040759411) status in CI separately; the present batch extends `scripts/audit-curriculum-integrity.mjs` with cross-lesson guards for Delivery's CI publish failure, untrusted credential scope, partial deployment, changed-digest approval, failed backfill, Ansible check-mode and configuration validation, tag drift, rollback artifact retention, untrusted signing and time-bound vulnerability exceptions (`9c86e47`).
 - These checks detect **removal of explicit exercise evidence clauses** in authored source; they cannot assess whether the prose is sufficiently clear, that students achieve competence, or that a real lab was executed. Exact-head CI must finish before acceptance.
+
+## Batch 116 — Cross-school copyable-command safety inventory (2026-10-17)
+
+- Expanded `scripts/report-curriculum-code-evidence.mjs` to flag potentially destructive **literal teaching code blocks** across runtime path sources (including root-recursive delete, broad chmod on root, and curl-to-shell patterns) with source filename and line number (`dd24b28`). Existing report already locates observable snippets without adjacent expected output; this adds an independent safety-review dimension.
+- Hazard matches are **review candidates**, not blanket automatic failures: context, environment isolation and pedagogical purpose must be inspected. The AST inventory does not parse dynamically assembled output nor certify all executable examples. The report is invoked by the existing `report:curriculum-examples` CI step; the new head's CI result must be checked before acceptance.
+- Prior Delivery regression-guard commit [39040847468](https://github.com/enoqueJonas/tsa/actions/runs/39040847468) passed both CI jobs.
