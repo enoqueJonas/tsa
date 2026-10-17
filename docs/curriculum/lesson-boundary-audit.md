@@ -584,3 +584,9 @@ Curriculum-wide quality work also includes 18 distinct Java practical evidence c
 - Cross-checked `platform-builder-implementation-milestones.ts` against the amended Platform OS patch-posture practical. The milestone previously demanded a canary and wider-fleet *patch execution* without handling the entirely legitimate state where no supported updates are pending; this risked incentivizing an unsafe fabricated downgrade or mislabeling a no-op run as patch proof.
 - Corrected in `7e8a6b1`: the pre-maintenance report now explicitly captures timestamped host posture, installed/running kernel differences and advisory limitations; live update execution is conditional on real supported updates. When none exist, retain an honest no-change record and leave the live rollout gate incomplete. Canary failure explicitly blocks later hosts.
 - Source reviewed: OS patching lifecycle and the three Platform implementation milestone contracts. The rest of Platform activity-level/learner-rendered review remains outstanding. No claim of live maintenance execution or current-head CI pass is made.
+
+## Review batch 65 — Honest patch-regression evidence (2026-10-17)
+
+- Revisited the OS lifecycle milestone after the no-update correction. Its regression instruction still assumed a real update had occurred even when supported updates were unavailable.
+- Fixed in `cefaee3`: when a supported update is applied, investigate a controlled regression on a disposable canary and verify recovery; otherwise, conduct a separate clearly labeled fault-injection drill, never represented as post-update evidence.
+- This resolves the internal milestone contradiction at source level. It does not prove actual patch deployment, real lab execution or rendered activity quality. Current-head CI must be verified separately.
