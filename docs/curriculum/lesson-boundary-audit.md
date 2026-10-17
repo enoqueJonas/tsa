@@ -449,3 +449,7 @@ Verified exact reading/practical profile title matches for six other Delivery En
 ## Review batch 40 — Security threat-modeling boundary reasoning
 
 Inspected the Security Steward trust-boundary lesson and practical. Commit `719cfe9` adds a concrete valid-token-but-unauthorized-service-mutation trace across Kong, API authorization and database persistence, including denied and allowed outcome requirements. The change distinguishes identity proof, token checks, and authorization against authoritative ownership policy. It provides a scenario for the lesson's boundary/control matrix; the result is a teaching example and still needs rendered review and current build confirmation.
+
+## Review batch 41 — Virtual networking prerequisite ordering
+
+Revisited the Platform Builder virtualization lesson and fixed a teaching-order regression. The worked guest reachability diagnosis referred to bridging before the lesson explained the bridging mechanism. Commit `1fd08c0` places Bridging before the worked scenario, preserving the NAT → bridging → comparative diagnosis progression. This source-level sequencing correction still requires current audit/build and rendered inspection.
