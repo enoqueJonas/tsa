@@ -430,3 +430,7 @@ The CI container-build reading also taught a GitHub Actions YAML example despite
 ## Review batch 36 — Curriculum audit regression guards
 
 Added `32b5a0d` to `scripts/audit-curriculum-integrity.mjs`. The audit now checks that every one of the 25 Artifact Supply Chain source lessons has exactly one subject-specific practical contract (no missing or orphan mapping) and that the Delivery CI container-build walkthrough uses canonical GitLab CI/CD rather than GitHub Actions. The contract matching was inspected against current source: **25 lesson IDs and 25 matching contracts, zero missing or orphan keys**. This is a source-level static check only; the full audit script and build have not been executed by this assistant after these commits.
+
+## Review batch 37 — Cross-school worked examples and syntax honesty
+
+Broadened review beyond Delivery Engineer into Architect, Reliability Engineer and Quality Steward. `a9d1386` adds a port-and-adapter implementation change trace to Architect Hexagonal Architecture; `06b370b` adds a falsifiable, bounded dependency-failure scenario with baseline, perturbation, observable queue behavior and recovery expectations to Reliability Fault Injection. In Quality Java Test Engineering, the shared lesson renderer labeled Maven CLI code as Java. Commit `d235b1e` makes Maven-lifecycle examples shell-language blocks while keeping real Java snippets in Java. This is an honest syntax and readability correction; it does not establish complete cross-school audit sign-off.
