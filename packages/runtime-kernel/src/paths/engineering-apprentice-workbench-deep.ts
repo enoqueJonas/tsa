@@ -287,7 +287,7 @@ function preserveWorkbenchReading(lesson: Lesson): Lesson {
       const paragraphs = activity.content.blocks
         .filter((block) => block.type === "paragraph")
         .map((block) => block.text)
-        .join("\\n\\n");
+        .join("\n\n");
       return { ...activity, content: { ...activity.content, body: paragraphs || activity.content.body } };
     }),
   };
