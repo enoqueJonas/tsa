@@ -34,7 +34,7 @@ export function LearningExperience({
   // Reset scroll for lessons, exercises and reflections, including restored progress.
   useEffect(() => {
     if (!restored) return;
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, [activity.id, restored]);
   const [hasNext, setHasNext] = useState(session.hasNext());
   const [completedActivityIds, setCompletedActivityIds] = useState(session.completedActivityIds());
