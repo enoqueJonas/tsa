@@ -12,7 +12,8 @@
     "format": "prettier --write .",
     "audit:curriculum": "node scripts/audit-curriculum-integrity.mjs",
     "census:curriculum": "node scripts/refresh-curriculum-source-census.mjs",
-    "report:curriculum-examples": "node scripts/report-curriculum-code-evidence.mjs"
+    "report:curriculum-examples": "node scripts/report-curriculum-code-evidence.mjs",
+    "check:python-examples": "node scripts/check-python-teaching-examples.mjs"
   },
   "devDependencies": {
     "prettier": "^3.0.0",
