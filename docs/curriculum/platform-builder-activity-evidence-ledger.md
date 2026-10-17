@@ -56,3 +56,14 @@ The 17 family labels above map to the 22 deep/quality/implementation source file
 3. Check rendered OOP and Platform representative pages across desktop/mobile widths; verify that URLs, diagrams, output blocks and instructions are not lost by transformation.
 4. Execute selected Linux/Rocky, networking, DHCP/time, Ansible, Proxmox, NAS, Windows and final Steward gates on appropriately controlled equipment. Mark impossible or expensive labs **pending**, not passed.
 5. Run exact-head `pnpm audit:curriculum`, example checks and build in CI; only then make a merge recommendation.
+
+## Verification batch 73 — actual Linux command execution (2026-10-17)
+
+- Executed the corrected filesystem demonstration in an isolated Linux shell: temporary directory/file, symbolic link, `stat`, `file`, `readlink -f`, `find`, cleanup. It completed with expected existing-file and symlink observations.
+- Executed the corrected signal demonstration against a locally spawned disposable `sleep` process and verified process inspection before `SIGTERM`. No unrelated process was targeted.
+- Executed the corrected procfs example with `sample_pid=$$`; `/proc/$sample_pid/status` and `/proc/$sample_pid/fd` were present and inspectable. These are Linux-shell execution checks, **not** proof of Rocky Linux homelab or TSA renderer behavior.
+- Confirmed GitHub Actions run [39029927381](https://github.com/enoqueJonas/tsa/actions/runs/39029927381) succeeded for commit `e96533c14`, covering the preceding integrity-guard and example fixes. Any subsequent documentation commit must be checked separately.
+
+### Completion boundary
+
+The 22-file Platform source-family triage is finished, but **the full Platform Builder module is not signed off**. The repository connection provides source and CI information, not a learner browser session or control of the user's Proxmox/Windows/Rocky infrastructure. Do not mark R/E gates complete without direct evidence. Activity-by-activity review beyond the targeted cases above remains open; the school-level checklist must reflect this honestly.
