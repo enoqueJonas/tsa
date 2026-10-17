@@ -530,3 +530,10 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - Added an **individual domain-specific operational readiness reading to the start of each of the 15 paths** (`90e425c`). Each provides an initial mental model, concrete evidence/inspection approach, common misdiagnosis and lab safety/recovery boundary. These are authored learner-facing lessons, not a checklist hidden in documentation.
 - Extended the resolved practical check to assert that all 15 paths contain the first readiness lesson with substantive reading content (`490c634`); corrected paragraph rendering (`ff004d7`). Earlier improvements to individual labs remain intact.
 - The latest changes have not yet been independently compiled or run. Smoke and production build verification are pending. **Pedagogical acceptance remains qualified:** the 15-path coverage pass does not prove every instruction/example is independently executable, nor substitute for hands-on host/lab evidence. Do not claim physical lab execution or progress/navigation testing.
+
+### 2026-10-18 — NAS and Proxmox worked instructional scenarios
+
+- User confirmed **8/8 tests and successful uncached production build** at `685df741`.
+- NAS: expanded the lessons on filesystem byte/inode capacity, bounded exhaustion, RAID1 degraded-state/rebuild and checksum proof, and NFS client/export/identity and boot-mount diagnosis (`3acb63d`). All added to existing topic reading arrays rather than introducing duplicate keys.
+- Proxmox: expanded network bridges/VLAN traffic tracing, virtual storage versus independent backup, and restore verification in a separately identified guest (`fafc0af`).
+- This review improves the learner-facing technical explanations but does **not** establish that physical labs were executed. The latest edits require fresh smoke and build verification; source-level school coverage alone is not final pedagogical acceptance.
