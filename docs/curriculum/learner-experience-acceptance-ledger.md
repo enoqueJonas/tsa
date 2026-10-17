@@ -57,17 +57,17 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 | platform-builder | `platform-builder-proxmox-milestone` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
 | platform-builder | `platform-builder-virtualization-quality` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
 | platform-builder | `platform-builder-windows-powershell-enterprise-deep` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
-| delivery-engineer | `delivery-artifact-supply-chain-quality` | — | — | — | — | — | Not started |
-| delivery-engineer | `delivery-automation-shell-deep` | — | — | — | — | — | Not started |
-| delivery-engineer | `delivery-containers-docker-quality` | — | — | — | — | — | Not started |
-| delivery-engineer | `delivery-continuous-delivery-quality` | — | — | — | — | — | Not started |
-| delivery-engineer | `delivery-continuous-integration-quality` | — | — | — | — | — | Not started |
-| delivery-engineer | `delivery-configuration-management-quality` | — | — | — | — | — | Not started |
-| delivery-engineer | `delivery-engineer-milestone-deep` | — | — | — | — | — | Not started |
-| delivery-engineer | `delivery-migration-exercises-deep` | — | — | — | — | — | Not started |
-| delivery-engineer | `delivery-production-schema-evolution-deep` | — | — | — | — | — | Not started |
-| delivery-engineer | `delivery-release-engineering-quality` | — | — | — | — | — | Not started |
-| delivery-engineer | `delivery-software-foundations-quality` | — | — | — | — | — | Not started |
+| delivery-engineer | `delivery-artifact-supply-chain-quality` | In review | In review | In review | — | — | Full-school source triage; real delivery rehearsal/UX pending |
+| delivery-engineer | `delivery-automation-shell-deep` | In review | In review | In review | — | — | Full-school source triage; real delivery rehearsal/UX pending |
+| delivery-engineer | `delivery-containers-docker-quality` | In review | In review | In review | — | — | Full-school source triage; real delivery rehearsal/UX pending |
+| delivery-engineer | `delivery-continuous-delivery-quality` | In review | In review | In review | — | — | Full-school source triage; real delivery rehearsal/UX pending |
+| delivery-engineer | `delivery-continuous-integration-quality` | In review | In review | In review | — | — | Full-school source triage; real delivery rehearsal/UX pending |
+| delivery-engineer | `delivery-configuration-management-quality` | In review | In review | In review | — | — | Full-school source triage; real delivery rehearsal/UX pending |
+| delivery-engineer | `delivery-engineer-milestone-deep` | In review | In review | In review | — | — | Full-school source triage; real delivery rehearsal/UX pending |
+| delivery-engineer | `delivery-migration-exercises-deep` | In review | In review | In review | — | — | Full-school source triage; real delivery rehearsal/UX pending |
+| delivery-engineer | `delivery-production-schema-evolution-deep` | In review | In review | In review | — | — | Full-school source triage; real delivery rehearsal/UX pending |
+| delivery-engineer | `delivery-release-engineering-quality` | In review | In review | In review | — | — | Full-school source triage; real delivery rehearsal/UX pending |
+| delivery-engineer | `delivery-software-foundations-quality` | In review | In review | In review | — | — | Full-school source triage; real delivery rehearsal/UX pending |
 | cloud-engineer | `cloud-architecture-cost-quality` | — | — | — | — | — | Not started |
 | cloud-engineer | `cloud-hosting-models-quality` | — | — | — | — | — | Not started |
 | cloud-engineer | `cloud-building-blocks-quality` | — | — | — | — | — | Not started |
@@ -238,3 +238,10 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - **Source wiring reviewed:** inspected all 17 source-module entry files represented by the Platform Builder census, plus the canonical path composition. Confirmed intermediate implementation milestones are placed before the final review activity in relevant paths.
 - **Reading fallback:** Ansible configuration-management source now includes authored paragraph content in its fallback reading body (current source verified). Other legacy reading factory patterns warrant review, particularly enterprise file/directory services.
 - **Not accepted:** realistic VM/hardware inventory, OS-specific commands, storage operations, networking labs, recovery drills, resource links, displayed UI and progress/re-entry have not been fully validated in real environments. Source-level coverage is not sufficient to claim school completion.
+
+### 2026-10-17 — Delivery Engineer: eleven-module source composition review
+
+- **Canonical order:** software delivery foundations, shell automation, Docker, CI, CD/deployment, configuration management, artifact/dependency supply chain (`internal-dependency-management.ts`), release engineering, schema evolution, CI platform migration and Delivery milestone. Verified actual imports and path order in `delivery-engineer.ts`.
+- **Reading integrity fixes:** substantive paragraph sequences now preserved in reading-body fallback for software delivery (`2c863f0`), shell (`0a7a9db`), containers (`f8f8ae3`), CI (`e435432`), CD (`d26c121`) and release engineering (`007ef48`). Prior factory behavior gave only the introduction while deeper authored material lived in blocks.
+- **Scope note:** 11 logical modules recorded. Quality-layer overrides and dedicated deep lessons supply exercises; this review does not establish that a learner can execute their specific environment, nor that CI recovery or migration works.
+- **Acceptance gates still open:** real GitLab/Nexus or substitute stack prerequisites, compose and container persistence, schema expansion/backfill/rollback in real PostgreSQL, failed-run recovery, artifact promotion and identity, release rollback, migration and platform operation, browser usability, resource/dependency references. Never mark accepted from source traversal alone.
