@@ -59,5 +59,27 @@ export const extractStewardCommonLesson: Lesson = {
 export const artifactDependencySupplyChainManagement: LearningPath = {
     id: "artifact-and-supply-chain",
     title: "Artifact, Dependency and Supply-Chain Management",
-    lessons: artifactDependencySupplyChainQualityLessons,
+    lessons: [{
+        id: "artifact-and-supply-chain-fieldwork-orientation",
+        title: "Worked delivery model: Artifact, Dependency and Supply-Chain Management",
+        activities: [{
+            id: "artifact-and-supply-chain-fieldwork-reading",
+            title: "Model, worked example and failure diagnosis",
+            estimatedMinutes: 30,
+            content: {
+                type: "reading",
+                body: "A dependency is an input to a build; an artifact is its output. Lockfiles, versions, provenance and repository access govern which exact bits ship.",
+                blocks: [
+                    { type: "heading", id: "model", text: "Understand the boundary before using tools", level: 2 },
+                    { type: "paragraph", text: "Internal libraries have versioned public interfaces; build artifacts have immutable identities such as digests. A mutable tag is not reliable proof of what ran." },
+                    { type: "heading", id: "worked-case", text: "Worked Steward case", level: 2 },
+                    { type: "paragraph", text: "Pin an internal Steward package version, build the consuming service and record package version, commit SHA, registry path and image digest. Compare the approved digest with what is deployed." },
+                    { type: "heading", id: "verification", text: "Expected verification", level: 2 },
+                    { type: "paragraph", text: "A second installation from the lockfile must resolve the same dependency version. Verify the deployed image by digest, not only by human-readable tag." },
+                    { type: "heading", id: "failure-analysis", text: "Failure analysis", level: 2 },
+                    { type: "paragraph", text: "If a dependency source is unavailable, builds should fail explicitly; silently falling back to a mutable or untrusted repository breaks chain-of-custody assumptions." },
+                ],
+            },
+        }],
+    }, ...artifactDependencySupplyChainQualityLessons],
 };
