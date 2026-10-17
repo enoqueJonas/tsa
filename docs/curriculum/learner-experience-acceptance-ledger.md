@@ -412,3 +412,9 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 
 - User ran `pnpm test`: curriculum integrity and Java example smoke tests passed; Python example smoke test failed because nine newly selected OOP blocks were not extracted. Source-level check identified that most OOP samples use **quoted object property names** (e.g. `"caption"`, `"code"`) while the AST helper only recognized identifier-form property names. Updated extractor to accept both identifier and string-literal property names (`4cbc1fa`). The resulting 22-example run still needs confirmation.
 - At user direction, **defer testing learner curriculum loading, lesson navigation, completion recording and persistence/re-entry for now**. Do not treat those learner-functionality gates as passed. Continue other chosen curriculum checks without automatically expanding to those deferred tests.
+
+### 2026-10-17 — Python content-check coverage expanded; learner workflow tests deferred
+
+- Confirmed extractor supports quoted and unquoted object-literal properties after `4cbc1fa`, addressing the user-reported nine sample-extraction failures; **no new user/CI execution result yet**.
+- Extended Python self-contained examples from 22 to **28**: added account invalid-state contrast and enforced invariant, single-parent inheritance, notifier duck typing, return-value contract mismatch, and domain ownership/lifecycle design (`87340f5`). Updated smoke-suite acceptance assertion accordingly (`3909c55`). These are independently executable code snippets; examples requiring an earlier code block remain outside this standalone execution set and should be checked by a stateful fixture later.
+- Per user instruction, continue to **skip learner-functionality tests** (curriculum loading/navigation, completion recording, progress restoration). These remain explicitly unverified and not accepted; this pass targets educational content examples only.
