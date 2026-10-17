@@ -25,5 +25,7 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Audit curriculum integrity
         run: pnpm audit:curriculum
+      - name: Report cross-school code example evidence
+        run: pnpm report:curriculum-examples
       - name: Build applications
         run: pnpm build
