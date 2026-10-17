@@ -113,9 +113,12 @@ def check_complete_first_module(page):
         assert activity_id, f"Missing activity URL at step {index}"
         assert activity_id not in visited, f"Navigation stuck at {activity_id}"
         visited.add(activity_id)
-        title = page.locator("main h1").first
-        title.wait_for(timeout=10000)
-        assert title.inner_text().strip()
+        # Reflection activities have a prompt and textarea, but no h1.
+        assert page.locator("main").is_visible()
+        if page.locator("main h1").count():
+            assert page.locator("main h1").first.inner_text().strip()
+        else:
+            assert page.get_by_placeholder("Write your response here...").is_visible()
         if page.get_by_placeholder("Write your response here...").count():
             page.get_by_placeholder("Write your response here...").fill(
                 "This synthetic browser fixture records a controlled observation and "
