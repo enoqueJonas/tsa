@@ -116,8 +116,8 @@ def check_complete_first_module(page):
         title = page.locator("main h1").first
         title.wait_for(timeout=10000)
         assert title.inner_text().strip()
-        if page.locator("textarea").count():
-            page.locator("textarea").fill(
+        if page.get_by_placeholder("Write your response here...").count():
+            page.get_by_placeholder("Write your response here...").fill(
                 "This synthetic browser fixture records a controlled observation and "
                 "differentiates cause, symptom, evidence and recovery. "
                 "It is not an actual learner submission or infrastructure proof."
