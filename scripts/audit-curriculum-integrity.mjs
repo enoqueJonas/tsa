@@ -855,7 +855,7 @@ const evidenceContracts = [
   ["quality-containers-ci-deep.ts", "The submitted transcript identifies the exact"],
   ["quality-java-test-engineering-deep.ts", "The submitted ${spec.title} implementation demonstrates"],
   ["cloud-infrastructure-as-code-deep.ts", "The ${spec.title} submission links each declared resource"],
-  ["security-web-api-threats-deep.ts", "the submission identifies the specific entry point"],
+  ["security-web-api-threats-deep.ts", "identify the authorized test scope"],
   ["security-container-delivery-deep.ts", "Capture before-and-after evidence"],
   ["quality-api-integration-testing-deep.ts", "At least one negative or boundary case"],
   ["quality-browser-environment-testing-deep.ts", "the browser or environment scenario states the user-visible risk"],
