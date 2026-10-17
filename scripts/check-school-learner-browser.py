@@ -59,6 +59,12 @@ def inspect_school(page):
             assert not re.search(r"\b(?:TODO|TBD|Lorem ipsum)\b", text, re.I), (
                 f"Unfinished teaching placeholder: {activity_id}"
             )
+            if activity_id == "pki-verification-model-how-certificate-verification-works":
+                assert len(text) >= 1800, (
+                    "PKI rich authored reading lost its substantive source body or block content"
+                )
+                assert content.get_by_text("Trust starts at the verifier", exact=True).count() == 1
+                assert content.get_by_text("A trusted issuer is only one check", exact=True).count() == 1
             code = content.locator("figure").filter(has=page.get_by_role("button", name="Copy"))
             for k in range(code.count()):
                 assert code.nth(k).locator("pre").count() > 0, (
