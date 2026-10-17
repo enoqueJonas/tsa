@@ -233,3 +233,9 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 
 - Began the outstanding Delivery Engineer pedagogical audit rather than extending only Platform Builder. The Continuous Delivery `Rollback` practical now requires inspecting database migration history, acknowledged asynchronous messages and writes since deployment **before** reverting to the previous application image. It also requires explicit compatibility evidence for database/schema and asynchronous paths, and a named recovery owner for non-reversible side effects (`26d2f45`).
 - This is a curriculum acceptance-criteria change, not an executed Steward release rollback. The full Delivery Engineer lesson-by-lesson and curriculum-wide reviews remain in progress. Check the new commit's CI before accepting it.
+
+## Batch 105 — Delivery Engineer approval invalidation and partial deployment gates (2026-10-17)
+
+- Delivery `Release Approvals` practical now requires testing approval invalidation after a candidate digest change, recording protected approval/deployment roles, and tracing the approver to the actually deployed candidate (`f00a508`). This prevents a generic approval from authorizing a subsequently altered image.
+- Delivery `Deployment Automation` practical now requires deliberately interrupting the multi-role rollout and proving that a partial deployment is detected, recovered or clearly blocked—not silently accepted as success (`105964d`).
+- These are improved learner evidence requirements, **not** claims that a real GitLab promotion or Steward deployment was executed. Both await completed CI verification.
