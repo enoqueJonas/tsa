@@ -88,7 +88,7 @@ function practicalLesson(): Lesson {
                         "Deploy or simulate a candidate that fails the predefined verification criterion.",
                         "Use evidence to identify whether the failure is artifact, configuration, migration, runtime or infrastructure related.",
                         "Execute the documented rollback or forward-fix path.",
-                        "Verify the known-good release identity and application behavior after recovery.",
+                        "After recovery, verify that the API, outbox publisher and lifecycle consumer use the approved image, then prove an authenticated API request and one asynchronous lifecycle event complete.",
                         "Document any class of change that your rollback mechanism cannot safely reverse.",
                     ],
                     deliverables: ["Failure evidence", "Rollback/recovery execution record", "Known-good verification", "Documented rollback limitations"],
