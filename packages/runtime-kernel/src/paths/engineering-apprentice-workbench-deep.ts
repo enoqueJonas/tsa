@@ -42,11 +42,11 @@ const shellFilesystemLesson: Lesson = {
 
      {type:"heading",id:"shell-quoting",text:"5. Words, whitespace and quoting",level:2},
      {type:"paragraph",text:"The shell normally uses whitespace to separate words. Quoting lets spaces or shell-significant characters remain part of one argument. Single quotes preserve text literally in common Unix shells; double quotes keep text together while still allowing expansions such as $HOME. Unquoted variables can be split or expanded in surprising ways, so quote values when you mean one argument."},
-     {type:"code",language:"shell",caption:"Why quoting changes arguments",code:`mkdir -p 'release evidence'\nprintf '%s\\n' "$HOME"\nprintf '%s\\n' '$HOME'`,output:"Double quotes expand HOME; single quotes print the characters $HOME literally."},
+     {type:"code",language:"shell",caption:"Run after entering the disposable ~/tsa-shell-lab workspace. Quoted filenames containing spaces remain one argument.",code:`mkdir -p 'release evidence'\nprintf '%s\\n' "$HOME"\nprintf '%s\\n' '$HOME'`,output:"Double quotes expand HOME; single quotes print the characters $HOME literally."},
 
      {type:"heading",id:"shell-streams",text:"6. Standard input, output and error",level:2},
      {type:"paragraph",text:"A process normally starts with three standard streams. Standard input (stdin) is where input can arrive. Standard output (stdout) carries normal output. Standard error (stderr) carries diagnostics. Keeping stdout and stderr conceptually separate lets tools compose and lets failures remain visible."},
-     {type:"code",language:"shell",caption:"Normal output and diagnostic output are different streams",code:"ls notes\nls does-not-exist",output:"The first command writes a listing to stdout. The second writes a diagnostic to stderr and returns a non-zero status."},
+     {type:"code",language:"shell",caption:"Run after creating ~/tsa-shell-lab/notes in the earlier workspace exercise; the second command deliberately fails.",code:"cd ~/tsa-shell-lab\nls notes\nls does-not-exist",output:"The first command writes a listing to stdout. The second writes a diagnostic to stderr and returns a non-zero status."},
 
      {type:"heading",id:"shell-pipes-redirection",text:"7. Pipes and redirection compose programs",level:2},
      {type:"paragraph",text:"A pipe connects one process's stdout to another process's stdin. Redirection connects a stream to or from a file. The shell creates these connections before starting the programs. > replaces a file with stdout; >> appends stdout. Use them deliberately: redirecting to the wrong file can destroy previous contents."},
@@ -63,7 +63,7 @@ const shellFilesystemLesson: Lesson = {
 
      {type:"heading",id:"shell-help",text:"10. Discover commands instead of guessing",level:2},
      {type:"paragraph",text:"Professional command-line work includes discovering unfamiliar options safely. Start with command --help where supported, man command on Unix-like systems, or the tool's built-in help. Check usage before copying an option from memory, especially for commands that mutate files."},
-     {type:"code",language:"shell",caption:"Inspect before using an unfamiliar option",code:"ls --help 2>/dev/null || man ls\ngit help status"},
+     {type:"code",language:"shell",caption:"Non-interactive discovery: show help without launching a pager. macOS BSD ls does not support --help; use man when reading interactively after the lab.",code:"git --version\ngit -c core.pager=cat help -a\nprintf 'For ls on macOS, use: man ls (press q to quit).\\n'"},
      {type:"callout",tone:"note",title:"Platform boundary",body:"This lesson builds workstation fluency. Platform Builder later teaches Linux and operating-system administration, permissions, services, networking and production operations in depth. You are learning to reason at a developer shell, not to administer a server."},
 
      {type:"heading",id:"shell-debugging",text:"11. Diagnose from evidence",level:2},
