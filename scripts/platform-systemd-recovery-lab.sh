@@ -64,5 +64,10 @@ for attempt in {1..80}; do
 done
 [[ -n "$newpid" ]] || { sudo journalctl -u "${unit}.service" -n 30 --no-pager; echo "FAIL no systemd-managed recovery"; exit 1; }
 sudo systemctl is-active --quiet "${unit}.service"
+restarts="$(systemctl show "${unit}.service" --value -p NRestarts)"
+[[ "$restarts" =~ ^[1-9][0-9]*$ ]] || { echo "FAIL systemd did not record a restart (NRestarts=$restarts)" >&2; exit 1; }
+policy="$(systemctl show "${unit}.service" --value -p Restart)"
+[[ "$policy" == "on-failure" ]] || { echo "FAIL unexpected restart policy: $policy" >&2; exit 1; }
+echo "PASS systemd policy=$policy NRestarts=$restarts"
 echo "PASS automatic systemd restart old_pid=$oldpid new_pid=$newpid and independent HTTP health"
 sudo journalctl -u "${unit}.service" -n 20 --no-pager
