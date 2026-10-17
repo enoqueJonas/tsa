@@ -553,3 +553,11 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - Wrote an all-school resolved-curriculum guard that checks every practical has the preceding preparation reading and expected-evidence/negative-path structure. Unlike checking only one lesson per path, this check traverses the actual assembled activities.
 - Detailed worked examples additionally authored for release engineering, CI migration, schema evolution and deployment rollback. Path and lab instructions have source-level coverage; **that is not hands-on completion**. Running real GitLab/Jenkins, container registry, PostgreSQL migrations, deployed Steward services and rollback exercises needs external infrastructure and execution evidence. Do not close real-lab acceptance until observed.
 - **New changes pending user verification:** eight Node smoke tests plus the actual production build. Learner navigation and progress-persistence tests remain deferred.
+
+### 2026-10-18 — Cloud Engineer whole-school source-level pass
+
+- The user verified Delivery Engineer at `d034cdf6`: **8/8 automated tests and two uncached successful builds**.
+- Cloud Engineer has **11 paths**. Added path-specific responsibility models, worked Steward experiments, expected evidence and failure analysis to every path via `cloud-engineer.ts`; each individual cloud practical now has immediately preceding scenario-specific preparation, acceptance and negative-path/recovery guidance.
+- Updated resolved practical contracts audit to walk all 11 Cloud Engineer paths and every practical, checking both operational model and preparation order.
+- **Scope distinction:** instructional source coverage does not prove execution of VPS provisioning, internet DNS/TLS, object-storage uploads, Terraform/IaC, Kubernetes/GitOps, canary analysis, costs or live Internet environment. Those need learner-controlled infrastructure and logs before real-world lab acceptance. Progress/completion UI testing remains deferred.
+- These commits have **not** been verified through local `pnpm test` or `pnpm build` yet.
