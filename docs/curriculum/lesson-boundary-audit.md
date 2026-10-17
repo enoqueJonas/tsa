@@ -492,3 +492,7 @@ Reviewed Technical Steward Engineering Health's KPI-vs-KRI learning activity. Co
 ## Review batch 43 — Shell concept-first sequencing
 
 Revisited the Delivery shell pipeline lesson and found the worked `pipefail` failure trace was presented before the section explaining the underlying pipeline exit-status mechanism. Commit `129dd48` reorders the two blocks so the explanation precedes the executable comparison; commit `18b137f` adds a static curriculum-audit guard against recurrence. Current rendered, audit and build results remain unverified after these source changes.
+
+## Review batch 44 — Software Delivery Foundations scenarios
+
+Inspected Git Workflows and Environment Promotion source/practical pairings. Commits `05ea447` and `ac9bd99` add concrete Steward authorization-regression merge gating and a build-once, immutable-digest UAT-to-production-like promotion trace with explicit runtime configuration, approvals and post-deployment client verification. The edits deepen reasoning about why a green build does not establish an authorized merge or a verified release. New changes require current `pnpm audit:curriculum`, `pnpm build`, and rendered lesson checks before closure.
