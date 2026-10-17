@@ -11,18 +11,6 @@ import { internetNetworkingQualityLessons } from "./cloud-internet-networking-qu
 import { vpsOperationsQualityLessons } from "./cloud-vps-operations-quality";
 import type { LearningPath } from "./learning-path";
 
-export const cloudAndHostingModels: LearningPath = teachCloudPath({ id: "cloud-and-hosting-models", title: "Cloud and Hosting Models", lessons: cloudAndHostingModelsQualityLessons });
-export const vpsOperations: LearningPath = teachCloudPath({ id: "vps-operations", title: "VPS Operations", lessons: vpsOperationsQualityLessons });
-export const internetNetworking: LearningPath = teachCloudPath({ id: "internet-networking", title: "Internet Networking", lessons: internetNetworkingQualityLessons });
-export const certificateLifecycleOperations: LearningPath = teachCloudPath({ id: "certificate-lifecycle-operations", title: "Certificate Lifecycle Operations", lessons: certificateLifecycleOperationsDeepLessons });
-export const cloudBuildingBlocks: LearningPath = teachCloudPath({ id: "cloud-building-blocks", title: "Cloud Building Blocks", lessons: cloudBuildingBlocksQualityLessons });
-export const objectStorageImplementation: LearningPath = teachCloudPath({ id: "object-storage-implementation", title: "S3-Compatible Object Storage", lessons: objectStorageImplementationDeepLessons });
-export const infrastructureAsCode: LearningPath = teachCloudPath({ id: "infrastructure-as-code", title: "Infrastructure as Code", lessons: infrastructureAsCodeQualityLessons });
-export const cloudOrchestrationGitOps: LearningPath = teachCloudPath({ id: "cloud-orchestration-gitops", title: "Kubernetes, OpenShift and GitOps", lessons: cloudOrchestrationGitOpsDeepLessons });
-export const progressiveDeliveryCanary: LearningPath = teachCloudPath({ id: "progressive-delivery-canary", title: "Progressive Delivery with Canary Releases", lessons: progressiveDeliveryCanaryDeepLessons });
-export const cloudArchitectureAndCost: LearningPath = teachCloudPath({ id: "cloud-architecture-and-cost", title: "Cloud Architecture and Cost", lessons: cloudArchitectureAndCostQualityLessons });
-export const stewardInternetEnvironment: LearningPath = teachCloudPath({ id: "steward-internet-environment", title: "Cloud Engineer Milestone", lessons: cloudEngineerMilestoneDeepLessons });
-
 type CloudBoundary = { mentalModel: string; experiment: string; fault: string };
 const cloudBoundaries: Record<string, CloudBoundary> = {
     "cloud-and-hosting-models": { mentalModel: "Compare rented infrastructure, managed platform services and self-hosting by responsibility, not marketing labels.", experiment: "For Steward, draw who patches the operating system, application, database and TLS termination for a VPS versus a managed application service.", fault: "A working endpoint is not evidence that backups, updates or access control have an owner." },
@@ -80,6 +68,18 @@ function teachCloudPath(path: LearningPath): LearningPath {
             ] } }],
     }, ...prepared] };
 }
+
+export const cloudAndHostingModels: LearningPath = teachCloudPath({ id: "cloud-and-hosting-models", title: "Cloud and Hosting Models", lessons: cloudAndHostingModelsQualityLessons });
+export const vpsOperations: LearningPath = teachCloudPath({ id: "vps-operations", title: "VPS Operations", lessons: vpsOperationsQualityLessons });
+export const internetNetworking: LearningPath = teachCloudPath({ id: "internet-networking", title: "Internet Networking", lessons: internetNetworkingQualityLessons });
+export const certificateLifecycleOperations: LearningPath = teachCloudPath({ id: "certificate-lifecycle-operations", title: "Certificate Lifecycle Operations", lessons: certificateLifecycleOperationsDeepLessons });
+export const cloudBuildingBlocks: LearningPath = teachCloudPath({ id: "cloud-building-blocks", title: "Cloud Building Blocks", lessons: cloudBuildingBlocksQualityLessons });
+export const objectStorageImplementation: LearningPath = teachCloudPath({ id: "object-storage-implementation", title: "S3-Compatible Object Storage", lessons: objectStorageImplementationDeepLessons });
+export const infrastructureAsCode: LearningPath = teachCloudPath({ id: "infrastructure-as-code", title: "Infrastructure as Code", lessons: infrastructureAsCodeQualityLessons });
+export const cloudOrchestrationGitOps: LearningPath = teachCloudPath({ id: "cloud-orchestration-gitops", title: "Kubernetes, OpenShift and GitOps", lessons: cloudOrchestrationGitOpsDeepLessons });
+export const progressiveDeliveryCanary: LearningPath = teachCloudPath({ id: "progressive-delivery-canary", title: "Progressive Delivery with Canary Releases", lessons: progressiveDeliveryCanaryDeepLessons });
+export const cloudArchitectureAndCost: LearningPath = teachCloudPath({ id: "cloud-architecture-and-cost", title: "Cloud Architecture and Cost", lessons: cloudArchitectureAndCostQualityLessons });
+export const stewardInternetEnvironment: LearningPath = teachCloudPath({ id: "steward-internet-environment", title: "Cloud Engineer Milestone", lessons: cloudEngineerMilestoneDeepLessons });
 
 export const cloudEngineerPaths: LearningPath[] = [
     cloudAndHostingModels,
