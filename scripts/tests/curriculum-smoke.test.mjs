@@ -33,5 +33,5 @@ test("Java dependency-injection lesson executes and matches published output", (
 });
 
 test("all-school source code evidence report runs and inventories modules", () => {
-  runAudit("scripts/report-curriculum-code-evidence.mjs", /Source-level code block inventory: \d+ path files; \d+ code records;/);
+  runAudit("scripts/report-curriculum-code-evidence.mjs", /Code evidence by language \(source-level, not runtime pass rates\):/);
 });
