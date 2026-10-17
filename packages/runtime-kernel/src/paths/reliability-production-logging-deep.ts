@@ -36,7 +36,7 @@ function blocksFor(spec: Spec): LessonBlock[] {
 
 function lessonFrom(spec: Spec): Lesson {
     return { id: `logging-${spec.id}`, title: spec.title, activities: [
-        { id: `logging-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: spec.intro, blocks: blocksFor(spec) } },
+        { id: `logging-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: blocksFor(spec).filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks: blocksFor(spec) } },
         { id: `logging-${spec.id}-002`, title: `Implement: ${spec.title}`, estimatedMinutes: 55, content: { type: "practical", objective: `Apply ${spec.title} to Steward's production-like logging path.`, scenario: "Use Steward's observability questions as the source of logging requirements. Change only learner-controlled code/configuration, preserve sensitive-data boundaries and verify that the resulting events support diagnosis.", instructions: spec.practice, deliverables: ["Logging change or assessment", "Representative log evidence", "Diagnostic usefulness note"], completionCriteria: ["Log structure and context support a concrete operational question.", "Sensitive values are not exposed.", "The learner can explain why the event belongs at its chosen level and retention path."] } },
         { id: `logging-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.reflection, minimumCharacters: 200 } },
     ] };
