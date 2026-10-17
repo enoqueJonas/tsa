@@ -13,10 +13,11 @@ function replaceRockyStrings(value: string): string {
         .replaceAll("Ubuntu Server", "Rocky Linux")
         .replaceAll("Ubuntu host", "Rocky Linux host")
         .replaceAll("Ubuntu", "Rocky Linux")
-        .replaceAll("sudo apt update", "sudo dnf check-update")
+        .replaceAll("sudo apt update", "sudo dnf check-update # exit 100 means updates are available, not a failed package-manager operation")
         .replaceAll("apt policy postgresql", "dnf info postgresql-server")
         .replaceAll("dpkg -l | grep -E 'python|postgresql'", "rpm -qa | grep -E 'python|postgresql'")
-        .replaceAll("apt show <package>", "dnf info <package>")
+        .replaceAll("apt show <package>", "dnf info bash")
+        .replaceAll("Inspect availability and current state before installing.", "Before installing, inspect package availability and current state. On Rocky Linux, dnf check-update exits 0 when up to date, 100 when updates are available, or 1 when it encounters an error; an exit code of 100 is not a failed diagnostic.")
         .replaceAll("apt update", "dnf check-update")
         .replaceAll("apt upgrade", "dnf upgrade")
         .replaceAll("apt workflow", "DNF/RPM workflow")
@@ -83,7 +84,7 @@ const practices: Record<string, PracticalContent> = {
         type: "practical",
         objective: "Treat one Steward host package installation or update as controlled, traceable DNF/RPM change.",
         scenario: "A required host dependency must be installed or updated without turning the server into an undocumented collection of manually downloaded binaries or untracked repositories.",
-        instructions: ["Identify one OS-level package Steward or its operation genuinely needs.", "Use dnf info/repolist and rpm queries to inspect candidate version, repository origin and installed state before change.", "Explain the difference between checking package metadata/available updates and actually applying upgrades.", "Install or update the package through DNF.", "Capture the final RPM version, architecture and provenance.", "Run a small Steward verification and state the rollback/recovery path if the package change caused a regression."],
+        instructions: ["Identify one OS-level package Steward or its operation genuinely needs.", "Use dnf info/repolist and rpm queries to inspect candidate version, repository origin and installed state before change.", "Explain the difference between checking package metadata/available updates and actually applying upgrades; note that dnf check-update can exit with status 100 when updates are available, which is not a failed dependency resolution.", "Install or update the package through DNF.", "Capture the final RPM version, architecture and provenance.", "Run a small Steward verification and state the rollback/recovery path if the package change caused a regression."],
         deliverables: ["DNF/RPM package change record", "Version/provenance evidence", "Post-change Steward verification"],
         completionCriteria: ["The package need is explicit.", "Version and repository origin are known.", "The learner can relate Rocky's package workflow to RHEL-family operations.", "Package-manager success is followed by application verification."],
     },

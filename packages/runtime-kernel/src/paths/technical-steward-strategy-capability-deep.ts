@@ -7,14 +7,54 @@ const techRadar: LearningResource = { title: "Thoughtworks Technology Radar", ur
 const teamTopologies: LearningResource = { title: "Team Topologies — Key Concepts", url: "https://teamtopologies.com/key-concepts", kind: "reference" };
 
 type Spec={id:string;title:string;body:string;practice:string[];resources:LearningResource[]};
+
+// These worked cases make each strategic choice inspectable, rather than asking
+// the learner to apply abstract governance vocabulary with no model to follow.
+const workedCases: Record<string, { question: string; example: string; challenge: string }> = {
+  "outcomes-horizons": {
+    question: "How does an organizational outcome become a time-bounded technology choice?",
+    example: "Illustrative Steward scenario: the next 90-day outcome is to make service ownership reliable enough for incident routing. Current evidence shows several services have no accountable team; the exact percentage has not yet been measured. Commit now to measure missing ownership and define an ownership correction workflow. Treat directory federation as a later option, conditional on validated identity-sync needs. Do not label a speculative three-year integration as a funded delivery promise.",
+    challenge: "Distinguish the observable outcome, first measurement, near-term commitment, later conditional option and trigger for reconsideration."
+  },
+  "strategic-choices": {
+    question: "What must be excluded for a plan to become a strategy?",
+    example: "Illustrative choice: improve Steward's owner accuracy and restore procedure before introducing another message broker. The broker could be useful later, but there is no current evidence of an event-throughput problem. Fund ownership verification and recovery drills; explicitly defer event-platform expansion. The opportunity cost is reduced near-term feature velocity, while the accepted risk is continued synchronous integration for now.",
+    challenge: "Name the chosen investment, a credible rejected investment, evidence that could reverse the exclusion and the cost of the choice."
+  },
+  "capability-map": {
+    question: "How can capability gaps be separated from product names?",
+    example: "Illustrative map: business capability 'route service incidents to accountable owners' depends on data quality (verified ownership), process (handoff rules), people (named responders) and tools (Steward registry). Buying a directory product cannot repair missing accountability by itself. Rate each component's current evidence and its effect on incident routing before proposing technology.",
+    challenge: "Identify which gap is behavioral, organizational, informational or technical; explain what happens if only software changes."
+  },
+  "investment-prioritization": {
+    question: "What makes a small investment more defensible than a fashionable large one?",
+    example: "Illustrative decision: compare a two-week ownership cleanup, a six-week log correlation improvement and a three-month platform rewrite. Score each against incident impact, confidence in evidence, delivery capacity, reversibility and operating cost. Mark all initial scores as assumptions until measured. A rewrite may offer substantial flexibility but has low near-term evidence and high migration risk; the cleanup may win because it directly addresses a confirmed pain with a short feedback loop.",
+    challenge: "State one weighting that could change the ranking, one unverified assumption and a measurable post-investment review."
+  },
+  "capability-building": {
+    question: "When should a capability be built, bought, learned or retired?",
+    example: "Illustrative options: Steward's service-ownership rule is domain-specific and should remain understandable in the product. TLS certificate operations can use established tooling instead of custom cryptography. The engineering team needs to learn how to verify certificate renewal even when automation is purchased. A duplicated internal registry export can be retired only after consumers and retention requirements are inventoried.",
+    challenge: "Classify the four choices and identify the responsibility that remains with the organization after buying or outsourcing."
+  },
+  "roadmaps-options": {
+    question: "How does a roadmap communicate uncertainty without becoming vague?",
+    example: "Illustrative horizon: Now — inventory unowned services and agree an escalation owner; Next — trial ownership reminders with one team and measure correction time; Later — consider directory sync only if repeated manual updates remain a measured bottleneck. Explicit dependencies: reliable team identifiers, access approval and a data owner. Stop the experiment if false assignments rise; expand only if correction time decreases without unauthorized changes.",
+    challenge: "Identify entry criteria, dependency, observable success, abort trigger and a deliberately uncommitted later option."
+  }
+};
 function make(s:Spec):Lesson {
+  const worked = workedCases[s.id];
+  if (!worked) throw new Error(`Missing worked strategy case for ${s.id}`);
   const blocks:LessonBlock[]=[
     {type:"paragraph",text:s.body},
+    {type:"heading",id:"worked-strategy-case",text:worked.question,level:2},
+    {type:"paragraph",text:worked.example},
+    {type:"callout",tone:"note",title:"Reason from the case",body:worked.challenge},
     {type:"callout",tone:"steward",title:"Strategy is a coherent set of choices",body:"A technology strategy is not a wishlist, tool catalogue or multi-year prediction. It connects organizational outcomes to a small set of technology choices, capability investments, deliberate non-investments, sequencing and evidence that would cause the strategy to change."},
     {type:"resources",title:"Continue learning",resources:s.resources},
   ];
   return {id:`technical-strategy-${s.id}`,title:s.title,activities:[
-    {id:`technical-strategy-${s.id}-reading`,title:s.title,estimatedMinutes:55,content:{type:"reading",body:s.body,blocks}},
+    {id:`technical-strategy-${s.id}-reading`,title:s.title,estimatedMinutes:55,content:{type:"reading",body:[s.body, worked.example].join("\n\n"),blocks}},
     {id:`technical-strategy-${s.id}-practice`,title:`Practice: ${s.title}`,estimatedMinutes:75,content:{type:"practical",objective:`Apply ${s.title} to Steward's next planning horizon.`,scenario:"Use the accumulated Steward evidence and current organizational assumptions. Make explicit choices about what to strengthen, simplify, defer or stop. Do not invent growth or transformation merely to justify investment.",instructions:s.practice,deliverables:["Strategy/capability decision artifact","Evidence and trade-offs","Owner, horizon and review trigger"],completionCriteria:["Choices trace to organizational outcomes and evidence.","At least one credible non-investment or stop/defer choice is explicit.","Capability and operating consequences are considered, not only technology acquisition."]}},
   ]};
 }

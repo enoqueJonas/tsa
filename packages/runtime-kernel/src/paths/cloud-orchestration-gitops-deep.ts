@@ -33,7 +33,7 @@ function richLesson(spec: LessonSpec): Lesson {
         id: `cloud-orchestration-gitops-${spec.id}`,
         title: spec.title,
         activities: [
-            { id: `cloud-orchestration-gitops-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: spec.intro, blocks } },
+            { id: `cloud-orchestration-gitops-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks } },
             {
                 id: `cloud-orchestration-gitops-${spec.id}-002`,
                 title: spec.practiceTitle,

@@ -1,0 +1,157 @@
+name: Curriculum audit and build
+on:
+  push:
+    branches:
+      - curriculum/oop-depth-reconstruction
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Superseded curriculum commits should not consume 11 concurrent CI jobs each.
+concurrency:
+  group: curriculum-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Audit curriculum integrity
+        run: pnpm audit:curriculum
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Execute Python teaching examples
+        run: pnpm check:python-examples
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Execute Java teaching example
+        run: pnpm check:java-examples
+      - name: Execute curriculum smoke test suite
+        run: pnpm test
+      - name: Report cross-school code example evidence
+        run: pnpm report:curriculum-examples
+      - name: Execute isolated Platform service recovery drill
+        run: python scripts/check-platform-loopback-drill.py
+      - name: Execute Platform OS observation examples
+        run: python scripts/check-platform-os-observations.py
+      - name: Exercise isolated TCP UDP and local name resolution
+        run: python scripts/check-platform-network-foundations.py
+      - name: Execute isolated Platform filesystem and symlink drill
+        run: python scripts/check-platform-filesystem-drill.py
+      - name: Verify disposable backup restore and integrity
+        run: python scripts/check-platform-backup-restore.py
+      - name: Execute isolated process failure and HTTP recovery
+        run: python scripts/check-platform-process-recovery.py
+      - name: Validate isolated systemd unit definition
+        run: python scripts/check-platform-systemd-unit.py
+      - name: Parse dedicated-VM systemd recovery lab
+        run: bash -n scripts/platform-systemd-recovery-lab.sh
+      - name: Verify isolated Delivery release identity and fail-closed mismatch
+        run: python scripts/check-delivery-release-identity.py
+      - name: Build applications
+        run: pnpm build
+
+  learner-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install and build web application
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+      - name: Install headless browser
+        run: |
+          python -m pip install playwright==1.58.0
+          python -m playwright install --with-deps chromium
+      - name: Test learner-facing Platform Builder activities
+        run: |
+          python -m http.server 4173 --bind 127.0.0.1 --directory apps/web/out > /tmp/tsa-server.log 2>&1 &
+          for i in $(seq 1 30); do curl --fail --silent http://127.0.0.1:4173/ > /dev/null && break; sleep 1; done
+          python scripts/check-platform-learner-browser.py
+      - name: Upload learner screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: platform-builder-learner-screenshots
+          path: artifacts/platform-learner/
+          if-no-files-found: warn
+
+  cross-school-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        school:
+          - engineering-apprentice
+          - builder
+          - platform-builder
+          - system-thinker
+          - delivery-engineer
+          - cloud-engineer
+          - quality-steward
+          - security-steward
+          - reliability-engineer
+          - architect
+          - technical-steward
+          - professional-engineer
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Build learner application
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+      - name: Install Chromium
+        run: |
+          python -m pip install playwright==1.58.0
+          python -m playwright install --with-deps chromium
+      - name: Traverse all rendered activities in selected school
+        env:
+          TSA_SCHOOL: ${{ matrix.school }}
+        run: |
+          python -m http.server 4173 --bind 127.0.0.1 --directory apps/web/out > /tmp/tsa-server.log 2>&1 &
+          for i in $(seq 1 30); do curl --fail --silent http://127.0.0.1:4173/ > /dev/null && break; sleep 1; done
+          python scripts/check-school-learner-browser.py
+      - name: Upload cross-school learner evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: learner-${{ matrix.school }}
+          path: artifacts/cross-school-learner/
+          if-no-files-found: warn

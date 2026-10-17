@@ -27,10 +27,11 @@ const practices: Record<string, PracticalContent> = {
             "Classify each step as independent, prerequisite or consumer of an earlier artifact.",
             "Create the GitLab CI/CD stage/job dependency graph.",
             "Identify at least two checks that can run in parallel and one that must remain ordered.",
-            "Introduce one controlled check failure and predict exactly which downstream work should not run."
+            "Introduce one controlled check failure and predict exactly which downstream work should not run.",
+            "Run the failure scenario and compare actual GitLab needs/stage behavior with the dependency graph; prove the image publication step cannot run after a required test failure."
         ],
         deliverables: ["Dependency graph", "Parallelism decision", "Failure-propagation expectation"],
-        completionCriteria: ["Ordering reflects real dependencies rather than visual preference.", "Independent feedback is not serialized unnecessarily.", "A failed prerequisite blocks only the work that depends on it."],
+        completionCriteria: ["Ordering reflects real dependencies rather than visual preference.", "Independent feedback is not serialized unnecessarily.", "Actual failed-job evidence matches the declared dependency graph.", "A failed required check cannot result in a published release image."],
     },
     "GitLab Runners and Execution Infrastructure": {
         type: "practical",
@@ -112,11 +113,12 @@ const practices: Record<string, PracticalContent> = {
             "Inventory pipeline values and classify them as ordinary configuration or secrets.",
             "Create a least-privilege GitLab CI/CD credential requirement for one sensitive operation.",
             "Bind that credential only to the stage that needs it.",
-            "Check logs and archived artifacts for accidental value exposure.",
+            "Check logs and archived artifacts for accidental value exposure using a disposable canary value, not a real credential.",
+            "Attempt one untrusted merge-request pipeline and prove protected release credentials and publishing permissions remain inaccessible.",
             "Document rotation/revocation ownership and a future handoff to stronger secret management."
         ],
         deliverables: ["CI configuration classification", "GitLab CI/CD credential scope", "Leakage check and rotation note"],
-        completionCriteria: ["Secrets are not global by default.", "Logs/artifacts do not intentionally contain secret values.", "Credential scope matches the required operation."],
+        completionCriteria: ["Secrets are not global by default.", "A disposable canary is absent from logs and archived artifacts.", "Untrusted merge-request jobs cannot read protected release credentials or publish images.", "Credential scope matches the required operation."],
     },
     "Parallelism": {
         type: "practical",

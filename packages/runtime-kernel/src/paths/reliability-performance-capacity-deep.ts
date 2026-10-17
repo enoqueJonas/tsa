@@ -18,7 +18,7 @@ function lessonFrom(spec: Spec): Lesson {
         { type: "resources", title: "Continue learning", resources: [sreBook, prometheus, grafana] },
     ];
     return { id: `performance-and-capacity-${spec.id}`, title: spec.title, activities: [
-        { id: `performance-and-capacity-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: spec.intro, blocks } },
+        { id: `performance-and-capacity-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks } },
         { id: `performance-and-capacity-${spec.id}-002`, title: `Analyze: ${spec.title}`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${spec.title} to Steward performance evidence.`, scenario: "Use the existing Prometheus/Grafana/logging stack and a controlled workload. Define the workload and expected service behavior before interpreting resource or latency signals.", instructions: spec.practice, deliverables: ["Performance evidence", "Workload definition", "Capacity or bottleneck conclusion"], completionCriteria: ["The workload is defined and reproducible.", "The conclusion connects resource behavior to user-visible service behavior.", "Unknowns and confounding variables are explicit."] } },
         { id: `performance-and-capacity-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.reflection, minimumCharacters: 200 } },
     ] };

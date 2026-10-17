@@ -25,7 +25,7 @@ function deepLesson(spec: Spec): Lesson {
         { type: "resources", title: "Reference material", resources: resourcesBySloTopic[spec.id] ?? [sreWorkbook, sreBook] },
     ];
     return { id: `service-level-engineering-${spec.id}`, title: spec.title, activities: [
-        { id: `service-level-engineering-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: spec.intro, blocks } },
+        { id: `service-level-engineering-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks } },
         { id: `service-level-engineering-${spec.id}-002`, title: `Engineer: ${spec.title}`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${spec.title} to Steward.`, scenario: "Use the Steward capability/risk map and whatever trustworthy evidence already exists. Define the service-level semantics and measurement specification before choosing Prometheus/Grafana instrumentation; later metrics work will operationalize these definitions. Do not invent a target that cannot be measured consistently.", instructions: spec.practice, deliverables: ["Service-level artifact", "Measurement evidence", "Decision/trade-off note"], completionCriteria: ["The indicator and target have explicit semantics.", "The measure reflects service behavior rather than host health alone.", "The learner explains how the result affects an engineering or release decision."] } },
         { id: `service-level-engineering-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.reflection, minimumCharacters: 200 } },
     ] };

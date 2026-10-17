@@ -13,9 +13,22 @@ const resourcesByFundamentalsTopic: Record<string, LearningResource[]> = {
 
 type Spec = { id: string; title: string; intro: string; principles: string[]; steward: string[]; practice: string[]; reflection: string };
 
-function make(spec: Spec): Lesson {
+const architectureWorked: Record<string, {situation:string;reasoning:string;evidence:string}> = {
+  "what-architecture-is":{situation:"Steward has one API process and a database on a VPS.",reasoning:"The deployment boundary is architectural because moving the database changes availability, recovery, network security and operational ownership.",evidence:"Sketch the runtime units and show one failure path. A class diagram alone cannot demonstrate those consequences."},
+  "architecture-vs-design":{situation:"An engineer renames a private helper method; another proposes separating the database onto a managed service.",reasoning:"The helper rename is usually local design; the database migration alters failure domains, cost and responsibility and is therefore an architectural decision.",evidence:"Compare affected stakeholders, rollback cost and system-wide consequences rather than classifying by code size."},
+  "architecture-drivers":{situation:"Stakeholders request higher availability but the project has a strict monthly operating budget.",reasoning:"Make availability target and budget explicit drivers before selecting replicas or managed services.",evidence:"Record who owns the target, what outage duration is acceptable and which cost ceiling constrains options."},
+  "quality-attributes":{situation:"The API must recover registration capability within a defined time after database-host failure.",reasoning:"Express a quality scenario: stimulus (host failure), environment (normal load), response (restore service), measure (RTO).",evidence:"An adjective such as reliable is not testable until the response measure and conditions are defined."},
+  "constraints":{situation:"The organization requires data residency in a specific jurisdiction.",reasoning:"Exclude hosting options that cannot satisfy the requirement, even if cheaper or more scalable.",evidence:"Distinguish a binding constraint from a preference; record source and change authority."},
+  "tradeoffs":{situation:"Adding a second application replica reduces process-level downtime but increases deployment and state-management complexity.",reasoning:"Compare the option against staying on one process with automated recovery and measured restart time.",evidence:"Record which failure modes the replica addresses and which shared dependencies remain single points of failure."},
+  "organization-architecture":{situation:"The API and platform teams independently change one shared deployment configuration.",reasoning:"Define ownership and review boundaries to prevent uncoordinated production changes.",evidence:"Trace who approves, deploys and rolls back a configuration change. A team chart alone does not establish technical interfaces."},
+  "fitness-evolution":{situation:"A proposed change accidentally adds a second direct database writer.",reasoning:"Add an architecture fitness check that detects unauthorized dependency direction or ownership.",evidence:"Demonstrate a failing example and state what the check cannot prove about runtime behavior."},
+  "documentation":{situation:"A diagram shows Steward, PostgreSQL and a message broker but no reason for asynchronous publication.",reasoning:"Record an ADR explaining the reliability driver, alternatives, outbox decision and failure trade-offs.",evidence:"Link the diagram to decision evidence and revisit triggers; the picture alone cannot justify the architecture."},
+};
+
+function make(spec: Spec): Lesson { const worked = architectureWorked[spec.id];
   const blocks: LessonBlock[] = [
     { type: "paragraph", text: spec.intro },
+    ...(worked ? [{type:"heading" as const,id:`${spec.id}-worked`,text:"Worked architecture decision",level:2 as const},{type:"paragraph" as const,text:`Situation: ${worked.situation}`},{type:"paragraph" as const,text:`Reasoning: ${worked.reasoning}`},{type:"paragraph" as const,text:`Evidence: ${worked.evidence}`}] : []),
     { type: "heading", id: `${spec.id}-principles`, text: "Architecture reasoning", level: 2 },
     { type: "list", items: spec.principles },
     { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
@@ -28,7 +41,7 @@ function make(spec: Spec): Lesson {
     id: `architecture-fundamentals-${spec.id}`,
     title: spec.title,
     activities: [
-      { id: `architecture-fundamentals-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: spec.intro, blocks } },
+      { id: `architecture-fundamentals-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks } },
       { id: `architecture-fundamentals-${spec.id}-002`, title: `Evaluate: ${spec.title}`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${spec.title} to the mature Steward ecosystem.`, scenario: "Use the actual Steward system and evidence accumulated from development, delivery, cloud, QA, security and reliability. Do not redesign the platform to showcase a pattern; reason from present constraints and observed quality-attribute needs.", instructions: spec.practice, deliverables: ["Architecture evidence", "Driver/trade-off analysis", "Decision or explicitly justified non-change"], completionCriteria: ["The problem is stated before the solution.", "The conclusion uses explicit architecture drivers and evidence.", "Keeping the current structure is accepted when it remains the strongest option."] } },
       { id: `architecture-fundamentals-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.reflection, minimumCharacters: 200 } },
     ],

@@ -1,0 +1,626 @@
+# Curriculum lesson-boundary audit — inventory
+
+> Initial module inventory, not a finding of pedagogical completeness. Each module below requires inspection for overloaded concepts, missing prerequisites, worked examples and output traces.
+
+## Evidence-based completion gates (current)
+
+The audit is tracked in GitHub Issue #314. **Source presence is not pedagogical approval**:
+
+| Gate | Current finding |
+| --- | --- |
+| Logical curriculum inventory | 134 of 134 source files inspected for presence and basic shape; complete structural census in `source-census.md`. |
+| School module wiring | School and Academy aggregator imports reconciled with inventory; static drift guard added. |
+| Delivery practical enrichment | 82 title-to-quality-practical pairs matched; automated parity guard added. |
+| Artifact Supply Chain source-level reading/practical audit | 25 authored lesson specifications and 23 quality override profiles examined; specific fixes committed. |
+| Lesson-by-lesson pedagogical approval across schools | Not complete; historical checkboxes are progress markers, not approval of every activity. |
+| Executable examples and expected outputs | Cross-school TypeScript source scan found 407 code records; Python runnable-example CI now executes 12 curated snippets and compares real stdout to published outputs. Remaining generated/dynamic examples and contextual command outputs still require inspection. |
+| Automated `pnpm audit:curriculum` and latest `pnpm build` | **Latest branch HEAD verified in CI:** GitHub Actions run [39026644609](https://github.com/enoqueJonas/tsa/actions/runs/39026644609) completed successfully on commit `61699e983373c75e787deed82ff1fff53d19651d` (2026-10-17). This supersedes the earlier run 39025220429 reference; it does not constitute rendered-page, end-to-end lab, or pedagogical approval. |
+| Rendered lesson checks and real learner labs | Open; actual Steward infrastructure and exercise execution have not been verified. |
+
+## Review criteria
+
+1. Does each lesson have one coherent objective and enough space to explain new mechanisms?
+2. Does it teach prerequisites before using them?
+3. Do runnable examples demonstrate behavior with expected output and execution explanation?
+4. Is the reading technically clear without becoming superficial or artificially introductory?
+5. Do practical activities build independently demonstrable evidence?
+
+## School module inventory
+
+### builder
+
+Status: **Not yet audited**.
+
+- [x] `builder-python-quality`
+- [x] `builder-web-api-quality`
+- [x] `builder-django-quality`
+- [x] `builder-postgresql-quality`
+- [x] `builder-identity-auth-deep`
+- [x] `builder-software-craft-quality`
+- [ ] `builder-milestone-deep`
+
+### system-thinker
+
+Status: **Not yet audited**.
+
+- [x] `system-thinker-requirements-quality`
+- [x] `system-thinker-boundaries-quality`
+- [x] `system-thinker-modeling-quality`
+- [ ] `system-thinker-components-quality`
+- [ ] `system-thinker-data-flow-quality`
+- [ ] `system-thinker-soap-xml-deep`
+- [ ] `system-thinker-enterprise-file-integration-deep`
+- [ ] `system-thinker-distributed-state-messaging-deep`
+- [ ] `system-thinker-failure-quality`
+- [ ] `system-thinker-architecture-decisions-quality`
+- [ ] `system-thinker-milestone-deep`
+
+### platform-builder
+
+Status: **Not yet audited**.
+
+- [ ] `platform-builder-bare-metal-foundations-deep`
+- [ ] `platform-builder-budget-homelab-quality`
+- [ ] `platform-builder-computer-os-quality`
+- [ ] `platform-builder-configuration-management-deep`
+- [ ] `platform-builder-core-infrastructure-services-deep`
+- [ ] `platform-builder-enterprise-file-directory-services-deep`
+- [ ] `platform-builder-enterprise-storage-nas-deep`
+- [ ] `platform-builder-implementation-milestones`
+- [ ] `platform-builder-linux-administration-quality`
+- [ ] `platform-builder-milestone-deep`
+- [x] `platform-builder-networking-quality`
+- [ ] `platform-builder-os-patching-lifecycle-deep`
+- [ ] `platform-builder-packet-tracer-network-engineering-deep`
+- [ ] `platform-builder-proxmox-homelab-deep`
+- [ ] `platform-builder-proxmox-milestone`
+- [ ] `platform-builder-virtualization-quality`
+- [ ] `platform-builder-windows-powershell-enterprise-deep`
+
+### delivery-engineer
+Status: **All 11 logical modules have received a source-level triage pass; activity-by-activity pedagogical certification and real infrastructure exercises remain open.** The checkboxes below indicate source review, not rendered or practical sign-off.
+
+- [x] `delivery-artifact-supply-chain-quality` — 25 authored source specs, 23 enriched practicals plus 2 integrated labs; repository evidence and packaging requirements reviewed.
+- [x] `delivery-automation-shell-deep` — six distinct practical evidence contracts, pipeline failure traces and annotated shell examples.
+- [x] `delivery-containers-docker-quality` — packaging, local image identity, persistent dependencies, authorization and end-to-end roles.
+- [x] `delivery-continuous-delivery-quality` — promotions, post-deployment API/async validation and three-role recovery.
+- [x] `delivery-continuous-integration-quality` — GitLab baseline, gates, runners, fail-closed behavior and canonical documentation.
+- [x] `delivery-configuration-management-quality` — Rocky Linux Ansible, drift/rerun evidence and full runtime readiness.
+- [x] `delivery-engineer-milestone-deep` — gates require exact artifact identity, all three roles, authorization and async recovery.
+- [x] `delivery-migration-exercises-deep` — bounded Jenkins-to-GitLab exercise, failure equivalence and fixture-only honesty.
+- [x] `delivery-production-schema-evolution-deep` — compatibility, concurrent-backfill interleaving and destructive-contract gates.
+- [x] `delivery-release-engineering-quality` — immutable promotion, release safety and conditional internal-package provenance.
+- [x] `delivery-software-foundations-quality` — Git integration and promotion worked traces; module/profile alignment verified.
+
+**Delivery source-level triage: 11/11.** **Delivery activity-level sign-off: not claimed.** Pending: running actual Steward labs on accessible infrastructure, rendered lessons, and executable checks beyond coverage already in CI.
+
+### cloud-engineer
+
+Status: **Not yet audited**.
+
+- [x] `cloud-architecture-cost-quality`
+- [x] `cloud-hosting-models-quality`
+- [x] `cloud-building-blocks-quality`
+- [ ] `cloud-certificate-lifecycle-operations-deep`
+- [ ] `cloud-engineer-milestone-deep`
+- [ ] `cloud-orchestration-gitops-deep`
+- [ ] `cloud-progressive-delivery-canary-deep`
+- [ ] `cloud-object-storage-implementation-deep`
+- [x] `cloud-infrastructure-as-code-quality`
+- [ ] `cloud-internet-networking-quality`
+- [ ] `cloud-vps-operations-quality`
+
+### quality-steward
+
+Status: **Not yet audited**.
+
+- [x] `quality-api-integration-testing-deep`
+- [x] `quality-automation-framework-engineering-deep`
+- [ ] `quality-browser-environment-testing-deep`
+- [ ] `quality-browser-surface-decision`
+- [ ] `quality-performance-tool-decision`
+- [ ] `quality-containers-ci-deep`
+- [ ] `quality-java-test-engineering-deep`
+- [ ] `quality-continuous-scheduled-execution-deep`
+- [ ] `quality-non-functional-deep`
+- [ ] `quality-engineering-deep`
+- [ ] `quality-steward-milestone-deep`
+- [ ] `quality-reuse-internal-library-deep`
+- [ ] `quality-test-analysis-design-deep`
+- [ ] `quality-unit-component-testing-deep`
+
+### security-steward
+
+Status: **Not yet audited**.
+
+- [x] `security-application-deep`
+- [ ] `security-artifact-signing-verification-deep`
+- [ ] `security-container-delivery-deep`
+- [ ] `security-enterprise-directory-federation-deep`
+- [ ] `security-foundations-deep`
+- [ ] `security-identity-secrets-deep`
+- [ ] `security-internal-pki-machine-trust-deep`
+- [ ] `security-internal-pki-milestone`
+- [ ] `security-linux-network-deep`
+- [ ] `security-secure-file-transfer-migration-deep`
+- [ ] `security-steward-milestone-deep`
+- [ ] `security-threat-modeling-deep`
+- [ ] `security-vault-implementation-deep`
+- [ ] `security-vulnerability-laboratory-deep`
+- [ ] `security-web-api-threats-deep`
+
+### reliability-engineer
+
+Status: **Not yet audited**.
+
+- [ ] `reliability-alerting-on-call-deep`
+- [ ] `reliability-alertmanager-implementation-deep`
+- [ ] `reliability-central-logging-decision`
+- [ ] `reliability-database-stewardship-deep`
+- [ ] `reliability-data-protection-disaster-recovery-deep`
+- [ ] `reliability-distributed-tracing-implementation-deep`
+- [ ] `reliability-fault-injection-deep`
+- [ ] `reliability-incident-management-deep`
+- [ ] `reliability-metrics-prometheus-grafana-deep`
+- [x] `reliability-observability-deep`
+- [ ] `reliability-observability-stack-integration-deep`
+- [ ] `reliability-performance-capacity-deep`
+- [ ] `reliability-production-logging-deep`
+- [ ] `reliability-sre-foundations-deep`
+- [ ] `reliability-resilience-distributed-failure-deep`
+- [ ] `reliability-service-level-engineering-deep`
+- [ ] `reliability-steward-reliability-program-deep`
+- [ ] `reliability-tracing-backend-decision`
+
+### architect
+
+Status: **Not yet audited**.
+
+- [ ] `architect-evaluation-governance-deep`
+- [x] `architect-architecture-fundamentals-deep`
+- [ ] `architect-milestone-deep`
+- [ ] `architect-architectural-styles-deep`
+- [ ] `architect-data-architecture-deep`
+- [x] `architect-domain-modeling-deep`
+- [ ] `architect-integration-and-messaging-deep`
+- [ ] `architect-modularity-deep`
+- [ ] `architect-resilience-architecture-deep`
+- [ ] `architect-scalability-distributed-systems-deep`
+
+### technical-steward
+
+Status: **Not yet audited**.
+
+- [ ] `technical-steward-architecture-governance-deep`
+- [ ] `technical-steward-change-service-governance-deep`
+- [ ] `technical-steward-controls-compliance-assurance-deep`
+- [ ] `technical-steward-engineering-governance-deep`
+- [ ] `technical-steward-handbook-standards-deep`
+- [ ] `technical-steward-milestone-deep`
+- [ ] `technical-steward-security-data-governance-deep`
+- [ ] `technical-steward-technical-debt-health-deep`
+- [ ] `technical-steward-technical-leadership-deep`
+- [ ] `technical-steward-third-party-lifecycle-risk-deep`
+- [ ] `technical-steward-technology-governance-deep`
+- [x] `technical-steward-technology-risk-deep`
+- [ ] `technical-steward-strategy-capability-deep`
+
+### professional-engineer
+
+Status: **Not yet audited**.
+
+- [ ] `professional-engineer-capstone-problem-discovery-deep`
+- [ ] `professional-engineer-capstone-engineering-proposal-deep`
+- [ ] `professional-engineer-independent-build-deep`
+- [ ] `professional-engineer-production-readiness-deep`
+- [ ] `professional-engineer-defence-deep`
+- [x] `professional-engineer-professional-practice-deep`
+- [ ] `professional-engineer-portfolio-reflection-deep`
+
+## Known findings and actions
+
+- [x] Python OOP was overloaded as one lesson; split into sequenced lessons.
+- [x] Rebuild Python encapsulation, composition, inheritance, polymorphism, decorators and design explanations.
+- [x] Separate decorator mechanics from class-feature decorators.
+- [x] Add an object-reference diagram for composition.
+- [ ] Review rendered OOP lessons and practical activities.
+- [ ] Review each module above and document specific findings before editing.
+- [ ] Re-run curriculum audit and build after remediation.
+
+## Review batch 1 — Builder and System Thinker
+
+The following entries have been inspected for module structure and lesson-title progression; this is a **structural pass**, not a full block-by-block pedagogical approval. The `*-quality` modules primarily decorate practical activities and inherit teaching content from separate `*-deep` or `*-rich` modules. Therefore, counting code blocks or lesson headings in the quality wrapper alone is misleading.
+
+| Module | Observation | Follow-up |
+| --- | --- | --- |
+| Builder Web/API | Teaching comes from `builder-web-api-deep`; it introduces HTTP request/response and network layers separately. | Inspect individual response-contract examples for visible outcomes. |
+| Builder Django | Teaching comes from `builder-django-rich`; uses a concept-to-code block mapper that supports expected output. | Inspect every concept's code for meaningful runtime behavior. |
+| Builder PostgreSQL | Teaching comes from `builder-postgresql-deep`; SQL sections support optional expected output. | Review examples where result tables would aid understanding. |
+| Builder Identity/Auth | Distinguishes identity, authentication, authorization, password verification and security boundaries. | Review code-level prerequisite ordering. |
+| Builder Software Craft | Distinguishes Git history, staging, restore/revert/reset and architecture boundaries. | Preserve advanced depth; review practice evidence. |
+| System Thinker Requirements | Distinguishes stakeholders, actors, quality attributes, constraints and acceptance criteria. | Review worked examples and validation evidence. |
+| System Thinker Boundaries | Separates system context, responsibility, trust and ownership boundaries. | Review diagram interpretation tasks. |
+| System Thinker Modeling | Separates model scope, C4 views, state transitions and diagram-as-code. | Review actual learner diagrams. |
+
+**Confirmed cross-module prerequisite defect fixed:** introductory Python OOP practical previously required Team composition before the Composition lesson. The task is now in the later Composition practical (`5e64311`).
+
+## Review batch 2
+
+Inspected selected Cloud, Quality, Security and Architecture modules. The Cloud quality wrappers delegate teaching to deep source modules. Quality API and framework modules separate HTTP semantics, contracts, authentication, logging and retry policy. Security application modules distinguish authentication, authorization and validation. These observations do not establish complete pedagogical quality.
+
+**Confirmed and fixed:** `architect-domain-modeling-deep` combined entities, value objects and aggregates into one brief lesson. Commit `c1019ec` splits them into three substantive lessons on identity, value equality and consistency boundaries, with Steward examples and exercises.
+
+## Review batch 3 — cross-school sampling
+
+Inspected lesson sequences in Cloud Hosting, Cloud Cost, IaC, Security Application, Reliability Observability, Technical Risk, Professional Practice, Platform Networking and Delivery CI/Docker. Most of these already separate major named concepts, but a lesson-title scan does not establish conceptual depth. `*-quality` wrappers may import content from corresponding `*-deep` modules. Keep advanced subject matter advanced while checking prerequisite order.
+
+**Architect remediation extended:** commit `e925ee5` adds runnable, output-bearing Python examples to the three newly split identity, value-object and aggregate lessons. Each demonstrates a specific mechanism and explains the observed result.
+
+## Review batch 4 — Technology Risk
+
+Confirmed a teaching-quality issue: Technology Risk lessons used substantial prose in the reading body but supplied only a resources block, with no worked reasoning sequence. Commit `94d0132` places the lesson explanation into reading blocks and adds worked risk scenarios for identification, likelihood/impact, inherent/residual exposure, appetite/tolerance, treatment and acceptance. The examples distinguish observation, uncertainty, consequence, evidence, control effectiveness and authority. Remaining risk lessons still need detailed review.
+
+## Review batch 5 — Professional Practice
+
+Confirmed a lack of worked decision sequences in `professional-engineer-professional-practice-deep`: lessons supplied substantive conceptual prose and practice tasks but no specific case connecting a situation, defensible decision, evidence and trade-off. Commit `3a272ee` adds one worked decision to each of the six lessons, preserving their existing advanced content and exercises. This is a targeted instructional improvement, not a claim that the entire school is audited.
+
+## Review batch 6 — Observability
+
+Confirmed a gap in `reliability-observability-deep`: each lesson offered principles and Steward exercises but lacked an explicit diagnostic walkthrough mapping a question to signals and an interpretation. Commit `9a552d2` adds question/evidence/interpretation examples to all eight conceptual lessons. The examples cover monitoring versus observability, signals, telemetry design, correlation, instrumentation, tracing, golden signals and telemetry cost. These are reasoning examples, not fabricated runtime measurements.
+
+## Review batch 7 — Python OOP practical progression
+
+Confirmed a major gap: after splitting Python OOP into individual lessons, the quality-layer practical mapping covered Composition but not the six other new lessons. Those lessons therefore retained generic practical instructions instead of progressive, domain-specific engineering tasks. Commit `75c20ed` adds targeted practical activities for Encapsulation, Inheritance, Polymorphism, Decorators, Python Class Features and OOP Design, with runnable evidence and negative tests. Commit `1b5f61c` labels inheritance snippets that depend on the earlier Vehicle definition as continuations. The broader Python curriculum still requires review outside OOP.
+
+## Review batch 8 — Application Security
+
+Confirmed that the twelve application-security conceptual lessons presented principles and practical tasks without an explicit worked case connecting threat scenario, control, positive/negative verification and reasoning. Commit `f733a55` adds a concrete control-and-verification case to each lesson. The cases distinguish authentication from authorization, validation from access control, generic errors from protected diagnostics, and configuration from verified security properties. This does not imply security assurance for the actual Steward implementation; learners must still implement and test controls in their own environment.
+
+## Review batch 9 — Architecture Fundamentals
+
+Confirmed that nine architecture-fundamentals lessons provided principles and exercises but lacked a worked decision showing why the concept matters to a concrete system. Commit `3588615` adds situation/reasoning/evidence walkthroughs for architectural significance, design boundaries, drivers, quality attributes, constraints, trade-offs, ownership, fitness checks and ADR documentation. These are illustrative decisions; learners still need to evaluate their actual Steward architecture.
+
+## Review batch 10 — System Thinker components and data flow
+
+Inspected the source lessons behind `system-thinker-components-quality` and `system-thinker-data-flow-quality` rather than treating the quality wrapper as teaching content. Both have distinct lesson objectives, practices and checks, but the introductory reading used mostly general descriptions and conceptual diagrams where a concrete decision trace would help learners test understanding.
+
+- Commit `1ec8d5b` adds a registration-based worked responsibility decision that separates permission, lifecycle invariants and persistence. It explicitly marks the model as illustrative pending comparison with the Steward implementation.
+- Commit `2198260` adds a positive and negative registration-flow walkthrough distinguishing authentication, authorization, domain validation, persistence and observed contract outcomes. It makes clear these are expected outcomes, not asserted runtime test results.
+
+This is a **targeted content improvement**, not a full pass over either module. Remaining lessons, practice/rendering, the complete school sequence, and actual local audit/build still require validation.
+
+## Review batch 11 — Distributed messaging outbox
+
+Inspected the distributed-state and messaging module's lesson sequence, particularly transactional outbox. The module already splits distributed-state justification, caching, queueing, idempotency, dead-lettering, ordering and outbox into distinct lessons; this is useful structural granularity, not evidence that every lesson is complete. The outbox lesson described the dual-write failure but lacked a stepwise explanation of specific crash windows and the resulting committed/pending/duplicate states. Commit `c19fa77` adds a worked event-ID trace covering rollback, committed pending intent, published-but-not-marked duplication and ambiguous broker outcomes. The example distinguishes publisher recovery from consumer idempotency and avoids unsupported exactly-once claims. Remaining lessons and actual behavior/rendering still need review.
+
+## Review batch 12 — SOAP/XML and enterprise file contracts
+
+Reviewed source teaching sections in `system-thinker-soap-xml-deep` and `system-thinker-enterprise-file-integration-deep`, focusing on failure interpretation and file handoff/replay. Both modules already cover distinct contract and lifecycle mechanisms but some lessons lacked a specific end-to-end outcome trace.
+
+- Commit `b8aa947`: the SOAP Envelope/Fault lesson now traces connection unavailability, HTTP/SOAP binding rejection, SOAP Fault and valid response as different diagnostic layers. The trace labels its cases illustrative and separates retry decisions from error classification.
+- Commit `bf51432`: the enterprise file-contract lesson now traces incomplete .part delivery, final-name handoff, accepted delivery, identical replay and conflicting replay. It explicitly bounds atomic-rename assumptions and distinguishes expected behavior from observed tests.
+
+These are targeted instructional improvements, **not** full module clearance. Still required: inspect other SOAP/file lessons and practicals, check rendered content, perform curriculum audit/build and record learner validation.
+
+## Review batch 13 — Failure Modes and Architecture Decisions remediation
+
+After inspecting both source lesson modules and their quality activities, addressed the two pending teaching gaps. Commit `ffda281` adds a worked stale-ownership failure chain, distinguishing trigger, incorrect behavior, impact and candidate prevention/detection/containment/recovery controls. Commit `efdf06e` adds an end-to-end hypothetical synchronous-versus-asynchronous notification trade-off, with evidence requirements, costs, and reconsideration triggers. These are source-content remediations, not evidence that the complete modules have passed learner testing. Build, automated audit and rendered-content validation remain pending.
+
+## Review batch 14 — System Thinker milestone handoff and Platform bare metal
+
+Inspected the System Thinker milestone artifact gates. The milestone already requires a traceable Builder checkpoint, reconciled models, Redis/RabbitMQ evidence, failure analysis, and ADRs; this is a structural inspection only, not proof that the completed portfolio or rendered learner flow is sufficient. Began Platform Builder source review with `platform-builder-bare-metal-foundations-deep`. The Hardware Health lesson had a heading ('Observe before replacing') immediately followed by the next heading, leaving its diagnostic concept without an explanatory sequence. Commit `c25618b` supplies a concrete, illustrative hardware-versus-application I/O investigation with bounded SMART evidence and missing-telemetry handling. Remaining Platform lessons, final rendered verification and audit/build have not been completed.
+
+## Review batch 15 — Platform Builder homelab capacity
+
+Inspected the budget-homelab, computer/OS and virtualization quality wrappers and their source lesson relationships. These modules include applied resource and operating-system investigations; the wrappers alone cannot establish reading quality. The budget-homelab CPU/RAM/storage/NIC lesson stated memory constraints but provided no worked resource-allocation calculation. Commit `f9878a9` adds an explicitly hypothetical 16 GiB host budget, separating host reserve, guest allocation and remaining headroom; it warns that allocation arithmetic does not substitute for monitoring. Remaining lesson mechanisms and generated rendered content have not received a full review; automated audit and build are not yet run.
+
+## Review batch 16 — Platform Builder virtualization networking
+
+Inspected the teaching content in `platform-builder-virtualization-deep.ts`, not only its quality wrapper. The Virtual Networking Modes lesson already contrasts NAT and bridging and includes diagnostic commands, but it did not connect those commands into a clear troubleshooting sequence. Commit `b1394b6` adds an illustrative connection-failure trace separating application listening, guest address/route, NAT or bridged topology, and firewall/upstream policy. The content is not represented as actual learner output. This is one targeted improvement; remaining Platform modules and rendered/build checks still require review.
+
+## Review batch 17 — Linux systemd diagnostics
+
+Inspected Linux Administration teaching source, its Rocky Linux quality wrapper, plus Platform Proxmox and NAS lesson sources. The quality wrapper adapts Ubuntu-origin material to the Rocky Linux learning baseline, so raw source terminology alone is not sufficient evidence of the learner-visible runtime text. The systemd lesson distinguished service activation from application readiness but lacked a concrete investigation sequence. Commit `16c5249` adds an active-unit/unreachable-application walkthrough, checking supervisor evidence, logs, listening socket, local request and network/security boundary without claiming invented command output. Proxmox and NAS inspections were exploratory, not module sign-off. Local automated audit/build and rendered experience remain pending.
+
+## Review batch 18 — Enterprise NAS NFS access diagnosis
+
+Reviewed Proxmox backup/restore and Enterprise NAS source lessons. Both already require hands-on restore evidence, distinguish snapshots from independent backup, and acknowledge single-host failure domains. The NAS NFS teaching distinguished identity/export layers conceptually but offered no stepwise case of an apparently successful mount followed by a denied write. Commit `01fb60d` adds a worked client mount → server export → numeric identity → filesystem permission diagnosis, with explicit evidence boundaries and without unsafe blanket permission changes. This is targeted source remediation; no full Proxmox/NAS pedagogical clearance or local build/render validation is claimed.
+
+## Review batch 19 — Platform infrastructure and configuration management
+
+Inspected configuration-management, core infrastructure (DNS/DHCP/time) and enterprise file/directory source content. The infrastructure lessons distinguish DNS authority/recursion, DHCP relay, chrony/time semantics, network-file permissions and directory identity. The configuration-management drift lesson explained check/diff conceptually but lacked a concrete decision sequence for legitimate versus unauthorized drift. Commit `e739c29` adds a worked canary-oriented investigation: inspect a manual change, compare declared ownership, decide whether to codify or revert it, validate configuration and service behavior, and repeat to test idempotence. Further lesson-by-lesson inspection remains pending; no local build, automated curriculum audit or rendered verification has been performed.
+
+## Review batch 20 — Packet Tracer first-lab prerequisites
+
+Inspected Platform OS patching, Windows/PowerShell and Packet Tracer source lessons. The first Packet Tracer lab required learners to navigate IOS command modes and diagnose interface state but passed no teaching sections to its brief, leaving the mechanism to be discovered during the practical. Commit `f155103` adds prerequisite-first explanations of user/privileged/configuration modes, a prompt-to-mode command trace, and an interface-state interpretation walkthrough before the lab. The content labels expected behavior rather than fabricating runtime output. The OS patching and Windows modules received initial structural inspection only; further content review, rendered inspection and automated build/audit remain pending.
+
+## Review batch 21 — Windows PowerShell pipeline teaching
+
+Inspected Platform Builder Windows/PowerShell and OS patching sources beyond the initial structural pass. The PowerShell lesson states that pipelines carry objects and that early formatting is harmful, but offered no concrete worked transformation. Commit `80cd4be` adds a stepwise object/property/filter/select explanation and contrasts premature table formatting; host-dependent results are correctly treated as observations, not fabricated console output. OS patching already distinguishes DNF transaction success from workload validation and installed from running kernels. Further Windows and patching lesson-by-lesson review, rendered experience and audit/build remain pending.
+
+## Review batch 22 — Platform milestone handoff and Delivery shell example
+
+Inspected Platform Builder's integrated milestone gates (core infrastructure, patch lifecycle, Windows estate, Proxmox, and the main Steward homelab portfolio). The gates require observed cross-system and recovery evidence rather than completion by diagram alone; this is structural review, not a completed learner run. Began Delivery Engineer content review. In `delivery-automation-shell-deep.ts`, the `set -euo pipefail` health-check example referenced `health_url` without defining it, which makes the snippet fail under `set -u` when copied independently. Commit `bd6ebe2` supplies an explicit positional-argument/default URL before use. This remedies a concrete independently-runnable-example defect; build and learner rendering remain unverified.
+
+## Review batch 23 — Delivery CI dependency behavior
+
+Inspected Delivery Engineer continuous-integration, Docker and release-engineering lesson sources. The Jobs, Stages and Dependencies section discussed parallel work and prerequisite relationships but did not give learners a complete passing/failing execution trace. Commit `c040d6c` adds a worked Steward job graph, independent versus gated work, a failed unit-test outcome, explicit policy-dependent lint gating, and immutable image handoff. This is targeted source improvement only; remaining lessons, rendered content, automated curriculum audit and local build are unverified.
+
+## Review batch 24 — Docker, Release Engineering and Delivery breadth
+
+Inspected the 15 source Docker lesson titles and confirmed that all 15 have corresponding investigation activities in the quality wrapper. Inspected the six core Release Engineering reading lessons and confirmed all six have matching practice overrides; additional release lab/review content is composed separately and still requires individual validation. Sampled their instruction and evidence design, and inspected Delivery continuous delivery, migration, configuration management, software foundations, artifact supply chain, CI and school milestone sources. This is **not** a finished activity-by-activity pedagogical sign-off.
+
+Remediations committed: `7591086` and `1e24027` strengthen Docker volume lifecycle and add a disposable executable persistence demonstration with expected output; `2de93f3` adds a worked release regression decision distinguishing process health, functional failure, backwards-compatible rollback and forward repair; `ce9c279` adds an explicit expand/backfill/switch/contract field migration through old/new application coexistence.
+
+**Outstanding:** individual lesson activity-level depth verification, prerequisite sequencing, example-output review, full school and 133-module curriculum review, automated `pnpm audit:curriculum`, `pnpm build`, and rendered inspection. The connected GitHub editor cannot run local `pnpm` here; attempted Git access from local container failed due unavailable network resolution. Do not infer passing build or whole-school approval from successful source commits.
+
+## Review batch 25 — Activity inventory: Docker and Release Engineering
+
+Inspected the complete 15-title Docker source/quality pairing and 6-title core Release Engineering source/quality pairing, plus the three release-lab practices and final review. Each of the 21 core lesson/practical pairs has a practical contract with objective, scenario, instructions, deliverables and completion criteria; this does **not** prove the instructions will succeed in a learner environment. The matrix records the strongest source-level teaching question or implemented correction for each activity rather than pretending the labs were executed.
+
+| Lesson/activity | Source-level audit focus | Unresolved validation |
+| --- | --- | --- |
+| Docker: Containers vs VMs | Boundary and failure scope; worked guest/container comparison added | Runtime evidence and rendered-content verification pending |
+| Docker: Namespaces/cgroups | Kernel-visibility versus resource-enforcement distinction and practical | Runtime evidence and rendered-content verification pending |
+| Docker: Architecture | CLI/daemon privilege path and practical | Runtime evidence and rendered-content verification pending |
+| Docker: Images/Layers | Image/container distinction; cache-invalidation scenario added | Runtime evidence and rendered-content verification pending |
+| Docker: Dockerfiles | PID 1/process contract; representative Dockerfile, not assumed repo build | Runtime evidence and rendered-content verification pending |
+| Docker: Build Context | `.dockerignore` file pattern example and build-context risk added | Runtime evidence and rendered-content verification pending |
+| Docker: Multi-stage Builds | Build-time versus runtime responsibility; decision practical | Runtime evidence and rendered-content verification pending |
+| Docker: Volumes | Executable disposable named-volume lifecycle and expected output | Runtime evidence and rendered-content verification pending |
+| Docker: Networking | Client/host/bridge and inter-container DNS path walkthrough | Runtime evidence and rendered-content verification pending |
+| Docker: Compose | Startup order versus readiness worked race | Runtime evidence and rendered-content verification pending |
+| Docker: Health Checks | Liveness-versus-readiness observation and failure case | Runtime evidence and rendered-content verification pending |
+| Docker: Registries | Internal artifact authority and reproduction contract | Runtime evidence and rendered-content verification pending |
+| Docker: Image Tags | Mutable-tag/digest mismatch worked scenario | Runtime evidence and rendered-content verification pending |
+| Docker: Optimization | Measure/rebuild/comparison practical rather than size fetish | Runtime evidence and rendered-content verification pending |
+| Docker: Debugging | Boundary-first investigation and failure injection | Runtime evidence and rendered-content verification pending |
+| Release: Candidates | Immutable candidate manifest and mutation ambiguity practical | Runtime evidence and rendered-content verification pending |
+| Release: Promotion/Gates | Exact-digest approval invalidation and reject path | Runtime evidence and rendered-content verification pending |
+| Release: Deployment Evidence | Client checks; corrected local image ID versus registry digest and required URL/token inputs | Runtime evidence and rendered-content verification pending |
+| Release: Observability | Before/after, release identity, health versus behavior | Runtime evidence and rendered-content verification pending |
+| Release: Failure Handling | Compatible/incompatible data-state recovery walkthrough | Runtime evidence and rendered-content verification pending |
+| Release: Runbooks | Command preconditions, expected evidence, stop and exercised-runbook practice | Runtime evidence and rendered-content verification pending |
+| Release Lab: Release Plan | Candidate/version/gates/recovery plan exercise | Runtime evidence and rendered-content verification pending |
+| Release Lab: Promote/Verify | Same artifact, deployment and client evidence exercise | Runtime evidence and rendered-content verification pending |
+| Release Lab: Fail/Recover | Controlled negative scenario and recovery exercise | Runtime evidence and rendered-content verification pending |
+| Release Review | Reflective readiness/recovery/identity distinctions | Runtime evidence and rendered-content verification pending |
+
+Additional committed corrections after batch 24: `77b4e06` (networking/Compose/health traces), `3520658` (isolation, caching and digest examples), `89db687` (build-context example), `05b588b` (promotion gate), `fba936f` and `ec3d3ac` (release verification script and OCI digest provenance). An attempted `b867c6a` edit was a no-op and must not be counted as remediation. All 25 listed activities were reviewed for intended learning objective and evidence contract; learner run, TypeScript compilation, full visual check, and deeper source review across other modules remain outstanding.
+
+## Review batch 26 — Additional Delivery remediations and cross-school reconnaissance
+
+Further Delivery Engineer fixes: `f8162f8` replaces a mismatched Ubuntu `ansible.builtin.apt` example with the Rocky Linux `ansible.builtin.dnf` package module; `4b87385` adds a regression guard in the curriculum integrity audit. A branch-scoped GitHub Actions workflow was introduced by `7249371` to run `pnpm audit:curriculum` and `pnpm build` on branch pushes. No workflow runs had been reported for the inspected commits, so **CI/build pass remains unverified**, and the editor environment still cannot clone the repository locally to execute it.
+
+Performed a broad, non-sign-off structural reconnaissance across samples from Cloud Engineer, Quality Steward, Security Steward, Reliability Engineer, Architect, Technical Steward and Professional Engineer, including authored-lesson sources whose practical blocks are not represented by literal `type: "practical"` text. Do not use such regex counts to claim missing exercises. A single bulk attempt to fetch all 133 inventory modules exceeded the connected tool-call cap; **no full curriculum-wide activity inspection has been completed**. Remaining modules stay unchecked until source-level review and specific evidence are recorded.
+
+## Review batch 26 — Delivery completeness checks and executable CI guard
+
+Verified lesson/practice title coverage through the quality wrappers for Delivery Software Foundations (9), Automation/Shell (6 source lessons), Configuration Management (6), Continuous Integration (13), Continuous Delivery (10), Docker (15), and Release Engineering (6 core lessons plus 3 release-lab activities and review). Structural matching is not evidence of actually completing learner exercises or visual validation. Corrected the inherited Debian `ansible.builtin.apt`/`docker.io` example in Delivery Configuration Management to the Rocky Linux `ansible.builtin.dnf` baseline (`f8162f8`). Added Docker multi-stage builder/runtime mechanics with explicit portability and missing-process-command warning (`93b3936`).
+
+A branch-scoped GitHub Actions workflow `.github/workflows/curriculum-audit.yml` (`7249371`) was added to run `pnpm install --frozen-lockfile`, `pnpm audit:curriculum`, and `pnpm build` on a GitHub-hosted Node 22 runner, using pnpm 10.26.1. **No workflow run appeared when the commit was checked**, so this is a validation mechanism, not a passing result; inspect Actions configuration, branch-workflow triggering and CI evidence before approving changes.
+
+The 133-module inventory remains a progress checklist, not a certification. A large share of modules still requires substantive lesson-by-lesson review; source inspection alone cannot validate the learner runtime, lab infrastructure, generated pages, or final build. Keep this limitation visible in Issue #314.
+
+## Review batch 27 — Build confirmation and Delivery rollback
+
+User reports a successful local build on the working branch. Record this as **user-reported `pnpm build` success**, not independently observed assistant execution; the exact commit and whether `pnpm audit:curriculum` was run are not established. In the Continuous Delivery rollback lesson, commit `25c7988` adds an explicit decision trace for application image rollback when schema versions coexist, including asynchronous publisher/consumer compatibility, client-level recovery verification and when forward repair is required. Continue individual activity review; successful compilation alone does not establish pedagogical quality or completed curriculum coverage.
+
+## Review batch 28 — Blue-green rollback boundary
+
+Inspected Continuous Delivery's Blue-Green teaching and associated practical contract. Commit `c1dcd3b` adds a concrete sequence of direct candidate verification, traffic switch, observed client verification, failure detection, route reversal and shared-database/external-event caveats. It avoids conflating duplicated application processes with independent persistent state. Automated audit and rendered inspection are not yet independently verified after these commits.
+
+## Review batch 29 — Canary and feature flags
+
+Inspected the Continuous Delivery canary and feature-flag reading/practical pairs. Commit `9d71e56` adds an evidence-limited 5%-traffic/ten-request example explaining why zero observed errors cannot justify promotion, and a reversible feature-activation example that explicitly excludes irreversible data/external effects. The practical contracts already require a defer decision when traffic/observability is insufficient and flag ownership/removal conditions. This is content remediation, not evidence of production canary execution. User-reported earlier successful build predates this edit; curriculum audit and current build remain unverified.
+
+## Review batch 30 — Delivery shell and Ansible executable evidence
+
+Compared the Delivery Engineer Ansible Fundamentals connectivity snippet with its immediately subsequent Inventory example. The teaching used the nonexistent `steward_hosts` group while the demonstrated inventory names `steward_api` and `ci_runners`; commit `fb8fce1` aligns command group and explicit `inventory.ini` filename. In Shell Pipes/Exit Codes, commit `0f43547` supplies a self-contained producer-failure pipeline demonstration with expected exit-status output (0 without pipefail, 1 with pipefail), before introducing network/JSON dependencies. The Make lesson previously referenced project-specific scripts without demonstrating the order; commit `9b88e4c` adds a minimal executable Makefile and expected output while explicitly distinguishing orchestration demonstration from real project validation.
+
+**Validation:** these are source edits on the existing audit branch and postdate the user's last reported successful build. Local execution, application build and rendered activity behavior on the new commits are not yet evidenced.
+
+## Review batch 31 — CI cache and Nexus dependency authority
+
+Reviewed the CI Caching lesson and the Artifact Supply Chain public-proxy activity. Commit `a210f5a` adds a warm-cache versus clean-runner failure diagnosis, requiring missing inputs be declared rather than silently preserved in mutable workspace state. Commit `4a066b7` adds a dependency-confusion scenario showing that Nexus group/proxy caching is not equivalent to authority for an internal package and requires source, namespace, version and checksum verification. Further lesson-level curriculum review, learner execution, render validation and post-change build evidence remain pending.
+
+## Review batch 32 — Artifact retention and quality-gate decisions
+
+Inspected Delivery Artifact Supply Chain's retention exercise and the CI Quality Gates lesson. Commit `5bf5ce1` introduces a concrete release-in-use scenario that prevents age-only cleanup from deleting a still-deployed or rollback-required image and makes dependency retention/retrieval explicit. Commit `3459d22` traces a mandatory failing authorization test, rejecting promotion despite a green build, and differentiates a controlled release-scoped exception from silently weakening future policy. Source edits remain unverified in current build and rendered lessons; user-reported earlier build predates these commits.
+
+## Review batch 33 — SBOM-to-deployment interpretation
+
+Inspected the Software Bill of Materials lesson and practical. Commit `77443c4` adds a worked trace from image digest A and component X version 1.2 to an advisory, explicitly separating component presence from exploitability and release-B state. The lesson now requires correlating artifact identity, affected-version information and actual deployments rather than treating an SBOM or scan result as a verdict. This source edit is not a verified learner execution or current build result.
+
+## Review batch 34 — Artifact Supply Chain source inventory
+
+Inspected all 25 authored Artifact Supply Chain lesson specifications: repository roles and architecture; Python/npm/OCI distribution; Nexus setup and permissions; producer/consumer mechanics; cache, version and retention policy; provenance, SBOM, signing, scanning; and two integrated labs. Each spec supplies a reading with sections, a practical task and a knowledge check. This is source-content coverage only, not successful execution of its lab.
+
+Commits `ff06a3b` and `40ef07a` improve Python-package publication prerequisites/results and immutable image-digest handoff. Prior batches remediated proxy authority, deployed-artifact retention, and SBOM interpretation. Remaining: live Nexus/configuration tests, package-publish and clean-consumer tests, security failure exercises, UI inspection, latest audit/build. Do not represent source review as operational completion.
+
+## Review batch 35 — Artifact practical contracts and canonical CI source
+
+Artifact Supply Chain source audit found that **all 25 distinct practicals inherited the same generic objective, deliverables and completion criteria**, even where their operational learning goals were unrelated. Commit `1b3d3bd` replaces this one-size-fits-all contract with 25 subject-specific objectives, evidence deliverables and acceptance criteria. It preserves original subject-specific exercise instructions and explicitly respects the decision not to invent `steward-common` unless a real package and consumers exist. This resolves a substantive practical-assessment-quality gap, not merely prose polish.
+
+The CI container-build reading also taught a GitHub Actions YAML example despite GitLab CI/CD being TSA's chosen delivery platform. Commits `d39a591` and `eb9f99c` replace it with a GitLab job dependency illustration and fix the TS string escaping. Runner/Docker access, check-script availability, publishing and registry digest recording are identified as separate prerequisites or subsequent steps. These edits require fresh `pnpm audit:curriculum`, `pnpm build` and rendered lesson validation; no post-change build success has been observed.
+
+## Review batch 36 — Curriculum audit regression guards
+
+Added `32b5a0d` to `scripts/audit-curriculum-integrity.mjs`. The audit now checks that every one of the 25 Artifact Supply Chain source lessons has exactly one subject-specific practical contract (no missing or orphan mapping) and that the Delivery CI container-build walkthrough uses canonical GitLab CI/CD rather than GitHub Actions. The contract matching was inspected against current source: **25 lesson IDs and 25 matching contracts, zero missing or orphan keys**. This is a source-level static check only; the full audit script and build have not been executed by this assistant after these commits.
+
+## Review batch 37 — Cross-school worked examples and syntax honesty
+
+Broadened review beyond Delivery Engineer into Architect, Reliability Engineer and Quality Steward. `a9d1386` adds a port-and-adapter implementation change trace to Architect Hexagonal Architecture; `06b370b` adds a falsifiable, bounded dependency-failure scenario with baseline, perturbation, observable queue behavior and recovery expectations to Reliability Fault Injection. In Quality Java Test Engineering, the shared lesson renderer labeled Maven CLI code as Java. Commit `d235b1e` makes Maven-lifecycle examples shell-language blocks while keeping real Java snippets in Java. This is an honest syntax and readability correction; it does not establish complete cross-school audit sign-off.
+
+## Review batch 38 — Inventory completeness and rendered Supply Chain contracts
+
+Compared the logical curriculum module checklist with runtime-kernel source files and Delivery Engineer path wiring. **The checklist omitted the actually wired `delivery-artifact-supply-chain-quality` path**. Added it to Delivery Engineer, increasing the logical checklist from 133 to **134** entries. The runtime source tree contains additional `*-deep`, `*-rich` and `*-quality` files backing those logical modules; do not mistake source-file count for a count of independent school modules.
+
+All 25 supply-chain lesson specifications are present. The actual learner-facing pipeline overrides **23 normal practicals with subject-specific quality profiles** and leaves the two integrated labs with source-level contracts. Verified title correspondence: 23 matching profiles, zero missing or orphan titles. Commit `0899d66` now enforces profile-to-lesson parity and ensures the inventory includes the wired module; `b245249` repairs the inventory. The source-level module audit is complete, but operational Nexus/package exercises and rendered UI checks are not. The broader 134-module content audit is not yet complete.
+
+## Review batch 39 — Delivery quality-wrapper parity
+
+Verified exact reading/practical profile title matches for six other Delivery Engineer quality modules: Software Foundations 9/9, Docker 15/15, CI 13/13, Continuous Delivery 10/10, Configuration Management 6/6 and Release Engineering 6/6. Along with Artifact Supply Chain's 23/23, **82 normal lesson title/profile pairs** now have verified coverage; standalone shell, schema, migration, integrated labs and milestone use other structures and are not counted in this metric. There were no missing or orphan profile titles among the six pairs. Commit `61fd905` adds enforceable static parity checks for these six wrappers so future title changes cannot silently drop exercise enrichment. This guards curriculum wiring, not the teaching quality or execution success of individual exercises.
+
+## Review batch 40 — Security threat-modeling boundary reasoning
+
+Inspected the Security Steward trust-boundary lesson and practical. Commit `719cfe9` adds a concrete valid-token-but-unauthorized-service-mutation trace across Kong, API authorization and database persistence, including denied and allowed outcome requirements. The change distinguishes identity proof, token checks, and authorization against authoritative ownership policy. It provides a scenario for the lesson's boundary/control matrix; the result is a teaching example and still needs rendered review and current build confirmation.
+
+## Review batch 41 — Virtual networking prerequisite ordering
+
+Revisited the Platform Builder virtualization lesson and fixed a teaching-order regression. The worked guest reachability diagnosis referred to bridging before the lesson explained the bridging mechanism. Commit `1fd08c0` places Bridging before the worked scenario, preserving the NAT → bridging → comparative diagnosis progression. This source-level sequencing correction still requires current audit/build and rendered inspection.
+
+## Review batch 41 — School-level inventory wiring validation
+
+Compared import declarations in Academy and all ten school aggregators against the 134-entry logical lesson-module inventory. All directly imported module sources with `-quality`, `-rich`, `-deep`, `-milestone(s)` or `-decision` suffixes appear in the checklist; no other missing direct school imports were found. The indirect `delivery-artifact-supply-chain-quality` path is independently checked through the supply-chain composition guards. Commit `81acbce` enforces direct aggregator-to-inventory parity in the curriculum integrity audit, preventing recurrence of the previously omitted Supply Chain logical module. This is broad **structural wiring coverage**, not 134 pedagogical approvals.
+
+## Review batch 42 — Cloud TLS and Quality decision-table coverage
+
+Inspected the Cloud certificate lifecycle practical and Quality Steward decision-table example. Commit `00710f6` adds a client-side OpenSSL certificate/SNI/hostname verification walkthrough with an intentional wrong-hostname negative case and machine-specific result interpretation. Commit `57a6229` repairs an incomplete three-condition decision table: all eight binary combinations are now represented, rather than four examples that could be mistaken for exhaustive rule coverage. Both teach observable evidence before claiming system correctness. New source edits require fresh audit/build and learner rendering.
+
+## Review batch 42 — Complete 134-module structural source census
+
+Fetched and inspected the declared source files for **all 134 logical module entries** across the eleven schools, with no missing/unreadable sources. The reproducible reference is `docs/curriculum/source-census.md` (completion commit `65b4de5`), which records each source file and simple literal reading/practical/code/output markers. Its interpretation section explicitly warns that `*-quality` wrappers delegate learning content and factories produce activities dynamically. The source census proves file coverage, not that all rendered lessons have been deeply read or their activities executed. The historical inventory currently has **26 marked** entries and **108 unmarked**; marks represent earlier review tracking, not 25 certified courses. The remaining pedagogical, build, activity-execution and visual checks cannot be closed from this census alone.
+
+## Review batch 43 — Runnable virtual-network evidence
+
+Revisited Platform Builder Virtual Networking from the earlier worked-example remediation. The reading previously mixed guest-local inspection and client-side connection testing in one command block and used angle-bracket pseudo-placeholders such as `ping <gateway>` / `curl http://<ip>:<port>`, which a shell interprets as redirection rather than valid runnable arguments. Commit `f37ec6d` splits guest-side interface/route/socket evidence from client-side HTTP reachability and adds required shell variable checks instead of misleading placeholders. Commit `09d22e5` corrects the embedded TypeScript string quoting. The NAT → Bridging → Worked diagnosis sequence was fixed earlier in `1fd08c0`. No guest/client command results or post-change build have been observed.
+
+## Review batch 44 — Governance metrics interpretation
+
+Reviewed Technical Steward Engineering Health's KPI-vs-KRI learning activity. Commit `ca5d9ef` adds a quantified hypothetical where change lead time improves while the fraction of deployed services with unsupported critical dependencies worsens. The example teaches why a positive delivery-performance trend cannot by itself certify lower technology risk, and explicitly calls for denominator, period, ownership and escalation rules. No observed Steward KPI/KRI figures are asserted. No GitHub Actions workflow run was returned for the newest commit when checked; current automated build/audit and rendered teaching verification remain open.
+
+## Review batch 43 — Shell concept-first sequencing
+
+Revisited the Delivery shell pipeline lesson and found the worked `pipefail` failure trace was presented before the section explaining the underlying pipeline exit-status mechanism. Commit `129dd48` reorders the two blocks so the explanation precedes the executable comparison; commit `18b137f` adds a static curriculum-audit guard against recurrence. Current rendered, audit and build results remain unverified after these source changes.
+
+## Review batch 44 — Software Delivery Foundations scenarios
+
+Inspected Git Workflows and Environment Promotion source/practical pairings. Commits `05ea447` and `ac9bd99` add concrete Steward authorization-regression merge gating and a build-once, immutable-digest UAT-to-production-like promotion trace with explicit runtime configuration, approvals and post-deployment client verification. The edits deepen reasoning about why a green build does not establish an authorized merge or a verified release. New changes require current `pnpm audit:curriculum`, `pnpm build`, and rendered lesson checks before closure.
+
+## Review batch 45 — Delivery consistency and validation limitation
+
+Confirmed two subtle teaching mismatches during the Delivery Engineer pass. The Configuration Management desired-state explanation still said `nginx` after the earlier Rocky DNF example had changed to `python3` and `git`; fixed in `2195951`. The Continuous Integration container-build lesson now uses GitLab CI syntax, but its attached resources still favored GitHub Actions; corrected to canonical GitLab documentation in `77c12fb`. Tried to inspect branch workflow runs through the connected GitHub API, but the connector rejected the Actions endpoint. Neither a passing GitHub Actions workflow nor a local build on the newest commits can be asserted.
+
+## Review batch 46 — Shell lesson-specific assessment contracts
+
+User reports the latest local build now succeeds following the five-file TS2532 remediation. This is user-reported build success; no separate runtime or rendered verification is implied. Inspecting the six Shell Automation lessons showed their practicals all inherited one generic objective, three generic deliverables and three generic completion criteria despite materially different tasks. Commit `70df43d` provides six specific assessment contracts for scripting, pipefail, environment configuration, repeatability, Make dependencies and idempotency, preserving original instructions and expected failure requirements. Commit `4f555ea` adds an integrity-audit rule ensuring each shell lesson has exactly one contract and the contracts remain wired. Both commits postdate the confirmed build and require revalidation.
+
+## Review batch 47 — Delivery Engineer milestone runtime evidence
+
+User reported the previous build successful. Reviewed Delivery Engineer milestone Gates 4 and 5 and found runtime validation did not explicitly require checking all three application roles, the negative authorization boundary, or an end-to-end outbox lifecycle event. Commit `6076b7c` strengthens Gate 4 to verify authorized and denied ownership changes, RabbitMQ publisher/consumer flow and consistent API/publisher/consumer image identity; Gate 5 now assesses persistent-side-effect rollback safety and checks async recovery. Commit `9ffca16` adds regression guards for these requirements. This change updates the learner acceptance rubric; it does not assert an actual lab run. New commits postdate the user-confirmed successful build.
+
+## Review batch 48 — Docker integrated lab identity and authorization
+
+Corrected the Docker integrated lab's premature demand for a registry digest: `bc3fb3d` now asks for source commit and local image ID during local image work, with registry digest captured after the later Artifact Supply Chain publication step. Commit `b2bf8e7` strengthens the end-to-end container exercise with a forbidden cross-team mutation that must not create an outbox event. These source edits postdate the prior successful build and need fresh build and UI validation.
+
+## Review batch 49 — Bounded CI migration worked equivalence
+
+Audited the Jenkins-to-GitLab migration exercise: it was behavior-focused but lacked a concrete side-by-side failure-gate example and assumed access to a real inherited Jenkins installation. Commit `8c4025c` adds an authorization-regression gate migration trace (tests must block publishing, not just show green builds), identifies stage dependency/credentials/source identity as equivalence dimensions, and explicitly permits a labeled Jenkinsfile fixture when no inherited system exists. Simulated cutover evidence must not be represented as a production migration. This source change awaits refreshed audit/build and rendered validation.
+
+## Review batch 50 — Concurrent schema backfill example
+
+Added a concrete stale-read versus ownership-transfer race to Production Schema Evolution (`aa02e02`). The illustrative guarded SQL distinguishes one updated row from zero eligible rows, states its compatibility-writer assumptions and explains why this is not a complete concurrency protocol. Strengthened the backfill practical to require testing this interleaving and reconciling conflicts (`456bfe9`). Source-level corrections need latest build/audit and rendered validation.
+
+## Review batch 51 — Release lab conditional package identity
+
+Reviewed the Release Engineering integrated lab and found an unconditional instruction to record `steward-common` version/hash, which contradicted the evidence-gated package-extraction policy and could push learners to fabricate a package. Commit `fb707c9` makes internal-package evidence conditional upon actual Builder extraction and otherwise requires a documented deferral. Commit `71cad9a` adds a curriculum integrity guard for that rule. Build and rendered validation are outstanding for these new commits.
+
+## Review batch 52 — Continuous Delivery deployment lab
+
+Reviewed the integrated Continuous Delivery lab. API health alone did not establish the asynchronous runtime release contract. Commit `7eedf3d` strengthens its deployment practice by asking for API behavior and a publisher-to-consumer lifecycle event using the approved image. A follow-up attempt to strengthen post-recovery three-role checks was blocked by GitHub operation safety checks and has not been committed. Current build and rendering remain unverified for this batch.
+
+## Review batch 53 — Continuous Delivery three-role recovery closure
+
+Resolved the outstanding Continuous Delivery recovery lab finding. Commit `21afb27` requires API, publisher and consumer image identity plus authenticated API and asynchronous lifecycle-event evidence after recovery. Commit `3dc11d7` updates the completion criterion so no failed-release role remains ambiguously active. This is source-level completion, not observed lab execution; latest build/audit and UI rendering await verification.
+
+## Review batch 54 — Configuration Management full-runtime handoff
+
+Reviewed the Ansible integrated lab and strengthened the host-preparation verification: instead of accepting a healthy API alone, the learner must prove publisher/consumer readiness and an end-to-end outbox lifecycle event after deploying to an Ansible-prepared host (`02b10c9`). This checks that host configuration really supports the complete Steward runtime. Source correction committed; latest audit/build and rendered verification remain pending.
+
+## Review batches 55–60 — cross-school example execution and Quality CI assessment
+
+**System-wide evidence:** The 134 logical modules remain accounted for in the source census; this is not the same as reading and validating every rendered activity. Added repeatable census refresh (`pnpm census:curriculum`) and a TypeScript AST-based code-evidence report (`pnpm report:curriculum-examples`), both independent of manual checkboxes. The cross-school report saw 407 static source code records and identified 32 potentially observable literal examples without an adjacent recognized output at the first measured run. After corrections, 16 remain as review candidates; most are environment-dependent diagnostic commands, declarative GitLab YAML or clearly labeled HTTP templates, not automatically confirmed defects.
+
+**Builder:** Fixed self-contained inputs and added expected outputs for Python control flow, dictionary mutations, iteration, exceptions, generators and comprehensions; removed use of `def`/`return` before the Functions lesson. Environment-dependent interpreter examples now show labeled output shapes. The HTTP lab explicitly marks `example.test` as a non-runnable template and explains real response evidence. Executable CI now runs **12** curated Python examples via Python 3.12 and compares actual stdout against authored outputs, failing on drift.
+
+**System Thinker:** Added a positive and negative namespace-URI identity counterexample to XML teaching; changing a prefix is not the same as changing the URI.
+
+**Platform Builder:** Replaced invalid Bash built-in help syntax, aligned firewall inspection with Rocky Linux (`firewall-cmd`/nft instead of Ubuntu ufw) and replaced shell angle-bracket placeholder commands with guarded environment variable inputs.
+
+**Delivery Engineer:** Reviewed the source structures for all 11 logical modules plus their associated deep sources and integrated labs in prior batches; repeated verification of the three runtime roles, image identity, async end-to-end flow, bounded migration and evidence-gated packages. Added output shapes to Shell examples and an observed Docker volume-persistence trace. This is a completed **source-level triage pass**, not a claim of successful real homelab exercises or of rendered UI approval.
+
+**Quality Steward:** Replaced the generic evidence acceptance artifact in 18 Java engineering lessons with specific observable proof contracts; corrected a Maven snippet incorrectly rendered as Java, supplied a fully executable constructor-injection example with expected stdout, replaced an empty JUnit-tag test with a genuine assertion and labeled a non-runnable interface fragment. Corrected invalid GitLab `stages:` nesting in the CI examples, supplied a Maven runner image, fixed an improperly joined Maven command sample and added 22 lesson-specific Quality CI proof and failure criteria. Internal test-package publishing now remains conditional on genuine evidence for shared-package extraction.
+
+**Engineering Apprentice:** Replaced a non-executable `some-command` shell example with a deterministic stderr/stdout/exit-status trace, validated its output and recorded it in the source.
+
+**Regression/CI:** The curriculum integrity audit protects the new Shell/Java/Quality-CI contracts, XML counterexample, Python worked output traces and platform shell constraints. GitHub Actions now runs the curriculum integrity check, 12 Python example executions, cross-school code-evidence reporting, TypeScript compilation and Next.js build. The last verified source commit before this documentation update is `03d45689c` (Actions run 39025220429, successful).
+
+**Still required for honest full pedagogical sign-off:** Activity-by-activity reading and practical review across every school, independent execution/verification for remaining runnable blocks beyond the 12 curated Python checks, manual assessment of the 16 context-dependent source report candidates and dynamically composed code, rendered learner navigation/reading layouts, and real Steward homelab/CI/Nexus exercises. The audit cannot be marked globally complete on the basis of structural counts or green builds alone.
+
+## Review batch 61 — Delivery source-triage reconciliation and current CI
+
+Reconciled the Delivery Engineer inventory to the substantive commits from Batches 33–54 and the later cross-school worked-example pass: all **11 logical Delivery module entries** now explicitly indicate a completed *source-level triage*, with the unresolved rendered/activity-level verification and real infrastructure labs separately stated. Corrected the GitLab CI documentation resource in `delivery-continuous-integration-deep.ts` (`7efa877`) to `https://docs.gitlab.com/ci/`. The status distinction matters: the historical unchecked boxes had not reflected source work already committed, but checking them must not be mistaken for verified learner completion.
+
+Curriculum-wide quality work also includes 18 distinct Java practical evidence contracts, 22 Quality CI proof contracts, runnable Python examples with CI-asserted stdout, positive/negative XML namespace explanation and Rocky Linux-aligned commands. The automated reports flag possible gaps for investigation; none establishes full activity-by-activity approval. GitHub Actions on the branch have completed successfully on earlier substantive commits, and the latest branch commit should be checked separately against the current workflow run.
+
+## Review batch 62 — Reconciliation of current branch evidence (2026-10-17)
+
+- Confirmed active branch `curriculum/oop-depth-reconstruction` at `61699e983373c75e787deed82ff1fff53d19651d`, 230 commits ahead of `master`, zero behind at the comparison time. This large unmerged branch needs an explicit merge gate; do not infer readiness from divergence counts.
+- The **exact head** has a successful GitHub Actions *Curriculum audit and build* run: [39026644609](https://github.com/enoqueJonas/tsa/actions/runs/39026644609). Earlier notes saying there is no current successful CI run are historical, not the current validation state. Passing automation remains distinct from manual learner rendering and infrastructure execution.
+- Inventory still contains 134 logical modules. The 11 Delivery Engineer entries have an explicit source-level triage claim with limits; other checked boxes may denote selective or structural inspection, not per-activity acceptance. **Do not convert checked boxes into certified lessons.**
+- Outstanding verification is explicit: (1) reconcile each module's *structural / source-triage / activity-reviewed / rendered / executed* evidence; (2) complete remaining activity-by-activity audits; (3) adjudicate context-dependent example findings and dynamically composed content; (4) inspect rendered OOP and school samples; (5) execute representative Steward infrastructure labs; (6) review and merge only after evidence-based gates pass.
+- The school-level “Not yet audited” labels coexist with checked subset items. Interpret them as *no full-school pedagogical sign-off* until a finer-grained evidence ledger replaces the ambiguous checklist.
+- The 134-module census is a structural denominator, **not** 134 verified lessons or labs. Likewise, a successful CI run is not a proof of instructional clarity.
+
+## Review batch 63 — Platform Builder patch lifecycle prerequisite correction (2026-10-17)
+
+- Inspected `platform-builder-os-patching-lifecycle-deep.ts` and the Platform Builder curriculum ownership contract. Found a **real cross-school prerequisite inversion**: the Platform patch-posture practical required Prometheus and Grafana monitoring infrastructure, although those are established later in Reliability Engineer. This forced the learner to depend on technologies not yet taught just to demonstrate patch hygiene.
+- Remediated in `46fc0b3`: retain the lesson and its purpose, but replace its premature dashboard implementation with a timestamped Ansible/shell host posture report, installed-versus-running kernel evidence, a reproducible staleness policy and a labeled simulated mismatch. Explicitly defer Prometheus/Grafana export and alerting to the later Reliability handoff.
+- This corrects the prerequisite boundary; it **does not approve all Platform Builder activities**. The current source commit still needs its own CI result and rendered lesson verification.
+
+## Review batch 64 — OS lifecycle milestone and prerequisite alignment (2026-10-17)
+
+- Cross-checked `platform-builder-implementation-milestones.ts` against the amended Platform OS patch-posture practical. The milestone previously demanded a canary and wider-fleet *patch execution* without handling the entirely legitimate state where no supported updates are pending; this risked incentivizing an unsafe fabricated downgrade or mislabeling a no-op run as patch proof.
+- Corrected in `7e8a6b1`: the pre-maintenance report now explicitly captures timestamped host posture, installed/running kernel differences and advisory limitations; live update execution is conditional on real supported updates. When none exist, retain an honest no-change record and leave the live rollout gate incomplete. Canary failure explicitly blocks later hosts.
+- Source reviewed: OS patching lifecycle and the three Platform implementation milestone contracts. The rest of Platform activity-level/learner-rendered review remains outstanding. No claim of live maintenance execution or current-head CI pass is made.
+
+## Review batch 65 — Honest patch-regression evidence (2026-10-17)
+
+- Revisited the OS lifecycle milestone after the no-update correction. Its regression instruction still assumed a real update had occurred even when supported updates were unavailable.
+- Fixed in `cefaee3`: when a supported update is applied, investigate a controlled regression on a disposable canary and verify recovery; otherwise, conduct a separate clearly labeled fault-injection drill, never represented as post-update evidence.
+- This resolves the internal milestone contradiction at source level. It does not prove actual patch deployment, real lab execution or rendered activity quality. Current-head CI must be verified separately.
+
+## Review batches 66–67 — Platform milestone exit-gate reconciliation (2026-10-17)
+
+- Windows member milestone (`6f817e2`): require evidence from a distinct member VM for synthetic domain login and applied GPO. A licensing/resource constraint permits honest deferral, not a pass based on domain-controller-local policy evidence.
+- Final Homelab Gate 7 and Gate 8, and overall exit acceptance (`dc21782`): removed contradictions with the implementation milestones. The final Platform assessment must not treat a no-update maintenance report as executed live patching or a missing Windows member as completed interoperability. Labeled controlled drills and explicit pending gates are preserved without fabricating execution.
+- Source-level cross-file review covered Platform Windows lesson, implementation milestones, final Homelab gates, and core infrastructure teaching. Rendered pages and real exercises are not verified; current-head CI needs separate confirmation.
+
+## Review batch 68 — Platform Builder full source-family sweep and prerequisite correction (2026-10-17)
+
+- Enumerated all **22** `platform-builder-*.ts` source files in the runtime-kernel path directory, including the deep/quality wrappers, integrated milestones and final homelab milestone. Inspected lesson structure, review scope, sample exercise/acceptance contracts and cross-school dependencies across computer/OS, Linux, networking, virtualization, bare metal, budget homelab, Proxmox, storage/NAS, DNS/DHCP/time, Ansible, patching, Windows/directory, Packet Tracer and milestones. This is a **source-family sweep**, not a claim of complete rendered or executed activity certification.
+- Identified an additional current-state mismatch in Configuration Management's final reassessment: learner-facing prose said TSA **now uses** container/Kubernetes delivery and Vault even though Platform Builder precedes those capabilities. In commit `d98c33d`, the scenario now distinguishes presently operated Proxmox/Ansible from later delivery, orchestration and secrets capabilities. It asks the learner to plan boundaries without inventing deployed infrastructure.
+- Reconfirmed material fixes from batches 63–67: monitoring deferred from Platform patch posture to Reliability; no-update maintenance is not called a rollout; post-patch incident versus simulated fault evidence are separate; member-side Windows/GPO proof is required; Platform exit gates must not certify unperformed work.
+- Additional checks remain deliberately distinct from source inspection: verify composed teaching and exercises activity by activity, inspect rendered views, execute representative homelab and mixed-estate labs, and check CI at the latest commit. Historical `[x]` markers remain source-progress evidence only, not graduation approval.
+
+## Review batch 69 — Platform Linux resource authority reconciliation (2026-10-17)
+
+- The **deep source** for Linux Administration continued to attach Ubuntu Server and Ubuntu APT package-management documentation, despite Quality wrappers substituting Rocky Linux terminology into visible prose. This was not only a cosmetic mismatch: readers following the resources could learn the wrong distribution-specific package workflow.
+- Updated learning resource targets in `8d6aff5` to Rocky Linux documentation and DNF documentation while retaining their existing resource attachment positions. Variable identifiers remain historical internal names; the learner-facing resource titles/URLs are corrected.
+- The Budget Homelab deep source similarly defaulted to Ubuntu documentation. Updated its reference in `04264ea` to Rocky Linux documentation. Bounded Tailscale comparison is not automatically asserted to be TSA's primary private-management design; WireGuard remains the canonical management mechanism.
+- Across the Platform source-family sweep, notable already-protected decisions include isolated DHCP experiments, safe disposable clock-skew experiments, distinct Proxmox host/guest lifecycle, positive and negative file permission tests, and real restore evidence. These are source contract observations, not independently observed lab outcomes.
+- Remaining sign-off gates: inspect rendered learner-facing resource links and the combined deep/quality compositions; execute relevant activities in real infrastructure; confirm CI on the newest source commits. Do not close school-wide pedagogical certification on a source-only sweep.
+
+## Review batches 70–71 — Platform runnable Linux examples and evidence ledger (2026-10-17)
+
+- The composed Rocky Linux Package Management command example previously transformed `apt show <package>` into `dnf info <package>`, which is **not a runnable shell command** because angle brackets are shell redirection syntax. Replaced it with `dnf info bash` (`bba4540`), and clarified DNF `check-update` status 100 in the practice (`d7928b8`).
+- The deep Linux signal lesson had raw `kill -TERM <pid>` / `kill -KILL <pid>` pseudo-commands, and the filesystem metadata lesson used nonexistent `/path/to/file` and `/path/to/link` paths. Replaced these with a disposable `sleep` process demonstration (`4a6862c`) and temporary-file/symlink metadata demonstration (`9ab4618`). Independently executed the equivalent safe Bash commands in an isolated shell with successful output. This execution is a check of the demonstration only; it is **not** a full Rocky homelab lab or rendered-platform check.
+- Established a per-family review and evidence matrix in [`platform-builder-activity-evidence-ledger.md`](./platform-builder-activity-evidence-ledger.md) (`d77e45d`) spanning 17 logical families and their 22 deep/quality/implementation sources. Individual activity/rendered/lab gates remain explicitly unapproved until observed.
+
+## Review batch 72 — Cross-Platform source safety scan and automated guard (2026-10-17)
+
+- Ran a targeted high-confidence placeholder/unsafe-command scan across the full 22-file Platform Builder source family, including the deep and quality source layers and milestones. Most flagged uses of `chmod 777` or `setenforce 0` were explicit anti-pattern warnings rather than instructions to use those commands.
+- Found one additional **real runnable-example defect** in Computer/OS Foundations: `cat /proc/<PID>/status` and `ls -l /proc/<PID>/fd` embed shell redirection placeholders in copyable commands. Replaced those with `sample_pid=$$` and quoted `/proc/$sample_pid/...` examples (`005c5da`); the equivalent procfs inspection commands were executed in the current Linux environment and produced valid process metadata. They still require Rocky/rendered checks.
+- Added static regression checks (`068d857`) to the curriculum integrity audit for the corrected process-ID placeholders, Linux signal and filesystem placeholders, DNF placeholder and premature Kubernetes/Vault current-state assertion. These are precise syntactic regressions, **not** automated measures of teaching quality.
+- Platform source-family scan is now complete at the structural and targeted-risk level, as recorded in the linked evidence ledger. Composed activity-by-activity approval, rendered-page review, and actual lab/graduation validation remain separate pending gates. Latest CI must be confirmed after the new guard.

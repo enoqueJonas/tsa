@@ -1,8 +1,8 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
-const gha: LearningResource = { title: "GitHub Actions documentation", url: "https://docs.github.com/actions" };
-const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://www.gitlab.io/doc/" };
+const gha: LearningResource = { title: "GitHub Actions documentation (comparison only)", url: "https://docs.github.com/actions" };
+const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
 const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
 
 function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [gha]): Lesson {
@@ -15,7 +15,7 @@ function rich(id: string, title: string, intro: string, sections: Array<{ headin
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward CI checkpoint", body: "Apply this concept to Steward's current source-to-image path. Ask what evidence the pipeline should produce, what failure should stop promotion, and whether another engineer could understand the result without rerunning the job manually." });
     blocks.push({ type: "resources", title: "Continue learning", resources });
-    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+    return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || intro, blocks } }] };
 }
 
 export const continuousIntegrationDeepLessons: Lesson[] = [
@@ -25,6 +25,7 @@ export const continuousIntegrationDeepLessons: Lesson[] = [
     ]),
     rich("jobs-stages", "Jobs, Stages and Dependencies", "Jobs define isolated units of work; dependencies define when they may run and what evidence they consume. A good graph maximizes useful parallel feedback without hiding ordering constraints.", [
         { heading: "Build the dependency graph", body: "A pipeline graph expresses prerequisites, not merely visual ordering. Suppose lint, type-check and unit-test all consume the same checked-out commit but do not consume one another's output: they can run concurrently. If build-image is allowed only after unit-test and type-check succeed, those edges mean the image job cannot become eligible until its required evidence exists. An unrelated documentation check need not delay it unless policy deliberately makes that check a prerequisite. Avoid serializing independent work simply because a YAML file is easier to read top-to-bottom." },
+        { heading: "Worked job graph and failure consequence", body: "Consider a proposed Steward commit with independent lint, type-check and unit-test jobs. These can run in parallel because each consumes the same checked-out revision and neither requires output from another job. A build-image job must not run when unit-test fails: its dependency gate has no passing evidence. If unit-test and type-check pass but lint fails, whether image creation may proceed depends on the declared policy—do not silently assume all checks gate every job. A later publish step must consume the exact image built from this revision, not rebuild from a moving branch. Draw the dependency edges, inject a unit-test failure and verify that dependent jobs are blocked while independent checks still report their own results." },
         { heading: "Fail where the fault is", body: "Do not create a final generic job that discovers every problem late. Keep failure close to the check that detected it so the diagnostic signal remains strong." },
     ]),
     rich("runners", "GitLab Runners and Execution Infrastructure", "A CI runner is execution infrastructure. It checks out untrusted or semi-trusted source, receives credentials, consumes CPU/storage/network and therefore belongs in the threat and capacity model.", [
@@ -41,7 +42,8 @@ export const continuousIntegrationDeepLessons: Lesson[] = [
     ], [gha, gitlab]),
     rich("caching", "Caching", "Caches trade storage complexity for speed. They are performance hints, not sources of truth, and a pipeline must still be correct when the cache is empty.", [
         { heading: "Cache immutable inputs", body: "Dependency package caches are usually safer than caching arbitrary build outputs. Key caches using lockfile or dependency state so stale inputs are less likely to masquerade as valid ones." },
-        { heading: "Prove cold-path correctness", body: "Periodically execute without cache or invalidate the cache deliberately. A build that only succeeds with yesterday's workspace is not reproducible." },
+        { heading: "Worked cache failure: stale state hides a missing dependency", body: "Suppose the Steward CI job succeeds with a warm dependency cache but fails on a clean runner because a package was never declared in the lockfile. The warm cache is not proof of a reproducible build: a retained file masked an undeclared input. Re-run the same source revision with caches disabled and a clean workspace. If dependency installation fails, correct the manifest and lockfile in source control rather than copying the missing package from a previous job. Then verify both warm and cold paths produce independently traceable artifacts. A cache key based on lockfile content reduces stale reuse; it cannot make undeclared dependencies legitimate." },
+                { heading: "Prove cold-path correctness", body: "Periodically execute without cache or invalidate the cache deliberately. A build that only succeeds with yesterday's workspace is not reproducible." },
     ]),
     rich("artifacts", "Pipeline Artifacts", "Pipeline artifacts preserve outputs or evidence from a job so later jobs or reviewers can consume them without rebuilding the same state.", [
         { heading: "Distinguish artifact from cache", body: "Caches accelerate work and are allowed to disappear: if the dependency cache is empty, the job should download dependencies and still produce the same valid result. Artifacts are outputs/evidence from a particular execution. If test-job produces junit.xml for review or build-job produces a package consumed by a later job, silently substituting a stale file from another run would be incorrect. That is why cache identity is about reuse safety while artifact identity is about provenance to one pipeline/source state." },
@@ -65,13 +67,14 @@ export const continuousIntegrationDeepLessons: Lesson[] = [
     ]),
     rich("quality-gates", "Quality Gates", "A quality gate is a policy decision backed by evidence: a change may not proceed because a defined risk threshold was not met. Gates should be intentional, reviewable and proportional.", [
         { heading: "Gate only what you can defend", body: "Examples include all required tests passing, no lint errors, successful image build or mandatory review. Arbitrary percentage thresholds without context can create compliance theater." },
+        { heading: "Worked gate result and justified exception", body: "Suppose Steward passes build and lint, but a mandatory authorization regression test fails. A green image build is not permission to promote: the required test gate has rejected the candidate. First diagnose and correct the failure or deliberately record an exception tied to that immutable candidate, with an authorized decision owner, scope, expiry and compensating follow-up. An exception for one release must not silently weaken the gate for every subsequent commit. Verify that the pipeline records the failed evidence and the explicit exception outcome distinctly; neither outcome is equivalent to a passing test." },
         { heading: "Keep exceptions visible", body: "When an emergency or justified exception bypasses a gate, preserve who approved it, why, and what follow-up remains. Invisible bypasses destroy trust in the pipeline." },
     ]),
     rich("container-build", "Building Containers in CI", "Container builds turn validated source into a deployable artifact. CI is where image identity, reproducibility and source traceability become much stronger than laptop-local builds.", [
         { heading: "Build from known source", body: "Tag images with a release candidate or commit-derived identity, and capture the resulting image digest. Do not rely on mutable `latest` tags as release evidence." },
         { heading: "Separate build credentials", body: "If the build must authenticate to registries or package repositories, scope those credentials to the minimum operation and avoid embedding them in image layers." },
-        { heading: "Example pipeline shape", body: "The exact syntax will vary, but the sequence should preserve one artifact identity from build to later promotion.", code: { language: "yaml", code: "jobs:\n  checks:\n    runs-on: self-hosted\n    steps:\n      - uses: actions/checkout@v4\n      - run: ./scripts/check.sh\n\n  image:\n    needs: checks\n    runs-on: self-hosted\n    steps:\n      - uses: actions/checkout@v4\n      - run: docker build -t steward:${{ github.sha }} .\n      - run: docker image inspect steward:${{ github.sha }}" } },
-    ], [gha, docker]),
+        { heading: "Example GitLab CI pipeline shape", body: "Steward uses GitLab CI/CD as the authoritative pipeline, not GitHub Actions. This is a minimal illustrative .gitlab-ci.yml: the build job needs a passing check job and tags the image using the exact checked-out commit. It assumes the runner can execute Docker safely and that the repo provides the shown check script. Building locally is not publishing: a separate authenticated push, registry digest recording and promotion step are still required.", code: { language: "yaml", code: "stages:\n  - check\n  - build\n\nchecks:\n  stage: check\n  script:\n    - ./scripts/check.sh\n\nimage_build:\n  stage: build\n  needs: [checks]\n  script:\n    - docker build -t \"steward:$CI_COMMIT_SHA\" .\n    - docker image inspect \"steward:$CI_COMMIT_SHA\"" } },
+    ], [gitlab, docker]),
     {
         id: "continuous-integration-lab",
         title: "Lab: Run Steward CI from the Homelab",

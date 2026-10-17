@@ -22,9 +22,21 @@ const resourcesByObservabilityTopic: Record<string, LearningResource[]> = {
 
 type Spec = { id: string; title: string; intro: string; principles: string[]; steward: string[]; practice: string[]; reflection: string };
 
+const observabilityWorked: Record<string, {question:string;signals:string;interpretation:string}> = {
+  "observability-vs-monitoring": {question:"The /health endpoint is green, but service registration fails. What can we know?",signals:"A health probe reports process reachability. A failed registration request with a database timeout shows a different user-visible outcome.",interpretation:"Monitoring detects a known condition; observability evidence helps investigate why a system behaves unexpectedly. A green probe alone cannot prove the workflow works."},
+  "logs-metrics-traces": {question:"A registration request took 3.2 seconds and failed. Which signal answers what?",signals:"Metric: registration_error_total increments and duration is observed. Log: request ID and sanitized database timeout. Trace: request span with a slow database child span.",interpretation:"Metrics show frequency and trend; logs describe individual events; traces show causal timing across operations. None should contain secrets."},
+  "telemetry-design": {question:"How do we know whether delayed service registration is caused by the API or asynchronous delivery?",signals:"Record API response latency, outbox pending age, publication attempts, queue depth and consumer completion age.",interpretation:"The signals correspond to competing hypotheses. If API latency is normal but outbox age rises, investigate publication rather than adding more HTTP request logs."},
+  "correlation-context": {question:"Can we reconstruct one registration from API request to consumer?",signals:"Attach a generated correlation ID at the request boundary; propagate it through outbox metadata, publication and consumer logs.",interpretation:"Search by correlation ID, not by personal payload. Correlation identifies related work; it does not prove ordering or guarantee successful delivery."},
+  instrumentation: {question:"Where should latency and outcome be measured?",signals:"Measure the request boundary and the database write separately; record success/failure outcomes; instrument queue publication and consumption around actual operations.",interpretation:"The measurement boundaries must match the question. A duration around a no-op helper is not evidence of database or queue performance."},
+  opentelemetry: {question:"What is a trace and why does propagation matter?",signals:"Parent span: POST /services. Child spans: database insert and outbox publish. Trace context propagates to the consumer where supported.",interpretation:"Spans describe timed operations and parent-child relationships. Without propagation, downstream work may appear as unrelated traces; sampling can also leave incomplete evidence."},
+  "golden-signals": {question:"Which signals would reveal a degrading registration API?",signals:"Latency: p95 registration time. Traffic: registration requests per minute. Errors: failed registrations. Saturation: database connection pool utilization.",interpretation:"A high p95 with growing pool utilization suggests resource contention, but does not prove causality. Compare against deployment and dependency evidence."},
+  "telemetry-cost-noise": {question:"Why not record every request payload and every trace?",signals:"Estimate event volume, retention, label cardinality and sensitive-data exposure before choosing sampling and aggregation.",interpretation:"High-cardinality labels and unbounded retention can make telemetry expensive and unsafe. Keep rare failure evidence while avoiding credentials and personal payloads."}
+};
 function blocksFor(spec: Spec): LessonBlock[] {
+  const worked = observabilityWorked[spec.id];
   return [
     { type: "paragraph", text: spec.intro },
+    ...(worked ? [{type:"heading" as const,id:`${spec.id}-worked`,text:"Worked diagnostic reasoning",level:2 as const},{type:"paragraph" as const,text:`Question: ${worked.question}`},{type:"paragraph" as const,text:`Evidence: ${worked.signals}`},{type:"paragraph" as const,text:`Interpretation: ${worked.interpretation}`}] : []),
     { type: "heading", id: `${spec.id}-principles`, text: "Observability principles", level: 2 },
     { type: "list", items: spec.principles },
     { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
@@ -36,7 +48,7 @@ function blocksFor(spec: Spec): LessonBlock[] {
 
 function lessonFrom(spec: Spec): Lesson {
   return { id: `observability-${spec.id}`, title: spec.title, activities: [
-    { id: `observability-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: spec.intro, blocks: blocksFor(spec) } },
+    { id: `observability-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: blocksFor(spec).filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks: blocksFor(spec) } },
     { id: `observability-${spec.id}-002`, title: `Observe: ${spec.title}`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${spec.title} to Steward.`, scenario: "Use the current Steward architecture and the Reliability Risk Map. Start from a user-visible or operational question, instrument only what is necessary, then verify that the resulting telemetry actually answers the question.", instructions: spec.practice, deliverables: ["Operational question", "Telemetry evidence", "Interpretation and gap note"], completionCriteria: ["The signal is tied to a concrete question.", "Context is sufficient to distinguish relevant causes or requests.", "The learner records what the telemetry still cannot prove."] } },
     { id: `observability-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.reflection, minimumCharacters: 200 } },
   ] };

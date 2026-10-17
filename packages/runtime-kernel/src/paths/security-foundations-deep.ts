@@ -60,7 +60,7 @@ function lessonFrom(spec: Spec): Lesson {
                 id: `security-foundations-${spec.id}-001`,
                 title: spec.title,
                 estimatedMinutes: 45,
-                content: { type: "reading", body: spec.intro, blocks },
+                content: { type: "reading", body: blocks.filter((b) => b.type === "paragraph").map((b) => b.text).join("\n\n") || spec.intro, blocks },
             },
             {
                 id: `security-foundations-${spec.id}-002`,

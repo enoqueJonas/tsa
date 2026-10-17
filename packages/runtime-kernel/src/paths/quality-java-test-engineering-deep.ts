@@ -21,11 +21,34 @@ const resourcesFor = (id: string): LearningResource[] => {
  return [java, junit];
 };
 
+const javaPracticeEvidence: Record<string, string> = {
+ "jvm-maven": "JVM bytecode and clean Maven test evidence",
+ "maven-lifecycle": "Maven phase and goal failure trace",
+ "maven-dependencies": "Direct/transitive dependency tree and scope evidence",
+ "surefire-failsafe": "Separated unit and integration test gate results",
+ "junit-platform": "JUnit engine discovery execution trace",
+ "junit-lifecycle": "Instance lifecycle state-isolation test result",
+ "junit-parameterization": "Parameterized boundary case execution",
+ "junit-extensions": "Extension callback or parameter injection trace",
+ "types-modeling": "Validated immutable fixture and rejected invalid input",
+ "equality-object-contracts": "Equality/hashCode contract tests and set behavior",
+ "interfaces-composition": "Two implementations verified against one interface",
+ "dependency-injection": "Constructor-injected test double interaction result",
+ "generics-collections": "Typed collection contract with observed iteration",
+ "exceptions-resources": "Exception handling and resource closure evidence",
+ "annotations-reflection": "Annotation discovery and missing case evidence",
+ "junit-tags": "Tagged inclusion and exclusion run outputs",
+ "functional-java": "Stream/Optional transform and empty-case results",
+ "concurrency": "Repeatable shared-state race or thread-safety evidence",
+};
+
 type Spec = {
  id: string; title: string; principle: string; mechanics: string[]; frameworkUse: string[];
  antiPatterns: string[]; practice: string[]; questions: string[]; code?: string;
 };
 function lesson(spec: Spec): Lesson {
+ const evidence = javaPracticeEvidence[spec.id];
+ if (!evidence) throw new Error(`Missing Java practical evidence: ${spec.id}`);
  const blocks: LessonBlock[]=[
   {type:"paragraph",text:spec.principle},
   {type:"heading",id:`${spec.id}-mechanics`,text:"Mechanics you must understand",level:2},
@@ -35,11 +58,11 @@ function lesson(spec: Spec): Lesson {
   {type:"heading",id:`${spec.id}-failure-patterns`,text:"Failure patterns to recognize",level:2},
   {type:"list",items:spec.antiPatterns},
  ];
- if(spec.code) blocks.push({type:"code",language:"java",code:spec.code});
+ if(spec.code) { const language = new Set(["jvm-maven","maven-lifecycle","maven-dependencies","surefire-failsafe","junit-platform"]).has(spec.id) ? "bash" : "java"; blocks.push({type:"code",language,code:spec.code,...(spec.id === "dependency-injection" ? {caption:"DependencyInjectionExample.java — compile with javac, then run with java DependencyInjectionExample",output:"https://test.invalid / Bearer demo-token"} : {}),...(spec.id === "interfaces-composition" ? {caption:"Interface declaration fragment — implement and exercise in the practical"} : {})}); }
  blocks.push({type:"heading",id:`${spec.id}-check`,text:"Check your understanding",level:2},{type:"list",items:spec.questions},{type:"resources",title:"Continue learning",resources:resourcesFor(spec.id)});
  return {id:`quality-java-${spec.id}`,title:spec.title,activities:[
-  {id:`quality-java-${spec.id}-001`,title:spec.title,estimatedMinutes:55,content:{type:"reading",body:spec.principle,blocks}},
-  {id:`quality-java-${spec.id}-002`,title:`Build: ${spec.title}`,estimatedMinutes:65,content:{type:"practical",objective:`Apply ${spec.title} while growing steward-tests.`,scenario:"Every exercise changes the real test project. Small isolated experiments are allowed only to expose a Java mechanism before applying it to steward-tests.",instructions:spec.practice,deliverables:["Committed steward-tests increment","Executable example or test","Short design note answering the lesson questions"],completionCriteria:["The learner can explain the Java mechanism without framework magic.","The increment compiles and tests execute.","The design keeps dependencies explicit.","The learner can identify the lesson anti-patterns in a code review."]}}
+  {id:`quality-java-${spec.id}-001`,title:spec.title,estimatedMinutes:55,content:{type:"reading",body: blocks.filter((b) => b.type === "paragraph").map((b) => b.text).join("\n\n") || spec.principle, blocks}},
+  {id:`quality-java-${spec.id}-002`,title:`Build: ${spec.title}`,estimatedMinutes:65,content:{type:"practical",objective:`Apply ${spec.title} while growing steward-tests.`,scenario:"Every exercise changes the real test project. Small isolated experiments are allowed only to expose a Java mechanism before applying it to steward-tests.",instructions:spec.practice,deliverables:["Committed steward-tests increment",evidence,"Relevant executed test or command output","Short design note answering the lesson questions"],completionCriteria:[`The submitted ${spec.title} implementation demonstrates the mechanism with an executed command or test and its actual result.`,`The evidence includes ${evidence.toLowerCase()} and identifies the source file or test responsible.`,`A deliberately invalid input, failure, or anti-pattern relevant to ${spec.title} is demonstrated or isolated in a reproducible failing test.`,`The completed increment builds from the command line and its assumptions and dependencies are documented.`]}}
  ]};
 }
 
@@ -126,7 +149,7 @@ mechanics:["A constructor can require all collaborators needed for valid operati
 frameworkUse:["Supply TestSettings, TokenProvider and later specifications/browser factories explicitly.","Make framework components testable without network credentials.","Understand Spring/Guice later without needing them for a small automation project."],
 antiPatterns:["new TokenProvider() hidden inside StewardApiClient.","Static service locators such as Context.get(ApiClient.class).","Field injection that permits invisible/uninitialized dependencies.","Adding Spring solely because the framework has constructors."],
 practice:["Inject TestSettings and TokenProvider into a client constructor.","Create a fake TokenProvider for a focused test.","Create a small composition root/factory where concrete objects are assembled.","Compare constructor injection with service-locator and static-singleton alternatives."],
-questions:["What exactly is being injected?","Where should object construction happen?","What problem would a DI container solve here, and do we have that problem yet?"],code:"final class StewardApiClient {\n  private final TestSettings settings;\n  private final TokenProvider tokens;\n  StewardApiClient(TestSettings settings, TokenProvider tokens) {\n    this.settings = settings; this.tokens = tokens;\n  }\n}"},
+questions:["What exactly is being injected?","Where should object construction happen?","What problem would a DI container solve here, and do we have that problem yet?"],code:"public class DependencyInjectionExample {\n  interface TokenProvider { String token(); }\n  record TestSettings(String baseUrl) {}\n\n  static final class StewardApiClient {\n    private final TestSettings settings;\n    private final TokenProvider tokens;\n\n    StewardApiClient(TestSettings settings, TokenProvider tokens) {\n      this.settings = settings;\n      this.tokens = tokens;\n    }\n\n    String describeRequest() {\n      return settings.baseUrl() + \" / Bearer \" + tokens.token();\n    }\n  }\n\n  public static void main(String[] args) {\n    var client = new StewardApiClient(\n        new TestSettings(\"https://test.invalid\"), () -> \"demo-token\");\n    System.out.println(client.describeRequest());\n  }\n}"},
 
 {id:"generics-collections",title:"Generics and Collections",principle:"Generics preserve type contracts across reusable code; collections represent groups and mappings. Framework code needs enough mastery to read library APIs and avoid unsafe casting, not abstraction for its own sake.",
 mechanics:["List, Set and Map encode different collection semantics.","Generic type parameters such as T are compile-time type variables.","Bounded generics constrain acceptable types; wildcards express variance at API boundaries.","Type erasure means most generic type arguments are not directly available at runtime."],
@@ -153,8 +176,8 @@ questions:["Does @Test itself execute a method?","Why does retention matter?","W
 mechanics:["JUnit Platform provides discovery/execution infrastructure; Jupiter is the JUnit 5 programming model/engine.","Test instances and @BeforeEach/@AfterEach lifecycle affect state ownership.","Parameterized tests execute one behavior against multiple argument sets.","Tags are metadata used by launchers/build tooling for intentional selection.","Extensions provide explicit lifecycle/interception/parameter-resolution hooks when ordinary composition is insufficient."],
 frameworkUse:["Create smoke/api/browser portfolios without duplicating suites.","Choose lifecycle boundaries for test-owned data.","Understand how Maven Surefire delegates execution to the JUnit Platform."],
 antiPatterns:["A tag for every feature or Jira ticket.","Order-dependent tests sharing instance/static state.","Extensions used to hide ordinary object construction.","@BeforeAll creating mutable global product state."],
-practice:["Define the initial steward-tests tag vocabulary.","Demonstrate @BeforeEach/@AfterEach ownership.","Create one @ParameterizedTest with MethodSource.","Tag a small test set and execute one selected group with Maven/Surefire.","Document forbidden/redundant tags and when an extension would be justified."],
-questions:["What is the difference between JUnit Platform and Jupiter?","Who interprets @Tag during Maven execution?","When should setup remain explicit instead of becoming an extension?"],code:"@Tag(\"smoke\")\n@Tag(\"api\")\n@Test\nvoid healthEndpointIsAvailable() {}"},
+practice:["Explain that the tagged fixture illustrates test selection rather than a real API health check.","Define the initial steward-tests tag vocabulary.","Demonstrate @BeforeEach/@AfterEach ownership.","Create one @ParameterizedTest with MethodSource.","Tag a small test set and execute one selected group with Maven/Surefire.","Document forbidden/redundant tags and when an extension would be justified."],
+questions:["What is the difference between JUnit Platform and Jupiter?","Who interprets @Tag during Maven execution?","When should setup remain explicit instead of becoming an extension?"],code:"import static org.junit.jupiter.api.Assertions.assertEquals;\nimport org.junit.jupiter.api.Tag;\nimport org.junit.jupiter.api.Test;\n\nclass TagFilteringExampleTest {\n  @Tag(\"smoke\")\n  @Tag(\"api\")\n  @Test\n  void taggedContractFixturePasses() {\n    assertEquals(\"service\", \" service \".trim());\n  }\n}"},
 
 {id:"functional-java",title:"Lambdas, Functional Interfaces, Streams and Optional",principle:"Functional Java is useful for callbacks and transformations common in libraries, but framework code must optimize for diagnosis and readability.",
 mechanics:["A functional interface has one abstract method and can be implemented with a lambda.","Method references are concise lambda forms when intent remains obvious.","Streams form lazy transformation pipelines terminated by an operation such as toList or collect.","Optional models a value that may be absent; it is not a universal replacement for null or every field."],

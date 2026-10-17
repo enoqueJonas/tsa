@@ -8,9 +8,15 @@
     "build": "turbo build",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
-    "test": "turbo test",
+    "test": "node --test scripts/tests/*.test.mjs",
     "format": "prettier --write .",
-    "audit:curriculum": "node scripts/audit-curriculum-integrity.mjs"
+    "audit:curriculum": "node scripts/audit-curriculum-integrity.mjs",
+    "census:curriculum": "node scripts/refresh-curriculum-source-census.mjs",
+    "report:curriculum-examples": "node scripts/report-curriculum-code-evidence.mjs",
+    "report:curriculum-practicals": "node scripts/report-curriculum-practicals.mjs",
+    "check:resolved-practicals": "node scripts/check-resolved-practical-contracts.mjs",
+    "check:python-examples": "node scripts/check-python-teaching-examples.mjs",
+    "check:java-examples": "node scripts/check-java-teaching-examples.mjs"
   },
   "devDependencies": {
     "prettier": "^3.0.0",

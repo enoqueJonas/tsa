@@ -26,10 +26,11 @@ const practices: Record<string, PracticalContent> = {
             "For each gate, write the exact question, required evidence, decision owner and failure outcome.",
             "Classify each gate as automatable or judgment-dependent and justify any human approval that remains.",
             "Promote the exact same Nexus artifact identity through a safe non-production stage and prove no rebuild occurred.",
+            "Record registry digest evidence before and after promotion; deliberately retag or replace a disposable test candidate and demonstrate that digest mismatch blocks deployment even if the visible tag remains unchanged.",
             "Force one gate to reject the candidate and verify that promotion stops visibly instead of being bypassed."
         ],
         deliverables: ["Promotion-state model", "Gate/evidence matrix", "Promotion and rejection evidence"],
-        completionCriteria: ["Every gate controls an explicit risk.", "Human approval is not used merely to re-check automation.", "Rejected candidates cannot silently advance and accepted candidates preserve immutable identity."],
+        completionCriteria: ["Every gate controls an explicit risk.", "Human approval is not used merely to re-check automation.", "Digest mismatch or mutable-tag replacement blocks promotion.", "Rejected candidates cannot silently advance and accepted candidates preserve immutable identity."],
     },
     "Deployment Evidence": {
         type: "practical",
@@ -40,10 +41,11 @@ const practices: Record<string, PracticalContent> = {
             "Capture the intended release identity, target, deployment execution, migration result and running container/image identity.",
             "Verify the health endpoint and one representative authenticated Steward API behavior from a client perspective.",
             "Create one safe mismatch or failed verification condition and show which evidence reveals that pipeline success is not enough.",
-            "Assemble a concise release record linking source commit, GitLab CI/CD run, Nexus artifact, approval state, deployment and runtime proof."
+            "Assemble a concise release record linking source commit, GitLab CI/CD run, Nexus artifact, approval state, deployment and runtime proof.",
+            "Compare the expected digest against each running API, outbox-publisher and lifecycle-consumer role; flag a mixed-image deployment as incomplete, even when the API health check succeeds."
         ],
         deliverables: ["Completed release record", "Runtime identity and client evidence", "Pipeline-success-vs-runtime-failure evidence"],
-        completionCriteria: ["The running artifact is independently traceable to the approved candidate.", "Verification includes meaningful application behavior, not only process health.", "A deployment command finishing successfully is not treated as proof of release success."],
+        completionCriteria: ["The running artifact is independently traceable to the approved candidate.", "All application roles run the approved immutable digest; mixed releases are detected.", "Verification includes meaningful application behavior, not only process health.", "A deployment command finishing successfully is not treated as proof of release success."],
     },
     "Release Observability": {
         type: "practical",

@@ -23,12 +23,32 @@ const resourcesByPkiLesson: Record<string, LearningResource[]> = {
 };
 
 function withPkiResources(lesson: AuthoredLesson): AuthoredLesson {
+    const referenceBlock = {
+        type: "resources",
+        title: "Continue learning",
+        resources: resourcesByPkiLesson[lesson.id] ?? [rfc5280],
+    };
+    // A resource collection is not a separate lesson when a substantive
+    // reading exists. The old wrapper created an unnecessary resource-only navigation step before this reading; exercise-only lessons retain a separate references step.
+    const firstReading = lesson.activities.findIndex((activity) =>
+        "type" in activity && activity.type === "reading");
+    if (firstReading < 0) {
+        return {
+            ...lesson,
+            activities: [
+                { type: "resources", title: "Read before the exercise", resources: referenceBlock.resources },
+                ...lesson.activities,
+            ],
+        };
+    }
     return {
         ...lesson,
-        activities: [
-            { type: "resources", title: "Read before the exercise", resources: resourcesByPkiLesson[lesson.id] ?? [rfc5280] },
-            ...lesson.activities,
-        ],
+        activities: lesson.activities.map((activity, index) => {
+            if (index !== firstReading || !("type" in activity)) return activity;
+            const existingBlocks = "blocks" in activity && Array.isArray(activity.blocks)
+                ? activity.blocks : [];
+            return { ...activity, blocks: [...existingBlocks, referenceBlock] };
+        }),
     };
 }
 

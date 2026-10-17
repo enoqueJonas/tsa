@@ -14,13 +14,13 @@ export const releaseEngineeringLab: Lesson = {
                 scenario: "Use the delivery capabilities already built in this school. Do not create a fake release pipeline beside them; reconcile CI, Nexus, deployment automation and the homelab into one release path.",
                 instructions: [
                     "Choose one real Steward source revision and assign an appropriate candidate version.",
-                    "Record CI run, steward-common version/hash, Steward OCI digest, migrations and configuration assumptions.",
+                    "Record the CI run, Steward OCI digest, migrations and configuration assumptions. Include a steward-common version and package hash only if earlier Builder evidence justified extracting that package; otherwise record the deferred-extraction decision and do not invent an internal package.",
                     "Define the gates that must pass before production deployment and the question each gate answers.",
                     "Define explicit stop, rollback and forward-recovery criteria before executing the release.",
                     "Write or update the Steward release runbook with prerequisites, commands/pipeline entry points, verification and recovery steps.",
                 ],
                 deliverables: ["Release candidate record", "Gate matrix", "Release/rollback decision criteria", "Versioned release runbook"],
-                completionCriteria: ["Candidate identity resolves to immutable artifacts.", "Every gate has a risk question and evidence.", "Rollback limitations caused by state or migrations are explicit."],
+                completionCriteria: ["Candidate identity resolves to immutable artifacts, with internal-package coordinates required only for packages actually earned.", "Every gate has a risk question and evidence.", "Rollback limitations caused by state or migrations are explicit."],
             },
         },
         {

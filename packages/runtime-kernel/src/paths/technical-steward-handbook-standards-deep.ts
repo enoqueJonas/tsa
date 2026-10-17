@@ -14,6 +14,7 @@ const resourcesByHandbook:Record<string,LearningResource[]>={
 const scenario = "Steward is a mature organization-owned service whose architecture, delivery, quality, security, reliability, dependency, risk and governance decisions need durable guidance that engineers can find, understand, challenge and maintain. The handbook is an organizational-memory and navigation layer, not a duplicate of every technical artifact.";
 
 function reading(id: string, title: string, body: string, outcomes: string[], example: string, mistakes: string[], practice: string[]): Lesson {
+  const fullBody = `${scenario}\n\nLearning outcomes\n- ${outcomes.join("\n- ")}\n\n${body}\n\nWorked Steward example\n${example}\n\nCommon mistakes\n- ${mistakes.join("\n- ")}\n\nPractice\n- ${practice.join("\n- ")}`;
   return {
     id,
     title,
@@ -23,8 +24,8 @@ function reading(id: string, title: string, body: string, outcomes: string[], ex
       estimatedMinutes: 50,
       content: {
         type: "reading",
-        blocks: [{type:"resources",title:"Continue learning",resources:resourcesByHandbook[id] ?? [docsCode]}],
-        body: `${scenario}\n\nLearning outcomes\n- ${outcomes.join("\n- ")}\n\n${body}\n\nWorked Steward example\n${example}\n\nCommon mistakes\n- ${mistakes.join("\n- ")}\n\nPractice\n- ${practice.join("\n- ")}`,
+        blocks: [...fullBody.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),{type:"resources",title:"Continue learning",resources:resourcesByHandbook[id] ?? [docsCode]}],
+        body: fullBody,
       },
     }],
   };

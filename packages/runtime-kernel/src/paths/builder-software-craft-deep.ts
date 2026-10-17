@@ -49,7 +49,7 @@ function lesson(
         id,
         title,
         activities: [
-            { id: `${id}-reading`, title, estimatedMinutes: 30, content: { type: "reading", body: introduction, blocks } },
+            { id: `${id}-reading`, title, estimatedMinutes: 30, content: { type: "reading", body: blocks.filter((block) => block.type === "paragraph").map((block) => block.text).join("\n\n") || introduction, blocks } },
             {
                 id: `${id}-practice`, title: `${title}: Engineering Practice`, estimatedMinutes: 40,
                 content: {

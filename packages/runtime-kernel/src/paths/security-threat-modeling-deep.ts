@@ -64,7 +64,7 @@ function lessonFrom(spec: Spec): Lesson {
                 id: `threat-modeling-${spec.id}-001`,
                 title: spec.title,
                 estimatedMinutes: 45,
-                content: { type: "reading", body: spec.intro, blocks: blocksFor(spec) },
+                content: { type: "reading", body: blocksFor(spec).filter((b) => b.type === "paragraph").map((b) => b.text).join("\n\n") || spec.intro, blocks: blocksFor(spec) },
             },
             {
                 id: `threat-modeling-${spec.id}-002`,
@@ -120,7 +120,7 @@ const specs: Spec[] = [
         title: "Trust Boundaries",
         intro: "A trust boundary is where the system must stop relying on an implicit assumption and verify something again. Crossing a network boundary, changing identity, entering a privileged process or consuming an external artifact can all create a boundary.",
         principles: ["Do not equate network location with trust.", "Treat privilege changes and identity transitions as boundaries.", "Mark where untrusted or differently trusted data enters.", "Identify which control is expected to justify crossing each boundary."],
-        steward: ["Public ingress through Kong to the API, API to PostgreSQL/Redis, PostgreSQL outbox to publisher, publisher to RabbitMQ, RabbitMQ to consumer, workload identity to Vault/secret sources, CI to Nexus, developer to administration channel and test automation to deployed environments are distinct Steward trust boundaries.", "The question at each boundary is: what claim is being trusted here, and what verifies it?"],
+        steward: ["Public ingress through Kong to the API, API to PostgreSQL/Redis, PostgreSQL outbox to publisher, publisher to RabbitMQ, RabbitMQ to consumer, workload identity to Vault/secret sources, CI to Nexus, developer to administration channel and test automation to deployed environments are distinct Steward trust boundaries.", "Worked authorization boundary: a user presents a valid identity token to the API through Kong. Successful signature verification establishes a token claim but does not itself authorize mutation of a service owned by another team. The API must validate token audience/expiry and recheck the specific service ownership and role against authoritative policy before the database write. If the actor is authenticated but lacks ownership permission, the expected result is denial and no ownership change; the reverse case proves the allowed path. Record where each claim is checked rather than treating internal network location or a valid token as authorization.", "The question at each boundary is: what claim is being trusted here, and what verifies it?"],
         practice: ["Overlay trust boundaries on the Steward flow diagrams.", "For each boundary, name the claim being trusted.", "Record the preventive or detective control expected to validate that claim."],
         reflection: "Choose one Steward trust boundary and explain what could go wrong if a network location or authenticated identity were treated as sufficient proof of trust.",
     },

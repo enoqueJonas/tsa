@@ -1,7 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
-const ubuntu: LearningResource = { title: "Ubuntu Server documentation", url: "https://documentation.ubuntu.com/server/" };
+const ubuntu: LearningResource = { title: "Rocky Linux documentation", url: "https://docs.rockylinux.org/" };
 const proxmox: LearningResource = { title: "Proxmox VE documentation", url: "https://pve.proxmox.com/pve-docs/" };
 const tailscale: LearningResource = { title: "Tailscale documentation", url: "https://tailscale.com/kb" };
 const nginx: LearningResource = { title: "NGINX documentation", url: "https://nginx.org/en/docs/" };
@@ -34,6 +34,7 @@ export const budgetHomelabDeepLessons: Lesson[] = [
     ]),
     reading("resources", "CPU, RAM, Storage and NIC Trade-offs", "Homelab capacity is a constraint system. A fast CPU cannot compensate for exhausted RAM, unreliable storage or a poor network interface.", [
         { heading: "Allocate from workload evidence", body: "Estimate concurrent VMs and services, then budget memory first because it often becomes the practical virtualization ceiling. CPU overcommit can be tolerable for bursty labs; memory exhaustion is far less forgiving." },
+        { heading: "Worked capacity decision", body: "Consider a hypothetical host with 16 GiB of RAM. Reserving 3 GiB for the hypervisor and host services leaves 13 GiB, not 16 GiB, for guests. If the initial Steward VM is allocated 6 GiB and an observability VM is allocated 4 GiB, 3 GiB remain unallocated for other guests and safety headroom. The arithmetic describes allocations, not measured consumption: guest and host memory pressure must still be monitored, and an operator should not assume all allocations can grow without cost. State the reserve and allocation assumptions explicitly before recommending hardware." },
         { heading: "Storage and network matter", body: "Prefer SSD storage for VM responsiveness and predictable Ethernet for server workloads. Record whether storage is replaceable and whether the NIC is supported by the intended operating system." },
     ]),
     reading("power", "Power, Noise and Reliability", "A homelab that is too loud, hot or expensive to leave available will not become dependable infrastructure.", [
@@ -50,7 +51,7 @@ export const budgetHomelabDeepLessons: Lesson[] = [
     ]),
     reading("addressing", "Static Addressing", "Servers need stable identities, but stability can come from either host configuration or DHCP reservations. The engineering requirement is predictable addressing with one source of truth.", [
         { heading: "Choose an address plan", body: "Reserve a small range or DHCP reservations for infrastructure and document gateway, prefix, DNS and ownership. Avoid random static addresses inside the router's dynamic pool." },
-        { heading: "Verify rather than assume", body: "After configuration, inspect interface address, route and name resolution, then test from another host.", code: { language: "bash", code: "ip -br addr\nip route\nresolvectl status\nping -c 3 <gateway>" } },
+        { heading: "Verify rather than assume", body: "After configuration, inspect interface address, route and name resolution, then test from another host.", code: { language: "bash", code: "ip -br addr\nip route\nresolvectl status\nip -4 route show default\n# Set GATEWAY_IP to the actual next hop above.\n: \"${GATEWAY_IP:?Set GATEWAY_IP first}\"\nping -c 3 \"$GATEWAY_IP\"" } },
     ]),
     reading("hosts", "Multiple Hosts and VMs", "The moment a homelab has multiple compute boundaries, placement becomes an architectural decision: which workload runs where, and what remains shared when one host fails?", [
         { heading: "Name every compute boundary", body: "Use stable hostnames and maintain an inventory containing physical host, VM, IP address, operating system, purpose and owner." },

@@ -32,7 +32,7 @@ function richLesson(spec: LessonSpec): Lesson {
         id: `cloud-and-hosting-models-${spec.id}`,
         title: spec.title,
         activities: [
-            { id: `cloud-and-hosting-models-${spec.id}-001`, title: spec.title, estimatedMinutes: 40, content: { type: "reading", body: spec.intro, blocks } },
+            { id: `cloud-and-hosting-models-${spec.id}-001`, title: spec.title, estimatedMinutes: 40, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks } },
             {
                 id: `cloud-and-hosting-models-${spec.id}-002`,
                 title: `Apply: ${spec.title}`,

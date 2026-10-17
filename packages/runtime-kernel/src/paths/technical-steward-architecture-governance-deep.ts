@@ -13,7 +13,7 @@ const deliverables = ["Architecture-governance artifact", "Evidence and rational
 const criteria = ["The governance mechanism is tied to a real decision or risk.", "Ownership and decision rights are explicit.", "The mechanism is proportionate and avoids unnecessary approval gates."];
 function readingPractice(id: string, title: string, body: string, instructions: string[]): Lesson {
   return { id: `architecture-governance-${id}`, title, activities: [
-    { id: `architecture-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 55, content: { type: "reading", body, blocks:[{type:"resources",title:"Architecture governance reference",resources:resourcesByArchGov[id] ?? [adr]}] } },
+    { id: `architecture-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 55, content: { type: "reading", body, blocks:[...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),{type:"resources",title:"Architecture governance reference",resources:resourcesByArchGov[id] ?? [adr]}] } },
     { id: `architecture-governance-${id}-practice`, title: `${title}: Steward governance exercise`, estimatedMinutes: 55, content: { type: "practical", objective: `Apply ${title} as an architecture-governance capability for Steward.`, scenario, instructions, deliverables, completionCriteria: criteria } },
   ] };
 }

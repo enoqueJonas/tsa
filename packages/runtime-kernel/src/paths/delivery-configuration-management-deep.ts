@@ -50,8 +50,8 @@ export const configurationManagementDeepLessons: Lesson[] = [
         "Desired-state automation describes the condition a system should reach rather than scripting every historical action that might have produced it.",
         [
             { type: "heading", id: "declare-the-outcome", text: "Declare the outcome", level: 2 },
-            { type: "paragraph", text: "Instead of saying 'run apt install nginx every time', configuration management expresses that nginx must be present at an approved version or package state. The tool compares current state to intent and changes only what is necessary." },
-            { type: "code", language: "yaml", caption: "Idempotent package intent", code: "- name: Ensure required packages are installed\n  ansible.builtin.apt:\n    name:\n      - docker.io\n      - python3\n    state: present\n    update_cache: true" },
+            { type: "paragraph", text: "Instead of saying 'run dnf install python3 every time', configuration management expresses that Python and Git must be present at an approved package state, as the Rocky Linux DNF example below demonstrates. The tool compares current state to intent and changes only what is necessary." },
+            { type: "code", language: "yaml", caption: "Idempotent package intent", code: "- name: Ensure required packages are installed\n  ansible.builtin.dnf:\n    name:\n      - python3\n      - git\n    state: present\n    update_cache: true" },
             { type: "heading", id: "idempotency-is-a-behavior", text: "Idempotency is a behavior, not a slogan", level: 2 },
             { type: "paragraph", text: "An automation run is usefully idempotent when repeating it against an already-correct system produces no unnecessary mutation. This matters because operators must be able to rerun automation after partial failure without fearing duplicate users, repeated file edits or destructive side effects." },
             { type: "callout", tone: "warning", title: "A green run can still be wrong", body: "If the declared state itself is incorrect, an idempotent playbook will reproduce the wrong configuration consistently. Version control, review and testing remain necessary." },
@@ -65,7 +65,7 @@ export const configurationManagementDeepLessons: Lesson[] = [
         [
             { type: "heading", id: "control-node-and-managed-nodes", text: "Control node and managed nodes", level: 2 },
             { type: "paragraph", text: "The control node contains the inventory and playbooks. Managed nodes are reached using SSH and receive module operations. Authentication, privilege escalation and host-key trust therefore remain part of the system design rather than disappearing behind the tool." },
-            { type: "code", language: "bash", caption: "First connectivity proof", code: "ansible steward_hosts -m ansible.builtin.ping\nansible steward_hosts -m ansible.builtin.setup" },
+            { type: "code", language: "bash", caption: "First connectivity proof", code: "ansible -i inventory.ini steward_api -m ansible.builtin.ping\nansible -i inventory.ini steward_api -m ansible.builtin.setup" },
             { type: "heading", id: "modules-before-shell", text: "Prefer modules over shell commands", level: 2 },
             { type: "paragraph", text: "Purpose-built modules understand resource state and often provide safer idempotency than arbitrary shell commands. Use shell or command only when there is no suitable module or when the command itself is genuinely the resource boundary." },
         ],
@@ -130,7 +130,7 @@ export const configurationManagementDeepLessons: Lesson[] = [
                         "Keep credentials and secret values out of plaintext version control; document the boundary used for secret injection even if full secret-management tooling comes later.",
                         "Run the playbook against the target, record the changed tasks, then run it again without modifying inputs and prove that the second run converges with no unnecessary changes.",
                         "Introduce one safe drift condition manually, rerun the playbook, and prove that declared state repairs it.",
-                        "Deploy a known Steward release using the existing delivery path after configuration management has prepared the host and verify meaningful API behavior.",
+                        "Deploy a known Steward release using the existing delivery path after configuration management has prepared the host; verify API behavior, publisher and consumer readiness, and one outbox-to-consumer lifecycle event.",
                         "Produce a short handoff showing which machine assumptions are now declared and which remaining assumptions belong to later artifact/dependency, security or reliability work.",
                     ],
                     deliverables: [

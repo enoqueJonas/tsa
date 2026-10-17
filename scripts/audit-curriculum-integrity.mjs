@@ -42,6 +42,15 @@ for (const [file, source] of sources) {
   }
 }
 
+// Delivery configuration examples must use the Rocky Linux package-management baseline.
+const deliveryConfigExamples = sources.get("delivery-configuration-management-deep.ts") ?? "";
+if (/ansible\.builtin\.apt\b|\bapt install\b/.test(deliveryConfigExamples)) {
+  failures.push("Delivery configuration management must not teach Ubuntu apt on Rocky Linux hosts");
+}
+if (!deliveryConfigExamples.includes("ansible.builtin.dnf")) {
+  failures.push("Delivery configuration management must include the Rocky Linux DNF Ansible module");
+}
+
 const migrationExercise = sources.get("delivery-migration-exercises-deep.ts") ?? "";
 if (!/GitLab CI\/CD/.test(migrationExercise) || !/Jenkins/.test(migrationExercise)) {
   failures.push("legacy CI migration exercise must explicitly preserve Jenkins-to-GitLab migration semantics");
@@ -55,6 +64,213 @@ for (const required of ["more than one real consumer", "Internal-package boundar
 }
 for (const required of ["If steward-common has independently earned extraction", "otherwise use an explicitly labeled minimal training package", "If extraction was deferred, use an explicit fixture"]) {
   if (!deliveryArtifacts.includes(required)) failures.push(`Delivery steward-common lifecycle must preserve conditional distribution semantics: ${required}`);
+}
+
+// Every Artifact Supply Chain reading should have a distinct practical evidence contract.
+// A single generic objective/acceptance list makes unrelated exercises look complete.
+const artifactSpecIds = [...deliveryArtifacts.matchAll(/^\s*id: "([^"]+)",\s*\n\s*title: "[^"]+"/gm)].map((match) => match[1]);
+const contractSource = deliveryArtifacts.match(/const practicalContracts: Record<string, PracticalContract> = \{([\s\S]*?)\n\};/)?.[1] ?? "";
+const contractedIds = [...contractSource.matchAll(/^\s*"([^"]+)": \{ objective: "[^"]+", deliverables: \[[^\]]+\], completionCriteria: \[[^\]]+\] \},?$/gm)].map((match) => match[1]);
+for (const id of artifactSpecIds) {
+  if (contractedIds.filter((candidate) => candidate === id).length !== 1) {
+    failures.push(`Artifact Supply Chain lesson ${id} must have exactly one tailored practical contract`);
+  }
+}
+for (const id of contractedIds) {
+  if (!artifactSpecIds.includes(id)) failures.push(`orphan Artifact Supply Chain practical contract: ${id}`);
+}
+if (!deliveryArtifacts.includes("objective: contract.objective") ||
+    !deliveryArtifacts.includes("completionCriteria: contract.completionCriteria")) {
+  failures.push("Artifact Supply Chain practicals must use lesson-specific objectives and acceptance criteria");
+}
+
+// Delivery quality wrappers must cover every normal source lesson by exact title.
+// Title drift can silently drop substantive learner exercises when the wrapper maps by title.
+const deliveryQualityPairs = [
+  ["delivery-software-foundations-deep.ts", "delivery-software-foundations-quality.ts", /lesson\(\s*"[^"]+",\s*"([^"]+)"/g],
+  ["delivery-containers-docker-deep.ts", "delivery-containers-docker-quality.ts", /richLesson\(\s*"[^"]+",\s*"([^"]+)"/g],
+  ["delivery-continuous-integration-deep.ts", "delivery-continuous-integration-quality.ts", /rich\(\s*"[^"]+",\s*"([^"]+)"/g],
+  ["delivery-continuous-delivery-deep.ts", "delivery-continuous-delivery-quality.ts", /richLesson\(\s*"[^"]+",\s*"([^"]+)"/g],
+  ["delivery-configuration-management-deep.ts", "delivery-configuration-management-quality.ts", /reading\(\s*"[^"]+",\s*"([^"]+)"/g],
+  ["delivery-release-engineering-deep.ts", "delivery-release-engineering-quality.ts", /reading\(\s*"[^"]+",\s*"([^"]+)"/g],
+];
+for (const [sourceFile, qualityFile, titlePattern] of deliveryQualityPairs) {
+  const source = sources.get(sourceFile) ?? "";
+  const quality = sources.get(qualityFile) ?? "";
+  const titles = [...source.matchAll(titlePattern)].map((m) => m[1]);
+  const profiles = [...quality.matchAll(/^    "([^"]+)": \{/gm)].map((m) => m[1]);
+  if (!titles.length || !profiles.length) failures.push("Delivery lesson/profile inventory empty: " + sourceFile);
+  for (const title of titles) {
+    if (profiles.filter((item) => item === title).length !== 1) failures.push("Delivery quality profile missing or duplicated: " + qualityFile + " -> " + title);
+  }
+  for (const title of profiles) {
+    if (!titles.includes(title)) failures.push("Delivery quality profile orphaned: " + qualityFile + " -> " + title);
+  }
+}
+
+// Guard against a real school lesson silently disappearing from the audit checklist.
+// Backing deep/rich modules used through a quality wrapper are not separate logical paths.
+const inventoryText = fs.readFileSync(path.join(docsDir, "lesson-boundary-audit.md"), "utf8").split("## Known findings")[0];
+const listedModules = new Set(inventoryText.split("\n").filter((line) => line.startsWith("- [")).map((line) => line.split(String.fromCharCode(96))[1]).filter(Boolean));
+// Every tracked module must still resolve to a real curriculum source file.
+const inventoryNames = inventoryText.split("\n").filter((line) => line.startsWith("- [")).map((line) => line.split(String.fromCharCode(96))[1]).filter(Boolean);
+for (const name of inventoryNames) {
+  if (!sources.has(name + ".ts")) failures.push("Curriculum audit inventory source is missing: " + name);
+  if (inventoryNames.filter((item) => item === name).length !== 1) failures.push("Duplicate curriculum audit inventory module: " + name);
+}
+for (const schoolFile of [
+  "academy-journey.ts", "system-thinker.ts", "platform-builder.ts",
+  "delivery-engineer.ts", "cloud-engineer.ts", "quality-steward.ts",
+  "security-steward.ts", "reliability-engineer.ts", "architect.ts",
+  "technical-steward.ts", "professional-engineer.ts"
+]) {
+  const schoolSource = sources.get(schoolFile) ?? "";
+  for (const match of schoolSource.matchAll(/from "\.\/([^"]+)"/g)) {
+    const moduleName = match[1];
+    if (/-(?:quality|rich|deep|milestone|milestones|decision)$/.test(moduleName) && !listedModules.has(moduleName)) {
+      failures.push("Wired school lesson absent from audit inventory: " + schoolFile + " -> " + moduleName);
+    }
+  }
+}
+
+// The learner receives the quality-enriched practical for 23 normal Supply Chain lessons.
+// The two integrated lab lessons retain their specialized deep-source contract instead.
+const artifactQuality = sources.get("delivery-artifact-supply-chain-quality.ts") ?? "";
+const artifactTitles = [...deliveryArtifacts.matchAll(/^\s*id: "[^"]+",\s*\n\s*title: "([^"]+)"/gm)].map((match) => match[1]);
+const profileTitles = [...artifactQuality.matchAll(/^    "([^"]+)": \{/gm)].map((match) => match[1]);
+for (const title of artifactTitles.filter((item) => !item.startsWith("Lab:"))) {
+  if (profileTitles.filter((item) => item === title).length !== 1) failures.push(`Supply Chain quality-practical profile missing/duplicated: ${title}`);
+}
+for (const title of profileTitles) {
+  if (!artifactTitles.includes(title)) failures.push(`Supply Chain quality-practical profile is orphaned: ${title}`);
+}
+if (!artifactQuality.includes("artifactDependencySupplyChainDeepLessons.map(enrichLesson)")) {
+  failures.push("Supply Chain quality profiles must be applied to exported deep lessons");
+}
+if (!(fs.readFileSync(path.join(docsDir, "lesson-boundary-audit.md"), "utf8")).includes("`delivery-artifact-supply-chain-quality`")) {
+  failures.push("Curriculum lesson-boundary inventory omitted the wired Artifact Supply Chain quality module");
+}
+
+// Worked networking diagnosis must not use bridging before the learner receives its definition.
+const virtualizationLesson = sources.get("platform-builder-virtualization-deep.ts") ?? "";
+const natIndex = virtualizationLesson.indexOf('title: "NAT hides the guest behind another address"');
+const bridgeIndex = virtualizationLesson.indexOf('title: "Bridging makes the guest a LAN participant"');
+const diagnosisIndex = virtualizationLesson.indexOf('title: "Worked reachability diagnosis"');
+if (natIndex < 0 || bridgeIndex <= natIndex || diagnosisIndex <= bridgeIndex) {
+  failures.push("Platform virtual networking must teach NAT and bridging before the worked reachability diagnosis");
+}
+
+// Delivery milestone verifies all runtime roles and behavior, not only an HTTP health check.
+const deliveryMilestone = sources.get("delivery-engineer-milestone-deep.ts") ?? "";
+for (const evidence of [
+  "unauthorized cross-team mutation is denied",
+  "outbox publisher and lifecycle consumer process it through RabbitMQ",
+  "API, publisher and consumer run the approved image digest",
+  "recovered async path",
+]) {
+  if (!deliveryMilestone.includes(evidence)) failures.push(`Delivery milestone missing runtime verification: ${evidence}`);
+}
+
+// A simulated legacy CI cutover must be labeled, and failing authorization must block publication.
+for (const phrase of [
+  "legacy Jenkinsfile fixture",
+  "prevent the publish job",
+  "fixture-only observations",
+]) {
+  if (!migrationExercise.includes(phrase)) failures.push(`Delivery CI migration teaching missing: ${phrase}`);
+}
+
+// Release lab must not manufacture a shared Python package when extraction was deferred.
+const releaseLab = sources.get("delivery-release-engineering-lab-deep.ts") ?? "";
+for (const phrase of ["only if earlier Builder evidence justified extracting", "record the deferred-extraction decision"]) {
+  if (!releaseLab.includes(phrase)) failures.push(`Release Engineering lab missing conditional package guidance: ${phrase}`);
+}
+
+// Java test-engineering readings must have a concrete, distinct verification artifact per lesson.
+const javaSource = sources.get("quality-java-test-engineering-deep.ts") ?? "";
+const javaSpecRegion = javaSource.split("const specs: Spec[]=")[1]?.split("\n];")[0] ?? "";
+const javaIds = [...javaSpecRegion.matchAll(/\{id:"([^"]+)",title:/g)].map((m) => m[1]);
+const javaEvidenceRegion = javaSource.split("const javaPracticeEvidence: Record<string, string> = {")[1]?.split("\n};")[0] ?? "";
+const javaEvidenceIds = [...javaEvidenceRegion.matchAll(/^ "([^"]+)":/gm)].map((m) => m[1]);
+for (const id of javaIds) {
+  if (javaEvidenceIds.filter((entry) => entry === id).length !== 1) failures.push(`Java practical needs one distinct evidence contract: ${id}`);
+}
+for (const id of javaEvidenceIds) {
+  if (!javaIds.includes(id)) failures.push(`Orphan Java practical evidence contract: ${id}`);
+}
+if (!javaSource.includes('deliverables:["Committed steward-tests increment",evidence')) failures.push("Java practice must expose lesson-specific executed evidence");
+
+// XML namespace teaching must contrast a cosmetic prefix change with a semantic URI change.
+const soapSource = sources.get("system-thinker-soap-xml-deep.ts") ?? "";
+if (!soapSource.includes("the same lookup must return no match")) failures.push("XML namespace lesson missing negative URI identity case");
+
+// Every Quality CI source lesson needs its own observed proof and release-gate rule.
+const qualityCiSource = sources.get("quality-containers-ci-deep.ts") ?? "";
+const qualityCiSpecs = qualityCiSource.split("const specs: Spec[] = [")[1]?.split("const controlledIntegrationMilestone:")[0] ?? "";
+const qualityCiIds = [...qualityCiSpecs.matchAll(/^\s*id: "([^"]+)",/gm)].map((m) => m[1]);
+const qualityProofRegion = qualityCiSource.split("const practicalProofs: Record<string, [string, string]> = {")[1]?.split("\n};")[0] ?? "";
+const qualityProofIds = [...qualityProofRegion.matchAll(/^    "([^"]+)":/gm)].map((m) => m[1]);
+for (const id of qualityCiIds) {
+  if (qualityProofIds.filter((value) => value === id).length !== 1) failures.push(`Quality CI practical proof missing/duplicated: ${id}`);
+}
+for (const id of qualityProofIds) {
+  if (!qualityCiIds.includes(id)) failures.push(`Quality CI orphan practical proof: ${id}`);
+}
+if (!qualityCiSource.includes("deliverables: [\"Versioned pipeline or container change\", proof[0]")) failures.push("Quality CI practical proof must be wired");
+if (qualityCiSource.includes('code: "quality:\\nstages:')) failures.push("Quality CI must use top-level GitLab stages");
+
+// Python examples used in the first lessons must not assume a variable from a prior block.
+const pythonLearner = sources.get("builder-python-rich.ts") ?? "";
+const controlReading = pythonLearner.split("const controlFlow = lesson(")[1]?.split("const functions = lesson(")[0] ?? "";
+if (controlReading.includes("def can_promote_to_production(")) failures.push("Python Control Flow introduces def before Functions and Scope");
+for (const caption of [
+  "Make the decision visible",
+  "Find unowned critical services",
+  "Search without a separate flag",
+  "Iterate with the information you need",
+  "Generate matching services lazily",
+  "Critical production services",
+  "Choose the result structure intentionally",
+]) {
+  const start = pythonLearner.indexOf(`caption: "${caption}"`);
+  const line = start >= 0 ? pythonLearner.slice(start, pythonLearner.indexOf("\n", start)) : "";
+  if (!line.includes("output:")) failures.push(`Python worked example missing trace: ${caption}`);
+}
+const workbenchSource = sources.get("engineering-apprentice-workbench-deep.ts") ?? "";
+if (workbenchSource.includes("some-command > run.out")) failures.push("Apprentice stderr example still uses a non-executable placeholder");
+const platformNetwork = sources.get("platform-builder-networking-deep.ts") ?? "";
+if (platformNetwork.includes("sudo ufw status verbose")) failures.push("Rocky Linux networking example must not assume Ubuntu ufw");
+
+// Every authored Shell lesson has its own explicit practical evidence contract.
+const shellModule = sources.get("delivery-automation-shell-deep.ts") ?? "";
+const shellLessonIds = [...shellModule.matchAll(/richLesson\("([^"]+)", "([^"]+)"/g)].map((m) => m[1]);
+const shellContractBody = shellModule.split("const shellPracticeEvidence: Record<string, ShellPracticeEvidence> = {")[1]?.split("\n};")[0] ?? "";
+const shellContracts = [...shellContractBody.matchAll(/^    "([^"]+)": \{/gm)].map((m) => m[1]);
+for (const id of shellLessonIds) {
+  if (shellContracts.filter((name) => name === id).length !== 1) failures.push(`Missing or duplicated Shell practical evidence contract: ${id}`);
+}
+for (const id of shellContracts) {
+  if (!shellLessonIds.includes(id)) failures.push(`Orphan Shell practical evidence contract: ${id}`);
+}
+if (!shellModule.includes("objective: evidence.objective") || !shellModule.includes("completionCriteria: evidence.completionCriteria")) {
+  failures.push("Shell lesson practicals must use their subject-specific evidence contract");
+}
+
+// Shell failure traces must follow the explanation of pipeline status and pipefail.
+const shellTeaching = sources.get("delivery-automation-shell-deep.ts") ?? "";
+const pipelineExplanation = shellTeaching.indexOf('heading: "Pipelines need special attention"');
+const pipelineWorkedTrace = shellTeaching.indexOf('heading: "Worked failure trace:');
+if (pipelineExplanation < 0 || pipelineWorkedTrace <= pipelineExplanation) {
+  failures.push("Delivery shell must explain pipeline status before the worked pipefail trace");
+}
+
+// Steward's chosen CI executor is GitLab. A comparison lesson may teach other providers,
+// but its canonical container-build walkthrough must not silently switch to GitHub Actions.
+const ciExamples = sources.get("delivery-continuous-integration-deep.ts") ?? "";
+const containerBuildSection = ciExamples.split('rich("container-build"')[1]?.split('id: "continuous-integration-lab"')[0] ?? "";
+if (!containerBuildSection.includes("Example GitLab CI pipeline shape") ||
+    containerBuildSection.includes("actions/checkout@")) {
+  failures.push("Delivery CI container-build lesson must use a GitLab CI/CD example");
 }
 
 // Later schools must preserve the actual steward-common state rather than assuming extraction occurred.
@@ -484,7 +700,7 @@ for (const [schoolId, [file, arrayName]] of Object.entries(schoolRegistries)) {
   const schoolStart = planned.indexOf(`{ id: "${schoolId}", title:`);
   const nextSchool = schoolStart >= 0 ? planned.indexOf('\n        { id: "', schoolStart + 1) : -1;
   const section = schoolStart >= 0 ? planned.slice(schoolStart, nextSchool >= 0 ? nextSchool : planned.length) : "";
-  const expected = [...section.matchAll(/module\("([^"]+)"/g)].map((m) => m[1]);
+  const expected = [...section.matchAll(/plannedModule\("([^"]+)"/g)].map((m) => m[1]);
   const registry = sources.get(file) ?? "";
   const tail = registry.split(`export const ${arrayName}:`)[1] ?? "";
   const symbols = tail.match(/=\s*\[([^\]]+)\]/)?.[1]?.split(",").map((s) => s.trim()).filter(Boolean) ?? [];
@@ -550,6 +766,104 @@ if (!modulesLesson) {
     if (!pythonRich.includes(required)) failures.push(`Python pedagogical resource invariant is missing: ${required}`);
   }
   if (!modulesLesson.includes("pythonPackagesTutorial")) failures.push("Python Modules and Packages must reference pythonPackagesTutorial");
+}
+
+// Keep high-confidence Platform Builder teaching regressions out of the canonical learner path.
+// These checks only reject invalid or unsafe literal example forms; subjective clarity is reviewed manually.
+const platformComputer = sources.get("platform-builder-computer-os-deep.ts") ?? "";
+const platformLinux = sources.get("platform-builder-linux-administration-deep.ts") ?? "";
+const platformLinuxQuality = sources.get("platform-builder-linux-administration-quality.ts") ?? "";
+const platformConfig = sources.get("platform-builder-configuration-management-deep.ts") ?? "";
+if (platformComputer.includes("sample_pid=$\\n") || platformComputer.includes("stat /path/to/steward")) {
+  failures.push("Platform OS foundations has malformed PID expansion or nonexistent stat target");
+}
+if (platformComputer.includes("/proc/<PID>/status") || platformComputer.includes("/proc/<PID>/fd")) {
+  failures.push("Platform computer/OS teaching has an unbound /proc/<PID> shell placeholder");
+}
+if (platformLinux.includes("kill -TERM <pid>") || platformLinux.includes("kill -KILL <pid>")) {
+  failures.push("Platform Linux signal example must use a disposable, real PID rather than a copyable placeholder");
+}
+if (platformLinux.includes("stat /path/to/file") || platformLinux.includes("readlink -f /path/to/link")) {
+  failures.push("Platform Linux metadata teaching must use a controlled existing test path");
+}
+if (platformLinuxQuality.includes('"dnf info <package>"')) {
+  failures.push("Platform Rocky package example contains shell-redirection angle brackets");
+}
+if (platformConfig.includes("TSA now uses Proxmox templates, Ansible, container/Kubernetes delivery and Vault")) {
+  failures.push("Platform configuration management must not claim later-school runtime capabilities already exist");
+}
+
+// Rendering invariant: when a reading uses blocks, the UI renders those blocks.
+// Putting only a resources card into blocks while keeping the explanation in
+// the body field makes the actual conceptual teaching invisible to learners.
+// The browser matrix exposed this across Architect and Technical Steward.
+for (const [file, source] of sources) {
+  if (/blocks\s*:\s*resources\s*\(/.test(source) ||
+      /blocks\s*:\s*\[\s*\{\s*type\s*:\s*["']resources["']/.test(source)) {
+    failures.push(`Potentially hidden reading body: ${file} attaches resources-only blocks; include the paragraph text in rendered blocks`);
+  }
+}
+
+// Python lesson sequencing: introduce instance construction and self before
+// asking learners to reason about encapsulation or later OOP abstractions.
+// This is a narrow regression gate, not a substitute for qualitative reading.
+const pythonOopSequence = [
+  ["class, object, __init__ and self introduction", "A class describes a kind of thing; an object"],
+  ["encapsulation", 'const encapsulation = lesson("Encapsulation and Invariants"'],
+  ["composition", 'const composition = lesson("Composition and Collaboration"'],
+  ["inheritance", 'const inheritance = lesson("Inheritance and Overriding"'],
+  ["polymorphism", 'const polymorphism = lesson("Polymorphism and Duck Typing"'],
+  ["decorator function wrapping", 'const decorators = lesson("Decorators and Function Wrapping"'],
+  ["class features", 'const classFeatures = lesson("Properties, Class Methods and Dataclasses"'],
+];
+let precedingPythonStep = -1;
+for (const [label, marker] of pythonOopSequence) {
+  const position = pythonLearner.indexOf(marker);
+  if (position < 0 || position <= precedingPythonStep) {
+    failures.push(`Python OOP teaching sequence missing or out of order: ${label}`);
+  }
+  precedingPythonStep = position;
+}
+
+// Cross-school regression gates for Delivery learner assessment contracts.
+// These check that key negative controls cannot silently disappear in later edits.
+const deliveryCIQuality = sources.get("delivery-continuous-integration-quality.ts") ?? "";
+const deliveryCDQuality = sources.get("delivery-continuous-delivery-quality.ts") ?? "";
+const deliveryConfigQuality = sources.get("delivery-configuration-management-quality.ts") ?? "";
+const deliveryReleaseQuality = sources.get("delivery-release-engineering-quality.ts") ?? "";
+const deliverySupplyChain = sources.get("delivery-artifact-supply-chain-deep.ts") ?? "";
+const deliveryGuardrails = [
+  ["Delivery CI failed check must block publication", deliveryCIQuality, "failed required check cannot result in a published release image"],
+  ["Delivery CI protected credentials require untrusted-pipeline test", deliveryCIQuality, "untrusted merge-request pipeline"],
+  ["Delivery CD needs partial deployment test", deliveryCDQuality, "partial multi-role deployment"],
+  ["Delivery approvals must be invalidated by digest changes", deliveryCDQuality, "approval cannot authorize the modified candidate"],
+  ["Delivery migration must rehearse a failed backfill", deliveryCDQuality, "partially applied or failed data backfill"],
+  ["Delivery Ansible requires actual check-mode comparison", deliveryConfigQuality, "compare predicted changes with the subsequent real run"],
+  ["Delivery Ansible must validate candidate config", deliveryConfigQuality, "validation command before replacement"],
+  ["Delivery release promotion must reject tag drift", deliveryReleaseQuality, "digest mismatch blocks deployment"],
+  ["Delivery supply chain must preserve rollback artifacts", deliverySupplyChain, "dry-run deletion plan"],
+  ["Delivery supply chain must reject unauthorized signer", deliverySupplyChain, "untrusted signer"],
+  ["Delivery vulnerability exceptions need accountable expiry", deliverySupplyChain, "expiration or reassessment condition"],
+];
+for (const [label, source, marker] of deliveryGuardrails) {
+  if (!source.includes(marker)) failures.push(`${label}: missing evidence marker "${marker}"`);
+}
+
+// Ensure recently strengthened assessment contracts retain executable evidence rather
+// than reverting to generic knowledge-only completion criteria.
+const evidenceContracts = [
+  ["quality-containers-ci-deep.ts", "The submitted transcript identifies the exact"],
+  ["quality-java-test-engineering-deep.ts", "The submitted ${spec.title} implementation demonstrates"],
+  ["cloud-infrastructure-as-code-deep.ts", "The ${spec.title} submission links each declared resource"],
+  ["security-web-api-threats-deep.ts", "identify the authorized test scope"],
+  ["security-container-delivery-deep.ts", "Capture before-and-after evidence"],
+  ["quality-api-integration-testing-deep.ts", "At least one negative or boundary case"],
+  ["quality-browser-environment-testing-deep.ts", "the browser or environment scenario states the user-visible risk"],
+];
+for (const [file, marker] of evidenceContracts) {
+  if (!(sources.get(file) ?? "").includes(marker)) {
+    failures.push(`School practical evidence criterion missing: ${file} — ${marker}`);
+  }
 }
 
 if (failures.length) {

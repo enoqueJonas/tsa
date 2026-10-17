@@ -21,7 +21,7 @@ function blocksFor(spec: Spec): LessonBlock[] {
 
 function lessonFrom(spec: Spec): Lesson {
     return { id: `reliability-and-sre-${spec.id}`, title: spec.title, activities: [
-        { id: `reliability-and-sre-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: spec.intro, blocks: blocksFor(spec) } },
+        { id: `reliability-and-sre-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: blocksFor(spec).filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks: blocksFor(spec) } },
         { id: `reliability-and-sre-${spec.id}-002`, title: `Analyze: ${spec.title}`, estimatedMinutes: 55, content: { type: "practical", objective: `Apply ${spec.title} to the operated Steward ecosystem.`, scenario: "Treat Steward as a service with users and dependencies rather than a project that merely builds successfully. Start with a reliability question or failure hypothesis and use current architecture and operational evidence.", instructions: spec.practice, deliverables: ["Steward reliability analysis", "Evidence or measurement plan", "Improvement or risk note"], completionCriteria: ["The analysis connects technical behavior to service/user impact.", "Assumptions and missing evidence are explicit.", "The learner identifies an operational decision or next measurement rather than only describing terminology."] } },
         { id: `reliability-and-sre-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.reflection, minimumCharacters: 200 } },
     ] };

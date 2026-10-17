@@ -40,12 +40,12 @@ const practices: Record<string, PracticeSpec> = {
             "Continue from the Service dictionaries created in the previous checkpoint.",
             "In main.py, use if/elif/else to evaluate payments_api against the three eligibility conditions: active is True, endpoint is not empty, and age_days is an integer greater than or equal to zero.",
             "Print either \"Payments API is eligible\" or a specific rejection reason.",
-            "Change one field at a time to exercise inactive, missing-endpoint and invalid-age paths. Record the observed output for each case.",
+            "Change one field at a time to exercise inactive, missing-endpoint and invalid-age paths. Include age_days=True as an invalid input: Python considers booleans a subclass of integers, but a boolean is not a valid age in days. Record the output for each case.",
             "Restore the valid Payments API data before finishing.",
             "Write the rule as a small decision table in your notes. Do not extract a function yet; the next increment will make that refactor purposeful."
         ],
         deliverables: ["Working conditional eligibility logic", "Observed output for the valid path and three rejected paths", "Small eligibility decision table"],
-        completionCriteria: ["Every stated rule has an observable branch.", "The valid Payments API is accepted.", "Each invalid variation is rejected for an understandable reason.", "The checkpoint still uses explicit control flow so the next refactor has real code to improve."]
+        completionCriteria: ["Every stated rule has an observable branch.", "The valid Payments API is accepted.", "Each invalid variation, including age_days=True, is rejected for an understandable reason.", "The checkpoint still uses explicit control flow so the next refactor has real code to improve."]
     },
     "programming-with-python-functions-and-scope": {
         objective: "Turn the Service behavior you already built into named functions with explicit inputs, outputs and state changes.",
@@ -98,15 +98,15 @@ const practices: Record<string, PracticeSpec> = {
         scenario: "The current registry can create, activate, deactivate, find and filter Services, but invalid data is still easy to introduce and an unknown lookup simply returns None. Now that those behaviors exist, make failure deliberate without hiding programmer defects.",
         instructions: [
             "Continue from the refactored steward package from the previous checkpoint.",
-            "Add validation to create_service(): name and endpoint must be non-empty strings and age_days must be an integer greater than or equal to zero.",
-            "Create a ServiceValidationError exception for invalid Service input and raise it with a useful message.",
+            "Add validation to create_service(): name and endpoint must be non-empty strings after stripping surrounding whitespace; age_days must be a non-negative integer, explicitly rejecting boolean values even though bool subclasses int. Preserve the rules already discovered in Control Flow.",
+            "Create a ServiceValidationError exception for invalid Service input and raise it with a useful message. Place the exception type where create_service() can import or reference it without circular dependencies.",
             "Change find_service_by_name() so an unknown Service raises a ServiceNotFoundError instead of returning None.",
-            "In main.py, demonstrate one invalid create_service() call and one missing lookup. Catch only the expected domain exception at the boundary where you can print a useful message.",
+            "In main.py, demonstrate invalid name, whitespace-only endpoint, negative age, string age and boolean True age; each must raise ServiceValidationError. Demonstrate an unknown lookup raising ServiceNotFoundError. Catch only the expected exception types at the main.py boundary and show the messages.",
             "Deliberately introduce a programmer defect inside a temporary copy of the demo and prove that catch-all Exception handling would hide it. Remove the broad catch and restore the working code.",
             "Write down what callers should do for ServiceValidationError, ServiceNotFoundError and an unexpected exception."
         ],
         deliverables: ["Explicit Steward exception types", "Validated create_service()", "Missing-Service failure behavior", "Expected-failure demo", "Short caller-response table"],
-        completionCriteria: ["Invalid Service data is rejected at creation.", "Unknown lookup no longer silently returns None.", "Expected domain failures are handled specifically.", "Unexpected programmer defects are not swallowed.", "Existing valid Service and registry behavior still works."]
+        completionCriteria: ["Invalid Service data is rejected at creation, including blank/whitespace-only strings and age_days=True; valid age_days=0 remains accepted.", "Unknown lookup no longer silently returns None.", "Expected domain failures are handled specifically.", "Unexpected programmer defects are not swallowed.", "Existing valid Service and registry behavior still works."]
     },
     "programming-with-python-object-oriented-programming": {
         objective: "Evolve the existing dictionary-based Service into an object only after the accumulated behavior gives the object a reason to exist.",
@@ -116,12 +116,67 @@ const practices: Record<string, PracticeSpec> = {
             "Implement a Service class that owns name, endpoint, active and age_days. Keep the validation rules from the previous checkpoint.",
             "Move activate(), deactivate(), is_eligible() and summary() onto Service where doing so improves cohesion.",
             "Update registry functions to work with Service instances without changing their externally observable lookup/filter behavior.",
-            "Create a small Team class with a name, then give Service an optional owner_team through composition. Do not use inheritance between Team and Service.",
             "Update main.py to reproduce the same Payments API lifecycle demonstrated before the refactor.",
             "Record one reason the class is now justified and one reason you would reject creating a class for a concept that has only passive data."
         ],
-        deliverables: ["Service class", "Small Team composition example", "Updated registry integration", "Before/after behavior comparison", "Design rationale"],
-        completionCriteria: ["Service protects the validation rules already established.", "Activation/deactivation and eligibility behavior is preserved.", "Registry lookup/filtering works with Service objects.", "Team is composed with Service rather than forced into inheritance.", "The refactor changes structure without silently changing established behavior."]
+        deliverables: ["Service class", "Updated registry integration", "Before/after behavior comparison", "Design rationale"],
+        completionCriteria: ["Service protects the validation rules already established.", "Activation/deactivation and eligibility behavior is preserved.", "Registry lookup/filtering works with Service objects.", "The refactor changes structure without silently changing established behavior."]
+    },
+    "programming-with-python-encapsulation-and-invariants": {
+        objective: "Protect Service invariants through a deliberate public interface.",
+        scenario: "The Service registry already supports lifecycle transitions. Prevent callers from bypassing its domain rules through direct attribute mutation.",
+        instructions: ["Introduce a private-by-convention lifecycle field and expose an ordinary read method such as get_lifecycle(). Do not use @property here: decorators and properties are taught in later lessons.","Route activation through a method that rejects a missing service name or invalid state.","Demonstrate an attempted invalid transition and assert that the previous state remains unchanged.","Explain why a leading underscore is a convention rather than access-control security.","Retest registry creation, eligibility and lookup after the refactor."],
+        deliverables: ["Service invariant implementation","Passing and failing transition tests","Encapsulation trade-off note"],
+        completionCriteria: ["A rejected lifecycle transition leaves state unchanged, with an assertion showing it.","An ordinary get_lifecycle() method reports the lifecycle; the learner explains that a leading underscore is a convention and does not prevent direct assignment. Do not claim that an accessor makes state tamper-proof.","Registry lookup and eligibility remain correct after encapsulation."]
+    },
+    "programming-with-python-inheritance-and-overriding": {
+        objective: "Compare inherited behavior and overrides without confusing inheritance with ownership.",
+        scenario: "Extend a small notification/reporting abstraction in steward-core while keeping the existing Service/Team composition intact.",
+        instructions: ["Define a base Reporter with a method and a derived JsonReporter that overrides it.","Call both implementations and record which method runs.","Use super() in an override that genuinely extends base behavior and trace the call order.","Demonstrate a case where a Team should remain a collaborator rather than a Service subclass.","Write a short test verifying base and overridden behavior."],
+        deliverables: ["Reporter classes","Method lookup and super() trace","Inheritance versus composition rationale"],
+        completionCriteria: ["Both Reporter outputs are demonstrated and asserted.","The super() call order is recorded and explained.","Team remains a collaborator, and the is-a/has-a choice is justified."]
+    },
+    "programming-with-python-polymorphism-and-duck-typing": {
+        objective: "Use one interface with multiple implementations and observable dispatch.",
+        scenario: "The registry needs a summary exporter but should not depend on a single output format.",
+        instructions: ["Implement two exporters that each provide export(services) without sharing a base class.","Write a caller that accepts any compatible exporter and demonstrate both outputs.","Add a third implementation that returns a different format without changing the caller.","Pass an object missing export and capture the failure; distinguish a contract failure from a type hierarchy requirement.","Test the output for each exporter."],
+        deliverables: ["Exporter implementations","Dispatch and failure evidence","Contract decision"],
+        completionCriteria: ["Two unrelated exporter implementations work with one caller.","A third exporter works without modifying the caller.","An incompatible object produces an explained contract failure."]
+    },
+    "programming-with-python-decorators-and-function-wrapping": {
+        objective: "Implement transparent instrumentation around an existing registry operation.",
+        scenario: "Measure or log a registry function while preserving its arguments, return value and metadata.",
+        instructions: ["Write a decorator using a nested wrapper and *args/**kwargs.","Apply functools.wraps and verify the decorated function's __name__ is preserved.","Decorate a lookup function, call it with positional and keyword arguments, and show that results are unchanged.","Demonstrate and test how exceptions propagate through the wrapper.","Explain which concern belongs in the decorator and which remains in the domain function."],
+        deliverables: ["Reusable decorator","Output and exception tests","Function metadata evidence"],
+        completionCriteria: ["Positional and keyword calls preserve the original lookup result.","functools.wraps preserves function metadata.","Domain exceptions propagate unchanged through the wrapper."]
+    },
+    "programming-with-python-properties-class-methods-and-dataclasses": {
+        objective: "Choose class features based on their semantics rather than convenience.",
+        scenario: "The registry needs a derived display label, an alternate construction path and a compact immutable value representation.",
+        instructions: ["Add a read-only @property that derives a Service display label without storing duplicate state.","Create a @classmethod constructor that validates and builds a Service from a mapping.","Define a frozen dataclass for a repository coordinate and compare two equal instances.","Demonstrate the difference between classmethod and staticmethod with a concrete example, or explain why no staticmethod is needed.","Add a validated writable @property to a small Temperature class: reject temperatures below absolute zero before updating its backing field, and assert that a rejected assignment preserves the old value. Test invalid input, equality and attempted mutation."],
+        deliverables: ["Derived property and alternate constructor","Value-object dataclass","Behavior and failure tests"],
+        completionCriteria: ["The derived property reflects changing source state.","Alternate construction enforces invalid-input rejection.","Equal frozen dataclass values compare equal and reject reassignment. A failed Temperature property assignment raises ValueError and retains the previous reading."]
+    },
+    "programming-with-python-object-oriented-design-decisions": {
+        objective: "Make an explicit design decision using behavior, invariants and collaboration.",
+        scenario: "The registry now has Service, Team, exporters and decorators. Review the model for unnecessary inheritance, mutable shared state and duplicated policy.",
+        instructions: ["Draw the object collaboration graph with has-a and is-a relationships labelled.","Identify two invariants and show where each is enforced.","Compare a composition-based exporter with an inheritance-based alternative.","Refactor one design problem without changing external behavior and prove it with tests.","Record the rejected alternative and a trigger that would justify revisiting the decision."],
+        deliverables: ["Object model diagram","Refactor with regression tests","Decision record"],
+        completionCriteria: ["The diagram distinguishes has-a and is-a relationships.","Two invariants have explicit enforcement points and negative tests.","The refactor preserves external behavior and records a rejected alternative and revisit trigger."]
+    },
+    "programming-with-python-composition-and-collaboration": {
+        objective: "Add an owning Team collaborator to the existing Service registry without changing the Service's identity or lifecycle rules.",
+        scenario: "The Service class is already responsible for its own lifecycle. Ownership is a separate concern, so represent a Team as a collaborating object rather than a subclass.",
+        instructions: [
+            "Create a Team class with a name and a readable description method.",
+            "Give Service an optional owner_team reference through its constructor and explain why this is a has-a relationship.",
+            "Implement a Service method that delegates to Team to describe ownership.",
+            "Create two services with the same Team instance and demonstrate reference identity.",
+            "Replace the Team collaborator with a test double and show that the Service delegates without changing its class.",
+            "Record what changes when a shared Team instance is mutated and why that matters."
+        ],
+        deliverables: ["Team collaborator", "Service composition integration", "Delegation evidence", "Shared-reference test", "Design note"],
+        completionCriteria: ["Service has a Team rather than inherits from Team.", "Delegation is observable.", "The existing registry behavior still works.", "Shared references and their trade-offs are explained."]
     },
     "programming-with-python-comprehensions-iterators-and-pythonic-tools": {
         objective: "Improve real registry queries with Python iteration tools while keeping the existing behavior readable.",
@@ -161,7 +216,7 @@ const practices: Record<string, PracticeSpec> = {
             "Declare runtime dependencies separately from development-only tooling. If the current Steward core has no third-party runtime dependency, keep that list empty rather than adding a package merely to populate it.",
             "Declare mypy as development tooling using the dependency mechanism selected for the project.",
             "Configure the package so the steward module can be installed from the repository.",
-            "Delete .venv, create a new one and install the project using only commands justified by repository metadata.",
+            "Before replacing .venv, verify that it is a generated virtual environment in the Steward repository (not a symlink or a directory of project work); preserve any diagnostic information you need. Recreate it with the interpreter and commands documented in the repository metadata, then install the project from that metadata.",
             "Run main.py and the mypy check from the clean environment.",
             "Inspect the resolved environment and explain what is reproducible now and what would still require a lock strategy for stronger reproducibility."
         ],
@@ -176,27 +231,31 @@ const practices: Record<string, PracticeSpec> = {
             "Use a payload where age_days is the string \"184\" and reproduce the failure. Capture the original traceback before changing code.",
             "Write at least two hypotheses: for example, the Service validator is wrong, or the import boundary failed to convert external text.",
             "Use breakpoint(), pdb, targeted logging or temporary inspection to observe the value and type immediately before Service construction.",
-            "Fix the earliest responsible boundary by converting and validating external age_days before constructing Service. Do not weaken the Service invariant to accept arbitrary strings.",
-            "Add one invalid payload such as age_days \"unknown\" and preserve the useful failure behavior.",
+            "Fix the earliest responsible boundary: accept only a decimal integer string matching the agreed import format, convert it with int(), then pass the resulting integer into Service validation. Reject booleans, non-string/non-integer source types and malformed text explicitly. Do not weaken the Service invariant to accept arbitrary strings.",
+            "Add invalid payloads age_days=\"unknown\", age_days=True and age_days=\"184.5\"; require each to fail without silent coercion. Distinguish text parsing errors from validly parsed values that violate the domain rule.",
             "Rerun the original valid-text payload and the rest of the Steward demo, then record the evidence chain from symptom to root cause."
         ],
         deliverables: ["Original traceback", "Competing hypotheses", "Diagnostic observation", "Boundary-level fix", "Invalid-payload evidence", "Chronological debugging log"],
-        completionCriteria: ["At least one hypothesis is falsified by observation.", "The fix occurs at the external-data boundary rather than weakening the Service model.", "The string \"184\" can be imported as integer age 184.", "The string \"unknown\" still fails deliberately.", "Previously established Steward behavior continues to run."]
+        completionCriteria: ["At least one hypothesis is falsified by observation.", "The fix occurs at the external-data boundary rather than weakening the Service model.", "The string \"184\" can be imported as integer age 184.", "The string \"unknown\", boolean True and decimal text \"184.5\" still fail deliberately, without silent coercion.", "Previously established Steward behavior continues to run."]
     },
 
 };
 
-function firstTeachingParagraph(lesson: Lesson): string | undefined {
+function fullTeachingBody(lesson: Lesson): string | undefined {
     const reading = lesson.activities.find((activity) => activity.content.type === "reading");
     if (!reading || reading.content.type !== "reading") return undefined;
-    return reading.content.blocks?.find((block) => block.type === "paragraph")?.text;
+    const paragraphs = reading.content.blocks
+        ?.filter((block) => block.type === "paragraph")
+        .map((block) => block.text.trim())
+        .filter(Boolean);
+    return paragraphs?.length ? paragraphs.join("\n\n") : reading.content.body;
 }
 
 export const programmingWithPythonQualityLessons: Lesson[] = programmingWithPythonRichLessons.map((lesson) => ({
     ...lesson,
     activities: lesson.activities.map((activity) => {
         if (activity.content.type === "reading") {
-            const teachingBody = firstTeachingParagraph(lesson);
+            const teachingBody = fullTeachingBody(lesson);
             return teachingBody ? { ...activity, content: { ...activity.content, body: teachingBody } } : activity;
         }
         if (activity.content.type === "practical") {

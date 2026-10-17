@@ -27,10 +27,12 @@ const practices: Record<string, PracticalContent> = {
             "Run the playbook once and record changed tasks.",
             "Run it again without changing inputs and record the second result.",
             "Introduce a safe drift condition, rerun, and identify exactly which task repairs it.",
+            "Run Ansible check mode before applying the drift repair, compare predicted changes with the subsequent real run, and record any module that cannot predict accurately.",
+            "Use an isolated test file to introduce an invalid desired state and prove the play fails without silently leaving the host compliant on paper.",
             "Explain one case where idempotent automation could still enforce the wrong state consistently."
         ],
         deliverables: ["Minimal desired-state play", "First/second-run comparison", "Drift-repair evidence"],
-        completionCriteria: ["Rocky/RHEL package management uses DNF-aware Ansible behavior rather than Ubuntu apt assumptions.", "The unchanged second run converges without unnecessary mutation.", "The learner can separate idempotency from correctness."],
+        completionCriteria: ["Rocky/RHEL package management uses DNF-aware Ansible behavior rather than Ubuntu apt assumptions.", "The unchanged second run converges without unnecessary mutation.", "Check-mode predictions are compared with actual drift repair, including documented limitations.", "A deliberately invalid desired state fails visibly rather than claiming convergence.", "The learner can separate idempotency from correctness."],
     },
     "Ansible Fundamentals": {
         type: "practical",
@@ -72,10 +74,12 @@ const practices: Record<string, PracticalContent> = {
             "Use become only on tasks or plays that genuinely require it.",
             "Manage one configuration file or template and notify a handler only when that resource changes.",
             "Run once, run again unchanged, then modify the managed input and prove the handler fires only on the meaningful change.",
+            "Deliberately introduce an invalid managed configuration in a disposable environment; use a validation command before replacement so the handler is not triggered by invalid input.",
+            "Record whether the failed candidate left the previous working configuration and running service intact, and explain what Ansible cannot automatically roll back.",
             "Review the playbook and remove any task that actually belongs to the GitLab CI/CD deployment pipeline or application release process."
         ],
         deliverables: ["Focused playbook", "Handler/change evidence", "Boundary review"],
-        completionCriteria: ["Task names communicate intent.", "Handlers respond to real changes instead of restarting services on every run.", "Host configuration remains distinct from application deployment."],
+        completionCriteria: ["Task names communicate intent.", "Handlers respond to real changes instead of restarting services on every run.", "Invalid configuration is rejected before replacement and the last valid file remains available.", "Host configuration remains distinct from application deployment."],
     },
     "Roles Concepts": {
         type: "practical",

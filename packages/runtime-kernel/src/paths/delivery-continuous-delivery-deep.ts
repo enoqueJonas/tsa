@@ -31,7 +31,7 @@ function richLesson(
             id: `continuous-delivery-deployment-${id}-001`,
             title,
             estimatedMinutes: 40,
-            content: { type: "reading", body: intro, blocks },
+            content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || intro, blocks },
         }],
     };
 }
@@ -49,6 +49,9 @@ function practicalLesson(): Lesson {
                     type: "reading",
                     body: "Before automating deployment, define what may change, what must remain immutable and what evidence determines success.",
                     blocks: [
+                        { type: "heading", id: "worked-release-promotion", text: "Worked promotion and rollback decision", level: 2 },
+                        { type: "paragraph", text: "Imagine CI publishes Steward image sha256:abc123 (illustrative), while staging runs sha256:old456. The deployment manifest must point to the exact approved digest, not the mutable latest tag. Before promotion, record a healthy request to staging and a database schema compatibility check. Promote the digest, repeat the same request and compare the runtime-reported version/digest with the approved release record. An HTTP response from a reverse proxy alone is not sufficient if the application or database is unhealthy." },
+                        { type: "paragraph", text: "Now deliberately break only a disposable staging configuration value and make the application-level check fail. The deployment gate must report failure and stop further promotion. Restore the prior configuration or last-known-good image, verify the original request succeeds and preserve a timeline of the failed check and recovery. If schema contraction has already removed data used by the old release, stop: container rollback alone is unsafe." },
                         { type: "heading", id: "release-contract", text: "Define the release contract", level: 2 },
                         { type: "paragraph", text: "Choose one CI-produced Steward image as the release candidate. Record its application version, source commit and immutable image identity. Define the target environment, runtime configuration source, migration behavior, verification endpoint and rollback trigger." },
                         { type: "list", items: ["The artifact is not rebuilt during deployment.", "Secrets remain outside the image and repository.", "Database migration behavior is explicit.", "Success and rollback criteria are observable.", "The previous known-good release remains identifiable."] },
@@ -69,7 +72,7 @@ function practicalLesson(): Lesson {
                         "Define the deployment target and environment-specific configuration inputs.",
                         "Automate image retrieval, service update and application startup without rebuilding the application artifact.",
                         "Run database migrations deliberately and capture their result.",
-                        "Verify application health and one meaningful Steward API behavior after deployment.",
+                        "Verify API health and authorized behavior, then verify that the publisher and consumer process a lifecycle event using the approved image.",
                         "Capture deployment evidence that another engineer can connect back to the original source revision.",
                     ],
                     deliverables: ["Versioned deployment workflow", "Release identity record", "Deployment execution evidence", "Post-deployment verification evidence"],
@@ -88,11 +91,11 @@ function practicalLesson(): Lesson {
                         "Deploy or simulate a candidate that fails the predefined verification criterion.",
                         "Use evidence to identify whether the failure is artifact, configuration, migration, runtime or infrastructure related.",
                         "Execute the documented rollback or forward-fix path.",
-                        "Verify the known-good release identity and application behavior after recovery.",
+                        "After recovery, verify that the API, outbox publisher and lifecycle consumer use the approved image, then prove an authenticated API request and one asynchronous lifecycle event complete.",
                         "Document any class of change that your rollback mechanism cannot safely reverse.",
                     ],
                     deliverables: ["Failure evidence", "Rollback/recovery execution record", "Known-good verification", "Documented rollback limitations"],
-                    completionCriteria: ["Recovery uses a predefined release identity rather than 'latest'.", "The learner can explain why application rollback may not imply data rollback.", "The failed release does not remain ambiguously active."],
+                    completionCriteria: ["Recovery uses a predefined release identity rather than 'latest'.", "The learner can explain why application rollback may not imply data rollback.", "The failed release does not remain ambiguously active, including API, publisher and consumer roles."],
                 },
             },
             {
@@ -132,7 +135,8 @@ export const continuousDeliveryDeploymentDeepLessons: Lesson[] = [
     ], [djangoMigrations]),
     richLesson("rollback", "Rollback", "Rollback is the controlled restoration of a previously known-good release state. It depends on immutable release identity, compatible persistent state and a verification procedure.", [
         { heading: "Know what you can reverse", body: "Application image, runtime configuration and routing may be reversible quickly. Database writes, external side effects and irreversible migrations may not be. Define rollback boundaries before deployment." },
-        { heading: "Verify after rollback", body: "A successful command is not proof of recovery. Confirm the previous image identity, health and at least one meaningful Steward behavior." },
+        { heading: "Worked rollback decision under schema coexistence", body: "Suppose Steward release B is deployed while both old and new application versions can still read the expanded ownership schema. An authenticated ownership update fails after deployment, but release A previously passed the same path. Before switching containers, verify that no contract migration removed columns A still needs and that asynchronous publisher/consumer roles will not emit incompatible events. If compatibility holds, redeploy the recorded A image digest for all affected roles, then verify an ownership update and one lifecycle message from the client path. If B has already removed an old column or published an irreversible external effect, replacing the image does not undo that state: halt promotion, contain the incident and choose a forward repair or state-recovery procedure instead. The decision depends on observed state, not the success of a deployment command." },
+                { heading: "Verify after rollback", body: "A successful command is not proof of recovery. Confirm the previous image identity, health and at least one meaningful Steward behavior." },
     ], [dockerCompose, djangoMigrations]),
     richLesson("rolling-deployments", "Rolling Deployments", "A rolling deployment replaces instances gradually so some capacity remains available while new instances start. It is useful only when multiple interchangeable instances exist and versions can coexist safely.", [
         { heading: "Understand the prerequisites", body: "Rolling deployment assumes traffic can be distributed across replicas and that old/new application versions tolerate the same dependencies and schema during the rollout." },
@@ -140,14 +144,17 @@ export const continuousDeliveryDeploymentDeepLessons: Lesson[] = [
     ], [dockerCompose]),
     richLesson("blue-green", "Blue-Green Deployments", "Blue-green deployment maintains two complete application environments so a release can be verified on the inactive side before traffic switches.", [
         { heading: "Shift traffic deliberately", body: "The technique reduces application switch-over risk because the previous environment can remain intact, but shared databases and external side effects still complicate rollback." },
-        { heading: "Count the cost", body: "Blue-green requires duplicate runtime capacity and disciplined routing. In a budget homelab, the learner should understand the trade-off rather than force the pattern into every service." },
+        { heading: "Worked traffic switch and failed verification", body: "Suppose release A serves Steward requests through the current router while release B runs behind a separate target with the same compatible database schema. Before changing the route, verify B directly against representative authenticated requests and record its image digest. Switch the intended client route to B, observe that clients reach the B digest, and stop if the ownership-update smoke test fails. Switching traffic back to A may recover application behavior only while shared database changes and emitted side effects remain compatible. This is not a two-database rollback: duplicating runtime processes does not duplicate persistent authority or make externally published events reversible." },
+                { heading: "Count the cost", body: "Blue-green requires duplicate runtime capacity and disciplined routing. In a budget homelab, the learner should understand the trade-off rather than force the pattern into every service." },
     ], [dockerCompose]),
     richLesson("canary", "Canary Deployment Concepts", "Canary deployment exposes a new release to a limited slice of traffic or users before broader rollout. Its value comes from comparing real runtime evidence while limiting blast radius.", [
         { heading: "Define the observation", body: "A canary without measurable success criteria is just partial exposure. Decide which errors, latency, business behavior or operator signals would stop promotion." },
+        { heading: "Worked decision: a small sample cannot justify promotion", body: "Suppose a team routes 5% of Steward requests to release B and observes zero errors over ten requests. That is not strong evidence that B has a lower failure rate than A: a rare failure could easily be absent from ten observations. Compare comparable request types and enough traffic over a justified window, include authenticated ownership updates rather than only health checks, and define stop conditions before exposure. When homelab traffic is sparse, perform controlled regression and defer a production-like canary rather than inventing confidence from an arbitrary percentage." },
         { heading: "Know when it is premature", body: "Steward does not yet have the traffic scale or observability maturity to justify implementing a real canary. The concept becomes actionable later when Reliability Engineering adds stronger runtime signals." },
     ], []),
     richLesson("feature-flags", "Feature Flag Concepts", "Feature flags decouple code deployment from feature exposure. They can reduce release coupling, but they introduce runtime configuration state that must be owned, tested and eventually removed.", [
         { heading: "Separate deployment from activation", body: "A compatible code path can be deployed dark, then enabled for selected users or conditions. This can reduce rollback pressure when feature activation is reversible independently of the binary." },
+        { heading: "Worked activation failure and flag removal", body: "Imagine a compatible ownership-summary feature shipped disabled by default. Deployment can be verified with the flag off, then an authorized operator enables it for a small test scope. If the new summary is wrong, disabling the flag can restore the old application path without changing the image, provided the feature did not already produce irreversible database updates or external effects. Test the disabled and enabled paths, record who may change the flag, and remove both branches after the feature becomes permanently accepted. A flag is not a substitute for schema compatibility or data recovery." },
         { heading: "Control flag debt", body: "Temporary flags need owners and removal criteria. Stale flags multiply execution paths and make testing, debugging and reasoning harder." },
     ], [twelveFactor]),
     practicalLesson(),

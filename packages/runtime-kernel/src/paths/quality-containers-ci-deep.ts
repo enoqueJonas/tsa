@@ -45,7 +45,34 @@ type Spec = {
     warning?: string;
 };
 
+const practicalProofs: Record<string, [string, string]> = {
+    "testcontainers-lifecycle": ["Executed test-owned container lifecycle trace","A failed setup cannot leave an unnoticed running dependency"],
+    "testcontainers-networking": ["Host-to-container mapped-port connection and failure trace","Tests use resolved mapped ports rather than assuming host port constants"],
+    "database-migrations-isolation": ["Fresh database migration, seed and teardown execution evidence","Two independent test runs prove schema and data do not leak"],
+    "testcontainers-observability": ["Startup/wait/log timeline from a controlled container failure","A timeout is diagnosable from a captured readiness signal"],
+    "gitlab-runners": ["Actual runner executor/capabilities and trust boundary record","Job placement and Docker capability assumptions are explicit"],
+    "gitlab-container-execution": ["Runner-local Testcontainers smoke execution and daemon evidence","The test fails visibly when its container runtime is unavailable"],
+    "gitlab-cache-artifacts": ["Cache reuse contrasted with immutable test report artifact","Cache eviction cannot erase required release-gate evidence"],
+    "gitlab-dag-rules": ["Merge-request/default-branch/schedule DAG and rule traces","A failed dependency cannot be bypassed by a needs/rules mismatch"],
+    "gitlab-security": ["Masked/protected variable and least-privilege execution check","A pipeline from an untrusted ref cannot access protected credentials"],
+    "gitlab-environments-approvals": ["Promotion rule, approval and environment identity record","An unapproved job cannot promote a candidate into the protected environment"],
+    "test-containers": ["Deterministic container-backed integration suite evidence","Tests recreate their dependency state and isolate failed runs"],
+    "dockerized-dependencies": ["PostgreSQL dependency health and preserved test database boundary","The test rejects an unready dependency rather than racing startup"],
+    "ephemeral-environments": ["Temporary test environment creation, identity and cleanup record","Cleanup occurs after normal success and controlled failure"],
+    "gitlab-ci-foundations": ["Runnable GitLab Maven job with stored JUnit report","A failed test exits nonzero and its report remains accessible"],
+    "pipeline-stages": ["Quality stage matrix with fast checks and expensive checks","A stage cannot accidentally skip a required verification gate"],
+    "parallelization": ["Serial-versus-parallel timings and state-isolation failures","Concurrent tests cannot contaminate another worker's state"],
+    "reports-artifacts": ["JUnit/Allure evidence linkable to commit and CI run","Missing or unreadable test reports are treated as missing evidence"],
+    "quality-gates": ["Explicit pass/fail/no-evidence decision table and examples","A skipped or not-run critical check cannot yield release approval"],
+    "test-selection": ["Changed-scope and full-suite selection matrix with risk rationale","Critical regressions remain covered across schedule and merge gates"],
+    "failure-triage": ["Failure classification backed by logs, test output and runner state","A real product regression is not mislabeled as infrastructure flakiness"],
+    "flake-containment": ["Reproduction count, cause hypothesis and quarantine expiry","Quarantine does not silently count a known failing check as green"],
+    "internal-package-compatibility": ["Nexus-resolved candidate package and consumer compatibility trace or justified deferral","No internal test package is fabricated when extraction lacks evidence"],
+};
+
 function lessonFrom(spec: Spec): Lesson {
+    const proof = practicalProofs[spec.id];
+    if (!proof) throw new Error(`Missing Quality CI practical evidence: ${spec.id}`);
     const blocks: LessonBlock[] = [
         { type: "paragraph", text: spec.core },
         { type: "heading", id: `${spec.id}-principles`, text: "Core principles", level: 2 },
@@ -62,8 +89,8 @@ function lessonFrom(spec: Spec): Lesson {
         id: `quality-ci-${spec.id}`,
         title: spec.title,
         activities: [
-            { id: `quality-ci-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: spec.core, blocks } },
-            { id: `quality-ci-${spec.id}-002`, title: `Apply: ${spec.title}`, estimatedMinutes: 55, content: { type: "practical", objective: `Apply ${spec.title} to the Steward quality system.`, scenario: "Use Steward's existing JUnit/REST Assured/Playwright Java framework, deployed environments and immutable release identity. Improve the pipeline without hiding failures or duplicating evidence at the wrong test level.", instructions: spec.practice, deliverables: ["Pipeline or container change", "Execution evidence", "Short decision/triage note"], completionCriteria: ["The change improves repeatability or decision quality.", "Missing/skipped evidence remains visible.", "The learner can explain why this stage belongs at this point in the pipeline."] } },
+            { id: `quality-ci-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: blocks.filter((b) => b.type === "paragraph").map((b) => b.text).join("\n\n") || spec.core, blocks } },
+            { id: `quality-ci-${spec.id}-002`, title: `Apply: ${spec.title}`, estimatedMinutes: 55, content: { type: "practical", objective: `Prove ${spec.title} with this concrete outcome: ${proof[0]}.`, scenario: "Use Steward's existing JUnit/REST Assured/Playwright Java framework, deployed environments and immutable release identity. Improve the pipeline without hiding failures or duplicating evidence at the wrong test level.", instructions: spec.practice, deliverables: ["Versioned pipeline or container change", proof[0], "Observed success/failure transcript", "Short decision/triage note"], completionCriteria: [proof[1], `The submitted transcript identifies the exact ${spec.title} control, the command or job that exercised it, and the resulting pass/fail evidence.`, `A deliberately failed or missing ${spec.title} check cannot be reported as a clean successful quality gate; capture the observed blocking or advisory behavior and justify the policy.`] } },
             { id: `quality-ci-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: `Explain the main risk addressed by ${spec.title}, how it applies to Steward, and one way a poorly designed implementation could produce misleading green results.`, minimumCharacters: 200 } },
         ],
     };
@@ -187,9 +214,9 @@ const specs: Spec[] = [
         principles: ["Jobs execute on runners; stages provide coarse ordering while needs can express a DAG for faster dependency-aware execution.", "rules should make pipeline intent explicit for merge requests, branches, tags and schedules.", "Cache accelerates reusable downloaded/build data; artifacts preserve outputs/evidence between jobs and after execution.", "Protected/masked CI variables and least-privilege credentials protect environment and Nexus access.", "Pipeline source, commit SHA, environment and test selection are evidence identity."],
         steward: ["steward-tests should use GitLab CI/CD as its primary CI implementation and produce JUnit/Allure-compatible evidence plus Playwright/API diagnostics.", "The same Maven commands proven locally remain the execution contract; GitLab orchestrates them rather than replacing Maven."],
         practice: ["Create the initial .gitlab-ci.yml for steward-tests.", "Run a Maven verification job on an appropriate GitLab Runner.", "Use rules to distinguish merge-request, default-branch and scheduled behavior.", "Use needs where a DAG improves feedback without weakening dependencies.", "Publish JUnit/test artifacts and inspect them after a controlled failure.", "Define cache versus artifact usage and configure one of each deliberately."],
-        code: "stages:\n  - verify\n  - integration\n  - browser\n\njava-verify:\n  stage: verify\n  script:\n    - mvn -B -U clean test\n  artifacts:\n    when: always\n    reports:\n      junit: target/surefire-reports/TEST-*.xml",
+        code: "stages:\n  - verify\n  - integration\n  - browser\n\njava-verify:\n  stage: verify\n  image: maven:3.9-eclipse-temurin-17\n  script:\n    - mvn -B -U clean test\n  artifacts:\n    when: always\n    reports:\n      junit: target/surefire-reports/TEST-*.xml",
         language: "yaml",
-        warning: "Do not encode business/test logic in GitLab YAML. The pipeline should orchestrate reproducible Maven commands and preserve evidence."
+        warning: "Example output contract: an executed job reports the Maven exit code, test count and JUnit report path; GitLab archives matching XML files with artifacts:when:always even when tests fail. The YAML is intentionally a minimal teaching excerpt, not a full integration/browser pipeline: defining stages alone does not create jobs for those stages. Do not encode business/test logic in GitLab YAML. The pipeline should orchestrate reproducible Maven commands and preserve evidence."
     },
     {
         id: "pipeline-stages",
@@ -197,8 +224,8 @@ const specs: Spec[] = [
         core: "Pipeline stages should order feedback by cost, speed, dependency and decision value. Fast checks should reject obvious failures early; slower evidence should run when its additional confidence justifies the cost.",
         principles: ["Fail fast on deterministic high-signal checks.", "Use Maven Surefire for fast unit/component-style execution in the `test` phase and Maven Failsafe for integration-style execution across `integration-test` and `verify`; keep their inclusion/tag rules deliberate rather than relying on accidental class-name discovery.", "Do not rerun the same behavior through every layer.", "Make stage dependencies explicit.", "Preserve one release identity across promotion-oriented evidence."],
         steward: ["A sensible GitLab pipeline can progress from static/build checks to unit/component, API/integration, selected browser checks and then targeted non-functional evidence.", "Not every non-functional baseline belongs on every commit; cadence should follow risk and cost."],
-        practice: ["Map the existing Steward checks into ordered stages.", "Show which JUnit tests Surefire executes during `mvn test` and which integration tests Failsafe executes/validates through `mvn verify`.", "Prove an integration-test failure makes `verify` fail rather than being lost between `integration-test` and `verify`.", "Identify duplicate evidence and remove unjustified repetition.", "Define which failures block later stages and why."],
-        code: "quality:\n  stages:\n    - build-and-static\n    - unit-component\n    - api-integration\n    - browser-smoke\n    - targeted-non-functional",
+        practice: ["Map the existing Steward checks into ordered stages.", "Show which JUnit tests Surefire executes during `mvn test` and which integration tests Failsafe executes/validates through `mvn verify`.", "Prove an integration-test failure makes `verify` fail rather than being lost between `integration-test` and `verify`.", "Capture the failing Maven exit code, matching JUnit XML and GitLab job status in a disposable negative-control run; prove downstream jobs that require the failed job do not silently publish success.", "Identify duplicate evidence and remove unjustified repetition.", "Define which failures block later stages and why."],
+        code: "stages:\n  - build-and-static\n  - unit-component\n  - api-integration\n  - browser-smoke\n  - targeted-non-functional\n\nunit-tests:\n  stage: unit-component\n  image: maven:3.9-eclipse-temurin-17\n  script:\n    - mvn -B test",
         language: "yaml",
     },
     {
@@ -257,8 +284,8 @@ const specs: Spec[] = [
         core: "Once tsa-test-core is a versioned internal dependency, CI must prove that candidate versions can be published, resolved and consumed without turning source copying or local paths into hidden coupling.",
         principles: ["Build and identify the package artifact once.", "Publish candidate versions to the internal Maven repository.", "Test consumers against explicit candidate/approved versions.", "Treat public API compatibility as a release concern."],
         steward: ["Steward remains the first real consumer. A tsa-test-core change should run package tests, publish a candidate artifact, install it through Nexus Maven repository and run a focused Steward compatibility suite.", "Steward-specific clients, workflows and assertions remain in the Steward repository."],
-        practice: ["Design the CI path from tsa-test-core source to internal artifact to Steward consumer test.", "Define candidate version identity and promotion/approval expectations.", "Prove the consumer installs through the repository rather than a local path."],
-        code: "mvn -U clean deploy -Drevision=0.2.0-rc1\\nmvn -U test -Dtsa-test-core.version=0.2.0-rc1 -Dgroups=compatibility",
+        practice: ["First check the evidence gate: if tsa-test-core extraction was justified by independent consumers, design and run its source-to-Nexus-to-Steward CI path; otherwise document the deferred extraction and use a clearly labeled training package to demonstrate the repository mechanism.", "For a real extracted package or labeled fixture, define candidate version identity and promotion/approval expectations.", "Where a package was published, prove the consumer resolves it through Nexus rather than a local path; never claim fixture evidence as proof that the real shared package was earned."],
+        code: "# Run from the tsa-test-core checkout only after extraction is justified.\n# Requires configured Nexus distributionManagement and publish credentials.\nmvn -B -U clean deploy -Drevision=0.2.0-rc1\n\n# In a separate steward-tests checkout that resolves packages via Nexus:\nmvn -B -U test -Dtsa-test-core.version=0.2.0-rc1 -Dgroups=compatibility",
         language: "bash",
     },
 ];

@@ -30,7 +30,7 @@ function richLesson(spec: LessonSpec): Lesson {
         id: `cloud-architecture-and-cost-${spec.id}`,
         title: spec.title,
         activities: [
-            { id: `cloud-architecture-and-cost-${spec.id}-001`, title: spec.title, estimatedMinutes: 40, content: { type: "reading", body: spec.intro, blocks } },
+            { id: `cloud-architecture-and-cost-${spec.id}-001`, title: spec.title, estimatedMinutes: 40, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks } },
             { id: `cloud-architecture-and-cost-${spec.id}-002`, title: `Apply: ${spec.title}`, estimatedMinutes: 45, content: { type: "practical", objective: `Apply ${spec.title} to Steward's remote architecture.`, scenario: "Steward now has a provider-neutral target architecture and Infrastructure as Code baseline. Review whether that design is actually proportionate, resilient enough, recoverable and affordable before treating it as the Cloud Engineer target.", instructions: spec.practice, deliverables: ["Architecture evidence", "Trade-off note", "Cost or recovery assumptions where relevant"], completionCriteria: ["The decision is tied to a concrete Steward driver.", "Failure and operational consequences are explicit.", "The solution avoids unnecessary architecture for its own sake."] } },
             { id: `cloud-architecture-and-cost-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.questions.join("\n\n"), minimumCharacters: 180 } },
         ],
