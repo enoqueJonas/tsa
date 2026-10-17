@@ -585,3 +585,10 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - Inserted a task-specific reading immediately before each practical: scenario and hypothesis, first observations, accepted evidence, measurable abort condition and recovery procedure.
 - Added resolved-runtime checks for each path foundation and every practical. The registry remains a static ordered path list to preserve integrity parser compatibility.
 - **New commits not locally verified yet:** run `pnpm test` and `pnpm build`. Source coverage does not prove real telemetry backends, alert routing, backup restoration, incident response or fault-injection execution. Learner navigation and progress controls remain deferred.
+
+### 2026-10-18 — Architect full-school source-level instructional pass
+
+- User verified Reliability Engineer at `2adf289d`: eight passing tests and successful uncached runtime/web builds.
+- Enhanced **all 10 Architect learning paths** with worked design decisions, explicit architectural constraints, trade-offs, and counterexamples. Every authored practical has its own immediately preceding preparation lesson with the task's scenario, first analysis steps, evidence requirements and rejected alternative/falsification analysis.
+- Added resolved curriculum checks for all ten foundations and every practical's preceding tradeoff reading. Preserved the static school registry to avoid curriculum-integrity parser drift.
+- **Pending:** local test/build verification, substantive per-example execution and independent architecture review. The source-level pass is not proof of a live architecture migration or production adoption. Learner progress and navigation testing remain deferred.
