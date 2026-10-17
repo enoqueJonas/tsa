@@ -607,3 +607,11 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - Each path begins with a concept, worked evidence case and counterargument. Every practical receives a preceding scenario-specific reading with first actions, independently inspectable acceptance conditions, failure limits and non-fabrication expectations.
 - Resolved-runtime checks now cover all seven path introductions and each practical's immediate preparation.
 - **Pending:** local `pnpm test`/`pnpm build`; independent demonstration of capstone implementation, deployment and defence. Source-coverage completion does not prove learner proficiency or real artifact execution. Navigation and progress UI acceptance still deferred.
+
+### 2026-10-18 — All-school resolved learner-facing audit initiated
+
+- User verified Professional Engineer at `ddb7a12c`: **8/8 tests passing** and two successful, uncached build tasks.
+- Added `scripts/audit-learner-facing-curriculum.mjs` which compiles and inspects the **assembled/normalized learner-visible journey** rather than inferring completion solely from source strings. Reports per-school path/lesson/practical/code-block coverage, brief body-only reading candidates and repeated heading anchors. Finds empty readings, empty code/list blocks, missing code languages, and duplicate school/path/lesson/activity identifiers.
+- Introduced **nonblocking** inventory into the smoke suite; `node scripts/audit-learner-facing-curriculum.mjs --strict` exits nonzero on structural findings. Nonblocking mode is deliberate until the initial findings are triaged; it is not a declaration that findings are absent.
+- This is an initial cross-school structural/content-health audit, **not** proof of prerequisite correctness or independent example execution. Next audit work: inspect real output, resolve any findings, then add strict regression enforcement where safe, review short body-only readings and conduct controlled exercise execution. Progress persistence and learner navigation remain deferred.
+- New changes await user-run `pnpm test`/`pnpm build`; do not claim verified beforehand.
