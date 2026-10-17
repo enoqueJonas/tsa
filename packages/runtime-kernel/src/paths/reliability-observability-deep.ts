@@ -48,7 +48,7 @@ function blocksFor(spec: Spec): LessonBlock[] {
 
 function lessonFrom(spec: Spec): Lesson {
   return { id: `observability-${spec.id}`, title: spec.title, activities: [
-    { id: `observability-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: spec.intro, blocks: blocksFor(spec) } },
+    { id: `observability-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: blocksFor(spec).filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks: blocksFor(spec) } },
     { id: `observability-${spec.id}-002`, title: `Observe: ${spec.title}`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${spec.title} to Steward.`, scenario: "Use the current Steward architecture and the Reliability Risk Map. Start from a user-visible or operational question, instrument only what is necessary, then verify that the resulting telemetry actually answers the question.", instructions: spec.practice, deliverables: ["Operational question", "Telemetry evidence", "Interpretation and gap note"], completionCriteria: ["The signal is tied to a concrete question.", "Context is sufficient to distinguish relevant causes or requests.", "The learner records what the telemetry still cannot prove."] } },
     { id: `observability-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.reflection, minimumCharacters: 200 } },
   ] };
