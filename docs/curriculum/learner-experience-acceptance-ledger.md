@@ -136,19 +136,19 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 | architect | `architect-modularity-deep` | In review | In review | In review | — | — | Source-level audit; real learner portfolio and UX pending |
 | architect | `architect-resilience-architecture-deep` | In review | In review | In review | — | — | Source-level audit; real learner portfolio and UX pending |
 | architect | `architect-scalability-distributed-systems-deep` | In review | In review | In review | — | — | Source-level audit; real learner portfolio and UX pending |
-| technical-steward | `technical-steward-architecture-governance-deep` | — | — | — | — | — | Not started |
-| technical-steward | `technical-steward-change-service-governance-deep` | — | — | — | — | — | Not started |
-| technical-steward | `technical-steward-controls-compliance-assurance-deep` | — | — | — | — | — | Not started |
-| technical-steward | `technical-steward-engineering-governance-deep` | — | — | — | — | — | Not started |
-| technical-steward | `technical-steward-handbook-standards-deep` | — | — | — | — | — | Not started |
-| technical-steward | `technical-steward-milestone-deep` | — | — | — | — | — | Not started |
-| technical-steward | `technical-steward-security-data-governance-deep` | — | — | — | — | — | Not started |
-| technical-steward | `technical-steward-technical-debt-health-deep` | — | — | — | — | — | Not started |
-| technical-steward | `technical-steward-technical-leadership-deep` | — | — | — | — | — | Not started |
-| technical-steward | `technical-steward-third-party-lifecycle-risk-deep` | — | — | — | — | — | Not started |
-| technical-steward | `technical-steward-technology-governance-deep` | — | — | — | — | — | Not started |
-| technical-steward | `technical-steward-technology-risk-deep` | — | — | — | — | — | Not started |
-| technical-steward | `technical-steward-strategy-capability-deep` | — | — | — | — | — | Not started |
+| technical-steward | `technical-steward-architecture-governance-deep` | In review | In review | In review | — | — | Whole-school source triage; learner-level acceptance pending |
+| technical-steward | `technical-steward-change-service-governance-deep` | In review | In review | In review | — | — | Whole-school source triage; learner-level acceptance pending |
+| technical-steward | `technical-steward-controls-compliance-assurance-deep` | In review | In review | In review | — | — | Whole-school source triage; learner-level acceptance pending |
+| technical-steward | `technical-steward-engineering-governance-deep` | In review | In review | In review | — | — | Whole-school source triage; learner-level acceptance pending |
+| technical-steward | `technical-steward-handbook-standards-deep` | In review | In review | In review | — | — | Whole-school source triage; learner-level acceptance pending |
+| technical-steward | `technical-steward-milestone-deep` | In review | In review | In review | — | — | Whole-school source triage; learner-level acceptance pending |
+| technical-steward | `technical-steward-security-data-governance-deep` | In review | In review | In review | — | — | Whole-school source triage; learner-level acceptance pending |
+| technical-steward | `technical-steward-technical-debt-health-deep` | In review | In review | In review | — | — | Whole-school source triage; learner-level acceptance pending |
+| technical-steward | `technical-steward-technical-leadership-deep` | In review | In review | In review | — | — | Whole-school source triage; learner-level acceptance pending |
+| technical-steward | `technical-steward-third-party-lifecycle-risk-deep` | In review | In review | In review | — | — | Whole-school source triage; learner-level acceptance pending |
+| technical-steward | `technical-steward-technology-governance-deep` | In review | In review | In review | — | — | Whole-school source triage; learner-level acceptance pending |
+| technical-steward | `technical-steward-technology-risk-deep` | In review | In review | In review | — | — | Whole-school source triage; learner-level acceptance pending |
+| technical-steward | `technical-steward-strategy-capability-deep` | In review | In review | In review | — | — | Whole-school source triage; learner-level acceptance pending |
 | professional-engineer | `professional-engineer-capstone-problem-discovery-deep` | — | — | — | — | — | Not started |
 | professional-engineer | `professional-engineer-capstone-engineering-proposal-deep` | — | — | — | — | — | Not started |
 | professional-engineer | `professional-engineer-independent-build-deep` | — | — | — | — | — | Not started |
@@ -278,3 +278,10 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - Verified canonical `architect.ts` progression: fundamentals, domain modeling, modularity, architecture styles, data architecture, integration and messaging, scalability, resilience, architecture evaluation/governance and final Steward Architecture Evolution. Domain boundaries precede selection of architecture styles.
 - Inspected source shape of all ten modules. Data, integration, scalability, resilience and evaluation modules already construct a full reading body, while four lesson factories used only introductions despite extensive paragraph blocks. Corrected these in fundamentals (`a5b3289`), domain modeling (`d7cad80`), modularity (`66fd2cf`) and architecture styles (`012286f`).
 - **Limits:** individual architecture alternatives, diagrams, decisions, measurable quality attributes and capstone evidence still need line-by-line and learner-level verification. Resource checking, browser page usability, independent execution and final portfolio review not performed. No path accepted from source inspection alone.
+
+### 2026-10-17 — Technical Steward: 13-path school source review and strategy depth correction
+
+- Confirmed all 13 paths in `technical-steward.ts`: leadership, engineering governance, technology governance, strategy/capability, risk, controls/compliance, architecture governance, security/data governance, change/service governance, third-party lifecycle, technical debt, handbook/standards and final milestone.
+- Audited the entry and reading-body composition of all 13 authored source files: most already preserve the full lesson body and do not suffer the earlier intro-only problem. **Do not mechanically rewrite these again.**
+- **Substantive teaching-depth issue:** the six Technology Strategy and Capability Planning readings consisted of short abstract paragraphs (~300–630 characters) asking learners to make strategy decisions without first modeling the reasoning. Commit `07df020` adds six distinct worked Steward examples (outcomes/horizons, exclusions, capability maps, prioritization, build/buy/learn/retire, and uncertainty-aware roadmaps), each with a diagnostic question and reasoning challenge. The fallback reading text includes the worked example.
+- **Pending:** full individual examples and exercises review throughout leadership/governance schools; resource accuracy, real decision evidence, UX and learner artifacts. Source-level review is not acceptance.
