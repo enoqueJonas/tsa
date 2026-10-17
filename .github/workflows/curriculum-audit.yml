@@ -25,6 +25,11 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Audit curriculum integrity
         run: pnpm audit:curriculum
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Execute Python teaching examples
+        run: pnpm check:python-examples
       - name: Report cross-school code example evidence
         run: pnpm report:curriculum-examples
       - name: Build applications
