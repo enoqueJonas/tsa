@@ -804,6 +804,27 @@ for (const [file, source] of sources) {
   }
 }
 
+// Python lesson sequencing: introduce instance construction and self before
+// asking learners to reason about encapsulation or later OOP abstractions.
+// This is a narrow regression gate, not a substitute for qualitative reading.
+const pythonOopSequence = [
+  ["class, object, __init__ and self introduction", "A class describes a kind of thing; an object"],
+  ["encapsulation", 'const encapsulation = lesson("Encapsulation and Invariants"'],
+  ["composition", 'const composition = lesson("Composition and Collaboration"'],
+  ["inheritance", 'const inheritance = lesson("Inheritance and Overriding"'],
+  ["polymorphism", 'const polymorphism = lesson("Polymorphism and Duck Typing"'],
+  ["decorator function wrapping", 'const decorators = lesson("Decorators and Function Wrapping"'],
+  ["class features", 'const classFeatures = lesson("Properties, Class Methods and Dataclasses"'],
+];
+let precedingPythonStep = -1;
+for (const [label, marker] of pythonOopSequence) {
+  const position = pythonLearner.indexOf(marker);
+  if (position < 0 || position <= precedingPythonStep) {
+    failures.push(`Python OOP teaching sequence missing or out of order: ${label}`);
+  }
+  precedingPythonStep = position;
+}
+
 // Cross-school regression gates for Delivery learner assessment contracts.
 // These check that key negative controls cannot silently disappear in later edits.
 const deliveryCIQuality = sources.get("delivery-continuous-integration-quality.ts") ?? "";
