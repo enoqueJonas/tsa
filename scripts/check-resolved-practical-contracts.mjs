@@ -37,6 +37,7 @@ try {
 }
 if (!journey || !Array.isArray(journey.schools)) throw new Error("No resolved curriculum journey");
 const problems = [];
+const reusedCriteria = new Map();
 const stats = { schools: 0, paths: 0, lessons: 0, practicals: 0 };
 const nonEmpty = (value) => typeof value === "string" && value.trim().length > 0;
 const detailedList = (value) => Array.isArray(value) && value.length > 0 &&
@@ -52,6 +53,14 @@ for (const school of journey.schools) {
         if (activity.content?.type !== "practical") continue;
         stats.practicals++;
         const c = activity.content;
+        for (const item of c.completionCriteria ?? []) {
+          if (typeof item !== "string") continue;
+          const criterion = item.trim().toLowerCase().replace(/\s+/g, " ");
+          const result = reusedCriteria.get(criterion) ?? { count: 0, examples: [] };
+          result.count++;
+          if (result.examples.length < 2) result.examples.push(`${school.id}/${learningPath.id}/${lesson.id}`);
+          reusedCriteria.set(criterion, result);
+        }
         const missing = keys.filter((key) =>
           key === "objective" || key === "scenario" ? !nonEmpty(c[key]) : !detailedList(c[key]));
         if (missing.length) problems.push(
@@ -64,4 +73,9 @@ console.log(`Resolved practical contracts: ${stats.schools} schools, ${stats.pat
 if (problems.length) {
   console.error("Missing resolved practical content:\n- " + problems.join("\n- "));
   process.exitCode = 1;
+}
+
+console.log("Frequently reused practical completion criteria (review candidates, not automatic defects):");
+for (const [criterion, usage] of [...reusedCriteria].filter(([, value]) => value.count >= 10).sort((a, b) => b[1].count - a[1].count).slice(0, 20)) {
+  console.log(`  ${usage.count}x ${criterion.slice(0, 160)} — ${usage.examples.join('; ')}`);
 }
