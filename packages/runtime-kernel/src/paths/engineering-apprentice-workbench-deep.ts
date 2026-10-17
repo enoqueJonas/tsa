@@ -212,7 +212,7 @@ const developerInspectionLesson: Lesson = {
 
     {type:"heading",id:"inspect-output",text:"5. stdout, stderr and logs are execution evidence",level:2},
     {type:"paragraph",text:"Programs can write normal output and diagnostics to their standard streams, and applications may also write structured log files. Capture enough evidence to answer what happened without assuming every line is equally important. Timestamps, severity, request/correlation identity and the first causal error are often more useful than dumping thousands of lines."},
-    {type:"code",language:"shell",caption:"Capture both output streams for a disposable command",code:`some-command > run.out 2> run.err\nprintf 'exit=%s\\n' "$?"\nwc -l run.out run.err`},
+    {type:"code",language:"shell",caption:"Capture both output streams for a disposable command",code:"bash -c 'printf \"ready\\\\n\"; printf \"simulated failure\\\\n\" >&2; exit 7' > run.out 2> run.err\nprintf 'exit=%s\\\\n' \"$?\"\nprintf 'stdout lines=%s\\\\n' \"$(wc -l < run.out)\"\nprintf 'stderr lines=%s\\\\n' \"$(wc -l < run.err)\"",output:"exit=7\nstdout lines=1\nstderr lines=1"},
     {type:"paragraph",text:"Do not redirect a long-running server blindly during the first exercise if that makes its behavior harder to observe. The point is to understand where evidence goes."},
 
     {type:"heading",id:"inspect-text",text:"6. Search text to answer a question",level:2},
