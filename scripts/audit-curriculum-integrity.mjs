@@ -768,6 +768,28 @@ if (!modulesLesson) {
   if (!modulesLesson.includes("pythonPackagesTutorial")) failures.push("Python Modules and Packages must reference pythonPackagesTutorial");
 }
 
+// Keep high-confidence Platform Builder teaching regressions out of the canonical learner path.
+// These checks only reject invalid or unsafe literal example forms; subjective clarity is reviewed manually.
+const platformComputer = sources.get("platform-builder-computer-os-deep.ts") ?? "";
+const platformLinux = sources.get("platform-builder-linux-administration-deep.ts") ?? "";
+const platformLinuxQuality = sources.get("platform-builder-linux-administration-quality.ts") ?? "";
+const platformConfig = sources.get("platform-builder-configuration-management-deep.ts") ?? "";
+if (platformComputer.includes("/proc/<PID>/status") || platformComputer.includes("/proc/<PID>/fd")) {
+  failures.push("Platform computer/OS teaching has an unbound /proc/<PID> shell placeholder");
+}
+if (platformLinux.includes("kill -TERM <pid>") || platformLinux.includes("kill -KILL <pid>")) {
+  failures.push("Platform Linux signal example must use a disposable, real PID rather than a copyable placeholder");
+}
+if (platformLinux.includes("stat /path/to/file") || platformLinux.includes("readlink -f /path/to/link")) {
+  failures.push("Platform Linux metadata teaching must use a controlled existing test path");
+}
+if (platformLinuxQuality.includes('"dnf info <package>"')) {
+  failures.push("Platform Rocky package example contains shell-redirection angle brackets");
+}
+if (platformConfig.includes("TSA now uses Proxmox templates, Ansible, container/Kubernetes delivery and Vault")) {
+  failures.push("Platform configuration management must not claim later-school runtime capabilities already exist");
+}
+
 if (failures.length) {
   console.error("Curriculum integrity audit failed:\n- " + failures.join("\n- "));
   process.exit(1);
