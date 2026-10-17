@@ -35,3 +35,7 @@ test("Java dependency-injection lesson executes and matches published output", (
 test("all-school source code evidence report runs and inventories modules", () => {
   runAudit("scripts/report-curriculum-code-evidence.mjs", /Code evidence by language \(source-level, not runtime pass rates\):/);
 });
+
+test("practical contract inventory runs across all curriculum schools", () => {
+  runAudit("scripts/report-curriculum-practicals.mjs", /Practical source audit: \d+ path files; \d+ explicit practical content objects;/);
+});
