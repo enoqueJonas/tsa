@@ -423,3 +423,8 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 
 - Expanded Python teaching-code checker with **four stateful, isolated execution sequences** (`eb87d07`, newline delimiter correction `d6ba9c0`): (1) valid Account construction followed by failed withdrawal/deposit; (2) Engine construction, Car delegation, collaborator replacement and fake; (3) inherited Vehicle/Bicycle, Car override, Bus constructor; (4) notifier implementations followed by missing-method failure. Each sequence executes all code blocks in order and compares concatenated printed output, avoiding misleading standalone execution of examples that deliberately rely on an earlier block.
 - The self-contained example target remains **28**; four new stateful sequences are separate checks. These checks are committed but not yet reported passing by a user or CI run. Per user choice, no learner progress/navigation/persistence tests were introduced.
+
+### 2026-10-17 — Python stateful snippet attribution hardened
+
+- Reviewed the four newly added Python stateful sequences and identified a false-positive hazard: comparison of a **single concatenated stdout string** could pass even when an earlier block printed output attributed to a later block. Modified the checker to emit a boundary after each executed block and compare **each block's output** against its own published output (`b4938ca`). Sequences still share interpreter state within each lesson but run independently of one another.
+- This change has not yet been verified by a fresh `pnpm test` run. User explicitly deferred UI navigation/completion/progress-persistence tests; no such tests were introduced.
