@@ -68,17 +68,17 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 | delivery-engineer | `delivery-production-schema-evolution-deep` | In review | In review | In review | — | — | Full-school source triage; real delivery rehearsal/UX pending |
 | delivery-engineer | `delivery-release-engineering-quality` | In review | In review | In review | — | — | Full-school source triage; real delivery rehearsal/UX pending |
 | delivery-engineer | `delivery-software-foundations-quality` | In review | In review | In review | — | — | Full-school source triage; real delivery rehearsal/UX pending |
-| cloud-engineer | `cloud-architecture-cost-quality` | — | — | — | — | — | Not started |
-| cloud-engineer | `cloud-hosting-models-quality` | — | — | — | — | — | Not started |
-| cloud-engineer | `cloud-building-blocks-quality` | — | — | — | — | — | Not started |
-| cloud-engineer | `cloud-certificate-lifecycle-operations-deep` | — | — | — | — | — | Not started |
-| cloud-engineer | `cloud-engineer-milestone-deep` | — | — | — | — | — | Not started |
-| cloud-engineer | `cloud-orchestration-gitops-deep` | — | — | — | — | — | Not started |
-| cloud-engineer | `cloud-progressive-delivery-canary-deep` | — | — | — | — | — | Not started |
-| cloud-engineer | `cloud-object-storage-implementation-deep` | — | — | — | — | — | Not started |
-| cloud-engineer | `cloud-infrastructure-as-code-quality` | — | — | — | — | — | Not started |
-| cloud-engineer | `cloud-internet-networking-quality` | — | — | — | — | — | Not started |
-| cloud-engineer | `cloud-vps-operations-quality` | — | — | — | — | — | Not started |
+| cloud-engineer | `cloud-architecture-cost-quality` | In review | In review | In review | — | — | School-wide source triage, rendered labs unverified |
+| cloud-engineer | `cloud-hosting-models-quality` | In review | In review | In review | — | — | School-wide source triage, rendered labs unverified |
+| cloud-engineer | `cloud-building-blocks-quality` | In review | In review | In review | — | — | School-wide source triage, rendered labs unverified |
+| cloud-engineer | `cloud-certificate-lifecycle-operations-deep` | In review | In review | In review | — | — | School-wide source triage, rendered labs unverified |
+| cloud-engineer | `cloud-engineer-milestone-deep` | In review | In review | In review | — | — | School-wide source triage, rendered labs unverified |
+| cloud-engineer | `cloud-orchestration-gitops-deep` | In review | In review | In review | — | — | School-wide source triage, rendered labs unverified |
+| cloud-engineer | `cloud-progressive-delivery-canary-deep` | In review | In review | In review | — | — | School-wide source triage, rendered labs unverified |
+| cloud-engineer | `cloud-object-storage-implementation-deep` | In review | In review | In review | — | — | School-wide source triage, rendered labs unverified |
+| cloud-engineer | `cloud-infrastructure-as-code-quality` | In review | In review | In review | — | — | School-wide source triage, rendered labs unverified |
+| cloud-engineer | `cloud-internet-networking-quality` | In review | In review | In review | — | — | School-wide source triage, rendered labs unverified |
+| cloud-engineer | `cloud-vps-operations-quality` | In review | In review | In review | — | — | School-wide source triage, rendered labs unverified |
 | quality-steward | `quality-api-integration-testing-deep` | — | — | — | — | — | Not started |
 | quality-steward | `quality-automation-framework-engineering-deep` | — | — | — | — | — | Not started |
 | quality-steward | `quality-browser-environment-testing-deep` | — | — | — | — | — | Not started |
@@ -245,3 +245,10 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - **Reading integrity fixes:** substantive paragraph sequences now preserved in reading-body fallback for software delivery (`2c863f0`), shell (`0a7a9db`), containers (`f8f8ae3`), CI (`e435432`), CD (`d26c121`) and release engineering (`007ef48`). Prior factory behavior gave only the introduction while deeper authored material lived in blocks.
 - **Scope note:** 11 logical modules recorded. Quality-layer overrides and dedicated deep lessons supply exercises; this review does not establish that a learner can execute their specific environment, nor that CI recovery or migration works.
 - **Acceptance gates still open:** real GitLab/Nexus or substitute stack prerequisites, compose and container persistence, schema expansion/backfill/rollback in real PostgreSQL, failed-run recovery, artifact promotion and identity, release rollback, migration and platform operation, browser usability, resource/dependency references. Never mark accepted from source traversal alone.
+
+### 2026-10-17 — Cloud Engineer: complete eleven-path source-composition triage
+
+- Confirmed canonical progression in `cloud-engineer.ts`: hosting models → VPS → Internet networking → TLS certificates → cloud building blocks → S3-like storage → infrastructure as code → Kubernetes/OpenShift/GitOps → progressive canary → cost/architecture → Steward Internet Environment milestone.
+- Inspected all 11 teaching/deep sources represented by the school, along with actual canonical path imports and the quality-wrapper layering. Existing sequencing generally builds operational vocabulary before orchestration and canary releases.
+- **Teaching fallback defects corrected:** seven factories provided only `spec.intro` as fallback reading body despite long authored explanatory blocks. Full paragraph prose is now available in Hosting (`7d75f09`), VPS (`8179926`), networking (`2c0d030`), cloud building blocks (`e5aaadd`), Kubernetes/GitOps (`85a16bd`), cost (`c4210ab`) and IaC (`908643d`).
+- **Still unverified:** real VPS provisioning, DNS/TLS renewal, object storage access policies, IaC plan/apply/destroy, cluster resource constraints, canary rollback decision, security/cost trade-offs, link relevance, learner-facing UX and final internet milestone. No completion certification from source inspection.
