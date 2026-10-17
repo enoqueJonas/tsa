@@ -275,3 +275,12 @@ This is a **targeted content improvement**, not a full pass over either module. 
 ## Review batch 11 — Distributed messaging outbox
 
 Inspected the distributed-state and messaging module's lesson sequence, particularly transactional outbox. The module already splits distributed-state justification, caching, queueing, idempotency, dead-lettering, ordering and outbox into distinct lessons; this is useful structural granularity, not evidence that every lesson is complete. The outbox lesson described the dual-write failure but lacked a stepwise explanation of specific crash windows and the resulting committed/pending/duplicate states. Commit `c19fa77` adds a worked event-ID trace covering rollback, committed pending intent, published-but-not-marked duplication and ambiguous broker outcomes. The example distinguishes publisher recovery from consumer idempotency and avoids unsupported exactly-once claims. Remaining lessons and actual behavior/rendering still need review.
+
+## Review batch 12 — SOAP/XML and enterprise file contracts
+
+Reviewed source teaching sections in `system-thinker-soap-xml-deep` and `system-thinker-enterprise-file-integration-deep`, focusing on failure interpretation and file handoff/replay. Both modules already cover distinct contract and lifecycle mechanisms but some lessons lacked a specific end-to-end outcome trace.
+
+- Commit `b8aa947`: the SOAP Envelope/Fault lesson now traces connection unavailability, HTTP/SOAP binding rejection, SOAP Fault and valid response as different diagnostic layers. The trace labels its cases illustrative and separates retry decisions from error classification.
+- Commit `bf51432`: the enterprise file-contract lesson now traces incomplete .part delivery, final-name handoff, accepted delivery, identical replay and conflicting replay. It explicitly bounds atomic-rename assumptions and distinguishes expected behavior from observed tests.
+
+These are targeted instructional improvements, **not** full module clearance. Still required: inspect other SOAP/file lessons and practicals, check rendered content, perform curriculum audit/build and record learner validation.
