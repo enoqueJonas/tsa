@@ -153,9 +153,9 @@ const practices: Record<string, PracticeSpec> = {
     "programming-with-python-properties-class-methods-and-dataclasses": {
         objective: "Choose class features based on their semantics rather than convenience.",
         scenario: "The registry needs a derived display label, an alternate construction path and a compact immutable value representation.",
-        instructions: ["Add a read-only @property that derives a Service display label without storing duplicate state.","Create a @classmethod constructor that validates and builds a Service from a mapping.","Define a frozen dataclass for a repository coordinate and compare two equal instances.","Demonstrate the difference between classmethod and staticmethod with a concrete example, or explain why no staticmethod is needed.","Test invalid input, equality and attempted mutation."],
+        instructions: ["Add a read-only @property that derives a Service display label without storing duplicate state.","Create a @classmethod constructor that validates and builds a Service from a mapping.","Define a frozen dataclass for a repository coordinate and compare two equal instances.","Demonstrate the difference between classmethod and staticmethod with a concrete example, or explain why no staticmethod is needed.","Add a validated writable @property to a small Temperature class: reject temperatures below absolute zero before updating its backing field, and assert that a rejected assignment preserves the old value. Test invalid input, equality and attempted mutation."],
         deliverables: ["Derived property and alternate constructor","Value-object dataclass","Behavior and failure tests"],
-        completionCriteria: ["The derived property reflects changing source state.","Alternate construction enforces invalid-input rejection.","Equal frozen dataclass values compare equal and reject reassignment."]
+        completionCriteria: ["The derived property reflects changing source state.","Alternate construction enforces invalid-input rejection.","Equal frozen dataclass values compare equal and reject reassignment. A failed Temperature property assignment raises ValueError and retains the previous reading."]
     },
     "programming-with-python-object-oriented-design-decisions": {
         objective: "Make an explicit design decision using behavior, invariants and collaboration.",
