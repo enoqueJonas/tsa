@@ -268,6 +268,35 @@ if (!steward || steward.paths.length !== 13) {
     }
   }
 }
+const professional = journey.schools.find((school) => school.id === "professional-engineer");
+if (!professional || professional.paths.length !== 7) {
+  problems.push("Professional Engineer must expose 7 paths");
+} else {
+  for (const path of professional.paths) {
+    const overview = path.lessons[0];
+    const headings = overview?.activities?.[0]?.content?.blocks;
+    if (overview?.id !== `${path.id}-professional-model` ||
+        !Array.isArray(headings) ||
+        !headings.some((block) => block.type === "heading" && block.id === "worked-claim") ||
+        !headings.some((block) => block.type === "heading" && block.id === "counterclaim")) {
+      problems.push(`Professional Engineer worked model missing: ${path.id}`);
+    }
+    for (const lesson of path.lessons) {
+      lesson.activities.forEach((activity, index) => {
+        if (activity.content.type !== "practical") return;
+        const before = lesson.activities[index - 1];
+        const blocks = before?.content?.blocks;
+        if (!before?.id?.endsWith("-professional-preparation") ||
+            before?.content?.type !== "reading" ||
+            !Array.isArray(blocks) ||
+            !blocks.some((block) => block.type === "heading" && block.id === "independent-acceptance") ||
+            !blocks.some((block) => block.type === "heading" && block.id === "challenge-and-limit")) {
+          problems.push(`Professional practical missing defensible evidence preparation: ${path.id}/${lesson.id}/${activity.id}`);
+        }
+      });
+    }
+  }
+}
 const nonEmpty = (value) => typeof value === "string" && value.trim().length > 0;
 const detailedList = (value) => Array.isArray(value) && value.length > 0 &&
   value.every((entry) => nonEmpty(entry));
