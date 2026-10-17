@@ -115,3 +115,9 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 
 - Beyond checking that code blocks have visible preformatted source and a Copy control, exercised the clipboard interaction for an available example during the full synthetic progression. The browser grants clipboard permissions in its isolated CI context, activates Copy, then checks for nonempty clipboard contents. The test does not execute arbitrary learner code from the browser and must not be counted as infrastructure evidence.
 - GitHub Actions run [39032853924](https://github.com/enoqueJonas/tsa/actions/runs/39032853924) passed both validation and learner-browser jobs on commit `c7a598e`, including all 328 synthetic activity visits. A later documentation-only commit needs its own CI result.
+
+## Batch 85 — Code-copy regression debugging and activity coverage artifacts (2026-10-17)
+
+- The strict `pre code` versus clipboard equality check exposed a mismatch during CI (run 39033105528) on the first CPU resource example. The highlighted DOM includes presentation/line-number structures and is not necessarily byte-identical to the source clipboard string. This failure is recorded rather than treated as proof of an incorrect learner clipboard. The revised test asserts a known raw CPU inventory prefix in the clipboard; its exact-head CI run must pass before acceptance.
+- Added a structured `activity-coverage.json` CI artifact, containing every visited module index, activity ID, rendered activity type and code figure count, so the 328-activity browser coverage is independently reviewable rather than reported only as a terminal summary.
+- Added a listener for client-side exceptions across the entire synthetic learner traversal; a browser runtime exception will now fail the validation. These checks verify application behavior but not the real Proxmox/Rocky/Windows labs.
