@@ -171,3 +171,9 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 - Confirmed the Batch 92 final Actions run [39036438990](https://github.com/enoqueJonas/tsa/actions/runs/39036438990) completed successfully for validation and browser checks after the corrected `sample_pid=$$` shell expansion.
 - Reviewed Linux Administration 'Logs and journalctl'. Removed an outcome that prescribed follow-mode while the worked command intentionally uses bounded output. Clarified `--since`, `-n 30`, `--no-pager`, `-b`, and the prerequisite of using an existing service unit; an empty journal is not evidence that a service is healthy. Source commit `cf8d715`.
 - The lesson remains a host-level lab requiring the learner's actual systemd unit and a controlled failure event; the GitHub Actions Ubuntu runner cannot certify a real Steward service journal.
+
+## Batch 94 — Linux service lifecycle and permissions preconditions (2026-10-17)
+
+- Improved the Linux Administration systemd lesson to explain the required existing `steward.service` unit, the difference between `daemon-reload` and `enable --now`, why ActiveState does not establish application health, and why learners must not mutate unfamiliar host or production units (`fb7f374`).
+- Improved the permissions lab caption to distinguish file mode `640` from parent-directory traversal requirements and to require verified lab paths and an existing service account before running `chmod` and `chown` (`3dad1fa`). This is a source-level pedagogical correction, not an executed production service or privileged filesystem change.
+- The latest CI workflows must complete before either change is accepted. Actual systemd service operations on a learner VM and a real endpoint response remain outstanding.
