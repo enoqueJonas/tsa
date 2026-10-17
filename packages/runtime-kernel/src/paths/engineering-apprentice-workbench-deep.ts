@@ -194,7 +194,7 @@ const developerInspectionLesson: Lesson = {
     {type:"paragraph",text:"When a local application 'doesn't work', jumping straight into its code is often premature. First establish whether the process started, whether it is still alive, whether it is listening where you expect, and what stdout/stderr or logs say. These observations separate execution problems from application-response problems."},
     {type:"heading",id:"inspect-process-model",text:"1. A running program is a process",level:2},
     {type:"paragraph",text:"An executable or script on disk is not the same as a running process. Starting a program creates a process with a process identifier (PID), arguments, environment, working context and open resources. A process can exit successfully, fail immediately, remain running, or spawn other processes."},
-    {type:"code",language:"shell",caption:"Start a disposable local server",code:"mkdir -p ~/tsa-inspection && cd ~/tsa-inspection\nprintf 'hello from TSA\\n' > index.html\npython3 -m http.server 8765",output:"The command stays running and normally reports that it is serving on port 8765. Use a second terminal for inspection."},
+    {type:"code",language:"shell",caption:"Start a disposable local server",code:"mkdir -p ~/tsa-inspection && cd ~/tsa-inspection\nprintf 'hello from TSA\\n' > index.html\npython3 -m http.server 8765 --bind 127.0.0.1",output:"The command stays running and normally reports that it is serving on port 8765. Use a second terminal for inspection."},
     {type:"paragraph",text:"If python3 is unavailable, use another safe local development server available on your workstation. The capability being learned is inspection, not Python."},
 
     {type:"heading",id:"inspect-process",text:"2. Prove that the process exists",level:2},
@@ -258,7 +258,7 @@ const httpCommandLineLesson: Lesson = {
     {type:"heading",id:"http-failure-layers",text:"5. Not every curl failure is HTTP",level:2},
     {type:"paragraph",text:"Before an HTTP response can exist, the client must resolve the target name when needed, establish a network connection and—when using HTTPS—complete TLS sufficiently to exchange HTTP. A failure before that point may have no HTTP status code at all."},
     {type:"list",items:["Name-resolution failure: the client cannot resolve the host to an address; no HTTP response exists.","Connection refused/unreachable: the client cannot establish the expected connection; no HTTP response exists.","TLS/certificate failure: secure negotiation/verification fails before normal HTTP exchange; usually no application HTTP response exists.","HTTP 4xx/5xx: an HTTP-speaking server returned a response. Investigate request/application behavior rather than calling it a connectivity failure."]},
-    {type:"code",language:"shell",caption:"Controlled local comparison",code:"curl -i http://127.0.0.1:8765/missing\ncurl -i http://127.0.0.1:8766/",output:"If 8765 has the practice server, the first can return an HTTP response such as 404. If nothing listens on 8766, the second fails to connect and has no HTTP status."},
+    {type:"code",language:"shell",caption:"Controlled local comparison",code:"curl -i http://127.0.0.1:8765/missing\ncurl -i http://127.0.0.1:8766/",output:"If 8765 has the practice server, the first returns an HTTP response such as 404. Check that no service uses 8766 before the second request; if none listens, curl fails to connect and has no HTTP status. curl's displayed http_code=000, when requested via -w, is not an HTTP status code."},
 
     {type:"heading",id:"http-headers",text:"6. Headers are protocol metadata, not decoration",level:2},
     {type:"paragraph",text:"Request headers can describe accepted media, content type, authorization and other context. Response headers can describe representation type, caching, correlation and server behavior. At this stage, learn to inspect relevant headers and avoid leaking sensitive ones."},
@@ -277,4 +277,20 @@ const httpCommandLineLesson: Lesson = {
  ]
 };
 
-export const engineeringApprenticeWorkbenchDeepLessons:Lesson[]=[shellFilesystemLesson,gitVersionControlLesson,developerInspectionLesson,httpCommandLineLesson];
+// Preserve the actual authored explanation in reading.body for clients that cannot
+// display rich blocks. Keep structured blocks intact for the full lesson reader.
+function preserveWorkbenchReading(lesson: Lesson): Lesson {
+  return {
+    ...lesson,
+    activities: lesson.activities.map((activity) => {
+      if (activity.content.type !== "reading" || !activity.content.blocks) return activity;
+      const paragraphs = activity.content.blocks
+        .filter((block) => block.type === "paragraph")
+        .map((block) => block.text)
+        .join("\\n\\n");
+      return { ...activity, content: { ...activity.content, body: paragraphs || activity.content.body } };
+    }),
+  };
+}
+
+export const engineeringApprenticeWorkbenchDeepLessons:Lesson[]=[shellFilesystemLesson,gitVersionControlLesson,developerInspectionLesson,httpCommandLineLesson].map(preserveWorkbenchReading);
