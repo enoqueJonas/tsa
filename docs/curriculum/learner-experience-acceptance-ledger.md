@@ -149,13 +149,13 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 | technical-steward | `technical-steward-technology-governance-deep` | In review | In review | In review | — | — | Whole-school source triage; learner-level acceptance pending |
 | technical-steward | `technical-steward-technology-risk-deep` | In review | In review | In review | — | — | Whole-school source triage; learner-level acceptance pending |
 | technical-steward | `technical-steward-strategy-capability-deep` | In review | In review | In review | — | — | Whole-school source triage; learner-level acceptance pending |
-| professional-engineer | `professional-engineer-capstone-problem-discovery-deep` | — | — | — | — | — | Not started |
-| professional-engineer | `professional-engineer-capstone-engineering-proposal-deep` | — | — | — | — | — | Not started |
-| professional-engineer | `professional-engineer-independent-build-deep` | — | — | — | — | — | Not started |
-| professional-engineer | `professional-engineer-production-readiness-deep` | — | — | — | — | — | Not started |
-| professional-engineer | `professional-engineer-defence-deep` | — | — | — | — | — | Not started |
-| professional-engineer | `professional-engineer-professional-practice-deep` | — | — | — | — | — | Not started |
-| professional-engineer | `professional-engineer-portfolio-reflection-deep` | — | — | — | — | — | Not started |
+| professional-engineer | `professional-engineer-capstone-problem-discovery-deep` | In review | In review | In review | — | — | Seven-path source audit; actual capstone evidence and UX pending |
+| professional-engineer | `professional-engineer-capstone-engineering-proposal-deep` | In review | In review | In review | — | — | Seven-path source audit; actual capstone evidence and UX pending |
+| professional-engineer | `professional-engineer-independent-build-deep` | In review | In review | In review | — | — | Seven-path source audit; actual capstone evidence and UX pending |
+| professional-engineer | `professional-engineer-production-readiness-deep` | In review | In review | In review | — | — | Seven-path source audit; actual capstone evidence and UX pending |
+| professional-engineer | `professional-engineer-defence-deep` | In review | In review | In review | — | — | Seven-path source audit; actual capstone evidence and UX pending |
+| professional-engineer | `professional-engineer-professional-practice-deep` | In review | In review | In review | — | — | Seven-path source audit; actual capstone evidence and UX pending |
+| professional-engineer | `professional-engineer-portfolio-reflection-deep` | In review | In review | In review | — | — | Seven-path source audit; actual capstone evidence and UX pending |
 
 ## Findings and review journal
 
@@ -285,3 +285,10 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - Audited the entry and reading-body composition of all 13 authored source files: most already preserve the full lesson body and do not suffer the earlier intro-only problem. **Do not mechanically rewrite these again.**
 - **Substantive teaching-depth issue:** the six Technology Strategy and Capability Planning readings consisted of short abstract paragraphs (~300–630 characters) asking learners to make strategy decisions without first modeling the reasoning. Commit `07df020` adds six distinct worked Steward examples (outcomes/horizons, exclusions, capability maps, prioritization, build/buy/learn/retire, and uncertainty-aware roadmaps), each with a diagnostic question and reasoning challenge. The fallback reading text includes the worked example.
 - **Pending:** full individual examples and exercises review throughout leadership/governance schools; resource accuracy, real decision evidence, UX and learner artifacts. Source-level review is not acceptance.
+
+### 2026-10-17 — Professional Engineer: complete seven-path source review
+
+- Verified canonical path order: professional practice/ethics → problem discovery → proposal → independent build → production readiness → portfolio/reflection → engineering defence. This appropriately demands a genuinely new capstone domain rather than cloning Steward.
+- Inspected all seven authored path sources. Most long-form capstone readings already retain complete `body` with additional requirements or review standard; professional practice includes six distinct worked ethical decisions; portfolio sources expose complete paragraph bodies. No blanket reading-body rewrite was required.
+- Learner acceptance observation: capstone stages require explicit, traceable real evidence, deliberately rejected options, reproducible production/rollback claims and a credible *no-go* readiness outcome. Independent transfer, not a recycled Steward implementation, is the intended competence bar.
+- Remains unverified: independent capstone feasibility for learner constraints; quality of worked examples inside every individual lesson; adequacy of instructor feedback/rubrics; accessibility and usability of long-form study and submissions; ability to execute the full end-to-end project and independently defend its evidence. Full acceptance requires actual learner artifacts and rendered journey verification. **All seven paths In review.**
