@@ -81,7 +81,7 @@ function lessonFrom(spec: Spec): Lesson {
         id: `application-security-${spec.id}`,
         title: spec.title,
         activities: [
-            { id: `application-security-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: spec.intro, blocks: blocksFor(spec) } },
+            { id: `application-security-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: blocksFor(spec).filter((b) => b.type === "paragraph").map((b) => b.text).join("\n\n") || spec.intro, blocks: blocksFor(spec) } },
             {
                 id: `application-security-${spec.id}-002`,
                 title: `Engineer and verify: ${spec.title}`,
