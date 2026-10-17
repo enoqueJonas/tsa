@@ -69,7 +69,7 @@ function practicalLesson(): Lesson {
                         "Define the deployment target and environment-specific configuration inputs.",
                         "Automate image retrieval, service update and application startup without rebuilding the application artifact.",
                         "Run database migrations deliberately and capture their result.",
-                        "Verify application health and one meaningful Steward API behavior after deployment.",
+                        "Verify API health and authorized behavior, then verify that the publisher and consumer process a lifecycle event using the approved image.",
                         "Capture deployment evidence that another engineer can connect back to the original source revision.",
                     ],
                     deliverables: ["Versioned deployment workflow", "Release identity record", "Deployment execution evidence", "Post-deployment verification evidence"],
