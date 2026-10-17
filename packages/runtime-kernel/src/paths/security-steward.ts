@@ -37,10 +37,10 @@ function path(id: string, title: string, lessons: AuthoredLesson[]): AuthoredLea
     if (!guide) throw new Error(`Missing Security Steward model for ${id}`);
     const prepared = lessons.map((lesson) => ({ ...lesson, activities: lesson.activities.flatMap((activity) => {
         const content = ("content" in activity ? activity.content : activity) as Record<string, unknown>;
-        if (!content || content.type !== "practical") return [activity];
+        if (!content || (content.type !== "practical" && content.type !== "exercise")) return [activity];
         const instructions = Array.isArray(content.instructions) ? content.instructions : [];
         const criteria = Array.isArray(content.completionCriteria) ? content.completionCriteria : [];
-        return [{ type: "reading" as const, title: `Prepare securely: ${activity.title}`, description: [`Scenario: ${content.scenario ?? lesson.title}`, `Trust boundary: ${guide.model}`, `Worked example: ${guide.experiment}`, `Initial observations: ${instructions.slice(0,3).join("; ")}`, `Required evidence: ${criteria.join("; ")}`, `Negative path and recovery: ${guide.failure}`, "Use only controlled synthetic data and explicitly authorized targets; restore the baseline and prove the same consumer-level operation succeeds."].join("\\n\\n") }, activity];
+        return [{ type: "reading" as const, title: `Prepare securely: ${activity.title}`, description: [`Scenario: ${content.scenario ?? content.description ?? lesson.title}`, `Trust boundary: ${guide.model}`, `Worked example: ${guide.experiment}`, `Initial observations: ${instructions.slice(0,3).join("; ")}`, `Required evidence: ${criteria.length ? criteria.join("; ") : "Produce a verifiable written artifact covering the stated trust boundary and explicitly rejected unsafe configuration."}`, `Negative path and recovery: ${guide.failure}`, "Use only controlled synthetic data and explicitly authorized targets; restore the baseline and prove the same consumer-level operation succeeds."].join("\\n\\n") }, activity];
     }) }));
     const overview: AuthoredLesson = { id: `${id}-security-orientation`, title: `Worked security model: ${title}`, activities: [{ type: "reading", title: "Threat, controlled experiment and expected rejection", description: [guide.model, guide.experiment, guide.failure].join("\\n\\n") }] };
     return { id, title, lessons: [overview, ...prepared] };
