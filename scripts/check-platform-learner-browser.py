@@ -162,6 +162,10 @@ def check_complete_modules(page):
                 assert page.get_by_text("Illustrative excerpts (not captured from your host):").count() >= 1, (
                     "CPU example output missing from the learner rendering"
                 )
+                sample = page.locator("main figure").first.locator("pre").last.inner_text()
+                assert "\n$ nproc\n4\n" in sample, (
+                    "Worked CPU output is not rendered as multiple readable lines"
+                )
             # Exercise the user-facing copy control in Chromium, not only its appearance.
             if code_blocks.count() and index == 0:
                 page.context.grant_permissions(["clipboard-read", "clipboard-write"])
