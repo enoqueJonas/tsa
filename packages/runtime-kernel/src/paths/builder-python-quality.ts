@@ -216,7 +216,7 @@ const practices: Record<string, PracticeSpec> = {
             "Declare runtime dependencies separately from development-only tooling. If the current Steward core has no third-party runtime dependency, keep that list empty rather than adding a package merely to populate it.",
             "Declare mypy as development tooling using the dependency mechanism selected for the project.",
             "Configure the package so the steward module can be installed from the repository.",
-            "Delete .venv, create a new one and install the project using only commands justified by repository metadata.",
+            "Before replacing .venv, verify that it is a generated virtual environment in the Steward repository (not a symlink or a directory of project work); preserve any diagnostic information you need. Recreate it with the interpreter and commands documented in the repository metadata, then install the project from that metadata.",
             "Run main.py and the mypy check from the clean environment.",
             "Inspect the resolved environment and explain what is reproducible now and what would still require a lock strategy for stronger reproducibility."
         ],
@@ -231,7 +231,7 @@ const practices: Record<string, PracticeSpec> = {
             "Use a payload where age_days is the string \"184\" and reproduce the failure. Capture the original traceback before changing code.",
             "Write at least two hypotheses: for example, the Service validator is wrong, or the import boundary failed to convert external text.",
             "Use breakpoint(), pdb, targeted logging or temporary inspection to observe the value and type immediately before Service construction.",
-            "Fix the earliest responsible boundary by converting and validating external age_days before constructing Service. Do not weaken the Service invariant to accept arbitrary strings.",
+            "Fix the earliest responsible boundary: accept only a decimal integer string matching the agreed import format, convert it with int(), then pass the resulting integer into Service validation. Reject booleans, non-string/non-integer source types and malformed text explicitly. Do not weaken the Service invariant to accept arbitrary strings.",
             "Add one invalid payload such as age_days \"unknown\" and preserve the useful failure behavior.",
             "Rerun the original valid-text payload and the rest of the Steward demo, then record the evidence chain from symptom to root cause."
         ],
