@@ -92,7 +92,7 @@ function practicalLesson(): Lesson {
                         "Document any class of change that your rollback mechanism cannot safely reverse.",
                     ],
                     deliverables: ["Failure evidence", "Rollback/recovery execution record", "Known-good verification", "Documented rollback limitations"],
-                    completionCriteria: ["Recovery uses a predefined release identity rather than 'latest'.", "The learner can explain why application rollback may not imply data rollback.", "The failed release does not remain ambiguously active."],
+                    completionCriteria: ["Recovery uses a predefined release identity rather than 'latest'.", "The learner can explain why application rollback may not imply data rollback.", "The failed release does not remain ambiguously active, including API, publisher and consumer roles."],
                 },
             },
             {
