@@ -58,7 +58,7 @@ function lesson(spec: Spec): Lesson {
   {type:"heading",id:`${spec.id}-failure-patterns`,text:"Failure patterns to recognize",level:2},
   {type:"list",items:spec.antiPatterns},
  ];
- if(spec.code) { const language = new Set(["jvm-maven","maven-lifecycle","maven-dependencies","surefire-failsafe"]).has(spec.id) ? "bash" : "java"; blocks.push({type:"code",language,code:spec.code}); }
+ if(spec.code) { const language = new Set(["jvm-maven","maven-lifecycle","maven-dependencies","surefire-failsafe","junit-platform"]).has(spec.id) ? "bash" : "java"; blocks.push({type:"code",language,code:spec.code}); }
  blocks.push({type:"heading",id:`${spec.id}-check`,text:"Check your understanding",level:2},{type:"list",items:spec.questions},{type:"resources",title:"Continue learning",resources:resourcesFor(spec.id)});
  return {id:`quality-java-${spec.id}`,title:spec.title,activities:[
   {id:`quality-java-${spec.id}-001`,title:spec.title,estimatedMinutes:55,content:{type:"reading",body:spec.principle,blocks}},
