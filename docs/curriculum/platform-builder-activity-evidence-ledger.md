@@ -153,3 +153,9 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 - Expanded the Computer/OS CPU worked example's caption to explain that Linux one-/five-/fifteen-minute load averages are not CPU utilization percentages and must be compared with available CPU capacity, command behavior and observations over time (`23b4bf4`).
 - Added a labeled illustrative filesystem output block and explained the distinct purposes of `findmnt`, `lsblk -f`, `df -hT`, `du` and `stat` (`2385e4f`); revised the example to avoid referencing a command not displayed (`bb4dd74`). Illustrative device names and capacities are **not** observations of the learner's machine.
 - Added a browser check that the Filesystems reading actually renders its worked output (`2b353c8`). Full CI for the newest commit is required before claiming that new check has passed. These are targeted pedagogical improvements, not full lesson-by-lesson qualitative certification.
+
+## Batch 91 — Process and threads diagnostics pedagogy (2026-10-17)
+
+- Confirmed the previous Batch 90 latest GitHub Actions run [39035005423](https://github.com/enoqueJonas/tsa/actions/runs/39035005423) passed both validation and learner-browser jobs, including the filesystem worked-output rendering check.
+- Improved the Computer/OS process/thread lesson to explain process parent/child information, lightweight process (LWP) thread identifiers and the key distinction between the current shell PID (`$$`) and Steward's real service PID. Added a clearly illustrative `/proc/<PID>/status` worked-output excerpt (`c95cb3a`). This prevents beginners from mistaking observations of their own shell for measurements of Steward. The specific change must pass its exact-head CI before marking accepted.
+- The source correction supplies explanation and example but does not claim a production service was inspected or restarted. Real-service failure/recovery proof remains a separate lab gate.
