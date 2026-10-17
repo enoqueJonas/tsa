@@ -99,7 +99,7 @@ function lessonFrom(spec: Spec): Lesson {
                     scenario: "Start from the current Steward threat model. Use only authorized TSA/Steward systems or intentionally vulnerable local fixtures. Prefer evidence-producing requests, tests and code/configuration review over speculative findings.",
                     instructions: spec.practice,
                     deliverables: ["Attack-path hypothesis", "Evidence or control-verification artifact", "Finding or justified no-finding note", "Mitigation/retest note when applicable"],
-                    completionCriteria: ["The assessment is scoped to an identified Steward attack path.", "Evidence distinguishes reachable behavior from assumption.", "The learner can explain the security boundary and the control that should prevent abuse."],
+                    completionCriteria: [`For ${spec.title}, identify the authorized test scope, affected entry point, protected asset and trust boundary.`, `Attach a reproducible request or inspection record showing observed behavior, including a documented no-finding when the suspected issue is not reproduced.`, `If a control is changed, demonstrate a targeted regression check that rejects the unwanted behavior while preserving authorized operation.`],
                 },
             },
             {
