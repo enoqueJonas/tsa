@@ -246,3 +246,7 @@ Confirmed a teaching-quality issue: Technology Risk lessons used substantial pro
 ## Review batch 5 — Professional Practice
 
 Confirmed a lack of worked decision sequences in `professional-engineer-professional-practice-deep`: lessons supplied substantive conceptual prose and practice tasks but no specific case connecting a situation, defensible decision, evidence and trade-off. Commit `3a272ee` adds one worked decision to each of the six lessons, preserving their existing advanced content and exercises. This is a targeted instructional improvement, not a claim that the entire school is audited.
+
+## Review batch 6 — Observability
+
+Confirmed a gap in `reliability-observability-deep`: each lesson offered principles and Steward exercises but lacked an explicit diagnostic walkthrough mapping a question to signals and an interpretation. Commit `9a552d2` adds question/evidence/interpretation examples to all eight conceptual lessons. The examples cover monitoring versus observability, signals, telemetry design, correlation, instrumentation, tracing, golden signals and telemetry cost. These are reasoning examples, not fabricated runtime measurements.
