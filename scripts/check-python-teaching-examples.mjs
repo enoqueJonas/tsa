@@ -36,6 +36,14 @@ const required = new Set([
   "The same method name is not a sufficient contract",
   "Separate ownership from lifecycle rules",
 ]);
+// Some examples explicitly continue from earlier code blocks. Run each sequence in a
+// fresh Python interpreter so lesson state is available without leaking across lessons.
+const sequences = [
+  ["Validate before changing account state", "A failed withdrawal preserves the invariant"],
+  ["An Engine is an independent object", "Car holds an Engine and delegates starting", "A Car can use a different Engine instance", "A small test double proves delegation"],
+  ["Inherit an existing behavior", "Override and reuse parent behavior (run after the Vehicle definition above)", "Extend initialization carefully (run after the Vehicle definition above)"],
+  ["Different implementations of the same operation", "A missing method fails at runtime"],
+];
 const extracted = new Map();
 const literal = (obj, key) => {
   const property = obj.properties.find((p) => ts.isPropertyAssignment(p) && (ts.isIdentifier(p.name) || ts.isStringLiteral(p.name)) && p.name.text === key);
@@ -44,7 +52,7 @@ const literal = (obj, key) => {
 function visit(node) {
   if (ts.isObjectLiteralExpression(node)) {
     const caption = literal(node, "caption");
-    if (caption && required.has(caption)) {
+    if (caption && (required.has(caption) || sequences.some((sequence) => sequence.includes(caption)))) {
       if (extracted.has(caption)) throw new Error(`Repeated teaching example caption: ${caption}`);
       extracted.set(caption, {
         code: literal(node, "code"),
@@ -71,8 +79,23 @@ for (const caption of required) {
     failures.push(`${caption}: output mismatch\n  Expected: ${JSON.stringify(sample.expected)}\n  Actual:   ${JSON.stringify(process.stdout)}`);
   }
 }
+for (const sequence of sequences) {
+  const samples = sequence.map((caption) => extracted.get(caption));
+  if (samples.some((sample) => !sample || sample.language !== "python" || !sample.code || sample.expected === undefined)) {
+    failures.push(`Stateful sequence has missing Python example: ${sequence.join(" -> ")}`);
+    continue;
+  }
+  const code = samples.map((sample) => sample.code).join("\\n\\n");
+  const expected = samples.map((sample) => sample.expected).join("\\n");
+  const result = spawnSync("python3", ["-I", "-c", code], { encoding: "utf8", timeout: 8000 });
+  if (result.error || result.status !== 0) {
+    failures.push(`Stateful sequence ${sequence.join(" -> ")} failed: ${result.error ?? result.stderr}`);
+  } else if (normalize(result.stdout) !== normalize(expected)) {
+    failures.push(`Stateful sequence ${sequence.join(" -> ")} output mismatch: expected ${JSON.stringify(expected)}, got ${JSON.stringify(result.stdout)}`);
+  }
+}
 if (failures.length) {
   console.error("Python learner-example validation failed:\n- " + failures.join("\n- "));
   process.exit(1);
 }
-console.log(`Python learner-example validation passed: ${required.size} independently executed snippets produced their documented output.`);
+console.log(`Python learner-example validation passed: ${required.size} independently executed snippets and ${sequences.length} stateful lesson sequences produced their documented output.`);
