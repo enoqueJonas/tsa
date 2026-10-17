@@ -130,7 +130,7 @@ export const configurationManagementDeepLessons: Lesson[] = [
                         "Keep credentials and secret values out of plaintext version control; document the boundary used for secret injection even if full secret-management tooling comes later.",
                         "Run the playbook against the target, record the changed tasks, then run it again without modifying inputs and prove that the second run converges with no unnecessary changes.",
                         "Introduce one safe drift condition manually, rerun the playbook, and prove that declared state repairs it.",
-                        "Deploy a known Steward release using the existing delivery path after configuration management has prepared the host and verify meaningful API behavior.",
+                        "Deploy a known Steward release using the existing delivery path after configuration management has prepared the host; verify API behavior, publisher and consumer readiness, and one outbox-to-consumer lifecycle event.",
                         "Produce a short handoff showing which machine assumptions are now declared and which remaining assumptions belong to later artifact/dependency, security or reliability work.",
                     ],
                     deliverables: [
