@@ -266,3 +266,9 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 
 - Updated the Delivery Engineer `Playbooks` exercise to test an invalid configuration in a disposable lab, use a validation command before installing a managed file, and verify that the previous valid configuration is preserved without triggering a service restart (`4dc38af`). This distinguishes handler change detection from safe configuration application and does not claim Ansible provides general transactional rollback.
 - Evidence remains a learner practical requirement, not an executed Rocky Linux/Ansible exercise. CI validation is necessary but does not certify host behavior.
+
+## Batch 111 — Delivery artifact retention and provenance rejection gates (2026-10-17)
+
+- Audited the Delivery Artifact Supply Chain practical contracts. `retention-cleanup` now requires a digest-based inventory of live and rollback dependencies, a dry-run deletion policy that **rejects** deletion of active/rollback images, and safe deletion proof only for an unreferenced disposable artifact (`477fa35`). Age-only cleanup is insufficient.
+- `provenance` now requires actual source revision, trusted build-run/runner and publisher evidence, an independent registry digest lookup, and a **negative test** where a mismatched source/run/digest tuple must be rejected (`30b9e24`). Mutable tags are not accepted as provenance.
+- These are strengthened learner acceptance criteria; they do not claim live Nexus/GitLab verification. Exact-head CI success must be checked before accepting this batch.
