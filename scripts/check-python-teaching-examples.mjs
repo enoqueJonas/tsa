@@ -85,8 +85,8 @@ for (const sequence of sequences) {
     failures.push(`Stateful sequence has missing Python example: ${sequence.join(" -> ")}`);
     continue;
   }
-  const code = samples.map((sample) => sample.code).join("\\n\\n");
-  const expected = samples.map((sample) => sample.expected).join("\\n");
+  const code = samples.map((sample) => sample.code).join("\n\n");
+  const expected = samples.map((sample) => sample.expected).join("\n");
   const result = spawnSync("python3", ["-I", "-c", code], { encoding: "utf8", timeout: 8000 });
   if (result.error || result.status !== 0) {
     failures.push(`Stateful sequence ${sequence.join(" -> ")} failed: ${result.error ?? result.stderr}`);
