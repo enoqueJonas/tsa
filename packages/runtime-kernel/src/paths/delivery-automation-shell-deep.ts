@@ -28,7 +28,7 @@ function richLesson(id: string, title: string, intro: string, outcomes: string[]
         id: lessonId,
         title,
         activities: [
-            { id: `${lessonId}-reading`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } },
+            { id: `${lessonId}-reading`, title, estimatedMinutes: 35, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || intro, blocks } },
             { id: `${lessonId}-practice`, title: `${title}: Practice`, estimatedMinutes: 45, content: { type: "practical", objective: evidence.objective, scenario: "Use the current Steward repository and homelab. Prefer small scripts and visible failure behavior over clever shell one-liners.", instructions: practice, deliverables: evidence.deliverables, completionCriteria: evidence.completionCriteria } },
             { id: `${lessonId}-check`, title: `${title}: Knowledge Check`, estimatedMinutes: 10, content: { type: "reflection", prompt: questions.map((q, i) => `${i + 1}. ${q}`).join("\n") } },
         ],
