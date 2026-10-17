@@ -14,7 +14,7 @@ function compileDirectory(relative = "") {
     if (entry.isDirectory()) {
       compileDirectory(child);
     } else if (entry.isFile() && entry.name.endsWith(".ts")) {
-      const outputPath = path.join(temporaryRoot, child.replace(/\\.ts$/, ".js"));
+      const outputPath = path.join(temporaryRoot, child.replace(/\.ts$/, ".js"));
       fs.mkdirSync(path.dirname(outputPath), { recursive: true });
       const js = ts.transpileModule(fs.readFileSync(path.join(sourceRoot, child), "utf8"), {
         fileName: child,
