@@ -40,23 +40,23 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 | system-thinker | `system-thinker-failure-quality` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
 | system-thinker | `system-thinker-architecture-decisions-quality` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
 | system-thinker | `system-thinker-milestone-deep` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
-| platform-builder | `platform-builder-bare-metal-foundations-deep` | — | — | — | — | — | Not started |
-| platform-builder | `platform-builder-budget-homelab-quality` | — | — | — | — | — | Not started |
-| platform-builder | `platform-builder-computer-os-quality` | — | — | — | — | — | Not started |
-| platform-builder | `platform-builder-configuration-management-deep` | — | — | — | — | — | Not started |
-| platform-builder | `platform-builder-core-infrastructure-services-deep` | — | — | — | — | — | Not started |
-| platform-builder | `platform-builder-enterprise-file-directory-services-deep` | — | — | — | — | — | Not started |
-| platform-builder | `platform-builder-enterprise-storage-nas-deep` | — | — | — | — | — | Not started |
-| platform-builder | `platform-builder-implementation-milestones` | — | — | — | — | — | Not started |
-| platform-builder | `platform-builder-linux-administration-quality` | — | — | — | — | — | Not started |
-| platform-builder | `platform-builder-milestone-deep` | — | — | — | — | — | Not started |
-| platform-builder | `platform-builder-networking-quality` | — | — | — | — | — | Not started |
-| platform-builder | `platform-builder-os-patching-lifecycle-deep` | — | — | — | — | — | Not started |
-| platform-builder | `platform-builder-packet-tracer-network-engineering-deep` | — | — | — | — | — | Not started |
-| platform-builder | `platform-builder-proxmox-homelab-deep` | — | — | — | — | — | Not started |
-| platform-builder | `platform-builder-proxmox-milestone` | — | — | — | — | — | Not started |
-| platform-builder | `platform-builder-virtualization-quality` | — | — | — | — | — | Not started |
-| platform-builder | `platform-builder-windows-powershell-enterprise-deep` | — | — | — | — | — | Not started |
+| platform-builder | `platform-builder-bare-metal-foundations-deep` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
+| platform-builder | `platform-builder-budget-homelab-quality` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
+| platform-builder | `platform-builder-computer-os-quality` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
+| platform-builder | `platform-builder-configuration-management-deep` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
+| platform-builder | `platform-builder-core-infrastructure-services-deep` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
+| platform-builder | `platform-builder-enterprise-file-directory-services-deep` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
+| platform-builder | `platform-builder-enterprise-storage-nas-deep` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
+| platform-builder | `platform-builder-implementation-milestones` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
+| platform-builder | `platform-builder-linux-administration-quality` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
+| platform-builder | `platform-builder-milestone-deep` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
+| platform-builder | `platform-builder-networking-quality` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
+| platform-builder | `platform-builder-os-patching-lifecycle-deep` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
+| platform-builder | `platform-builder-packet-tracer-network-engineering-deep` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
+| platform-builder | `platform-builder-proxmox-homelab-deep` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
+| platform-builder | `platform-builder-proxmox-milestone` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
+| platform-builder | `platform-builder-virtualization-quality` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
+| platform-builder | `platform-builder-windows-powershell-enterprise-deep` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
 | delivery-engineer | `delivery-artifact-supply-chain-quality` | — | — | — | — | — | Not started |
 | delivery-engineer | `delivery-automation-shell-deep` | — | — | — | — | — | Not started |
 | delivery-engineer | `delivery-containers-docker-quality` | — | — | — | — | — | Not started |
@@ -231,3 +231,10 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - **Substantive cross-module finding:** all **ten teaching-source factories** for the non-milestone modules stored only a brief introduction/objective in the `reading.body` even while authoring substantial paragraph explanations as rich blocks. Corrected each source to retain the entire authored paragraph sequence in the fallback reader text: requirements `cd55082`; boundaries `0e685e6`; modeling `227a6a1`; data flow `d90c67c`; architecture decisions `e7dfe46`; components `237235a`; failure modes `42ee802`; file integration `0202d5a`; SOAP/XML `f544aab`; distributed state/messaging `2412286`.
 - **Exercise wiring:** quality-layer contracts are present for requirements, boundaries, modeling, components, data flow, failures and architecture decisions. Enterprise file/batch, SOAP/XML and distributed-state have dedicated deep implementation material. These exercises have not been executed by this source-level pass.
 - **Acceptance limits:** resource URL reachability, exact example output, infrastructure lab execution (Redis/RabbitMQ and file/SOAP scenarios), rendered website usability, and independent portfolio quality remain unverified. No module is marked accepted based on source inspection alone.
+
+### 2026-10-17 — Platform Builder: entire-school composition review
+
+- **Canonical curriculum:** `platform-builder.ts` composes 15 learner paths (Computer/OS, Linux, Networking, Packet Tracer, Virtualization, Bare Metal, Budget Homelab, Proxmox, Storage/NAS, DNS/DHCP/Time, Ansible, Patching, Windows/PowerShell, Enterprise Directory/File, Steward Homelab milestone). Some have multiple logical source files and intermediate implementation milestones.
+- **Source wiring reviewed:** inspected all 17 source-module entry files represented by the Platform Builder census, plus the canonical path composition. Confirmed intermediate implementation milestones are placed before the final review activity in relevant paths.
+- **Reading fallback:** Ansible configuration-management source now includes authored paragraph content in its fallback reading body (current source verified). Other legacy reading factory patterns warrant review, particularly enterprise file/directory services.
+- **Not accepted:** realistic VM/hardware inventory, OS-specific commands, storage operations, networking labs, recovery drills, resource links, displayed UI and progress/re-entry have not been fully validated in real environments. Source-level coverage is not sufficient to claim school completion.
