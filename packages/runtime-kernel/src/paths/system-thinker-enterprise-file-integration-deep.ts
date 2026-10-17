@@ -39,7 +39,7 @@ function lesson(spec: Spec): Lesson {
         id: `system-thinker-enterprise-file-${spec.id}`,
         title: spec.title,
         activities: [
-            { id: `system-thinker-enterprise-file-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: spec.intro, blocks } },
+            { id: `system-thinker-enterprise-file-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: blocks.filter((block) => block.type === "paragraph").map((block) => block.text).join("\n\n") || spec.intro, blocks } },
             { id: `system-thinker-enterprise-file-${spec.id}-002`, title: spec.practiceTitle, estimatedMinutes: 120, content: { type: "practical", objective: spec.practiceTitle, scenario: spec.scenario, instructions: spec.instructions, deliverables: spec.deliverables, completionCriteria: spec.criteria } },
             { id: `system-thinker-enterprise-file-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.questions.join("\n\n"), minimumCharacters: 220 } },
         ],
