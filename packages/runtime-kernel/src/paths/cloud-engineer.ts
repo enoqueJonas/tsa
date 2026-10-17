@@ -40,6 +40,31 @@ const cloudBoundaries: Record<string, CloudBoundary> = {
 function teachCloudPath(path: LearningPath): LearningPath {
     const guide = cloudBoundaries[path.id];
     if (!guide) throw new Error(`Missing Cloud Engineer instructional model for ${path.id}`);
+    const prepared = path.lessons.map((lesson) => ({ ...lesson, activities: lesson.activities.flatMap((activity) => {
+        if (activity.content.type !== "practical") return [activity];
+        const practical = activity.content;
+        return [{
+            id: `${activity.id}-cloud-preparation`,
+            title: `Prepare and verify: ${activity.title}`,
+            estimatedMinutes: 20,
+            content: {
+                type: "reading" as const,
+                body: `Objective: ${practical.objective}\\n\\nScenario: ${practical.scenario}\\n\\nBoundary: ${guide.mentalModel}`,
+                blocks: [
+                    { type: "heading" as const, id: "scenario", text: "The problem and operational boundary", level: 2 as const },
+                    { type: "paragraph" as const, text: practical.scenario },
+                    { type: "paragraph" as const, text: guide.mentalModel },
+                    { type: "heading" as const, id: "first-observations", text: "Make the first steps observable", level: 2 as const },
+                    { type: "list" as const, items: practical.instructions.slice(0, 3), ordered: true },
+                    { type: "heading" as const, id: "acceptance", text: "Expected evidence", level: 2 as const },
+                    { type: "list" as const, items: practical.completionCriteria },
+                    { type: "heading" as const, id: "failure", text: "Negative test and safe recovery", level: 2 as const },
+                    { type: "paragraph" as const, text: guide.fault },
+                    { type: "paragraph" as const, text: "Use disposable resources, avoid running real cloud costs without a budget limit, capture healthy state before injecting a single bounded fault, and repeat the consumer-level verification after restoring it." },
+                ],
+            },
+        }, activity];
+    }) }));
     return { ...path, lessons: [{
         id: `${path.id}-operational-model`,
         title: `Worked cloud boundary: ${path.title}`,
@@ -53,7 +78,7 @@ function teachCloudPath(path: LearningPath): LearningPath {
                 { type: "paragraph", text: guide.fault },
                 { type: "paragraph", text: "Execute only with disposable resources or explicitly approved cloud accounts. Preserve resource identity, budget constraints, known-good configuration and recovery evidence." },
             ] } }],
-    }, ...path.lessons] };
+    }, ...prepared] };
 }
 
 const cloudEngineerSourcePaths: LearningPath[] = [
