@@ -15,7 +15,7 @@ function richLesson(id: string, title: string, intro: string, sections: Array<{ 
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward checkpoint", body: "Apply this concept to Steward with the smallest configuration that proves the behavior. Prefer observable container boundaries, immutable image identity and documented runtime inputs over Docker commands used by habit." });
     blocks.push({ type: "resources", title: "Continue learning", resources });
-    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } }] };
+    return { id: `containers-and-docker-${id}`, title, activities: [{ id: `containers-and-docker-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || intro, blocks } }] };
 }
 
 export const containersAndDockerDeepLessons: Lesson[] = [
