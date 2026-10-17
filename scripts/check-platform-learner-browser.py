@@ -166,6 +166,10 @@ def check_complete_modules(page):
                 assert "\n$ nproc\n4\n" in sample, (
                     "Worked CPU output is not rendered as multiple readable lines"
                 )
+            if activity_id == "computer-and-os-foundations-filesystems-reading":
+                assert page.get_by_text("Illustrative excerpts (not your host):").count() >= 1, (
+                    "Filesystem example output missing from learner rendering"
+                )
             # Exercise the user-facing copy control in Chromium, not only its appearance.
             if code_blocks.count() and index == 0:
                 page.context.grant_permissions(["clipboard-read", "clipboard-write"])
