@@ -60,3 +60,9 @@ These **49** lesson-depth changes go beyond browser remediation. They materially
 - Added an explicit source-order regression gate for **Python OOP**, requiring class/instance/`__init__`/`self` teaching before encapsulation, composition, inheritance, polymorphism, decorators and class features (`abcc821`).
 
 A completed CI workflow applies to its exact source SHA. Later source/documentation edits require their own workflow completion and cannot inherit earlier CI status.
+
+## Technical Leadership targeted pedagogy review (2026-10-17)
+
+- Inspected `technical-steward-technical-leadership-deep.ts` (eight reading/practice pairs plus an integrated review lab). Readings were primarily abstract one-paragraph treatments of advanced leadership tasks.
+- Commit `a7f135a` adds an explicitly hypothetical, evidence-led delivery-gate decision comparing options, uncertainty and a revisit criterion; it also adds a mentoring exchange that teaches ambiguous POST retries through diagnostic questions, an idempotency example and an independent negative test.
+- **Scope limit:** two of eight readings enriched; the remaining six readings and all learner activities still need qualitative review. The commit does not demonstrate runnable infrastructure, successful CI against this exact head, or actual learner comprehension.
