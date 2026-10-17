@@ -17,6 +17,7 @@ function replaceRockyStrings(value: string): string {
         .replaceAll("apt policy postgresql", "dnf info postgresql-server")
         .replaceAll("dpkg -l | grep -E 'python|postgresql'", "rpm -qa | grep -E 'python|postgresql'")
         .replaceAll("apt show <package>", "dnf info bash")
+        .replaceAll("Inspect availability and current state before installing.", "Before installing, inspect package availability and current state. On Rocky Linux, dnf check-update exits 0 when up to date, 100 when updates are available, or 1 when it encounters an error; an exit code of 100 is not a failed diagnostic.")
         .replaceAll("apt update", "dnf check-update")
         .replaceAll("apt upgrade", "dnf upgrade")
         .replaceAll("apt workflow", "DNF/RPM workflow")
