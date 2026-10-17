@@ -145,6 +145,15 @@ if (!(fs.readFileSync(path.join(docsDir, "lesson-boundary-audit.md"), "utf8")).i
   failures.push("Curriculum lesson-boundary inventory omitted the wired Artifact Supply Chain quality module");
 }
 
+// Worked networking diagnosis must not use bridging before the learner receives its definition.
+const virtualizationLesson = sources.get("platform-builder-virtualization-deep.ts") ?? "";
+const natIndex = virtualizationLesson.indexOf('title: "NAT hides the guest behind another address"');
+const bridgeIndex = virtualizationLesson.indexOf('title: "Bridging makes the guest a LAN participant"');
+const diagnosisIndex = virtualizationLesson.indexOf('title: "Worked reachability diagnosis"');
+if (natIndex < 0 || bridgeIndex <= natIndex || diagnosisIndex <= bridgeIndex) {
+  failures.push("Platform virtual networking must teach NAT and bridging before the worked reachability diagnosis");
+}
+
 // Steward's chosen CI executor is GitLab. A comparison lesson may teach other providers,
 // but its canonical container-build walkthrough must not silently switch to GitHub Actions.
 const ciExamples = sources.get("delivery-continuous-integration-deep.ts") ?? "";
