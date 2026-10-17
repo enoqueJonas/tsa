@@ -125,6 +125,16 @@ def check_complete_modules(page):
                 assert page.locator("main h1").first.inner_text().strip()
             else:
                 assert page.get_by_placeholder("Write your response here...").is_visible()
+            # Confirm the rendered activity has meaningful type-specific content.
+            if page.get_by_placeholder("Write your response here...").count():
+                assert page.locator("main").last.get_by_text("Your reflection", exact=True).count() >= 1
+            elif page.get_by_text("Engineering Practice", exact=True).count():
+                assert page.get_by_text("Work through the problem", exact=True).count() >= 1
+                assert page.get_by_text("Evidence to keep", exact=True).count() >= 1
+            else:
+                assert page.locator("main").last.locator("p").count() >= 1, (
+                    f"Reading has no visible explanatory paragraphs: {activity_id}"
+                )
             reflection = page.get_by_placeholder("Write your response here...")
             if reflection.count():
                 reflection.fill(
