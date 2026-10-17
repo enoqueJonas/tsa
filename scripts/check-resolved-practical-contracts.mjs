@@ -240,6 +240,34 @@ if (!architect || architect.paths.length !== 10) {
     }
   }
 }
+const steward = journey.schools.find((school) => school.id === "technical-steward");
+if (!steward || steward.paths.length !== 13) {
+  problems.push("Technical Steward must expose 13 paths");
+} else {
+  for (const path of steward.paths) {
+    const intro = path.lessons[0];
+    const sections = intro?.activities?.[0]?.content?.blocks;
+    if (intro?.id !== `${path.id}-stewardship-model` ||
+        !Array.isArray(sections) ||
+        !sections.some((block) => block.type === "heading" && block.id === "worked-decision")) {
+      problems.push(`Technical Steward model missing: ${path.id}`);
+    }
+    for (const lesson of path.lessons) {
+      lesson.activities.forEach((activity, i) => {
+        if (activity.content.type !== "practical") return;
+        const before = lesson.activities[i - 1];
+        const sections = before?.content?.blocks;
+        if (!before?.id?.endsWith("-stewardship-preparation") ||
+            before?.content?.type !== "reading" ||
+            !Array.isArray(sections) ||
+            !sections.some((block) => block.type === "heading" && block.id === "accountability-evidence") ||
+            !sections.some((block) => block.type === "heading" && block.id === "challenge-control")) {
+          problems.push(`Technical Steward lab lacks accountable preparation: ${path.id}/${lesson.id}/${activity.id}`);
+        }
+      });
+    }
+  }
+}
 const nonEmpty = (value) => typeof value === "string" && value.trim().length > 0;
 const detailedList = (value) => Array.isArray(value) && value.length > 0 &&
   value.every((entry) => nonEmpty(entry));
