@@ -9,6 +9,7 @@ const ts = require(path.join(root, "node_modules/typescript"));
 const directory = path.join(root, "packages/runtime-kernel/src/paths");
 const files = fs.readdirSync(directory).filter((name) => name.endsWith(".ts"));
 const issues = [];
+const syntaxErrors = [];
 let objects = 0;
 
 function staticName(name) {
@@ -20,6 +21,10 @@ function staticName(name) {
 
 for (const file of files) {
   const source = ts.createSourceFile(file, fs.readFileSync(path.join(directory, file), "utf8"), ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+  for (const diagnostic of source.parseDiagnostics) {
+    const line = source.getLineAndCharacterOfPosition(diagnostic.start ?? 0).line + 1;
+    syntaxErrors.push(`${file}:${line} TS${diagnostic.code}: ${ts.flattenDiagnosticMessageText(diagnostic.messageText, " ")}`);
+  }
   function visit(node) {
     if (ts.isObjectLiteralExpression(node)) {
       objects++;
@@ -40,7 +45,11 @@ for (const file of files) {
   }
   visit(source);
 }
-console.log(`Duplicate curriculum object keys: ${files.length} path files, ${objects} object literals, ${issues.length} duplicate keys.`);
+console.log(`Duplicate curriculum object keys: ${files.length} path files, ${objects} object literals, ${issues.length} duplicate keys; ${syntaxErrors.length} syntax errors.`);
+if (syntaxErrors.length) {
+  console.error("Curriculum syntax errors:\n" + syntaxErrors.join("\n"));
+  process.exitCode = 1;
+}
 if (issues.length) {
   console.error(issues.join("\n"));
   process.exitCode = 1;
