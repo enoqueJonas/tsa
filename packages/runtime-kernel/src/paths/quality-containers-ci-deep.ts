@@ -187,7 +187,7 @@ const specs: Spec[] = [
         principles: ["Jobs execute on runners; stages provide coarse ordering while needs can express a DAG for faster dependency-aware execution.", "rules should make pipeline intent explicit for merge requests, branches, tags and schedules.", "Cache accelerates reusable downloaded/build data; artifacts preserve outputs/evidence between jobs and after execution.", "Protected/masked CI variables and least-privilege credentials protect environment and Nexus access.", "Pipeline source, commit SHA, environment and test selection are evidence identity."],
         steward: ["steward-tests should use GitLab CI/CD as its primary CI implementation and produce JUnit/Allure-compatible evidence plus Playwright/API diagnostics.", "The same Maven commands proven locally remain the execution contract; GitLab orchestrates them rather than replacing Maven."],
         practice: ["Create the initial .gitlab-ci.yml for steward-tests.", "Run a Maven verification job on an appropriate GitLab Runner.", "Use rules to distinguish merge-request, default-branch and scheduled behavior.", "Use needs where a DAG improves feedback without weakening dependencies.", "Publish JUnit/test artifacts and inspect them after a controlled failure.", "Define cache versus artifact usage and configure one of each deliberately."],
-        code: "stages:\n  - verify\n  - integration\n  - browser\n\njava-verify:\n  stage: verify\n  script:\n    - mvn -B -U clean test\n  artifacts:\n    when: always\n    reports:\n      junit: target/surefire-reports/TEST-*.xml",
+        code: "stages:\n  - verify\n  - integration\n  - browser\n\njava-verify:\n  stage: verify\n  image: maven:3.9-eclipse-temurin-17\n  script:\n    - mvn -B -U clean test\n  artifacts:\n    when: always\n    reports:\n      junit: target/surefire-reports/TEST-*.xml",
         language: "yaml",
         warning: "Do not encode business/test logic in GitLab YAML. The pipeline should orchestrate reproducible Maven commands and preserve evidence."
     },
@@ -198,7 +198,7 @@ const specs: Spec[] = [
         principles: ["Fail fast on deterministic high-signal checks.", "Use Maven Surefire for fast unit/component-style execution in the `test` phase and Maven Failsafe for integration-style execution across `integration-test` and `verify`; keep their inclusion/tag rules deliberate rather than relying on accidental class-name discovery.", "Do not rerun the same behavior through every layer.", "Make stage dependencies explicit.", "Preserve one release identity across promotion-oriented evidence."],
         steward: ["A sensible GitLab pipeline can progress from static/build checks to unit/component, API/integration, selected browser checks and then targeted non-functional evidence.", "Not every non-functional baseline belongs on every commit; cadence should follow risk and cost."],
         practice: ["Map the existing Steward checks into ordered stages.", "Show which JUnit tests Surefire executes during `mvn test` and which integration tests Failsafe executes/validates through `mvn verify`.", "Prove an integration-test failure makes `verify` fail rather than being lost between `integration-test` and `verify`.", "Identify duplicate evidence and remove unjustified repetition.", "Define which failures block later stages and why."],
-        code: "quality:\n  stages:\n    - build-and-static\n    - unit-component\n    - api-integration\n    - browser-smoke\n    - targeted-non-functional",
+        code: "stages:\n  - build-and-static\n  - unit-component\n  - api-integration\n  - browser-smoke\n  - targeted-non-functional\n\nunit-tests:\n  stage: unit-component\n  image: maven:3.9-eclipse-temurin-17\n  script:\n    - mvn -B test",
         language: "yaml",
     },
     {
@@ -258,7 +258,7 @@ const specs: Spec[] = [
         principles: ["Build and identify the package artifact once.", "Publish candidate versions to the internal Maven repository.", "Test consumers against explicit candidate/approved versions.", "Treat public API compatibility as a release concern."],
         steward: ["Steward remains the first real consumer. A tsa-test-core change should run package tests, publish a candidate artifact, install it through Nexus Maven repository and run a focused Steward compatibility suite.", "Steward-specific clients, workflows and assertions remain in the Steward repository."],
         practice: ["Design the CI path from tsa-test-core source to internal artifact to Steward consumer test.", "Define candidate version identity and promotion/approval expectations.", "Prove the consumer installs through the repository rather than a local path."],
-        code: "mvn -U clean deploy -Drevision=0.2.0-rc1\\nmvn -U test -Dtsa-test-core.version=0.2.0-rc1 -Dgroups=compatibility",
+        code: "# Run from the tsa-test-core checkout only after extraction is justified.\n# Requires configured Nexus distributionManagement and publish credentials.\nmvn -B -U clean deploy -Drevision=0.2.0-rc1\n\n# In a separate steward-tests checkout that resolves packages via Nexus:\nmvn -B -U test -Dtsa-test-core.version=0.2.0-rc1 -Dgroups=compatibility",
         language: "bash",
     },
 ];
