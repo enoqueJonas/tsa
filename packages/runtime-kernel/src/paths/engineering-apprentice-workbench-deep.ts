@@ -22,7 +22,7 @@ const shellFilesystemLesson: Lesson = {
      {type:"paragraph",text:"A terminal, a shell and a command-line program are related but different. The terminal is the window or interface carrying text input and output. The shell is a program such as zsh, bash or PowerShell that interprets what you type. Commands such as pwd, ls and git are built-ins or programs the shell invokes. Keeping those layers separate helps you diagnose whether a problem is syntax, shell behavior, a missing program or the program itself."},
      {type:"heading",id:"shell-command-model",text:"1. From a prompt to a running command",level:2},
      {type:"paragraph",text:"When you enter a command, the shell first interprets shell syntax: words, quoting, variable expansion, pipes and redirections. It then resolves the command name and invokes the appropriate built-in or executable with arguments. The program runs, produces an exit status and may write to output streams. This is why punctuation such as quotes, | and > is not merely decoration: the shell may act on it before the target program starts."},
-     {type:"code",language:"shell",caption:"A command, an option and an argument",code:"ls -la ~/tsa",output:"The shell resolves ls, passes -la and the expanded home-directory path as arguments, and ls produces the directory listing."},
+     {type:"code",language:"shell",caption:"A command, an option and an argument",code:"ls -la ~",output:"The shell expands ~ to your home directory, passes -la and that path to ls, and ls lists the home directory. File names and metadata vary by computer."},
      {type:"callout",tone:"note",title:"Inspect before changing",body:"A reliable command-line habit is: establish where you are, inspect the target, predict the effect, then change it. pwd and ls are cheap evidence before cp, mv or rm."},
 
      {type:"heading",id:"shell-filesystem-tree",text:"2. The filesystem is a tree",level:2},
@@ -32,7 +32,7 @@ const shellFilesystemLesson: Lesson = {
 
      {type:"heading",id:"shell-paths",text:"3. Absolute and relative paths",level:2},
      {type:"paragraph",text:"An absolute path identifies a location from the root and does not depend on your current directory. A relative path is interpreted from the current directory. If your current directory is /Users/ana/projects, then notes/todo.txt refers to /Users/ana/projects/notes/todo.txt, while ../archive refers to /Users/ana/archive."},
-     {type:"code",language:"shell",caption:"The same target through different path expressions",code:"cd ~/projects\npwd\ncat notes/todo.txt\ncat ~/projects/notes/todo.txt"},
+     {type:"code",language:"shell",caption:"Illustrative only: these commands require an existing ~/projects/notes/todo.txt file; do not run them until you have created that structure",code:"cd ~/projects\npwd\ncat notes/todo.txt\ncat ~/projects/notes/todo.txt"},
      {type:"callout",tone:"warning",title:"Relative paths depend on state",body:"A relative command can be correct in one directory and wrong in another. When a command says 'file not found', inspect pwd and the target path before changing the command blindly."},
 
      {type:"heading",id:"shell-safe-file-operations",text:"4. Read state before you mutate it",level:2},
