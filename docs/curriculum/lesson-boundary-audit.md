@@ -508,3 +508,7 @@ User reports the latest local build now succeeds following the five-file TS2532 
 ## Review batch 47 — Delivery Engineer milestone runtime evidence
 
 User reported the previous build successful. Reviewed Delivery Engineer milestone Gates 4 and 5 and found runtime validation did not explicitly require checking all three application roles, the negative authorization boundary, or an end-to-end outbox lifecycle event. Commit `6076b7c` strengthens Gate 4 to verify authorized and denied ownership changes, RabbitMQ publisher/consumer flow and consistent API/publisher/consumer image identity; Gate 5 now assesses persistent-side-effect rollback safety and checks async recovery. Commit `9ffca16` adds regression guards for these requirements. This change updates the learner acceptance rubric; it does not assert an actual lab run. New commits postdate the user-confirmed successful build.
+
+## Review batch 48 — Docker integrated lab identity and authorization
+
+Corrected the Docker integrated lab's premature demand for a registry digest: `bc3fb3d` now asks for source commit and local image ID during local image work, with registry digest captured after the later Artifact Supply Chain publication step. Commit `b2bf8e7` strengthens the end-to-end container exercise with a forbidden cross-team mutation that must not create an outbox event. These source edits postdate the prior successful build and need fresh build and UI validation.
