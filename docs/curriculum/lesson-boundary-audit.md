@@ -445,3 +445,7 @@ All 25 supply-chain lesson specifications are present. The actual learner-facing
 ## Review batch 39 — Delivery quality-wrapper parity
 
 Verified exact reading/practical profile title matches for six other Delivery Engineer quality modules: Software Foundations 9/9, Docker 15/15, CI 13/13, Continuous Delivery 10/10, Configuration Management 6/6 and Release Engineering 6/6. Along with Artifact Supply Chain's 23/23, **82 normal lesson title/profile pairs** now have verified coverage; standalone shell, schema, migration, integrated labs and milestone use other structures and are not counted in this metric. There were no missing or orphan profile titles among the six pairs. Commit `61fd905` adds enforceable static parity checks for these six wrappers so future title changes cannot silently drop exercise enrichment. This guards curriculum wiring, not the teaching quality or execution success of individual exercises.
+
+## Review batch 40 — Security threat-modeling boundary reasoning
+
+Inspected the Security Steward trust-boundary lesson and practical. Commit `719cfe9` adds a concrete valid-token-but-unauthorized-service-mutation trace across Kong, API authorization and database persistence, including denied and allowed outcome requirements. The change distinguishes identity proof, token checks, and authorization against authoritative ownership policy. It provides a scenario for the lesson's boundary/control matrix; the result is a teaching example and still needs rendered review and current build confirmation.
