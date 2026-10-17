@@ -132,3 +132,15 @@ A review aid across the **134 logical module entries** in `lesson-boundary-audit
 | technical-steward | `technical-steward-technology-risk-deep` | marked | 18222 | 1 | 4 | 0 | 0 |
 | technical-steward | `technical-steward-strategy-capability-deep` | open | 7581 | 1 | 1 | 0 | 0 |
 | professional-engineer | `professional-engineer-capstone-problem-discovery-deep` | open | 14910 | 1 | 2 | 0 | 0 |
+| professional-engineer | `professional-engineer-capstone-engineering-proposal-deep` | open | 13484 | 1 | 2 | 0 | 0 |
+| professional-engineer | `professional-engineer-independent-build-deep` | open | 17612 | 1 | 2 | 0 | 0 |
+| professional-engineer | `professional-engineer-production-readiness-deep` | open | 11507 | 1 | 1 | 0 | 0 |
+| professional-engineer | `professional-engineer-defence-deep` | open | 14149 | 1 | 1 | 0 | 0 |
+| professional-engineer | `professional-engineer-professional-practice-deep` | marked | 11953 | 1 | 1 | 0 | 0 |
+| professional-engineer | `professional-engineer-portfolio-reflection-deep` | open | 3507 | 1 | 1 | 0 | 0 |
+
+## Interpretation and required next checks
+
+- Counts reflect TypeScript source tokens, not composed learner activities. Delegated deep sources and factory-generated blocks must be inspected before judging content gaps.
+- This structural census does not establish pedagogical quality, successful lab execution, rendered UI correctness, passing tests or a fresh build.
+- Use the inventory with `lesson-boundary-audit.md` and GitHub Issue #314 for activity-by-activity remediation; never automatically mark a module as reviewed because the source file was fetched.
