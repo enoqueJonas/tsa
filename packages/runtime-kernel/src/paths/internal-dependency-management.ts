@@ -81,5 +81,27 @@ export const artifactDependencySupplyChainManagement: LearningPath = {
                 ],
             },
         }],
-    }, ...artifactDependencySupplyChainQualityLessons],
+    }, ...artifactDependencySupplyChainQualityLessons.map((lesson) => ({
+        ...lesson,
+        activities: lesson.activities.flatMap((activity) => {
+            if (activity.content.type !== "practical") return [activity];
+            const task = activity.content;
+            return [{
+                id: `${activity.id}-preparation`,
+                title: `Prepare the supply-chain experiment: ${activity.title}`,
+                estimatedMinutes: 20,
+                content: {
+                    type: "reading" as const,
+                    body: `Supply-chain scenario: ${task.scenario}. The experiment must preserve dependency version and published artifact identity while proving unauthorized changes fail closed.`,
+                    blocks: [
+                        { type: "heading" as const, id: "expected-evidence", text: "Expected evidence", level: 2 as const },
+                        { type: "list" as const, items: task.completionCriteria },
+                        { type: "heading" as const, id: "negative-path", text: "Negative path and recovery", level: 2 as const },
+                        { type: "paragraph" as const, text: "Before using live registries, verify this lab runs with test-only credentials. Record a pinned dependency, reproduce the artifact digest, then test a forbidden/invalid version or untrusted source in a disposable build. Preserve the original known-good version and restore it; never log tokens or private registry credentials." },
+                        { type: "paragraph" as const, text: task.objective },
+                    ],
+                },
+            }, activity];
+        }),
+    }))],
 };
