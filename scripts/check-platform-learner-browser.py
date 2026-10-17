@@ -153,6 +153,12 @@ def check_complete_modules(page):
                 first.get_by_role("button", name="Copy").click()
                 clipboard_text = page.evaluate("navigator.clipboard.readText()")
                 assert clipboard_text.strip(), f"Copy produced empty clipboard at {activity_id}"
+                # The copied text should be exactly the source displayed in the code element.
+                displayed_code = first.locator("pre code").first.text_content()
+                assert displayed_code is not None
+                assert clipboard_text.strip() == displayed_code.strip(), (
+                    f"Copy content differs from displayed source at {activity_id}"
+                )
             reflection = page.get_by_placeholder("Write your response here...")
             if reflection.count():
                 reflection.fill(
