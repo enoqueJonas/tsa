@@ -54,6 +54,8 @@ jobs:
         run: python scripts/check-platform-systemd-unit.py
       - name: Parse dedicated-VM systemd recovery lab
         run: bash -n scripts/platform-systemd-recovery-lab.sh
+      - name: Verify isolated Delivery release identity and fail-closed mismatch
+        run: python scripts/check-delivery-release-identity.py
       - name: Build applications
         run: pnpm build
 
