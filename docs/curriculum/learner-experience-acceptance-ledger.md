@@ -537,3 +537,11 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - NAS: expanded the lessons on filesystem byte/inode capacity, bounded exhaustion, RAID1 degraded-state/rebuild and checksum proof, and NFS client/export/identity and boot-mount diagnosis (`3acb63d`). All added to existing topic reading arrays rather than introducing duplicate keys.
 - Proxmox: expanded network bridges/VLAN traffic tracing, virtual storage versus independent backup, and restore verification in a separately identified guest (`fafc0af`).
 - This review improves the learner-facing technical explanations but does **not** establish that physical labs were executed. The latest edits require fresh smoke and build verification; source-level school coverage alone is not final pedagogical acceptance.
+
+### 2026-10-18 — Platform Builder completion review (source-only)
+
+- User verified **8 passing smoke tests and successful uncached production build** at `b34ea4c2`.
+- Deepened configuration management with an Ansible two-run convergence/drift example and deliberate secret-handling failure (`ea19cdd`); expanded Windows baseline investigation through concrete PowerShell commands (`7b4864f`).
+- Three existing implementation milestones now include **worked prerequisite readings** before the executable practical (DNS/DHCP/time; OS lifecycle; Windows mixed estate), retaining the existing evidence criteria (`5ad1cac`, corrected actual milestone ids in `7cc4f7e`). Regression test asserts those lessons exist with reading before practical (`1e8729d`).
+- **School-level source coverage:** 15 paths carry operational-readiness lessons; the school contains practical and verification contracts across its paths. This represents an instructional coverage sweep, **not certification of 100% exercise execution**. Live Proxmox, Packet Tracer, Rocky, Windows/AD, directory, storage-rebuild and recovery labs still need learner/environment execution records before practical acceptance. UI progress persistence and completion UX remain intentionally deferred.
+- The latest GitHub commits are **not yet user-build verified**.
