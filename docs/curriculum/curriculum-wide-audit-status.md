@@ -39,3 +39,13 @@ Workflow [39043938019](https://github.com/enoqueJonas/tsa/actions/runs/390439380
 ## Acceptance policy
 
 Do not mark a school pedagogically certified solely because its browser matrix is green. Preserve separate status for (a) content rendering, (b) executable synthetic tests, (c) manual pedagogical review, (d) real external infrastructure evidence and (e) accessibility. Each newly found substantive defect should receive a source fix, regression test when practical and exact-head CI verification.
+
+## Substantive Architect pedagogy reconstruction (2026-10-17)
+
+- Reconstructed **seven** formerly 141–197 character Architect Data Architecture readings: ownership, schema boundaries, transactional consistency, caching, database-per-service, migration evolution and audit history (`21d1aa0`). Each now includes concepts, a concrete Steward scenario, failure/compatibility boundaries and an observable architectural decision.
+- Reconstructed **nine** Architect Resilience Architecture readings to cover timeouts, retries, circuit breakers, bulkheads, graceful degradation, dependency isolation, redundancy/failure domains and recovery objectives with practical failure tests (`90506b7`).
+- Reconstructed **ten** Architect Scalability/Distributed Systems readings, requiring workload measurements, consistency/coordination guarantees and explicit costs before suggesting distributed infrastructure (`0dee243`).
+- Reconstructed **thirteen** short Architecture Evaluation/Governance readings including ADRs, scenario evaluations, architecture fitness functions, technology selection, build vs buy and real-consumer gates for optional shared libraries (`06f1d3f`).
+- Reconstructed **ten** Integration and Messaging readings with source-of-truth, queue/fan-out, message identity, durable delivery, backpressure and fail-closed contract examples (`41e47fc`).
+
+These **49** lesson-depth changes go beyond browser remediation. They materially expand concepts and reasoning, but are **not** a human certification of every Architect reading and do not imply infrastructure tests were run. The structure-driven Architect Fundamentals/Styles/Domain/Modularity lessons already contain distinct `intro`, `principles`, `steward`, `practice` and `reflection` components and were not flattened into short generic descriptions. The next acceptance gate is exact-head CI followed by representative human review for clarity and factual consistency.
