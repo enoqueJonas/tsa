@@ -89,7 +89,7 @@ function lessonFrom(spec: Spec): Lesson {
         id: `quality-ci-${spec.id}`,
         title: spec.title,
         activities: [
-            { id: `quality-ci-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: spec.core, blocks } },
+            { id: `quality-ci-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: blocks.filter((b) => b.type === "paragraph").map((b) => b.text).join("\n\n") || spec.core, blocks } },
             { id: `quality-ci-${spec.id}-002`, title: `Apply: ${spec.title}`, estimatedMinutes: 55, content: { type: "practical", objective: `Prove ${spec.title} with this concrete outcome: ${proof[0]}.`, scenario: "Use Steward's existing JUnit/REST Assured/Playwright Java framework, deployed environments and immutable release identity. Improve the pipeline without hiding failures or duplicating evidence at the wrong test level.", instructions: spec.practice, deliverables: ["Versioned pipeline or container change", proof[0], "Observed success/failure transcript", "Short decision/triage note"], completionCriteria: [proof[1], "Missing/skipped evidence remains visible.", "The learner can explain this control’s specific stage and failure boundaries."] } },
             { id: `quality-ci-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: `Explain the main risk addressed by ${spec.title}, how it applies to Steward, and one way a poorly designed implementation could produce misleading green results.`, minimumCharacters: 200 } },
         ],
