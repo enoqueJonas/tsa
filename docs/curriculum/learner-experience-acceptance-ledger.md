@@ -498,3 +498,8 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 
 - Third user execution moved past the ESM `exports` error but failed on `SyntaxError: Identifier 'module' has already been declared`. The source `technical-stewardship-journey.ts` had a top-level local alias `const module = plannedPath`; in CommonJS the wrapper already reserves `module`.
 - Renamed only this local alias and its 120 call sites to `plannedModule` (`332e263`), preserving the existing curriculum definitions, lesson order and teaching content. This should eliminate the concrete binding collision without introducing a runtime-loader workaround. Fresh execution of `pnpm check:resolved-practicals` is required before claiming success.
+
+### 2026-10-17 — Fully resolved practical presence confirmed
+
+- User successfully ran `pnpm check:resolved-practicals` after `332e263`: **12 schools, 128 paths, 1,225 lessons, 1,331 practical activities, 0 missing/empty contract findings**. This confirms field completeness on the assembled curriculum, including computed/spread content, not educational depth or usability.
+- Added the resolved-curriculum verification as a **sixth** `pnpm test` smoke assertion requiring 12 schools and zero missing/empty contracts (`851f84d`). The new full-suite check itself awaits execution. Separate substantive review of detailed task instructions, deliverable quality and realistic acceptance criteria remains open. Learner navigation, completion tracking and progress persistence remain deferred at user request.
