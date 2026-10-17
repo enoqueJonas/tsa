@@ -6,6 +6,10 @@ const djangoMigrations: LearningResource = { title: "Django migrations", url: "h
 
 const blocks: LessonBlock[] = [
     { type: "paragraph", text: "A production database cannot be treated as if application code and schema switch atomically. During a rolling or staged release, old and new application versions can overlap while data already exists. Steward must learn to evolve persistent state without assuming an instant cutover." },
+    { type: "heading", id: "worked-column-transition", text: "Worked two-version schema transition", level: 2 },
+    { type: "paragraph", text: "Imagine the Steward API currently reads customers.display_name. The next version needs customers.preferred_name, but old API replicas still read display_name during a rolling release. Adding preferred_name as nullable is an expansion; dropping display_name immediately would make old replicas fail. First deploy compatible code, backfill in bounded batches, compare counts and values, then switch readers only when evidence shows all writers maintain the new field." },
+    { type: "code", language: "sql", caption: "Illustrative expansion and read-only backfill verification; execute only against a disposable PostgreSQL database.", code: "ALTER TABLE customers ADD COLUMN preferred_name text;\\n-- After an application-compatible backfill, inspect remaining work:\\nSELECT count(*) AS missing_preferred_name\\nFROM customers WHERE preferred_name IS NULL;" },
+    { type: "paragraph", text: "The count alone is not enough if NULL is permitted by business rules. Define which synthetic records must have a preferred name, test old and new application versions against the expanded schema, and document the last safe rollback point. A contract migration is only safe after every old reader/writer has stopped depending on display_name. Never execute the example against real banking or production records." },
     { type: "heading", id: "expand-contract", text: "Expand, migrate, switch, contract", level: 2 },
     { type: "list", items: [
         "Expand: add backward-compatible schema/state without removing what the old application still needs.",
