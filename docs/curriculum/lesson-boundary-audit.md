@@ -78,20 +78,21 @@ Status: **Not yet audited**.
 - [ ] `platform-builder-windows-powershell-enterprise-deep`
 
 ### delivery-engineer
+Status: **All 11 logical modules have received a source-level triage pass; activity-by-activity pedagogical certification and real infrastructure exercises remain open.** The checkboxes below indicate source review, not rendered or practical sign-off.
 
-Status: **Not yet audited**.
+- [x] `delivery-artifact-supply-chain-quality` — 25 authored source specs, 23 enriched practicals plus 2 integrated labs; repository evidence and packaging requirements reviewed.
+- [x] `delivery-automation-shell-deep` — six distinct practical evidence contracts, pipeline failure traces and annotated shell examples.
+- [x] `delivery-containers-docker-quality` — packaging, local image identity, persistent dependencies, authorization and end-to-end roles.
+- [x] `delivery-continuous-delivery-quality` — promotions, post-deployment API/async validation and three-role recovery.
+- [x] `delivery-continuous-integration-quality` — GitLab baseline, gates, runners, fail-closed behavior and canonical documentation.
+- [x] `delivery-configuration-management-quality` — Rocky Linux Ansible, drift/rerun evidence and full runtime readiness.
+- [x] `delivery-engineer-milestone-deep` — gates require exact artifact identity, all three roles, authorization and async recovery.
+- [x] `delivery-migration-exercises-deep` — bounded Jenkins-to-GitLab exercise, failure equivalence and fixture-only honesty.
+- [x] `delivery-production-schema-evolution-deep` — compatibility, concurrent-backfill interleaving and destructive-contract gates.
+- [x] `delivery-release-engineering-quality` — immutable promotion, release safety and conditional internal-package provenance.
+- [x] `delivery-software-foundations-quality` — Git integration and promotion worked traces; module/profile alignment verified.
 
-- [x] `delivery-artifact-supply-chain-quality` — 25 lessons / 23 quality-enriched practicals + 2 integrated labs; source audit complete, execution/render validation open.
-- [ ] `delivery-automation-shell-deep`
-- [x] `delivery-containers-docker-quality`
-- [ ] `delivery-continuous-delivery-quality`
-- [x] `delivery-continuous-integration-quality`
-- [ ] `delivery-configuration-management-quality`
-- [ ] `delivery-engineer-milestone-deep`
-- [ ] `delivery-migration-exercises-deep`
-- [ ] `delivery-production-schema-evolution-deep`
-- [x] `delivery-release-engineering-quality`
-- [ ] `delivery-software-foundations-quality`
+**Delivery source-level triage: 11/11.** **Delivery activity-level sign-off: not claimed.** Pending: running actual Steward labs on accessible infrastructure, rendered lessons, and executable checks beyond coverage already in CI.
 
 ### cloud-engineer
 
