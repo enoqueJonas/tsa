@@ -135,6 +135,15 @@ def check_complete_modules(page):
                 assert page.locator("main").last.locator("p").count() >= 1, (
                     f"Reading has no visible explanatory paragraphs: {activity_id}"
                 )
+            # Inspect code block presentation whenever this reading contains code.
+            code_blocks = page.locator("main figure").filter(has=page.get_by_role("button", name="Copy"))
+            for code_index in range(code_blocks.count()):
+                block = code_blocks.nth(code_index)
+                assert block.locator("pre").count() >= 1, (
+                    f"Code block lacks a displayed preformatted source at {activity_id}"
+                )
+                copy = block.get_by_role("button", name="Copy")
+                assert copy.is_visible(), f"Code block has no visible copy control at {activity_id}"
             reflection = page.get_by_placeholder("Write your response here...")
             if reflection.count():
                 reflection.fill(
