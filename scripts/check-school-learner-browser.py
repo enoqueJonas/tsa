@@ -65,9 +65,24 @@ def inspect_school(page):
                     f"Code block not rendered: {activity_id}"
                 )
             reflection = page.get_by_placeholder("Write your response here...")
+            practical = page.get_by_text("Engineering Practice", exact=True).count() > 0
+            activity_type = "reading"
             if reflection.count():
+                activity_type = "reflection"
                 reflection.fill(SYNTHETIC_REFLECTION)
+            elif practical:
+                activity_type = "practical"
+                assert content.get_by_text("Work through the problem", exact=True).count() >= 1, (
+                    f"Practical has no visible instructions: {activity_id}"
+                )
+                assert content.get_by_text("Evidence to keep", exact=True).count() >= 1, (
+                    f"Practical has no visible deliverables: {activity_id}"
+                )
             else:
+                assert content.locator("p").count() >= 1, (
+                    f"Reading lacks a rendered explanatory paragraph: {activity_id}"
+                )
+            if not reflection.count():
                 assert content.locator("h1").count() >= 1, (
                     f"Missing activity heading: {activity_id}"
                 )
@@ -78,6 +93,7 @@ def inspect_school(page):
             evidence.append({
                 "module": module_index + 1,
                 "activity_id": activity_id,
+                "activity_type": activity_type,
                 "visible_characters": len(text),
                 "code_blocks": code.count(),
             })
