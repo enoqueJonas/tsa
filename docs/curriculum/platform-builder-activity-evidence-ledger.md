@@ -256,3 +256,8 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 - Strengthened `Promotion and Gates`: a disposable mutable-tag replacement must be detected by immutable image digest comparison and must block the promotion, even if a human-readable tag remains unchanged (`f705389`).
 - Strengthened `Deployment Evidence`: the accepted image digest must be independently verified on API, outbox-publisher and lifecycle-consumer; a mixed-role rollout cannot be counted as successful merely because the API is healthy (`f705389`).
 - This is a learner practical-evidence requirement, not a claim that Nexus/GitLab or live Steward roles were exercised by the curriculum audit. Exact-head validation and learner-browser results still need confirmation.
+
+## Batch 109 — Delivery Ansible idempotency negative control (2026-10-17)
+
+- Updated `Desired State and Idempotency` in Delivery Configuration Management. Beyond first-run, second-run and repair evidence, the learner must compare Ansible check-mode predictions with actual repair, document unsupported/inaccurate check-mode behavior, and deliberately introduce an invalid desired state in a disposable test resource to prove that the play fails visibly rather than falsely reporting convergence (`6841fb3`).
+- This updates practical teaching/acceptance criteria; it does **not** claim a learner-owned Rocky host or Ansible control node was operated. Exact-head CI remains a separate acceptance gate.
