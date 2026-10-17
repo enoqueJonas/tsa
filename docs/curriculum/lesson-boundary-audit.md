@@ -328,3 +328,11 @@ Inspected Platform Builder's integrated milestone gates (core infrastructure, pa
 ## Review batch 23 — Delivery CI dependency behavior
 
 Inspected Delivery Engineer continuous-integration, Docker and release-engineering lesson sources. The Jobs, Stages and Dependencies section discussed parallel work and prerequisite relationships but did not give learners a complete passing/failing execution trace. Commit `c040d6c` adds a worked Steward job graph, independent versus gated work, a failed unit-test outcome, explicit policy-dependent lint gating, and immutable image handoff. This is targeted source improvement only; remaining lessons, rendered content, automated curriculum audit and local build are unverified.
+
+## Review batch 24 — Docker, Release Engineering and Delivery breadth
+
+Inspected the 15 source Docker lesson titles and confirmed that all 15 have corresponding investigation activities in the quality wrapper. Inspected the six core Release Engineering reading lessons and confirmed all six have matching practice overrides; additional release lab/review content is composed separately and still requires individual validation. Sampled their instruction and evidence design, and inspected Delivery continuous delivery, migration, configuration management, software foundations, artifact supply chain, CI and school milestone sources. This is **not** a finished activity-by-activity pedagogical sign-off.
+
+Remediations committed: `7591086` and `1e24027` strengthen Docker volume lifecycle and add a disposable executable persistence demonstration with expected output; `2de93f3` adds a worked release regression decision distinguishing process health, functional failure, backwards-compatible rollback and forward repair; `ce9c279` adds an explicit expand/backfill/switch/contract field migration through old/new application coexistence.
+
+**Outstanding:** individual lesson activity-level depth verification, prerequisite sequencing, example-output review, full school and 133-module curriculum review, automated `pnpm audit:curriculum`, `pnpm build`, and rendered inspection. The connected GitHub editor cannot run local `pnpm` here; attempted Git access from local container failed due unavailable network resolution. Do not infer passing build or whole-school approval from successful source commits.
