@@ -493,3 +493,8 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 
 - User's second run of `pnpm check:resolved-practicals` reproduced `exports is not defined in ES module scope`, this time in the temporary compiled `.js` tree. The prior fix isolated the files but did not declare the generated package's module format; Node 25 still interpreted a compiled file as ESM.
 - Fixed by writing a **temporary `package.json` with `type: "commonjs"`** beside the generated modules before requiring the assembled journey (`4e70869`). This specifies the format for every generated `.js` module independently of Node's module-detection heuristics. Nothing is changed in TSA's actual package manifests. Await fresh execution before claiming success.
+
+### 2026-10-17 — CommonJS `module` collision in resolved practical checker
+
+- Third user execution moved past the ESM `exports` error but failed on `SyntaxError: Identifier 'module' has already been declared`. The source `technical-stewardship-journey.ts` had a top-level local alias `const module = plannedPath`; in CommonJS the wrapper already reserves `module`.
+- Renamed only this local alias and its 120 call sites to `plannedModule` (`332e263`), preserving the existing curriculum definitions, lesson order and teaching content. This should eliminate the concrete binding collision without introducing a runtime-loader workaround. Fresh execution of `pnpm check:resolved-practicals` is required before claiming success.
