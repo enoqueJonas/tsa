@@ -28,6 +28,11 @@ with open(f"/proc/{pid}/status", encoding="utf-8") as status:
 assert f"Pid:\t{pid}" in text, "Cannot match procfs status to the running process"
 assert os.path.isdir(f"/proc/{pid}/fd")
 print("PASS procfs process status and descriptor directory are observable")
+fields = run("grep", "-E", "^(Name|Pid|PPid|Threads):", f"/proc/{pid}/status").stdout
+for label in ("Name:", "Pid:", "PPid:", "Threads:"):
+    assert label in fields, f"Missing {label} in procfs status"
+print("PASS procfs grep example exposes process and thread fields")
+
 
 device = run("stat", "/var")
 assert "File:" in device.stdout
