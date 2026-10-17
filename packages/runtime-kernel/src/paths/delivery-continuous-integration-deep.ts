@@ -2,7 +2,7 @@ import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
 const gha: LearningResource = { title: "GitHub Actions documentation (comparison only)", url: "https://docs.github.com/actions" };
-const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://www.gitlab.io/doc/" };
+const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
 const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
 
 function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [gha]): Lesson {
