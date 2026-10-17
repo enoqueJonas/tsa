@@ -228,7 +228,7 @@ def check_cross_school_first_reading(page):
         heading = page.locator("main h1").first
         heading.wait_for(timeout=30000)
         assert heading.inner_text().strip(), f"Empty first reading title for school {slug}"
-        assert page.locator("main").inner_text().strip(), f"Empty first reading content for school {slug}"
+        assert page.locator("main").last.inner_text().strip(), f"Empty first reading content for school {slug}"
         print(f"PASS school entry and first reading: {slug}", flush=True)
 
 
