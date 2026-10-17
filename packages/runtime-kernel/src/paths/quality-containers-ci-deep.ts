@@ -216,7 +216,7 @@ const specs: Spec[] = [
         practice: ["Create the initial .gitlab-ci.yml for steward-tests.", "Run a Maven verification job on an appropriate GitLab Runner.", "Use rules to distinguish merge-request, default-branch and scheduled behavior.", "Use needs where a DAG improves feedback without weakening dependencies.", "Publish JUnit/test artifacts and inspect them after a controlled failure.", "Define cache versus artifact usage and configure one of each deliberately."],
         code: "stages:\n  - verify\n  - integration\n  - browser\n\njava-verify:\n  stage: verify\n  image: maven:3.9-eclipse-temurin-17\n  script:\n    - mvn -B -U clean test\n  artifacts:\n    when: always\n    reports:\n      junit: target/surefire-reports/TEST-*.xml",
         language: "yaml",
-        warning: "Do not encode business/test logic in GitLab YAML. The pipeline should orchestrate reproducible Maven commands and preserve evidence."
+        warning: "Example output contract: an executed job reports the Maven exit code, test count and JUnit report path; GitLab archives matching XML files with artifacts:when:always even when tests fail. The YAML is intentionally a minimal teaching excerpt, not a full integration/browser pipeline: defining stages alone does not create jobs for those stages. Do not encode business/test logic in GitLab YAML. The pipeline should orchestrate reproducible Maven commands and preserve evidence."
     },
     {
         id: "pipeline-stages",
