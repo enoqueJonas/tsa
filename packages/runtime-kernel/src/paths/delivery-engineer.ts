@@ -68,7 +68,7 @@ export const deliveryEngineerPaths: LearningPath[] = [
     continuousIntegration,
     continuousDeliveryDeployment,
     configurationManagement,
-    path(artifactDependencySupplyChainManagement.id, artifactDependencySupplyChainManagement.title, artifactDependencySupplyChainManagement.lessons),
+    artifactDependencySupplyChainManagement,
     releaseEngineering,
     productionSchemaEvolution,
     deliveryPlatformMigration,
