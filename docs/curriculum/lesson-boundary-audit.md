@@ -410,3 +410,7 @@ Reviewed the CI Caching lesson and the Artifact Supply Chain public-proxy activi
 ## Review batch 32 — Artifact retention and quality-gate decisions
 
 Inspected Delivery Artifact Supply Chain's retention exercise and the CI Quality Gates lesson. Commit `5bf5ce1` introduces a concrete release-in-use scenario that prevents age-only cleanup from deleting a still-deployed or rollback-required image and makes dependency retention/retrieval explicit. Commit `3459d22` traces a mandatory failing authorization test, rejecting promotion despite a green build, and differentiates a controlled release-scoped exception from silently weakening future policy. Source edits remain unverified in current build and rendered lessons; user-reported earlier build predates these commits.
+
+## Review batch 33 — SBOM-to-deployment interpretation
+
+Inspected the Software Bill of Materials lesson and practical. Commit `77443c4` adds a worked trace from image digest A and component X version 1.2 to an advisory, explicitly separating component presence from exploitability and release-B state. The lesson now requires correlating artifact identity, affected-version information and actual deployments rather than treating an SBOM or scan result as a verdict. This source edit is not a verified learner execution or current build result.
