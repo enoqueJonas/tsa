@@ -177,3 +177,8 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 - Improved the Linux Administration systemd lesson to explain the required existing `steward.service` unit, the difference between `daemon-reload` and `enable --now`, why ActiveState does not establish application health, and why learners must not mutate unfamiliar host or production units (`fb7f374`).
 - Improved the permissions lab caption to distinguish file mode `640` from parent-directory traversal requirements and to require verified lab paths and an existing service account before running `chmod` and `chown` (`3dad1fa`). This is a source-level pedagogical correction, not an executed production service or privileged filesystem change.
 - The latest CI workflows must complete before either change is accepted. Actual systemd service operations on a learner VM and a real endpoint response remain outstanding.
+
+## Batch 95 — Disposable directory traversal check (2026-10-17)
+
+- Extended `scripts/check-platform-filesystem-drill.py` to create a private temporary directory and file, set the directory mode to 0600 (no execute/traversal), independently inspect it with `stat`, and restore 0700 before reading the contents. This provides a controlled demonstration that directory traversal permission is distinct from file content mode; it does not mutate host application paths. Commit `79980b0`.
+- Linux Administration service and permission explanatory captions from Batch 94 remain part of the learner content. The latest Actions run must pass its full validation and browser jobs before the new drill is counted as accepted. Real Rocky/Proxmox/Windows labs remain unverified.
