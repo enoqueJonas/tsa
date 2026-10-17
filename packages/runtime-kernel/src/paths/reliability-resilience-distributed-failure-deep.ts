@@ -29,7 +29,7 @@ function lessonFrom(spec: Spec): Lesson {
         { type: "resources", title: "Continue learning", resources: resourcesByResilienceTopic[spec.id] ?? [sre, azure] },
     ];
     return { id: `resilience-distributed-failure-${spec.id}`, title: spec.title, activities: [
-        { id: `resilience-distributed-failure-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: spec.intro, blocks } },
+        { id: `resilience-distributed-failure-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks } },
         { id: `resilience-distributed-failure-${spec.id}-002`, title: `Harden: ${spec.title}`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${spec.title} to a Steward dependency path.`, scenario: "Start from the exact Reliability baseline and choose an active Steward dependency path. Use its measured latency/capacity evidence and existing telemetry. Model one real failure mode before changing code, then verify whether the control bounds latency, work amplification and user impact.", instructions: spec.practice, deliverables: ["Failure-path model", "Resilience-control evidence", "Telemetry and trade-off note"], completionCriteria: ["The failure mode is explicit.", "The control has a bounded behavior rather than an infinite or arbitrary policy.", "Normal, failure and recovery behavior are observable." ] } },
         { id: `resilience-distributed-failure-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.reflection, minimumCharacters: 200 } },
     ] };
