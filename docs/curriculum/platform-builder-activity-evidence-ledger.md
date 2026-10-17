@@ -128,3 +128,9 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 - Replaced the OS resource lesson's unbounded `vmstat 1` sampling with `vmstat 1 5` and a caption explaining available RAM, swap-in/swap-out and CPU wait. Executed `vmstat 1 5` in an isolated Linux shell and observed five rows followed by normal process exit. This is a command-execution check, not a Rocky homelab performance benchmark.
 - Replaced the Linux Administration lesson's unbounded `journalctl -u steward.service -f` with a bounded `journalctl -u steward.service -n 30 --no-pager`, suitable for copying into one-shot evidence collection. The journal source was corrected, but the actual steward service unit is not installed in CI; no service output was fabricated.
 - New source commits `38fc500` and `1d48777` need exact-head CI verification before final acceptance; rendered/source R and E categories remain bounded by the tests actually performed.
+
+## Batch 87 — Worked output and vmstat interpretation (2026-10-17)
+
+- Corrected the OS resource-inspection explanation: in `vmstat 1 5`, the first displayed report summarizes averages since boot, while subsequent reports represent one-second samples. Verified directly with a bounded `vmstat 1 5` invocation in a disposable Linux shell, yielding five data rows and normal termination.
+- Extended the Computer/OS rich-lesson code factory to support explicit `output` examples. The CPU inventory example now shows clearly labeled **illustrative**, host-dependent output instead of leaving the beginner to guess what `nproc`, `uptime` or `ps` print. The output is not misrepresented as evidence from Steward or the learner's machine.
+- Added a browser regression assertion to ensure the illustrative output is actually rendered in the learner UI. Source commits: `13ec9dc`, `4ab9872`, `721361c`. As always, source and browser CI must pass for the exact latest commit before acceptance.
