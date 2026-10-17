@@ -16,7 +16,7 @@
 
 Status: **Not yet audited**.
 
-- [ ] `builder-python-quality`
+- [x] `builder-python-quality`
 - [x] `builder-web-api-quality`
 - [x] `builder-django-quality`
 - [x] `builder-postgresql-quality`
@@ -250,3 +250,7 @@ Confirmed a lack of worked decision sequences in `professional-engineer-professi
 ## Review batch 6 — Observability
 
 Confirmed a gap in `reliability-observability-deep`: each lesson offered principles and Steward exercises but lacked an explicit diagnostic walkthrough mapping a question to signals and an interpretation. Commit `9a552d2` adds question/evidence/interpretation examples to all eight conceptual lessons. The examples cover monitoring versus observability, signals, telemetry design, correlation, instrumentation, tracing, golden signals and telemetry cost. These are reasoning examples, not fabricated runtime measurements.
+
+## Review batch 7 — Python OOP practical progression
+
+Confirmed a major gap: after splitting Python OOP into individual lessons, the quality-layer practical mapping covered Composition but not the six other new lessons. Those lessons therefore retained generic practical instructions instead of progressive, domain-specific engineering tasks. Commit `75c20ed` adds targeted practical activities for Encapsulation, Inheritance, Polymorphism, Decorators, Python Class Features and OOP Design, with runnable evidence and negative tests. Commit `1b5f61c` labels inheritance snippets that depend on the earlier Vehicle definition as continuations. The broader Python curriculum still requires review outside OOP.
