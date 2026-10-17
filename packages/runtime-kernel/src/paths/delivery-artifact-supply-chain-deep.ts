@@ -19,6 +19,35 @@ interface LessonSpec {
     resources: LearningResource[];
 }
 
+type PracticalContract = { objective: string; deliverables: string[]; completionCriteria: string[] };
+const practicalContracts: Record<string, PracticalContract> = {
+    "why-internal-repositories": { objective: "Explain why a managed internal artifact path improves Steward release and dependency operations.", deliverables: ["Internal repository rationale","Failure and ownership map"], completionCriteria: ["Decision distinguishes artifact authority from simple file hosting."] },
+    "registries-vs-repositories": { objective: "Choose repository endpoints according to Python, npm and OCI consumption contracts.", deliverables: ["Format and protocol comparison","Repository endpoint decision"], completionCriteria: ["The selected endpoint matches each consumer's protocol."] },
+    "public-private-dependencies": { objective: "Classify dependencies by ownership, authority and source resolution.", deliverables: ["Dependency classification","Namespace collision analysis"], completionCriteria: ["Private code cannot silently resolve from public namespaces."] },
+    "repository-manager-architecture": { objective: "Design Nexus responsibilities and dependency flows for the Steward estate.", deliverables: ["Nexus topology","Repository authority and failure boundaries"], completionCriteria: ["Each publish and consume path has an explicit owner and trust boundary."] },
+    "hosted-proxy-group": { objective: "Explain and verify hosted, proxy and group repository behavior.", deliverables: ["Repository type matrix","Resolved-source evidence"], completionCriteria: ["A group endpoint is not confused with an internal package publisher."] },
+    "python-pypi-distribution": { objective: "Explain which files and metadata make a Python distribution consumable.", deliverables: ["Wheel/sdist contract","Clean Python consumption evidence"], completionCriteria: ["Metadata and package identity agree with the artifact distributed."] },
+    "npm-distribution": { objective: "Describe and verify npm package contents, name and version.", deliverables: ["npm package manifest","Pack-content inspection"], completionCriteria: ["Consumers depend on packaged output, not untracked workspace files."] },
+    "container-registries": { objective: "Trace an OCI image from repository/tag to exact digest.", deliverables: ["Image identity record","Digest resolution evidence"], completionCriteria: ["Tag and immutable digest are not treated as equivalent."] },
+    "deploy-nexus-homelab": { objective: "Operate a bounded Nexus service in the existing homelab.", deliverables: ["Nexus deployment and storage evidence","Restart and recovery notes"], completionCriteria: ["The service survives its documented lifecycle without exposing administrative access publicly."] },
+    "auth-permissions": { objective: "Apply distinct administrator, publisher and consumer access to Nexus.", deliverables: ["Identity/permission matrix","Allowed and denied action evidence"], completionCriteria: ["A consumer cannot publish and a publisher lacks unnecessary administrator rights."] },
+    "publish-python": { objective: "Publish a deliberately identified Python distribution to hosted Nexus PyPI.", deliverables: ["Distribution checksum and version record","Publication and rejection evidence"], completionCriteria: ["A duplicate or invalid release is not silently substituted."] },
+    "consume-pip": { objective: "Install a selected package through Nexus from a clean consumer.", deliverables: ["Consumer environment proof","Resolved version and index record"], completionCriteria: ["The install works without producer checkout or locally copied wheels."] },
+    "publish-npm": { objective: "Publish a reviewed npm distribution through the approved hosted repository.", deliverables: ["Packed-file inventory","Publication/version evidence"], completionCriteria: ["Sensitive or irrelevant local files are not included in the package."] },
+    "consume-npm-pnpm": { objective: "Prove clean npm or pnpm consumption through the approved Nexus endpoint.", deliverables: ["Consumer lockfile and registry record","Clean-install evidence"], completionCriteria: ["The consumer does not require a link to the producer workspace."] },
+    "publish-steward-images": { objective: "Publish and retrieve the same Steward OCI content through Nexus.", deliverables: ["Source/run/tag/digest record","Independent pull proof"], completionCriteria: ["The consumer retrieves the promoted digest instead of trusting a mutable tag."] },
+    "proxy-cache-public": { objective: "Verify proxy caching without confusing public source with internal ownership.", deliverables: ["Resolved upstream and cache evidence","Namespace conflict response"], completionCriteria: ["External cache hits cannot impersonate an approved internal release."] },
+    "internal-versioning": { objective: "Define compatible and incompatible evolution for an earned package or explicit fixture.", deliverables: ["Package version policy","Consumer impact matrix"], completionCriteria: ["Breaking changes do not masquerade as patch releases."] },
+    "prerelease-release": { objective: "Apply release-stage conventions without overwriting accepted bytes.", deliverables: ["Prerelease-to-release decision","Artifact immutability evidence"], completionCriteria: ["A promoted release resolves to fixed content and retains provenance."] },
+    "retention-cleanup": { objective: "Set retention based on deployment and recovery dependencies.", deliverables: ["Artifact retention categories","Recovery digest availability check"], completionCriteria: ["No deployed or required rollback artifact is removed by an age-only rule."] },
+    "provenance": { objective: "Link source revision, CI execution and exact published artifact.", deliverables: ["Provenance chain","Source-to-deployment trace"], completionCriteria: ["Claims identify actual source, run, version and digest/hash."] },
+    "sbom": { objective: "Generate and interpret component inventory for an exact Steward artifact.", deliverables: ["SBOM with artifact digest","Five-component verification"], completionCriteria: ["An SBOM is not mistaken for proof of exploitability or safety."] },
+    "signing-provenance": { objective: "Locate signing and verification decisions in the supply-chain trust path.", deliverables: ["Signer/verifier responsibility diagram","Trust limitation note"], completionCriteria: ["Signature validity is distinguished from signer authorization and artifact safety."] },
+    "scanning": { objective: "Evaluate at least one artifact-linked dependency or image scan result.", deliverables: ["Digest-scoped scan evidence","Finding disposition and rationale"], completionCriteria: ["Findings are not resolved by severity score alone."] },
+    "lab-nexus-platform": { objective: "Integrate a real, controlled Nexus publishing and consumption platform.", deliverables: ["Operated Nexus configuration","Permission, restart and consumer evidence"], completionCriteria: ["Publication and independent consumption work across the intended trust boundary."] },
+    "lab-steward-common-ci": { objective: "Prove internal package release and clean consumption only when extraction was earned.", deliverables: ["CI-published package or explicitly labeled fixture","Independent consumer and blocked-failure evidence"], completionCriteria: ["No unearned steward-common package or fabricated real consumer is required."] },
+};
+
 function richLesson(spec: LessonSpec): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
     for (const section of spec.sections) {
@@ -45,11 +74,11 @@ function richLesson(spec: LessonSpec): Lesson {
                 estimatedMinutes: 45,
                 content: {
                     type: "practical",
-                    objective: `Apply ${spec.title} to the Steward delivery platform.`,
+                    objective: practicalContracts[spec.id].objective,
                     scenario: "Use the existing Steward API, homelab, CI pipeline and internal-package work. Keep the exercise inside the Delivery Engineer boundary rather than prematurely solving later security or reliability work.",
                     instructions: spec.practice,
-                    deliverables: ["Versioned configuration or artifact evidence", "Short engineering note explaining the decision", "Proof of successful and relevant failure behavior"],
-                    completionCriteria: ["The work is reproducible by another engineer.", "Artifact or dependency identity is explicit.", "The learner can explain where trust enters the workflow."],
+                    deliverables: practicalContracts[spec.id].deliverables,
+                    completionCriteria: practicalContracts[spec.id].completionCriteria,
                 },
             },
             {
