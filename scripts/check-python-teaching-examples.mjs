@@ -32,7 +32,7 @@ const required = new Set([
 ]);
 const extracted = new Map();
 const literal = (obj, key) => {
-  const property = obj.properties.find((p) => ts.isPropertyAssignment(p) && ts.isIdentifier(p.name) && p.name.text === key);
+  const property = obj.properties.find((p) => ts.isPropertyAssignment(p) && (ts.isIdentifier(p.name) || ts.isStringLiteral(p.name)) && p.name.text === key);
   return property && ts.isStringLiteralLike(property.initializer) ? property.initializer.text : undefined;
 };
 function visit(node) {
