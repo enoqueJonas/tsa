@@ -51,7 +51,7 @@ export const budgetHomelabDeepLessons: Lesson[] = [
     ]),
     reading("addressing", "Static Addressing", "Servers need stable identities, but stability can come from either host configuration or DHCP reservations. The engineering requirement is predictable addressing with one source of truth.", [
         { heading: "Choose an address plan", body: "Reserve a small range or DHCP reservations for infrastructure and document gateway, prefix, DNS and ownership. Avoid random static addresses inside the router's dynamic pool." },
-        { heading: "Verify rather than assume", body: "After configuration, inspect interface address, route and name resolution, then test from another host.", code: { language: "bash", code: "ip -br addr\nip route\nresolvectl status\nping -c 3 <gateway>" } },
+        { heading: "Verify rather than assume", body: "After configuration, inspect interface address, route and name resolution, then test from another host.", code: { language: "bash", code: "ip -br addr\nip route\nresolvectl status\nping -c 3 192.0.2.1 # documentation-only address; replace with the lab gateway before running" } },
     ]),
     reading("hosts", "Multiple Hosts and VMs", "The moment a homelab has multiple compute boundaries, placement becomes an architectural decision: which workload runs where, and what remains shared when one host fails?", [
         { heading: "Name every compute boundary", body: "Use stable hostnames and maintain an inventory containing physical host, VM, IP address, operating system, purpose and owner." },
