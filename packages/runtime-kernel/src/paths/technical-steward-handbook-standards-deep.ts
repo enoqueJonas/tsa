@@ -24,7 +24,7 @@ function reading(id: string, title: string, body: string, outcomes: string[], ex
       estimatedMinutes: 50,
       content: {
         type: "reading",
-        blocks: [{type:"paragraph",text:fullBody},{type:"resources",title:"Continue learning",resources:resourcesByHandbook[id] ?? [docsCode]}],
+        blocks: [...fullBody.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),{type:"resources",title:"Continue learning",resources:resourcesByHandbook[id] ?? [docsCode]}],
         body: fullBody,
       },
     }],
