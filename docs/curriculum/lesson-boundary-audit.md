@@ -2,6 +2,21 @@
 
 > Initial module inventory, not a finding of pedagogical completeness. Each module below requires inspection for overloaded concepts, missing prerequisites, worked examples and output traces.
 
+## Evidence-based completion gates (current)
+
+The audit is tracked in GitHub Issue #314. **Source presence is not pedagogical approval**:
+
+| Gate | Current finding |
+| --- | --- |
+| Logical curriculum inventory | 134 of 134 source files inspected for presence and basic shape; complete structural census in `source-census.md`. |
+| School module wiring | School and Academy aggregator imports reconciled with inventory; static drift guard added. |
+| Delivery practical enrichment | 82 title-to-quality-practical pairs matched; automated parity guard added. |
+| Artifact Supply Chain source-level reading/practical audit | 25 authored lesson specifications and 23 quality override profiles examined; specific fixes committed. |
+| Lesson-by-lesson pedagogical approval across schools | Not complete; historical checkboxes are progress markers, not approval of every activity. |
+| Executable examples and expected outputs | Selected examples corrected; comprehensive per-code-block verification open. |
+| Automated `pnpm audit:curriculum` and latest `pnpm build` | Not confirmed after latest changes. Earlier build success was reported by the user. |
+| Rendered lesson checks and real learner labs | Open; actual Steward infrastructure and exercise execution have not been verified. |
+
 ## Review criteria
 
 1. Does each lesson have one coherent objective and enough space to explain new mechanisms?
