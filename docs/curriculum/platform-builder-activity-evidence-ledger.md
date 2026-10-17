@@ -200,3 +200,9 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 - Extended `scripts/check-platform-systemd-unit.py` to verify that the same `systemd-analyze verify` invocation rejects a deliberately nonexistent `ExecStart` binary in an otherwise valid disposable unit. This negative control demonstrates the audit can detect a real unit error rather than merely reporting positive results. Commit `6e72538`.
 - The isolated CI validation job passed on [run 39037931106](https://github.com/enoqueJonas/tsa/actions/runs/39037931106), including the new negative control; full browser completion is a separate gate.
 - This remains static systemd-manager tooling verification, not an actual daemon lifecycle or automatically supervised recovery test.
+
+## Batch 99 — Non-root systemd example policy guard (2026-10-17)
+
+- Verified the preceding Batch 98 workflow [39038005706](https://github.com/enoqueJonas/tsa/actions/runs/39038005706) completed successfully for both validation and the full learner-browser journey.
+- Strengthened `scripts/check-platform-systemd-unit.py` so the disposable example must explicitly run with `User=nobody` rather than root and retain `Restart=on-failure` rather than switching silently to unconditional restart. This verifies that a syntax-valid example still maintains the chosen least-privilege and restart semantics. Commit `a8e1245`.
+- The check is policy-specific and does not prove actual systemd-managed restart. Exact-head CI status must be checked before acceptance.
