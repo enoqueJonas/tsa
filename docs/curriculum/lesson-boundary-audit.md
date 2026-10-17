@@ -262,3 +262,12 @@ Confirmed that the twelve application-security conceptual lessons presented prin
 ## Review batch 9 — Architecture Fundamentals
 
 Confirmed that nine architecture-fundamentals lessons provided principles and exercises but lacked a worked decision showing why the concept matters to a concrete system. Commit `3588615` adds situation/reasoning/evidence walkthroughs for architectural significance, design boundaries, drivers, quality attributes, constraints, trade-offs, ownership, fitness checks and ADR documentation. These are illustrative decisions; learners still need to evaluate their actual Steward architecture.
+
+## Review batch 10 — System Thinker components and data flow
+
+Inspected the source lessons behind `system-thinker-components-quality` and `system-thinker-data-flow-quality` rather than treating the quality wrapper as teaching content. Both have distinct lesson objectives, practices and checks, but the introductory reading used mostly general descriptions and conceptual diagrams where a concrete decision trace would help learners test understanding.
+
+- Commit `1ec8d5b` adds a registration-based worked responsibility decision that separates permission, lifecycle invariants and persistence. It explicitly marks the model as illustrative pending comparison with the Steward implementation.
+- Commit `2198260` adds a positive and negative registration-flow walkthrough distinguishing authentication, authorization, domain validation, persistence and observed contract outcomes. It makes clear these are expected outcomes, not asserted runtime test results.
+
+This is a **targeted content improvement**, not a full pass over either module. Remaining lessons, practice/rendering, the complete school sequence, and actual local audit/build still require validation.
