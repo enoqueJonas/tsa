@@ -114,7 +114,7 @@ def check_complete_first_module(page):
         assert activity_id not in visited, f"Navigation stuck at {activity_id}"
         visited.add(activity_id)
         # Reflection activities have a prompt and textarea, but no h1.
-        assert page.locator("main").is_visible()
+        assert page.locator("main").last.is_visible()
         if page.locator("main h1").count():
             assert page.locator("main h1").first.inner_text().strip()
         else:
