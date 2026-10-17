@@ -348,3 +348,9 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 
 - Added standard-library Python CI drill `scripts/check-delivery-release-identity.py` (`bc06997`) and wired it into the curriculum workflow (`e845959`). It constructs immutable SHA-256 fixture digests for Steward's API, outbox publisher and lifecycle consumer. A valid approved tuple passes; mutable-tag repoint, missing runtime role, mismatched CI run/source revision and a tag passed instead of a digest all **must** fail closed.
 - This is deliberately a **synthetic contract verifier**, not actual Docker/Nexus/GitLab verification; it adds executable negative-control evidence beyond merely requiring learners to collect release digests. Current CI status is to be confirmed.
+
+## Batch 126 — Exhaustive nine-school browser traversal via matrix CI (2026-10-17)
+
+- Added isolated `scripts/check-school-learner-browser.py` (`7120826`) and nine separate `cross-school-browser` matrix CI jobs (`3467eed`) to attempt a **complete** navigation/content/code-block pass through every activity in System Thinker, Delivery Engineer, Cloud Engineer, Quality Steward, Security Steward, Reliability Engineer, Architect, Technical Steward and Professional Engineer. Platform Builder retains its own exhaustive 328-activity test.
+- Each job uses an isolated synthetic browser context, traverses modules in order, validates nonempty rendered learner content and activity progression, checks displayed preformatted code, and uploads activity IDs and visible-content counts as evidence. Browser completion is synthetic and must not be confused with genuine learner engineering artifacts.
+- This is a first attempt at full-school checks, **not** a claim of nine-school success. CI failures should be investigated and corrected until the exact-head matrix completes successfully; discovery of genuine lesson gaps must not be bypassed.
