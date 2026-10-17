@@ -338,3 +338,8 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 
 - Expanded the existing Playwright learner-browser script to navigate from each of the ten runtime school slugs to its first available module and assert a nonempty actual learner heading/content (`247472f`). This supplements, rather than replaces, the full 328-activity Platform Builder progression. It catches broken first-module navigation or empty pages outside Platform Builder without falsely claiming complete activity traversal for those nine schools.
 - CI execution is the acceptance gate; until that workflow passes, the cross-school browser test is implemented but unverified. Longer-term exhaustive traversal and concept-order pedagogical review remain open.
+
+## Batch 124 — All-activity first-module traversal for ten schools (2026-10-17)
+
+- Fixed a strict-mode Playwright locator error uncovered in initial cross-school smoke: two nested `<main>` elements exist in the lesson view, so the learner content assertion must target the inner `main` (`63ce518`). That fix passed both CI jobs, including all ten school entry checks and full 328-activity Platform traversal: [39042044242](https://github.com/enoqueJonas/tsa/actions/runs/39042044242).
+- Expanded the all-ten-school smoke further: it now visits each activity of the **first module** in each school, checks nonempty content/placeholder absence and traversable Next progression; reflection input is synthetic and explicitly not treated as practical evidence (`ef10278`). It does **not** yet certify all modules or genuine infrastructure outcomes across those schools. Exact-head browser CI pending.
