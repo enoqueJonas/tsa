@@ -113,7 +113,7 @@ for (const [sourceFile, qualityFile, titlePattern] of deliveryQualityPairs) {
 const inventoryText = fs.readFileSync(path.join(docsDir, "lesson-boundary-audit.md"), "utf8").split("## Known findings")[0];
 const listedModules = new Set(inventoryText.split("\n").filter((line) => line.startsWith("- [")).map((line) => line.split(String.fromCharCode(96))[1]).filter(Boolean));
 // Every tracked module must still resolve to a real curriculum source file.
-const inventoryNames = inventoryText.split("\\n").filter((line) => line.startsWith("- [")).map((line) => line.split(String.fromCharCode(96))[1]).filter(Boolean);
+const inventoryNames = inventoryText.split("\n").filter((line) => line.startsWith("- [")).map((line) => line.split(String.fromCharCode(96))[1]).filter(Boolean);
 for (const name of inventoryNames) {
   if (!sources.has(name + ".ts")) failures.push("Curriculum audit inventory source is missing: " + name);
   if (inventoryNames.filter((item) => item === name).length !== 1) failures.push("Duplicate curriculum audit inventory module: " + name);
