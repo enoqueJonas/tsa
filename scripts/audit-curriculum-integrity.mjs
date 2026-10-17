@@ -84,6 +84,24 @@ if (!deliveryArtifacts.includes("objective: practicalContracts[spec.id].objectiv
   failures.push("Artifact Supply Chain practicals must use lesson-specific objectives and acceptance criteria");
 }
 
+// The learner receives the quality-enriched practical for 23 normal Supply Chain lessons.
+// The two integrated lab lessons retain their specialized deep-source contract instead.
+const artifactQuality = sources.get("delivery-artifact-supply-chain-quality.ts") ?? "";
+const artifactTitles = [...deliveryArtifacts.matchAll(/^\s*id: "[^"]+",\s*\n\s*title: "([^"]+)"/gm)].map((match) => match[1]);
+const profileTitles = [...artifactQuality.matchAll(/^    "([^"]+)": \{/gm)].map((match) => match[1]);
+for (const title of artifactTitles.filter((item) => !item.startsWith("Lab:"))) {
+  if (profileTitles.filter((item) => item === title).length !== 1) failures.push(`Supply Chain quality-practical profile missing/duplicated: ${title}`);
+}
+for (const title of profileTitles) {
+  if (!artifactTitles.includes(title)) failures.push(`Supply Chain quality-practical profile is orphaned: ${title}`);
+}
+if (!artifactQuality.includes("artifactDependencySupplyChainDeepLessons.map(enrichLesson)")) {
+  failures.push("Supply Chain quality profiles must be applied to exported deep lessons");
+}
+if (!(fs.readFileSync(path.join(docsDir, "lesson-boundary-audit.md"), "utf8")).includes("`delivery-artifact-supply-chain-quality`")) {
+  failures.push("Curriculum lesson-boundary inventory omitted the wired Artifact Supply Chain quality module");
+}
+
 // Steward's chosen CI executor is GitLab. A comparison lesson may teach other providers,
 // but its canonical container-build walkthrough must not silently switch to GitHub Actions.
 const ciExamples = sources.get("delivery-continuous-integration-deep.ts") ?? "";
