@@ -21,17 +21,29 @@ function richLesson(id: string, title: string, intro: string, outcomes: string[]
     blocks.push({ type: "callout", tone: "steward", title: "Steward automation rule", body: "Automate a repeated Steward developer or operator task only when the automation makes intent, failure and rerun behavior clearer than the manual sequence it replaces." });
     blocks.push({ type: "resources", title: "Required and supporting reading", resources });
 
+    const evidence = shellPracticeEvidence[id];
+    if (!evidence) throw new Error(`Missing shell practice evidence for ${id}`);
     const lessonId = `automation-and-shell-${id}`;
     return {
         id: lessonId,
         title,
         activities: [
             { id: `${lessonId}-reading`, title, estimatedMinutes: 35, content: { type: "reading", body: intro, blocks } },
-            { id: `${lessonId}-practice`, title: `${title}: Practice`, estimatedMinutes: 45, content: { type: "practical", objective: `Apply ${title.toLowerCase()} to a real Steward workflow.`, scenario: "Use the current Steward repository and homelab. Prefer small scripts and visible failure behavior over clever shell one-liners.", instructions: practice, deliverables: ["Versioned script or task definition", "Successful execution evidence", "One documented failure-path observation"], completionCriteria: ["The automation has a clear input/output contract.", "Failures return non-zero status and are visible.", "Rerunning does not create unexplained destructive side effects."] } },
+            { id: `${lessonId}-practice`, title: `${title}: Practice`, estimatedMinutes: 45, content: { type: "practical", objective: evidence.objective, scenario: "Use the current Steward repository and homelab. Prefer small scripts and visible failure behavior over clever shell one-liners.", instructions: practice, deliverables: evidence.deliverables, completionCriteria: evidence.completionCriteria } },
             { id: `${lessonId}-check`, title: `${title}: Knowledge Check`, estimatedMinutes: 10, content: { type: "reflection", prompt: questions.map((q, i) => `${i + 1}. ${q}`).join("\n") } },
         ],
     };
 }
+
+type ShellPracticeEvidence = { objective: string; deliverables: string[]; completionCriteria: string[] };
+const shellPracticeEvidence: Record<string, ShellPracticeEvidence> = {
+    "shell-scripting": { objective: "Create a small Steward shell helper with a defined interpreter, inputs, quoting and reliable error behavior.", deliverables: ["Versioned executable helper", "Recorded input/output examples", "Failed-precondition evidence"], completionCriteria: ["Whitespace-containing paths and arguments are handled safely.", "A missing command or invalid target fails visibly.", "The operator can explain the script without relying on shell tricks."] },
+    "pipes-exit-codes": { objective: "Prove that an upstream command failure propagates through a Steward health-verification pipeline.", deliverables: ["Successful health-check evidence", "Connection-failure and malformed-response evidence", "Captured exit codes and stderr/stdout decisions"], completionCriteria: ["A failed producer cannot appear successful because a later pipeline command exited zero.", "Malformed JSON or unhealthy status is rejected.", "Machine-facing exit status and human diagnostics are distinguishable."] },
+    "environment": { objective: "Make a Steward helper reject missing required configuration before causing side effects.", deliverables: ["Configuration and sensitivity classification", "Required-variable validation", "Missing-variable failure transcript"], completionCriteria: ["Ordinary configuration and secrets are distinguished.", "Missing mandatory variables produce nonzero status before mutation.", "Sensitive values are not written to ordinary logs or committed artifacts."] },
+    "repeatable": { objective: "Turn a repeated Steward procedure into a script with preconditions and automatic temporary-file cleanup.", deliverables: ["Executable repeatable procedure", "Precondition-failure observation", "Cleanup and second-run evidence"], completionCriteria: ["Preconditions are checked before relevant mutation.", "Temporary resources do not leak after normal completion or expected failure.", "The second run has explainable outputs and state."] },
+    "make": { objective: "Provide discoverable Make targets with meaningful dependencies for existing Steward workflows.", deliverables: ["Documented task targets", "Observed prerequisite execution", "Verification-failure blocks-dependent-target proof"], completionCriteria: ["Prerequisite steps execute before dependent targets.", "A failed prerequisite prevents dependent mutation.", "Nontrivial procedural logic remains in maintainable scripts."] },
+    "idempotency": { objective: "Show that a mutating Steward automation step converges instead of accumulating changes.", deliverables: ["Initial state and intended state", "Three sequential run transcripts", "State comparison after every run"], completionCriteria: ["The first execution reaches intended state.", "Subsequent executions do not duplicate lines, users or other resources.", "A partial-failure retry and its guard conditions are explained."] },
+};
 
 export const automationAndShellDeepLessons: Lesson[] = [
     richLesson("shell-scripting", "Shell Scripting for Engineers", "Shell scripts are small operational programs. The quality bar should therefore be the same as for other code: explicit inputs, readable control flow, safe quoting, predictable outputs and visible failure.", ["Explain when shell is a good automation tool.", "Write scripts with explicit interpreter and strict-enough failure behavior.", "Quote data correctly.", "Prefer readable steps over fragile command chains."], [
