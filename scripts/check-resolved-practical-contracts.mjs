@@ -39,6 +39,20 @@ if (!journey || !Array.isArray(journey.schools)) throw new Error("No resolved cu
 const problems = [];
 const reusedCriteria = new Map();
 const stats = { schools: 0, paths: 0, lessons: 0, practicals: 0 };
+const builder = journey.schools.find((school) => school.id === "platform-builder");
+if (!builder || builder.paths.length !== 15) {
+  problems.push("Platform Builder must expose its 15 planned paths");
+} else {
+  for (const path of builder.paths) {
+    const first = path.lessons?.[0];
+    const read = first?.activities?.[0]?.content;
+    if (first?.id !== `${path.id}-operational-readiness` ||
+        read?.type !== "reading" ||
+        typeof read.body !== "string" || read.body.length < 250) {
+      problems.push(`Platform Builder readiness guidance missing or too short: ${path.id}`);
+    }
+  }
+}
 const nonEmpty = (value) => typeof value === "string" && value.trim().length > 0;
 const detailedList = (value) => Array.isArray(value) && value.length > 0 &&
   value.every((entry) => nonEmpty(entry));
