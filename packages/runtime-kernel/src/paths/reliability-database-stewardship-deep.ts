@@ -70,7 +70,7 @@ function databaseLesson(spec: DatabaseLessonSpec): Lesson {
                 id: `database-stewardship-${spec.id}-001`,
                 title: spec.title,
                 estimatedMinutes: 50,
-                content: { type: "reading", body: spec.intro, blocks },
+                content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks },
             },
             {
                 id: `database-stewardship-${spec.id}-002`,
