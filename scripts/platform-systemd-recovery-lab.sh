@@ -4,6 +4,8 @@
 set -Eeuo pipefail
 if [[ "${EUID}" -eq 0 ]]; then echo "Run as a normal sudo-capable user, not root." >&2; exit 2; fi
 if [[ "$(ps -p 1 -o comm=)" != "systemd" ]]; then echo "Requires systemd as PID 1." >&2; exit 2; fi
+if [[ "$(id -un)" == "nobody" ]]; then echo "Requires a dedicated, sudo-capable lab account." >&2; exit 2; fi
+sudo -v || { echo "Requires authorized sudo access on a dedicated lab VM." >&2; exit 2; }
 for c in sudo systemctl python3 curl mktemp; do command -v "$c" >/dev/null || { echo "Missing $c" >&2; exit 2; }; done
 unit="tsa-recovery-lab-${UID}-$$"
 work="$(mktemp -d)"
