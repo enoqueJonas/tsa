@@ -171,6 +171,15 @@ for (const evidence of [
   if (!deliveryMilestone.includes(evidence)) failures.push(`Delivery milestone missing runtime verification: ${evidence}`);
 }
 
+// A simulated legacy CI cutover must be labeled, and failing authorization must block publication.
+for (const phrase of [
+  "legacy Jenkinsfile fixture",
+  "prevent the publish job",
+  "fixture-only observations",
+]) {
+  if (!migrationExercise.includes(phrase)) failures.push(`Delivery CI migration teaching missing: ${phrase}`);
+}
+
 // Every authored Shell lesson has its own explicit practical evidence contract.
 const shellModule = sources.get("delivery-automation-shell-deep.ts") ?? "";
 const shellLessonIds = [...shellModule.matchAll(/richLesson\("([^"]+)", "([^"]+)"/g)].map((m) => m[1]);
