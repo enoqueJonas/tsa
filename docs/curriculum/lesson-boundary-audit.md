@@ -66,6 +66,7 @@ Status: **Not yet audited**.
 
 Status: **Not yet audited**.
 
+- [x] `delivery-artifact-supply-chain-quality` — 25 lessons / 23 quality-enriched practicals + 2 integrated labs; source audit complete, execution/render validation open.
 - [ ] `delivery-automation-shell-deep`
 - [x] `delivery-containers-docker-quality`
 - [ ] `delivery-continuous-delivery-quality`
