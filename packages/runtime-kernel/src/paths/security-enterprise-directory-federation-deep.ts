@@ -39,7 +39,7 @@ function lesson(spec: Spec): Lesson {
         id: `security-directory-federation-${spec.id}`,
         title: spec.title,
         activities: [
-            { id: `security-directory-federation-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: spec.intro, blocks } },
+            { id: `security-directory-federation-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: blocks.filter((b) => b.type === "paragraph").map((b) => b.text).join("\n\n") || spec.intro, blocks } },
             { id: `security-directory-federation-${spec.id}-002`, title: spec.practiceTitle, estimatedMinutes: 150, content: { type: "practical", objective: spec.practiceTitle, scenario: spec.scenario, instructions: spec.instructions, deliverables: spec.deliverables, completionCriteria: spec.criteria } },
             { id: `security-directory-federation-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.questions.join("\n\n"), minimumCharacters: 220 } },
         ],
