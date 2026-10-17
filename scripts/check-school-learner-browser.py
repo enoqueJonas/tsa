@@ -14,6 +14,7 @@ from playwright.sync_api import sync_playwright
 BASE = os.getenv("TSA_BASE_URL", "http://127.0.0.1:4173")
 SCHOOL = os.environ["TSA_SCHOOL"]
 ALLOWED = {
+    "engineering-apprentice", "builder", "platform-builder",
     "system-thinker", "delivery-engineer", "cloud-engineer",
     "quality-steward", "security-steward", "reliability-engineer",
     "architect", "technical-steward", "professional-engineer",
