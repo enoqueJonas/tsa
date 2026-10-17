@@ -310,3 +310,8 @@ Extended `scripts/check-platform-learner-browser.py` to inspect the rendered act
 
 - Reviewed the Networking `DNS and Local Naming` example from the cross-school code-evidence report. Clarified that `dig` tests DNS, `getent hosts` follows the local host-resolution policy (which may include `/etc/hosts`), and `resolvectl` depends on systemd-resolved being available. A successful lookup is not proof of a working TCP/HTTP endpoint; a missing `steward.lab` DNS record on an unconfigured learner VM is not an application defect (`bd2f563`).
 - All examples remain explicitly environment-dependent; no fabricated resolver output was added. CI source/build/browser outcomes for this batch must be checked separately.
+
+## Batch 119 — Network firewall and TLS diagnostic explanation (2026-10-17)
+
+- Reviewed two additional cross-school code-evidence candidates in Networking. Firewall caption now distinguishes the default zone from active interface zones (`firewall-cmd --get-active-zones`), local sockets from authorized remote reachability, and cautions against disabling firewalld as a diagnostic shortcut. TLS caption distinguishes TLS handshake from certificate hostname/chain verification and from meaningful HTTP health; bypassing verification with curl `-k` is not accepted as success (`39d88f0`).
+- These are learner-facing explanatory corrections, not a live firewalld or TLS endpoint certification. Verify current CI before acceptance.
