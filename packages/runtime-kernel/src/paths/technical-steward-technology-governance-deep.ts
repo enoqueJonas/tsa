@@ -21,7 +21,7 @@ function reading(id: string, title: string, body: string): Lesson {
             id: `${id}-001`,
             title,
             estimatedMinutes: 55,
-            content: { type: "reading", body, blocks:[{type:"paragraph",text:body},{type:"resources",title:"Framework/reference",resources:resourcesByTechGovernance[id] ?? [iso38500]}] },
+            content: { type: "reading", body, blocks:[...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),{type:"resources",title:"Framework/reference",resources:resourcesByTechGovernance[id] ?? [iso38500]}] },
         }],
     };
 }
