@@ -211,7 +211,7 @@ function lessonFrom(topic: Topic): Lesson {
                 id: `container-and-delivery-security-${slug}-001`,
                 title: topic,
                 estimatedMinutes: 45,
-                content: { type: "reading", body: item.intro, blocks: blocksFor(topic, item) },
+                content: { type: "reading", body: blocksFor(topic, item).filter((b) => b.type === "paragraph").map((b) => b.text).join("\n\n") || item.intro, blocks: blocksFor(topic, item) },
             },
             {
                 id: `container-and-delivery-security-${slug}-002`,
