@@ -19,7 +19,7 @@ function readingLesson(id: string, title: string, body: string, practice: string
         id: `${id}-reading`,
         title,
         estimatedMinutes: 55,
-        content: { type: "reading", body, blocks:[{type:"resources",title:"Continue learning",resources:resourcesByGovernance[id] ?? [iso38500]}] },
+        content: { type: "reading", body, blocks:[{type:"paragraph",text:body},{type:"resources",title:"Continue learning",resources:resourcesByGovernance[id] ?? [iso38500]}] },
       },
       {
         id: `${id}-practice`,
