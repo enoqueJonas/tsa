@@ -183,6 +183,34 @@ if (!security || security.paths.length !== 14) {
     }
   }
 }
+const reliability = journey.schools.find((school) => school.id === "reliability-engineer");
+if (!reliability || reliability.paths.length !== 16) {
+  problems.push("Reliability Engineer must expose 16 paths");
+} else {
+  for (const path of reliability.paths) {
+    const first = path.lessons[0];
+    const blocks = first?.activities?.[0]?.content?.blocks;
+    if (first?.id !== `${path.id}-reliability-model` ||
+        !Array.isArray(blocks) ||
+        !blocks.some((block) => block.type === "heading" && block.id === "worked-experiment")) {
+      problems.push(`Reliability model missing: ${path.id}`);
+    }
+    for (const lesson of path.lessons) {
+      lesson.activities.forEach((activity, index) => {
+        if (activity.content.type !== "practical") return;
+        const prep = lesson.activities[index - 1];
+        const reading = prep?.content?.blocks;
+        if (!prep?.id?.endsWith("-reliability-preparation") ||
+            prep?.content?.type !== "reading" ||
+            !Array.isArray(reading) ||
+            !reading.some((block) => block.type === "heading" && block.id === "evidence") ||
+            !reading.some((block) => block.type === "heading" && block.id === "abort-recovery")) {
+          problems.push(`Reliability practical lacks measurable safety preparation: ${path.id}/${lesson.id}/${activity.id}`);
+        }
+      });
+    }
+  }
+}
 const nonEmpty = (value) => typeof value === "string" && value.trim().length > 0;
 const detailedList = (value) => Array.isArray(value) && value.length > 0 &&
   value.every((entry) => nonEmpty(entry));
