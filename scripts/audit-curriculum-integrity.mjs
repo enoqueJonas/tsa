@@ -79,8 +79,8 @@ for (const id of artifactSpecIds) {
 for (const id of contractedIds) {
   if (!artifactSpecIds.includes(id)) failures.push(`orphan Artifact Supply Chain practical contract: ${id}`);
 }
-if (!deliveryArtifacts.includes("objective: practicalContracts[spec.id].objective") ||
-    !deliveryArtifacts.includes("completionCriteria: practicalContracts[spec.id].completionCriteria")) {
+if (!deliveryArtifacts.includes("objective: contract.objective") ||
+    !deliveryArtifacts.includes("completionCriteria: contract.completionCriteria")) {
   failures.push("Artifact Supply Chain practicals must use lesson-specific objectives and acceptance criteria");
 }
 
