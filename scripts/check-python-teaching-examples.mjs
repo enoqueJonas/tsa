@@ -45,6 +45,8 @@ const sequences = [
   ["Different implementations of the same operation", "A missing method fails at runtime"],
 ];
 const extracted = new Map();
+const availableExamples = [];
+
 const literal = (obj, key) => {
   const property = obj.properties.find((p) => ts.isPropertyAssignment(p) && (ts.isIdentifier(p.name) || ts.isStringLiteral(p.name)) && p.name.text === key);
   return property && ts.isStringLiteralLike(property.initializer) ? property.initializer.text : undefined;
@@ -52,6 +54,11 @@ const literal = (obj, key) => {
 function visit(node) {
   if (ts.isObjectLiteralExpression(node)) {
     const caption = literal(node, "caption");
+    const language = literal(node, "language");
+    const code = literal(node, "code");
+    if (language === "python" && code !== undefined) {
+      availableExamples.push({ caption, hasOutput: literal(node, "output") !== undefined });
+    }
     if (caption && (required.has(caption) || sequences.some((sequence) => sequence.includes(caption)))) {
       if (extracted.has(caption)) throw new Error(`Repeated teaching example caption: ${caption}`);
       extracted.set(caption, {
@@ -108,5 +115,17 @@ for (const sequence of sequences) {
 if (failures.length) {
   console.error("Python learner-example validation failed:\n- " + failures.join("\n- "));
   process.exit(1);
+}
+const tested = new Set([...required, ...sequences.flat()]);
+const excluded = availableExamples.filter(({ caption }) => !caption || !tested.has(caption));
+const outputBearingExcluded = excluded.filter((item) => item.hasOutput);
+console.log(
+  `Python source census: ${availableExamples.length} literal Python code blocks; ${tested.size} distinct example captions targeted; ${outputBearingExcluded.length} published-output blocks remain outside this check.`,
+);
+if (outputBearingExcluded.length) {
+  console.log(
+    "Unverified published-output examples (require standalone eligibility or a stateful fixture):\\n- " +
+      outputBearingExcluded.map((item) => item.caption ?? "<untitled>").join("\\n- "),
+  );
 }
 console.log(`Python learner-example validation passed: ${required.size} independently executed snippets and ${sequences.length} stateful lesson sequences produced their documented output.`);
