@@ -50,7 +50,7 @@ export const configurationManagementDeepLessons: Lesson[] = [
         "Desired-state automation describes the condition a system should reach rather than scripting every historical action that might have produced it.",
         [
             { type: "heading", id: "declare-the-outcome", text: "Declare the outcome", level: 2 },
-            { type: "paragraph", text: "Instead of saying 'run dnf install python3 every time', configuration management expresses that nginx must be present at an approved version or package state. The tool compares current state to intent and changes only what is necessary." },
+            { type: "paragraph", text: "Instead of saying 'run dnf install python3 every time', configuration management expresses that Python and Git must be present at an approved package state, as the Rocky Linux DNF example below demonstrates. The tool compares current state to intent and changes only what is necessary." },
             { type: "code", language: "yaml", caption: "Idempotent package intent", code: "- name: Ensure required packages are installed\n  ansible.builtin.dnf:\n    name:\n      - python3\n      - git\n    state: present\n    update_cache: true" },
             { type: "heading", id: "idempotency-is-a-behavior", text: "Idempotency is a behavior, not a slogan", level: 2 },
             { type: "paragraph", text: "An automation run is usefully idempotent when repeating it against an already-correct system produces no unnecessary mutation. This matters because operators must be able to rerun automation after partial failure without fearing duplicate users, repeated file edits or destructive side effects." },
