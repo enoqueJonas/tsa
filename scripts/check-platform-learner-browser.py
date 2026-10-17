@@ -66,10 +66,10 @@ def check_all_module_entries(page):
     print(f"PASS opened and screenshotted all {count} Platform Builder modules")
 
 def check_all_activity_pages(page):
-    """Visit every activity link exposed in each Platform Builder module outline.
+    """Inspect each activity entry in the Platform module sidebar.
 
-    This validates route resolution and content rendering without marking
-    learner progress complete or claiming manual visual approval.
+    This checks navigation structure and lock state without visiting locked
+    activities, altering learner progress, or claiming full visual approval.
     """
     page.set_viewport_size({"width": 1440, "height": 900})
     page.goto(BASE + "/?view=curriculum&school=platform-builder", wait_until="networkidle")
@@ -79,8 +79,7 @@ def check_all_activity_pages(page):
         page.goto(BASE + "/?view=curriculum&school=platform-builder", wait_until="networkidle")
         page.get_by_role("button", name=re.compile(r"^(Start|Continue|Review) module$")).nth(module_index).click()
         page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
-        # The sidebar lists all activities, although later ones may be locked.
-        # Test only those exposed as selectable, without circumventing gates.
+        # The sidebar lists all activities, including locked future activities.
         sidebar = page.locator("aside").filter(has=page.get_by_text("Curriculum", exact=True)).first
         activity_buttons = sidebar.locator("button")
         assert activity_buttons.count() >= 1, f"Missing activity navigation in module {module_index + 1}"
