@@ -40,12 +40,12 @@ const practices: Record<string, PracticeSpec> = {
             "Continue from the Service dictionaries created in the previous checkpoint.",
             "In main.py, use if/elif/else to evaluate payments_api against the three eligibility conditions: active is True, endpoint is not empty, and age_days is an integer greater than or equal to zero.",
             "Print either \"Payments API is eligible\" or a specific rejection reason.",
-            "Change one field at a time to exercise inactive, missing-endpoint and invalid-age paths. Record the observed output for each case.",
+            "Change one field at a time to exercise inactive, missing-endpoint and invalid-age paths. Include age_days=True as an invalid input: Python considers booleans a subclass of integers, but a boolean is not a valid age in days. Record the output for each case.",
             "Restore the valid Payments API data before finishing.",
             "Write the rule as a small decision table in your notes. Do not extract a function yet; the next increment will make that refactor purposeful."
         ],
         deliverables: ["Working conditional eligibility logic", "Observed output for the valid path and three rejected paths", "Small eligibility decision table"],
-        completionCriteria: ["Every stated rule has an observable branch.", "The valid Payments API is accepted.", "Each invalid variation is rejected for an understandable reason.", "The checkpoint still uses explicit control flow so the next refactor has real code to improve."]
+        completionCriteria: ["Every stated rule has an observable branch.", "The valid Payments API is accepted.", "Each invalid variation, including age_days=True, is rejected for an understandable reason.", "The checkpoint still uses explicit control flow so the next refactor has real code to improve."]
     },
     "programming-with-python-functions-and-scope": {
         objective: "Turn the Service behavior you already built into named functions with explicit inputs, outputs and state changes.",
