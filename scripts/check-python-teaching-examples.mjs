@@ -18,6 +18,17 @@ const required = new Set([
   "Lazy iteration",
   "Use any/all deliberately",
   "Choose the result structure intentionally",
+  // Self-contained OOP examples: execute what learners actually see, not only foundations.
+  "Two separate Car objects",
+  "Create two objects and trace self through their methods",
+  "An Engine is an independent object",
+  "Functions can be passed and returned",
+  "Decorator syntax is an assignment shortcut",
+  "Forward arguments and preserve a function name",
+  "A property offers computed attribute-style access",
+  "Run as a self-contained example: rejected assignment leaves the prior temperature intact",
+  "Class methods receive the class; static methods do not",
+  "Dataclasses generate boilerplate",
 ]);
 const extracted = new Map();
 const literal = (obj, key) => {
