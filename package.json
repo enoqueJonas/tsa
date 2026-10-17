@@ -10,7 +10,8 @@
     "typecheck": "turbo typecheck",
     "test": "turbo test",
     "format": "prettier --write .",
-    "audit:curriculum": "node scripts/audit-curriculum-integrity.mjs"
+    "audit:curriculum": "node scripts/audit-curriculum-integrity.mjs",
+    "census:curriculum": "node scripts/refresh-curriculum-source-census.mjs"
   },
   "devDependencies": {
     "prettier": "^3.0.0",
