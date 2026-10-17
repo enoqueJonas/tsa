@@ -25,10 +25,10 @@ const architectureWorked: Record<string, {situation:string;reasoning:string;evid
   "documentation":{situation:"A diagram shows Steward, PostgreSQL and a message broker but no reason for asynchronous publication.",reasoning:"Record an ADR explaining the reliability driver, alternatives, outbox decision and failure trade-offs.",evidence:"Link the diagram to decision evidence and revisit triggers; the picture alone cannot justify the architecture."},
 };
 
-function make(spec: Spec): Lesson {
+function make(spec: Spec): Lesson { const worked = architectureWorked[spec.id];
   const blocks: LessonBlock[] = [
     { type: "paragraph", text: spec.intro },
-    ...(architectureWorked[spec.id] ? [{type:"heading" as const,id:`${spec.id}-worked`,text:"Worked architecture decision",level:2 as const},{type:"paragraph" as const,text:`Situation: ${architectureWorked[spec.id].situation}`},{type:"paragraph" as const,text:`Reasoning: ${architectureWorked[spec.id].reasoning}`},{type:"paragraph" as const,text:`Evidence: ${architectureWorked[spec.id].evidence}`}] : []),
+    ...(worked ? [{type:"heading" as const,id:`${spec.id}-worked`,text:"Worked architecture decision",level:2 as const},{type:"paragraph" as const,text:`Situation: ${worked.situation}`},{type:"paragraph" as const,text:`Reasoning: ${worked.reasoning}`},{type:"paragraph" as const,text:`Evidence: ${worked.evidence}`}] : []),
     { type: "heading", id: `${spec.id}-principles`, text: "Architecture reasoning", level: 2 },
     { type: "list", items: spec.principles },
     { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
