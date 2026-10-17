@@ -38,6 +38,8 @@ jobs:
         run: pnpm check:java-examples
       - name: Report cross-school code example evidence
         run: pnpm report:curriculum-examples
+      - name: Execute isolated Platform service recovery drill
+        run: python scripts/check-platform-loopback-drill.py
       - name: Build applications
         run: pnpm build
 
