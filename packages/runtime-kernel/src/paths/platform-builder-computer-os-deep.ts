@@ -43,7 +43,7 @@ function richLesson(
         id,
         title,
         activities: [
-            { id: `${id}-reading`, title, estimatedMinutes: 35, content: { type: "reading", body: introduction, blocks } },
+            { id: `${id}-reading`, title, estimatedMinutes: 35, content: { type: "reading", body: blocks.filter((b) => b.type === "paragraph").map((b) => b.text).join("\n\n") || introduction, blocks } },
             {
                 id: `${id}-practice`,
                 title: `${title}: Machine Practice`,
