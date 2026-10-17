@@ -56,7 +56,7 @@ export const productionSchemaEvolutionDeepLessons: Lesson[] = [
                     "Seed a non-production PostgreSQL database with enough representative Steward rows to make partial backfill observable.",
                     "Run the expand migration while the old application version is still serving representative read/write traffic and prove it remains functional.",
                     "Deploy or run the compatibility-capable new application version while the old version remains available, and exercise both versions against the expanded schema.",
-                    "Execute the backfill in bounded batches or another restartable mechanism rather than one opaque application-startup mutation; define how concurrent application writes are detected or safely reconciled.",
+                    "Execute the backfill in bounded batches or another restartable mechanism rather than one opaque application-startup mutation; prove the concurrent ownership-transfer interleaving does not overwrite newer state, and record how skipped/conflicting rows are reconciled.",
                     "Interrupt the backfill deliberately after partial progress, inspect state, restart it and prove already-migrated rows are not corrupted or duplicated.",
                     "Measure/observe database locks, query latency or resource pressure sufficiently to identify whether the migration threatens normal service.",
                     "Run deterministic verification that identifies missing, inconsistent or invalid migrated rows before cutover."
