@@ -161,7 +161,6 @@ def check_complete_modules(page):
             next_button.click()
         visited_total += len(visited)
         print(f"PASS module {module_index + 1}/{modules}: traversed {len(visited)} activities", flush=True)
-    assert visited_total >= 300, f"Unexpected school activity coverage: {visited_total}"
     assert visited_total == 328, f"Platform Builder activity count changed: {visited_total}; update audit census deliberately"
     print(f"PASS full synthetic learner progression: {visited_total} activities across {modules} modules")
 
