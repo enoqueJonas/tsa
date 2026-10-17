@@ -67,3 +67,10 @@ The 17 family labels above map to the 22 deep/quality/implementation source file
 ### Completion boundary
 
 The 22-file Platform source-family triage is finished, but **the full Platform Builder module is not signed off**. The repository connection provides source and CI information, not a learner browser session or control of the user's Proxmox/Windows/Rocky infrastructure. Do not mark R/E gates complete without direct evidence. Activity-by-activity review beyond the targeted cases above remains open; the school-level checklist must reflect this honestly.
+
+## Batch 74–75 — Computer and OS Foundations composed-source review
+
+- Examined the five main deep teaching sequences and their five Quality practical overrides: **CPU/Memory/Storage/I/O**, **What an OS Does**, **Kernel vs User Space**, **Processes/Threads**, and **Filesystems**, plus the integrated host-inspection lab in the deep source. Quality practicals supply observable deliverables; the deep file retains readings and checks. This is an activity-type and source contract review, not a claim that every rendered lesson was tested.
+- Found the process inspection snippet had `sample_pid=$` rather than the required Bash `sample_pid=$$`, an error introduced by the previous automated text replacement. Corrected in `ff319e4`, then fetched the file to verify the authored TypeScript contains both dollar signs.
+- The preceding CI failure on `d0cc204` was **not** a JavaScript parse error: the GitHub job log shows the intentional audit guard detecting the malformed PID example. The prior `a1edfae` CI run failed due to JavaScript syntax; `d0cc204` fixed parse syntax but the example defect remained. Do not conflate these failures.
+- The CI check on `ff319e4` needs independent completion confirmation. The real learner browser and homelab execution gates remain open.
