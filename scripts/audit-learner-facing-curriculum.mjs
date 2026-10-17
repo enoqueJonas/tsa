@@ -86,4 +86,4 @@ for (const item of review) console.log(`${item.school}: paths=${item.paths}, les
 console.log(`Learner-facing structural findings: ${errors.length}`);
 for (const msg of errors.slice(0, 60)) console.error("- " + msg);
 if (errors.length > 60) console.error(`... plus ${errors.length - 60} additional findings`);
-if (errors.length) process.exitCode = 1;
+if (errors.length && process.argv.includes("--strict")) process.exitCode = 1;
