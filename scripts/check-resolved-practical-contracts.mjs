@@ -84,6 +84,25 @@ if (!delivery || delivery.paths.length !== 11) {
     }
   }
 }
+if (delivery) {
+  for (const path of delivery.paths) {
+    if (path.id === "artifact-and-supply-chain") continue;
+    for (const lesson of path.lessons) {
+      lesson.activities.forEach((activity, index) => {
+        if (activity.content.type !== "practical") return;
+        const prep = lesson.activities[index - 1];
+        const blocks = prep?.content?.blocks;
+        if (prep?.content?.type !== "reading" ||
+            !prep.id.endsWith("-preparation") ||
+            !Array.isArray(blocks) ||
+            !blocks.some((block) => block.type === "heading" && block.id === "expected-evidence") ||
+            !blocks.some((block) => block.type === "heading" && block.id === "negative-path")) {
+          problems.push(`Delivery practical lacks lab-specific preparation: ${path.id}/${lesson.id}/${activity.id}`);
+        }
+      });
+    }
+  }
+}
 const nonEmpty = (value) => typeof value === "string" && value.trim().length > 0;
 const detailedList = (value) => Array.isArray(value) && value.length > 0 &&
   value.every((entry) => nonEmpty(entry));
