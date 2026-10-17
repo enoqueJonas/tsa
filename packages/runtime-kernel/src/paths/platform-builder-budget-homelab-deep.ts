@@ -1,7 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
-const ubuntu: LearningResource = { title: "Ubuntu Server documentation", url: "https://documentation.ubuntu.com/server/" };
+const ubuntu: LearningResource = { title: "Rocky Linux documentation", url: "https://docs.rockylinux.org/" };
 const proxmox: LearningResource = { title: "Proxmox VE documentation", url: "https://pve.proxmox.com/pve-docs/" };
 const tailscale: LearningResource = { title: "Tailscale documentation", url: "https://tailscale.com/kb" };
 const nginx: LearningResource = { title: "NGINX documentation", url: "https://nginx.org/en/docs/" };
