@@ -282,7 +282,7 @@ export const linuxAdministrationDeepLessons: Lesson[] = [
                         "Introduce one controlled failure, diagnose the chain from symptom to host-level cause, restore service and prove recovery.",
                     ],
                     deliverables: ["Linux service runbook", "systemd unit and configuration evidence", "permissions/identity evidence", "SSH and storage evidence", "failure-and-recovery timeline"],
-                    completionCriteria: ["Steward runs independently of an interactive shell.", "The service runs under a dedicated non-root identity.", "Configuration and permissions are explicit and reviewable.", "Logs are sufficient to reconstruct the controlled failure.", "The learner can restart and recover Steward through documented Linux operations.", "No unknown local files or unrelated server state were destroyed during the exercise."],
+                    completionCriteria: ["A reboot or logout of the administering session does not stop Steward; record systemctl status and a successful HTTP request from a separate session afterward.", "The unit runs with a named, dedicated non-root account; record the effective user and minimal read/write permissions on configuration and persistent paths.", "A controlled failure produces a timestamped journalctl excerpt showing the service-level cause, and the documented recovery procedure restores a successful HTTP response.", "The storage evidence names the actual mount, filesystem and persistence boundary used by Steward, including how the service behaves if that mount is missing.", "The submitted change log lists all altered paths and confirms that the exercise did not delete unrelated files or server state."],
                 },
             },
             {
