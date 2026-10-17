@@ -28,7 +28,7 @@ function lessonFrom(spec: Spec): Lesson {
         { type: "resources", title: "Continue learning", resources: resourcesByAlertingTopic[spec.id] ?? [sreAlerting, promAlerting] },
     ];
     return { id: `alerting-and-on-call-${spec.id}`, title: spec.title, activities: [
-        { id: `alerting-and-on-call-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: spec.intro, blocks } },
+        { id: `alerting-and-on-call-${spec.id}-001`, title: spec.title, estimatedMinutes: 45, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks } },
         { id: `alerting-and-on-call-${spec.id}-002`, title: `Design: ${spec.title}`, estimatedMinutes: 55, content: { type: "practical", objective: `Apply ${spec.title} to Steward operations.`, scenario: "Use the SLOs, error-budget model, Prometheus metrics and diagnostic logs already created. Design alerts around meaningful service symptoms, ownership and response actions rather than around every available metric.", instructions: spec.practice, deliverables: ["Alert/on-call design artifact", "Trigger or routing evidence", "Operational action/risk note"], completionCriteria: ["The alert corresponds to a real action or escalation.", "Severity is tied to impact and urgency.", "The learner can explain why the condition should alert, page or remain dashboard-only."] } },
         { id: `alerting-and-on-call-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.reflection, minimumCharacters: 200 } },
     ] };
