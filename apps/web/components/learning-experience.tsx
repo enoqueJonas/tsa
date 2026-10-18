@@ -29,6 +29,13 @@ export function LearningExperience({
 
   const [lesson, setLesson] = useState(session.currentLesson());
   const [activity, setActivity] = useState(session.currentActivity());
+
+  // Activity navigation replaces the content without changing the page route.
+  // Reset scroll for lessons, exercises and reflections, including restored progress.
+  useEffect(() => {
+    if (!restored) return;
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [activity.id, restored]);
   const [hasNext, setHasNext] = useState(session.hasNext());
   const [completedActivityIds, setCompletedActivityIds] = useState(session.completedActivityIds());
   const [unlockedLessonIds, setUnlockedLessonIds] = useState(session.unlockedLessonIds());
