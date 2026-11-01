@@ -229,7 +229,7 @@ for (const caption of [
   "Search without a separate flag",
   "Iterate with the information you need",
   "Generate matching services lazily",
-  "Critical active services",
+  "Critical production services",
   "Choose the result structure intentionally",
 ]) {
   const start = pythonLearner.indexOf(`caption: "${caption}"`);
