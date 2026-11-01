@@ -10,8 +10,11 @@ import path from "node:path";
 const source = fs.readFileSync(path.join(process.cwd(), "packages/runtime-kernel/src/paths/builder-web-api-deep.ts"), "utf8");
 assert.ok(source.includes('lesson("Client-Server Architecture"'), "Client-server fundamentals lesson was not found");
 assert.ok(source.includes('lesson("Client-Server Boundaries and Failure Modes"'), "Client-server failure lab was not found");
-assert.ok(source.includes("python3 -m http.server 8765 --bind 127.0.0.1"), "Learner-facing server command changed without test update");
-assert.ok(source.includes("curl -i http://127.0.0.1:8765/hello.txt"), "Learner-facing curl command changed without test update");
+assert.ok(source.includes("python3 mini_steward_server.py"), "Learner-facing mini-Steward run command changed without test update");
+assert.ok(source.includes("curl -i http://127.0.0.1:8765/services"), "Learner-facing API request changed without test update");
+const sampleMatch = source.match(/"caption": "mini_steward_server\.py[^"]*"\s*,\s*"code": ("(?:\\.|[^"\\])*")/);
+assert.ok(sampleMatch, "Unable to find the actual learner-facing Python server source");
+const sampleCode = JSON.parse(sampleMatch[1]);
 
 async function availablePort() {
   const probe = net.createServer();
@@ -22,13 +25,13 @@ async function availablePort() {
 }
 
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), "tsa-client-server-lab-"));
-fs.writeFileSync(path.join(temp, "hello.txt"), "Steward local lab\n");
+fs.writeFileSync(path.join(temp, "mini_steward_server.py"), sampleCode);
 const port = await availablePort();
 let server;
 let diagnostics = "";
 try {
-  server = spawn("python3", ["-u", "-m", "http.server", String(port), "--bind", "127.0.0.1"], {
-    cwd: temp, stdio: ["ignore", "pipe", "pipe"],
+  server = spawn("python3", ["-u", "mini_steward_server.py"], {
+    cwd: temp, env: { ...process.env, STEWARD_DEMO_PORT: String(port) }, stdio: ["ignore", "pipe", "pipe"],
   });
   server.stderr.on("data", (chunk) => { diagnostics += chunk.toString(); });
   server.stdout.on("data", (chunk) => { diagnostics += chunk.toString(); });
@@ -39,7 +42,7 @@ try {
   for (let attempt = 0; attempt < 60; attempt++) {
     if (server.exitCode !== null) throw new Error("Server exited before accepting requests: " + diagnostics);
     try {
-      success = await fetch(origin + "/hello.txt", { signal: AbortSignal.timeout(500) });
+      success = await fetch(origin + "/services", { signal: AbortSignal.timeout(500) });
       break;
     } catch {
       await new Promise((resolve) => setTimeout(resolve, 80));
@@ -47,14 +50,14 @@ try {
   }
   assert.ok(success, "Local teaching example did not start: " + diagnostics);
   assert.equal(success.status, 200);
-  assert.equal(await success.text(), "Steward local lab\n");
+  assert.deepEqual(await success.json(), { services: [{ id: 7, name: "Cleaning", active: true }] });
 
-  const missing = await fetch(origin + "/does-not-exist.txt", { signal: AbortSignal.timeout(2000) });
+  const missing = await fetch(origin + "/missing", { signal: AbortSignal.timeout(2000) });
   assert.equal(missing.status, 404);
   server.kill("SIGTERM");
   await new Promise((resolve) => server.once("exit", resolve));
-  await assert.rejects(fetch(origin + "/hello.txt", { signal: AbortSignal.timeout(1000) }));
-  console.log("Client-server learner example passed: HTTP 200 text, HTTP 404 and connection refusal after shutdown.");
+  await assert.rejects(fetch(origin + "/services", { signal: AbortSignal.timeout(1000) }));
+  console.log("Client-server learner example passed: JSON service HTTP 200, HTTP 404 and connection refusal after shutdown.");
 } finally {
   if (server && server.exitCode === null) server.kill("SIGKILL");
   fs.rmSync(temp, { recursive: true, force: true });
