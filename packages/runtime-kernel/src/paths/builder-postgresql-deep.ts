@@ -6,7 +6,7 @@ interface DataLessonSpec {
     title: string;
     introduction: string;
     outcomes: string[];
-    sections: Array<{ id: string; title: string; body: string; code?: string; output?: string; caption?: string }>;
+    sections: Array<{ id: string; title: string; body: string; code?: string; output?: string; caption?: string; language?: string }>;
     warning?: string;
     assignment: string[];
     resources: LearningResource[];
@@ -15,6 +15,11 @@ interface DataLessonSpec {
     knowledgeCheck: string;
 }
 
+const persistenceResources: LearningResource[] = [
+    { title: "Python — json module", url: "https://docs.python.org/3/library/json.html", kind: "reference" },
+    { title: "PostgreSQL — Getting Started", url: "https://www.postgresql.org/docs/current/tutorial-start.html", kind: "reference" },
+];
+const pgIntroVideo: LearningResource = { title: "CMU Database Systems — Relational Model and Algebra (lecture 1)", url: "https://www.youtube.com/watch?v=7NPIENPr-zk", kind: "video", read: "Entire lecture (advanced optional extension)", purpose: "Distinguish relational model, keys and physical storage; use after the first worked model." };
 const postgresDocs: LearningResource = { title: "PostgreSQL Documentation", url: "https://www.postgresql.org/docs/current/" };
 const djangoQueryDocs: LearningResource = { title: "Django — Making queries", url: "https://docs.djangoproject.com/en/stable/topics/db/queries/" };
 const djangoMigrationDocs: LearningResource = { title: "Django — Migrations", url: "https://docs.djangoproject.com/en/stable/topics/migrations/" };
@@ -29,7 +34,8 @@ const pgExplain: LearningResource = { title: "PostgreSQL — Using EXPLAIN", url
 const pgPsql: LearningResource = { title: "PostgreSQL — psql", url: "https://www.postgresql.org/docs/current/app-psql.html", kind: "reference" };
 const pgLocks: LearningResource = { title: "PostgreSQL — Explicit Locking", url: "https://www.postgresql.org/docs/current/explicit-locking.html", kind: "reference" };
 const resourcesByDataLesson: Record<string, LearningResource[]> = {
- "relational-model":[pgDdl],"sql-crud":[pgQueries],"filtering-ordering":[pgQueries],aggregation:[pgFunctions],joins:[pgQueries],
+ "from-memory-to-durable-data":persistenceResources,"postgresql-first-connection":[{ title: "PostgreSQL — psql and Accessing a Database", url: "https://www.postgresql.org/docs/current/tutorial-accessdb.html", kind: "reference" }],
+ "relational-model":[pgDdl,pgIntroVideo],"sql-crud":[pgQueries],"filtering-ordering":[pgQueries],aggregation:[pgFunctions],joins:[pgQueries],
  subqueries:[pgQueries],ctes:[pgWith],"transactions-acid":[pgTransactions],"constraints-keys":[pgConstraints],"schema-design":[pgDdl],
  normalization:[pgDdl],indexes:[pgIndexes],"query-plans":[pgExplain],"query-performance":[pgExplain],"postgresql-practice":[pgPsql],
  "django-orm":[djangoQueryDocs],"orm-vs-sql":[djangoQueryDocs,pgQueries],"n-plus-one":[djangoQueryDocs,pgExplain],migrations:[djangoMigrationDocs,pgDdl],
@@ -44,7 +50,7 @@ function lesson(spec: DataLessonSpec): Lesson {
         ...spec.sections.flatMap<LessonBlock>((section) => [
             { type: "heading", id: section.id, text: section.title, level: 2 },
             { type: "paragraph", text: section.body },
-            ...(section.code ? [{ type: "code", language: "sql", code: section.code, caption: section.caption, output: section.output } satisfies LessonBlock] : []),
+            ...(section.code ? [{ type: "code", language: section.language ?? "sql", code: section.code, caption: section.caption, output: section.output } satisfies LessonBlock] : []),
         ]),
         ...(spec.warning
             ? [{ type: "callout", tone: "warning", title: "Engineering caution", body: spec.warning } satisfies LessonBlock]
@@ -89,6 +95,177 @@ function lesson(spec: DataLessonSpec): Lesson {
 
 const specs: DataLessonSpec[] = [
     {
+        "id": "from-memory-to-durable-data",
+        "title": "From In-Memory State to Durable Data",
+        "introduction": "The Steward registry you built in Python and the local Web/API lab can keep a Service record in a dictionary for as long as its process runs. Stop that process and the dictionary is gone. This is not a database bug; it is the starting limitation of volatile application state. Before learning tables or installing PostgreSQL, discover which problem persistence solves and why simply writing a JSON file is both useful and insufficient for a growing multi-user application.",
+        "outcomes": [
+            "Distinguish process memory, a file snapshot, persistent storage and a database management system.",
+            "Demonstrate an actual process restart without losing a file-backed service record.",
+            "Identify concurrent-update, partial-write, query and integrity failures of a naïve JSON snapshot.",
+            "Explain why Steward should migrate to a relational model without claiming every project needs PostgreSQL."
+        ],
+        "sections": [
+            {
+                "id": "state-lifetime",
+                "title": "Where does the data live while the program runs?",
+                "body": "A Python dictionary is an object in a particular running process. It is fast to access and excellent for calculations or temporary state, but the runtime does not automatically turn it into durable records. A client calling GET /services receives a serialized representation; it has not learned whether the server used memory, a JSON file or PostgreSQL. A 200 response and a persistent result are separate guarantees. Restart the synthetic API from Web/API Foundations: its in-memory collection resets. The first engineering question is what must survive a restart and who may update it, not which database logo to choose."
+            },
+            {
+                "id": "storage-choices",
+                "title": "Memory, file, database: different responsibilities",
+                "body": "Memory makes one process's current state accessible. A file lets bytes survive the process that wrote them, assuming a functioning storage system. A database management system coordinates operations over organized data, including queries, constraints, transactions, client connections and concurrent access. A relational database represents facts in tables linked by values and keys; a document database groups structured documents; a key–value store retrieves by key; an append-only event log preserves a sequence of events. Each solves a different workload and makes trade-offs in querying, relationships, operation semantics and complexity. 'Durable' is a property to verify under defined failures, not a promise that power loss, file corruption or backup mistakes can never happen."
+            },
+            {
+                "id": "file-lab",
+                "title": "A real two-process persistence experiment",
+                "body": "Use Python 3 with no package installation. Create a disposable directory, save the following source as persistence_lab.py and execute the commands in the next section from inside that directory. Every command runs a new Python process. This lab deliberately saves a complete JSON snapshot and never touches your existing Steward repository. reset destroys only the snapshot in that disposable directory; corrupt deliberately damages it so you can observe a negative case. Inspect the file between commands.",
+                "language": "python",
+                "caption": "persistence_lab.py — published executable file-backed experiment",
+                "code": "from pathlib import Path\nimport json\nimport sys\n\nFILE = Path(\"steward-snapshot.json\")\nif len(sys.argv) != 2 or sys.argv[1] not in {\"reset\", \"add-payments\", \"add-identity\", \"read\", \"corrupt\"}:\n    raise SystemExit(\"Use reset, add-payments, add-identity, read or corrupt\")\n\naction = sys.argv[1]\nif action == \"reset\":\n    FILE.write_text('{\"services\": []}\\n', encoding=\"utf-8\")\n    print(\"RESET: []\")\nelif action == \"corrupt\":\n    FILE.write_text('{\"services\": [', encoding=\"utf-8\")\n    print(\"CORRUPTED\")\nelse:\n    try:\n        data = json.loads(FILE.read_text(encoding=\"utf-8\"))\n    except (FileNotFoundError, json.JSONDecodeError):\n        print(\"ERROR: missing or invalid snapshot\")\n        raise SystemExit(2)\n    if action == \"read\":\n        print(\"READ:\", \", \".join(item[\"name\"] for item in data[\"services\"]))\n    else:\n        name = \"Payments API\" if action == \"add-payments\" else \"Identity API\"\n        data[\"services\"].append({\"id\": len(data[\"services\"]) + 1, \"name\": name})\n        FILE.write_text(json.dumps(data, indent=2) + \"\\n\", encoding=\"utf-8\")\n        print(\"ADDED:\", name)",
+                "output": "reset → RESET: []\nadd-payments → ADDED: Payments API\nread (new process) → READ: Payments API\nadd-identity → ADDED: Identity API\nread (new process) → READ: Payments API, Identity API\ncorrupt → CORRUPTED\nread → ERROR: missing or invalid snapshot (exit 2)\nreset + read → RESET: [] then READ:"
+            },
+            {
+                "id": "run-experiment",
+                "title": "Run, observe and explain the failure",
+                "body": "From an empty disposable directory: run python3 persistence_lab.py reset; python3 persistence_lab.py add-payments; python3 persistence_lab.py read; python3 persistence_lab.py add-identity; python3 persistence_lab.py read. Each invocation exits before the next starts, so seeing both names proves cross-process file persistence, not a living Python dictionary. Then run python3 persistence_lab.py corrupt and python3 persistence_lab.py read; the last command must exit 2 rather than silently inventing a new valid record. Recover with python3 persistence_lab.py reset followed by read. The order matters: the deliberate corruption is destructive inside your scratch directory. An absent file and malformed JSON are different root causes that this small script intentionally reports with the same public message; a production system would log more detail."
+            },
+            {
+                "id": "concurrency",
+                "title": "Why the file solution does not scale to two writers",
+                "body": "Imagine two processes read a snapshot containing one service at the same moment. A adds a Payments record in its private in-memory copy; B adds an Identity record in its different private copy. Both write the entire JSON file. Whichever writes last can silently erase the other addition: a lost update. The script above does not simulate concurrent execution or protect against it. It also truncates the target file during replacement, making interruptions dangerous. Atomic file replacement can help with partial writes but does not by itself solve concurrent decisions, referential integrity, queries or authorization. These are reasons to explore database transactions and constraints, not proof that PostgreSQL prevents every mistake automatically."
+            },
+            {
+                "id": "decision",
+                "title": "Choose storage based on invariants and workload",
+                "body": "For a disposable one-user demonstration, an in-memory dictionary may be sufficient. For a small single-user configuration, a carefully managed file may be reasonable. For a shared service registry, Steward needs independent Team and Service facts, queries over dependencies, multiple writers, controlled schema changes, and consistent ownership rules. A relational database is a defensible choice for those requirements. The next two lessons establish a working PostgreSQL session and then derive a relational schema from facts; they do not ask you to install Django, run an ORM or accept a complex API as a prerequisite."
+            }
+        ],
+        "warning": "The JSON experiment does not prove crash-safe or concurrent storage. Do not store real credentials or customer data in the example snapshot; use disposable sample records only.",
+        "assignment": [
+            "Execute every published file command in a clean scratch directory and capture exit statuses, JSON file contents and independent-process outputs.",
+            "Explain the two-writer lost-update timeline without claiming to have executed a concurrency test.",
+            "Compare an in-memory store, a file and a relational database for a single-user prototype versus a team-owned service registry."
+        ],
+        "resources": [
+            {
+                "title": "Python Standard Library — json",
+                "url": "https://docs.python.org/3/library/json.html",
+                "kind": "reference",
+                "purpose": "Understand serialization/deserialization and malformed JSON errors."
+            },
+            {
+                "title": "PostgreSQL — Tutorial: Introduction and Getting Started",
+                "url": "https://www.postgresql.org/docs/current/tutorial.html",
+                "kind": "reference",
+                "purpose": "Understand why a server database adds a connection/query/transaction model beyond writing a JSON file."
+            },
+            {
+                "title": "CMU Database Systems (Fall 2025) — Lecture 1: Relational Model and Algebra",
+                "url": "https://www.youtube.com/watch?v=7NPIENPr-zk",
+                "kind": "video",
+                "read": "Full introductory lecture; pause at the model vs SQL discussion",
+                "purpose": "Compare relational facts, keys, physical storage and alternative models; advanced follow-up, not a prerequisite for the first SQL command."
+            }
+        ],
+        "practiceObjective": "Prove that in-memory state and persistent state have different lifetimes; identify exactly why snapshot files do not suffice as Steward's multi-user data layer.",
+        "practiceInstructions": [
+            "Create a fresh scratch directory and save the lesson's Python code as persistence_lab.py; run reset, add-payments, read, add-identity and read as five separate processes.",
+            "Record the exact file JSON after the second add and tie each output to process or file state.",
+            "Run corrupt and read; capture the nonzero exit and explain what failed. Recover using reset and read.",
+            "Draw a two-writer lost-update timeline; distinguish that thought experiment from the failures actually executed.",
+            "Write a three-option storage decision record with query, concurrency, constraints, crash recovery, operational burden and growth assumptions."
+        ],
+        "knowledgeCheck": "Without looking at the source, explain (1) why restarting an HTTP server can erase records even though the client saw 201; (2) what changed after using a file; (3) how two correct single-process writes can lose data; (4) one case where a PostgreSQL deployment would be unnecessary."
+    },
+    {
+        "id": "postgresql-first-connection",
+        "title": "PostgreSQL: Server, Client and Your First Session",
+        "introduction": "A PostgreSQL table is not something a code example can conjure up by itself. PostgreSQL is a running database server that accepts authenticated connections. psql is a separate client that sends SQL to that server. Before asking you to CREATE TABLE, this lesson establishes those components, an isolated learning database, a successful command, an intentional failure and repeatable setup evidence.",
+        "outcomes": [
+            "Separate PostgreSQL server, server process, cluster, database, schema, connection role and psql client.",
+            "Connect to an explicitly selected disposable learning database without assuming a preinstalled local server.",
+            "Run a multi-statement SQL file with deterministic error handling and inspect its result.",
+            "Diagnose missing client, refused connection, authentication, missing database and SQL errors as distinct failures."
+        ],
+        "sections": [
+            {
+                "id": "architecture",
+                "title": "Two programs, one protocol boundary",
+                "body": "The server owns and coordinates database state. The client psql is a terminal program that opens a PostgreSQL connection, authenticates as a role, chooses a database, and submits SQL. Your shell, psql and the PostgreSQL server are three different execution contexts. A server instance can manage several named databases; schemas are namespaces inside one database. A PostgreSQL cluster in this context is the managed collection of databases under one server installation, not automatically a high-availability cluster. A role controls identity and privileges; it is not the same object as the database. This vocabulary prevents the common mistake of typing SQL into a shell or believing installation of psql starts a server."
+            },
+            {
+                "id": "installation",
+                "title": "Establish prerequisites without inventing credentials",
+                "body": "You need an available PostgreSQL server (local, container-based or course-provided), psql installed, and a database/role for which you have permission. Follow the official PostgreSQL installation and Getting Started documentation appropriate to your operating system; do not run arbitrary privileged setup commands from a lesson. Run psql --version to verify the client binary, but recognize that a version string says nothing about server availability. For a local standard setup, inspect pg_isready -h 127.0.0.1 -p 5432; a ready signal means a listener answers, not that your credentials are valid. A hosted course database may use a different host, port or TLS requirement. Have your instructor or installation guide provision a dedicated database named tsa_steward_lab and an authorized non-superuser role. Do not perform these experiments on a production or shared application database."
+            },
+            {
+                "id": "connection",
+                "title": "Connect deliberately and identify the target",
+                "body": "Use the host, port, role and database from your setup, not arbitrary guesses. PostgreSQL client utilities can use PGHOST, PGPORT, PGUSER and PGDATABASE environment variables; do not put passwords in the command text or committed source. For a local lab, set PGHOST=127.0.0.1, PGPORT=5432, PGDATABASE=tsa_steward_lab and PGUSER to your provisioned role in your shell. Type psql -X to enter an interactive session, use \\conninfo to inspect the active connection, SELECT current_database(), current_user; to prove its context, \\dt to list visible tables, and \\q to exit. Flags and meta-commands are interpreted by psql; SELECT is SQL executed by the server. Record the database/role but never include secrets in your evidence.",
+                "language": "bash",
+                "caption": "Shell commands — connection diagnostics, not SQL",
+                "code": "psql --version\npg_isready -h 127.0.0.1 -p 5432\n# After setting PGHOST, PGPORT, PGUSER, PGDATABASE for YOUR lab:\npsql -X -v ON_ERROR_STOP=1 -c 'SELECT current_database(), current_user, 2 + 2 AS four;'\n# Expected: tsa_steward_lab | <your role> | 4"
+            },
+            {
+                "id": "session-sql",
+                "title": "A complete first SQL file: temporary tables and session scope",
+                "body": "Write the following to first_session.sql, then run psql -X -v ON_ERROR_STOP=1 -f first_session.sql from your shell with the lab PG* variables set. CREATE TEMP TABLE defines a table limited to this database session; INSERT adds two rows; SELECT retrieves the ordered result; BEGIN/ROLLBACK demonstrate that an extra row inside the transaction is discarded. Running a fresh psql command to select from tsa_session_probe afterwards will fail because a temporary table does not survive the original connection. Contrast this intentionally temporary database table with the file snapshot in the previous lesson and the durable Team table we will build next.",
+                "language": "sql",
+                "caption": "first_session.sql — run only in a disposable PostgreSQL lab database",
+                "code": "CREATE TEMP TABLE tsa_session_probe (\n  id integer PRIMARY KEY,\n  service_name text NOT NULL\n);\nINSERT INTO tsa_session_probe (id, service_name)\nVALUES (1, 'Payments API'), (2, 'Identity API');\nSELECT id, service_name FROM tsa_session_probe ORDER BY id;\nBEGIN;\nINSERT INTO tsa_session_probe (id, service_name) VALUES (3, 'Temporary Service');\nROLLBACK;\nSELECT count(*) AS remaining FROM tsa_session_probe;",
+                "output": "CREATE TABLE\nINSERT 0 2\n id | service_name\n----+----------------\n  1 | Payments API\n  2 | Identity API\n(2 rows)\nBEGIN\nINSERT 0 1\nROLLBACK\n remaining\n-----------\n         2\n(1 row)"
+            },
+            {
+                "id": "negative-cases",
+                "title": "Classify failures by the boundary that actually failed",
+                "body": "If psql --version is not found, the client is not available on PATH; no database query was attempted. If the host refuses a connection, no PostgreSQL session was established. A password or role error means the server responded but denied authentication. A database-does-not-exist error means the requested database name was not available; check PGDATABASE and provisioning. A syntax error or missing-relation error occurs only after reaching the SQL engine. With ON_ERROR_STOP=1 a noninteractive psql script stops on SQL error rather than silently continuing. Prove the missing-table case by running psql -X -v ON_ERROR_STOP=1 -c 'SELECT * FROM tsa_session_probe;' in a NEW session; it should fail even though the earlier session's SELECT worked."
+            },
+            {
+                "id": "model-next",
+                "title": "The next durable table is a design decision",
+                "body": "A temporary table is useful for isolated experiments, but Steward Teams must survive a client disconnect. In the next lesson we create persistent tables in the dedicated learning database. SQL column definitions, primary keys, references and nullability will come from the facts the application must maintain, not from copying JSON responses. Keep your connection notes and a clean SQL file as the starting point. When an example says 'run this query,' you can now name the server, database, client and permissions needed to make that instruction meaningful."
+            }
+        ],
+        "warning": "Do not paste passwords into shell history, screenshots, committed environment files or public issue comments. Never create/drop learning tables in a production database. SQL sample outputs assume the disposable database and stated commands; PostgreSQL has not been executed by the automated source-only regression.",
+        "assignment": [
+            "Verify the client and server separately and record the observed outcome, including any setup or access blocker.",
+            "Connect to the dedicated lab database; run SELECT current_database(), current_user, 2+2 and record the expected 4.",
+            "Execute first_session.sql and compare both result sets against the published output.",
+            "Open a second psql session and demonstrate that the temporary table is absent; classify the error.",
+            "Document the five diagnostic boundaries and the precise database/role the next lesson will use."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL Official Tutorial — Getting Started",
+                "url": "https://www.postgresql.org/docs/current/tutorial-start.html",
+                "kind": "reference",
+                "purpose": "Server installation, role, database, and connection prerequisites."
+            },
+            {
+                "title": "PostgreSQL Official Tutorial — Accessing a Database",
+                "url": "https://www.postgresql.org/docs/current/tutorial-accessdb.html",
+                "kind": "reference",
+                "purpose": "Interactive psql, SQL commands and psql meta-command distinction."
+            },
+            {
+                "title": "PostgreSQL — psql Reference",
+                "url": "https://www.postgresql.org/docs/current/app-psql.html",
+                "kind": "reference",
+                "purpose": "Script execution, ON_ERROR_STOP, connection flags and error exit behavior."
+            }
+        ],
+        "practiceObjective": "Establish and prove an actual PostgreSQL lab connection before any subsequent schema exercise assumes one.",
+        "practiceInstructions": [
+            "Provision or obtain a dedicated lab PostgreSQL database and role; document installation choice, privileges and blocked prerequisites without exposing credentials.",
+            "Run the shell diagnostics and the query reporting database, role and 4. Distinguish the client from the server.",
+            "Save and execute first_session.sql with ON_ERROR_STOP; capture its 2-row output and final count 2.",
+            "Use a second psql process to query the temporary table and capture the expected missing-relation error.",
+            "Draw a five-layer failure triage tree covering unavailable client, refused transport, rejected login, nonexistent database and SQL execution failure.",
+            "Explain why the next lesson's permanent Team table differs from the disposable session table."
+        ],
+        "knowledgeCheck": "Without notes, (1) trace shell → psql → PostgreSQL server → selected database/schema; (2) state why psql --version does not prove connectivity; (3) explain temporary vs persistent table lifetime; (4) choose the most informative observation for authentication failure versus missing relation."
+    },
+    {
         id: "relational-model",
         title: "The Relational Model",
         introduction: "A relational database stores structured data in tables and lets those tables relate to one another through values such as keys. Rows represent individual records; columns describe the values each record can hold. The relational model goes further than this physical picture: it gives us a disciplined way to represent facts and relationships so that data can change without duplicating or contradicting the same fact in many places. Steward needs that discipline for teams, services, environments and dependencies.",
@@ -96,7 +273,7 @@ const specs: DataLessonSpec[] = [
         sections: [
             { id: "table-mental-model", title: "Start with table, row and column", body: "Suppose we need to store teams. A table named team describes one kind of data. Each row represents one team. Columns such as id and name describe values recorded for every row. A primary key identifies each row independently of display values that may change.", code: "CREATE TABLE team (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  name text NOT NULL UNIQUE\n);\n\nINSERT INTO team (name) VALUES ('Payments'), ('Platform');\n\nSELECT id, name FROM team ORDER BY id;", caption: "Create, populate and query a relation", output: " id |   name\n----+----------\n  1 | Payments\n  2 | Platform\n(2 rows)" },
             { id: "facts-as-relations", title: "From tables to relational facts", body: "The table/row/column picture is useful, but the relational model is about meaning rather than spreadsheet layout. Treat a table as representing facts of one kind. If a Service belongs to a Team, repeating the team name inside every service row duplicates a fact that can change. Store the Team once, give it stable identity, and let Service reference that identity." },
-            { id: "steward-shape", title: "A first Steward relational shape", body: "Teams own services; services run in environments; services depend on other services. These are separate relations because they have different cardinalities, lifecycles and constraints.", code: "CREATE TABLE team (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  name text NOT NULL UNIQUE\n);\n\nCREATE TABLE service (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  name text NOT NULL,\n  owning_team_id bigint NOT NULL REFERENCES team(id)\n);" },
+            { id: "steward-shape", title: "A first Steward relational shape", body: "Teams own services; services run in environments; services depend on other services. These are separate relations because they have different cardinalities, lifecycles and constraints.", code: "CREATE TABLE service (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  name text NOT NULL,\n  owning_team_id bigint NOT NULL REFERENCES team(id)\n);" },
             { id: "database-vocabulary", title: "Database, schema, table, row and column are different scopes", body: "A PostgreSQL server can host multiple databases. Inside a database, schemas are namespaces for objects such as tables. A table defines columns and constraints; each row records one fact instance. PostgreSQL commonly uses the public schema by default, but relying on defaults without understanding the namespace becomes confusing once applications, extensions or multiple teams share a database." },
             { id: "data-types", title: "Column types constrain representation", body: "Choose types from the fact being stored: bigint/identity for generated numeric identifiers, text for unconstrained text, boolean for true/false state, date for calendar dates, timestamptz for instants that must survive timezone presentation, numeric for exact decimal quantities, and uuid when UUID identity is deliberately required. A type does not encode every domain rule, but it prevents entire classes of invalid representation." , code: "CREATE TABLE environment (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  service_id bigint NOT NULL REFERENCES service(id),\n  name text NOT NULL,\n  production boolean NOT NULL DEFAULT false,\n  created_at timestamptz NOT NULL DEFAULT now()\n);" },
             { id: "null-meaning", title: "NULL means missing/unknown, not empty or zero", body: "NULL is a marker for absence of a value under SQL semantics. It is different from an empty string, zero and false. Decide whether absence is legitimate for each column; use NOT NULL when every valid row must contain the fact. Excessive nullable columns often indicate unclear lifecycle or table boundaries." },
