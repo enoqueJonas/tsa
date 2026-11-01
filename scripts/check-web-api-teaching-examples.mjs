@@ -24,3 +24,6 @@ console.log("Web/API learner JSON examples passed: syntax, shape, domain and omi
 
 execute("pagination_model.py", "first: [10, 20]\noffset after insert: [20, 30]\ncursor after insert: [30, 40]\noffset after delete: [40]\ncursor after delete: [30, 40]");
 execute("contract_boundary.py", "{\"active\": true, \"ageDays\": 184, \"endpoint\": \"https://payments.internal/api\", \"id\": 7, \"name\": \"Payments API\"}\nREJECTED: ageDays must be a non-negative integer\nREJECTED: ageDays must be a non-negative integer\nREJECTED: required fields: name, endpoint, ageDays; no extras\nadded field: Payments API / 184\nBROKEN CLIENT: name");
+
+execute("url_parser.py", "https://example.org/services?team=payments+%26+ops&tag=api&tag=bank#details\norigin: https://example.org\nrequest target: /services?team=payments+%26+ops&tag=api&tag=bank\nteams: ['payments & ops']\ntags: ['api', 'bank']\nfragment: details\nencoded id: payments%2Fcore\nbad query team: ['payments ']");
+console.log("Web/API URL parsing example passed: encoded query, repeated parameters, fragment omission and negative concatenation.");
