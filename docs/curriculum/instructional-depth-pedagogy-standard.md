@@ -65,6 +65,21 @@ The activity time estimate is an instructional promise. A 50-minute reading cann
 
 “Continue learning” cannot be the main lesson. A learner may choose not to open any optional external resource and must still receive the core instruction needed for the TSA activity.
 
+## Evidence-led source research for every substantial rewrite
+
+**Research before drafting, teach independently afterwards.** When a lesson is rewritten, the author must consult suitable primary documentation, at least one substantive technical article or course chapter, and a relevant lecture/video where one exists. An introductory marketing explainer does not substitute for a technical treatment. Verify that each link actually addresses the taught mechanism; do not attach videos merely for decoration or assert the video has been watched when only its public outline was inspected.
+
+Record for each changed lesson:
+
+1. **Research map:** source title, URL, exact concept supported, its authority/limitations, and whether material was read, sampled, or only indexed.
+2. **Teaching translation:** the precise learner-facing explanation, trace or worked example produced from the research, in original language with no long copied passages; reconcile disagreements with primary standards.
+3. **Prerequisite boundary:** what the learner has already executed, what is introduced now, and what must wait for a later module.
+4. **Worked evidence:** run the exact published code (including a failure case) in a disposable environment; do not claim network, database or platform validation from a modeled Python example.
+5. **Resource placement:** offer the primary references and optional video with a clear purpose; the lesson body itself must teach the essential material without requiring the video.
+6. **Verification tier:** source review, executable example, browser/render inspection and independent novice transfer remain separate checkboxes.
+
+Prefer official documentation and standards for correctness; use university lectures, reputable engineering deep dives and practitioner walkthroughs for pedagogical explanations and competing approaches. Split a lesson when the research exposes several foundational mechanisms that cannot be explained to the intended learner at sufficient depth within one coherent learning unit.
+
 ## Pedagogical progression by school level
 
 Scaffolding should decrease deliberately:
