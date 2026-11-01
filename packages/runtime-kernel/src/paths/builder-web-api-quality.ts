@@ -98,19 +98,49 @@ const practices: Record<string, PracticeSpec> = {
     ]
   },
   "web-and-api-foundations-methods-headers-and-status-codes": {
-    objective: "Design method, retry and status semantics for Steward operations so clients can behave correctly under success and failure.",
-    scenario: "A proposed Steward API uses POST for every operation and returns 200 for every handled outcome with an error flag in JSON. Review it before implementation and replace convenience-driven choices with explicit HTTP semantics.",
-    instructions: [
-      "List at least six Steward operations, including retrieval, creation, partial update, deletion and dependency management.",
-      "Choose a method for each operation and classify whether it is safe and/or idempotent.",
-      "For each operation, describe what could happen if a client retries after losing the response.",
-      "Map invalid input, missing authentication, forbidden cross-team edit, missing service, conflict, unsupported media type, rate limiting, temporary unavailability and unexpected server failure to specific status codes.",
-      "Use 201/Location for a creation case, then explain one ETag conditional-request case and one Retry-After case.",
-      "For a retryable creation-style POST, design an idempotency-key contract and explain what duplicate effect it prevents."
-    ],
-    deliverables: ["Steward operation/method matrix", "Retry-risk analysis", "Failure/status decision table", "Response-header behavior note"],
-    completionCriteria: ["Method choices communicate operation intent.", "Safety and idempotency are explained rather than memorized.", "Client-correctable failures remain distinguishable from server failures.", "Retry behavior is considered explicitly for non-trivial operations."]
-  },
+  "objective": "Explain method intent and observed status semantics using the exact disposable method server from the reading.",
+  "scenario": "The GET-only mini-Steward server cannot demonstrate creation or deletion. Use the separate plain-text method_server.py experiment; its state is synthetic, in memory, and reset on restart.",
+  "instructions": [
+    "Save and start method_server.py on loopback. Run the eight published curl requests in order on a fresh instance.",
+    "For each request capture method, target, handler, status, relevant headers, body and resulting state. Verify creation by following Location.",
+    "Execute repeated valid POSTs and inspect the collection. Contrast repeated DELETE and GET effects.",
+    "Execute PATCH and a missing GET target; distinguish the framework's 501 from 404, the explicit 405 contract, and business-input errors.",
+    "Propose six future Steward method/status contracts and justify each. Do not claim the lab implements PUT, PATCH, JSON, authentication or persistence."
+  ],
+  "deliverables": [
+    "Observed eight-request transcript plus unsupported-method and duplicate-creation experiments",
+    "Before/after state trace",
+    "Six proposed operation contracts with client actions"
+  ],
+  "completionCriteria": [
+    "All eight statuses and Location/Allow/bodyless behavior are interpreted from actual output.",
+    "The learner distinguishes 400, 404, 405, 415 and 501 by cause.",
+    "Methods are justified by intended operation rather than URL naming.",
+    "A changed status on repeated DELETE is not confused with a second deletion effect."
+  ]
+},
+  "web-and-api-foundations-retries-idempotency-and-conditional-requests": {
+  "objective": "Predict and diagnose duplicate effects and stale edits, and design a retry contract with explicit limits.",
+  "scenario": "A timeout hides the server outcome. The published retry_model.py demonstrates decision rules in sequential Python, without claiming network, database or crash-safe implementation.",
+  "instructions": [
+    "Predict then execute retry_model.py; annotate every state mutation and returned result.",
+    "Simulate response loss by ignoring the first create result, then retry with the same key. Repeat with a different key and compare collection length.",
+    "Change editor B to use the current revision, predict the final name and verify it. Explain why fetching a version does not itself reconcile intent.",
+    "Design a future operation-key scope, payload-mismatch policy, retention and in-progress behavior; identify the atomicity and restart gaps in the model.",
+    "Explain proposed If-Match/412 versus If-None-Match/304 behavior and choose bounded retry/correction/reconciliation for timeout, 400 and 503."
+  ],
+  "deliverables": [
+    "Executed model transcript and two changed-input experiments",
+    "Operation-key contract and limitations",
+    "Conditional-write and retry decision note"
+  ],
+  "completionCriteria": [
+    "Safety and idempotency are defined separately and effects are inspected.",
+    "The same operation keeps one key; a new intent gets a new key.",
+    "A stale write is rejected and removing the guard is not claimed as conflict resolution.",
+    "The model is explicitly sequential, volatile and not a production deduplication implementation."
+  ]
+},
   "web-and-api-foundations-json-and-content-types": {
     objective: "Distinguish parsing, shape validation and domain validation through independently executable Python, and correctly interpret HTTP representation headers without an unbuilt API.",
     scenario: "A teammate reports an 'invalid JSON' failure while another sends a correct-looking body with criticality banana. You do not yet have a Steward HTTP POST implementation, but you have Python's standard-library JSON parser, steward-core rules and a local read-only demo server.",

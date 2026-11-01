@@ -36,6 +36,10 @@ test("Web and API Foundations JSON teaching examples execute and match their out
   runAudit("scripts/check-web-api-teaching-examples.mjs", /Web\/API learner JSON examples passed:/);
 });
 
+test("method, retry and prerequisite examples execute from their teaching source", () => {
+  runAudit("scripts/check-method-retry-teaching-examples.mjs", /Method\/retry teaching examples passed:/);
+});
+
 test("Java dependency-injection lesson executes and matches published output", () => {
   runAudit("scripts/check-java-teaching-examples.mjs", /Java learner-example validation passed:/);
 });

@@ -623,3 +623,15 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 **Limits:** The zero-findings result only covers the checks implemented in this script (IDs, empty reading/code/list fields, heading anchors). It does **not** establish correct prerequisite order, adequate code demonstrations, independent lab execution, resource accuracy, progress persistence or rendered UX. Several schools have zero code *blocks within reading content*; that count is not necessarily zero code presented elsewhere, and warrants investigation rather than a blanket assertion. No module is promoted to Accepted from this checkpoint. Cached build output is not evidence of a fresh end-to-end browser run.
 
 **Next gate:** Independently inspect the composed learner-visible content and actual exercise execution in each module, including schools with zero reading code blocks; record precise lesson-level failures and evidence of remediation in this ledger. Test UX and persistence with actual browser interaction before learner acceptance.
+
+
+## 2026-11-01 — PED-005 bounded Web/API remediation evidence
+
+See [the learner-order review](ped-005-web-api-learner-order-review.md) for exact source ownership, all 76 assembled Apprentice/Web-API activities, classifications, runtime evidence and outstanding work. Baseline: `345ebd875202ed5f3297ee857c4b3ffd1713a413`.
+
+- Web/API methods: source rewritten; complete local method experiment and failure checks execute.
+- New retries/conditional-requests lesson: registered in actual learner sequence with specific practical and executable sequential state model. No durable/concurrent implementation claimed.
+- Apprentice Developer Inspection: published stream example corrected and regression-executed; full school novice-depth review still outstanding.
+- Full suite 12/12 and production build passed. Rendered methods reading/practical and retry reading received bounded DOM review; reload retained reading position. Synthetic navigation reflections are not competence evidence.
+- Independent teach-back/transfer: **NOT RUN**. Full responsive visual review and final lab: **UNVERIFIED**.
+- Module/school acceptance: **NOT VALIDATED**. Remaining thin readings and missing final-lab capabilities are listed explicitly; #318/#319/#320 remain open.

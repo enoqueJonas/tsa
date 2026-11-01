@@ -606,33 +606,248 @@ export const webAndApiFoundationsDeepLessons: Lesson[] = [
   "State the limits of human-readable HTTP/1.1 framing when HTTP/2 or HTTP/3 is negotiated."
 ], "A client sends Accept: text/plain but receives Content-Type: application/json. Which header states preference and which describes the actual body? Why must a client distinguish 204 No Content from 200 with {}? What does a 404 prove that a connection failure does not?"),
 
-  lesson("Methods, Headers and Status Codes", 50, [
-    { type: "heading", id: "methods", text: "Methods communicate intent" },
-    { type: "paragraph", text: "HTTP methods carry semantics. `GET` retrieves a representation, `POST` commonly creates or triggers processing, `PUT` replaces a resource representation, `PATCH` applies partial modification, and `DELETE` requests removal. Correct method choice helps clients, caches, documentation and operators understand intent." },
-    { type: "code", language: "http", caption: "Steward operations", code: "GET    /services/42\nPOST   /services\nPATCH  /services/42\nDELETE /services/42\n\nPOST   /services/42/dependencies" },
-    { type: "heading", id: "safe-idempotent", text: "Safe and idempotent are protocol properties" },
-    { type: "paragraph", text: "A safe method is intended not to change server state as a requested effect. An idempotent method can be repeated with the same intended effect. These properties matter for retries, proxies and failure recovery. `POST` is not automatically unsafe to retry in every application, but if repeated execution can create duplicates, the API must design around that risk." },
-    { type: "heading", id: "status", text: "Status codes classify outcomes" },
-    { type: "list", items: ["2xx: the request was successfully processed in the protocol/application sense.", "3xx: redirection or alternate location behavior.", "4xx: the request cannot be fulfilled as sent, including validation, authentication, authorization or missing-resource cases.", "5xx: the server failed while attempting a validly formed request."] },
-    { type: "heading", id: "specific-status-semantics", text: "Choose the specific status from the failure meaning" },
-    { type: "paragraph", text: "Status families are only the first classification. Clients need the specific status to decide what happened. 400 Bad Request is suitable for a request the server rejects as invalid at the request/input level. 401 Unauthorized, despite its historical name, means valid authentication credentials are missing or unacceptable and commonly accompanies an authentication challenge. 403 Forbidden means the server understood the caller/request but refuses the action. 404 Not Found means the target resource was not found or is intentionally presented that way. 500 Internal Server Error represents an unexpected server-side failure rather than a client-correctable validation decision." },
-    { type: "code", language: "text", caption: "Same endpoint, different failure meanings", code: "POST /services\n400 → JSON/field/domain input is invalid for this operation\n401 → caller has not established acceptable authentication\n403 → caller is identified but is not allowed to create this resource\n404 → referenced/target resource is not found (where applicable)\n500 → server encountered an unexpected processing failure" },
-    { type: "paragraph", text: "Authentication asks 'who is the caller and can that identity be established?'. Authorization asks 'is that established caller allowed to perform this action on this resource?'. Keeping those questions separate prevents an access-control decision from being reported as malformed input or server failure." },
-    { type: "callout", tone: "note", title: "Status alone is not the whole error contract", body: "Two validation failures can both use 400 while carrying different stable application error codes and field details. Later in this module you will design that response body. First preserve the protocol-level category correctly." },
-    { type: "callout", tone: "steward", title: "Make failure semantics useful", body: "If Team A tries to modify a service owned by Team B, returning 500 hides a deliberate authorization decision as a server failure. Status design should preserve the difference between invalid input, missing authentication, forbidden action, missing resource and unexpected server failure." },
-    { type: "heading", id: "put-patch", text: "PUT and PATCH make different update promises" },
-    { type: "paragraph", text: "`PUT` is defined around creating/replacing the state of the target resource with the supplied representation and is idempotent by semantics. `PATCH` applies a set of partial modifications whose idempotency depends on the patch operation/media type and application design. In practice, document update semantics precisely rather than treating both as interchangeable 'update verbs'." },
-    { type: "heading", id: "status-toolkit", text: "Know the statuses that drive ordinary API clients" },
-    { type: "code", language: "text", caption: "Useful status semantics", code: "200 OK                  → successful response with normal representation/result\n201 Created             → resource created; Location may identify it\n202 Accepted            → accepted for processing, not necessarily completed\n204 No Content          → successful response with no body\n304 Not Modified        → conditional retrieval can reuse cached representation\n400 Bad Request         → request rejected as malformed/invalid at request level\n401 Unauthorized        → acceptable authentication is missing/invalid\n403 Forbidden           → action is refused for this caller\n404 Not Found           → target resource not found/presented as absent\n409 Conflict            → request conflicts with current resource state\n415 Unsupported Media Type → request representation type is unsupported\n422 Unprocessable Content → representation understood but instructions/content cannot be processed semantically\n429 Too Many Requests   → rate limit/request pressure policy rejected request\n500 Internal Server Error → unexpected server failure\n503 Service Unavailable → service temporarily unable to handle request" },
-    { type: "paragraph", text: "Do not choose a status from a memorized table alone. Start from the actual failure meaning and the behavior you want a generic HTTP client to infer. Application error codes then add domain-specific precision inside that protocol category." },
-    { type: "heading", id: "idempotency-key", text: "Application design can make risky retries safer" },
-    { type: "paragraph", text: "A creation-style `POST` can duplicate work when a client retries after an unknown outcome. Some APIs accept an idempotency key: repeated requests carrying the same operation key can be recognized and prevented from creating a second effect. This is an application contract layered on HTTP; it does not make every POST intrinsically idempotent." },
-    { type: "heading", id: "conditional", text: "Conditional requests coordinate versions and caches" },
-    { type: "paragraph", text: "A server can return an `ETag` representing a selected representation version. A later GET with `If-None-Match` may receive `304 Not Modified`, avoiding retransmission. Conditional modification headers can also help prevent blindly overwriting a newer version. You do not need to implement concurrency control yet, but recognize ETags as protocol validators rather than arbitrary version strings." },
-    { type: "heading", id: "assignment", text: "Assignment" },
-    { type: "list", ordered: true, items: ["Classify six Steward operations by method.", "Explain whether retrying each operation is safe and/or idempotent.", "Map validation failure, unauthenticated request, forbidden cross-team edit, missing service and database crash to appropriate status-code families.", "Inspect Retry-After, Location or ETag on a real API if available and explain the header's role."] },
-    { type: "resources", resources: [mdnMethods, mdnStatus, rfc9110] },
-  ], "Choose methods and status codes from intended semantics rather than convention alone.", ["Map Steward operations to methods.", "Classify safety and idempotency.", "Design statuses for five distinct failures.", "Inspect at least one response header that affects client behavior."], "Why are safety and idempotency useful to clients and infrastructure? Distinguish 400, 401, 403, 404 and 500 using Steward examples.", [mdnMethods, mdnStatus, rfc9110]),
+  lesson("Methods, Headers and Status Codes", 60, [
+  {
+    "type": "heading",
+    "id": "bridge",
+    "text": "Choose behavior before choosing a verb"
+  },
+  {
+    "type": "paragraph",
+    "text": "You can now identify the method, target, headers, status and content of an HTTP message. Apprentice's workbench supplied terminal, foreground-process and curl observation skills; Python supplied dictionaries, functions and conditionals. No Django application or database exists in this exercise. The question here is how a caller can predict an operation's effect before sending it. A method is the request's operation category; a resource is the thing identified by the target, such as one service or the collection of services."
+  },
+  {
+    "type": "paragraph",
+    "text": "Imagine an API that deletes /services/42 when it receives GET. A browser preview, link checker or retry could remove a service when its caller only intended to read. Shared method semantics prevent that surprise. The method communicates a promise; the handler must implement that promise. Writing GET in a request does not physically prevent a badly written handler from changing data."
+  },
+  {
+    "type": "heading",
+    "id": "operation-contract",
+    "text": "Read, submit, replace, modify and remove"
+  },
+  {
+    "type": "code",
+    "language": "text",
+    "caption": "Proposed future Steward operations, not running endpoints",
+    "code": "GET    /services/42              read one representation\nPOST   /services                 submit a new service for processing/creation\nPUT    /services/42              replace writable state at a known identity\nPATCH  /services/42              apply a specified partial change\nDELETE /services/42              remove the target association/resource"
+  },
+  {
+    "type": "paragraph",
+    "text": "POST lets the target decide how to process submitted content. A collection can allocate a new service identity; an action endpoint can start a workflow. PUT supplies the desired replacement at a target chosen by the caller. PATCH supplies change instructions, whose format and treatment of omitted fields must be documented. DELETE requests removal of the target; it does not promise physical erasure of every historical record. A resource's allowed methods are part of its contract, not something a client can infer from a URL's spelling."
+  },
+  {
+    "type": "paragraph",
+    "text": "For a proposed service with name and lifecycle, a PUT containing only name is not automatically a name-only update: the contract must say whether the incomplete replacement is rejected or what replacement means for omitted writable fields. PATCH can express 'set name, leave lifecycle alone'. The same word update hides these different promises. We will study retry properties in the next lesson."
+  },
+  {
+    "type": "heading",
+    "id": "status-decision",
+    "text": "A status tells the client what kind of result occurred"
+  },
+  {
+    "type": "paragraph",
+    "text": "First ask whether an HTTP response arrived at all. Connection refusal has no HTTP status. When a response exists, its status classifies that attempt. 2xx reports success; 3xx covers redirection and conditional reuse; 4xx reports a problem fulfilling the request as sent; 5xx reports server failure or inability to fulfill it. A 5xx does not prove the request was valid, and none of these classes alone proves the intended business outcome."
+  },
+  {
+    "type": "code",
+    "language": "text",
+    "caption": "A decision table for a proposed create contract",
+    "code": "created now                         201 + Location identifying new resource\naccepted for later work              202 + a documented way to inspect progress\nsuccessful with no response content  204 (do not JSON-parse an absent body)\nmalformed/invalid request             400 (this contract's input-error policy)\nmissing/invalid credentials           401 + WWW-Authenticate challenge\naction refused                       403 (do not retry unchanged credentials blindly)\ntarget absent or concealed           404\nknown target, method not allowed      405 + Allow listing supported methods\nconflict with current state           409\nunsupported request media type        415\nunexpected processing defect          500\ntemporarily unable to serve           503, possibly Retry-After"
+  },
+  {
+    "type": "paragraph",
+    "text": "Authentication establishes a caller's identity; authorization decides what that caller may do. 401 calls for acceptable credentials and a challenge, while 403 is refusal of the requested action. A server may conceal a forbidden resource with 404. Do not diagnose identity policy from a status alone without the documented contract. Some APIs use 422 for understood content that fails semantic validation; choose and document a consistent distinction from 400 rather than guessing which number is universally correct. Rate-limiting policies commonly use 429; waiting does not fix a forbidden action."
+  },
+  {
+    "type": "heading",
+    "id": "executable-methods",
+    "text": "Run a complete, deliberately small method contract"
+  },
+  {
+    "type": "paragraph",
+    "text": "Save the following as method_server.py in a disposable directory and run python3 method_server.py. It stays running without a startup banner; use a second terminal for curl. If 8766 is occupied, choose another unused port and change both server and commands. This uses UTF-8 plain text so we can isolate methods before the JSON lesson. The only field is a non-empty name. Everything is in memory and disappears on restart. This server intentionally lacks authentication, persistence, general input hardening, PUT/PATCH support and concurrent handling; it is a teaching experiment, not a Steward implementation."
+  },
+  {
+    "type": "code",
+    "language": "python",
+    "caption": "method_server.py — complete disposable method experiment",
+    "code": "from http.server import BaseHTTPRequestHandler, HTTPServer\n\n# A disposable, single-threaded, one-field resource. Restart resets all state.\nservices = {}\nnext_id = 1\n\nclass Handler(BaseHTTPRequestHandler):\n    def reply(self, status, text=\"\", **headers):\n        payload = text.encode(\"utf-8\")\n        self.send_response(status)\n        if status != 204:\n            self.send_header(\"Content-Type\", \"text/plain; charset=utf-8\")\n            self.send_header(\"Content-Length\", str(len(payload)))\n        for name, value in headers.items():\n            self.send_header(name, value)\n        self.end_headers()\n        self.wfile.write(payload)\n\n    def do_GET(self):\n        if self.path == \"/services\":\n            self.reply(200, repr(services))\n        elif self.path in services:\n            self.reply(200, services[self.path])\n        else:\n            self.reply(404, \"unknown resource\")\n\n    def do_POST(self):\n        global next_id\n        if self.path != \"/services\":\n            self.reply(404, \"unknown collection\")\n            return\n        if self.headers.get(\"Content-Type\") != \"text/plain\":\n            self.reply(415, \"send Content-Type: text/plain\")\n            return\n        length = int(self.headers.get(\"Content-Length\", \"0\"))\n        name = self.rfile.read(length).decode(\"utf-8\").strip()\n        if not name:\n            self.reply(400, \"name must not be empty\")\n            return\n        target = f\"/services/{next_id}\"\n        next_id += 1\n        services[target] = name\n        self.reply(201, name, Location=target)\n\n    def do_DELETE(self):\n        if self.path not in services:\n            self.reply(404, \"unknown resource\")\n            return\n        del services[self.path]\n        self.reply(204)\n\n    def do_PUT(self):\n        self.reply(405, \"PUT is not part of this collection contract\",\n                   Allow=\"GET, POST\")\n\nHTTPServer((\"127.0.0.1\", 8766), Handler).serve_forever()"
+  },
+  {
+    "type": "code",
+    "language": "shell",
+    "caption": "Run in a second terminal against a freshly started server",
+    "code": "curl --noproxy '*' -i http://127.0.0.1:8766/services\ncurl --noproxy '*' -i -H 'Content-Type: text/plain' --data 'Payments' http://127.0.0.1:8766/services\ncurl --noproxy '*' -i http://127.0.0.1:8766/services/1\ncurl --noproxy '*' -i -H 'Content-Type: application/json' --data '{}' http://127.0.0.1:8766/services\ncurl --noproxy '*' -i -H 'Content-Type: text/plain' --data '' http://127.0.0.1:8766/services\ncurl --noproxy '*' -i -X PUT http://127.0.0.1:8766/services\ncurl --noproxy '*' -i -X DELETE http://127.0.0.1:8766/services/1\ncurl --noproxy '*' -i -X DELETE http://127.0.0.1:8766/services/1",
+    "output": "Statuses in order: 200, 201, 200, 415, 400, 405, 204, 404. The 201 includes Location: /services/1; the 405 includes Allow: GET, POST. Date and Server headers vary. The 204 has no content."
+  },
+  {
+    "type": "paragraph",
+    "text": "The initial GET reads an empty dictionary. --data selects POST; the server checks Content-Type before reading and validating the name, allocates /services/1, stores Payments and returns 201 with Location. Follow that path with GET to verify the created state rather than trusting the status alone. The wrong media type is rejected with 415; the empty name is rejected with 400. Neither allocates an identity. The known collection rejects PUT with 405 and advertises its allowed methods. DELETE changes state once; the second DELETE finds no target. Different statuses across repeated requests can still produce the same final state."
+  },
+  {
+    "type": "heading",
+    "id": "diagnose",
+    "text": "Separate handler support from domain validation"
+  },
+  {
+    "type": "paragraph",
+    "text": "Sending PATCH to this server produces BaseHTTPRequestHandler's default 501 response because no do_PATCH handler exists. That is not evidence that a Steward domain rule or JSON validator rejected your patch. Our explicit PUT handler demonstrates the more specific 405 policy for the known collection. To investigate an unexpected response, record the exact method and target, inspect Content-Type and body, then compare the supported-method contract with the handler selected. If startup reports address already in use, resolve the listener problem before interpreting any API result."
+  },
+  {
+    "type": "paragraph",
+    "text": "Returning 200 with an error flag forces every generic client to understand your custom body before it can distinguish ordinary success from rejection. Specific statuses preserve shared meaning; stable application error codes add domain detail later. Conversely, a useful status cannot replace an explanation of which field is invalid or what conflict must be resolved."
+  },
+  {
+    "type": "heading",
+    "id": "practice-methods",
+    "text": "Practice and transfer"
+  },
+  {
+    "type": "list",
+    "ordered": true,
+    "items": [
+      "Run the eight requests on a fresh server. Annotate which handler ran, the state before/after and what each header proves. Record actual output.",
+      "Repeat a valid POST twice. Read /services and explain why two identities exist; contrast repeated GET and DELETE. Restart to reset synthetic state.",
+      "Without changing code, predict an unknown GET path and unsupported PATCH, then execute them. Explain 404 versus 501 and why neither proves a business validator ran.",
+      "Design method/status choices for read service, create service, replace writable state, change name, remove service and add dependency. Label these proposals; the lab does not implement them.",
+      "Transfer rubric: explain method intent, predict state, choose a specific status, justify a client action and distinguish unimplemented behavior from domain rejection. All five must be correct on an unfamiliar example before claiming independent application."
+    ]
+  },
+  {
+    "type": "resources",
+    "resources": [
+      {
+        "title": "RFC 9110 — method and status semantics",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-9"
+      }
+    ]
+  }
+], "Execute a complete method/status experiment and justify the resulting client behavior.", ["Run the eight requests in the reading against a fresh method_server.py.","Annotate handler, state change, status, headers and content.","Execute unsupported PATCH and a repeated POST; explain the differences.","Design six future Steward operation contracts without claiming they exist."], "Explain why a 405 differs from a 404, why a 201 needs state verification, and why repeated DELETE may return different statuses.", [mdnMethods, mdnStatus, rfc9110]),
+
+  lesson("Retries, Idempotency and Conditional Requests", 60, [
+  {
+    "type": "heading",
+    "id": "retry-bridge",
+    "text": "When the response is missing, the outcome is unknown"
+  },
+  {
+    "type": "paragraph",
+    "text": "The methods experiment showed that repeated POST can allocate two identities, while a second DELETE can return 404 after the first returned 204. Now connect that behavior to the timeout problem from Client–Server Boundaries. A response can be lost after the server commits a change. The client observes uncertainty, not cancellation. This lesson uses the Python state model you already know to reason about retries and concurrent edits without pretending that an HTTP service or database has implemented these protections."
+  },
+  {
+    "type": "heading",
+    "id": "safe-idempotent",
+    "text": "Safety and idempotency answer different questions"
+  },
+  {
+    "type": "paragraph",
+    "text": "A safe method does not request a state change: GET, HEAD, OPTIONS and TRACE have safe semantics. A server may still log requests or count metrics; those incidental effects do not make reading a resource an intended write. Idempotency asks whether repeating the same request has the same intended server effect as sending it once. Safe methods are idempotent; PUT and DELETE are also idempotent but request changes. POST and PATCH do not carry a general idempotency guarantee. A particular operation can provide a stronger documented application guarantee."
+  },
+  {
+    "type": "paragraph",
+    "text": "Setting name to Ledger twice leaves name as Ledger. Incrementing a counter twice adds two. A PATCH that sets a field may be idempotent, while a patch instruction that appends an item may not be. DELETE can return 204 followed by 404 yet leave the same target absent. Idempotency concerns intended effect, not identical status, content, log count or freedom from other clients' intervening changes. It also does not mean a stale PUT cannot overwrite newer data."
+  },
+  {
+    "type": "code",
+    "language": "text",
+    "caption": "Reason about a lost response before selecting a retry policy",
+    "code": "Attempt 1: client sends create -> server creates identity 1 -> response lost\nClient only knows: no confirmed response\nAttempt 2 with ordinary POST -> server might create identity 2\nAttempt 2 with same protected operation identity -> server replays identity 1\n\nAlternative history: attempt 1 never arrived\nProtected attempt 2 -> server performs the operation once"
+  },
+  {
+    "type": "heading",
+    "id": "key-contract",
+    "text": "An operation key identifies one intent across attempts"
+  },
+  {
+    "type": "paragraph",
+    "text": "An idempotency key is a client-chosen identifier for one logical operation, reused across retries of that same input. A server must define its scope (for example caller plus operation), compare the original input with retry input, and retain the result long enough for its documented retry window. A different logical creation gets a new key even if its name matches. Reusing a key with changed input should fail under a documented policy; silently replaying a different operation is dangerous."
+  },
+  {
+    "type": "paragraph",
+    "text": "Recognizing a key is insufficient if two workers can both see it as absent and create two resources. Production handling must coordinate duplicate detection and the effect atomically, handle in-progress attempts, recover after crashes, and define retention expiry. The sequential in-memory model below demonstrates the decision rules only. It loses records on restart and has no race protection. A request/correlation identifier helps find logs; it is not deduplication unless the server implements a contract for that purpose."
+  },
+  {
+    "type": "heading",
+    "id": "conditional",
+    "text": "Version conditions protect against lost updates"
+  },
+  {
+    "type": "paragraph",
+    "text": "Suppose two editors read revision 3. Editor A changes the name and advances to revision 4; editor B's replacement from revision 3 would erase A's work. A validator such as an ETag lets the client attach a condition to the write. A strong ETag identifies the current representation for comparison; clients treat its quoted value as opaque, rather than inventing the next value. If-Match with the observed strong validator means apply only if the server's current representation still matches. On mismatch, 412 Precondition Failed tells the client to fetch and reconcile instead of blindly resending."
+  },
+  {
+    "type": "code",
+    "language": "http",
+    "caption": "Illustrative future exchange — not implemented by method_server.py",
+    "code": "GET /services/42\n-> 200 OK\n   ETag: \"revision-3\"\n\nPUT /services/42\nIf-Match: \"revision-3\"\n...complete writable replacement...\n\n-> 204 No Content   (if still current)\nor 412 Precondition Failed (if another edit changed the validator)"
+  },
+  {
+    "type": "paragraph",
+    "text": "For a cached read, If-None-Match asks a different question: send the representation only if it differs from the stored validator. A matching conditional GET can receive 304, which has no response content; the client reuses its stored representation. That is different from 204 after a successful write. A cache without the stored representation cannot reconstruct it from a bare 304. These headers solve version comparison, not identity or permission checks."
+  },
+  {
+    "type": "heading",
+    "id": "model",
+    "text": "Execute the decisions and trace the state"
+  },
+  {
+    "type": "paragraph",
+    "text": "Save retry_model.py below and run python3 retry_model.py. It requires only Python's standard runtime and the earlier dictionary/function/conditional concepts. Predict each line before execution. The revision integer models a version condition; it does not implement HTTP ETag comparison. Read each function from its first guard to its state change."
+  },
+  {
+    "type": "code",
+    "language": "python",
+    "caption": "retry_model.py — assignment, duplication and stale writes",
+    "code": "# Pure Python model, not an HTTP server or production concurrency control.\nstate = {\"name\": \"Payments\", \"revision\": 1}\ncreations = []\nremembered = {}\n\ndef replace_name(name):\n    state[\"name\"] = name\n\ndef increment():\n    state[\"revision\"] += 1\n\ndef create(key, name):\n    if key in remembered:\n        old_name, identity = remembered[key]\n        if old_name != name:\n            return \"409 key reused with different input\"\n        return identity\n    identity = len(creations) + 1\n    creations.append(name)\n    remembered[key] = (name, identity)\n    return identity\n\ndef conditional_name(expected_revision, name):\n    if expected_revision != state[\"revision\"]:\n        return \"412 stale version\"\n    state[\"name\"] = name\n    state[\"revision\"] += 1\n    return \"204 changed\"\n\nreplace_name(\"Ledger\")\nreplace_name(\"Ledger\")\nprint(\"repeated assignment:\", state[\"name\"])\nincrement()\nincrement()\nprint(\"repeated increment:\", state[\"revision\"])\nprint(\"same key:\", create(\"operation-a\", \"Payments\"),\n      create(\"operation-a\", \"Payments\"), \"count:\", len(creations))\nprint(\"changed payload:\", create(\"operation-a\", \"Different\"))\nprint(\"new key:\", create(\"operation-b\", \"Payments\"), \"count:\", len(creations))\nobserved_revision = state[\"revision\"]\nprint(\"editor A:\", conditional_name(observed_revision, \"Owner A\"))\nprint(\"editor B:\", conditional_name(observed_revision, \"Owner B\"))\nprint(\"final name:\", state[\"name\"])",
+    "output": "repeated assignment: Ledger\nrepeated increment: 3\nsame key: 1 1 count: 1\nchanged payload: 409 key reused with different input\nnew key: 2 count: 2\neditor A: 204 changed\neditor B: 412 stale version\nfinal name: Owner A"
+  },
+  {
+    "type": "paragraph",
+    "text": "Assignment stores the same value twice. The two increments move revision from 1 to 3. create remembers operation-a's original input and allocated identity, so its retry returns 1 without appending. Changed input with that key is rejected. operation-b is a new intent, so it creates identity 2. Both editors then start from observed revision 3; A advances it to 4, B's guard fails, and Owner A remains. Inspecting the collection length and final name verifies effects rather than relying only on labels."
+  },
+  {
+    "type": "heading",
+    "id": "retry-diagnosis",
+    "text": "Waiting and retrying are separate decisions"
+  },
+  {
+    "type": "paragraph",
+    "text": "Retry-After can express a delay in seconds or an HTTP date; it does not guarantee a retry will succeed or make a duplicate effect safe. A rate-limited 429 or temporary 503 may justify a bounded wait when the operation's retry contract is understood. A 400 with unchanged invalid input does not. Use a finite attempt/time budget and increasing delays; random variation in delays reduces synchronized client bursts. Stop and surface uncertainty when the budget ends. A timeout on an unprotected creation should trigger reconciliation using durable operation evidence rather than an invented success or endless retries."
+  },
+  {
+    "type": "paragraph",
+    "text": "If every retry creates a duplicate, inspect whether the client changed keys or the server lost its records. If 412 repeats, check whether the client is resending the same stale validator. Fetch the current representation, compare the intended change with intervening edits, and ask for a new decision when reconciliation is ambiguous. Removing If-Match simply removes the guard; it does not resolve the conflict."
+  },
+  {
+    "type": "heading",
+    "id": "retry-practice",
+    "text": "Independent prediction and design"
+  },
+  {
+    "type": "list",
+    "ordered": true,
+    "items": [
+      "Run the model and annotate dictionary/list state after each call. Change editor B to use the current revision; predict and then verify that it overwrites A. Explain why this is a new decision rather than a safe automatic fix.",
+      "Simulate a lost response by calling create once without using its returned value, then calling it again with the same key. Compare with a fresh key and verify collection length.",
+      "Design a proposed creation-key contract with caller scope, payload comparison, in-progress behavior and retention window. Mark crash safety and concurrency as unimplemented.",
+      "For a timeout on POST, a 400, a 503 with Retry-After, and a stale-write 412, choose retry, correction or reconciliation and justify what evidence permits the decision.",
+      "Transfer rubric: on an unfamiliar append operation, correctly predict duplicate effects, distinguish safety from idempotency, preserve operation identity and reject a stale write. All four must pass independently; running this model alone does not establish learner validation."
+    ]
+  },
+  {
+    "type": "resources",
+    "resources": [
+      {
+        "title": "RFC 9110 — idempotency and conditional requests",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2"
+      },
+      {
+        "title": "RFC 5789 — PATCH semantics",
+        "url": "https://www.rfc-editor.org/rfc/rfc5789.html#section-2"
+      }
+    ]
+  }
+], "Predict duplicate effects and stale writes using an executable state model.", ["Execute retry_model.py and explain each state transition.","Simulate a lost response with the same operation key and then with a new key.","Change the version used by editor B; predict and verify the effect.","Design a bounded retry/reconciliation policy and state the model's production limitations."], "Can an idempotent operation overwrite a newer change? Explain how an operation key and If-Match solve different problems.", [mdnMethods, mdnStatus, rfc9110]),
 
   lesson("JSON and Content Types", 70, [
     { type: "heading", id: "representation", text: "JSON is a representation format" },

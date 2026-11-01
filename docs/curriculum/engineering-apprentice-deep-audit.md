@@ -1,6 +1,11 @@
 # Engineering Apprentice — Deep Curriculum Audit
 
-Status: structural and prerequisite audit complete; resource regression recorded
+Status: historical structural audit; PED-005 novice-depth review remains incomplete
+
+See [the 2026-11-01 learner-order review](ped-005-web-api-learner-order-review.md)
+for the assembled activity inventory, prerequisite evidence and confirmed stream
+example correction. The earlier structural findings below do not establish novice
+instructional sufficiency or learner validation.
 
 ## Purpose
 
@@ -18,11 +23,11 @@ The learner should leave able to frame a problem, reason from evidence, debug sy
 6. Evidence and Technical Reasoning
 7. Learning as an Engineering Skill
 8. Communicating Technical Work
-9. Engineering Investigation
-10. Terminal, Shell and Filesystem
-11. Git and Version-Control Workflow
-12. Developer Inspection: Processes, Ports and Text
-13. HTTP from the Command Line
+9. Terminal, Shell and Filesystem
+10. Git and Version-Control Workflow
+11. Developer Inspection: Processes, Ports and Text
+12. HTTP from the Command Line
+13. Engineering Investigation
 
 ## Finding resolved: hidden Builder prerequisites
 

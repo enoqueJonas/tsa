@@ -115,15 +115,16 @@ Builder audit may proceed in parallel at source level, but Engineering Apprentic
 
 | Lesson / area | Classification | Finding |
 | --- | --- | --- |
-| How the Web Works | REMEDIATED | Expanded DNS/TCP/TLS prerequisites, success evidence and failure boundaries before HTTP (`9d810021`). |
+| How the Web Works | THIN — targeted rewrite pending | Earlier layer expansion retained, but bounded URL/encoding observation and prerequisite scaffolding remain insufficient in the PED-005 pass. |
 | Client-Server Architecture + Client-Server Boundaries and Failure Modes | REMEDIATED — REVALIDATION REQUIRED | Learner screenshot disproved prior PASS: the original 35-minute reading was a compressed overview, assumed undefined terms and illustrated a future PostgreSQL dependency as if already built. Replaced with two progressively focused chapters (architecture/alternatives, then mechanics/failure lab) and a local, reproducible HTTP experiment; inspect both rendered pages before accepting. |
 | HTTP Requests and Responses | SOURCE-REVIEWED — LEARNER VALIDATION PENDING | Teaches raw message anatomy, headers/body distinction and body-optional responses before practice. |
-| Methods, Headers and Status Codes | REMEDIATED | Added concrete 400/401/403/404/500 semantics and authentication-vs-authorization distinction (`fa6c086b`). |
+| Methods, Headers and Status Codes | REMEDIATED — learner transfer pending | Replaced compressed survey with executable plain-text server, eight method/status experiments and failure diagnosis; split retries into a registered separate lesson. See PED-005 review evidence. |
+| Retries, Idempotency and Conditional Requests | REMEDIATED — learner transfer pending | New lesson, specific practical and sequential executable decision model; real conditional HTTP/durable concurrent deduplication explicitly unimplemented. |
 | JSON and Content Types | SOURCE-REVIEWED — LEARNER VALIDATION PENDING | Separates representation syntax, Content-Type/Accept and domain validation. |
-| REST Principles and Trade-offs | SOURCE-REVIEWED — LEARNER VALIDATION PENDING | Treats REST as architectural constraints rather than URL aesthetics and explicitly discusses CRUD trade-offs. |
-| Modeling Resources and API Contracts | SOURCE-REVIEWED — LEARNER VALIDATION PENDING | Strong representation/domain/storage separation and compatibility reasoning. |
-| Errors and Status Design | SOURCE-REVIEWED — LEARNER VALIDATION PENDING | Failure taxonomy, stable codes, retryability and public-vs-internal evidence are directly taught. |
-| curl/Postman lab | SOURCE-REVIEWED — LEARNER VALIDATION PENDING | Strong protocol-level synthesis after the targeted teaching gaps were remediated. |
+| REST Principles and Trade-offs | THIN — rewrite required; prior sufficiency withdrawn | Treats REST as architectural constraints rather than URL aesthetics and explicitly discusses CRUD trade-offs. |
+| Modeling Resources and API Contracts | THIN — rewrite required; prior sufficiency withdrawn | Strong representation/domain/storage separation and compatibility reasoning. |
+| Errors and Status Design | THIN — rewrite required; prior sufficiency withdrawn | Failure taxonomy, stable codes, retryability and public-vs-internal evidence are directly taught. |
+| curl/Postman lab | THIN — rewrite required; prior sufficiency withdrawn | Strong protocol-level synthesis after the targeted teaching gaps were remediated. |
 
 ### Relational Data and PostgreSQL
 
@@ -841,3 +842,14 @@ The immediately following lesson was also found to be a compressed header/protoc
 ### 2026-11-01 — JSON and Content Types: prerequisites and executable depth
 
 The 40-minute JSON lesson correctly named types and headers but lacked executable instruction for parsing versus shape/domain validation. Its practical wrongly assumed a working JSON POST API before that component existed. Expanded the reading to **70 minutes**, with staged syntax/shape/domain explanation, a runnable four-case `json.loads` classifier, an independently executed omitted/null/zero demonstration, a representation-vs-header explanation and negative transfer questions. Updated the practical to use Python and the previously built localhost demo, and to label the HTTP POST contract as **future design**. Added a smoke test that extracts and executes both learner-visible Python snippets and compares their exact seven-line combined output. Source-level correction implemented; full repository test/build and rendered learner acceptance still pending.
+
+
+### 2026-11-01 — PED-005 methods/retries and Apprentice prerequisite correction
+
+Authoritative evidence: [learner-order review and full assembled activity inventory](ped-005-web-api-learner-order-review.md). Baseline `345ebd875202ed5f3297ee857c4b3ffd1713a413`; implementation commit is recorded in #318/#319/#320 and #315 comments.
+
+Web/API now has 11 lessons / 33 activities after splitting the overloaded methods survey. Methods source and the new retries chapter are REMEDIATED, with specific quality-layer practicals, executable output/failure regressions, bounded rendered DOM review and reload/re-entry checks. Independent learner transfer is UNVERIFIED. Full Web/API remains incomplete: How the Web Works, REST, contract modeling, error design and final lab still need work. Earlier strong-sufficiency descriptions in this tracker do not override these findings.
+
+Apprentice inventory covers 13 lessons / 43 activities, including four independent workbench labs. Fixed and executed the actual Developer Inspection stream sample (literal backslash-n defect and platform-dependent wc spacing), and corrected the historical audit capstone order. This is targeted prerequisite work, not a full #319 source/novice pass.
+
+Verification: locked dependency installation, full `pnpm test` (12/12), `pnpm build` (2 successful tasks; network-enabled rerun required for Google Fonts). The new source-sample regression verifies HTTP statuses/effects, retry model output and stream files. See the linked report for exact commands, limitations and rendered routes. No VALIDATED promotion and no issue closure.
