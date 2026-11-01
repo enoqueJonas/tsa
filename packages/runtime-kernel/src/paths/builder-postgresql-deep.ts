@@ -35,7 +35,7 @@ const pgPsql: LearningResource = { title: "PostgreSQL — psql", url: "https://w
 const pgLocks: LearningResource = { title: "PostgreSQL — Explicit Locking", url: "https://www.postgresql.org/docs/current/explicit-locking.html", kind: "reference" };
 const resourcesByDataLesson: Record<string, LearningResource[]> = {
  "relational-model":[pgDdl,pgIntroVideo],"sql-crud":[pgQueries],"filtering-ordering":[pgComparison,pgQueries,pgCmuModernSql],aggregation:[pgAggregationTutorial,pgFunctions],joins:[pgJoinTutorial,pgQueries],
- subqueries:[{ title: "PostgreSQL — Subquery Expressions", url: "https://www.postgresql.org/docs/current/functions-subquery.html", kind: "reference" }],ctes:[pgWith],"transactions-acid":[pgTransactions],"constraints-keys":[pgConstraints],"schema-design":[pgDdl],
+ subqueries:[{ title: "PostgreSQL — Subquery Expressions", url: "https://www.postgresql.org/docs/current/functions-subquery.html", kind: "reference" }],ctes:[pgWith],"transactions-acid":[{ title: "PostgreSQL — Transactions", url: "https://www.postgresql.org/docs/current/tutorial-transactions.html", kind: "reference" }, pgConstraints],"concurrent-transactions-and-isolation-levels":[pgTransactions,pgLocks],"constraints-keys":[pgConstraints],"schema-design":[pgDdl],
  normalization:[pgDdl],indexes:[pgIndexes],"query-plans":[pgExplain],"query-performance":[pgExplain],"postgresql-practice":[pgPsql],
  "django-orm":[djangoQueryDocs],"orm-vs-sql":[djangoQueryDocs,pgQueries],"n-plus-one":[djangoQueryDocs,pgExplain],migrations:[djangoMigrationDocs,pgDdl],
  concurrency:[pgTransactions,pgLocks],
@@ -884,23 +884,201 @@ const specs: DataLessonSpec[] = [
         "knowledgeCheck": "What survives after a WITH statement ends? Why does recursive UNION ALL need a termination guard on graph cycles? What does the visited array prevent, and what are the differences between a query CTE and a persistent view?"
     },
     {
-        id: "transactions-acid",
-        title: "Transactions and ACID",
-        introduction: "A transaction defines one unit of database change. Steward will often need multiple writes to succeed or fail together—for example creating a service and its required initial production environment. Transactions protect invariants across those steps.",
-        outcomes: ["Explain atomicity, consistency, isolation and durability operationally.", "Group related writes in a transaction.", "Use rollback intentionally.", "Distinguish application validation from transactional guarantees."],
-        sections: [
-            { id: "atomic-change", title: "One business change, one transaction", body: "Atomicity means observers should not see half of a logically indivisible change. If a required second write fails, the first should not remain committed.", code: "BEGIN;\n\nINSERT INTO service (name, owning_team_id, endpoint)\nSELECT 'Ledger API', id, 'https://ledger.example.invalid/api'\nFROM team WHERE name = 'Payments'\nRETURNING id;\n\nINSERT INTO environment (service_id, name, kind)\nSELECT id, 'Primary', 'production'\nFROM service WHERE name = 'Ledger API';\n\nCOMMIT;" },
-            { id: "acid", title: "ACID is behavior, not marketing", body: "Consistency depends on the invariants you actually encode. Isolation controls interaction between concurrent transactions. Durability concerns committed changes surviving failures. Learn each property through observable behavior." },
-            { id: "boundaries", title: "BEGIN, COMMIT and ROLLBACK define the explicit boundary", body: "Without an explicit multi-statement transaction, clients commonly operate in autocommit mode where each successful statement becomes its own transaction. BEGIN starts a transaction block, COMMIT makes its successful changes durable/visible according to isolation rules, and ROLLBACK abandons the transaction's uncommitted changes." },
-            { id: "isolation-levels", title: "Isolation is about concurrent observations", body: "PostgreSQL's default Read Committed gives each statement a snapshot appropriate to that statement, so two SELECTs in one transaction can observe different committed data. Repeatable Read provides a stable transaction snapshot and PostgreSQL prevents additional serialization-style anomalies at Serializable by aborting transactions that cannot safely coexist. Stronger isolation can require application retry logic." },
-            { id: "concurrency-phenomena", title: "Name the anomalies you are trying to prevent", body: "A dirty read observes another transaction's uncommitted change; a nonrepeatable read sees a row change between reads; phantom-style changes alter the qualifying set; write skew/lost-update patterns arise from concurrent decisions over shared state. PostgreSQL does not permit dirty reads, but application invariants still require deliberate isolation, constraints or locking." },
+        "id": "transactions-acid",
+        "title": "Transactions and ACID",
+        "introduction": "The Steward schema now contains a Service and its production Environment in two related tables. Writing those facts with two unrelated autocommit statements can leave a half-created Service if the second write fails. A transaction is the database-controlled boundary that lets related writes become visible together or be abandoned together. We will observe that behavior in PostgreSQL before asking what happens when *two* transactions run concurrently; that is the separate next lesson.",
+        "outcomes": [
+            "Predict which rows persist when COMMIT versus ROLLBACK ends one multi-statement operation.",
+            "Prove atomicity using two distinct PostgreSQL connections, not a Python simulation.",
+            "Explain ACID without conflating constraints, concurrency and crash recovery.",
+            "Recover deliberately from an SQL error using a SAVEPOINT and an explicit partial rollback."
         ],
-        warning: "Wrapping invalid business logic in a transaction does not make it correct. Transactions preserve the database guarantees you have actually defined.",
-        assignment: ["Identify one Steward operation requiring multiple writes.", "Run it in a transaction and force the second step to fail.", "Verify rollback leaves no partial state."],
-        resources: [postgresDocs],
-        practiceObjective: "Prove atomic behavior for a multi-step Steward data change.",
-        practiceInstructions: ["Begin a transaction.", "Perform two related writes.", "Force one failure and ROLLBACK.", "Repeat with valid data and COMMIT.", "Query afterward to prove the difference."],
-        knowledgeCheck: "1. What does atomicity prevent?\n2. Why does consistency depend on constraints and rules?\n3. What is the difference between ROLLBACK and compensating later with another write?",
+        "sections": [
+            {
+                "id": "business-invariant",
+                "title": "Start with the invariant, not the acronym",
+                "body": "For this exercise, a newly registered production Service must have a corresponding Environment of kind production. Service and Environment live in separate rows; the database's existing foreign key ensures each Environment belongs to a real Service, but it does **not** demand that every Service has an Environment. Two successive autocommit INSERTs can therefore leave a Service without its required first deployment if the second operation fails. Write both facts in one explicit transaction. This is an application-level business requirement protected by coordinating the writes, not a new automatic guarantee of the foreign key."
+            },
+            {
+                "id": "commands",
+                "title": "BEGIN opens a boundary; COMMIT publishes it; ROLLBACK abandons it",
+                "body": "PostgreSQL executes each standalone SQL statement in a transaction implicitly when an explicit transaction is absent, but separate standalone commands do not form one all-or-nothing business operation. BEGIN makes a multi-command transaction; changes inside it are visible to subsequent reads in that same session, but not to other sessions until COMMIT. ROLLBACK reverses uncommitted table changes. Observe the count before and after rollback in one script, then use a new psql process to verify that no Service survived. Generated sequence/identity counters can advance despite rollback, so never assume a rolled-back INSERT makes an identity value reusable.",
+                "language": "sql",
+                "caption": "txn_rollback.sql — demonstrate a deliberate rollback of a Service insert",
+                "code": "BEGIN;\nINSERT INTO service (name, owning_team_id, endpoint)\nSELECT 'Txn Rollback Demo', id, 'https://rollback.example.invalid/api'\nFROM team WHERE name = 'Payments';\nSELECT 'inside' AS stage, count(*) FROM service WHERE name = 'Txn Rollback Demo';\nROLLBACK;\nSELECT 'after' AS stage, count(*) FROM service WHERE name = 'Txn Rollback Demo';",
+                "output": "inside | 1\nafter | 0. A separate session also finds zero rows."
+            },
+            {
+                "id": "success",
+                "title": "Commit two related facts and verify them from a second connection",
+                "body": "The same principle applies when both writes are valid. The first INSERT adds the Service; the second locates its generated identity by its unique teaching name and creates the Environment. COMMIT makes both rows available to a new connection. Run the following in the dedicated disposable learning database with psql -X -v ON_ERROR_STOP=1 -f txn_commit.sql. Run it only once on a fresh exercise fixture, since the unique Service name is intentional. A connection in a different psql process should observe both rows. In the automated test the demo rows are cleaned after verification to keep the five-Service seed intact.",
+                "language": "sql",
+                "caption": "txn_commit.sql — commit Service plus initial Environment together",
+                "code": "BEGIN;\nINSERT INTO service (name, owning_team_id, endpoint)\nSELECT 'Txn Commit Demo', id, 'https://commit.example.invalid/api'\nFROM team WHERE name = 'Payments';\nINSERT INTO environment (service_id, name, kind)\nSELECT id, 'Initial', 'production'\nFROM service WHERE name = 'Txn Commit Demo';\nCOMMIT;\nSELECT s.name, e.kind\nFROM service s JOIN environment e ON e.service_id = s.id\nWHERE s.name = 'Txn Commit Demo';",
+                "output": "Txn Commit Demo | production. The same pair is readable in a new connection."
+            },
+            {
+                "id": "acid",
+                "title": "Four guarantees, four different questions",
+                "body": "**Atomicity**: do the related changes commit together or not? **Consistency**: does each committed state respect the invariants enforced by database constraints and the application's transactional behavior? A transaction does not invent the business requirement that every production Service have an Environment. **Isolation**: what may a concurrent transaction observe, and which interleavings can change outcomes? It is not simply 'transactions never interfere'. **Durability**: once PostgreSQL acknowledges COMMIT under its configured durability guarantees, it maintains the committed changes through failures according to WAL, storage and recovery assumptions. Observing a row after reconnect is evidence of commit visibility, **not** a simulated power-failure durability test. Isolation gets its own learner lesson next; WAL and recovery mechanisms are studied in later platform/reliability modules."
+            },
+            {
+                "id": "error",
+                "title": "An error can abort the current transaction",
+                "body": "A bad Environment.kind such as 'unknown' violates the seed's CHECK constraint. In PostgreSQL, after a statement error inside BEGIN the transaction is in an aborted state: ordinary statements fail until ROLLBACK, or ROLLBACK TO an existing SAVEPOINT. The demo below first creates a Service, establishes a savepoint, deliberately triggers the CHECK failure, rolls back to the savepoint, then inserts a valid Environment and commits. Notice the psql-only \\set directives: the command-line runner normally uses ON_ERROR_STOP=1, so this *teaching script deliberately turns it off only for the one expected failure*. Restore it immediately, then execute ROLLBACK TO SAVEPOINT; do not normalize suppressing real production errors. The expected CHECK failure is printed on stderr even though the script completes successfully.",
+                "language": "sql",
+                "caption": "txn_savepoint.sql — recover from one expected SQL error",
+                "code": "BEGIN;\nINSERT INTO service (name, owning_team_id, endpoint)\nSELECT 'Txn Savepoint Demo', id, 'https://savepoint.example.invalid/api'\nFROM team WHERE name = 'Payments';\nSAVEPOINT before_invalid_kind;\n\\set ON_ERROR_STOP off\nINSERT INTO environment (service_id, name, kind)\nSELECT id, 'Invalid', 'unknown'\nFROM service WHERE name = 'Txn Savepoint Demo';\n\\set ON_ERROR_STOP on\nROLLBACK TO SAVEPOINT before_invalid_kind;\nINSERT INTO environment (service_id, name, kind)\nSELECT id, 'Recovered', 'production'\nFROM service WHERE name = 'Txn Savepoint Demo';\nCOMMIT;\nSELECT s.name, e.kind\nFROM service s JOIN environment e ON e.service_id = s.id\nWHERE s.name = 'Txn Savepoint Demo';",
+                "output": "stderr: a CHECK constraint violation for kind='unknown'.\nstdout: Txn Savepoint Demo | production. The rejected Environment row does not persist."
+            },
+            {
+                "id": "counterexample",
+                "title": "Why a successful transaction can still be wrong",
+                "body": "Consider BEGIN; INSERT Service without Environment; COMMIT. The database accepts this because its foreign key only constrains Environment → Service, not Service → Environment completeness. Atomicity was satisfied, yet the intended business invariant was not. Similarly, COMMIT of a misleading status or a duplicate fact outside a declared uniqueness rule is not automatically correct. A reliable design combines database constraints for local invariants, carefully scoped transactions for multi-row changes and application/domain validation for rules the database cannot express as a simple constraint. Never use an unprotected two-statement service creation flow merely because your demonstration data looks valid."
+            },
+            {
+                "id": "lab-steps",
+                "title": "Reproduction sequence and failure diagnosis",
+                "body": "First establish the canonical five-Service Steward seed in a *disposable* PostgreSQL lab. Save the three published scripts exactly as txn_rollback.sql, txn_commit.sql and txn_savepoint.sql. Run the rollback script and capture 1→0. Run the commit script and prove its resulting Service and Environment appear in a separate psql session. Run the savepoint script; capture both the expected CHECK error and the eventual committed production Environment. If the script exits before ROLLBACK TO, check that psql's ON_ERROR_STOP was temporarily disabled for the one expected statement, and restore a clean transaction/connection; do not mask the exception by changing the CHECK constraint. These scripts add no real production data and their demo Services should be cleaned under a controlled rollback/teardown procedure after the exercise."
+            }
+        ],
+        "warning": "A transaction is not magic: the PostgreSQL sequence/identity generator is not transactional, a CHECK failure leaves a transaction aborted until rollback-to-savepoint, and a COMMIT cannot compensate for a missing business invariant. Never run these educational INSERTs against a live/shared registry.",
+        "assignment": [
+            "Execute rollback, commit and savepoint teaching scripts in an isolated lab with separate-process verification.",
+            "Explain the uncommitted versus committed visibility and report the exact observed status and affected rows.",
+            "Write a new multi-row Service+Environment transaction that deliberately violates a constraint, then repair it without publishing partial state.",
+            "Give distinct, accurate operational explanations for A, C, I and D—including what the local exercise does *not* prove."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL — Transactions tutorial",
+                "url": "https://www.postgresql.org/docs/current/tutorial-transactions.html",
+                "kind": "reference",
+                "purpose": "Source for implicit statement transactions, BEGIN/COMMIT/ROLLBACK and SAVEPOINT error recovery."
+            },
+            {
+                "title": "PostgreSQL — Constraints",
+                "url": "https://www.postgresql.org/docs/current/ddl-constraints.html",
+                "kind": "reference",
+                "purpose": "Distinguish declared referential/check constraints from an application-level multi-row invariant."
+            },
+            {
+                "title": "CMU 15-445 Fall 2025 — Concurrency Control Theory",
+                "url": "https://15445.courses.cs.cmu.edu/fall2025/schedule.html",
+                "kind": "course",
+                "read": "Lecture #17 (optional deep theory; watch linked lecture if desired)",
+                "purpose": "Research the deeper concurrency context after mastering transaction commands; full video viewing not claimed."
+            }
+        ],
+        "practiceObjective": "Execute complete PostgreSQL rollback, commit and savepoint evidence with a single explicit business invariant rather than memorize ACID vocabulary.",
+        "practiceInstructions": [
+            "Verify the dedicated disposable lab and seeded Team/Service tables before changing data.",
+            "Run txn_rollback.sql, predict inside=1 and after=0, and verify zero from a fresh connection.",
+            "Run txn_commit.sql, verify Service+production Environment from a new connection, and explain COMMIT visibility.",
+            "Run txn_savepoint.sql in psql with its temporary ON_ERROR_STOP setting; capture the expected constraint error, rollback-to-savepoint and valid final state.",
+            "Explain why a transaction that commits only Service without Environment can still violate the domain requirement.",
+            "Classify which ACID properties these tests observe and which require more complex concurrency/crash-recovery experiments."
+        ],
+        "knowledgeCheck": "If a Service INSERT succeeds and the Environment INSERT fails, what remains under autocommit versus BEGIN/ROLLBACK? Why might an id sequence skip numbers after rollback? What does ROLLBACK TO SAVEPOINT repair, and why do atomic operations not automatically prove business correctness?"
+    },
+    {
+        "id": "concurrent-transactions-and-isolation-levels",
+        "title": "Concurrent Transactions and Isolation Levels",
+        "introduction": "Now that a transaction boundary is real, the next question is what happens when *two independent database sessions* read and write overlapping data. Isolation is not a binary safety switch. PostgreSQL's default Read Committed takes a fresh snapshot for each statement; Repeatable Read retains a stable snapshot for a transaction's queries; Serializable adds detection and may abort a conflicting transaction. We will observe a concurrent read change with two terminals before discussing anomalies and retries.",
+        "outcomes": [
+            "Distinguish two PostgreSQL connections from two commands in one connection, and name a snapshot's role.",
+            "Reproduce a nonrepeatable read under Read Committed and stable repeated reads under Repeatable Read.",
+            "Understand that PostgreSQL does not allow dirty reads and Read Uncommitted behaves like Read Committed.",
+            "Differentiate stable snapshot, row-level locking, uniqueness constraints and Serializable retry requirements."
+        ],
+        "sections": [
+            {
+                "id": "session",
+                "title": "Two clients are two concurrent views of the same database",
+                "body": "A psql session owns a connection and transaction state; another psql terminal uses a different connection even when both select the same database. PostgreSQL's multi-version concurrency control (MVCC) lets readers see appropriate committed row versions without simply exposing an uncommitted write. The snapshot answers 'which committed versions may this statement/transaction see?' If A updates a row but has not committed, B at ordinary Read Committed sees the old committed value. When A commits, B's next SELECT may see the newly committed value. This is correct behavior for Read Committed, not inconsistent SQL parsing."
+            },
+            {
+                "id": "setup",
+                "title": "Use a disposable counter, not real Steward business rows",
+                "body": "To isolate the concurrency mechanism, use an independent table with one row. Execute the setup once in the dedicated lab database. Do not replace, delete or lock existing Team or Service data to demonstrate snapshots. Use two distinct psql terminals with separate transactions named A and B, and execute each command only at the indicated stage. The CI exercise uses two independent psql child processes and waits for each stated observation before continuing; a single connection running both scripts cannot prove concurrent visibility.",
+                "language": "sql",
+                "caption": "isolation_setup.sql — one isolated probe row for the two-session exercise",
+                "code": "CREATE TABLE tsa_isolation_probe (\n  id integer PRIMARY KEY,\n  value integer NOT NULL\n);\nINSERT INTO tsa_isolation_probe (id, value) VALUES (1, 10);\nSELECT value FROM tsa_isolation_probe WHERE id = 1;",
+                "output": "10"
+            },
+            {
+                "id": "rc",
+                "title": "Read Committed: a fresh statement can see a new commit",
+                "body": "Follow this exact two-terminal protocol after setup. A begins a Read Committed transaction and reads 10. B begins and updates to 20 but has not committed; A reads 10 again because it cannot see B's uncommitted value (no dirty read). B commits; A reads 20 on its next statement because Read Committed uses a new statement-level snapshot. A then commits. Note: seeing 10 then 20 within A is called a nonrepeatable read, not proof that PostgreSQL 'lost' an update. Every observed value has an explanation in the commit timeline.",
+                "language": "text",
+                "caption": "isolation_read_committed.txt — interleave these commands between two psql sessions",
+                "code": "Session A: BEGIN ISOLATION LEVEL READ COMMITTED;\nSession A: SELECT value FROM tsa_isolation_probe WHERE id = 1;  -- 10\nSession B: BEGIN;\nSession B: UPDATE tsa_isolation_probe SET value = 20 WHERE id = 1;\nSession A: SELECT value FROM tsa_isolation_probe WHERE id = 1;  -- 10 (B uncommitted)\nSession B: COMMIT;\nSession A: SELECT value FROM tsa_isolation_probe WHERE id = 1;  -- 20\nSession A: COMMIT;",
+                "output": "A observations: 10, 10, 20. B's uncommitted value never appears."
+            },
+            {
+                "id": "rr",
+                "title": "Repeatable Read: a stable transaction snapshot",
+                "body": "Reset the probe to value 10 *outside* either transaction. A begins Repeatable Read and executes the first SELECT, establishing its snapshot. B then changes the value to 20 and commits. A's next SELECT still returns 10 because its snapshot is stable. After A commits, a brand-new SELECT sees 20. In PostgreSQL, the Repeatable Read snapshot is established at the first non-transaction-control statement, not necessarily at the literal BEGIN line; this distinction matters when demonstrating timing. Repeated reads are stable, but write skew and other serialization anomalies still require additional protection. The independent concurrency lesson does not imply Repeatable Read is equivalent to Serializable.",
+                "language": "text",
+                "caption": "isolation_repeatable_read.txt — repeat after resetting the probe to 10",
+                "code": "Session B: UPDATE tsa_isolation_probe SET value = 10 WHERE id = 1;  -- autocommit reset\nSession A: BEGIN ISOLATION LEVEL REPEATABLE READ;\nSession A: SELECT value FROM tsa_isolation_probe WHERE id = 1;  -- 10, snapshot acquired\nSession B: BEGIN;\nSession B: UPDATE tsa_isolation_probe SET value = 20 WHERE id = 1;\nSession B: COMMIT;\nSession A: SELECT value FROM tsa_isolation_probe WHERE id = 1;  -- still 10\nSession A: COMMIT;\nSession A: SELECT value FROM tsa_isolation_probe WHERE id = 1;  -- new statement: 20",
+                "output": "A observations: 10, 10, 20; the middle value is stable even after B commits."
+            },
+            {
+                "id": "phenomena",
+                "title": "Different phenomena require different protection",
+                "body": "A dirty read would expose uncommitted data; PostgreSQL's Read Uncommitted behaves like Read Committed and does not permit dirty reads. A nonrepeatable read means a repeated row read changes after another commit; the Read Committed example demonstrates this. A phantom means the set of rows matching a predicate changes; PostgreSQL's Repeatable Read prevents phantoms even though the SQL standard permits implementations with weaker guarantees. A serialization anomaly means committed concurrent transactions cannot be explained by any valid serial ordering; Repeatable Read does not prevent all such anomalies. Serializable uses monitoring and may reject an unsafe transaction with SQLSTATE 40001. The application must retry the **entire transaction**, including the reads and decision, not only replay the last INSERT. A UNIQUE constraint solves duplicate-key insertion at the shared data boundary but cannot express every cross-row budget/coverage invariant."
+            },
+            {
+                "id": "locks",
+                "title": "Snapshots are not locks; isolation is not a performance badge",
+                "body": "Read Committed usually allows more observable changes across statements; Repeatable Read trades those changes for a stable view; Serializable strengthens cross-transaction correctness but can require retries and incur overhead. Explicit SELECT ... FOR UPDATE can lock selected rows before computing a decision involving those rows. It is not suitable as a blanket remedy, because a lock can block other workers, cause deadlocks in inconsistent acquisition order, and still fail to protect a relationship involving nonexistent rows. Choose a concrete invariant and minimum sufficient mechanism—constraints, transaction scope, lock or Serializable—then test the concurrent scenario. Later concurrency material explores conflicting writes and state transitions in more depth."
+            },
+            {
+                "id": "lab",
+                "title": "Observe, record and teach the timeline independently",
+                "body": "Write the A/B command timeline before running it and label each value as uncommitted, committed but outside A's snapshot, or visible to A's current query. Run the protocols on the disposable probe, verify that A's Read Committed sequence is 10→10→20 and Repeatable Read sequence 10→10→20 for *different reasons*, and explain the middle read difference relative to the moment B commits. The crucial comparison is the SELECT **after** B COMMIT: 20 at Read Committed, 10 at Repeatable Read. Record the exact transaction boundaries, identify one scenario requiring Serializable or explicit locks, and clean up only the dedicated probe table after recording evidence."
+            }
+        ],
+        "warning": "Do not mistake a sequential script in one psql session for a concurrency test. PostgreSQL does not permit dirty reads, and Serializable retries must repeat the complete logical transaction. The described probe is disposable; do not demonstrate races on production tables.",
+        "assignment": [
+            "Run the two-terminal Read Committed protocol and explain each read value including the uncommitted interval.",
+            "Run the Repeatable Read protocol against a freshly reset probe; identify the statement that establishes A's snapshot.",
+            "Draw a timestamped matrix of A/B transactions with first read, pending write, commit and second read.",
+            "Explain why a uniqueness constraint and Serializable isolation prevent different classes of bugs, and identify an example requiring whole-transaction retry.",
+            "Without executing a dangerous uncontrolled race, predict what would happen if A tries to UPDATE a row changed since the Repeatable Read snapshot."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL — Transaction Isolation",
+                "url": "https://www.postgresql.org/docs/current/transaction-iso.html",
+                "kind": "reference",
+                "purpose": "PostgreSQL-specific MVCC, snapshot timing, anomalies, Read Uncommitted caveat and Serializable retries."
+            },
+            {
+                "title": "PostgreSQL — Explicit Locking",
+                "url": "https://www.postgresql.org/docs/current/explicit-locking.html",
+                "kind": "reference",
+                "purpose": "Understand why row locks are a targeted alternative to automatic snapshot guarantees."
+            },
+            {
+                "title": "CMU 15-445 Fall 2025 — Concurrency Control and MVCC lectures",
+                "url": "https://15445.courses.cs.cmu.edu/fall2025/schedule.html",
+                "kind": "course",
+                "read": "Lectures #17–#20 on concurrency theory, locking, timestamp ordering and MVCC; optional videos",
+                "purpose": "In-depth explanatory companion for mechanisms not implemented inside this Builder lesson; full videos not asserted watched."
+            }
+        ],
+        "practiceObjective": "Run a real two-session PostgreSQL experiment that distinguishes per-statement Read Committed snapshots from a Repeatable Read transaction snapshot.",
+        "practiceInstructions": [
+            "Create the dedicated tsa_isolation_probe table in a disposable lab; verify value 10 from a separate psql connection.",
+            "Run the interleaved A/B Read Committed timeline, capturing A=10 before B's update, A=10 while B uncommitted, and A=20 after B commits.",
+            "Reset probe to 10; run A in Repeatable Read and capture A=10 before and A=10 after B commits, then A=20 after A ends.",
+            "Annotate each snapshot and commit boundary; compare observed values without claiming this proves Serializable behavior.",
+            "Predict one UPDATE-after-snapshot conflict and document the need to abort/retry the complete transaction if serialization fails.",
+            "Remove only the dedicated probe table when the exercise is finished."
+        ],
+        "knowledgeCheck": "Why can A at Read Committed see different committed values without ever seeing dirty data? What event establishes PostgreSQL's Repeatable Read snapshot? Can two Repeatable Read transactions still cause serialization anomalies, and what must a client retry on SQLSTATE 40001?"
     },
     {
         id: "constraints-keys",
