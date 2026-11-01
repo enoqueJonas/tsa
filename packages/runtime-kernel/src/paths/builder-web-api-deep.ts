@@ -931,27 +931,113 @@ export const webAndApiFoundationsDeepLessons: Lesson[] = [
     { type: "resources", resources: [rfc9110, mdnHttp] },
   ], "Use REST principles as design constraints while recognizing their trade-offs.", ["Draft resource-oriented Steward endpoints.", "Evaluate one command-like workflow.", "Compare two API shapes.", "Write a short decision explaining which option you prefer and why."], "Why is REST more than endpoint naming? Give one case where forcing an operation into CRUD could make an API less clear.", [rfc9110]),
 
-  lesson("Modeling Resources and API Contracts", 55, [
-    { type: "heading", id: "contract", text: "An API is a contract between independently changing systems" },
-    { type: "paragraph", text: "The contract includes resource shape, field meaning, required and optional data, validation, methods, statuses, pagination, filtering and failure representations. Once clients depend on a behavior, changing it has compatibility consequences." },
-    { type: "code", language: "json", caption: "A deliberate service contract", code: "{\n  \"id\": 42,\n  \"name\": \"Payments API\",\n  \"slug\": \"payments-api\",\n  \"criticality\": \"high\",\n  \"lifecycle\": \"production\",\n  \"ownerTeam\": {\n    \"id\": 7,\n    \"name\": \"Payments Engineering\"\n  }\n}" },
-    { type: "heading", id: "domain-vs-representation", text: "A representation is not the domain model" },
-    { type: "paragraph", text: "The API may expose a nested `ownerTeam` representation while the persistence model stores a foreign key and the domain layer enforces ownership rules. Treating every JSON field as a direct database column couples layers unnecessarily." },
-    { type: "heading", id: "compatibility", text: "Contracts live over time" },
-    { type: "paragraph", text: "Renaming a field, changing nullability, narrowing accepted values or changing status semantics can break consumers. Good API design asks not only 'does this work today?' but also 'what promises are we making?'" },
-    { type: "callout", tone: "steward", title: "Steward contract example", body: "If `lifecycle` accepts `development`, `uat`, `production` and `retired`, those values become part of the public contract. Adding a new value may be compatible for some clients and breaking for clients that assume an exhaustive set." },
-    { type: "heading", id: "collection-contract", text: "A collection response is also a contract" },
-    { type: "paragraph", text: "Define whether a list response is a bare array or an envelope, how pagination continuation is represented, which filters/sorts are supported, and whether totals are exact/available. Clients will depend on these details just as they depend on individual resource fields." },
-    { type: "code", language: "json", caption: "One possible paginated collection contract", code: "{\n  \"items\": [\n    {\"id\": 42, \"name\": \"Payments API\"}\n  ],\n  \"nextCursor\": \"opaque-token\"\n}" },
-    { type: "heading", id: "compatibility-types", text: "Additive does not automatically mean compatible" },
-    { type: "paragraph", text: "Adding an optional response field is often low-risk because tolerant clients ignore it, but adding a new enum value can break clients that assumed the old set was exhaustive. Making an optional request field required, changing a field's type, changing nullability or removing a field is normally higher risk. Compatibility depends on actual consumer assumptions." },
-    { type: "heading", id: "versioning", text: "Versioning is one tool, not a substitute for evolution discipline" },
-    { type: "paragraph", text: "APIs can version through paths, media types, headers or other organizational conventions, but every version creates support/migration cost. Prefer compatible evolution where practical. When a breaking change is justified, define migration/deprecation timing and observable consumer impact instead of immediately creating `/v2` for every change." },
-    { type: "heading", id: "deprecation", text: "Deprecation is a consumer migration process" },
-    { type: "paragraph", text: "A deprecated field or endpoint still exists for some period. Document the replacement, identify/communicate with consumers where possible, provide a migration window, observe remaining usage and remove only under an explicit compatibility policy. 'Deprecated' without a removal/migration plan is merely a label." },
-    { type: "heading", id: "assignment", text: "Assignment" },
-    { type: "list", ordered: true, items: ["Draft a create-service request and service response separately.", "Mark every field required, optional, nullable or server-generated.", "Define validation for lifecycle, criticality and ownerTeamId.", "Identify three future changes and classify their compatibility risk.", "Write one contract decision you would document before implementation."] },
-  ], "Design a Steward resource contract independently from storage implementation.", ["Draft request and response schemas.", "Define field semantics and validation.", "Identify compatibility risks.", "Separate API representation decisions from persistence decisions."], "Why should API representations not simply mirror database tables? Give two examples of seemingly small changes that can break clients."),
+  lesson("Modeling Resources and API Contracts", 70, [
+  {
+    "type": "heading",
+    "id": "contract",
+    "text": "Turn existing behavior into an explicit public promise"
+  },
+  {
+    "type": "paragraph",
+    "text": "An API contract is the observable agreement between independently changing programs: what callers may send, what an operation means, what it returns and how failures are reported. You already learned Python values and validation, HTTP message anatomy, JSON parsing and REST design. Here we translate an existing capability into a proposed HTTP interface. Nothing in this lesson deploys Django, adds a database or establishes real authentication."
+  },
+  {
+    "type": "paragraph",
+    "text": "The preceding Python practicals build Service data with name, endpoint, active and age_days, creation that starts active, activation/deactivation and in-memory lookup/filtering. Later examples explore Team composition and lifecycle, but an illustrative class is not proof that every learner's registry implements that feature. First run your own steward-core and inventory its actual fields and operations. The worked contract below uses the earlier common fields only. Numeric identity is a new API design decision; lifecycle, criticality and ownerTeamId are deferred until their implementation and rules are verified."
+  },
+  {
+    "type": "heading",
+    "id": "field-decisions",
+    "text": "Decide who supplies each value"
+  },
+  {
+    "type": "code",
+    "language": "text",
+    "caption": "Proposed create contract, independent of storage",
+    "code": "POST /services\nContent-Type: application/json\nAccept: application/json\n\nRequest fields:\nname      required non-empty text; no null\nendpoint  required non-empty text; no null\nageDays   required integer >= 0; true/false are not ages\nactive    forbidden in create input; server initializes true\nid        forbidden in create input; server allocates identity\nUnknown request fields: reject in this teaching contract\n\nSuccess: 201, Location: /services/7\nResponse includes id, name, endpoint, active and ageDays"
+  },
+  {
+    "type": "paragraph",
+    "text": "Required means the field must be present; nullable means an explicit null is allowed. These are independent choices. This create contract requires ageDays and rejects null, so neither omission nor null means zero. Zero is a valid explicit age. active is server-controlled here because the existing create behavior initializes it to true; changing status belongs to a separately designed operation. An allowlist of input fields prevents callers from setting response-only fields accidentally. Rejecting unknown request fields catches misspellings but requires coordinated evolution when new clients send new fields to old servers."
+  },
+  {
+    "type": "paragraph",
+    "text": "The external name ageDays maps to internal age_days. That deliberate translation lets Python naming or storage change without silently changing the client's contract. Do not serialize an object's entire __dict__: that can expose internal collaborators and future private fields. An endpoint is treated here only as non-empty text, matching the bounded example; real URL syntax, allowed schemes and any server-side fetching policy need separate decisions before claiming those validations exist."
+  },
+  {
+    "type": "heading",
+    "id": "worked-boundary",
+    "text": "Execute the boundary before choosing a framework"
+  },
+  {
+    "type": "paragraph",
+    "text": "Save contract_boundary.py below and run python3 contract_boundary.py. It is a standalone executable adapter model using dictionaries, not a replacement for your Service class. In your project, validated values would be passed to the existing create operation and its domain rules would still run. json.loads handles syntax; object and field checks handle shape; age validation handles the chosen rule; represent selects public output. This sample has no HTTP listener and its identity 7 is supplied by the demonstration."
+  },
+  {
+    "type": "code",
+    "language": "python",
+    "caption": "contract_boundary.py — explicit inputs and consumer compatibility",
+    "code": "import json\n\ndef decode_create(raw):\n    data = json.loads(raw)\n    if not isinstance(data, dict):\n        raise ValueError(\"object required\")\n    if set(data) != {\"name\", \"endpoint\", \"ageDays\"}:\n        raise ValueError(\"required fields: name, endpoint, ageDays; no extras\")\n    for field in (\"name\", \"endpoint\"):\n        if not isinstance(data[field], str) or not data[field].strip():\n            raise ValueError(field + \" must be non-empty text\")\n    if type(data[\"ageDays\"]) is not int or data[\"ageDays\"] < 0:\n        raise ValueError(\"ageDays must be a non-negative integer\")\n    return {\"name\": data[\"name\"], \"endpoint\": data[\"endpoint\"],\n            \"age_days\": data[\"ageDays\"], \"active\": True}\n\ndef represent(service, identity):\n    return {\"id\": identity, \"name\": service[\"name\"],\n            \"endpoint\": service[\"endpoint\"], \"active\": service[\"active\"],\n            \"ageDays\": service[\"age_days\"]}\n\nraw = '{\"name\":\"Payments API\",\"endpoint\":\"https://payments.internal/api\",\"ageDays\":184}'\nservice = decode_create(raw)\nresponse = represent(service, 7)\nprint(json.dumps(response, sort_keys=True))\nfor change in ({\"ageDays\": True}, {\"ageDays\": None}, {\"active\": False}):\n    candidate = json.loads(raw)\n    candidate.update(change)\n    try:\n        decode_create(json.dumps(candidate))\n    except ValueError as error:\n        print(\"REJECTED:\", error)\ndef old_client(payload):\n    return payload[\"name\"] + \" / \" + str(payload[\"ageDays\"])\nprint(\"added field:\", old_client({**response, \"description\": \"optional\"}))\nrenamed = dict(response)\nrenamed[\"displayName\"] = renamed.pop(\"name\")\ntry:\n    old_client(renamed)\nexcept KeyError as error:\n    print(\"BROKEN CLIENT:\", error.args[0])",
+    "output": "{\"active\": true, \"ageDays\": 184, \"endpoint\": \"https://payments.internal/api\", \"id\": 7, \"name\": \"Payments API\"}\nREJECTED: ageDays must be a non-negative integer\nREJECTED: ageDays must be a non-negative integer\nREJECTED: required fields: name, endpoint, ageDays; no extras\nadded field: Payments API / 184\nBROKEN CLIENT: name"
+  },
+  {
+    "type": "paragraph",
+    "text": "The valid request becomes an internal dictionary with age_days and active true, then a selected JSON representation. Python considers bool a subclass of int, so the exact type check rejects true as an age. null becomes None and is rejected too. Supplying active is rejected before creation. No failed case creates a Service. The old client reads only name and ageDays: an extra description does not break this particular client, but renaming name does. This is executable consumer evidence, not a guarantee for every client."
+  },
+  {
+    "type": "heading",
+    "id": "endpoint-trace",
+    "text": "Describe complete operations and failure evidence"
+  },
+  {
+    "type": "paragraph",
+    "text": "For proposed POST /services, decode the body, validate request shape, invoke domain creation, allocate identity, then return 201 with the representation and Location. Malformed JSON or rejected fields map to the documented 400 policy; a future duplicate-name rule could map to 409 only if uniqueness is actually required. Unexpected implementation defects remain server failures rather than being disguised as bad input. The next lesson develops error translation; do not catch every exception and return 400."
+  },
+  {
+    "type": "paragraph",
+    "text": "GET /services/7 returns the selected representation with 200 when the identity exists, or a documented 404 when absent. It must not allocate a replacement resource on a failed lookup. Identity should remain stable when a name changes; using a name as the public identifier is an alternative, but then renaming needs an explicit link/migration policy. An internal list index is also a poor public identity if deletion can shift positions."
+  },
+  {
+    "type": "code",
+    "language": "json",
+    "caption": "Proposed bounded collection response; pagination implementation remains future",
+    "code": "{\"items\":[{\"id\":7,\"name\":\"Payments API\",\"endpoint\":\"https://payments.internal/api\",\"active\":true,\"ageDays\":184}],\"nextCursor\":null}"
+  },
+  {
+    "type": "paragraph",
+    "text": "This envelope always contains an items array; no matches means an empty array, not null or 404. nextCursor null means no continuation under this proposed contract. Before implementing pagination, define allowed filters, maximum page size, stable ordering and the meaning of a cursor after concurrent changes using the previous lesson. Unsupported filters should have a documented rejection policy; silently ignoring active=false could return the opposite set from what a caller expects. A bare array is simpler for a permanently small collection, but changing later to an envelope breaks clients that iterate the top-level value."
+  },
+  {
+    "type": "heading",
+    "id": "evolution",
+    "text": "Evaluate compatibility in both directions"
+  },
+  {
+    "type": "paragraph",
+    "text": "Compatibility asks whether an existing consumer still works with the changed provider and whether a new consumer can work with an older provider. Adding an optional response field worked for the demonstrated tolerant client; a strict exact-field client could reject it. Making ageDays newly required would break an older request that omitted it. Changing an integer to text breaks numerical consumers. Adding an enum value can break exhaustive client switches even though no old value was removed. Test concrete consumer assumptions rather than labeling every additive change safe."
+  },
+  {
+    "type": "paragraph",
+    "text": "If name must become displayName, first identify consumers and provide a migration period with a documented compatibility adapter or overlapping fields whose equality is enforced. Test old and migrated clients, observe remaining old-field usage where feasible, agree a removal date and remove only under that policy. A versioned endpoint can isolate an unavoidable break, but it creates parallel support obligations. Deprecation means scheduled migration, not immediate removal, and a new version number cannot repair an unexplained contract."
+  },
+  {
+    "type": "heading",
+    "id": "practice",
+    "text": "Apply the contract to your real core"
+  },
+  {
+    "type": "list",
+    "ordered": true,
+    "items": [
+      "Inventory your actual Service fields and operations with source references. Mark each proposed API field implemented, new adapter responsibility or deferred; do not copy the larger future domain as if it already exists.",
+      "Execute the sample. Add missing ageDays, negative age, an array body and malformed JSON. Predict the rejection stage before running; record actual errors without labeling all of them domain failures.",
+      "Replace the dictionary construction with your own create operation in a separate adapter. Prove a rejected input leaves registry size unchanged and a valid response exposes only chosen fields.",
+      "Write create, read-one and list contracts including required/null/server-controlled fields, status, headers, empty collection and unknown target behavior.",
+      "Modify the old client to reject unknown fields; rerun the added-description case and explain why the compatibility conclusion changes.",
+      "Transfer rubric: independently trace one valid and one invalid input, preserve domain invariants, justify input/output asymmetry, predict a real consumer break and propose a tested migration. All five criteria must pass before learner validation."
+    ]
+  }
+], "Derive and test a public contract from actual Steward core behavior.", ["Inventory existing fields and operations.", "Execute and extend contract_boundary.py.", "Write create, read and list contracts.", "Demonstrate a consumer compatibility failure and migration."], "Why are required and nullable different? Trace input through validation, domain behavior and selected output; explain which client a field rename breaks."),
 
   lesson("Errors and Status Design", 50, [
     { type: "heading", id: "errors", text: "Errors are part of the API contract" },

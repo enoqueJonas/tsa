@@ -176,21 +176,11 @@ const practices: Record<string, PracticeSpec> = {
     completionCriteria: ["Resources are modeled from domain concepts rather than URL aesthetics.", "A non-CRUD workflow is evaluated honestly rather than forced into a preferred style.", "The chosen design has explicit trade-offs.", "REST is treated as an architectural constraint set, not a maturity score."]
   },
   "web-and-api-foundations-modeling-resources-and-api-contracts": {
-    objective: "Turn the existing Steward Service capability into an explicit HTTP contract without coupling the contract to a database or framework that has not been built yet.",
-    scenario: "You already have a Service model and registry behavior in steward-core. Clients now need a stable way to create and read Services over HTTP. Define that public contract before PostgreSQL or Django can accidentally dictate it.",
-    instructions: [
-      "Inventory the Service fields and behavior that exist at the end of Programming with Python.",
-      "Draft a create-service JSON request using the existing concepts. Mark each field required, optional or server-controlled.",
-      "Draft a service-response representation and decide whether internal implementation details such as Python class names should appear. They should not appear merely because they exist.",
-      "Map the existing Service validation failures and missing-Service failure to proposed HTTP status/error semantics.",
-      "Define GET /services, POST /services and GET /services/{id-or-slug} at contract level. You are designing requests/responses, not implementing Django.",
-      "Add one future field such as criticality or ownerTeamId as explicitly deferred if it is not yet present in steward-core; do not rewrite history and claim it already exists.",
-      "Define a collection response for GET /services including supported filter/sort/pagination behavior.",
-      "Classify four proposed changes—optional response field, new enum value, required request field, removed field—by compatibility risk and define how one breaking change would be deprecated/migrated rather than reflexively adding /v2.",
-      "Write one compatibility risk for a future contract change."
-    ],
-    deliverables: ["Current-domain inventory", "Create request contract", "Service response contract", "Initial endpoint contract", "Failure mapping", "Deferred-field note"],
-    completionCriteria: ["The API contract grows from the current Steward implementation.", "Request and response semantics are explicit.", "Future fields are labeled as future rather than treated as existing state.", "No persistence detail leaks into the public contract.", "A later framework can implement this contract without defining it retroactively."]
+    objective: "Derive and test a public contract from the learner's actual Steward core.",
+    scenario: "The earlier Python practicals supply name, endpoint, active and age_days behavior. Audit your own implementation before proposing new fields; no Django or persistence is assumed.",
+    instructions: ["Inventory actual Service fields and operations with source references; label new identity and deferred domain fields.", "Execute contract_boundary.py and extend it with missing ageDays, negative age, an array and malformed JSON. Record the actual rejection stage.", "Adapt the boundary to your existing create operation and prove rejected input leaves registry size unchanged.", "Specify create, read-one and collection request/response contracts, including nullability, server-controlled fields, statuses and empty results.", "Change the old client to reject unknown fields, rerun the optional-field example and explain the compatibility difference.", "Design a name-to-displayName migration with old/new consumer tests and a removal policy."],
+    deliverables: ["Actual-core inventory", "Executed boundary and failure transcript", "Three endpoint contracts", "Consumer compatibility experiment and migration plan"],
+    completionCriteria: ["Current implementation and future proposals are distinguished.", "Syntax, shape and domain rejection are traced separately.", "Public fields are selected deliberately and invalid input does not mutate registry state.", "Compatibility conclusions cite executed consumer behavior.", "Independent transfer satisfies the five criteria in the reading; sample execution alone does not prove mastery."]
   },
   "web-and-api-foundations-errors-and-status-design": {
     objective: "Design a Steward failure contract that lets clients distinguish correction, authentication, authorization, conflict, retry and unexpected server failure without leaking internal diagnostics.",

@@ -225,3 +225,10 @@ not a claim that all these pages were rendered or pedagogically accepted.
 ## REST continuation — 2026-11-01
 
 REST Principles and Trade-offs received targeted source remediation: mechanisms for stateless interaction, uniform interface, cacheability and layering; two worked ownership-transfer designs; executable offset/cursor insertion and deletion failures with explicit snapshot limits; independent transfer rubric. The original practical remains a design exercise. New pagination sample is extracted and executed by the Web/API regression. Rendered review of this increment and independent learner transfer remain UNVERIFIED; no VALIDATED promotion. Earlier THIN classification is superseded only for these addressed source gaps. Full #319 and remaining #320 contract/error/final-lab work stay open.
+
+
+## Contract modeling continuation — 2026-11-01
+
+Modeling Resources and API Contracts rewritten at source with a matching practical: traced name/endpoint/active/age_days to the actual preceding Python practicals; deferred unverified lifecycle/ownership fields; defined request/output asymmetry, nullability and server-controlled fields; supplied an executable boundary and consumer-compatibility example, complete proposed create/read/list semantics, and migration reasoning. Existing lesson IDs preserved. Source is REMEDIATED; rendered review and independent five-criterion learner transfer remain UNVERIFIED. The standalone adapter is not an HTTP server or proof of the learner-specific core integration. Full Apprentice review, error design and final lab remain open.
+
+Verification for this increment: `pnpm test` 12/12 passed; `pnpm build` 2 successful tasks. Source-extracted `contract_boundary.py` verified selected JSON output, boolean/null/extra-field rejection, a tolerant consumer accepting an added field and a renamed field breaking that consumer. No live HTTP or learner-core integration is claimed.

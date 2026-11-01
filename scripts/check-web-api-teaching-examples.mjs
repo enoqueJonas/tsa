@@ -5,7 +5,7 @@ import { spawnSync } from "node:child_process";
 
 const source = fs.readFileSync(path.join(process.cwd(), "packages/runtime-kernel/src/paths/builder-web-api-deep.ts"), "utf8");
 assert.ok(source.includes('lesson("JSON and Content Types", 70'), "The authored JSON teaching lesson is missing");
-const samples = [...source.matchAll(/"caption":"([^"]+)","code":("(?:\\.|[^"\\])*")/g)]
+const samples = [...source.matchAll(/"caption":\s*"([^"]+)"\s*,\s*"code":\s*("(?:\\.|[^"\\])*")/g)]
   .map((hit) => ({ caption: hit[1], code: JSON.parse(hit[2]) }));
 function execute(captionPrefix, expected) {
   const found = samples.find((sample) => sample.caption.startsWith(captionPrefix));
@@ -22,3 +22,4 @@ execute("Run this separate Python snippet", "omitted\nexplicit null\nvalue: 0");
 console.log("Web/API learner JSON examples passed: syntax, shape, domain and omitted/null/zero classifications.");
 
 execute("pagination_model.py", "first: [10, 20]\noffset after insert: [20, 30]\ncursor after insert: [30, 40]\noffset after delete: [40]\ncursor after delete: [30, 40]");
+execute("contract_boundary.py", "{\"active\": true, \"ageDays\": 184, \"endpoint\": \"https://payments.internal/api\", \"id\": 7, \"name\": \"Payments API\"}\nREJECTED: ageDays must be a non-negative integer\nREJECTED: ageDays must be a non-negative integer\nREJECTED: required fields: name, endpoint, ageDays; no extras\nadded field: Payments API / 184\nBROKEN CLIENT: name");
