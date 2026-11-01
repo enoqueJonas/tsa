@@ -49,6 +49,34 @@ const practices: Record<string, PracticeSpec> = {
     "The final architecture decision names a genuine trade-off, an alternative and a decision reversal trigger."
   ]
 },
+  "web-and-api-foundations-client-server-boundaries-and-failure-modes": {
+    objective: "Observe a genuine process boundary and justify a future Steward API design using reproducible network evidence rather than framework assumptions.",
+    scenario: "You have a local steward-core library but no Django/DRF service or PostgreSQL database yet. Your task is to prove the distinction between a local function call and a network exchange, then decide how the next Steward increment should expose domain behavior safely.",
+    instructions: [
+      "Use two terminals to run the lesson's Python standard-library HTTP file-server lab on 127.0.0.1; document that this is a disposable demonstration, not Steward API.",
+      "Send curl requests for hello.txt and a deliberately missing file; record actual HTTP statuses, response bodies where present and corresponding server console output.",
+      "Stop the server, repeat the request and record the connection-level failure. Explain why this is not HTTP 404.",
+      "Contrast the existing local steward-core lookup with a proposed GET /services/42 exchange: serialization, authorization, observable errors, latency, compatibility and ownership of service invariants.",
+      "Draw two possible paths for a timed-out service deactivation: committed change with lost response, and request never received. State what evidence or operation identity a production client would need before retrying.",
+      "Write a short boundary decision comparing clients calling a proposed Steward API versus reading/writing domain data directly. Include an alternative, the reason it is rejected, and a condition that would warrant reconsideration.",
+      "Label every component of the diagram either already built or future: do not claim Django, the API server or PostgreSQL currently exists."
+    ],
+    deliverables: [
+      "Two-terminal transcript showing HTTP 200, HTTP 404 and connection failure with server logs",
+      "Local-call versus proposed API boundary comparison",
+      "Timeout ambiguity sequence diagram and proposed client behavior",
+      "Steward responsibility and trust-boundary diagram with current/future labels",
+      "Architectural decision record with rejected alternative and falsifiable rationale"
+    ],
+    completionCriteria: [
+      "The evidence distinguishes an application-level HTTP response from a failure before HTTP and can be repeated on localhost.",
+      "The learner can distinguish client/server roles from process and host identities, and can explain serialization without assuming shared Python objects.",
+      "The proposed server remains authoritative for domain invariants and access control; client-side validation is treated as assistance, not enforcement.",
+      "Two different possible server outcomes after a timeout are explicitly represented; retries are not assumed harmless.",
+      "The choice of interface is explained by specific requirements and a rejected design, not by preferring distributed architecture by default.",
+      "Every proposed technology that the learner has not implemented yet is labeled future."
+    ]
+  },
   "web-and-api-foundations-http-requests-and-responses": {
     objective: "Read an HTTP exchange directly enough to explain what happened without relying on a framework debugger or API-client UI.",
     scenario: "A teammate sends you a screenshot showing '200 OK' and says the integration is correct. You are not willing to approve the claim until the complete request and response contract is visible.",
