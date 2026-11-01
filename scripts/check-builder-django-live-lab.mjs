@@ -29,6 +29,11 @@ try {
   const serializer=snippet("Service serializer");
   const commands=snippet("registry/services.py — protect production transitions and last-deployment deletion");
   const versioning=snippet("API versioning — executable old-client compatibility test");
+  const validation=snippet("DRF validation — executable field and cross-field rejection");
+  const errorMapping=snippet("DRF API errors — executable stable domain-to-HTTP mapping");
+  const pagination=snippet("DRF pagination — executable offset shift failure");
+  assert.match(exec("python3",["-c",errorMapping]),/DRF error mapping: conflict, forbidden, safe internal error/);
+  assert.match(exec("python3",["-c",pagination]),/offset shift duplicates: Identity/);
   assert.match(exec("python3",["-c",versioning]),/versioning contract rejects semantic drift/);
 
   exec("psql",["-X","-v","ON_ERROR_STOP=1","-c","CREATE DATABASE tsa_steward_django_lab;"]);
@@ -55,6 +60,7 @@ DATABASES = {'default': {'ENGINE': 'django.db.backends.postgresql',
   assert.match(plan,/CREATE TABLE "service"/);
   assert.match(plan,/CREATE TABLE "environment"/);
   exec("python3",["manage.py","migrate","--noinput"],env);
+  assert.match(exec("python3",["manage.py","shell","-c",validation],env),/DRF validation: valid, field failure, cross-field failure/);
   const probe=`from django.test import Client
 from registry.models import Team,Service,Environment
 from registry.serializers import ServiceSerializer
