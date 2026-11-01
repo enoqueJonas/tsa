@@ -19,10 +19,10 @@ function extractCode(source, caption){
   const variants=[`caption: "${caption}"`, `"caption":"${caption}"`, `"caption": "${caption}"`];
   const ix=Math.max(...variants.map(v=>source.indexOf(v)));
   assert.ok(ix>=0,`No lesson code caption: ${caption}`);
-  const codeAfter=source.slice(ix,ix+22000).match(/(?:["']?code["']?)\s*:\s*("(?:\\.|[^"\\])*")/);
+  const codeAfter=source.slice(ix,ix+22000).match(/(?:["']?(?:code|value)["']?)\s*:\s*("(?:\\.|[^"\\])*")/);
   if(codeAfter&&codeAfter.index<1200)return JSON.parse(codeAfter[1]);
   const before=source.slice(Math.max(0,ix-14000),ix);
-  const matches=[...before.matchAll(/(?:["']?code["']?)\s*:\s*("(?:\\.|[^"\\])*")/g)];
+  const matches=[...before.matchAll(/(?:["']?(?:code|value)["']?)\s*:\s*("(?:\\.|[^"\\])*")/g)];
   assert.ok(matches.length,`No preceding code block: ${caption}`);
   return JSON.parse(matches.at(-1)[1]);
 }
@@ -34,16 +34,16 @@ const run=(caption,code,expected)=>{
 };
 const life=extractCode(sources.python,"A small domain function");
 assert.match(life,/ALLOWED_LIFECYCLES/);
-run("Python lifecycle",life+"\nassert normalize_lifecycle('production')=='production'\nassert normalize_lifecycle('retired')=='retired'\ntry:\n normalize_lifecycle('production')\nexcept ValueError:\n print('REJECTED_INVALID_LIFECYCLE')\nelse:\n raise AssertionError('production cannot be a lifecycle')","REJECTED_DEPLOYMENT_AS_LIFECYCLE");
-run("Python active-service list",extractCode(sources.python,"Critical production services"),"payments-api");
+run("Python lifecycle",life+"\nassert normalize_lifecycle('production')=='production'\nassert normalize_lifecycle('retired')=='retired'\ntry:\n normalize_lifecycle('unknown')\nexcept ValueError:\n print('REJECTED_INVALID_LIFECYCLE')\nelse:\n raise AssertionError('unknown should not be a valid lifecycle')","REJECTED_INVALID_LIFECYCLE");
+run("Python production-stage Service list",extractCode(sources.python,"Critical production services"),"payments-api");
 run("Authorization decision matrix",extractCode(sources.identity,"Authorization — executable subject/action/object decision matrix"),"authorization matrix passed: 6 cases");
 const api=JSON.parse(extractCode(sources.web,"Steward service representation"));
 assert.equal(api.lifecycle,"production");
 assert.ok(!sources.django.includes("owner_team"),"Inconsistent Django owner_team field");
-assert.ok(!sources.django.includes("Lifecycle.PRODUCTION"),"Django lifecycle must support product-defined production stage");
+assert.ok(sources.django.includes("PRODUCTION = 'production'"),"Django lifecycle must support product-defined production stage");
 const model=extractCode(sources.django,"registry/models.py — canonical Steward ORM foundation");
 assert.ok(model.includes("owning_team = models.ForeignKey"),"Canonical Django FK omitted");
-assert.ok(model.includes("PRODUCTION = 'production'"),"Active lifecycle absent");
+assert.ok(model.includes("PRODUCTION = 'production'"),"Production lifecycle absent");
 assert.ok(model.includes("PRODUCTION = 'production'"),"Environment kind missing");
 const flow=sources.milestone;
 for(const concept of ["ServiceDependency","ServiceReview","owning Team","Cross-Team"])assert.ok(flow.includes(concept));
