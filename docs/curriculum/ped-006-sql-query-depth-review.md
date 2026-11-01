@@ -56,3 +56,11 @@ Not demonstrated even by a green SQL job: a novice learner following the tutoria
 3. Normalization, indexes, query plans and performance: improve worked examples, realistic datasets, failure analyses and SQL execution where possible.
 4. Postgres operational practice, Django/ORM-dependent lessons and the subsequent Builder modules.
 5. Learner-rendered review and independent transfer tasks; thereafter audit subsequent schools for the same quality defect rather than treating prior structural PASS classifications as pedagogical proof.
+
+## ACID and isolation continuation — 2026-11-01
+
+Transactions and ACID was too broad and lacked a complete failing/committed example. The source now has two separate lessons: **Transactions and ACID** and **Concurrent Transactions and Isolation Levels**. The first includes three exact scripts for a rolled-back Service, a two-row Service/Environment commit, and a CHECK-violation recovery using SAVEPOINT. The second includes a disposable probe and interleaved two-client psql protocols for Read Committed and Repeatable Read. Original transaction activity IDs remain stable; the isolation split adds three activities.
+
+Research anchors: [PostgreSQL transactions](https://www.postgresql.org/docs/current/tutorial-transactions.html), [PostgreSQL isolation behavior](https://www.postgresql.org/docs/current/transaction-iso.html), [PostgreSQL constraints](https://www.postgresql.org/docs/current/ddl-constraints.html), and the optional [CMU 15-445 Fall 2025 lectures 17–20](https://15445.courses.cs.cmu.edu/fall2025/schedule.html). Primary documentation grounds implicit transactions, savepoints, statement versus transaction snapshots, no dirty reads, SQLSTATE 40001 retry, and the limits of declarative constraints. The course schedule was inspected; no full-video viewing is claimed.
+
+The separate live PostgreSQL 17 runner now verifies rollback/commit/reconnect/savepoint error and coordinates two independent psql processes to observe 10→10→20 at Read Committed versus 10→10→20 with a stable middle snapshot at Repeatable Read. Results are not inherited from the earlier green CI. Even a successful integration test would not simulate crash-recovery durability, prove Serializable's anomaly detection, validate novice teach-back, or replace a rendered/mobile reading review. **Source remediated; acceptance still pending.**
