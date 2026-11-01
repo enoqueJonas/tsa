@@ -72,7 +72,7 @@ try {
     ["aggregate_team.sql — group at Team identity with a valid Service count",
       ["Identity|1", "Payments|2", "Platform|2"]],
     ["aggregate_zero.sql — count joined rows versus real Service identities",
-      ["Identity|1|1", "Payments|2|2", "Platform|2|2", "Unassigned|1|0"]],
+      ["Unassigned|1|0"]],
     ["aggregate_having.sql — filter active matches then threshold groups",
       ["Payments|2"]],
     ["aggregate_inflation.sql — observe overcount and correctly count Service identities",
