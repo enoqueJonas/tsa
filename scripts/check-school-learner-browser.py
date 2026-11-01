@@ -57,7 +57,9 @@ def inspect_school(page):
             assert content.is_visible(), f"Hidden activity content: {activity_id}"
             text = content.inner_text().strip()
             assert len(text) >= 90, f"Unusually short activity content: {activity_id}"
-            assert not re.search(r"\b(?:TODO|TBD|Lorem ipsum)\b", text, re.I), (
+            # Only flag editorial TODO/TBD markers at the start of a line, not
+            # filenames such as notes/todo.txt in legitimate filesystem lessons.
+            assert not re.search(r"(?im)^\s*(?:TODO|TBD)\s*[:\-]|\bLorem ipsum\b", text, re.I), (
                 f"Unfinished teaching placeholder: {activity_id}"
             )
             if activity_id == "pki-verification-model-how-certificate-verification-works":
