@@ -66,6 +66,43 @@ jobs:
       - name: Build applications
         run: pnpm build
 
+  builder-postgresql-lab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: tsa_steward_lab
+          POSTGRES_USER: tsa_learner
+          POSTGRES_PASSWORD: tsa_local_ci_only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U tsa_learner -d tsa_steward_lab"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install PostgreSQL client if absent
+        run: |
+          if ! command -v psql >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y postgresql-client
+          fi
+      - name: Execute the actual published Builder SQL against disposable PostgreSQL
+        env:
+          PGHOST: 127.0.0.1
+          PGPORT: '5432'
+          PGDATABASE: tsa_steward_lab
+          PGUSER: tsa_learner
+          PGPASSWORD: tsa_local_ci_only
+        run: node scripts/check-builder-postgresql-live-lab.mjs
+
   learner-browser:
     runs-on: ubuntu-latest
     timeout-minutes: 30
