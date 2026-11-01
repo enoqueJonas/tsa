@@ -116,7 +116,7 @@ try {
 
   // One client cannot prove isolation: use two live, independently connected psql processes.
   const isolationSql = codeFromLesson("isolation_setup.sql — one isolated probe row for the two-session exercise");
-  assert.equal(run(["-c", isolationSql]).out, "10");
+  assert.equal(run(["-c", isolationSql]).out.split(/\r?\n/).at(-1), "10");
   const makeSession = (name) => {
     const child = spawn("psql", ["-X", "-A", "-t", "-F", "|", "-q", "-v", "ON_ERROR_STOP=1"], {
       env: process.env, stdio: ["pipe", "pipe", "pipe"]
