@@ -168,7 +168,7 @@ try {
   assert.equal(missingBefore, "Payroll API");
   const readinessRepair = run(["-c", codeFromLesson("readiness_repair.sql — reversible cross-table invariant repair")]).out;
   assert.match(readinessRepair, /INSERT 0 1/);
-  assert.match(readinessRepair, /(^|\\n)0(\\n|$)/);
+  assert.ok(readinessRepair.split(/\r?\n/).includes("0"), "Readiness repair must report zero current violations");
   assert.equal(run(["-c", codeFromLesson("readiness_missing.sql — detect production-stage Services without production deployment")]).out, "Payroll API");
   assert.equal(run(["-c", "SELECT count(*) FROM environment WHERE service_id=(SELECT id FROM service WHERE name='Payroll API')"]).out, "0");
   // Complete the rest of the PostgreSQL path using the learner-visible examples.

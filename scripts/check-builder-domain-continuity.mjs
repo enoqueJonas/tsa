@@ -37,6 +37,7 @@ assert.match(life,/ALLOWED_LIFECYCLES/);
 run("Python lifecycle",life+"\nassert normalize_lifecycle('production')=='production'\nassert normalize_lifecycle('retired')=='retired'\ntry:\n normalize_lifecycle('unknown')\nexcept ValueError:\n print('REJECTED_INVALID_LIFECYCLE')\nelse:\n raise AssertionError('unknown should not be a valid lifecycle')","REJECTED_INVALID_LIFECYCLE");
 run("Python production-stage Service list",extractCode(sources.python,"Critical production services"),"payments-api");
 run("Authorization decision matrix",extractCode(sources.identity,"Authorization — executable subject/action/object decision matrix"),"authorization matrix passed: 6 cases");
+run("Refresh rotation and replay",extractCode(sources.identity,"Refresh rotation — executable replay and family revocation state machine"),"rotation state machine: 3 assertions passed");
 const api=JSON.parse(extractCode(sources.web,"Steward service representation"));
 assert.equal(api.lifecycle,"production");
 assert.ok(!sources.django.includes("owner_team"),"Inconsistent Django owner_team field");
