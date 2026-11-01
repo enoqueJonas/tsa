@@ -28,6 +28,8 @@ try {
   const model=snippet("registry/models.py — canonical Steward ORM foundation");
   const serializer=snippet("Service serializer");
   const commands=snippet("registry/services.py — protect production transitions and last-deployment deletion");
+  const versioning=snippet("API versioning — executable old-client compatibility test");
+  assert.match(exec("python3",["-c",versioning]),/versioning contract rejects semantic drift/);
 
   exec("psql",["-X","-v","ON_ERROR_STOP=1","-c","CREATE DATABASE tsa_steward_django_lab;"]);
   exec("python3",["-m","django","startproject","config","."]);
