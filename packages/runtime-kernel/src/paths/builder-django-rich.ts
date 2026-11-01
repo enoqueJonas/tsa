@@ -15,12 +15,13 @@ const drfFiltering: LearningResource = { title:"DRF — Filtering", url:"https:/
 const drfPagination: LearningResource = { title:"DRF — Pagination", url:"https://www.django-rest-framework.org/api-guide/pagination/", kind:"reference" };
 const djangoSettings: LearningResource = { title:"Django — Settings", url:"https://docs.djangoproject.com/en/stable/topics/settings/", kind:"reference" };
 const djangoLogging: LearningResource = { title:"Django — Logging", url:"https://docs.djangoproject.com/en/stable/topics/logging/", kind:"reference" };
+const drfDeepVideo: LearningResource = { title: "Django REST Framework Full Course (2026) — ProgrammingWithSingh", url: "https://www.youtube.com/watch?v=dMCAHncMFQM", kind: "video", read: "00:24:18 serializers; 01:26:26 views; 01:59:31 generics; 02:22:50 permissions; 02:43:17 pagination", purpose: "Optional multi-hour source covering actual DRF requests, serializers, views and permission mechanics. Source chapters verified; recorded material was not viewed in full." };
 const resourcesByDjangoLesson: Record<string, LearningResource[]> = {
- "Django Foundations":[djangoRequest,djangoDocs],"Django REST Framework":[drfDocs],
+ "Django Foundations":[djangoRequest,djangoDocs],"Django REST Framework":[drfDocs,drfDeepVideo],
  "Projects, Applications and Boundaries":[djangoApps],"Models and Domain Data":[djangoModels],
- "Serializers and Representation":[drfSerializers],"Views, ViewSets and Routing":[drfViews],
+ "Serializers and Representation":[drfSerializers,drfDeepVideo],"Views, ViewSets and Routing":[drfViews,drfDeepVideo],
  "Validation and Business Rules":[drfValidation],"API Error Handling":[drfExceptions],
- "Filtering, Searching and Ordering":[drfFiltering],"Pagination":[drfPagination],
+ "Filtering, Searching and Ordering":[drfFiltering],"Pagination":[drfPagination,drfDeepVideo],
  "API Versioning":[drfDocs],"OpenAPI and Swagger Documentation":[openApi],
  "Configuration and Environments":[djangoSettings],"Application Logging":[djangoLogging],
 };
