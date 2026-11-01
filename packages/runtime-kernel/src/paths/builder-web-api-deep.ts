@@ -411,25 +411,202 @@ export const webAndApiFoundationsDeepLessons: Lesson[] = [
   "Document a boundary decision and one negative or counterexample with independently checkable results."
 ], "Without notes, distinguish a 404 from a refused connection. Explain why a timeout may follow a successfully committed operation. Show how the server, not the browser, retains authority over domain invariants."),
 
-  lesson("HTTP Requests and Responses", 45, [
-    { type: "heading", id: "messages", text: "HTTP is a message protocol" },
-    { type: "paragraph", text: "An HTTP request contains a method, target, headers and sometimes a body. A response contains a status code, headers and sometimes a body. Reading these raw parts is one of the highest-leverage habits for API engineering because it lets you reason underneath tools and frameworks." },
-    { type: "code", language: "http", caption: "Example Steward request", code: "GET /services/42 HTTP/1.1\nHost: steward.example.com\nAccept: application/json\nAuthorization: Bearer <token>" },
-    { type: "code", language: "http", caption: "Example response", code: "HTTP/1.1 200 OK\nContent-Type: application/json\nETag: \"service-42-v7\"\n\n{\n  \"id\": 42,\n  \"name\": \"Payments API\",\n  \"criticality\": \"high\"\n}" },
-    { type: "heading", id: "headers", text: "Headers carry metadata" },
-    { type: "paragraph", text: "Headers describe representation, authorization, caching, tracing and other metadata. The body carries a representation when one is needed. Treating everything as 'the JSON' hides important protocol behavior." },
-    { type: "callout", tone: "warning", title: "A body is not guaranteed", body: "Many valid HTTP responses have no response body. Clients must use status and headers correctly instead of assuming every response is JSON." },
-    { type: "heading", id: "common-headers", text: "Learn the headers that shape ordinary API behavior" },
-    { type: "code", language: "text", caption: "High-frequency HTTP fields", code: "Accept          → response media types the client can process\nContent-Type    → media type of this message body\nAuthorization   → credentials for the request\nLocation        → URI associated with creation/redirection\nCache-Control   → caching directives\nETag            → validator for a representation/version\nIf-None-Match   → make retrieval conditional on an ETag\nRetry-After     → when a client may retry in relevant responses\nUser-Agent      → information about the requesting client" },
-    { type: "paragraph", text: "Headers are extensible, so do not try to memorize all of them. Learn the common semantic categories and inspect unfamiliar fields in authoritative documentation." },
-    { type: "heading", id: "redirects", text: "3xx responses can require another request" },
-    { type: "paragraph", text: "Redirect responses normally use a `Location` header to point at another URI. Clients differ in whether and how they follow redirects automatically, especially when methods or credentials are involved. When debugging, distinguish the original response from the follow-up request your tool may have issued for you." },
-    { type: "heading", id: "cookies-auth", text: "Cookies and Authorization are different mechanisms" },
-    { type: "paragraph", text: "A server can ask a user agent to store cookie state with `Set-Cookie`, after which matching requests may send it in `Cookie`. APIs also commonly receive credentials in the `Authorization` header. Authentication design comes later; here the key point is that both are HTTP metadata with different client behavior and security attributes, not JSON fields in the resource body." },
-    { type: "heading", id: "assignment", text: "Assignment" },
-    { type: "list", ordered: true, items: ["Capture one GET and one POST using curl -i or curl -v.", "Label method, target, request headers, request body, status, response headers and response body.", "Change Accept or Content-Type deliberately and observe what the server does.", "Record one assumption your API client made that was not guaranteed by HTTP itself."] },
-    { type: "resources", resources: [mdnHttp, rfc9110] },
-  ], "Read and explain raw HTTP requests and responses.", ["Capture raw-ish HTTP evidence using curl.", "Annotate every major message component.", "Compare a request with and without a body.", "Explain one behavior controlled by headers rather than JSON."], "What information belongs to the request line, headers and body? Why is a 204 response different from a 200 response with an empty JSON object?", [mdnHttp, rfc9110]),
+  lesson("HTTP Requests and Responses", 75, [
+  {
+    "type": "heading",
+    "id": "problem",
+    "text": "Why inspect raw HTTP instead of trusting an API tool?",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "In the previous chapter you ran a client and a server as separate processes. You saw a success, a missing resource, and a connection failure. Now inspect what the two processes actually exchange when the connection succeeds. HTTP is an application-layer protocol: a shared set of message and behavior rules that lets a client make a request and a server return a response. An HTTP API is one use of that protocol; downloading a web page is another."
+  },
+  {
+    "type": "heading",
+    "id": "anatomy-request",
+    "text": "Read a request from the first line downward",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "The example below uses HTTP/1.1 notation because it is readable line by line. Its first line is the request line. GET names the operation method, /services is the target path, and HTTP/1.1 names the version of the message format. The Host header says which named server the client intends to reach; the Accept header says which representation formats the client can handle. An empty line ends the headers. This GET has no body. Method semantics are explored more deeply in the next lesson."
+  },
+  {
+    "type": "code",
+    "caption": "Illustrative HTTP/1.1 request. This is a protocol transcript, not a curl command.",
+    "language": "http",
+    "code": "GET /services HTTP/1.1\nHost: 127.0.0.1:8765\nAccept: application/json\n\n"
+  },
+  {
+    "type": "paragraph",
+    "text": "The URL you type into curl also includes a scheme and destination: http://127.0.0.1:8765/services. In a typical HTTP/1.1 request to that server, the request target is /services, and Host carries the host and port. The operating system's connection, HTTP message and Steward business logic are different layers. Do not confuse the browser address bar with the exact bytes sent over the connection."
+  },
+  {
+    "type": "heading",
+    "id": "anatomy-response",
+    "text": "Read a response from status to body",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "A server that accepts the request constructs a response. In HTTP/1.1 notation, the status line communicates the outcome category. Headers follow, describing the message or representation, then a blank line separates them from the optional body. A response status of 200 means the request succeeded according to HTTP semantics; it does not alone prove the JSON fields are correct, the caller was authorized properly, or the intended database change occurred."
+  },
+  {
+    "type": "code",
+    "caption": "Illustrative success response; real headers and field ordering can differ.",
+    "language": "http",
+    "code": "HTTP/1.1 200 OK\nContent-Type: application/json; charset=utf-8\nContent-Length: 58\n\n{\"services\":[{\"id\":7,\"name\":\"Cleaning\",\"active\":true}]}"
+  },
+  {
+    "type": "paragraph",
+    "text": "The body here is JSON text representing one synthetic Service. Content-Type tells a recipient how to interpret it. Content-Length, when used, describes the body length in bytes, not the number of characters after JavaScript decoding. Do not copy the illustrative Content-Length value as a contractual constant; a real server computes it from the actual bytes sent. The Python mini-server from the previous chapter does exactly that."
+  },
+  {
+    "type": "heading",
+    "id": "bytes-boundary",
+    "text": "The empty line is a real boundary",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "HTTP/1.1 message syntax uses a blank line after the header fields. Headers are not part of the JSON document; they describe the exchange or its representation. The JSON body starts only after that boundary. A receiver can process response metadata before interpreting the body. With HTTP/2 or HTTP/3 the wire framing is different from the visible HTTP/1.1 lines, but the distinction between method, target, status, header fields and content still matters. Do not treat a human-readable HTTP/1.1 transcript as universal wire framing."
+  },
+  {
+    "type": "heading",
+    "id": "why-headers",
+    "text": "Headers have different jobs",
+    "level": 2
+  },
+  {
+    "type": "list",
+    "items": [
+      "Host identifies the desired host for an HTTP/1.1 server that may handle multiple names.",
+      "Accept is the client's preference for what response media types it can use; it does not magically force the server to implement content negotiation.",
+      "Content-Type describes the format of the body in the message that carries that header. A client sending JSON may use Content-Type: application/json; a server returning JSON may use it in the response.",
+      "Content-Length conveys message-body length in bytes when the protocol uses it; other framing mechanisms also exist.",
+      "Authorization carries credentials in some API designs. It is sensitive metadata, not a business field; later identity lessons explain safe token handling.",
+      "Location, ETag, Cache-Control and Retry-After support redirects/creation, validation/caching and retry guidance. Learn the mechanism when it becomes relevant, rather than treating their names as definitions."
+    ],
+    "ordered": false
+  },
+  {
+    "type": "heading",
+    "id": "experiment",
+    "text": "Inspect the same mini-Steward service with curl",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "Re-use mini_steward_server.py from the preceding chapter. In Terminal A start python3 mini_steward_server.py from the directory where you saved the file. In Terminal B run these commands. The server is a controlled local example; the JSON record is hardcoded and no database or login exists. The first request should return HTTP 200 with JSON; the second should return HTTP 404 with an HTML error representation. Record actual values rather than copying sample output."
+  },
+  {
+    "type": "code",
+    "caption": "Terminal B: first inspect a normal response, then the client's outgoing request and a failure.",
+    "language": "bash",
+    "code": "curl -i --http1.1 http://127.0.0.1:8765/services\ncurl -v --http1.1 http://127.0.0.1:8765/services\ncurl -i --http1.1 http://127.0.0.1:8765/missing"
+  },
+  {
+    "type": "paragraph",
+    "text": "With curl -i, inspect the response headers and body. With curl -v, look for lines describing connection setup and outgoing/incoming protocol details. You may see extra headers that are specific to curl or Python: classify what each belongs to rather than memorizing the list. Do not paste tokens or private cookies into shared output when inspecting real systems."
+  },
+  {
+    "type": "heading",
+    "id": "negative-test",
+    "text": "A client preference is not automatic server behavior",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "Now send Accept: text/plain while requesting /services. The mini-server intentionally ignores Accept and still responds with its JSON representation. That is a limitation of THIS implementation, not proof that Accept is meaningless. Content negotiation is behavior the server must implement and define. The experiment demonstrates why a client must examine the observed Content-Type rather than assume its preference was obeyed."
+  },
+  {
+    "type": "code",
+    "caption": "A negative contract test: observe, do not invent the expected HTTP status.",
+    "language": "bash",
+    "code": "curl -i --http1.1 -H 'Accept: text/plain' http://127.0.0.1:8765/services"
+  },
+  {
+    "type": "heading",
+    "id": "no-body",
+    "text": "A successful response need not contain JSON",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "Imagine an API that successfully deletes a resource and returns 204 No Content. That response is intentionally bodyless. A 200 OK response whose body is {} is different: the latter contains a JSON representation and has different meaning for a client expecting data. The 404 response from the local Python server is also not JSON; the body is an HTML error page. A robust client checks status and available metadata before trying to parse content."
+  },
+  {
+    "type": "code",
+    "caption": "Two hypothetical successful outcomes with different content guarantees.",
+    "language": "http",
+    "code": "HTTP/1.1 204 No Content\n\n# No body follows.\n\nHTTP/1.1 200 OK\nContent-Type: application/json\n\n{}"
+  },
+  {
+    "type": "heading",
+    "id": "redirects-and-state",
+    "text": "Redirects and cookies are HTTP behavior, not JSON",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "Some responses direct clients elsewhere using a 3xx status and a Location header. A browser or HTTP library may automatically follow the location, making a sequence of two requests look like one action. Cookies are another distinct mechanism: Set-Cookie in a response can ask a browser to retain data that it sends as Cookie on later applicable requests. These subjects have important security and method details, so this lesson establishes where they appear; later lessons explain how and when to use them."
+  },
+  {
+    "type": "heading",
+    "id": "wrong-assumptions",
+    "text": "Interpret evidence without overclaiming",
+    "level": 2
+  },
+  {
+    "type": "list",
+    "items": [
+      "HTTP 200 does not prove the application returned correct business data; inspect the representation and effects.",
+      "HTTP 404 is a response from an HTTP server. It is not the same as failure to resolve a host or failure to establish a connection.",
+      "Content-Type tells you how to interpret a message body; Accept requests a preferred output format. They are not interchangeable.",
+      "HTTP 204 means no response body. A client that blindly calls JSON.parse on every successful response is broken.",
+      "Seeing Authorization in a request does not, by itself, prove that the server correctly authenticated or authorized the operation."
+    ],
+    "ordered": false
+  },
+  {
+    "type": "heading",
+    "id": "transfer",
+    "text": "Independent diagnostic exercise",
+    "level": 2
+  },
+  {
+    "type": "list",
+    "items": [
+      "Draw an annotated request and response for the local /services endpoint: method, target, headers, blank line, status, body and each participant's responsibility.",
+      "Record the actual behavior of /services, /missing and /services with Accept: text/plain. Explain what the server guarantees and what it does not.",
+      "Predict what would happen if a client tried to parse the 404 HTML body as JSON, and identify the check that should come first.",
+      "Explain what curl -i reveals versus curl -v and why HTTP/2 traces may not look like literal HTTP/1.1 start lines.",
+      "Write one example of a bodyless success and explain how it differs from a JSON object with no fields."
+    ],
+    "ordered": true
+  },
+  {
+    "type": "resources",
+    "title": "Reference after working through the transcript",
+    "resources": [
+      {
+        "title": "MDN — HTTP overview",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview"
+      },
+      {
+        "title": "RFC 9110 — HTTP Semantics",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110"
+      }
+    ]
+  }
+], "Identify and interpret the actual parts of HTTP request/response messages and verify their meaning against observable traffic.", [
+  "Reuse the preceding mini-Steward server and capture a raw-ish request/response using curl -v and curl -i.",
+  "Annotate request line, host, headers, blank line, status line, body and representation semantics.",
+  "Run a negative Accept-header experiment and distinguish server behavior from client preferences.",
+  "Explain 200 with JSON, 404 with HTML, and hypothetical 204 without a body before parsing any representation.",
+  "State the limits of human-readable HTTP/1.1 framing when HTTP/2 or HTTP/3 is negotiated."
+], "A client sends Accept: text/plain but receives Content-Type: application/json. Which header states preference and which describes the actual body? Why must a client distinguish 204 No Content from 200 with {}? What does a 404 prove that a connection failure does not?"),
 
   lesson("Methods, Headers and Status Codes", 50, [
     { type: "heading", id: "methods", text: "Methods communicate intent" },
