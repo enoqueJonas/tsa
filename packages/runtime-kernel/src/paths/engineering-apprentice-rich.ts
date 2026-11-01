@@ -107,22 +107,241 @@ export const thinkingLikeAnEngineerRich = richLesson(
 export const systemsThinkingRich = richLesson(
     "Systems Thinking",
     [
-        { type: "heading", id: "introduction", text: "Behavior emerges from relationships" },
-        { type: "paragraph", text: "A system is more than a list of components. Its behavior emerges from interactions, dependencies, feedback loops, delays, shared resources and human processes. Debugging only the component where a symptom appears can miss the mechanism that created it." },
-        { type: "heading", id: "boundaries", text: "Choose boundaries deliberately" },
-        { type: "paragraph", text: "Every system model excludes something. The useful question is not whether the model is complete, but whether its boundary is appropriate for the decision you need to make. A login failure might require looking at the browser, API, identity provider, database, clock synchronization and network—not the entire company." },
-        { type: "heading", id: "relationships", text: "Map flows, dependencies and feedback" },
-        { type: "code", language: "text", caption: "A simple service interaction map", code: "User\n  │\n  ▼\nWeb/API ─────► Identity Provider\n  │\n  ├──────────► PostgreSQL\n  │\n  └──────────► Notification Service\n\nDeployment pipeline ──changes──► Web/API\nMonitoring ◄──telemetry──────── Web/API" },
-        { type: "paragraph", text: "The arrows matter. They represent requests, data, ownership, control, feedback or failure propagation. Labeling them turns a pretty diagram into a reasoning tool." },
-        { type: "heading", id: "failure-propagation", text: "Local symptoms can have remote causes" },
-        { type: "list", items: ["A database connection pool can make an API appear CPU-bound because requests queue.", "A retry policy can multiply load and turn a dependency slowdown into a cascading failure.", "A manual approval step can be the real bottleneck in an otherwise automated delivery pipeline.", "A monitoring dashboard can hide a problem if its aggregation window smooths short failures away."] },
-        { type: "callout", tone: "steward", title: "Future the project connection", body: "the project will eventually catalogue services and dependencies. Systems thinking is what makes those relationships meaningful rather than turning the product into a static inventory." },
-        { type: "heading", id: "assignment", text: "Assignment" },
-        { type: "list", ordered: true, items: ["Choose one system you can observe safely.", "Draw its important actors, components and external dependencies.", "Label at least five flows or relationships.", "Mark one feedback loop and one delay.", "Trace how one dependency failure could become a user-visible symptom.", "Write one important element intentionally outside your model boundary and justify excluding it."] },
-    ],
-    "Build a system map that explains behavior and failure propagation rather than merely listing components.",
-    ["Select an application or work process you can safely inspect; otherwise model the disposable local HTTP server, curl client and filesystem introduced in the later Workbench section, and mark the model as a planned exercise rather than an observed system.", "Define the question your system model should answer.", "Draw actors, components, dependencies and flows.", "Identify shared resources, delays and feedback loops.", "Trace two different failure paths to user-visible symptoms.", "Revise the boundary if the model cannot explain the observed behavior."],
-    "Why is a system boundary a decision rather than an objective fact? Give an example of a symptom whose likely cause sits outside the component that reports the error. What information does an unlabeled architecture box-and-arrow diagram fail to communicate?",
+    {
+        "type": "heading",
+        "id": "why-system",
+        "text": "Why a system cannot be understood from its parts alone"
+    },
+    {
+        "type": "paragraph",
+        "text": "A system is a set of parts that interact through relationships to produce behavior. A part might be a person, a machine, a rule or a piece of software. A relationship tells you what passes between parts—information, work, material or control. A system model is a deliberately simplified picture of those parts and relationships for one question. The picture is useful only if it explains something, such as where work waits or why a service fails."
+    },
+    {
+        "type": "paragraph",
+        "text": "Imagine a small café. A customer places an order, a staff member prepares it, and the customer collects the result. Naming 'customer, counter, barista' is an inventory, not yet an explanation. We need to state what moves, in what order, who waits for whom and what happens when arrivals exceed preparation capacity. Those relationships create the user-visible waiting time."
+    },
+    {
+        "type": "code",
+        "language": "text",
+        "caption": "First model: explicitly label what the arrows mean",
+        "code": "Customer --order details--> Order queue --next order--> Barista\n   ^                        (waiting tickets)          |\n   |                                                    |\n   +-------------------- prepared drink -----------------+\n\nBoundary: ordering, waiting, preparation and pickup\nOutside for this question: the coffee farm and supplier invoices"
+    },
+    {
+        "type": "heading",
+        "id": "boundaries",
+        "text": "A model boundary answers one question"
+    },
+    {
+        "type": "paragraph",
+        "text": "The boundary specifies what is inside the system being studied. You cannot model everything, and including irrelevant parts can hide the explanation. For 'why do customers wait?' we include the queue and preparation. For 'why is the café out of beans?' we must extend the boundary to inventory and suppliers. Neither model is universally correct. You choose a boundary based on the outcome, then revise it when evidence shows an omitted dependency matters."
+    },
+    {
+        "type": "paragraph",
+        "text": "An actor is a person or external system participating at the boundary. A component is something inside it that performs work. A dependency is something the component needs to succeed. A flow is what actually crosses a relationship. A queue is where unfinished work waits. If your diagram has unlabeled arrows, nobody can tell whether they mean 'sends data', 'waits for', 'owns' or merely 'is related to'."
+    },
+    {
+        "type": "heading",
+        "id": "trace",
+        "text": "Trace one interaction rather than drawing decorative boxes"
+    },
+    {
+        "type": "list",
+        "ordered": true,
+        "items": [
+            "1. A customer submits one order and receives a ticket. The ticket is work to be done, not a finished drink.",
+            "2. The ticket enters a queue. If the barista is busy, it waits; its place can be observed.",
+            "3. The barista takes the next ticket, prepares the order and hands off the drink.",
+            "4. The customer receives the result. The order's completion time includes waiting and preparation, not just the seconds spent making the drink."
+        ]
+    },
+    {
+        "type": "paragraph",
+        "text": "To check a model, ask whether it can explain every observed transition. If the café accepts tickets but never marks completion, a diagram that ignores completion state cannot distinguish 'waiting' from 'already served'. If it excludes people collecting the drinks, it cannot explain handoff errors. The model must be specific enough to answer your stated question, not as detailed as possible."
+    },
+    {
+        "type": "heading",
+        "id": "quantities",
+        "text": "A tiny calculation can expose system behavior"
+    },
+    {
+        "type": "paragraph",
+        "text": "Assume six new orders arrive each minute and one barista completes four orders each minute. Start with an empty queue. During each minute, two more orders arrive than finish, so the queue grows. These numbers are illustrative assumptions, not measurements at a real café."
+    },
+    {
+        "type": "code",
+        "language": "text",
+        "caption": "Worked backlog trace — orders, not seconds",
+        "code": "Minute                  0    1    2    3    4    5\nNew orders (per minute)  —    6    6    6    6    6\nCompleted (per minute)   —    4    4    4    4    4\nWaiting after minute     0    2    4    6    8   10"
+    },
+    {
+        "type": "paragraph",
+        "text": "At minute five, ten orders are waiting: 5 × (6 − 4) = 10. The important conclusion is not 'the barista is slow' but 'the modeled arrival rate exceeds the modeled completion rate'. Hiring an extra person, changing preparation steps or accepting fewer orders would change that relationship in different ways. We will investigate the consequences of such changes in the next dedicated lesson."
+    },
+    {
+        "type": "heading",
+        "id": "alternatives",
+        "text": "Compare a component inventory with a behavioral model"
+    },
+    {
+        "type": "paragraph",
+        "text": "An inventory diagram is appropriate for asset ownership or counting devices; it is not enough to explain time, dependency or failure. A behavioral system diagram labels flows, state and bottlenecks. A step-by-step process diagram can also describe ordering and handoff; a system model adds relationships and constraints that explain why the process changes under load. Pick the representation that answers the question rather than drawing a more elaborate graphic by habit."
+    },
+    {
+        "type": "heading",
+        "id": "first-technical-transfer",
+        "text": "Transfer only the mechanism to a future technical system"
+    },
+    {
+        "type": "paragraph",
+        "text": "Later, you will inspect a local HTTP file server with a command-line client. That is another system: a client asks for a file, a server receives a request, a filesystem supplies content and a response returns. You do not need to understand a database, identity provider or deployment pipeline to practice system boundaries now. Those will be introduced in later schools with their own prerequisites."
+    },
+    {
+        "type": "callout",
+        "tone": "note",
+        "title": "Observation versus hypothetical",
+        "body": "The café numbers and the future file-server analogy are teaching models. Do not claim that you measured customer wait times or ran the technical server unless you actually did."
+    },
+    {
+        "type": "heading",
+        "id": "independent-practice",
+        "text": "Independently model a different queue"
+    },
+    {
+        "type": "paragraph",
+        "text": "Model a school registration desk, a print station or a support-ticket queue. Set a precise question, draw a boundary, label at least three flows, and trace one item from entry through completion. Invent two clearly labeled hypothetical arrival/completion rates, calculate the backlog after three time steps and propose one observation that could disprove your model. Check your own work against this rubric: an explicit question, justified boundary, labeled relationships, numerically coherent trace and an identified unknown."
+    }
+],
+    "Explain a system through a purpose, a deliberately chosen boundary, named flows, state and a traceable cause rather than a generic component list.",
+    [
+    "Choose a safe everyday system (café, print desk, registration line or school workflow) and state one precise question before drawing.",
+    "Identify actors, the boundary, components and at least three labeled flows; distinguish queue/waiting state from completed work.",
+    "Use hypothetical arrival and completion rates to build a three-step backlog trace; separate invented numbers from observed data.",
+    "Contrast a component inventory with your behavioral model and justify what each can answer.",
+    "Describe one important missing observation and revise the model if it cannot explain a plausible failure."
+],
+    "Why is a system more than its components? In a queue receiving six jobs/minute and completing four, why does the backlog grow? What evidence would tell you that your chosen boundary excludes an important cause?",
+    
+);
+
+export const feedbackLoopsAndFailurePropagationRich = richLesson(
+    "Feedback Loops and Failure Propagation",
+    [
+    {
+        "type": "heading",
+        "id": "mechanism",
+        "text": "What feedback means and what it does not mean"
+    },
+    {
+        "type": "paragraph",
+        "text": "Feedback occurs when the outcome of a process influences a later input or decision in that same system. A loop is closed when the effect returns to something that can change the process. Mere reporting is not necessarily feedback: displaying yesterday's order count changes nothing unless someone or something acts on the information."
+    },
+    {
+        "type": "paragraph",
+        "text": "A reinforcing loop amplifies a change: more delay causes frustration, customers ask for updates, staff spend additional time answering, and delay grows further. A balancing loop counteracts a deviation: a long queue triggers extra staff, preparation capacity rises, and the queue begins to shrink. These labels describe the direction of the effect, not whether an outcome is ethically 'good' or 'bad'."
+    },
+    {
+        "type": "code",
+        "language": "text",
+        "caption": "Reinforcing versus balancing — arrows carry a described effect",
+        "code": "REINFORCING:\nWaiting grows → more status questions → less staff time for orders → waiting grows\n\nBALANCING:\nWaiting exceeds threshold → add a prepared staff member → more completions → waiting falls\n\nThe arrows do not promise an immediate effect. Staffing takes time."
+    },
+    {
+        "type": "heading",
+        "id": "delays",
+        "text": "Why a response can be correct but too late"
+    },
+    {
+        "type": "paragraph",
+        "text": "A delay is the time between a change and when its consequence becomes visible or actionable. An extra worker may need five minutes to start. A dashboard may summarize every ten minutes. During those delays, the queue can keep growing. A loop that ignores delay can predict a successful intervention while people experience an outage or worsening wait."
+    },
+    {
+        "type": "heading",
+        "id": "step-trace",
+        "text": "Compute how a deliberate intervention changes the result"
+    },
+    {
+        "type": "paragraph",
+        "text": "Continue the earlier illustrative café. The queue starts at ten waiting orders after minute five. For minutes six and seven, six arrive and four complete; the queue becomes twelve and then fourteen. The extra prepared worker begins at minute eight and raises completion capacity to eight orders per minute. From that point onward, eight can complete while only six arrive, so the queue shrinks by two per minute as long as it remains nonempty."
+    },
+    {
+        "type": "code",
+        "language": "text",
+        "caption": "Worked sequence — no hidden rate change",
+        "code": "Minute                 5   6   7   8   9  10\nArrival rate/min       —   6   6   6   6   6\nCompletion rate/min    —   4   4   8   8   8\nQueue after minute    10  12  14  12  10   8"
+    },
+    {
+        "type": "paragraph",
+        "text": "Do not declare success at minute eight because capacity increased. Customers are still waiting, and the model predicts eight outstanding orders even by minute ten. There is a distinction between improving a trend (queue is shrinking), meeting a service objective (acceptable wait) and resolving an incident (no undesirable impact remaining). The figures assume constant rates, available work and no cancellations; real measurements can invalidate the model."
+    },
+    {
+        "type": "heading",
+        "id": "failure-propagation",
+        "text": "Trace a failure across dependencies"
+    },
+    {
+        "type": "paragraph",
+        "text": "Consider a card-payment terminal that stops responding. A customer cannot confirm payment, so an order is held rather than prepared. More customers arrive, and the queue at the payment stage grows. Customers complain that drinks are late even though the barista has spare capacity. The symptom is at pickup; the initiating failure is in payment. If cash is permitted as a fallback, that changes the dependency and has other costs, such as reconciliation and cash-handling risks."
+    },
+    {
+        "type": "code",
+        "language": "text",
+        "caption": "Failure chain with the first causal defect labeled",
+        "code": "Payment terminal unavailable\n       ↓ cannot confirm payment\nOrders held at checkout\n       ↓ waiting queue grows\nCustomer waits longer\n       ↓ reports 'service is slow'\n\nRoot-cause candidate: checkout dependency\nVisible symptom: customer delay\nProposed mitigation: authorized cash fallback, if policy allows"
+    },
+    {
+        "type": "paragraph",
+        "text": "A correlation is not automatically a cause. Seeing a long queue and slow service together does not prove the terminal failed. Verify terminal error output and affected orders. Competing hypotheses include too few staff, a printing failure or a misplaced order. An experiment should distinguish them: for example, compare the count of held-payment orders with the count awaiting preparation."
+    },
+    {
+        "type": "heading",
+        "id": "trade-offs",
+        "text": "Different fixes change different constraints"
+    },
+    {
+        "type": "list",
+        "ordered": false,
+        "items": [
+            "Adding a prepared staff member addresses preparation capacity but not a broken payment terminal; extra staff also cost money.",
+            "Allowing cash may restore some orders but introduces control and reconciliation obligations; it is not always authorized.",
+            "Turning off all new orders limits backlog growth but loses sales and may be preferable during a severe outage.",
+            "Increasing alert frequency can detect trouble earlier but raises noise; no monitoring system prevents failure by itself."
+        ]
+    },
+    {
+        "type": "heading",
+        "id": "real-world-transfer",
+        "text": "From queues to technical systems, without skipping later prerequisites"
+    },
+    {
+        "type": "paragraph",
+        "text": "When you later work with HTTP clients and servers, requests may queue, connections may fail and retries may increase load. The café loop provides a first mental model for that behavior. Do not assume databases, Kubernetes clusters or message brokers exist in today's learner project. The concept to transfer is cause → dependency → measurable symptom → evidence → intervention → delayed effect."
+    },
+    {
+        "type": "callout",
+        "tone": "note",
+        "title": "Do not conflate a possible explanation with the diagnosis",
+        "body": "Draw a failure chain as a hypothesis until evidence supports the causal links. A clear diagram is not a substitute for an observation."
+    },
+    {
+        "type": "heading",
+        "id": "independent-check",
+        "text": "Explain, calculate and challenge a new scenario"
+    },
+    {
+        "type": "paragraph",
+        "text": "A print desk receives seven jobs per minute and completes five, starting empty. Predict the queue after four minutes, then suppose a second printer raises capacity to nine from minute five. Predict the queues after minutes five and six. Describe one reinforcing loop, one balancing intervention, one delay, a competing diagnosis and a measurement that could falsify your preferred explanation. Assessment: correct arithmetic, causal arrows labeled, intervention timing respected, a genuine alternative and an explicit evidence plan."
+    }
+],
+    "Distinguish reinforcing and balancing feedback, compute delayed outcomes and trace cross-component failures using falsifiable evidence.",
+    [
+    "Draw the actual reinforcing and balancing loops from the café example, labeling what moves between steps.",
+    "Recompute the two-stage queue example and explain why improved throughput is not immediate recovery.",
+    "Model a payment-terminal failure from initiating defect to user-visible symptom, and state which links remain hypotheses.",
+    "Compare at least two interventions using capacity, delay and operational constraints.",
+    "Apply the mechanism to a new print-desk queue and propose a measurement that could invalidate your explanation."
+],
+    "Why can a balancing intervention make the queue shrink without eliminating customer delay? What is the difference between a failure chain, a correlation and proof of root cause?",
+    
 );
 
 export const tradeOffsRich = richLesson(
@@ -306,6 +525,7 @@ export const engineeringInvestigationRich: Lesson = {
 export const engineeringApprenticeRichLessons: Lesson[] = [
     thinkingLikeAnEngineerRich,
     systemsThinkingRich,
+    feedbackLoopsAndFailurePropagationRich,
     tradeOffsRich,
     debuggingMindsetRich,
     engineeringDecisionsRich,
