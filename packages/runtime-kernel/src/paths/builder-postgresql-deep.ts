@@ -27,10 +27,14 @@ const pgTransactions: LearningResource = { title: "PostgreSQL — Transaction Is
 const pgConstraints: LearningResource = { title: "PostgreSQL — Constraints", url: "https://www.postgresql.org/docs/current/ddl-constraints.html", kind: "reference" };
 const pgIndexes: LearningResource = { title: "PostgreSQL — Indexes", url: "https://www.postgresql.org/docs/current/indexes.html", kind: "reference" };
 const pgExplain: LearningResource = { title: "PostgreSQL — Using EXPLAIN", url: "https://www.postgresql.org/docs/current/using-explain.html", kind: "reference" };
+const pgComparison: LearningResource = { title: "PostgreSQL — Comparison Functions", url: "https://www.postgresql.org/docs/current/functions-comparison.html", kind: "reference" };
+const pgJoinTutorial: LearningResource = { title: "PostgreSQL — Joins Between Tables", url: "https://www.postgresql.org/docs/current/tutorial-join.html", kind: "reference" };
+const pgAggregationTutorial: LearningResource = { title: "PostgreSQL — Aggregate Functions", url: "https://www.postgresql.org/docs/current/tutorial-agg.html", kind: "reference" };
+const pgCmuModernSql: LearningResource = { title: "CMU 15-445 Fall 2025 — Modern SQL lecture", url: "https://15445.courses.cs.cmu.edu/fall2025/schedule.html", kind: "course", read: "Lecture 02; open linked notes and video", purpose: "Optional deeper explanation of SQL semantics and relational algebra" };
 const pgPsql: LearningResource = { title: "PostgreSQL — psql", url: "https://www.postgresql.org/docs/current/app-psql.html", kind: "reference" };
 const pgLocks: LearningResource = { title: "PostgreSQL — Explicit Locking", url: "https://www.postgresql.org/docs/current/explicit-locking.html", kind: "reference" };
 const resourcesByDataLesson: Record<string, LearningResource[]> = {
- "relational-model":[pgDdl,pgIntroVideo],"sql-crud":[pgQueries],"filtering-ordering":[pgQueries],aggregation:[pgFunctions],joins:[pgQueries],
+ "relational-model":[pgDdl,pgIntroVideo],"sql-crud":[pgQueries],"filtering-ordering":[pgComparison,pgQueries,pgCmuModernSql],aggregation:[pgAggregationTutorial,pgFunctions],joins:[pgJoinTutorial,pgQueries],
  subqueries:[pgQueries],ctes:[pgWith],"transactions-acid":[pgTransactions],"constraints-keys":[pgConstraints],"schema-design":[pgDdl],
  normalization:[pgDdl],indexes:[pgIndexes],"query-plans":[pgExplain],"query-performance":[pgExplain],"postgresql-practice":[pgPsql],
  "django-orm":[djangoQueryDocs],"orm-vs-sql":[djangoQueryDocs,pgQueries],"n-plus-one":[djangoQueryDocs,pgExplain],migrations:[djangoMigrationDocs,pgDdl],
@@ -398,59 +402,296 @@ const specs: DataLessonSpec[] = [
         knowledgeCheck: "1. Why should a mutation predicate be inspected as a SELECT first?\n2. What does RETURNING give you?\n3. Why is an INSERT column list preferable to relying on table column order?",
     },
     {
-        id: "filtering-ordering",
-        title: "Filtering and Ordering Queries",
-        introduction: "Useful registry questions depend on precise predicates and deterministic ordering. WHERE decides which facts qualify; ORDER BY decides how the result is presented. Mixing those concerns leads to subtle bugs and unstable pagination.",
-        outcomes: ["Compose predicates with comparison, IN, NULL and boolean logic.", "Reason about SQL three-valued logic.", "Use deterministic multi-column ordering.", "Recognize unsafe assumptions around NULL."],
-        sections: [
-            { id: "predicates", title: "Predicates define the candidate set", body: "`AND` narrows, `OR` broadens, and parentheses make intent explicit. `NULL` is not equal to anything, including `NULL`, so use `IS NULL` and `IS NOT NULL`.", code: "SELECT id, name, criticality\nFROM service\nWHERE lifecycle = 'active'\n  AND criticality IN ('high', 'critical')\nORDER BY criticality DESC, name ASC, id ASC;" },
-            { id: "determinism", title: "Ordering must be deterministic", body: "When multiple rows share the same primary sort value, add a stable tie-breaker such as id. This becomes essential when pagination is introduced." },
-            { id: "predicate-toolkit", title: "Common predicates express ranges, sets and patterns", body: "Use IN for membership in a known set, BETWEEN for an inclusive range when that reads clearly, LIKE/ILIKE for simple text patterns, and IS NULL for absence. PostgreSQL ILIKE performs case-insensitive pattern matching. Pattern matching is not a substitute for a search model, and a leading wildcard can make ordinary B-tree index use difficult.", code: "SELECT id, name\nFROM service\nWHERE criticality IN ('high', 'critical')\n  AND name ILIKE 'pay%'\n  AND retired_at IS NULL;" },
-            { id: "limit-offset", title: "LIMIT bounds output; OFFSET skips rows", body: "LIMIT is useful for bounded exploration and page-style APIs, but without deterministic ORDER BY the chosen rows are not a stable page. Large OFFSET values can become inefficient because the database still has to locate/skip preceding rows; later API design may use cursor/keyset pagination for changing collections." },
-            { id: "three-valued", title: "SQL predicates can be TRUE, FALSE or UNKNOWN", body: "Comparisons involving NULL commonly produce UNKNOWN. WHERE keeps rows for which the predicate is TRUE, so UNKNOWN rows are filtered out. This explains why NOT (column = value) does not automatically include NULL rows." },
+        "id": "filtering-ordering",
+        "title": "Filtering and Ordering Queries",
+        "introduction": "A registry query can return the wrong answer even though its SQL is syntactically valid. Before relying on filters and ordering for operational decisions, understand the logical pipeline: read candidate rows from a named table, evaluate one predicate per row, retain only TRUE results, project the requested columns, and order the resulting rows. The five-Service dataset from the previous lab is the reproducible reference throughout. You do not need an ORM, Django project or production environment.",
+        "outcomes": [
+            "Predict the exact selected rows for AND, OR, IN, parentheses, pattern and NULL predicates.",
+            "Explain why SQL has TRUE, FALSE and UNKNOWN in predicate evaluation.",
+            "Distinguish filtering from projection and explicit ordering, including ties and NULL sorting.",
+            "Use actual Steward rows to diagnose a retired-record leak caused by operator precedence."
         ],
-        assignment: ["Query active high/critical Steward services.", "Write one predicate involving NULL.", "Add a stable tie-breaker to each ordered query."],
-        resources: [postgresDocs],
-        practiceObjective: "Build a small catalogue of precise Steward filters and explain their truth conditions.",
-        practiceInstructions: ["Seed rows containing varied lifecycle, criticality and nullable fields.", "Write at least five WHERE clauses.", "Include AND/OR grouping and NULL handling.", "Demonstrate deterministic ordering when values tie."],
-        knowledgeCheck: "1. Why does column = NULL not do what many beginners expect?\n2. What does a tie-breaker solve in ORDER BY?\n3. When can OR unintentionally broaden a result set?",
+        "sections": [
+            {
+                "id": "mental-model",
+                "title": "FROM, WHERE, SELECT and ORDER BY: four different jobs",
+                "body": "FROM identifies the source relation; WHERE evaluates a Boolean condition for each candidate row; SELECT chooses the output columns/expressions; ORDER BY sorts the final result. SQL is declarative: this is a useful logical model, not a promise of the physical execution order selected by the PostgreSQL optimizer. On the seed fixture the five services are Payments API (active/high), Payroll API (active/critical), Identity API (active/critical), Catalogue API (active/medium) and Legacy Gateway (retired/low). Predict results with that row set before running a query. The database has no inherent stable row order: a SELECT without ORDER BY cannot promise an alphabetical or insertion-order page."
+            },
+            {
+                "id": "truth-tables",
+                "title": "A predicate is evaluated for every candidate row",
+                "body": "Comparisons such as lifecycle = 'active' produce TRUE or FALSE for a non-NULL lifecycle. AND requires both operands TRUE; OR requires at least one TRUE. Without parentheses, PostgreSQL evaluates AND more tightly than OR, so A AND B OR C means (A AND B) OR C. IN ('high','critical') is a convenient membership predicate. A mistake in grouping can include records that should be excluded even when each individual comparison is correct.",
+                "language": "sql",
+                "caption": "filter_boolean.sql — retired-record leak and its corrected predicate",
+                "code": "SELECT name FROM service\nWHERE lifecycle = 'active' AND criticality = 'critical'\n   OR name = 'Legacy Gateway'\nORDER BY name;\n\nSELECT name FROM service\nWHERE lifecycle = 'active'\n  AND (criticality = 'critical' OR name = 'Legacy Gateway')\nORDER BY name;",
+                "output": "Unparenthesized: Identity API, Legacy Gateway, Payroll API.\nParenthesized: Identity API, Payroll API. Legacy Gateway is excluded because its lifecycle is retired."
+            },
+            {
+                "id": "null-logic",
+                "title": "NULL means unknown/absent data, not an ordinary value",
+                "body": "Most ordinary comparisons against SQL NULL evaluate to UNKNOWN, not TRUE or FALSE. WHERE retains only TRUE rows: FALSE and UNKNOWN are both rejected. NOT UNKNOWN remains UNKNOWN. Therefore retired_at = NULL never identifies the unretired records; retired_at IS NULL does. These are SQL truth conditions, not Python None or JSON null behavior. In this fixture the four active-lifecycle services have retired_at NULL and Legacy Gateway has a retirement timestamp. No field named technical_owner exists yet; do not write a query against it until a later schema change has defined it.",
+                "language": "sql",
+                "caption": "filter_null.sql — wrong equality, correct IS NULL and UNKNOWN",
+                "code": "SELECT name FROM service\nWHERE retired_at = NULL\nORDER BY name;\n\nSELECT name FROM service\nWHERE retired_at IS NULL\nORDER BY name;\n\nSELECT COALESCE((NULL::text = 'x')::text, 'UNKNOWN') AS equals_x,\n       COALESCE((NOT (NULL::text = 'x'))::text, 'UNKNOWN') AS not_equals_x;",
+                "output": "First query: zero rows.\nSecond query: Catalogue API, Identity API, Payments API, Payroll API.\nThird query: UNKNOWN | UNKNOWN."
+            },
+            {
+                "id": "ordering",
+                "title": "Sort keys are not automatically unique",
+                "body": "If you order by criticality alone, all services with the same criticality tie. PostgreSQL does not promise which tied row comes first, and LIMIT can expose that instability. Use an explicit stable tie-breaker, such as a unique id, after a meaningful primary sort key. DESC and ASC indicate direction; NULLS FIRST or NULLS LAST make missing values' placement explicit when relevant. LIMIT bounds the output but OFFSET counts skipped result rows: the earlier Web/API module showed why offset pagination can shift when rows are inserted or deleted. One execution that happens to print the same order twice does not prove stability.",
+                "language": "sql",
+                "caption": "filter_order.sql — deterministic top results with a unique tie-breaker",
+                "code": "SELECT name, criticality\nFROM service\nWHERE lifecycle = 'active'\nORDER BY criticality DESC, name ASC, id ASC\nLIMIT 3;",
+                "output": "PostgreSQL text sort for criticality DESC: Payroll API (critical), Identity API (critical), Payments API (high) only if criticality text collation orders as expected; actual tie order among the two critical rows is Identity API then Payroll API due to name ASC. Use ORDER BY name ASC, id ASC for a collation-independent example below."
+            },
+            {
+                "id": "complete",
+                "title": "Predict, run, inspect and transfer",
+                "body": "First predict the results of the three published query blocks. Execute each against the unchanged seed and compare the exact chosen rows. Then write a new query: all active services whose name starts with 'Pay' regardless of case, ordered by name and id. Compare ILIKE 'pay%' with LIKE 'pay%' under your database collation and show why a leading wildcard can be an expensive search form on ordinary B-tree indexes. For a second independent case, find services where retired_at is present; use IS NOT NULL. Explain the difference between output order and filter semantics before moving to joins."
+            }
+        ],
+        "warning": "Never treat NULL as a quoted string 'NULL', or infer that a query without ORDER BY has stable row order. Text sorting of criticality is lexicographic, not a business severity ranking.",
+        "assignment": [
+            "Predict and execute the wrong/right Boolean query and annotate why Legacy Gateway leaked.",
+            "Run the NULL query; explain three-valued SQL logic and write IS NOT NULL independently.",
+            "Implement two stable filter+sort queries without copying the samples, including one ILIKE pattern and one tied key.",
+            "Record the seed version and queries so another learner can reproduce the selected rows."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL — Comparison Functions and Operators",
+                "url": "https://www.postgresql.org/docs/current/functions-comparison.html",
+                "kind": "reference",
+                "purpose": "Precise TRUE/FALSE/NULL comparison semantics, IS NULL and distinctness."
+            },
+            {
+                "title": "PostgreSQL — Table Expressions / WHERE",
+                "url": "https://www.postgresql.org/docs/current/queries-table-expressions.html",
+                "kind": "reference",
+                "purpose": "Read the documented logical FROM/WHERE/grouping pipeline."
+            },
+            {
+                "title": "CMU 15-445 Fall 2025 — Modern SQL (lecture and notes)",
+                "url": "https://15445.courses.cs.cmu.edu/fall2025/schedule.html",
+                "kind": "course",
+                "read": "Lecture #02 Modern SQL; notes and video from course schedule",
+                "purpose": "Optional university-level theory for predicates, query representation and SQL semantics."
+            }
+        ],
+        "practiceObjective": "Demonstrate correct SQL filtering and ordering with observed positive and negative cases on the unchanged Steward teaching dataset.",
+        "practiceInstructions": [
+            "Run filter_boolean.sql with and without parentheses; record the retired Legacy Gateway leak and explain AND/OR precedence.",
+            "Run filter_null.sql and prove equality with NULL differs from IS NULL; produce an independent truth table for UNKNOWN and NOT UNKNOWN.",
+            "Run filter_order.sql and explain its sort keys; avoid treating lexical criticality ordering as operational severity.",
+            "Build the independent active-Pay* query using ILIKE and record exact rows; compare with a case-sensitive alternative.",
+            "Demonstrate deterministic pagination ordering with id tie-breaker, noting that it does not solve offset shifts after concurrent writes."
+        ],
+        "knowledgeCheck": "Without copying queries: Why can (A AND B) OR C return a retired service? What does WHERE do with UNKNOWN? Why is ORDER BY criticality DESC potentially wrong for severity priority, and what makes a LIMIT page deterministic?"
     },
     {
-        id: "aggregation",
-        title: "Aggregation, GROUP BY and HAVING",
-        introduction: "Steward must answer questions about groups of facts: services per team, dependency counts, critical services per lifecycle and environments per service. Aggregation turns row-level data into system-level evidence.",
-        outcomes: ["Use COUNT, MIN, MAX and aggregate expressions.", "Group rows at the correct grain.", "Distinguish WHERE from HAVING.", "Detect misleading counts caused by joins."],
-        sections: [
-            { id: "aggregate-first", title: "An aggregate summarizes many input rows", body: "Functions such as `COUNT`, `SUM`, `AVG`, `MIN` and `MAX` calculate a summary over a set of input rows. Before grouping anything, make the basic operation visible: `SELECT COUNT(*) FROM service;` returns one result row containing the number of service rows." },
-            { id: "grain", title: "Choose the grouping grain", body: "`GROUP BY` divides the input into groups and produces one aggregate result row per group. Ask what one result row means before writing the query. If one row should mean one team, group by team identity, not every service attribute.", code: "SELECT t.id, t.name, COUNT(s.id) AS service_count\nFROM team t\nLEFT JOIN service s ON s.owning_team_id = t.id\nGROUP BY t.id, t.name\nHAVING COUNT(s.id) >= 2\nORDER BY service_count DESC;" },
-            { id: "where-having", title: "`WHERE` before grouping, `HAVING` after grouping", body: "`WHERE` removes source rows before aggregation. `HAVING` removes groups after aggregates have been computed. They answer different questions." },
-            { id: "aggregate-null", title: "Aggregates do not all treat NULL the same way", body: "COUNT(*) counts input rows; COUNT(column) counts only rows where that expression is non-NULL. SUM, AVG, MIN and MAX generally ignore NULL inputs and may return NULL when no input values exist. Know which population your metric actually measures before publishing it.", code: "SELECT\n  COUNT(*) AS service_rows,\n  COUNT(retired_at) AS rows_with_retirement_time\nFROM service;" },
-            { id: "conditional-aggregate", title: "FILTER can make conditional aggregates explicit", body: "PostgreSQL supports FILTER on aggregates, which can calculate several conditional metrics at one grouping grain without separate queries.", code: "SELECT owning_team_id,\n  COUNT(*) AS total,\n  COUNT(*) FILTER (WHERE criticality = 'critical') AS critical_count\nFROM service\nGROUP BY owning_team_id;" },
+        "id": "joins",
+        "title": "INNER, LEFT and RIGHT JOINs",
+        "introduction": "The Team, Service and Environment tables intentionally store separate facts. To answer 'who owns this Service?' or 'which services have no environment?' you must combine rows by explicit matching conditions. A JOIN is not an ORM feature or magical spreadsheet lookup: it forms pairs of rows according to an ON predicate, and the join type decides which unmatched records survive. Learn the actual output multiplicities before using joins inside a metric.",
+        "outcomes": [
+            "Trace join matching between primary/foreign-key values and predict result rows.",
+            "Compare INNER, LEFT and RIGHT joins and the null-extension of unmatched rows.",
+            "Explain the meaningful difference between an outer join predicate in ON versus WHERE.",
+            "Diagnose one-to-many row multiplication and use aliases for directed self-relationships."
         ],
-        warning: "Joining multiple one-to-many relations before COUNT can multiply rows and inflate totals. Inspect the row shape before trusting aggregates.",
-        assignment: ["Count services by owning team.", "Find teams with at least two active services.", "Explain whether filtering lifecycle belongs in WHERE or HAVING for your query."],
-        resources: [postgresDocs],
-        practiceObjective: "Produce trustworthy registry metrics using grouping and aggregation.",
-        practiceInstructions: ["Create data for teams with zero, one and multiple services.", "Use LEFT JOIN so zero-service teams remain observable.", "Add HAVING for a group-level threshold.", "Verify the count manually against source rows."],
-        knowledgeCheck: "1. What does grouping grain mean?\n2. Why can JOINs inflate COUNT?\n3. Give one condition that belongs in WHERE and one that belongs in HAVING.",
+        "sections": [
+            {
+                "id": "keys-to-pairs",
+                "title": "Trace one matching rule before naming join types",
+                "body": "On the seed fixture each Service has one owning_team_id referencing Team.id. For each Service row, PostgreSQL can logically look for the Team row whose id matches. The output combines chosen columns from both matching rows; this is a conceptual model, not the physical join algorithm used by the engine. A FOREIGN KEY constrains existing references but does not automatically select a Team name; the query must ask for it. Aliases s and t distinguish similarly named id/name columns, and ORDER BY makes output reproducible.",
+                "language": "sql",
+                "caption": "join_owner.sql — reconstruct the authoritative owner",
+                "code": "SELECT s.name AS service, t.name AS team\nFROM service AS s\nINNER JOIN team AS t ON t.id = s.owning_team_id\nORDER BY s.name;",
+                "output": "Catalogue API | Platform\nIdentity API | Identity\nLegacy Gateway | Platform\nPayments API | Payments\nPayroll API | Payments"
+            },
+            {
+                "id": "missing-pairs",
+                "title": "INNER versus LEFT: decide whether missing relationships stay visible",
+                "body": "The fixture's Payroll API has no row in Environment. An INNER JOIN between Service and Environment omits Payroll altogether; a LEFT JOIN returns the Service row and fills the absent Environment columns with SQL NULL. Conversely, Payments API has two Environment rows (production and staging), so a one-to-many join produces TWO result rows for Payments. This is not duplication in the table—it is the number of matching pairs in the join result. Predict 3 rows for Payroll/Payments under LEFT JOIN and 2 rows under INNER JOIN.",
+                "language": "sql",
+                "caption": "join_optional.sql — keep Payroll and expose two Payments environments",
+                "code": "SELECT s.name AS service, e.kind AS environment_kind\nFROM service s\nLEFT JOIN environment e ON e.service_id = s.id\nWHERE s.name IN ('Payments API', 'Payroll API')\nORDER BY s.name, e.kind NULLS LAST;",
+                "output": "Payments API | production\nPayments API | staging\nPayroll API | NULL"
+            },
+            {
+                "id": "on-versus-where",
+                "title": "A subtle failure: a WHERE filter can undo an outer join",
+                "body": "LEFT JOIN performs matching and null-extension before the final WHERE filter. Put the production-only match condition in ON and every selected Service survives; put e.kind = 'production' in WHERE and Payroll's null-extended row fails the predicate, disappearing from the result. Moving filters is not a harmless formatting change for outer joins. Use this example to debug reports that 'lost' services with missing deployments.",
+                "language": "sql",
+                "caption": "join_on_where.sql — two different results from one predicate",
+                "code": "SELECT s.name, e.kind\nFROM service s\nLEFT JOIN environment e\n  ON e.service_id = s.id AND e.kind = 'production'\nWHERE s.name IN ('Payments API', 'Payroll API')\nORDER BY s.name;\n\nSELECT s.name, e.kind\nFROM service s\nLEFT JOIN environment e ON e.service_id = s.id\nWHERE s.name IN ('Payments API', 'Payroll API')\n  AND e.kind = 'production'\nORDER BY s.name;",
+                "output": "Filter in ON: Payments API | production; Payroll API | NULL.\nFilter in WHERE: Payments API | production only."
+            },
+            {
+                "id": "right-full",
+                "title": "RIGHT JOIN and FULL JOIN are alternate preservation choices",
+                "body": "RIGHT JOIN preserves every row from the table to its right, filling unmatched left values with NULL; it is the mirror of LEFT JOIN. Swap table positions and rewrite most straightforward RIGHT JOIN queries as LEFT JOIN without changing preservation semantics. FULL JOIN retains unmatched rows from both sides. CROSS JOIN creates all combinations even without a matching relationship: five Services cross three Teams would create fifteen pairs; use CROSS JOIN intentionally, not by forgetting ON. A NATURAL JOIN silently chooses equally named columns as matching keys and can change meaning when schemas evolve; explicit ON is safer for teaching and review.",
+                "language": "sql",
+                "caption": "join_right.sql — RIGHT JOIN rewritten as the equivalent LEFT JOIN",
+                "code": "SELECT s.name AS service, e.kind\nFROM environment e\nRIGHT JOIN service s ON s.id = e.service_id\nWHERE s.name = 'Payroll API';\n\nSELECT s.name AS service, e.kind\nFROM service s\nLEFT JOIN environment e ON e.service_id = s.id\nWHERE s.name = 'Payroll API';",
+                "output": "Both queries: Payroll API | NULL."
+            },
+            {
+                "id": "self-join",
+                "title": "When one table plays two roles: directed dependencies",
+                "body": "A ServiceDependency has source_service_id and target_service_id. Both columns reference Service, so join the Service relation twice under different aliases: src means 'dependent service' and dst means 'the service it depends on'. Without two roles, a query cannot display human-readable names for both ends. On the fixture, Payments API depends on Identity API, and Payroll API depends on Payments API; direction matters when diagnosing impact.",
+                "language": "sql",
+                "caption": "join_dependencies.sql — decode both ends of a directed edge",
+                "code": "SELECT src.name AS service, dst.name AS depends_on\nFROM service_dependency d\nJOIN service src ON src.id = d.source_service_id\nJOIN service dst ON dst.id = d.target_service_id\nORDER BY src.name;",
+                "output": "Payments API | Identity API\nPayroll API | Payments API"
+            },
+            {
+                "id": "transfer",
+                "title": "Predict cardinality before using a JOIN in a count",
+                "body": "Before the next Aggregation lesson, prove three row counts on the same five-service fixture: Service alone has 5 rows; Service LEFT JOIN Environment has 6 rows because Payments has two environments and Payroll/Legacy have none; Service INNER JOIN Environment has 4 rows because only Payments, Identity and Catalogue have environments. Your actual fixture has four Environment rows (Payments 2, Identity 1, Catalogue 1). A report that counts joined rows instead of Service identities may inflate totals. Write the joined row list first; never apply DISTINCT blindly to hide a model error."
+            }
+        ],
+        "warning": "An INNER JOIN can hide rows with missing relationships. An outer join followed by a WHERE filter on the optional side can accidentally do the same. JOIN row multiplication is expected and must be explained before aggregation.",
+        "assignment": [
+            "Predict and run the ownership and optional-environment queries; annotate which rows are paired and which are null-extended.",
+            "Execute both ON/WHERE variants, name the boundary where Payroll disappears, and correct a hypothetical broken report.",
+            "Rewrite the RIGHT JOIN example as LEFT JOIN, and explain which table's rows are preserved.",
+            "Execute the directed dependency query and explain why joining Service once is insufficient.",
+            "Compute total row counts of a left and inner join without copying output; record what one row means."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL — Joins Between Tables",
+                "url": "https://www.postgresql.org/docs/current/tutorial-join.html",
+                "kind": "reference",
+                "purpose": "First-principles JOIN examples and unmatched-row behavior."
+            },
+            {
+                "title": "PostgreSQL — Table Expressions / Joined Tables",
+                "url": "https://www.postgresql.org/docs/current/queries-table-expressions.html",
+                "kind": "reference",
+                "purpose": "Authoritative INNER/LEFT/RIGHT/FULL semantics and ON-versus-WHERE counterexample."
+            },
+            {
+                "title": "CMU 15-445 Fall 2025 — Join Algorithms",
+                "url": "https://15445.courses.cs.cmu.edu/fall2025/schedule.html",
+                "kind": "course",
+                "read": "Lecture #12 and its notes/video; optional after learning logical JOIN semantics",
+                "purpose": "Deepen the difference between logical joins and physical nested-loop, hash, and sort-merge algorithms, which the Builder lesson does not implement."
+            }
+        ],
+        "practiceObjective": "Trace and execute the five named JOIN experiments with correct cardinalities and intentional missing-relationship diagnosis.",
+        "practiceInstructions": [
+            "Run join_owner.sql; identify each Service's authoritative Team using its foreign key.",
+            "Run join_optional.sql and explain why Payments appears twice but Payroll remains as a NULL row.",
+            "Run join_on_where.sql and show exactly why filtering e.kind in WHERE removes Payroll.",
+            "Run join_right.sql and explain preservation symmetry rather than claiming RIGHT JOIN is always needed.",
+            "Run join_dependencies.sql; trace each directed edge.",
+            "Independently write queries counting service rows, LEFT JOIN rows and INNER JOIN rows. Compare with 5, 6 and 4 on the unmodified seed."
+        ],
+        "knowledgeCheck": "How can LEFT JOIN create more rows than exist in the left table? Why does a WHERE filter on an optional joined field remove an unmatched row? What makes two Service aliases necessary in a dependency query, and when does a RIGHT JOIN preserve different rows than a LEFT JOIN?"
     },
     {
-        id: "joins",
-        title: "INNER, LEFT and RIGHT JOINs",
-        introduction: "JOINs are where the relational model becomes useful. They reconstruct connected facts without duplicating them. Choosing join semantics is an engineering decision about which missing relationships should remain visible.",
-        outcomes: ["Explain INNER and outer join result sets.", "Choose join direction based on the question.", "Detect accidental row multiplication.", "Query self-referential service dependencies."],
-        sections: [
-            { id: "join-mental-model", title: "A JOIN combines rows by a matching rule", body: "Start with two tables: `service` contains an `owning_team_id`, while `team` contains the corresponding `id`. A JOIN tells PostgreSQL how rows from those tables match. The `ON` expression is that matching rule; selected columns can then come from either side." , code: "SELECT s.name AS service, t.name AS team\nFROM service s\nJOIN team t ON t.id = s.owning_team_id;" },
-            { id: "join-semantics", title: "Join type decides which unmatched rows survive", body: "`INNER JOIN` keeps only matched pairs. `LEFT JOIN` also keeps every left-side row when no right-side row exists, filling the missing right-side columns with NULL. That distinction lets Steward expose data-quality gaps such as services without environments.", code: "SELECT s.name, e.name AS environment\nFROM service s\nLEFT JOIN environment e ON e.service_id = s.id\nORDER BY s.name, e.name;" },
-            { id: "self-reference", title: "Dependencies join Service twice", body: "A ServiceDependency relation references a source service and a target service. Aliases let one table play two roles in the same query.", code: "SELECT src.name AS service, dst.name AS depends_on\nFROM service_dependency d\nJOIN service src ON src.id = d.source_service_id\nJOIN service dst ON dst.id = d.target_service_id;" },
-            { id: "cardinality", title: "Predict join cardinality before trusting the result", body: "A one-to-many join repeats the one-side row once for every matching many-side row. Joining two independent one-to-many relationships can multiply combinations. Before adding DISTINCT or aggregation, state what one output row should represent and inspect whether the join preserves that grain." },
-            { id: "cross-full", title: "Know the less-common join shapes", body: "CROSS JOIN forms every combination of two inputs and is useful only when that Cartesian product is intended. FULL OUTER JOIN preserves unmatched rows from both sides. They are less common in ordinary application queries, but recognizing them helps you read SQL and diagnose accidental Cartesian products." },
+        "id": "aggregation",
+        "title": "Aggregation, GROUP BY and HAVING",
+        "introduction": "The previous JOIN experiments proved that a result row is not always a business entity: Payments API produced two rows because it has two Environments. Aggregation magnifies that difference. A database can correctly count rows and still answer the wrong business question. Learn the grouping grain, WHERE-versus-HAVING stage and NULL-aware counting before publishing dashboard numbers.",
+        "outcomes": [
+            "Predict aggregate output from the seed fixture and choose the grouping grain.",
+            "Explain COUNT(*) versus COUNT(nullable expression) on an outer join.",
+            "Distinguish WHERE before GROUP BY from HAVING after grouping.",
+            "Reproduce and correct a metric inflated by joining a one-to-many relationship.",
+            "Assess when COUNT(DISTINCT) or preaggregation is the better query shape."
         ],
-        assignment: ["List every service and its owning team.", "List every service even when no environment exists.", "List dependency edges with human-readable source and target names."],
-        resources: [postgresDocs],
-        practiceObjective: "Answer non-trivial Steward questions with deliberate join semantics.",
-        practiceInstructions: ["Seed at least one service without an environment.", "Compare INNER JOIN and LEFT JOIN outputs.", "Write the self-join dependency query.", "Explain one case where a RIGHT JOIN can be rewritten more readably as LEFT JOIN by swapping table order."],
-        knowledgeCheck: "1. Why would INNER JOIN hide a service with missing environment data?\n2. What causes row multiplication?\n3. Why do dependency queries need aliases?",
+        "sections": [
+            {
+                "id": "count-grain",
+                "title": "A count answers a question about a specific population",
+                "body": "COUNT(*) counts input rows, not abstract Services. COUNT(s.id) counts non-NULL matched Service identities and therefore returns zero for a Team with no Services under a LEFT JOIN. COUNT(*) in that same zero-Service team still counts the one null-extended Team row and incorrectly yields 1 if you call it service_count. Decide the *grain* of the report (one Team per result row) and the *population* (Services, not joined Environment records) before writing SQL. The baseline has Teams Identity=1, Payments=2, Platform=2; add a hypothetical empty Team only with a read-only VALUES/UNION ALL CTE, never silently mutate the shared fixture.",
+                "language": "sql",
+                "caption": "aggregate_team.sql — group at Team identity with a valid Service count",
+                "code": "SELECT t.name AS team, COUNT(s.id) AS service_count\nFROM team t\nLEFT JOIN service s ON s.owning_team_id = t.id\nGROUP BY t.id, t.name\nORDER BY t.name;",
+                "output": "Identity | 1\nPayments | 2\nPlatform | 2"
+            },
+            {
+                "id": "zero-case",
+                "title": "Test the zero-related-row case without changing the dataset",
+                "body": "To see why COUNT(*) and COUNT(s.id) differ, create a read-only virtual list of Teams containing all three real teams plus a synthetic 'Unassigned' row with id -999. A LEFT JOIN gives Unassigned one null-extended row. COUNT(*) returns 1 for that group; COUNT(s.id) correctly returns 0. The code uses a CTE (a named temporary query result), which will receive its own explanation later. For now read WITH as naming the result of the UNION ALL expression—no table is created or modified.",
+                "language": "sql",
+                "caption": "aggregate_zero.sql — count joined rows versus real Service identities",
+                "code": "WITH teams AS (\n  SELECT id, name FROM team\n  UNION ALL\n  SELECT -999::bigint, 'Unassigned'::text\n)\nSELECT t.name, COUNT(*) AS joined_rows, COUNT(s.id) AS service_count\nFROM teams t\nLEFT JOIN service s ON s.owning_team_id = t.id\nGROUP BY t.id, t.name\nORDER BY t.name;",
+                "output": "Identity | 1 | 1\nPayments | 2 | 2\nPlatform | 2 | 2\nUnassigned | 1 | 0"
+            },
+            {
+                "id": "where-having",
+                "title": "Filter rows before grouping or groups after grouping",
+                "body": "The meaningful logical sequence is FROM/JOIN, WHERE (filter source rows), GROUP BY (form groups), aggregates (calculate a summary), HAVING (keep groups), and finally projection/order. WHERE cannot reference COUNT(s.id) in the same grouping query: the count does not exist until after grouping. HAVING COUNT(s.id) >= 2 is a group-level condition. To count only active Services, put s.lifecycle = 'active' in the JOIN's ON clause when you must preserve empty Teams; putting it in WHERE after LEFT JOIN can eliminate zero-count teams. On this seed Payments has 2 active Services, Platform 1, Identity 1.",
+                "language": "sql",
+                "caption": "aggregate_having.sql — filter active matches then threshold groups",
+                "code": "SELECT t.name, COUNT(s.id) AS active_services\nFROM team t\nLEFT JOIN service s\n  ON s.owning_team_id = t.id AND s.lifecycle = 'active'\nGROUP BY t.id, t.name\nHAVING COUNT(s.id) >= 2\nORDER BY t.name;",
+                "output": "Payments | 2"
+            },
+            {
+                "id": "inflation",
+                "title": "A technically correct COUNT can be a false dashboard metric",
+                "body": "Now join each Service to its Environments as well as its Team, then COUNT(s.id). Payments API has two Environment rows, so the Payments Team's two Services contribute THREE joined rows: two Payments API and one Payroll API null-extended row. That makes the displayed Payments service count 3 even though exactly two distinct Services exist. COUNT(DISTINCT s.id) corrects the *identity count*; another robust approach is to aggregate Service at Team grain before joining unrelated one-to-many tables. DISTINCT may not be correct for SUM(some_amount), because two different services can legitimately have equal amounts. Show the inflated source row set before choosing a fix.",
+                "language": "sql",
+                "caption": "aggregate_inflation.sql — observe overcount and correctly count Service identities",
+                "code": "SELECT t.name AS team,\n       COUNT(s.id) AS wrong_count,\n       COUNT(DISTINCT s.id) AS service_count\nFROM team t\nLEFT JOIN service s ON s.owning_team_id = t.id\nLEFT JOIN environment e ON e.service_id = s.id\nGROUP BY t.id, t.name\nORDER BY t.name;",
+                "output": "Identity | 1 | 1\nPayments | 3 | 2\nPlatform | 2 | 2"
+            },
+            {
+                "id": "filter-and-nulls",
+                "title": "COUNT, FILTER and NULL choose different populations",
+                "body": "COUNT(*) counts all Service rows (5); COUNT(retired_at) counts rows whose retirement timestamp is not NULL (1). PostgreSQL FILTER (WHERE criticality='critical') calculates only the matching subset inside that aggregate without discarding noncritical rows from other aggregates. SUM, AVG, MIN and MAX generally ignore NULL inputs and may return NULL when no input values remain. Always label dashboard metrics by exactly which rows entered the computation.",
+                "language": "sql",
+                "caption": "aggregate_nulls.sql — define two populations in one report",
+                "code": "SELECT COUNT(*) AS all_services,\n       COUNT(retired_at) AS retired_with_timestamp,\n       COUNT(*) FILTER (WHERE criticality = 'critical') AS critical_services\nFROM service;",
+                "output": "5 | 1 | 2"
+            },
+            {
+                "id": "handoff",
+                "title": "Independent verification: predict before calculating",
+                "body": "With no further insertions, calculate the expected aggregates on paper, run each published query, and reconcile every discrepancy. Then write your own query returning one row per Team with total Services, active Services and production Environment count. Decide whether production Environment count means placements or Services with a production deployment: one Service could have more than one production placement, and the two business questions are different. Explicitly separate joined rows from Service identities. SQL can answer either question; only the engineering requirement determines which is right."
+            }
+        ],
+        "warning": "Never add DISTINCT to a dashboard query simply to make a number look plausible. First name the grain and inspect intermediate joined rows; a wrong metric can be faithfully computed from an incorrectly shaped input.",
+        "assignment": [
+            "Predict all published aggregate outputs from the fixture before running them.",
+            "Run aggregate_zero.sql and explain why COUNT(*) returns 1 for the synthetic empty Team.",
+            "Run aggregate_inflation.sql, identify the doubled Payments API row and justify COUNT(DISTINCT s.id) for this specific metric.",
+            "Compare WHERE and HAVING using the active-service threshold; preserve zero-service teams deliberately.",
+            "Write an independent grouped report with three precise metrics and documented business meaning."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL — Aggregate Functions Tutorial",
+                "url": "https://www.postgresql.org/docs/current/tutorial-agg.html",
+                "kind": "reference",
+                "purpose": "Worked introduction to COUNT/GROUP BY/HAVING and why aggregates cannot appear in WHERE."
+            },
+            {
+                "title": "PostgreSQL — Table Expressions / GROUP BY and HAVING",
+                "url": "https://www.postgresql.org/docs/current/queries-table-expressions.html",
+                "kind": "reference",
+                "purpose": "Authoritative ordering of WHERE, GROUP BY and HAVING transformations."
+            },
+            {
+                "title": "CMU 15-445 Fall 2025 — Sorting and Aggregations Algorithms",
+                "url": "https://15445.courses.cs.cmu.edu/fall2025/schedule.html",
+                "kind": "course",
+                "read": "Lecture #11 and notes/video; optional advanced mechanism study",
+                "purpose": "Extend logical aggregation to physical database algorithms and their trade-offs."
+            }
+        ],
+        "practiceObjective": "Use actual PostgreSQL grouped results to disprove two misleading counts and implement a report with an explicitly chosen grain.",
+        "practiceInstructions": [
+            "Run aggregate_team.sql and verify Identity=1, Payments=2, Platform=2.",
+            "Run aggregate_zero.sql; explain the exact difference between COUNT(*) and COUNT(s.id) for a team with no service.",
+            "Run aggregate_having.sql and prove that the group threshold is applied after matching active services.",
+            "Run aggregate_inflation.sql and inspect the Payments join input before choosing DISTINCT or preaggregation.",
+            "Run aggregate_nulls.sql; compare COUNT(*), COUNT(nonnull retired_at), and FILTER count against the fixture.",
+            "Produce an independent grouped report with totals, active counts, production deployments and clear labels."
+        ],
+        "knowledgeCheck": "Why can COUNT(*) over a LEFT JOIN show 1 for a team with no services? Why is COUNT(DISTINCT service.id) appropriate for one metric but not a universal fix for SUM? When does a filter belong in JOIN ON instead of WHERE, and when is HAVING required?"
     },
     {
         id: "subqueries",
