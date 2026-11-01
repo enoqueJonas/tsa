@@ -111,17 +111,19 @@ Builder audit may proceed in parallel at source level, but Engineering Apprentic
 
 ### Web and API Foundations
 
+**Acceptance correction (learner feedback, 2026-11-01):** The former source-level PASS classifications cannot be treated as evidence of instructional mastery. Each reading below requires independent review for first-principles explanation, prerequisite teaching, worked examples and observed learner comprehension. The original client–server lesson is the confirmed failure; the remaining lessons are *unverified*, not automatically deficient.
+
 | Lesson / area | Classification | Finding |
 | --- | --- | --- |
 | How the Web Works | REMEDIATED | Expanded DNS/TCP/TLS prerequisites, success evidence and failure boundaries before HTTP (`9d810021`). |
 | Client-Server Architecture + Client-Server Boundaries and Failure Modes | REMEDIATED — REVALIDATION REQUIRED | Learner screenshot disproved prior PASS: the original 35-minute reading was a compressed overview, assumed undefined terms and illustrated a future PostgreSQL dependency as if already built. Replaced with two progressively focused chapters (architecture/alternatives, then mechanics/failure lab) and a local, reproducible HTTP experiment; inspect both rendered pages before accepting. |
-| HTTP Requests and Responses | PASS | Teaches raw message anatomy, headers/body distinction and body-optional responses before practice. |
+| HTTP Requests and Responses | SOURCE-REVIEWED — LEARNER VALIDATION PENDING | Teaches raw message anatomy, headers/body distinction and body-optional responses before practice. |
 | Methods, Headers and Status Codes | REMEDIATED | Added concrete 400/401/403/404/500 semantics and authentication-vs-authorization distinction (`fa6c086b`). |
-| JSON and Content Types | PASS | Separates representation syntax, Content-Type/Accept and domain validation. |
-| REST Principles and Trade-offs | PASS | Treats REST as architectural constraints rather than URL aesthetics and explicitly discusses CRUD trade-offs. |
-| Modeling Resources and API Contracts | PASS | Strong representation/domain/storage separation and compatibility reasoning. |
-| Errors and Status Design | PASS | Failure taxonomy, stable codes, retryability and public-vs-internal evidence are directly taught. |
-| curl/Postman lab | PASS | Strong protocol-level synthesis after the targeted teaching gaps were remediated. |
+| JSON and Content Types | SOURCE-REVIEWED — LEARNER VALIDATION PENDING | Separates representation syntax, Content-Type/Accept and domain validation. |
+| REST Principles and Trade-offs | SOURCE-REVIEWED — LEARNER VALIDATION PENDING | Treats REST as architectural constraints rather than URL aesthetics and explicitly discusses CRUD trade-offs. |
+| Modeling Resources and API Contracts | SOURCE-REVIEWED — LEARNER VALIDATION PENDING | Strong representation/domain/storage separation and compatibility reasoning. |
+| Errors and Status Design | SOURCE-REVIEWED — LEARNER VALIDATION PENDING | Failure taxonomy, stable codes, retryability and public-vs-internal evidence are directly taught. |
+| curl/Postman lab | SOURCE-REVIEWED — LEARNER VALIDATION PENDING | Strong protocol-level synthesis after the targeted teaching gaps were remediated. |
 
 ### Relational Data and PostgreSQL
 
