@@ -833,3 +833,7 @@ The learner inspected the rendered **Client–Server Architecture** page and rep
 
 **Issue:** [#318 — Pedagogical depth reset](https://github.com/enoqueJonas/tsa/issues/318). **State:** `REMEDIATED` for the two rewritten source chapters, `AUDIT REQUIRED` for the remainder of the module and journey; `VALIDATED` remains blocked on actual rendered reading and independent learner teach-back.
 
+
+### 2026-11-01 — Immediate next lesson: HTTP Requests and Responses
+
+The immediately following lesson was also found to be a compressed header/protocol survey. Rewrote it as a 75-minute concept-first reading covering request/response anatomy, the precise header/body boundary, request-target vs URL, representation semantics, 204 vs 200, the behavior of the real Python demo server, and the distinction between HTTP/1.1 notation and HTTP/2+/Python's HTTP/1.0 response behavior. The practical now uses the actual mini-Steward example to inspect 200, HTML 404, outgoing requests and an Accept/Content-Type mismatch rather than demanding premature, unsupported POST/redirect scenarios. The executable regression also verifies the negative Accept case. **Source remediated, rendered validation and full build pending.**
