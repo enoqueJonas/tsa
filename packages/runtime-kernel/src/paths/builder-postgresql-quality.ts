@@ -118,32 +118,31 @@ const practices: Record<string, PracticeSpec> = {
         completionCriteria: ["The matching predicate, join type, and one-to-many cardinality are explained separately.", "LEFT/RIGHT preservation and ON/WHERE filtering are demonstrated with real missing relationships.", "The learner can explain why a Service can appear twice without being duplicated in persistent storage.", "The JOIN module is completed before the Aggregation module."]
     },
     "relational-data-and-postgresql-subqueries-practice": {
-        objective: "Use EXISTS, IN and JOIN deliberately rather than treating subqueries as a stylistic trick.",
-        scenario: "You need to find services that have at least one production environment. Three engineers propose EXISTS, IN and JOIN solutions and claim theirs is always faster.",
+        objective: "Use IN, EXISTS, scalar and anti-existence queries with precise row-shape predictions and a reproducible NULL failure.",
+        scenario: "An operator must find Services with and without production deployments. A NOT IN query unexpectedly returns no results when the candidate list contains NULL.",
         instructions: [
-            "Implement the production-environment question with EXISTS.",
-            "Implement a logically equivalent solution using JOIN and, where sensible, IN.",
-            "Compare result correctness first, including duplicate behavior.",
-            "Run EXPLAIN on the alternatives using the same dataset and parameters.",
-            "Identify whether PostgreSQL transforms them into similar physical plans or meaningfully different ones.",
-            "Choose the version you would keep based on intent, correctness and evidence rather than folklore."
+            "Use the unchanged five-Service database fixture; run subquery_in.sql, subquery_exists.sql and subquery_scalar.sql and state each inner query's output shape.",
+            "Run the isolated subquery_not_in.sql example; record why the first query returns zero rows while the NOT EXISTS version returns 2 and 3.",
+            "Independently write correlated NOT EXISTS and LEFT anti-join queries for Services without a production Environment.",
+            "Compare the two results with the fixture's Payroll API and Legacy Gateway; do not infer algorithmic performance superiority from syntax.",
+            "Explain when a scalar subquery is invalid because it produces multiple rows and when JOIN can increase outer-row cardinality."
         ],
-        deliverables: ["Equivalent query variants", "EXPLAIN evidence", "Duplicate-behavior check", "Query-shape decision note"],
-        completionCriteria: ["EXISTS is understood as an existence test, not a magic performance keyword.", "Logical SQL structure is distinguished from PostgreSQL's chosen physical plan.", "The kept query is justified by readability and evidence."],
+        deliverables: ["Four source-extracted SQL transcripts", "NULL truth-condition diagnosis", "Two independently authored anti-join queries", "Query-shape decision note"],
+        completionCriteria: ["The learner predicts result sets before execution.", "NOT IN with nullable values does not silently pass as equivalent to NOT EXISTS.", "Correlation is explicitly tied to the outer Service identity.", "The chosen form matches the question before optimization."]
     },
     "relational-data-and-postgresql-ctes-practice": {
-        objective: "Turn a difficult multi-stage registry question into inspectable query stages and reason about recursion safely.",
-        scenario: "A dependency-risk query has become difficult to review because filtering, aggregation and dependency traversal are buried in one statement. The team needs a version that can be debugged stage by stage.",
+        objective: "Build inspectable staged queries and a terminating directed dependency traversal without confusing WITH with persistent storage.",
+        scenario: "A registry reviewer wants critical service dependency counts and the transitive dependency chain of Payroll API. The dependency graph may contain cycles.",
         instructions: [
-            "Choose a non-trivial Steward query involving filtering plus aggregation or dependency traversal.",
-            "Break it into named CTE stages whose names describe business meaning rather than implementation detail.",
-            "Run each stage independently and verify its intermediate row set.",
-            "Produce an equivalent non-CTE query and compare readability and plan shape.",
-            "Sketch a recursive dependency traversal and identify how a cycle could cause repeated traversal.",
-            "Document the cycle-protection strategy you would require before using recursion on untrusted dependency data."
+            "Run cte_priority.sql and verify the three exact priority-service outgoing edge counts.",
+            "Execute and explain each nonrecursive CTE stage independently before trusting the combined query.",
+            "Run cte_recursive.sql and trace depth 0 Payroll API to depth 2 Identity API; explain each visited-node guard operation.",
+            "Run the isolated cte_cycle.sql with VALUES two-node cycle and show that A and B appear once each.",
+            "Create a new staged query based on a concrete registry question and compare readability with its non-CTE equivalent.",
+            "Distinguish a query-scoped CTE, a session TEMP table, a persistent VIEW and a materialized view; do not claim query tuning or plan materialization without EXPLAIN evidence."
         ],
-        deliverables: ["Staged CTE query", "Intermediate-stage evidence", "Equivalent non-CTE query", "Recursive-cycle safety note"],
-        completionCriteria: ["Each CTE stage has a clear reason to exist.", "Intermediate results can be independently inspected.", "Recursive traversal is not proposed without explicit cycle handling."],
+        deliverables: ["Three published SQL transcripts", "Anchor/recursive-step/path diagram", "Two-node cycle termination evidence", "Independent staged query", "CTE storage and plan boundary note"],
+        completionCriteria: ["Cycle guard is actually executed and output verified.", "Recursive query cannot loop indefinitely on the provided example.", "The learner explains the lifetime and materialization limitations of WITH.", "Examples use the existing ServiceDependency fixture without unannounced schema mutations."]
     },
     "relational-data-and-postgresql-transactions-acid-practice": {
         objective: "Prove atomic behavior for a multi-write Steward operation by observing both rollback and commit outcomes.",
