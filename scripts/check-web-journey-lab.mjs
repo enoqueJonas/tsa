@@ -6,7 +6,7 @@ import net from "node:net";
 import { spawn, spawnSync } from "node:child_process";
 
 const source = fs.readFileSync("packages/runtime-kernel/src/paths/builder-web-api-deep.ts", "utf8");
-const samples = [...source.matchAll(/"caption":\\s*"([^"]+)"\\s*,\\s*"code":\\s*("(?:\\\\.|[^"\\\\])*")/g)]
+const samples = [...source.matchAll(/"caption":\s*"([^"]+)"\s*,\s*"code":\s*("(?:\\.|[^"\\])*")/g)]
   .map(hit => ({ caption: hit[1], code: JSON.parse(hit[2]) }));
 const sample = prefix => {
   const found = samples.find(value => value.caption.startsWith(prefix));
@@ -61,18 +61,18 @@ try {
 
   const success = curl(curlCommands[0]);
   assert.equal(success.status, 0, success.stderr);
-  assert.match(success.stdout, /^HTTP\\/\\d(?:\\.\\d)? 200/m);
-  assert.match(success.stdout, /<h1>Local web works<\\/h1>/);
+  assert.match(success.stdout, new RegExp("^HTTP/[0-9][.][0-9] 200", "m"));
+  assert.ok(success.stdout.includes("<h1>Local web works</h1>"));
 
   const missing = curl(curlCommands[1]);
   assert.equal(missing.status, 0, missing.stderr);
-  assert.match(missing.stdout, /^HTTP\\/\\d(?:\\.\\d)? 404/m);
+  assert.match(missing.stdout, new RegExp("^HTTP/[0-9][.][0-9] 404", "m"));
 
   server.kill("SIGTERM");
   await new Promise(resolve => server.once("exit", resolve));
   const refused = curl(curlCommands[2]);
   assert.notEqual(refused.status, 0, "Stopped server unexpectedly answered");
-  assert.doesNotMatch(refused.stdout, /^HTTP\\//m, "Connection refusal is not HTTP");
+  assert.doesNotMatch(refused.stdout, new RegExp("^HTTP/", "m"), "Connection refusal is not HTTP");
   console.log("Web journey lab passed: published setup, curl HTTP 200, curl HTTP 404 and no HTTP after shutdown.");
 } finally {
   if (server.exitCode === null) {
