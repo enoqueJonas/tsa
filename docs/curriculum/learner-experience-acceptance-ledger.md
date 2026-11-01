@@ -635,3 +635,8 @@ See [the learner-order review](ped-005-web-api-learner-order-review.md) for exac
 - Full suite 12/12 and production build passed. Rendered methods reading/practical and retry reading received bounded DOM review; reload retained reading position. Synthetic navigation reflections are not competence evidence.
 - Independent teach-back/transfer: **NOT RUN**. Full responsive visual review and final lab: **UNVERIFIED**.
 - Module/school acceptance: **NOT VALIDATED**. Remaining thin readings and missing final-lab capabilities are listed explicitly; #318/#319/#320 remain open.
+
+
+## REST continuation — 2026-11-01
+
+REST Principles and Trade-offs received targeted source remediation: mechanisms for stateless interaction, uniform interface, cacheability and layering; two worked ownership-transfer designs; executable offset/cursor insertion and deletion failures with explicit snapshot limits; independent transfer rubric. The original practical remains a design exercise. New pagination sample is extracted and executed by the Web/API regression. Rendered review of this increment and independent learner transfer remain UNVERIFIED; no VALIDATED promotion. Earlier THIN classification is superseded only for these addressed source gaps. Full #319 and remaining #320 contract/error/final-lab work stay open.

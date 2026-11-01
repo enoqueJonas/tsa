@@ -20,3 +20,5 @@ function execute(captionPrefix, expected) {
 execute("json_boundary.py", "ACCEPTED\nDOMAIN ERROR\nSYNTAX ERROR\nSHAPE ERROR");
 execute("Run this separate Python snippet", "omitted\nexplicit null\nvalue: 0");
 console.log("Web/API learner JSON examples passed: syntax, shape, domain and omitted/null/zero classifications.");
+
+execute("pagination_model.py", "first: [10, 20]\noffset after insert: [20, 30]\ncursor after insert: [30, 40]\noffset after delete: [40]\ncursor after delete: [30, 40]");
