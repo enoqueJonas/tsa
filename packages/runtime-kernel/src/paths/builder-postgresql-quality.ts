@@ -145,20 +145,32 @@ const practices: Record<string, PracticeSpec> = {
         completionCriteria: ["Cycle guard is actually executed and output verified.", "Recursive query cannot loop indefinitely on the provided example.", "The learner explains the lifetime and materialization limitations of WITH.", "Examples use the existing ServiceDependency fixture without unannounced schema mutations."]
     },
     "relational-data-and-postgresql-transactions-acid-practice": {
-        objective: "Prove atomic behavior for a multi-write Steward operation by observing both rollback and commit outcomes.",
-        scenario: "Registering a production service requires the Service row and an initial production Environment. A failure after the first insert currently leaves an impossible half-created service.",
+        objective: "Demonstrate transaction atomicity with real PostgreSQL commit/rollback evidence and recover from a deliberately invalid statement using a SAVEPOINT.",
+        scenario: "A production Service and its initial Environment are two rows representing one required business registration. Without one transaction, a failing Environment creation can leave a half-created Service.",
         instructions: [
-            "Define the invariant the multi-write operation must preserve.",
-            "Execute the two writes inside an explicit transaction and force the second write to fail.",
-            "ROLLBACK and query the database to prove that no partial service remains.",
-            "Repeat with valid data and COMMIT, then prove both facts are durable.",
-            "Repeat the failing scenario without a transaction in disposable data to observe the partial-state risk.",
-            "Map what you observed to atomicity and explain which consistency rules still depend on constraints or application logic.",
-            "Observe/document your client's autocommit behavior, then explain how an explicit transaction changes the boundary.",
-            "Run one two-session observation under PostgreSQL's default Read Committed behavior and state what a stronger isolation level would be intended to protect."
+            "Establish a disposable PostgreSQL lab with the seeded Steward tables; explain why foreign-key integrity does not by itself require every Service to have an Environment.",
+            "Save and execute the published txn_rollback.sql script. Capture inside=1, after=0 and a fresh-connection read of 0.",
+            "Save and execute txn_commit.sql; verify both Service and Environment in another psql connection. Run it only once against the clean fixture.",
+            "Execute txn_savepoint.sql. Record the intended CHECK violation, rollback-to-savepoint and valid committed replacement Environment. Do not weaken the CHECK or globally suppress psql errors.",
+            "Produce a separate autocommit thought experiment that shows the half-state risk without modifying the shared fixture.",
+            "Distinguish atomicity, declared consistency, isolation and durability, including limitations of the exercises, then safely remove only the educational records."
         ],
-        deliverables: ["Transactional SQL", "Rollback evidence", "Successful commit evidence", "ACID behavior explanation"],
-        completionCriteria: ["The failed operation leaves no partial durable state when protected by the transaction.", "The learner distinguishes atomicity from business-rule correctness.", "The explanation is based on observed database state rather than definitions alone."],
+        deliverables: ["Rollback and new-connection transcript", "Two-row commit evidence", "SAVEPOINT recovery and error transcript", "ACID versus business invariant explanation"],
+        completionCriteria: ["The observed rollback leaves no Service after reconnect.", "A committed Service and Environment are both visible to a new session.", "The real CHECK failure is captured and does not escape to production data.", "The learner does not claim a simulated power outage or automatic domain consistency."]
+    },
+    "relational-data-and-postgresql-concurrent-transactions-and-isolation-levels-practice": {
+        objective: "Prove PostgreSQL's Read Committed and Repeatable Read visibility differences through two independently coordinated psql sessions.",
+        scenario: "Two workers read the same state while one commits an update. Their outputs differ even though neither reads uncommitted data. Explain the snapshot boundary rather than calling every changed value a race-condition bug.",
+        instructions: [
+            "Create the dedicated tsa_isolation_probe table only in an isolated learning database and start two independent psql terminals A and B.",
+            "Follow isolation_read_committed.txt step by step. Capture A=10 initially, A=10 while B's update is uncommitted, and A=20 after B commits.",
+            "Reset the probe to 10 and follow isolation_repeatable_read.txt. Capture A=10 initially and still 10 after B commits, then 20 after A ends.",
+            "Draw a timeline showing both session boundaries, snapshots and the COMMIT that changes what future reads may observe.",
+            "Contrast PostgreSQL's Read Uncommitted behavior, Repeatable Read limitations and SQLSTATE 40001 whole-transaction retry for Serializable.",
+            "Clean up only the dedicated probe after recording evidence; do not interpret a single-session script as a concurrency demonstration."
+        ],
+        deliverables: ["Two-terminal Read Committed transcript", "Two-terminal Repeatable Read transcript", "Snapshot/commit timeline", "Isolation and retry decision record"],
+        completionCriteria: ["The test actually uses separate concurrent database connections.", "The learner can explain the post-B-commit read difference between isolation levels.", "No dirty-read claim contradicts PostgreSQL behavior.", "Serializable is not marked tested merely because Read Committed/Repeatable Read ran."]
     },
     "relational-data-and-postgresql-constraints-keys-practice": {
         objective: "Move durable Steward invariants from comments and application checks into PostgreSQL where the database can enforce them for every writer.",
