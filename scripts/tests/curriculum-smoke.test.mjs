@@ -48,6 +48,10 @@ test("method, retry and prerequisite examples execute from their teaching source
   runAudit("scripts/check-method-retry-teaching-examples.mjs", /Method\/retry teaching examples passed:/);
 });
 
+test("Builder persistence and PostgreSQL-first-connection examples preserve learner order and run their published Python code", () => {
+  runAudit("scripts/check-builder-data-foundations-examples.mjs", /Builder data foundations examples passed:/);
+});
+
 test("Java dependency-injection lesson executes and matches published output", () => {
   runAudit("scripts/check-java-teaching-examples.mjs", /Java learner-example validation passed:/);
 });
