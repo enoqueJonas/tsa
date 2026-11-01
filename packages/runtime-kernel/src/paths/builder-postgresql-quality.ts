@@ -33,20 +33,32 @@ const practices: Record<string, PracticeSpec> = {
         completionCriteria: ["The next lab has a real accessible PostgreSQL database or an honest blocked-state record.", "The learner distinguishes client, server, database, schema and role.", "SQL and psql meta-commands are correctly separated.", "No real PostgreSQL execution is claimed solely from static CI tests."]
     },
     "relational-data-and-postgresql-relational-model-practice": {
-        objective: "Give the existing Steward domain durable relational storage and deliberately expand it with the relationships needed by the Builder product.",
-        scenario: "steward-core currently keeps Services in memory, and Web/API Foundations defined a future HTTP contract without inventing persistence. Now persistence becomes real. Design the first PostgreSQL schema from the Service behavior you already own, then add the Team, Environment and dependency facts needed for the registry to grow.",
+        objective: "Understand Team, Service and relationship semantics through a deliberately temporary PostgreSQL example before creating the permanent Steward schema.",
+        scenario: "The preceding lesson gave you a working psql connection. Now you can observe keys and relationships without prematurely making persistent tables and silently committing to a schema before you understand its facts.",
         instructions: [
-            "Inventory the current Service fields and Team ownership concept from steward-core before drawing a table.",
-            "Model Team and Service first. Preserve the domain meaning already established instead of copying a hypothetical API response.",
-            "Add Environment as a separate relation so one Service can exist in multiple environments without repeating the Service record.",
-            "Add directed ServiceDependency relationships using Service identities rather than comma-separated names.",
-            "Choose primary keys, foreign keys, cardinalities, PostgreSQL data types and nullability explicitly, then create the schema in PostgreSQL. Record why absence is or is not valid for at least two fields.",
-            "Seed at least two Teams, three Services, multiple Environments and two dependency edges using names already familiar from the Python exercises where practical.",
-            "Rename one Team and prove Service ownership still has one authoritative source.",
-            "Write one JOIN that reconstructs a useful Service catalogue view and compare that relational result with the in-memory representation you started from."
+            "Inventory Service fields and the Team ownership relationship from earlier Builder Python work. Define identity, attribute, one-to-many and directed many-to-many with examples.",
+            "In a single psql session, execute the lesson's CREATE TEMP TABLE team/service/environment sketches in sequence, not in separate sessions; observe the Team rows and foreign-key relationship.",
+            "Explain why service.owning_team_id is a foreign key rather than a duplicate team name; sketch a directed service_dependency relation and its integrity rules.",
+            "Compare a normalized Team/Service model with a flawed duplicate-team-name design; predict the effect of a Team rename.",
+            "Close that psql session. Open another and show that the temporary example tables are absent. The next lesson will create the permanent teaching dataset.",
+            "State which Steward fields existed in the Python core and which database columns are proposed extensions, rather than pretending the previous app already implemented them."
         ],
-        deliverables: ["Current-domain inventory", "Relational schema sketch", "Working PostgreSQL schema and seed SQL", "Team-rename evidence", "Catalogue JOIN output", "Persistence-boundary note"],
-        completionCriteria: ["PostgreSQL is introduced here rather than assumed in earlier exercises.", "Existing Service concepts survive the move to persistence.", "Team, Environment and ServiceDependency have explicit relational meaning.", "Ownership and dependencies use keys rather than duplicated text.", "The learner can explain why database rows do not need to mirror API JSON or Python objects exactly."]
+        deliverables: ["Fact and cardinality diagram", "One-session TEMP table transcript", "Independent post-disconnect missing-table evidence", "Ownership anomaly explanation", "Proposed schema notes for the next lesson"],
+        completionCriteria: ["Every command is run only after establishing an actual PostgreSQL connection.", "The learner can explain TEMP lifetime and why key references matter.", "The exercise does not create conflicting permanent tables before the canonical seed lab.", "Previously implemented domain and proposed persistence extensions are distinguished."]
+    },
+    "relational-data-and-postgresql-steward-schema-and-seed-practice": {
+        objective: "Build one permanent, consistent, disposable PostgreSQL teaching dataset that supports the next SQL lessons.",
+        scenario: "The original lesson sequence later queried columns and relationships without defining them. Establish a single documented schema plus seed data, then verify both successful joins and constraint failures.",
+        instructions: [
+            "Confirm you are connected to a freshly provisioned empty tsa_steward_lab database; do not drop or overwrite tables in an existing database.",
+            "Save the published steward_schema_seed.sql exactly and execute it with psql -X -v ON_ERROR_STOP=1 -1 -f steward_schema_seed.sql.",
+            "Save and run verify_steward_seed.sql in a new connection. Check team counts (Identity 1, Payments 2, Platform 2), one missing Payroll environment and both dependency edges.",
+            "Attempt the two separately documented invalid inserts: foreign-key orphan and duplicate Service name. Capture distinct errors and verify five original Services remain.",
+            "Explain why active and lifecycle are separate assumptions, and why fake .invalid endpoints must not be used for live HTTP tests.",
+            "Commit SQL scripts, expected results and a concise documented reset/reprovisioning procedure for this disposable learning database."
+        ],
+        deliverables: ["Atomic baseline SQL run", "Three expected verification query result sets", "Two negative constraint transcripts", "Post-run integrity query", "Reproduction instructions"],
+        completionCriteria: ["All later-referenced baseline columns exist in the seed schema.", "Five Services, three Teams, four Environment rows and two directed dependencies are proved, not guessed.", "No destructive commands are directed at real or shared data.", "No PostgreSQL pass is inferred from source-only or SQLite-based checks."]
     },
     "relational-data-and-postgresql-sql-crud-practice": {
         objective: "Perform data changes with a disciplined preview-mutate-verify workflow that makes accidental broad updates difficult.",
