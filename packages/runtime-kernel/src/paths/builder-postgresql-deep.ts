@@ -614,11 +614,11 @@ const specs: DataLessonSpec[] = [
             {
                 "id": "zero-case",
                 "title": "Test the zero-related-row case without changing the dataset",
-                "body": "To see why COUNT(*) and COUNT(s.id) differ, create a read-only virtual list of Teams containing all three real teams plus a synthetic 'Unassigned' row with id -999. A LEFT JOIN gives Unassigned one null-extended row. COUNT(*) returns 1 for that group; COUNT(s.id) correctly returns 0. The code uses a CTE (a named temporary query result), which will receive its own explanation later. For now read WITH as naming the result of the UNION ALL expression—no table is created or modified.",
+                "body": "To see why COUNT(*) and COUNT(s.id) differ, use VALUES to provide one *virtual row* named Unassigned with an impossible Team id -999. VALUES makes a read-only row source: (VALUES (-999, 'Unassigned')) AS t(id, name) gives its two columns meaningful names. LEFT JOIN creates one null-extended result; COUNT(*) returns 1, while COUNT(s.id) returns 0. No table is created or modified. The later CTE lesson will teach how to name longer query stages; this example needs no CTE.",
                 "language": "sql",
                 "caption": "aggregate_zero.sql — count joined rows versus real Service identities",
-                "code": "WITH teams AS (\n  SELECT id, name FROM team\n  UNION ALL\n  SELECT -999::bigint, 'Unassigned'::text\n)\nSELECT t.name, COUNT(*) AS joined_rows, COUNT(s.id) AS service_count\nFROM teams t\nLEFT JOIN service s ON s.owning_team_id = t.id\nGROUP BY t.id, t.name\nORDER BY t.name;",
-                "output": "Identity | 1 | 1\nPayments | 2 | 2\nPlatform | 2 | 2\nUnassigned | 1 | 0"
+                "code": "SELECT t.name, COUNT(*) AS joined_rows, COUNT(s.id) AS service_count\nFROM (VALUES (-999::bigint, 'Unassigned'::text)) AS t(id, name)\nLEFT JOIN service s ON s.owning_team_id = t.id\nGROUP BY t.name\nORDER BY t.name;",
+                "output": "Unassigned | 1 | 0"
             },
             {
                 "id": "where-having",
@@ -739,10 +739,10 @@ const specs: DataLessonSpec[] = [
             {
                 "id": "negative",
                 "title": "NOT IN is dangerous when the candidate set includes NULL",
-                "body": "This counterexample does not touch the Steward tables. The inner values are 1 and NULL. For x=2, '2 NOT IN (1,NULL)' is not TRUE: it is UNKNOWN because 2 might equal the missing value. WHERE excludes UNKNOWN, so the NOT IN query returns no rows. A correctly correlated NOT EXISTS asks whether a real matching row exists and returns 2 and 3. Do not blindly replace every NOT IN with NOT EXISTS without specifying the matching columns and NULL policy; understand the semantics first.",
+                "body": "This counterexample does not touch the Steward tables. The VALUES expressions create tiny read-only row sources and AS c(x)/AS b(y) name their columns. The inner values are 1 and NULL. For x=2, '2 NOT IN (1,NULL)' is not TRUE: it is UNKNOWN because 2 might equal the missing value. WHERE excludes UNKNOWN, so the NOT IN query returns no rows. A correctly correlated NOT EXISTS asks whether a real matching row exists and returns 2 and 3. Do not blindly replace every NOT IN with NOT EXISTS without specifying the matching columns and NULL policy; understand the semantics first.",
                 "language": "sql",
                 "caption": "subquery_not_in.sql — the NULL trap and a safe anti-existence test",
-                "code": "WITH candidates(x) AS (VALUES (1),(2),(3)),\n     blocked(y) AS (VALUES (1),(NULL))\nSELECT x FROM candidates\nWHERE x NOT IN (SELECT y FROM blocked)\nORDER BY x;\n\nWITH candidates(x) AS (VALUES (1),(2),(3)),\n     blocked(y) AS (VALUES (1),(NULL))\nSELECT c.x FROM candidates c\nWHERE NOT EXISTS (\n  SELECT 1 FROM blocked b WHERE b.y = c.x\n)\nORDER BY c.x;",
+                "code": "SELECT c.x FROM (VALUES (1),(2),(3)) AS c(x)\nWHERE c.x NOT IN (\n  SELECT b.y FROM (VALUES (1),(NULL)) AS b(y)\n)\nORDER BY c.x;\n\nSELECT c.x FROM (VALUES (1),(2),(3)) AS c(x)\nWHERE NOT EXISTS (\n  SELECT 1 FROM (VALUES (1),(NULL)) AS b(y)\n  WHERE b.y = c.x\n)\nORDER BY c.x;",
                 "output": "NOT IN query: zero rows because the blocked set contains NULL.\nNOT EXISTS query: 2, 3."
             },
             {
