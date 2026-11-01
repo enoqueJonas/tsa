@@ -183,18 +183,13 @@ const practices: Record<string, PracticeSpec> = {
     completionCriteria: ["Current implementation and future proposals are distinguished.", "Syntax, shape and domain rejection are traced separately.", "Public fields are selected deliberately and invalid input does not mutate registry state.", "Compatibility conclusions cite executed consumer behavior.", "Independent transfer satisfies the five criteria in the reading; sample execution alone does not prove mastery."]
   },
   "web-and-api-foundations-errors-and-status-design": {
-    objective: "Design a Steward failure contract that lets clients distinguish correction, authentication, authorization, conflict, retry and unexpected server failure without leaking internal diagnostics.",
-    scenario: "A prototype wraps every exception and returns HTTP 400 with the original exception message. It appears user-friendly, but database failures now look like bad input and SQL details can reach callers. Replace the design with a stable failure contract.",
-    instructions: [
-      "Model six failures: invalid criticality, self-dependency, duplicate dependency, missing authentication, forbidden cross-team edit and database outage.",
-      "Assign a status and stable machine-readable error code to each, and define a consistent error envelope that can carry field details plus a request/correlation identifier.",
-      "For every case, state what the client should do next: correct input, authenticate, stop, retry later or escalate.",
-      "Separate fields suitable for a public response from details that belong only in controlled logs.",
-      "Take one low-level database exception and show how you would prevent its raw text from becoming the public API contract."
-    ],
-    deliverables: ["Six-case failure contract", "Client-action/retry table", "Public-versus-internal diagnostic split", "Exception-leakage remediation example"],
-    completionCriteria: ["Different failure categories remain observable to clients.", "Stable error codes do not depend on raw exception text.", "Unexpected server defects are not mislabeled as client errors.", "Public responses are actionable without exposing unnecessary internals."]
+    objective: "Translate understood failures and unexpected defects without confusing caller responsibility or leaking implementation details.",
+    scenario: "Use the standalone error_boundary.py model before adapting actual Steward domain exceptions. Authentication and database failures remain explicitly proposed or synthetic.",
+    instructions: ["Execute all seven cases and annotate detection layer, status/code, client action and diagnostic evidence.", "Add array, null and negative-age cases; identify the model's coarse object/age classification and improve it with a dedicated shape error.", "Inject KeyError after valid input and verify a generic 500 body with a matching internal event identifier, without private detail leakage.", "Design future 401 and 403 contracts, including the authentication challenge, without claiming credentials were verified.", "Map specific exceptions from your real core in an adapter; test pre-mutation rejection leaves state unchanged.", "Explain why timeout or 500 after a state change cannot prove rollback, and choose a bounded retry or reconciliation policy."],
+    deliverables: ["Seven-case executed transcript", "Extended negative cases", "Public/internal evidence comparison", "Domain adapter and failure-state evidence", "Client-action policy"],
+    completionCriteria: ["Client input errors remain distinct from unexpected server defects.", "Public codes remain stable independently of exception wording.", "Private implementation details are absent from responses.", "Synthetic failures and future identity contracts are accurately labeled.", "The learner explains uncertain mutation outcomes and satisfies the five-part transfer rubric independently."]
   }
+
 };
 
 export const webAndApiFoundationsQualityLessons: Lesson[] = webAndApiFoundationsDeepLessons.map((lesson) => ({

@@ -1039,26 +1039,136 @@ export const webAndApiFoundationsDeepLessons: Lesson[] = [
   }
 ], "Derive and test a public contract from actual Steward core behavior.", ["Inventory existing fields and operations.", "Execute and extend contract_boundary.py.", "Write create, read and list contracts.", "Demonstrate a consumer compatibility failure and migration."], "Why are required and nullable different? Trace input through validation, domain behavior and selected output; explain which client a field rename breaks."),
 
-  lesson("Errors and Status Design", 50, [
-    { type: "heading", id: "errors", text: "Errors are part of the API contract" },
-    { type: "paragraph", text: "A useful API does not merely return non-2xx statuses. It provides enough stable information for clients and operators to understand what failed, whether retrying makes sense, and what action could correct the request." },
-    { type: "code", language: "json", caption: "Example domain error", code: "{\n  \"code\": \"service.self_dependency\",\n  \"message\": \"A service cannot depend on itself.\",\n  \"field\": \"dependsOnServiceId\"\n}" },
-    { type: "heading", id: "categories", text: "Separate failure categories" },
-    { type: "list", items: ["Malformed representation: the server cannot parse the request.", "Validation failure: data parses but violates field or domain rules.", "Authentication failure: caller identity is missing or invalid.", "Authorization failure: identity is known but the action is not permitted.", "Conflict: current state prevents the requested transition.", "Unexpected server failure: processing failed for reasons the client cannot correct directly."] },
-    { type: "heading", id: "leakage", text: "Useful does not mean leaking internals" },
-    { type: "paragraph", text: "Database stack traces, SQL errors and internal class names are excellent diagnostic evidence for controlled logs but poor public API responses. Error contracts should be actionable without disclosing unnecessary implementation details." },
-    { type: "callout", tone: "warning", title: "Never turn every exception into 400", body: "Catching all failures and returning 'bad request' destroys the distinction between client-correctable input and server defects. That makes debugging, monitoring and client behavior worse." },
-    { type: "heading", id: "error-shape", text: "Keep the machine contract stable while human text can improve" },
-    { type: "code", language: "json", caption: "A structured error envelope", code: "{\n  \"code\": \"service.self_dependency\",\n  \"message\": \"A service cannot depend on itself.\",\n  \"field\": \"dependsOnServiceId\",\n  \"requestId\": \"req-8f2c\"\n}" },
-    { type: "paragraph", text: "Clients should branch on stable status/application codes rather than matching human-readable message text. A request/correlation identifier can connect a public failure to controlled server logs without exposing stack traces." },
-    { type: "heading", id: "retry", text: "Retryability depends on failure and operation semantics" },
-    { type: "paragraph", text: "A validation error should not become successful merely because the same invalid request is retried. A temporary `503` may be retryable, but clients should use bounded backoff and respect `Retry-After` where applicable. For state-changing operations, retry only when idempotency/duplicate-effect behavior is understood." },
-    { type: "heading", id: "field-errors", text: "Multiple validation failures need a deliberate representation" },
-    { type: "paragraph", text: "For forms or structured requests, returning only the first invalid field can force repeated round trips. An API may return a list/map of field problems while preserving one stable top-level error category. Define ordering, field paths and codes if clients consume them programmatically." },
-    { type: "heading", id: "assignment", text: "Assignment" },
-    { type: "list", ordered: true, items: ["Design responses for invalid criticality, self-dependency, duplicate dependency, missing authentication, forbidden cross-team edit and database outage.", "Choose a stable machine-readable code for each domain failure.", "Identify which details belong in logs but not in public responses.", "Explain retry behavior for each failure." ] },
-    { type: "resources", resources: [mdnStatus, rfc9110] },
-  ], "Design error responses that preserve failure meaning and support correct client behavior.", ["Map six Steward failures to status codes.", "Define machine-readable error codes.", "Classify retryability.", "Separate public error detail from internal diagnostics."], "Why is returning 400 for every failure harmful? How should a client distinguish validation, authorization, conflict and server failure?", [mdnStatus, rfc9110]),
+  lesson("Errors and Status Design", 70, [
+  {
+    "type": "heading",
+    "id": "errors",
+    "text": "Design failures from the caller's next decision"
+  },
+  {
+    "type": "paragraph",
+    "text": "An error contract describes a failed operation in terms another program can act on. It has three audiences: HTTP clients interpret the status and headers, application clients interpret stable error codes and fields, and operators investigate diagnostic evidence. A useful error preserves the distinction between correcting input, establishing identity, requesting permission, reconciling state and investigating a server defect. Build on the previous contract adapter; no database or identity provider is implemented here."
+  },
+  {
+    "type": "paragraph",
+    "text": "An exception is a local program signal that interrupts normal execution. It is not an HTTP response. A boundary adapter catches understood failures, selects a public result and returns it to the caller. The layer that detects a failure need not decide its public wording: a Service can enforce a rule without knowing HTTP. Conversely, the adapter must not turn every programming exception into a user-input error."
+  },
+  {
+    "type": "heading",
+    "id": "failure-order",
+    "text": "Trace where the failure occurs before selecting a status"
+  },
+  {
+    "type": "code",
+    "language": "text",
+    "caption": "A proposed create pipeline and its failure boundaries",
+    "code": "bytes -> JSON parsing -> request shape -> domain rules -> state change -> response\n         malformed      wrong type       invalid age     conflict       lost response\n         400            400              400 policy      409 policy     unknown outcome\n\nUnexpected defect anywhere -> controlled 500 boundary + internal diagnostic event\nKnown temporary inability -> 503 only when that condition is actually identified"
+  },
+  {
+    "type": "paragraph",
+    "text": "The same 400 can describe several client-correctable failures, so use a stable code such as request.invalid_json or service.invalid_age to identify the correction. Choose field paths only when meaningful. A malformed document may have no reliably identified field; an invalid age can point to ageDays. This lesson uses a documented 400 policy for validation; another API may distinguish semantic validation with 422. Consistency and a clear client action matter more than guessing a universally correct validation number."
+  },
+  {
+    "type": "paragraph",
+    "text": "A 409 names a conflict with current state, such as a name already taken under an explicit uniqueness rule. Do not invent uniqueness because a database could enforce it. A 404 represents the target's absence or a deliberate concealment policy. A 500 is an unexpected processing failure; blaming the caller would send them searching for a correction they cannot make. A known unavailable dependency may justify 503, but catching every RuntimeError as 503 would conceal bugs behind an unjustified promise of transience."
+  },
+  {
+    "type": "heading",
+    "id": "public-internal",
+    "text": "Expose a stable explanation and preserve diagnostic context"
+  },
+  {
+    "type": "code",
+    "language": "json",
+    "caption": "Proposed public validation response",
+    "code": "{\"code\":\"service.invalid_age\",\"message\":\"Send a non-negative integer ageDays.\",\"field\":\"ageDays\",\"requestId\":\"demo-invalid\"}"
+  },
+  {
+    "type": "paragraph",
+    "text": "Clients should branch on code and status, not the exact message. Human wording can improve or be translated without changing the machine decision. requestId connects one attempt to diagnostic events; it is not an idempotency key and does not prevent duplicates. Generate or validate identifiers at the boundary rather than trusting arbitrary incoming text. Internal evidence should include enough controlled context to locate a defect, but logs are not a license to store tokens, credentials or complete request bodies."
+  },
+  {
+    "type": "paragraph",
+    "text": "For an unexpected exception, send a generic public explanation and an identifier. In an actual application, authorized operators use that identifier to find sanitized diagnostic context and, where appropriate, a controlled stack trace. The model below records only exception class and identifier, deliberately illustrating the separation. It is not a complete logging system, and raw exception text must never become the public contract automatically."
+  },
+  {
+    "type": "heading",
+    "id": "execute",
+    "text": "Execute success, rejection and defect translation"
+  },
+  {
+    "type": "paragraph",
+    "text": "Save error_boundary.py and run python3 error_boundary.py. The function returns a tuple of proposed status, headers, body and internal event; no HTTP response is transmitted. mode injects named synthetic failures so the experiment does not require PostgreSQL, authentication or an external outage. The input rule is ageDays as a non-negative integer, retaining the earlier boolean rejection. The sample performs no persistent mutation."
+  },
+  {
+    "type": "code",
+    "language": "python",
+    "caption": "error_boundary.py — execute the translation boundary",
+    "code": "import json\n\nclass InvalidInput(Exception):\n    pass\n\nclass MissingService(Exception):\n    pass\n\nclass Unavailable(Exception):\n    pass\n\nclass NameConflict(Exception):\n    pass\n\ndef operation(raw, mode):\n    data = json.loads(raw)\n    if not isinstance(data, dict):\n        raise InvalidInput(\"object required\")\n    age = data.get(\"ageDays\")\n    if type(age) is not int or age < 0:\n        raise InvalidInput(\"invalid age\")\n    # Controlled synthetic failures, not a database or authentication service.\n    if mode == \"missing\":\n        raise MissingService(\"internal lookup detail\")\n    if mode == \"conflict\":\n        raise NameConflict(\"synthetic duplicate name\")\n    if mode == \"unavailable\":\n        raise Unavailable(\"synthetic dependency disconnected\")\n    if mode == \"bug\":\n        raise RuntimeError(\"synthetic private implementation detail\")\n    return {\"acceptedAgeDays\": age}\n\ndef boundary(raw, mode, request_id):\n    try:\n        return 200, {}, operation(raw, mode), None\n    except json.JSONDecodeError as error:\n        status, code, message, field = 400, \"request.invalid_json\", \"Send valid JSON.\", None\n    except InvalidInput as error:\n        status, code, message, field = 400, \"service.invalid_age\", \"Send a non-negative integer ageDays in an object.\", \"ageDays\"\n    except MissingService as error:\n        status, code, message, field = 404, \"service.not_found\", \"Service not found.\", None\n    except NameConflict as error:\n        status, code, message, field = 409, \"service.name_conflict\", \"Choose an available name.\", \"name\"\n    except Unavailable as error:\n        status, code, message, field = 503, \"service.unavailable\", \"Try later under the retry policy.\", None\n    except Exception as error:\n        # Last boundary only: sanitized response and a diagnostic event, not silent success.\n        event = {\"requestId\": request_id, \"category\": type(error).__name__}\n        return 500, {}, {\"code\": \"internal.error\", \"message\": \"Unexpected failure.\",\n                         \"requestId\": request_id}, event\n    headers = {\"Retry-After\": \"5\"} if status == 503 else {}\n    body = {\"code\": code, \"message\": message, \"requestId\": request_id}\n    if field is not None:\n        body[\"field\"] = field\n    return status, headers, body, None\n\ncases = [\n    (\"valid\", '{\"ageDays\":0}', \"ok\"),\n    (\"syntax\", '{\"ageDays\":', \"ok\"),\n    (\"invalid\", '{\"ageDays\":true}', \"ok\"),\n    (\"missing\", '{\"ageDays\":2}', \"missing\"),\n    (\"conflict\", '{\"ageDays\":2}', \"conflict\"),\n    (\"unavailable\", '{\"ageDays\":2}', \"unavailable\"),\n    (\"bug\", '{\"ageDays\":2}', \"bug\"),\n]\nfor label, raw, mode in cases:\n    status, headers, body, event = boundary(raw, mode, \"demo-\" + label)\n    print(label, status, body.get(\"code\", \"success\"), headers.get(\"Retry-After\", \"-\"))\n    assert \"synthetic private\" not in json.dumps(body)\n    if event:\n        assert event[\"requestId\"] == body[\"requestId\"]\n        print(\"internal event:\", event[\"category\"], event[\"requestId\"])\n",
+    "output": "valid 200 success -\nsyntax 400 request.invalid_json -\ninvalid 400 service.invalid_age -\nmissing 404 service.not_found -\nconflict 409 service.name_conflict -\nunavailable 503 service.unavailable 5\nbug 500 internal.error -\ninternal event: RuntimeError demo-bug"
+  },
+  {
+    "type": "paragraph",
+    "text": "Trace invalid: JSON parsing succeeds; true becomes Python True; exact-type validation rejects it; the specific exception maps to 400 and service.invalid_age. Trace bug: the request passes validation, the injected defect raises RuntimeError, the last catch produces 500 and a separate event. The client's body contains neither the private text nor the exception class. The matching identifier connects the two records. The generic catch belongs at the final response boundary, with diagnostics and tests; using it inside every function to ignore failures would destroy evidence."
+  },
+  {
+    "type": "heading",
+    "id": "identity-status",
+    "text": "Authentication and permission need distinct contracts"
+  },
+  {
+    "type": "paragraph",
+    "text": "Authentication establishes acceptable caller identity. A proposed protected endpoint rejects missing or invalid credentials with 401 and a suitable WWW-Authenticate challenge. Authorization decides whether an established caller can perform the action; refusal normally uses 403, with 404 sometimes chosen to conceal existence. For a future ownership edit, invalid age is an input problem, while an authenticated Team A caller editing Team B's service is a permission decision. Neither should become 500. These are contract designs only: the sample does not implement or verify credentials, team membership or challenges."
+  },
+  {
+    "type": "heading",
+    "id": "client-actions",
+    "text": "Status alone does not make a retry safe"
+  },
+  {
+    "type": "paragraph",
+    "text": "For invalid JSON or age, correct the request; resending unchanged input will repeat rejection. For missing target, verify the identity rather than creating a substitute silently. For a name conflict, inspect current state and select or reconcile the name. For 401, obtain acceptable credentials under the application's identity flow; for 403, stop or seek permission. Repeated credentials do not repair an authorization decision."
+  },
+  {
+    "type": "paragraph",
+    "text": "The synthetic 503 includes Retry-After: 5, meaning a suggested five-second delay, not proof that the next attempt succeeds. Apply the earlier bounded retry policy only when the operation's duplicate-effect behavior is understood. A real create operation might commit before an exception or lost response; a 500 or timeout does not by itself prove nothing happened. Reconcile using durable operation evidence. This model cannot establish rollback, idempotency or crash safety because it has no mutation or persistence."
+  },
+  {
+    "type": "heading",
+    "id": "multiple-fields",
+    "text": "Choose how much validation evidence to return"
+  },
+  {
+    "type": "paragraph",
+    "text": "For several independent field problems, a response may include a list of field/code/message entries under one stable validation category. Define field-path syntax and whether clients can rely on ordering. Collecting independent errors helps forms avoid repeated correction rounds, but stop when parsing or shape failure makes later checks meaningless. Do not run a state-changing domain operation merely to discover another field error. Compare fail-fast simplicity with the extra validation work and coupling of aggregate responses."
+  },
+  {
+    "type": "heading",
+    "id": "practice",
+    "text": "Prove classification and transfer"
+  },
+  {
+    "type": "list",
+    "ordered": true,
+    "items": [
+      "Execute all seven cases and explain the detection layer, public status/code, suggested client action and internal evidence for each.",
+      "Add array input, null age and negative age; predict what the current model reports before running. Improve the object-shape failure into its own stable code rather than mislabeling it as an age error.",
+      "Inject a KeyError after valid input. Prove it remains 500 and its private details never reach the body; preserve an internal event with the same identifier.",
+      "Design future unauthenticated and forbidden ownership-edit responses, including a challenge for 401. Label authentication unimplemented.",
+      "Connect specific domain exceptions from your own core to a separate adapter and check unchanged state on failures that occur before mutation. Do not claim rollback after mutation without an explicit mechanism and test.",
+      "Transfer rubric: independently identify the failing layer, preserve client/server responsibility, choose a justified client action, separate public/internal evidence and explain uncertain mutation outcomes. All five must pass on unfamiliar cases."
+    ]
+  },
+  {
+    "type": "resources",
+    "resources": [
+      {
+        "title": "RFC 9110 — HTTP semantics",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110"
+      }
+    ]
+  }
+], "Translate domain and implementation failures into actionable public contracts.", ["Execute error_boundary.py.", "Extend negative cases and preserve failure categories.", "Design future identity failures explicitly.", "Test an adapter around actual domain exceptions."], "Why can a 500 leave an operation outcome uncertain? Explain which evidence belongs in the response and which belongs in controlled diagnostics.", [mdnStatus, rfc9110]),
 
   { id: "web-and-api-foundations-lab-explore-apis-with-curl-and-postman", title: "Lab: Explore APIs with curl and Postman", activities: [
     { id: "web-and-api-foundations-lab-explore-apis-with-curl-and-postman-brief", title: "API Investigation Brief", estimatedMinutes: 20, content: { type: "reading", body: "Use `curl` as the evidence-first tool and Postman as a productivity tool. The goal is to prove that you can read HTTP independently of any specific client UI.", blocks: [

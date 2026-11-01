@@ -18,6 +18,7 @@ function execute(captionPrefix, expected) {
   assert.equal(result.stdout.trim(), expected, `Published expected output mismatch: ${captionPrefix}`);
 }
 execute("json_boundary.py", "ACCEPTED\nDOMAIN ERROR\nSYNTAX ERROR\nSHAPE ERROR");
+execute("error_boundary.py", "valid 200 success -\nsyntax 400 request.invalid_json -\ninvalid 400 service.invalid_age -\nmissing 404 service.not_found -\nconflict 409 service.name_conflict -\nunavailable 503 service.unavailable 5\nbug 500 internal.error -\ninternal event: RuntimeError demo-bug");
 execute("Run this separate Python snippet", "omitted\nexplicit null\nvalue: 0");
 console.log("Web/API learner JSON examples passed: syntax, shape, domain and omitted/null/zero classifications.");
 
