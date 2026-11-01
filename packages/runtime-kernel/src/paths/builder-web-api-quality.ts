@@ -50,31 +50,30 @@ const practices: Record<string, PracticeSpec> = {
   ]
 },
   "web-and-api-foundations-client-server-boundaries-and-failure-modes": {
-    objective: "Observe a genuine process boundary and justify a future Steward API design using reproducible network evidence rather than framework assumptions.",
-    scenario: "You have a local steward-core library but no Django/DRF service or PostgreSQL database yet. Your task is to prove the distinction between a local function call and a network exchange, then decide how the next Steward increment should expose domain behavior safely.",
+    objective: "Execute the actual mini-Steward HTTP server and distinguish normal responses from transport failure, then defend a proposed future API boundary.",
+    scenario: "The existing steward-core library is local. You have not yet implemented Django, DRF or PostgreSQL. The lesson supplies a synthetic read-only Python HTTP server: execute it separately from curl, observe the failure boundaries and explain what an API would add to your domain core.",
     instructions: [
-      "Use two terminals to run the lesson's Python standard-library HTTP file-server lab on 127.0.0.1; document that this is a disposable demonstration, not Steward API.",
-      "Send curl requests for hello.txt and a deliberately missing file; record actual HTTP statuses, response bodies where present and corresponding server console output.",
-      "Stop the server, repeat the request and record the connection-level failure. Explain why this is not HTTP 404.",
-      "Contrast the existing local steward-core lookup with a proposed GET /services/42 exchange: serialization, authorization, observable errors, latency, compatibility and ownership of service invariants.",
-      "Draw two possible paths for a timed-out service deactivation: committed change with lost response, and request never received. State what evidence or operation identity a production client would need before retrying.",
-      "Write a short boundary decision comparing clients calling a proposed Steward API versus reading/writing domain data directly. Include an alternative, the reason it is rejected, and a condition that would warrant reconsideration.",
-      "Label every component of the diagram either already built or future: do not claim Django, the API server or PostgreSQL currently exists."
+      "Save the exact mini_steward_server.py from the lesson into a disposable directory. State where its synthetic data lives and why this is not a production Steward API.",
+      "Use two terminals to start the server bound to 127.0.0.1 and request /services; capture the actual status, Content-Type and JSON fields, and explain each process's role.",
+      "Request /missing; capture HTTP 404 and the evidence that an HTTP server answered.",
+      "Stop the server with Ctrl+C and repeat the /services request; record the connection failure and explain why it cannot be described by an HTTP status code.",
+      "Describe what changed between a local steward-core function call and a network request: representation, latency, trust, error reporting, version compatibility and independent process failure.",
+      "Draw both valid server outcomes after the client times out on a future state-changing operation; state what observation or operation identifier could make retry safer.",
+      "Write a short architectural decision for one proposed Steward HTTP API versus clients accessing underlying data directly. Label every planned dependency as future."
     ],
     deliverables: [
-      "Two-terminal transcript showing HTTP 200, HTTP 404 and connection failure with server logs",
-      "Local-call versus proposed API boundary comparison",
-      "Timeout ambiguity sequence diagram and proposed client behavior",
-      "Steward responsibility and trust-boundary diagram with current/future labels",
-      "Architectural decision record with rejected alternative and falsifiable rationale"
+      "Executed mini_steward_server.py and curl transcripts for 200, 404 and connection refusal",
+      "Annotated two-process diagram and JSON response explanation",
+      "Local function versus HTTP boundary comparison",
+      "Two-outcome timeout analysis",
+      "Steward API boundary decision including rejected alternative"
     ],
     completionCriteria: [
-      "The evidence distinguishes an application-level HTTP response from a failure before HTTP and can be repeated on localhost.",
-      "The learner can distinguish client/server roles from process and host identities, and can explain serialization without assuming shared Python objects.",
-      "The proposed server remains authoritative for domain invariants and access control; client-side validation is treated as assistance, not enforcement.",
-      "Two different possible server outcomes after a timeout are explicitly represented; retries are not assumed harmless.",
-      "The choice of interface is explained by specific requirements and a rejected design, not by preferring distributed architecture by default.",
-      "Every proposed technology that the learner has not implemented yet is labeled future."
+      "The local sample executes in two processes and the learner captures observable 200, 404 and non-HTTP connection-failure evidence.",
+      "The learner identifies which system holds the synthetic data, what gets serialized into the response, and why a Python object is not shared over the wire.",
+      "The learner can explain which changes have been implemented versus merely proposed.",
+      "A timeout is correctly treated as an unknown outcome, not proof of cancellation or non-execution.",
+      "Business invariants remain server-authoritative and alternatives are compared against operational costs, not slogans."
     ]
   },
   "web-and-api-foundations-http-requests-and-responses": {
