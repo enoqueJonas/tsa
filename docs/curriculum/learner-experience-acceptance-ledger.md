@@ -21,7 +21,7 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 
 | School | Module | Concepts | Practicals | Continuity | Resources | UX | Overall / evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| engineering-apprentice | **Engineering Foundations: 9 conceptual lessons + 4 Workbench lessons** | In review | — | — | — | — | In review; first shell example corrected; full enumeration pending |
+| engineering-apprentice | **Engineering Foundations: 9 conceptual lessons + 4 Workbench lessons + 1 capstone** | In review | — | — | — | — | In review; first shell example corrected; full enumeration pending |
 | builder | `builder-python-quality` | In review | In review | In review | — | — | Source-path triage: 20 lessons / 19 explicit practical overrides; rendered and execution review pending |
 | builder | `builder-web-api-quality` | In review | In review | In review | — | — | Source triage completed; full learner verification pending |
 | builder | `builder-django-quality` | In review | In review | In review | — | — | Source triage completed; full learner verification pending |
@@ -668,3 +668,8 @@ Source lab is REMEDIATED. The independent second-service/extra-negative-case exe
 ## 2026-11-01 — New web/URL teaching chapter; no learner acceptance
 
 Source commits: `74f554a`, `88b365e`; regression commit `87184e4`. Builder Web/API now includes **URLs and Query Encoding** immediately after the rebuilt **How the Web Works**. That increases the Web/API learner path from 11 to 12 lessons (33 to 36 activities), and the total assembled Apprentice + Web/API inventory from 76 to 79 activities. The new source explains URL structure, encoded values, client-side fragments, repeated query keys and a negative parser case, with an independent standard-library Python run matching its stated output. The web chapter separates observable loopback HTTP evidence from unexecuted public DNS/TLS behavior and states the HTTP/3 exception. The latest repository test/build and rendered UX checks have **not** been rerun at this branch head. No novice learner transfer is scored. The module remains **In review**, not Accepted.
+
+
+## 2026-11-01 — Apprentice Systems Thinking split; independent acceptance open
+
+Live teaching source `engineering-apprentice-rich.ts` commit `11f456d`: replaced premature identity-provider/PostgreSQL and pipeline terms with a first-principles behavioral model, then registered a separate feedback-loop/failure-propagation lesson with a numerical trace and competing-hypothesis exercise. This changes Apprentice to 14 lessons / 46 activities and the assembled Apprentice + Web/API total to 82 activities. Both lessons have specific practical transfer instructions; their independent execution and learner understanding have not been observed. The latest full test/build and rendered checks are pending at the new head. **In review**, not Accepted; #319 remains open.
