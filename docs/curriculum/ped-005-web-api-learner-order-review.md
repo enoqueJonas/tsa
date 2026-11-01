@@ -10,7 +10,7 @@ that tests had run. The tests and build reported below were executed in this pas
 
 ## Actual ownership and prerequisites
 
-`engineering-foundations.ts` composes eight conceptual lessons from
+`engineering-foundations.ts` now composes nine conceptual lessons from
 `engineering-apprentice-rich.ts`, then four lessons from
 `engineering-apprentice-workbench-deep.ts`, then the rich investigation capstone.
 The older deep-audit document incorrectly placed the capstone before the workbench.
@@ -121,51 +121,55 @@ not a claim that all these pages were rendered or pedagogically accepted.
    - reading: `engineering-foundations-systems-thinking-lesson`
    - practical: `engineering-foundations-systems-thinking-practice`
    - reflection: `engineering-foundations-systems-thinking-check`
-3. **Trade-offs** — `engineering-foundations-trade-offs`
+3. **Feedback Loops and Failure Propagation** — `engineering-foundations-feedback-loops-and-failure-propagation`
+   - reading: `engineering-foundations-feedback-loops-and-failure-propagation-lesson`
+   - practical: `engineering-foundations-feedback-loops-and-failure-propagation-practice`
+   - reflection: `engineering-foundations-feedback-loops-and-failure-propagation-check`
+4. **Trade-offs** — `engineering-foundations-trade-offs`
    - reading: `engineering-foundations-trade-offs-lesson`
    - practical: `engineering-foundations-trade-offs-practice`
    - reflection: `engineering-foundations-trade-offs-check`
-4. **Debugging Mindset** — `engineering-foundations-debugging-mindset`
+5. **Debugging Mindset** — `engineering-foundations-debugging-mindset`
    - reading: `engineering-foundations-debugging-mindset-lesson`
    - practical: `engineering-foundations-debugging-mindset-practice`
    - reflection: `engineering-foundations-debugging-mindset-check`
-5. **Engineering Decisions** — `engineering-foundations-engineering-decisions`
+6. **Engineering Decisions** — `engineering-foundations-engineering-decisions`
    - reading: `engineering-foundations-engineering-decisions-lesson`
    - practical: `engineering-foundations-engineering-decisions-practice`
    - reflection: `engineering-foundations-engineering-decisions-check`
-6. **Evidence and Technical Reasoning** — `engineering-foundations-evidence-and-technical-reasoning`
+7. **Evidence and Technical Reasoning** — `engineering-foundations-evidence-and-technical-reasoning`
    - reading: `engineering-foundations-evidence-and-technical-reasoning-lesson`
    - practical: `engineering-foundations-evidence-and-technical-reasoning-practice`
    - reflection: `engineering-foundations-evidence-and-technical-reasoning-check`
-7. **Learning as an Engineering Skill** — `engineering-foundations-learning-as-an-engineering-skill`
+8. **Learning as an Engineering Skill** — `engineering-foundations-learning-as-an-engineering-skill`
    - reading: `engineering-foundations-learning-as-an-engineering-skill-lesson`
    - practical: `engineering-foundations-learning-as-an-engineering-skill-practice`
    - reflection: `engineering-foundations-learning-as-an-engineering-skill-check`
-8. **Communicating Technical Work** — `engineering-foundations-communicating-technical-work`
+9. **Communicating Technical Work** — `engineering-foundations-communicating-technical-work`
    - reading: `engineering-foundations-communicating-technical-work-lesson`
    - practical: `engineering-foundations-communicating-technical-work-practice`
    - reflection: `engineering-foundations-communicating-technical-work-check`
-9. **Terminal, Shell and Filesystem** — `engineering-workbench-shell-filesystem`
+10. **Terminal, Shell and Filesystem** — `engineering-workbench-shell-filesystem`
    - reading: `engineering-workbench-shell-filesystem-reading`
    - practical: `engineering-workbench-shell-filesystem-guided`
    - reflection: `engineering-workbench-shell-filesystem-check`
    - practical: `engineering-workbench-shell-filesystem-lab`
-10. **Git and Version-Control Workflow** — `engineering-workbench-git-version-control`
+11. **Git and Version-Control Workflow** — `engineering-workbench-git-version-control`
    - reading: `engineering-workbench-git-version-control-reading`
    - practical: `engineering-workbench-git-version-control-guided`
    - reflection: `engineering-workbench-git-version-control-check`
    - practical: `engineering-workbench-git-version-control-lab`
-11. **Developer Inspection: Processes, Ports and Text** — `engineering-workbench-developer-inspection`
+12. **Developer Inspection: Processes, Ports and Text** — `engineering-workbench-developer-inspection`
    - reading: `engineering-workbench-developer-inspection-reading`
    - practical: `engineering-workbench-developer-inspection-guided`
    - reflection: `engineering-workbench-developer-inspection-check`
    - practical: `engineering-workbench-developer-inspection-lab`
-12. **HTTP from the Command Line** — `engineering-workbench-http-command-line`
+13. **HTTP from the Command Line** — `engineering-workbench-http-command-line`
    - reading: `engineering-workbench-http-command-line-reading`
    - practical: `engineering-workbench-http-command-line-guided`
    - reflection: `engineering-workbench-http-command-line-check`
    - practical: `engineering-workbench-http-command-line-lab`
-13. **Milestone: Engineering Investigation** — `engineering-foundations-engineering-investigation`
+14. **Milestone: Engineering Investigation** — `engineering-foundations-engineering-investigation`
    - reading: `engineering-foundations-engineering-investigation-brief`
    - practical: `engineering-foundations-engineering-investigation-build`
    - reflection: `engineering-foundations-engineering-investigation-defence`
@@ -257,3 +261,12 @@ At branch commits `74f554a` (source), `88b365e` (practicals), `87184e4` (regress
 Source mechanisms: define web versus internet and client/server roles, distinguish browser rendering from HTTP representation, trace DNS/address → transport → TLS → HTTP (with correct HTTP/3/QUIC exception), and show how an HTTP responder may be a proxy. The offline Python static-server experiment gives a bounded 200, 404 and post-shutdown connection-failure path. Public HTTPS observation is explicitly optional and **not verified** by the offline experiment. No database, deployed Steward API, certificate-bypass or external network is assumed.
 
 The URL chapter uses the runnable Python standard library (`urlencode`, `urlsplit`, `parse_qs`, `quote`) to demonstrate encoded `payments & ops`, repeated `tag` keys, origin, request target without fragment, encoded path slash and the negative outcome from manually concatenating an unescaped ampersand. I independently executed the exact Python example before committing and observed the published eight output lines. The source-based regression was added to `scripts/check-web-api-teaching-examples.mjs`; **the updated full test suite, TypeScript build, browser rendering and novice teach-back have not been run in this increment**. This is `REMEDIATED`, not `VALIDATED`.
+
+
+## Engineering Apprentice Systems Thinking continuation — 2026-11-01
+
+At commit `11f456d`, the actual live `engineering-apprentice-rich.ts` **Systems Thinking** reading was found to introduce identity-provider, PostgreSQL, monitoring and deployment-pipeline architecture before those prerequisites exist. The text named 'emergent behavior' but did not demonstrate how to trace state or quantitative accumulation. It also had a broken 'Future the project connection' callout. These are not merely editorial complaints: they undermine the beginner reasoning prerequisite for Builder.
+
+Replaced that source lesson with a bounded first-principles café/queue model: explicit system definition, boundary, labeled flows, waiting/completed state, a worked arrival-six/completion-four queue trace and independently justified alternative representations. Added a separately registered **Feedback Loops and Failure Propagation** lesson rather than squeezing delay, reinforcing/balancing loops, cross-component causes and intervention trade-offs into the initial lesson. It includes a second quantitative queue trace, a hypothetical checkout failure chain, explicit competing hypotheses and an independent print-desk transfer rubric. No coding, identity provider, database or framework knowledge is assumed. These numerical examples are hypothetical, not observations.
+
+The assembled Apprentice path now contains **14 lessons / 46 activities** (nine concepts + four Workbench + one capstone). The total assembled Apprentice + Web/API inventory is **82 activities**; earlier recorded totals of 76 and 79 describe older source snapshots. Source is REMEDIATED only in these two lessons; new head build/smoke, rendered review and independent novice transfer still require fresh evidence. Other Apprentice lessons remain under #319 full learner-order audit.
