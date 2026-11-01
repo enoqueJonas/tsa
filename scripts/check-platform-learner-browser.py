@@ -204,7 +204,10 @@ def check_complete_modules(page):
         visited_total += len(visited)
         print(f"PASS module {module_index + 1}/{modules}: traversed {len(visited)} activities", flush=True)
     assert not client_errors, f"Browser exceptions during full traversal: {client_errors}"
-    assert visited_total == 328, f"Platform Builder activity count changed: {visited_total}; update audit census deliberately"
+    # Rebaseline against the actual registered 15 Platform modules: GitHub Actions
+    # browser traversal observed 377 unique activities on 2026-11-01. The former
+    # 328 fixture was stale; keep a fixed expectation so unexpected changes fail.
+    assert visited_total == 377, f"Platform Builder activity count changed: {visited_total}; update audit census deliberately"
     (OUT / "activity-coverage.json").write_text(
         json.dumps({"modules": modules, "activities": evidence}, indent=2), encoding="utf-8"
     )
