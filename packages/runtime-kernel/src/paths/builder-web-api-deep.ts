@@ -456,7 +456,7 @@ export const webAndApiFoundationsDeepLessons: Lesson[] = [
     "type": "code",
     "caption": "Illustrative success response; real headers and field ordering can differ.",
     "language": "http",
-    "code": "HTTP/1.1 200 OK\nContent-Type: application/json; charset=utf-8\nContent-Length: 58\n\n{\"services\":[{\"id\":7,\"name\":\"Cleaning\",\"active\":true}]}"
+    "code": "HTTP/1.1 200 OK\nContent-Type: application/json; charset=utf-8\nContent-Length: 55\n\n{\"services\":[{\"id\":7,\"name\":\"Cleaning\",\"active\":true}]}"
   },
   {
     "type": "paragraph",
@@ -508,7 +508,7 @@ export const webAndApiFoundationsDeepLessons: Lesson[] = [
   },
   {
     "type": "paragraph",
-    "text": "With curl -i, inspect the response headers and body. With curl -v, look for lines describing connection setup and outgoing/incoming protocol details. You may see extra headers that are specific to curl or Python: classify what each belongs to rather than memorizing the list. Do not paste tokens or private cookies into shared output when inspecting real systems."
+    "text": "With curl -i, inspect the response headers and body. With curl -v, look for lines describing connection setup and outgoing/incoming protocol details. Python's BaseHTTPRequestHandler defaults to an HTTP/1.0 response even when curl sends an HTTP/1.1 request; this observable difference is expected, not a faulty API. You may see extra headers that are specific to curl or Python: classify what each belongs to rather than memorizing the list. Do not paste tokens or private cookies into shared output when inspecting real systems."
   },
   {
     "type": "heading",
