@@ -94,14 +94,21 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y postgresql-client
           fi
-      - name: Execute the actual published Builder SQL against disposable PostgreSQL
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install Django and Django REST Framework for real ORM bridge verification
+        run: python3 -m pip install 'Django>=5.2,<6' 'djangorestframework>=3.16,<4' 'psycopg[binary]>=3,<4'
+      - name: Execute published Builder SQL and Django examples in isolated PostgreSQL databases
         env:
           PGHOST: 127.0.0.1
           PGPORT: '5432'
           PGDATABASE: tsa_steward_lab
           PGUSER: tsa_learner
           PGPASSWORD: tsa_local_ci_only
-        run: node scripts/check-builder-postgresql-live-lab.mjs
+        run: |
+          node scripts/check-builder-postgresql-live-lab.mjs
+          node scripts/check-builder-django-live-lab.mjs
 
   learner-browser:
     runs-on: ubuntu-latest
