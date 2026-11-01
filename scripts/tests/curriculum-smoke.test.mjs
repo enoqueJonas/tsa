@@ -28,6 +28,10 @@ test("Python curriculum examples execute and match published outputs", () => {
   runAudit("scripts/check-python-teaching-examples.mjs", /Python learner-example validation passed: 28 independently executed snippets and 6 stateful lesson sequences/);
 });
 
+test("client-server architecture teaching example executes and proves boundary failures", () => {
+  runAudit("scripts/check-client-server-teaching-example.mjs", /Client-server learner example passed: HTTP 200 JSON, HTTP 404 and connection refusal after shutdown\./);
+});
+
 test("Java dependency-injection lesson executes and matches published output", () => {
   runAudit("scripts/check-java-teaching-examples.mjs", /Java learner-example validation passed:/);
 });
