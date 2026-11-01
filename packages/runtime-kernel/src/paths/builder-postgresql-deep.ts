@@ -441,8 +441,8 @@ const specs: DataLessonSpec[] = [
                 "body": "If you order by criticality alone, all services with the same criticality tie. PostgreSQL does not promise which tied row comes first, and LIMIT can expose that instability. Use an explicit stable tie-breaker, such as a unique id, after a meaningful primary sort key. DESC and ASC indicate direction; NULLS FIRST or NULLS LAST make missing values' placement explicit when relevant. LIMIT bounds the output but OFFSET counts skipped result rows: the earlier Web/API module showed why offset pagination can shift when rows are inserted or deleted. One execution that happens to print the same order twice does not prove stability.",
                 "language": "sql",
                 "caption": "filter_order.sql — deterministic top results with a unique tie-breaker",
-                "code": "SELECT name, criticality\nFROM service\nWHERE lifecycle = 'active'\nORDER BY criticality DESC, name ASC, id ASC\nLIMIT 3;",
-                "output": "PostgreSQL text sort for criticality DESC: Payroll API (critical), Identity API (critical), Payments API (high) only if criticality text collation orders as expected; actual tie order among the two critical rows is Identity API then Payroll API due to name ASC. Use ORDER BY name ASC, id ASC for a collation-independent example below."
+                "code": "SELECT name, criticality\nFROM service\nWHERE lifecycle = 'active'\nORDER BY name ASC, id ASC\nLIMIT 3;",
+                "output": "Catalogue API | medium\nIdentity API | critical\nPayments API | high. This is alphabetical order by name; it deliberately does not rank severity."
             },
             {
                 "id": "complete",
