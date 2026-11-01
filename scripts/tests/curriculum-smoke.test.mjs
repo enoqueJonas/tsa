@@ -52,6 +52,10 @@ test("Builder persistence and PostgreSQL-first-connection examples preserve lear
   runAudit("scripts/check-builder-data-foundations-examples.mjs", /Builder data foundations examples passed:/);
 });
 
+test("Builder Software Craft executable lessons preserve behavior, reject invalid config and avoid logging secrets", () => {
+  runAudit("scripts/check-builder-craft-teaching-examples.mjs", /Builder craft examples passed:/);
+});
+
 test("Java dependency-injection lesson executes and matches published output", () => {
   runAudit("scripts/check-java-teaching-examples.mjs", /Java learner-example validation passed:/);
 });
