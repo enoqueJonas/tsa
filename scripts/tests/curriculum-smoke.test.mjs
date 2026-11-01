@@ -36,6 +36,10 @@ test("Web and API Foundations JSON teaching examples execute and match their out
   runAudit("scripts/check-web-api-teaching-examples.mjs", /Web\/API learner JSON examples passed:/);
 });
 
+test("final Web/API lab executes the published curl sequence", () => {
+  runAudit("scripts/check-final-api-lab.mjs", /Final API lab passed:/);
+});
+
 test("method, retry and prerequisite examples execute from their teaching source", () => {
   runAudit("scripts/check-method-retry-teaching-examples.mjs", /Method\/retry teaching examples passed:/);
 });

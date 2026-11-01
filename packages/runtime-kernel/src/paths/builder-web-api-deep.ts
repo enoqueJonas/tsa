@@ -1171,15 +1171,145 @@ export const webAndApiFoundationsDeepLessons: Lesson[] = [
 ], "Translate domain and implementation failures into actionable public contracts.", ["Execute error_boundary.py.", "Extend negative cases and preserve failure categories.", "Design future identity failures explicitly.", "Test an adapter around actual domain exceptions."], "Why can a 500 leave an operation outcome uncertain? Explain which evidence belongs in the response and which belongs in controlled diagnostics.", [mdnStatus, rfc9110]),
 
   { id: "web-and-api-foundations-lab-explore-apis-with-curl-and-postman", title: "Lab: Explore APIs with curl and Postman", activities: [
-    { id: "web-and-api-foundations-lab-explore-apis-with-curl-and-postman-brief", title: "API Investigation Brief", estimatedMinutes: 20, content: { type: "reading", body: "Use `curl` as the evidence-first tool and Postman as a productivity tool. The goal is to prove that you can read HTTP independently of any specific client UI.", blocks: [
-      { type: "heading", id: "objective", text: "Investigate an API from the wire outward" },
-      { type: "paragraph", text: "Choose a stable public API or run a tiny local HTTP service. You will capture requests and responses, vary methods and headers, send valid and invalid JSON, classify status codes, and document what each observation proves." },
-      { type: "callout", tone: "note", title: "Tool principle", body: "Postman can make exploration faster. curl makes protocol details explicit. You should be able to explain the exchange without depending on either tool's presentation layer." },
-      { type: "paragraph", text: "These commands are templates, not an executable public API: example.test is deliberately a non-resolving documentation hostname. Replace the host and resource paths with a local or public API you are authorized to test. Expected evidence: curl -i prints response status/headers/body, while -v adds DNS, connection and protocol diagnostics. Actual statuses and bodies depend on the selected API; do not invent them." },
-      { type: "code", language: "bash", caption: "Request templates — replace example.test with your running API", code: "curl -i https://example.test/services\n\ncurl -i -X POST https://example.test/services \\\n  -H 'Content-Type: application/json' \\\n  -H 'Accept: application/json' \\\n  --data '{\"name\":\"Payments API\"}'\n\ncurl -v https://example.test/services/42\n# -i includes response headers; -v shows connection/protocol diagnostics." },
-      { type: "resources", resources: [mdnHttp, mdnMethods, mdnStatus] },
-    ] } },
-    { id: "web-and-api-foundations-lab-explore-apis-with-curl-and-postman-build", title: "HTTP Investigation", estimatedMinutes: 150, content: { type: "practical", objective: "Investigate real API behavior and produce a protocol-level evidence pack.", scenario: "Before Django abstracts request parsing and response generation, prove that you can explain raw API behavior yourself.", instructions: ["Capture at least one GET, POST, PATCH/PUT and DELETE or equivalent exchange.", "For each exchange record URL components, method, relevant request headers, body, response status, response headers and body.", "Send malformed JSON and syntactically valid but semantically invalid data where the target API permits safe testing.", "Vary Accept and Content-Type and record the result.", "Identify one safe method and one idempotent method and demonstrate why the distinction matters.", "Create a failure table covering validation, missing resource, unauthorized/forbidden if available, and server-side failure or a documented substitute.", "Reproduce at least three exchanges in Postman and compare what the UI hides or adds.", "Write a one-page API contract sketch for a future Steward /services resource using what you learned."], deliverables: ["curl transcript or equivalent evidence", "Annotated request/response table", "Failure classification table", "Postman collection", "Draft Steward `/services` contract"], completionCriteria: ["The learner can reconstruct the meaning of each exchange from protocol evidence.", "HTTP status and application error semantics are not conflated.", "Content negotiation/representation metadata is demonstrated.", "The Steward contract sketch reflects explicit resource and failure semantics."] } },
+    {
+  "id": "web-and-api-foundations-lab-explore-apis-with-curl-and-postman-brief",
+  "title": "API Investigation Brief",
+  "estimatedMinutes": 60,
+  "content": {
+    "type": "reading",
+    "body": "Execute and explain a complete bounded local API investigation.",
+    "blocks": [
+      {
+        "type": "heading",
+        "id": "objective",
+        "text": "Investigate a complete local HTTP contract"
+      },
+      {
+        "type": "paragraph",
+        "text": "Use Python 3, curl and two terminal windows. The earlier lessons taught methods, JSON, contract decisions and error translation; this lab joins them into observable requests and state changes. Save the complete lab_api.py below in a disposable directory. Run python3 lab_api.py in terminal A and leave it running. Run the numbered sequence in terminal B. No package installation, database, public API account or real credentials are needed."
+      },
+      {
+        "type": "paragraph",
+        "text": "This synthetic registry starts empty and resets whenever the process restarts. It deliberately uses only name, ageDays and active to keep the experiment bounded; it is not your steward-core implementation. IDs are allocated by the server. Names must be unique under this lab's explicit policy. Only active may be patched. The contract has no pagination, authentication, TLS or persistence. The outage route is a fixture that always returns 503, not evidence of a failing dependency. Keep the server bound to 127.0.0.1."
+      },
+      {
+        "type": "heading",
+        "id": "server",
+        "text": "Read the mechanism before executing it"
+      },
+      {
+        "type": "paragraph",
+        "text": "HTTPServer accepts local connections and BaseHTTPRequestHandler selects do_GET, do_POST or another handler. Those aliases dispatch to run, which selects a resource and operation. read_object checks representation type, bounded length, JSON syntax and object shape. The operation then validates fields before mutating the dictionary. Rejected carries a known status/code to the response boundary. reply serializes the selected body and writes headers before bytes; 204 has neither content nor Content-Length. Unexpected defects are not handled as input errors."
+      },
+      {
+        "type": "code",
+        "language": "python",
+        "caption": "lab_api.py — complete disposable final-lab target",
+        "code": "import json\nimport os\nfrom http.server import BaseHTTPRequestHandler, HTTPServer\n\nservices = {}\nnext_id = 1\n\nclass Rejected(Exception):\n    def __init__(self, status, code):\n        self.status, self.code = status, code\n\nclass Handler(BaseHTTPRequestHandler):\n    def reply(self, status, body=None, **headers):\n        self.send_response(status)\n        if status != 204:\n            payload = json.dumps(body).encode(\"utf-8\")\n            self.send_header(\"Content-Type\", \"application/json\")\n            self.send_header(\"Content-Length\", str(len(payload)))\n        for key, value in headers.items():\n            self.send_header(key, value)\n        self.end_headers()\n        if status != 204:\n            self.wfile.write(payload)\n\n    def read_object(self):\n        media = self.headers.get(\"Content-Type\", \"\").split(\";\")[0].strip().lower()\n        if media != \"application/json\":\n            raise Rejected(415, \"request.media_type\")\n        try:\n            length = int(self.headers.get(\"Content-Length\", \"0\"))\n        except ValueError:\n            raise Rejected(400, \"request.length\")\n        if length < 0 or length > 4096:\n            raise Rejected(413, \"request.too_large\")\n        try:\n            value = json.loads(self.rfile.read(length))\n        except (ValueError, UnicodeDecodeError):\n            raise Rejected(400, \"request.invalid_json\")\n        if not isinstance(value, dict):\n            raise Rejected(400, \"request.object_required\")\n        return value\n\n    def run(self, method):\n        global next_id\n        # This route is a deliberate fault fixture, not a real outage.\n        if method == \"GET\" and self.path == \"/lab/unavailable\":\n            self.reply(503, {\"code\": \"lab.unavailable\"}, **{\"Retry-After\": \"2\"})\n            return\n        if self.path == \"/services\":\n            if method == \"GET\":\n                self.reply(200, {\"items\": list(services.values())})\n                return\n            if method != \"POST\":\n                self.reply(405, {\"code\": \"request.method\"}, Allow=\"GET, POST\")\n                return\n            data = self.read_object()\n            if set(data) != {\"name\", \"ageDays\"}:\n                raise Rejected(400, \"service.fields\")\n            if not isinstance(data[\"name\"], str) or not data[\"name\"].strip():\n                raise Rejected(400, \"service.name\")\n            if type(data[\"ageDays\"]) is not int or data[\"ageDays\"] < 0:\n                raise Rejected(400, \"service.age\")\n            # Deliberate lab-only uniqueness policy.\n            if any(s[\"name\"] == data[\"name\"] for s in services.values()):\n                raise Rejected(409, \"service.name_conflict\")\n            target = f\"/services/{next_id}\"\n            value = {\"id\": next_id, **data, \"active\": True}\n            services[target] = value\n            next_id += 1\n            self.reply(201, value, Location=target)\n            return\n        if self.path not in services:\n            raise Rejected(404, \"service.not_found\")\n        if method == \"GET\":\n            self.reply(200, services[self.path])\n        elif method == \"PATCH\":\n            data = self.read_object()\n            if set(data) != {\"active\"} or type(data[\"active\"]) is not bool:\n                raise Rejected(400, \"service.active\")\n            services[self.path][\"active\"] = data[\"active\"]\n            self.reply(200, services[self.path])\n        elif method == \"DELETE\":\n            del services[self.path]\n            self.reply(204)\n        else:\n            self.reply(405, {\"code\": \"request.method\"}, Allow=\"GET, PATCH, DELETE\")\n\n    def dispatch(self):\n        try:\n            self.run(self.command)\n        except Rejected as error:\n            self.reply(error.status, {\"code\": error.code})\n\n    do_GET = dispatch\n    do_POST = dispatch\n    do_PATCH = dispatch\n    do_PUT = dispatch\n    do_DELETE = dispatch\n\nport = int(os.environ.get(\"TSA_LAB_PORT\", \"8767\"))\nprint(f\"Lab listening on http://127.0.0.1:{port}\", flush=True)\nHTTPServer((\"127.0.0.1\", port), Handler).serve_forever()\n"
+      },
+      {
+        "type": "paragraph",
+        "text": "If startup reports address already in use, leave unknown processes alone. Run TSA_LAB_PORT=8768 python3 lab_api.py and substitute 8768 in every client URL. A startup print is not proof of a listener: verify the initial GET. Python's default response version may be HTTP/1.0; the method and status semantics still apply. This single-threaded teaching server expects ordinary curl requests with known lengths; it is not hardened for arbitrary clients or production traffic."
+      },
+      {
+        "type": "heading",
+        "id": "trace",
+        "text": "Execute one controlled sequence on a fresh instance"
+      },
+      {
+        "type": "code",
+        "language": "shell",
+        "caption": "Final lab curl sequence — run in order after a fresh start",
+        "code": "curl --noproxy '*' -i http://127.0.0.1:8767/services\ncurl --noproxy '*' -i -H 'Content-Type: application/json' --data '{\"name\":\"Payments\",\"ageDays\":184}' http://127.0.0.1:8767/services\ncurl --noproxy '*' -i http://127.0.0.1:8767/services/1\ncurl --noproxy '*' -i -X PATCH -H 'Content-Type: application/json' --data '{\"active\":false}' http://127.0.0.1:8767/services/1\ncurl --noproxy '*' -i -H 'Content-Type: application/json' --data '{\"name\":' http://127.0.0.1:8767/services\ncurl --noproxy '*' -i -H 'Content-Type: application/json' --data '{\"name\":\"Other\",\"ageDays\":true}' http://127.0.0.1:8767/services\ncurl --noproxy '*' -i -H 'Content-Type: text/plain' --data '{}' http://127.0.0.1:8767/services\ncurl --noproxy '*' -i -H 'Accept: text/plain' http://127.0.0.1:8767/services/1\ncurl --noproxy '*' -i -H 'Content-Type: application/json' --data '{\"name\":\"Payments\",\"ageDays\":184}' http://127.0.0.1:8767/services\ncurl --noproxy '*' -i -X PUT http://127.0.0.1:8767/services/1\ncurl --noproxy '*' -i http://127.0.0.1:8767/lab/unavailable\ncurl --noproxy '*' -i -X DELETE http://127.0.0.1:8767/services/1\ncurl --noproxy '*' -i -X DELETE http://127.0.0.1:8767/services/1\ncurl --noproxy '*' -i http://127.0.0.1:8767/services",
+        "output": "Statuses in order: 200, 201, 200, 200, 400, 400, 415, 200, 409, 405, 503, 204, 404, 200. Final body: {\"items\": []}. Date and Server headers vary."
+      },
+      {
+        "type": "paragraph",
+        "text": "The first GET proves the collection is empty. POST validates the fields, allocates identity 1 and returns Location: /services/1. GET that path verifies creation. PATCH sets active false while keeping the other fields; repeat that exact patch before deletion to observe the same intended state. The malformed JSON request fails parsing; the boolean age parses but fails the field rule. Neither changes the registry. Compare a GET before and after each rejected write to prove that claim."
+      },
+      {
+        "type": "paragraph",
+        "text": "Content-Type text/plain is rejected with 415 even when its bytes resemble JSON. In contrast, Accept: text/plain still receives JSON: this deliberately simple server ignores preferences and has only one representation. Record that behavior rather than claiming negotiation was enforced. The duplicate name returns 409 under the lab policy. PUT to the existing item returns 405 and Allow: GET, PATCH, DELETE. The fixture returns 503 with Retry-After: 2; do not loop indefinitely because it never recovers on its own."
+      },
+      {
+        "type": "paragraph",
+        "text": "DELETE removes identity 1 and returns a bodyless 204. Repeating it returns 404 but leaves the same resource absent. The final collection is empty. Stop terminal A with Ctrl+C, then repeat the first GET: curl should report connection failure without an HTTP response. This final observation is categorically different from the explicit 503 fixture. Restarting gives an empty collection and resets allocated IDs, demonstrating why the service is unsuitable for durable identity."
+      },
+      {
+        "type": "heading",
+        "id": "postman",
+        "text": "Reproduce requests with a second client"
+      },
+      {
+        "type": "paragraph",
+        "text": "If Postman is installed, create a new request, choose GET and enter the local /services URL. Send it and inspect status, response headers and body. For POST, select POST, enter /services, select Body → raw → JSON, and paste the valid creation object from the curl sequence. Confirm Content-Type is application/json. For PATCH, use the Location path, select PATCH and send {\"active\":false}. Save these three requests in a lab collection and compare their actual responses with curl. Use a freshly restarted server or a different name so the duplicate policy does not invalidate the comparison."
+      },
+      {
+        "type": "paragraph",
+        "text": "If Postman is unavailable, the entire protocol experiment remains executable with curl. Record the Postman portion as UNVERIFIED and retain the curl commands and transcripts as reproducible evidence; do not fabricate a collection or claim cross-client equivalence. No Postman installation is required to learn the HTTP mechanism."
+      },
+      {
+        "type": "heading",
+        "id": "diagnosis",
+        "text": "Investigate discrepancies using evidence"
+      },
+      {
+        "type": "paragraph",
+        "text": "A 404 after restarting may mean you lost volatile state, not that the URL syntax changed. A 409 on a supposedly fresh creation suggests the earlier request succeeded or the server was not restarted. A 400 for active means the PATCH body must contain exactly one boolean field; the string \"false\" is not false. If you receive an HTML 501, check whether you selected a method for which the base handler has no implementation. If no HTTP response arrives, inspect process/listener evidence before changing validation code."
+      },
+      {
+        "type": "heading",
+        "id": "independent",
+        "text": "Transfer without copying the happy path"
+      },
+      {
+        "type": "list",
+        "ordered": true,
+        "items": [
+          "Create a second service and prove that patching the first does not change it. Predict the allocated ID and compare with Location.",
+          "Try array JSON, null age, missing fields, an unknown field and a string active value. Classify the rejection stage and prove state remains unchanged.",
+          "Explain why repeated POST gives a conflict here while the earlier method server created duplicates. Identify the contract policy responsible; the word POST alone did not enforce uniqueness.",
+          "Design 401/403 responses for a future protected resource and state explicitly that this server does not test authentication or authorization.",
+          "Write an evidence packet with exact requests, observed status/headers/body, before/after state, failure diagnosis and one justified alternative contract.",
+          "Pass rubric: independently trace a write, distinguish syntax/type/domain/method/transport failures, verify state after rejection, explain retry effects and defend a contract choice. All five must pass; executing this script alone is not learner validation."
+        ]
+      }
+    ]
+  }
+},
+    {
+  "id": "web-and-api-foundations-lab-explore-apis-with-curl-and-postman-build",
+  "title": "HTTP Investigation",
+  "estimatedMinutes": 150,
+  "content": {
+    "type": "practical",
+    "objective": "Independently trace method, JSON, state and failure behavior on the supplied local service.",
+    "scenario": "Run the complete lab_api.py target from the reading; all data is synthetic and volatile.",
+    "instructions": [
+      "Start a fresh server and execute the fourteen published curl commands in order; record actual status, headers and body.",
+      "Repeat PATCH before deletion and verify unchanged intended state. Prove rejected writes leave the collection unchanged.",
+      "Add the five negative variations and second-service isolation exercise from the reading.",
+      "Stop the server, repeat GET and distinguish connection failure from the synthetic 503 fixture.",
+      "Reproduce GET/POST/PATCH in Postman if available; otherwise explicitly mark that portion UNVERIFIED.",
+      "Write future 401/403 contracts without claiming identity enforcement exists.",
+      "Defend a proposed Steward contract and explain how it differs from this deliberately bounded lab."
+    ],
+    "deliverables": [
+      "Reproducible curl transcript",
+      "Annotated state transitions and negative-case evidence",
+      "Postman collection or explicit unverified limitation",
+      "Failure diagnosis table",
+      "Future Steward contract decision"
+    ],
+    "completionCriteria": [
+      "The learner explains each exchange from observable evidence.",
+      "Rejected inputs and successful mutations have independently checked state effects.",
+      "Unsupported methods, malformed JSON, invalid fields and transport failures remain distinct.",
+      "Synthetic outages and missing identity/persistence capabilities are labeled accurately.",
+      "All five independent transfer criteria in the reading are met before claiming learner validation."
+    ]
+  }
+},
     { id: "web-and-api-foundations-lab-explore-apis-with-curl-and-postman-review", title: "Module Review", estimatedMinutes: 20, content: { type: "reflection", prompt: "Without looking at notes, explain the complete path from URL to response, the structure of an HTTP request and response, the difference between Content-Type and Accept, safe vs idempotent methods, what makes an API contract durable, and how you would distinguish malformed input, invalid domain data, forbidden action and server failure in Steward." } },
   ] },
 ];
