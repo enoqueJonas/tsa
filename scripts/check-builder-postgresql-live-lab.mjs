@@ -103,14 +103,14 @@ try {
     return filepath;
   };
   const rolledBack = run(["-f", transactionSql("txn_rollback.sql", "txn_rollback.sql — demonstrate a deliberate rollback of a Service insert")]).out;
-  assert.match(rolledBack, /inside\\|1/);
-  assert.match(rolledBack, /after\\|0/);
+  assert.match(rolledBack, /inside\|1/);
+  assert.match(rolledBack, /after\|0/);
   assert.equal(run(["-c", "SELECT count(*) FROM service WHERE name='Txn Rollback Demo'"]).out, "0");
   run(["-f", transactionSql("txn_commit.sql", "txn_commit.sql — commit Service plus initial Environment together")]);
   assert.equal(run(["-c", "SELECT s.name, e.kind FROM service s JOIN environment e ON e.service_id=s.id WHERE s.name='Txn Commit Demo'"]).out, "Txn Commit Demo|production");
   const recovered = run(["-f", transactionSql("txn_savepoint.sql", "txn_savepoint.sql — recover from one expected SQL error")]);
   assert.match(recovered.err, /violates check constraint/);
-  assert.match(recovered.out, /Txn Savepoint Demo\\|production/);
+  assert.match(recovered.out, /Txn Savepoint Demo\|production/);
   assert.equal(run(["-c", "SELECT count(*) FROM environment e JOIN service s ON s.id=e.service_id WHERE s.name='Txn Savepoint Demo'"]).out, "1");
   assert.equal(run(["-c", "SELECT count(*) FROM service WHERE name='Txn Rollback Demo'"]).out, "0");
 
@@ -130,15 +130,15 @@ try {
   const sessions = [makeSession("A"), makeSession("B")];
   const stage = async (session, label, statements, expected) => {
     const marker = `__TSA_${label}`;
-    session.child.stdin.write(statements.trim() + "\\n" + `SELECT '${marker}', value FROM tsa_isolation_probe WHERE id=1;\\n`);
+    session.child.stdin.write(statements.trim() + "\n" + `SELECT '${marker}', value FROM tsa_isolation_probe WHERE id=1;\n`);
     const target = `${marker}|${expected}`;
     for (let i = 0; i < 200; i++) {
-      if (session.out.split(/\\r?\\n/).includes(target)) return;
-      if (session.ended) throw new Error(`Session ${session.name} closed: ${session.err}\\n${session.out}`);
+      if (session.out.split(/\r?\n/).includes(target)) return;
+      if (session.ended) throw new Error(`Session ${session.name} closed: ${session.err}\n${session.out}`);
       if (session.err.includes("ERROR:")) throw new Error(`Session ${session.name}: ${session.err}`);
       await new Promise(resolve => setTimeout(resolve, 30));
     }
-    throw new Error(`No observation ${target} in session ${session.name}: ${session.out}\\n${session.err}`);
+    throw new Error(`No observation ${target} in session ${session.name}: ${session.out}\n${session.err}`);
   };
   try {
     const A = sessions[0], B = sessions[1];
@@ -155,7 +155,7 @@ try {
     await stage(A, "rr_after_end", "COMMIT;", 20);
   } finally {
     for (const session of sessions) {
-      session.child.stdin.end("\\q\\n");
+      session.child.stdin.end("\\q\n");
       session.child.kill();
     }
   }
