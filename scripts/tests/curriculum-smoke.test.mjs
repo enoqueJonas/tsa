@@ -32,6 +32,10 @@ test("client-server architecture teaching example executes and proves boundary f
   runAudit("scripts/check-client-server-teaching-example.mjs", /Client-server learner example passed: JSON service HTTP 200, HTTP 404 and connection refusal after shutdown\./);
 });
 
+test("web journey introductory lesson runs its exact published local curl lab", () => {
+  runAudit("scripts/check-web-journey-lab.mjs", /Web journey lab passed:/);
+});
+
 test("Web and API Foundations JSON teaching examples execute and match their outputs", () => {
   runAudit("scripts/check-web-api-teaching-examples.mjs", /Web\/API learner JSON examples passed:/);
 });
