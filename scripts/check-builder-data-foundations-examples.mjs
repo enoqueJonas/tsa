@@ -9,7 +9,9 @@ const marker = (id) => source.indexOf(`"id": "${id}"`);
 const persistence = marker("from-memory-to-durable-data");
 const connection = marker("postgresql-first-connection");
 const relational = source.indexOf('id: "relational-model"');
-assert.ok(persistence > 0 && connection > persistence && relational > connection, "The learner order must be persistence → PostgreSQL connection → relational model");
+const fixture = marker("steward-schema-and-seed");
+const crud = source.indexOf('id: "sql-crud"');
+assert.ok(persistence > 0 && connection > persistence && relational > connection && fixture > relational && crud > fixture, "The learner order must be persistence → PostgreSQL connection → relational model → fixture → CRUD");
 
 function publishedCode(caption) {
   const anchor = source.indexOf(`"caption": "${caption}"`);
@@ -48,7 +50,26 @@ try {
   const relationalShape = source.match(/id: "steward-shape"[\s\S]*?code: ("(?:\\.|[^"\\])*")/);
   assert.ok(relationalShape, "Relational shape lesson missing");
   assert.doesNotMatch(JSON.parse(relationalShape[1]), /CREATE TABLE team/, "The lesson must not recreate Team after the prior example");
-  console.log("Builder data foundations examples passed: multi-process JSON persistence, corruption exit 2, recovery, SQL session contract and no duplicate Team CREATE.");
+  const seed = publishedCode("steward_schema_seed.sql — complete one-time PostgreSQL teaching fixture");
+  const verification = publishedCode("verify_steward_seed.sql — three result shapes the learner can predict");
+  const tableNames = ["team", "service", "environment", "service_dependency"];
+  for (const name of tableNames) {
+    assert.ok(seed.includes(`CREATE TABLE ${name} (`), `Missing permanent table in teaching fixture: ${name}`);
+    assert.ok(!seed.includes(`CREATE TEMP TABLE ${name}`), `Fixture must be durable rather than session-local: ${name}`);
+  }
+  for (const field of ["owning_team_id", "endpoint", "active boolean", "age_days", "criticality", "lifecycle", "retired_at", "kind", "source_service_id", "target_service_id"]) {
+    assert.ok(seed.includes(field), `Later SQL lesson prerequisite column missing: ${field}`);
+  }
+  for (const name of ["Payments API", "Payroll API", "Identity API", "Catalogue API", "Legacy Gateway"]) {
+    assert.ok(seed.includes(name), `Seed omits named service ${name}`);
+  }
+  assert.ok(seed.includes("CHECK (source_service_id <> target_service_id)"));
+  assert.ok(seed.includes("UNIQUE (source_service_id, target_service_id)"));
+  assert.ok(verification.includes("LEFT JOIN environment"), "NULL-preserving observation must be taught");
+  assert.ok(verification.includes("JOIN service src") && verification.includes("JOIN service dst"), "Directed dependency example missing");
+  assert.ok(source.includes("psql -X -v ON_ERROR_STOP=1 -1 -f steward_schema_seed.sql"), "Atomic failure-stopping execution command missing from reading");
+  console.log("Builder data foundations examples passed: multi-process JSON persistence, corruption exit 2, recovery, SQL session contract, canonical four-table seed and no duplicate Team CREATE. PostgreSQL connection execution remains unverified.");
+
 } finally {
   fs.rmSync(directory, { recursive: true, force: true });
 }
