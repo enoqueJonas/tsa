@@ -163,6 +163,37 @@ try {
   run(["-c", "DROP TABLE tsa_isolation_probe;"]);
   run(["-c", "BEGIN; DELETE FROM environment WHERE service_id IN (SELECT id FROM service WHERE name IN ('Txn Commit Demo','Txn Savepoint Demo')); DELETE FROM service WHERE name IN ('Txn Commit Demo','Txn Savepoint Demo'); COMMIT;"]);
   assert.equal(run(["-c", "SELECT count(*) FROM service"]).out, "5");
+  // Complete the rest of the PostgreSQL path using the learner-visible examples.
+  const constraints = run(["-c", codeFromLesson("constraints_inspect.sql — inspect actual deployed integrity rules")]).out;
+  assert.match(constraints, /FOREIGN KEY/);
+  assert.match(constraints, /UNIQUE/);
+  const attempts = codeFromLesson("constraints_failures.sql — four isolated invalid inserts").split(";").map(x => x.trim()).filter(Boolean);
+  assert.equal(attempts.length, 4);
+  for (const sql of attempts) {
+    const bad = run(["-c", sql+";"], 1);
+    assert.match(bad.err, /violates (unique|foreign key|check) constraint|duplicate key value/);
+  }
+  assert.equal(run(["-c", "SELECT count(*) FROM service"]).out, "5");
+  const slug = run(["-c", codeFromLesson("constraints_slug.sql — reversible uniqueness evolution")]).out;
+  assert.match(slug, /payments-api/);
+  assert.equal(run(["-c", "SELECT count(*) FROM information_schema.columns WHERE table_name='service' AND column_name='slug'"]).out, "0");
+  const schema = run(["-c", codeFromLesson("schema_extension.sql — disposable memberships and historical reviews")]).out;
+  assert.match(schema, /followup/);
+  assert.match(schema, /pass/);
+  const anomaly = run(["-c", codeFromLesson("normalization_anomaly.sql — two competing team names in one duplicated column")]).out;
+  assert.match(anomaly, /Payments Division/);
+  assert.match(anomaly, /Payroll API\\|Payments/);
+  const smallPlan = run(["-c", codeFromLesson("index_small.sql — inspect an already indexed unique Service name")]).out;
+  assert.match(smallPlan, /(Scan|scan)/);
+  const largePlan = run(["-c", codeFromLesson("index_lab.sql — compare actual physical plans on 15000 temporary rows")]).out;
+  assert.match(largePlan, /Execution Time/);
+  assert.match(largePlan, /CREATE INDEX/);
+  const joinPlan = run(["-c", codeFromLesson("explain_join.sql — inspect query plan and correct grouped result")]).out;
+  assert.match(joinPlan, /Execution Time/);
+  const perfPlan = run(["-c", codeFromLesson("performance_probe.sql — compare selective and broad predicates")]).out;
+  assert.match(perfPlan, /Execution Time/);
+  const metadata = run(["-c", codeFromLesson("postgresql_inspect.sql — verify connection and visible Service relation")]).out;
+  for (const table of ["team","service","environment","service_dependency"]) assert.ok(metadata.split(/\\r?\\n/).includes(table), `Cannot see ${table}`);
   console.log(`Builder PostgreSQL live lab passed: first session/TEMP negative, 4 persisted tables, 20 published SQL examples, 5/6/4 join cardinalities, 2 rejected writes, 3 transaction scripts with savepoint failure and 2-session Read Committed/Repeatable Read; database=${process.env.PGDATABASE}.`);
 
 } finally {
