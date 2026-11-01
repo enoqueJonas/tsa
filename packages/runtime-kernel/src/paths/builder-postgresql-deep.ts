@@ -35,7 +35,7 @@ const pgPsql: LearningResource = { title: "PostgreSQL — psql", url: "https://w
 const pgLocks: LearningResource = { title: "PostgreSQL — Explicit Locking", url: "https://www.postgresql.org/docs/current/explicit-locking.html", kind: "reference" };
 const resourcesByDataLesson: Record<string, LearningResource[]> = {
  "from-memory-to-durable-data":persistenceResources,"postgresql-first-connection":[{ title: "PostgreSQL — psql and Accessing a Database", url: "https://www.postgresql.org/docs/current/tutorial-accessdb.html", kind: "reference" }],
- "relational-model":[pgDdl,pgIntroVideo],"sql-crud":[pgQueries],"filtering-ordering":[pgQueries],aggregation:[pgFunctions],joins:[pgQueries],
+ "relational-model":[pgDdl,pgIntroVideo],"steward-schema-and-seed":[pgDdl,pgConstraints,pgPsql],"sql-crud":[pgQueries],"filtering-ordering":[pgQueries],aggregation:[pgFunctions],joins:[pgQueries],
  subqueries:[pgQueries],ctes:[pgWith],"transactions-acid":[pgTransactions],"constraints-keys":[pgConstraints],"schema-design":[pgDdl],
  normalization:[pgDdl],indexes:[pgIndexes],"query-plans":[pgExplain],"query-performance":[pgExplain],"postgresql-practice":[pgPsql],
  "django-orm":[djangoQueryDocs],"orm-vs-sql":[djangoQueryDocs,pgQueries],"n-plus-one":[djangoQueryDocs,pgExplain],migrations:[djangoMigrationDocs,pgDdl],
@@ -271,19 +271,117 @@ const specs: DataLessonSpec[] = [
         introduction: "A relational database stores structured data in tables and lets those tables relate to one another through values such as keys. Rows represent individual records; columns describe the values each record can hold. The relational model goes further than this physical picture: it gives us a disciplined way to represent facts and relationships so that data can change without duplicating or contradicting the same fact in many places. Steward needs that discipline for teams, services, environments and dependencies.",
         outcomes: ["Explain rows, columns, relations and keys without relying on ORM terminology.", "Distinguish identity from attributes.", "Model many-to-one and many-to-many facts explicitly.", "Recognize when duplicated facts create inconsistency risk."],
         sections: [
-            { id: "table-mental-model", title: "Start with table, row and column", body: "Suppose we need to store teams. A table named team describes one kind of data. Each row represents one team. Columns such as id and name describe values recorded for every row. A primary key identifies each row independently of display values that may change.", code: "CREATE TABLE team (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  name text NOT NULL UNIQUE\n);\n\nINSERT INTO team (name) VALUES ('Payments'), ('Platform');\n\nSELECT id, name FROM team ORDER BY id;", caption: "Create, populate and query a relation", output: " id |   name\n----+----------\n  1 | Payments\n  2 | Platform\n(2 rows)" },
-            { id: "facts-as-relations", title: "From tables to relational facts", body: "The table/row/column picture is useful, but the relational model is about meaning rather than spreadsheet layout. Treat a table as representing facts of one kind. If a Service belongs to a Team, repeating the team name inside every service row duplicates a fact that can change. Store the Team once, give it stable identity, and let Service reference that identity." },
-            { id: "steward-shape", title: "A first Steward relational shape", body: "Teams own services; services run in environments; services depend on other services. These are separate relations because they have different cardinalities, lifecycles and constraints.", code: "CREATE TABLE service (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  name text NOT NULL,\n  owning_team_id bigint NOT NULL REFERENCES team(id)\n);" },
+            { id: "table-mental-model", title: "Start with table, row and column", body: "Suppose we need to store teams. A table named team describes one kind of data. Each row represents one team. Columns such as id and name describe values recorded for every row. A primary key identifies each row independently of display values that may change.", code: "CREATE TEMP TABLE team (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  name text NOT NULL UNIQUE\n);\n\nINSERT INTO team (name) VALUES ('Payments'), ('Platform');\n\nSELECT id, name FROM team ORDER BY id;", caption: "One-session temporary Team relation; close psql after this model", output: " id |   name\n----+----------\n  1 | Payments\n  2 | Platform\n(2 rows)" },
+            { id: "facts-as-relations", title: "From tables to relational facts", body: "These snippets are deliberately TEMP experiments in one psql session; their tables disappear after disconnect. The table/row/column picture is useful, but the relational model is about meaning rather than spreadsheet layout. Treat a table as representing facts of one kind. If a Service belongs to a Team, repeating the team name inside every service row duplicates a fact that can change. Store the Team once, give it stable identity, and let Service reference that identity." },
+            { id: "steward-shape", title: "A first Steward relational shape", body: "Teams own services; services run in environments; services depend on other services. These are separate relations because they have different cardinalities, lifecycles and constraints.", code: "CREATE TEMP TABLE service (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  name text NOT NULL,\n  owning_team_id bigint NOT NULL REFERENCES team(id)\n);" },
             { id: "database-vocabulary", title: "Database, schema, table, row and column are different scopes", body: "A PostgreSQL server can host multiple databases. Inside a database, schemas are namespaces for objects such as tables. A table defines columns and constraints; each row records one fact instance. PostgreSQL commonly uses the public schema by default, but relying on defaults without understanding the namespace becomes confusing once applications, extensions or multiple teams share a database." },
-            { id: "data-types", title: "Column types constrain representation", body: "Choose types from the fact being stored: bigint/identity for generated numeric identifiers, text for unconstrained text, boolean for true/false state, date for calendar dates, timestamptz for instants that must survive timezone presentation, numeric for exact decimal quantities, and uuid when UUID identity is deliberately required. A type does not encode every domain rule, but it prevents entire classes of invalid representation." , code: "CREATE TABLE environment (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  service_id bigint NOT NULL REFERENCES service(id),\n  name text NOT NULL,\n  production boolean NOT NULL DEFAULT false,\n  created_at timestamptz NOT NULL DEFAULT now()\n);" },
+            { id: "data-types", title: "Column types constrain representation", body: "Choose types from the fact being stored: bigint/identity for generated numeric identifiers, text for unconstrained text, boolean for true/false state, date for calendar dates, timestamptz for instants that must survive timezone presentation, numeric for exact decimal quantities, and uuid when UUID identity is deliberately required. A type does not encode every domain rule, but it prevents entire classes of invalid representation." , code: "CREATE TEMP TABLE environment (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  service_id bigint NOT NULL REFERENCES service(id),\n  name text NOT NULL,\n  kind text NOT NULL CHECK (kind IN ('development','staging','production')),\n  created_at timestamptz NOT NULL DEFAULT now()\n);" },
             { id: "null-meaning", title: "NULL means missing/unknown, not empty or zero", body: "NULL is a marker for absence of a value under SQL semantics. It is different from an empty string, zero and false. Decide whether absence is legitimate for each column; use NOT NULL when every valid row must contain the fact. Excessive nullable columns often indicate unclear lifecycle or table boundaries." },
         ],
         warning: "Do not choose table boundaries by mirroring JSON payloads. API representation and relational storage solve different problems.",
         assignment: ["Sketch the Steward entities and relationships without Django model syntax.", "Mark primary keys, foreign keys and cardinalities.", "Identify one fact that would become inconsistent if duplicated."],
         resources: [postgresDocs],
-        practiceObjective: "Create a minimal relational model for Team, Service, Environment and ServiceDependency.",
-        practiceInstructions: ["Draw the relations and cardinalities first.", "Create the tables in PostgreSQL.", "Insert a small dataset with two teams and three services.", "Demonstrate one relationship query and explain why the model avoids duplicated ownership facts."],
+        practiceObjective: "Design the Steward model and prove its identity/relationship semantics using disposable temporary tables.",
+        practiceInstructions: ["Draw the relations and cardinalities first.", "Use temporary example tables in a single psql session; the next lesson creates the durable baseline.", "Insert a small dataset with two teams and three services.", "Demonstrate one relationship query and explain why the model avoids duplicated ownership facts."],
         knowledgeCheck: "1. Why is a foreign key more than a convenient integer column?\n2. What is the difference between entity identity and an attribute such as service name?\n3. Why should service dependencies be represented as a relation rather than a comma-separated column?",
+    },
+    {
+        "id": "steward-schema-and-seed",
+        "title": "A Reproducible Steward Schema and Seed Dataset",
+        "introduction": "Knowing the meaning of a relation does not yet give you a working database for every later SQL exercise. Earlier draft material invented service columns, environment kinds and dependencies at different points, producing SQL that cannot be run from the previous lesson's schema. Here we derive one explicit, disposable, versioned teaching dataset and prove it works. The rest of this module should use this baseline unless the activity deliberately evolves it.",
+        "outcomes": [
+            "Create Team, Service, Environment and ServiceDependency using declared SQL fields, types and constraints.",
+            "Explain the relationship between PostgreSQL's persistent table definitions and the earlier disposable TEMP examples.",
+            "Seed related rows by stable business meaning rather than guessing generated numeric IDs.",
+            "Prove a missing relationship remains observable and foreign keys reject orphan writes."
+        ],
+        "sections": [
+            {
+                "id": "checkpoint",
+                "title": "Do not run a second schema into unknown existing tables",
+                "body": "Precondition: you have a working connection to a dedicated, empty tsa_steward_lab learning database using the previous lesson's server/client/role instructions. The temporary Team/Service demonstrations in The Relational Model should have been run in a different psql session and discarded when that session closed. This script creates permanent tables; unlike TEMP tables, they survive client disconnect. Do not add IF NOT EXISTS as a way to hide that you are connected to an old or incompatible schema. If CREATE TABLE says the relation already exists, stop, inspect \\dt and your target database, and create a new disposable lab database or explicitly reset under supervision; do not drop arbitrary tables."
+            },
+            {
+                "id": "facts",
+                "title": "Define facts, identities and integrity before writing rows",
+                "body": "Team has its own identity and unique name; Service holds an immutable generated database identity and a Team foreign key. Service's name is unique here as an explicit *teaching assumption*, not a universal fact about all registries. Environment describes one deployed placement of one Service and has a kind limited to development, staging or production. A directed ServiceDependency relates source → target and forbids a self-edge and duplicates. The `active` operational flag is not the same concept as `lifecycle`: a temporarily unavailable active-lifecycle service need not be retired. `criticality` is a declared priority and `retired_at` records a timestamp where one exists. The domain/API interface does not have to expose every SQL column. Generated IDs are not stable seed assumptions; the foreign key lookup follows Team identity."
+            },
+            {
+                "id": "schema",
+                "title": "Create the schema and dataset in one explicit script",
+                "body": "Save the following exactly as steward_schema_seed.sql in a scratch directory. Connect to the verified empty learning database and run psql -X -v ON_ERROR_STOP=1 -1 -f steward_schema_seed.sql. The -1 flag wraps a file in one transaction: an SQL error stops the script and rolls back the changes, rather than leaving a half-created baseline. The .invalid URLs are deliberate non-routable placeholders for local teaching data; no real endpoints or customer records are involved. Inspect all table names and foreign-key directions before running. Never run this file against production or any database that contains valuable data.",
+                "language": "sql",
+                "caption": "steward_schema_seed.sql — complete one-time PostgreSQL teaching fixture",
+                "code": "CREATE TEMP TABLE team (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  name text NOT NULL UNIQUE\n);\n\nCREATE TEMP TABLE service (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  name text NOT NULL UNIQUE,\n  owning_team_id bigint NOT NULL REFERENCES team(id),\n  endpoint text NOT NULL,\n  active boolean NOT NULL DEFAULT true,\n  age_days integer NOT NULL DEFAULT 0 CHECK (age_days >= 0),\n  lifecycle text NOT NULL DEFAULT 'active' CHECK (lifecycle IN ('active', 'retired')),\n  criticality text NOT NULL DEFAULT 'medium' CHECK (criticality IN ('low', 'medium', 'high', 'critical')),\n  retired_at timestamptz\n);\n\nCREATE TEMP TABLE environment (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  service_id bigint NOT NULL REFERENCES service(id),\n  name text NOT NULL,\n  kind text NOT NULL CHECK (kind IN ('development', 'staging', 'production')),\n  UNIQUE (service_id, name)\n);\n\nCREATE TABLE service_dependency (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  source_service_id bigint NOT NULL REFERENCES service(id),\n  target_service_id bigint NOT NULL REFERENCES service(id),\n  UNIQUE (source_service_id, target_service_id),\n  CHECK (source_service_id <> target_service_id)\n);\n\nINSERT INTO team (name) VALUES ('Payments'), ('Platform'), ('Identity');\n\nINSERT INTO service (name, owning_team_id, endpoint, active, age_days, lifecycle, criticality)\nSELECT 'Payments API', id, 'https://payments.example.invalid/api', true, 184, 'active', 'high'\nFROM team WHERE name = 'Payments';\n\nINSERT INTO service (name, owning_team_id, endpoint, active, age_days, lifecycle, criticality)\nSELECT 'Payroll API', id, 'https://payroll.example.invalid/api', true, 55, 'active', 'critical'\nFROM team WHERE name = 'Payments';\n\nINSERT INTO service (name, owning_team_id, endpoint, active, age_days, lifecycle, criticality)\nSELECT 'Identity API', id, 'https://identity.example.invalid/api', true, 350, 'active', 'critical'\nFROM team WHERE name = 'Identity';\n\nINSERT INTO service (name, owning_team_id, endpoint, active, age_days, lifecycle, criticality)\nSELECT 'Catalogue API', id, 'https://catalogue.example.invalid/api', true, 10, 'active', 'medium'\nFROM team WHERE name = 'Platform';\n\nINSERT INTO service (name, owning_team_id, endpoint, active, age_days, lifecycle, criticality, retired_at)\nSELECT 'Legacy Gateway', id, 'https://legacy.example.invalid/api', false, 1600, 'retired', 'low', now()\nFROM team WHERE name = 'Platform';\n\nINSERT INTO environment (service_id, name, kind)\nSELECT id, 'Primary', 'production' FROM service\nWHERE name IN ('Payments API', 'Identity API', 'Catalogue API');\n\nINSERT INTO environment (service_id, name, kind)\nSELECT id, 'Preprod', 'staging' FROM service WHERE name = 'Payments API';\n\nINSERT INTO service_dependency (source_service_id, target_service_id)\nSELECT src.id, dst.id FROM service src CROSS JOIN service dst\nWHERE src.name = 'Payments API' AND dst.name = 'Identity API';\n\nINSERT INTO service_dependency (source_service_id, target_service_id)\nSELECT src.id, dst.id FROM service src CROSS JOIN service dst\nWHERE src.name = 'Payroll API' AND dst.name = 'Payments API';"
+            },
+            {
+                "id": "verify",
+                "title": "Observe rows, missing relationships and dependency direction",
+                "body": "Run the verification queries in the *same named learning database*, now in a new psql session. The first result must report Identity=1, Payments=2 and Platform=2; their order is alphabetical. The LEFT JOIN in the second query deliberately keeps Payroll API even though it has no environment, producing NULL for kind. Payments API should have two kinds. The dependency query must show Payments API depends on Identity API, and Payroll API depends on Payments API. If any count or edge differs, inspect the actual seed and stop before following another lesson; do not 'fix' the result by adding DISTINCT blindly.",
+                "language": "sql",
+                "caption": "verify_steward_seed.sql — three result shapes the learner can predict",
+                "code": "SELECT t.name AS team, COUNT(s.id) AS services\nFROM team t LEFT JOIN service s ON s.owning_team_id = t.id\nGROUP BY t.id, t.name ORDER BY t.name;\n\nSELECT s.name, e.kind\nFROM service s LEFT JOIN environment e ON e.service_id = s.id\nWHERE s.name IN ('Payroll API', 'Payments API')\nORDER BY s.name, e.kind;\n\nSELECT src.name AS service, dst.name AS depends_on\nFROM service_dependency d\nJOIN service src ON src.id = d.source_service_id\nJOIN service dst ON dst.id = d.target_service_id\nORDER BY src.name;",
+                "output": "Team counts: Identity | 1; Payments | 2; Platform | 2.\nEnvironment results: Payments API | production; Payments API | staging; Payroll API | NULL.\nDependencies: Payments API → Identity API; Payroll API → Payments API."
+            },
+            {
+                "id": "negative",
+                "title": "Make the constraint boundary fail safely",
+                "body": "Attempt a separate INSERT that references owning_team_id = -1 and supplies just name and endpoint; it must fail with a foreign-key violation and leave the Service count unchanged. Then attempt to insert another Service named Payments API and observe the UNIQUE violation. Run these as separate psql -c statements with ON_ERROR_STOP enabled, not as part of your successful baseline file. The exact error wording and generated internal key names depend on PostgreSQL. This proves *these two* constraints respond to these invalid rows; it does not prove that the whole domain model has been fully validated or that transactions solve all races.",
+                "language": "sql",
+                "caption": "Expected failures — run one at a time only after creating the lab fixture",
+                "code": "INSERT INTO service (name, owning_team_id, endpoint)\nVALUES ('Orphan', -1, 'https://orphan.example.invalid');\n\nINSERT INTO service (name, owning_team_id, endpoint)\nSELECT 'Payments API', id, 'https://duplicate.example.invalid'\nFROM team WHERE name = 'Payments';"
+            },
+            {
+                "id": "why-next",
+                "title": "Carry one coherent baseline into subsequent SQL topics",
+                "body": "SELECT/UPDATE/DELETE, WHERE/ORDER BY, grouping, JOIN, EXISTS, CTE, indexing and EXPLAIN all need a reproducible data shape. This fixture supplies fields they later query: lifecycle, criticality, retired_at, endpoint, environment.kind and directed dependency keys. Those later lessons must declare any further changes they require. Before a mutation exercise, checkpoint the learning database and select the exact rows to be affected. A clean fixture supports repeatability, but a five-row table cannot establish real-world index-performance improvements; performance experiments must generate suitably sized representative data and measure cautiously."
+            }
+        ],
+        "warning": "Database fixture commands are intentionally persistent; run only in a freshly provisioned disposable lab database. The seed script is source-reviewed but not executed against an actual PostgreSQL server by the current automated test.",
+        "assignment": [
+            "Create the four-table schema and seed in a clean isolated PostgreSQL learning database, saving output of the atomic -1 script run.",
+            "Run the three verification queries and reconcile every row with the stated cardinalities and expected missing relationship.",
+            "Trigger the negative foreign-key and duplicate-name writes in isolation and prove that the original five-service dataset remains unchanged.",
+            "Explain why this fixture uses multiple relations rather than embedding team name, environments and dependencies as comma-separated Service fields.",
+            "Keep the SQL files under a versioned learning checkpoint; no customer or production data."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL — Data Definition",
+                "url": "https://www.postgresql.org/docs/current/ddl.html",
+                "kind": "reference",
+                "purpose": "Table, namespace, field and schema definitions."
+            },
+            {
+                "title": "PostgreSQL — Constraints",
+                "url": "https://www.postgresql.org/docs/current/ddl-constraints.html",
+                "kind": "reference",
+                "purpose": "Foreign keys, CHECK, UNIQUE and domain invariants."
+            },
+            {
+                "title": "PostgreSQL — psql",
+                "url": "https://www.postgresql.org/docs/current/app-psql.html",
+                "kind": "reference",
+                "purpose": "Understand ON_ERROR_STOP and the -1 atomic file execution flag."
+            },
+            {
+                "title": "CMU Database Systems (Fall 2025) — Modern SQL lecture",
+                "url": "https://www.youtube.com/watch?v=O5gU9NQjCAs",
+                "kind": "video",
+                "read": "Lecture 2; optional advanced SQL model lecture",
+                "purpose": "Deepen the difference between logical declarative SQL and engine execution; course outline reviewed, recording not watched here."
+            }
+        ],
+        "practiceObjective": "Create a coherent durable SQL fixture and verify that every later Builder SQL example has its required named fields and relationships.",
+        "practiceInstructions": [
+            "Confirm that the selected PostgreSQL database is dedicated, empty and not production. Do not hide duplicate tables using IF NOT EXISTS.",
+            "Run the full published steward_schema_seed.sql using psql -X -v ON_ERROR_STOP=1 -1 and retain the transcript.",
+            "Run verify_steward_seed.sql in a separate session and compare the exact Team counts, NULL environment and dependency edges.",
+            "Trigger the missing-Team foreign key and duplicate Service failures separately; verify all five original Services remain.",
+            "Mark which API/domain fields came from earlier Python core versus which became explicit database teaching assumptions, and defend active/lifecycle distinction.",
+            "Write a reproducible setup note that lets a second learner create a fresh instance without copying screenshots or hardcoded IDs."
+        ],
+        "knowledgeCheck": "Predict the output after two inserts of the same Service name, and after joining a Service that has no Environment. Explain why a foreign key is a rule, not simply an integer column; why SQL row order needs ORDER BY; and why a five-row EXPLAIN plan cannot establish a performance win."
     },
     {
         id: "sql-crud",
