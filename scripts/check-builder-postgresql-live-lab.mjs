@@ -77,7 +77,14 @@ try {
       ["Payments|2"]],
     ["aggregate_inflation.sql — observe overcount and correctly count Service identities",
       ["Identity|1|1", "Payments|3|2", "Platform|2|2"]],
-    ["aggregate_nulls.sql — define two populations in one report", ["5|1|2"]]
+    ["aggregate_nulls.sql — define two populations in one report", ["5|1|2"]],
+    ["subquery_in.sql — derive a set of owning Team identities", ["Payments API", "Payroll API"]],
+    ["subquery_exists.sql — correlate an existence test to one Service", ["Catalogue API", "Identity API", "Payments API"]],
+    ["subquery_scalar.sql — one count per Team", ["Identity|1", "Payments|2", "Platform|2"]],
+    ["subquery_not_in.sql — the NULL trap and a safe anti-existence test", ["2", "3"]],
+    ["cte_priority.sql — inspectable two-stage priority dependency count", ["Identity API|0", "Payments API|1", "Payroll API|1"]],
+    ["cte_recursive.sql — bounded dependency walk with visited-node guard", ["Payroll API|0", "Payments API|1", "Identity API|2"]],
+    ["cte_cycle.sql — read-only cyclic graph and explicit termination", ["A|0", "B|1"]]
   ];
   for (const [caption, expected] of cases) verify(caption, expected);
   const rowCounts = run(["-c", "SELECT (SELECT count(*) FROM service), (SELECT count(*) FROM service s LEFT JOIN environment e ON e.service_id=s.id), (SELECT count(*) FROM service s INNER JOIN environment e ON e.service_id=s.id)"]).out;
@@ -89,7 +96,7 @@ try {
   assert.match(repeat.err, /duplicate key value violates unique constraint/);
   assert.equal(run(["-c", "SELECT count(*) FROM service"]).out, "5");
 
-  console.log(`Builder PostgreSQL live lab passed: first session/TEMP negative, 4 persisted tables, 13 published SQL examples, 5/6/4 join cardinalities and 2 rejected writes; database=${process.env.PGDATABASE}.`);
+  console.log(`Builder PostgreSQL live lab passed: first session/TEMP negative, 4 persisted tables, 20 published SQL examples, 5/6/4 join cardinalities and 2 rejected writes; database=${process.env.PGDATABASE}.`);
 } finally {
   fs.rmSync(root, { recursive: true, force: true });
 }
