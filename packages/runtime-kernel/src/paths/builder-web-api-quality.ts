@@ -19,19 +19,36 @@ const practices: Record<string, PracticeSpec> = {
     completionCriteria: ["DNS, TCP/TLS and HTTP/application failures are not conflated.", "Every diagnosis points to observable evidence rather than intuition.", "You can identify when an HTTP status proves that the request reached an HTTP server.", "Another engineer could follow your triage sequence without knowing the answer in advance."]
   },
   "web-and-api-foundations-client-server-architecture": {
-    objective: "Design the first network boundary for the Steward core you already built and identify what must remain authoritative on the server.",
-    scenario: "Your steward-core package is now installable and its domain behavior is understood locally. The next major increment is to expose that capability to clients. Before choosing Django or DRF, decide what changes when the existing local Service operations cross an HTTP boundary.",
-    instructions: [
-      "Start from the completed steward-core checkpoint; use Service creation, lookup and status change as the concrete behavior under discussion.",
-      "Draw a proposed interaction Engineering Client → Steward HTTP API → Steward domain core. PostgreSQL is a later increment, so do not pretend it exists yet.",
-      "Take the existing Service lookup and deactivation operations and compare local function calls with future HTTP calls: serialization, latency, authentication, timeout, partial failure and compatibility. For a timed-out state-changing request, explain why the client may not know whether the server committed the change.",
-      "Decide which existing validation and Service invariants must remain authoritative behind the server boundary even if a future client also validates them.",
-      "Sketch one bad design where a client alone enforces an important Service rule and explain how another client could bypass it.",
-      "Record why this lesson designs the boundary but does not yet introduce a web framework."
-    ],
-    deliverables: ["Boundary diagram grounded in steward-core", "Local-call versus HTTP-call comparison", "Server-authority decision", "Client-bypass example", "Framework-deferral note"],
-    completionCriteria: ["The design starts from Steward behavior the learner actually built.", "No database or framework is assumed to exist yet.", "Network-specific failure modes are explicit.", "Domain rules remain authoritative on the server side.", "The learner can explain why HTTP design precedes framework implementation."]
-  },
+  "objective": "Define and defend a client–server boundary for the current Steward core and collect independent runtime evidence from a synthetic local HTTP client and server.",
+  "scenario": "The learner has steward-core domain behavior but not yet a Steward HTTP API or PostgreSQL integration. The decision is whether and how to expose those operations to a future Engineering Portal. Prove the basic request/response interaction with an isolated standard-library demo before designing the future boundary.",
+  "instructions": [
+    "From memory, define the architecture in terms of client, server, contract, protocol and authority; explain why 'server' need not mean a physical machine.",
+    "Run the Python standard-library server from the reading. In a second terminal execute curl -i for /services and /missing, stop the server, and repeat /services. Record actual HTTP 200, HTTP 404 and connection-error evidence; do not fabricate output.",
+    "Annotate the three observations with the responsible layer, which process performed the work and why a connection refusal is not an HTTP status.",
+    "Draw the proposed Engineering Portal -> Steward HTTP API -> steward-core boundary. Distinguish planned code from existing steward-core. Explicitly omit PostgreSQL at this stage.",
+    "Contrast the current client–server proposal with a peer-to-peer alternative; then explain why modular monolith versus microservices is a different architectural dimension.",
+    "Explain with a concrete bypass why a browser-only self-dependency check is insufficient and where that invariant must be enforced.",
+    "Describe the timeout ambiguity for a hypothetical state-changing request: request lost versus change committed but response lost. Say what evidence would disambiguate them.",
+    "Write a concise design decision containing the chosen boundary, its benefits, its costs, one rejected alternative and a specific condition that would make you reconsider."
+  ],
+  "deliverables": [
+    "Observed transcript for successful, nonexistent-path and stopped-server requests",
+    "Annotated architecture and process diagram grounded in existing steward-core",
+    "Comparison of client–server, peer-to-peer, modular monolith and microservices",
+    "Authoritative-rule and bypass analysis",
+    "Timeout outcome analysis",
+    "Evidence-based architectural decision"
+  ],
+  "completionCriteria": [
+    "A precise definition, not a list of technologies, explains what the client and server do.",
+    "The demo was actually executed and its three observed outcomes are correctly differentiated.",
+    "The architecture uses the real current Steward increment and does not invent PostgreSQL or a framework implementation.",
+    "The explanation distinguishes communication roles from deployment style and tier count.",
+    "The server-side domain rule and the risk of client-only checks are justified.",
+    "Timeout uncertainty and a safe verification strategy are explained.",
+    "The final architecture decision names a genuine trade-off, an alternative and a decision reversal trigger."
+  ]
+},
   "web-and-api-foundations-http-requests-and-responses": {
     objective: "Read an HTTP exchange directly enough to explain what happened without relying on a framework debugger or API-client UI.",
     scenario: "A teammate sends you a screenshot showing '200 OK' and says the integration is correct. You are not willing to approve the claim until the complete request and response contract is visible.",
