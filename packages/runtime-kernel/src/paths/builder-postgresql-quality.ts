@@ -94,7 +94,7 @@ const practices: Record<string, PracticeSpec> = {
         scenario: "Steward reports three services for Payments, but the canonical dataset contains two. Prove the query is counting joined environment rows rather than service identities.",
         instructions: [
             "Run aggregate_team.sql and predict the three Team counts before executing.",
-            "Run the read-only aggregate_zero.sql CTE with synthetic Unassigned Team and contrast COUNT(*)=1 with COUNT(s.id)=0.",
+            "Run the read-only aggregate_zero.sql VALUES-row example with synthetic Unassigned Team and contrast COUNT(*)=1 with COUNT(s.id)=0.",
             "Run aggregate_having.sql and explain why HAVING is a group filter, and lifecycle belongs in ON when a LEFT JOIN must keep empty teams.",
             "Run aggregate_inflation.sql and inspect the raw join inputs behind Payments=3 versus distinct service_count=2.",
             "Run aggregate_nulls.sql and distinguish COUNT(*) (5), COUNT(retired_at) (1) and criticality FILTER (2).",
