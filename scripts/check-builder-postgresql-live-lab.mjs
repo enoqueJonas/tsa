@@ -182,7 +182,7 @@ try {
   assert.match(schema, /pass/);
   const anomaly = run(["-c", codeFromLesson("normalization_anomaly.sql — two competing team names in one duplicated column")]).out;
   assert.match(anomaly, /Payments Division/);
-  assert.match(anomaly, /Payroll API\\|Payments/);
+  assert.match(anomaly, /Payroll API\|Payments/);
   const smallPlan = run(["-c", codeFromLesson("index_small.sql — inspect an already indexed unique Service name")]).out;
   assert.match(smallPlan, /(Scan|scan)/);
   const largePlan = run(["-c", codeFromLesson("index_lab.sql — compare actual physical plans on 15000 temporary rows")]).out;
@@ -193,7 +193,7 @@ try {
   const perfPlan = run(["-c", codeFromLesson("performance_probe.sql — compare selective and broad predicates")]).out;
   assert.match(perfPlan, /Execution Time/);
   const metadata = run(["-c", codeFromLesson("postgresql_inspect.sql — verify connection and visible Service relation")]).out;
-  for (const table of ["team","service","environment","service_dependency"]) assert.ok(metadata.split(/\\r?\\n/).includes(table), `Cannot see ${table}`);
+  for (const table of ["team","service","environment","service_dependency"]) assert.ok(metadata.split(/\r?\n/).includes(table), `Cannot see ${table}`);
   console.log(`Builder PostgreSQL live lab passed: first session/TEMP negative, 4 persisted tables, 20 published SQL examples, 5/6/4 join cardinalities, 2 rejected writes, 3 transaction scripts with savepoint failure and 2-session Read Committed/Repeatable Read; database=${process.env.PGDATABASE}.`);
 
 } finally {
