@@ -75,7 +75,9 @@ try {
   assert.doesNotMatch(refused.stdout, new RegExp("^HTTP/", "m"), "Connection refusal is not HTTP");
   console.log("Web journey lab passed: published setup, curl HTTP 200, curl HTTP 404 and no HTTP after shutdown.");
 } finally {
-  if (server.exitCode === null) {
+  // A process terminated by SIGTERM can have exitCode=null with signalCode set.
+  // Awaiting an already emitted 'exit' event leaves an unresolved top-level await.
+  if (server.exitCode === null && server.signalCode === null && !server.killed) {
     server.kill("SIGTERM");
     await new Promise(resolve => server.once("exit", resolve));
   }
