@@ -35,7 +35,7 @@ const pgPsql: LearningResource = { title: "PostgreSQL — psql", url: "https://w
 const pgLocks: LearningResource = { title: "PostgreSQL — Explicit Locking", url: "https://www.postgresql.org/docs/current/explicit-locking.html", kind: "reference" };
 const resourcesByDataLesson: Record<string, LearningResource[]> = {
  "relational-model":[pgDdl,pgIntroVideo],"sql-crud":[pgQueries],"filtering-ordering":[pgComparison,pgQueries,pgCmuModernSql],aggregation:[pgAggregationTutorial,pgFunctions],joins:[pgJoinTutorial,pgQueries],
- subqueries:[pgQueries],ctes:[pgWith],"transactions-acid":[pgTransactions],"constraints-keys":[pgConstraints],"schema-design":[pgDdl],
+ subqueries:[{ title: "PostgreSQL — Subquery Expressions", url: "https://www.postgresql.org/docs/current/functions-subquery.html", kind: "reference" }],ctes:[pgWith],"transactions-acid":[pgTransactions],"constraints-keys":[pgConstraints],"schema-design":[pgDdl],
  normalization:[pgDdl],indexes:[pgIndexes],"query-plans":[pgExplain],"query-performance":[pgExplain],"postgresql-practice":[pgPsql],
  "django-orm":[djangoQueryDocs],"orm-vs-sql":[djangoQueryDocs,pgQueries],"n-plus-one":[djangoQueryDocs,pgExplain],migrations:[djangoMigrationDocs,pgDdl],
  concurrency:[pgTransactions,pgLocks],
@@ -694,34 +694,194 @@ const specs: DataLessonSpec[] = [
         "knowledgeCheck": "Why can COUNT(*) over a LEFT JOIN show 1 for a team with no services? Why is COUNT(DISTINCT service.id) appropriate for one metric but not a universal fix for SUM? When does a filter belong in JOIN ON instead of WHERE, and when is HAVING required?"
     },
     {
-        id: "subqueries",
-        title: "Subqueries",
-        introduction: "A subquery lets one query depend on the result of another. It is useful when the mental model is naturally staged: first identify a set or value, then use it to answer the outer question.",
-        outcomes: ["Use scalar, IN and EXISTS subqueries.", "Recognize correlated subqueries.", "Choose EXISTS when testing existence.", "Compare a subquery with an equivalent join."],
-        sections: [
-            { id: "exists", title: "EXISTS expresses a yes/no relationship", body: "When the question is whether at least one related row exists, EXISTS often states the intent directly and avoids accidental duplication.", code: "SELECT s.id, s.name\nFROM service s\nWHERE EXISTS (\n  SELECT 1\n  FROM environment e\n  WHERE e.service_id = s.id\n    AND e.kind = 'production'\n);" },
-            { id: "correlation", title: "Correlated subqueries depend on the outer row", body: "The inner query can reference the current outer service. Think carefully about execution and readability; PostgreSQL may transform plans, but you still need to understand the logical relationship." },
+        "id": "subqueries",
+        "title": "Subqueries",
+        "introduction": "A subquery is a SELECT whose result is used inside another SQL query. It can supply a single value, a set of candidate values, or an existence test. The crucial beginner skill is predicting what *shape* the inner query returns and what the outer query does with that shape. Use the existing Team, Service and Environment fixture; none of the examples creates tables or requires an ORM.",
+        "outcomes": [
+            "Distinguish scalar, IN and EXISTS subquery results.",
+            "Explain correlation: a reference to the current outer row inside the inner query.",
+            "Predict EXISTS versus JOIN result cardinality and why EXISTS does not duplicate the outer Service row.",
+            "Diagnose NULL poisoning in NOT IN and implement a correctly correlated NOT EXISTS alternative."
         ],
-        assignment: ["Find services with at least one production environment using EXISTS.", "Find services owned by teams whose names match a subquery result.", "Rewrite one subquery as a JOIN and compare readability."],
-        resources: [postgresDocs],
-        practiceObjective: "Use subqueries where they clarify staged or existence-based reasoning.",
-        practiceInstructions: ["Write an EXISTS query.", "Write an IN subquery.", "Produce an equivalent JOIN for one of them.", "Run EXPLAIN and record whether the physical plans differ meaningfully on your dataset."],
-        knowledgeCheck: "1. When does EXISTS communicate intent better than JOIN?\n2. What makes a subquery correlated?\n3. Why should logical SQL structure and physical execution plan be considered separately?",
+        "sections": [
+            {
+                "id": "three-shapes",
+                "title": "Ask what the inner query returns before composing SQL",
+                "body": "A scalar subquery returns one column in at most one row and can be used as one value; if it produces more than one row in a scalar context PostgreSQL raises an error. IN expects one comparable column of values; EXISTS only asks whether the inner result has any row at all. A subquery in FROM produces a derived table with rows and columns. None of these forms guarantees a faster physical execution by syntax alone: PostgreSQL's planner may transform an EXISTS into a semi-join or choose other access paths. We are deciding the logical question first, not guessing performance."
+            },
+            {
+                "id": "in",
+                "title": "IN expresses membership in a computed set",
+                "body": "Suppose we want Services owned by the Payments Team. An inner query returns the Team's id, and the outer query selects Services with owning_team_id in that set. Under the fixture this returns Payments API and Payroll API. You could write the same request using JOIN, but IN avoids bringing Team columns into the output when you only need membership. This example returns exactly one Team id because Team.name is unique; if the name matched multiple Teams, IN still asks whether each Service owner appears among the values.",
+                "language": "sql",
+                "caption": "subquery_in.sql — derive a set of owning Team identities",
+                "code": "SELECT s.name\nFROM service s\nWHERE s.owning_team_id IN (\n  SELECT t.id FROM team t WHERE t.name = 'Payments'\n)\nORDER BY s.name;",
+                "output": "Payments API\nPayroll API"
+            },
+            {
+                "id": "exists",
+                "title": "EXISTS asks a yes/no question for each outer Service",
+                "body": "Which Services have at least one production Environment? The inner SELECT refers to the current Service row as s.id, so it is *correlated*. EXISTS returns TRUE for that outer row if any matching Environment exists; SELECT 1 is a conventional placeholder, because EXISTS does not need the Environment's output columns. With the seed, Catalogue API, Identity API and Payments API qualify. Unlike a plain join to environments, EXISTS never expands a single outer Service into multiple output rows; it tests existence rather than returning matched pairs.",
+                "language": "sql",
+                "caption": "subquery_exists.sql — correlate an existence test to one Service",
+                "code": "SELECT s.name\nFROM service s\nWHERE EXISTS (\n  SELECT 1 FROM environment e\n  WHERE e.service_id = s.id AND e.kind = 'production'\n)\nORDER BY s.name;",
+                "output": "Catalogue API\nIdentity API\nPayments API"
+            },
+            {
+                "id": "scalar",
+                "title": "Scalar subqueries yield one value for one outer row",
+                "body": "A correlated SELECT COUNT(*) always returns a single count row for each Team, including zero when there are no matches. This makes an understandable comparison with JOIN + GROUP BY from the previous lesson, though it is not a blanket performance recommendation. If the subquery instead returned several service names in scalar context, PostgreSQL would reject it; use IN, EXISTS, ARRAY aggregation or a JOIN according to the intended output shape.",
+                "language": "sql",
+                "caption": "subquery_scalar.sql — one count per Team",
+                "code": "SELECT t.name,\n       (SELECT COUNT(*) FROM service s WHERE s.owning_team_id = t.id) AS services\nFROM team t\nORDER BY t.name;",
+                "output": "Identity | 1\nPayments | 2\nPlatform | 2"
+            },
+            {
+                "id": "negative",
+                "title": "NOT IN is dangerous when the candidate set includes NULL",
+                "body": "This counterexample does not touch the Steward tables. The inner values are 1 and NULL. For x=2, '2 NOT IN (1,NULL)' is not TRUE: it is UNKNOWN because 2 might equal the missing value. WHERE excludes UNKNOWN, so the NOT IN query returns no rows. A correctly correlated NOT EXISTS asks whether a real matching row exists and returns 2 and 3. Do not blindly replace every NOT IN with NOT EXISTS without specifying the matching columns and NULL policy; understand the semantics first.",
+                "language": "sql",
+                "caption": "subquery_not_in.sql — the NULL trap and a safe anti-existence test",
+                "code": "WITH candidates(x) AS (VALUES (1),(2),(3)),\n     blocked(y) AS (VALUES (1),(NULL))\nSELECT x FROM candidates\nWHERE x NOT IN (SELECT y FROM blocked)\nORDER BY x;\n\nWITH candidates(x) AS (VALUES (1),(2),(3)),\n     blocked(y) AS (VALUES (1),(NULL))\nSELECT c.x FROM candidates c\nWHERE NOT EXISTS (\n  SELECT 1 FROM blocked b WHERE b.y = c.x\n)\nORDER BY c.x;",
+                "output": "NOT IN query: zero rows because the blocked set contains NULL.\nNOT EXISTS query: 2, 3."
+            },
+            {
+                "id": "transfer",
+                "title": "Prove equivalence before arguing optimization",
+                "body": "Now answer a new question: which Services do **not** have a production Environment? Use correlated NOT EXISTS; predict Payroll API and Legacy Gateway (and any other Service without a production placement) before running. On this fixture Payroll API and Legacy Gateway do not have environments, while the others do, so those two names are correct. Then write an equivalent LEFT JOIN ... ON production + WHERE e.service_id IS NULL query and explain why optional JOIN filters belong in ON for that pattern. Compare plans with EXPLAIN if you have a real PostgreSQL lab but do not claim one form is invariably faster."
+            }
+        ],
+        "warning": "NOT IN with nullable subquery values and an uncorrelated NOT EXISTS are common logic defects. A syntactically valid query can silently omit every expected row.",
+        "assignment": [
+            "Predict and run the IN, EXISTS and scalar examples on the unchanged seed.",
+            "Execute the isolated NOT IN/NOT EXISTS negative case and explain each TRUE/FALSE/UNKNOWN outcome.",
+            "Write a new NOT EXISTS query for Services without production and an equivalent LEFT JOIN anti-join; verify identical results.",
+            "Compare logical result cardinality and write a plan-inspection note without asserting the optimizer always executes subqueries literally."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL — Subquery Expressions",
+                "url": "https://www.postgresql.org/docs/current/functions-subquery.html",
+                "kind": "reference",
+                "purpose": "Authoritative EXISTS, IN, NOT IN and NULL behavior."
+            },
+            {
+                "title": "PostgreSQL — Table Expressions",
+                "url": "https://www.postgresql.org/docs/current/queries-table-expressions.html",
+                "kind": "reference",
+                "purpose": "Derived tables, subqueries and the distinction between JOIN and existence tests."
+            },
+            {
+                "title": "CMU 15-445 Fall 2025 — Modern SQL",
+                "url": "https://15445.courses.cs.cmu.edu/fall2025/schedule.html",
+                "kind": "course",
+                "read": "Lecture #02 Modern SQL notes/video (optional)",
+                "purpose": "Extend the mental model from nested SQL syntax to relational transformations."
+            }
+        ],
+        "practiceObjective": "Choose IN, EXISTS, scalar or anti-existence subqueries based on result shape and prove the NULL trap with executable evidence.",
+        "practiceInstructions": [
+            "Run the three subquery examples and explain the exact output shape of the inner SELECT for each.",
+            "Execute subquery_not_in.sql and show why the first query returns no rows but the correctly correlated NOT EXISTS returns 2 and 3.",
+            "Write independent anti-existence and LEFT anti-join queries for Services without production; predict and compare results.",
+            "Record the difference between logical row count and the physical strategy chosen by EXPLAIN.",
+            "Review NULL policy and the intended uniqueness/cardinality before accepting an equivalent rewrite."
+        ],
+        "knowledgeCheck": "If a subquery yields three rows, can it be a scalar expression? Why does EXISTS ignore SELECT 1 values? What does NULL do to NOT IN, and why can EXISTS avoid outer-row duplication?"
     },
     {
-        id: "ctes",
-        title: "Common Table Expressions",
-        introduction: "Common Table Expressions name intermediate query results. Their main Builder value is not cleverness; it is making a multi-stage data question inspectable and reviewable.",
-        outcomes: ["Use WITH to name intermediate result sets.", "Break complex queries into meaningful stages.", "Use recursive CTEs conceptually for graph traversal.", "Avoid using CTEs merely to make simple queries longer."],
-        sections: [
-            { id: "staged-query", title: "Name the stages of a question", body: "A CTE can first identify critical services, then count their dependencies. Each stage should have a clear meaning that can be queried independently while debugging.", code: "WITH critical_services AS (\n  SELECT id, name\n  FROM service\n  WHERE criticality = 'critical'\n)\nSELECT cs.name, COUNT(d.id) AS dependency_count\nFROM critical_services cs\nLEFT JOIN service_dependency d ON d.source_service_id = cs.id\nGROUP BY cs.id, cs.name;" },
-            { id: "recursive", title: "Recursive CTEs and dependency graphs", body: "Recursive CTEs can walk dependency chains, but cycles must be considered. TSA will revisit graph and architecture analysis later; here the goal is to recognize the tool and its risks." },
+        "id": "ctes",
+        "title": "Common Table Expressions",
+        "introduction": "As queries grow, repeatedly nested expressions become hard to inspect. WITH gives intermediate SELECT results names so that a query can be read and verified in stages. The name is only scoped to the single statement: it is not a persistent table, a migration or a guaranteed optimization fence. Recursive CTEs can also follow graph edges using a seed step and a repeat step, but only when termination and cycles are deliberately handled.",
+        "outcomes": [
+            "Write a nonrecursive CTE as a staged query and inspect each stage.",
+            "Distinguish the temporary query result of WITH from persistent and TEMP PostgreSQL tables.",
+            "Use WITH RECURSIVE to traverse directed Steward dependencies with a cycle guard.",
+            "Explain why CTE materialization or inlining is planner dependent, not an unconditional performance claim."
         ],
-        assignment: ["Refactor one multi-stage Steward query using WITH.", "Run the CTE body by itself to verify the intermediate set.", "Describe how a dependency cycle could affect a recursive traversal."],
-        resources: [postgresDocs],
-        practiceObjective: "Make a complex Steward query easier to inspect using named stages.",
-        practiceInstructions: ["Choose a query with filtering plus aggregation or dependency traversal.", "Create at least two logical stages.", "Validate each stage independently.", "Compare the final result with an equivalent non-CTE query."],
-        knowledgeCheck: "1. What problem does a CTE solve for human readers?\n2. Why can recursive graph queries require cycle protection?\n3. When is a CTE unnecessary?",
+        "sections": [
+            {
+                "id": "stages",
+                "title": "Name one question, then name its intermediate answers",
+                "body": "We want the number of outgoing dependencies for every high-or-critical Service. First priority_services identifies the three Services Payments API (high), Payroll API (critical) and Identity API (critical). Next dependency_counts groups directed edges by source_service_id. The final SELECT preserves Services with zero outgoing dependencies using LEFT JOIN and COALESCE, which changes NULL aggregate absence into zero. This query is readable because each named result has a precise role, not because more lines are automatically better.",
+                "language": "sql",
+                "caption": "cte_priority.sql — inspectable two-stage priority dependency count",
+                "code": "WITH priority_services AS (\n  SELECT id, name FROM service\n  WHERE criticality IN ('high', 'critical')\n),\ndependency_counts AS (\n  SELECT source_service_id, COUNT(*) AS outgoing\n  FROM service_dependency\n  GROUP BY source_service_id\n)\nSELECT p.name, COALESCE(d.outgoing, 0) AS outgoing\nFROM priority_services p\nLEFT JOIN dependency_counts d ON d.source_service_id = p.id\nORDER BY p.name;",
+                "output": "Identity API | 0\nPayments API | 1\nPayroll API | 1"
+            },
+            {
+                "id": "inspect",
+                "title": "Validate stages separately before trusting the final result",
+                "body": "Run SELECT id,name FROM service WHERE criticality IN ('high','critical') ORDER BY name; as the first stage. Then separately run SELECT source_service_id, COUNT(*) FROM service_dependency GROUP BY source_service_id ORDER BY source_service_id; as the second stage. Finally execute cte_priority.sql and reconcile every edge with the seed. A CTE does not promise PostgreSQL actually materializes each stage: modern PostgreSQL may inline nonrecursive, side-effect-free CTEs as part of planning. Explain what the logical names mean without inventing a physical plan."
+            },
+            {
+                "id": "recursive",
+                "title": "A recursive CTE has an anchor and a repeated transition",
+                "body": "A Service depends on another Service, which may in turn depend on another. For Payroll API, the first row is the starting Service at depth 0. The recursive member follows source → target dependency edges and increments depth. Repeat until there is no unseen next Service. The path bigint[] contains visited Service IDs; NOT (next id = ANY(path)) prevents revisiting a node in a cycle. On the fixture the chain is Payroll API → Payments API → Identity API, with depths 0, 1 and 2. This is a small graph traversal, not a claim that PostgreSQL uses any particular search ordering. The final ORDER BY makes presentation deterministic.",
+                "language": "sql",
+                "caption": "cte_recursive.sql — bounded dependency walk with visited-node guard",
+                "code": "WITH RECURSIVE walk(service_id, depth, path) AS (\n  SELECT id, 0, ARRAY[id]\n  FROM service WHERE name = 'Payroll API'\n  UNION ALL\n  SELECT d.target_service_id, w.depth + 1,\n         w.path || d.target_service_id\n  FROM walk w\n  JOIN service_dependency d ON d.source_service_id = w.service_id\n  WHERE NOT (d.target_service_id = ANY(w.path))\n)\nSELECT s.name, w.depth\nFROM walk w JOIN service s ON s.id = w.service_id\nORDER BY w.depth, s.name;",
+                "output": "Payroll API | 0\nPayments API | 1\nIdentity API | 2"
+            },
+            {
+                "id": "cycle-case",
+                "title": "Prove cycle safety without altering the shared fixture",
+                "body": "A self-reference CHECK only prohibits A → A; it does not prohibit A → B → A. The following isolated read-only query creates a two-edge conceptual cycle using VALUES, then uses the same visited-node technique. Without its WHERE condition the recursion would repeat A and B indefinitely unless interrupted by an external limit; do not execute the unsafe version. With cycle protection it stops at A depth 0, B depth 1. This makes termination an observable part of the exercise rather than a footnote.",
+                "language": "sql",
+                "caption": "cte_cycle.sql — read-only cyclic graph and explicit termination",
+                "code": "WITH RECURSIVE edges(src, dst) AS (\n  VALUES ('A'::text, 'B'::text), ('B'::text, 'A'::text)\n),\nwalk(node, path, depth) AS (\n  SELECT 'A'::text, ARRAY['A'::text], 0\n  UNION ALL\n  SELECT e.dst, w.path || e.dst, w.depth + 1\n  FROM walk w\n  JOIN edges e ON e.src = w.node\n  WHERE NOT (e.dst = ANY(w.path))\n)\nSELECT node, depth FROM walk ORDER BY depth;",
+                "output": "A | 0\nB | 1"
+            },
+            {
+                "id": "tradeoffs",
+                "title": "WITH is neither a stored view nor always faster SQL",
+                "body": "A CTE's scope is one statement; a VIEW is a named persistent database query definition, while a MATERIALIZED VIEW stores a computed result that must be refreshed. A TEMP TABLE is a real table visible to one session. A nonrecursive SELECT CTE may be inlined by PostgreSQL; explicit MATERIALIZED/NOT MATERIALIZED options can affect planning under certain conditions. Avoid such tuning until you inspect EXPLAIN and have a representative performance need. Use WITH for a genuinely staged question, not to bury a one-line predicate inside unnecessary names."
+            },
+            {
+                "id": "independent",
+                "title": "Extend the traversal without hiding domain assumptions",
+                "body": "Build a report of all direct outgoing dependencies for each critical Service and compare it with the recursive closure of Payroll API. If the product asks for unique impacted Services, a graph can have multiple distinct paths to the same node; the simple recursive example records paths and may produce repeated nodes across separate paths. State how the business question handles cycles, paths, deduplication and maximum depth before turning a teaching example into production code."
+            }
+        ],
+        "warning": "An unguarded recursive UNION ALL can loop indefinitely on cyclic data. Do not experiment with unsafe recursive queries or alter production dependency edges. CTE syntax alone says nothing about the actual query plan or performance.",
+        "assignment": [
+            "Execute cte_priority.sql and verify Identity 0, Payments 1 and Payroll 1 outgoing dependencies.",
+            "Execute cte_recursive.sql and draw Payroll → Payments → Identity with depths 0,1,2.",
+            "Execute cte_cycle.sql against its isolated VALUES graph and explain exactly why it terminates.",
+            "Write one new nonrecursive CTE that makes a two-stage registry query clearer, and justify why you chose it over a simpler SELECT.",
+            "Explain the trade-offs between CTE, VIEW, materialized view and session TEMP table without confusing their lifetimes."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL — WITH Queries (Common Table Expressions)",
+                "url": "https://www.postgresql.org/docs/current/queries-with.html",
+                "kind": "reference",
+                "purpose": "Nonrecursive composition, recursion evaluation and materialization boundaries."
+            },
+            {
+                "title": "PostgreSQL — Subquery Expressions",
+                "url": "https://www.postgresql.org/docs/current/functions-subquery.html",
+                "kind": "reference",
+                "purpose": "Distinguish named CTE stages from nested scalar/existence queries."
+            },
+            {
+                "title": "CMU 15-445 Fall 2025 — Modern SQL",
+                "url": "https://15445.courses.cs.cmu.edu/fall2025/schedule.html",
+                "kind": "course",
+                "read": "Lecture #02 and notes, optional",
+                "purpose": "University-level context for declarative query representation and staged reasoning."
+            }
+        ],
+        "practiceObjective": "Use published CTE queries to show staged reporting, a terminating directed dependency walk and a separate cycle-negative example.",
+        "practiceInstructions": [
+            "Execute the two-stage priority dependency query and reconcile the three expected counts.",
+            "Inspect each nonrecursive stage alone and explain why a named CTE is helpful here.",
+            "Run the recursive Payroll chain and use the depth/path to explain the anchor and repeated step.",
+            "Run the read-only two-node cycle example and demonstrate why the visited-node guard stops recursion.",
+            "Write an independent WITH query with a justified stage decomposition and a clear expected outcome.",
+            "Document why query readability does not prove physical materialization or performance improvement."
+        ],
+        "knowledgeCheck": "What survives after a WITH statement ends? Why does recursive UNION ALL need a termination guard on graph cycles? What does the visited array prevent, and what are the differences between a query CTE and a persistent view?"
     },
     {
         id: "transactions-acid",
