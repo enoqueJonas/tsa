@@ -37,9 +37,10 @@ try {
   const missing = await fetch(`${url}/does-not-exist.txt`, { signal: AbortSignal.timeout(2000) });
   assert.equal(missing.status, 404, "A missing file must produce an HTTP response with 404");
   await missing.arrayBuffer();
+  const stopped = new Promise((resolve) => child.once("close", resolve));
   child.kill("SIGTERM");
-  await Promise.race([new Promise((resolve) => child.once("close", resolve)), sleep(2500)]);
-  assert.notEqual(child.exitCode, null, "The server process must have exited before the connection-failure check");
+  await Promise.race([stopped, sleep(2500)]);
+  assert.ok(child.exitCode !== null || child.signalCode !== null, "The server process must have exited before the connection-failure check");
   await assert.rejects(fetch(`${url}/hello.txt`, { signal: AbortSignal.timeout(1000) }),
     "A stopped server must fail at connection level, not return an HTTP 404");
   console.log("Client-server teaching lab passed: HTTP 200, HTTP 404 and connection-level failure.");
