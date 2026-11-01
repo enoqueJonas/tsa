@@ -100,6 +100,18 @@ Representative fields may include:
 }
 ```
 
+### Canonical lifecycle and deployment distinction
+
+Steward v1 deliberately models **Service.lifecycle** separately from **Environment.kind**.
+
+- Service lifecycle stages: `development`, `uat`, `production`, `retired`. These describe the Service's organizational/product stage, not the existence of a deployment row.
+- Environment kind: `development`, `uat`, `staging`, `production` when relevant to the organization. These describe actual registered deployments/placements. UAT and staging may be distinct in real organizations; this learning model does not assume they are synonyms.
+- A Service with `lifecycle = 'production'` must have at least one related Environment with `kind = 'production'` before it is considered domain-compliant/releasable.
+- A Boolean operational `active` flag (when introduced in an exercise) is not another lifecycle stage. Its operational meaning and relationship to retired status require an explicit invariant if retained.
+- The `owning_team_id` persistence column represents the Service → Team FK. API representation names such as `ownerTeam` are presentation decisions and must be documented as mappings, not new ownership fields.
+
+For instructional negative cases, a disposable seed may deliberately contain a production-lifecycle Service with no production Environment. Such a record is **known noncompliant data to diagnose**, not a model of a valid production release. Earlier Python, Web/API, SQL, Django, security and Builder-milestone lessons must preserve this vocabulary consistently.
+
 ### Environment
 
 Represents a meaningful runtime environment of a service, such as development, UAT or production.
@@ -172,7 +184,7 @@ For example:
 ```sql
 SELECT team.name, COUNT(service.id)
 FROM team
-JOIN service ON service.owner_team_id = team.id
+JOIN service ON service.owning_team_id = team.id
 WHERE service.criticality = 'high'
 GROUP BY team.name
 ORDER BY COUNT(service.id) DESC;
