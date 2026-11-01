@@ -66,7 +66,7 @@ The audit proceeds in learner progression order so later schools can rely only o
 | Area | Classification | Finding |
 | --- | --- | --- |
 | Thinking Like an Engineer | PASS | Explicit engineering reasoning loop, worked problem-framing example, constrained practice and reasoning check. |
-| Systems Thinking | PASS | Teaches boundaries, relationships, feedback/failure propagation and requires a purposeful system map. |
+| Systems Thinking | REMEDIATED — learner verification pending | Replaced prematurely introduced identity-provider/PostgreSQL/deployment diagram with a bounded café/queue model, explicit flows, state and quantitative trace; advanced feedback/failure moved to a dedicated lesson. |
 | Trade-offs | PASS | Teaches decision drivers, reversibility, false precision and contextual comparison with applied practice. |
 | Debugging Mindset | PASS | Hypothesis-driven investigation, evidence log, cognitive-bias awareness and falsification-oriented practice. |
 | Engineering Decisions | PASS | Durable decision-record model, worked ADR-style example, proportionality and revisit conditions. |
@@ -890,3 +890,10 @@ Source lab is REMEDIATED. The independent second-service/extra-negative-case exe
 - Converted the overloaded How the Web Works reading into a first-principles web/transport lesson followed by **URLs and Query Encoding**; actual assembled path now contains 12 lessons / 36 activities.
 - The URL example was independently run with Python 3 and its eight expected lines verified before commit. Its source-based suite regression is committed **but not executed at this branch head**. The offline web server exercise, public HTTPS inspection, full test/build, browser pages and novice teach-back remain **UNVERIFIED** after these changes.
 - Do not mark Builder or Web/API `VALIDATED`. Prior 13/13 tests and successful build apply to an earlier commit only. Follow #320 and #315 acceptance gates.
+
+
+### 2026-11-01 — Apprentice Systems Thinking prerequisite correction (PED-005/#319)
+
+- Source `11f456d`: the original Systems Thinking lesson assumed later platform technologies and compressed boundaries, flows, feedback, delay and failures into one brief overview. Rewritten as two registered lessons: **Systems Thinking** (definition, boundary, named flows, queue state, worked backlog) and **Feedback Loops and Failure Propagation** (causal loops, delayed interventions, worked two-rate trace, checkout failure, alternative diagnoses and independent transfer).
+- The actual Apprentice learner-order path now has **14 lessons / 46 activities**, with the investigation capstone last after four Workbench lessons. No new vendor prerequisites or installed infrastructure are implied.
+- Source **REMEDIATED**, not **VALIDATED**. Latest CI, rendered pages, actual learner practice and novice teach-back are unverified on this new head; #319 remains open for other lessons and full school acceptance.
