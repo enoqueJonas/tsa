@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 
 // This is an *actual PostgreSQL execution test*, unlike the source-only smoke guard.
 // It is intended only for a fresh, isolated database in GitHub Actions.
@@ -96,7 +96,75 @@ try {
   assert.match(repeat.err, /duplicate key value violates unique constraint/);
   assert.equal(run(["-c", "SELECT count(*) FROM service"]).out, "5");
 
-  console.log(`Builder PostgreSQL live lab passed: first session/TEMP negative, 4 persisted tables, 20 published SQL examples, 5/6/4 join cardinalities and 2 rejected writes; database=${process.env.PGDATABASE}.`);
+  // Run the exact published transaction scripts, then verify their effects from new connections.
+  const transactionSql = (filename, caption) => {
+    const filepath = path.join(root, filename);
+    fs.writeFileSync(filepath, codeFromLesson(caption));
+    return filepath;
+  };
+  const rolledBack = run(["-f", transactionSql("txn_rollback.sql", "txn_rollback.sql — demonstrate a deliberate rollback of a Service insert")]).out;
+  assert.match(rolledBack, /inside\\|1/);
+  assert.match(rolledBack, /after\\|0/);
+  assert.equal(run(["-c", "SELECT count(*) FROM service WHERE name='Txn Rollback Demo'"]).out, "0");
+  run(["-f", transactionSql("txn_commit.sql", "txn_commit.sql — commit Service plus initial Environment together")]);
+  assert.equal(run(["-c", "SELECT s.name, e.kind FROM service s JOIN environment e ON e.service_id=s.id WHERE s.name='Txn Commit Demo'"]).out, "Txn Commit Demo|production");
+  const recovered = run(["-f", transactionSql("txn_savepoint.sql", "txn_savepoint.sql — recover from one expected SQL error")]);
+  assert.match(recovered.err, /violates check constraint/);
+  assert.match(recovered.out, /Txn Savepoint Demo\\|production/);
+  assert.equal(run(["-c", "SELECT count(*) FROM environment e JOIN service s ON s.id=e.service_id WHERE s.name='Txn Savepoint Demo'"]).out, "1");
+  assert.equal(run(["-c", "SELECT count(*) FROM service WHERE name='Txn Rollback Demo'"]).out, "0");
+
+  // One client cannot prove isolation: use two live, independently connected psql processes.
+  const isolationSql = codeFromLesson("isolation_setup.sql — one isolated probe row for the two-session exercise");
+  assert.equal(run(["-c", isolationSql]).out, "10");
+  const makeSession = (name) => {
+    const child = spawn("psql", ["-X", "-A", "-t", "-F", "|", "-q", "-v", "ON_ERROR_STOP=1"], {
+      env: process.env, stdio: ["pipe", "pipe", "pipe"]
+    });
+    const session = { name, child, out: "", err: "", ended: false };
+    child.stdout.on("data", buf => { session.out += buf.toString(); });
+    child.stderr.on("data", buf => { session.err += buf.toString(); });
+    child.on("exit", () => { session.ended = true; });
+    return session;
+  };
+  const sessions = [makeSession("A"), makeSession("B")];
+  const stage = async (session, label, statements, expected) => {
+    const marker = `__TSA_${label}`;
+    session.child.stdin.write(statements.trim() + "\\n" + `SELECT '${marker}', value FROM tsa_isolation_probe WHERE id=1;\\n`);
+    const target = `${marker}|${expected}`;
+    for (let i = 0; i < 200; i++) {
+      if (session.out.split(/\\r?\\n/).includes(target)) return;
+      if (session.ended) throw new Error(`Session ${session.name} closed: ${session.err}\\n${session.out}`);
+      if (session.err.includes("ERROR:")) throw new Error(`Session ${session.name}: ${session.err}`);
+      await new Promise(resolve => setTimeout(resolve, 30));
+    }
+    throw new Error(`No observation ${target} in session ${session.name}: ${session.out}\\n${session.err}`);
+  };
+  try {
+    const A = sessions[0], B = sessions[1];
+    await stage(A, "rc_first", "BEGIN ISOLATION LEVEL READ COMMITTED;", 10);
+    await stage(B, "rc_uncommitted_b", "BEGIN; UPDATE tsa_isolation_probe SET value=20 WHERE id=1;", 20);
+    await stage(A, "rc_pending", "SELECT 1;", 10);
+    await stage(B, "rc_committed_b", "COMMIT;", 20);
+    await stage(A, "rc_after", "SELECT 1;", 20);
+    await stage(A, "rc_end", "COMMIT;", 20);
+    await stage(B, "rr_reset", "UPDATE tsa_isolation_probe SET value=10 WHERE id=1;", 10);
+    await stage(A, "rr_first", "BEGIN ISOLATION LEVEL REPEATABLE READ;", 10);
+    await stage(B, "rr_changed", "BEGIN; UPDATE tsa_isolation_probe SET value=20 WHERE id=1; COMMIT;", 20);
+    await stage(A, "rr_same_snapshot", "SELECT 1;", 10);
+    await stage(A, "rr_after_end", "COMMIT;", 20);
+  } finally {
+    for (const session of sessions) {
+      session.child.stdin.end("\\q\\n");
+      session.child.kill();
+    }
+  }
+  assert.equal(run(["-c", "SELECT value FROM tsa_isolation_probe WHERE id=1"]).out, "20");
+  run(["-c", "DROP TABLE tsa_isolation_probe;"]);
+  run(["-c", "BEGIN; DELETE FROM environment WHERE service_id IN (SELECT id FROM service WHERE name IN ('Txn Commit Demo','Txn Savepoint Demo')); DELETE FROM service WHERE name IN ('Txn Commit Demo','Txn Savepoint Demo'); COMMIT;"]);
+  assert.equal(run(["-c", "SELECT count(*) FROM service"]).out, "5");
+  console.log(`Builder PostgreSQL live lab passed: first session/TEMP negative, 4 persisted tables, 20 published SQL examples, 5/6/4 join cardinalities, 2 rejected writes, 3 transaction scripts with savepoint failure and 2-session Read Committed/Repeatable Read; database=${process.env.PGDATABASE}.`);
+
 } finally {
   fs.rmSync(root, { recursive: true, force: true });
 }
