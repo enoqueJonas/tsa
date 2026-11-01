@@ -112,17 +112,24 @@ const practices: Record<string, PracticeSpec> = {
     completionCriteria: ["Method choices communicate operation intent.", "Safety and idempotency are explained rather than memorized.", "Client-correctable failures remain distinguishable from server failures.", "Retry behavior is considered explicitly for non-trivial operations."]
   },
   "web-and-api-foundations-json-and-content-types": {
-    objective: "Separate JSON syntax, representation metadata and Steward domain validation by deliberately crossing each boundary with valid and invalid examples.",
-    scenario: "An integration defect is reported as 'invalid JSON', but the payload parses correctly: its criticality is 'banana'. At the same time another caller sends genuine JSON with the wrong Content-Type. You must classify both failures accurately.",
+    objective: "Distinguish parsing, shape validation and domain validation through independently executable Python, and correctly interpret HTTP representation headers without an unbuilt API.",
+    scenario: "A teammate reports an 'invalid JSON' failure while another sends a correct-looking body with criticality banana. You do not yet have a Steward HTTP POST implementation, but you have Python's standard-library JSON parser, steward-core rules and a local read-only demo server.",
     instructions: [
-      "Create one valid Steward service JSON document and one malformed JSON document.",
-      "Create a syntactically valid document that violates at least two Steward domain rules.",
-      "Send JSON with the expected Content-Type, then repeat with an incorrect Content-Type and capture the difference. Also vary Accept to demonstrate that request representation and acceptable response representation are independent.",
-      "Compare a field omitted entirely with the same field explicitly set to null and define the intended Steward meaning for each.",
-      "Write a three-stage validation model: representation parsing, field/schema validation and domain validation."
+      "Execute the lesson's json_boundary.py sample in Python, predict the four classifications before running it and compare with ACCEPTED / DOMAIN ERROR / SYNTAX ERROR / SHAPE ERROR.",
+      "Change two inputs: use a permitted criticality, then use an integer for a text field. Classify which stage should reject each case and why.",
+      "Run the lesson's missing-versus-null snippet. Explain why omitted, null, zero, empty array and empty string can have distinct contract meanings.",
+      "Use the local read-only mini-Steward server to inspect actual Content-Type on GET /services, then vary Accept and record the observed behavior.",
+      "Design (on paper) a future JSON POST /services contract, including correct request Content-Type, client Accept preference, one malformed representation and one syntactically valid but domain-invalid representation. Label this contract FUTURE, not implemented.",
+      "Explain why POST against the current GET-only lab server would test an unimplemented method instead of Steward's JSON parsing or media-type policy."
     ],
-    deliverables: ["Valid, malformed and domain-invalid payloads", "Content-Type experiment", "Omitted-versus-null contract decision", "Three-stage validation model"],
-    completionCriteria: ["Valid JSON is not confused with valid domain data.", "Content-Type and Accept can be explained separately.", "Nullability and optionality are treated as contract decisions.", "The validation stages assign failures to the correct boundary."]
+    deliverables: ["Executed JSON classification transcript and changed-input analysis", "Omitted/null/zero contract decision", "Observed local Content-Type versus Accept evidence", "Future POST contract sketch with syntax, shape and domain failure distinctions"],
+    completionCriteria: [
+      "The Python examples are executed and actual output matches the stated seven-line total across two snippets.",
+      "JSON syntax, expected object shape and business constraints are correctly distinguished.",
+      "Omitted, explicit null and present zero are treated as different cases and have justified contract decisions.",
+      "Content-Type and Accept are described separately and the current GET-only server's behavior is not claimed as proof of a hypothetical POST endpoint.",
+      "The future contract includes distinct negative cases without pretending unimplemented infrastructure is running."
+    ]
   },
   "web-and-api-foundations-rest-principles-and-trade-offs": {
     objective: "Design a resource-oriented Steward surface, then challenge it with a workflow that does not fit CRUD cleanly and make a defensible API-design decision.",
