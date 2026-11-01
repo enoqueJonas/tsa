@@ -49,302 +49,310 @@ export const webAndApiFoundationsDeepLessons: Lesson[] = [
     { type: "resources", title: "Required and supporting reading", resources: [mdnHttp] },
   ], "Explain and observe the path from a URL to an HTTP response.", ["Inspect a real URL component by component.", "Use curl -v to capture connection and protocol details.", "Create a five-layer failure map.", "Relate each failure to the component responsible."], "A user reports 'the API is down.' What observations would help you distinguish DNS, TCP/TLS and application failures?", [mdnHttp]),
 
-  lesson("Client-Server Architecture", 95, [
+  lesson("Client-Server Architecture", 85, [
   {
     "type": "heading",
-    "id": "learning-contract",
-    "text": "What you will be able to explain",
+    "id": "why-architecture",
+    "text": "Before client and server: what makes an architecture?",
     "level": 2
   },
   {
     "type": "paragraph",
-    "text": "By the end, you should be able to define client–server architecture without naming a framework; identify the roles in a real exchange; draw the request and response path; distinguish a communication architecture from deployment and code organization; make an informed comparison with peer-to-peer and other designs; and run a small client and server locally. The next lesson will unpack HTTP syntax in depth. Here we focus on architecture: who asks whom, who owns a rule, and what changes when two programs communicate."
+    "text": "Software architecture describes how a system is organized: which components exist, what each is responsible for, and how they interact. Imagine Steward's service registry with a screen, rules for valid services, and stored records. You could build all of it as a local application or expose the operations to other programs over a network. Both may implement the same feature. They differ in who controls the rules, how components are deployed, and what can fail. Those are architectural decisions."
   },
   {
     "type": "heading",
-    "id": "definition",
-    "text": "A precise definition of client–server architecture",
+    "id": "client-server-definition",
+    "text": "Define client–server precisely",
     "level": 2
   },
   {
     "type": "paragraph",
-    "text": "Client–server architecture is a way of organizing interactions between software components. A client initiates a request for a capability or resource. A server exposes an agreed interface, receives the request, performs or coordinates the requested work, and returns an outcome. The communication is governed by a protocol—a set of rules describing how the parties exchange information. The architectural feature is the division of roles and responsibilities across an interface, not the use of any particular programming language, database, cloud product, or web framework."
+    "text": "Client–server is an architectural interaction pattern: a component playing the CLIENT role initiates a request for data or behavior, while a component playing the SERVER role exposes an interface, receives requests and returns results. These are roles in an exchange, not classes of hardware. A laptop can run a server. An application backend is a server when responding to the browser and a client when requesting data from another service. A client does not have to be a browser, and a server does not have to be accessible over the public internet."
   },
   {
     "type": "paragraph",
-    "text": "For example, a browser can ask a website server for a page. A mobile application can ask an API server for a list of services. A backend can act as a client when it asks another server for an exchange rate. A database process can act as a server to the application connecting to it. The same software component may therefore be a server in one interaction and a client in the next. There is no requirement that a client be a browser or a server be a large physical machine."
-  },
-  {
-    "type": "callout",
-    "title": "Two distinct meanings of server",
-    "body": "A server may mean the software process that listens for requests, or the physical/virtual computer on which that process runs. In architecture diagrams, specify which meaning you intend. You can run a client and a server as separate processes on the same laptop; they still communicate through an interface.",
-    "tone": "note"
-  },
-  {
-    "type": "heading",
-    "id": "anatomy",
-    "text": "The five pieces of one interaction",
-    "level": 2
-  },
-  {
-    "type": "list",
-    "items": [
-      "1. Client: the program that wants a result and initiates communication. Example: an Engineering Portal asking for services.",
-      "2. Server: a program that accepts a request and decides how to respond. Example: the future Steward HTTP API.",
-      "3. Interface/contract: the operations the server makes available, together with the meaning of inputs, results and errors. Example: GET /services returns a list; clients must not assume access to internal Python objects.",
-      "4. Protocol and transport: the rules and mechanism for exchanging messages. HTTP defines request/response semantics; TCP is a common transport beneath HTTP/1.1, and TLS protects HTTPS connections. We will study these layers separately.",
-      "5. State and dependencies: any facts the operation reads or changes, such as existing Service records, a file, or a future database. A server can serve a response from memory; a database is not required for the client–server model."
-    ],
-    "ordered": false
-  },
-  {
-    "type": "heading",
-    "id": "how-an-exchange-works",
-    "text": "Follow one request from intention to response",
-    "level": 2
-  },
-  {
-    "type": "paragraph",
-    "text": "Suppose the Engineering Portal wants to display the existing Steward service registry. The browser is the client and the future Steward API is the server. The client chooses the operation and sends a request. The server checks what the operation means, applies the rules it owns, consults whichever data source is available, prepares a response, and sends it back. The client interprets that response and decides what to display. A successful response is not the same as a successful rendering: both parties can fail independently."
+    "text": "Distinguish the pieces before going further. A COMPONENT is a subsystem with a responsibility; a PROCESS is a running program with its own memory; a HOST is the computer or virtual machine running it; an INTERFACE is the published way another component interacts with it. Two processes on the same laptop can communicate through localhost. That is still an interaction across a process boundary; physical distance is not part of the definition."
   },
   {
     "type": "code",
-    "language": "text",
-    "caption": "Future Steward service lookup; the database is deliberately excluded at this stage",
-    "code": "Engineering Portal (client)                  Steward API (server)\n         |                                            |\n         |--- request: GET /services ---------------->|\n         |                                            |-- validate operation\n         |                                            |-- call steward-core\n         |                                            |-- prepare response\n         |<-- response: status + service data --------|\n         |                                            |\n         |-- render services or show error            |\n"
-  },
-  {
-    "type": "paragraph",
-    "text": "The server may invoke your previously implemented steward-core domain functions. That is a function call inside the server, not another HTTP request. In the current TSA sequence there is no Steward PostgreSQL dependency yet; persistence is introduced later. Do not add components to the diagram merely because they are common in production systems."
+    "caption": "Today's Steward core is local; HTTP and PostgreSQL are not yet implemented in this checkpoint.",
+    "code": "CURRENT: Engineering script ---> steward-core Python functions\n                    (one local program)\n\nFUTURE: Engineering client --HTTP--> Steward API --local call--> steward-core\n             client role        server role             domain rules\n\nLATER: Steward API --database protocol--> database server\n       client role                      server role",
+    "language": "text"
   },
   {
     "type": "heading",
-    "id": "roles-versus-tiers",
-    "text": "Roles, tiers and code organization are different questions",
+    "id": "architectural-contract",
+    "text": "What does a working client–server arrangement require?",
     "level": 2
-  },
-  {
-    "type": "paragraph",
-    "text": "Client and server describe roles in an exchange. A tier is a logical or physical part of a deployed system with a particular responsibility. A module is a code organization boundary. These are related, but not interchangeable. A single server process may contain many modules; several server processes may run on the same host. A browser may call one API that itself calls another API. This is why the number of clients, servers, processes, machines and tiers need not match."
   },
   {
     "type": "list",
     "items": [
-      "Two-tier example: a desktop business client communicates directly with a database server. The client may contain business logic; the database provides shared persistence.",
-      "Three-tier example: a browser presentation tier calls an application/API tier, which uses a database tier. The application enforces domain rules and mediates access to stored data.",
-      "N-tier example: an API calls identity, messaging or other services. Every added boundary has a reason and an operational cost.",
-      "At this point in TSA, we are designing the boundary between a proposed HTTP client and the already built Steward domain core. A three-tier database deployment is not yet something you have implemented."
+      "A provider with a defined interface: what operations are available, how to address it, and what a valid request looks like.",
+      "A client that initiates requests and interprets responses. It cannot directly access another process's in-memory Python objects.",
+      "A server that validates requests, applies domain and access rules, and reports the outcome. The client may help with feedback, but cannot be trusted as the only guard.",
+      "A shared communication contract: message representation, errors and compatibility expectations.",
+      "An understanding that clients and servers may run, restart, change versions or fail independently."
     ],
-    "ordered": false
+    "ordered": true
   },
   {
     "type": "heading",
-    "id": "responsibility",
-    "text": "Which component must own each decision?",
+    "id": "trace-service-request",
+    "text": "Follow a complete service lookup",
     "level": 2
   },
   {
     "type": "paragraph",
-    "text": "A design becomes unsafe when the wrong side of the boundary is trusted. A browser may check that a required field is filled in, giving fast feedback to the user. But a second client—such as a script—could skip that browser check. Therefore the authoritative validation must also run on the server. This includes the domain rule that a service cannot depend on itself and any future rule controlling who may edit a service."
+    "text": "Suppose a future Engineering Portal needs the name of Service 42. The browser constructs a GET request to a defined API endpoint. The API interprets the request, checks whether access is allowed, asks steward-core to find the service, and creates an HTTP response. The client reads the status and response body and renders the name. A protocol response and a Python function result are not the same thing: the API translates between them."
   },
   {
-    "type": "paragraph",
-    "text": "A practical division of responsibility is: the client owns presentation and user interaction; the server owns authoritative domain operations, access decisions and externally visible behavior; a storage mechanism (when introduced) owns durable data storage, not business authorization. These are design defaults, not universal laws. If a client works offline, it may temporarily maintain local state; synchronization rules must then specify how conflicts are resolved."
+    "type": "code",
+    "caption": "Illustrative future HTTP contract, not an endpoint that has already been built.",
+    "code": "REQUEST (client -> API)\nGET /services/42 HTTP/1.1\nHost: steward.example.test\n\nSERVER STEPS\n1. Receive and parse request\n2. Check permissions\n3. Call steward-core lookup for Service 42\n4. Serialize the permitted fields\n\nRESPONSE (API -> client)\nHTTP/1.1 200 OK\nContent-Type: application/json\n\n{\"id\":42,\"name\":\"Payments\"}\n\nIf the service does not exist, return an appropriate not-found response.",
+    "language": "text"
   },
   {
     "type": "heading",
-    "id": "comparison",
-    "text": "What alternatives exist—and what is actually being compared?",
+    "id": "ownership",
+    "text": "Who is responsible for a rule?",
     "level": 2
   },
   {
     "type": "paragraph",
-    "text": "Architectures can be classified along different axes. Client–server and peer-to-peer describe communication and coordination. Monolithic versus microservices describes how an application is split into independently deployable pieces. Layered architecture describes organization by responsibility. Event-driven architecture describes how components react to events. One system may be client–server, layered, event-driven and a modular monolith simultaneously. Treating these as mutually exclusive 'architecture types' would be misleading."
-  },
-  {
-    "type": "list",
-    "items": [
-      "Client–server: a designated server exposes a capability to requesting clients. Useful for centrally governed records, accounts and authoritative APIs. Trade-off: server availability, capacity and trust become important shared concerns.",
-      "Peer-to-peer (P2P): participants can both request and provide resources to one another rather than always depending on one central service. Useful in distributed file-sharing and some collaboration networks. Trade-off: discovery, membership, trust and consistency are harder.",
-      "Monolithic application: much of the domain logic executes and deploys as one application. It can still provide an HTTP client–server API; monolith is not the opposite of client–server.",
-      "Microservices: capabilities are split into separately deployable services that call one another. Their communication is usually still client–server between services; the extra boundaries add coordination and failure modes.",
-      "Event-driven communication: a producer publishes an event that one or more consumers process later. Useful for decoupled notifications or asynchronous work. It can coexist with synchronous client–server requests; it does not remove the need to define ownership of operations."
-    ],
-    "ordered": false
-  },
-  {
-    "type": "heading",
-    "id": "compare-with-constraints",
-    "text": "Choose a design from constraints, not prestige",
-    "level": 2
-  },
-  {
-    "type": "paragraph",
-    "text": "For the present Steward increment, a client calling one authoritative API is straightforward: one central service-registry contract, one location for core validation, and fewer moving parts to deploy and debug. A peer-to-peer service-registry design would need a compelling requirement for independent nodes; otherwise it complicates consistency and control. Splitting the small Steward core into several network services would likewise introduce more operational risk without yet demonstrating a benefit."
+    "text": "A domain invariant is a rule that must always hold, such as 'a service cannot depend on itself'. A browser may check this before submission to give immediate feedback. But a caller can use curl, Python or a different browser client and bypass browser-side validation. The future API must enforce the invariant through the existing domain core. The server is authoritative for business changes; the client is responsible for presenting the interaction. This is why 'the UI already checks it' is not sufficient security or correctness."
   },
   {
     "type": "callout",
-    "title": "Decision test",
-    "body": "If someone proposes microservices because they are 'more modern', ask which independently changing capability, organizational constraint or measured scaling bottleneck justifies the added network boundary. If they cannot answer, the architecture choice is not yet defensible.",
+    "title": "An important distinction",
+    "body": "Client-side validation can improve usability. It cannot replace server-side validation and authorization. You will learn authentication mechanisms later; here you only need to understand where enforcement must live.",
     "tone": "warning"
   },
   {
     "type": "heading",
-    "id": "network-boundary",
-    "text": "Why replacing a function call with a network call matters",
+    "id": "compare-architectures",
+    "text": "Other architectures: what differs, and what does not?",
     "level": 2
   },
   {
     "type": "paragraph",
-    "text": "A local function call normally executes inside one process and either returns or raises an error according to its programming-language rules. A remote call requires data to be represented as a message, sent across a connection, interpreted by another process and answered. The new boundary introduces more possible failures and less certainty about the other side's internal state."
+    "text": "The terms below describe different questions and are not all mutually exclusive. Client–server describes who requests and who responds across an interface. Three-tier describes a separation of presentation, application logic and data. Monolith/microservices describe deployment and ownership boundaries. A system can be client–server, three-tier and a modular monolith simultaneously."
+  },
+  {
+    "type": "code",
+    "caption": "Conceptual comparisons, with typical use cases.",
+    "code": "STANDALONE LOCAL APP: UI and logic in one local program\n  Example: an offline editor; no remote server needed for core work.\nCLIENT–SERVER: requester talks to a provider through an interface\n  Example: browser retrieving a service from an API.\nTHREE-TIER: presentation / application logic / persistent data\n  Example: business website; tiers need not mean three physical hosts.\nPEER-TO-PEER: participants may both offer and request resources\n  Example: distributed file sharing; no single central service required.\nPUBLISH–SUBSCRIBE: publisher emits events consumed asynchronously\n  Example: notifications; publisher need not wait for each consumer.\nMODULAR MONOLITH: one deployable application with internal modules\n  Example: small team with clear domain separation.\nMICROSERVICES: independently deployed service components\n  Example: large organization needing independent team ownership.\n\nClient–server interactions can appear INSIDE many of these designs.",
+    "language": "text"
+  },
+  {
+    "type": "paragraph",
+    "text": "For Steward, a modular monolith behind an HTTP API is a plausible starting point: one deployable application, separated internal responsibilities, and a stable interface for clients. Splitting each rule into an independently deployed service would add credentials, distributed traces, network failure cases and more operational work. If multiple independently maintained teams and scaling needs later justify that cost, the design can evolve. 'More distributed' is not synonymous with 'better'."
+  },
+  {
+    "type": "heading",
+    "id": "tiers",
+    "text": "Three tiers are responsibilities, not a shopping list",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "Presentation is what the user interacts with. Application logic enforces business behavior. Persistence retains durable information after a process stops. These responsibilities may run in two or three processes, or temporarily in one. At this learning checkpoint you have steward-core, not a completed PostgreSQL-backed deployment. Treat the API and persistent store as planned architecture, not as things already installed."
+  },
+  {
+    "type": "code",
+    "caption": "Describe existing and planned parts without pretending they all run today.",
+    "code": "PRESENTATION: planned Engineering client\n       |\n       | planned HTTP communication\n       v\nAPPLICATION: planned Steward API -> already-built steward-core\n       |\n       | future persistence boundary\n       v\nDATA: persistent storage (taught in a later module)",
+    "language": "text"
+  },
+  {
+    "type": "heading",
+    "id": "misconceptions",
+    "text": "Test your mental model against common mistakes",
+    "level": 2
   },
   {
     "type": "list",
     "items": [
-      "Serialization: converting a program value (such as a Python Service object) to a transferable representation (for example JSON text), then interpreting it on the other side. Internal classes should not accidentally become the public contract.",
-      "Latency: the time an operation takes. A remote call includes network delays and server work; the client must not assume responses arrive immediately.",
-      "Partial failure: one side or one step fails while other parts remain running. Your browser can work while the API is unreachable, or the API can work while its dependency is unavailable.",
-      "Timeout: a caller stops waiting after a chosen duration. A timeout tells the caller that it did not receive an answer on time; it does not prove the server did nothing.",
-      "Versioning and compatibility: a deployed client may still use an older contract after the server changes. An interface change must consider existing callers.",
-      "Authentication and authorization: authentication establishes who a caller is; authorization decides whether that caller is permitted to perform a particular action. A network caller must not be trusted solely because its UI showed an allowed button."
+      "“A server is necessarily a powerful remote computer.” False. A server is a role that even a small local process can play.",
+      "“Client–server and microservices are opposites.” False. Microservices commonly act as servers to some callers and clients of others.",
+      "“An API is always public.” False. An API can be internal, local or external, and not every API uses HTTP.",
+      "“Client–server makes everything stateless.” False. User interface, application and durable state can live in different places."
     ],
     "ordered": false
   },
   {
     "type": "heading",
-    "id": "unknown-outcome",
-    "text": "The important difference between a failure and an unknown result",
-    "level": 2
-  },
-  {
-    "type": "paragraph",
-    "text": "Imagine a future request that changes a service's status. The server completes the change, but the connection drops before the client receives confirmation. The client sees a timeout. If it sends the operation again, it might perform the change twice. The problem is not that the server necessarily failed: it is that the client cannot tell what happened. A request identifier can help trace an attempt; an idempotent operation is one whose repeated application has the same intended effect as one application. We introduce those names here to explain the danger; the HTTP methods lesson will show precisely which operations can be retried safely."
-  },
-  {
-    "type": "code",
-    "language": "text",
-    "caption": "Possible outcomes of one state-changing request",
-    "code": "Client sends \"deactivate Service 7\"\n     |\n     +-- request never reaches server ---------> no change\n     |\n     +-- server rejects request --------------> no change; error response\n     |\n     +-- server changes state; response arrives -> change confirmed\n     |\n     +-- server changes state; response lost --> client sees timeout,\n                                                  but change occurred"
-  },
-  {
-    "type": "heading",
-    "id": "state",
-    "text": "Where can state live?",
-    "level": 2
-  },
-  {
-    "type": "paragraph",
-    "text": "State simply means information remembered across operations. The client's selected tab is presentation state. A service's active/inactive status is domain state. A future database may persist that domain state across restarts. A server can also maintain temporary in-memory state, but it will disappear when the process restarts unless it is stored durably. The architectural question is: which component is authoritative for each fact, who may update it, and how do copies converge? 'Stateless request handling' means a request can be interpreted using the necessary context without relying on an accidental private conversation history in one server process; it does not mean that the whole application has no state."
-  },
-  {
-    "type": "heading",
-    "id": "run-it",
-    "text": "Run a small client and server yourself",
-    "level": 2
-  },
-  {
-    "type": "paragraph",
-    "text": "The following demonstration uses only Python's standard library, which you encountered earlier, and curl from the previous Web Foundations lesson. It deliberately avoids Django, DRF, authentication, and databases. The goal is to see the architectural boundary first. Save the following code as mini_steward_server.py in a disposable directory. It exposes one read-only operation and returns synthetic JSON data."
-  },
-  {
-    "type": "code",
-    "language": "python",
-    "caption": "mini_steward_server.py — local, read-only HTTP server",
-    "code": "from http.server import BaseHTTPRequestHandler, HTTPServer\nimport json\nimport os\n\nSERVICES = [{\"id\": 7, \"name\": \"Cleaning\", \"active\": True}]\n\nclass StewardHandler(BaseHTTPRequestHandler):\n    def do_GET(self):\n        if self.path != \"/services\":\n            self.send_error(404, \"Resource not found\")\n            return\n\n        data = json.dumps({\"services\": SERVICES}).encode(\"utf-8\")\n        self.send_response(200)\n        self.send_header(\"Content-Type\", \"application/json; charset=utf-8\")\n        self.send_header(\"Content-Length\", str(len(data)))\n        self.end_headers()\n        self.wfile.write(data)\n\nif __name__ == \"__main__\":\n    port = int(os.environ.get(\"STEWARD_DEMO_PORT\", \"8765\"))\n    print(f\"Listening at http://127.0.0.1:{port}\", flush=True)\n    HTTPServer((\"127.0.0.1\", port), StewardHandler).serve_forever()\n"
-  },
-  {
-    "type": "paragraph",
-    "text": "The handler is the part of this tiny server that processes requests. The `do_GET` method handles incoming GET operations; `self.path` is the requested path; `send_response` and `send_header` construct response metadata; `wfile.write` sends the body. The list named SERVICES is deliberately in memory and synthetic—it is not Steward's actual persistence layer. The address 127.0.0.1 is the loopback address: requests remain on your own computer, but still cross the process/interface boundary."
-  },
-  {
-    "type": "code",
-    "language": "bash",
-    "caption": "Use two terminals; keep the first server process running",
-    "code": "# Terminal 1\npython3 mini_steward_server.py\n\n# Terminal 2\ncurl -i http://127.0.0.1:8765/services\ncurl -i http://127.0.0.1:8765/missing\n\n# Stop the server in Terminal 1 with Ctrl+C.\n# Repeat the first curl command and observe the connection failure."
-  },
-  {
-    "type": "paragraph",
-    "text": "Expected evidence: the first request gets HTTP 200 with JSON containing service 7. The second reaches the server and gets HTTP 404 because that path does not exist. After stopping the process, the client cannot connect at all; that failure is not an HTTP 404 or HTTP 500, because no server response was delivered. The exact response headers and error text depend on your Python/curl versions. Capture the observed result rather than copying a fabricated transcript."
-  },
-  {
-    "type": "heading",
-    "id": "explain-observations",
-    "text": "Explain your observations, not just the commands",
+    "id": "understanding-check",
+    "text": "Can you explain the design without jargon?",
     "level": 2
   },
   {
     "type": "list",
     "items": [
-      "For HTTP 200: identify client program, server process, request path, protocol, response body and the source of the returned data.",
-      "For HTTP 404: explain which component produced the result and how you know a server actually received the request.",
-      "For connection refusal: explain why no HTTP status exists, even though curl reports an error.",
-      "For the same-machine setup: explain why localhost does not make the two processes one application, and why this exercise does not reproduce internet DNS or TLS failures.",
-      "For the Steward architecture: replace the hard-coded synthetic list conceptually with a call to existing steward-core operations, without inventing a database or framework implementation."
+      "Define client, server, process, host and interface, explaining how they differ.",
+      "Draw the future Engineering Client -> Steward API -> steward-core path. Show the owner of the self-dependency rule. Do not add a database as if it already exists.",
+      "Compare the local steward-core program with the future client–server interface. What user need justifies the network boundary?",
+      "Explain how peer-to-peer differs from client–server, and why 'three-tier' and 'microservices' are not competing definitions of the same thing."
     ],
     "ordered": true
   },
   {
+    "type": "resources",
+    "title": "Further reading",
+    "resources": [
+      {
+        "title": "MDN — An overview of HTTP",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview"
+      }
+    ]
+  }
+], "Define client–server from first principles, compare it with alternative architectural patterns and establish correct ownership of Steward business rules.", [
+  "Explain each participant and role using the actual steward-core checkpoint.",
+  "Create a boundary diagram that does not assume future database infrastructure already exists.",
+  "Compare standalone, peer-to-peer, three-tier, monolith and microservice patterns using concrete examples.",
+  "Justify why a separate API boundary is or is not warranted for two independently operating clients."
+], "Explain why two programs on the same laptop can still be client–server. Distinguish a server process from a host, then decide which component must reject a self-dependency and why a browser cannot be the only enforcement point."),
+
+  lesson("Client-Server Boundaries and Failure Modes", 75, [
+  {
     "type": "heading",
-    "id": "design-check",
-    "text": "Worked design choice: who enforces a business invariant?",
+    "id": "what-boundary-changes",
+    "text": "Local function calls and remote requests are not equivalent",
     "level": 2
   },
   {
     "type": "paragraph",
-    "text": "Suppose a future UI prevents users from choosing a service as its own dependency. UI validation is helpful but bypassable. A second client can send a request directly. The server must invoke the existing domain rule and return an appropriate failure rather than trusting the client. If only the browser enforces the rule, the system has no reliable single source of truth. This is the distinction between convenient client feedback and authoritative server enforcement."
+    "text": "Imagine a Python function call, get_service(42), inside one process. It can pass an ordinary object and raise a Python exception to its caller. If a browser or command-line client requests the same operation from a separate Steward API process, the programs do not share Python memory. The request must be encoded into messages that cross a communication channel, and the server must convert the result or failure into a documented response."
+  },
+  {
+    "type": "code",
+    "caption": "Same business question, different operational assumptions.",
+    "code": "IN-PROCESS: result = get_service(42)\n- Direct Python values\n- Caller's stack can observe an exception\n\nFUTURE NETWORK API: GET /services/42\n- Request and response encoded as bytes\n- Status, headers and optional body\n- May time out or disconnect\n- Client cannot assume a result was received",
+    "language": "text"
   },
   {
     "type": "heading",
-    "id": "common-misconceptions",
-    "text": "Common mistakes and their corrections",
+    "id": "serialization",
+    "text": "What serialization means",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "Serialization converts a program value into a representation that another process can read; JSON is a common choice for an HTTP API. Deserialization turns that representation into new values on the receiving side. You are not transmitting an actual Python Service instance with its methods. You are transmitting a selected representation of fields that both sides agree on. An API contract specifies those fields, valid operations and error responses; changing it can break independently deployed clients."
+  },
+  {
+    "type": "code",
+    "caption": "An illustrative public representation of a future Service; not the original Python object.",
+    "code": "{\n  \"id\": 42,\n  \"name\": \"Payments\",\n  \"active\": true\n}",
+    "language": "json"
+  },
+  {
+    "type": "heading",
+    "id": "latency-and-trust",
+    "text": "Latency, concurrency and trust",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "A network round trip takes time even when the server itself is fast. Messages may be delayed, dropped or interrupted. Several clients may send changes concurrently, so the server must defend the same invariant regardless of which client acts first. Requests crossing an interface are untrusted input: a client may be buggy, stale or intentionally hostile. These are reasons to keep domain rules and access decisions behind the server boundary rather than inside one browser."
+  },
+  {
+    "type": "heading",
+    "id": "timeouts",
+    "text": "The dangerous ambiguity of a timeout",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "Suppose a future client requests deactivation of Service 42. The server could commit that change but lose the response before the client receives it. Or the request might not reach the server at all. Both cases appear as a timeout to the client, but the real service state differs. Therefore a timeout does not prove 'nothing happened'. Repeating some operations can duplicate effects, so safe retries may require an idempotent operation, an operation identifier or verification of current state. Those techniques will be expanded in the HTTP and API design lessons."
+  },
+  {
+    "type": "code",
+    "caption": "Two realities, one client-visible symptom.",
+    "code": "A) Client --deactivate(42)--> Server changes state\n   Client <--response LOST--- Server\n   Result: timeout, change DID happen\n\nB) Client --deactivate(42)--X Server never receives it\n   Client <--no response---- Server\n   Result: timeout, change DID NOT happen",
+    "language": "text"
+  },
+  {
+    "type": "heading",
+    "id": "state",
+    "text": "State and source of truth",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "State is any information that changes: an unfinished form, a login session, a service's active status. The browser can hold temporary form state; steward-core determines whether domain operations are valid; a future database can retain data across restarts. Ask which part is authoritative for each fact and what happens when one component has an older copy. When HTTP is described as stateless, that generally refers to how requests are interpreted, not to the absence of state anywhere in the system."
+  },
+  {
+    "type": "heading",
+    "id": "two-terminals",
+    "text": "Experiment: observe a real client and server",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "This safe local lab makes the pattern tangible without requiring Django, Docker, cloud infrastructure or PostgreSQL. Use an empty disposable directory. Run the server in Terminal A and the client in Terminal B. The address 127.0.0.1 is loopback: the server listens only on your own machine. This is a demonstration HTTP file server, NOT an implementation of the Steward API."
+  },
+  {
+    "type": "code",
+    "caption": "Terminal A — start the server. Keep this process running.",
+    "code": "mkdir -p /tmp/tsa-client-server-lab\ncd /tmp/tsa-client-server-lab\nprintf 'Steward local lab\\n' > hello.txt\npython3 -m http.server 8765 --bind 127.0.0.1",
+    "language": "bash"
+  },
+  {
+    "type": "paragraph",
+    "text": "Open a second terminal while the first remains running. A successful request for hello.txt should return an HTTP 200 response and the words 'Steward local lab'. A request for a missing file should return HTTP 404: an actual HTTP server answered, but the resource does not exist. Watch Terminal A's logs; the server receives both operations. Now stop the server using Ctrl+C and request hello.txt again. The connection should fail BEFORE an HTTP response exists. Distinguish the three outcomes in your notes."
+  },
+  {
+    "type": "code",
+    "caption": "Terminal B — make requests as a separate client.",
+    "code": "curl -i http://127.0.0.1:8765/hello.txt\ncurl -i http://127.0.0.1:8765/does-not-exist.txt\n# After stopping the server in Terminal A:\ncurl -i --max-time 3 http://127.0.0.1:8765/hello.txt",
+    "language": "bash"
+  },
+  {
+    "type": "paragraph",
+    "text": "If port 8765 is busy, select another unused port and replace it in every command. HTTP response headers vary by Python version; use the observed status and body as evidence rather than memorizing an exact transcript. If the first request cannot find hello.txt, check that Terminal A started from the lab directory. A connection refusal is not an HTTP 404 because the HTTP server did not return any response."
+  },
+  {
+    "type": "heading",
+    "id": "engineering-decision",
+    "text": "Design the future Steward boundary",
     "level": 2
   },
   {
     "type": "list",
     "items": [
-      "\"A server is a physical machine.\" Not necessarily: a server is often a program; multiple server processes can run on one machine.",
-      "\"Client means browser.\" A CLI, mobile app or another backend can also be a client.",
-      "\"Client–server implies PostgreSQL or microservices.\" No: the model defines interaction roles, independent of storage choice or deployment decomposition.",
-      "\"A timeout means no update occurred.\" Not necessarily: the response may have been lost after the server committed the operation.",
-      "\"A successful HTTP response means the user's workflow succeeded.\" Not automatically: content and business result must also be checked.",
-      "\"Stateless means no data is stored.\" It means a specific way of handling requests; durable application state can still exist."
-    ],
-    "ordered": false
-  },
-  {
-    "type": "heading",
-    "id": "knowledge-check",
-    "text": "Prove the model without looking at notes",
-    "level": 2
-  },
-  {
-    "type": "list",
-    "items": [
-      "Define client–server architecture in two sentences, then name its essential roles and why a contract matters.",
-      "Draw an Engineering Portal → Steward API → steward-core request. Mark which arrow crosses an HTTP boundary and which is an ordinary function call.",
-      "Explain whether a modular monolith can expose a client–server API and why that is not a contradiction.",
-      "Compare this Steward design with a peer-to-peer alternative and identify one concrete trade-off for each.",
-      "Explain the difference between an HTTP 404 and a refused TCP connection based on what you observed.",
-      "Describe why a client-only self-dependency check is insufficient and how the server should respond.",
-      "Explain, using two possible sequences, why a state-changing request timeout leaves the result uncertain."
+      "Prepare a comparison of local steward-core calls versus a separate HTTP API: data representation, latency, independent failure, permissions and compatibility.",
+      "Draw the planned communication path and label which code already exists versus which parts are future.",
+      "Demonstrate 200, 404 and connection refusal using the loopback experiment; explain which component you would investigate for each.",
+      "Write a short decision record comparing direct client access to domain storage with access through the Steward API. Include a rejected alternative and one testable consequence.",
+      "Describe what a client should do after a state-changing request times out, without claiming that nothing happened."
     ],
     "ordered": true
   },
   {
     "type": "callout",
-    "title": "What comes next",
-    "body": "The next lessons examine HTTP request/response structure, methods, status codes and representation formats in detail. You do not need to implement Django, a database, microservices or distributed messaging to pass this architectural lesson.",
-    "tone": "note"
+    "title": "Why there is no Django code yet",
+    "body": "Learning the protocol and process boundary first lets you evaluate Django and DRF later instead of mistaking framework convenience methods for architecture. After this lesson, you can explain what the framework must implement.",
+    "tone": "steward"
+  },
+  {
+    "type": "resources",
+    "title": "Further reading",
+    "resources": [
+      {
+        "title": "MDN — An overview of HTTP",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview"
+      }
+    ]
   }
-], "Explain client–server architecture precisely, defend its use for the current Steward core, compare alternatives without confusing architectural dimensions, and demonstrate a local request/response boundary.", [
-  "Draw the current Steward design with Engineering Portal (future client), proposed HTTP API (future server) and existing steward-core (local domain code). Explicitly label what is implemented now versus planned; do not depict PostgreSQL as completed.",
-  "Run the read-only mini_steward_server.py exercise from the lesson using two terminals, then use curl -i to record a 200 response for /services and a 404 for /missing. Stop the server and capture the failure for /services. Explain why these three results occur at different boundaries.",
-  "Annotate a request-response diagram identifying the client, server, protocol, interface, domain rule owner and the location of the synthetic data. Explain why two processes on the same host still form a client–server interaction.",
-  "Create a comparison table for client–server, peer-to-peer, modular monolith and microservices. Compare relevant dimensions (coordination, deployable boundaries, authority, failure behavior); explicitly identify which terms are not mutually exclusive.",
-  "Describe a self-dependency validation bypass if validation exists only in the client and show where the authoritative rule must execute.",
-  "Describe two possible outcomes after a client times out on a future state-changing request. Propose an observation that could determine what actually happened rather than blindly retrying.",
-  "Write a short architecture decision: why one future Steward HTTP API is justified now, one cost it introduces, and which requirement would justify changing that decision."
-], "Without notes: (1) state the precise client–server definition; (2) distinguish role, process, tier and module; (3) compare client–server, P2P and microservices correctly; (4) explain what you observed from a successful local request, a 404 and a refused connection; (5) identify who owns Steward's self-dependency invariant; (6) explain why a timed-out state change has an unknown outcome. Include at least one diagram grounded in the Steward code you have already built."),
+], "Demonstrate separate client/server processes and explain serialization, failure ambiguity, trust, state ownership and safe boundary decisions.", [
+  "Run a loopback HTTP server, record one 200 response, one 404 response and one connection failure after stopping it.",
+  "Explain what is and is not known after a state-changing request times out.",
+  "Compare local steward-core calls with a future HTTP API including five independent failure and contract dimensions.",
+  "Write a reproducible API boundary decision with an explicit rejected design."
+], "In the loopback lab, why is a missing file different from no running server? If the future client times out while deactivating a Service, can it conclude the change did not occur? Why not?"),
+
   lesson("HTTP Requests and Responses", 45, [
     { type: "heading", id: "messages", text: "HTTP is a message protocol" },
     { type: "paragraph", text: "An HTTP request contains a method, target, headers and sometimes a body. A response contains a status code, headers and sometimes a body. Reading these raw parts is one of the highest-leverage habits for API engineering because it lets you reason underneath tools and frameworks." },
