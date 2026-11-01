@@ -5,6 +5,33 @@ import { djangoDependentPostgresqlDeepLessons, relationalDataAndPostgresqlDeepLe
 type PracticeSpec = Omit<PracticalContent, "type">;
 
 const practices: Record<string, PracticeSpec> = {
+    "relational-data-and-postgresql-from-memory-to-durable-data-practice": {
+        objective: "Demonstrate cross-process persistence and its limitations before adopting a database.",
+        scenario: "The existing Steward HTTP server stores data in process memory. A user assumes that a successful HTTP response makes that data durable. Test that assumption using disposable state.",
+        instructions: [
+            "Create an empty scratch directory, save the exact published persistence_lab.py, and run reset, add-payments, read, add-identity, read as separate commands.",
+            "Capture the file after each write and state exactly which process owns the dictionary versus which file persists.",
+            "Run corrupt and read. Record stdout, exit status 2, and recover with reset. Do not execute this against a real registry.",
+            "Reason through two simultaneous snapshot reads and overwriting writes, identifying the lost-update hazard without claiming to have reproduced a race.",
+            "Compare memory, file snapshots and PostgreSQL for one-user demos versus Steward's multi-writer registry. Explain what would have to change before claiming crash-safe writes."
+        ],
+        deliverables: ["Five-command transcript and snapshot contents", "Corruption negative case and recovery", "Two-writer lost-update timeline", "Storage choice decision record"],
+        completionCriteria: ["The learner has reproduced persistence across separate Python processes.", "The negative JSON corruption is observed and the recovery documented.", "The limits of the exercise (no concurrency or crash safety) are not presented as verified.", "A database is chosen for explicit Steward requirements rather than assumed universally necessary."]
+    },
+    "relational-data-and-postgresql-postgresql-first-connection-practice": {
+        objective: "Prove an actual PostgreSQL lab connection and temporary-table lifecycle before the relational schema lab.",
+        scenario: "A following lesson asks for CREATE TABLE, but a learner must first have a server, database, role and client. Establish and diagnose those prerequisites explicitly.",
+        instructions: [
+            "Use the official PostgreSQL setup guide for your OS or an authorized course database. Isolate learning from any production or shared database.",
+            "Prove the psql client version and database connection separately; do not confuse pg_isready with successful authentication.",
+            "Record the selected database and role using SELECT current_database(), current_user, 2 + 2 with expected result 4.",
+            "Save and run first_session.sql using psql -X -v ON_ERROR_STOP=1 -f first_session.sql; compare both result sets with expected outputs.",
+            "In a new psql session, deliberately query tsa_session_probe and capture the missing-relation result to show session-only TEMP table lifetime.",
+            "Document environment/permissions blockers rather than inventing a successful SQL execution or exposing credentials."
+        ],
+        deliverables: ["Environment/role/database setup record without secrets", "Successful connection and query output or explicit blocker", "First SQL file transcript", "Expected second-session TEMP-table failure", "Five-boundary diagnostic tree"],
+        completionCriteria: ["The next lab has a real accessible PostgreSQL database or an honest blocked-state record.", "The learner distinguishes client, server, database, schema and role.", "SQL and psql meta-commands are correctly separated.", "No real PostgreSQL execution is claimed solely from static CI tests."]
+    },
     "relational-data-and-postgresql-relational-model-practice": {
         objective: "Give the existing Steward domain durable relational storage and deliberately expand it with the relationships needed by the Builder product.",
         scenario: "steward-core currently keeps Services in memory, and Web/API Foundations defined a future HTTP contract without inventing persistence. Now persistence becomes real. Design the first PostgreSQL schema from the Service behavior you already own, then add the Team, Environment and dependency facts needed for the registry to grow.",
