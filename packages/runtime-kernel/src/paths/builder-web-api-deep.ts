@@ -20,34 +20,313 @@ function lesson(title: string, estimatedMinutes: number, blocks: LessonBlock[], 
 }
 
 export const webAndApiFoundationsDeepLessons: Lesson[] = [
-  lesson("How the Web Works", 40, [
-    { type: "heading", id: "introduction", text: "From a URL to a response" },
-    { type: "paragraph", text: "At the simplest useful level, the web is a request/response interaction: a client sends an HTTP request to a server, and the server returns an HTTP response. The request says what resource or operation the client wants; the response carries a status plus any returned representation or metadata." },
-    { type: "code", language: "text", caption: "The basic HTTP interaction", code: "Client  ── HTTP request ──>  Server\nClient  <─ HTTP response ──  Server" },
-    { type: "paragraph", text: "That simple model remains true even when the real path has more layers. Before an HTTPS request can reach application code, the client normally has to resolve a host name, establish transport connectivity and negotiate TLS. We will add those layers one at a time rather than treating them as one opaque 'API call'." },
-    { type: "code", language: "text", caption: "A simplified request path", code: "Client\n  ↓ DNS lookup\nIP address\n  ↓ TCP connection\nTransport channel\n  ↓ TLS handshake for HTTPS\nSecure channel\n  ↓ HTTP request\nReverse proxy / web server\n  ↓\nSteward API\n  ↓\nHTTP response" },
-    { type: "callout", tone: "note", title: "Layers matter", body: "DNS, TCP, TLS and HTTP solve different problems. A DNS failure is not an HTTP `404`. A refused TCP connection is not an application validation error. Good debugging starts by identifying the failing layer." },
-    { type: "heading", id: "dns-tcp-tls", text: "DNS, TCP and TLS establish different prerequisites" },
-    { type: "paragraph", text: "DNS answers a naming question: which network address should this host name resolve to? A successful DNS lookup does not prove that an application is running at that address. TCP then establishes a transport connection to an address and port. A successful TCP connection proves that the connection was accepted at that endpoint, not that the application will return a successful HTTP response. With HTTPS, TLS runs over the transport connection to negotiate encryption and authenticate the server identity according to certificate/trust rules before ordinary HTTP messages are exchanged." },
-    { type: "code", language: "text", caption: "What each successful step proves", code: "DNS success  → a host name resolved to address information\nTCP success  → a connection was established to an address:port\nTLS success  → a secure session was negotiated sufficiently to exchange HTTPS\nHTTP status  → an HTTP-speaking server returned an HTTP response\n\nNone of the earlier successes guarantees that the next layer will succeed." },
-    { type: "paragraph", text: "This layered evidence prevents category errors. 'Could not resolve host' gives you no HTTP status because HTTP was never reached. 'Connection refused' means the expected transport connection was not established. A certificate verification error occurs during the secure-channel step. HTTP `404` or 500 means the request reached an HTTP server far enough for it to return protocol-level application evidence." },
-    { type: "callout", tone: "warning", title: "Do not disable TLS verification as a generic fix", body: "Certificate verification failures are evidence about trust, identity or configuration. Bypassing verification may hide the problem and weaken security. At Builder stage, classify the failure correctly; later schools teach certificate and platform administration in depth." },
-    { type: "heading", id: "urls", text: "URLs identify resources and destinations" },
-    { type: "paragraph", text: "A URL carries structured information: scheme, host, optional port, path, query and fragment. For APIs, the path and query normally participate in identifying or selecting resources while the host tells the client which server to contact." },
-    { type: "code", language: "text", caption: "Dissecting a Steward URL", code: "https://steward.example.com:443/services?criticality=high\n│       │                   │    │        │\n│       │                   │    │        └─ query\n│       │                   │    └────────── path\n│       │                   └─────────────── port\n│       └─────────────────────────────────── host\n└─────────────────────────────────────────── scheme" },
-    { type: "heading", id: "url-encoding", text: "URL components have syntax and encoding rules" },
-    { type: "paragraph", text: "A query string is not an arbitrary text suffix. Reserved characters have structural meaning and data may need percent-encoding. For example, a space may appear encoded as `%20` in a URL. Client libraries normally encode parameters for you; manually concatenating untrusted values into URLs is error-prone." },
-    { type: "code", language: "text", caption: "Illustrative URL shapes (not shell commands)", code: "/services/payments-api              # identify one resource by path\n/services?criticality=high&limit=20 # select/filter a collection\n\n# Fragment identifiers such as #section are normally handled client-side\n# and are not sent as part of the HTTP request target to the server." },
-    { type: "paragraph", text: "Path segments commonly identify hierarchy/resources while query parameters commonly filter, sort, paginate or modify a retrieval view. These are conventions rather than universal laws, but a consistent API makes the distinction predictable." },
-    { type: "heading", id: "http-versions", text: "HTTP semantics outlive a particular wire version" },
-    { type: "paragraph", text: "HTTP/1.1, HTTP/2 and HTTP/3 differ in transport/framing behavior and performance characteristics, but methods, statuses, fields and resource semantics remain the conceptual API contract. At this stage, recognize the distinction: an API designer should not confuse HTTP semantics with the exact connection/framing mechanism used to carry them." },
-    { type: "heading", id: "request-response", text: "The web is request-response at this level" },
-    { type: "paragraph", text: "HTTP gives clients and servers a shared message model. The client sends a request describing an intended operation; the server returns a response describing the result. Frameworks hide much of the message parsing, but they do not change the protocol contract." },
-    { type: "callout", tone: "steward", title: "Steward connection", body: "Later Django code may expose /services, but a failure to resolve steward.example.com occurs before Django exists in the request path. This distinction becomes essential during Delivery, Cloud and Reliability schools." },
-    { type: "heading", id: "assignment", text: "Assignment" },
-    { type: "list", ordered: true, items: ["Take three URLs and identify scheme, host, port, path and query.", "Use curl -v against a public HTTPS endpoint and identify where connection establishment ends and HTTP begins.", "Create a short failure map distinguishing DNS failure, connection refusal, TLS failure, HTTP `404` and HTTP 500.", "Explain which of those failures could occur before the Steward application executes any code."] },
-    { type: "resources", title: "Required and supporting reading", resources: [mdnHttp] },
-  ], "Explain and observe the path from a URL to an HTTP response.", ["Inspect a real URL component by component.", "Use curl -v to capture connection and protocol details.", "Create a five-layer failure map.", "Relate each failure to the component responsible."], "A user reports 'the API is down.' What observations would help you distinguish DNS, TCP/TLS and application failures?", [mdnHttp]),
+  lesson("How the Web Works", 70, [
+  {
+    "type": "heading",
+    "id": "learning-goal",
+    "text": "What the web actually is",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "The World Wide Web is a system for retrieving and linking resources over networks. A resource can be a document, an image or the representation of an application-owned record. Web browsers are clients: they request resources and present results. Servers are programs that accept requests and return responses. The internet is the underlying global network; the web is one use of it, not another name for the entire internet. Email and other network services also use the internet."
+  },
+  {
+    "type": "paragraph",
+    "text": "A web address (URL) identifies a resource and indicates how to access it. HTTP provides the shared rules for requests and responses. HTTPS is HTTP carried over a protected connection. An address and an HTTP response are distinct things: knowing where to send a request never guarantees that the resource exists or that the server accepts the operation."
+  },
+  {
+    "type": "code",
+    "language": "text",
+    "caption": "A browser requesting one resource",
+    "code": "Browser (client) -- GET / --> Web server\nBrowser (client) <-- 200 + HTML -- Web server\nBrowser then parses the HTML; it may request CSS, JavaScript and images separately."
+  },
+  {
+    "type": "paragraph",
+    "text": "A browser does not receive a finished visual page as one magical network object. It typically receives HTML and then may request linked resources. JavaScript can make additional API calls. A script using curl can make the same kind of HTTP request without rendering any page. This distinction explains why a server can return HTTP 200 while the user still sees a broken interface."
+  },
+  {
+    "type": "heading",
+    "id": "request-journey",
+    "text": "Trace a visit without skipping hidden steps",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "Imagine typing https://example.org/services in a browser. First the client interprets the URL: https is the scheme, example.org is the host and /services is the path. If no port is written, HTTPS normally uses port 443. Later in this module, the dedicated URL lesson will teach query strings, fragments and encoding. At present, recognize that a host name is not itself a numerical network address."
+  },
+  {
+    "type": "code",
+    "language": "text",
+    "caption": "Conceptual request journey — not a guarantee that each step makes a new network call",
+    "code": "1. Interpret URL and determine destination\n2. Resolve the hostname to address information when needed (DNS or cache)\n3. Establish the network transport (TCP for ordinary HTTP/1.1 or HTTP/2)\n4. Establish TLS and verify the server identity for HTTPS\n5. Exchange HTTP request and response messages\n6. Interpret the representation; a browser may fetch additional resources"
+  },
+  {
+    "type": "paragraph",
+    "text": "DNS stands for Domain Name System. It maps names such as example.org to address information. A client can use cached information, so a DNS query is not guaranteed on every visit. DNS answers a naming question; it neither starts an application nor proves an API is healthy. Multiple addresses may be returned, and the destination chosen by the client can vary."
+  },
+  {
+    "type": "paragraph",
+    "text": "A network connection is directed to an address and a port. For HTTP/1.1 or HTTP/2 over TLS, TCP provides an ordered transport between endpoints. A successful connection only shows a transport listener accepted it; it does not certify the API's business logic. HTTPS then uses TLS to protect traffic and authenticate the server under certificate and trust rules. A valid TLS session is not a promise of successful authorization or correct application data."
+  },
+  {
+    "type": "callout",
+    "tone": "warning",
+    "title": "Important version boundary",
+    "body": "The diagram above describes the common HTTP/1.1 and HTTP/2 path, not every possible transport. HTTP/3 uses QUIC over UDP with integrated security rather than TCP followed by a separate TLS-over-TCP step. HTTP methods and status meanings remain broadly shared; do not teach TCP as an invariant of all HTTP."
+  },
+  {
+    "type": "heading",
+    "id": "http-exchange",
+    "text": "Know where HTTP begins",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "Only after the client can communicate with the HTTP-speaking endpoint can it send a request such as GET /services. An HTTP response has a status code, headers and optionally a body. The status is evidence that an HTTP-capable component responded; an intermediary (such as a reverse proxy or CDN) may produce it without executing the intended application handler. A 404 means the responding component reports that the target was not found, not that DNS failed."
+  },
+  {
+    "type": "code",
+    "language": "text",
+    "caption": "Three evidence categories",
+    "code": "DNS failure: name cannot be resolved; no HTTP status exists.\nConnection refusal: no expected listener accepts the transport connection; no HTTP status exists.\nHTTP 404: an HTTP responder returned a not-found outcome; inspect which responder supplied it."
+  },
+  {
+    "type": "paragraph",
+    "text": "A reverse proxy can sit in front of an application. It can terminate TLS, forward requests, serve cached content or reject a request before the application is reached. The initial boundary to understand is client → HTTP endpoint, not a promise that every request reaches Steward core code. There is no PostgreSQL database or deployed Steward API in this lesson."
+  },
+  {
+    "type": "heading",
+    "id": "local-lab",
+    "text": "Experiment one: prove HTTP success, not-found and refusal locally",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "This first exercise works offline on macOS or Linux with Python 3 and curl. A local loopback address (127.0.0.1) names your own machine, so the exercise does not demonstrate public DNS or TLS. You are running a disposable static-file HTTP server, not Steward. A command can fail if port 8768 is already in use; choose an unused port and update both terminals consistently."
+  },
+  {
+    "type": "code",
+    "language": "bash",
+    "caption": "Terminal A — create one HTML file and run an HTTP server",
+    "code": "mkdir -p tsa-web-lab\nprintf '<h1>Local web works</h1>\\n' > tsa-web-lab/index.html\npython3 -m http.server 8768 --bind 127.0.0.1 --directory tsa-web-lab"
+  },
+  {
+    "type": "code",
+    "language": "bash",
+    "caption": "Terminal B — compare HTTP and transport outcomes",
+    "code": "curl --noproxy '*' -i --http1.1 http://127.0.0.1:8768/\ncurl --noproxy '*' -i --http1.1 http://127.0.0.1:8768/does-not-exist\n# Return to Terminal A, press Ctrl+C, then rerun:\ncurl --noproxy '*' -v --max-time 3 http://127.0.0.1:8768/"
+  },
+  {
+    "type": "paragraph",
+    "text": "In the first request expect an HTTP 200 response and the local HTML body. The Python server may label its reply HTTP/1.0 even though the client requested HTTP/1.1; the semantics still apply. In the second expect HTTP 404 and an error page generated by the file server. After Ctrl+C, curl should report a connection failure (often exit code 7) and no HTTP status; read the actual output instead of inventing a status. A different status suggests a different process answered or your expected port/server setup differs."
+  },
+  {
+    "type": "heading",
+    "id": "real-https",
+    "text": "Experiment two: inspect public HTTPS when a connection is available",
+    "level": 2
+  },
+  {
+    "type": "code",
+    "language": "bash",
+    "caption": "Optional public-network observation; do not paste credentials",
+    "code": "curl --noproxy '*' -v --http1.1 --max-time 15 https://example.org/ -o /dev/null"
+  },
+  {
+    "type": "paragraph",
+    "text": "This is an observation, not a fixed-output test. If internet access is allowed, mark the resolution/address evidence, connection lines, TLS handshake/certificate verification and eventual HTTP status separately. Output varies by curl build, proxy policy, DNS cache and server behavior; -o /dev/null only discards the response body. The --http1.1 switch chooses HTTP/1.1 for this comparison. If access is blocked, record the earliest observed failure; do not report a successful TLS test that never occurred."
+  },
+  {
+    "type": "callout",
+    "tone": "warning",
+    "title": "Do not turn off verification to make an exercise green",
+    "body": "A certificate failure is useful evidence. Do not reach for -k/--insecure, paste tokens or disable proxy/security controls simply to obtain a 200."
+  },
+  {
+    "type": "heading",
+    "id": "diagnostic-transfer",
+    "text": "Choose the next observation, not a favourite explanation",
+    "level": 2
+  },
+  {
+    "type": "list",
+    "ordered": true,
+    "items": [
+      "A teammate says 'the page won't load' but DNS fails: collect the hostname and resolution error before discussing application logs.",
+      "A connection is refused: verify address, port and listener before changing API JSON or business rules.",
+      "TLS verification fails: distinguish identity/trust evidence from application authorization.",
+      "An HTTP 404 arrives: inspect URL path and responding component, including reverse-proxy routing; do not call it a DNS failure.",
+      "An HTTP 500 arrives: an HTTP component responded with a server-error status; investigate its request correlation and ownership, without assuming which handler executed."
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "A transfer task: the static-file server returns 200 for /, 404 for /missing and no HTTP response after shutdown. Predict each result before running it; then explain why these three results require different next actions. Independently describe which URL/transport components must be checked before anyone can conclude 'Steward API is down'."
+  },
+  {
+    "type": "resources",
+    "title": "Further reference",
+    "resources": [
+      {
+        "title": "MDN — An overview of HTTP",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview"
+      }
+    ]
+  }
+], "Explain the actual web request path and diagnose evidence at the first failing layer.", [
+  "Before running commands, draw the browser → web endpoint path and state what DNS, transport, TLS and HTTP each do.",
+  "Run the two-terminal local server exercise; collect actual 200, 404 and post-shutdown connection-failure observations.",
+  "Label what the offline lab cannot prove: real DNS resolution, TLS negotiation or Steward application behavior.",
+  "Inspect a public HTTPS request with curl -v only where network access is allowed; record the first failed or successful layer without fabricating output.",
+  "Produce a five-case diagnosis map, then defend the first next action for an unfamiliar failure."
+], "Explain why a TCP connection, valid TLS session and HTTP 200 each prove different things. Which of those necessarily proves that an application handler executed?", [mdnHttp]),
+
+  lesson("URLs and Query Encoding", 65, [
+  {
+    "type": "heading",
+    "id": "purpose",
+    "text": "A URL is structured input, not a decorative string",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "HTTP can only make sense of a request target when the client knows where to send it and what resource is being requested. A Uniform Resource Locator (URL) gives the client structured information to locate a resource. Data inside a URL can contain characters that also have structural meanings. Encoding preserves the difference between a delimiter and data; without it, user input can change what the server interprets."
+  },
+  {
+    "type": "heading",
+    "id": "anatomy",
+    "text": "Read every component without guessing",
+    "level": 2
+  },
+  {
+    "type": "code",
+    "language": "text",
+    "caption": "Anatomy of a URL",
+    "code": "https://example.org:443/services/payments?team=platform&tag=api#details\n\\____/ \\_________/ \\______________/ \\___________________/ \\_____/\n scheme  authority        path                 query           fragment"
+  },
+  {
+    "type": "paragraph",
+    "text": "The scheme says how to access the resource (https here). The authority includes hostname example.org and optional port 443. The path identifies a resource under that destination. The query carries parameters, often for filtering or pagination. The fragment identifies a location within a representation and is interpreted by the client; it is normally not transmitted as part of the HTTP request target. Some URL forms include credentials; never place secrets in URLs, where logs and browser history may record them."
+  },
+  {
+    "type": "paragraph",
+    "text": "The origin for ordinary web security comparison is scheme + host + port (using the effective default port when omitted). Changing https to http or changing ports can change the origin even when the hostname is the same. A domain, origin, path, host machine and API operation are not synonyms."
+  },
+  {
+    "type": "heading",
+    "id": "encoding",
+    "text": "What %20, +, %26 and %2F mean",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "Percent-encoding writes a byte as % followed by two hexadecimal digits. In form-style query encoding, a space is often represented by +, and a literal plus must itself be encoded. An ampersand separates query parameters and an equals sign separates names from values. The value 'payments & ops' therefore cannot be safely appended to '?team=' unchanged. Path segments have different escaping rules: a literal slash divides segments, whereas an identifier containing a slash may need %2F."
+  },
+  {
+    "type": "callout",
+    "tone": "note",
+    "title": "Encoding is not encryption",
+    "body": "Percent-encoding preserves URL syntax; it does not conceal information. Do not put passwords, access tokens or sensitive personal data in URL paths or query parameters."
+  },
+  {
+    "type": "heading",
+    "id": "worked-example",
+    "text": "Run a full parser/encoder and trace every output",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "You already learned Python imports, variables and lists in Programming with Python. This example uses only its standard library, without a web connection. Save the following code as url_parser.py and run python3 url_parser.py. The list of pairs is deliberate: it preserves two tag parameters with the same name. urlencode converts the data into a safe query; urlsplit then separates components; parse_qs reconstructs query values as lists."
+  },
+  {
+    "type": "code",
+    "language": "python",
+    "caption": "url_parser.py — independently runnable standard-library example",
+    "code": "from urllib.parse import urlencode, urlsplit, parse_qs, quote\n\nparameters = [(\"team\", \"payments & ops\"), (\"tag\", \"api\"), (\"tag\", \"bank\")]\nurl = \"https://example.org/services?\" + urlencode(parameters) + \"#details\"\nparts = urlsplit(url)\nrequest_target = parts.path + \"?\" + parts.query\n\nprint(url)\nprint(\"origin:\", f\"{parts.scheme}://{parts.netloc}\")\nprint(\"request target:\", request_target)\nprint(\"teams:\", parse_qs(parts.query)[\"team\"])\nprint(\"tags:\", parse_qs(parts.query)[\"tag\"])\nprint(\"fragment:\", parts.fragment)\nprint(\"encoded id:\", quote(\"payments/core\", safe=\"\"))\nprint(\"bad query team:\", parse_qs(\"team=payments & ops\")[\"team\"])"
+  },
+  {
+    "type": "code",
+    "language": "text",
+    "caption": "Observed Python 3 output (the example above has been executed)",
+    "code": "https://example.org/services?team=payments+%26+ops&tag=api&tag=bank#details\norigin: https://example.org\nrequest target: /services?team=payments+%26+ops&tag=api&tag=bank\nteams: ['payments & ops']\ntags: ['api', 'bank']\nfragment: details\nencoded id: payments%2Fcore\nbad query team: ['payments ']"
+  },
+  {
+    "type": "paragraph",
+    "text": "Walk the first line: urlencode turns the space into + and the literal & into %26. The server-side query decoder therefore sees one team value, 'payments & ops', not an accidental second parameter. The list has two separate tag pairs; parse_qs returns both instead of silently overwriting one. urlsplit exposes fragment 'details', but request_target deliberately omits it. The path identifier 'payments/core' becomes 'payments%2Fcore' when quote uses safe='' so its slash is data, not a hierarchy delimiter."
+  },
+  {
+    "type": "paragraph",
+    "text": "The final line is a negative test: manual concatenation produces 'team=payments & ops'. A typical query parser sees only 'payments ' as the team value because the unescaped & starts another parameter. A request can be valid HTTP yet represent the wrong user intention. This is why query composition belongs in encoding utilities instead of string concatenation."
+  },
+  {
+    "type": "heading",
+    "id": "path-vs-query",
+    "text": "Choose path and query based on identity",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "A path such as /services/17 commonly names one resource; a query such as /services?team=platform commonly selects a view or collection subset. These are design conventions, not universal HTTP requirements. A path segment is not necessarily an integer ID; if an identifier can contain '/', encode that segment rather than accidentally creating another path level. Query parameters can repeat. The server contract must define whether repeats are accepted, rejected or combined."
+  },
+  {
+    "type": "code",
+    "language": "text",
+    "caption": "Two distinct intended targets",
+    "code": "GET /services/17                 # retrieve a selected resource\nGET /services?tag=api&tag=bank  # filter a collection using repeated parameters\nGET /services/payments%2Fcore   # one encoded identifier containing a slash"
+  },
+  {
+    "type": "heading",
+    "id": "failure-analysis",
+    "text": "Separate a syntax error from a contract error",
+    "level": 2
+  },
+  {
+    "type": "paragraph",
+    "text": "If a query name is unknown, the URL can still be syntactically valid but violate the API contract. If an API expects one 'limit' value and receives two, the server must define how it handles that case; an encoding library cannot decide the domain rule. A '#' inside a URL starts a fragment unless encoded as part of data. Treat copied URLs and manually constructed URLs with suspicion, particularly when a value contains &, =, +, # or /."
+  },
+  {
+    "type": "heading",
+    "id": "practical-transfer",
+    "text": "Apply the encoding decision to Steward without inventing an API",
+    "level": 2
+  },
+  {
+    "type": "list",
+    "ordered": true,
+    "items": [
+      "Write URLs for service 17, for services filtered by team 'platform & operations', and for two tag filters. Show the encoded target and decoded values.",
+      "Predict what happens if the raw value 'platform & operations' is concatenated without encoding; run a parser to confirm.",
+      "Compare /services/payments/core with /services/payments%2Fcore. Describe why a server router might interpret them differently.",
+      "Explain which portion of https://example.org/services?tag=api#results reaches an HTTP server and which is a browser-side fragment.",
+      "Design one clear validation rule for a repeated 'limit' query parameter. Test a negative case and justify the HTTP-facing client error you would document."
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "Independent check: a colleague proposes a link with a secret token in the query and argues percent-encoding makes it safe. Reject or accept that proposal with a mechanism-based explanation. Then modify the executable example to accept tag=quality a third time and verify the parser returns all three tags without changing the team."
+  },
+  {
+    "type": "resources",
+    "title": "Reference for standard-library behavior",
+    "resources": [
+      {
+        "title": "Python docs — urllib.parse",
+        "url": "https://docs.python.org/3/library/urllib.parse.html"
+      },
+      {
+        "title": "MDN — URI",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/URI"
+      }
+    ]
+  }
+], "Correctly parse and construct resource URLs, including query encoding, fragments and repeated parameters.", [
+  "Save and execute url_parser.py exactly; compare each output with the expected transcript.",
+  "Generate three Steward URL examples from structured data, including a query value containing spaces and an ampersand.",
+  "Break one URL by manually concatenating unencoded input; document the changed parsed value.",
+  "Compare an encoded slash in a single identifier with two path segments, and distinguish path, query and fragment.",
+  "Design and justify an API rule for repeated limit parameters and a safe logging rule for URLs."
+], "Why does an unescaped ampersand change a query? What part of an address does the browser not send in the HTTP request target, and what does percent-encoding not protect?", [mdnHttp, { title: "Python docs — urllib.parse", url: "https://docs.python.org/3/library/urllib.parse.html" }]),
 
   lesson("Client-Server Architecture", 70, [
   {
