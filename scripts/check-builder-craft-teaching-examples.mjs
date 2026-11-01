@@ -8,7 +8,9 @@ const cases=[
   ["Testing — executable unittest authorization boundary", "Ran 2 tests"],
   ["Configuration — executable fail-closed environment parser", "valid False"],
   ["Logging — executable structured-context and secret absence test", "service=42 request=req-demo-7"],
-  ["Errors — executable stable public error mapping", "public error mappings: 6"]
+  ["Errors — executable stable public error mapping", "public error mappings: 6"],
+  ["Static analysis — parse error versus valid but wrong authorization", "syntax valid; authorization policy still wrong"],
+  ["Documentation — executable setup instructions completeness gate", "documentation checklist passed; vague instructions rejected"]
 ];
 for(const [caption,expected] of cases){
   const anchor=source.indexOf('"caption":"'+caption+'"');
@@ -25,4 +27,4 @@ for(const [caption,expected] of cases){
     assert.match(r.stdout,/invalid DJANGO_DEBUG must be true or false/);
   }
 }
-console.log("Builder craft examples passed: 5 source-extracted Python labs and their negative boundaries.");
+console.log("Builder craft examples passed: 7 source-extracted Python labs and their negative boundaries.");
