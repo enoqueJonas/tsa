@@ -15,10 +15,6 @@ interface DataLessonSpec {
     knowledgeCheck: string;
 }
 
-const persistenceResources: LearningResource[] = [
-    { title: "Python — json module", url: "https://docs.python.org/3/library/json.html", kind: "reference" },
-    { title: "PostgreSQL — Getting Started", url: "https://www.postgresql.org/docs/current/tutorial-start.html", kind: "reference" },
-];
 const pgIntroVideo: LearningResource = { title: "CMU Database Systems — Relational Model and Algebra (lecture 1)", url: "https://www.youtube.com/watch?v=7NPIENPr-zk", kind: "video", read: "Entire lecture (advanced optional extension)", purpose: "Distinguish relational model, keys and physical storage; use after the first worked model." };
 const postgresDocs: LearningResource = { title: "PostgreSQL Documentation", url: "https://www.postgresql.org/docs/current/" };
 const djangoQueryDocs: LearningResource = { title: "Django — Making queries", url: "https://docs.djangoproject.com/en/stable/topics/db/queries/" };
@@ -34,8 +30,7 @@ const pgExplain: LearningResource = { title: "PostgreSQL — Using EXPLAIN", url
 const pgPsql: LearningResource = { title: "PostgreSQL — psql", url: "https://www.postgresql.org/docs/current/app-psql.html", kind: "reference" };
 const pgLocks: LearningResource = { title: "PostgreSQL — Explicit Locking", url: "https://www.postgresql.org/docs/current/explicit-locking.html", kind: "reference" };
 const resourcesByDataLesson: Record<string, LearningResource[]> = {
- "from-memory-to-durable-data":persistenceResources,"postgresql-first-connection":[{ title: "PostgreSQL — psql and Accessing a Database", url: "https://www.postgresql.org/docs/current/tutorial-accessdb.html", kind: "reference" }],
- "relational-model":[pgDdl,pgIntroVideo],"steward-schema-and-seed":[pgDdl,pgConstraints,pgPsql],"sql-crud":[pgQueries],"filtering-ordering":[pgQueries],aggregation:[pgFunctions],joins:[pgQueries],
+ "relational-model":[pgDdl,pgIntroVideo],"sql-crud":[pgQueries],"filtering-ordering":[pgQueries],aggregation:[pgFunctions],joins:[pgQueries],
  subqueries:[pgQueries],ctes:[pgWith],"transactions-acid":[pgTransactions],"constraints-keys":[pgConstraints],"schema-design":[pgDdl],
  normalization:[pgDdl],indexes:[pgIndexes],"query-plans":[pgExplain],"query-performance":[pgExplain],"postgresql-practice":[pgPsql],
  "django-orm":[djangoQueryDocs],"orm-vs-sql":[djangoQueryDocs,pgQueries],"n-plus-one":[djangoQueryDocs,pgExplain],migrations:[djangoMigrationDocs,pgDdl],
