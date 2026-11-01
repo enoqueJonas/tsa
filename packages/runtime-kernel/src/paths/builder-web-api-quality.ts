@@ -77,18 +77,25 @@ const practices: Record<string, PracticeSpec> = {
     ]
   },
   "web-and-api-foundations-http-requests-and-responses": {
-    objective: "Read an HTTP exchange directly enough to explain what happened without relying on a framework debugger or API-client UI.",
-    scenario: "A teammate sends you a screenshot showing '200 OK' and says the integration is correct. You are not willing to approve the claim until the complete request and response contract is visible.",
+    objective: "Explain every meaningful part of an HTTP exchange using real evidence, including where protocol metadata stops and representation content begins.",
+    scenario: "A teammate reports that a single HTTP 200 screenshot proves the Steward integration works. You have the disposable mini-Steward Python server from the previous lesson and must demonstrate what a raw response does and does not establish before drawing conclusions.",
     instructions: [
-      "Capture one GET exchange and one request with a body using curl -i or curl -v.",
-      "Annotate method, target, request headers, request body, status, response headers and response body separately.",
-      "Identify at least two pieces of behavior communicated outside the JSON body.",
-      "Find or simulate a response with no body and explain why a client must not assume JSON is always present.",
-      "Change one relevant request header and record exactly which part of the exchange changes.",
-      "Capture or deliberately inspect one redirect and distinguish the original 3xx response from any follow-up request performed by the client."
+      "Start mini_steward_server.py on loopback, then use curl -i --http1.1 /services and /missing; record the actual status, headers and response body. Do not invent a currently running Steward API.",
+      "Use curl -v --http1.1 to identify the outgoing request versus incoming response. Annotate the request method, target, Host, Accept and the separation between headers and body.",
+      "Explain why Python may reply with HTTP/1.0 even when curl sends HTTP/1.1 and why protocol semantics still make sense.",
+      "Send Accept: text/plain to /services and compare the resulting Content-Type and body with the original request. Explain why the preference is not enforced automatically by the teaching server.",
+      "Classify the /missing response as a real HTTP 404 with an HTML body, not a transport failure or a JSON contract.",
+      "Analyze the illustrative 204 No Content and 200 with {} responses from the lesson. Predict the result of a client that always JSON-parses a successful response.",
+      "Write a short evidence-based verdict explaining why a 200 alone cannot demonstrate correct service data, authorization or a successful state change."
     ],
-    deliverables: ["Two annotated HTTP exchanges", "Header-behavior notes", "Bodyless-response analysis", "Before/after header experiment"],
-    completionCriteria: ["Every major message component can be identified independently.", "Headers are not treated as incidental metadata.", "Status and body are interpreted separately.", "You can reconstruct the exchange without depending on Postman's presentation layer."]
+    deliverables: ["Annotated real 200 and 404 HTTP exchanges", "curl -v client/server transcript", "Accept-versus-Content-Type negative experiment", "204-versus-200 interpretation", "Evidence-based integration verdict"],
+    completionCriteria: [
+      "The learner labels request/response lines, headers, empty line and optional content without confusing URL, message and connection layers.",
+      "Actual status and representation are collected from the runnable example rather than copied from a fabricated transcript.",
+      "The Accept negative experiment demonstrates observed server behavior and the limits of client preference headers.",
+      "204 is correctly understood to be bodyless, unlike a 200 containing an empty JSON object.",
+      "The final verdict distinguishes protocol success from verified application semantics."
+    ]
   },
   "web-and-api-foundations-methods-headers-and-status-codes": {
     objective: "Design method, retry and status semantics for Steward operations so clients can behave correctly under success and failure.",
