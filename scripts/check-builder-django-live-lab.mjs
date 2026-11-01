@@ -59,20 +59,20 @@ assert Client().get('/health/').status_code==200
 assert Client().get('/missing/').status_code==404
 assert Client().post('/health/').status_code==405
 t=Team.objects.create(name='Payments')
-s=Service.objects.create(name='Payments API',owning_team=t,endpoint='https://payments.example.invalid/api',lifecycle=Service.Lifecycle.ACTIVE)
+s=Service.objects.create(name='Payments API',owning_team=t,endpoint='https://payments.example.invalid/api',lifecycle=Service.Lifecycle.PRODUCTION)
 e=Environment.objects.create(service=s,name='Primary',kind=Environment.Kind.PRODUCTION)
 item=Service.objects.select_related('owning_team').get(pk=s.pk)
 assert item.owning_team.name=='Payments'
-assert item.lifecycle=='active' and e.kind=='production'
+assert item.lifecycle=='production' and e.kind=='production'
 assert item._meta.get_field('owning_team').column=='owning_team_id'
 data=ServiceSerializer(item).data
-assert data['owning_team']==t.pk and data['lifecycle']=='active'
+assert data['owning_team']==t.pk and data['lifecycle']=='production'
 assert 'slug' not in data
 assert Service.objects.count()==1
 print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
 `;
   const output=exec("python3",["manage.py","shell","-c",probe],env);
-  assert.match(output,/DJANGO_BRIDGE_OK Payments API Payments active production/);
+  assert.match(output,/DJANGO_BRIDGE_OK Payments API Payments production production/);
   console.log("Builder Django bridge passed: actual learner-visible config URL, models, serializer, PostgreSQL migrations, query, and HTTP test client 200/404/405.");
 } finally {
   fs.rmSync(root,{recursive:true,force:true});
