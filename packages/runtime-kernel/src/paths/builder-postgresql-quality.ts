@@ -76,48 +76,46 @@ const practices: Record<string, PracticeSpec> = {
         completionCriteria: ["Every executed mutation has an evidenced target set.", "No destructive statement relies on table order or an implicit assumption.", "The learner can explain why syntactically valid SQL can still be operationally dangerous."],
     },
     "relational-data-and-postgresql-filtering-ordering-practice": {
-        objective: "Build precise, deterministic Steward catalogue queries and expose the bugs caused by NULL and ambiguous boolean logic.",
-        scenario: "The Engineering Portal needs filters for active critical services, services missing a technical owner, and stable ordered results for later pagination. A first implementation returns surprising rows when NULL and OR are involved.",
+        objective: "Predict exact SQL predicate results, diagnose NULL/precedence failures, and produce deterministic ordered queries on the canonical Steward seed.",
+        scenario: "An engineer accidentally includes Legacy Gateway in an active-service report. Diagnose why a valid query leaks a retired record and prove the correction against the unchanged five-service dataset.",
         instructions: [
-            "Seed services with mixed lifecycle, criticality and nullable technical-owner values, including tied sort values.",
-            "Write at least five predicates using AND, OR, IN, IS NULL and parentheses.",
-            "Create one deliberately incorrect NULL comparison and capture the unexpected result; explain it using SQL TRUE/FALSE/UNKNOWN rather than only memorizing IS NULL.",
-            "Create one ambiguous AND/OR predicate, then add parentheses to make the intended truth conditions explicit.",
-            "Add deterministic ordering with an explicit tie-breaker and demonstrate stable output across repeated runs.",
-            "Use one range/pattern predicate and a bounded LIMIT query; explain why LIMIT without deterministic ORDER BY is not a stable page.",
-            "Write the expected truth conditions for each query before comparing them with PostgreSQL output."
+            "Start with the canonical steward_schema_seed.sql baseline; do not assume technical_owner exists or add unexplained columns.",
+            "Run filter_boolean.sql and annotate the retained row set before/after parentheses. Explain the AND/OR binding with the named Legacy Gateway row.",
+            "Run filter_null.sql and explain UNKNOWN, NOT UNKNOWN, IS NULL and which rows WHERE retains.",
+            "Run filter_order.sql; show that its chosen order is alphabetical rather than a business severity ranking.",
+            "Independently construct an active-Service search using ILIKE 'pay%' and stable ORDER BY name, id, then change case and verify the result.",
+            "Describe how OFFSET pages can change under inserts and why ORDER BY alone does not solve snapshot consistency."
         ],
-        deliverables: ["Query catalogue", "NULL failure evidence", "Boolean-precedence correction", "Deterministic ordering evidence"],
-        completionCriteria: ["NULL is handled with SQL semantics rather than ordinary equality assumptions.", "Boolean grouping is explicit where intent could be misread.", "Every ordered result intended for pagination has a stable tie-breaker."],
+        deliverables: ["Executed Boolean and NULL transcripts", "Truth table explaining UNKNOWN", "Independent search query and output", "Deterministic sort and pagination limitation note"],
+        completionCriteria: ["All named rows are predicted and compared with the real PostgreSQL output.", "A retired service cannot enter an active-only result through precedence.", "No column absent from the canonical fixture is used without an explicit migration.", "No textual criticality order is mistaken for domain severity rank."]
     },
     "relational-data-and-postgresql-aggregation-practice": {
-        objective: "Produce registry metrics that remain trustworthy when teams have zero services and joins can multiply rows.",
-        scenario: "Leadership asks for services per team and high-criticality service counts. A dashboard query appears to overcount after environments are joined into the same report.",
+        objective: "Reproduce inaccurate database metrics caused by row multiplication and correct them at the intended business grain.",
+        scenario: "Steward reports three services for Payments, but the canonical dataset contains two. Prove the query is counting joined environment rows rather than service identities.",
         instructions: [
-            "Seed teams with zero, one and multiple services, plus multiple environments for at least one service.",
-            "Write a LEFT JOIN aggregation that keeps zero-service teams visible.",
-            "Add a HAVING threshold for teams with at least two qualifying services.",
-            "Join environments in a way that deliberately inflates COUNT and inspect the pre-aggregation row shape.",
-            "Correct the metric using an appropriate query shape and verify it manually against source rows.",
-            "Compare COUNT(*) with COUNT(nullable_column) on data containing NULL and explain the population each metric counts.",
-            "Explain which filters belong in WHERE and which are genuinely group-level conditions for HAVING."
+            "Run aggregate_team.sql and predict the three Team counts before executing.",
+            "Run the read-only aggregate_zero.sql CTE with synthetic Unassigned Team and contrast COUNT(*)=1 with COUNT(s.id)=0.",
+            "Run aggregate_having.sql and explain why HAVING is a group filter, and lifecycle belongs in ON when a LEFT JOIN must keep empty teams.",
+            "Run aggregate_inflation.sql and inspect the raw join inputs behind Payments=3 versus distinct service_count=2.",
+            "Run aggregate_nulls.sql and distinguish COUNT(*) (5), COUNT(retired_at) (1) and criticality FILTER (2).",
+            "Independently write a per-Team report distinguishing services, active services and production placements, describing the grain of each metric."
         ],
-        deliverables: ["Correct aggregation queries", "Inflated-count reproduction", "Manual verification table", "Metric-grain explanation"],
-        completionCriteria: ["The meaning of one output row is stated before grouping.", "Zero-service teams are handled deliberately rather than accidentally disappearing.", "The final counts are verified against source data and are not trusted merely because the SQL executed."],
+        deliverables: ["Five verified aggregate transcripts", "Manual row-count reconciliation", "Zero-case demonstration", "Independent metric report", "Explanation of COUNT DISTINCT limitations for sums"],
+        completionCriteria: ["Every number is reconciled to original Service/Environment rows.", "Empty parent records do not disappear unintentionally.", "The learner can explain why DISTINCT is one targeted fix rather than a universal response to a bad JOIN.", "WHERE, ON and HAVING have separate documented responsibilities."]
     },
     "relational-data-and-postgresql-joins-practice": {
-        objective: "Choose join semantics from the business question and use missing relationships as useful data-quality evidence.",
-        scenario: "A Steward review report must show every service, including services missing an environment. An INNER JOIN implementation silently hides precisely the incomplete records the report is supposed to reveal.",
+        objective: "Predict and execute JOIN results and debug missing and multiplied rows before aggregating them.",
+        scenario: "An INNER JOIN review report hides Payroll API because it has no Environment; an apparently equivalent LEFT JOIN report loses Payroll again when a production filter is moved from ON to WHERE.",
         instructions: [
-            "Seed at least one service with no environment and one service with multiple environments.",
-            "Run equivalent INNER JOIN and LEFT JOIN queries and compare which services disappear or multiply.",
-            "Write the dependency query that joins Service twice through ServiceDependency using meaningful aliases.",
-            "Predict the output grain/cardinality before executing the joins, then trace one multiplied row back to its one-to-many relationship and explain why the result is correct rather than duplicate corruption.",
-            "Rewrite one RIGHT JOIN question as a LEFT JOIN by reversing table order and compare readability.",
-            "Choose the join semantics for the review report and justify the decision from the report's purpose."
+            "Run join_owner.sql and trace a Service-to-Team foreign key for every one of the five seeded services.",
+            "Run join_optional.sql and explain the two Payments rows and Payroll's NULL Environment.",
+            "Run join_on_where.sql twice; show why the ON variant keeps Payroll while the WHERE variant omits it.",
+            "Run join_right.sql and demonstrate the equivalent LEFT JOIN query preserving unmatched Service rows.",
+            "Run join_dependencies.sql and map both directed edges using source and destination aliases.",
+            "Independently count plain Service rows (5), Service LEFT JOIN Environment rows (6) and the INNER JOIN rows (4). Predict them first, then execute."
         ],
-        deliverables: ["INNER/LEFT comparison output", "Dependency self-join query", "Row-multiplication explanation", "Join-semantics decision note"],
-        completionCriteria: ["Missing related data remains visible when the question requires it.", "Aliases make source and target service roles unambiguous.", "The learner can distinguish legitimate one-to-many multiplication from an erroneous join."],
+        deliverables: ["Five executable JOIN outputs", "Pair matching and NULL-extension diagram", "ON-vs-WHERE failure diagnosis", "Directed dependency reconstruction", "Count prediction and actual reconciliation"],
+        completionCriteria: ["The matching predicate, join type, and one-to-many cardinality are explained separately.", "LEFT/RIGHT preservation and ON/WHERE filtering are demonstrated with real missing relationships.", "The learner can explain why a Service can appear twice without being duplicated in persistent storage.", "The JOIN module is completed before the Aggregation module."]
     },
     "relational-data-and-postgresql-subqueries-practice": {
         objective: "Use EXISTS, IN and JOIN deliberately rather than treating subqueries as a stylistic trick.",
