@@ -98,7 +98,7 @@ const practices: Record<string, PracticeSpec> = {
             "Run aggregate_having.sql and explain why HAVING is a group filter, and lifecycle belongs in ON when a LEFT JOIN must keep empty teams.",
             "Run aggregate_inflation.sql and inspect the raw join inputs behind Payments=3 versus distinct service_count=2.",
             "Run aggregate_nulls.sql and distinguish COUNT(*) (5), COUNT(retired_at) (1) and criticality FILTER (2).",
-            "Independently write a per-Team report distinguishing services, active services and production placements, describing the grain of each metric."
+            "Independently write a per-Team report distinguishing services, production-stage services and actual production deployments, describing the grain of each metric."
         ],
         deliverables: ["Five verified aggregate transcripts", "Manual row-count reconciliation", "Zero-case demonstration", "Independent metric report", "Explanation of COUNT DISTINCT limitations for sums"],
         completionCriteria: ["Every number is reconciled to original Service/Environment rows.", "Empty parent records do not disappear unintentionally.", "The learner can explain why DISTINCT is one targeted fix rather than a universal response to a bad JOIN.", "WHERE, ON and HAVING have separate documented responsibilities."]
