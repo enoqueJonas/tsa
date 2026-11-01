@@ -115,16 +115,17 @@ Builder audit may proceed in parallel at source level, but Engineering Apprentic
 
 | Lesson / area | Classification | Finding |
 | --- | --- | --- |
-| How the Web Works | THIN — targeted rewrite pending | Earlier layer expansion retained, but bounded URL/encoding observation and prerequisite scaffolding remain insufficient in the PED-005 pass. |
+| How the Web Works | REMEDIATED — learner verification pending | New explicit web/internet, client/server, DNS/TCP/TLS/HTTP explanation; HTTP/3 transport caveat; offline loopback 200/404/refusal experiment. HTTPS/TLS inspection remains optional and unverified. |
+| URLs and Query Encoding | REMEDIATED — learner verification pending | New separately registered lesson: anatomy, origin, path/query/fragment, special-character encoding, repeated values and Python standard-library output/negative test. Source-extracted regression committed; full suite/build pending at new head. |
 | Client-Server Architecture + Client-Server Boundaries and Failure Modes | REMEDIATED — REVALIDATION REQUIRED | Learner screenshot disproved prior PASS: the original 35-minute reading was a compressed overview, assumed undefined terms and illustrated a future PostgreSQL dependency as if already built. Replaced with two progressively focused chapters (architecture/alternatives, then mechanics/failure lab) and a local, reproducible HTTP experiment; inspect both rendered pages before accepting. |
 | HTTP Requests and Responses | SOURCE-REVIEWED — LEARNER VALIDATION PENDING | Teaches raw message anatomy, headers/body distinction and body-optional responses before practice. |
 | Methods, Headers and Status Codes | REMEDIATED — learner transfer pending | Replaced compressed survey with executable plain-text server, eight method/status experiments and failure diagnosis; split retries into a registered separate lesson. See PED-005 review evidence. |
 | Retries, Idempotency and Conditional Requests | REMEDIATED — learner transfer pending | New lesson, specific practical and sequential executable decision model; real conditional HTTP/durable concurrent deduplication explicitly unimplemented. |
 | JSON and Content Types | SOURCE-REVIEWED — LEARNER VALIDATION PENDING | Separates representation syntax, Content-Type/Accept and domain validation. |
-| REST Principles and Trade-offs | THIN — rewrite required; prior sufficiency withdrawn | Treats REST as architectural constraints rather than URL aesthetics and explicitly discusses CRUD trade-offs. |
-| Modeling Resources and API Contracts | THIN — rewrite required; prior sufficiency withdrawn | Strong representation/domain/storage separation and compatibility reasoning. |
-| Errors and Status Design | THIN — rewrite required; prior sufficiency withdrawn | Failure taxonomy, stable codes, retryability and public-vs-internal evidence are directly taught. |
-| curl/Postman lab | THIN — rewrite required; prior sufficiency withdrawn | Strong protocol-level synthesis after the targeted teaching gaps were remediated. |
+| REST Principles and Trade-offs | REMEDIATED — learner verification pending | Rewritten with REST constraints, ownership workflow comparison, and an executable offset/cursor pagination failure model. |
+| Modeling Resources and API Contracts | REMEDIATED — learner verification pending | Rewritten to derive actual Steward-core fields, compare create/read/list public contracts, validate inputs and test old/new consumer compatibility. |
+| Errors and Status Design | REMEDIATED — learner verification pending | Rewritten with seven-case failure translation, sanitized public codes, diagnostic correlation and explicit non-persistent error model. |
+| curl/Postman lab | REMEDIATED — learner verification pending | Rewritten with a complete Python HTTP lab target and 14 executed curl scenarios; Postman, independent transfer and rendered UX pending. |
 
 ### Relational Data and PostgreSQL
 
@@ -881,3 +882,11 @@ Replaced the external-target/templates brief with complete learner-visible lab_a
 Verification: `pnpm test` **13/13 passed** and `pnpm build` **2 tasks successful**. `scripts/check-final-api-lab.mjs` extracts the published server and curl commands, substitutes only an available loopback port, and executes all fourteen commands. Observed statuses: 200/201/200/200/400/400/415/200/409/405/503/204/404/200. Checks Location, JSON despite Accept:text/plain, Allow, Retry-After, bodyless 204 without Content-Length, preserved resource state after rejected writes, empty final collection and non-HTTP connection failure after shutdown.
 
 Source lab is REMEDIATED. The independent second-service/extra-negative-case exercises, Postman reproduction, rendered review and five-part learner transfer remain UNVERIFIED. Server is synthetic, volatile, single-threaded, loopback-only; no persistence, TLS, authentication, pagination or production-hardening claim. Identity failure contracts are design exercises, not executed authentication evidence. Full #319 novice review and How the Web Works scaffolding remain open; no module/school VALIDATED promotion.
+
+
+### 2026-11-01 — Web request / URL encoding split (PED-005)
+
+- Implementation: `74f554a` Web/API reading source, `88b365e` distinct practical contracts, `87184e4` published-example regression.
+- Converted the overloaded How the Web Works reading into a first-principles web/transport lesson followed by **URLs and Query Encoding**; actual assembled path now contains 12 lessons / 36 activities.
+- The URL example was independently run with Python 3 and its eight expected lines verified before commit. Its source-based suite regression is committed **but not executed at this branch head**. The offline web server exercise, public HTTPS inspection, full test/build, browser pages and novice teach-back remain **UNVERIFIED** after these changes.
+- Do not mark Builder or Web/API `VALIDATED`. Prior 13/13 tests and successful build apply to an earlier commit only. Follow #320 and #315 acceptance gates.
