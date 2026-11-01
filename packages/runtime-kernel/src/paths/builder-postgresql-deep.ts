@@ -884,6 +884,88 @@ const specs: DataLessonSpec[] = [
         "knowledgeCheck": "What survives after a WITH statement ends? Why does recursive UNION ALL need a termination guard on graph cycles? What does the visited array prevent, and what are the differences between a query CTE and a persistent view?"
     },
     {
+        "id": "production-readiness-invariant",
+        "title": "Production Readiness: A Cross-Table Business Invariant",
+        "introduction": "A database can satisfy every declared foreign key and still contain a Service that violates Steward's release-readiness rule. In the canonical product, a production-stage Service must have at least one production Environment. The five-Service SQL teaching fixture deliberately includes Payroll API with lifecycle production but no production Environment: this is negative test data, not a valid production registry. Diagnose, temporarily repair and reason about the invariant.",
+        "outcomes": [
+            "Translate a written business invariant into a correlated NOT EXISTS query.",
+            "Explain the difference between a lifecycle stage and a registered deployment.",
+            "Prove a one-direction foreign key cannot require every qualifying parent to have a matching child.",
+            "Demonstrate a reversible repair and specify which authorized API operations must protect the invariant."
+        ],
+        "sections": [
+            {
+                "id": "two-dimensions",
+                "title": "Production stage and production deployment are distinct facts",
+                "body": "Service.lifecycle describes development, UAT, production or retired stage. Environment.kind describes a deployed placement. The same word production occurs in both, but one does not imply the other. If a Service claims production lifecycle without a production Environment, Steward's product rule is broken. In the fixture Payroll API intentionally demonstrates this condition; do not call the fixture production-ready."
+            },
+            {
+                "id": "detect",
+                "title": "Find the missing child without false positives",
+                "body": "For every Service in the production stage, the correlated NOT EXISTS checks whether at least one production Environment exists. It returns Payroll API on the teaching seed. A LEFT JOIN followed by e.kind <> 'production' is wrong: it could flag a staging row even when another production row exists. Ask which absence the business rule really cares about.",
+                "language": "sql",
+                "caption": "readiness_missing.sql — detect production-stage Services without production deployment",
+                "code": "SELECT s.name\nFROM service s\nWHERE s.lifecycle='production'\n  AND NOT EXISTS (\n    SELECT 1 FROM environment e\n    WHERE e.service_id=s.id AND e.kind='production'\n  )\nORDER BY s.name;",
+                "output": "Payroll API"
+            },
+            {
+                "id": "reversible",
+                "title": "Repair the evidence in a transaction, then roll it back",
+                "body": "Insert Payroll's missing production Environment inside BEGIN/ROLLBACK, count remaining violations, and verify zero inside the transaction. ROLLBACK keeps the seed unchanged so future lessons can reproduce the negative case. A real release operation would COMMIT a valid state; this reversible learning demonstration is not a production release procedure.",
+                "language": "sql",
+                "caption": "readiness_repair.sql — reversible cross-table invariant repair",
+                "code": "BEGIN;\nINSERT INTO environment(service_id,name,kind)\nSELECT id,'Primary','production'\nFROM service WHERE name='Payroll API';\nSELECT count(*) AS violations\nFROM service s\nWHERE s.lifecycle='production'\n  AND NOT EXISTS (\n    SELECT 1 FROM environment e\n    WHERE e.service_id=s.id AND e.kind='production'\n  );\nROLLBACK;",
+                "output": "INSERT 0 1; violations 0; ROLLBACK; rerunning readiness_missing.sql returns Payroll API."
+            },
+            {
+                "id": "foreign-key",
+                "title": "A foreign key only enforces the direction you declared",
+                "body": "Environment.service_id REFERENCES service(id) prevents an Environment from pointing to a missing Service. It does not require every Service to have an Environment, even when its lifecycle is production. A simple Service CHECK cannot generally query another table. The authorized application/domain transition may need to create or validate a deployment in one transaction; triggers/stored procedures may offer stronger centralized enforcement at a complexity cost. Every update path—and removal of the last production deployment—must preserve the rule."
+            },
+            {
+                "id": "transfer",
+                "title": "Convert the SQL diagnosis into two negative API tests",
+                "body": "Test a request setting lifecycle from UAT to production with no production Environment. The API may reject with a documented conflict or atomically create a valid deployment under authorization, but it must not silently commit incomplete state. Also test deletion of the last production Environment from an already production-stage Service. Changing the route shape cannot bypass the policy. Verify not only the response but the unchanged database state after each forbidden operation; consider concurrent requests changing related records."
+            }
+        ],
+        "warning": "This is an intentionally noncompliant fixture for learning. Do not claim that a valid FOREIGN KEY implies release readiness.",
+        "assignment": [
+            "Run readiness_missing.sql and explain why Payroll API is returned.",
+            "Run readiness_repair.sql, confirm zero violations inside its transaction, then verify Payroll API is again reported after rollback.",
+            "Diagram the FK direction and the inverse business requirement.",
+            "Write API-level negative tests for production transition and deletion of the final production Environment, with unchanged-state assertions.",
+            "Explain where authorization, transactions and race conditions affect this rule."
+        ],
+        "resources": [
+            {
+                "title": "Steward canonical product contract",
+                "url": "https://github.com/enoqueJonas/tsa/blob/curriculum/oop-depth-reconstruction/docs/product/steward.md",
+                "kind": "reference",
+                "purpose": "Canonical lifecycle and deployment readiness invariant."
+            },
+            {
+                "title": "PostgreSQL — Subquery Expressions",
+                "url": "https://www.postgresql.org/docs/current/functions-subquery.html",
+                "kind": "reference",
+                "purpose": "Correlated NOT EXISTS semantics."
+            },
+            {
+                "title": "PostgreSQL — Constraints",
+                "url": "https://www.postgresql.org/docs/current/ddl-constraints.html",
+                "kind": "reference",
+                "purpose": "Foreign-key direction and cross-table limitations."
+            }
+        ],
+        "practiceObjective": "Prove a cross-table Steward production-readiness violation, reverse a temporary repair and design proper API enforcement.",
+        "practiceInstructions": [
+            "Execute published readiness_missing.sql and verify Payroll API is the only violation.",
+            "Execute readiness_repair.sql and verify zero inside, then confirm the negative fixture remains after rollback.",
+            "Explain why foreign-key integrity does not imply existence of a qualifying Environment.",
+            "Specify both API mutation routes that must enforce the rule and record negative test outcomes."
+        ],
+        "knowledgeCheck": "Why does a valid Environment.service_id FK permit a production-stage Service without a production Environment? How could a concurrent last-Environment deletion invalidate a previously checked transition?"
+    },
+    {
         "id": "transactions-acid",
         "title": "Transactions and ACID",
         "introduction": "The Steward schema now contains a Service and its production Environment in two related tables. Writing those facts with two unrelated autocommit statements can leave a half-created Service if the second write fails. A transaction is the database-controlled boundary that lets related writes become visible together or be abandoned together. We will observe that behavior in PostgreSQL before asking what happens when *two* transactions run concurrently; that is the separate next lesson.",
