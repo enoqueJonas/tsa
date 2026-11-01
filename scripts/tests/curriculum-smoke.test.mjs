@@ -56,6 +56,10 @@ test("Builder Software Craft executable lessons preserve behavior, reject invali
   runAudit("scripts/check-builder-craft-teaching-examples.mjs", /Builder craft examples passed:/);
 });
 
+test("Builder curriculum preserves Python, Web, Django and security domain continuity with executable examples", () => {
+  runAudit("scripts/check-builder-domain-continuity.mjs", /Builder school continuity passed:/);
+});
+
 test("Java dependency-injection lesson executes and matches published output", () => {
   runAudit("scripts/check-java-teaching-examples.mjs", /Java learner-example validation passed:/);
 });
