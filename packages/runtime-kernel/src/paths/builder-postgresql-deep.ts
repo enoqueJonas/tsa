@@ -1081,130 +1081,512 @@ const specs: DataLessonSpec[] = [
         "knowledgeCheck": "Why can A at Read Committed see different committed values without ever seeing dirty data? What event establishes PostgreSQL's Repeatable Read snapshot? Can two Repeatable Read transactions still cause serialization anomalies, and what must a client retry on SQLSTATE 40001?"
     },
     {
-        id: "constraints-keys",
-        title: "Constraints, Keys and Relationships",
-        introduction: "Constraints turn assumptions into executable rules. If Steward says a service slug is unique or a dependency cannot reference missing services, the database should protect those facts where possible.",
-        outcomes: ["Use PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT NULL and CHECK.", "Choose constraints based on invariants.", "Understand referential actions.", "Avoid relying only on application validation for durable rules."],
-        sections: [
-            { id: "invariants", title: "Encode invariants close to the data", body: "Application checks can race or be bypassed by another writer. Database constraints provide a shared line of defense. Evolve the existing fixture rather than trying to CREATE service a second time. The following staged slug addition assumes every existing service has a unique name-derived slug; inspect collisions before enforcing uniqueness.", code: "ALTER TABLE service ADD COLUMN slug text;\n\n-- Backfill before adding NOT NULL and UNIQUE; inspect duplicates first.\nUPDATE service SET slug = lower(replace(name, ' ', '-'));\nALTER TABLE service ALTER COLUMN slug SET NOT NULL;\nALTER TABLE service ADD CONSTRAINT uq_service_slug UNIQUE (slug);" },
-            { id: "dependency-uniqueness", title: "Relationship constraints matter too", body: "The preceding seed already declares a composite UNIQUE and a self-edge CHECK. Inspect those existing constraints, then test that a duplicate or self-dependency is rejected; do not ADD duplicate definitions." , code: "SELECT conname, pg_get_constraintdef(oid)\nFROM pg_constraint\nWHERE conrelid = 'service_dependency'::regclass\nORDER BY conname;\n\n-- The seed schema already declares UNIQUE(source, target) and a self-edge CHECK." },
-            { id: "key-kinds", title: "Primary, natural, surrogate and composite keys answer different questions", body: "A primary key is the table's chosen row identity and is unique/non-null. A natural key comes from domain data, such as a genuinely stable external identifier. A surrogate key is generated for database identity, such as bigint identity or UUID. A composite key uses multiple columns. Surrogate identity does not remove the need for UNIQUE constraints on domain facts that must also be unique." },
-            { id: "fk-actions", title: "Foreign-key actions define lifecycle coupling", body: "ON DELETE/UPDATE actions such as RESTRICT/NO ACTION, CASCADE and SET NULL determine what PostgreSQL does when referenced identity changes or disappears. Choose them from domain lifecycle: deleting a Team should not silently delete all active Services merely because CASCADE is convenient.", code: "owning_team_id bigint NOT NULL\n  REFERENCES team(id) ON DELETE RESTRICT" },
-            { id: "check-boundary", title: "Constraints are powerful but not every rule fits one row", body: "NOT NULL, UNIQUE, CHECK and FOREIGN KEY cover many durable invariants. Rules involving aggregates, complex cross-row lifecycle state or external systems may require transactions, application/domain logic or other database mechanisms. Put a rule at the lowest shared layer that can enforce it correctly without creating an opaque design." },
+        "id": "constraints-keys",
+        "title": "Constraints, Keys and Relationships",
+        "introduction": "A database is useful partly because a rule can survive multiple clients. What does it mean to make an invariant executable rather than put it in a comment? We will inspect existing Steward constraints, predict four real constraint failures, then evolve the schema with one explicit, reversible example. This builds on the SQL fixture; do not recreate its tables.",
+        "outcomes": [
+            "Explain PRIMARY KEY, UNIQUE, NOT NULL, CHECK and FOREIGN KEY by the condition each prevents.",
+            "Observe a rejected direct SQL write even when no API or Django validation runs.",
+            "Distinguish row identity, domain uniqueness, relationship lifecycle and multi-row business policy.",
+            "Add a new constraint safely after checking the existing rows."
         ],
-        assignment: ["List Steward invariants that belong in the database.", "Inspect the CHECK and composite UNIQUE already enforced in the seed; add and validate a new slug uniqueness rule.", "Attempt invalid writes and capture the failures."],
-        resources: [postgresDocs],
-        practiceObjective: "Move important Steward assumptions into enforceable PostgreSQL constraints.",
-        practiceInstructions: ["Add unique service slug enforcement.", "Add allowed criticality values.", "Protect service dependencies from duplicates and self-reference.", "Attempt each invalid case and record the database response."],
-        knowledgeCheck: "1. Why can an application-only uniqueness check race?\n2. What is a composite unique constraint?\n3. Which kinds of rules are difficult to express as simple database constraints?",
+        "sections": [
+            {
+                "id": "model",
+                "title": "From domain statement to machine-enforced invariant",
+                "body": "A primary key identifies a row and prohibits NULL/duplicates. A separate UNIQUE constraint protects a domain fact such as Service.name, even if an identity id already exists. NOT NULL forbids absent values; CHECK evaluates a Boolean expression on each row (in PostgreSQL CHECK does not reject UNKNOWN, so add NOT NULL when NULL is not valid). A FOREIGN KEY connects child references to parent identities and controls orphan records. The fixture already declares Team.name UNIQUE, Service.name UNIQUE, Service.owning_team_id REFERENCES Team, Environment.kind CHECK, ServiceDependency edge UNIQUE and no-self-dependency CHECK. These are *different* promises and the database—not a DRF serializer—rejects violating statements."
+            },
+            {
+                "id": "inspect",
+                "title": "Discover the constraints that actually exist",
+                "body": "A design diagram is not proof of deployed constraints. Query pg_constraint with pg_get_constraintdef to view PostgreSQL's actual definitions for the four real fixture tables. Distinguish constraint names from SQLSTATE or the user-visible wording; avoid tests depending on automatically generated names. The result includes table-specific primary and uniqueness constraints, foreign keys and checks. A logical meaning belongs in your documentation; the database catalog is the runtime evidence.",
+                "caption": "constraints_inspect.sql — inspect actual deployed integrity rules",
+                "code": "SELECT conrelid::regclass::text AS relation, contype, pg_get_constraintdef(oid) AS rule\nFROM pg_constraint\nWHERE conrelid IN ('team'::regclass,'service'::regclass,'environment'::regclass,'service_dependency'::regclass)\nORDER BY relation, contype, rule;"
+            },
+            {
+                "id": "failures",
+                "title": "Prove constraint enforcement without breaking the fixture",
+                "body": "Run the following statements *one by one* in a psql script with \\set ON_ERROR_STOP off only during the intentional failures, then restore it. A duplicate Team name violates UNIQUE; an orphan Service owner violates FK; an invalid Environment.kind violates CHECK; a self-referential dependency violates CHECK. In each case PostgreSQL should reject the statement and preserve the original seed. A failed statement in a standalone autocommit context does not abort subsequent standalone statements, but inside BEGIN you must ROLLBACK or roll back to a savepoint as taught previously.",
+                "caption": "constraints_failures.sql — four isolated invalid inserts",
+                "code": "INSERT INTO team(name) VALUES ('Payments');\nINSERT INTO service(name, owning_team_id, endpoint)\nVALUES ('Orphan Demo', -1, 'https://orphan.example.invalid');\nINSERT INTO environment(service_id,name,kind)\nSELECT id,'Bad','unknown' FROM service WHERE name='Payments API';\nINSERT INTO service_dependency(source_service_id,target_service_id)\nSELECT id,id FROM service WHERE name='Payments API';"
+            },
+            {
+                "id": "evolve",
+                "title": "Evolve an existing table rather than recreate it",
+                "body": "Add a slug in a transaction. First inspect collisions of the proposed name-derived slug; then add a nullable column, backfill, enforce NOT NULL and UNIQUE, verify lookup, and ROLLBACK this teaching experiment to leave the fixture unchanged. In a production migration a long-running backfill and constraint/locking strategy may require multiple deployable steps; the small transactional demo is not a deployment plan. The special value identity remains the surrogate row key, while slug is an additional public uniqueness rule.",
+                "caption": "constraints_slug.sql — reversible uniqueness evolution",
+                "code": "BEGIN;\nSELECT lower(replace(name,' ','-')) AS candidate, count(*)\nFROM service GROUP BY candidate HAVING count(*) > 1;\nALTER TABLE service ADD COLUMN slug text;\nUPDATE service SET slug = lower(replace(name,' ','-'));\nALTER TABLE service ALTER COLUMN slug SET NOT NULL;\nALTER TABLE service ADD CONSTRAINT uq_service_slug UNIQUE(slug);\nSELECT name,slug FROM service ORDER BY name;\nROLLBACK;",
+                "output": "Collision query: zero rows; five Service name/slug pairs; after ROLLBACK the slug column does not exist."
+            },
+            {
+                "id": "lifecycle",
+                "title": "FOREIGN KEY actions are domain policy, not convenience",
+                "body": "NO ACTION is PostgreSQL's default referential action and can be deferred when declared DEFERRABLE; RESTRICT refuses a referenced change immediately. CASCADE propagates deletion to children and SET NULL clears references when permitted. Deleting a Team should not silently delete banking/registry Services just because CASCADE is easier to type. The fixture's non-nullable ownership reference prevents orphaning Services. Ask which object owns the lifecycle before choosing any delete action. A CHECK generally cannot enforce the business rule 'all newly active Services require production Environment' across two tables; use controlled transactions and application/domain policy."
+            }
+        ],
+        "assignment": [
+            "Run the deployed-constraints catalog query and explain at least one rule for each table.",
+            "Execute four negative statements in disposable autocommit mode and record the different constraint failures and unchanged row count.",
+            "Execute the staged slug transaction and prove that ROLLBACK removes both data and schema changes.",
+            "Explain why a Team deletion should not CASCADE onto Services without explicit domain approval."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL — Constraints",
+                "url": "https://www.postgresql.org/docs/current/ddl-constraints.html",
+                "kind": "reference",
+                "purpose": "Correct NULL CHECK, foreign-key, uniqueness and deferability semantics"
+            },
+            {
+                "title": "PostgreSQL — ALTER TABLE",
+                "url": "https://www.postgresql.org/docs/current/ddl-alter.html",
+                "kind": "reference",
+                "purpose": "Schema changes as explicit tracked operations"
+            }
+        ],
+        "practiceObjective": "Explain PRIMARY KEY, UNIQUE, NOT NULL, CHECK and FOREIGN KEY by the condition each prevents.",
+        "practiceInstructions": [
+            "Run the deployed-constraints catalog query and explain at least one rule for each table.",
+            "Execute four negative statements in disposable autocommit mode and record the different constraint failures and unchanged row count.",
+            "Execute the staged slug transaction and prove that ROLLBACK removes both data and schema changes.",
+            "Explain why a Team deletion should not CASCADE onto Services without explicit domain approval."
+        ],
+        "knowledgeCheck": "Why does CHECK (x > 0) accept NULL unless NOT NULL also exists? Why is a PRIMARY KEY not sufficient for all domain uniqueness? What difference does a FOREIGN KEY enforce versus an application precheck?",
+        "warning": "Only execute changing SQL in a dedicated disposable PostgreSQL learning database. Predict the resulting rows and constraints before running a statement, and do not treat a five-row fixture as representative performance evidence."
     },
     {
-        id: "schema-design",
-        title: "Schema Design",
-        introduction: "Schema design translates domain meaning into tables, columns, relationships and constraints that can survive changing queries and application code. Good schema design begins with facts and invariants, not framework convenience.",
-        outcomes: ["Derive tables from domain facts.", "Choose data types intentionally.", "Model cardinality explicitly.", "Separate durable domain data from presentation concerns."],
-        sections: [
-            { id: "design-sequence", title: "A useful design sequence", body: "Start with the questions the system must answer, identify facts and identities, define relationships and cardinalities, encode invariants, then test the model using representative queries and changes." },
-            { id: "service-review", title: "Model reviews as facts with their own lifecycle", body: "A ServiceReview should not be a handful of columns repeatedly overwritten on Service if historical reviews matter. A separate relation can preserve review time, reviewer and result." },
-            { id: "cardinality-optionality", title: "Cardinality and optionality become constraints", body: "For every relationship ask both how many and whether absence is allowed: one Team owns many Services; each Service must have exactly one owning Team; a Service can have zero or many Environments. Foreign keys, NOT NULL and uniqueness constraints translate those decisions into enforceable structure." },
-            { id: "time-and-history", title: "Current state and history are different models", body: "A lifecycle column answers current state. A separate review/event/history relation answers how state evolved. Do not add history tables automatically, but if the product must answer 'who reviewed this service last quarter?', overwriting the current row cannot preserve that fact." },
-            { id: "naming-defaults", title: "Names and defaults become long-lived interfaces", body: "Use consistent singular/plural and identifier conventions across tables/columns. Defaults should represent a legitimate domain default, not merely save typing. A default that silently invents ownership, lifecycle or security-sensitive state can hide missing input." },
+        "id": "schema-design",
+        "title": "Schema Design",
+        "introduction": "A schema is a model of durable facts and the questions an application must answer—not an arbitrary mapping from screen fields to database columns. Steward's initial four-table fixture intentionally excludes Membership and ServiceReview history. We will make those missing concepts explicit, determine their cardinalities and show why overwriting one column destroys historical evidence.",
+        "outcomes": [
+            "Derive relations and keys from independently evolving domain facts.",
+            "Use one-to-many and many-to-many cardinalities to choose appropriate foreign keys and unique pairs.",
+            "Distinguish current-state columns from append-only review history.",
+            "Construct and query a temporary schema extension with justified nullability and access boundaries."
         ],
-        assignment: ["Write five questions Steward must answer.", "Map each question to relations and keys.", "Review whether every stored field represents a durable fact rather than UI convenience."],
-        resources: [postgresDocs],
-        practiceObjective: "Produce and defend a coherent PostgreSQL schema for the full Builder-level Steward domain.",
-        practiceInstructions: ["Include Team, Membership, Service, Environment, ServiceDependency and ServiceReview.", "Annotate cardinalities and delete/update implications.", "Add key constraints.", "Test the design against at least five registry questions and two change scenarios."],
-        knowledgeCheck: "1. Why should queries influence schema review without dictating every table shape?\n2. When does a concept deserve its own table?\n3. Why are data types part of domain modeling?",
+        "sections": [
+            {
+                "id": "facts",
+                "title": "Start with five questions, not CREATE TABLE syntax",
+                "body": "What Teams own Services? Which Services depend on Identity API? Where is a Service deployed? Who can maintain the owning Team? Who reviewed the Service last quarter? The existing Team/Service/Environment/Dependency tables answer the first three questions. The last two require distinct facts with their own lifetimes: TeamMembership (person, team, role, active state) and ServiceReview (service, reviewer, review result, timestamp). Neither is merely an array of display labels on the Service row. A user may belong to several teams; a Service may receive multiple reviews over time."
+            },
+            {
+                "id": "cardinality",
+                "title": "Translate each business statement into a key rule",
+                "body": "Each Service must have exactly one owning Team: owning_team_id NOT NULL REFERENCES team(id). Each Team can own zero or many Services: no Team-side Service column is needed. A membership needs one Team and one subject; UNIQUE(team_id, subject) protects one current membership per pair in this simplified model. A review has one Service and a historical event timestamp; multiple reviews are valid, so UNIQUE(service_id) would be wrong. A review's id provides stable event identity even if two reviews happen at the same second. These are teaching assumptions: in a regulated system, retention, PII, reviewer identity and historical membership changes need explicit policy."
+            },
+            {
+                "id": "executable",
+                "title": "Create two additional facts in session-limited tables",
+                "body": "The following TEMP relations let you explore membership and review history without redefining the existing permanent schema. PostgreSQL foreign keys in these TEMP tables may reference the existing permanent Team/Service tables. Insert sample records tied to Team/Service identities, not guessed numeric IDs, then query the history. Closing the session drops both TEMP tables. Use pseudonymous subjects only; do not create user credentials in a plain text column.",
+                "caption": "schema_extension.sql — disposable memberships and historical reviews",
+                "code": "CREATE TEMP TABLE team_membership (\n  team_id bigint NOT NULL REFERENCES team(id),\n  subject text NOT NULL,\n  role text NOT NULL CHECK(role IN ('viewer','maintainer')),\n  PRIMARY KEY(team_id,subject)\n);\nCREATE TEMP TABLE service_review (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  service_id bigint NOT NULL REFERENCES service(id),\n  reviewer text NOT NULL,\n  verdict text NOT NULL CHECK(verdict IN ('pass','followup')),\n  reviewed_at timestamptz NOT NULL\n);\nINSERT INTO team_membership(team_id,subject,role)\nSELECT id,'demo-reviewer','maintainer' FROM team WHERE name='Payments';\nINSERT INTO service_review(service_id,reviewer,verdict,reviewed_at)\nSELECT id,'demo-reviewer','followup','2026-01-10T10:00:00Z' FROM service WHERE name='Payments API';\nINSERT INTO service_review(service_id,reviewer,verdict,reviewed_at)\nSELECT id,'demo-reviewer','pass','2026-02-10T10:00:00Z' FROM service WHERE name='Payments API';\nSELECT verdict FROM service_review ORDER BY reviewed_at;",
+                "output": "followup; pass. Both review facts remain observable in the same session."
+            },
+            {
+                "id": "history",
+                "title": "Current status and an event stream answer different questions",
+                "body": "A Service.current_verdict column could answer 'what is the most recent verdict?' but overwriting it cannot answer 'what was the previous verdict?' or 'who changed it?'. An append-only review relation preserves those separate events; a current view can be derived using ORDER BY reviewed_at DESC, id DESC LIMIT 1. An audit trail also needs a policy for corrections, integrity, retention and access control; simply adding timestamps does not make it tamper-proof. Decide whether reviewers should be referenced by a user identity table rather than free text when building the real domain."
+            },
+            {
+                "id": "tradeoffs",
+                "title": "Data types and defaults are engineering policy",
+                "body": "Use timestamptz for instants whose timezone matters; plain timestamp is a wall-clock value without timezone. Use text CHECK for small fixed values in an exercise, but consider how new statuses and backward-compatible migrations are handled. Do not silently default a missing reviewer to an administrative identity, or a missing ownership to a random Team. Use NULL only when absence is legitimate and clearly named. Decide ON DELETE behavior from the lifecycle of each fact, not from a generic ORM default."
+            }
+        ],
+        "assignment": [
+            "Write a question-to-relation trace for all six Steward entities.",
+            "Execute the two TEMP relations and query historical revisions in one psql session.",
+            "Prove why UNIQUE(service_id) is wrong for ServiceReview and why the TeamMembership primary key is composite.",
+            "Produce a schema decision note covering cardinality, data types, deletion and history retention."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL — Table Basics",
+                "url": "https://www.postgresql.org/docs/current/ddl-basics.html",
+                "kind": "reference",
+                "purpose": "Persistent data types and relational tables"
+            },
+            {
+                "title": "PostgreSQL — Constraints",
+                "url": "https://www.postgresql.org/docs/current/ddl-constraints.html",
+                "kind": "reference",
+                "purpose": "Cardinality and key enforcement"
+            }
+        ],
+        "practiceObjective": "Derive relations and keys from independently evolving domain facts.",
+        "practiceInstructions": [
+            "Write a question-to-relation trace for all six Steward entities.",
+            "Execute the two TEMP relations and query historical revisions in one psql session.",
+            "Prove why UNIQUE(service_id) is wrong for ServiceReview and why the TeamMembership primary key is composite.",
+            "Produce a schema decision note covering cardinality, data types, deletion and history retention."
+        ],
+        "knowledgeCheck": "Why can two reviews for one Service be legitimate while two current memberships for the same subject/team may not? What would be lost by storing only current_verdict?",
+        "warning": "Only execute changing SQL in a dedicated disposable PostgreSQL learning database. Predict the resulting rows and constraints before running a statement, and do not treat a five-row fixture as representative performance evidence."
     },
     {
-        id: "normalization",
-        title: "Normalization and Denormalization Trade-offs",
-        introduction: "Normalization reduces duplicated facts and update anomalies. Denormalization intentionally duplicates or precomputes data to serve a proven need. The engineering skill is knowing which problem you are solving and which consistency cost you are accepting.",
-        outcomes: ["Explain update, insertion and deletion anomalies.", "Recognize basic normalization problems.", "Distinguish derived data from authoritative facts.", "Justify denormalization with evidence."],
-        sections: [
-            { id: "anomalies", title: "Duplicated facts create anomalies", body: "If every Service row stores owning_team_name, renaming a team requires many coordinated updates. A missed row creates two competing truths. A foreign key to Team avoids that anomaly." },
-            { id: "denormalization", title: "Denormalize deliberately", body: "A cached dependency_count may improve a proven hot path, but then you own synchronization and stale-data behavior. Measure first; do not preemptively copy facts everywhere." },
-            { id: "normal-forms", title: "Use normal forms as anomaly tests, not ceremony", body: "At a practical level, first normal form asks for scalar/relationally structured values rather than repeating groups in one column. Second normal form matters when a composite key exists: non-key facts should depend on the whole key. Third normal form pushes you to remove non-key facts that actually depend on another non-key fact. The goal is one authoritative home for each fact, not reciting form numbers." },
-            { id: "example-normalize", title: "Normalize by following functional dependency", body: "If Service stores owning_team_id and owning_team_name, the team name depends on Team identity rather than Service identity. Put the name on Team and reference Team from Service. If a dependency relation's key is (source_service_id, target_service_id), facts about the source Service itself do not belong duplicated on that edge." },
+        "id": "normalization",
+        "title": "Normalization and Denormalization Trade-offs",
+        "introduction": "Normalization is not a contest to remove every repeated string. It is the discipline of giving a durable fact one authoritative home so that changes cannot create contradictory truths. Work through a failed ownership design, identify its functional dependency, and then prove the normalized model handles the same question without repeating Team names.",
+        "outcomes": [
+            "Demonstrate an actual update anomaly in a deliberately flawed representation.",
+            "Use functional dependency to distinguish key ownership from another table's facts.",
+            "Explain practical 1NF, 2NF and 3NF without applying them as slogans.",
+            "Justify denormalization only with a measured query and an explicit consistency owner."
         ],
-        warning: "Do not use 'performance' as a generic reason to denormalize before measuring a real query and considering indexes or better access patterns.",
-        assignment: ["Find one duplicated fact in a deliberately bad Steward schema.", "Describe its update anomaly.", "Propose one hypothetical denormalization and document the consistency mechanism it would require."],
-        resources: [postgresDocs],
-        practiceObjective: "Normalize a flawed Steward schema and evaluate one evidence-based denormalization scenario.",
-        practiceInstructions: ["Create or inspect a schema with duplicated ownership/environment facts.", "Refactor it into authoritative relations.", "Demonstrate how one update becomes safer.", "Write a short decision note for or against one denormalized field."],
-        knowledgeCheck: "1. What is an update anomaly?\n2. Why is denormalization not automatically bad?\n3. What evidence should exist before adding duplicated derived data?",
+        "sections": [
+            {
+                "id": "failure",
+                "title": "A Team rename should be one fact, not a distributed update",
+                "body": "A flawed service row stores both owning_team_id and owning_team_name. Two Services with the same owning_team_id can accidentally have different names after a partial rename. The actual Team.name is the authoritative fact and service.owning_team_id is the reference. On a multi-user system, enforcing rename synchronization manually across all Service rows is brittle; a single Team row makes the update coherent. This is an **update anomaly**, not a PostgreSQL software defect."
+            },
+            {
+                "id": "demo",
+                "title": "Make an anomaly observable without damaging the fixture",
+                "body": "Use a TEMP table for the deliberately bad model and two Services under the same Team. Rename only one record. PostgreSQL allows the two contradictory names because there is no rule tying the duplicate text to a shared Team row. Compare that with the real JOIN, which gets Team.name from one authoritative row. Closing psql clears the broken example. For a fair comparison, ask what happens if a Team is renamed and whether the Service domain still knows the correct identity.",
+                "caption": "normalization_anomaly.sql — two competing team names in one duplicated column",
+                "code": "CREATE TEMP TABLE bad_service(\n  service text PRIMARY KEY,\n  owning_team_id integer NOT NULL,\n  owning_team_name text NOT NULL\n);\nINSERT INTO bad_service VALUES\n('Payments API',1,'Payments'),('Payroll API',1,'Payments');\nUPDATE bad_service SET owning_team_name='Payments Division'\nWHERE service='Payments API';\nSELECT service,owning_team_name FROM bad_service ORDER BY service;",
+                "output": "Payments API | Payments Division; Payroll API | Payments. The same team identity now has two names."
+            },
+            {
+                "id": "dependencies",
+                "title": "Functional dependencies explain why the anomaly exists",
+                "body": "Under the Steward domain, Team.id → Team.name: one Team identity determines one Team name. Service.id → Service.owning_team_id: one Service identity determines its owning Team. If Service also stores Team.name, Service.id → Team.id → Team.name creates an indirect, duplicated fact. Third Normal Form asks you to move that non-key fact to the relation whose key actually determines it. In a relation with composite key (source_service_id, target_service_id), a fact determined by only source_service_id belongs to Service, not the dependency edge; that is the kind of partial dependency 2NF prevents. 1NF is about well-defined relational attribute values and avoiding repeating groups, not a ban on JSON types in all PostgreSQL designs."
+            },
+            {
+                "id": "alternate",
+                "title": "Denormalization can be rational but carries a maintenance contract",
+                "body": "A materialized dependency_count or Team name snapshot can avoid repeated joins for a proven heavy read workload. But who updates it when dependencies change? What happens between the authoritative update and the cached snapshot update? How stale may an operational dashboard be? If the business requires exact current counts, a stale cache can be worse than a slower query. First compare actual plans and representative data volume; then choose caching, indexed query, materialized view or denormalized column based on measured latency and the tolerable consistency window."
+            },
+            {
+                "id": "transfer",
+                "title": "Independent redesign exercise",
+                "body": "Consider a Service record containing [environment_1_name, environment_2_name] and dependencies as a comma-separated string. Determine which concepts need child relations to support arbitrary cardinality, foreign-key checks and joins. Then argue whether storing a historical display snapshot of a Team name on an audit event is acceptable even though current ownership should not duplicate it. Historical snapshots deliberately answer a different question from normalized current state; avoid absolutist rules."
+            }
+        ],
+        "assignment": [
+            "Run the exact TEMP anomaly example and identify the two competing names.",
+            "Trace functional dependencies for Team, Service and ServiceDependency.",
+            "Redesign the flawed model using a Team foreign key and query the authoritative name.",
+            "Write a denormalization decision record identifying latency evidence, synchronization mechanism and permitted staleness."
+        ],
+        "resources": [
+            {
+                "title": "CMU Database Systems — Relational Design and Normal Forms",
+                "url": "https://15445.courses.cs.cmu.edu/fall2025/schedule.html",
+                "kind": "reference",
+                "purpose": "Academic depth for functional dependencies and logical schema design"
+            },
+            {
+                "title": "PostgreSQL — Data Definition",
+                "url": "https://www.postgresql.org/docs/current/ddl.html",
+                "kind": "reference",
+                "purpose": "Separate tables, keys and relational facts"
+            }
+        ],
+        "practiceObjective": "Demonstrate an actual update anomaly in a deliberately flawed representation.",
+        "practiceInstructions": [
+            "Run the exact TEMP anomaly example and identify the two competing names.",
+            "Trace functional dependencies for Team, Service and ServiceDependency.",
+            "Redesign the flawed model using a Team foreign key and query the authoritative name.",
+            "Write a denormalization decision record identifying latency evidence, synchronization mechanism and permitted staleness."
+        ],
+        "knowledgeCheck": "What makes a duplicated fact an update anomaly? How does a partial-key dependency differ from a transitive dependency? When is a deliberately frozen historical name legitimate?",
+        "warning": "Only execute changing SQL in a dedicated disposable PostgreSQL learning database. Predict the resulting rows and constraints before running a statement, and do not treat a five-row fixture as representative performance evidence."
     },
     {
-        id: "indexes",
-        title: "Indexes",
-        introduction: "Indexes are additional data structures that trade storage and write cost for faster access paths. Adding one is an optimization decision tied to real predicates, joins and ordering patterns—not a badge of database sophistication.",
-        outcomes: ["Explain the purpose and cost of an index.", "Choose index columns from access patterns.", "Understand composite index ordering at a practical level.", "Use EXPLAIN to verify whether an index participates."],
-        sections: [
-            { id: "access-path", title: "Indexes create alternative access paths", body: "A sequential scan reads table pages broadly. An index may let PostgreSQL locate a small subset efficiently. For small tables a sequential scan can still be cheaper, so 'index exists' does not imply 'index should be used'.", code: "CREATE INDEX idx_service_lifecycle_criticality\nON service (lifecycle, criticality);\n\nEXPLAIN ANALYZE\nSELECT id, name\nFROM service\nWHERE lifecycle = 'active'\n  AND criticality = 'critical';" },
-            { id: "write-cost", title: "Every index has a write cost", body: "INSERT, UPDATE and DELETE may also maintain indexes. Unused indexes consume space and increase write work, so treat them as production assets that require justification." },
-            { id: "btree", title: "B-tree is the ordinary default, not the only index family", body: "PostgreSQL B-tree indexes support common equality/range/order access patterns and are the default CREATE INDEX method. PostgreSQL also provides index methods such as GIN, GiST, SP-GiST, BRIN and hash for different data/operator patterns. Builder should master B-tree reasoning first and research another method only when the data/operator requirement earns it." },
-            { id: "composite-prefix", title: "Composite indexes are ordered structures", body: "For a B-tree index on (lifecycle, criticality), predicates constraining the leading lifecycle column usually make the index broadly useful; a query only on criticality may not benefit in the same way. Column order should come from actual predicates, equality/range behavior and ordering requirements—not from whichever field sounds most important." },
-            { id: "selectivity", title: "Selectivity influences whether an index is worthwhile", body: "An index is most compelling when it can avoid reading much of the table. A boolean column with roughly half the table matching may be a poor standalone index target, while a selective slug lookup is different. PostgreSQL's planner combines statistics, estimated rows and I/O/CPU costs rather than applying an 'index always faster' rule." },
-            { id: "unique-index", title: "Uniqueness and indexing are related but different intents", body: "PostgreSQL implements UNIQUE constraints using unique indexes, but declare a domain uniqueness rule as a constraint when that is the meaning. Create a plain index when the intent is access performance. This keeps schema intent readable." },
+        "id": "indexes",
+        "title": "Indexes",
+        "introduction": "Why not put an index on every column? An index is an additional physical structure maintained during writes to let PostgreSQL locate or order selected rows efficiently. First prove that the planner can choose not to use an available index on a small table, then build a larger disposable table to observe scan behavior and describe the B-tree's trade-offs. This lesson is about evidence, not promising faster queries.",
+        "outcomes": [
+            "Distinguish heap/sequential scanning from B-tree index lookup and ordering.",
+            "Measure a candidate index on representative, disposable data and inspect the plan.",
+            "Explain composite ordering, selectivity, write amplification and why unused indexes cost resources.",
+            "Identify UNIQUE constraint enforcement versus ordinary performance indexes."
         ],
-        assignment: ["Identify a Steward query worth indexing.", "Create an index based on its predicate or join.", "Compare plans before and after and explain what changed—or why nothing changed."],
-        resources: [postgresDocs],
-        practiceObjective: "Use evidence to add one useful Steward index instead of indexing by intuition.",
-        practiceInstructions: ["Capture EXPLAIN ANALYZE before the index.", "Create a candidate index.", "Capture the new plan.", "Compare cost, timing and chosen scan type.", "Document the write/storage trade-off."],
-        knowledgeCheck: "1. Why might PostgreSQL ignore an available index?\n2. What cost does an index add to writes?\n3. Why does composite column order matter?",
+        "sections": [
+            {
+                "id": "mechanism",
+                "title": "What an index changes physically",
+                "body": "A B-tree maps ordered key values to locations of matching rows, reducing the need to inspect unrelated heap pages when a query is selective. PostgreSQL usually stores table tuples separately from index entries, so an Index Scan may still fetch heap data. An Index Only Scan is possible only when required columns are available through the index and tuple visibility permits it. A Seq Scan may outperform an index for a tiny table or when a large fraction of rows matches. PostgreSQL's planner estimates costs from statistics, table size, locality and available algorithms."
+            },
+            {
+                "id": "small",
+                "title": "Show why five Service rows cannot prove a speedup",
+                "body": "The canonical Steward fixture contains only five Services. Run EXPLAIN SELECT ... WHERE name='Payments API' and read the reported scan node; it may be an index lookup because Service.name UNIQUE created a unique index, or the optimizer may choose a Seq Scan. Neither means a rule that indexes always/never help. Do not infer a production-scale latency improvement from a tiny microsecond result. Use the next disposable dataset for a meaningful change in row shape and candidate filtering.",
+                "caption": "index_small.sql — inspect an already indexed unique Service name",
+                "code": "EXPLAIN SELECT id,name FROM service WHERE name='Payments API';"
+            },
+            {
+                "id": "lab",
+                "title": "Build a deliberately larger scratch relation",
+                "body": "Generate 15,000 predictable records into a TEMP table with generate_series (PostgreSQL's set-returning series function, introduced here). Start without an index; ANALYZE collects statistics; EXPLAIN (ANALYZE, BUFFERS) records actual plan, row count and buffer behavior. Create a B-tree index on the lookup key, ANALYZE again and compare the plan for a selective exact match. Record whether the planner actually switched methods; performance measurements vary with caching and CI hardware and are not universal. This is scratch data only: TEMP table disappears with its connection.",
+                "caption": "index_lab.sql — compare actual physical plans on 15000 temporary rows",
+                "code": "CREATE TEMP TABLE tsa_index_probe AS\nSELECT n AS id, 'service-' || lpad(n::text,5,'0') AS slug, (n % 4) AS priority\nFROM generate_series(1,15000) AS g(n);\nANALYZE tsa_index_probe;\nEXPLAIN (ANALYZE, BUFFERS)\nSELECT * FROM tsa_index_probe WHERE slug='service-14999';\nCREATE INDEX tsa_probe_slug_idx ON tsa_index_probe(slug);\nANALYZE tsa_index_probe;\nEXPLAIN (ANALYZE, BUFFERS)\nSELECT * FROM tsa_index_probe WHERE slug='service-14999';"
+            },
+            {
+                "id": "composite",
+                "title": "Index order is a property of workload, not naming preference",
+                "body": "A B-tree on (lifecycle, criticality) has ordered entries first by lifecycle, then criticality within each lifecycle. Equality on the leading lifecycle column may help bound the search; criticality alone need not use the same prefix efficiently. PostgreSQL can use various access strategies, including skip scans in applicable versions, so 'never used' is too absolute. Columns used for equality, range, join and ordering—and their selectivity—should drive the choice. For a selective slug lookup, a single-column B-tree is simpler."
+            },
+            {
+                "id": "costs",
+                "title": "Indexes slow some writes and occupy storage",
+                "body": "An INSERT often needs to add entries to every relevant index; UPDATE of indexed values must maintain those entries; DELETE later requires cleanup/vacuum. Unique indexes reject duplicate keys, but declare business uniqueness as a UNIQUE constraint to express domain intent. Do not create a redundant index on an existing primary/unique key without checking catalog definitions. You should be able to justify both the read improvement and the write/storage cost in a short review."
+            }
+        ],
+        "assignment": [
+            "Execute EXPLAIN on the canonical Service fixture and explain why its five rows are inconclusive.",
+            "Run index_lab.sql in one psql session; record pre/post plan nodes, actual row counts and buffer activity.",
+            "Explain which real Service queries benefit from an index on (lifecycle,criticality) versus a unique slug.",
+            "Write a measurable decision: when should the extra index remain or be removed?"
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL — Indexes",
+                "url": "https://www.postgresql.org/docs/current/indexes.html",
+                "kind": "reference",
+                "purpose": "B-tree access, multicolumn index rules and index costs"
+            },
+            {
+                "title": "PostgreSQL — EXPLAIN",
+                "url": "https://www.postgresql.org/docs/current/using-explain.html",
+                "kind": "reference",
+                "purpose": "Plan behavior and cost evidence"
+            },
+            {
+                "title": "CMU 15-445 Fall 2025 — Indexes, Query Planning and Execution",
+                "url": "https://15445.courses.cs.cmu.edu/fall2025/schedule.html",
+                "kind": "course",
+                "read": "Lectures #08–#09 and #13–#15, optional deep dive",
+                "purpose": "Compare B-tree internals and physical query algorithms with declarative SQL; full recordings not claimed watched"
+            }
+        ],
+        "practiceObjective": "Distinguish heap/sequential scanning from B-tree index lookup and ordering.",
+        "practiceInstructions": [
+            "Execute EXPLAIN on the canonical Service fixture and explain why its five rows are inconclusive.",
+            "Run index_lab.sql in one psql session; record pre/post plan nodes, actual row counts and buffer activity.",
+            "Explain which real Service queries benefit from an index on (lifecycle,criticality) versus a unique slug.",
+            "Write a measurable decision: when should the extra index remain or be removed?"
+        ],
+        "knowledgeCheck": "Why might PostgreSQL deliberately use Seq Scan when an index exists? What work does each index add to writes? Why does creating a UNIQUE constraint imply indexing but not all indexes imply uniqueness?",
+        "warning": "Only execute changing SQL in a dedicated disposable PostgreSQL learning database. Predict the resulting rows and constraints before running a statement, and do not treat a five-row fixture as representative performance evidence."
     },
     {
-        id: "query-plans",
-        title: "Query Plans and EXPLAIN",
-        introduction: "EXPLAIN turns performance reasoning from guesswork into evidence. PostgreSQL chooses physical operators—scans, joins, sorts and aggregates—based on estimated cost and statistics. Builder engineers should be able to read the broad story of a plan.",
-        outcomes: ["Run EXPLAIN and EXPLAIN ANALYZE safely.", "Identify scan, join, sort and aggregate nodes.", "Compare estimates with actual rows.", "Use plans to form performance hypotheses."],
-        sections: [
-            { id: "logical-physical", title: "SQL says what; the plan says how", body: "The same logical query can be executed using different physical strategies. A plan tree shows the chosen strategy and estimated work.", code: "EXPLAIN (ANALYZE, BUFFERS)\nSELECT t.name, COUNT(s.id)\nFROM team t\nLEFT JOIN service s ON s.owning_team_id = t.id\nGROUP BY t.id, t.name;" },
-            { id: "estimates", title: "Estimated rows versus actual rows", body: "Large estimation errors can point to stale statistics, skew or correlated predicates. Do not jump straight to adding indexes; first understand where the planner's picture differs from reality." },
-            { id: "plan-reading", title: "Read plans from the leaves toward the result", body: "Plan nodes form a tree. Leaf scans produce rows; joins combine inputs; sorts reorder; aggregate nodes group/compute; upper nodes consume lower output. With ANALYZE, loops × rows per loop matters when estimating how much work a node actually produced." },
-            { id: "scan-types", title: "Scan and join names tell a physical story", body: "Seq Scan reads broadly from the table; Index Scan follows an index and then heap/table tuples as needed; Index Only Scan may satisfy selected data from the index when visibility permits; Bitmap scans can combine/use index matches in batches. Nested Loop, Hash Join and Merge Join are common join strategies chosen for different input shapes and ordering/costs." },
-            { id: "buffers", title: "BUFFERS adds I/O evidence", body: "EXPLAIN (ANALYZE, BUFFERS) reports buffer activity that helps distinguish work served from shared cache versus blocks read, written or dirtied. Timing varies with cache/warm-up and machine load, so interpret one run cautiously and compare under controlled conditions." },
+        "id": "query-plans",
+        "title": "Query Plans and EXPLAIN",
+        "introduction": "SQL expresses which answer you want. PostgreSQL's query planner selects how to produce it: scans, joins, sorts and aggregate operators. EXPLAIN reveals that physical plan, while EXPLAIN ANALYZE executes the query and adds actual observations. The goal is to explain each plan node's role and avoid false performance inferences.",
+        "outcomes": [
+            "Distinguish estimates from measured rows, loops and buffers.",
+            "Read a plan from lower operators through final output.",
+            "Explain when Hash Join, Nested Loop, Sort and Aggregate nodes can appear.",
+            "Use a safe read-only EXPLAIN ANALYZE without changing business data."
         ],
-        warning: "EXPLAIN ANALYZE executes the query. On mutating statements, wrap carefully in a transaction and roll back, or avoid ANALYZE entirely.",
-        assignment: ["Explain a join+aggregate Steward query.", "Identify the major nodes.", "Compare estimated and actual row counts.", "Write one performance hypothesis supported by the plan."],
-        resources: [postgresDocs],
-        practiceObjective: "Read and explain the execution plan of a meaningful Steward query.",
-        practiceInstructions: ["Choose a query with at least one join.", "Run EXPLAIN ANALYZE BUFFERS.", "Annotate scan, join and aggregate nodes.", "Record the largest estimate/actual mismatch.", "Propose one evidence-based next investigation."],
-        knowledgeCheck: "1. What is the difference between EXPLAIN and EXPLAIN ANALYZE?\n2. Why are row-estimate errors interesting?\n3. Why should a slow query not automatically lead to an index?",
+        "sections": [
+            {
+                "id": "physical",
+                "title": "Logical join versus physical implementation",
+                "body": "The previous JOIN lesson taught the set of row pairs returned by ON. PostgreSQL may execute that logical join as a Nested Loop (probe another input per row), a Hash Join (build an in-memory hash table on one side then probe with the other), or a Merge Join (consume sorted inputs). The same query can use different physical plans when table size or statistics change. Do not rewrite correct SQL solely because one tiny sample shows an unfamiliar node."
+            },
+            {
+                "id": "read-plan",
+                "title": "Read the plan from the leaves upward",
+                "body": "Scans produce rows; a Join combines them; Sort orders them; Aggregate/HashAggregate groups and calculates metrics. Plans usually show estimated startup/total cost and estimated rows, then, with ANALYZE, actual times/rows/loops. The actual row count is per loop, so loops matter when estimating total work. With BUFFERS, shared hit/read show buffer-cache activity, not necessarily physical disk writes in a simple one-to-one mapping. Costs are planner units, not milliseconds. The final runtime includes startup, execution and instrumentation factors."
+            },
+            {
+                "id": "run",
+                "title": "Observe a safe join/aggregate plan",
+                "body": "The fixture query below is read-only. It must return Identity 1, Payments 2, Platform 2 independent of the physical join plan. Compare EXPLAIN without ANALYZE and EXPLAIN (ANALYZE, BUFFERS) to see the added evidence; record scan nodes, join type, aggregation node and row estimates. The five-row source is suitable for learning node names, not for judging scalability.",
+                "caption": "explain_join.sql — inspect query plan and correct grouped result",
+                "code": "EXPLAIN (ANALYZE, BUFFERS)\nSELECT t.name, COUNT(s.id) AS n\nFROM team t LEFT JOIN service s ON s.owning_team_id=t.id\nGROUP BY t.id,t.name\nORDER BY t.name;"
+            },
+            {
+                "id": "wrong-fix",
+                "title": "Estimated rows are hypotheses, not guarantees",
+                "body": "PostgreSQL uses statistics to estimate selectivity and result sizes. A bad row estimate may arise from stale statistics, correlated predicates, skew or misleading sample size. ANALYZE updates statistics; it is not the same as EXPLAIN ANALYZE. Before adding an index, inspect predicates, row counts, result width and the data distribution. EXPLAIN ANALYZE on UPDATE/DELETE actually performs the mutation; never run it on live data without an appropriately controlled rollback, and remember even rolled-back changes can cause side effects in some operations."
+            },
+            {
+                "id": "interpret",
+                "title": "Avoid optimizing a synthetic benchmark",
+                "body": "If query A is 0.1ms and B 0.08ms on a CI runner, noise and cache warmth can dominate. Record hardware, PostgreSQL version, data size, parameters, plan and repeated runs. A plan may improve CPU work while increasing storage/write cost, or behave differently with real correlated data. The learner's task is to form a falsifiable performance hypothesis rather than award a trophy to an index after one execution."
+            }
+        ],
+        "assignment": [
+            "Execute explain_join.sql and annotate source scans, join and aggregate nodes.",
+            "Explain planner cost versus actual time and why loops × rows per loop matters.",
+            "Produce an EXPLAIN (non-executing) plan for a different read query.",
+            "Identify one realistic row-estimation hypothesis and design a safe experiment to test it."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL — Using EXPLAIN",
+                "url": "https://www.postgresql.org/docs/current/using-explain.html",
+                "kind": "reference",
+                "purpose": "Planner outputs, timings and scan strategies"
+            },
+            {
+                "title": "CMU 15-445 Fall 2025 — Indexes, Query Planning and Execution",
+                "url": "https://15445.courses.cs.cmu.edu/fall2025/schedule.html",
+                "kind": "course",
+                "read": "Lectures #08–#09 and #13–#15, optional deep dive",
+                "purpose": "Compare B-tree internals and physical query algorithms with declarative SQL; full recordings not claimed watched"
+            }
+        ],
+        "practiceObjective": "Distinguish estimates from measured rows, loops and buffers.",
+        "practiceInstructions": [
+            "Execute explain_join.sql and annotate source scans, join and aggregate nodes.",
+            "Explain planner cost versus actual time and why loops × rows per loop matters.",
+            "Produce an EXPLAIN (non-executing) plan for a different read query.",
+            "Identify one realistic row-estimation hypothesis and design a safe experiment to test it."
+        ],
+        "knowledgeCheck": "What is the difference between EXPLAIN and EXPLAIN ANALYZE? Why is cost not latency? What makes a plan decision credible if a query has a small dataset?",
+        "warning": "Only execute changing SQL in a dedicated disposable PostgreSQL learning database. Predict the resulting rows and constraints before running a statement, and do not treat a five-row fixture as representative performance evidence."
     },
     {
-        id: "query-performance",
-        title: "Query Performance",
-        introduction: "Performance work is an investigation: define the symptom, reproduce it, measure the plan and data shape, change one relevant factor, then compare. SQL style alone rarely explains performance.",
-        outcomes: ["Define a measurable query-performance problem.", "Distinguish latency, throughput and resource use.", "Investigate data volume and selectivity.", "Avoid premature micro-optimization."],
-        sections: [
-            { id: "performance-loop", title: "Use an evidence loop", body: "Start from an observable requirement such as 'service search p95 exceeds 300 ms on representative data'. Capture query, parameters, plan and row counts before changing code." },
-            { id: "levers", title: "Common performance levers", body: "Better predicates, indexes, reduced row width, fewer round trips, better joins, pagination and avoiding N+1 patterns are common levers. The right lever depends on evidence." },
+        "id": "query-performance",
+        "title": "Query Performance",
+        "introduction": "Performance engineering means defining a symptom, creating a representative workload, recording a baseline, changing one factor and retaining only changes justified by evidence. A clever SQL rewrite is not a goal; a measured improvement for an actual use case is.",
+        "outcomes": [
+            "Define p50/p95 latency, throughput and row-volume requirements rather than 'fast'.",
+            "Separate database server time from network and application serialization time.",
+            "Design a controlled before/after comparison including data distribution and warm-up.",
+            "Identify risks of unbounded lists, N+1 requests, OFFSET pagination and premature indexes."
         ],
-        assignment: ["Define one measurable Steward query symptom.", "Capture baseline timing and plan.", "Change one factor and compare.", "Record whether the evidence supports keeping the change."],
-        resources: [postgresDocs],
-        practiceObjective: "Run a small controlled query-performance investigation.",
-        practiceInstructions: ["Generate enough representative data to make the query non-trivial.", "Capture baseline EXPLAIN ANALYZE.", "Apply one change such as an index or query rewrite.", "Re-measure under the same conditions.", "Write a conclusion with limitations."],
-        knowledgeCheck: "1. Why must performance goals be measurable?\n2. What makes a before/after comparison credible?\n3. Name three performance levers other than adding an index.",
+        "sections": [
+            {
+                "id": "goal",
+                "title": "An objective has a workload and a threshold",
+                "body": "'Search p95 ≤ 300ms at 40 requests/s over 100,000 Services' is testable; 'faster SQL' is not. p95 summarizes the slow tail of a latency distribution; throughput describes work completed per unit time. PostgreSQL EXPLAIN ANALYZE measures database execution in a local query, not HTTP end-to-end time, TLS, queueing, DRF serialization or network effects. Define which layer you measured. A query can have good p50 and unacceptable p95 under load."
+            },
+            {
+                "id": "control",
+                "title": "Change one variable at a time",
+                "body": "Seed a representative number of rows with relevant selectivity and skew, run the same query/parameters repeatedly before and after an index or rewritten predicate, and record row counts, plan nodes and median/spread. Avoid changing query, index, hardware and data simultaneously. Cold-cache and warm-cache conditions may differ. A tiny sample with only five Services is inadequate for most optimization conclusions."
+            },
+            {
+                "id": "patterns",
+                "title": "What typical bottlenecks look like",
+                "body": "An unbounded list returns excessive rows and JSON bytes; pagination must define stable ordering and permission filtering. An N+1 Django view can send one query per Service relationship; the remedy is usually fetching related data deliberately, not changing one index. A large OFFSET forces skipping many rows; keyset pagination can help when the ordering keys and consistency semantics are suitable. A wide SELECT * may fetch data that the client never uses. Indexing helps selective predicates, but an index on every field increases write costs."
+            },
+            {
+                "id": "baseline",
+                "title": "A repeatable workload and inspectable result",
+                "body": "Use the 15,000-row scratch fixture from Indexes or establish it in a new psql session. Compare an equality lookup and a low-selectivity priority predicate. Record the before/after EXPLAIN plan and actual row count, but do not claim an SLA based on one local run. Explain whether the query is CPU-bound, scan-heavy or round-trip-bound from evidence rather than guesses.",
+                "caption": "performance_probe.sql — compare selective and broad predicates",
+                "code": "CREATE TEMP TABLE tsa_perf_probe AS\nSELECT n AS id, (n % 4) AS priority, 'svc-' || n::text AS name\nFROM generate_series(1,15000) AS g(n);\nANALYZE tsa_perf_probe;\nEXPLAIN (ANALYZE, BUFFERS) SELECT id FROM tsa_perf_probe WHERE id=14777;\nEXPLAIN (ANALYZE, BUFFERS) SELECT id FROM tsa_perf_probe WHERE priority=1;"
+            },
+            {
+                "id": "decision",
+                "title": "Decide what to keep, and write down uncertainty",
+                "body": "State the observed baseline, intervention, resulting plan and timings, test environment and known limitations. If plans do not change after creating an index, that is valuable evidence: investigate selectivity, table size, ANALYZE statistics and query shape instead of forcing an index. If improving one query slows writes, quantify the cost and decide based on the actual product workload. This is an evidence-backed choice, not a rule that every measured improvement deserves a deployment."
+            }
+        ],
+        "assignment": [
+            "Write a measurable query objective with traffic/data assumptions and acceptance threshold.",
+            "Run the disposable performance_probe.sql and inspect two contrasting plans.",
+            "Choose one candidate index or predicate change, run controlled comparisons and document results and caveats.",
+            "Explain how you would measure HTTP end-to-end p95 separately from database EXPLAIN timing."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL — Performance Tips",
+                "url": "https://www.postgresql.org/docs/current/performance-tips.html",
+                "kind": "reference",
+                "purpose": "Explain, statistics and benchmark limits"
+            },
+            {
+                "title": "PostgreSQL — EXPLAIN",
+                "url": "https://www.postgresql.org/docs/current/using-explain.html",
+                "kind": "reference",
+                "purpose": "Interpretation of actual-versus-estimated query costs"
+            },
+            {
+                "title": "CMU 15-445 Fall 2025 — Indexes, Query Planning and Execution",
+                "url": "https://15445.courses.cs.cmu.edu/fall2025/schedule.html",
+                "kind": "course",
+                "read": "Lectures #08–#09 and #13–#15, optional deep dive",
+                "purpose": "Compare B-tree internals and physical query algorithms with declarative SQL; full recordings not claimed watched"
+            }
+        ],
+        "practiceObjective": "Define p50/p95 latency, throughput and row-volume requirements rather than 'fast'.",
+        "practiceInstructions": [
+            "Write a measurable query objective with traffic/data assumptions and acceptance threshold.",
+            "Run the disposable performance_probe.sql and inspect two contrasting plans.",
+            "Choose one candidate index or predicate change, run controlled comparisons and document results and caveats.",
+            "Explain how you would measure HTTP end-to-end p95 separately from database EXPLAIN timing."
+        ],
+        "knowledgeCheck": "How do database execution time and API request latency differ? Why could a valid index change slow overall throughput? What makes a before/after comparison credible?",
+        "warning": "Only execute changing SQL in a dedicated disposable PostgreSQL learning database. Predict the resulting rows and constraints before running a statement, and do not treat a five-row fixture as representative performance evidence."
     },
     {
-        id: "postgresql-practice",
-        title: "PostgreSQL in Practice",
-        introduction: "Using PostgreSQL professionally includes more than SQL syntax. Connections, roles, schemas, backups, extensions and operational visibility shape whether an application can be run safely. Builder introduces these concepts before later platform and reliability schools go deeper.",
-        outcomes: ["Navigate psql and inspect database objects.", "Explain databases, schemas and roles.", "Use least-privilege application credentials conceptually.", "Recognize basic operational commands and metadata."],
-        sections: [
-            { id: "psql", title: "Interrogate the database directly", body: "Use psql to inspect tables, constraints, indexes and active connections. Direct database literacy helps separate application bugs from data or schema facts." },
-            { id: "roles", title: "Application roles should be deliberate", body: "The application should not normally connect as a PostgreSQL superuser. Database privileges are another boundary that limits blast radius." },
-            { id: "psql-toolkit", title: "A small psql vocabulary makes the database inspectable", body: "Useful psql meta-commands include \\l to list databases, \\c to connect, \\dn to list schemas, \\dt to list tables, \\d table_name to describe a relation, \\du to inspect roles and \\q to exit. Meta-commands are psql client commands, not SQL sent to PostgreSQL.", language: "text", code: "\\l\n\\c tsa_steward_lab\n\\dn\n\\dt\n\\d service\n\\du" },
-            { id: "connection", title: "A connection identifies server, database and role", body: "A PostgreSQL connection commonly needs host, port, database and user/role plus an authentication method/credential. PostgreSQL's conventional port is 5432, but configuration may differ. A successful network connection does not imply the role has permission to use every schema/table." },
-            { id: "privileges", title: "Privileges should match application operations", body: "Roles can receive privileges such as CONNECT on a database, USAGE on a schema and SELECT/INSERT/UPDATE/DELETE on selected tables/sequences as required. Ownership and superuser powers are broader than ordinary application access. Later Security work hardens this further; Builder should at least stop treating 'database login' as all-or-nothing access." },
-            { id: "metadata", title: "System catalogs and information_schema expose metadata", body: "psql convenience commands ultimately inspect PostgreSQL metadata. information_schema provides standardized views for many schema facts while pg_catalog exposes PostgreSQL-specific details. Knowing metadata exists helps you verify constraints/indexes programmatically rather than relying only on GUI views." },
+        "id": "postgresql-practice",
+        "title": "PostgreSQL in Practice",
+        "introduction": "The database is a server with roles, connections, schemas and maintenance responsibilities. A local exercise may function when connected as the owner, yet fail when an application role lacks SELECT or a table exists in another schema. Learn to inspect effective identity, privileges and running sessions before assuming an ORM or PostgreSQL server has broken.",
+        "outcomes": [
+            "Inspect connection, current database, role, search path, visible tables and constraints.",
+            "Distinguish a role that owns schema objects from a narrowly privileged application role.",
+            "Use psql introspection and SQL metadata to diagnose failures without exposing credentials.",
+            "Explain which backups and restore tests must be owned by operations and reliability work."
         ],
-        assignment: ["Connect to the Steward database with psql.", "Inspect tables, indexes and constraints.", "Describe the privileges the application role actually needs."],
-        resources: [postgresDocs],
-        practiceObjective: "Operate a local Steward PostgreSQL database without depending entirely on Django tooling.",
-        practiceInstructions: ["Connect with psql.", "List relations and describe the service table.", "Inspect indexes and constraints using PostgreSQL metadata or psql commands.", "Create or document a non-superuser application role approach."],
-        knowledgeCheck: "1. Why is direct psql literacy useful even when using an ORM?\n2. Why should an app avoid superuser credentials?\n3. What is the distinction between a PostgreSQL database and schema?",
+        "sections": [
+            {
+                "id": "context",
+                "title": "A connection has more identity than its hostname",
+                "body": "psql is a client; it connects to one PostgreSQL server endpoint, selects a database, authenticates as a role and uses a search_path to resolve unqualified table names into schemas. SELECT current_database(), current_user, current_schema() are real checks, not assumptions. A successful login does not grant every table privilege. Database CONNECT, schema USAGE and table SELECT/INSERT/UPDATE/DELETE are distinct authorization boundaries."
+            },
+            {
+                "id": "toolkit",
+                "title": "Use the client and catalogs as evidence",
+                "body": "In interactive psql, \\conninfo explains the current connection, \\l lists databases, \\dn schemas, \\dt tables, \\d service describes an object and \\du describes roles. These backslash commands are interpreted by the client, not sent as SQL; the command-line syntax must use an actual backslash in a psql terminal. The following SQL query can run noninteractively in the dedicated lab. Compare the reported database/user/schema with what your project config expects.",
+                "caption": "postgresql_inspect.sql — verify connection and visible Service relation",
+                "code": "SELECT current_database(), current_user, current_schema();\nSELECT table_name FROM information_schema.tables\nWHERE table_schema='public' AND table_name IN ('team','service','environment','service_dependency')\nORDER BY table_name;",
+                "output": "First query: tsa_steward_lab | tsa_learner | public (under the CI lab setup).\nSecond query: environment, service, service_dependency, team."
+            },
+            {
+                "id": "privilege",
+                "title": "Least privilege is a design that can be tested",
+                "body": "A schema owner/migration role may CREATE/ALTER tables, while a runtime application role should normally receive only the minimum operations needed. An API that lists Services may need SELECT on Service and Team, but creating Services requires INSERT and SELECT of related tables, with extra sequence privileges depending on identity/default setup. Avoid application superuser credentials and never commit passwords to a repo. Some privileges are inherited through roles; explain the effective privileges rather than blindly guessing GRANT strings."
+            },
+            {
+                "id": "operational",
+                "title": "Connection failures have distinct causes",
+                "body": "Missing psql executable is a client setup failure; connection refused is usually a transport/listener issue; role authentication failure happens before authorization; missing database is a target-selection error; permission denied on a relation is an authenticated session that lacks a SQL privilege; missing relation may be wrong search_path, schema or migration state. The next action differs for each. Use psql -X -v ON_ERROR_STOP=1 when scripting; inspect errors rather than swallowing failures."
+            },
+            {
+                "id": "backup",
+                "title": "A backup is not a recoverability claim until restore works",
+                "body": "pg_dump produces a logical export for a chosen database; it is not the same as a physical WAL-based backup or point-in-time recovery. A restore drill must verify that the data can be reconstructed and queried in an isolated destination, with tested credentials and time limits. These operations belong to later Platform and Reliability courses; Builder must recognize the handoff, not pretend that a copied SQL file proves recovery."
+            }
+        ],
+        "assignment": [
+            "Run the connection/catalog query and document observed database, role and visible objects without secrets.",
+            "Use psql meta-commands to inspect one table and one role; map each to the relevant SQL catalog.",
+            "Design a least-privilege role for a read-only Service viewer and predict permission-denied behavior.",
+            "Write a diagnosis table for client missing, listener failure, bad credentials, schema mismatch and insufficient privileges."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL — psql Client",
+                "url": "https://www.postgresql.org/docs/current/app-psql.html",
+                "kind": "reference",
+                "purpose": "Connection and object introspection"
+            },
+            {
+                "title": "PostgreSQL — Privileges",
+                "url": "https://www.postgresql.org/docs/current/ddl-priv.html",
+                "kind": "reference",
+                "purpose": "Rights and schema/table boundaries"
+            }
+        ],
+        "practiceObjective": "Inspect connection, current database, role, search path, visible tables and constraints.",
+        "practiceInstructions": [
+            "Run the connection/catalog query and document observed database, role and visible objects without secrets.",
+            "Use psql meta-commands to inspect one table and one role; map each to the relevant SQL catalog.",
+            "Design a least-privilege role for a read-only Service viewer and predict permission-denied behavior.",
+            "Write a diagnosis table for client missing, listener failure, bad credentials, schema mismatch and insufficient privileges."
+        ],
+        "knowledgeCheck": "Why does successful login not prove SELECT privilege on Service? How do database versus schema differ? What evidence would prove an actual backup can be restored?",
+        "warning": "Only execute changing SQL in a dedicated disposable PostgreSQL learning database. Predict the resulting rows and constraints before running a statement, and do not treat a five-row fixture as representative performance evidence."
     },
     {
         id: "django-orm",
