@@ -40,17 +40,17 @@ lab has brief → investigation → module review.
 | Order / lesson | Source classification | Finding / next gate |
 | --- | --- | --- |
 | 1. How the Web Works | REMEDIATED source; learner verification pending | Rebuilt from first principles with explicit web/internet/client distinctions, stepwise DNS–transport–TLS–HTTP trace, an HTTP/3 limitation, and offline local 200/404/refused-connection experiment. Public HTTPS inspection is optional and never recorded as performed without evidence. |
-| 3. URLs and Query Encoding | REMEDIATED new lesson; learner verification pending | Split out URL anatomy, origins, path/query/fragment, percent/form encoding, repeated keys and security limits. The exact `url_parser.py` code was executed independently with the expected output; regression is committed but latest suite/build and rendered UX remain unverified. |
-| 2. Client–Server Architecture | RICH calibration source; learner acceptance pending | Defines roles, authority and alternatives rather than starting with consequences. Existing rewrite retained. No new independent teach-back. |
+| 2. URLs and Query Encoding | REMEDIATED new lesson; learner verification pending | Split out URL anatomy, origins, path/query/fragment, percent/form encoding, repeated keys and security limits. The exact `url_parser.py` code was executed independently with the expected output; regression is committed but latest suite/build and rendered UX remain unverified. |
+| 3. Client–Server Architecture | RICH calibration source; learner acceptance pending | Defines roles, authority and alternatives rather than starting with consequences. Existing rewrite retained. No new independent teach-back. |
 | 4. Client–Server Boundaries and Failure Modes | RICH calibration source; learner acceptance pending | Complete local synthetic server and separate client, serialization and uncertain-outcome reasoning; sample executed by existing regression. |
 | 5. HTTP Requests and Responses | RICH source; learner acceptance pending | Previous rewrite teaches message anatomy, actual Python server behavior, bodyless results and Accept limits. Existing server regression covers only part of the promised curl exploration. |
 | 6. Methods, Headers and Status Codes | THIN → REMEDIATED source | Replaced compressed survey with intent/contract definitions, replacement versus patch reasoning, status/client-action decisions, complete plain-text method server, eight requests and explained failure diagnosis. Existing lesson/activity IDs retained. |
 | 7. Retries, Idempotency and Conditional Requests | New REMEDIATED source | Split from overloaded methods survey, registered before JSON through the actual lesson array and supplied a specific practical override. Teaches effect versus response, duplicate intent, stale-write prevention, cache validators and bounded retries. Executable sequential model; real HTTP conditional/deduplication implementation explicitly absent. |
 | 8. JSON and Content Types | RICH source; learner acceptance pending | Previous rewrite separates syntax, shape, domain and missing/null/zero. Both source-extracted Python examples passed. Not rewritten in this pass. |
-| 9. REST Principles and Trade-offs | THIN | Resource definitions are present but statelessness/cacheability/uniform-interface mechanisms, worked competing workflow designs and pagination failure traces are too compressed for the requested independent design exercise. Rewrite next. |
-| 10. Modeling Resources and API Contracts | THIN | Starts with a mature ownerTeam/lifecycle/criticality representation before showing a current-core-to-public-contract derivation; practical says future fields must be labeled but reading does not consistently do so. Needs worked create/read/failure contract and consumer compatibility exercise. |
-| 11. Errors and Status Design | THIN | Useful taxonomy and envelope, but six-case practice lacks a worked translation from actual exception to public status/code, client action and controlled diagnostic evidence. |
-| 12. Lab: Explore APIs with curl and Postman | THIN / environment-dependent UNVERIFIED | Requires POST, PATCH/PUT, DELETE and malformed JSON but previous GET-only server cannot supply them; the new plain-text server still does not implement JSON/PATCH. Provide a complete bounded lab target or explicit alternatives before claiming lab readiness. No public API write experiments performed. |
+| 9. REST Principles and Trade-offs | REMEDIATED source; learner verification pending | REST constraints, two ownership-transfer alternatives, offset/cursor pagination failure trace and independently executable model added; see REST continuation below. |
+| 10. Modeling Resources and API Contracts | REMEDIATED source; learner verification pending | Derives a public contract from actual Builder core, shows create/read failures and consumer-compatibility break; see contract modeling continuation. |
+| 11. Errors and Status Design | REMEDIATED source; learner verification pending | Seven-case exception-to-client error model, stable public codes and correlated diagnostics added; see error-design continuation. |
+| 12. Lab: Explore APIs with curl and Postman | REMEDIATED source; learner verification pending | Complete loopback-only lab server and fourteen curl experiments added and executed in prior commit; Postman and learner acceptance remain unverified. |
 
 ## Executed evidence
 
@@ -180,11 +180,11 @@ not a claim that all these pages were rendered or pedagogically accepted.
    - reading: `web-and-api-foundations-urls-and-query-encoding-concepts`
    - practical: `web-and-api-foundations-urls-and-query-encoding-practice`
    - reflection: `web-and-api-foundations-urls-and-query-encoding-check`
-4. **Client-Server Architecture** — `web-and-api-foundations-client-server-architecture`
+3. **Client-Server Architecture** — `web-and-api-foundations-client-server-architecture`
    - reading: `web-and-api-foundations-client-server-architecture-concepts`
    - practical: `web-and-api-foundations-client-server-architecture-practice`
    - reflection: `web-and-api-foundations-client-server-architecture-check`
-3. **Client-Server Boundaries and Failure Modes** — `web-and-api-foundations-client-server-boundaries-and-failure-modes`
+4. **Client-Server Boundaries and Failure Modes** — `web-and-api-foundations-client-server-boundaries-and-failure-modes`
    - reading: `web-and-api-foundations-client-server-boundaries-and-failure-modes-concepts`
    - practical: `web-and-api-foundations-client-server-boundaries-and-failure-modes-practice`
    - reflection: `web-and-api-foundations-client-server-boundaries-and-failure-modes-check`
