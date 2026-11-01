@@ -29,7 +29,7 @@ test("Python curriculum examples execute and match published outputs", () => {
 });
 
 test("client-server architecture teaching example executes and proves boundary failures", () => {
-  runAudit("scripts/check-client-server-teaching-example.mjs", /Client-server learner example passed: HTTP 200 JSON, HTTP 404 and connection refusal after shutdown\./);
+  runAudit("scripts/check-client-server-teaching-example.mjs", /Client-server learner example passed: HTTP 200 text, HTTP 404 and connection refusal after shutdown\./);
 });
 
 test("Java dependency-injection lesson executes and matches published output", () => {
