@@ -32,6 +32,15 @@ try {
   const validation=snippet("DRF validation — executable field and cross-field rejection");
   const errorMapping=snippet("DRF API errors — executable stable domain-to-HTTP mapping");
   const pagination=snippet("DRF pagination — executable offset shift failure");
+  const filtering=snippet("DRF filters — executable lifecycle and ordering whitelist");
+  const config=snippet("Django configuration — executable environment contract");
+  const openapi=snippet("OpenAPI — minimal health contract with deliberate path mismatch");
+  assert.match(exec("python3",["-c",filtering]),/filter contract: valid and 2 invalid parameters/);
+  assert.match(exec("python3",["-c",config]),/configuration: valid local and 3 rejected setups/);
+  const documented=JSON.parse(openapi);
+  assert.equal(documented.openapi,"3.0.3");
+  assert.ok(documented.paths["/health"] && !documented.paths["/health/"],"Published mismatch must be deliberate and observable");
+
   assert.match(exec("python3",["-c",errorMapping]),/DRF error mapping: conflict, forbidden, safe internal error/);
   assert.match(exec("python3",["-c",pagination]),/offset shift duplicates: Identity/);
   assert.match(exec("python3",["-c",versioning]),/versioning contract rejects semantic drift/);
