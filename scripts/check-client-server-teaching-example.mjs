@@ -5,7 +5,7 @@ import net from "node:net";
 import os from "node:os";
 import path from "node:path";
 
-// The learner's actual lesson runs Python's built-in HTTP file server and curl.
+// Execute the learner-published mini-Steward Python HTTP server and its protocol experiments.
 // Execute the same server with a dynamically assigned port to avoid local conflicts.
 const source = fs.readFileSync(path.join(process.cwd(), "packages/runtime-kernel/src/paths/builder-web-api-deep.ts"), "utf8");
 assert.ok(source.includes('lesson("Client-Server Architecture"'), "Client-server fundamentals lesson was not found");
@@ -54,6 +54,13 @@ try {
 
   const missing = await fetch(origin + "/missing", { signal: AbortSignal.timeout(2000) });
   assert.equal(missing.status, 404);
+  const requestedText = await fetch(origin + "/services", {
+    headers: { Accept: "text/plain" }, signal: AbortSignal.timeout(2000),
+  });
+  assert.equal(requestedText.status, 200);
+  assert.match(requestedText.headers.get("content-type") ?? "", /application\/json/);
+  assert.deepEqual(await requestedText.json(), { services: [{ id: 7, name: "Cleaning", active: true }] });
+
   server.kill("SIGTERM");
   await new Promise((resolve) => server.once("exit", resolve));
   await assert.rejects(fetch(origin + "/services", { signal: AbortSignal.timeout(1000) }));
