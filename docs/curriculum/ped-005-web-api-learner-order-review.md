@@ -39,17 +39,18 @@ lab has brief → investigation → module review.
 
 | Order / lesson | Source classification | Finding / next gate |
 | --- | --- | --- |
-| 1. How the Web Works | THIN in prerequisite scaffolding | Layer distinctions are useful, but URL/encoding and public HTTPS observation are compressed; no bounded local walkthrough of every promised layer. Review external-network assumptions and label the simplified TCP/TLS path's version scope. Not remediated in this pass. |
+| 1. How the Web Works | REMEDIATED source; learner verification pending | Rebuilt from first principles with explicit web/internet/client distinctions, stepwise DNS–transport–TLS–HTTP trace, an HTTP/3 limitation, and offline local 200/404/refused-connection experiment. Public HTTPS inspection is optional and never recorded as performed without evidence. |
+| 3. URLs and Query Encoding | REMEDIATED new lesson; learner verification pending | Split out URL anatomy, origins, path/query/fragment, percent/form encoding, repeated keys and security limits. The exact `url_parser.py` code was executed independently with the expected output; regression is committed but latest suite/build and rendered UX remain unverified. |
 | 2. Client–Server Architecture | RICH calibration source; learner acceptance pending | Defines roles, authority and alternatives rather than starting with consequences. Existing rewrite retained. No new independent teach-back. |
-| 3. Client–Server Boundaries and Failure Modes | RICH calibration source; learner acceptance pending | Complete local synthetic server and separate client, serialization and uncertain-outcome reasoning; sample executed by existing regression. |
-| 4. HTTP Requests and Responses | RICH source; learner acceptance pending | Previous rewrite teaches message anatomy, actual Python server behavior, bodyless results and Accept limits. Existing server regression covers only part of the promised curl exploration. |
-| 5. Methods, Headers and Status Codes | THIN → REMEDIATED source | Replaced compressed survey with intent/contract definitions, replacement versus patch reasoning, status/client-action decisions, complete plain-text method server, eight requests and explained failure diagnosis. Existing lesson/activity IDs retained. |
-| 6. Retries, Idempotency and Conditional Requests | New REMEDIATED source | Split from overloaded methods survey, registered before JSON through the actual lesson array and supplied a specific practical override. Teaches effect versus response, duplicate intent, stale-write prevention, cache validators and bounded retries. Executable sequential model; real HTTP conditional/deduplication implementation explicitly absent. |
-| 7. JSON and Content Types | RICH source; learner acceptance pending | Previous rewrite separates syntax, shape, domain and missing/null/zero. Both source-extracted Python examples passed. Not rewritten in this pass. |
-| 8. REST Principles and Trade-offs | THIN | Resource definitions are present but statelessness/cacheability/uniform-interface mechanisms, worked competing workflow designs and pagination failure traces are too compressed for the requested independent design exercise. Rewrite next. |
-| 9. Modeling Resources and API Contracts | THIN | Starts with a mature ownerTeam/lifecycle/criticality representation before showing a current-core-to-public-contract derivation; practical says future fields must be labeled but reading does not consistently do so. Needs worked create/read/failure contract and consumer compatibility exercise. |
-| 10. Errors and Status Design | THIN | Useful taxonomy and envelope, but six-case practice lacks a worked translation from actual exception to public status/code, client action and controlled diagnostic evidence. |
-| 11. Lab: Explore APIs with curl and Postman | THIN / environment-dependent UNVERIFIED | Requires POST, PATCH/PUT, DELETE and malformed JSON but previous GET-only server cannot supply them; the new plain-text server still does not implement JSON/PATCH. Provide a complete bounded lab target or explicit alternatives before claiming lab readiness. No public API write experiments performed. |
+| 4. Client–Server Boundaries and Failure Modes | RICH calibration source; learner acceptance pending | Complete local synthetic server and separate client, serialization and uncertain-outcome reasoning; sample executed by existing regression. |
+| 5. HTTP Requests and Responses | RICH source; learner acceptance pending | Previous rewrite teaches message anatomy, actual Python server behavior, bodyless results and Accept limits. Existing server regression covers only part of the promised curl exploration. |
+| 6. Methods, Headers and Status Codes | THIN → REMEDIATED source | Replaced compressed survey with intent/contract definitions, replacement versus patch reasoning, status/client-action decisions, complete plain-text method server, eight requests and explained failure diagnosis. Existing lesson/activity IDs retained. |
+| 7. Retries, Idempotency and Conditional Requests | New REMEDIATED source | Split from overloaded methods survey, registered before JSON through the actual lesson array and supplied a specific practical override. Teaches effect versus response, duplicate intent, stale-write prevention, cache validators and bounded retries. Executable sequential model; real HTTP conditional/deduplication implementation explicitly absent. |
+| 8. JSON and Content Types | RICH source; learner acceptance pending | Previous rewrite separates syntax, shape, domain and missing/null/zero. Both source-extracted Python examples passed. Not rewritten in this pass. |
+| 9. REST Principles and Trade-offs | THIN | Resource definitions are present but statelessness/cacheability/uniform-interface mechanisms, worked competing workflow designs and pagination failure traces are too compressed for the requested independent design exercise. Rewrite next. |
+| 10. Modeling Resources and API Contracts | THIN | Starts with a mature ownerTeam/lifecycle/criticality representation before showing a current-core-to-public-contract derivation; practical says future fields must be labeled but reading does not consistently do so. Needs worked create/read/failure contract and consumer compatibility exercise. |
+| 11. Errors and Status Design | THIN | Useful taxonomy and envelope, but six-case practice lacks a worked translation from actual exception to public status/code, client action and controlled diagnostic evidence. |
+| 12. Lab: Explore APIs with curl and Postman | THIN / environment-dependent UNVERIFIED | Requires POST, PATCH/PUT, DELETE and malformed JSON but previous GET-only server cannot supply them; the new plain-text server still does not implement JSON/PATCH. Provide a complete bounded lab target or explicit alternatives before claiming lab readiness. No public API write experiments performed. |
 
 ## Executed evidence
 
@@ -97,17 +98,12 @@ precedes the teaching body and is long; review this reading burden separately.
 No independent learner was tested, no genuine learner practical was marked complete,
 and no module/school is promoted to VALIDATED.
 
-## Next work
+## Current next work
 
-1. Finish #319's full novice source pass and workbench runtime checks, retaining
-   the real capstone-after-workbench order.
-2. Repair How the Web Works scaffolding, then rewrite REST, contract modeling and
-   error design in the inventory order above.
-3. Supply a complete bounded final-lab target and execute the promised method/JSON
-   variations; do not use the GET-only or plain-text experiment as evidence for
-   unimplemented behavior.
-4. Review all affected readings/practicals at normal desktop/mobile sizes and score
-   independent transfer using the explicit lesson rubrics. Keep #318/#319/#320 open.
+1. Finish #319's full Apprentice novice source pass and workbench runtime checks in actual learner order, retaining capstone-after-workbench.
+2. Run the current complete suite and production build at the new branch head, including the committed URL-regression check. Do not inherit earlier successful runs as validation of new commits.
+3. Reopen rendered Web/API pages in learner order, including the newly inserted URL lesson; verify progress locks, long code display, mobile reading layout and re-entry.
+4. Perform and score real novice teach-back on the local web diagnosis, URL encoding negative case and final API lab. Keep #318/#319/#320 open until independent transfer evidence exists.
 
 ## Complete assembled activity inventory
 
@@ -180,7 +176,11 @@ not a claim that all these pages were rendered or pedagogically accepted.
    - reading: `web-and-api-foundations-how-the-web-works-concepts`
    - practical: `web-and-api-foundations-how-the-web-works-practice`
    - reflection: `web-and-api-foundations-how-the-web-works-check`
-2. **Client-Server Architecture** — `web-and-api-foundations-client-server-architecture`
+2. **URLs and Query Encoding** — `web-and-api-foundations-urls-and-query-encoding`
+   - reading: `web-and-api-foundations-urls-and-query-encoding-concepts`
+   - practical: `web-and-api-foundations-urls-and-query-encoding-practice`
+   - reflection: `web-and-api-foundations-urls-and-query-encoding-check`
+4. **Client-Server Architecture** — `web-and-api-foundations-client-server-architecture`
    - reading: `web-and-api-foundations-client-server-architecture-concepts`
    - practical: `web-and-api-foundations-client-server-architecture-practice`
    - reflection: `web-and-api-foundations-client-server-architecture-check`
@@ -188,35 +188,35 @@ not a claim that all these pages were rendered or pedagogically accepted.
    - reading: `web-and-api-foundations-client-server-boundaries-and-failure-modes-concepts`
    - practical: `web-and-api-foundations-client-server-boundaries-and-failure-modes-practice`
    - reflection: `web-and-api-foundations-client-server-boundaries-and-failure-modes-check`
-4. **HTTP Requests and Responses** — `web-and-api-foundations-http-requests-and-responses`
+5. **HTTP Requests and Responses** — `web-and-api-foundations-http-requests-and-responses`
    - reading: `web-and-api-foundations-http-requests-and-responses-concepts`
    - practical: `web-and-api-foundations-http-requests-and-responses-practice`
    - reflection: `web-and-api-foundations-http-requests-and-responses-check`
-5. **Methods, Headers and Status Codes** — `web-and-api-foundations-methods-headers-and-status-codes`
+6. **Methods, Headers and Status Codes** — `web-and-api-foundations-methods-headers-and-status-codes`
    - reading: `web-and-api-foundations-methods-headers-and-status-codes-concepts`
    - practical: `web-and-api-foundations-methods-headers-and-status-codes-practice`
    - reflection: `web-and-api-foundations-methods-headers-and-status-codes-check`
-6. **Retries, Idempotency and Conditional Requests** — `web-and-api-foundations-retries-idempotency-and-conditional-requests`
+7. **Retries, Idempotency and Conditional Requests** — `web-and-api-foundations-retries-idempotency-and-conditional-requests`
    - reading: `web-and-api-foundations-retries-idempotency-and-conditional-requests-concepts`
    - practical: `web-and-api-foundations-retries-idempotency-and-conditional-requests-practice`
    - reflection: `web-and-api-foundations-retries-idempotency-and-conditional-requests-check`
-7. **JSON and Content Types** — `web-and-api-foundations-json-and-content-types`
+8. **JSON and Content Types** — `web-and-api-foundations-json-and-content-types`
    - reading: `web-and-api-foundations-json-and-content-types-concepts`
    - practical: `web-and-api-foundations-json-and-content-types-practice`
    - reflection: `web-and-api-foundations-json-and-content-types-check`
-8. **REST Principles and Trade-offs** — `web-and-api-foundations-rest-principles-and-trade-offs`
+9. **REST Principles and Trade-offs** — `web-and-api-foundations-rest-principles-and-trade-offs`
    - reading: `web-and-api-foundations-rest-principles-and-trade-offs-concepts`
    - practical: `web-and-api-foundations-rest-principles-and-trade-offs-practice`
    - reflection: `web-and-api-foundations-rest-principles-and-trade-offs-check`
-9. **Modeling Resources and API Contracts** — `web-and-api-foundations-modeling-resources-and-api-contracts`
+10. **Modeling Resources and API Contracts** — `web-and-api-foundations-modeling-resources-and-api-contracts`
    - reading: `web-and-api-foundations-modeling-resources-and-api-contracts-concepts`
    - practical: `web-and-api-foundations-modeling-resources-and-api-contracts-practice`
    - reflection: `web-and-api-foundations-modeling-resources-and-api-contracts-check`
-10. **Errors and Status Design** — `web-and-api-foundations-errors-and-status-design`
+11. **Errors and Status Design** — `web-and-api-foundations-errors-and-status-design`
    - reading: `web-and-api-foundations-errors-and-status-design-concepts`
    - practical: `web-and-api-foundations-errors-and-status-design-practice`
    - reflection: `web-and-api-foundations-errors-and-status-design-check`
-11. **Lab: Explore APIs with curl and Postman** — `web-and-api-foundations-lab-explore-apis-with-curl-and-postman`
+12. **Lab: Explore APIs with curl and Postman** — `web-and-api-foundations-lab-explore-apis-with-curl-and-postman`
    - reading: `web-and-api-foundations-lab-explore-apis-with-curl-and-postman-brief`
    - practical: `web-and-api-foundations-lab-explore-apis-with-curl-and-postman-build`
    - reflection: `web-and-api-foundations-lab-explore-apis-with-curl-and-postman-review`
@@ -248,3 +248,12 @@ Replaced the external-target/templates brief with complete learner-visible lab_a
 Verification: `pnpm test` **13/13 passed** and `pnpm build` **2 tasks successful**. `scripts/check-final-api-lab.mjs` extracts the published server and curl commands, substitutes only an available loopback port, and executes all fourteen commands. Observed statuses: 200/201/200/200/400/400/415/200/409/405/503/204/404/200. Checks Location, JSON despite Accept:text/plain, Allow, Retry-After, bodyless 204 without Content-Length, preserved resource state after rejected writes, empty final collection and non-HTTP connection failure after shutdown.
 
 Source lab is REMEDIATED. The independent second-service/extra-negative-case exercises, Postman reproduction, rendered review and five-part learner transfer remain UNVERIFIED. Server is synthetic, volatile, single-threaded, loopback-only; no persistence, TLS, authentication, pagination or production-hardening claim. Identity failure contracts are design exercises, not executed authentication evidence. Full #319 novice review and How the Web Works scaffolding remain open; no module/school VALIDATED promotion.
+
+
+## Introductory web / URL split continuation — 2026-11-01
+
+At branch commits `74f554a` (source), `88b365e` (practicals), `87184e4` (regression), the original overloaded **How the Web Works** was replaced with two separately registered lessons: the web request journey and **URLs and Query Encoding**. The original activity ID is retained for the first chapter, with new stable IDs for the second. Web/API now has **12 lessons / 36 activities**; together with 13 Apprentice lessons / 43 activities, the assembled two-school inventory has **79 activities**. Earlier 11-lesson / 76-activity references describe the previous snapshot.
+
+Source mechanisms: define web versus internet and client/server roles, distinguish browser rendering from HTTP representation, trace DNS/address → transport → TLS → HTTP (with correct HTTP/3/QUIC exception), and show how an HTTP responder may be a proxy. The offline Python static-server experiment gives a bounded 200, 404 and post-shutdown connection-failure path. Public HTTPS observation is explicitly optional and **not verified** by the offline experiment. No database, deployed Steward API, certificate-bypass or external network is assumed.
+
+The URL chapter uses the runnable Python standard library (`urlencode`, `urlsplit`, `parse_qs`, `quote`) to demonstrate encoded `payments & ops`, repeated `tag` keys, origin, request target without fragment, encoded path slash and the negative outcome from manually concatenating an unescaped ampersand. I independently executed the exact Python example before committing and observed the published eight output lines. The source-based regression was added to `scripts/check-web-api-teaching-examples.mjs`; **the updated full test suite, TypeScript build, browser rendering and novice teach-back have not been run in this increment**. This is `REMEDIATED`, not `VALIDATED`.
