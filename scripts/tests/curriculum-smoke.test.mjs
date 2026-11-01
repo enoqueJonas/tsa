@@ -60,6 +60,10 @@ test("Builder curriculum preserves Python, Web, Django and security domain conti
   runAudit("scripts/check-builder-domain-continuity.mjs", /Builder school continuity passed:/);
 });
 
+test("Builder authorization and refresh-token rotation examples execute from learner source", () => {
+  runAudit("scripts/check-builder-security-teaching-examples.mjs", /Builder security teaching examples passed:/);
+});
+
 test("Java dependency-injection lesson executes and matches published output", () => {
   runAudit("scripts/check-java-teaching-examples.mjs", /Java learner-example validation passed:/);
 });
