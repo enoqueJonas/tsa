@@ -6,7 +6,7 @@ const source=fs.readFileSync("packages/runtime-kernel/src/paths/builder-software
 const cases=[
   ["Refactoring — executable behavior-preservation check", "refactor contracts preserved: 3"],
   ["Testing — executable unittest authorization boundary", "Ran 2 tests"],
-  ["Configuration — executable fail-closed environment parser", "valid false"],
+  ["Configuration — executable fail-closed environment parser", "valid False"],
   ["Logging — executable structured-context and secret absence test", "service=42 request=req-demo-7"],
   ["Errors — executable stable public error mapping", "public error mappings: 6"]
 ];

@@ -163,6 +163,14 @@ try {
   run(["-c", "DROP TABLE tsa_isolation_probe;"]);
   run(["-c", "BEGIN; DELETE FROM environment WHERE service_id IN (SELECT id FROM service WHERE name IN ('Txn Commit Demo','Txn Savepoint Demo')); DELETE FROM service WHERE name IN ('Txn Commit Demo','Txn Savepoint Demo'); COMMIT;"]);
   assert.equal(run(["-c", "SELECT count(*) FROM service"]).out, "5");
+  // Directly execute the cross-table product-invariant lesson, including its negative baseline and reversible repair.
+  const missingBefore = run(["-c", codeFromLesson("readiness_missing.sql — detect production-stage Services without production deployment")]).out;
+  assert.equal(missingBefore, "Payroll API");
+  const readinessRepair = run(["-c", codeFromLesson("readiness_repair.sql — reversible cross-table invariant repair")]).out;
+  assert.match(readinessRepair, /INSERT 0 1/);
+  assert.match(readinessRepair, /(^|\\n)0(\\n|$)/);
+  assert.equal(run(["-c", codeFromLesson("readiness_missing.sql — detect production-stage Services without production deployment")]).out, "Payroll API");
+  assert.equal(run(["-c", "SELECT count(*) FROM environment WHERE service_id=(SELECT id FROM service WHERE name='Payroll API')"]).out, "0");
   // Complete the rest of the PostgreSQL path using the learner-visible examples.
   const constraints = run(["-c", codeFromLesson("constraints_inspect.sql — inspect actual deployed integrity rules")]).out;
   assert.match(constraints, /FOREIGN KEY/);
@@ -194,7 +202,7 @@ try {
   assert.match(perfPlan, /Execution Time/);
   const metadata = run(["-c", codeFromLesson("postgresql_inspect.sql — verify connection and visible Service relation")]).out;
   for (const table of ["team","service","environment","service_dependency"]) assert.ok(metadata.split(/\r?\n/).includes(table), `Cannot see ${table}`);
-  console.log(`Builder PostgreSQL live lab passed: first session/TEMP negative, 4 persisted tables, 20 published SQL examples, 5/6/4 join cardinalities, 2 rejected writes, 3 transaction scripts with savepoint failure and 2-session Read Committed/Repeatable Read; database=${process.env.PGDATABASE}.`);
+  console.log(`Builder PostgreSQL live lab passed: first session/TEMP negative, 4 persisted tables, 20 published SQL examples, 5/6/4 join cardinalities, 2 rejected writes, 3 transaction scripts with savepoint failure, 2-session Read Committed/Repeatable Read, cross-table release-readiness detection and rollback proof; database=${process.env.PGDATABASE}.`);
 
 } finally {
   fs.rmSync(root, { recursive: true, force: true });
