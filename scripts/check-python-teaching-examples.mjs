@@ -14,7 +14,7 @@ const required = new Set([
   "Handle, continue and clean up deliberately",
   "Generate matching services lazily",
   "Keep only even numbers",
-  "Critical active services",
+  "Critical production services",
   "Lazy iteration",
   "Use any/all deliberately",
   "Choose the result structure intentionally",
