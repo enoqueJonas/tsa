@@ -229,16 +229,14 @@ export const webAndApiFoundationsDeepLessons: Lesson[] = [
       "Draw an Engineering Portal → Steward API → steward-core request. Mark which arrow crosses an HTTP boundary and which is an ordinary function call.",
       "Explain whether a modular monolith can expose a client–server API and why that is not a contradiction.",
       "Compare this Steward design with a peer-to-peer alternative and identify one concrete trade-off for each.",
-      "Explain the difference between an HTTP 404 and a refused TCP connection based on what you observed.",
-      "Describe why a client-only self-dependency check is insufficient and how the server should respond.",
-      "Explain, using two possible sequences, why a state-changing request timeout leaves the result uncertain."
+      "Describe why a client-only self-dependency check is insufficient and how the server should respond."
     ],
     "ordered": true
   },
   {
     "type": "callout",
     "title": "What comes next",
-    "body": "The next lessons examine HTTP request/response structure, methods, status codes and representation formats in detail. You do not need to implement Django, a database, microservices or distributed messaging to pass this architectural lesson.",
+    "body": "The next chapter uses real separate processes to examine HTTP transport, serialization, ambiguous timeouts, state and failures. After that, the module teaches the anatomy and semantics of HTTP messages. You do not need Django, PostgreSQL, microservices or distributed messaging to understand this architectural model.",
     "tone": "note"
   }
 ], "Understand and defend the client–server pattern from first principles, with a correct division of Steward responsibilities and comparison to other architecture dimensions.", [
