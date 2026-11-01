@@ -6,18 +6,54 @@ type PracticeSpec = Omit<PracticalContent, "type">;
 
 const practices: Record<string, PracticeSpec> = {
   "web-and-api-foundations-how-the-web-works": {
-    objective: "Diagnose an API availability report by separating DNS, connection, TLS and HTTP/application evidence instead of treating every failure as 'the API is down'.",
-    scenario: "A developer reports that Steward is unavailable from their laptop. Another teammate immediately blames the API. You are the first engineer asked to investigate. Your job is not to guess the cause; it is to locate the failing layer and produce evidence another engineer could verify.",
-    instructions: [
-      "Choose a reachable HTTPS endpoint and write down scheme, host, port, path and query before running any tool; include one query value that requires URL encoding and show the encoded request target.",
-      "Use curl -v (and a DNS lookup tool available on your machine) to capture name resolution, connection establishment, TLS negotiation and the HTTP exchange.",
-      "Create a failure map for five cases: DNS resolution failure, refused connection, TLS/certificate failure, HTTP 404 and HTTP 500.",
-      "For each case, state the earliest layer that can prove the failure and whether Steward application code would have executed.",
-      "Produce a short triage sequence you would follow when someone says only 'the API is down'."
-    ],
-    deliverables: ["Annotated connection/HTTP transcript", "Five-case failure-layer map", "API-down triage sequence", "Short explanation of which failures occur before application code"],
-    completionCriteria: ["DNS, TCP/TLS and HTTP/application failures are not conflated.", "Every diagnosis points to observable evidence rather than intuition.", "You can identify when an HTTP status proves that the request reached an HTTP server.", "Another engineer could follow your triage sequence without knowing the answer in advance."]
-  },
+  "objective": "Diagnose web availability by locating DNS, transport, TLS and HTTP evidence without claiming offline experiments test HTTPS.",
+  "scenario": "A teammate says the site is down. Prove the difference between an HTTP response and a connection failure locally before classifying public HTTPS behavior.",
+  "instructions": [
+    "Explain how the web differs from the internet and name the distinct responsibilities of client, HTTP endpoint and browser renderer.",
+    "Create and run the local Python static server from the reading, then use curl from a second terminal to observe HTTP 200, HTTP 404 and connection refusal after stopping it.",
+    "For each observation cite the status/output and component responsible; distinguish HTTP 404 produced by the file server from a Steward API error.",
+    "Attempt the optional public HTTPS curl experiment only if allowed and available. Annotate observed DNS/transport/TLS/HTTP evidence; label steps you could not execute.",
+    "Compare the common HTTP/1.1/2 TCP/TLS path with HTTP/3's QUIC-over-UDP boundary, without implying all HTTP must use TCP.",
+    "Write a five-case failure map and an evidence-led first-response playbook."
+  ],
+  "deliverables": [
+    "Local server command/transcript with three distinct outcomes",
+    "Web request path annotated by layer",
+    "Optional public HTTPS transcript or explicit external-network limitation",
+    "Failure classification and first-response playbook"
+  ],
+  "completionCriteria": [
+    "HTTP status is distinguished from DNS, TCP and TLS failures.",
+    "An offline loopback test is not presented as TLS evidence.",
+    "The browser/web/server responsibilities and HTTP/3 transport caveat are accurately explained.",
+    "The incident response chooses observations before guessing causes."
+  ]
+},
+  "web-and-api-foundations-urls-and-query-encoding": {
+  "objective": "Construct, decode and debug URL components with validated Python examples rather than unsafe concatenation.",
+  "scenario": "The planned Steward service registry supports future filters and identifiers. Before designing the API, prove how a URL transports those values and how a bad encoding changes the user's intent.",
+  "instructions": [
+    "Run url_parser.py from the reading using Python 3, and annotate the purpose of urlencode, urlsplit, parse_qs and quote.",
+    "Modify the snippet to add tag=quality as a repeated parameter; verify the decoded list preserves all tags.",
+    "Construct a filtered services URL for team 'platform & operations' and independently decode the query.",
+    "Demonstrate how raw '&' accidentally alters a query, and compare an encoded slash with two literal path segments.",
+    "Show which parts of a URL identify the origin, request target and client-side fragment.",
+    "Specify how your API would reject or interpret duplicate limit parameters and why encoding cannot protect credentials placed in URLs."
+  ],
+  "deliverables": [
+    "Executed Python and expected-output comparison",
+    "Three correct encoded URLs and their decoded interpretations",
+    "One demonstrated malformed-concatenation failure",
+    "URL anatomy and origin diagram",
+    "Duplicate-parameter and URL-sensitive-data policy"
+  ],
+  "completionCriteria": [
+    "Examples execute and the displayed outputs match the Python code.",
+    "The learner can explain plus and percent-encoding without treating encoding as encryption.",
+    "Repeated parameters, path segments and fragment behavior are differentiated.",
+    "A new URL with special characters can be assembled independently with the standard library."
+  ]
+},
   "web-and-api-foundations-client-server-architecture": {
   "objective": "Define and defend a client–server boundary for the current Steward core and collect independent runtime evidence from a synthetic local HTTP client and server.",
   "scenario": "The learner has steward-core domain behavior but not yet a Steward HTTP API or PostgreSQL integration. The decision is whether and how to expose those operations to a future Engineering Portal. Prove the basic request/response interaction with an isolated standard-library demo before designing the future boundary.",
