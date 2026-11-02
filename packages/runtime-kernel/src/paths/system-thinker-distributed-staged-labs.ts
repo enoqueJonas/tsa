@@ -2,6 +2,7 @@ import type { Lesson } from "./lesson";
 import {redisLivePrimerSections,rabbitLivePrimerSections} from "./system-thinker-distributed-live-primer";
 import {realOutboxWorkedSections} from "./system-thinker-real-outbox-worked";
 import {competingOutboxSections,competingOutboxResources} from "./system-thinker-outbox-concurrent-worked";
+import {rabbitPoisonReplaySections,rabbitPoisonReplayResources} from "./system-thinker-rabbitmq-poison-replay-worked";
 import type { LessonBlock, LearningResource } from "../activities/content";
 
 const redis: LearningResource = { title:"Redis — Run Open Source on Docker", url:"https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/docker/", kind:"reference" };
@@ -23,7 +24,7 @@ function stage(id: string, title: string, intro: string, sections: Section[], pr
         if (section.code) blocks.push({type:"code",language:section.code.language,caption:section.code.caption,code:section.code.code});
     }
     blocks.push({type:"callout",tone:"warning",title:"Evidence tier",body:"Commands are a reproducible local starting point, not evidence of live integration. Redis/RabbitMQ/Steward experiments are UNVERIFIED until executed in the learner environment, including failure injection."});
-    blocks.push({type:"resources",title:"Reference and optional reinforcement",resources:[redis,rabbit,confirms,redisVideo,...(id==="outbox-concurrent-lab"?competingOutboxResources:[])]});
+    blocks.push({type:"resources",title:"Reference and optional reinforcement",resources:[redis,rabbit,confirms,redisVideo,...(id==="outbox-concurrent-lab"?competingOutboxResources:[]),...(id==="rabbitmq-poison-lab"?rabbitPoisonReplayResources:[])]});
     return { id:prefix,title,activities:[
         {id:prefix+"-reading",title:title+": Mechanisms",estimatedMinutes:readMinutes,content:{type:"reading",body:blocks.filter(b=>b.type==="paragraph").map(b=>b.text).join("\n\n"),blocks}},
         {id:prefix+"-practice",title:title+": Runtime Evidence",estimatedMinutes:practiceMinutes,content:{type:"practical",objective:practice.objective,scenario:practice.scenario,instructions:practice.instructions,deliverables:practice.deliverables,completionCriteria:practice.criteria}},
@@ -117,7 +118,7 @@ export const distributedStateStagedLabs: Lesson[] = [
         "Make the consumer do its local effect before manual ack; configure bounded prefetch.",
         "Crash the consumer between effect and acknowledgement, restart, and capture actual broker redelivery.",
         "Implement a transactionally protected dedupe record with the consumer's local database effect; repeat stable ID and prove no second effect.",
-        "Demonstrate bounded transient retry and poison-message delivery to an inspectable DLQ, with a safe replay procedure.",
+        "Describe the poison-message failure path now; perform actual DLX quarantine, supervised replay and an out-of-order projection in the next focused stage.",
         "Stop the broker and record how outages are surfaced and recovered."
     ],
     "deliverables": [
@@ -138,7 +139,42 @@ export const distributedStateStagedLabs: Lesson[] = [
     "Why doesn't publisher confirm prove that the consumer processed the event?",
     "What prevents a poison message from looping forever?"
 ], 35, 150),
-    stage("outbox-lab", "Lab 3: Transactional Outbox, Ordering and Restart Recovery", "A database transaction cannot atomically commit to PostgreSQL and confirm a separate RabbitMQ publish without a distributed transaction. The transactional outbox keeps the domain change and intent to publish together, then deliberately accepts at-least-once publication with idempotent consumers.", [
+    stage("rabbitmq-poison-lab", "Lab 3: RabbitMQ Poison-Message Quarantine, Replay and Ordering",
+      "A successful broker publish is not a successful business effect. Unsupported messages need bounded, observable handling, and delayed or duplicated versions must not overwrite a newer authoritative projection. This focused lab runs a real dead-letter exchange and PostgreSQL projection before the next lesson adds a transactional outbox publisher.",
+      rabbitPoisonReplaySections,
+      {
+        objective:"Observe real broker quarantine and replay while preventing older or duplicated Service events from regressing PostgreSQL state.",
+        scenario:"Steward's downstream lifecycle projection receives v8 before v7 and a duplicate v8; another event has a schema version unsupported by the current consumer. A supervised replay must recover after schema support is introduced.",
+        instructions:[
+          "Execute the complete published Python program against isolated PostgreSQL 17 and RabbitMQ 4; keep exact stdout and queue/SQL evidence.",
+          "Draw the work exchange -> work queue -> DLX -> quarantine queue topology and explain why requeue=false depends on a configured dead-letter exchange and binding.",
+          "Show the x-death header on the rejected schema-v2 event, then record why it was not written to PostgreSQL before successful replay.",
+          "After simulating an approved consumer adapter upgrade, republish the original payload and stable event ID with publisher confirms, then acknowledge the quarantined delivery.",
+          "Observe the version-8 full-state projection persist when version 7 arrives later and the exact v8 message is duplicated; explain version guards and atomic processed-event records.",
+          "Replay an already processed event and prove it creates no second local effect. Compare this guarantee with external email/provider side effects.",
+          "Document failures not reproduced: missing DLQ binding, clustered broker/DLX durability, operator access, delayed transient retries, production Steward authorization and provider reconciliation."
+        ],
+        deliverables:[
+          "Exact isolated RabbitMQ topology and x-death quarantine evidence",
+          "Confirmed replay transcript with stable event identity and payload",
+          "PostgreSQL processed-event ledger and per-Service projection counts",
+          "Out-of-order and duplicate outcome diagnosis",
+          "Operational recovery note distinguishing validated and unverified guarantees"
+        ],
+        criteria:[
+          "An unsupported schema is quarantined and can be inspected, rather than silently lost or endlessly requeued",
+          "A confirmed replay is followed by a durable consumer effect, not merely a broker publish acknowledgment",
+          "v8 then v7 cannot regress a full-state projection and a duplicate event cannot repeat the local effect",
+          "Real broker, DB, and retry outcomes are recorded; absent service execution is UNVERIFIED"
+        ]
+      },
+      [
+        "How does an x-death header differ from a publisher confirm?",
+        "What is the danger of acknowledging a quarantined delivery before the replay publication is confirmed?",
+        "Why is a higher-version full-state snapshot safe after a gap while a delta event may not be?",
+        "Which additional guarantee would make a clustered/quorum dead-letter path production-ready?"
+      ], 40, 120),
+    stage("outbox-lab", "Lab 4: Transactional Outbox, Ordering and Restart Recovery", "A database transaction cannot atomically commit to PostgreSQL and confirm a separate RabbitMQ publish without a distributed transaction. The transactional outbox keeps the domain change and intent to publish together, then deliberately accepts at-least-once publication with idempotent consumers.", [
     {
         "title": "Trace both sides of the dual-write failure",
         "paragraphs": [
@@ -191,7 +227,7 @@ export const distributedStateStagedLabs: Lesson[] = [
     "Why is the outbox not exactly-once message delivery?",
     "What ordering signal protects one Service without requiring global broker order?"
 ], 35, 165),
-    stage("outbox-concurrent-lab", "Lab 4: Concurrent Outbox Publishers and Expiring Claims",
+    stage("outbox-concurrent-lab", "Lab 5: Concurrent Outbox Publishers and Expiring Claims",
         "The previous lab established a durable publication intent for one publisher. Now two *independent worker processes* compete for pending rows, and a crashed claimant must not permanently block the queue. Separate this concurrency problem from the first outbox lesson: its lock, lease and fencing mechanisms require their own observed failure and recovery proof.",
         competingOutboxSections,
         {
@@ -226,7 +262,7 @@ export const distributedStateStagedLabs: Lesson[] = [
             "Why can a stale publisher still send after its lease expires even though its sent-row UPDATE fails?",
             "What concrete evidence would justify a new outbox row-claim/renewal service in Steward?"
         ], 35, 110),
-    stage("distributed-defence", "Lab 5: Distributed Steward System Defence", "This is a synthesis, not the place to introduce Redis, message routing or SQL transactions for the first time. It is an independent architecture defence supported by the four preceding runtime labs and a coherent system baseline.", [
+    stage("distributed-defence", "Lab 6: Distributed Steward System Defence", "This is a synthesis, not the place to introduce Redis, message routing or SQL transactions for the first time. It is an independent architecture defence supported by the five preceding runtime labs and a coherent system baseline.", [
     {
         "title": "Defend the simplest working architecture",
         "paragraphs": [
@@ -235,7 +271,7 @@ export const distributedStateStagedLabs: Lesson[] = [
         ]
     }
 ], {
-    "objective": "Reconcile all four staged labs and defend the real observed architecture.",
+    "objective": "Reconcile all five staged labs and defend the real observed architecture.",
     "scenario": "Steward now includes one justified cache and one durable asynchronous side effect. Reviewers challenge every dependency and recovery claim.",
     "instructions": [
         "Present versioned source and the pre-distribution Steward baseline.",
