@@ -221,26 +221,47 @@ if (!reliability || reliability.paths.length !== 16) {
   problems.push("Reliability Engineer must expose 16 paths");
 } else {
   for (const path of reliability.paths) {
-    const first = path.lessons[0];
-    const blocks = first?.activities?.[0]?.content?.blocks;
-    if (first?.id !== `${path.id}-reliability-model` ||
-        !Array.isArray(blocks) ||
-        !blocks.some((block) => block.type === "heading" && block.id === "worked-experiment")) {
-      problems.push(`Reliability model missing: ${path.id}`);
+    if (!path.lessons?.length) {
+      problems.push(`Reliability path missing real authored lessons: ${path.id}`);
+      continue;
     }
+    const first=path.lessons[0]?.activities?.[0];
+    const blocks=first?.content?.blocks;
+    if (first?.content?.type !== "reading" ||
+        !Array.isArray(blocks) ||
+        !blocks.some((b)=>b.type === "heading") ||
+        !blocks.some((b)=>b.type === "paragraph")) {
+      problems.push(`Reliability path starts without substantive source teaching: ${path.id}`);
+    }
+    let readings=0, practicals=0;
     for (const lesson of path.lessons) {
-      lesson.activities.forEach((activity, index) => {
-        if (activity.content.type !== "practical") return;
-        const prep = lesson.activities[index - 1];
-        const reading = prep?.content?.blocks;
-        if (!prep?.id?.endsWith("-reliability-preparation") ||
-            prep?.content?.type !== "reading" ||
-            !Array.isArray(reading) ||
-            !reading.some((block) => block.type === "heading" && block.id === "evidence") ||
-            !reading.some((block) => block.type === "heading" && block.id === "abort-recovery")) {
-          problems.push(`Reliability practical lacks measurable safety preparation: ${path.id}/${lesson.id}/${activity.id}`);
+      if (lesson.id.endsWith("-reliability-model")) {
+        problems.push(`Synthetic Reliability orientation still in learner path: ${path.id}`);
+      }
+      for (const activity of lesson.activities ?? []) {
+        if (activity.id.endsWith("-reliability-preparation")) {
+          problems.push(`Duplicate Reliability preparation still in learner path: ${path.id}/${lesson.id}`);
         }
-      });
+        if (activity.content.type === "reading") readings++;
+        if (activity.content.type === "practical") practicals++;
+      }
+    }
+    if (!readings || !practicals) {
+      problems.push(`Reliability path lacks real reading or practice: ${path.id} (readings=${readings}, practicals=${practicals})`);
+    }
+    if (path.id === "logging") {
+      const ids=path.lessons.map((x)=>x.id);
+      const decision=ids.indexOf("production-logging-centralized-stack-decision");
+      const gelf=ids.indexOf("logging-graylog-event-lifecycle");
+      if (decision<0 || gelf<=decision) problems.push("GELF source lesson must follow Graylog stack decision");
+    }
+    if (path.id === "observability-stack-integration" &&
+        path.lessons[0]?.activities?.[0]?.id !== "reliability-observability-stack-integration-000") {
+      problems.push("Observability integration must begin with authored cross-signal teaching");
+    }
+    if (path.id === "steward-reliability-program" &&
+        path.lessons[0]?.activities?.[0]?.id !== "steward-reliability-program-milestone-000") {
+      problems.push("Reliability milestone must begin with authored evidence-first brief");
     }
   }
 }
