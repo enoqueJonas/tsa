@@ -7,9 +7,13 @@ for (const [path,call] of [["reliability-service-level-engineering-deep.ts","ext
   assert.ok(source.includes("..."+call+"(spec.id)"),"Source reading must wire "+call);
 }
 function getMap(name){
-  const match=original.match(new RegExp("export const "+name+":\\s*Record<string,WorkedSection\\[\\]> = (\\{[\\s\\S]*?\\});\\nexport "));
-  assert.ok(match,"Could not recover "+name+" from original teaching source");
-  return JSON.parse(match[1]);
+  const begin="export const "+name+": Record<string,WorkedSection[]> = ";
+  const pos=original.indexOf(begin);
+  assert.ok(pos>=0,"Missing source map "+name);
+  const next=name==="sliDepthById" ? ";\nexport const metricDepthById:" : ";\nfunction addSections";
+  const stop=original.indexOf(next,pos+begin.length);
+  assert.ok(stop>pos,"Cannot delimit authored map "+name);
+  return JSON.parse(original.slice(pos+begin.length,stop));
 }
 const sli=getMap("sliDepthById"), metrics=getMap("metricDepthById");
 assert.deepEqual(Object.keys(sli).sort(),["slis","error-budgets","windowing","burn-rate-alerting"].sort());
