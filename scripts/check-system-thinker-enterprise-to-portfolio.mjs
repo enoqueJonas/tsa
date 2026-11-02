@@ -66,7 +66,7 @@ assert.ok(fileSchool.includes("concurrentStewardBatchSections") && fileSchool.in
 for(const term of ["ThreadPoolExecutor","Barrier(2)","pg_backend_pid()","SELECT FOR UPDATE","ON CONFLICT (delivery_id) DO NOTHING","transaction.atomic()","stale_owner","denied_receipt","batch_race_effect"]){
   assert.ok(concurrencySource.includes(term),"Missing real concurrent-worker evidence: "+term);
 }
-for(const term of ["Independently devise a novel race","two physical PG","no human transfer PASS"]){
+for(const term of ["Independently devise a novel race","two physical PostgreSQL","No human transfer PASS"]){
   assert.ok((fileSchool+" "+concurrencySource).toLowerCase().includes(term.toLowerCase()),"Learner race critique missing "+term);
 }
 const milestone=readFileSync(root+"system-thinker-milestone-deep.ts","utf8");
