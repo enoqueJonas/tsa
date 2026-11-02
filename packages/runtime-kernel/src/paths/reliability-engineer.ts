@@ -2,6 +2,7 @@ import type { LearningPath } from "./learning-path";
 import { alertingAndOnCallDeepLessons } from "./reliability-alerting-on-call-deep";
 import { alertmanagerImplementationDeepLessons } from "./reliability-alertmanager-implementation-deep";
 import { centralLoggingDecisionLesson } from "./reliability-central-logging-decision";
+import { graylogEventTraceLesson } from "./reliability-graylog-event-trace";
 import { databaseStewardshipDeepLessons } from "./reliability-database-stewardship-deep";
 import { dataProtectionAndDisasterRecoveryDeepLessons } from "./reliability-data-protection-disaster-recovery-deep";
 import { distributedTracingImplementationDeepLessons } from "./reliability-distributed-tracing-implementation-deep";
@@ -70,7 +71,7 @@ function prepareReliability(path: LearningPath): LearningPath {
 export const reliabilityAndSre: LearningPath = prepareReliability({ id: "reliability-and-sre", title: "Reliability and SRE Foundations", lessons: reliabilityAndSreDeepLessons });
 export const observability: LearningPath = prepareReliability({ id: "observability", title: "Observability", lessons: [...observabilityDeepLessons, tracingBackendDecisionLesson] });
 export const distributedTracing: LearningPath = prepareReliability({ id: "distributed-tracing", title: "Distributed Tracing with OpenTelemetry and Tempo", lessons: distributedTracingImplementationDeepLessons });
-export const productionLogging: LearningPath = prepareReliability({ id: "logging", title: "Production Logging", lessons: [...productionLoggingDeepLessons, centralLoggingDecisionLesson] });
+export const productionLogging: LearningPath = prepareReliability({ id: "logging", title: "Production Logging", lessons: [...productionLoggingDeepLessons, centralLoggingDecisionLesson, graylogEventTraceLesson] });
 export const metricsPrometheusGrafana: LearningPath = prepareReliability({ id: "metrics-prometheus-grafana", title: "Metrics, Prometheus and Grafana", lessons: metricsPrometheusGrafanaDeepLessons });
 export const observabilityStackIntegration: LearningPath = prepareReliability({ id: "observability-stack-integration", title: "Observability Stack Integration", lessons: observabilityStackIntegrationDeepLessons });
 export const serviceLevelEngineering: LearningPath = prepareReliability({ id: "service-level-engineering", title: "Service Level Engineering", lessons: serviceLevelEngineeringDeepLessons });
