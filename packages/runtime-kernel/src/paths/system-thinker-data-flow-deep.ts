@@ -28,7 +28,7 @@ function richLesson(
         { type: "list", items: outcomes },
     ];
 
-    for (const section of [...sections, ...(workedByModule["flow"][title] ?? [])]) {
+    for (const section of [...sections, ...(workedByModule["flow"]?.[title] ?? [])]) {
         blocks.push({ type: "heading", id: slug(section.title), text: section.title, level: 2 });
         for (const text of section.paragraphs) blocks.push({ type: "paragraph", text });
         if (section.code) {
@@ -44,7 +44,7 @@ function richLesson(
         title: "Steward connection",
         body: "Trace Steward flows across authorization, domain rules, persistence and integration boundaries. A useful flow model shows where data changes meaning, ownership or assurance—not every function call.",
     });
-    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...primaryResearchByModule["flow"]] });
+    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...(primaryResearchByModule["flow"] ?? [])] });
 
     return {
         id,

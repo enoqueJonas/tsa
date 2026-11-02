@@ -27,7 +27,7 @@ function richLesson(
         { type: "list", items: outcomes },
     ];
 
-    for (const section of [...sections, ...(reviewWorkedByModule["failure"][title] ?? [])]) {
+    for (const section of [...sections, ...(reviewWorkedByModule["failure"]?.[title] ?? [])]) {
         blocks.push({ type: "heading", id: slug(section.title), text: section.title, level: 2 });
         for (const text of section.paragraphs) blocks.push({ type: "paragraph", text });
         if (section.code) {
@@ -45,7 +45,7 @@ function richLesson(
         title: "Steward connection",
         body: "Use Steward API v1 as evidence. A failure mode is not hypothetical merely because it has not happened yet; it is credible when the current design, dependency graph, state model or operating assumptions make it possible.",
     });
-    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...reviewResearch["failure"]] });
+    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...(reviewResearch["failure"] ?? [])] });
 
     return {
         id,

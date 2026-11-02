@@ -28,7 +28,7 @@ function richLesson(
         { type: "list", items: outcomes },
     ];
 
-    for (const section of [...sections, ...(workedByModule["modeling"][title] ?? [])]) {
+    for (const section of [...sections, ...(workedByModule["modeling"]?.[title] ?? [])]) {
         blocks.push({ type: "heading", id: slug(section.title), text: section.title, level: 2 });
         for (const text of section.paragraphs) blocks.push({ type: "paragraph", text });
         if (section.code) {
@@ -44,7 +44,7 @@ function richLesson(
         title: "Steward connection",
         body: "The model must answer a real engineering question about Steward. Do not draw database tables, Django classes or infrastructure unless that level of detail is necessary for the question being asked.",
     });
-    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...primaryResearchByModule["modeling"]] });
+    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...(primaryResearchByModule["modeling"] ?? [])] });
 
     return {
         id,
