@@ -80,6 +80,16 @@ Record for each changed lesson:
 
 Prefer official documentation and standards for correctness; use university lectures, reputable engineering deep dives and practitioner walkthroughs for pedagogical explanations and competing approaches. Split a lesson when the research exposes several foundational mechanisms that cannot be explained to the intended learner at sufficient depth within one coherent learning unit.
 
+## One-school-at-a-time remediation rule
+
+**Do not spread an audit across several schools.** Select one canonical school, inventory **all** its modules, composed lessons and activity overrides, and stay within that school until its review reaches an evidence-backed disposition. External prerequisites from an earlier school may be inspected and reused, but they are not an excuse to silently switch the audit scope or edit another school's lessons.
+
+At school entry, open or update a dedicated GitHub school issue, learner-order matrix and draft remediation PR. For every module inspect definitions, prerequisites, core mechanism, worked and negative examples, practical setup/outputs, resource quality, rendered experience and independent transfer. Record concrete deficiencies against the actual activity ID, not just file-wide counts. Splitting overbroad topics is allowed and expected; preserve progress identifiers where feasible and test navigation/persistence after changing activity counts.
+
+At school exit, reconcile **each** module against the canonical learner-experience ledger and the school-wide audit report. Technical passes are separate from author-led review and independent novice learner evidence. If an external environment or human learner is unavailable, mark the specific gate **BLOCKED / UNVERIFIED**, preserve it in the current school's issue, and **do not declare the school learner-validated**. Do not start the next school's remediation merely because the CI is green or because remaining work is inconvenient. A deliberately scoped handoff must state what remains before the school can be accepted.
+
+**Current active school: System Thinker (PED-008 / issue #332, draft PR #333).** This named lock is a current-work pointer, not a permanent content assumption: update it only when a school is formally exited and the next one becomes active.
+
 ## Pedagogical progression by school level
 
 Scaffolding should decrease deliberately:
