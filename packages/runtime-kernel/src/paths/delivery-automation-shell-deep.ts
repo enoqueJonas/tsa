@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import {deliveryShellFailureSections,deliveryShellFailureResources} from "./delivery-shell-failure-worked";
 
 const bash: LearningResource = { title: "GNU Bash manual", url: "https://www.gnu.org/software/bash/manual/" };
 const shellcheck: LearningResource = { title: "ShellCheck", url: "https://www.shellcheck.net/" };
@@ -12,14 +13,14 @@ function richLesson(id: string, title: string, intro: string, outcomes: string[]
         { type: "heading", id: "learning-outcomes", text: "Learning outcomes", level: 2 },
         { type: "list", items: outcomes },
     ];
-    for (const section of sections) {
+    for (const section of [...sections, ...(id === "pipes-exit-codes" ? deliveryShellFailureSections : [])]) {
         const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
         blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code, caption: section.code.caption, output: section.code.output });
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward automation rule", body: "Automate a repeated Steward developer or operator task only when the automation makes intent, failure and rerun behavior clearer than the manual sequence it replaces." });
-    blocks.push({ type: "resources", title: "Required and supporting reading", resources });
+    blocks.push({ type: "resources", title: "Required and supporting reading", resources: id === "pipes-exit-codes" ? [...resources, ...deliveryShellFailureResources] : resources });
 
     const evidence = shellPracticeEvidence[id];
     if (!evidence) throw new Error(`Missing shell practice evidence for ${id}`);
