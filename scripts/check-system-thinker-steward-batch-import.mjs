@@ -9,9 +9,12 @@ import {spawnSync} from "node:child_process";
 const builder=fs.readFileSync("packages/runtime-kernel/src/paths/builder-django-rich.ts","utf8");
 const batch=fs.readFileSync("packages/runtime-kernel/src/paths/system-thinker-real-steward-batch-worked.ts","utf8");
 const lesson=fs.readFileSync("packages/runtime-kernel/src/paths/system-thinker-enterprise-file-integration-deep.ts","utf8");
+const concurrent=fs.readFileSync("packages/runtime-kernel/src/paths/system-thinker-concurrent-batch-worked.ts","utf8");
 assert.ok(lesson.includes("realStewardBatchSections"),"Batch practical reading is not actually rendered");
 assert.ok(lesson.includes('id: "steward-batch-domain"'),"Dedicated import lesson is missing");
-assert.ok(lesson.includes('[lesson(spec), lesson(stewardBatchDomainSpec)]'),"Domain import lesson not placed after batch lifecycle");
+assert.ok(lesson.includes('[lesson(spec), lesson(stewardBatchDomainSpec), lesson(stewardBatchConcurrencySpec)]'),"Domain and concurrency lesson order incorrect");
+assert.ok(lesson.includes('id: "steward-batch-concurrency"'),"Concurrent importer lesson missing");
+assert.ok(lesson.includes("independently devise a novel race"),"No independent concurrency failure challenge");
 assert.ok(lesson.includes("Independently modify a copy of the lab"),"No novel negative learner practice");
 assert.ok(lesson.includes("realStewardBatchResources"),"Missing database transaction research links");
 function builderCode(caption){
@@ -81,6 +84,24 @@ DATABASES = {'default': {
     "real Builder Service ORM rows: 4; completed receipts: 1",
   ])assert.ok(stdout.includes(required),"Expected real ORM observation missing: "+required+"\n"+stdout);
   console.log("System Thinker real Django PostgreSQL CSV owner-import passed: denied actor, forged approval, all-row rollback, crash, replay, conflict and immutable receipt.");
+  // Test the exact learner-visible 2-worker program, not a parallel mock.
+  const raceCaption="Two real PostgreSQL workers: absent-row locking race, unique claims and stale-owner refusal";
+  const raceAnchor=concurrent.indexOf('"caption": '+JSON.stringify(raceCaption));
+  assert.ok(raceAnchor>=0,"Missing published concurrency program");
+  const raceMatch=concurrent.slice(raceAnchor,raceAnchor+28000).match(/"code":\s*("(?:\\.|[^"\\])*")/);
+  assert.ok(raceMatch,"Cannot source-extract concurrent Python");
+  const raceCode=JSON.parse(raceMatch[1]);
+  const observed=run("python3",["manage.py","shell","-c",raceCode],env);
+  for(const expected of [
+    "absent-row SELECT FOR UPDATE race: two backends, one raw unique violation",
+    "same ID and same bytes: one applied, one duplicate, one DB effect",
+    "same ID but changed bytes: one applied, one conflict, no second effect",
+    "different IDs and same old owner: one applied, one stale_owner rollback",
+    "other actor denied prior receipt; no new effect: True",
+    "real PostgreSQL receipts: 3; local owner effects: 3; worker backends distinct",
+  ])assert.ok(observed.includes(expected),"Missing concurrent proof: "+expected+"\n"+observed);
+  console.log("System Thinker real PG worker race passed: absent-row preflight failure, transactional claims, collision, stale owner, access-gated replay.");
+
 }finally{
   try{
     if(created)run("psql",["-X","-v","ON_ERROR_STOP=1","-c","DROP DATABASE "+name+" WITH (FORCE)"]);
