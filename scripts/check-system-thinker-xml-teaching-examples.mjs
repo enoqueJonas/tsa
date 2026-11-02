@@ -41,4 +41,4 @@ for (const example of cases) {
     assert.ok(result.stdout.includes(line), `${example.caption}: missing ${line} from ${result.stdout}`);
   }
 }
-console.log("System Thinker XML/XSD learner examples passed: 2 source-extracted programs and 6 negative outcomes.");
+console.log("System Thinker XML/XSD learner examples passed: 2 source-extracted programs and 5 negative outcomes.");
