@@ -156,7 +156,7 @@ export const distributedStateStagedLabs: Lesson[] = [
             "Messages for the same Service may arrive late or out of order because of concurrent publishers, redelivery or parallel consumers. Include entity version or another domain ordering signal; if a consumer sees version 3 after version 4, it should not regress derived state to version 3. No global ordering is assumed.",
             "Measure queue growth, unprocessed outbox rows and oldest-event age. Define cleanup/retention only after delivery is durable and auditable, and prove concurrency handling when two outbox publishers race to claim the same row."
         ]
-    }
+    },
     ...realOutboxWorkedSections,
 ], {
     "objective": "Implement and prove a durable event publication pipeline in PostgreSQL and RabbitMQ.",
