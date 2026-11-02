@@ -128,6 +128,23 @@ if (!cloud || cloud.paths.length !== 11) {
   problems.push("Cloud Engineer must expose 11 learning paths");
 } else {
   for (const path of cloud.paths) {
+    if (path.id === "cloud-orchestration-gitops") {
+      // Inspect the actual Kubernetes teaching sequence, not a generic wrapper.
+      if (path.lessons.length !== 17) problems.push("Cloud orchestration must retain 16 concept lessons plus its milestone");
+      for (const lesson of path.lessons) {
+        if (lesson.id === "cloud-orchestration-gitops-milestone") continue;
+        const reading = lesson.activities?.[0];
+        const blocks = reading?.content?.blocks;
+        if (reading?.content?.type !== "reading" ||
+            !Array.isArray(blocks) ||
+            blocks.filter((block) => block.type === "heading").length < 2 ||
+            !lesson.activities.some((item) => item.content.type === "practical") ||
+            !lesson.activities.some((item) => item.content.type === "reflection")) {
+          problems.push(`Missing authored Kubernetes reading/practice/transfer: ${lesson.id}`);
+        }
+      }
+      continue;
+    }
     const first = path.lessons?.[0];
     const blocks = first?.activities?.[0]?.content?.blocks;
     if (first?.id !== `${path.id}-operational-model` ||
