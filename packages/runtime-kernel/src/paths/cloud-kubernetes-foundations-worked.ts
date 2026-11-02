@@ -414,7 +414,7 @@ export const kubernetesFoundationsById: Record<string,K8sSection[]> = {
       }
     },
     {
-      "heading": "Read-only inspection and compatibility diagnosis",
+      "heading": "Read-only failure diagnosis and compatibility checks",
       "paragraphs": [
         "On an actual authorized OpenShift environment, inspect Route definitions, deployment Pod events and applicable SCC. Do not assume normal application users have authority to list every SCC cluster-wide. If an image fails with a security-context denial, inspect the admission error and requested user, group, volume or capability constraint before editing the image/security policy. A route that exists but returns 503 may indicate unready/unselected Service endpoints; a TLS hostname mismatch is a different certificate/edge issue."
       ],
@@ -525,7 +525,7 @@ export const kubernetesFoundationsById: Record<string,K8sSection[]> = {
       }
     },
     {
-      "heading": "Evaluate a change that crosses release and safety boundaries",
+      "heading": "Failure case: conflicting desired state and live emergency repair",
       "paragraphs": [
         "Suppose a human hotfix changes the live readiness path during an incident while the Git declaration still contains the failing path. Blind automatic self-heal could restore the incorrect configuration. The operator must choose a documented break-glass freeze/override with a finite reconciliation strategy, repair Git, review the new desired state, then re-enable safe reconciliation; do not let two systems fight over the field. In an independent design, assign release digest to GitOps, HPA-owned replicas to the autoscaler, secrets to the approved external source and image build to GitLab CI/CD, and list the API rights each needs."
       ]
