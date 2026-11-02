@@ -28,6 +28,9 @@ const cloudBoundaries: Record<string, CloudBoundary> = {
 function teachCloudPath(path: LearningPath): LearningPath {
     const guide = cloudBoundaries[path.id];
     if (!guide) throw new Error(`Missing Cloud Engineer instructional model for ${path.id}`);
+    // Orchestration now teaches in 16 actual concept readings plus the milestone.
+    // Generic generated prep/orientation would obscure the real sequence and duplicate lessons.
+    if (path.id === "cloud-orchestration-gitops") return path;
     const prepared = path.lessons.map((lesson) => ({ ...lesson, activities: lesson.activities.flatMap((activity) => {
         if (activity.content.type !== "practical") return [activity];
         const practical = activity.content;
