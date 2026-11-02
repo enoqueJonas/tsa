@@ -7,7 +7,7 @@ export const rabbitPoisonReplaySections = [
     "paragraphs": [
       "RabbitMQ's negative acknowledgement with `requeue=False` can dead-letter a message **only when the source queue has a valid dead-letter exchange configuration and binding**. The dead-letter exchange (DLX) routes; the quarantine queue (DLQ) stores. A consumer that repeatedly `nack(requeue=True)` for an unsupported schema risks a hot loop and starvation. A poison message is a permanent failure *for the currently deployed consumer*, not necessarily a permanently invalid business event.",
       "Publisher confirms and consumer acknowledgements refer to different endpoints. The original publication confirm establishes broker responsibility according to queue topology; it cannot prove successful processing. A negative consumer acknowledgement can route to DLX, but the default classic-queue dead-letter forwarding does not carry the same safety guarantee as source publishing with confirms. Real clustered quorum at-least-once dead-lettering is a separate configuration and failure test; don't claim it from a one-node classic-queue demo.",
-      "The worked example creates an isolated durable direct exchange, work queue with `x-dead-letter-exchange` / routing key, a **different** dead-letter exchange and an explicitly bound quarantine queue. An unsupported schema-v2 event receives `basic_nack(requeue=False)`; its `x-death` header records the source queue and reason. Inspecting the quarantine delivery is stronger evidence than observing the original queue count decrease."
+      "The worked example uses queue-declaration `x-arguments` **only for its disposable uniquely named lab queue**. RabbitMQ recommends policies for operational deployments because hardcoded arguments require queue redeclaration to change. The example creates an isolated durable direct exchange, work queue with `x-dead-letter-exchange` / routing key, a **different** dead-letter exchange and an explicitly bound quarantine queue. An unsupported schema-v2 event receives `basic_nack(requeue=False)`; its `x-death` header records the source queue and reason. Inspecting the quarantine delivery is stronger evidence than observing the original queue count decrease."
     ]
   },
   {
@@ -48,6 +48,18 @@ export const rabbitPoisonReplayResources: LearningResource[] = [
     "title": "RabbitMQ — Queue ordering and redelivery caveats",
     "url": "https://www.rabbitmq.com/docs/queues",
     "kind": "reference"
+  },
+  {
+    "title": "RabbitMQ Engineering — At-Least-Once Dead Lettering (technical deep dive)",
+    "url": "https://www.rabbitmq.com/blog/2022/03/29/at-least-once-dead-lettering",
+    "kind": "reference",
+    "purpose": "RabbitMQ team explanation of why standard dead-lettering is not equivalent to quorum-queue at-least-once transfer."
+  },
+  {
+    "title": "RabbitMQ Tutorial 19a — Alternate Exchanges, Dead Letter and Acknowledgements (jumpstartCS)",
+    "url": "https://www.youtube.com/watch?v=M7Mg7izbi7w",
+    "kind": "video",
+    "purpose": "Optional 10-minute visual orientation of queue/DLX/ack routing. Public outline inspected; recording not watched end-to-end. Use current RabbitMQ documentation for safety guarantees."
   },
   {
     "title": "PostgreSQL — INSERT ... ON CONFLICT conditional UPDATE",
