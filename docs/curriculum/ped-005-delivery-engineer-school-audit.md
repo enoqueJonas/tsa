@@ -134,6 +134,44 @@ Source disposition: Configuration Drift **TARGETED** (diagnosis scenarios but no
 
 **Remaining school sequence:** finish any required concrete Configuration Management source gaps, then assess Path 7 Artifact/Dependency/Supply Chain, 8 Release Engineering, 9 Production Schema Evolution, 10 CI Platform Migration and 11 Milestone in order. Uncoached learner validation stays separate from this audit; do not close #325 or mark this school VALIDATED.
 
+## Paths 7–11 — school-wide authored-source findings
+
+### Path 7 — Artifact and Dependency Supply Chain
+
+Reviewed the 23 topic-level reading/practice/reflection specs and two integration labs in `delivery-artifact-supply-chain-deep.ts`, with the richer per-title expectations from `delivery-artifact-supply-chain-quality.ts` and the source/package prerequisites from `internal-dependency-management.ts`.
+
+**Contradiction fixed:** the Python distribution practical falsely asserted that `steward-cli` and `steward-release-check` already existed as two independent consumers and that `steward-common` therefore **must** be created. The npm publication/consumption and internal-versioning practicals likewise assumed production shared packages existed. These four practicals now accept **either** a real earned package (if independent consumer evidence exists) **or** a clearly labeled disposable teaching fixture, while prohibiting claims that a fixture is a Steward dependency. This restores consistency with the earlier conditional extraction gate and the milestone. The pip example no longer hardcodes a possibly nonexistent `steward-common==1.2.0`; it takes `PACKAGE_SPEC` and requires an approved Nexus index. A tag/digest inspection sample no longer assumes RepoDigests[0] exists on a locally built image.
+
+**Concept-remediation targets inside original readings:** `delivery-supply-chain-depth.ts` adds concrete trust/negative cases for (1) public versus private dependency resolution, (2) hosted/proxy/group authority, (3) Nexus placement, persistent metadata and restore, (4) role-based registry permissions and credential revocation, and (5) prerelease promotion without mutating artifact bytes. Existing detailed worked examples of private Python/npm/OCI publication, package versioning, retention of deployed rollback digests, provenance, SBOM, signature limitations and scanner triage were retained.
+
+**Still UNVERIFIED:** real Nexus installation, storage restore, private TLS, hosted/group resolution and dependency-confusion negative test, actual source→OCI digest pull, role-denied publication, clean package installs, generated SBOM and signed provenance. This path is not certified by tests of TS lesson structure alone.
+
+### Path 8 — Release Engineering
+
+Source includes six substantive authored concept readings, a four-part integrated release lab and a review; critically, `delivery-release-engineering-quality.ts` **overlays the otherwise generic `Apply:` practicals with six distinct title-specific scenarios**. Read the actual enriched practicals before labeling them repetitive. Retain the verified teaching distinctions: candidate vs approved release vs deployment vs observed runtime; immutable digest/correct registry identity; stopped promotion on mismatch; data rollback versus application rollback; before/after client verification; exercised runbook. **Real** release, recovery and independent handoff evidence remains UNVERIFIED. No cosmetic expansion added.
+
+### Path 9 — Production Database Schema Evolution
+
+One dense foundational reading and five subsequent practice/reflection activities already teach expand → compatible coexistence → bounded restartable backfill → switch → safe contract, concurrency guards and lost rollback windows. A real defect in the initial SQL demonstration was corrected: a missing `customers` table and display-only escaped newlines made it non-standalone. The reading now publishes a **transactional, disposable PostgreSQL fixture** using `CREATE TEMP TABLE`, expansion, synthetic backfill, missing count **2 → 0** and `ROLLBACK`. `scripts/check-delivery-schema-expansion.mjs` extracts this exact authored SQL, executes it in the existing PostgreSQL CI job and asserts both counts. **Green matching-head CI required** before claiming this executed successfully. Real rolling database load, backfill interruption and production-scale locks remain UNVERIFIED.
+
+### Path 10 — CI Platform Migration Exercise
+
+One authored reading, practical and review already distinguish job syntax from verified semantic equivalence. The example makes GitLab the canonical target, requires equivalent successful/negative runs and one authoritative publisher during cutover, and **explicitly allows a fictional legacy Jenkinsfile as a labeled fixture if no actual Jenkins exists**, preventing another fabricated infrastructure dependency. Existing source is adequate for the conceptual/fixture exercise; a real two-platform cutover remains UNVERIFIED and must never be claimed when only the fixture ran.
+
+### Path 11 — Delivery Engineer Milestone
+
+Eight detailed milestone units (brief; gates for source/artifacts, infrastructure, promotion, runtime verification, failure/recovery and handoff; exit review) already demand exact digest and three process roles, real GitLab Runner and Nexus evidence, authorized vs forbidden API paths, outbox→RabbitMQ consumer completion, an immutable rollback target and no duplicate publishing platform. The milestone correctly makes `steward-common` conditional on genuine extraction, not a compulsory artifact. Keep these real pass/fail requirements instead of creating another broad review checklist. No actual learner homelab release or unaided handoff has been observed: NOT VALIDATED.
+
+### Quality judgment across the eleven-path school
+
+Every path has been read at the **source-content and practical-contract level**, and concrete contradictory prerequisites and generic teaching gaps have been corrected. However:
+
+- **Automated structural / source-example evidence:** updated TS lesson sources, exact Python allow/block controls and the new PostgreSQL source-derived check require final matching-head pipeline success.
+- **Source-level instructional depth:** concrete mechanisms, negative paths and independently transferable decisions are now present across inspected areas, but source review cannot establish that the rendered experience feels comprehensive to a novice; generated orientation/preparation wrappers still exist on paths 2–11 and are not counted as substantive lessons.
+- **Learner-validation lane:** actual Docker/Nexus/GitLab/Ansible/Steward stack exercises, rendered-lesson depth reviews, uncoached novice explanations and recovery demonstrations are still outstanding. Do not mark the Delivery Engineer school learner-validated or close #325 merely on code and CI.
+
+**Merge policy:** PR #339 stays **draft** until its final head passes the full workflow and the source changes are reviewed; final learner validation may remain separately open, explicitly named and evidence-backed. Next human step after a green build: run the rendered Delivery Engineer school end to end with real learners and an isolated homelab, recording failure cases and teaching gaps by exact lesson ID.
+
 ## Completion rule
 
 Remediate all 11 paths at source with executable safe examples and failure cases, then advance to Cloud Engineer. Independently scored learner teach-back, visual manual review and production infrastructure are tracked separately; do not let them trigger endless new features within this school.
