@@ -80,6 +80,10 @@ test("Platform Builder budget homelab mechanisms and executable capacity refusal
   runAudit("scripts/check-platform-builder-homelab-worked.mjs", /Platform Builder budget homelab authored examples passed:/);
 });
 
+test("Platform Builder separates NFS, Samba, LDAP and AD schema comparison into focused labs", () => {
+  runAudit("scripts/check-platform-builder-file-directory-split.mjs", /Platform Builder enterprise files and directory lesson split passed:/);
+});
+
 test("System Thinker XML and XSD examples execute from the actual learner source", () => {
   runAudit("scripts/check-system-thinker-xml-teaching-examples.mjs", /System Thinker XML/);
 });
