@@ -10,17 +10,17 @@ const practices: Record<string, PracticeSpec> = {
     objective: "Create Steward's first Django application and connect it to artifacts the learner already designed: the HTTP contract and PostgreSQL-backed domain.",
     scenario: "You now have three real inputs: a Python Steward domain history, an HTTP contract designed before frameworks, and a PostgreSQL schema you can query directly. Django does not exist yet. In this increment you will create it deliberately and trace one request through the framework without pretending a starter project was already provided.",
     instructions: [
-      "From the steward-core repository, create a new working branch or checkpoint before introducing Django.",
+      "The Django primer created a disposable tsa-django-intro scratch project for the first HTTP experiment. Return to the existing steward-core project and create a coherent checkpoint before introducing Django there; reuse the validated primer concepts, not the scratch database.",
       "Add Django as an explicit project dependency, then create the Steward Django project and a registry app. Record the generated files and explain manage.py, settings.py, urls.py, asgi.py/wsgi.py, apps.py and migrations instead of treating them as magic.",
       "Configure a local PostgreSQL connection using environment-owned configuration rather than embedding credentials in committed source.",
-      "Create the minimum model/migration mapping needed for one existing Service concept. Where the Django model differs from your earlier SQL design, record the reason instead of silently replacing the design.",
-      "Implement GET /services/health as the first narrow endpoint and return a small JSON response.",
+      "Use a NEW, empty tsa_steward_django_lab database owned by Django migrations; do not run migrate on the manually seeded tsa_steward_lab. Map the canonical Team/Service/Environment concepts, and record every intentional difference from the SQL design.",
+      "Implement GET /health/ as the first narrow endpoint, preserving the exact route and response contract proven in the disposable Django primer. Create /services/health/ later only with a documented contract reason.",
       "Send a real request and trace ordered URL resolution, middleware request/response traversal, HttpRequest/view execution and HttpResponse creation.",
       "Annotate the important project files as framework configuration, HTTP orchestration, persistence mapping or domain/application behavior.",
       "Commit this checkpoint: later Django exercises may now rely on an actual Steward Django project."
     ],
     deliverables: ["Created Steward Django project and registry app", "Declared Django/PostgreSQL dependencies", "Environment-based database configuration", "Initial model/migration mapping", "Working health endpoint", "Request-flow diagram"],
-    completionCriteria: ["The Django project is created in this exercise rather than assumed to pre-exist.", "The application can connect to the learner's Steward PostgreSQL environment.", "GET /services/health returns the expected JSON.", "The learner can trace the request path through Django.", "Framework configuration, persistence and domain responsibilities are distinguishable.", "Later Django lessons have an explicit checkpoint to continue from."]
+    completionCriteria: ["The Django project is created in this exercise rather than assumed to pre-exist.", "The application connects to the dedicated Django-managed PostgreSQL lab, not the existing raw-SQL fixture.", "GET /health/ returns the expected JSON, consistent with the primer and API documentation lessons.", "The learner can trace the request path through Django.", "Framework configuration, persistence and domain responsibilities are distinguishable.", "Later Django lessons have an explicit checkpoint to continue from."]
   },
   "django-and-api-engineering-django-rest-framework": {
     objective: "Introduce Django REST Framework only after observing plain Django HTTP behavior, then use it to begin implementing the Service contract designed earlier.",
@@ -91,7 +91,7 @@ const practices: Record<string, PracticeSpec> = {
   "django-and-api-engineering-filtering-searching-and-ordering": {
     objective: "Expose query capabilities that answer real Steward questions without accidentally publishing an unbounded query language.",
     scenario: "A generic filter backend makes every field searchable and orderable. It is convenient, but nobody has decided whether those capabilities belong to the public contract or what they cost.",
-    instructions: ["List the actual collection questions Steward clients need to ask.", "Implement explicit lifecycle, criticality and owner-team filters using an allowlisted FilterSet/backend contract rather than passing arbitrary query parameters into ORM lookups.", "Add limited name/slug search and deliberate ordering_fields; inspect the actual public query-parameter conventions and generated SQL.", "Attempt one unsupported query and confirm it is rejected or ignored predictably.", "Inspect at least one generated SQL query and identify a future performance concern."],
+    instructions: ["List the actual collection questions Steward clients need to ask.", "Implement explicit lifecycle, criticality and owner-team filters using an allowlisted FilterSet/backend contract rather than passing arbitrary query parameters into ORM lookups.", "Add bounded name search and deliberate ordering_fields. Include slug search only after the dedicated slug migration exists; inspect the public query-parameter contract and generated SQL.", "Attempt one unsupported query and confirm it is rejected or ignored predictably.", "Inspect at least one generated SQL query and identify a future performance concern."],
     deliverables: ["Supported-query matrix", "Implemented filters/search/order", "Unsupported-query evidence", "SQL observation note"],
     completionCriteria: ["Every exposed query capability maps to a known use case.", "Search, filtering and ordering are distinguished.", "The public surface is intentionally bounded."]
   },
