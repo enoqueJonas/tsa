@@ -49,6 +49,11 @@ Source references: [Graylog GELF format](https://go2docs.graylog.org/current/get
 
 The official Graylog [GELF 1.1 specification](https://go2docs.graylog.org/current/getting_in_log_data/gelf_format.html) confirms portable required fields and also distinguishes the current server parser's more permissive behavior; the [Graylog Inputs](https://go2docs.graylog.org/current/getting_in_log_data/inputs.htm) and [data-management](https://go2docs.graylog.org/current/making_sense_of_your_log_data/manage_your_log_data.htm) references support the ingest/stream/index distinction. A local GELF UDP socket proves neither an indexed search result nor retention.
 
+
+### New exact SLI and metrics worked source — 2026-11-02
+
+The source-audit continuation added `reliability-sli-metrics-worked.ts` to the actual Service Level Engineering and Metrics original readings (original IDs unchanged). Four SLI teaching contexts explain eligible/good event sets, missing denominators, asynchronous lifecycle completion, allowed error budget, multi-window alerts and low traffic; three Metrics teaching contexts explain counter-reset `rate()`, valid denominator and label identity, classic cumulative histogram buckets and empty Prometheus vectors. The exact local Python event-population, request budget, histogram and PromQL printing examples are exercised by `scripts/check-reliability-sli-metrics-worked.mjs` in CI. These are **synthetic/local source checks**, not a real Prometheus scrape, running Steward SLI or Graylog query. Matching-head CI and independent learner transfer remain required.
+
 ## Remaining source and evidence gates
 
 - [x] Inventory all **16 paths** and remove synthetic wrappers; add genuine first-principles teaching for the two originally practice-only paths; remediate original logging and observability source gaps. Independent module teach-back remains open.
