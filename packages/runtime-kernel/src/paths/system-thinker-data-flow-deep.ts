@@ -1,6 +1,7 @@
 import type { Lesson } from "./lesson";
 import type { LearningResource, LessonBlock } from "../activities/content";
 import {workedByModule, primaryResearchByModule} from "./system-thinker-intermediate-worked";
+import {ambiguousHttpWorkedSections,ambiguousHttpResources} from "./system-thinker-http-ambiguous-commit-worked";
 
 const sequenceDiagrams: LearningResource = { title: "Sequence diagrams", url: "https://www.uml-diagrams.org/sequence-diagrams.html" };
 const httpSemantics: LearningResource = { title: "HTTP Semantics", url: "https://www.rfc-editor.org/rfc/rfc9110" };
@@ -125,6 +126,33 @@ export const dataFlowAndIntegrationDeepLessons: Lesson[] = [
         ["Choose a synchronous or asynchronous boundary.", "List timeout, explicit rejection and partial-success cases.", "For each case, state what is known and unknown about remote state.", "Decide whether retry is safe and why.", "Define correlation/observability evidence.", "Record one scenario that should require manual investigation rather than automatic recovery."],
         ["Why can a timeout be ambiguous?", "When is automatic retry unsafe?", "What does an operator need to reconstruct a cross-boundary failure?"],
         [httpSemantics, twelveFactor],
+    ),
+    richLesson(
+        "Ambiguous HTTP Outcomes and Idempotent Retries",
+        "A network failure can hide a successfully committed business operation. Learn the difference by running a local HTTP server that commits a Steward-shaped lifecycle change to SQLite, disconnects before returning HTTP, then recovers a safe retry across process restart. This is a focused prerequisite for distributed publication and recovery, not a full Steward API deployment.",
+        [
+            "Distinguish network receipt, durable domain mutation, HTTP response and external side effects.",
+            "Explain why a client cannot infer rollback from a missing response.",
+            "Implement a stable, scoped idempotency key and reject changed intent.",
+            "Verify correct authorization-order and a single durable effect after replay."
+        ],
+        ambiguousHttpWorkedSections,
+        "Exercise a real lost-response crash boundary and defend the retry contract.",
+        [
+            "Start with the published Python program in an empty disposable directory, run it unchanged and capture all expected outputs and final durable counts.",
+            "Draw a timeline with client, HTTP handler, SQL transaction, persisted idempotency record and returned/lost response. Mark the first unknown outcome from the client's perspective.",
+            "Identify which SQL statements share a transaction. Remove that property in a disposable copy and explain the duplicated/missing-effect risk under crash.",
+            "Re-run the original code and show identical replay after full server restart, changed-intent conflict, and cross-Team denial.",
+            "Treat X-Demo-Verified-Team as a toy trusted-context injection only. Identify how the real Builder Steward authenticated actor and membership rules must replace it.",
+            "Specify operational expiry, key scope, payload fingerprint and safe external side-effect behavior for a real PostgreSQL-backed Steward API, marking all unimplemented cases UNVERIFIED."
+        ],
+        [
+            "Why does no HTTP response fail to establish whether the database committed?",
+            "Which single transaction boundary makes duplicate logical effects impossible in the toy local service?",
+            "Why is reusing an idempotency key for a different request not a harmless retry?",
+            "Where would a real Steward API enforce Team authorization before returning a cached response?"
+        ],
+        [httpSemantics, ...ambiguousHttpResources],
     ),
     {
         id: "data-flow-and-integration-lab-model-steward-api-data-flows",
