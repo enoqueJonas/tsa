@@ -53,6 +53,13 @@ for(const [path,terms] of composed){
   const source=readFileSync(root+path,"utf8");
   for(const term of terms)assert.ok(source.includes(term),path+" does not compose "+term);
 }
+const fileSchool=readFileSync(root+"system-thinker-enterprise-file-integration-deep.ts","utf8");
+const batchSchool=readFileSync(root+"system-thinker-real-steward-batch-worked.ts","utf8");
+assert.ok(fileSchool.includes('id: "steward-batch-domain"'),"Missing separately scoped real Builder import lesson");
+assert.ok(fileSchool.includes('spec.id === "batch-lifecycle"') && fileSchool.includes('[lesson(spec), lesson(stewardBatchDomainSpec)]'),"Real import lab is not sequenced after batch lifecycle");
+assert.ok(!fileSchool.includes('spec.id==="batch-lifecycle"?realStewardBatchSections'),"Long domain lab was collapsed into old overloaded batch reading");
+for(const term of ["Independently modify a copy of the lab","trusted","rollback","conflict","full-file"])assert.ok(fileSchool.toLowerCase().includes(term.toLowerCase()),"Real domain independent practice is missing "+term);
+for(const term of ["Service.objects.select_for_update()","transaction.atomic()","batch_lab_delivery","trusted_approvals","forged CSV approval denied","lost response retry"])assert.ok(batchSchool.includes(term),"Published real Django+PostgreSQL exercise lacks "+term);
 const milestone=readFileSync(root+"system-thinker-milestone-deep.ts","utf8");
 for(const term of ["evidence-continuity","cross-module claim ledger","UNVERIFIED","unauthorized actor","independent defence","Independent Transfer"])
   assert.ok(milestone.toLowerCase().includes(term.toLowerCase()),"Portfolio missing "+term);
