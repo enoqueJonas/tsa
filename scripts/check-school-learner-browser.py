@@ -57,7 +57,9 @@ def inspect_school(page):
             assert content.is_visible(), f"Hidden activity content: {activity_id}"
             text = content.inner_text().strip()
             assert len(text) >= 90, f"Unusually short activity content: {activity_id}"
-            assert not re.search(r"\b(?:TODO|TBD|Lorem ipsum)\b", text, re.I), (
+            # Only flag editorial TODO/TBD markers at the start of a line, not
+            # filenames such as notes/todo.txt in legitimate filesystem lessons.
+            assert not re.search(r"(?im)^\s*(?:TODO|TBD)\s*[:\-]|\bLorem ipsum\b", text, re.I), (
                 f"Unfinished teaching placeholder: {activity_id}"
             )
             if activity_id == "pki-verification-model-how-certificate-verification-works":
@@ -66,6 +68,25 @@ def inspect_school(page):
                 )
                 assert content.get_by_text("Trust starts at the verifier", exact=True).count() == 1
                 assert content.get_by_text("A trusted issuer is only one check", exact=True).count() == 1
+            # PED-007: These exact lessons previously rendered as 418–1491
+            # characters even while all structural/browser smoke checks passed.
+            # Keep the guard tied to the *rendered* learning surface, including
+            # a real copyable code example rather than padded generic prose.
+            if SCHOOL == "builder" and activity_id in {
+                "software-craft-internal-package-design-001",
+                "relational-data-and-postgresql-orm-vs-sql-reading",
+                "relational-data-and-postgresql-n-plus-one-reading",
+                "relational-data-and-postgresql-django-orm-reading",
+                "relational-data-and-postgresql-migrations-reading",
+                "software-craft-performance-awareness-reading",
+            }:
+                assert len(text) >= 2200, (
+                    f"Pedagogical depth regression in critical Builder reading: {activity_id}, "
+                    f"only {len(text)} rendered characters"
+                )
+                assert content.get_by_role("button", name="Copy").count() >= 1, (
+                    f"Missing runnable, copyable example in Builder reading: {activity_id}"
+                )
             code = content.locator("figure").filter(has=page.get_by_role("button", name="Copy"))
             for k in range(code.count()):
                 assert code.nth(k).locator("pre").count() > 0, (
@@ -104,7 +125,20 @@ def inspect_school(page):
                 "visible_characters": len(text),
                 "code_blocks": code.count(),
             })
+            if SCHOOL in {"builder", "system-thinker"} and len(visited) < count:
+                # Reproduce a long reading: navigating from its bottom must take
+                # the learner to the start of the next activity, not mid-page.
+                has_scroll = page.evaluate(
+                    "document.documentElement.scrollHeight > innerHeight + 120"
+                )
+                if has_scroll:
+                    page.evaluate("window.scrollTo(0, document.documentElement.scrollHeight)")
+                    assert page.evaluate("window.scrollY") > 30, (
+                        f"Could not establish scroll regression precondition: {activity_id}"
+                    )
             nxt.click()
+            if SCHOOL in {"builder", "system-thinker"} and len(visited) < count and has_scroll:
+                page.wait_for_function("window.scrollY <= 8", timeout=8000)
         print(f"PASS {SCHOOL} module {module_index+1}/{module_count}: {count} activities", flush=True)
     assert not errors, f"Browser exceptions in {SCHOOL}: {errors}"
     # A readable page is not automatically a sufficiently developed explanation.
@@ -152,12 +186,170 @@ def check_mobile_first_module(page):
     print(f"PASS {SCHOOL} mobile first two activities at 390px", flush=True)
 
 
+def check_builder_mobile_modules(page):
+    """Check at least the first reading and follow-up for EVERY Builder module."""
+    page.goto(f"{BASE}/?view=curriculum&school=builder", wait_until="networkidle")
+    count = page.get_by_role("button", name=MODULE).count()
+    assert count >= 7, f"Expected seven Builder modules, found {count}"
+    for index in range(count):
+        page.goto(f"{BASE}/?view=curriculum&school=builder", wait_until="networkidle")
+        page.get_by_role("button", name=MODULE).nth(index).click()
+        page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+        for k in range(2):
+            main = page.locator("main").last
+            main.wait_for(timeout=30000)
+            assert main.inner_text().strip(), f"Blank Builder mobile module {index+1} activity {k+1}"
+            assert not page.evaluate(
+                "document.documentElement.scrollWidth > innerWidth + 2"
+            ), f"Horizontal overflow in Builder module {index+1} mobile activity {k+1}"
+            if k == 0:
+                page.get_by_role("button", name=NEXT).click()
+                page.wait_for_function("window.scrollY <= 8", timeout=8000)
+        print(f"PASS builder mobile module {index+1}/{count}: first two activities", flush=True)
+
+
+def check_system_thinker_mobile_all(page):
+    """All System Thinker activities at 390px, with content, navigation and scroll regression."""
+    page.goto(f"{BASE}/?view=curriculum&school=system-thinker", wait_until="networkidle")
+    module_count = page.get_by_role("button", name=MODULE).count()
+    assert module_count == 11, f"Expected 11 System Thinker modules, found {module_count}"
+    errors = []
+    page.on("pageerror", lambda err: errors.append(str(err)))
+    total = 0
+    for module_index in range(module_count):
+        page.goto(f"{BASE}/?view=curriculum&school=system-thinker", wait_until="networkidle")
+        page.get_by_role("button", name=MODULE).nth(module_index).click()
+        page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+        sidebar = page.locator("aside").filter(has=page.get_by_text("Curriculum", exact=True)).first
+        activity_count = sidebar.locator("button").count()
+        assert activity_count > 0, f"No System Thinker module {module_index+1} activities"
+        seen = set()
+        for activity_index in range(activity_count):
+            activity_id = page.evaluate(
+                "new URLSearchParams(location.search).get('activity')"
+            )
+            assert activity_id and activity_id not in seen, (
+                f"Mobile activity ID missing/repeated: {activity_id}"
+            )
+            seen.add(activity_id)
+            main = page.locator("main").last
+            assert main.is_visible() and main.inner_text().strip(), (
+                f"Blank System Thinker mobile activity: {activity_id}"
+            )
+            assert not page.evaluate(
+                "document.documentElement.scrollWidth > innerWidth + 2"
+            ), f"Horizontal page overflow at 390px: {activity_id}"
+            for block in main.locator("figure").filter(
+                has=page.get_by_role("button", name="Copy")
+            ).all():
+                # A scrollable code figure is acceptable; its code must remain present.
+                assert block.locator("pre").count() >= 1, (
+                    f"Missing code display on mobile: {activity_id}"
+                )
+            if activity_index < activity_count - 1:
+                reflection = page.get_by_placeholder("Write your response here...")
+                if reflection.count():
+                    reflection.fill(SYNTHETIC_REFLECTION)
+                can_scroll = page.evaluate(
+                    "document.documentElement.scrollHeight > innerHeight + 120"
+                )
+                if can_scroll:
+                    page.evaluate("window.scrollTo(0, document.documentElement.scrollHeight)")
+                    assert page.evaluate("window.scrollY") > 30, (
+                        f"Unable to establish mobile long-scroll precondition: {activity_id}"
+                    )
+                next_button = page.get_by_role("button", name=NEXT)
+                assert next_button.count() == 1 and next_button.is_enabled(), (
+                    f"Unusable mobile navigation at {activity_id}"
+                )
+                next_button.click()
+                page.wait_for_function("window.scrollY <= 8", timeout=8000)
+            total += 1
+        print(
+            f"PASS system-thinker mobile module {module_index+1}/{module_count}: "
+            f"{activity_count} activities with no overflow and top navigation",
+            flush=True,
+        )
+    assert not errors, f"System Thinker mobile browser exceptions: {errors}"
+    print(f"PASS system-thinker 390px mobile traversal: {total} activities", flush=True)
+
+
+def check_system_thinker_reentry(page):
+    """Persistence regression with a synthetic learner in a fresh browser profile.
+
+    Tests actual IndexedDB read/write across reload, not pedagogy, real lab
+    execution, independent learning or multi-device synchronization.
+    """
+    page.goto(f"{BASE}/?view=curriculum&school=system-thinker", wait_until="networkidle")
+    page.get_by_role("button", name=MODULE).first.click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+    params = page.evaluate("new URLSearchParams(location.search).toString()")
+    assert "path=" in params, "Module did not open with durable path identity"
+
+    # First reading -> first practical: evidence must survive a hard reload.
+    page.get_by_role("button", name=NEXT).click()
+    page.get_by_placeholder("What did you build, inspect, break, diagnose, or change? Include commands, observations, and important decisions.").wait_for()
+    notes = "Synthetic System Thinker evidence: a named C4 boundary and a rejected assumption."
+    page.get_by_placeholder("What did you build, inspect, break, diagnose, or change? Include commands, observations, and important decisions.").fill(notes)
+    page.get_by_placeholder("What was the result? What did the evidence prove, and what would you do differently next time?").fill("This is a storage regression, not validated system-design evidence.")
+    page.get_by_role("button", name="Save evidence").click()
+    page.get_by_text("Saved locally", exact=True).wait_for()
+    practical_id = page.evaluate("new URLSearchParams(location.search).get('activity')")
+    page.reload(wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+    page.get_by_placeholder("What did you build, inspect, break, diagnose, or change? Include commands, observations, and important decisions.").wait_for()
+    actual = page.get_by_placeholder("What did you build, inspect, break, diagnose, or change? Include commands, observations, and important decisions.").input_value()
+    assert actual == notes, f"Practical evidence lost on reload: {practical_id}"
+
+    # First reflection -> persist the completed text, then reload on the same URL.
+    page.get_by_role("button", name=NEXT).click()
+    reflection = page.get_by_placeholder("Write your response here...")
+    reflection.wait_for()
+    reflection_id = page.evaluate("new URLSearchParams(location.search).get('activity')")
+    path_id = page.evaluate("new URLSearchParams(location.search).get('path')")
+    answer = "Synthetic transfer check only. " * 12
+    reflection.fill(answer)
+    # Wait for IndexedDB commit, not just React state, before navigation.
+    page.wait_for_function("""async ({pathId, activityId, expected}) => {
+      const db = await new Promise((resolve, reject) => {
+        const request = indexedDB.open("tsa-academy", 5);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      try {
+        const tx = db.transaction("path-progress", "readonly");
+        const record = await new Promise((resolve, reject) => {
+          const request = tx.objectStore("path-progress").get(pathId);
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+        return record?.reflectionResponses?.[activityId] === expected;
+      } finally {
+        db.close();
+      }
+    }""", arg={"pathId": path_id, "activityId": reflection_id, "expected": answer}, timeout=12000)
+    page.reload(wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+    assert page.get_by_placeholder("Write your response here...").input_value() == answer, (
+        f"Reflection content lost on reload: {reflection_id}"
+    )
+    print("PASS system-thinker IndexedDB reentry: practical evidence and reflection persisted across hard reload", flush=True)
+
+
 with sync_playwright() as playwright:
     browser = playwright.chromium.launch(headless=True)
     context = browser.new_context(viewport={"width": 1440, "height": 900})
     inspect_school(context.new_page())
     context.close()
     mobile = browser.new_context(viewport={"width": 390, "height": 844})
-    check_mobile_first_module(mobile.new_page())
+    if SCHOOL == "builder":
+        check_builder_mobile_modules(mobile.new_page())
+    elif SCHOOL == "system-thinker":
+        check_system_thinker_mobile_all(mobile.new_page())
+        isolated = browser.new_context(viewport={"width": 1440, "height": 900})
+        check_system_thinker_reentry(isolated.new_page())
+        isolated.close()
+    else:
+        check_mobile_first_module(mobile.new_page())
     mobile.close()
     browser.close()

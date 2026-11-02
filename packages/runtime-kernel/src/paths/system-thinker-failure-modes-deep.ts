@@ -1,5 +1,7 @@
 import type { Lesson } from "./lesson";
 import type { LearningResource, LessonBlock } from "../activities/content";
+import {reviewWorkedByModule,reviewResearch} from "./system-thinker-failures-decisions-worked";
+import {operationalBridgeFailure,operationalBridgeReferences} from "./system-thinker-operational-reasoning-bridge";
 
 const sreBook: LearningResource = { title: "Google SRE Book", url: "https://sre.google/sre-book/table-of-contents/" };
 const awsReliability: LearningResource = { title: "AWS Well-Architected Reliability Pillar", url: "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html" };
@@ -26,7 +28,7 @@ function richLesson(
         { type: "list", items: outcomes },
     ];
 
-    for (const section of sections) {
+    for (const section of [...sections, ...(operationalBridgeFailure[title] ?? []), ...(reviewWorkedByModule["failure"]?.[title] ?? [])]) {
         blocks.push({ type: "heading", id: slug(section.title), text: section.title, level: 2 });
         for (const text of section.paragraphs) blocks.push({ type: "paragraph", text });
         if (section.code) {
@@ -44,7 +46,7 @@ function richLesson(
         title: "Steward connection",
         body: "Use Steward API v1 as evidence. A failure mode is not hypothetical merely because it has not happened yet; it is credible when the current design, dependency graph, state model or operating assumptions make it possible.",
     });
-    blocks.push({ type: "resources", title: "Required and supporting reading", resources });
+    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...(reviewResearch["failure"] ?? []), ...(operationalBridgeFailure[title] ? operationalBridgeReferences.failure : [])] });
 
     return {
         id,

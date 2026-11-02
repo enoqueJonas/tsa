@@ -1,5 +1,9 @@
 import type { Lesson } from "./lesson";
 import type { LearningResource, LessonBlock } from "../activities/content";
+import {workedByModule, primaryResearchByModule} from "./system-thinker-intermediate-worked";
+import {ambiguousHttpWorkedSections,ambiguousHttpResources} from "./system-thinker-http-ambiguous-commit-worked";
+import {stewardDomainBoundarySections,stewardDomainBoundaryResources} from "./system-thinker-steward-domain-boundary-worked";
+import {flowRunningCase,flowRunningReferences} from "./system-thinker-flow-running-case";
 
 const sequenceDiagrams: LearningResource = { title: "Sequence diagrams", url: "https://www.uml-diagrams.org/sequence-diagrams.html" };
 const httpSemantics: LearningResource = { title: "HTTP Semantics", url: "https://www.rfc-editor.org/rfc/rfc9110" };
@@ -27,7 +31,7 @@ function richLesson(
         { type: "list", items: outcomes },
     ];
 
-    for (const section of sections) {
+    for (const section of [...sections, ...(flowRunningCase[title] ?? []), ...(workedByModule["flow"]?.[title] ?? [])]) {
         blocks.push({ type: "heading", id: slug(section.title), text: section.title, level: 2 });
         for (const text of section.paragraphs) blocks.push({ type: "paragraph", text });
         if (section.code) {
@@ -43,7 +47,7 @@ function richLesson(
         title: "Steward connection",
         body: "Trace Steward flows across authorization, domain rules, persistence and integration boundaries. A useful flow model shows where data changes meaning, ownership or assurance—not every function call.",
     });
-    blocks.push({ type: "resources", title: "Required and supporting reading", resources });
+    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...(flowRunningReferences[title] ?? []), ...(primaryResearchByModule["flow"] ?? [])] });
 
     return {
         id,
@@ -82,6 +86,33 @@ export const dataFlowAndIntegrationDeepLessons: Lesson[] = [
         ["Choose create service, add dependency or lifecycle change.", "Identify the actor and required authorization context.", "List validation and domain-rule points.", "Mark every database read/write that affects the decision.", "Record response and logging side effects.", "Identify one hidden dependency revealed by the trace."],
         ["Why should a flow begin with actor intent?", "What is the difference between moving data and changing state?", "Which transformations should be visible in a system flow?"],
         [sequenceDiagrams, httpSemantics],
+    ),
+    richLesson(
+        "Steward Domain Boundaries: Authorization and Database Commit",
+        "The Builder v1 Steward API supplies real PostgreSQL models and protected lifecycle services. A System Thinker must trace who can request a mutation, which invariant authorizes it, and what SQL transaction actually becomes durable. Run the authentic Builder teaching implementation in a disposable environment rather than substituting diagram-only assertions.",
+        [
+            "Distinguish authenticated identity, local Team authorization and domain readiness.",
+            "Follow Builder v1's actual Django services into PostgreSQL transaction boundaries.",
+            "Reproduce rejected authorization, rejected readiness and forced rollback.",
+            "Preserve a single authoritative lifecycle state and the final production deployment guard."
+        ],
+        stewardDomainBoundarySections,
+        "Run and trace the real Steward domain invariant and authorization test.",
+        [
+            "Start from a disposable Builder v1 Django model/services checkpoint and record its published source version and migration state; do not touch the live or real learner's primary project database.",
+            "Execute the complete published steward_boundary.py inside Django shell against isolated PostgreSQL and save all six observed outputs.",
+            "Trace the denied cross-Team call and the authorized-but-unready call to their precise decision boundaries.",
+            "Inject the outer rollback, inspect persisted lifecycle after the exception and explain why nested atomic blocks do not force a commit.",
+            "Restore the valid promotion and reject last-production-deployment deletion. Record SQL changes and implementation evidence.",
+            "Draw an independent sequence for a different Service type and identify the real enterprise identity/membership integration that the test fixture does not establish."
+        ],
+        [
+            "Which check confirms actor identity, and which proves authority over this Service?",
+            "Why must a lifecycle promotion be rejected without a production Environment even if the serializer accepts the lifecycle field?",
+            "Where is the first durable state change, and what did the forced rollback prove?",
+            "How would a direct model save or cross-team update violate the invariant despite a successful SQL write?"
+        ],
+        [httpSemantics, ...stewardDomainBoundaryResources],
     ),
     richLesson(
         "Synchronous and Asynchronous Boundaries",
@@ -124,6 +155,33 @@ export const dataFlowAndIntegrationDeepLessons: Lesson[] = [
         ["Choose a synchronous or asynchronous boundary.", "List timeout, explicit rejection and partial-success cases.", "For each case, state what is known and unknown about remote state.", "Decide whether retry is safe and why.", "Define correlation/observability evidence.", "Record one scenario that should require manual investigation rather than automatic recovery."],
         ["Why can a timeout be ambiguous?", "When is automatic retry unsafe?", "What does an operator need to reconstruct a cross-boundary failure?"],
         [httpSemantics, twelveFactor],
+    ),
+    richLesson(
+        "Ambiguous HTTP Outcomes and Idempotent Retries",
+        "A network failure can hide a successfully committed business operation. Learn the difference by running a local HTTP server that commits a Steward-shaped lifecycle change to SQLite, disconnects before returning HTTP, then recovers a safe retry across process restart. This is a focused prerequisite for distributed publication and recovery, not a full Steward API deployment.",
+        [
+            "Distinguish network receipt, durable domain mutation, HTTP response and external side effects.",
+            "Explain why a client cannot infer rollback from a missing response.",
+            "Implement a stable, scoped idempotency key and reject changed intent.",
+            "Verify correct authorization-order and a single durable effect after replay."
+        ],
+        ambiguousHttpWorkedSections,
+        "Exercise a real lost-response crash boundary and defend the retry contract.",
+        [
+            "Start with the published Python program in an empty disposable directory, run it unchanged and capture all expected outputs and final durable counts.",
+            "Draw a timeline with client, HTTP handler, SQL transaction, persisted idempotency record and returned/lost response. Mark the first unknown outcome from the client's perspective.",
+            "Identify which SQL statements share a transaction. Remove that property in a disposable copy and explain the duplicated/missing-effect risk under crash.",
+            "Re-run the original code and show identical replay after full server restart, changed-intent conflict, and cross-Team denial.",
+            "Treat X-Demo-Verified-Team as a toy trusted-context injection only. Identify how the real Builder Steward authenticated actor and membership rules must replace it.",
+            "Specify operational expiry, key scope, payload fingerprint and safe external side-effect behavior for a real PostgreSQL-backed Steward API, marking all unimplemented cases UNVERIFIED."
+        ],
+        [
+            "Why does no HTTP response fail to establish whether the database committed?",
+            "Which single transaction boundary makes duplicate logical effects impossible in the toy local service?",
+            "Why is reusing an idempotency key for a different request not a harmless retry?",
+            "Where would a real Steward API enforce Team authorization before returning a cached response?"
+        ],
+        [httpSemantics, ...ambiguousHttpResources],
     ),
     {
         id: "data-flow-and-integration-lab-model-steward-api-data-flows",

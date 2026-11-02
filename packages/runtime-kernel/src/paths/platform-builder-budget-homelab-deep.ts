@@ -1,14 +1,15 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import {budgetHomelabWorkedSections} from "./platform-builder-budget-homelab-worked";
 
-const ubuntu: LearningResource = { title: "Rocky Linux documentation", url: "https://docs.rockylinux.org/" };
+const rockyLinux: LearningResource = { title: "Rocky Linux documentation", url: "https://docs.rockylinux.org/" };
 const proxmox: LearningResource = { title: "Proxmox VE documentation", url: "https://pve.proxmox.com/pve-docs/" };
-const tailscale: LearningResource = { title: "Tailscale documentation", url: "https://tailscale.com/kb" };
+const wireGuard: LearningResource = { title: "WireGuard documentation", url: "https://www.wireguard.com/quickstart/" };
 const nginx: LearningResource = { title: "NGINX documentation", url: "https://nginx.org/en/docs/" };
 
-function blocks(title: string, intro: string, sections: Array<{ heading: string; body: string; list?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [ubuntu]): LessonBlock[] {
+function blocks(title: string, intro: string, sections: Array<{ heading: string; body: string; list?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [rockyLinux]): LessonBlock[] {
     const result: LessonBlock[] = [{ type: "paragraph", text: intro }];
-    for (const section of sections) {
+    for (const section of [...sections, ...(budgetHomelabWorkedSections[title] ?? [])]) {
         const id = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
         result.push({ type: "heading", id, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
         if (section.list) result.push({ type: "list", items: section.list });
@@ -56,11 +57,11 @@ export const budgetHomelabDeepLessons: Lesson[] = [
     reading("hosts", "Multiple Hosts and VMs", "The moment a homelab has multiple compute boundaries, placement becomes an architectural decision: which workload runs where, and what remains shared when one host fails?", [
         { heading: "Name every compute boundary", body: "Use stable hostnames and maintain an inventory containing physical host, VM, IP address, operating system, purpose and owner." },
         { heading: "Understand correlated failure", body: "Five VMs on one mini PC are five isolated guests but still share one power supply, storage controller and physical NIC. Virtual separation is not physical redundancy." },
-    ], [ubuntu, proxmox]),
+    ], [rockyLinux, proxmox]),
     reading("remote-admin", "Remote Administration", "A homelab becomes infrastructure when it can be operated without attaching a keyboard and monitor to every machine.", [
         { heading: "SSH is the primary control path", body: "Use key authentication, named administrative identities and least privilege. Keep a recovery path before changing remote-access configuration." },
         { heading: "Private remote access", body: "If administration is needed away from home, prefer a private overlay or VPN approach rather than exposing SSH directly to the public Internet without a strong reason." },
-    ], [ubuntu, tailscale]),
+    ], [rockyLinux, wireGuard]),
     reading("firewall", "Local Firewalling", "A listening service and a reachable service are different facts. Host firewall policy is one explicit boundary between them.", [
         { heading: "Default to minimum reachability", body: "Permit only the management and application paths the topology requires. Record source, destination, protocol and port for every intentional rule." },
         { heading: "Test both allowed and denied paths", body: "A firewall change is not proven by one successful request. Confirm the intended source can connect and an unintended source or port cannot." },
@@ -80,7 +81,7 @@ export const budgetHomelabDeepLessons: Lesson[] = [
     reading("exposure", "Safe Exposure and Isolation", "Making a lab service reachable from the Internet changes the threat model. Convenience is not sufficient justification for public exposure.", [
         { heading: "Prefer private reachability", body: "For learning and personal administration, LAN access or authenticated private networking is often enough. Public ingress should be introduced only when a later requirement genuinely needs it." },
         { heading: "Map trust boundaries", body: "Document which interfaces are trusted, which users can administer the host and which application endpoints are reachable from each network. Isolation must be testable." },
-    ], [tailscale]),
+    ], [wireGuard]),
     reading("vlans", "VLAN Concepts", "VLANs let a managed Layer-2 network carry multiple logical broadcast domains. They are useful for learning segmentation, but they do not create security by themselves.", [
         { heading: "Access and trunk mental model", body: "An access port places an endpoint into one VLAN; a trunk can carry tagged traffic for multiple VLANs between VLAN-aware devices. Routing is required for traffic to cross subnets." },
         { heading: "Segmentation requires policy", body: "Creating VLAN 10 and VLAN 20 does not prevent communication if the router freely routes between them. The security outcome comes from routing and firewall policy plus verification." },

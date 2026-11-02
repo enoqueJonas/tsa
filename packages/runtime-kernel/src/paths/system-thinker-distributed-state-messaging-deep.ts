@@ -1,4 +1,8 @@
 import type { Lesson } from "./lesson";
+import {kafkaComparisonWorkedSections,kafkaComparisonResources} from "./system-thinker-kafka-comparison-worked";
+import { distributedStateStagedLabs } from "./system-thinker-distributed-staged-labs";
+import { messagingSemanticsWorked, messagingSemanticsReferences } from "./system-thinker-messaging-semantics-worked";
+import {operationalBridgeDistributed,operationalBridgeReferences} from "./system-thinker-operational-reasoning-bridge";
 import type { LearningResource, LessonBlock } from "../activities/content";
 
 const redisDocs: LearningResource = { title: "Redis Documentation", url: "https://redis.io/docs/latest/" };
@@ -34,7 +38,7 @@ function richLesson(
         { type: "list", items: outcomes },
     ];
 
-    for (const section of sections) {
+    for (const section of [...sections, ...(operationalBridgeDistributed[title] ?? []), ...(messagingSemanticsWorked[title] ?? [])]) {
         blocks.push({ type: "heading", id: slug(section.title), text: section.title, level: 2 });
         for (const text of section.paragraphs) blocks.push({ type: "paragraph", text });
         if (section.code) {
@@ -50,7 +54,7 @@ function richLesson(
         title: "Steward connection",
         body: "TSA deliberately evolves Steward until Redis and RabbitMQ solve real measured product problems. The learner must prove those prerequisites before implementation; the technologies are required outcomes of earned pressure, not badges of architectural maturity.",
     });
-    blocks.push({ type: "resources", title: "Required and supporting reading", resources });
+    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...(messagingSemanticsWorked[title] ? messagingSemanticsReferences : []), ...(operationalBridgeDistributed[title] ? operationalBridgeReferences.distributed : [])] });
 
     return {
         id,
@@ -207,7 +211,7 @@ export const distributedStateAndMessagingDeepLessons: Lesson[] = [
         ["Explain eventual consistency through observable Steward behavior.", "Identify where ordering matters and where it does not.", "Avoid assuming global message order.", "Design consumers that reject or handle stale events deliberately."],
         [
             { title: "Intermediate state becomes part of the user experience", paragraphs: ["If Steward commits lifecycle='retired' and an audit/search projection updates later, two views may temporarily disagree. The design must define which view is authoritative and how long inconsistency may reasonably persist.", "Eventual consistency is not an excuse for undefined behavior. It requires a convergence story, observability and a product decision that delayed agreement is acceptable."] },
-            { title: "Ordering is scoped", paragraphs: ["Two events about the same Service may need causal ordering while events for unrelated services may not. Broker topology, concurrent consumers, retries and requeue can all affect observed order.", "Consumers can carry aggregate version or occurred_at metadata and reject stale updates where appropriate. Do not invent a global ordering requirement unless the domain truly needs one."], code: { language: "text", code: "Service 42 version 7: lifecycle → deprecated\nService 42 version 8: lifecycle → retired\n\nProjection receives v8 then v7\n  → without version check: state regresses\n  → with version check: ignore stale v7", caption: "Ordering controls should follow the domain scope that needs them." } },
+            { title: "Ordering is scoped", paragraphs: ["Two events about the same Service may need causal ordering while events for unrelated services may not. Broker topology, concurrent consumers, retries and requeue can all affect observed order.", "Consumers can carry aggregate version or occurred_at metadata and reject stale updates where appropriate. Do not invent a global ordering requirement unless the domain truly needs one."], code: { language: "text", code: "Service 42 version 7: lifecycle → production\nService 42 version 8: lifecycle → retired\n\nProjection receives v8 then v7\n  → without version check: state regresses\n  → with version check: ignore stale v7", caption: "Ordering controls should follow the domain scope that needs them." } },
         ],
         {
             objective: "Model one temporary inconsistency and one out-of-order event for Steward, then define safe convergence behavior.",
@@ -247,6 +251,7 @@ export const distributedStateAndMessagingDeepLessons: Lesson[] = [
         [
             { title: "RabbitMQ emphasizes routed work delivery", paragraphs: ["RabbitMQ fits work queues, routed messages, acknowledgements and per-message delivery/retry patterns naturally. Consumers usually care about receiving work and acknowledging completion; messages need not become a long-term history by default.", "That makes it a strong first implementation for Steward notifications, background jobs and integration events where the immediate problem is asynchronous delivery and failure handling."] },
             { title: "Kafka emphasizes a durable partitioned log", paragraphs: ["Kafka retains ordered records in partitions for a configured period and lets consumer groups track their own offsets. This supports replay, stream processing and high-throughput event histories, but introduces partitioning, retention and consumer-lag concerns.", "Kafka should enter a Steward architecture decision only if those capabilities match real drivers. 'More scalable' is not a sufficient requirement."], code: { language: "text", code: "RabbitMQ question: which queue(s) should receive this message, and was the work acknowledged?\nKafka question: which partition contains this record, how long is it retained, and where is each consumer group's offset?", caption: "The products overlap, but their primary operating models differ." } },
+            ...kafkaComparisonWorkedSections,
         ],
         {
             objective: "Write a RabbitMQ-versus-Kafka decision note for a concrete Steward workload without implementing Kafka.",
@@ -256,46 +261,7 @@ export const distributedStateAndMessagingDeepLessons: Lesson[] = [
             completionCriteria: ["The comparison is workload-specific.", "Kafka is understood conceptually without creating a duplicate implementation track.", "The selected technology is not justified by popularity or vague scale claims.", "Revisit conditions are observable."],
         },
         ["What retained-log capability makes Kafka materially different from a normal queue-first model?", "Why is RabbitMQ a useful first implementation for TSA?", "What evidence should trigger a RabbitMQ-versus-Kafka reevaluation?"],
-        [rabbitmqDocs, kafkaDocs],
+        [rabbitmqDocs, kafkaDocs, ...kafkaComparisonResources],
     ),
-    {
-        id: "distributed-state-and-messaging-lab-evolve-steward-with-redis-and-rabbitmq",
-        title: "Lab: Evolve Steward with Redis and RabbitMQ",
-        activities: [
-            {
-                id: "distributed-state-and-messaging-lab-evolve-steward-with-redis-and-rabbitmq-brief",
-                title: "Add only the infrastructure Steward has earned",
-                estimatedMinutes: 30,
-                content: {
-                    type: "reading",
-                    body: "This lab evolves Steward from a single API/database system into a deliberately distributed system. Redis and RabbitMQ are added only for two justified capabilities: a measured cacheable read path and a post-commit asynchronous side effect with a real consumer.",
-                    blocks: [
-                        { type: "heading", id: "required-capabilities", text: "Required capabilities", level: 2 },
-                        { type: "list", items: ["One measured Redis cache-aside read path", "Explicit invalidation and cache-outage behavior", "One RabbitMQ exchange/queue/consumer flow", "Manual acknowledgement and bounded retry behavior", "Idempotent duplicate handling", "Dead-letter handling", "One eventual-consistency/ordering scenario", "An implemented PostgreSQL transactional outbox with restart recovery"] },
-                        { type: "callout", tone: "warning", title: "Do not distribute the domain", body: "Steward remains one authoritative domain application unless evidence says otherwise. Redis is not a second source of truth, RabbitMQ is not the owner of business rules, and this lab is not permission to split Steward into microservices." },
-                        { type: "resources", title: "Implementation references", resources: [redisDocs, rabbitmqDocs, rabbitmqReliability] },
-                    ],
-                },
-            },
-            {
-                id: "distributed-state-and-messaging-lab-evolve-steward-with-redis-and-rabbitmq-practice",
-                title: "Distributed-system evidence pass",
-                estimatedMinutes: 300,
-                content: {
-                    type: "practical",
-                    objective: "Complete Steward's earned Redis and RabbitMQ increments and prove their value, correctness boundaries and failure semantics.",
-                    scenario: "The preceding exercises must first create and measure the planned catalogue-performance and non-blocking lifecycle-side-effect requirements. Once those prerequisites are demonstrated, Redis and RabbitMQ are required Steward increments. If the prerequisite evidence is missing, the milestone is blocked: fix the earlier workload/requirement evidence rather than skipping the technology or inventing a result.",
-                    instructions: ["Start with pressure statements and baseline evidence for both additions.", "Implement one Redis cache-aside path with explicit key, value, `TTL`, source-of-truth and post-commit invalidation behavior.", "Demonstrate cache hit, miss, stale-data risk, invalidation and Redis-unavailable fallback.", "Define one Steward event for a real consumer such as notification or audit processing.", "Create RabbitMQ exchange, `queue` and binding topology and run producer/consumer flow.", "Demonstrate consumer downtime, manual acknowledgement and at least one redelivery.", "Make the consumer idempotent for duplicate delivery and prove it by replaying one stable event `ID`.", "Configure bounded retry plus a real `DLQ`, drive one poison message into it, inspect the failure evidence and recover/replay it through the documented operator path.", "Reproduce one real out-of-order RabbitMQ delivery against the consumer and prove the implemented authority/convergence rule prevents derivative state from regressing.", "Implement a PostgreSQL transactional outbox for the lifecycle event: commit the domain change and publication intent atomically, run a publisher that can resume pending work after restart, and prove recovery from a crash before broker publication.", "Write a RabbitMQ-versus-Kafka decision note with an observable revisit trigger.", "Update Steward system/dependency/data-flow diagrams to show the new components, contracts and failure relationships."],
-                    deliverables: ["Redis performance/correctness evidence", "RabbitMQ topology and event contract", "Retry/idempotency/DLQ evidence", "Consistency/ordering analysis", "Transactional outbox implementation and crash-recovery evidence", "RabbitMQ-vs-Kafka decision note", "Updated system diagrams"],
-                    completionCriteria: ["Both additions have demonstrated drivers rather than speculative justifications.", "PostgreSQL remains authoritative for Steward domain state.", "Redis failure and staleness behavior are explicit.", "RabbitMQ consumers tolerate duplicate delivery according to the chosen effect.", "Retry is bounded and poison messages become inspectable.", "A committed lifecycle change retains durable publication intent across process failure, and the restarted outbox publisher eventually reaches RabbitMQ without requiring exactly-once delivery.", "The learner can identify at least three new failure modes introduced by the added infrastructure."],
-                },
-            },
-            {
-                id: "distributed-state-and-messaging-lab-evolve-steward-with-redis-and-rabbitmq-review",
-                title: "Distributed-system defence",
-                estimatedMinutes: 25,
-                content: { type: "reflection", prompt: "1. What evidence justified Redis, and what would make you remove it?\n2. Which Steward data remains authoritative when Redis disagrees with PostgreSQL?\n3. Where can RabbitMQ redeliver a message after the consumer already produced an effect?\n4. How does your idempotency strategy make that duplicate safe?\n5. What happens after retry attempts are exhausted?\n6. Where can the database commit succeed while event publication fails, and how does your design recover?\n7. Which state is allowed to be eventually consistent, for how long, and why?\n8. What concrete future evidence would make Kafka a better fit than RabbitMQ?" },
-            },
-        ],
-    },
+    ...distributedStateStagedLabs,
 ];

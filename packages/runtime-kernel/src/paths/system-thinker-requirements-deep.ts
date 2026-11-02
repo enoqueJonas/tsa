@@ -1,5 +1,7 @@
 import type { Lesson } from "./lesson";
 import type { LearningResource, LessonBlock } from "../activities/content";
+import { requirementsWorkedSections, requirementsResearch, type RequirementsTeachingSection } from "./system-thinker-requirements-worked";
+import {requirementsRunningCase,requirementsRunningCaseReferences} from "./system-thinker-requirements-running-case";
 
 const volere: LearningResource = { title: "Volere Requirements Resources", url: "https://www.volere.org/" };
 const iso25010: LearningResource = { title: "ISO/IEC 25010 quality model overview", url: "https://iso25000.com/index.php/en/iso-25000-standards/iso-25010" };
@@ -14,7 +16,7 @@ function richLesson(
     title: string,
     introduction: string,
     outcomes: string[],
-    sections: { title: string; paragraphs: string[]; example?: string }[],
+    sections: RequirementsTeachingSection[],
     objective: string,
     instructions: string[],
     questions: string[],
@@ -27,14 +29,15 @@ function richLesson(
         { type: "list", items: outcomes },
     ];
 
-    for (const section of sections) {
+    for (const section of [...sections, ...(requirementsWorkedSections[title] ?? []), ...(requirementsRunningCase[title] ?? [])]) {
         blocks.push({ type: "heading", id: slug(section.title), text: section.title, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.example) blocks.push({ type: "callout", tone: "note", title: "Steward example", body: section.example });
+        if (section.code) blocks.push({ type: "code", ...section.code });
     }
 
     blocks.push({ type: "callout", tone: "steward", title: "System Thinker rule", body: "Treat the current Steward implementation as evidence, not as the definition of the problem. A System Thinker must be able to explain what the organization needs, what the system is responsible for, and which assumptions came from implementation choices rather than stakeholder need." });
-    blocks.push({ type: "resources", title: "Required and supporting reading", resources });
+    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...(requirementsResearch[title] ?? []), ...(requirementsRunningCaseReferences[title] ?? [])] });
 
     return {
         id,

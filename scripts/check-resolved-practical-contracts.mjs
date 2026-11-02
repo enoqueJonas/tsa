@@ -45,11 +45,12 @@ if (!builder || builder.paths.length !== 15) {
 } else {
   for (const path of builder.paths) {
     const first = path.lessons?.[0];
-    const read = first?.activities?.[0]?.content;
-    if (first?.id !== `${path.id}-operational-readiness` ||
-        read?.type !== "reading" ||
-        typeof read.body !== "string" || read.body.length < 250) {
-      problems.push(`Platform Builder readiness guidance missing or too short: ${path.id}`);
+    // PED-005: no generated 3-note readiness chapter is an acceptable proxy
+    // for an actual educational lesson, regardless of paragraph length.
+    const generated = path.lessons?.find((item) => item.id === `${path.id}-operational-readiness`);
+    const authoredReading = first?.activities?.find((activity) => activity.content?.type === "reading");
+    if (generated || !first || !authoredReading) {
+      problems.push(`Platform Builder begins with a generated placeholder or lacks an authored first reading: ${path.id}`);
     }
   }
 }

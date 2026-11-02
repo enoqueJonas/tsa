@@ -2,24 +2,6 @@ import type { PracticalContent } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { budgetHomelabDeepLessons } from "./platform-builder-budget-homelab-deep";
 
-function normalizeEnterpriseBaseline<T>(value: T): T {
-    if (typeof value === "string") {
-        return value
-            .replaceAll("Ubuntu Server", "Rocky Linux")
-            .replaceAll("Ubuntu", "Rocky Linux")
-            .replaceAll("https://documentation.ubuntu.com/server/", "https://docs.rockylinux.org/")
-            .replaceAll("Tailscale", "WireGuard")
-            .replaceAll("https://tailscale.com/kb", "https://www.wireguard.com/quickstart/") as T;
-    }
-    if (Array.isArray(value)) return value.map((item) => normalizeEnterpriseBaseline(item)) as T;
-    if (value && typeof value === "object") {
-        return Object.fromEntries(
-            Object.entries(value as Record<string, unknown>).map(([key, item]) => [key, normalizeEnterpriseBaseline(item)]),
-        ) as T;
-    }
-    return value;
-}
-
 const practices: Record<string, PracticalContent> = {
     "Designing a Learning Homelab": {
         type: "practical",
@@ -151,7 +133,7 @@ const practices: Record<string, PracticalContent> = {
     },
 };
 
-const normalizedLessons = normalizeEnterpriseBaseline(budgetHomelabDeepLessons);
+const normalizedLessons = budgetHomelabDeepLessons;
 
 export const budgetHomelabQualityLessons: Lesson[] = normalizedLessons.map((lesson) => {
     const practical = practices[lesson.title];

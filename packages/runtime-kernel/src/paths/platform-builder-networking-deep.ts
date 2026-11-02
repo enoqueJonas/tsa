@@ -1,5 +1,6 @@
 import type { Lesson } from "./lesson";
 import type { LearningResource, LessonBlock } from "../activities/content";
+import {platformNetworkingTraceByTitle,platformNetworkingTraceResources} from "./platform-builder-networking-running-case";
 
 const tcpIpGuide: LearningResource = { title: "Cloudflare Learning Center — What is TCP/IP?", url: "https://www.cloudflare.com/learning/ddos/glossary/tcp-ip/" };
 const ipAddressing: LearningResource = { title: "RFC 1918 — Address Allocation for Private Internets", url: "https://datatracker.ietf.org/doc/html/rfc1918" };
@@ -33,7 +34,7 @@ function richLesson(
         { type: "list", items: outcomes },
     ];
 
-    for (const section of sections) {
+    for (const section of [...sections, ...(platformNetworkingTraceByTitle[title] ?? [])]) {
         blocks.push({ type: "heading", id: slug(section.title), text: section.title, level: 2 });
         for (const text of section.paragraphs) blocks.push({ type: "paragraph", text });
         if (section.code) {
@@ -44,7 +45,7 @@ function richLesson(
     }
 
     blocks.push({ type: "callout", tone: "steward", title: "Steward connection", body: "Treat the client-to-Steward path as a chain of independently observable network decisions. Do not say 'the network is down' when you can identify whether the fault is local addressing, switching, routing, name resolution, transport, firewall policy, TLS or the listening application socket." });
-    blocks.push({ type: "resources", title: "Required and supporting reading", resources });
+    blocks.push({ type: "resources", title: "Required and supporting reading", resources: title==="Subnetting" ? [...resources, ...platformNetworkingTraceResources.slice(0,2)] : resources });
 
     return {
         id,

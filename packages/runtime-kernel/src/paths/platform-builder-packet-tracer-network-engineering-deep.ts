@@ -1,5 +1,6 @@
 import type { Lesson } from "./lesson";
 import type { LearningResource, LessonBlock } from "../activities/content";
+import { packetTracerWorkedTeaching, packetTracerWorkedResources } from "./platform-builder-packet-tracer-worked";
 
 const packetTracer: LearningResource = { title: "Cisco Packet Tracer", url: "https://www.netacad.com/cisco-packet-tracer" };
 const ciscoNetworking: LearningResource = { title: "Cisco Networking Academy", url: "https://www.netacad.com/" };
@@ -24,7 +25,7 @@ function lab(
         { type: "heading", id: "learning-outcomes", text: "Learning outcomes", level: 2 },
         { type: "list", items: outcomes },
     ];
-    for (const section of teaching) {
+    for (const section of [...teaching, ...(packetTracerWorkedTeaching[title] ?? [])]) {
         blocks.push({ type: "heading", id: slug(section.title), text: section.title, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.code) blocks.push(section.code.caption
@@ -33,7 +34,7 @@ function lab(
     }
     blocks.push(
         { type: "callout", tone: "steward", title: "Vendor syntax, transferable model", body: "Cisco IOS is the implementation medium for this lab. Treat commands as evidence of switching, routing and policy behavior rather than as trivia to memorize. The transferable skill is predicting packet behavior, proving it with device state, breaking it deliberately and localizing the fault." },
-        { type: "resources", title: "Required and supporting resources", resources: [packetTracer, ciscoNetworking] },
+        { type: "resources", title: "Required and supporting resources", resources: [...[packetTracer, ciscoNetworking], ...(packetTracerWorkedTeaching[title] ? packetTracerWorkedResources : [])] },
     );
 
     return {

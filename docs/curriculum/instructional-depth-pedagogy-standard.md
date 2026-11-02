@@ -65,6 +65,31 @@ The activity time estimate is an instructional promise. A 50-minute reading cann
 
 “Continue learning” cannot be the main lesson. A learner may choose not to open any optional external resource and must still receive the core instruction needed for the TSA activity.
 
+## Evidence-led source research for every substantial rewrite
+
+**Research before drafting, teach independently afterwards.** When a lesson is rewritten, the author must consult suitable primary documentation, at least one substantive technical article or course chapter, and a relevant lecture/video where one exists. An introductory marketing explainer does not substitute for a technical treatment. Verify that each link actually addresses the taught mechanism; do not attach videos merely for decoration or assert the video has been watched when only its public outline was inspected.
+
+Record for each changed lesson:
+
+1. **Research map:** source title, URL, exact concept supported, its authority/limitations, and whether material was read, sampled, or only indexed.
+2. **Teaching translation:** the precise learner-facing explanation, trace or worked example produced from the research, in original language with no long copied passages; reconcile disagreements with primary standards.
+3. **Prerequisite boundary:** what the learner has already executed, what is introduced now, and what must wait for a later module.
+4. **Worked evidence:** run the exact published code (including a failure case) in a disposable environment; do not claim network, database or platform validation from a modeled Python example.
+5. **Resource placement:** offer the primary references and optional video with a clear purpose; the lesson body itself must teach the essential material without requiring the video.
+6. **Verification tier:** source review, executable example, browser/render inspection and independent novice transfer remain separate checkboxes.
+
+Prefer official documentation and standards for correctness; use university lectures, reputable engineering deep dives and practitioner walkthroughs for pedagogical explanations and competing approaches. Split a lesson when the research exposes several foundational mechanisms that cannot be explained to the intended learner at sufficient depth within one coherent learning unit.
+
+## One-school-at-a-time remediation rule
+
+**Do not spread an audit across several schools.** Select one canonical school, inventory **all** its modules, composed lessons and activity overrides, and stay within that school until its review reaches an evidence-backed disposition. External prerequisites from an earlier school may be inspected and reused, but they are not an excuse to silently switch the audit scope or edit another school's lessons.
+
+At school entry, open or update a dedicated GitHub school issue, learner-order matrix and draft remediation PR. For every module inspect definitions, prerequisites, core mechanism, worked and negative examples, practical setup/outputs, resource quality, rendered experience and independent transfer. Record concrete deficiencies against the actual activity ID, not just file-wide counts. Splitting overbroad topics is allowed and expected; preserve progress identifiers where feasible and test navigation/persistence after changing activity counts.
+
+At school exit, reconcile **each** module against the canonical learner-experience ledger and the school-wide audit report. Technical passes are separate from author-led review and independent novice learner evidence. If an external environment or human learner is unavailable, mark the specific gate **BLOCKED / UNVERIFIED**, preserve it in the current school's issue, and **do not declare the school learner-validated**. Do not start the next school's remediation merely because the CI is green or because remaining work is inconvenient. A deliberately scoped handoff must state what remains before the school can be accepted.
+
+**Current active school: System Thinker (PED-008 / issue #332, draft PR #333).** This named lock is a current-work pointer, not a permanent content assumption: update it only when a school is formally exited and the next one becomes active.
+
 ## Pedagogical progression by school level
 
 Scaffolding should decrease deliberately:

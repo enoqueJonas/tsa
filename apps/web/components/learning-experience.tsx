@@ -29,13 +29,6 @@ export function LearningExperience({
 
   const [lesson, setLesson] = useState(session.currentLesson());
   const [activity, setActivity] = useState(session.currentActivity());
-
-  // Activity navigation replaces the content without changing the page route.
-  // Reset scroll for lessons, exercises and reflections, including restored progress.
-  useEffect(() => {
-    if (!restored) return;
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-  }, [activity.id, restored]);
   const [hasNext, setHasNext] = useState(session.hasNext());
   const [completedActivityIds, setCompletedActivityIds] = useState(session.completedActivityIds());
   const [unlockedLessonIds, setUnlockedLessonIds] = useState(session.unlockedLessonIds());
@@ -76,6 +69,14 @@ export function LearningExperience({
     setRestored(true);
     onActivityChange?.(current.id);
   }, [activePath.id, initialActivityId, onActivityChange, progressForPath, ready, restored, session]);
+
+  // Every activity replaces the learner's reading surface. A navigation should
+  // begin at the lesson header, never inherit the previous long activity's scroll.
+  // This also applies to sidebar navigation and restored deep links.
+  useEffect(() => {
+    if (!restored) return;
+    window.scrollTo(0, 0);
+  }, [activity.id, restored]);
 
   function primary() {
     const id = session.currentActivity().id;

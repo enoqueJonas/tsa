@@ -1,5 +1,11 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { fileHandoffWorkedSections } from "./system-thinker-file-handoff-examples";
+import {ftpLoopbackWorkedSections} from "./system-thinker-ftp-worked";
+import {sftpWorkedSections,sftpWorkedResources} from "./system-thinker-sftp-worked";
+import {enterpriseBridgeBySpec,enterpriseBridgeReferences} from "./system-thinker-enterprise-authority-bridge";
+import {realStewardBatchSections,realStewardBatchResources} from "./system-thinker-real-steward-batch-worked";
+import {concurrentStewardBatchSections,concurrentStewardBatchReferences} from "./system-thinker-concurrent-batch-worked";
 
 const rfc959: LearningResource = { title: "RFC 959 — File Transfer Protocol", url: "https://www.rfc-editor.org/rfc/rfc959" };
 const opensshSftp: LearningResource = { title: "OpenSSH documentation", url: "https://www.openssh.com/manual.html" };
@@ -25,7 +31,7 @@ function lesson(spec: Spec): Lesson {
         { type: "heading", id: `${spec.id}-outcomes`, text: "What you need to reason about", level: 2 },
         { type: "list", items: spec.criteria },
     ];
-    for (const section of spec.sections) {
+    for (const section of [...spec.sections, ...(enterpriseBridgeBySpec[spec.id] ?? [])]) {
         blocks.push({ type: "heading", id: `${spec.id}-${section.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`, text: section.title, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.code) blocks.push(section.code.caption
@@ -33,7 +39,7 @@ function lesson(spec: Spec): Lesson {
             : { type: "code", language: section.code.language, code: section.code.code });
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward integration boundary", body: "This path adds a file-based integration channel because a legacy enterprise dependency cannot consume Steward's REST API. The file channel is not allowed to become a second source of truth: Steward remains authoritative for its domain state and must validate every imported change." });
-    blocks.push({ type: "resources", title: "Continue learning", resources: spec.resources ?? [rfc959, opensshSftp, pythonCsv] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: [...(spec.resources ?? [rfc959, opensshSftp, pythonCsv]), ...(enterpriseBridgeReferences[spec.id] ?? [])] });
 
     return {
         id: `system-thinker-enterprise-file-${spec.id}`,
@@ -56,6 +62,7 @@ const specs: Spec[] = [
             { title: "Identity and authority must survive the file boundary", paragraphs: ["Names are usually poor integration identity because they can change or collide. Exchange stable Steward identifiers and define whether an inbound value is authoritative, a proposal, or reference information. A syntactically valid file must never gain authority to bypass Steward's ownership and domain rules.", "Version the contract independently from filenames chosen for convenience. A consumer should be able to reject an unsupported version deliberately rather than discovering incompatibility halfway through row processing."] },
             { title: "Handoff must distinguish incomplete from complete delivery", paragraphs: ["A consumer must not process bytes while the producer is still writing them. One common convention is to upload under a temporary name and atomically rename into the agreed incoming name only after the transfer completes on the same filesystem. Another managed-transfer workflow may expose an explicit completion marker. The contract must state which event transfers ownership to the consumer.", "Acknowledgement is also part of the protocol: accepted, rejected and partially processed must have defined meaning. A transport-level successful upload does not prove that the business records were accepted."] , code: { language: "text", caption: "One explicit batch handoff", code: "producer: inventory_20260930.csv.part\n       write + close\n       rename → inventory_20260930_v1.csv\n                    ↓ ownership transfers\nconsumer: claim → validate envelope/version → validate records\n                    ↓\n          accepted OR rejected(result artifact)" } },
             { title: "Worked handoff: incomplete, accepted and conflicting deliveries", paragraphs: ["Suppose the producer delivers inventory for business date 2026-09-30 under identity legacy-registry/2026-09-30/001. While the file is named inventory_20260930.csv.part, the consumer must not claim it: successful transfer of some bytes is not a completed business delivery. After the producer closes and atomically renames it to the agreed final name on the same filesystem, the consumer can claim and validate its envelope and records.", "If validation succeeds, issue an acceptance artifact referring to the delivery identity; acceptance must explicitly say whether it means file receipt, validated records or applied domain changes. A second delivery with the same identity and identical content should follow the documented duplicate policy without applying the same effects again. The same identity with different content is not a harmless retry: quarantine it and require investigation instead of overwriting the earlier result.", "These are expected contract outcomes, not observed runtime results. Test interrupted upload, successful rename, identical replay and conflicting replay separately. Also confirm what guarantees the actual transfer mechanism provides; atomic rename assumptions do not carry across unrelated filesystems or every managed transfer service."] },
+            ...fileHandoffWorkedSections,
             { title: "Replay behavior is a contract decision", paragraphs: ["Networks retry and operators resend files. Define a delivery identity such as producer + business date + sequence, optionally strengthened with a checksum. Decide whether an identical replay is ignored, acknowledged as already processed or deliberately reprocessed. If the same identity arrives with different content, treat that as a conflict requiring investigation rather than silently applying it.", "Checksums can detect accidental content change; they do not by themselves authenticate the producer. Transport identity, signatures or other security controls are separate concerns and are deepened later."] },
         ],
         practiceTitle: "Define the Steward Service-Inventory Exchange Contract",
@@ -76,6 +83,7 @@ const specs: Spec[] = [
         title: "Legacy FTP Integration",
         intro: "FTP remains common in long-lived enterprise batch integrations. Its separate control/data connections, active/passive modes and clear-text security model create operating and firewall behavior that engineers still encounter even when they would not select FTP for a new secure integration.",
         sections: [
+            ...ftpLoopbackWorkedSections,
             { title: "FTP separates control from transferred data", paragraphs: ["The client opens a control connection to the server and sends authentication, navigation and transfer commands there. Directory listings and file contents use separate data connections. A successful control login therefore does not prove that the data path is reachable.", "Troubleshooting FTP requires identifying which channel failed instead of treating the protocol as one connection."] },
             { title: "Active and passive modes change data-connection direction", paragraphs: ["In active mode the client advertises an endpoint and the server initiates the data connection toward the client. Client-side firewalls and NAT often make that awkward. In passive mode the server advertises a data endpoint and the client initiates the data connection, which is generally easier for clients behind NAT.", "Passive mode still requires a deliberately bounded server-side data-port policy; it is not a reason to expose an arbitrary port range."], code: { language: "text", caption: "Control direction stays stable while the data path changes", code: "ACTIVE:  client --control--> server; server --data--> client\nPASSIVE: client --control--> server; client --data--> server" } },
             { title: "Treat FTP as a legacy compatibility constraint", paragraphs: ["Traditional FTP does not provide transport confidentiality for credentials or content. TSA operates it only in a constrained learner-owned environment to understand a legacy enterprise dependency, not as a recommended modern transport.", "Dedicated accounts, narrow directories and restricted network exposure reduce blast radius but do not turn clear-text FTP into a secure protocol. Later migration should preserve the already-defined file contract while replacing the transport."] },
@@ -144,6 +152,43 @@ const specs: Spec[] = [
         questions: ["When is NFS a better fit than managed file transfer?", "What new coupling appears when two applications depend on the same mounted filesystem?"],
     },
     {
+        id: "sftp-loopback-protocol",
+        title: "SSH Trust and SFTP File Delivery: Executable Boundary",
+        intro: "Before proposing a secure file-transfer migration, directly observe SFTP's actual SSH authentication, host trust and file delivery boundaries. This focused lab demonstrates the wire protocol on a local disposable listener; Security Steward remains responsible for real deployment, policy and cryptographic hardening.",
+        sections: sftpWorkedSections,
+        practiceTitle: "Prove SSH Host Trust and a Completed SFTP Delivery",
+        scenario: "An enterprise vendor will replace Steward's old clear-text FTP file handoff with SFTP. The existing file contract and durable delivery ID must survive the transport change, while both sides need proof that they connected to the intended SSH host and authorized client.",
+        instructions: [
+            "Install AsyncSSH in a disposable virtual environment, run the complete pinned-key SFTP program and save its expected observations.",
+            "Locate the server's authorized user public key and the client's pinned host key; explain why they authenticate different parties.",
+            "Reproduce wrong host-key rejection and wrong user-key authentication refusal as distinct negative controls.",
+            "Observe the .part upload before rename and the final file afterward, then compare SHA-256 digests of source and downloaded bytes.",
+            "Stop the SFTP listener and reproduce connection refusal. Name which of the failure modes are transport failures rather than invalid business records.",
+            "Apply the earlier file-envelope/SQLite replay-identity contract to the final delivery on paper, identifying where its stable business delivery ID must come from.",
+            "Write a handoff to Security Steward for host/user key rotation, audited onboarding, real transfer accounts and remote firewall/service hardening."
+        ],
+        deliverables: [
+            "Exact execution trace with authenticated, rejected-host and rejected-user cases",
+            "Incomplete versus renamed final file listing and SHA-256 integrity",
+            "Credential and host-key trust-boundary diagram",
+            "File-contract/replay-identity continuity note",
+            "Security Steward production-deployment handoff"
+        ],
+        criteria: [
+            "SFTP is demonstrated over a real SSH connection without bypassing host-key verification",
+            "Unauthorized client public key and unexpected SSH host key are rejected",
+            "Only the finished remote filename is consumer-ready, with matching content integrity",
+            "Transport proof is not mistaken for application-level validation or authoritative Steward mutation",
+            "The lab remains separate from production security audit and vendor cutover acceptance"
+        ],
+        questions: [
+            "Why does checking an SSH server host key protect against a different threat than validating the client public key?",
+            "Why is a successful encrypted upload insufficient to prove that the destination can process the business records?",
+            "What recovery must the consumer implement if it crashes immediately after a valid SFTP rename?"
+        ],
+        resources: sftpWorkedResources,
+    },
+    {
         id: "secure-transfer-readiness",
         title: "Secure File Transfer Readiness: SFTP and FTPS",
         intro: "SFTP and FTPS both protect file transfer but are different protocols. SFTP runs over SSH and usually uses a single connection model; FTPS adds TLS to FTP and retains FTP's protocol shape. Security Steward will perform the actual migration after the legacy baseline is understood.",
@@ -168,4 +213,94 @@ const specs: Spec[] = [
     },
 ];
 
-export const enterpriseFileIntegrationDeepLessons: Lesson[] = specs.map(lesson);
+// Keep the real ORM boundary separate: Batch Processing already teaches handoff,
+// row/file atomicity and replay; this lesson demands actual guarded domain effects.
+const stewardBatchDomainSpec: Spec = {
+    id: "steward-batch-domain",
+    title: "Steward Batch Import: Authorization, Atomic Commit and Replay",
+    intro: "The previous batch lifecycle described a file handoff and a delivery ledger. This focused integration lab now makes the missing domain boundary observable on the real Builder v1 Team and Service models in a disposable PostgreSQL database. Its trusted approval and group checks are explicitly sandbox fixtures; production ownership policy D-01 remains unapproved.",
+    sections: realStewardBatchSections,
+    practiceTitle: "Lab: Deny, Apply and Replay a Steward Ownership Batch in PostgreSQL",
+    scenario: "A nightly file proposes owner-team changes. A syntactically valid file may come from an unauthorized actor or contain a proposal that lacks independent approval. A crash or a lost response must not create an unauthorized partial change or a second effect.",
+    instructions: [
+        "Build the disposable PostgreSQL-backed Builder v1 Django project using the earlier checkpoint; record the exact Builder model revision and fake identity/approval boundaries.",
+        "Run the entire published Python program. Capture ten specific observed lines, the four real Service rows, and the single receipt; do not substitute a detached SQLite simulation.",
+        "Explain why the CSV proposal ID is not an approval credential and why the actor's membership must come from trusted application context.",
+        "Reproduce the malicious second row that targets another team's Service. Record the original owners, the denied result, unchanged PostgreSQL rows and absent receipt.",
+        "Reproduce the crash after the first row but before the second and demonstrate that the database transaction rolls both owner changes and receipt back.",
+        "Prove that after a successful authorized commit, a lost reply leads to duplicate on exact replay and that a changed file under the same delivery ID is a conflict, not a new business approval.",
+        "Independently modify a copy of the lab with a novel attempted bypass (for example an unknown Service or duplicate proposal ID), predict the actual outcome and run it. Record the failure and what invariant survived.",
+        "Defend the deliberate full-file atomicity contract against per-row acceptance; identify two concrete tests still required before two concurrent file importers or a real enterprise IdP could be trusted."
+    ],
+    deliverables: [
+        "Actual Builder v1 Django/PostgreSQL run log and exact code revision",
+        "Before/after owner and receipt snapshots for denied, crash and committed cases",
+        "Original independent negative variant with predicted and observed result",
+        "Approval and trust-boundary diagram clearly separating sandbox fixture from production",
+        "Provisional full-file-vs-row atomicity and concurrency decision with UNVERIFIED evidence"
+    ],
+    criteria: [
+        "The same committed SQL transaction covers the owner mutations and one delivery receipt; a crash or denied later row leaves both unchanged.",
+        "Trusted approval is not accepted from the inbound CSV alone; forged/unauthorized proposals are denied and source of actor membership is explicit.",
+        "A lost response replay returns duplicate, while same-ID modified bytes returns conflict without changing the domain again.",
+        "A learner supplies one truly novel failed case and explains the invariant unprompted rather than copying the ten expected stdout messages.",
+        "No real enterprise authorization, IdP, vendor delivery or concurrent-importer correctness is claimed from this isolated lab."
+    ],
+    questions: [
+        "How can a file have a valid SHA-256 digest and still request an illegal Team transfer?",
+        "Why must a delivery receipt and two successful owner changes be committed inside the same database transaction for this all-or-nothing contract?",
+        "What changed between a network-lost success response and a database rollback, and what can the consumer infer on retry?",
+        "Which assumption is no longer valid if business requires per-row partial acceptance, and what must change to handle two importers racing?"
+    ],
+    resources: realStewardBatchResources,
+};
+
+// The first real-domain import lesson establishes transactional authority.
+// This separate follow-up tests a new failure dimension: two physical PG workers.
+const stewardBatchConcurrencySpec: Spec = {
+    id: "steward-batch-concurrency",
+    title: "Concurrent Batch Importers: Claims, Locks and Stale Owners",
+    intro: "An idempotency key is not a distributed mutex. A test that replays the same file sequentially is necessary but cannot prove two workers racing over an absent receipt, nor can it prevent distinct deliveries from overwriting one another. This separate lesson demonstrates both races with actual independent PostgreSQL connections.",
+    sections: concurrentStewardBatchSections,
+    practiceTitle: "Lab: Diagnose and Repair Concurrent PostgreSQL Delivery Claims",
+    scenario: "Two scheduled batch workers accidentally see the same completed file. A legacy consumer only selects an absent delivery record with FOR UPDATE; a different incoming delivery targets the same Service but assumes its previously recorded owner. Diagnose the unhandled unique-key failure and last-write-wins risk using real transaction traces.",
+    instructions: [
+        "Finish the previous real Builder v1 CSV owner-import lesson. Predict, in writing, what an empty SELECT FOR UPDATE locks when neither worker has yet inserted the receipt.",
+        "Reconstruct the temporary Django/PG 17 exercise and run the whole published two-worker Python program, not two sequential invocations. Capture distinct pg_backend_pid values and all six checked output lines.",
+        "Explain the negative-control race: two workers independently observe an absent row; one raw INSERT succeeds and the other gets an integrity failure. Explain why a uniqueness exception is not an acceptable silent replay protocol.",
+        "Explain how transactional INSERT ... ON CONFLICT DO NOTHING RETURNING and a new post-conflict SELECT classify same ID / same bytes as duplicate and same ID / changed bytes as conflict without repeating effects.",
+        "Run two different delivery IDs against the same original Service owner. Identify the Service row lock, the expected-owner precondition, the first committed owner and the second worker's rejected stale_owner result and rolled-back receipt.",
+        "Show why another actor cannot read an existing receipt result merely by guessing its delivery ID; distinguish this narrow fixture access check from enterprise IAM.",
+        "Independently devise a novel race or crash window that the sample did not execute: e.g., first claimant rolls back before committing while the second is waiting, or two multi-Service imports lock rows in opposite order. Record a safe predicted outcome, how to force the interleaving, and either actual test evidence or UNVERIFIED.",
+        "Compare keeping a database unique claim versus an external Redis lock. Reject an extra lock service unless a demonstrated invariant requires it, and state what the isolated single-database experiment cannot establish in production."
+    ],
+    deliverables: [
+        "Two physical PostgreSQL backend IDs and the forced unsafe SELECT race output",
+        "Same-ID duplicate and changed-content conflict with one durable effect in each pair",
+        "Different-ID owner conflict with an observed stale_owner and rolled-back receipt",
+        "Source-level transaction/lock diagram and exact evidence/caveat references",
+        "An original concurrency counterexample with observed test or explicit UNVERIFIED",
+        "Proposed operations response to deadlock, timeout or approved-actor revocation"
+    ],
+    criteria: [
+        "Two independent DB connections and deliberately concurrent workers are proven; sequential replay is not mislabeled a race test.",
+        "The absent-row SELECT FOR UPDATE negative control demonstrates a unique-key failure; the repaired path handles duplicate/conflicting claims without a second durable effect.",
+        "Two distinct deliveries with stale expected owner cannot both commit a different owner; a rejected transfer rolls back its claimed receipt.",
+        "The response identity boundary is enforced in the fixture, while real producer authentication, approved ownership policy and distributed effects are explicitly unverified.",
+        "Learner explains an independently devised concurrency failure, predicts an invariant and records the observed output or labels it UNVERIFIED. No human transfer PASS is inferred from green CI."
+    ],
+    questions: [
+        "Why can two transactions both observe a missing delivery record despite SELECT FOR UPDATE, and which actual database object prevents duplicate claims?",
+        "How does PostgreSQL READ COMMITTED help the loser inspect the committed receipt after ON CONFLICT DO NOTHING?",
+        "Why can two different delivery IDs corrupt owner history without a current-owner row lock and precondition?",
+        "Why is a Redis-based distributed lock not a substitute for PostgreSQL's transaction and unique constraints here?",
+        "Which two concurrent failure cases remain unverified even if all published output matches?"
+    ],
+    resources: concurrentStewardBatchReferences,
+};
+
+export const enterpriseFileIntegrationDeepLessons: Lesson[] = specs.flatMap((spec) =>
+    spec.id === "batch-lifecycle"
+        ? [lesson(spec), lesson(stewardBatchDomainSpec), lesson(stewardBatchConcurrencySpec)]
+        : [lesson(spec)]
+);

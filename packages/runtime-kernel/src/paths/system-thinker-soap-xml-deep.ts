@@ -1,15 +1,23 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import {soapWireTeachingSections} from "./system-thinker-soap-wire-worked";
+import {soapAdvancedSections} from "./system-thinker-soap-advanced-worked";
+import { xmlNamespaceWorkedSections, xsdWorkedSections } from "./system-thinker-xml-worked-examples";
+import {soapAuthorityBridge,soapAuthoritySources} from "./system-thinker-soap-authority-bridge";
 
 const xmlSpec:LearningResource={title:"W3C — Extensible Markup Language (XML) 1.0",url:"https://www.w3.org/TR/xml/",kind:"reference"};
 const xmlNamespaces:LearningResource={title:"W3C — Namespaces in XML",url:"https://www.w3.org/TR/xml-names/",kind:"reference"};
 const xsdSpec:LearningResource={title:"W3C — XML Schema Definition Language 1.1",url:"https://www.w3.org/TR/xmlschema11-1/",kind:"reference"};
 const wsdlSpec:LearningResource={title:"W3C — Web Services Description Language (WSDL) 1.1",url:"https://www.w3.org/TR/2001/NOTE-wsdl-20010315",kind:"reference"};
 const soapSpec:LearningResource={title:"W3C — SOAP Version 1.2",url:"https://www.w3.org/TR/soap12-part1/",kind:"reference"};
+const soap11Spec:LearningResource={title:"W3C — SOAP 1.1 (2000)",url:"https://www.w3.org/TR/2000/NOTE-SOAP-20000508/",kind:"reference",purpose:"Clarify the SOAP 1.1 text/xml and SOAPAction binding used in the minimal executable provider, separately from SOAP 1.2 conventions."};
 const owaspXxe:LearningResource={title:"OWASP — XML External Entity Prevention",url:"https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html",kind:"reference"};
+const pythonElementTree:LearningResource={title:"Python — ElementTree namespace parsing",url:"https://docs.python.org/3/library/xml.etree.elementtree.html",kind:"reference"};
+const lxmlSchemaDocs:LearningResource={title:"lxml — XML Schema validation",url:"https://lxml.de/validation.html",kind:"reference"};
+const namespaceVideo:LearningResource={title:"Automation Step by Step — XML Namespace tutorial",url:"https://www.youtube.com/watch?v=VTQRGDhH6WQ",kind:"video",purpose:"Optional visual reinforcement on prefixes, default namespaces and name collisions; the worked lab is self-contained."};
 const resourcesBySoap:Record<string,LearningResource[]>={
- "soap-xml-document-model":[xmlSpec,xmlNamespaces,owaspXxe],"soap-xml-xsd-contract":[xsdSpec,xmlNamespaces],
- "soap-wsdl-contract":[wsdlSpec,xsdSpec],"soap-envelope-faults":[soapSpec,wsdlSpec],
+ "soap-xml-document-model":[xmlSpec,xmlNamespaces,pythonElementTree,owaspXxe,namespaceVideo],"soap-xml-xsd-contract":[xsdSpec,xmlNamespaces,lxmlSchemaDocs],
+ "soap-wsdl-contract":[wsdlSpec,xsdSpec,soap11Spec],"soap-envelope-faults":[soap11Spec,soapSpec,wsdlSpec],
  "soap-service-implementation":[wsdlSpec,soapSpec],"soap-steward-consumer":[wsdlSpec,soapSpec],
  "soap-contract-testing-failure":[xsdSpec,wsdlSpec],"soap-xml-milestone":[xmlSpec,xsdSpec,wsdlSpec,soapSpec],
 };
@@ -17,12 +25,14 @@ const resourcesBySoap:Record<string,LearningResource[]>={
 type TeachingSection = { title: string; paragraphs: string[]; code?: { language: string; code: string; caption?: string } };
 const teachingBySoap: Record<string, TeachingSection[]> = {
     "soap-xml-document-model": [
+        ...xmlNamespaceWorkedSections,
         { title: "XML is a tree with stricter document rules", paragraphs: ["An XML document has one document element, nested elements, attributes, text and escaped characters. Well-formedness is the parser-level requirement that the document obey XML syntax: tags are properly nested/closed, attribute syntax is valid and there is one root document element. A well-formed document can still violate the business or schema contract.", "Unlike a typical JSON object model, XML also has namespaces, attributes versus elements, ordered child content and document-oriented features. Parse it structurally; regular expressions and string slicing cannot reliably preserve those semantics."] },
         { title: "Namespace identity is a URI, not the chosen prefix", paragraphs: ["A namespace qualifies element and attribute names so independently designed vocabularies can coexist. The prefix is only a local alias. <cmdb:Service> and <x:Service> identify the same expanded name when both prefixes map to the same namespace URI.", "Code that depends on the literal prefix can fail on a semantically equivalent document. Query using namespace-aware APIs and the namespace URI."], code: { language: "xml", caption: "Prefixes differ; expanded namespace identity can remain the same", code: "<cmdb:Service xmlns:cmdb=\"urn:example:cmdb:v1\">\n  <cmdb:Name>payments-api</cmdb:Name>\n</cmdb:Service>" } },
         { title: "Check the namespace rule against changed input", paragraphs: ["Worked result: if <x:Service xmlns:x=\"urn:example:cmdb:v1\"> replaces the cmdb prefix but retains the same namespace URI and local name, a namespace-aware lookup of {urn:example:cmdb:v1}Service still finds the element. If the URI changes to urn:example:cmdb:v2, the same lookup must return no match. The first change is cosmetic, the second changes the element identity; do not confuse XML prefix matching with contract compatibility."] },
         { title: "Parsing and validation are separate stages", paragraphs: ["Parsing turns a well-formed XML byte stream into a structured document/tree or event stream. Schema validation then asks whether that structure satisfies a declared contract. Domain validation still follows: an XSD can prove that ownerId is a string with a required occurrence, but not necessarily that the referenced Steward team exists or may own the service.", "For untrusted XML, parser configuration is a security boundary. Do not casually enable external entity or external resource resolution; Security Steward deepens parser hardening later."] },
     ],
     "soap-xml-xsd-contract": [
+        ...xsdWorkedSections,
         { title: "XSD constrains an XML vocabulary", paragraphs: ["An XML Schema defines elements, attributes, simple/complex types, occurrence constraints and namespace membership. Validation converts 'this sample looks right' into executable structural rules that producer and consumer can test independently.", "The schema targetNamespace states which vocabulary the declarations belong to. Instance documents must use the expected namespace; matching local element text under the wrong namespace is not the same contract."] },
         { title: "Cardinality and types make compatibility visible", paragraphs: ["minOccurs and maxOccurs express whether an element is optional, required or repeated. Simple types constrain lexical/value shape; complex types define structured content. Tightening an optional element into required can break existing producers, while adding an optional element is often easier for tolerant consumers—but actual client behavior must still be tested.", "Schema compatibility is consumer-specific. Generated clients may react differently from generic XML parsers, so predict changes and then verify them with the real toolchain."] },
         { title: "Schema validity is not domain validity", paragraphs: ["Keep cross-record rules, database existence checks, authorization and business lifecycle rules in application/domain validation. XSD should describe the interoperable document structure rather than attempt to become the entire Steward domain model."] },
@@ -57,13 +67,13 @@ const teachingBySoap: Record<string, TeachingSection[]> = {
 };
 
 function practical(id: string, title: string, objective: string, scenario: string, instructions: string[], deliverables: string[], completionCriteria: string[], estimatedMinutes = 120): Lesson {
-    const resources = resourcesBySoap[id] ?? [soapSpec];
-    const sections = teachingBySoap[id] ?? [];
+    const resources = [...(resourcesBySoap[id] ?? [soapSpec]), ...(soapAuthoritySources[id] ?? [])];
+    const sections = [...(teachingBySoap[id] ?? []), ...(soapAuthorityBridge[id] ?? []), ...(soapAdvancedSections[id] ?? [])];
     const blocks: LessonBlock[] = [
         { type: "paragraph", text: objective },
         { type: "heading", id: `${id}-mental-model`, text: "Protocol and contract mental model", level: 2 },
     ];
-    for (const section of sections) {
+    for (const section of [...sections, ...(soapWireTeachingSections[id] ?? [])]) {
         blocks.push({ type: "heading", id: `${id}-${section.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`, text: section.title, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.code) blocks.push(section.code.caption
@@ -73,7 +83,7 @@ function practical(id: string, title: string, objective: string, scenario: strin
     blocks.push({ type: "callout", tone: "steward", title: "Integration boundary", body: "SOAP/XML belongs at the enterprise integration boundary. Steward's domain model remains independent of generated SOAP types and raw XML representation." });
     blocks.push({ type: "resources", title: "Reference specifications", resources });
     const activities: Lesson["activities"] = [];
-    if (sections.length) activities.push({ id: `${id}-reading`, title: `${title}: Concepts`, estimatedMinutes: 45, content: { type: "reading", body: blocks.filter((block) => block.type === "paragraph").map((block) => block.text).join("\n\n") || objective, blocks } });
+    if (sections.length) activities.push({ id: `${id}-reading`, title: `${title}: Concepts`, estimatedMinutes: (id === "soap-rest-reassessment" || id === "soap-xml-milestone") ? 18 : 45, content: { type: "reading", body: blocks.filter((block) => block.type === "paragraph").map((block) => block.text).join("\n\n") || objective, blocks } });
     activities.push({ id: `${id}-lab`, title, estimatedMinutes, content: { type: "practical", objective, scenario, instructions, deliverables: [...deliverables, `Reference set: ${resources.map(r => r.title).join("; ")}`], completionCriteria } });
     return { id, title, activities };
 }

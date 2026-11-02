@@ -5,21 +5,60 @@ import { djangoDependentPostgresqlDeepLessons, relationalDataAndPostgresqlDeepLe
 type PracticeSpec = Omit<PracticalContent, "type">;
 
 const practices: Record<string, PracticeSpec> = {
-    "relational-data-and-postgresql-relational-model-practice": {
-        objective: "Give the existing Steward domain durable relational storage and deliberately expand it with the relationships needed by the Builder product.",
-        scenario: "steward-core currently keeps Services in memory, and Web/API Foundations defined a future HTTP contract without inventing persistence. Now persistence becomes real. Design the first PostgreSQL schema from the Service behavior you already own, then add the Team, Environment and dependency facts needed for the registry to grow.",
+    "relational-data-and-postgresql-from-memory-to-durable-data-practice": {
+        objective: "Demonstrate cross-process persistence and its limitations before adopting a database.",
+        scenario: "The existing Steward HTTP server stores data in process memory. A user assumes that a successful HTTP response makes that data durable. Test that assumption using disposable state.",
         instructions: [
-            "Inventory the current Service fields and Team ownership concept from steward-core before drawing a table.",
-            "Model Team and Service first. Preserve the domain meaning already established instead of copying a hypothetical API response.",
-            "Add Environment as a separate relation so one Service can exist in multiple environments without repeating the Service record.",
-            "Add directed ServiceDependency relationships using Service identities rather than comma-separated names.",
-            "Choose primary keys, foreign keys, cardinalities, PostgreSQL data types and nullability explicitly, then create the schema in PostgreSQL. Record why absence is or is not valid for at least two fields.",
-            "Seed at least two Teams, three Services, multiple Environments and two dependency edges using names already familiar from the Python exercises where practical.",
-            "Rename one Team and prove Service ownership still has one authoritative source.",
-            "Write one JOIN that reconstructs a useful Service catalogue view and compare that relational result with the in-memory representation you started from."
+            "Create an empty scratch directory, save the exact published persistence_lab.py, and run reset, add-payments, read, add-identity, read as separate commands.",
+            "Capture the file after each write and state exactly which process owns the dictionary versus which file persists.",
+            "Run corrupt and read. Record stdout, exit status 2, and recover with reset. Do not execute this against a real registry.",
+            "Reason through two simultaneous snapshot reads and overwriting writes, identifying the lost-update hazard without claiming to have reproduced a race.",
+            "Compare memory, file snapshots and PostgreSQL for one-user demos versus Steward's multi-writer registry. Explain what would have to change before claiming crash-safe writes."
         ],
-        deliverables: ["Current-domain inventory", "Relational schema sketch", "Working PostgreSQL schema and seed SQL", "Team-rename evidence", "Catalogue JOIN output", "Persistence-boundary note"],
-        completionCriteria: ["PostgreSQL is introduced here rather than assumed in earlier exercises.", "Existing Service concepts survive the move to persistence.", "Team, Environment and ServiceDependency have explicit relational meaning.", "Ownership and dependencies use keys rather than duplicated text.", "The learner can explain why database rows do not need to mirror API JSON or Python objects exactly."]
+        deliverables: ["Five-command transcript and snapshot contents", "Corruption negative case and recovery", "Two-writer lost-update timeline", "Storage choice decision record"],
+        completionCriteria: ["The learner has reproduced persistence across separate Python processes.", "The negative JSON corruption is observed and the recovery documented.", "The limits of the exercise (no concurrency or crash safety) are not presented as verified.", "A database is chosen for explicit Steward requirements rather than assumed universally necessary."]
+    },
+    "relational-data-and-postgresql-postgresql-first-connection-practice": {
+        objective: "Prove an actual PostgreSQL lab connection and temporary-table lifecycle before the relational schema lab.",
+        scenario: "A following lesson asks for CREATE TABLE, but a learner must first have a server, database, role and client. Establish and diagnose those prerequisites explicitly.",
+        instructions: [
+            "Use the official PostgreSQL setup guide for your OS or an authorized course database. Isolate learning from any production or shared database.",
+            "Prove the psql client version and database connection separately; do not confuse pg_isready with successful authentication.",
+            "Record the selected database and role using SELECT current_database(), current_user, 2 + 2 with expected result 4.",
+            "Save and run first_session.sql using psql -X -v ON_ERROR_STOP=1 -f first_session.sql; compare both result sets with expected outputs.",
+            "In a new psql session, deliberately query tsa_session_probe and capture the missing-relation result to show session-only TEMP table lifetime.",
+            "Document environment/permissions blockers rather than inventing a successful SQL execution or exposing credentials."
+        ],
+        deliverables: ["Environment/role/database setup record without secrets", "Successful connection and query output or explicit blocker", "First SQL file transcript", "Expected second-session TEMP-table failure", "Five-boundary diagnostic tree"],
+        completionCriteria: ["The next lab has a real accessible PostgreSQL database or an honest blocked-state record.", "The learner distinguishes client, server, database, schema and role.", "SQL and psql meta-commands are correctly separated.", "No real PostgreSQL execution is claimed solely from static CI tests."]
+    },
+    "relational-data-and-postgresql-relational-model-practice": {
+        objective: "Understand Team, Service and relationship semantics through a deliberately temporary PostgreSQL example before creating the permanent Steward schema.",
+        scenario: "The preceding lesson gave you a working psql connection. Now you can observe keys and relationships without prematurely making persistent tables and silently committing to a schema before you understand its facts.",
+        instructions: [
+            "Inventory Service fields and the Team ownership relationship from earlier Builder Python work. Define identity, attribute, one-to-many and directed many-to-many with examples.",
+            "In a single psql session, execute the lesson's CREATE TEMP TABLE team/service/environment sketches in sequence, not in separate sessions; observe the Team rows and foreign-key relationship.",
+            "Explain why service.owning_team_id is a foreign key rather than a duplicate team name; sketch a directed service_dependency relation and its integrity rules.",
+            "Compare a normalized Team/Service model with a flawed duplicate-team-name design; predict the effect of a Team rename.",
+            "Close that psql session. Open another and show that the temporary example tables are absent. The next lesson will create the permanent teaching dataset.",
+            "State which Steward fields existed in the Python core and which database columns are proposed extensions, rather than pretending the previous app already implemented them."
+        ],
+        deliverables: ["Fact and cardinality diagram", "One-session TEMP table transcript", "Independent post-disconnect missing-table evidence", "Ownership anomaly explanation", "Proposed schema notes for the next lesson"],
+        completionCriteria: ["Every command is run only after establishing an actual PostgreSQL connection.", "The learner can explain TEMP lifetime and why key references matter.", "The exercise does not create conflicting permanent tables before the canonical seed lab.", "Previously implemented domain and proposed persistence extensions are distinguished."]
+    },
+    "relational-data-and-postgresql-steward-schema-and-seed-practice": {
+        objective: "Build one permanent, consistent, disposable PostgreSQL teaching dataset that supports the next SQL lessons.",
+        scenario: "The original lesson sequence later queried columns and relationships without defining them. Establish a single documented schema plus seed data, then verify both successful joins and constraint failures.",
+        instructions: [
+            "Confirm you are connected to a freshly provisioned empty tsa_steward_lab database; do not drop or overwrite tables in an existing database.",
+            "Save the published steward_schema_seed.sql exactly and execute it with psql -X -v ON_ERROR_STOP=1 -1 -f steward_schema_seed.sql.",
+            "Save and run verify_steward_seed.sql in a new connection. Check team counts (Identity 1, Payments 2, Platform 2), one missing Payroll environment and both dependency edges.",
+            "Attempt the two separately documented invalid inserts: foreign-key orphan and duplicate Service name. Capture distinct errors and verify five original Services remain.",
+            "Explain why the operational active flag is distinct from the canonical lifecycle stages development/uat/production/retired; the fixture deliberately contains one production-stage Service without a production Environment as diagnostic negative data, not a valid release record. Fake .invalid endpoints are not suitable for live HTTP tests.",
+            "Commit SQL scripts, expected results and a concise documented reset/reprovisioning procedure for this disposable learning database."
+        ],
+        deliverables: ["Atomic baseline SQL run", "Three expected verification query result sets", "Two negative constraint transcripts", "Post-run integrity query", "Reproduction instructions"],
+        completionCriteria: ["All later-referenced baseline columns exist in the seed schema.", "Five Services, three Teams, four Environment rows and two directed dependencies are proved, not guessed.", "No destructive commands are directed at real or shared data.", "No PostgreSQL pass is inferred from source-only or SQLite-based checks."]
     },
     "relational-data-and-postgresql-sql-crud-practice": {
         objective: "Perform data changes with a disciplined preview-mutate-verify workflow that makes accidental broad updates difficult.",
@@ -37,103 +76,112 @@ const practices: Record<string, PracticeSpec> = {
         completionCriteria: ["Every executed mutation has an evidenced target set.", "No destructive statement relies on table order or an implicit assumption.", "The learner can explain why syntactically valid SQL can still be operationally dangerous."],
     },
     "relational-data-and-postgresql-filtering-ordering-practice": {
-        objective: "Build precise, deterministic Steward catalogue queries and expose the bugs caused by NULL and ambiguous boolean logic.",
-        scenario: "The Engineering Portal needs filters for active critical services, services missing a technical owner, and stable ordered results for later pagination. A first implementation returns surprising rows when NULL and OR are involved.",
+        objective: "Predict exact SQL predicate results, diagnose NULL/precedence failures, and produce deterministic ordered queries on the canonical Steward seed.",
+        scenario: "An engineer accidentally includes Legacy Gateway in a production-stage Service report. Diagnose why a valid query leaks a retired record and prove the correction against the unchanged five-service dataset.",
         instructions: [
-            "Seed services with mixed lifecycle, criticality and nullable technical-owner values, including tied sort values.",
-            "Write at least five predicates using AND, OR, IN, IS NULL and parentheses.",
-            "Create one deliberately incorrect NULL comparison and capture the unexpected result; explain it using SQL TRUE/FALSE/UNKNOWN rather than only memorizing IS NULL.",
-            "Create one ambiguous AND/OR predicate, then add parentheses to make the intended truth conditions explicit.",
-            "Add deterministic ordering with an explicit tie-breaker and demonstrate stable output across repeated runs.",
-            "Use one range/pattern predicate and a bounded LIMIT query; explain why LIMIT without deterministic ORDER BY is not a stable page.",
-            "Write the expected truth conditions for each query before comparing them with PostgreSQL output."
+            "Start with the canonical steward_schema_seed.sql baseline; do not assume technical_owner exists or add unexplained columns.",
+            "Run filter_boolean.sql and annotate the retained row set before/after parentheses. Explain the AND/OR binding with the named Legacy Gateway row.",
+            "Run filter_null.sql and explain UNKNOWN, NOT UNKNOWN, IS NULL and which rows WHERE retains.",
+            "Run filter_order.sql; show that its chosen order is alphabetical rather than a business severity ranking.",
+            "Independently construct a production-stage Service search using ILIKE 'pay%' and stable ORDER BY name, id, then change case and verify the result.",
+            "Describe how OFFSET pages can change under inserts and why ORDER BY alone does not solve snapshot consistency."
         ],
-        deliverables: ["Query catalogue", "NULL failure evidence", "Boolean-precedence correction", "Deterministic ordering evidence"],
-        completionCriteria: ["NULL is handled with SQL semantics rather than ordinary equality assumptions.", "Boolean grouping is explicit where intent could be misread.", "Every ordered result intended for pagination has a stable tie-breaker."],
+        deliverables: ["Executed Boolean and NULL transcripts", "Truth table explaining UNKNOWN", "Independent search query and output", "Deterministic sort and pagination limitation note"],
+        completionCriteria: ["All named rows are predicted and compared with the real PostgreSQL output.", "A retired Service cannot enter a production-only result through Boolean-precedence mistakes.", "No column absent from the canonical fixture is used without an explicit migration.", "No textual criticality order is mistaken for domain severity rank."]
     },
     "relational-data-and-postgresql-aggregation-practice": {
-        objective: "Produce registry metrics that remain trustworthy when teams have zero services and joins can multiply rows.",
-        scenario: "Leadership asks for services per team and high-criticality service counts. A dashboard query appears to overcount after environments are joined into the same report.",
+        objective: "Reproduce inaccurate database metrics caused by row multiplication and correct them at the intended business grain.",
+        scenario: "Steward reports three services for Payments, but the canonical dataset contains two. Prove the query is counting joined environment rows rather than service identities.",
         instructions: [
-            "Seed teams with zero, one and multiple services, plus multiple environments for at least one service.",
-            "Write a LEFT JOIN aggregation that keeps zero-service teams visible.",
-            "Add a HAVING threshold for teams with at least two qualifying services.",
-            "Join environments in a way that deliberately inflates COUNT and inspect the pre-aggregation row shape.",
-            "Correct the metric using an appropriate query shape and verify it manually against source rows.",
-            "Compare COUNT(*) with COUNT(nullable_column) on data containing NULL and explain the population each metric counts.",
-            "Explain which filters belong in WHERE and which are genuinely group-level conditions for HAVING."
+            "Run aggregate_team.sql and predict the three Team counts before executing.",
+            "Run the read-only aggregate_zero.sql VALUES-row example with synthetic Unassigned Team and contrast COUNT(*)=1 with COUNT(s.id)=0.",
+            "Run aggregate_having.sql and explain why HAVING is a group filter, and lifecycle belongs in ON when a LEFT JOIN must keep empty teams.",
+            "Run aggregate_inflation.sql and inspect the raw join inputs behind Payments=3 versus distinct service_count=2.",
+            "Run aggregate_nulls.sql and distinguish COUNT(*) (5), COUNT(retired_at) (1) and criticality FILTER (2).",
+            "Independently write a per-Team report distinguishing services, production-stage services and actual production deployments, describing the grain of each metric."
         ],
-        deliverables: ["Correct aggregation queries", "Inflated-count reproduction", "Manual verification table", "Metric-grain explanation"],
-        completionCriteria: ["The meaning of one output row is stated before grouping.", "Zero-service teams are handled deliberately rather than accidentally disappearing.", "The final counts are verified against source data and are not trusted merely because the SQL executed."],
+        deliverables: ["Five verified aggregate transcripts", "Manual row-count reconciliation", "Zero-case demonstration", "Independent metric report", "Explanation of COUNT DISTINCT limitations for sums"],
+        completionCriteria: ["Every number is reconciled to original Service/Environment rows.", "Empty parent records do not disappear unintentionally.", "The learner can explain why DISTINCT is one targeted fix rather than a universal response to a bad JOIN.", "WHERE, ON and HAVING have separate documented responsibilities."]
     },
     "relational-data-and-postgresql-joins-practice": {
-        objective: "Choose join semantics from the business question and use missing relationships as useful data-quality evidence.",
-        scenario: "A Steward review report must show every service, including services missing an environment. An INNER JOIN implementation silently hides precisely the incomplete records the report is supposed to reveal.",
+        objective: "Predict and execute JOIN results and debug missing and multiplied rows before aggregating them.",
+        scenario: "An INNER JOIN review report hides Payroll API because it has no Environment; an apparently equivalent LEFT JOIN report loses Payroll again when a production filter is moved from ON to WHERE.",
         instructions: [
-            "Seed at least one service with no environment and one service with multiple environments.",
-            "Run equivalent INNER JOIN and LEFT JOIN queries and compare which services disappear or multiply.",
-            "Write the dependency query that joins Service twice through ServiceDependency using meaningful aliases.",
-            "Predict the output grain/cardinality before executing the joins, then trace one multiplied row back to its one-to-many relationship and explain why the result is correct rather than duplicate corruption.",
-            "Rewrite one RIGHT JOIN question as a LEFT JOIN by reversing table order and compare readability.",
-            "Choose the join semantics for the review report and justify the decision from the report's purpose."
+            "Run join_owner.sql and trace a Service-to-Team foreign key for every one of the five seeded services.",
+            "Run join_optional.sql and explain the two Payments rows and Payroll's NULL Environment.",
+            "Run join_on_where.sql twice; show why the ON variant keeps Payroll while the WHERE variant omits it.",
+            "Run join_right.sql and demonstrate the equivalent LEFT JOIN query preserving unmatched Service rows.",
+            "Run join_dependencies.sql and map both directed edges using source and destination aliases.",
+            "Independently count plain Service rows (5), Service LEFT JOIN Environment rows (6) and the INNER JOIN rows (4). Predict them first, then execute."
         ],
-        deliverables: ["INNER/LEFT comparison output", "Dependency self-join query", "Row-multiplication explanation", "Join-semantics decision note"],
-        completionCriteria: ["Missing related data remains visible when the question requires it.", "Aliases make source and target service roles unambiguous.", "The learner can distinguish legitimate one-to-many multiplication from an erroneous join."],
+        deliverables: ["Five executable JOIN outputs", "Pair matching and NULL-extension diagram", "ON-vs-WHERE failure diagnosis", "Directed dependency reconstruction", "Count prediction and actual reconciliation"],
+        completionCriteria: ["The matching predicate, join type, and one-to-many cardinality are explained separately.", "LEFT/RIGHT preservation and ON/WHERE filtering are demonstrated with real missing relationships.", "The learner can explain why a Service can appear twice without being duplicated in persistent storage.", "The JOIN module is completed before the Aggregation module."]
     },
     "relational-data-and-postgresql-subqueries-practice": {
-        objective: "Use EXISTS, IN and JOIN deliberately rather than treating subqueries as a stylistic trick.",
-        scenario: "You need to find services that have at least one production environment. Three engineers propose EXISTS, IN and JOIN solutions and claim theirs is always faster.",
+        objective: "Use IN, EXISTS, scalar and anti-existence queries with precise row-shape predictions and a reproducible NULL failure.",
+        scenario: "An operator must find Services with and without production deployments. A NOT IN query unexpectedly returns no results when the candidate list contains NULL.",
         instructions: [
-            "Implement the production-environment question with EXISTS.",
-            "Implement a logically equivalent solution using JOIN and, where sensible, IN.",
-            "Compare result correctness first, including duplicate behavior.",
-            "Run EXPLAIN on the alternatives using the same dataset and parameters.",
-            "Identify whether PostgreSQL transforms them into similar physical plans or meaningfully different ones.",
-            "Choose the version you would keep based on intent, correctness and evidence rather than folklore."
+            "Use the unchanged five-Service database fixture; run subquery_in.sql, subquery_exists.sql and subquery_scalar.sql and state each inner query's output shape.",
+            "Run the isolated subquery_not_in.sql example; record why the first query returns zero rows while the NOT EXISTS version returns 2 and 3.",
+            "Independently write correlated NOT EXISTS and LEFT anti-join queries for Services without a production Environment.",
+            "Compare the two results with the fixture's Payroll API and Legacy Gateway; do not infer algorithmic performance superiority from syntax.",
+            "Explain when a scalar subquery is invalid because it produces multiple rows and when JOIN can increase outer-row cardinality."
         ],
-        deliverables: ["Equivalent query variants", "EXPLAIN evidence", "Duplicate-behavior check", "Query-shape decision note"],
-        completionCriteria: ["EXISTS is understood as an existence test, not a magic performance keyword.", "Logical SQL structure is distinguished from PostgreSQL's chosen physical plan.", "The kept query is justified by readability and evidence."],
+        deliverables: ["Four source-extracted SQL transcripts", "NULL truth-condition diagnosis", "Two independently authored anti-join queries", "Query-shape decision note"],
+        completionCriteria: ["The learner predicts result sets before execution.", "NOT IN with nullable values does not silently pass as equivalent to NOT EXISTS.", "Correlation is explicitly tied to the outer Service identity.", "The chosen form matches the question before optimization."]
     },
     "relational-data-and-postgresql-ctes-practice": {
-        objective: "Turn a difficult multi-stage registry question into inspectable query stages and reason about recursion safely.",
-        scenario: "A dependency-risk query has become difficult to review because filtering, aggregation and dependency traversal are buried in one statement. The team needs a version that can be debugged stage by stage.",
+        objective: "Build inspectable staged queries and a terminating directed dependency traversal without confusing WITH with persistent storage.",
+        scenario: "A registry reviewer wants critical service dependency counts and the transitive dependency chain of Payroll API. The dependency graph may contain cycles.",
         instructions: [
-            "Choose a non-trivial Steward query involving filtering plus aggregation or dependency traversal.",
-            "Break it into named CTE stages whose names describe business meaning rather than implementation detail.",
-            "Run each stage independently and verify its intermediate row set.",
-            "Produce an equivalent non-CTE query and compare readability and plan shape.",
-            "Sketch a recursive dependency traversal and identify how a cycle could cause repeated traversal.",
-            "Document the cycle-protection strategy you would require before using recursion on untrusted dependency data."
+            "Run cte_priority.sql and verify the three exact priority-service outgoing edge counts.",
+            "Execute and explain each nonrecursive CTE stage independently before trusting the combined query.",
+            "Run cte_recursive.sql and trace depth 0 Payroll API to depth 2 Identity API; explain each visited-node guard operation.",
+            "Run the isolated cte_cycle.sql with VALUES two-node cycle and show that A and B appear once each.",
+            "Create a new staged query based on a concrete registry question and compare readability with its non-CTE equivalent.",
+            "Distinguish a query-scoped CTE, a session TEMP table, a persistent VIEW and a materialized view; do not claim query tuning or plan materialization without EXPLAIN evidence."
         ],
-        deliverables: ["Staged CTE query", "Intermediate-stage evidence", "Equivalent non-CTE query", "Recursive-cycle safety note"],
-        completionCriteria: ["Each CTE stage has a clear reason to exist.", "Intermediate results can be independently inspected.", "Recursive traversal is not proposed without explicit cycle handling."],
+        deliverables: ["Three published SQL transcripts", "Anchor/recursive-step/path diagram", "Two-node cycle termination evidence", "Independent staged query", "CTE storage and plan boundary note"],
+        completionCriteria: ["Cycle guard is actually executed and output verified.", "Recursive query cannot loop indefinitely on the provided example.", "The learner explains the lifetime and materialization limitations of WITH.", "Examples use the existing ServiceDependency fixture without unannounced schema mutations."]
     },
     "relational-data-and-postgresql-transactions-acid-practice": {
-        objective: "Prove atomic behavior for a multi-write Steward operation by observing both rollback and commit outcomes.",
-        scenario: "Registering a production service requires the Service row and an initial production Environment. A failure after the first insert currently leaves an impossible half-created service.",
+        objective: "Demonstrate transaction atomicity with real PostgreSQL commit/rollback evidence and recover from a deliberately invalid statement using a SAVEPOINT.",
+        scenario: "A production Service and its initial Environment are two rows representing one required business registration. Without one transaction, a failing Environment creation can leave a half-created Service.",
         instructions: [
-            "Define the invariant the multi-write operation must preserve.",
-            "Execute the two writes inside an explicit transaction and force the second write to fail.",
-            "ROLLBACK and query the database to prove that no partial service remains.",
-            "Repeat with valid data and COMMIT, then prove both facts are durable.",
-            "Repeat the failing scenario without a transaction in disposable data to observe the partial-state risk.",
-            "Map what you observed to atomicity and explain which consistency rules still depend on constraints or application logic.",
-            "Observe/document your client's autocommit behavior, then explain how an explicit transaction changes the boundary.",
-            "Run one two-session observation under PostgreSQL's default Read Committed behavior and state what a stronger isolation level would be intended to protect."
+            "Establish a disposable PostgreSQL lab with the seeded Steward tables; explain why foreign-key integrity does not by itself require every Service to have an Environment.",
+            "Save and execute the published txn_rollback.sql script. Capture inside=1, after=0 and a fresh-connection read of 0.",
+            "Save and execute txn_commit.sql; verify both Service and Environment in another psql connection. Run it only once against the clean fixture.",
+            "Execute txn_savepoint.sql. Record the intended CHECK violation, rollback-to-savepoint and valid committed replacement Environment. Do not weaken the CHECK or globally suppress psql errors.",
+            "Produce a separate autocommit thought experiment that shows the half-state risk without modifying the shared fixture.",
+            "Distinguish atomicity, declared consistency, isolation and durability, including limitations of the exercises, then safely remove only the educational records."
         ],
-        deliverables: ["Transactional SQL", "Rollback evidence", "Successful commit evidence", "ACID behavior explanation"],
-        completionCriteria: ["The failed operation leaves no partial durable state when protected by the transaction.", "The learner distinguishes atomicity from business-rule correctness.", "The explanation is based on observed database state rather than definitions alone."],
+        deliverables: ["Rollback and new-connection transcript", "Two-row commit evidence", "SAVEPOINT recovery and error transcript", "ACID versus business invariant explanation"],
+        completionCriteria: ["The observed rollback leaves no Service after reconnect.", "A committed Service and Environment are both visible to a new session.", "The real CHECK failure is captured and does not escape to production data.", "The learner does not claim a simulated power outage or automatic domain consistency."]
+    },
+    "relational-data-and-postgresql-concurrent-transactions-and-isolation-levels-practice": {
+        objective: "Prove PostgreSQL's Read Committed and Repeatable Read visibility differences through two independently coordinated psql sessions.",
+        scenario: "Two workers read the same state while one commits an update. Their outputs differ even though neither reads uncommitted data. Explain the snapshot boundary rather than calling every changed value a race-condition bug.",
+        instructions: [
+            "Create the dedicated tsa_isolation_probe table only in an isolated learning database and start two independent psql terminals A and B.",
+            "Follow isolation_read_committed.txt step by step. Capture A=10 initially, A=10 while B's update is uncommitted, and A=20 after B commits.",
+            "Reset the probe to 10 and follow isolation_repeatable_read.txt. Capture A=10 initially and still 10 after B commits, then 20 after A ends.",
+            "Draw a timeline showing both session boundaries, snapshots and the COMMIT that changes what future reads may observe.",
+            "Contrast PostgreSQL's Read Uncommitted behavior, Repeatable Read limitations and SQLSTATE 40001 whole-transaction retry for Serializable.",
+            "Clean up only the dedicated probe after recording evidence; do not interpret a single-session script as a concurrency demonstration."
+        ],
+        deliverables: ["Two-terminal Read Committed transcript", "Two-terminal Repeatable Read transcript", "Snapshot/commit timeline", "Isolation and retry decision record"],
+        completionCriteria: ["The test actually uses separate concurrent database connections.", "The learner can explain the post-B-commit read difference between isolation levels.", "No dirty-read claim contradicts PostgreSQL behavior.", "Serializable is not marked tested merely because Read Committed/Repeatable Read ran."]
     },
     "relational-data-and-postgresql-constraints-keys-practice": {
         objective: "Move durable Steward invariants from comments and application checks into PostgreSQL where the database can enforce them for every writer.",
         scenario: "The database is about to gain more than one writer when the following Django module maps the schema. Any invariant protected only by the current Python application boundary could then be bypassed by direct SQL, imports or concurrent writers.",
         instructions: [
             "List candidate invariants and classify which belong in PostgreSQL, application code, or both.",
-            "Add UNIQUE protection for service slug and a CHECK for allowed criticality values.",
-            "Protect ServiceDependency from self-reference and duplicate source-target pairs.",
+            "Inspect the existing Service.name UNIQUE and criticality CHECK constraints first. Then run the reversible lesson's slug-column/UNIQUE migration; explain why adding the same constraints again would fail rather than blindly applying duplicates.",
+            "Verify the existing ServiceDependency self-reference CHECK and UNIQUE(source_service_id,target_service_id) with direct negative inserts; do not redundantly add constraints already in the canonical seed.",
             "Choose and justify surrogate/natural/composite key usage where applicable, then choose and justify referential actions for at least one foreign key rather than accepting defaults blindly.",
             "Attempt each invalid write directly in SQL and capture PostgreSQL's rejection.",
-            "Identify one important Steward rule that cannot be represented safely as a simple row constraint and explain where it remains enforced."
+            "Identify the production-readiness rule that cannot be represented safely as a single-table CHECK and explain where it remains enforced."
         ],
         deliverables: ["Invariant classification", "Constraint DDL/migration", "Negative-case database errors", "Boundary note for application-only rule"],
         completionCriteria: ["Durable row/relationship invariants are protected independently of any future framework or writer.", "Invalid writes are demonstrated directly against PostgreSQL.", "The learner can explain both the power and limits of database constraints."],
