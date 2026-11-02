@@ -3,6 +3,7 @@ import type { Lesson } from "./lesson";
 import {soapWireTeachingSections} from "./system-thinker-soap-wire-worked";
 import {soapAdvancedSections} from "./system-thinker-soap-advanced-worked";
 import { xmlNamespaceWorkedSections, xsdWorkedSections } from "./system-thinker-xml-worked-examples";
+import {soapAuthorityBridge,soapAuthoritySources} from "./system-thinker-soap-authority-bridge";
 
 const xmlSpec:LearningResource={title:"W3C — Extensible Markup Language (XML) 1.0",url:"https://www.w3.org/TR/xml/",kind:"reference"};
 const xmlNamespaces:LearningResource={title:"W3C — Namespaces in XML",url:"https://www.w3.org/TR/xml-names/",kind:"reference"};
@@ -66,8 +67,8 @@ const teachingBySoap: Record<string, TeachingSection[]> = {
 };
 
 function practical(id: string, title: string, objective: string, scenario: string, instructions: string[], deliverables: string[], completionCriteria: string[], estimatedMinutes = 120): Lesson {
-    const resources = resourcesBySoap[id] ?? [soapSpec];
-    const sections = [...(teachingBySoap[id] ?? []), ...(soapAdvancedSections[id] ?? [])];
+    const resources = [...(resourcesBySoap[id] ?? [soapSpec]), ...(soapAuthoritySources[id] ?? [])];
+    const sections = [...(teachingBySoap[id] ?? []), ...(soapAuthorityBridge[id] ?? []), ...(soapAdvancedSections[id] ?? [])];
     const blocks: LessonBlock[] = [
         { type: "paragraph", text: objective },
         { type: "heading", id: `${id}-mental-model`, text: "Protocol and contract mental model", level: 2 },
