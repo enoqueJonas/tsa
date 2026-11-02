@@ -25,6 +25,7 @@ function compileDirectory(relative = "") {
   }
 }
 let journey;
+let createLearningSession;
 try {
   compileDirectory();
   // Node 25 may classify generated .js as ESM via syntax detection unless the
@@ -32,6 +33,7 @@ try {
   fs.writeFileSync(path.join(temporaryRoot, "package.json"), JSON.stringify({ type: "commonjs" }));
   const requireTemp = createRequire(path.join(temporaryRoot, "entry.cjs"));
   journey = requireTemp("./paths/academy-journey.js").technicalStewardshipJourney;
+  createLearningSession = requireTemp("./runtime/session.js").createLearningSession;
 } finally {
   fs.rmSync(temporaryRoot, { recursive: true, force: true });
 }
@@ -262,6 +264,41 @@ if (!reliability || reliability.paths.length !== 16) {
     if (path.id === "steward-reliability-program" &&
         path.lessons[0]?.activities?.[0]?.id !== "steward-reliability-program-milestone-000") {
       problems.push("Reliability milestone must begin with authored evidence-first brief");
+    }
+  }
+}
+// Preserve authored completions and session position after removing generic
+// prep/orientation IDs that older IndexedDB records can still reference.
+if (reliability && typeof createLearningSession === "function") {
+  const loggingPath = reliability.paths.find((p) => p.id === "logging");
+  if (loggingPath) {
+    const authored = loggingPath.lessons.flatMap((lesson) => lesson.activities);
+    const firstId = authored[0]?.id;
+    const nextId = authored[1]?.id;
+    const removedId = `${nextId}-reliability-preparation`;
+    const session = createLearningSession(loggingPath);
+    session.restoreProgress({
+      currentActivityId: removedId,
+      completedActivityIds: [firstId, removedId],
+      reflectionResponses: {},
+    });
+    if (session.currentActivity().id !== nextId ||
+        !session.completedActivityIds().includes(firstId) ||
+        session.completedActivityIds().includes(removedId)) {
+      problems.push("Retired Reliability prep ID must resume at next unlocked real activity, without losing valid completions");
+    }
+    const everyId = authored.map((activity) => activity.id);
+    const responses = Object.fromEntries(authored.filter((activity) => activity.content.type === "reflection")
+      .map((activity) => [activity.id, "Completed with actual authored evidence."]));
+    const completed = createLearningSession(loggingPath);
+    completed.restoreProgress({
+      currentActivityId: `${loggingPath.id}-reliability-model-reading`,
+      completedActivityIds: [...everyId, `${loggingPath.id}-reliability-model-reading`],
+      reflectionResponses: responses,
+    });
+    if (completed.currentActivity().id !== everyId[everyId.length - 1] ||
+        completed.completedActivityIds().length !== everyId.length) {
+      problems.push("Fully completed Reliability path must retain completion and resume at last authored activity");
     }
   }
 }
