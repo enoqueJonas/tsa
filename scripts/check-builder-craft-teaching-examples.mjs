@@ -12,7 +12,8 @@ const cases=[
   ["Errors — executable stable public error mapping", "public error mappings: 6"],
   ["Static analysis — parse error versus valid but wrong authorization", "syntax valid; authorization policy still wrong"],
   ["Documentation — executable setup instructions completeness gate", "documentation checklist passed; vague instructions rejected"],
-  ["Internal package contract — executable incompatible consumer case", "BREAKING CHANGE: existing consumer expects a string", "injected"]
+  ["Internal package contract — executable incompatible consumer case", "BREAKING CHANGE: existing consumer expects a string", "injected"],
+  ["Performance Awareness — executable p50/p95 with a slow-tail negative case", "synthetic p50 unchanged at 100ms; p95 grows from 115ms to 320ms"]
 ];
 for(const [caption,expected,origin] of cases){
   const authored = origin === "injected" ? injected : source;
@@ -33,4 +34,4 @@ for(const [caption,expected,origin] of cases){
     assert.match(r.stdout,/invalid DJANGO_DEBUG must be true or false/);
   }
 }
-console.log("Builder craft examples passed: 8 source-extracted Python labs and their negative boundaries.");
+console.log("Builder craft examples passed: 9 source-extracted Python labs and their negative boundaries.");
