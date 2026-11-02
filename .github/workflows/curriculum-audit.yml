@@ -144,7 +144,9 @@ jobs:
           PGDATABASE: tsa_steward_lab
           PGUSER: tsa_learner
           PGPASSWORD: tsa_local_ci_only
-        run: node scripts/check-system-thinker-steward-django-domain.mjs
+        run: |
+          node scripts/check-system-thinker-steward-django-domain.mjs
+          node scripts/check-system-thinker-steward-batch-import.mjs
 
   system-thinker-outbox-crash-recovery:
     runs-on: ubuntu-latest
