@@ -10,7 +10,7 @@ assert.ok(assembler.includes('if (path.id === "cloud-orchestration-gitops") retu
 const match = authored.match(/export const kubernetesFoundationsById:[^\n]+ = (\{[\s\S]*\});\s*$/);
 assert.ok(match, "Could not extract authored K8s sections");
 const sections = JSON.parse(match[1]);
-for (const id of ["why-orchestration", "cluster-control-plane", "pods-deployments", "services-discovery", "scheduling-placement", "dns-network-policy", "persistent-storage", "config-secrets", "health-resources-rollouts", "rbac-namespaces", "openshift-platform", "openshift-security-routing"]) {
+for (const id of ["why-orchestration", "cluster-control-plane", "pods-deployments", "services-discovery", "scheduling-placement", "dns-network-policy", "persistent-storage", "termination-disruption", "pressure-eviction-rollout", "config-secrets", "health-resources-rollouts", "rbac-namespaces", "openshift-platform", "openshift-security-routing", "gitops-model", "argocd-operation"]) {
   assert.ok(Array.isArray(sections[id]) && sections[id].length >= 3, "Missing learning phases for " + id);
   assert.ok(sections[id].some(x => x.code?.code), "Missing guided command/manifest: " + id);
   assert.ok(sections[id].some(x => /transfer|failure|failed/i.test(x.heading+" "+x.paragraphs.join(" "))), "Missing negative or transfer case: " + id);
@@ -77,7 +77,24 @@ assert.equal(route.spec.to.kind,"Service");
 assert.equal(route.spec.tls.termination,"edge");
 assert.ok(sections["config-secrets"].some(x=>x.code?.code.includes("--dry-run=client") && x.code.code.includes("NOT_A_REAL_SECRET")),"Secret teaching fixture must be clearly fake and not applied");
 assert.ok(sections["openshift-platform"].some(x=>x.paragraphs.join(" ").includes("UNVERIFIED")),"OpenShift-only runtime evidence must remain explicitly unverified");
+const pdb=parseYaml(sections["termination-disruption"].find(x=>x.code?.language==="yaml")?.code?.code);
+assert.equal(pdb.kind,"PodDisruptionBudget");
+assert.equal(pdb.spec.minAvailable,2);
+assert.equal(pdb.spec.selector.matchLabels.app,"tsa-web");
+const argo=parseYaml(sections["argocd-operation"].find(x=>x.code?.language==="yaml")?.code?.code);
+assert.equal(argo.kind,"Application");
+assert.equal(argo.apiVersion,"argoproj.io/v1alpha1");
+assert.match(argo.spec.source.repoURL,/example\\.invalid/);
+assert.equal(argo.spec.syncPolicy?.automated,undefined,"Automatic reconciliation must not be enabled in a fake-source example");
+for (const id of ["pressure-eviction-rollout","gitops-model"]) {
+  const snippet=sections[id].find(x=>x.code?.language==="python")?.code?.code;
+  assert.ok(snippet,"Published Python model missing in "+id);
+  const outcome=spawnSync("python3",["-c",snippet],{encoding:"utf8",timeout:12000});
+  assert.ifError(outcome.error); assert.equal(outcome.status,0,id+": "+outcome.stderr);
+  if(id==="pressure-eviction-rollout")assert.match(outcome.stdout,/blocked by capacity and availability gate: True/);
+  if(id==="gitops-model"){assert.match(outcome.stdout,/initial sync: OutOfSync/); assert.match(outcome.stdout,/after matching declared state: Synced/); assert.match(outcome.stdout,/NOT_DETERMINED_BY_DIFF/);}
+}
 const changed=structuredClone(obj);
 changed.spec.template.metadata.labels.app="wrong";
 assert.notDeepEqual(changed.spec.selector.matchLabels,changed.spec.template.metadata.labels,"Negative selector mismatch must be rejected");
-console.log("Cloud Kubernetes 8 exact source manifests parsed including Deployment, Services, scheduling, PVC, probes, RBAC and OpenShift Route; no cluster runtime claimed.");
+console.log("Cloud all 16 K8s concepts connected; exact YAML contracts and executable local rollout/GitOps decision models pass; cluster runtime UNVERIFIED.");
