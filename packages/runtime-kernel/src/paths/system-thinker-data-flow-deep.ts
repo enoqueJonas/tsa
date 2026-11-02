@@ -2,6 +2,7 @@ import type { Lesson } from "./lesson";
 import type { LearningResource, LessonBlock } from "../activities/content";
 import {workedByModule, primaryResearchByModule} from "./system-thinker-intermediate-worked";
 import {ambiguousHttpWorkedSections,ambiguousHttpResources} from "./system-thinker-http-ambiguous-commit-worked";
+import {stewardDomainBoundarySections,stewardDomainBoundaryResources} from "./system-thinker-steward-domain-boundary-worked";
 
 const sequenceDiagrams: LearningResource = { title: "Sequence diagrams", url: "https://www.uml-diagrams.org/sequence-diagrams.html" };
 const httpSemantics: LearningResource = { title: "HTTP Semantics", url: "https://www.rfc-editor.org/rfc/rfc9110" };
@@ -84,6 +85,33 @@ export const dataFlowAndIntegrationDeepLessons: Lesson[] = [
         ["Choose create service, add dependency or lifecycle change.", "Identify the actor and required authorization context.", "List validation and domain-rule points.", "Mark every database read/write that affects the decision.", "Record response and logging side effects.", "Identify one hidden dependency revealed by the trace."],
         ["Why should a flow begin with actor intent?", "What is the difference between moving data and changing state?", "Which transformations should be visible in a system flow?"],
         [sequenceDiagrams, httpSemantics],
+    ),
+    richLesson(
+        "Steward Domain Boundaries: Authorization and Database Commit",
+        "The Builder v1 Steward API supplies real PostgreSQL models and protected lifecycle services. A System Thinker must trace who can request a mutation, which invariant authorizes it, and what SQL transaction actually becomes durable. Run the authentic Builder teaching implementation in a disposable environment rather than substituting diagram-only assertions.",
+        [
+            "Distinguish authenticated identity, local Team authorization and domain readiness.",
+            "Follow Builder v1's actual Django services into PostgreSQL transaction boundaries.",
+            "Reproduce rejected authorization, rejected readiness and forced rollback.",
+            "Preserve a single authoritative lifecycle state and the final production deployment guard."
+        ],
+        stewardDomainBoundarySections,
+        "Run and trace the real Steward domain invariant and authorization test.",
+        [
+            "Start from a disposable Builder v1 Django model/services checkpoint and record its published source version and migration state; do not touch the live or real learner's primary project database.",
+            "Execute the complete published steward_boundary.py inside Django shell against isolated PostgreSQL and save all six observed outputs.",
+            "Trace the denied cross-Team call and the authorized-but-unready call to their precise decision boundaries.",
+            "Inject the outer rollback, inspect persisted lifecycle after the exception and explain why nested atomic blocks do not force a commit.",
+            "Restore the valid promotion and reject last-production-deployment deletion. Record SQL changes and implementation evidence.",
+            "Draw an independent sequence for a different Service type and identify the real enterprise identity/membership integration that the test fixture does not establish."
+        ],
+        [
+            "Which check confirms actor identity, and which proves authority over this Service?",
+            "Why must a lifecycle promotion be rejected without a production Environment even if the serializer accepts the lifecycle field?",
+            "Where is the first durable state change, and what did the forced rollback prove?",
+            "How would a direct model save or cross-team update violate the invariant despite a successful SQL write?"
+        ],
+        [httpSemantics, ...stewardDomainBoundaryResources],
     ),
     richLesson(
         "Synchronous and Asynchronous Boundaries",
