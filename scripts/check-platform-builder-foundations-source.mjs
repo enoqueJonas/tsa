@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import {spawnSync} from "node:child_process";
 const root="packages/runtime-kernel/src/paths/";
 const read=(name)=>fs.readFileSync(root+name+".ts","utf8");
 const entry=read("platform-builder");
@@ -42,4 +43,25 @@ for(const evidence of [
 assert.ok(quality.includes("matchpathcon -V")&&quality.includes("ausearch"),"No evidence-based SELinux diagnostic");
 assert.ok(quality.includes("--get-active-zones")&&quality.includes("--permanent"),"Runtime/permanent firewalld distinction untestable");
 assert.ok(quality.includes("independent clients")||quality.includes("separate-client"),"No separate-client firewall negative contrast");
+
+for(const heading of [
+  "A system call mediates the operation, not its business meaning",
+  "Run an actual file-descriptor lifecycle in a disposable directory",
+  "Entering the kernel is not the same as switching to another process",
+  "A privilege boundary is enforced per operation",
+])assert.ok(computer.includes(heading),"Missing prerequisite mechanism "+heading);
+const programStart=computer.indexOf("Run an actual file-descriptor lifecycle in a disposable directory");
+assert.ok(programStart>=0,"Missing rendered learner program");
+const codeMatch=computer.slice(programStart,programStart+7500).match(/code:\s*("(?:\\.|[^"\\])*"), caption: "Exact source-executable kernel-mediated/);
+assert.ok(codeMatch,"Cannot extract exact published OS Python program");
+const code=JSON.parse(codeMatch[1]);
+const result=spawnSync("python3",["-c",code],{encoding:"utf8",timeout:10000});
+assert.ifError(result.error);
+assert.equal(result.status,0,"Published OS Python failed:\n"+result.stdout+"\n"+result.stderr);
+for(const evidence of [
+  "missing pathname: ENOENT",
+  "valid descriptor: read b'ok'",
+  "closed descriptor: EBADF",
+  "OS resources reclaimed after temporary fixture exit",
+])assert.ok(result.stdout.includes(evidence),"Missing OS observation "+evidence+"\n"+result.stdout);
 console.log("Platform Builder foundations source guard passed: 15 thin wrappers removed, 5 real OS lessons, 13 canonical Rocky Linux lessons, protected config and SELinux/firewalld failure teaching.");
