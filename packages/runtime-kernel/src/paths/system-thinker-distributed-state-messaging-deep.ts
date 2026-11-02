@@ -2,6 +2,7 @@ import type { Lesson } from "./lesson";
 import {kafkaComparisonWorkedSections,kafkaComparisonResources} from "./system-thinker-kafka-comparison-worked";
 import { distributedStateStagedLabs } from "./system-thinker-distributed-staged-labs";
 import { messagingSemanticsWorked, messagingSemanticsReferences } from "./system-thinker-messaging-semantics-worked";
+import {operationalBridgeDistributed,operationalBridgeReferences} from "./system-thinker-operational-reasoning-bridge";
 import type { LearningResource, LessonBlock } from "../activities/content";
 
 const redisDocs: LearningResource = { title: "Redis Documentation", url: "https://redis.io/docs/latest/" };
@@ -37,7 +38,7 @@ function richLesson(
         { type: "list", items: outcomes },
     ];
 
-    for (const section of [...sections, ...(messagingSemanticsWorked[title] ?? [])]) {
+    for (const section of [...sections, ...(operationalBridgeDistributed[title] ?? []), ...(messagingSemanticsWorked[title] ?? [])]) {
         blocks.push({ type: "heading", id: slug(section.title), text: section.title, level: 2 });
         for (const text of section.paragraphs) blocks.push({ type: "paragraph", text });
         if (section.code) {
@@ -53,7 +54,7 @@ function richLesson(
         title: "Steward connection",
         body: "TSA deliberately evolves Steward until Redis and RabbitMQ solve real measured product problems. The learner must prove those prerequisites before implementation; the technologies are required outcomes of earned pressure, not badges of architectural maturity.",
     });
-    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...(messagingSemanticsWorked[title] ? messagingSemanticsReferences : [])] });
+    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...(messagingSemanticsWorked[title] ? messagingSemanticsReferences : []), ...(operationalBridgeDistributed[title] ? operationalBridgeReferences.distributed : [])] });
 
     return {
         id,
