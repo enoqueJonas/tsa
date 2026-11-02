@@ -1903,38 +1903,163 @@ const specs: DataLessonSpec[] = [
         "knowledgeCheck": "Why does owning_team_id alone not imply Team fields are loaded? Why can't select_related fetch a one-to-many collection? Is fewer SQL statements a proof of faster p95 latency?"
     },
     {
-        id: "migrations",
-        title: "Database Migrations",
-        introduction: "A migration is a versioned change to durable data structure. It must work not only on an empty developer database but on existing data, under deployment constraints, and in a sequence other engineers can reproduce.",
-        outcomes: ["Explain schema versus data migrations.", "Review generated Django migrations instead of trusting them blindly.", "Plan backward-compatible multi-step changes.", "Recognize risky table rewrites and data assumptions."],
-        sections: [
-            { id: "versioned-schema", title: "Schema changes are production changes", body: "Adding a non-null column to a populated table, changing a type or adding a uniqueness constraint can fail or lock data. The safe path may require multiple deployable steps." },
-            { id: "expand-contract", title: "Expand before contract", body: "For compatibility-sensitive changes, add the new structure first, migrate writers/readers and data, then remove the old structure later. This reduces tight coupling between deployment timing and schema state." },
+        "id": "migrations",
+        "title": "Database Migrations: Expand, Backfill, Validate, Contract",
+        "introduction": "Database schema is persistent shared state, not a Python class declaration that can be replaced whenever code changes. A migration changes what existing writers/readers can safely assume, and must tolerate populated rows and mixed application versions during rollout. Use the canonical Service fixture to perform a reversible expand/backfill/constraint example, then relate each step to Django's historical migration model.",
+        "outcomes": [
+            "Distinguish migration source files, applied migration history, model code and actual PostgreSQL schema.",
+            "Demonstrate why adding a required column without a backfill can reject existing data.",
+            "Run reversible expand/backfill/constraint steps and verify old rows survive.",
+            "Explain backward-compatible deployment sequencing and the difference between rollback and roll-forward."
         ],
-        warning: "Never assume a migration is safe because makemigrations generated it successfully. Generated code still requires engineering review.",
-        assignment: ["Design a migration that adds a required Steward field to existing services.", "Split it into safe steps if necessary.", "Describe rollback and compatibility considerations."],
-        resources: [djangoMigrationDocs, postgresDocs],
-        practiceObjective: "Execute and review a non-trivial Steward schema evolution with existing data.",
-        practiceInstructions: ["Seed existing services.", "Add a new field that ultimately must be non-null.", "Plan and implement the migration in safe stages.", "Verify existing data remains valid.", "Document the forward and rollback story."],
-        knowledgeCheck: "1. Why can a generated migration still be unsafe?\n2. What is the expand-contract pattern?\n3. Why are existing rows part of migration design?",
+        "sections": [
+            {
+                "id": "four-states",
+                "title": "Separate the model, migration files, ledger and database rows",
+                "body": "The current Django models.py describes application state. Migration files contain ordered schema/data operations and dependencies; the django_migrations table records which changes were applied; PostgreSQL's catalog plus existing rows record the installed reality. A migration can be valid Python and still fail when applied to data that violates a new constraint. Before migrating, capture row counts, current schema and old application expectations, then inspect sqlmigrate and database state. You must know whether the database is the SQL-fixture lab or the separate Django migration-managed lab."
+            },
+            {
+                "id": "failure-first",
+                "title": "A NOT NULL requirement cannot retroactively invent values",
+                "body": "Imagine every Service must eventually have a technical_owner contact. Existing five Services do not have this column. The SQL fragment ALTER TABLE service ADD COLUMN technical_owner text NOT NULL would fail with nonempty data unless it has a valid DEFAULT or a staged population. A fabricated default contact merely to satisfy the DDL may be inaccurate. The safe general pattern is expand (add nullable field without breaking old writers), backfill real values with verification, update application readers/writers, and contract (enforce NOT NULL/UNIQUE only after old writes are no longer possible). The exact order may vary by deployment architecture and locking concerns."
+            },
+            {
+                "id": "run",
+                "title": "Execute a reversible microcosm on actual seeded PostgreSQL rows",
+                "body": "This script deliberately starts and ends with a ROLLBACK in the disposable SQL lab. PostgreSQL's transactional DDL lets the added column and backfilled values be undone together in this local exercise. The values are synthetic teaching contact strings, not real staff. Count before and after, assert no missing owner when tightening NOT NULL, then roll back. A real rollout would use separate deployments and not keep all phases inside one enormous transaction.",
+                "language": "sql",
+                "caption": "migration_expand_contract.sql — populated-data backfill with reversible DDL",
+                "code": "BEGIN;\nALTER TABLE service ADD COLUMN technical_owner text;\nSELECT count(*) AS missing_before FROM service\nWHERE technical_owner IS NULL;\nUPDATE service\nSET technical_owner = lower(replace(name,' ','.')) || '@example.invalid';\nSELECT count(*) AS missing_after FROM service\nWHERE technical_owner IS NULL;\nALTER TABLE service ALTER COLUMN technical_owner SET NOT NULL;\nSELECT count(*) AS rows_preserved FROM service;\nROLLBACK;\nSELECT count(*) AS remaining_column\nFROM information_schema.columns\nWHERE table_name='service' AND column_name='technical_owner';",
+                "output": "missing_before 5; missing_after 0; rows_preserved 5; remaining_column 0 after ROLLBACK."
+            },
+            {
+                "id": "historical",
+                "title": "Django data migrations use the model at the time of migration",
+                "body": "Inside a Django migrations.RunPython operation, use apps.get_model('registry','Service') to obtain the historical model matching that migration step, rather than import the current registry.models.Service, which will evolve. Use the database alias from schema_editor.connection.alias for multi-database setups. A schema migration adding nullable technical_owner and a later data migration that populates existing rows must have explicit dependencies before an AlterField NOT NULL operation. Data migrations also need idempotency/reversibility decisions: if re-running or rolling back could destroy user changes, document why forward recovery may be safer. These steps are more than adding a field to Python code."
+            },
+            {
+                "id": "locking",
+                "title": "Schema operations have concurrency and deployment costs",
+                "body": "ALTER TABLE and index creation may take locks and/or rewrite data depending on operation and PostgreSQL version. A million-row backfill inside one transaction can generate substantial WAL, hold locks and make rollback expensive. Creating a UNIQUE index concurrently on a large table can reduce blocking but requires special non-atomic migration planning. An empty local database proves syntax only. Before production, estimate row volume, old/new app overlap, migration duration, lock profile, failure recovery and actual constraints; test with populated copies and controlled permissions."
+            },
+            {
+                "id": "transfer",
+                "title": "Change data with a deployment compatibility plan",
+                "body": "Design a two-release scenario: old app ignores technical_owner, new app begins writing it, and old app continues receiving requests during rollout. Decide which schema changes are safe before each release and exactly when NOT NULL can be enforced. Predict failure if the constraint is tightened while the old writer is still active. Record how to detect incomplete backfill, how to pause/retry safely and what data could be lost on backward migration. Unlike source-only changes, a destructive schema migration is not made safe by Git revert."
+            }
+        ],
+        "warning": "Use only the disposable SQL fixture for migration_expand_contract.sql. Real production schema migrations need staged deployment, database ownership, lock/recovery review and populated-data evidence.",
+        "assignment": [
+            "Run the SQL migration example and record all four expected counts plus the absence of the column afterward.",
+            "Write a matching Django migration sequence and explain where historical models and database alias apply.",
+            "Design an old/new application deployment timeline with a precise point when enforcing NOT NULL is safe.",
+            "Explain two cases where rolling forward is safer than reverting a destructive migration."
+        ],
+        "resources": [
+            {
+                "title": "Django 5.2 — Migrations",
+                "url": "https://docs.djangoproject.com/en/5.2/topics/migrations/",
+                "kind": "reference",
+                "purpose": "Historical models, migration graph, data migration and deployment considerations."
+            },
+            {
+                "title": "Django 5.2 — Migration Operations",
+                "url": "https://docs.djangoproject.com/en/5.2/ref/migration-operations/",
+                "kind": "reference",
+                "purpose": "RunPython and RunSQL behavior, atomicity and database aliases."
+            },
+            {
+                "title": "PostgreSQL — ALTER TABLE",
+                "url": "https://www.postgresql.org/docs/current/sql-altertable.html",
+                "kind": "reference",
+                "purpose": "Schema change semantics, constraints and locking."
+            }
+        ],
+        "practiceObjective": "Safely evolve a populated Steward schema using a measured backfill and explicitly reason about old/new code compatibility.",
+        "practiceInstructions": [
+            "Execute migration_expand_contract.sql and capture before/after counts.",
+            "Translate its stages into Django operations for the separate Django-managed database.",
+            "Demonstrate an old client writer after expand but before contract and explain why it would fail afterward.",
+            "Record lock, data retention, reverse/forward and security risks."
+        ],
+        "knowledgeCheck": "Why can a migration pass on an empty database and fail on populated records? Why should RunPython use historical models? When does a NOT NULL constraint become compatible with old writers?"
     },
     {
-        id: "concurrency",
-        title: "Concurrency Fundamentals",
-        introduction: "Correct code can fail when two correct requests run at the same time. Concurrency exposes races around uniqueness, read-modify-write cycles and state transitions. PostgreSQL transactions, constraints and locks are tools for making those interactions explicit.",
-        outcomes: ["Recognize race conditions in read-then-write logic.", "Explain isolation at a practical level.", "Use uniqueness constraints as concurrency-safe guards.", "Understand when row locking may be needed."],
-        sections: [
-            { id: "race", title: "Read-then-write can race", body: "Two requests can both check that a service slug is unused and then both attempt insertion. The problem is the gap between the read and the write: each transaction can make a locally reasonable decision before either has observed the other transaction's uncommitted change. Merely wrapping both steps in transactions does not make that decision atomic. A database UNIQUE constraint arbitrates the conflicting writes at the shared data boundary." },
-            { id: "unique-race", title: "See what the losing writer experiences", body: "Suppose transaction A and transaction B both decide that payments-api is unused. A inserts first but has not committed. When B attempts the same unique value, PostgreSQL cannot safely accept a second committed duplicate, so B may wait for A's transaction outcome. If A commits, B's insert fails with a uniqueness violation; if A rolls back, B can proceed. The application must treat that database result as part of the normal concurrent outcome rather than assuming its earlier pre-check guaranteed success.", code: "-- Session A                         -- Session B\nBEGIN;                               BEGIN;\nINSERT INTO service (slug)           -- an earlier pre-check may also have\nVALUES ('payments-api');             -- reported no matching committed row\n                                     INSERT INTO service (slug)\n                                     VALUES ('payments-api');\n-- B cannot safely commit a duplicate yet\nCOMMIT;                              -- B is released and receives unique violation" },
-            { id: "locking", title: "Row locks serialize changes to existing contested state", body: "SELECT ... FOR UPDATE acquires a row-level lock on the selected rows and holds it until the surrounding transaction ends. If transaction A locks Service 42, a competing transaction that needs a conflicting lock on that row waits until A commits or rolls back. After the wait, the second transaction must reason from the state it can now observe; the lock is coordination, not permission to reuse a stale decision made before waiting.", code: "BEGIN;\nSELECT id, lifecycle\nFROM service\nWHERE id = 42\nFOR UPDATE;\n-- validate the locked/current state and perform the coordinated change\nCOMMIT; -- or ROLLBACK; either releases the transaction's row lock" },
-            { id: "constraint-vs-lock", title: "Choose the protection that matches the invariant", body: "Use a UNIQUE or other database constraint when the invariant can be expressed directly in the schema; every writer then shares the same arbiter. Use row locking when an operation must coordinate a decision around existing rows whose state can change concurrently. Use stronger isolation when correctness depends on a broader set of reads that cannot be protected by one simple constraint or row lock. These mechanisms can be combined, but adding a transaction around unsafe read-then-write logic is not by itself a concurrency strategy." },
-            { id: "deadlocks", title: "Waiting is normal; circular waiting is a deadlock", body: "Locks intentionally make some transactions wait. A deadlock is different: transaction A holds a lock B needs while B holds a lock A needs, so neither can progress. PostgreSQL detects the cycle and aborts one transaction. Applications performing multi-row coordinated updates should acquire resources in a consistent order where practical and be prepared for transaction-level retry when the database reports a retryable concurrency failure." },
+        "id": "concurrency",
+        "title": "Concurrency Fundamentals: Two Writers, One Unique Identity",
+        "introduction": "Two independent transactions can each decide that a new Service name is available, then race to create it. A sequential test that checks name availability before insert is not a concurrency guarantee. PostgreSQL's UNIQUE constraint arbitrates the conflict at the shared data boundary; one transaction may wait for another's uncommitted write, then succeed or fail depending on the first transaction's outcome. The exercise requires two real connected psql clients and the canonical Team/Service fixture.",
+        "outcomes": [
+            "Trace a check-then-insert race and distinguish observed committed state from uncommitted writes.",
+            "Run two concurrent inserts of the same complete Service row and observe the second session block/reject.",
+            "Explain why a database UNIQUE constraint is the durable arbiter rather than an API existence check.",
+            "Compare uniqueness arbitration with row-locking and Serializable retries for other types of invariants."
         ],
-        assignment: ["Describe a concurrent Steward operation that could race.", "Identify whether a constraint, transaction or row lock is the right protection.", "Explain the failure behavior of the losing transaction."],
-        resources: [postgresDocs],
-        practiceObjective: "Reproduce one race or contention scenario and apply a database-level protection.",
-        practiceInstructions: ["Open two database sessions.", "Attempt a conflicting change such as duplicate slug creation or coordinated state update.", "Observe what happens without adequate protection.", "Apply a constraint or locking strategy.", "Repeat and document the new behavior."],
-        knowledgeCheck: "1. Why can 'check then insert' fail under concurrency?\n2. What protection does a unique constraint provide that an app check does not?\n3. When might SELECT FOR UPDATE be appropriate?",
+        "sections": [
+            {
+                "id": "check-then-insert",
+                "title": "The first SELECT is not a reservation",
+                "body": "Suppose A and B both run SELECT count(*) FROM service WHERE name='Concurrent Guard Demo' and see 0. Each local read is correct: neither has committed that name yet. If the application then inserts only after the check, two writers can still race; a serializer uniqueness validator cannot close the gap. The unique Service.name constraint in the seed is the database-level invariant. Depending on timing, B's insert may block while A's same-key insert is uncommitted. After A commits, B fails with SQLSTATE 23505; after A rolls back, B can insert. These cases must be distinguished. Transaction wrappers alone don't guarantee no name conflict."
+            },
+            {
+                "id": "complete-schema",
+                "title": "Use the actual Service schema, not a fictitious slug-only INSERT",
+                "body": "The earlier sample INSERT INTO service(slug) VALUES('payments-api') was invalid for this fixture: Service has required name, owning_team_id and endpoint fields, and slug was added only in a separate reversible migration. The real concurrency lab inserts name, owning_team_id and endpoint using a Team lookup by unique name. The two psql terminals have separate transactions; do not attempt to run the interleaved transcript as one SQL script. The CI concurrency runner coordinates two real subprocess connections and checks that B did not succeed while A held the uncommitted same-name row.",
+                "language": "text",
+                "caption": "concurrency_unique_two_sessions.txt — two actual psql terminals and a unique-name conflict",
+                "code": "Session A: BEGIN;\nSession B: BEGIN;\nSession A: SELECT count(*) FROM service WHERE name='Concurrent Guard Demo';  -- 0\nSession B: SELECT count(*) FROM service WHERE name='Concurrent Guard Demo';  -- 0\nSession A:\nINSERT INTO service(name,owning_team_id,endpoint)\nSELECT 'Concurrent Guard Demo',id,'https://guard.example.invalid/a'\nFROM team WHERE name='Payments';\n-- A has not committed yet.\nSession B:\nINSERT INTO service(name,owning_team_id,endpoint)\nSELECT 'Concurrent Guard Demo',id,'https://guard.example.invalid/b'\nFROM team WHERE name='Payments';\n-- B waits for A's outcome (do not wait for B to finish before committing A).\nSession A: COMMIT;\n-- B receives a duplicate-key error (SQLSTATE 23505), rolls back.\nSession B: ROLLBACK;\n-- Verify exactly one row exists, then delete only the disposable demo Service.",
+                "output": "Two initial availability reads: 0, 0. A INSERT succeeds without commit; B is blocked; A COMMIT releases B; B reports duplicate key (23505). Exactly one named row survives until lab cleanup."
+            },
+            {
+                "id": "locks",
+                "title": "Row locks work on existing rows, uniqueness protects absent values",
+                "body": "SELECT ... FOR UPDATE locks selected existing rows, useful for transitions where a row's current state determines eligibility. It cannot simply lock a Service row that does not exist yet, so it is not a substitute for a declared unique key. For duplicate Service.name, UNIQUE is smaller and more reliable. For a production-ready Service whose last deployment is being deleted, locking the existing Service row can coordinate cooperating commands, as taught in Django. If you need serializable cross-row decisions, PostgreSQL SERIALIZABLE can abort a conflicting transaction and the application must retry the entire logical operation."
+            },
+            {
+                "id": "retry",
+                "title": "Treat expected constraint failure as part of API behavior",
+                "body": "The loser must not leak a raw duplicate-key stack trace to the client. The API can return its documented conflict response or use a narrow idempotent upsert policy where appropriate. Do not blindly retry the same non-idempotent INSERT: a legitimate existing record may now occupy the key. In a retry policy, check whether the caller is authorized to read/update the existing row. A transaction in a failed state requires rollback before more statements; use a new connection/transaction when retrying. Deadlocks and SERIALIZABLE serialization failures have different SQLSTATE and retry semantics."
+            },
+            {
+                "id": "transfer",
+                "title": "Select a mechanism from the actual invariant",
+                "body": "Create two mini-scenarios: (1) two users create Service names that normalize to the same slug; (2) production transition races with deleting a Service's final production Environment. For scenario 1, define a unique index/constraint on the authoritative normalized identifier and test simultaneous insertion. For scenario 2, both commands must coordinate on the same existing Service row and re-evaluate deployment state in a transaction. Explain why identical locking applied to both situations would be overengineering. Finally state the evidence needed to consider this race reproduced—two independently connected PostgreSQL sessions, an observed blocking/failure boundary, and a verified final row count."
+            }
+        ],
+        "warning": "Do not execute the teaching race on a shared production database. The two terminals must be coordinated; never wait indefinitely on the blocked writer. Use the declared Service.name uniqueness, not a slug column absent from the canonical seed.",
+        "assignment": [
+            "Predict the A/B timeline and write down both SELECT results and the expected losing INSERT outcome.",
+            "Run two independent psql sessions against an isolated fixture using the complete INSERT statements.",
+            "Capture and explain the blocked second write, duplicate-key error and final count of one, then remove only the teaching record.",
+            "Compare uniqueness with SELECT FOR UPDATE and Serializable retries on a separate business invariant."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL — Unique Constraints",
+                "url": "https://www.postgresql.org/docs/current/ddl-constraints.html",
+                "kind": "reference",
+                "purpose": "Database uniqueness and concurrent writer semantics."
+            },
+            {
+                "title": "PostgreSQL — Transaction Isolation",
+                "url": "https://www.postgresql.org/docs/current/transaction-iso.html",
+                "kind": "reference",
+                "purpose": "Conflicts and retry behavior."
+            },
+            {
+                "title": "PostgreSQL — Explicit Locking",
+                "url": "https://www.postgresql.org/docs/current/explicit-locking.html",
+                "kind": "reference",
+                "purpose": "Row-level coordination and deadlock considerations."
+            }
+        ],
+        "practiceObjective": "Reproduce a real two-session uniqueness race against the complete canonical Service schema, not a fictional slug-only table.",
+        "practiceInstructions": [
+            "Record the two pre-check results before starting either write.",
+            "Run Session A and B inserts concurrently, capture B's wait and the 23505 error after A commits.",
+            "Verify exactly one matching Service persists until cleanup and that Team/ownership is valid.",
+            "Compare the appropriate mechanism for the missing-row uniqueness race versus an existing Service readiness transition."
+        ],
+        "knowledgeCheck": "Why can two SELECT count(*)=0 results both be correct? Why does SELECT FOR UPDATE not lock a nonexistent target row? What should a client do after the UNIQUE constraint rejects a new Service?"
     },
     {
         id: "lab-persist-query",
