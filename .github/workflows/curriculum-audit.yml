@@ -149,6 +149,24 @@ jobs:
           PGPASSWORD: tsa_local_ci_only
         run: node scripts/check-system-thinker-real-outbox.mjs
 
+  system-thinker-wsdl-client:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install independent WSDL-aware SOAP client
+        run: python -m pip install 'zeep>=4.2,<5'
+      - name: Execute published WSDL provider and independently generated Zeep client
+        env:
+          TSA_REQUIRE_ZEEP: '1'
+        run: node scripts/check-system-thinker-soap-wire-teaching-example.mjs
+
   builder-postgresql-lab:
     runs-on: ubuntu-latest
     timeout-minutes: 15
