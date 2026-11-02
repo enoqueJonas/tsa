@@ -10,7 +10,7 @@ export const sreSourceDepthById: Record<string, Array<{heading:string;paragraphs
       "code": {
         "language": "python",
         "caption": "Executable green-probe versus failed-user-operation contrast",
-        "code": "# Local model: a healthy process is not always a usable service.\nprobe=[200,200,200,200]\nuser_operation=[200,503,503,200]\ndef success_ratio(values):\n    return sum(code < 500 for code in values)/len(values)\nprint(f\"process_probe_success={success_ratio(probe):.2f}\")\nprint(f\"user_operation_success={success_ratio(user_operation):.2f}\")\nassert success_ratio(probe)==1.0\nassert success_ratio(user_operation)==0.5\n# Real acceptance needs a named operation, population and time window.\n"
+        "code": "# Local model: a healthy process is not always a usable service.\nprobe=[200,200,200,200]\nuser_operation=[200,503,503,200]\ndef success_ratio(values):\n    return sum(200 <= code < 300 for code in values)/len(values)\nprint(f\"process_probe_success={success_ratio(probe):.2f}\")\nprint(f\"user_operation_success={success_ratio(user_operation):.2f}\")\nassert success_ratio(probe)==1.0\nassert success_ratio(user_operation)==0.5\n# Real acceptance needs a named operation, population and time window.\n"
       }
     },
     {
