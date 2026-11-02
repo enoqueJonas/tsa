@@ -1,5 +1,5 @@
 // PED-005: specific worked homelab mechanisms attached to existing lessons, not an orientation wrapper.
-export const budgetHomelabWorkedSections:Record<string,Array<{heading:string;body:string;code?:{language:string;code:string}}>> = {
+export const budgetHomelabWorkedSections:Record<string,Array<{heading:string;body:string;list?:string[];code?:{language:string;code:string}}>> = {
   "Designing a Learning Homelab": [
     {
       "heading": "Start from one recoverable Steward request",
