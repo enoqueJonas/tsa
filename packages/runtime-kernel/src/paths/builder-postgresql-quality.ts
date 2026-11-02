@@ -54,7 +54,7 @@ const practices: Record<string, PracticeSpec> = {
             "Save the published steward_schema_seed.sql exactly and execute it with psql -X -v ON_ERROR_STOP=1 -1 -f steward_schema_seed.sql.",
             "Save and run verify_steward_seed.sql in a new connection. Check team counts (Identity 1, Payments 2, Platform 2), one missing Payroll environment and both dependency edges.",
             "Attempt the two separately documented invalid inserts: foreign-key orphan and duplicate Service name. Capture distinct errors and verify five original Services remain.",
-            "Explain why active and lifecycle are separate assumptions, and why fake .invalid endpoints must not be used for live HTTP tests.",
+            "Explain why the operational active flag is distinct from the canonical lifecycle stages development/uat/production/retired; the fixture deliberately contains one production-stage Service without a production Environment as diagnostic negative data, not a valid release record. Fake .invalid endpoints are not suitable for live HTTP tests.",
             "Commit SQL scripts, expected results and a concise documented reset/reprovisioning procedure for this disposable learning database."
         ],
         deliverables: ["Atomic baseline SQL run", "Three expected verification query result sets", "Two negative constraint transcripts", "Post-run integrity query", "Reproduction instructions"],
@@ -77,17 +77,17 @@ const practices: Record<string, PracticeSpec> = {
     },
     "relational-data-and-postgresql-filtering-ordering-practice": {
         objective: "Predict exact SQL predicate results, diagnose NULL/precedence failures, and produce deterministic ordered queries on the canonical Steward seed.",
-        scenario: "An engineer accidentally includes Legacy Gateway in an active-service report. Diagnose why a valid query leaks a retired record and prove the correction against the unchanged five-service dataset.",
+        scenario: "An engineer accidentally includes Legacy Gateway in a production-stage Service report. Diagnose why a valid query leaks a retired record and prove the correction against the unchanged five-service dataset.",
         instructions: [
             "Start with the canonical steward_schema_seed.sql baseline; do not assume technical_owner exists or add unexplained columns.",
             "Run filter_boolean.sql and annotate the retained row set before/after parentheses. Explain the AND/OR binding with the named Legacy Gateway row.",
             "Run filter_null.sql and explain UNKNOWN, NOT UNKNOWN, IS NULL and which rows WHERE retains.",
             "Run filter_order.sql; show that its chosen order is alphabetical rather than a business severity ranking.",
-            "Independently construct an active-Service search using ILIKE 'pay%' and stable ORDER BY name, id, then change case and verify the result.",
+            "Independently construct a production-stage Service search using ILIKE 'pay%' and stable ORDER BY name, id, then change case and verify the result.",
             "Describe how OFFSET pages can change under inserts and why ORDER BY alone does not solve snapshot consistency."
         ],
         deliverables: ["Executed Boolean and NULL transcripts", "Truth table explaining UNKNOWN", "Independent search query and output", "Deterministic sort and pagination limitation note"],
-        completionCriteria: ["All named rows are predicted and compared with the real PostgreSQL output.", "A retired service cannot enter an active-only result through precedence.", "No column absent from the canonical fixture is used without an explicit migration.", "No textual criticality order is mistaken for domain severity rank."]
+        completionCriteria: ["All named rows are predicted and compared with the real PostgreSQL output.", "A retired Service cannot enter a production-only result through Boolean-precedence mistakes.", "No column absent from the canonical fixture is used without an explicit migration.", "No textual criticality order is mistaken for domain severity rank."]
     },
     "relational-data-and-postgresql-aggregation-practice": {
         objective: "Reproduce inaccurate database metrics caused by row multiplication and correct them at the intended business grain.",
@@ -177,11 +177,11 @@ const practices: Record<string, PracticeSpec> = {
         scenario: "The database is about to gain more than one writer when the following Django module maps the schema. Any invariant protected only by the current Python application boundary could then be bypassed by direct SQL, imports or concurrent writers.",
         instructions: [
             "List candidate invariants and classify which belong in PostgreSQL, application code, or both.",
-            "Add UNIQUE protection for service slug and a CHECK for allowed criticality values.",
-            "Protect ServiceDependency from self-reference and duplicate source-target pairs.",
+            "Inspect the existing Service.name UNIQUE and criticality CHECK constraints first. Then run the reversible lesson's slug-column/UNIQUE migration; explain why adding the same constraints again would fail rather than blindly applying duplicates.",
+            "Verify the existing ServiceDependency self-reference CHECK and UNIQUE(source_service_id,target_service_id) with direct negative inserts; do not redundantly add constraints already in the canonical seed.",
             "Choose and justify surrogate/natural/composite key usage where applicable, then choose and justify referential actions for at least one foreign key rather than accepting defaults blindly.",
             "Attempt each invalid write directly in SQL and capture PostgreSQL's rejection.",
-            "Identify one important Steward rule that cannot be represented safely as a simple row constraint and explain where it remains enforced."
+            "Identify the production-readiness rule that cannot be represented safely as a single-table CHECK and explain where it remains enforced."
         ],
         deliverables: ["Invariant classification", "Constraint DDL/migration", "Negative-case database errors", "Boundary note for application-only rule"],
         completionCriteria: ["Durable row/relationship invariants are protected independently of any future framework or writer.", "Invalid writes are demonstrated directly against PostgreSQL.", "The learner can explain both the power and limits of database constraints."],
