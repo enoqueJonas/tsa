@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { supplyChainDepthById } from "./delivery-supply-chain-depth";
 
 const nexusDocs: LearningResource = { title: "Sonatype Nexus Repository documentation", url: "https://help.sonatype.com/en/sonatype-nexus-repository.html" };
 const packaging: LearningResource = { title: "Python Packaging User Guide", url: "https://packaging.python.org/" };
@@ -52,7 +53,7 @@ function richLesson(spec: LessonSpec): Lesson {
     const contract = practicalContracts[spec.id];
     if (!contract) throw new Error(`Missing Artifact Supply Chain practical contract: ${spec.id}`);
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    for (const section of spec.sections) {
+    for (const section of [...spec.sections, ...(supplyChainDepthById[spec.id] ?? [])]) {
         blocks.push({ type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code, caption: section.code.caption });
@@ -183,7 +184,7 @@ const specs: LessonSpec[] = [
         title: "Container Registries",
         intro: "OCI container registries distribute immutable image content and metadata rather than application source code.",
         sections: [
-            { heading: "Tags and manifests", paragraphs: ["An image tag is a convenient mutable reference. The digest identifies specific image content. A registry stores manifests and layers so multiple environments can pull the exact image that CI produced."] , code: { language: "bash", caption: "Inspect immutable image identity", code: "docker image inspect steward-api:1.4.0 --format '{{index .RepoDigests 0}}'" } },
+            { heading: "Tags and manifests", paragraphs: ["An image tag is a convenient mutable reference. The digest identifies specific image content. A registry stores manifests and layers so multiple environments can pull the exact image that CI produced."] , code: { language: "bash", caption: "Inspect immutable image identity", code: "docker image inspect steward-api:1.4.0 --format '{{json .RepoDigests}}'\n# [] means no known registry digest on this local image.\n# Publish/pull from the approved registry before claiming a RepoDigest." } },
             { heading: "Internal distribution", paragraphs: ["Publishing Steward images to Nexus removes the assumption that deployment pulls from a developer workstation. The deployment host can retrieve a versioned image from infrastructure designed for distribution."] },
         ],
         practice: ["Record Steward's current image tag and digest.", "Design the internal image naming convention.", "Explain why production evidence should include digest in addition to tag."],
