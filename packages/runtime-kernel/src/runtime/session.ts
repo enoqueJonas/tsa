@@ -279,6 +279,17 @@ export function createLearningSession(
                 !location ||
                 !getUnlockedActivityIds().includes(progress.currentActivityId)
             ) {
+                // Curriculum remediation may retire generated orientation/prep
+                // activity IDs. Keep valid authored completions and resume at
+                // the first reachable incomplete activity, not page one.
+                const unlockedIds = getUnlockedActivityIds();
+                const fallbackId = unlockedIds.find((id) => !completedActivityIds.has(id))
+                    ?? unlockedIds[unlockedIds.length - 1];
+                const fallback = fallbackId ? findActivity(fallbackId) : null;
+                if (fallback) {
+                    lessonIndex = fallback.lessonIndex;
+                    activityIndex = fallback.activityIndex;
+                }
                 return;
             }
 
