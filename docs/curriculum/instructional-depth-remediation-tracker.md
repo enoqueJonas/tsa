@@ -19,6 +19,10 @@ This tracker is the source of truth for the remediation cycle. Do not mark a sch
 - **REMEDIATED** — source rewritten against the standard; validation still required.
 - **VALIDATED** — source and rendered experience satisfy the exit criteria.
 
+## Platform Builder whole-school source findings (2026-11-02)
+
+[Modules 1–2](./ped-005-platform-builder-foundations-readthrough.md), [module 3](./ped-005-platform-builder-networking-readthrough.md) and [modules 4–15](./ped-005-platform-builder-modules-4-15-source-readthrough.md) record a complete 15-path source disposition. Existing rich material is retained; shallow generated readiness placeholders were removed; bare protocol-only/homelab lessons received worked mechanisms; broad NFS/SMB and LDAP/AD labs were split while preserving original IDs. The new branch-head 370-activity CI is still pending. Do not conflate repository source remediation with physical/vendor/learner validation; these must be separately tracked before source closure.
+
 ## School progression rule (2026-11-02)
 
 **Two independent lanes, neither mislabeled as the other:**
@@ -78,7 +82,7 @@ The audit proceeds in learner progression order so later schools can rely only o
 | 1 | Engineering Apprentice | Thinking Like an Engineer; Systems Thinking; Trade-offs; Debugging Mindset; Engineering Foundations/workbench; milestone/checks | AUDIT IN PROGRESS | Every lesson classified; thin lessons rewritten; rendered spot-check; duration sanity check |
 | 2 | Builder | Builder fundamentals and implementation paths | REMEDIATED | Every live path classified and source-level gaps remediated; build/integrity and rendered UI validation remain pending |
 | 3 | System Thinker | 11 modules / 8 focused File and Batch lessons / SOAP/XML / Redis/RabbitMQ / failure modes / ADRs / capstone | **REMEDIATED — SOURCE PASS COMPLETE; NOT LEARNER VALIDATED** | All original teaching sources reviewed and targeted improvements applied; matching-head #41467056646 19/19 CI passed with 221 desktop/mobile activities. Independent reviewer score, manual pedagogy and real enterprise authority are **deferred to #334**, not blockers to the next school. PR #333 ready for code review; no claim of production deployment or human learner acceptance. |
-| 4 | Platform Builder | OS/Linux/networking/virtualization/storage/core services/Ansible/patching/Windows and homelab milestones | **AUDIT IN PROGRESS — NEXT ACTIVE SCHOOL** | Whole-school #323: audit each actual learner lesson and prerequisite, test safe examples and negative cases, split oversized lessons where needed. Begin with Computer/OS and Linux in canonical order; keep external infrastructure experiments UNVERIFIED. |
+| 4 | Platform Builder | 15 canonical paths: OS/Linux/networking/Packet Tracer/virtualization/bare-metal/budget homelab/Proxmox/NAS/DNS-DHCP-time/Ansible/patching/Windows/file-directory/capstone | **ALL FIFTEEN SOURCE MODULES REVIEWED — TARGETED REMEDIATIONS COMMITTED; MATCHING-HEAD CI PENDING** | [#323](https://github.com/enoqueJonas/tsa/issues/323), stacked [PR #335](https://github.com/enoqueJonas/tsa/pull/335), [full source record](./ped-005-platform-builder-modules-4-15-source-readthrough.md). No manual novice score, no actual Proxmox/Packet Tracer/Windows/AD/NFS/SMB/LDAP hardware evidence, and no full latest-head PASS claim. 15 shallow readiness wrappers removed; 370 authored activities expected once browser census confirms. Next Delivery Engineer only after source CI confirmation. |
 | 5 | Delivery Engineer | build/test/package/artifacts/GitLab CI/CD/release | NOT STARTED | Same school exit gate |
 | 6 | Cloud Engineer | provider abstractions/IaC/orchestration/GitOps/cloud operations | NOT STARTED | Same school exit gate |
 | 7 | Quality Steward | all paths detailed below | NOT STARTED | Same school exit gate plus Java-stack coherence |
