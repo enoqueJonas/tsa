@@ -430,5 +430,142 @@ export const kubernetesFoundationsById: Record<string,K8sSection[]> = {
         "Explain the difference between Kubernetes Ingress and OpenShift Route, and when using Kong with either adds value rather than duplicating the same routing operation. State the least-privilege and image-compatibility checks that must pass before Steward is considered deployable under OpenShift's selected SCC. Mark all operational conclusions UNVERIFIED without an actual cluster."
       ]
     }
+  ],
+  "termination-disruption": [
+    {
+      "heading": "What graceful termination actually promises",
+      "paragraphs": [
+        "During a normal Pod deletion, controllers and endpoint routing begin removing an unready/terminating Pod from new traffic, kubelet runs any configured preStop hook, sends the configured termination signal (typically SIGTERM to the process) and waits up to terminationGracePeriodSeconds before forceful termination. The ordering and propagation are not an instantaneous atomic guarantee: load balancers, EndpointSlices and clients may have propagation delay, and connections already in flight may still exist. Steward's API should stop accepting new work and drain requests; its outbox publisher and consumer must finish or safely requeue/ack messages according to their domain contract. A generic `sleep 20` does not establish correctness.",
+        "PodDisruptionBudgets constrain the Eviction API during voluntary disruptions such as node drain. They do not prevent direct Pod deletion, a crash, node outage or loss of all workers. A PDB cannot create spare capacity. Never drain the only kind control-plane node to manufacture a successful demo; it risks destroying the learning cluster rather than teaching graceful application shutdown."
+      ]
+    },
+    {
+      "heading": "Inspect a PDB without performing a destructive node drain",
+      "paragraphs": [
+        "The fixture applies only to the two-replica tsa-web Deployment in the dedicated namespace. A PDB with minAvailable=2 and exactly two ready replicas leaves zero voluntary disruptions allowed, illustrating how an overstrict budget can block maintenance. A real value requires capacity and availability decisions, not always two. Save as tsa-pdb.yaml; record observed status and then delete the fixture. This is a safe policy-observation exercise, **not an eviction proof**."
+      ],
+      "code": {
+        "language": "yaml",
+        "caption": "Deliberately strict disposable PDB; do not drain the only kind node",
+        "code": "apiVersion: policy/v1\nkind: PodDisruptionBudget\nmetadata:\n  name: tsa-strict-pdb\nspec:\n  minAvailable: 2\n  selector:\n    matchLabels:\n      app: tsa-web"
+      }
+    },
+    {
+      "heading": "Read the policy and defend the in-flight work boundary",
+      "paragraphs": [
+        "Apply and inspect the PDB using only the named training context. Expected on a healthy two-replica fixture: currentHealthy=2, desiredHealthy=2, disruptionsAllowed=0. Status may lag reconciliation or differ if one Pod is not ready; investigate instead of inventing zero disruption evidence. No actual eviction, node drain or queue-message interruption occurs in this lab."
+      ],
+      "code": {
+        "language": "bash",
+        "caption": "Scoped PDB read and cleanup; no node drain",
+        "code": "kubectl --context kind-tsa-ped005 -n tsa-ped005 apply -f tsa-pdb.yaml\nkubectl --context kind-tsa-ped005 -n tsa-ped005 get pdb tsa-strict-pdb -o wide\nkubectl --context kind-tsa-ped005 -n tsa-ped005 describe pdb tsa-strict-pdb\nkubectl --context kind-tsa-ped005 -n tsa-ped005 delete pdb tsa-strict-pdb\n# Expected: no allowed voluntary disruption at exactly two Ready replicas."
+      }
+    },
+    {
+      "heading": "Independent transfer",
+      "paragraphs": [
+        "Describe why deleting a Pod directly despite the PDB is not proof that the budget malfunctioned. In a three-node environment with two replica Pods and an in-flight RabbitMQ delivery, decide when a node drain can proceed, which consumer acknowledgement state could produce duplicates and what evidence establishes safe reprocessing. Distinguish shutdown/ready transitions, voluntary Eviction API and involuntary power loss."
+      ]
+    }
+  ],
+  "pressure-eviction-rollout": [
+    {
+      "heading": "Rollout strategy is capacity arithmetic, not only a YAML preference",
+      "paragraphs": [
+        "With a Deployment of three replicas, maxSurge=1 permits up to one additional Pod during a rolling update, while maxUnavailable=0 requires all three desired replicas to remain available. If the cluster has zero eligible spare scheduling slots and existing Pods occupy the available capacity, a fourth replacement Pod can remain Pending and the controller cannot delete an old Ready Pod without violating maxUnavailable=0. The rollout may stall even though the old release still serves traffic. This is a *different* failure from an OOMKilled process, eviction due node DiskPressure or image pull failure.",
+        "Requests affect scheduling; limits and actual runtime usage affect cgroup behavior and eviction/kill outcomes. Kubernetes QoS classes are not an automatic assurance that a Pod cannot be evicted. Diagnose scheduling Events for unschedulable Pods, node conditions for pressure, and container termination reason/exit code for OOMKilled. Repeated restarts do not fix insufficient placement capacity."
+      ]
+    },
+    {
+      "heading": "Executable local arithmetic before introducing rollout controls",
+      "paragraphs": [
+        "This pure Python model demonstrates the stated single bottleneck under a deliberately simplified assumption: one eligible scheduling slot per replica and no spare capacity, with maxUnavailable=0. It is not a simulation of the Kubernetes controller or proof that a live rollout will stall, because actual schedulers account for CPU, memory, affinity, topology and competing workloads. Execute the two outcomes and then inspect the real Deployment's rollout strategy in the disposable kind cluster."
+      ],
+      "code": {
+        "language": "python",
+        "caption": "Teaching model of a rollout that cannot create its surge Pod",
+        "code": "desired = 3\nmax_surge = 1\nmax_unavailable = 0\nold_ready = 3\nfree_eligible_slots = 0\nneed_new_pod = max_surge > 0\ncan_schedule_new = free_eligible_slots >= 1\ncan_delete_old_first = (old_ready - 1) >= desired - max_unavailable\nblocked = need_new_pod and not can_schedule_new and not can_delete_old_first\nprint('blocked by capacity and availability gate:', blocked)\nassert blocked is True\n# With a spare eligible slot, controller may attempt replacement:\nfree_eligible_slots = 1\nprint('one spare slot permits new Pod scheduling:', free_eligible_slots >= 1)"
+      }
+    },
+    {
+      "heading": "Observe an actual strategy without manufacturing host memory pressure",
+      "paragraphs": [
+        "The following read-only kind commands expose the configured strategy, replica count, Events and node allocatable capacity. If a real rollout is stuck, compare these facts with a Pending Pod's describe Events; never infer the cause from `rollout status` alone. The lab deliberately does not run a memory exhaustion stressor or resize the only kind node."
+      ],
+      "code": {
+        "language": "bash",
+        "caption": "Read-only rollout, Pod and node evidence",
+        "code": "kubectl --context kind-tsa-ped005 -n tsa-ped005 get deployment tsa-web -o yaml\nkubectl --context kind-tsa-ped005 -n tsa-ped005 describe deployment tsa-web\nkubectl --context kind-tsa-ped005 get nodes -o wide\nkubectl --context kind-tsa-ped005 -n tsa-ped005 get events --sort-by=.lastTimestamp\n# Expected strategy and placement evidence vary with cluster setup."
+      }
+    },
+    {
+      "heading": "Transfer: identify the first failing system",
+      "paragraphs": [
+        "Compare four observations: (1) Pod Pending with FailedScheduling insufficient CPU, (2) Pod Running then terminated OOMKilled, (3) Pod Evicted while node reports DiskPressure, and (4) Pod Running but readiness returns 404. Classify where each failure originates, which controller reacts and which remedy is plausible. Explain why increasing maxUnavailable may trade availability for forward progress and why it is not always a safe response to low capacity."
+      ]
+    }
+  ],
+  "gitops-model": [
+    {
+      "heading": "The authority moves from pushing commands to reconciling reviewed desired state",
+      "paragraphs": [
+        "A GitOps controller reads approved environment configuration from a repository and reconciles the live cluster toward it. GitLab CI/CD can still build/test/publish the immutable artifact, but it should not compete to directly mutate the same deployment fields once Argo CD owns that environment. A protected Git commit identifies desired environment state; the container image is independently referenced by an approved OCI digest. The target cluster and API permissions, namespace ownership, secrets source and rollback target must be declared before enabling automatic reconciliation.",
+        "A green Argo CD Synced state means the tracked live Kubernetes objects match the desired rendered manifests according to the controller's comparison; it does not prove runtime authorization, data integrity or user-level availability. An OutOfSync state means a difference exists but does not identify whether Git is wrong, an operator intervened deliberately, or an autoscaler owns a field. A controller repeatedly writing replicas while an autoscaler edits that field is an authority conflict, not legitimate self-healing."
+      ]
+    },
+    {
+      "heading": "Execute a safe, local desired-versus-observed model",
+      "paragraphs": [
+        "Run this Python model with no Kubernetes or credentials. It first shows Git desired digest D differs from live digest E (OutOfSync), then changes the observed digest to D (Synced). Health remains NOT_DETERMINED, because matching a declared string does not test a live endpoint. These printouts are an analogy for comparison semantics, **not an Argo CD Application status or actual reconciliation event**."
+      ],
+      "code": {
+        "language": "python",
+        "caption": "Pure local comparison; never presented as running Argo CD",
+        "code": "desired = {'image_digest': 'sha256:approved-D', 'replicas': 2}\nlive = {'image_digest': 'sha256:other-E', 'replicas': 2}\ndef sync_status(want, observed):\n    return 'Synced' if want == observed else 'OutOfSync'\nprint('initial sync:', sync_status(desired, live))\nprint('runtime health: NOT_DETERMINED_BY_DIFF')\nlive['image_digest'] = desired['image_digest']\nprint('after matching declared state:', sync_status(desired, live))\nassert sync_status(desired, live) == 'Synced'"
+      }
+    },
+    {
+      "heading": "Evaluate a change that crosses release and safety boundaries",
+      "paragraphs": [
+        "Suppose a human hotfix changes the live readiness path during an incident while the Git declaration still contains the failing path. Blind automatic self-heal could restore the incorrect configuration. The operator must choose a documented break-glass freeze/override with a finite reconciliation strategy, repair Git, review the new desired state, then re-enable safe reconciliation; do not let two systems fight over the field. In an independent design, assign release digest to GitOps, HPA-owned replicas to the autoscaler, secrets to the approved external source and image build to GitLab CI/CD, and list the API rights each needs."
+      ]
+    }
+  ],
+  "argocd-operation": [
+    {
+      "heading": "An Application is a controller contract, not simply a dashboard card",
+      "paragraphs": [
+        "An Argo CD Application identifies a configuration source (repository, target revision/path), target Kubernetes cluster/namespace and synchronization policy. Argo renders the configured manifests and compares them with live resources. Automated prune/self-heal may be deliberately disabled during initial training so a bad source declaration is not immediately enforced. A real GitOps handoff must specify which exact revision is approved and which controller owns each field. The Argo API server's green Application view is not a substitute for an external Steward request or queue-consumer verification.",
+        "The following Application YAML is intentionally **not deployable** as written: it references a reserved `.invalid` example repository and an illustrative namespace. It teaches fields only. Do not apply it to production or claim Argo has reconciled anything. A real implementation later must supply an authorized repository, Argo CD project/permissions, cluster destination and source application manifests that pin an approved image digest."
+      ]
+    },
+    {
+      "heading": "Inspect a complete illustrative Application object",
+      "paragraphs": [
+        "The example uses manual sync by omitting `spec.syncPolicy.automated`. It does not install Argo CD, create a repository or expose any workload. Explicitly distinguish Application source revision (`targetRevision`) from the OCI image digest contained in the manifests at that Git revision. A mutable branch ref can move to new commits; the review/protection policy determines which changes may reach that branch."
+      ],
+      "code": {
+        "language": "yaml",
+        "caption": "Source-only Argo CD Application schema; fake repo, never apply",
+        "code": "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\n  name: tsa-steward-demo\n  namespace: argocd\nspec:\n  project: default\n  source:\n    repoURL: https://example.invalid/tsa-steward-environments.git\n    targetRevision: main\n    path: clusters/tsa\n  destination:\n    server: https://kubernetes.default.svc\n    namespace: tsa-ped005"
+      }
+    },
+    {
+      "heading": "Read-only diagnostics only after an actual training Application exists",
+      "paragraphs": [
+        "When a real learner later deploys Argo CD in a permitted disposable cluster and replaces the fake repository, use the Argo CLI to inspect actual Application sync, health, revision and diff. These commands do not create the Application. If no Argo CD is installed, record UNVERIFIED rather than interpreting a CLI not found or authentication failure as drift. Do not enable pruning/self-heal to force a green dashboard without reviewing the Git change and application API behavior."
+      ],
+      "code": {
+        "language": "bash",
+        "caption": "Conditional Argo CD inspection; requires a real authorized training Application",
+        "code": "argocd app get tsa-steward-demo\nargocd app diff tsa-steward-demo\nargocd app history tsa-steward-demo\nargocd app resources tsa-steward-demo\n# A meaningful diagnosis also needs actual Kubernetes Events and external client checks."
+      }
+    },
+    {
+      "heading": "Independent drift diagnosis and recovery",
+      "paragraphs": [
+        "Case A: Application Synced and Healthy but cross-team ownership update returns HTTP 200 rather than 403. Argo did its declared reconciliation, but release verification failed; stop promotion and diagnose application authorization. Case B: Application OutOfSync after an emergency manual field change that restored service. Decide who owns that field and how the reviewed Git desired state will incorporate a durable fix before self-healing. Case C: Application repeatedly flips replica count against an HPA. Stop authority conflict, define ownership and update ignored-differences policy deliberately where appropriate. Never equate desired-state convergence with validated business behavior."
+      ]
+    }
   ]
 };
