@@ -81,6 +81,30 @@ This source correction is **not** whole-path approval from just five targeted su
 
 **Latest branch head:** matching CI / scripted browser traversal requires checking the final code-and-documentation commit after changes; do not reuse earlier green checks for a newer head. Independent rendered-depth judgment, enterprise infrastructure and uncoached learner transfer are NOT VALIDATED.
 
+## Path 4 — Continuous Integration learner-order source pass
+
+Inspected the real `delivery-continuous-integration-deep.ts` reading source, all **13 authored concept lessons** and the integrated lab, with practical expectations in `delivery-continuous-integration-quality.ts`. Existing generic path orientation/pre-lab preparation remains visible in the assembler and is **not** counted as substantive teaching.
+
+| Authored lesson | Baseline | Corrective evidence / limitation |
+| --- | --- | --- |
+| CI Pipeline Architecture | THIN | Expanded a precise event → commit → runner → checks → outputs → enforced policy model, contrasting merge-check evidence with promotion and runtime verification |
+| Jobs, Stages and Dependencies | TARGETED | Retained correct conceptual dependency graph and added **source-published executable Python** fail-closed local job simulation; unit check failure returns **17**, blocks image-build and publish |
+| GitLab Runners and Execution Infrastructure | TARGETED | Expanded executor identity, job scheduling, secret privileges and compromised runner response |
+| GitHub Actions and GitLab CI/CD | THIN | Added behavior-migration comparison (triggers, nonzero failures, credentials, exact artifacts); GitLab remains authoritative |
+| Self-hosted Runners | THIN | Added host/executor trust map, recovery from secret exposure, disk and identity management |
+| Caching | TARGETED (retained) | Existing declared-input/cold-path negative case is meaningful; actual clean GitLab Runner still UNVERIFIED |
+| Pipeline Artifacts | TARGETED (retained) | Existing origin-linked artifact versus cache behavior retained; real transfer into build/publish UNVERIFIED |
+| Secrets and Variables | THIN | Added protected-ref/permission and masking-limits explanation, unsafe log/artifact negative example, credential response |
+| Parallelism | THIN | Added dependency-critical-path versus runner saturation example and shared-database contention failure |
+| Automated Checks | THIN | Added oracle/risks framework and precise false-green omitted-test example |
+| Test Stages | THIN | Added unit/component/integration/end-to-end boundaries, PostgreSQL outbox failure and evidence interpretation |
+| Quality Gates | TARGETED (retained) | Existing authorization-regression gate and justified exception already teach a decision, not a generic checkbox |
+| Building Containers in CI | TARGETED (retained) | Existing `.gitlab-ci.yml` example explicitly says it builds only and does not publish; true image/registry behavior requires homelab CI proof |
+
+The published `ciDependencyPython` snippet is in `delivery-ci-dependency-worked.ts`, attached to the actual Jobs, Stages and Dependencies reading and executed by `scripts/check-delivery-ci-dependency.mjs`. Its positive and negative paths prove the **modelled** dependency decision only; no GitLab pipeline or image publish is simulated as having run. Full runtime GitLab Runner, Nexus upload, proper protected job scheduling, independent novice transfer and human rendered-depth judgment remain **UNVERIFIED**. All existing learner IDs preserved. CI is a **source pass** rather than an infrastructure certification.
+
+**Next learner-order path is 5 — Continuous Delivery and Deployment; paths 5–11 remain outstanding.** Do not call the school REMEDIATED or VALIDATED based on this partial pass. Matching-head automated workflow must be confirmed after these source/doc changes.
+
 ## Completion rule
 
 Remediate all 11 paths at source with executable safe examples and failure cases, then advance to Cloud Engineer. Independently scored learner teach-back, visual manual review and production infrastructure are tracked separately; do not let them trigger endless new features within this school.
