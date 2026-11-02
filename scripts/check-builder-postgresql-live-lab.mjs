@@ -164,10 +164,10 @@ try {
       "BEGIN; SELECT count(*) FROM service WHERE name='" + duplicate + "';", 20);
     await stage(B, "unique_start_b",
       "BEGIN; SELECT count(*) FROM service WHERE name='" + duplicate + "';", 20);
-    assert.ok(A.out.split(/\\r?\\n/).includes("0"), "A must see no original demo Service");
-    assert.ok(B.out.split(/\\r?\\n/).includes("0"), "B must see no original demo Service");
+    assert.ok(A.out.split(/\r?\n/).includes("0"), "A must see no original demo Service");
+    assert.ok(B.out.split(/\r?\n/).includes("0"), "B must see no original demo Service");
     await stage(A, "unique_insert_a", sqlInsert("a"), 20);
-    B.child.stdin.write("\\set VERBOSITY verbose\\n" + sqlInsert("b") + "\\n");
+    B.child.stdin.write("\\set VERBOSITY verbose\n" + sqlInsert("b") + "\n");
     let sawBlockedWriter = false;
     for (let i = 0; i < 150; i++) {
       const waiting = run(["-c",
@@ -240,7 +240,7 @@ try {
   for (const table of ["team","service","environment","service_dependency"]) assert.ok(metadata.split(/\r?\n/).includes(table), `Cannot see ${table}`);
   const migration = run(["-c",
     codeFromLesson("migration_expand_contract.sql — populated-data backfill with reversible DDL")]).out;
-  const stageCounts = migration.split(/\\r?\\n/).filter(v => /^\\d+$/.test(v));
+  const stageCounts = migration.split(/\r?\n/).filter(v => /^\d+$/.test(v));
   assert.deepEqual(stageCounts, ["5", "0", "5", "0"], "Backfill must retain five rows and leave no new column after rollback");
   assert.equal(run(["-c", "SELECT count(*) FROM information_schema.columns WHERE table_name='service' AND column_name='technical_owner'"]).out, "0");
   console.log(`Builder PostgreSQL live lab passed: first session/TEMP negative, 4 persisted tables, 20 published SQL examples, 5/6/4 join cardinalities, 2 rejected writes, 3 transaction scripts with savepoint failure, 2-session Read Committed/Repeatable Read, cross-table release-readiness detection and rollback proof, populated migration backfill and two-session unique-name race; database=${process.env.PGDATABASE}.`);
