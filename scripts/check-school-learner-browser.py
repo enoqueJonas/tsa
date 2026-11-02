@@ -125,7 +125,7 @@ def inspect_school(page):
                 "visible_characters": len(text),
                 "code_blocks": code.count(),
             })
-            if SCHOOL == "builder" and len(visited) < count:
+            if SCHOOL in {"builder", "system-thinker"} and len(visited) < count:
                 # Reproduce a long reading: navigating from its bottom must take
                 # the learner to the start of the next activity, not mid-page.
                 has_scroll = page.evaluate(
@@ -137,7 +137,7 @@ def inspect_school(page):
                         f"Could not establish scroll regression precondition: {activity_id}"
                     )
             nxt.click()
-            if SCHOOL == "builder" and len(visited) < count and has_scroll:
+            if SCHOOL in {"builder", "system-thinker"} and len(visited) < count and has_scroll:
                 page.wait_for_function("window.scrollY <= 8", timeout=8000)
         print(f"PASS {SCHOOL} module {module_index+1}/{module_count}: {count} activities", flush=True)
     assert not errors, f"Browser exceptions in {SCHOOL}: {errors}"
@@ -208,6 +208,70 @@ def check_builder_mobile_modules(page):
         print(f"PASS builder mobile module {index+1}/{count}: first two activities", flush=True)
 
 
+def check_system_thinker_mobile_all(page):
+    """All System Thinker activities at 390px, with content, navigation and scroll regression."""
+    page.goto(f"{BASE}/?view=curriculum&school=system-thinker", wait_until="networkidle")
+    module_count = page.get_by_role("button", name=MODULE).count()
+    assert module_count == 11, f"Expected 11 System Thinker modules, found {module_count}"
+    errors = []
+    page.on("pageerror", lambda err: errors.append(str(err)))
+    total = 0
+    for module_index in range(module_count):
+        page.goto(f"{BASE}/?view=curriculum&school=system-thinker", wait_until="networkidle")
+        page.get_by_role("button", name=MODULE).nth(module_index).click()
+        page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+        sidebar = page.locator("aside").filter(has=page.get_by_text("Curriculum", exact=True)).first
+        activity_count = sidebar.locator("button").count()
+        assert activity_count > 0, f"No System Thinker module {module_index+1} activities"
+        seen = set()
+        for activity_index in range(activity_count):
+            activity_id = page.evaluate(
+                "new URLSearchParams(location.search).get('activity')"
+            )
+            assert activity_id and activity_id not in seen, (
+                f"Mobile activity ID missing/repeated: {activity_id}"
+            )
+            seen.add(activity_id)
+            main = page.locator("main").last
+            assert main.is_visible() and main.inner_text().strip(), (
+                f"Blank System Thinker mobile activity: {activity_id}"
+            )
+            assert not page.evaluate(
+                "document.documentElement.scrollWidth > innerWidth + 2"
+            ), f"Horizontal page overflow at 390px: {activity_id}"
+            for block in main.locator("figure").all():
+                # A scrollable code figure is acceptable; its code must remain present.
+                assert block.locator("pre").count() >= 1, (
+                    f"Missing code display on mobile: {activity_id}"
+                )
+            if activity_index < activity_count - 1:
+                reflection = page.get_by_placeholder("Write your response here...")
+                if reflection.count():
+                    reflection.fill(SYNTHETIC_REFLECTION)
+                can_scroll = page.evaluate(
+                    "document.documentElement.scrollHeight > innerHeight + 120"
+                )
+                if can_scroll:
+                    page.evaluate("window.scrollTo(0, document.documentElement.scrollHeight)")
+                    assert page.evaluate("window.scrollY") > 30, (
+                        f"Unable to establish mobile long-scroll precondition: {activity_id}"
+                    )
+                next_button = page.get_by_role("button", name=NEXT)
+                assert next_button.count() == 1 and next_button.is_enabled(), (
+                    f"Unusable mobile navigation at {activity_id}"
+                )
+                next_button.click()
+                page.wait_for_function("window.scrollY <= 8", timeout=8000)
+            total += 1
+        print(
+            f"PASS system-thinker mobile module {module_index+1}/{module_count}: "
+            f"{activity_count} activities with no overflow and top navigation",
+            flush=True,
+        )
+    assert not errors, f"System Thinker mobile browser exceptions: {errors}"
+    print(f"PASS system-thinker 390px mobile traversal: {total} activities", flush=True)
+
+
 with sync_playwright() as playwright:
     browser = playwright.chromium.launch(headless=True)
     context = browser.new_context(viewport={"width": 1440, "height": 900})
@@ -216,6 +280,8 @@ with sync_playwright() as playwright:
     mobile = browser.new_context(viewport={"width": 390, "height": 844})
     if SCHOOL == "builder":
         check_builder_mobile_modules(mobile.new_page())
+    elif SCHOOL == "system-thinker":
+        check_system_thinker_mobile_all(mobile.new_page())
     else:
         check_mobile_first_module(mobile.new_page())
     mobile.close()
