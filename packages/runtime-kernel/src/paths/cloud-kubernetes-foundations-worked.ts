@@ -167,5 +167,106 @@ export const kubernetesFoundationsById: Record<string,K8sSection[]> = {
         "Independent case: a Service resolves by DNS and has two endpoints, but GET / returns connection refused. Give two possible explanations that are NOT DNS failure (wrong targetPort, process bound only to Pod loopback, or network policy) and state a command/observation to distinguish them. Then contrast Kubernetes Service with OpenShift Route without presenting a Route as a synonym."
       ]
     }
+  ],
+  "scheduling-placement": [
+    {
+      "heading": "The scheduler filters before it chooses",
+      "paragraphs": [
+        "A Kubernetes Pod is not assigned to an arbitrary worker. The scheduler first filters nodes that can satisfy hard constraints such as resource requests, node selectors, node affinity, taints/tolerations and volume topology; it then scores eligible nodes. CPU/memory requests reserve scheduling capacity, not physical cores or hard caps. Limits constrain runtime behavior but do not by themselves solve placement. A scheduler cannot ignore unsatisfied constraints because a Pod has been Pending for a long time.",
+        "A Deployment's replicas cannot automatically survive a node failure when every Pod is bound to one unavailable node or available nodes lack capacity. Availability therefore requires capacity and placement evidence, not simply replicas: 2. Anti-affinity and topology spread can help distribute replicas, but may keep Pods Pending in an undersized learning cluster. Do not force production-like spread constraints onto a one-node kind lab and claim that cluster has two fault domains."
+      ]
+    },
+    {
+      "heading": "Observe a deterministic scheduling failure safely",
+      "paragraphs": [
+        "Use the named kind cluster and dedicated tsa-ped005 namespace from earlier lessons. This negative Pod requests a node label deliberately not present in the disposable cluster; scheduling should leave it Pending. It does not download or execute its image. Save as tsa-unschedulable.yaml and apply only in the training namespace. Check Pod Events rather than diagnosing image pulls, because the scheduler must choose a node before kubelet can attempt an image download. Delete only this named negative Pod when finished."
+      ],
+      "code": {
+        "language": "yaml",
+        "caption": "Deliberately unschedulable Pod: nonexistent node selector",
+        "code": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: tsa-unschedulable\nspec:\n  nodeSelector:\n    tsa.example/placement: missing\n  containers:\n    - name: sleeper\n      image: busybox:1.36\n      command: [\"sh\", \"-c\", \"sleep 3600\"]\n      resources:\n        requests:\n          cpu: 20m\n          memory: 32Mi"
+      }
+    },
+    {
+      "heading": "Distinguish Pending scheduling from failed container startup",
+      "paragraphs": [
+        "Execute these scoped read/cleanup operations after applying the negative YAML. Expected: Pod Pending and an event explaining node(s) did not match the node selector. Event phrasing varies with Kubernetes version; a momentarily empty Events list is not proof of success. A scheduling event tells you what constraint was not met, but it does not prove the rest of the application would be healthy if scheduled. An ImagePullBackOff case generally occurs after Pod assignment and must be inspected via container status and kubelet events."
+      ],
+      "code": {
+        "language": "bash",
+        "caption": "Inspect FailedScheduling and remove only the negative Pod",
+        "code": "kubectl --context kind-tsa-ped005 -n tsa-ped005 apply -f tsa-unschedulable.yaml\nkubectl --context kind-tsa-ped005 -n tsa-ped005 get pod tsa-unschedulable -o wide\nkubectl --context kind-tsa-ped005 -n tsa-ped005 describe pod tsa-unschedulable\nkubectl --context kind-tsa-ped005 get nodes --show-labels\nkubectl --context kind-tsa-ped005 -n tsa-ped005 delete pod tsa-unschedulable\n# Expected: a scheduling failure tied to the intentionally impossible node label."
+      }
+    },
+    {
+      "heading": "Independent placement challenge",
+      "paragraphs": [
+        "A fictional production cluster has three nodes in one rack and two Steward replicas; both are Running on the same node. Explain which failures the replica count protects against, which rack/power failure it cannot survive and how topology spread or Pod anti-affinity plus spare nodes would change the guarantee. Then analyze a second case in which a rolling Deployment requires a third temporary Pod but the cluster cannot satisfy its CPU request. Identify why rollout stalls without blaming the image tag."
+      ]
+    }
+  ],
+  "dns-network-policy": [
+    {
+      "heading": "DNS answers a name; Service routing and policy answer different questions",
+      "paragraphs": [
+        "A Pod can resolve tsa-web.tsa-ped005.svc.cluster.local through cluster DNS while the Service has no ready endpoints, the application listens on the wrong port or policy blocks traffic. DNS success establishes only name-to-address resolution, not a TCP connection or HTTP authorization. Service discovery, EndpointSlice readiness, CNI packet forwarding and workload application status each add a separate boundary. Namespace-qualified Service names avoid ambiguity when clients and Services live in different namespaces.",
+        "A NetworkPolicy object selects Pods and describes allowed ingress/egress flows, but its enforcement depends on the cluster networking implementation. kind's default kindnetd is a simple CNI and should not be treated as a verified NetworkPolicy enforcement system. A YAML policy being accepted by the API does NOT prove network traffic was denied. For a real negative policy lab, use a supported network-policy-capable CNI in a dedicated, explicitly configured cluster; retain a positive allowed connection and a negative blocked connection from separate Pod identities. Never test deny-all on a shared production namespace."
+      ]
+    },
+    {
+      "heading": "Inspect DNS and endpoints with a disposable debug process",
+      "paragraphs": [
+        "The positive Service and Deployment from the previous lessons must already be Ready. The following Pod runs BusyBox nslookup and exits. Inspect its logs and Service endpoint information before deleting it. Expected: a DNS answer for the namespace-qualified Service and ready EndpointSlices if the training Pods are available. The DNS answer may resolve a ClusterIP rather than individual Pod addresses. If the DNS query fails, inspect the CoreDNS Service and Pod state, names and the source Pod network before altering NetworkPolicy."
+      ],
+      "code": {
+        "language": "bash",
+        "caption": "Scoped DNS lookup, logs and cleanup; no NetworkPolicy enforcement claimed",
+        "code": "kubectl --context kind-tsa-ped005 -n tsa-ped005 run tsa-dns-check --image=busybox:1.36 --restart=Never --command -- sh -c 'nslookup tsa-web.tsa-ped005.svc.cluster.local'\nkubectl --context kind-tsa-ped005 -n tsa-ped005 logs pod/tsa-dns-check\nkubectl --context kind-tsa-ped005 -n tsa-ped005 get svc tsa-web\nkubectl --context kind-tsa-ped005 -n tsa-ped005 get endpointslices -l kubernetes.io/service-name=tsa-web\nkubectl --context kind-tsa-ped005 -n tsa-ped005 delete pod tsa-dns-check\n# If logs are not ready immediately, wait for the short-lived Pod to reach completion."
+      }
+    },
+    {
+      "heading": "Diagnosis and policy transfer",
+      "paragraphs": [
+        "Case A: DNS resolves and EndpointSlices contain ready backends, but HTTP times out: investigate actual TCP routing, network policy enforcement, targetPort and listener, not the resolver. Case B: DNS resolves but Service has no ready backends: inspect the selector against labels and readiness probe; restarting DNS is not a fix. Case C: a restrictive NetworkPolicy resource was applied but client traffic still succeeds on a kind cluster: first verify the CNI actually enforces policies before claiming that Kubernetes ignored a valid deny rule.",
+        "Independent transfer: explain why an OpenShift Route, a Kubernetes Service and a NetworkPolicy cannot substitute for one another in Steward's inbound request path. Write the expected observable evidence at DNS, Service endpoint, policy and application layers without assuming an external network exists."
+      ]
+    }
+  ],
+  "persistent-storage": [
+    {
+      "heading": "A claim is a request, not a durable backup",
+      "paragraphs": [
+        "Kubernetes separates the Pod that uses storage from storage provisioning and lifecycle. A PersistentVolume (PV) represents a cluster storage resource; a PersistentVolumeClaim (PVC) requests storage with access mode, size and possibly a StorageClass that chooses provisioning behavior. A Pod mounts a claim at a path. Deleting the Pod usually does not delete a bound PVC, but deleting the claim may trigger a reclaim policy and storage deletion depending on the StorageClass/PV. A running database on a PVC is not automatically recoverable: durability still depends on storage failure domain, consistency and independently tested backups.",
+        "The OpenShift storage operator and CSI driver may add enterprise lifecycle capabilities, but the core PV/PVC/StorageClass contract remains Kubernetes. Do not use hostPath on a shared node to simulate resilient storage; host-local data does not survive a lost node without another recovery path. For Steward, authoritative PostgreSQL data and RabbitMQ critical state must be managed with proven persistence semantics, not merely because an application YAML contains a volumeMount."
+      ]
+    },
+    {
+      "heading": "Safe negative exercise: a PVC no provisioner can satisfy",
+      "paragraphs": [
+        "To expose the control-plane state without allocating disks, apply this PVC to the dedicated training namespace using a deliberately nonexistent StorageClass. The PVC should remain Pending because no matching dynamic provisioner or PV is available. The expected state is not a storage outage claim; it demonstrates that a valid storage request cannot be fulfilled by configuration alone. Do not use an existing shared production StorageClass name. Inspect StorageClass objects read-only, describe the PVC and then delete only the disposable claim."
+      ],
+      "code": {
+        "language": "yaml",
+        "caption": "Deliberately unbound disposable PVC; no real disk requested from a valid class",
+        "code": "apiVersion: v1\nkind: PersistentVolumeClaim\nmetadata:\n  name: tsa-unbound-claim\nspec:\n  accessModes:\n    - ReadWriteOnce\n  resources:\n    requests:\n      storage: 64Mi\n  storageClassName: tsa-nonexistent-class"
+      }
+    },
+    {
+      "heading": "Observe the storage control plane without touching application data",
+      "paragraphs": [
+        "After saving as tsa-unbound-claim.yaml, use the named kind cluster context to inspect provisioning state and Events. The claim should report Pending with no suitable StorageClass or PV. Event text varies with storage controller. Delete the intentionally unbound claim; no real Steward database files are involved. This is a negative contract exercise only. A valid positive exercise would require a supported disposable StorageClass and a Pod writing a unique value, followed by Pod recreation and an independent backup/restore test; **none of that has been performed here**."
+      ],
+      "code": {
+        "language": "bash",
+        "caption": "Read StorageClass/PV information and confirm unbound PVC before scoped cleanup",
+        "code": "kubectl --context kind-tsa-ped005 get storageclass\nkubectl --context kind-tsa-ped005 get persistentvolumes\nkubectl --context kind-tsa-ped005 -n tsa-ped005 apply -f tsa-unbound-claim.yaml\nkubectl --context kind-tsa-ped005 -n tsa-ped005 get pvc tsa-unbound-claim\nkubectl --context kind-tsa-ped005 -n tsa-ped005 describe pvc tsa-unbound-claim\nkubectl --context kind-tsa-ped005 -n tsa-ped005 delete pvc tsa-unbound-claim\n# Expected: Pending due to deliberately absent storage class; no data-loss experiment."
+      }
+    },
+    {
+      "heading": "Compare persistence and recovery decisions",
+      "paragraphs": [
+        "If a PVC remains bound after Pod replacement, the result says something about that storage class and node failure model, not that a backup exists. If an underlying volume is in the same physical failure domain as the worker, loss of that host may destroy data despite a green Kubernetes Deployment status. Distinguish in an independent diagram: Pod recreation, PV access mode, PVC identity, database consistency, off-cluster backups, RPO and RTO. Identify why OpenShift or a managed Kubernetes provider cannot infer the required restore objective from a PVC declaration."
+      ]
+    }
   ]
 };
