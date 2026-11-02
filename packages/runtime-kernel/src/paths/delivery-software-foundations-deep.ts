@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { lifecycleIdentityExtraSections } from "./delivery-lifecycle-identity-worked";
 
 const git: LearningResource = { title: "Git documentation", url: "https://git-scm.com/docs" };
 const semver: LearningResource = { title: "Semantic Versioning", url: "https://semver.org/" };
@@ -7,13 +8,13 @@ const conventional: LearningResource = { title: "Conventional Commits", url: "ht
 const keepChangelog: LearningResource = { title: "Keep a Changelog", url: "https://keepachangelog.com/" };
 const twelveFactor: LearningResource = { title: "The Twelve-Factor App", url: "https://12factor.net/" };
 
-function lesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: string }>, resources: LearningResource[]): Lesson {
+function lesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: string; language?: string; caption?: string; output?: string }>, resources: LearningResource[]): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
-    for (const section of sections) {
+    for (const section of id === "lifecycle" ? [...sections, ...lifecycleIdentityExtraSections] : sections) {
         const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
         blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
         if (section.items) blocks.push({ type: "list", items: section.items });
-        if (section.code) blocks.push({ type: "code", language: "text", code: section.code });
+        if (section.code) blocks.push({ type: "code", language: section.language ?? "text", code: section.code, caption: section.caption, output: section.output });
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward delivery checkpoint", body: "Apply this concept to the current Steward repository and homelab. Preserve evidence that another engineer could use to identify exactly what source became what release and where it was promoted." });
     blocks.push({ type: "resources", title: "Continue learning", resources });
