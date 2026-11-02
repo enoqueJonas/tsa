@@ -51,6 +51,36 @@ This review inspects `delivery-software-foundations-deep.ts` directly, not the a
 
 **Path 1 is NOT complete.** Remaining lessons above require actual teaching remediation, not reassignment of their ratings. No other Delivery Engineer path is cleared by this update.
 
+## Current continuation checkpoint: authored Foundations + Docker
+
+**Software Delivery Foundations path 1:** the original nine teaching readings have been expanded in their actual source file using `delivery-lifecycle-identity-worked.ts` (first reading) and `delivery-software-foundations-enrichment.ts` (remaining eight). This is deliberately different from adding another short intro wrapper. The assembler now uses the nine authored lesson/practice pairs without generated `fieldwork-orientation` or per-practical preparation placeholders for this path. `scripts/check-resolved-practical-contracts.mjs` was changed to reject missing original teaching depth (all nine activities require at least five actual heading sections and a real practice). The published artifact-gate Python has both a successful and a nonzero negative execution test.
+
+**Automation and Shell path 2:** the existing six authored concept readings, practicals and integrative lab are retained; the previously added exact Bash pipeline/pipefail and guarded mutation regression on `master` is the focused runtime proof. A complete real-learner review and any environment-specific Steward automation remain separate.
+
+**Containers and Docker path 3:** direct source read-through covered the fifteen teaching readings in `delivery-containers-docker-deep.ts` plus the attached realistic practices in `delivery-containers-docker-quality.ts`. The original readings are uneven; the well-motivated examples in VM/container boundaries, images and layers, Dockerfiles, build context, multi-stage trade-offs, volumes, networking, Compose and health checks are retained, not rewritten for cosmetic word counts. Five concrete gaps received added mechanisms and worked diagnostic cases *inside* their original readings in `delivery-docker-operational-depth.ts`:
+
+| Docker authored lesson | Original source diagnosis | Current source action / remaining evidence |
+| --- | --- | --- |
+| Containers versus Virtual Machines | TARGETED | Existing guest/kernel/container failure-layer example retained; physical-host observation UNVERIFIED |
+| Namespaces and cgroups Concepts | TARGETED | Added exact namespace vs cgroup explanation, disposal-safe inspection commands, cgroup-v1/v2 expectations and failure transfer; real daemon execution UNVERIFIED |
+| Docker Architecture | THIN | Added client → daemon → containerd/runtime control path, read-only endpoint diagnosis and permission versus application failure cases; real daemon UNVERIFIED |
+| Images and Layers | TARGETED | Existing Dockerfile cache invalidation walkthrough retained; reproducible build measurements UNVERIFIED |
+| Writing Dockerfiles | TARGETED | Existing non-root signal/exec-form explanation and illustrative Dockerfile retained; actual clean Steward build UNVERIFIED |
+| Build Context | TARGETED | Existing .dockerignore mechanism/example retained; local-secret exclusion test UNVERIFIED |
+| Multi-stage Builds | TARGETED | Existing compatible builder/runtime example retained; actual stage build and native-library compatibility UNVERIFIED |
+| Volumes | TARGETED | Existing disposable BusyBox volume recreate example retained; actual host data survival and backup proof UNVERIFIED |
+| Container Networking | TARGETED | Existing listener, service DNS, host port and firewall boundary example retained; actual topology proof UNVERIFIED |
+| Docker Compose | TARGETED | Existing startup versus database readiness walkthrough retained; full Steward Compose stack UNVERIFIED |
+| Health Checks | TARGETED | Existing live versus ready distinction retained; database-outage negative probe UNVERIFIED |
+| Container Registries | THIN | Added OCI tags, manifest versus platform digest, remote registry authorization and approval trace; real push/pull UNVERIFIED |
+| Image Tags and Versioning | TARGETED | Existing moved-tag A/B example retained; registry digest comparison UNVERIFIED |
+| Image Optimization | THIN | Added measured cold/warm build, dependency input/cache invalidation, size-vs-startup trade-offs; live timings UNVERIFIED |
+| Container Debugging | THIN | Added first-failing-boundary decision tree, read-only Docker commands and an illustrative listener/bind-address incident; live failure/recovery UNVERIFIED |
+
+This source correction is **not** whole-path approval from just five targeted supplements; the other authored readings and realistic multi-service lab must be checked in a proper disposable Docker environment, and independent learner transfer remains pending. The school has eleven paths; paths 4–11 have not yet been cleared. Preserve source quality and move through actual learner order rather than repeatedly reworking hypothetical corner cases.
+
+**Latest branch head:** matching CI / scripted browser traversal requires checking the final code-and-documentation commit after changes; do not reuse earlier green checks for a newer head. Independent rendered-depth judgment, enterprise infrastructure and uncoached learner transfer are NOT VALIDATED.
+
 ## Completion rule
 
 Remediate all 11 paths at source with executable safe examples and failure cases, then advance to Cloud Engineer. Independently scored learner teach-back, visual manual review and production infrastructure are tracked separately; do not let them trigger endless new features within this school.
