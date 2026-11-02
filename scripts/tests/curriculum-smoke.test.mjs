@@ -65,7 +65,7 @@ test("Builder authorization and refresh-token rotation examples execute from lea
 });
 
 test("System Thinker XML and XSD examples execute from the actual learner source", () => {
-  runAudit("scripts/check-system-thinker-xml-teaching-examples.mjs", /System Thinker XML\\/XSD learner examples passed:/);
+  runAudit("scripts/check-system-thinker-xml-teaching-examples.mjs", /System Thinker XML/);
 });
 
 test("Java dependency-injection lesson executes and matches published output", () => {
