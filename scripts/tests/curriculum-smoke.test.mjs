@@ -72,6 +72,10 @@ test("System Thinker file handoff example demonstrates persisted replay evidence
   runAudit("scripts/check-system-thinker-file-handoff-teaching-example.mjs", /System Thinker file handoff learner example passed:/);
 });
 
+test("System Thinker Requirements school module has six linked worked cases and falsifiable acceptance artifacts", () => {
+  runAudit("scripts/check-system-thinker-requirements-running-case.mjs", /System Thinker Requirements running case passed:/);
+});
+
 test("System Thinker quality target and real loopback dependency failure run from published learner code", () => {
   runAudit("scripts/check-system-thinker-reasoning-teaching-examples.mjs", /System Thinker requirements and failure-mode learner examples passed:/);
 });
