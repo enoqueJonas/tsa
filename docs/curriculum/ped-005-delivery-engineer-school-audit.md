@@ -105,6 +105,35 @@ The published `ciDependencyPython` snippet is in `delivery-ci-dependency-worked.
 
 **Next learner-order path is 5 — Continuous Delivery and Deployment; paths 5–11 remain outstanding.** Do not call the school REMEDIATED or VALIDATED based on this partial pass. Matching-head automated workflow must be confirmed after these source/doc changes.
 
+## Paths 5–6 — continuing source-level audit (not closed)
+
+### Path 5 — Continuous Delivery and Deployment
+
+Read the ten original concept lessons in `delivery-continuous-delivery-deep.ts` and the authored four-activity deployment/rollback lab, with related practical contracts in `delivery-continuous-delivery-quality.ts`. Five thin-to-targeted lessons now have original-reading content in `delivery-cd-operational-depth.ts`: CI vs continuous delivery vs continuous deployment (explicit decision contract and timeline), environment management (schema/config/secret/data boundaries), deployment automation (precondition→rollout→client verification→recovery), release approvals (immutable candidate/risk ownership) and rolling deployments (actual replication, health gating, mixed-version message incompatibility). **No new nominal introductory wrapper was added; original IDs remain stable.**
+
+| Original authored lesson | Source disposition / evidence |
+| --- | --- |
+| CI vs Continuous Delivery vs Continuous Deployment | THIN → TARGETED: operational definitions, three distinct completion gates, classified transfer |
+| Environment Management | THIN → TARGETED: artifact versus environment inputs, schema mismatch and async topology limitations |
+| Deployment Automation | THIN → TARGETED: concrete admission/precondition/run/verify/recovery, digest mismatch BLOCK decision |
+| Release Approvals | THIN → TARGETED: evidence-bound approval, rejection and exception scope |
+| Database Migrations During Deployment | TARGETED, existing expand/backfill/contract and rollback safety material; real migration rehearsal unverified |
+| Rollback | RICH, already has worked schema-coexistence and three-role recovery case; retained |
+| Rolling Deployments | THIN → TARGETED: capacity/readiness/mixed-version and single-node deferral |
+| Blue-Green Deployments | RICH, existing traffic-switch and shared-data rollback limitations; retained |
+| Canary Deployment Concepts | TARGETED, existing small-sample false-confidence case; no real production traffic claim |
+| Feature Flag Concepts | RICH, already describes activation failures, owners and cleanup; retained |
+
+**Not run:** GitLab deployment to a disposable Rocky/Compose environment, real registry pull, managed approval, real schema migration or rollback. These are environment-specific and not justified by source-only checks. The lesson source is more complete, but the full practical recovery contract and real learner transfer remain unverified.
+
+### Path 6 — Configuration Management
+
+Direct source `delivery-configuration-management-deep.ts` has six authored readings plus a substantial Ansible lab, and includes drift, desired state, Ansible fundamentals, inventory, playbooks and roles. A **demonstrated prerequisite-order defect** was found: the first Ansible Fundamentals code block invoked `ansible -i inventory.ini steward_api` before the following Inventories lesson defined any usable `inventory.ini` or required SSH identity. The first reading now supplies a self-contained disposable **localhost inventory** and expected `ansible.builtin.ping` result (`pong`, not ICMP), contrasts a no-matched-host case, then explicitly labels the original remote host commands as a preview until the next lesson. It also clarifies package presence versus cache refresh and that idempotency requires observed changed-state evidence.
+
+Source disposition: Configuration Drift **TARGETED** (diagnosis scenarios but no live repair); Desired State and Idempotency **TARGETED** (correct mechanism, real convergence not run); Ansible Fundamentals **THIN → TARGETED** (prerequisite corrected); Inventories **TARGETED** (clear topology, authorized host mapping needed); Playbooks **TARGETED** (correct state/handler examples, live execution not run); Roles Concepts **THIN** (structure taught but from-zero role creation, handler wiring and failure are still too compressed). Existing full multi-host lab remains **UNVERIFIED** without authorized Ansible nodes. Do not count an Ansible syntax example as a successful convergence proof.
+
+**Remaining school sequence:** finish any required concrete Configuration Management source gaps, then assess Path 7 Artifact/Dependency/Supply Chain, 8 Release Engineering, 9 Production Schema Evolution, 10 CI Platform Migration and 11 Milestone in order. Uncoached learner validation stays separate from this audit; do not close #325 or mark this school VALIDATED.
+
 ## Completion rule
 
 Remediate all 11 paths at source with executable safe examples and failure cases, then advance to Cloud Engineer. Independently scored learner teach-back, visual manual review and production infrastructure are tracked separately; do not let them trigger endless new features within this school.
