@@ -31,9 +31,9 @@ const practices: Record<string, PracticalContent> = {
         type: "practical",
         objective: "Design and verify the smallest useful subnet structure for the Steward homelab without creating complexity for its own sake.",
         scenario: "You want enough address structure to support future management and service boundaries, but unnecessary subnetting would make the lab harder to operate.",
-        instructions: ["Calculate the current Steward subnet from its address/prefix.", "Confirm the gateway belongs to the expected local network.", "Identify the DHCP range before proposing static addresses.", "Design one simple management/service separation option and explain what new routing requirement it creates.", "Reject the design if the boundary does not yet solve a real problem."],
+        instructions: ["Calculate the current Steward subnet from its address/prefix.", "Confirm the gateway belongs to the expected local network.", "Identify the DHCP range before proposing static addresses.", "Execute the published 192.168.50.20/26 versus 192.168.50.70/26 example, then deliberately repeat the calculation with a mistaken /24 and explain how the reply neighbor lookup changes.", "Independently choose a different /27 or /28 subnet and two addresses, predict the local versus routed decision before using Python ipaddress to verify it.", "Design one simple management/service separation option and explain what new routing requirement it creates.", "Reject the design if the boundary does not yet solve a real problem."],
         deliverables: ["Current subnet calculation", "Address-allocation plan", "Boundary decision"],
-        completionCriteria: ["CIDR is used to reason about reachability.", "Static addressing avoids DHCP conflicts.", "Any extra subnet has a stated operational purpose."],
+        completionCriteria: ["CIDR is used to reason about reachability and an incorrect mask is diagnosed with a concrete next-hop consequence.", "The learner solves a new /27 or /28 membership question without copying the worked /26 answers.", "Static addressing avoids DHCP conflicts.", "Any extra subnet has a stated operational purpose."],
     },
     "ARP": {
         type: "practical",
