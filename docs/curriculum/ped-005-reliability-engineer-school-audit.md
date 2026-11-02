@@ -54,6 +54,11 @@ The official Graylog [GELF 1.1 specification](https://go2docs.graylog.org/curren
 
 The source-audit continuation added `reliability-sli-metrics-worked.ts` to the actual Service Level Engineering and Metrics original readings (original IDs unchanged). Four SLI teaching contexts explain eligible/good event sets, missing denominators, asynchronous lifecycle completion, allowed error budget, multi-window alerts and low traffic; three Metrics teaching contexts explain counter-reset `rate()`, valid denominator and label identity, classic cumulative histogram buckets and empty Prometheus vectors. The exact local Python event-population, request budget, histogram and PromQL printing examples are exercised by `scripts/check-reliability-sli-metrics-worked.mjs` in CI. These are **synthetic/local source checks**, not a real Prometheus scrape, running Steward SLI or Graylog query. Matching-head CI and independent learner transfer remain required.
 
+
+### Tracing handoff and missing-context source proof
+
+The original `reliability-distributed-tracing-implementation-deep.ts` reading now includes `reliability-tracing-propagation-worked.ts`, a W3C `traceparent` field explanation and standard-library Python positive synthetic message propagation / missing-header negative case. `scripts/check-reliability-tracing-propagation.mjs` executes the **exact published source snippet** in CI. This demonstrates correct local ID syntax and a modeled header handoff, **not** running RabbitMQ propagation, OpenTelemetry SDK export, Tempo indexing, sampling or real span retrieval. Those still require the learner-owned environment, rendered review and independent transfer validation.
+
 ## Remaining source and evidence gates
 
 - [x] Inventory all **16 paths** and remove synthetic wrappers; add genuine first-principles teaching for the two originally practice-only paths; remediate original logging and observability source gaps. Independent module teach-back remains open.
