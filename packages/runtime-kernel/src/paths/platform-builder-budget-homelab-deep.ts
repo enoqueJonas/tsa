@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import {budgetHomelabWorkedSections} from "./platform-builder-budget-homelab-worked";
 
 const rockyLinux: LearningResource = { title: "Rocky Linux documentation", url: "https://docs.rockylinux.org/" };
 const proxmox: LearningResource = { title: "Proxmox VE documentation", url: "https://pve.proxmox.com/pve-docs/" };
@@ -8,7 +9,7 @@ const nginx: LearningResource = { title: "NGINX documentation", url: "https://ng
 
 function blocks(title: string, intro: string, sections: Array<{ heading: string; body: string; list?: string[]; code?: { language: string; code: string } }>, resources: LearningResource[] = [rockyLinux]): LessonBlock[] {
     const result: LessonBlock[] = [{ type: "paragraph", text: intro }];
-    for (const section of sections) {
+    for (const section of [...sections, ...(budgetHomelabWorkedSections[title] ?? [])]) {
         const id = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
         result.push({ type: "heading", id, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
         if (section.list) result.push({ type: "list", items: section.list });
