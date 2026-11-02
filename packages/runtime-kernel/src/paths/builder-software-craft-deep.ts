@@ -260,15 +260,68 @@ export const softwareCraftDeepLessons: Lesson[] = [
     ),
     lesson(
         "Performance Awareness",
-        "Performance awareness means understanding where work happens and measuring important paths before optimization. It is not premature micro-tuning or treating every millisecond as equally valuable.",
+        "Performance awareness starts with a measurable request and an explicit definition of success. It joins the earlier SQL/ORM lessons to Software Craft by asking whether a change improves a user-visible outcome enough to justify its added complexity, without compromising the Steward authorization or production-readiness rules.",
         [
-            { title: "Start with workload and evidence", paragraphs: ["Ask what users do, how much data exists, which operations are frequent, and what latency is acceptable. Previous Builder work already introduced query plans and N+1 behavior; Software Craft connects that evidence to code-review decisions.", "Optimization creates complexity. A faster implementation that is harder to reason about may be a poor trade unless the measured bottleneck matters."] },
-            { title: "Watch boundaries", paragraphs: ["Database round trips, unbounded list endpoints, serialization volume and repeated external calls often dominate application code. Measure request behavior, inspect queries, and keep pagination and indexes tied to actual access patterns."] },
+                {
+                        "title": "A performance claim needs a request, population and threshold",
+                        "paragraphs": [
+                                "'The API feels slow' is not a requirement. Write one testable objective: e.g., GET /services for 100 authorized Services should meet a specified p95 response latency and return a bounded response size under a declared request rate. Name the dataset, concurrency, authorization scope, response fields, hardware and network. A database query plan measures server execution; a user-visible HTTP request also includes network, queueing, authentication, serializers and rendering. Do not confuse these timing boundaries.",
+                                "Latency samples vary. The median (p50) describes a typical request; p95 highlights slower requests. A 1ms improvement in an isolated local query is not automatically valuable if authentication or remote network dominates the real response. Record enough observations to compare distributions and avoid overstating the precision of small samples."
+                        ]
+                },
+                {
+                        "title": "Run a deterministic percentile calculation, then interpret its limits",
+                        "paragraphs": [
+                                "This code teaches the nearest-rank percentile definition with a deliberately synthetic sample. Its output is predictable and can be executed without an API, but it is NOT evidence that Steward has a 400ms p95. A real performance study must collect latency from actual requests under controlled load. Different tools can use interpolated percentile definitions, so document the calculation and sample size when comparing reports."
+                        ],
+                        "code": {
+                                "language": "python",
+                                "caption": "Performance Awareness — executable p50/p95 with a slow-tail negative case",
+                                "code": "import math\n\ndef percentile_nearest_rank(values, fraction):\n    if not values or not (0 < fraction <= 1):\n        raise ValueError(\"nonempty samples and fraction in (0,1] required\")\n    ordered = sorted(values)\n    return ordered[math.ceil(len(ordered) * fraction) - 1]\n\nnormal = [80, 85, 90, 90, 92, 95, 95, 97, 98, 100,\n          100, 101, 102, 103, 105, 107, 109, 111, 115, 120]\nslow_tail = normal[:-2] + [320, 400]\nassert percentile_nearest_rank(normal, 0.50) == 100\nassert percentile_nearest_rank(normal, 0.95) == 115\nassert percentile_nearest_rank(slow_tail, 0.50) == 100\nassert percentile_nearest_rank(slow_tail, 0.95) == 320\nprint(\"synthetic p50 unchanged at 100ms; p95 grows from 115ms to 320ms\")"
+                        }
+                },
+                {
+                        "title": "Trace where the request actually spends work",
+                        "paragraphs": [
+                                "For a Steward Service list, mark sequential boundaries: HTTP connection and authentication, scoped queryset construction, database server work/round trips, Python model materialization, serializer representation and network output. An N+1 relationship access can dominate round trips, while unbounded fields can dominate payload size. A caching layer could reduce one workload but introduce stale authorization or lifecycle data. Measure before proposing Redis or indexes. The earlier ORM N+1 lab proved 5 versus 1 database statements: that result is a query-count observation, not itself an HTTP latency claim.",
+                                "A robust assessment includes negative path measurements as well: cross-Team filtering must happen before pagination and caching. An apparently fast endpoint that leaks unauthorized records is not a performance success. A cache keyed only by page number instead of authenticated Team may be a critical access-control bug. Security and correctness remain invariants, never optimization knobs."
+                        ]
+                },
+                {
+                        "title": "Choose one intervention and preserve a controlled baseline",
+                        "paragraphs": [
+                                "First reproduce the symptom with stable data shape and load. If the trace shows N+1, try select_related for a single FK or prefetch_related for a collection; if the plan shows a costly scan over a selective field, evaluate a justified index; if serialization emits huge unused values, constrain output. Change one factor at a time, remeasure warm and cold behavior where relevant and record variance, query counts, row counts and payload size. An index may improve reads but slow writes and consume storage. A faster local implementation might be a worse operational choice after maintenance cost is included.",
+                                "When measurements are inconclusive, do not force an optimization to complete an exercise. A correct **no-change** decision should state the observed data, expected impact of the proposed fix and the trigger for revisiting. An engineering review can reward restraint."
+                        ]
+                },
+                {
+                        "title": "An independent test requires a different dataset",
+                        "paragraphs": [
+                                "Build a small performance note for GET /services on a real Django/PostgreSQL lab: seed 5 and 150 authorized Services, measure query count and HTTP response sizes for a fixed page limit, then explain which metric should remain bounded. Use Django CaptureQueriesContext to identify relation-loading work, and a separate HTTP client for full response time. Show why pagination cannot be replaced with one huge prefetch. Retest with a different Team identity to ensure the measured endpoint did not skip authorization checks.",
+                                "Submit a table with workload, baseline, change/no-change, observed result, limitations and revisit trigger. The deeper System Thinker school will introduce distributed performance effects; Builder must first be able to explain the cost of its own application/database boundaries."
+                        ]
+                }
         ],
         "Investigate one Steward endpoint for performance risk without speculative optimization.",
-        ["Choose a realistic endpoint and dataset size.", "Record baseline query count and response timing or another relevant measure.", "Inspect the dominant work and form a hypothesis.", "Make one justified improvement only if evidence supports it.", "Compare before/after results and document the complexity cost."],
-        ["What should happen before optimization?", "Why can optimization reduce maintainability?", "Which boundaries commonly dominate API performance?"],
-        [twelveFactor],
+        [
+                "Choose a realistic authorized Steward endpoint, dataset sizes, request rate and explicit metric/threshold.",
+                "Run the published synthetic percentile example; explain why it is not evidence of a real API p95.",
+                "Capture baseline query counts and response timing on an actual disposable Django/PostgreSQL endpoint; distinguish database and HTTP timing.",
+                "Identify the measured dominant work and make one bounded change only if evidence supports it.",
+                "Run a positive and cross-Team negative request after the change; verify authorization and pagination remain correct.",
+                "Compare before/after results with sample size, variance and complexity cost; record a justified no-change decision when appropriate."
+        ],
+        [
+                "How do database EXPLAIN timings differ from end-to-end API latency?",
+                "Why can the median stay stable while p95 deteriorates?",
+                "Why might a cache or extra index damage correctness or write throughput?",
+                "Which evidence would support a decision not to optimize?"
+        ],
+        [
+            { title: "Django QuerySet API", url: "https://docs.djangoproject.com/en/5.2/ref/models/querysets/", kind: "documentation", purpose: "Learn relationship loading and query evaluation, not guess SQL counts." },
+            { title: "PostgreSQL EXPLAIN", url: "https://www.postgresql.org/docs/current/using-explain.html", kind: "reference", purpose: "Interpret actual-versus-estimated database execution time." },
+            twelveFactor,
+        ],
     ),
     {
         id: "software-craft-lab-refine-steward-api-for-review",
