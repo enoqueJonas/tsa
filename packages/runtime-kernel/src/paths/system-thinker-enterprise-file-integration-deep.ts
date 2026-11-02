@@ -5,6 +5,7 @@ import {ftpLoopbackWorkedSections} from "./system-thinker-ftp-worked";
 import {sftpWorkedSections,sftpWorkedResources} from "./system-thinker-sftp-worked";
 import {enterpriseBridgeBySpec,enterpriseBridgeReferences} from "./system-thinker-enterprise-authority-bridge";
 import {realStewardBatchSections,realStewardBatchResources} from "./system-thinker-real-steward-batch-worked";
+import {concurrentStewardBatchSections,concurrentStewardBatchReferences} from "./system-thinker-concurrent-batch-worked";
 
 const rfc959: LearningResource = { title: "RFC 959 — File Transfer Protocol", url: "https://www.rfc-editor.org/rfc/rfc959" };
 const opensshSftp: LearningResource = { title: "OpenSSH documentation", url: "https://www.openssh.com/manual.html" };
@@ -254,8 +255,52 @@ const stewardBatchDomainSpec: Spec = {
     resources: realStewardBatchResources,
 };
 
+// The first real-domain import lesson establishes transactional authority.
+// This separate follow-up tests a new failure dimension: two physical PG workers.
+const stewardBatchConcurrencySpec: Spec = {
+    id: "steward-batch-concurrency",
+    title: "Concurrent Batch Importers: Claims, Locks and Stale Owners",
+    intro: "An idempotency key is not a distributed mutex. A test that replays the same file sequentially is necessary but cannot prove two workers racing over an absent receipt, nor can it prevent distinct deliveries from overwriting one another. This separate lesson demonstrates both races with actual independent PostgreSQL connections.",
+    sections: concurrentStewardBatchSections,
+    practiceTitle: "Lab: Diagnose and Repair Concurrent PostgreSQL Delivery Claims",
+    scenario: "Two scheduled batch workers accidentally see the same completed file. A legacy consumer only selects an absent delivery record with FOR UPDATE; a different incoming delivery targets the same Service but assumes its previously recorded owner. Diagnose the unhandled unique-key failure and last-write-wins risk using real transaction traces.",
+    instructions: [
+        "Finish the previous real Builder v1 CSV owner-import lesson. Predict, in writing, what an empty SELECT FOR UPDATE locks when neither worker has yet inserted the receipt.",
+        "Reconstruct the temporary Django/PG 17 exercise and run the whole published two-worker Python program, not two sequential invocations. Capture distinct pg_backend_pid values and all six checked output lines.",
+        "Explain the negative-control race: two workers independently observe an absent row; one raw INSERT succeeds and the other gets an integrity failure. Explain why a uniqueness exception is not an acceptable silent replay protocol.",
+        "Explain how transactional INSERT ... ON CONFLICT DO NOTHING RETURNING and a new post-conflict SELECT classify same ID / same bytes as duplicate and same ID / changed bytes as conflict without repeating effects.",
+        "Run two different delivery IDs against the same original Service owner. Identify the Service row lock, the expected-owner precondition, the first committed owner and the second worker's rejected stale_owner result and rolled-back receipt.",
+        "Show why another actor cannot read an existing receipt result merely by guessing its delivery ID; distinguish this narrow fixture access check from enterprise IAM.",
+        "Independently devise a novel race or crash window that the sample did not execute: e.g., first claimant rolls back before committing while the second is waiting, or two multi-Service imports lock rows in opposite order. Record a safe predicted outcome, how to force the interleaving, and either actual test evidence or UNVERIFIED.",
+        "Compare keeping a database unique claim versus an external Redis lock. Reject an extra lock service unless a demonstrated invariant requires it, and state what the isolated single-database experiment cannot establish in production."
+    ],
+    deliverables: [
+        "Two physical PostgreSQL backend IDs and the forced unsafe SELECT race output",
+        "Same-ID duplicate and changed-content conflict with one durable effect in each pair",
+        "Different-ID owner conflict with an observed stale_owner and rolled-back receipt",
+        "Source-level transaction/lock diagram and exact evidence/caveat references",
+        "An original concurrency counterexample with observed test or explicit UNVERIFIED",
+        "Proposed operations response to deadlock, timeout or approved-actor revocation"
+    ],
+    criteria: [
+        "Two independent DB connections and deliberately concurrent workers are proven; sequential replay is not mislabeled a race test.",
+        "The absent-row SELECT FOR UPDATE negative control demonstrates a unique-key failure; the repaired path handles duplicate/conflicting claims without a second durable effect.",
+        "Two distinct deliveries with stale expected owner cannot both commit a different owner; a rejected transfer rolls back its claimed receipt.",
+        "The response identity boundary is enforced in the fixture, while real producer authentication, approved ownership policy and distributed effects are explicitly unverified.",
+        "Learner explains an independently devised concurrency failure, predicts an invariant and records the observed output or labels it UNVERIFIED. No human transfer PASS is inferred from green CI."
+    ],
+    questions: [
+        "Why can two transactions both observe a missing delivery record despite SELECT FOR UPDATE, and which actual database object prevents duplicate claims?",
+        "How does PostgreSQL READ COMMITTED help the loser inspect the committed receipt after ON CONFLICT DO NOTHING?",
+        "Why can two different delivery IDs corrupt owner history without a current-owner row lock and precondition?",
+        "Why is a Redis-based distributed lock not a substitute for PostgreSQL's transaction and unique constraints here?",
+        "Which two concurrent failure cases remain unverified even if all published output matches?"
+    ],
+    resources: concurrentStewardBatchReferences,
+};
+
 export const enterpriseFileIntegrationDeepLessons: Lesson[] = specs.flatMap((spec) =>
     spec.id === "batch-lifecycle"
-        ? [lesson(spec), lesson(stewardBatchDomainSpec)]
+        ? [lesson(spec), lesson(stewardBatchDomainSpec), lesson(stewardBatchConcurrencySpec)]
         : [lesson(spec)]
 );
