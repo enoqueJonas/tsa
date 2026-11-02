@@ -1,6 +1,7 @@
 // System Thinker: deep comparison that avoids outdated queue-versus-log slogans.
 // Sources are first-party Kafka ecosystem/RabbitMQ docs. The runnable Python
 // example is conceptual; no Kafka cluster is claimed to have been executed.
+import type {LearningResource} from "../activities/content";
 export const kafkaComparisonWorkedSections = [
   {
     "title": "The actual difference: routing state, storage state and consumer progress",
@@ -40,7 +41,7 @@ export const kafkaComparisonWorkedSections = [
     ]
   }
 ];
-export const kafkaComparisonResources = [
+export const kafkaComparisonResources: LearningResource[] = [
   {
     "title": "Apache Kafka — Consumer group and offset design",
     "url": "https://docs.confluent.io/kafka/design/consumer-design.html",
