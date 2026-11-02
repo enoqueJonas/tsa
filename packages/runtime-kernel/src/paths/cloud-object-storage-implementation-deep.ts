@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { objectStoreLocalProofBlocks } from "./cloud-observable-local-proofs";
 
 const awsS3: LearningResource = { title: "Amazon S3 User Guide", url: "https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html" };
 const minio: LearningResource = { title: "MinIO documentation", url: "https://min.io/docs/minio/linux/index.html" };
@@ -25,6 +26,7 @@ const blocks: LessonBlock[] = [
     { type: "heading", id: "integrity-and-etags", text: "Do not assume every ETag is a file checksum", level: 2 },
     { type: "paragraph", text: "An ETag can help identify an object representation, but its exact meaning depends on the service and upload method. In S3-style systems, multipart uploads and encryption can make the ETag differ from a simple MD5 of the file. If Steward requires end-to-end integrity verification, use a checksum mechanism whose semantics are explicitly supported by the chosen client and object store." },
     { type: "callout", tone: "steward", title: "Primary learning implementation", body: "Run one learner-owned S3-compatible implementation in the homelab, using MinIO or another compatible implementation that exposes the required S3 semantics. Provider S3 can be compared later; the exercise must not depend on buying a cloud account." },
+    ...objectStoreLocalProofBlocks,
     { type: "resources", title: "Continue learning", resources: [awsS3, minio] },
 ];
 
