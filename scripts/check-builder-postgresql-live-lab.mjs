@@ -153,6 +153,39 @@ try {
     await stage(B, "rr_changed", "BEGIN; UPDATE tsa_isolation_probe SET value=20 WHERE id=1; COMMIT;", 20);
     await stage(A, "rr_same_snapshot", "SELECT 1;", 10);
     await stage(A, "rr_after_end", "COMMIT;", 20);
+    // Two *live* sessions, each with a precheck, must not both commit
+    // the same unique Service.name. The second INSERT blocks while A is open.
+    const duplicate = "Concurrent Guard Demo";
+    const sqlInsert = endpoint =>
+      "INSERT INTO service (name, owning_team_id, endpoint) " +
+      "SELECT '" + duplicate + "', id, 'https://guard.example.invalid/" + endpoint +
+      "' FROM team WHERE name='Payments';";
+    await stage(A, "unique_start_a",
+      "BEGIN; SELECT count(*) FROM service WHERE name='" + duplicate + "';", 20);
+    await stage(B, "unique_start_b",
+      "BEGIN; SELECT count(*) FROM service WHERE name='" + duplicate + "';", 20);
+    assert.ok(A.out.split(/\\r?\\n/).includes("0"), "A must see no original demo Service");
+    assert.ok(B.out.split(/\\r?\\n/).includes("0"), "B must see no original demo Service");
+    await stage(A, "unique_insert_a", sqlInsert("a"), 20);
+    B.child.stdin.write("\\set VERBOSITY verbose\\n" + sqlInsert("b") + "\\n");
+    let sawBlockedWriter = false;
+    for (let i = 0; i < 150; i++) {
+      const waiting = run(["-c",
+        "SELECT count(*) FROM pg_stat_activity " +
+        "WHERE query LIKE '%Concurrent Guard Demo%' AND wait_event_type='Lock'"]).out;
+      if (waiting === "1") { sawBlockedWriter = true; break; }
+      await new Promise(resolve => setTimeout(resolve, 35));
+    }
+    assert.ok(sawBlockedWriter,
+      "Second unique-name writer was not observed waiting on the uncommitted first writer");
+    await stage(A, "unique_commit_a", "COMMIT;", 20);
+    for (let i = 0; i < 150 && !B.ended; i++) {
+      await new Promise(resolve => setTimeout(resolve, 35));
+    }
+    assert.ok(B.ended, "Second writer did not exit after A committed");
+    assert.match(B.err, /23505/);
+    assert.match(B.err, /duplicate key value violates unique constraint/);
+
   } finally {
     for (const session of sessions) {
       session.child.stdin.end("\\q\n");
@@ -160,6 +193,9 @@ try {
     }
   }
   assert.equal(run(["-c", "SELECT value FROM tsa_isolation_probe WHERE id=1"]).out, "20");
+  assert.equal(run(["-c", "SELECT count(*) FROM service WHERE name='Concurrent Guard Demo'"]).out, "1");
+  run(["-c", "DELETE FROM service WHERE name='Concurrent Guard Demo'"]);
+  assert.equal(run(["-c", "SELECT count(*) FROM service WHERE name='Concurrent Guard Demo'"]).out, "0");
   run(["-c", "DROP TABLE tsa_isolation_probe;"]);
   run(["-c", "BEGIN; DELETE FROM environment WHERE service_id IN (SELECT id FROM service WHERE name IN ('Txn Commit Demo','Txn Savepoint Demo')); DELETE FROM service WHERE name IN ('Txn Commit Demo','Txn Savepoint Demo'); COMMIT;"]);
   assert.equal(run(["-c", "SELECT count(*) FROM service"]).out, "5");
@@ -202,7 +238,12 @@ try {
   assert.match(perfPlan, /Execution Time/);
   const metadata = run(["-c", codeFromLesson("postgresql_inspect.sql — verify connection and visible Service relation")]).out;
   for (const table of ["team","service","environment","service_dependency"]) assert.ok(metadata.split(/\r?\n/).includes(table), `Cannot see ${table}`);
-  console.log(`Builder PostgreSQL live lab passed: first session/TEMP negative, 4 persisted tables, 20 published SQL examples, 5/6/4 join cardinalities, 2 rejected writes, 3 transaction scripts with savepoint failure, 2-session Read Committed/Repeatable Read, cross-table release-readiness detection and rollback proof; database=${process.env.PGDATABASE}.`);
+  const migration = run(["-c",
+    codeFromLesson("migration_expand_contract.sql — populated-data backfill with reversible DDL")]).out;
+  const stageCounts = migration.split(/\\r?\\n/).filter(v => /^\\d+$/.test(v));
+  assert.deepEqual(stageCounts, ["5", "0", "5", "0"], "Backfill must retain five rows and leave no new column after rollback");
+  assert.equal(run(["-c", "SELECT count(*) FROM information_schema.columns WHERE table_name='service' AND column_name='technical_owner'"]).out, "0");
+  console.log(`Builder PostgreSQL live lab passed: first session/TEMP negative, 4 persisted tables, 20 published SQL examples, 5/6/4 join cardinalities, 2 rejected writes, 3 transaction scripts with savepoint failure, 2-session Read Committed/Repeatable Read, cross-table release-readiness detection and rollback proof, populated migration backfill and two-session unique-name race; database=${process.env.PGDATABASE}.`);
 
 } finally {
   fs.rmSync(root, { recursive: true, force: true });
