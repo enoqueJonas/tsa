@@ -88,6 +88,10 @@ test("System Thinker message ordering source code prevents stale and duplicate r
   runAudit("scripts/check-system-thinker-messaging-order-teaching-example.mjs", /System Thinker messaging order example passed:/);
 });
 
+test("System Thinker Kafka comparison teaches independent group offsets and replay, without pretending to run Kafka", () => {
+  runAudit("scripts/check-system-thinker-kafka-comparison-model.mjs", /System Thinker Kafka offset model passed:/);
+});
+
 test("Java dependency-injection lesson executes and matches published output", () => {
   runAudit("scripts/check-java-teaching-examples.mjs", /Java learner-example validation passed:/);
 });
