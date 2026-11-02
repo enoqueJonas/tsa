@@ -421,7 +421,7 @@ export const kubernetesFoundationsById: Record<string,K8sSection[]> = {
       "code": {
         "language": "bash",
         "caption": "OpenShift-only diagnostics; no changes or privilege escalation",
-        "code": "oc get routes -n <approved-project>\noc describe route tsa-web -n <approved-project>\noc get services,endpointslices,pods -n <approved-project>\noc describe pod <training-pod> -n <approved-project>\n# Cluster administrators only, when authorized: oc get scc\n# Replace placeholders with explicitly approved project and Pod; no values are presumed."
+        "code": ": \"${OPENSHIFT_PROJECT:?Set an approved OpenShift project name}\"\n: \"${OPENSHIFT_POD:?Set an existing disposable Pod name in that project}\"\noc get routes -n \"$OPENSHIFT_PROJECT\"\noc describe route tsa-web -n \"$OPENSHIFT_PROJECT\"\noc get services,endpointslices,pods -n \"$OPENSHIFT_PROJECT\"\noc describe pod \"$OPENSHIFT_POD\" -n \"$OPENSHIFT_PROJECT\"\n# Cluster administrators only, when authorized: oc get scc\n# These commands are read-only but require a real authorized OpenShift context."
       }
     },
     {
