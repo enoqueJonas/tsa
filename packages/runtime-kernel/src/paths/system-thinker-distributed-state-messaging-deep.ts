@@ -1,5 +1,6 @@
 import type { Lesson } from "./lesson";
 import { distributedStateStagedLabs } from "./system-thinker-distributed-staged-labs";
+import { messagingSemanticsWorked, messagingSemanticsReferences } from "./system-thinker-messaging-semantics-worked";
 import type { LearningResource, LessonBlock } from "../activities/content";
 
 const redisDocs: LearningResource = { title: "Redis Documentation", url: "https://redis.io/docs/latest/" };
@@ -35,7 +36,7 @@ function richLesson(
         { type: "list", items: outcomes },
     ];
 
-    for (const section of sections) {
+    for (const section of [...sections, ...(messagingSemanticsWorked[title] ?? [])]) {
         blocks.push({ type: "heading", id: slug(section.title), text: section.title, level: 2 });
         for (const text of section.paragraphs) blocks.push({ type: "paragraph", text });
         if (section.code) {
@@ -51,7 +52,7 @@ function richLesson(
         title: "Steward connection",
         body: "TSA deliberately evolves Steward until Redis and RabbitMQ solve real measured product problems. The learner must prove those prerequisites before implementation; the technologies are required outcomes of earned pressure, not badges of architectural maturity.",
     });
-    blocks.push({ type: "resources", title: "Required and supporting reading", resources });
+    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...(messagingSemanticsWorked[title] ? messagingSemanticsReferences : [])] });
 
     return {
         id,
@@ -208,7 +209,7 @@ export const distributedStateAndMessagingDeepLessons: Lesson[] = [
         ["Explain eventual consistency through observable Steward behavior.", "Identify where ordering matters and where it does not.", "Avoid assuming global message order.", "Design consumers that reject or handle stale events deliberately."],
         [
             { title: "Intermediate state becomes part of the user experience", paragraphs: ["If Steward commits lifecycle='retired' and an audit/search projection updates later, two views may temporarily disagree. The design must define which view is authoritative and how long inconsistency may reasonably persist.", "Eventual consistency is not an excuse for undefined behavior. It requires a convergence story, observability and a product decision that delayed agreement is acceptable."] },
-            { title: "Ordering is scoped", paragraphs: ["Two events about the same Service may need causal ordering while events for unrelated services may not. Broker topology, concurrent consumers, retries and requeue can all affect observed order.", "Consumers can carry aggregate version or occurred_at metadata and reject stale updates where appropriate. Do not invent a global ordering requirement unless the domain truly needs one."], code: { language: "text", code: "Service 42 version 7: lifecycle → deprecated\nService 42 version 8: lifecycle → retired\n\nProjection receives v8 then v7\n  → without version check: state regresses\n  → with version check: ignore stale v7", caption: "Ordering controls should follow the domain scope that needs them." } },
+            { title: "Ordering is scoped", paragraphs: ["Two events about the same Service may need causal ordering while events for unrelated services may not. Broker topology, concurrent consumers, retries and requeue can all affect observed order.", "Consumers can carry aggregate version or occurred_at metadata and reject stale updates where appropriate. Do not invent a global ordering requirement unless the domain truly needs one."], code: { language: "text", code: "Service 42 version 7: lifecycle → production\nService 42 version 8: lifecycle → retired\n\nProjection receives v8 then v7\n  → without version check: state regresses\n  → with version check: ignore stale v7", caption: "Ordering controls should follow the domain scope that needs them." } },
         ],
         {
             objective: "Model one temporary inconsistency and one out-of-order event for Steward, then define safe convergence behavior.",
