@@ -80,4 +80,94 @@ const directoryFoundations = practicalLesson(
     ],
 );
 
-export const enterpriseFileAndDirectoryServicesDeepLessons: Lesson[] = [fileServices, directoryFoundations];
+
+// PED-005: original lesson identities survive, but the two mega-labs are split
+// so an NFS or LDAP novice does not have to implement two protocols at once.
+function narrowFirstProtocolLesson(lesson: Lesson, excluded: RegExp, title: string): Lesson {
+    return {
+        ...lesson,
+        title,
+        activities: lesson.activities.map((activity) => {
+            if (activity.content.type !== "practical") return activity;
+            return {
+                ...activity,
+                content: {
+                    ...activity.content,
+                    instructions: activity.content.instructions.filter((line) => !excluded.test(line)),
+                    deliverables: activity.content.deliverables.filter((line) => !excluded.test(line)),
+                    completionCriteria: activity.content.completionCriteria.filter((line) => !excluded.test(line)),
+                },
+            };
+        }),
+    };
+}
+
+const nfsFirst = narrowFirstProtocolLesson(fileServices, /Samba|SMB|which protocol remains/, "Enterprise File Services: NFS and Atomic Handoff");
+const ldapFirst = narrowFirstProtocolLesson(directoryFoundations, /OpenLDAP|both.*directories|existing AD DS and bounded/, "LDAP Directory Protocol: Bind, Search and TLS");
+
+const smbInterop = practicalLesson(
+    "platform-enterprise-smb-interoperability",
+    "Samba/SMB: Cross-Client Authorization and Recovery",
+    "SMB and NFS are distinct network file protocols; a successful mount is not evidence that a specific client identity can read or write the intended file. Learn NFS first, then compare SMB's authenticated session, share-level permission and backing filesystem access.",
+    "Prove a bounded SMB share's permitted and denied operations separately from the already operational NFS exchange.",
+    "A synthetic Windows client must consume a Steward-generated report. Avoid making a second permanent source of truth without a justified cross-platform requirement.",
+    [
+        "Reuse the NFS exchange evidence, then create a synthetic Samba share on a disposable server, documenting its owner and client boundary.",
+        "Identify an allowed and denied client identity; map share-level authorization separately from backing filesystem permissions.",
+        "Read and write a disposable report from a separate authorized client; repeat a denied write and denied identity using actual client evidence.",
+        "Exercise temporary-to-final-name publication in a single share and identify where replay still needs a separate ledger or checksum.",
+        "Interrupt the SMB service in an isolated environment; recover and prove a client request again rather than relying on server status.",
+        "Compare identity mapping, permissions, interoperability and operational cost against NFS, then retire the comparison share or justify its bounded ownership."
+    ],
+    ["Synthetic share/ACL map", "Allowed and denied client operations", "Publish and failure/recovery evidence", "NFS-versus-SMB decision"],
+    ["Share ACL, session identity and backing filesystem permissions are not conflated.",
+     "Allowed and denied behavior is tested from a second client with synthetic data.",
+     "Publication is not mislabeled exactly-once processing.",
+     "Recovery is proven from a file operation and the duplicate share is not retained without justification."],
+    [sambaDocs,nfsDocs],
+    [
+        {title:"A permitted SMB session can still be denied by the file",paragraphs:[
+            "SMB authenticates a session principal and checks share-level policy, then the server applies backing filesystem rights. A session can connect and list the share but fail a write because file or directory permissions deny it. By contrast, a simple NFS setup may depend on export policy and mapped numeric UID/GID. A shared username string does not establish identical authority across those implementations.",
+            "Before changing an ACL, identify the actual authenticated identity, requested operation, share permissions and filesystem owner/mode/ACL. A wide-open guest share or chmod 777 may hide the real cause while expanding access. Test an allowed read, a denied write and a wrong principal independently in a disposable share."
+        ]},
+        {title:"Service health is not client recovery",paragraphs:[
+            "A healthy Samba daemon does not prove a client can authenticate, route to the host, enter the share or read the specific report. Check the client operation after an outage and preserve the original file/checksum. A temporary publication name renamed on the same share is a useful readiness boundary but cannot ensure one-time downstream business processing.",
+            "Decide whether adding SMB actually solves an interoperability constraint. An extra network protocol can increase credential, patching and backup burden. Keep NFS as the primary Linux exchange until a concrete client requirement supports an additional SMB boundary."
+        ]}
+    ]
+);
+
+const ldapCompare = practicalLesson(
+    "platform-enterprise-openldap-ad-interoperability",
+    "OpenLDAP versus AD: Schema and Federation",
+    "LDAP bind/search is a protocol shared by directories that can still differ in DN tree, schema, group representation and source-of-truth policy. Master LDAP basics in the previous lesson before creating another directory.",
+    "Implement a synthetic OpenLDAP comparison and show why directory bind success does not prove trustworthy group-to-role mapping.",
+    "A synthetic AD DS domain is already available in the prior Windows module. Compare it with OpenLDAP without creating two live workforce authorities.",
+    [
+        "Document the existing synthetic AD authority; allocate a different, test-only namespace for an OpenLDAP comparison.",
+        "Deploy bounded OpenLDAP on a disposable host with recovery/retirement plan and synthetic LDIF entries, users and groups.",
+        "Compare DN/RDN, entry object classes, search base/scope, group and member attributes with AD examples.",
+        "Bind with a minimally authorized service account using certificate-validated TLS; prove an allowed and denied search.",
+        "Exercise invalid credential, wrong base DN and untrusted certificate separately; record each result without disabling TLS verification.",
+        "Build a client mapping for authoritative identifier, login, group membership and disabled user; determine whether one schema wrongly grants a Steward role.",
+        "Decide the sole authoritative workforce directory for the scenario and shut down or isolate the comparison server."
+    ],
+    ["Synthetic directory/LDIF evidence", "AD/OpenLDAP mapping", "Allowed and denied LDAP queries", "TLS and schema negative tests", "Authority decision"],
+    ["A successful bind is not equated with permitted search or application administrator rights.",
+     "Group and disabled-user semantics are mapped explicitly, not guessed from equal display names.",
+     "Broken TLS trust is distinct from invalid credentials and cannot be repaired by removing certificate checks.",
+     "The comparison remains synthetic and does not add another production identity authority."],
+    [openLdapAdmin,keycloakFederation],
+    [
+        {title:"Same LDAP verbs, different identity and group semantics",paragraphs:[
+            "An LDAP DN locates an entry within a directory tree, but application federation often needs a stable identifier and a group membership representation. AD may publish groups with member and memberOf links, while selected OpenLDAP schemas may represent membership with memberUid or member. An LDAP client that assumes all servers have identical attributes can silently lose authorization groups or interpret a missing field as a privilege.",
+            "Capture a mapping for base DN, identifier, login, group attribute and disabled-user rule for each provider. Never infer that a successful bind means a user should be an application administrator. Preserve one nominated source of truth instead of merging unrelated directories by login name."
+        ]},
+        {title:"Separate trust failure, search denial and role denial",paragraphs:[
+            "The client first establishes a trusted TLS connection, then authenticates its bind identity and performs a search limited by directory ACLs. Failure at one boundary does not imply failure in the others. A valid read-only bind may still be denied sensitive attributes or subtrees; the resulting user may still lack an application role.",
+            "Diagnose wrong server certificate, invalid bind secret, wrong base/filter and intentionally unauthorized group independently. Keep trusted certificates enforced, use synthetic accounts, and verify a negative app authorization outcome even when directory authentication succeeded."
+        ]}
+    ]
+);
+
+export const enterpriseFileAndDirectoryServicesDeepLessons: Lesson[] = [nfsFirst, smbInterop, ldapFirst, ldapCompare];
