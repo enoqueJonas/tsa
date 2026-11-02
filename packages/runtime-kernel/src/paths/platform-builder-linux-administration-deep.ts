@@ -1,11 +1,11 @@
 import type { Lesson } from "./lesson";
 import type { LearningResource, LessonBlock } from "../activities/content";
 
-const ubuntuServerGuide: LearningResource = { title: "Rocky Linux documentation", url: "https://docs.rockylinux.org/" };
+const rockyServerGuide: LearningResource = { title: "Rocky Linux documentation", url: "https://docs.rockylinux.org/" };
 const systemdMan: LearningResource = { title: "systemd.service manual", url: "https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html" };
 const journalctlMan: LearningResource = { title: "journalctl manual", url: "https://www.freedesktop.org/software/systemd/man/latest/journalctl.html" };
 const bashManual: LearningResource = { title: "GNU Bash manual", url: "https://www.gnu.org/software/bash/manual/bash.html" };
-const aptGuide: LearningResource = { title: "DNF documentation", url: "https://dnf.readthedocs.io/en/latest/" };
+const dnfGuide: LearningResource = { title: "DNF documentation", url: "https://dnf.readthedocs.io/en/latest/" };
 const sshDocs: LearningResource = { title: "OpenSSH manual", url: "https://man.openbsd.org/ssh" };
 const fhs: LearningResource = { title: "Filesystem Hierarchy Standard", url: "https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html" };
 const cronMan: LearningResource = { title: "crontab(5) manual", url: "https://man7.org/linux/man-pages/man5/crontab.5.html" };
@@ -24,7 +24,8 @@ function richLesson(
     questions: string[],
     resources: LearningResource[],
 ): Lesson {
-    const id = `linux-administration-${slug(title)}`;
+    // Preserve a historical progress key when fixing the previously mislabeled Rocky Linux title.
+    const id = title === "Installing Rocky Linux" ? "linux-administration-installing-ubuntu-server" : `linux-administration-${slug(title)}`;
     const blocks: LessonBlock[] = [
         { type: "paragraph", text: introduction },
         { type: "heading", id: "learning-outcomes", text: "Learning outcomes", level: 2 },
@@ -56,7 +57,7 @@ function richLesson(
                 content: {
                     type: "practical",
                     objective,
-                    scenario: "Use the Ubuntu Server environment that will host Steward API. Capture evidence from the machine instead of relying on memorized commands.",
+                    scenario: "Use the Rocky Linux environment that will host Steward API. Capture evidence from the machine instead of relying on memorized commands.",
                     instructions,
                     deliverables: ["Command/configuration evidence", "Short operational explanation connected to Steward"],
                     completionCriteria: ["The result is demonstrated on the learner-managed server.", "The learner explains the effect of the change and the failure mode it prevents.", "Commands and configuration are reproducible."],
@@ -69,17 +70,17 @@ function richLesson(
 
 export const linuxAdministrationDeepLessons: Lesson[] = [
     richLesson(
-        "Installing Ubuntu Server",
+        "Installing Rocky Linux",
         "A production-like Linux host begins before the application is copied onto it. Installation choices establish the operating-system version, storage layout, administrator access and the baseline from which later configuration must be reproduced.",
-        ["Plan a minimal Ubuntu Server installation.", "Distinguish installation-time choices from later service configuration.", "Record enough baseline information to rebuild the host.", "Verify the system immediately after first boot."],
+        ["Plan a minimal Rocky Linux installation.", "Distinguish installation-time choices from later service configuration.", "Record enough baseline information to rebuild the host.", "Verify the system immediately after first boot."],
         [
-            { title: "Install for a purpose", paragraphs: ["The goal is not to click through an installer successfully; it is to create a predictable server for Steward. Prefer a supported Ubuntu Server release, minimal packages, a known hostname, deliberate storage choices and a non-root administrative account.", "A reproducible install record should capture OS release, hostname, storage layout, network identity and the initial administrator path."], code: { language: "bash", code: "hostnamectl\ncat /etc/os-release\nlsblk -f\nip addr", caption: "Verify the host you actually created." } },
+            { title: "Install for a purpose", paragraphs: ["The goal is not to click through an installer successfully; it is to create a predictable server for Steward. Prefer a supported Rocky Linux release, minimal packages, a known hostname, deliberate storage choices and a non-root administrative account.", "A reproducible install record should capture OS release, hostname, storage layout, network identity and the initial administrator path."], code: { language: "bash", code: "hostnamectl\ncat /etc/os-release\nlsblk -f\nip addr", caption: "Verify the host you actually created." } },
             { title: "Baseline before customization", paragraphs: ["Before adding application dependencies, capture the clean system state. This makes later drift visible and gives you a reference when troubleshooting package, networking or storage changes.", "The Platform Builder phase should produce a host you can explain and rebuild, not a one-off machine that only works because of forgotten manual steps."] },
         ],
-        "Install or prepare an Ubuntu Server host and produce a first-boot baseline for the future Steward service.",
+        "Install or prepare an Rocky Linux host and produce a first-boot baseline for the future Steward service.",
         ["Record OS version, hostname and kernel version.", "Record disks, partitions/filesystems and mounts.", "Record network addresses and default route.", "Confirm a non-root administrative account can use sudo.", "Write a short rebuild note containing the installation decisions that matter."],
         ["Why is a successful install not the same as a reproducible server?", "Which installation decisions affect later Steward operations?", "Why should baseline evidence be captured before heavy customization?"],
-        [ubuntuServerGuide],
+        [rockyServerGuide],
     ),
     richLesson(
         "Shell Navigation and Command Fluency",
@@ -119,7 +120,7 @@ export const linuxAdministrationDeepLessons: Lesson[] = [
         "Create or inspect a dedicated Steward service identity and document the minimum resources it should own or access.",
         ["Inspect your current user and groups.", "Create a non-login Steward service account in a safe environment if one does not exist.", "Identify directories/files that should be owned by the service account.", "Identify resources that should remain owned by root or another service.", "Explain why Steward should not normally run as root."],
         ["What is the operational difference between a human user and a service user?", "What problem do groups solve?", "How does a dedicated service identity reduce blast radius?"],
-        [ubuntuServerGuide],
+        [rockyServerGuide],
     ),
     richLesson(
         "Linux Permissions",
@@ -137,15 +138,15 @@ export const linuxAdministrationDeepLessons: Lesson[] = [
     richLesson(
         "Package Management",
         "Package management turns software installation into a tracked, dependency-aware system operation. A server should know what came from the distribution, what repository supplied it and how updates will be applied without losing control of change.",
-        ["Use apt to query, install, update and remove packages.", "Distinguish package indexes from installed packages.", "Inspect package provenance and version.", "Plan updates as controlled change."],
+        ["Use DNF/RPM tools to query, install, update and remove packages.", "Distinguish package indexes from installed packages.", "Inspect package provenance and version.", "Plan updates as controlled change."],
         [
-            { title: "Package state is managed state", paragraphs: ["apt coordinates repository metadata, dependencies and installed package versions. This is safer and more reproducible than downloading arbitrary binaries into system paths without tracking their origin.", "Before installing something, ask whether it is needed by Steward, the host, or only by the current investigation."], code: { language: "bash", code: "sudo apt update\napt policy postgresql\ndpkg -l | grep -E 'python|postgresql'\napt show <package>", caption: "Inspect availability and current state before installing." } },
+            { title: "Package state is managed state", paragraphs: ["DNF/RPM manages repository metadata, dependencies and installed package versions. This is safer and more reproducible than downloading arbitrary binaries into system paths without tracking their origin.", "Before installing something, ask whether it is needed by Steward, the host, or only by the current investigation."], code: { language: "bash", code: "sudo dnf check-update\ndnf info postgresql-server\nrpm -qa | grep -E 'python|postgresql'\ndnf info bash", caption: "Inspection only: dnf check-update exits 0 when current, 100 when updates are available (not failure), and 1 for an error. dnf info and rpm -qa report package state without upgrading anything; install/upgrade only in an approved VM exercise." } },
             { title: "Updates have consequences", paragraphs: ["Security and bug-fix updates are necessary, but they are still changes. Kernel, database or runtime updates can require service restarts or alter behavior.", "A mature workflow records what changed, verifies service health afterward and avoids conflating 'latest' with 'safe to apply blindly.'"] },
         ],
-        "Inventory the packages Steward depends on at OS level and install one required package using a documented, verifiable apt workflow.",
-        ["Run apt update and explain what it changes and does not change.", "Inspect the candidate version of one package.", "Install or verify one required package.", "Record its installed version and origin.", "Define how you would verify Steward after a package update."],
-        ["What is the difference between apt update and apt upgrade?", "Why is package provenance useful?", "Why should post-update verification be part of administration?"],
-        [aptGuide],
+        "Inventory the packages Steward depends on at OS level and install one required package using a documented, verifiable DNF/RPM workflow.",
+        ["Run dnf check-update and explain what it changes and does not change.", "Inspect the candidate version of one package.", "Install or verify one required package.", "Record its installed version and origin.", "Define how you would verify Steward after a package update."],
+        ["What is the difference between dnf check-update and dnf upgrade?", "Why is package provenance useful?", "Why should post-update verification be part of administration?"],
+        [dnfGuide],
     ),
     richLesson(
         "Processes and Signals",
@@ -159,7 +160,7 @@ export const linuxAdministrationDeepLessons: Lesson[] = [
         "Observe Steward's process tree and compare a graceful process stop with a forced termination in a controlled environment.",
         ["Capture the Steward process tree.", "Stop the service gracefully through its normal control path and observe exit behavior.", "In a safe test, force-kill a disposable process and compare the difference.", "Record logs or state that show graceful versus forced behavior.", "Explain why systemd should normally own service lifecycle instead of ad-hoc kill commands."],
         ["Why is SIGTERM preferable to SIGKILL?", "Why does the process tree matter?", "When is forced termination justified?"],
-        [ubuntuServerGuide],
+        [rockyServerGuide],
     ),
     richLesson(
         "systemd and Services",
@@ -174,11 +175,11 @@ export const linuxAdministrationDeepLessons: Lesson[] = [
         "Create or review a systemd service for Steward and prove boot/start/stop/restart behavior using both systemctl and an application-level health check.",
         ["Create a dedicated service unit in a safe environment.", "Reload systemd and start the service.", "Verify the configured user, PID and restart policy.", "Enable the service for boot if appropriate.", "Cause one controlled process failure and record whether systemd recovers it as configured."],
         ["What does systemd add beyond starting a process manually?", "Why is daemon-reload needed?", "Why is active status not enough to prove application health?"],
-        [systemdMan, ubuntuServerGuide],
+        [systemdMan, rockyServerGuide],
     ),
     richLesson(
         "Environment and Configuration",
-        "A service needs configuration that is explicit, protected and independent of an interactive shell. Environment variables are useful, but their source, ownership and exposure must be controlled.",
+        "A service needs configuration that is explicit, protected and independent of an interactive shell. Shell variables and systemd service environments differ, and the lab must not expose secret values in CLI output. Environment variables are useful, but their source, ownership and exposure must be controlled.",
         ["Separate code from environment-specific configuration.", "Understand process environments and inheritance.", "Use systemd EnvironmentFile or equivalent deliberately.", "Protect secrets from casual exposure."],
         [
             { title: "Interactive shell state is not deployment state", paragraphs: ["A variable exported in your SSH shell does not automatically exist when systemd starts Steward. Production-like services need configuration declared in a location the service manager can load consistently.", "Configuration should make environment differences visible without modifying application source code."], code: { language: "bash", code: "# Print names, never environment variable values\ncompgen -e | sort\nsystemctl show steward.service -p EnvironmentFiles -p User -p WorkingDirectory\n# On a disposable VM after the 'steward' service group exists:\nsudo install -d -m 0750 -o root -g steward /etc/steward\nsudo test -e /etc/steward/steward.env || sudo install -m 0640 -o root -g steward /dev/null /etc/steward/steward.env", caption: "Treat configuration files as controlled operational assets." } },
@@ -187,7 +188,7 @@ export const linuxAdministrationDeepLessons: Lesson[] = [
         "Move Steward's runtime configuration out of an interactive shell into a controlled service configuration path and verify it is loaded without exposing secrets.",
         ["List which settings are environment-specific.", "Create a protected configuration file owned appropriately.", "Configure systemd to load it.", "Restart Steward and verify behavior using non-secret evidence.", "Confirm the configuration file is not world-readable and is not committed to the repository."],
         ["Why does export in your shell not configure a systemd service reliably?", "What is configuration drift?", "Why should secrets not be proven by printing them?"],
-        [systemdMan, ubuntuServerGuide],
+        [systemdMan, rockyServerGuide],
     ),
     richLesson(
         "Logs and journalctl",
@@ -226,7 +227,7 @@ export const linuxAdministrationDeepLessons: Lesson[] = [
         "Map the storage backing important Steward and PostgreSQL paths and verify whether those mounts are persistent across reboot.",
         ["Record disks/filesystems with lsblk -f.", "Map important application/data paths with findmnt.", "Inspect /etc/fstab without changing it unless needed.", "Identify one path whose loss would be recoverable and one whose loss would threaten persistent data.", "Document how you would verify the mount after reboot before starting Steward."],
         ["What is the difference between a device and a mount point?", "Why are UUIDs often preferable in fstab?", "How can a missing mount appear as an application failure?"],
-        [ubuntuServerGuide, fhs],
+        [rockyServerGuide, fhs],
     ),
     richLesson(
         "SSH and Key Authentication",
@@ -239,7 +240,7 @@ export const linuxAdministrationDeepLessons: Lesson[] = [
         "Establish key-based SSH access to the Steward host and document a safe validation sequence before any authentication hardening.",
         ["Generate or identify a dedicated administrator key.", "Install the public key on the server.", "Prove a new key-authenticated session works.", "Inspect relevant SSH server configuration and listening socket.", "Write a lockout-safe sequence for disabling weaker authentication later."],
         ["Why does the server not need your private key?", "Why should you test a second SSH session before closing the first?", "What operational risk comes from hardening too aggressively?"],
-        [sshDocs, ubuntuServerGuide],
+        [sshDocs, rockyServerGuide],
     ),
     {
         id: "linux-administration-lab-operate-steward-api-as-a-linux-service",
@@ -254,11 +255,11 @@ export const linuxAdministrationDeepLessons: Lesson[] = [
                     body: "This lab integrates the Linux Administration module. Steward must run as a deliberate Linux service with controlled identity, paths, configuration, logs, startup behavior, remote administration and recoverable failure handling.",
                     blocks: [
                         { type: "heading", id: "required-evidence", text: "Required evidence", level: 2 },
-                        { type: "list", items: ["Ubuntu host baseline and package inventory", "Dedicated Steward service user and least-privilege filesystem ownership", "systemd service unit with explicit working directory, environment and restart behavior", "journalctl evidence for start, stop and one deliberate failure", "SSH key-based administrative access", "storage/mount evidence for important persistent paths", "one safe scheduled operational task"] },
+                        { type: "list", items: ["Rocky Linux host baseline and package inventory", "Dedicated Steward service user and least-privilege filesystem ownership", "systemd service unit with explicit working directory, environment and restart behavior", "journalctl evidence for start, stop and one deliberate failure", "SSH key-based administrative access", "storage/mount evidence for important persistent paths", "one safe scheduled operational task"] },
                         { type: "heading", id: "failure-experiment", text: "Failure experiment", level: 2 },
                         { type: "paragraph", text: "Introduce one realistic failure such as a bad path, missing permission, invalid environment value or killed process. Diagnose it from service status, journal evidence and filesystem/process inspection. Do not immediately fix the symptom; first explain the failure chain." },
                         { type: "callout", tone: "warning", title: "Protect the host", body: "Do not use destructive cleanup, delete unknown files or modify storage blindly. Preserve local work and keep SSH recovery access while testing service failures." },
-                        { type: "resources", title: "Reference material", resources: [ubuntuServerGuide, systemdMan, journalctlMan, sshDocs] },
+                        { type: "resources", title: "Reference material", resources: [rockyServerGuide, systemdMan, journalctlMan, sshDocs] },
                     ],
                 },
             },
@@ -268,10 +269,10 @@ export const linuxAdministrationDeepLessons: Lesson[] = [
                 estimatedMinutes: 180,
                 content: {
                     type: "practical",
-                    objective: "Install and operate Steward API and PostgreSQL on Ubuntu Server as managed services, then diagnose and recover one controlled failure using Linux evidence.",
-                    scenario: "The development laptop is no longer the runtime model. Treat the Ubuntu host as a small production-like server that another engineer should be able to understand and operate.",
+                    objective: "Install and operate Steward API and PostgreSQL on Rocky Linux as managed services, then diagnose and recover one controlled failure using Linux evidence.",
+                    scenario: "The development laptop is no longer the runtime model. Treat the Rocky Linux host as a small production-like server that another engineer should be able to understand and operate.",
                     instructions: [
-                        "Prepare the application and database dependencies on Ubuntu Server using tracked package/configuration steps.",
+                        "Prepare the application and database dependencies on Rocky Linux using tracked package/configuration steps.",
                         "Create a dedicated Steward service account and directory layout with least-privilege ownership.",
                         "Move runtime configuration into a protected server-side configuration path.",
                         "Create and enable a systemd unit for Steward.",
