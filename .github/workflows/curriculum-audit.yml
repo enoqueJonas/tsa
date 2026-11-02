@@ -267,6 +267,7 @@ jobs:
         run: |
           node scripts/check-builder-postgresql-live-lab.mjs
           node scripts/check-builder-django-live-lab.mjs
+          node scripts/check-delivery-schema-expansion.mjs
 
   learner-browser:
     runs-on: ubuntu-24.04
