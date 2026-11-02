@@ -84,6 +84,10 @@ test("System Thinker loopback FTP learner example demonstrates real transfer and
   runAudit("scripts/check-system-thinker-ftp-teaching-example.mjs", /System Thinker FTP learner experiment passed:/);
 });
 
+test("System Thinker message ordering source code prevents stale and duplicate regression", () => {
+  runAudit("scripts/check-system-thinker-messaging-order-teaching-example.mjs", /System Thinker messaging order example passed:/);
+});
+
 test("Java dependency-injection lesson executes and matches published output", () => {
   runAudit("scripts/check-java-teaching-examples.mjs", /Java learner-example validation passed:/);
 });
