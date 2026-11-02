@@ -11,6 +11,10 @@
 
 **Still pending:** some thin Linux lessons (especially scheduled tasks and mounts), learner-managed Rocky/SSH/SELinux/firewalld evidence, manual pedagogical review, and the full school modules 3–15. The next source work remains Networking Foundations in learner order, not another school. Initial browser traverse reached every one of the 362 Platform Builder entries; matching-head CI after updating the hardcoded census remains to be confirmed.
 
+## Module 3 Network Foundations connected-case pass (2026-11-02)
+
+[Per-lesson read-through covering all 16 module lessons/labs](./ped-005-platform-builder-networking-readthrough.md). Kept the original fourteen concept lessons, quality WireGuard checkpoint and final diagnosis lab. Added thirteen **specific** packet-path/failure sections without new activity IDs, with an executable Python `ipaddress` correct-/26 and wrong-/24 negative example plus independent /27-/28 transfer. Isolated shell/socket tests cannot prove live routing, firewall or VPN; these remain UNVERIFIED. **Matching branch-head CI pending; module 4 Packet Tracer is next in the SAME school.**
+
 ## Canonical order — all 15 paths
 
 The real entrypoint is `packages/runtime-kernel/src/paths/platform-builder.ts`. A generated operational-readiness reading currently precedes each imported lesson collection; **do not credit this short introduction as proof that its underlying lessons teach deeply**.
@@ -19,7 +23,7 @@ The real entrypoint is `packages/runtime-kernel/src/paths/platform-builder.ts`. 
 | --- | --- | --- | --- | --- |
 | 1 | Computer and Operating-System Foundations | `platform-builder-computer-os-deep.ts`, `platform-builder-computer-os-quality.ts` | CPU, memory, kernel/process, filesystem and I/O: explain mechanism before metrics; observe one resource fault without unsafe changes | SOURCE READING IN PROGRESS |
 | 2 | Linux Administration | `platform-builder-linux-administration-deep.ts`, `platform-builder-linux-administration-quality.ts` | RPM/DNF/Rocky conventions, users/groups, permissions/SELinux, systemd, journalctl, SSH; trace negative service-health vs process-running behavior | SOURCE READING IN PROGRESS |
-| 3 | Networking Foundations | `platform-builder-networking-deep.ts`, `platform-builder-networking-quality.ts` | Link vs route vs DNS vs listener vs TLS/application; a runnable positive/negative packet and connection trace | NOT YET CLASSIFIED |
+| 3 | Networking Foundations | `platform-builder-networking-deep.ts`, `platform-builder-networking-quality.ts`, `platform-builder-networking-running-case.ts` | Thirteen lesson-specific connected Steward request traces; actual Python CIDR /26 versus /24 negative, independent /27-/28 transfer; preserve existing TCP/UDP depth | TARGETED SOURCE REMEDIATION COMMITTED — LATEST CI PENDING; real routed/WireGuard/Packet Tracer and learner transfer UNVERIFIED |
 | 4 | Network Engineering with Cisco Packet Tracer | `platform-builder-packet-tracer-network-engineering-deep.ts` | L2/VLAN/subnet/gateway/trunk/ACL failures; Packet Tracer environment dependency clearly stated | NOT YET CLASSIFIED |
 | 5 | Virtualization | `platform-builder-virtualization-deep.ts`, `platform-builder-virtualization-quality.ts` | Host/guest isolation and resource overcommit; failure domain, guest networking, snapshot vs backup | NOT YET CLASSIFIED |
 | 6 | Bare-Metal Platform Foundations | `platform-builder-bare-metal-foundations-deep.ts` | Firmware/boot/device discovery/recovery; avoid physical destructive instructions without explicit safeguard | NOT YET CLASSIFIED |
