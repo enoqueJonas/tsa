@@ -111,7 +111,7 @@ jobs:
           node scripts/check-builder-django-live-lab.mjs
 
   learner-browser:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
@@ -147,7 +147,7 @@ jobs:
           if-no-files-found: warn
 
   cross-school-browser:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
