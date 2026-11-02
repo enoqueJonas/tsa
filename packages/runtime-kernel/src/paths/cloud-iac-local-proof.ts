@@ -1,5 +1,5 @@
 // PED-005: distinct local and failure-path evidence in original OpenTofu readings.
-export type IacSection = { heading:string; paragraphs:string[]; code?:{language:string;caption?:string;code:string} };
+export type IacSection = { heading:string; paragraphs:string[]; list?:string[]; code?:{language:string;caption?:string;code:string} };
 export const iacDepthById: Record<string,IacSection[]> = {
   "terraform-opentofu-fundamentals": [
     {
