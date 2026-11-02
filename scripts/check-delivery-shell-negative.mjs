@@ -1,0 +1,14 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import {spawnSync} from "node:child_process";
+const source=fs.readFileSync("packages/runtime-kernel/src/paths/delivery-shell-failure-worked.ts","utf8");
+const assembled=fs.readFileSync("packages/runtime-kernel/src/paths/delivery-automation-shell-deep.ts","utf8");
+assert.ok(assembled.includes('id === "pipes-exit-codes" ? deliveryShellFailureSections'),"Teaching lab not used in the actual lesson");
+const anchor='code: ';
+const start=source.indexOf(anchor);assert.ok(start>=0);
+const match=source.slice(start).match(/code: ("(?:\\.|[^"\\])*")/);
+assert.ok(match,"No exact published shell source");
+const code=JSON.parse(match[1]);const run=spawnSync("bash",["-c",code],{encoding:"utf8",timeout:12000});
+assert.ifError(run.error);assert.equal(run.status,0,run.stderr+"\n"+run.stdout);
+for(const value of ["valid input: exit=0","missing input: exit=1","without pipefail: exit=0","with pipefail: exit=1","mutation blocked after missing input: yes"])assert.ok(run.stdout.includes(value),"Missing shell failure evidence "+value);
+console.log("Delivery Engineer exact published Bash negative paths passed: failure propagation and no forbidden mutation.");
