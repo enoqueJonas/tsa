@@ -8,6 +8,8 @@ const paths={
   web:"packages/runtime-kernel/src/paths/builder-web-api-deep.ts",
   django:"packages/runtime-kernel/src/paths/builder-django-rich.ts",
   identity:"packages/runtime-kernel/src/paths/builder-identity-auth-deep.ts",
+  postgresPractice:"packages/runtime-kernel/src/paths/builder-postgresql-quality.ts",
+  djangoPractice:"packages/runtime-kernel/src/paths/builder-django-quality.ts",
   milestone:"packages/runtime-kernel/src/paths/builder-milestone-deep.ts"
 };
 const sources=Object.fromEntries(Object.entries(paths).map(([k,v])=>[k,fs.readFileSync(v,"utf8")]));
@@ -46,6 +48,14 @@ const model=extractCode(sources.django,"registry/models.py — canonical Steward
 assert.ok(model.includes("owning_team = models.ForeignKey"),"Canonical Django FK omitted");
 assert.ok(model.includes("PRODUCTION = 'production'"),"Production lifecycle absent");
 assert.ok(model.includes("PRODUCTION = 'production'"),"Environment kind missing");
+// Teaching source and learner practical must agree on business states,
+// previously a green source test hid obsolete "active lifecycle" assignments.
+assert.ok(!sources.postgresPractice.includes("active-service report"), "Practical still teaches removed lifecycle stage");
+assert.ok(!sources.postgresPractice.includes("active-only result"), "Practical still contradicts the canonical production lifecycle");
+assert.match(sources.postgresPractice, /production-stage Service report/, "Practical omits canonical lifecycle");
+assert.match(sources.postgresPractice, /diagnostic negative data/, "Practical hides the intentionally invalid Payroll seed");
+assert.ok(!sources.djangoPractice.includes("GET /services/health"), "Django practical health path disagrees with runnable primer");
+assert.match(sources.djangoPractice, /GET \/health\//, "Django practical must use its published route");
 const flow=sources.milestone;
 for(const concept of ["ServiceDependency","ServiceReview","owning Team","Cross-Team"])assert.ok(flow.includes(concept));
 console.log("Builder school continuity passed: learner order, Python/WebAPI/Django lifecycle, ORM ownership, six-case authorization and milestone gates.");
