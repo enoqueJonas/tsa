@@ -7,38 +7,6 @@ const rhelDocs: LearningResource = { title: "Red Hat Enterprise Linux documentat
 const selinuxDocs: LearningResource = { title: "RHEL — Using SELinux", url: "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/using_selinux/" };
 const firewalldDocs: LearningResource = { title: "RHEL — Configuring firewalls and packet filters", url: "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_firewalls_and_packet_filters/" };
 
-function replaceRockyStrings(value: string): string {
-    return value
-        .replaceAll("Installing Ubuntu Server", "Installing Rocky Linux")
-        .replaceAll("Ubuntu Server", "Rocky Linux")
-        .replaceAll("Ubuntu host", "Rocky Linux host")
-        .replaceAll("Ubuntu", "Rocky Linux")
-        .replaceAll("sudo apt update", "sudo dnf check-update # exit 100 means updates are available, not a failed package-manager operation")
-        .replaceAll("apt policy postgresql", "dnf info postgresql-server")
-        .replaceAll("dpkg -l | grep -E 'python|postgresql'", "rpm -qa | grep -E 'python|postgresql'")
-        .replaceAll("apt show <package>", "dnf info bash")
-        .replaceAll("Inspect availability and current state before installing.", "Before installing, inspect package availability and current state. On Rocky Linux, dnf check-update exits 0 when up to date, 100 when updates are available, or 1 when it encounters an error; an exit code of 100 is not a failed diagnostic.")
-        .replaceAll("apt update", "dnf check-update")
-        .replaceAll("apt upgrade", "dnf upgrade")
-        .replaceAll("apt workflow", "DNF/RPM workflow")
-        .replaceAll("apt coordinates", "DNF coordinates")
-        .replaceAll("apt to query, install, update and remove packages", "DNF and RPM tooling to query, install, update and remove packages")
-        .replaceAll("the package manager", "DNF/RPM tooling")
-        .replaceAll("https://documentation.ubuntu.com/server/how-to/software/package-management/", "https://docs.rockylinux.org/guides/package_management/dnf_package_manager/")
-        .replaceAll("https://documentation.ubuntu.com/server/", "https://docs.rockylinux.org/")
-        .replaceAll("Ubuntu package management", "Rocky Linux package management")
-        .replaceAll("Ubuntu Server documentation", "Rocky Linux documentation");
-}
-
-function rockyize<T>(value: T): T {
-    if (typeof value === "string") return replaceRockyStrings(value) as T;
-    if (Array.isArray(value)) return value.map((item) => rockyize(item)) as T;
-    if (value && typeof value === "object") {
-        return Object.fromEntries(Object.entries(value as Record<string, unknown>).map(([key, item]) => [key, rockyize(item)])) as T;
-    }
-    return value;
-}
-
 const practices: Record<string, PracticalContent> = {
     "Installing Rocky Linux": {
         type: "practical",
@@ -224,7 +192,7 @@ const firewalldLesson = supplementalLesson(
     },
 );
 
-const rockyLessons = rockyize(linuxAdministrationDeepLessons).map((lesson) => {
+const rockyLessons = linuxAdministrationDeepLessons.map((lesson) => {
     const practical = practices[lesson.title];
     if (!practical) return lesson;
 
@@ -248,28 +216,28 @@ export const linuxAdministrationQualityLessons: Lesson[] = rockyLessons.flatMap(
             if (activity.content.type === "reading") {
                 return {
                     ...activity,
-                    content: rockyize({
+                    content: {
                         ...activity.content,
                         body: `${activity.content.body} The final host must keep SELinux enforcing and use firewalld to expose only justified network access.`,
-                    }),
+                    },
                 };
             }
             if (activity.content.type === "practical") {
                 return {
                     ...activity,
                     content: {
-                        ...rockyize(activity.content),
+                        ...activity.content,
                         instructions: [
-                            ...rockyize(activity.content.instructions),
+                            ...activity.content.instructions,
                             "Prove SELinux remains enforcing; diagnose and correct any policy/label issue rather than disabling it.",
                             "Configure firewalld so Steward is reachable only through the justified service path while unnecessary ports remain closed.",
                         ],
-                        deliverables: [...rockyize(activity.content.deliverables), "SELinux enforcing evidence", "firewalld exposure evidence"],
-                        completionCriteria: [...rockyize(activity.content.completionCriteria), "Steward operates with SELinux enforcing.", "Host firewall policy exposes only justified services."],
+                        deliverables: [...activity.content.deliverables, "SELinux enforcing evidence", "firewalld exposure evidence"],
+                        completionCriteria: [...activity.content.completionCriteria, "Steward operates with SELinux enforcing.", "Host firewall policy exposes only justified services."],
                     },
                 };
             }
-            return rockyize(activity);
+            return activity;
         }),
     }];
 });
