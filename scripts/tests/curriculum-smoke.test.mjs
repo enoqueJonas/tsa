@@ -68,6 +68,10 @@ test("Platform Builder avoids superficial readiness wrappers and teaches safe Ro
   runAudit("scripts/check-platform-builder-foundations-source.mjs", /Platform Builder foundations source guard passed:/);
 });
 
+test("Platform Builder network CIDR, next hop and stale-mask examples are source-rendered and executable", () => {
+  runAudit("scripts/check-platform-builder-network-case.mjs", /Platform Builder connected network case passed:/);
+});
+
 test("System Thinker XML and XSD examples execute from the actual learner source", () => {
   runAudit("scripts/check-system-thinker-xml-teaching-examples.mjs", /System Thinker XML/);
 });
