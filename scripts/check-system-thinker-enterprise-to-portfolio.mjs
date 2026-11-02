@@ -56,10 +56,19 @@ for(const [path,terms] of composed){
 const fileSchool=readFileSync(root+"system-thinker-enterprise-file-integration-deep.ts","utf8");
 const batchSchool=readFileSync(root+"system-thinker-real-steward-batch-worked.ts","utf8");
 assert.ok(fileSchool.includes('id: "steward-batch-domain"'),"Missing separately scoped real Builder import lesson");
-assert.ok(fileSchool.includes('spec.id === "batch-lifecycle"') && fileSchool.includes('[lesson(spec), lesson(stewardBatchDomainSpec)]'),"Real import lab is not sequenced after batch lifecycle");
+assert.ok(fileSchool.includes('spec.id === "batch-lifecycle"') && fileSchool.includes('[lesson(spec), lesson(stewardBatchDomainSpec), lesson(stewardBatchConcurrencySpec)]'),"Real ORM and concurrency lessons not sequenced after batch lifecycle");
 assert.ok(!fileSchool.includes('spec.id==="batch-lifecycle"?realStewardBatchSections'),"Long domain lab was collapsed into old overloaded batch reading");
 for(const term of ["Independently modify a copy of the lab","trusted","rollback","conflict","full-file"])assert.ok(fileSchool.toLowerCase().includes(term.toLowerCase()),"Real domain independent practice is missing "+term);
 for(const term of ["Service.objects.select_for_update()","transaction.atomic()","batch_lab_delivery","trusted_approvals","forged CSV approval denied","lost response retry"])assert.ok(batchSchool.includes(term),"Published real Django+PostgreSQL exercise lacks "+term);
+const concurrencySource=readFileSync(root+"system-thinker-concurrent-batch-worked.ts","utf8");
+assert.ok(fileSchool.includes('id: "steward-batch-concurrency"'),"Separate concurrency lesson not defined");
+assert.ok(fileSchool.includes("concurrentStewardBatchSections") && fileSchool.includes("concurrentStewardBatchReferences"),"Learner-facing concurrency source or references not composed");
+for(const term of ["ThreadPoolExecutor","Barrier(2)","pg_backend_pid()","SELECT FOR UPDATE","ON CONFLICT (delivery_id) DO NOTHING","transaction.atomic()","stale_owner","denied_receipt","batch_race_effect"]){
+  assert.ok(concurrencySource.includes(term),"Missing real concurrent-worker evidence: "+term);
+}
+for(const term of ["Independently devise a novel race","two physical PG","no human transfer PASS"]){
+  assert.ok((fileSchool+" "+concurrencySource).toLowerCase().includes(term.toLowerCase()),"Learner race critique missing "+term);
+}
 const milestone=readFileSync(root+"system-thinker-milestone-deep.ts","utf8");
 for(const term of ["evidence-continuity","cross-module claim ledger","UNVERIFIED","unauthorized actor","independent defence","Independent Transfer"])
   assert.ok(milestone.toLowerCase().includes(term.toLowerCase()),"Portfolio missing "+term);
