@@ -40,4 +40,25 @@ assert.ok(tofuLab.includes("tofu plan -input=false -detailed-exitcode"));
 assert.ok(tofuLab.includes("tofu destroy -auto-approve"));
 assert.ok(tofuLab.includes("mktemp -d"),"Providerless IaC lab must not run in actual project directory");
 assert.ok(!tofuLab.includes("aws_")&&!tofuLab.includes("azurerm_"),"Providerless example cannot create paid cloud resources");
-console.log("PASS all 12 Building Blocks lessons, local CIDR model, 5 IaC worked lessons, no destructive VPS patch or filler regression; OpenTofu CLI lab not executed by this test.");
+const costSrc=readFileSync("packages/runtime-kernel/src/paths/cloud-architecture-worked-proof.ts","utf8");
+const costWired=readFileSync("packages/runtime-kernel/src/paths/cloud-architecture-cost-deep.ts","utf8");
+assert.ok(costWired.includes("...(architectureDepthById[spec.id] ?? [])"),"Actual Cloud Architecture readings not wired");
+const costMatch=costSrc.match(/export const architectureDepthById:[^\n]+ = (\{[\s\S]*\});\s*$/);
+assert.ok(costMatch,"Architecture source map malformed");
+const cost=JSON.parse(costMatch[1]);
+const costIds=["availability","backup-recovery","failure-domains","cost-estimation","cost-controls-budgets","right-sizing"];
+assert.deepEqual(Object.keys(cost).sort(),costIds.sort());
+for (const [id,rows] of Object.entries(cost)) {
+  assert.ok(rows.length>=2&&rows.some(x=>/transfer|failure/i.test(x.heading)),"Missing independent cost/failure exercise for "+id);
+}
+for (const [id,expectation] of [
+  ["availability",/99\.90% allows 43\.80 minutes\/month/],
+  ["cost-estimation",/total=30\.85/],
+]) {
+ const model=cost[id].find(x=>x.code?.language==="python")?.code?.code;
+ assert.ok(model,"Missing source-published Python proof for "+id);
+ const output=spawnSync("python3",["-c",model],{encoding:"utf8",timeout:12000});
+ assert.ifError(output.error);assert.equal(output.status,0,id+": "+output.stderr);
+ assert.match(output.stdout,expectation);
+}
+console.log("PASS Cloud Building Blocks (12), IaC (5), architecture (6), executable local CIDR/cost/SLO proofs; cloud/Tofu runtime remains UNVERIFIED.");
