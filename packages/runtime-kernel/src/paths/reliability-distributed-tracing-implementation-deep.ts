@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { tracingPropagationBlocks } from "./reliability-tracing-propagation-worked";
 
 const otel: LearningResource = { title: "OpenTelemetry documentation", url: "https://opentelemetry.io/docs/" };
 const tempo: LearningResource = { title: "Grafana Tempo documentation", url: "https://grafana.com/docs/tempo/latest/" };
@@ -22,6 +23,7 @@ const blocks: LessonBlock[] = [
         "Prometheus/Grafana remain the primary metrics and dashboard path; Graylog remains the primary centralized log-management path.",
         "Trace context must cross meaningful synchronous and asynchronous boundaries rather than decorating one HTTP handler with a single span."
     ] },
+    ...tracingPropagationBlocks,
     { type: "resources", title: "Continue learning", resources: [otel, tempo, jaeger] },
 ];
 
