@@ -111,5 +111,61 @@ export const kubernetesFoundationsById: Record<string,K8sSection[]> = {
         "Evidence to retain: applied manifest revision, Pod ownerReferences/labels, describe Events, readiness results, controller recovery and exact namespace/context."
       ]
     }
+  ],
+  "services-discovery": [
+    {
+      "heading": "Name stability and endpoint health are separate contracts",
+      "paragraphs": [
+        "A Deployment maintains an intended set of Pods, but their IP addresses are disposable and may change on replacement. A Kubernetes Service is a stable virtual networking/discovery abstraction that selects Pods by labels and directs traffic to ready endpoints. Its DNS name is normally discoverable to workloads within the cluster, not automatically from the internet. EndpointSlice resources reflect selected network endpoints; selectors or readiness can leave a Service with no usable backends even though the Service object itself exists.",
+        "The networking path for this lesson is client inside cluster → Service DNS/ClusterIP → selected ready Pod IP:container port → web process. A Service maps service port to targetPort on the container; the actual Pod process must be listening. It does not by itself provide public TLS, Internet DNS or an OpenShift Route. Those are separate edge responsibilities."
+      ],
+      "list": [
+        "Deployment/ReplicaSet: desired number of replaceable Pods, not a fixed destination address.",
+        "Pod: current execution endpoint; names/IPs can change after reconciliation.",
+        "Service: stable name and logical port, with a selector that identifies intended Pods.",
+        "EndpointSlice: current endpoint data maintained by controllers; unready/mismatched Pods must not be assumed routable.",
+        "Ingress controller or OpenShift Route: an additional external edge and TLS/routing decision, introduced later."
+      ]
+    },
+    {
+      "heading": "Runnable Service fixture on the existing disposable Deployment",
+      "paragraphs": [
+        "The preceding lesson must have a running, Ready tsa-web Deployment in namespace tsa-ped005 on the named kind cluster. Save this YAML as tsa-web-service.yaml and apply it only to that namespace. Inspect Service, matching Pods and EndpointSlices before testing HTTP. The port-forward is a temporary local tunnel through kubectl; it is not a production load balancer, ingress or public exposure. Keep it active in one terminal, then send an HTTP request from a second terminal. Expected: nginx's default HTTP response succeeds if the test image and readiness are healthy. If not, inspect selected labels, readiness, Pod listener and Service targetPort in that order."
+      ],
+      "code": {
+        "language": "yaml",
+        "caption": "Complete local ClusterIP Service, using the Deployment labels taught earlier",
+        "code": "apiVersion: v1\nkind: Service\nmetadata:\n  name: tsa-web\nspec:\n  selector:\n    app: tsa-web\n  ports:\n    - name: http\n      port: 80\n      targetPort: 80"
+      }
+    },
+    {
+      "heading": "Observe the positive route and a deliberately empty selector",
+      "paragraphs": [
+        "These commands require the existing kind context. The first port-forward runs until interrupted and should be used in a separate terminal; use Ctrl-C after the curl. The negative Service selects no training Pods and should therefore have no ready endpoints. Its port-forward cannot supply a valid backend. This is a selector/endpoint failure, not evidence that DNS, TLS or cluster networking itself failed. It does not alter the healthy Service. Clean up only the negative fixture after recording evidence."
+      ],
+      "code": {
+        "language": "bash",
+        "caption": "Check Service-to-Pod routing; compare a selector that matches no Pods",
+        "code": "kubectl --context kind-tsa-ped005 -n tsa-ped005 apply -f tsa-web-service.yaml\nkubectl --context kind-tsa-ped005 -n tsa-ped005 get svc tsa-web\nkubectl --context kind-tsa-ped005 -n tsa-ped005 get endpointslices -l kubernetes.io/service-name=tsa-web\nkubectl --context kind-tsa-ped005 -n tsa-ped005 port-forward service/tsa-web 18080:80\n# In a second terminal, while forwarding:\ncurl --fail --show-error http://127.0.0.1:18080/\n# Ctrl-C the port-forward after recording the response.\n# Apply the deliberately wrong-selector YAML in the next section, then:\nkubectl --context kind-tsa-ped005 -n tsa-ped005 get endpointslices -l kubernetes.io/service-name=tsa-web-empty\nkubectl --context kind-tsa-ped005 -n tsa-ped005 describe service tsa-web-empty\n# Expected: no usable backend endpoints (not a healthy 200 response).\nkubectl --context kind-tsa-ped005 -n tsa-ped005 delete service tsa-web-empty"
+      }
+    },
+    {
+      "heading": "Negative fixture: a valid Service object with no useful backend",
+      "paragraphs": [
+        "A syntactically valid Service can still be operationally wrong. Save the second manifest as tsa-web-empty.yaml, then apply it before running the preceding negative observations. The selector intentionally differs from the Deployment's app=tsa-web label. Kubernetes can successfully create the Service object while no Pod matches; the correct diagnosis starts by comparing selector and Pod labels, not restarting CoreDNS or changing firewall rules."
+      ],
+      "code": {
+        "language": "yaml",
+        "caption": "Deliberately empty selector; apply only as negative training fixture",
+        "code": "apiVersion: v1\nkind: Service\nmetadata:\n  name: tsa-web-empty\nspec:\n  selector:\n    app: not-the-training-deployment\n  ports:\n    - name: http\n      port: 80\n      targetPort: 80"
+      }
+    },
+    {
+      "heading": "Transfer: service discovery is not internet exposure",
+      "paragraphs": [
+        "In a real Steward cluster, an API client outside the cluster needs an explicit ingress/route/network path and usually a valid TLS identity. The existence of a ClusterIP Service does not provide it. A worker inside the cluster could reach the Service while a laptop cannot; that difference is expected until the edge is configured.",
+        "Independent case: a Service resolves by DNS and has two endpoints, but GET / returns connection refused. Give two possible explanations that are NOT DNS failure (wrong targetPort, process bound only to Pod loopback, or network policy) and state a command/observation to distinguish them. Then contrast Kubernetes Service with OpenShift Route without presenting a Route as a synonym."
+      ]
+    }
   ]
 };
