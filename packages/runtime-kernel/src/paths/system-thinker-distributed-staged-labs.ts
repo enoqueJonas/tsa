@@ -1,4 +1,5 @@
 import type { Lesson } from "./lesson";
+import {redisLivePrimerSections,rabbitLivePrimerSections} from "./system-thinker-distributed-live-primer";
 import type { LessonBlock, LearningResource } from "../activities/content";
 
 const redis: LearningResource = { title:"Redis — Run Open Source on Docker", url:"https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/docker/", kind:"reference" };
@@ -41,6 +42,7 @@ export const distributedStateStagedLabs: Lesson[] = [
             "code": "docker version\ndocker run --rm -d --name tsa-redis -p 127.0.0.1:6379:6379 redis:7-alpine\ndocker exec tsa-redis redis-cli PING\n# expected: PONG\ndocker exec tsa-redis redis-cli SET tsa:probe ok EX 30\n# expected: OK\ndocker exec tsa-redis redis-cli GET tsa:probe\n# expected: ok (before 30 seconds)\n# after the application outage experiment:\ndocker stop tsa-redis"
         }
     },
+    ...redisLivePrimerSections,
     {
         "title": "Keep authority in PostgreSQL and observe a miss, hit, stale read and outage",
         "paragraphs": [
@@ -94,6 +96,7 @@ export const distributedStateStagedLabs: Lesson[] = [
             "code": "docker version\ndocker run --rm -d --name tsa-rmq -p 127.0.0.1:5672:5672 -p 127.0.0.1:15672:15672 rabbitmq:4-management\n# Wait until the broker completes startup, then:\ndocker exec tsa-rmq rabbitmq-diagnostics -q ping\n# expected: Ping succeeded\ndocker exec tsa-rmq rabbitmqctl list_queues name messages_ready messages_unacknowledged\n# after the broker exercise:\ndocker stop tsa-rmq"
         }
     },
+    ...rabbitLivePrimerSections,
     {
         "title": "Acknowledge the owned effect, not merely receipt",
         "paragraphs": [
