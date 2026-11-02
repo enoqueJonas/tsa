@@ -1,6 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { lifecycleIdentityExtraSections } from "./delivery-lifecycle-identity-worked";
+import { foundationDeepeningById } from "./delivery-software-foundations-enrichment";
 
 const git: LearningResource = { title: "Git documentation", url: "https://git-scm.com/docs" };
 const semver: LearningResource = { title: "Semantic Versioning", url: "https://semver.org/" };
@@ -10,7 +11,8 @@ const twelveFactor: LearningResource = { title: "The Twelve-Factor App", url: "h
 
 function lesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: string; language?: string; caption?: string; output?: string }>, resources: LearningResource[]): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
-    for (const section of id === "lifecycle" ? [...sections, ...lifecycleIdentityExtraSections] : sections) {
+    const lessonSections = id === "lifecycle" ? [...sections, ...lifecycleIdentityExtraSections] : sections;
+    for (const section of [...lessonSections, ...(foundationDeepeningById[id] ?? [])]) {
         const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
         blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
         if (section.items) blocks.push({ type: "list", items: section.items });
