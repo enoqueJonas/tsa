@@ -1,6 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { fileHandoffWorkedSections } from "./system-thinker-file-handoff-examples";
+import {ftpLoopbackWorkedSections} from "./system-thinker-ftp-worked";
 
 const rfc959: LearningResource = { title: "RFC 959 — File Transfer Protocol", url: "https://www.rfc-editor.org/rfc/rfc959" };
 const opensshSftp: LearningResource = { title: "OpenSSH documentation", url: "https://www.openssh.com/manual.html" };
@@ -78,6 +79,7 @@ const specs: Spec[] = [
         title: "Legacy FTP Integration",
         intro: "FTP remains common in long-lived enterprise batch integrations. Its separate control/data connections, active/passive modes and clear-text security model create operating and firewall behavior that engineers still encounter even when they would not select FTP for a new secure integration.",
         sections: [
+            ...ftpLoopbackWorkedSections,
             { title: "FTP separates control from transferred data", paragraphs: ["The client opens a control connection to the server and sends authentication, navigation and transfer commands there. Directory listings and file contents use separate data connections. A successful control login therefore does not prove that the data path is reachable.", "Troubleshooting FTP requires identifying which channel failed instead of treating the protocol as one connection."] },
             { title: "Active and passive modes change data-connection direction", paragraphs: ["In active mode the client advertises an endpoint and the server initiates the data connection toward the client. Client-side firewalls and NAT often make that awkward. In passive mode the server advertises a data endpoint and the client initiates the data connection, which is generally easier for clients behind NAT.", "Passive mode still requires a deliberately bounded server-side data-port policy; it is not a reason to expose an arbitrary port range."], code: { language: "text", caption: "Control direction stays stable while the data path changes", code: "ACTIVE:  client --control--> server; server --data--> client\nPASSIVE: client --control--> server; client --data--> server" } },
             { title: "Treat FTP as a legacy compatibility constraint", paragraphs: ["Traditional FTP does not provide transport confidentiality for credentials or content. TSA operates it only in a constrained learner-owned environment to understand a legacy enterprise dependency, not as a recommended modern transport.", "Dedicated accounts, narrow directories and restricted network exposure reduce blast radius but do not turn clear-text FTP into a secure protocol. Later migration should preserve the already-defined file contract while replacing the transport."] },
