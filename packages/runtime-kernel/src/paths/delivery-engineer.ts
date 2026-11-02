@@ -72,6 +72,9 @@ function prepareLabSequence(lessons: Lesson[], model: { model: string; failure: 
 function path(id: string, title: string, lessons: Lesson[]): LearningPath {
     const material = deliveryFieldwork[id];
     if (!material) throw new Error(`Missing Delivery Engineer fieldwork: ${id}`);
+    // Foundations now teach in the actual authored readings; do not precede
+    // every lesson and practice with shallow generated orientation wrappers.
+    if (id === "software-delivery-foundations") return { id, title, lessons };
     const intro: Lesson = {
         id: `${id}-fieldwork-orientation`,
         title: `Worked delivery model: ${title}`,
