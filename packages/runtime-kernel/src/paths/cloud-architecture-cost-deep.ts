@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { architectureDepthById } from "./cloud-architecture-worked-proof";
 
 const awsWellArchitected: LearningResource = { title: "AWS — Well-Architected Framework", url: "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html" };
 const googleCloudFramework: LearningResource = { title: "Google Cloud — Architecture Framework", url: "https://cloud.google.com/architecture/framework" };
@@ -17,7 +18,7 @@ interface LessonSpec {
 
 function richLesson(spec: LessonSpec): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    for (const section of spec.sections) {
+    for (const section of [...spec.sections, ...(architectureDepthById[spec.id] ?? [])]) {
         blocks.push({ type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.list) blocks.push({ type: "list", items: section.list });
