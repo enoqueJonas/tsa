@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { originalObservabilitySignalProof } from "./reliability-observability-source-proof";
 
 const otelDocs: LearningResource = { title: "OpenTelemetry Documentation", url: "https://opentelemetry.io/docs/" };
 const sreBook: LearningResource = { title: "Google Site Reliability Engineering", url: "https://sre.google/sre-book/table-of-contents/" };
@@ -42,6 +43,7 @@ function blocksFor(spec: Spec): LessonBlock[] {
     { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
     ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
     { type: "callout", tone: "steward", title: "Question before signal", body: "Do not add telemetry because a tool can collect it. Start with a concrete question about Steward behavior, then choose the smallest set of signals and context that can answer it reliably." },
+    ...(originalObservabilitySignalProof[spec.id] ?? []),
     { type: "resources", title: "Continue learning", resources: resourcesByObservabilityTopic[spec.id] ?? [otelDocs, sreBook] },
   ];
 }
