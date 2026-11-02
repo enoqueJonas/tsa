@@ -6,6 +6,8 @@ on:
       - curriculum/system-thinker-pedagogical-audit
       - curriculum/platform-builder-pedagogical-audit
       - curriculum/delivery-engineer-pedagogical-audit
+      - integration/tsa-audits-master-20261102
+      - master
   workflow_dispatch:
 
 permissions:
