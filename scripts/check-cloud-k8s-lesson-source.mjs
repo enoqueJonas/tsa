@@ -6,7 +6,10 @@ const authored = readFileSync("packages/runtime-kernel/src/paths/cloud-kubernete
 const actualLesson = readFileSync("packages/runtime-kernel/src/paths/cloud-orchestration-gitops-deep.ts", "utf8");
 const assembler = readFileSync("packages/runtime-kernel/src/paths/cloud-engineer.ts", "utf8");
 assert.ok(actualLesson.includes("...(kubernetesFoundationsById[spec.id] ?? [])"), "Kubernetes source lessons not connected");
-assert.ok(assembler.includes('if (path.id === "cloud-orchestration-gitops") return path;'), "Wrapper is still obscuring core Kubernetes sequence");
+assert.ok(!assembler.includes("teachCloudPath") && !assembler.includes("-cloud-preparation") && !assembler.includes("-operational-model"),
+  "Cloud assembly must expose source-authored lessons without any generated wrapper");
+assert.ok(assembler.includes("lessons: cloudOrchestrationGitOpsDeepLessons"),
+  "Cloud orchestration must use the original authored lessons directly");
 const match = authored.match(/export const kubernetesFoundationsById:[^\n]+ = (\{[\s\S]*\});\s*$/);
 assert.ok(match, "Could not extract authored K8s sections");
 const sections = JSON.parse(match[1]);
