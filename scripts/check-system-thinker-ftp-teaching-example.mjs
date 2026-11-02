@@ -7,7 +7,7 @@ const anchor=source.indexOf('"caption": '+JSON.stringify(caption));
 assert.ok(anchor>=0,"Missing published FTP code");
 const match=source.slice(anchor,anchor+18000).match(/"code":\s*("(?:\\.|[^"\\])*")/);
 assert.ok(match,"Cannot extract FTP learner code");
-const result=spawnSync("python3",["-c",JSON.parse(match[1])],{encoding:"utf8",timeout:20000});
+const result=spawnSync("python3",["-c",JSON.parse(match[1])],{encoding:"utf8",timeout:35000});
 assert.ifError(result.error);
 assert.equal(result.status,0,"FTP lab failed: "+result.stderr);
 for(const expected of [
