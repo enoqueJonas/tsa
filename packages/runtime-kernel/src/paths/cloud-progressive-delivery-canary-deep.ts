@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { canaryLocalProofBlocks } from "./cloud-observable-local-proofs";
 
 const k8sDeployment: LearningResource = { title: "Kubernetes Deployments", url: "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/" };
 const argoRollouts: LearningResource = { title: "Argo Rollouts documentation", url: "https://argo-rollouts.readthedocs.io/" };
@@ -24,6 +25,7 @@ const blocks: LessonBlock[] = [
     { type: "paragraph", text: "Aborting a canary can route traffic back to the stable application artifact, but it does not automatically undo database migrations, emitted messages, external side effects or cache/data-format changes already produced by the candidate. Stable and candidate versions must therefore be able to coexist with the current persistent state for the duration of the rollout." },
     { type: "paragraph", text: "Prefer backward-compatible schema and contract evolution so the stable version remains viable during the canary. If a release contains an irreversible state transition, progressive traffic control cannot manufacture a safe rollback; the deployment plan needs a separate migration/recovery strategy." },
     { type: "callout", tone: "steward", title: "State compatibility comes first", body: "A canary is unsafe if candidate and stable versions cannot share the current schema, queues, caches or contracts. Reuse the production schema-evolution discipline before exposing two application versions to live traffic." },
+    ...canaryLocalProofBlocks,
     { type: "resources", title: "Continue learning", resources: [k8sDeployment, argoRollouts, prometheus] },
 ];
 
