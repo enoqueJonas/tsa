@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { extraSreBlocks } from "./reliability-sre-source-depth";
 
 const sreBook: LearningResource = { title: "Google Site Reliability Engineering", url: "https://sre.google/sre-book/table-of-contents/" };
 const sreWorkbook: LearningResource = { title: "Google SRE Workbook", url: "https://sre.google/workbook/table-of-contents/" };
@@ -14,6 +15,7 @@ function blocksFor(spec: Spec): LessonBlock[] {
         { type: "list", items: spec.principles },
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
+        ...extraSreBlocks(spec.id),
         { type: "callout", tone: "steward", title: "Operational evidence", body: "Reliability is a property experienced over time. A design diagram or successful deployment is not enough: Steward must produce evidence about failure, recovery and user-visible behavior under real operating conditions." },
         { type: "resources", title: "Continue learning", resources: [sreBook, sreWorkbook, awsReliability] },
     ];
