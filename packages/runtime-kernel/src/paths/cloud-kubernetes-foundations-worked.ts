@@ -87,7 +87,7 @@ export const kubernetesFoundationsById: Record<string,K8sSection[]> = {
       "code": {
         "language": "yaml",
         "caption": "Complete disposable Deployment manifest; save as tsa-web.yaml",
-        "code": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: tsa-web\nspec:\n  replicas: 2\n  selector:\n    matchLabels:\n      app: tsa-web\n  template:\n    metadata:\n      labels:\n        app: tsa-web\n    spec:\n      containers:\n        - name: web\n          image: nginx:1.27-alpine\n          ports:\n            - containerPort: 80\n          resources:\n            requests:\n              cpu: 50m\n              memory: 64Mi\n            limits:\n              memory: 128Mi\n          readinessProbe:\n            httpGet:\n              path: /\n              port: 80\n            initialDelaySeconds: 2\n            periodSeconds: 5"
+        "code": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: tsa-web\n  labels:\n    app: tsa-web\nspec:\n  replicas: 2\n  selector:\n    matchLabels:\n      app: tsa-web\n  template:\n    metadata:\n      labels:\n        app: tsa-web\n    spec:\n      containers:\n        - name: web\n          image: nginx:1.27-alpine\n          ports:\n            - containerPort: 80\n          resources:\n            requests:\n              cpu: 50m\n              memory: 64Mi\n            limits:\n              memory: 128Mi\n          readinessProbe:\n            httpGet:\n              path: /\n              port: 80\n            initialDelaySeconds: 2\n            periodSeconds: 5"
       }
     },
     {
