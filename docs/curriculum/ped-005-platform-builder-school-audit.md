@@ -3,7 +3,7 @@
 **Started:** 2026-11-02  
 **Scope:** **Platform Builder only**, issue [#323](https://github.com/enoqueJonas/tsa/issues/323).  
 **Base:** `curriculum/platform-builder-pedagogical-audit` branched from `curriculum/system-thinker-pedagogical-audit` after System Thinker source remediation was closed. This is a **stacked branch**, not an independent merge of #333.  
-**State:** ALL FIFTEEN MODULES SOURCE-REVIEWED AND TARGETED REMEDIATIONS COMMITTED; matching-head full CI pending. No learner-validated or real-infrastructure certification claim.
+**State: INSTRUCTIONALLY REMEDIATED — ALL FIFTEEN MODULES SOURCE AUDIT CLOSED; independent learner and infrastructure acceptance still OPEN in #336.**
 
 ## Module 1–2 instructional read-through and structural correction (2026-11-02)
 
@@ -15,9 +15,15 @@
 
 [Per-lesson read-through covering all 16 module lessons/labs](./ped-005-platform-builder-networking-readthrough.md). Kept the original fourteen concept lessons, quality WireGuard checkpoint and final diagnosis lab. Added thirteen **specific** packet-path/failure sections without new activity IDs, with an executable Python `ipaddress` correct-/26 and wrong-/24 negative example plus independent /27-/28 transfer. Isolated shell/socket tests cannot prove live routing, firewall or VPN; these remain UNVERIFIED. **Matching branch-head CI pending; module 4 Packet Tracer is next in the SAME school.**
 
+## Whole-school source closure and next school — 2026-11-02
+
+[matching code-head Actions #41479989943](https://github.com/enoqueJonas/tsa/actions/runs/41479989943) **19/19 SUCCESS** at `51b68ed4c8be2f151cf8a0dc5ae9a8f3d783de70`, including the **active** browser assertion and 370 rendered Platform Builder activities across 15 modules at desktop 1440px and mobile 390px. This is **scripted browser traversal, not independent novice learning validation**.
+
+All 15 actual learner paths have source-level dispositions and confirmed remediation where needed. New source is not confused with simulated real infrastructure; the [human and environment-evidence backlog #336](https://github.com/enoqueJonas/tsa/issues/336) remains OPEN. **Platform Builder source remediation is complete; begin Delivery Engineer #325**. A new observed pedagogical regression warrants a targeted issue, not an endless new set of theoretical integration tests.
+
 ## Whole-school module 4–15 author-source record (2026-11-02)
 
-[Detailed learner-order read-through, dispositions and evidence gaps](./ped-005-platform-builder-modules-4-15-source-readthrough.md). All 15 canonical modules now have a sourced instructional disposition. Confirmed remediations include five Packet Tracer worked labs, sixteen expanded budget homelab readings, Proxmox host/fault/maintenance prerequisites, Windows/Rocky integration and split NFS/SMB + LDAP/OpenLDAP labs. Existing rich virtualization, bare metal, storage/NAS, DNS/DHCP/Chrony, Ansible, OS patch and capstone content is preserved. **Latest matching-head 370-activity UI/CI verification still pending; do not close the source gate before it passes.**
+[Detailed learner-order read-through, dispositions and evidence gaps](./ped-005-platform-builder-modules-4-15-source-readthrough.md). All 15 canonical modules now have a sourced instructional disposition. Confirmed remediations include five Packet Tracer worked labs, sixteen expanded budget homelab readings, Proxmox host/fault/maintenance prerequisites, Windows/Rocky integration and split NFS/SMB + LDAP/OpenLDAP labs. Existing rich virtualization, bare metal, storage/NAS, DNS/DHCP/Chrony, Ansible, OS patch and capstone content is preserved. **Full source gate PASSED:** [matching code-head Actions #41479989943](https://github.com/enoqueJonas/tsa/actions/runs/41479989943) **19/19 SUCCESS** at `51b68ed4c8be2f151cf8a0dc5ae9a8f3d783de70`, including the **active** browser assertion and 370 rendered Platform Builder activities across 15 modules at desktop 1440px and mobile 390px. This is **scripted browser traversal, not independent novice learning validation**.
 
 ## Canonical order — all 15 paths
 
@@ -54,4 +60,4 @@ The Linux curriculum has a second, testable concern: the underlying `platform-bu
 3. Execute practical **safe disposable** examples and negative tests, capture actual outputs; mark vendor/hypervisor/Windows/managed-infrastructure-only cases UNVERIFIED where unavailable. Run curriculum integrity, build and existing rendered browser traversal; manually sampled visual evidence cannot be faked by a scripted traversal.
 4. When the **entire school source** is instructionally remediated with test evidence, mark **REMEDIATED — SOURCE AUDIT CLOSED** and advance to Delivery Engineer. Preserve unresolved **learner-scored** validation or external managed infrastructure in a non-blocking follow-up; do not keep generating increasingly speculative edge cases forever.
 
-**Current boundary:** source-level remediation across all 15 modules is committed, but the latest matching-head full CI has not yet been verified. Physical/Windows/Packet Tracer/Proxmox integration and scored learner assessment remain UNVERIFIED; these are not reason to silently change the school to VALIDATED.
+**Source gate closed:** [matching code-head Actions #41479989943](https://github.com/enoqueJonas/tsa/actions/runs/41479989943) **19/19 SUCCESS** at `51b68ed4c8be2f151cf8a0dc5ae9a8f3d783de70`, including the **active** browser assertion and 370 rendered Platform Builder activities across 15 modules at desktop 1440px and mobile 390px. This is **scripted browser traversal, not independent novice learning validation**. Physical/Windows/Packet Tracer/Proxmox integration and scored learner assessment are UNVERIFIED and explicitly tracked in [non-blocking #336](https://github.com/enoqueJonas/tsa/issues/336). Next active school: [Delivery Engineer #325](https://github.com/enoqueJonas/tsa/issues/325). PR #335 is for code review, not automatically merged.

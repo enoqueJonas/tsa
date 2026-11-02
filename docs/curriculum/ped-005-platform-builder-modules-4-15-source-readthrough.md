@@ -2,7 +2,7 @@
 
 **Date:** 2026-11-02  
 **Scope:** the remaining **twelve canonical learning paths** of Platform Builder, after [modules 1–2](./ped-005-platform-builder-foundations-readthrough.md) and [module 3](./ped-005-platform-builder-networking-readthrough.md).  
-**Status:** whole-school *source remediation* work recorded; **matching-head CI still pending at this checkpoint**. No independent learner score and no remote/vendor/physical infrastructure verified merely from reading source.  
+**Status:** whole-school *source remediation* closed after [matching code-head Actions #41479989943](https://github.com/enoqueJonas/tsa/actions/runs/41479989943) **19/19 SUCCESS** at `51b68ed4c8be2f151cf8a0dc5ae9a8f3d783de70`, including the **active** browser assertion and 370 rendered Platform Builder activities across 15 modules at desktop 1440px and mobile 390px. This is **scripted browser traversal, not independent novice learning validation**. No independent learner score and no remote/vendor/physical infrastructure verified merely from reading source.  
 **Issue:** [#323](https://github.com/enoqueJonas/tsa/issues/323), [PR #335](https://github.com/enoqueJonas/tsa/pull/335).
 
 ## Source-owned lessons and disposition
@@ -47,4 +47,4 @@
 
 ## School exit distinction
 
-Once matching-branch-head CI is green and the per-module source record is reconciled in the governing tracker, label **INSTRUCTIONALLY REMEDIATED — SOURCE AUDIT CLOSED**, then start **Delivery Engineer**. Do not call the school **LEARNER VALIDATED** until actual rendered human review and independently scored learner work exist. Physical/hypervisor/Windows/Packet Tracer/AD/Samba/LDAP environment validation is a separate test-evidence backlog with precise dependencies. Do not reopen a whole school for speculative edge cases.
+The matching-code-head 19/19 CI and observed **370** activities are green, so the school is **INSTRUCTIONALLY REMEDIATED — SOURCE AUDIT CLOSED**. [Delivery Engineer #325](https://github.com/enoqueJonas/tsa/issues/325) is next. Do not call the school **LEARNER VALIDATED** until actual rendered human review and independently scored learner work exist. Physical/hypervisor/Windows/Packet Tracer/AD/Samba/LDAP environment validation is a separate test-evidence backlog with precise dependencies. Do not reopen a whole school for speculative edge cases.
