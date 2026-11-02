@@ -10,7 +10,7 @@ assert.ok(assembler.includes('if (path.id === "cloud-orchestration-gitops") retu
 const match = authored.match(/export const kubernetesFoundationsById:[^\n]+ = (\{[\s\S]*\});\s*$/);
 assert.ok(match, "Could not extract authored K8s sections");
 const sections = JSON.parse(match[1]);
-for (const id of ["why-orchestration", "cluster-control-plane", "pods-deployments", "services-discovery", "scheduling-placement", "dns-network-policy", "persistent-storage"]) {
+for (const id of ["why-orchestration", "cluster-control-plane", "pods-deployments", "services-discovery", "scheduling-placement", "dns-network-policy", "persistent-storage", "config-secrets", "health-resources-rollouts", "rbac-namespaces", "openshift-platform", "openshift-security-routing"]) {
   assert.ok(Array.isArray(sections[id]) && sections[id].length >= 3, "Missing learning phases for " + id);
   assert.ok(sections[id].some(x => x.code?.code), "Missing guided command/manifest: " + id);
   assert.ok(sections[id].some(x => /transfer|failure|failed/i.test(x.heading+" "+x.paragraphs.join(" "))), "Missing negative or transfer case: " + id);
@@ -59,7 +59,25 @@ assert.equal(claim.metadata.name,"tsa-unbound-claim");
 assert.equal(claim.spec.storageClassName,"tsa-nonexistent-class");
 assert.equal(claim.spec.resources.requests.storage,"64Mi");
 assert.ok(sections["dns-network-policy"].some(x=>x.paragraphs.join(" ").includes("not automatically") || x.paragraphs.join(" ").includes("does NOT prove")), "Kubernetes policy prose must not imply default kind CNI enforcement");
+const unready = parseYaml(sections["health-resources-rollouts"].find(x => x.code?.language === "yaml")?.code?.code);
+assert.equal(unready.kind,"Pod");
+assert.equal(unready.metadata.name,"tsa-unready");
+const web = unready.spec.containers[0];
+assert.notEqual(web.readinessProbe.httpGet.path,web.livenessProbe.httpGet.path,"Negative readiness probe must differ from liveness");
+const rbacYaml = sections["rbac-namespaces"].find(x=>x.code?.language==="yaml")?.code?.code;
+const rbacProcess=spawnSync("python3",["-c","import sys,json,yaml; print(json.dumps(list(yaml.safe_load_all(sys.stdin.read()))))"], {input:rbacYaml,encoding:"utf8",timeout:12000});
+assert.ifError(rbacProcess.error); assert.equal(rbacProcess.status,0,rbacProcess.stderr);
+const objects=JSON.parse(rbacProcess.stdout);
+assert.deepEqual(objects.map(x=>x.kind),["ServiceAccount","Role","RoleBinding"]);
+assert.deepEqual(objects[1].rules[0].verbs,["get","list"]);
+assert.equal(objects[2].roleRef.name,objects[1].metadata.name);
+const route=parseYaml(sections["openshift-security-routing"].find(x=>x.code?.language==="yaml")?.code?.code);
+assert.equal(route.apiVersion,"route.openshift.io/v1");
+assert.equal(route.spec.to.kind,"Service");
+assert.equal(route.spec.tls.termination,"edge");
+assert.ok(sections["config-secrets"].some(x=>x.code?.code.includes("--dry-run=client") && x.code.code.includes("NOT_A_REAL_SECRET")),"Secret teaching fixture must be clearly fake and not applied");
+assert.ok(sections["openshift-platform"].some(x=>x.paragraphs.join(" ").includes("UNVERIFIED")),"OpenShift-only runtime evidence must remain explicitly unverified");
 const changed=structuredClone(obj);
 changed.spec.template.metadata.labels.app="wrong";
 assert.notDeepEqual(changed.spec.selector.matchLabels,changed.spec.template.metadata.labels,"Negative selector mismatch must be rejected");
-console.log("Cloud Kubernetes 4 exact authored manifests parsed: Deployment, Service pair, Pending Pod and PVC negative fixtures; cluster runtime UNVERIFIED.");
+console.log("Cloud Kubernetes 8 exact source manifests parsed including Deployment, Services, scheduling, PVC, probes, RBAC and OpenShift Route; no cluster runtime claimed.");
