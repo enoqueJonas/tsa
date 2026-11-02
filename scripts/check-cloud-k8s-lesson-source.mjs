@@ -31,7 +31,24 @@ assert.equal(container.ports[0].containerPort,80);
 assert.ok(container.resources.requests.cpu && container.resources.requests.memory);
 assert.equal(container.readinessProbe.httpGet.port,80);
 assert.ok(sections["pods-deployments"].some(x=>x.code?.code.includes("kubectl --context kind-tsa-ped005")), "No explicitly scoped cluster lab");
+const serviceSnippets = sections["services-discovery"].filter(x => x.code?.language === "yaml").map(x => x.code.code);
+assert.equal(serviceSnippets.length, 2, "Missing healthy and negative Service manifests");
+function parseYaml(source) {
+  const result = spawnSync("python3", ["-c", "import sys,json,yaml; print(json.dumps(yaml.safe_load(sys.stdin.read())))"], {input:source,encoding:"utf8",timeout:12000});
+  assert.ifError(result.error); assert.equal(result.status,0,result.stderr);
+  return JSON.parse(result.stdout);
+}
+const healthy = parseYaml(serviceSnippets[0]);
+const empty = parseYaml(serviceSnippets[1]);
+assert.equal(healthy.kind,"Service");
+assert.equal(healthy.metadata.name,"tsa-web");
+assert.deepEqual(healthy.spec.selector,obj.spec.template.metadata.labels,"Healthy Service must select the actual Pods");
+assert.equal(healthy.spec.ports[0].targetPort,80);
+assert.equal(empty.kind,"Service");
+assert.equal(empty.metadata.name,"tsa-web-empty");
+assert.notDeepEqual(empty.spec.selector,obj.spec.template.metadata.labels,"Deliberate mismatched selector must remain a negative exercise");
+assert.ok(sections["services-discovery"].some(x => x.code?.code.includes("kubectl --context kind-tsa-ped005")), "Service exercise must name the disposable context");
 const changed=structuredClone(obj);
 changed.spec.template.metadata.labels.app="wrong";
 assert.notDeepEqual(changed.spec.selector.matchLabels,changed.spec.template.metadata.labels,"Negative selector mismatch must be rejected");
-console.log("Cloud Kubernetes exact authored YAML parsed: selector/labels/readiness/resources and negative mismatch checked; runtime cluster UNVERIFIED.");
+console.log("Cloud Kubernetes exact authored Deployment and Service YAML parsed: ready selectors and deliberate negative cases checked; runtime cluster UNVERIFIED.");
