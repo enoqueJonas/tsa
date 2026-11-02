@@ -7,6 +7,7 @@ on:
       - curriculum/platform-builder-pedagogical-audit
       - curriculum/delivery-engineer-pedagogical-audit
       - curriculum/delivery-engineer-source-depth-v2
+      - curriculum/cloud-engineer-source-depth-v1
       - integration/tsa-audits-master-20261102
       - master
   workflow_dispatch:
@@ -48,9 +49,11 @@ jobs:
       - name: Execute Java teaching example
         run: pnpm check:java-examples
       - name: Install XML schema validator for published System Thinker examples
-        run: python -m pip install 'lxml>=5,<8' 'pyftpdlib>=2,<3' 'asyncssh>=2.20,<3'
+        run: python -m pip install 'lxml>=5,<8' 'pyftpdlib>=2,<3' 'asyncssh>=2.20,<3' 'PyYAML>=6,<7'
       - name: Execute curriculum smoke test suite
         run: pnpm test
+      - name: Validate exact Cloud Kubernetes teaching manifest and fail-closed selector mismatch
+        run: node scripts/check-cloud-k8s-lesson-source.mjs
       - name: Report cross-school code example evidence
         run: pnpm report:curriculum-examples
       - name: Execute isolated Platform service recovery drill
