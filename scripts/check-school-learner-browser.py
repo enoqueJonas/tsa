@@ -106,7 +106,20 @@ def inspect_school(page):
                 "visible_characters": len(text),
                 "code_blocks": code.count(),
             })
+            if SCHOOL == "builder" and len(visited) < count:
+                # Reproduce a long reading: navigating from its bottom must take
+                # the learner to the start of the next activity, not mid-page.
+                has_scroll = page.evaluate(
+                    "document.documentElement.scrollHeight > innerHeight + 120"
+                )
+                if has_scroll:
+                    page.evaluate("window.scrollTo(0, document.documentElement.scrollHeight)")
+                    assert page.evaluate("window.scrollY") > 30, (
+                        f"Could not establish scroll regression precondition: {activity_id}"
+                    )
             nxt.click()
+            if SCHOOL == "builder" and len(visited) < count and has_scroll:
+                page.wait_for_function("window.scrollY <= 8", timeout=8000)
         print(f"PASS {SCHOOL} module {module_index+1}/{module_count}: {count} activities", flush=True)
     assert not errors, f"Browser exceptions in {SCHOOL}: {errors}"
     # A readable page is not automatically a sufficiently developed explanation.
@@ -154,12 +167,37 @@ def check_mobile_first_module(page):
     print(f"PASS {SCHOOL} mobile first two activities at 390px", flush=True)
 
 
+def check_builder_mobile_modules(page):
+    """Check at least the first reading and follow-up for EVERY Builder module."""
+    page.goto(f"{BASE}/?view=curriculum&school=builder", wait_until="networkidle")
+    count = page.get_by_role("button", name=MODULE).count()
+    assert count >= 7, f"Expected seven Builder modules, found {count}"
+    for index in range(count):
+        page.goto(f"{BASE}/?view=curriculum&school=builder", wait_until="networkidle")
+        page.get_by_role("button", name=MODULE).nth(index).click()
+        page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+        for k in range(2):
+            main = page.locator("main").last
+            main.wait_for(timeout=30000)
+            assert main.inner_text().strip(), f"Blank Builder mobile module {index+1} activity {k+1}"
+            assert not page.evaluate(
+                "document.documentElement.scrollWidth > innerWidth + 2"
+            ), f"Horizontal overflow in Builder module {index+1} mobile activity {k+1}"
+            if k == 0:
+                page.get_by_role("button", name=NEXT).click()
+                page.wait_for_function("window.scrollY <= 8", timeout=8000)
+        print(f"PASS builder mobile module {index+1}/{count}: first two activities", flush=True)
+
+
 with sync_playwright() as playwright:
     browser = playwright.chromium.launch(headless=True)
     context = browser.new_context(viewport={"width": 1440, "height": 900})
     inspect_school(context.new_page())
     context.close()
     mobile = browser.new_context(viewport={"width": 390, "height": 844})
-    check_mobile_first_module(mobile.new_page())
+    if SCHOOL == "builder":
+        check_builder_mobile_modules(mobile.new_page())
+    else:
+        check_mobile_first_module(mobile.new_page())
     mobile.close()
     browser.close()
