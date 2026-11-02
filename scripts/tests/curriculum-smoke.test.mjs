@@ -64,6 +64,10 @@ test("Builder authorization and refresh-token rotation examples execute from lea
   runAudit("scripts/check-builder-security-teaching-examples.mjs", /Builder security teaching examples passed:/);
 });
 
+test("System Thinker XML and XSD examples execute from the actual learner source", () => {
+  runAudit("scripts/check-system-thinker-xml-teaching-examples.mjs", /System Thinker XML\\/XSD learner examples passed:/);
+});
+
 test("Java dependency-injection lesson executes and matches published output", () => {
   runAudit("scripts/check-java-teaching-examples.mjs", /Java learner-example validation passed:/);
 });
