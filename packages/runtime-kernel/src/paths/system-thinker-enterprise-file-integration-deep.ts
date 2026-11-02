@@ -30,7 +30,7 @@ function lesson(spec: Spec): Lesson {
         { type: "heading", id: `${spec.id}-outcomes`, text: "What you need to reason about", level: 2 },
         { type: "list", items: spec.criteria },
     ];
-    for (const section of [...spec.sections, ...(enterpriseBridgeBySpec[spec.id] ?? []), ...(spec.id==="batch-lifecycle"?realStewardBatchSections:[])]) {
+    for (const section of [...spec.sections, ...(enterpriseBridgeBySpec[spec.id] ?? [])]) {
         blocks.push({ type: "heading", id: `${spec.id}-${section.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`, text: section.title, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.code) blocks.push(section.code.caption
@@ -38,7 +38,7 @@ function lesson(spec: Spec): Lesson {
             : { type: "code", language: section.code.language, code: section.code.code });
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward integration boundary", body: "This path adds a file-based integration channel because a legacy enterprise dependency cannot consume Steward's REST API. The file channel is not allowed to become a second source of truth: Steward remains authoritative for its domain state and must validate every imported change." });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [...(spec.resources ?? [rfc959, opensshSftp, pythonCsv]), ...(enterpriseBridgeReferences[spec.id] ?? []), ...(spec.id==="batch-lifecycle"?realStewardBatchResources:[])] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: [...(spec.resources ?? [rfc959, opensshSftp, pythonCsv]), ...(enterpriseBridgeReferences[spec.id] ?? [])] });
 
     return {
         id: `system-thinker-enterprise-file-${spec.id}`,
@@ -212,4 +212,50 @@ const specs: Spec[] = [
     },
 ];
 
-export const enterpriseFileIntegrationDeepLessons: Lesson[] = specs.map(lesson);
+// Keep the real ORM boundary separate: Batch Processing already teaches handoff,
+// row/file atomicity and replay; this lesson demands actual guarded domain effects.
+const stewardBatchDomainSpec: Spec = {
+    id: "steward-batch-domain",
+    title: "Steward Batch Import: Authorization, Atomic Commit and Replay",
+    intro: "The previous batch lifecycle described a file handoff and a delivery ledger. This focused integration lab now makes the missing domain boundary observable on the real Builder v1 Team and Service models in a disposable PostgreSQL database. Its trusted approval and group checks are explicitly sandbox fixtures; production ownership policy D-01 remains unapproved.",
+    sections: realStewardBatchSections,
+    practiceTitle: "Lab: Deny, Apply and Replay a Steward Ownership Batch in PostgreSQL",
+    scenario: "A nightly file proposes owner-team changes. A syntactically valid file may come from an unauthorized actor or contain a proposal that lacks independent approval. A crash or a lost response must not create an unauthorized partial change or a second effect.",
+    instructions: [
+        "Build the disposable PostgreSQL-backed Builder v1 Django project using the earlier checkpoint; record the exact Builder model revision and fake identity/approval boundaries.",
+        "Run the entire published Python program. Capture ten specific observed lines, the four real Service rows, and the single receipt; do not substitute a detached SQLite simulation.",
+        "Explain why the CSV proposal ID is not an approval credential and why the actor's membership must come from trusted application context.",
+        "Reproduce the malicious second row that targets another team's Service. Record the original owners, the denied result, unchanged PostgreSQL rows and absent receipt.",
+        "Reproduce the crash after the first row but before the second and demonstrate that the database transaction rolls both owner changes and receipt back.",
+        "Prove that after a successful authorized commit, a lost reply leads to duplicate on exact replay and that a changed file under the same delivery ID is a conflict, not a new business approval.",
+        "Independently modify a copy of the lab with a novel attempted bypass (for example an unknown Service or duplicate proposal ID), predict the actual outcome and run it. Record the failure and what invariant survived.",
+        "Defend the deliberate full-file atomicity contract against per-row acceptance; identify two concrete tests still required before two concurrent file importers or a real enterprise IdP could be trusted."
+    ],
+    deliverables: [
+        "Actual Builder v1 Django/PostgreSQL run log and exact code revision",
+        "Before/after owner and receipt snapshots for denied, crash and committed cases",
+        "Original independent negative variant with predicted and observed result",
+        "Approval and trust-boundary diagram clearly separating sandbox fixture from production",
+        "Provisional full-file-vs-row atomicity and concurrency decision with UNVERIFIED evidence"
+    ],
+    criteria: [
+        "The same committed SQL transaction covers the owner mutations and one delivery receipt; a crash or denied later row leaves both unchanged.",
+        "Trusted approval is not accepted from the inbound CSV alone; forged/unauthorized proposals are denied and source of actor membership is explicit.",
+        "A lost response replay returns duplicate, while same-ID modified bytes returns conflict without changing the domain again.",
+        "A learner supplies one truly novel failed case and explains the invariant unprompted rather than copying the ten expected stdout messages.",
+        "No real enterprise authorization, IdP, vendor delivery or concurrent-importer correctness is claimed from this isolated lab."
+    ],
+    questions: [
+        "How can a file have a valid SHA-256 digest and still request an illegal Team transfer?",
+        "Why must a delivery receipt and two successful owner changes be committed inside the same database transaction for this all-or-nothing contract?",
+        "What changed between a network-lost success response and a database rollback, and what can the consumer infer on retry?",
+        "Which assumption is no longer valid if business requires per-row partial acceptance, and what must change to handle two importers racing?"
+    ],
+    resources: realStewardBatchResources,
+};
+
+export const enterpriseFileIntegrationDeepLessons: Lesson[] = specs.flatMap((spec) =>
+    spec.id === "batch-lifecycle"
+        ? [lesson(spec), lesson(stewardBatchDomainSpec)]
+        : [lesson(spec)]
+);
