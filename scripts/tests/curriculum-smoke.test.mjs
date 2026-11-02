@@ -84,6 +84,10 @@ test("Platform Builder separates NFS, Samba, LDAP and AD schema comparison into 
   runAudit("scripts/check-platform-builder-file-directory-split.mjs", /Platform Builder enterprise files and directory lesson split passed:/);
 });
 
+test("Delivery Engineer shell lesson executes source-derived guarded failure and pipefail negative paths", () => {
+  runAudit("scripts/check-delivery-shell-negative.mjs", /Delivery Engineer exact published Bash negative paths passed:/);
+});
+
 test("System Thinker XML and XSD examples execute from the actual learner source", () => {
   runAudit("scripts/check-system-thinker-xml-teaching-examples.mjs", /System Thinker XML/);
 });
