@@ -3,6 +3,7 @@ import type { LearningResource, LessonBlock } from "../activities/content";
 import {workedByModule, primaryResearchByModule} from "./system-thinker-intermediate-worked";
 import {ambiguousHttpWorkedSections,ambiguousHttpResources} from "./system-thinker-http-ambiguous-commit-worked";
 import {stewardDomainBoundarySections,stewardDomainBoundaryResources} from "./system-thinker-steward-domain-boundary-worked";
+import {flowRunningCase,flowRunningReferences} from "./system-thinker-flow-running-case";
 
 const sequenceDiagrams: LearningResource = { title: "Sequence diagrams", url: "https://www.uml-diagrams.org/sequence-diagrams.html" };
 const httpSemantics: LearningResource = { title: "HTTP Semantics", url: "https://www.rfc-editor.org/rfc/rfc9110" };
@@ -30,7 +31,7 @@ function richLesson(
         { type: "list", items: outcomes },
     ];
 
-    for (const section of [...sections, ...(workedByModule["flow"]?.[title] ?? [])]) {
+    for (const section of [...sections, ...(flowRunningCase[title] ?? []), ...(workedByModule["flow"]?.[title] ?? [])]) {
         blocks.push({ type: "heading", id: slug(section.title), text: section.title, level: 2 });
         for (const text of section.paragraphs) blocks.push({ type: "paragraph", text });
         if (section.code) {
@@ -46,7 +47,7 @@ function richLesson(
         title: "Steward connection",
         body: "Trace Steward flows across authorization, domain rules, persistence and integration boundaries. A useful flow model shows where data changes meaning, ownership or assurance—not every function call.",
     });
-    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...(primaryResearchByModule["flow"] ?? [])] });
+    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...(flowRunningReferences[title] ?? []), ...(primaryResearchByModule["flow"] ?? [])] });
 
     return {
         id,
