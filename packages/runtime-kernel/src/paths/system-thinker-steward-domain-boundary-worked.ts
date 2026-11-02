@@ -51,6 +51,18 @@ export const stewardDomainBoundaryResources: LearningResource[] = [
     "kind": "reference"
   },
   {
+    "title": "DjangoCon Europe 2026 — Where did it all BEGIN? (transaction nesting and durability)",
+    "url": "https://www.djangotv.com/videos/djangocon-europe/2026/djangocon-europe-2026-where-did-it-all-begin/",
+    "kind": "video",
+    "purpose": "Optional 29-minute expert lecture on atomic, savepoints, rollback and transaction ownership. Description verified, video not fully watched."
+  },
+  {
+    "title": "Django Day Copenhagen — Pessimism, optimism, realism and Django database concurrency",
+    "url": "https://www.djangotv.com/videos/django-day-copenhagen/2023/aivars-kalvans-pessimism-optimism-realism-and-django-database-concurrency-django-day-cph-2023/",
+    "kind": "video",
+    "purpose": "Optional detailed lecture on select_for_update, optimistic version checks, lost updates and locking trade-offs; description verified, not fully watched."
+  },
+  {
     "title": "PostgreSQL row locking and transaction isolation",
     "url": "https://www.postgresql.org/docs/current/explicit-locking.html",
     "kind": "reference"
