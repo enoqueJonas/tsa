@@ -104,6 +104,48 @@ jobs:
       - name: Execute exact published Redis and RabbitMQ learner examples against live services
         run: node scripts/check-system-thinker-live-dependency-primers.mjs
 
+  system-thinker-real-steward-domain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: tsa_steward_lab
+          POSTGRES_USER: tsa_learner
+          POSTGRES_PASSWORD: tsa_local_ci_only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U tsa_learner -d tsa_steward_lab"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install PostgreSQL client if absent
+        run: |
+          if ! command -v psql >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y postgresql-client
+          fi
+      - name: Install actual Django/PostgreSQL ORM dependencies
+        run: python -m pip install 'Django>=5.2,<6' 'psycopg[binary]>=3,<4'
+      - name: Execute exact System Thinker code on published Builder Steward domain sources
+        env:
+          PGHOST: 127.0.0.1
+          PGPORT: '5432'
+          PGDATABASE: tsa_steward_lab
+          PGUSER: tsa_learner
+          PGPASSWORD: tsa_local_ci_only
+        run: node scripts/check-system-thinker-steward-django-domain.mjs
+
   system-thinker-outbox-crash-recovery:
     runs-on: ubuntu-latest
     timeout-minutes: 12
