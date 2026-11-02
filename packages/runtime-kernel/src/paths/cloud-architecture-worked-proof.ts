@@ -1,6 +1,6 @@
 // PED-005 Cloud architecture and cost: measurable worked models, explicitly
 // fictional unit costs, and independent failure/transfer questions.
-export type CloudCostSection = { heading:string; paragraphs:string[]; code?:{language:string;caption?:string;code:string} };
+export type CloudCostSection = { heading:string; paragraphs:string[]; list?:string[]; code?:{language:string;caption?:string;code:string} };
 export const architectureDepthById: Record<string,CloudCostSection[]> = {
   "availability": [
     {
