@@ -1,0 +1,15 @@
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+import {spawnSync} from "node:child_process";
+const source=readFileSync("packages/runtime-kernel/src/paths/reliability-tracing-propagation-worked.ts","utf8");
+const authored=readFileSync("packages/runtime-kernel/src/paths/reliability-distributed-tracing-implementation-deep.ts","utf8");
+assert.ok(authored.includes("...tracingPropagationBlocks"),"Real tracing reading must include worked context boundaries");
+const match=source.match(/export const localTraceContextPython=("(?:\\.|[^"\\])*");/);
+assert.ok(match,"No exact source-published traceparent code");
+const code=JSON.parse(match[1]);
+assert.ok(code.includes("message_headers")&&code.includes("broken_headers"),"Positive and missing propagation must both be taught");
+const r=spawnSync("python3",["-c",code],{encoding:"utf8",timeout:12000});
+assert.ifError(r.error);assert.equal(r.status,0,r.stderr);
+assert.match(r.stdout,/linked producer\/consumer trace_id: 0af7651916cd43dd8448eb211c80319c/);
+assert.match(r.stdout,/missing propagation detected: YES/);
+console.log("PASS actual tracing source W3C ID retention/missing propagation demonstration; real Tempo/RabbitMQ/OTel UNVERIFIED.");
