@@ -1,5 +1,6 @@
 import type { Lesson } from "./lesson";
 import type { LearningResource, LessonBlock } from "../activities/content";
+import {workedByModule, primaryResearchByModule} from "./system-thinker-intermediate-worked";
 
 const c4Context: LearningResource = { title: "C4 model — System Context diagram", url: "https://c4model.com/diagrams/system-context" };
 const arc42Context: LearningResource = { title: "arc42 — Context and Scope", url: "https://docs.arc42.org/section-3/" };
@@ -28,7 +29,7 @@ function readingLesson(
         ] },
     ];
 
-    for (const section of sections) {
+    for (const section of [...sections, ...(workedByModule["boundaries"][title] ?? [])]) {
         blocks.push({ type: "heading", id: slug(section.title), text: section.title, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.code) {
@@ -44,7 +45,7 @@ function readingLesson(
         title: "Steward connection",
         body: "Steward is an Engineering Service Registry and Technology Stewardship platform. The system boundary must be derived from the problem it owns, not from whichever Django models, endpoints or deployment units happen to exist today.",
     });
-    blocks.push({ type: "resources", title: "Required and supporting reading", resources });
+    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...primaryResearchByModule["boundaries"]] });
 
     return {
         id,

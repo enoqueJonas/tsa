@@ -1,5 +1,6 @@
 import type { Lesson } from "./lesson";
 import type { LearningResource, LessonBlock } from "../activities/content";
+import {workedByModule, primaryResearchByModule} from "./system-thinker-intermediate-worked";
 
 const c4Model: LearningResource = { title: "C4 model", url: "https://c4model.com/" };
 const arc42: LearningResource = { title: "arc42 Documentation Template", url: "https://arc42.org/overview" };
@@ -26,7 +27,7 @@ function richLesson(
         { type: "list", items: outcomes },
     ];
 
-    for (const section of sections) {
+    for (const section of [...sections, ...(workedByModule["components"][title] ?? [])]) {
         blocks.push({ type: "heading", id: slug(section.title), text: section.title, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.code) {
@@ -42,7 +43,7 @@ function richLesson(
         title: "Steward connection",
         body: "Treat Steward's implementation as evidence, not as proof that its current component boundaries are correct. The goal is to expose responsibility, dependency direction and change impact clearly enough for technical review.",
     });
-    blocks.push({ type: "resources", title: "Required and supporting reading", resources });
+    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...primaryResearchByModule["components"]] });
 
     return {
         id,
