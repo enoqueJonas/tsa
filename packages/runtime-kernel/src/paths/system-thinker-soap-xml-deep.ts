@@ -8,13 +8,14 @@ const xmlNamespaces:LearningResource={title:"W3C — Namespaces in XML",url:"htt
 const xsdSpec:LearningResource={title:"W3C — XML Schema Definition Language 1.1",url:"https://www.w3.org/TR/xmlschema11-1/",kind:"reference"};
 const wsdlSpec:LearningResource={title:"W3C — Web Services Description Language (WSDL) 1.1",url:"https://www.w3.org/TR/2001/NOTE-wsdl-20010315",kind:"reference"};
 const soapSpec:LearningResource={title:"W3C — SOAP Version 1.2",url:"https://www.w3.org/TR/soap12-part1/",kind:"reference"};
+const soap11Spec:LearningResource={title:"W3C — SOAP 1.1 (2000)",url:"https://www.w3.org/TR/2000/NOTE-SOAP-20000508/",kind:"reference",purpose:"Clarify the SOAP 1.1 text/xml and SOAPAction binding used in the minimal executable provider, separately from SOAP 1.2 conventions."};
 const owaspXxe:LearningResource={title:"OWASP — XML External Entity Prevention",url:"https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html",kind:"reference"};
 const pythonElementTree:LearningResource={title:"Python — ElementTree namespace parsing",url:"https://docs.python.org/3/library/xml.etree.elementtree.html",kind:"reference"};
 const lxmlSchemaDocs:LearningResource={title:"lxml — XML Schema validation",url:"https://lxml.de/validation.html",kind:"reference"};
 const namespaceVideo:LearningResource={title:"Automation Step by Step — XML Namespace tutorial",url:"https://www.youtube.com/watch?v=VTQRGDhH6WQ",kind:"video",purpose:"Optional visual reinforcement on prefixes, default namespaces and name collisions; the worked lab is self-contained."};
 const resourcesBySoap:Record<string,LearningResource[]>={
  "soap-xml-document-model":[xmlSpec,xmlNamespaces,pythonElementTree,owaspXxe,namespaceVideo],"soap-xml-xsd-contract":[xsdSpec,xmlNamespaces,lxmlSchemaDocs],
- "soap-wsdl-contract":[wsdlSpec,xsdSpec],"soap-envelope-faults":[soapSpec,wsdlSpec],
+ "soap-wsdl-contract":[wsdlSpec,xsdSpec,soap11Spec],"soap-envelope-faults":[soap11Spec,soapSpec,wsdlSpec],
  "soap-service-implementation":[wsdlSpec,soapSpec],"soap-steward-consumer":[wsdlSpec,soapSpec],
  "soap-contract-testing-failure":[xsdSpec,wsdlSpec],"soap-xml-milestone":[xmlSpec,xsdSpec,wsdlSpec,soapSpec],
 };

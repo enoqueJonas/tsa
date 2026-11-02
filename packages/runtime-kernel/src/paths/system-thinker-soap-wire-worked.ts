@@ -1,6 +1,6 @@
 // A minimal, self-contained SOAP 1.1 protocol experiment, not a production provider.
 // Original worked trace based on W3C WSDL 1.1 and SOAP 1.1 wire conventions.
-export const soapWireTeachingSections = {
+export const soapWireTeachingSections: Record<string, {title:string;paragraphs:string[];code?:{language:string;caption?:string;code:string}}[]> = {
     "soap-wsdl-contract": [
         {
             "title": "Read the complete contract in layers before trusting a client generator",
