@@ -5,6 +5,12 @@
 **Base:** `curriculum/platform-builder-pedagogical-audit` branched from `curriculum/system-thinker-pedagogical-audit` after System Thinker source remediation was closed. This is a **stacked branch**, not an independent merge of #333.  
 **State:** FULL-SCHOOL INVENTORY INITIATED; substantive lesson-by-lesson learner-order classification/remediation remains in progress. No claim of independent learner validation.
 
+## Module 1–2 instructional read-through and structural correction (2026-11-02)
+
+[Full per-lesson classification and evidence](./ped-005-platform-builder-foundations-readthrough.md): five authored Computer/OS concepts plus one baseline lab, and thirteen Linux concepts plus SELinux, firewalld and an operational service lab. **These are source dispositions, not learner-validated scores.** Removed fifteen nominal 3-note readiness lessons from all paths (activity census 377 → 362) and corrected the old test that rewarded their word count. Replaced the Linux Ubuntu/APT runtime rewrite with directly authored Rocky/DNF teaching, guarded against environment-secret disclosure and empty-file overwrite, strengthened OS syscall and Linux SELinux/firewalld failure mechanisms, and wired a source-derived Python negative example into CI.
+
+**Still pending:** some thin Linux lessons (especially scheduled tasks and mounts), learner-managed Rocky/SSH/SELinux/firewalld evidence, manual pedagogical review, and the full school modules 3–15. The next source work remains Networking Foundations in learner order, not another school. Initial browser traverse reached every one of the 362 Platform Builder entries; matching-head CI after updating the hardcoded census remains to be confirmed.
+
 ## Canonical order — all 15 paths
 
 The real entrypoint is `packages/runtime-kernel/src/paths/platform-builder.ts`. A generated operational-readiness reading currently precedes each imported lesson collection; **do not credit this short introduction as proof that its underlying lessons teach deeply**.
