@@ -21,4 +21,5 @@ const r=spawnSync("python3",["-c",py],{encoding:"utf8",timeout:12000});
 assert.ifError(r.error);assert.equal(r.status,0,r.stderr);
 assert.match(r.stdout,/process_probe_success=1\.00/);
 assert.match(r.stdout,/user_operation_success=0\.50/);
+assert.match(r.stdout,/authorized_operation_denied_success=0\.00/);
 console.log("PASS seven SRE source topics plus source-published green-probe/failed-operation negative; live Steward unverified.");
