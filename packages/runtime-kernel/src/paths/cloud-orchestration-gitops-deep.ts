@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { kubernetesFoundationsById } from "./cloud-kubernetes-foundations-worked";
 
 const kubernetesDocs: LearningResource = { title: "Kubernetes Documentation", url: "https://kubernetes.io/docs/" };
 const openshiftDocs: LearningResource = { title: "Red Hat OpenShift Documentation", url: "https://docs.redhat.com/en/documentation/openshift_container_platform" };
@@ -20,7 +21,7 @@ interface LessonSpec {
 
 function richLesson(spec: LessonSpec): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    for (const section of spec.sections) {
+    for (const section of [...spec.sections, ...(kubernetesFoundationsById[spec.id] ?? [])]) {
         blocks.push({ type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.list) blocks.push({ type: "list", items: section.list });

@@ -128,27 +128,39 @@ if (!cloud || cloud.paths.length !== 11) {
   problems.push("Cloud Engineer must expose 11 learning paths");
 } else {
   for (const path of cloud.paths) {
-    const first = path.lessons?.[0];
-    const blocks = first?.activities?.[0]?.content?.blocks;
-    if (first?.id !== `${path.id}-operational-model` ||
-        !Array.isArray(blocks) ||
-        !blocks.some((block) => block.type === "heading" && block.id === "worked-experiment") ||
-        !blocks.some((block) => block.type === "heading" && block.id === "failure-analysis")) {
-      problems.push(`Missing Cloud Engineer worked foundation: ${path.id}`);
+    if (path.lessons.length < 1) problems.push(`Cloud path missing actual source lessons: ${path.id}`);
+    if (path.lessons.some((lesson) => lesson.id.endsWith("-operational-model"))) {
+      problems.push(`Generic Cloud orientation must not replace source teaching: ${path.id}`);
     }
+    if (path.id === "cloud-orchestration-gitops" && path.lessons.length !== 17) {
+      problems.push("Cloud orchestration must retain 16 original concept lessons plus its milestone");
+    }
+    let readings = 0, practices = 0;
     for (const lesson of path.lessons) {
-      lesson.activities.forEach((activity, index) => {
-        if (activity.content.type !== "practical") return;
-        const intro = lesson.activities[index - 1];
-        const teaching = intro?.content?.blocks;
-        if (intro?.content?.type !== "reading" ||
-            !intro.id.endsWith("-cloud-preparation") ||
-            !Array.isArray(teaching) ||
-            !teaching.some((block) => block.type === "heading" && block.id === "acceptance") ||
-            !teaching.some((block) => block.type === "heading" && block.id === "failure")) {
-          problems.push(`Cloud lab missing preparation: ${path.id}/${lesson.id}/${activity.id}`);
+      const activities = lesson.activities ?? [];
+      const authored = activities.filter((activity) => activity.content.type === "reading");
+      if (activities.some((activity) => activity.id.endsWith("-cloud-preparation"))) {
+        problems.push(`Duplicated generic Cloud lab preparation: ${path.id}/${lesson.id}`);
+      }
+      if (path.id === "cloud-orchestration-gitops" && lesson.id !== "cloud-orchestration-gitops-milestone") {
+        if (!activities.some((activity) => activity.content.type === "practical") ||
+            !activities.some((activity) => activity.content.type === "reflection")) {
+          problems.push(`Kubernetes lesson missing original practice/transfer: ${lesson.id}`);
         }
-      });
+      }
+      for (const activity of authored) {
+        readings++;
+        const blocks = activity.content.blocks;
+        const headings = Array.isArray(blocks) ? blocks.filter((block) => block.type === "heading") : [];
+        const explanations = Array.isArray(blocks) ? blocks.filter((block) => block.type === "paragraph") : [];
+        if (!Array.isArray(blocks) || headings.length < 2 || explanations.length < 1) {
+          problems.push(`Cloud authored reading lacks concept/explanation depth: ${path.id}/${lesson.id}/${activity.id}`);
+        }
+      }
+      practices += activities.filter((activity) => activity.content.type === "practical").length;
+    }
+    if (!readings || !practices) {
+      problems.push(`Cloud path lacks real authored reading or practical: ${path.id} (readings=${readings}, practicals=${practices})`);
     }
   }
 }

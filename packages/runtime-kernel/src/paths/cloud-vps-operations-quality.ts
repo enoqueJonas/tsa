@@ -117,40 +117,14 @@ const practices: Record<string, PracticalContent> = {
     },
 };
 
-function alignRockyLinux(lesson: Lesson): Lesson {
+function enrichLesson(lesson: Lesson): Lesson {
+    const practice = practices[lesson.title];
+    if (!practice) return lesson;
     return {
         ...lesson,
-        activities: lesson.activities.map((activity) => {
-            if (activity.content.type !== "reading" || !activity.content.blocks) return activity;
-            return {
-                ...activity,
-                content: {
-                    ...activity.content,
-                    blocks: activity.content.blocks.map((block) => {
-                        if (block.type === "code" && block.caption === "Ubuntu patch baseline") {
-                            return {
-                                ...block,
-                                caption: "Rocky Linux patch baseline",
-                                code: "sudo dnf check-update || true\nsudo dnf updateinfo list --security || true\nsudo dnf upgrade --refresh",
-                            };
-                        }
-                        return block;
-                    }),
-                },
-            };
-        }),
-    };
-}
-
-function enrichLesson(lesson: Lesson): Lesson {
-    const aligned = alignRockyLinux(lesson);
-    const practice = practices[aligned.title];
-    if (!practice) return aligned;
-    return {
-        ...aligned,
-        activities: aligned.activities.map((activity) =>
+        activities: lesson.activities.map((activity) =>
             activity.content.type === "practical" && activity.title.startsWith("Apply:")
-                ? { ...activity, title: `${aligned.title}: Steward VPS Investigation`, estimatedMinutes: 60, content: practice }
+                ? { ...activity, title: `${lesson.title}: Steward VPS Investigation`, estimatedMinutes: 60, content: practice }
                 : activity,
         ),
     };

@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { iacDepthById } from "./cloud-iac-local-proof";
 
 const terraformDocs: LearningResource = { title: "HashiCorp Terraform Documentation", url: "https://developer.hashicorp.com/terraform/docs" };
 const openTofuDocs: LearningResource = { title: "OpenTofu Documentation", url: "https://opentofu.org/docs/" };
@@ -18,7 +19,7 @@ interface LessonSpec {
 
 function richLesson(spec: LessonSpec): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    for (const section of spec.sections) {
+    for (const section of [...spec.sections, ...(iacDepthById[spec.id] ?? [])]) {
         blocks.push({ type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.list) blocks.push({ type: "list", items: section.list });

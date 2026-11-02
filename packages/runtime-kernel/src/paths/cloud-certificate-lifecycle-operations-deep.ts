@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { certificateLocalProofBlocks } from "./cloud-observable-local-proofs";
 
 const letsEncrypt: LearningResource = { title: "Let's Encrypt documentation", url: "https://letsencrypt.org/docs/" };
 const certbot: LearningResource = { title: "Certbot documentation", url: "https://eff-certbot.readthedocs.io/" };
@@ -23,6 +24,7 @@ const blocks: LessonBlock[] = [
         "Recover: diagnose a deliberately broken renewal path, repair it and prove lifecycle health."
     ] },
     { type: "callout", tone: "steward", title: "Operational definition of done", body: "A successful ACME command is not enough. The public Steward endpoint must serve the expected renewed certificate, and operators must receive useful warning before expiry if automation stops working." },
+    ...certificateLocalProofBlocks,
     { type: "resources", title: "Continue learning", resources: [letsEncrypt, certbot, openssl] },
 ];
 
