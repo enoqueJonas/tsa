@@ -64,6 +64,10 @@ test("Builder authorization and refresh-token rotation examples execute from lea
   runAudit("scripts/check-builder-security-teaching-examples.mjs", /Builder security teaching examples passed:/);
 });
 
+test("Platform Builder avoids superficial readiness wrappers and teaches safe Rocky Linux/SELinux/firewalld mechanisms", () => {
+  runAudit("scripts/check-platform-builder-foundations-source.mjs", /Platform Builder foundations source guard passed:/);
+});
+
 test("System Thinker XML and XSD examples execute from the actual learner source", () => {
   runAudit("scripts/check-system-thinker-xml-teaching-examples.mjs", /System Thinker XML/);
 });
