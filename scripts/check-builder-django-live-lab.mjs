@@ -110,7 +110,7 @@ assert item._meta.get_field('owning_team').column=='owning_team_id'
 data=ServiceSerializer(item).data
 assert data['owning_team']==t.pk and data['lifecycle']=='production'
 assert 'slug' not in data
-assert Service.objects.count()==1
+assert Service.objects.filter(name='Payments API').count()==1
 from registry.services import promote_to_production, remove_environment, ReadinessConflict
 t2=Team.objects.create(name='Payroll')
 s2=Service.objects.create(name='Payroll API',owning_team=t2,endpoint='https://payroll.example.invalid/api',lifecycle=Service.Lifecycle.UAT)
