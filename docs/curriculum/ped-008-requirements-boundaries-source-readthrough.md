@@ -53,7 +53,7 @@ OBS-01 is an **invented rehearsal**, not an actual incident. A service owner loo
 - [x] Exact source file authored for all six Requirements lessons and all four Boundary conceptual lessons; **12 + 8 = 20 new teaching sections**.
 - [x] Original lesson IDs and practical IDs preserved. Cross-module order remains System Thinker's canonical order.
 - [x] Two source-derived curriculum smoke regressions cover section presence, progressive substance, worked artifacts, negative challenges and actual lesson composition; they cannot judge the truth of a learner's answer.
-- [ ] Match the latest source commit with complete TypeScript, test/build and whole-school desktop + narrow-mobile browser traversal evidence; insert verified workflow SHA when completed.
+- [x] Tested at source head `bb897384`: [workflow #41449638324](https://github.com/enoqueJonas/tsa/actions/runs/41449638324) **19/19 jobs passed**, including three linked-case checks, build, 212 desktop and 212 390px mobile activities, and synthetic IndexedDB hard-reload persistence. This is not independent learner validation.
 - [ ] Observe a novice uncoached explanation of *why a dashboard does not fix wrong source records* and *why a system context excludes the internal PostgreSQL process*.
 - [ ] Examine independent original requirements, quality-scenario measurements and boundary diagrams; score against the PED-008 transfer rubric with counterexamples and recorded review notes.
 - [ ] Confirm actual Steward actor membership and external IdP contracts before treating placeholder Team approval logic as production requirements.
