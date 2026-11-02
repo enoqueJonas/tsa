@@ -6,6 +6,27 @@ export const observabilityStackIntegrationDeepLessons: Lesson[] = [
     title: "Observability Stack Integration: Graylog, Prometheus and Grafana",
     activities: [
       {
+        id: "reliability-observability-stack-integration-000",
+        title: "Correlate One Incident Across Logs, Metrics and Traces",
+        estimatedMinutes: 55,
+        content: {
+          type: "reading",
+          body: "Follow a real user failure through separately owned telemetry contracts before implementing the Graylog, Prometheus and Grafana stack.",
+          blocks: [
+            { type: "heading", id: "correlation-goal", text: "Start with one user-visible failure and three diagnostic questions", level: 2 },
+            { type: "paragraph", text: "Suppose a Steward registration request returns HTTP 503 after 2.8 seconds. The reliability question is not whether Grafana, Graylog and Tempo all have green dashboards. First establish impact: did users fail or time out and how often? A request counter and duration histogram can show the rate and latency distribution. Second establish what occurred for a specific request: a sanitized structured event with request ID, component, operation, outcome and dependency error. Third reconstruct timing and propagation: a trace containing the API span, database attempt and publisher/worker handoff if actually instrumented. Three signals are complementary, not interchangeable. A missing trace does not imply the database succeeded, and a green API /health does not imply registration succeeds." },
+            { type: "heading", id: "correlation-identifiers", text: "Know which identifiers connect the evidence", level: 2 },
+            { type: "paragraph", text: "A request ID identifies one application interaction, while a W3C trace ID identifies a distributed trace context that may cross boundaries. They can be stored together but are not identical. Neither is a user authentication token. Propagate trace context through HTTP and async messaging deliberately; record the relevant request and trace identifiers in sanitized logs and trace attributes. Prometheus label cardinality should remain bounded: putting every unique request ID into time-series labels is an anti-pattern, because each distinct label set creates a new series. A log store or tracing backend is the right place to find individual high-cardinality IDs." },
+            { type: "heading", id: "causal-walkthrough", text: "Trace symptom → metric → log → span → action → verification", level: 2 },
+            { type: "paragraph", text: "A user-facing SLI alert shows a higher error ratio over the last 10 minutes. Preserve the PromQL expression, numerator, denominator and missing-data policy, and first distinguish a real increase in user errors from missing scrape targets. Filter Graylog to the same environment/time range, service and event_name, then narrow by the sanitized request or trace ID. Inspect whether parsing, timestamp or stream rules could have omitted events; an HTTP 202 to a GELF input is not the same thing as an indexed search result. Open the trace for the same trace ID and compare API, DB and worker span timings. Choose one causal hypothesis backed by all available evidence, repair only the relevant failure boundary, and then repeat the same user-level request and SLI query. If spans are absent, mark the causal conclusion lower-confidence instead of inventing timing." },
+            { type: "heading", id: "responsibility-ownership", text: "One owner per signal and a deliberate failure path", level: 2 },
+            { type: "paragraph", text: "Graylog owns centralized, searchable, sanitized events plus ingestion/retention policy. Prometheus owns scraped, labeled metrics and PromQL evaluation. Grafana visualizes and links operational evidence; its panel being green is not source truth. The tracing backend (Tempo when selected by the prior decision) stores and retrieves traces. Each component has independent storage, access, reliability, cost, retention and failure boundaries. If Graylog ingestion stops, the application must follow its defined degradation and buffering contract; do not make core transactions wait forever for optional telemetry. If Prometheus goes down, silence is missing evidence, not zero errors. If a trace is sampled out, the absence of spans must not be misreported as a healthy dependency." },
+            { type: "heading", id: "independent-diagnostic", text: "Failure and independent transfer before dashboard construction", level: 2 },
+            { type: "paragraph", text: "Case A: Prometheus reports API error spikes, Graylog returns zero results because one synthetic event has a timestamp two hours in the past, and Tempo has a matching trace. Explain the correct Graylog time-range fix and why restarting Prometheus would not repair log search. Case B: Graylog contains multiple authorization_denied events but a dashboard's http_5xx counter remains flat: HTTP 403 failures need a separately defined policy/user-outcome metric, not automatic classification as server errors. Case C: request ID matches across API and gateway logs, but queue consumer trace context was not propagated: state exactly which causal timing is still unverified. Record the query, exact matching IDs, interpretation and next safe action for each." },
+          ]
+        }
+      },
+      {
         id: "reliability-observability-stack-integration-001",
         title: "Implement the Steward Observability Stack",
         estimatedMinutes: 300,
