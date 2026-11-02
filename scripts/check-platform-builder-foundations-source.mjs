@@ -64,4 +64,11 @@ for(const evidence of [
   "closed descriptor: EBADF",
   "OS resources reclaimed after temporary fixture exit",
 ])assert.ok(result.stdout.includes(evidence),"Missing OS observation "+evidence+"\n"+result.stdout);
+const proxmox=read("platform-builder-proxmox-homelab-deep");
+const windows=read("platform-builder-windows-powershell-enterprise-deep");
+for(const topic of ["proxmox-install-secure","proxmox-failure-localization","proxmox-host-maintenance"])
+  assert.ok(proxmox.includes('"'+topic+'": ['),"Missing substantive pre-lab Proxmox teaching: "+topic);
+assert.ok(windows.includes('"windows-linux-interoperability": [')&&windows.includes('activities: teachWindowsFoundation("windows-linux-interoperability"'),"Missing cross-OS file/DNS/identity teaching before exercise");
+for(const heading of ["Cron and systemd timers represent different schedules","An existing directory can hide an absent backing mount"])
+  assert.ok(linux.includes(heading),"Linux operational negative-case prerequisite lost: "+heading);
 console.log("Platform Builder foundations source guard passed: 15 thin wrappers removed, 5 real OS lessons, 13 canonical Rocky Linux lessons, protected config and SELinux/firewalld failure teaching.");

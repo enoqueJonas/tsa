@@ -207,7 +207,7 @@ def check_complete_modules(page):
     # Rebaseline against the actual registered 15 Platform modules: GitHub Actions
     # browser traversal observed 377 unique activities on 2026-11-01. The former
     # 328 fixture was stale; keep a fixed expectation so unexpected changes fail.
-    # PED-005 deliberately removed one superficial generated readiness activity from each of 15 paths.\n    # A real rendered traversal above still proves all authored entries are present.\n    # Two new focused labs (SMB and OpenLDAP comparison) add four authored activities.\n    assert visited_total == 366, f"Platform Builder activity count changed: {visited_total}; update audit census deliberately"
+    # PED-005 deliberately removed one superficial generated readiness activity from each of 15 paths.\n    # A real rendered traversal above still proves all authored entries are present.\n    # Two new focused labs (SMB and OpenLDAP comparison) add four authored activities.\n    # Three Proxmox concept readings and one Windows Linux cross-boundary reading add four authored activities.\n    assert visited_total == 370, f"Platform Builder activity count changed: {visited_total}; update audit census deliberately"
     (OUT / "activity-coverage.json").write_text(
         json.dumps({"modules": modules, "activities": evidence}, indent=2), encoding="utf-8"
     )
