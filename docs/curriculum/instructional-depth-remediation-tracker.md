@@ -38,7 +38,7 @@ The audit proceeds in learner progression order so later schools can rely only o
 | ---: | --- | --- | --- | --- |
 | 1 | Engineering Apprentice | Thinking Like an Engineer; Systems Thinking; Trade-offs; Debugging Mindset; Engineering Foundations/workbench; milestone/checks | AUDIT IN PROGRESS | Every lesson classified; thin lessons rewritten; rendered spot-check; duration sanity check |
 | 2 | Builder | Builder fundamentals and implementation paths | REMEDIATED | Every live path classified and source-level gaps remediated; build/integrity and rendered UI validation remain pending |
-| 3 | System Thinker | 11 modules; requirements, C4, components, integration, SOAP/XML, file transfer, distributed messaging, failures, ADRs and milestone | AUDIT IN PROGRESS — SOURCE/ISOLATED PROTOCOL REMEDIATED, NOT LEARNER ACCEPTED | At `1e68a4e6`, 19/19 CI jobs and 212 desktop/mobile System Thinker activities passed. Modules 1–3 connected synthetic cases are now composed into lessons; modules 1–2 source gates passed at a tested code revision and module 3's newest CI is pending; final matching-docs CI still pending. Data Flow now has six lessons: real HTTP ambiguous commit/replay and actual Builder Steward Django/PG domain tests. Real concurrent PostgreSQL/RabbitMQ claim and local SFTP host-key/transfer tests add concrete failure evidence, not enterprise deployment or novice transfer. Independent visual review, Steward domain integration and scored learner work remain blocked. See #332 and draft #333. |
+| 3 | System Thinker | 11 modules; requirements, C4, components, integration, SOAP/XML, file transfer, distributed messaging, failures, ADRs and milestone | AUDIT IN PROGRESS — SOURCE/ISOLATED PROTOCOL REMEDIATED, NOT LEARNER ACCEPTED | At `1e68a4e6`, 19/19 CI jobs and 212 desktop/mobile System Thinker activities passed. Modules 1–3 connected synthetic cases are now composed into lessons; all three source continuity checks, tests/build and 212 desktop/mobile activities passed at `bb897384` (19/19 CI jobs); final matching-docs CI still pending. Data Flow now has six lessons: real HTTP ambiguous commit/replay and actual Builder Steward Django/PG domain tests. Real concurrent PostgreSQL/RabbitMQ claim and local SFTP host-key/transfer tests add concrete failure evidence, not enterprise deployment or novice transfer. Independent visual review, Steward domain integration and scored learner work remain blocked. See #332 and draft #333. |
 | 4 | Platform Builder | OS/Linux/networking/virtualization/storage/core services/Ansible/patching/Windows | NOT STARTED | Same school exit gate |
 | 5 | Delivery Engineer | build/test/package/artifacts/GitLab CI/CD/release | NOT STARTED | Same school exit gate |
 | 6 | Cloud Engineer | provider abstractions/IaC/orchestration/GitOps/cloud operations | NOT STARTED | Same school exit gate |
@@ -88,7 +88,7 @@ The audit proceeds in learner progression order so later schools can rely only o
 | `pnpm build` | PENDING LOCAL EXECUTION | Must be run from a checked-out workspace after the remediation changes. |
 | Rendered UI spot-check | NOT STARTED | Perform after a build/deployment containing the remediated lessons. |
 
-Builder audit may proceed in parallel at source level, but Engineering Apprentice must not be marked VALIDATED until the pending gates pass.
+Historical note superseded: one-school-at-a-time audit rule prohibits concurrent school remediation. System Thinker (PED-008) remains the sole active school until its evidence-backed disposition is recorded.
 
 ## Builder audit findings
 
