@@ -1,5 +1,6 @@
 import type { Lesson } from "./lesson";
 import {redisLivePrimerSections,rabbitLivePrimerSections} from "./system-thinker-distributed-live-primer";
+import {realOutboxWorkedSections} from "./system-thinker-real-outbox-worked";
 import type { LessonBlock, LearningResource } from "../activities/content";
 
 const redis: LearningResource = { title:"Redis — Run Open Source on Docker", url:"https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/docker/", kind:"reference" };
@@ -156,6 +157,7 @@ export const distributedStateStagedLabs: Lesson[] = [
             "Measure queue growth, unprocessed outbox rows and oldest-event age. Define cleanup/retention only after delivery is durable and auditable, and prove concurrency handling when two outbox publishers race to claim the same row."
         ]
     }
+    ...realOutboxWorkedSections,
 ], {
     "objective": "Implement and prove a durable event publication pipeline in PostgreSQL and RabbitMQ.",
     "scenario": "Steward's lifecycle event must survive a crash at any point between domain commit and consumer processing.",
