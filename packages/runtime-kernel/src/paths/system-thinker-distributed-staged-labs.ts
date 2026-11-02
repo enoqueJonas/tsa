@@ -3,6 +3,7 @@ import {redisLivePrimerSections,rabbitLivePrimerSections} from "./system-thinker
 import {realOutboxWorkedSections} from "./system-thinker-real-outbox-worked";
 import {competingOutboxSections,competingOutboxResources} from "./system-thinker-outbox-concurrent-worked";
 import {rabbitPoisonReplaySections,rabbitPoisonReplayResources} from "./system-thinker-rabbitmq-poison-replay-worked";
+import {rabbitMissingBindingSections,rabbitMissingBindingReferences} from "./system-thinker-rabbitmq-missing-binding-worked";
 import type { LessonBlock, LearningResource } from "../activities/content";
 
 const redis: LearningResource = { title:"Redis — Run Open Source on Docker", url:"https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/docker/", kind:"reference" };
@@ -24,7 +25,7 @@ function stage(id: string, title: string, intro: string, sections: Section[], pr
         if (section.code) blocks.push({type:"code",language:section.code.language,caption:section.code.caption,code:section.code.code});
     }
     blocks.push({type:"callout",tone:"warning",title:"Evidence tier",body:"Commands are a reproducible local starting point, not evidence of live integration. Redis/RabbitMQ/Steward experiments are UNVERIFIED until executed in the learner environment, including failure injection."});
-    blocks.push({type:"resources",title:"Reference and optional reinforcement",resources:[redis,rabbit,confirms,redisVideo,...(id==="outbox-concurrent-lab"?competingOutboxResources:[]),...(id==="rabbitmq-poison-lab"?rabbitPoisonReplayResources:[])]});
+    blocks.push({type:"resources",title:"Reference and optional reinforcement",resources:[redis,rabbit,confirms,redisVideo,...(id==="outbox-concurrent-lab"?competingOutboxResources:[]),...(id==="rabbitmq-poison-lab"?[...rabbitPoisonReplayResources,...rabbitMissingBindingReferences]:[])]});
     return { id:prefix,title,activities:[
         {id:prefix+"-reading",title:title+": Mechanisms",estimatedMinutes:readMinutes,content:{type:"reading",body:blocks.filter(b=>b.type==="paragraph").map(b=>b.text).join("\n\n"),blocks}},
         {id:prefix+"-practice",title:title+": Runtime Evidence",estimatedMinutes:practiceMinutes,content:{type:"practical",objective:practice.objective,scenario:practice.scenario,instructions:practice.instructions,deliverables:practice.deliverables,completionCriteria:practice.criteria}},
@@ -141,7 +142,7 @@ export const distributedStateStagedLabs: Lesson[] = [
 ], 35, 150),
     stage("rabbitmq-poison-lab", "Lab 3: RabbitMQ Poison-Message Quarantine, Replay and Ordering",
       "A successful broker publish is not a successful business effect. Unsupported messages need bounded, observable handling, and delayed or duplicated versions must not overwrite a newer authoritative projection. This focused lab runs a real dead-letter exchange and PostgreSQL projection before the next lesson adds a transactional outbox publisher.",
-      rabbitPoisonReplaySections,
+      [...rabbitPoisonReplaySections,...rabbitMissingBindingSections],
       {
         objective:"Observe real broker quarantine and replay while preventing older or duplicated Service events from regressing PostgreSQL state.",
         scenario:"Steward's downstream lifecycle projection receives v8 before v7 and a duplicate v8; another event has a schema version unsupported by the current consumer. A supervised replay must recover after schema support is introduced.",
@@ -152,19 +153,22 @@ export const distributedStateStagedLabs: Lesson[] = [
           "After simulating an approved consumer adapter upgrade, republish the original payload and stable event ID with publisher confirms, then acknowledge the quarantined delivery.",
           "Observe the version-8 full-state projection persist when version 7 arrives later and the exact v8 message is duplicated; explain version guards and atomic processed-event records.",
           "Replay an already processed event and prove it creates no second local effect. Compare this guarantee with external email/provider side effects.",
-          "Document failures not reproduced: missing DLQ binding, clustered broker/DLX durability, operator access, delayed transient retries, production Steward authorization and provider reconciliation."
+          "Run the separately published RabbitMQ missing-binding negative control: show that the first rejected message is absent from both source and quarantine, then bind the route and show the next rejected message quarantined with x-death. Never infer the first message was recovered.",
+          "Document failures still not reproduced: clustered broker/quorum DLX safety, operator access, delayed retries, production Steward authorization and external provider reconciliation."
         ],
         deliverables:[
           "Exact isolated RabbitMQ topology and x-death quarantine evidence",
           "Confirmed replay transcript with stable event identity and payload",
           "PostgreSQL processed-event ledger and per-Service projection counts",
           "Out-of-order and duplicate outcome diagnosis",
+          "Missing-binding negative-control stdout, source/quarantine counts and corrected binding evidence",
           "Operational recovery note distinguishing validated and unverified guarantees"
         ],
         criteria:[
           "An unsupported schema is quarantined and can be inspected, rather than silently lost or endlessly requeued",
           "A confirmed replay is followed by a durable consumer effect, not merely a broker publish acknowledgment",
           "v8 then v7 cannot regress a full-state projection and a duplicate event cannot repeat the local effect",
+          "A missing DLX binding is demonstrated to leave no quarantined copy; repaired routing applies only to subsequently rejected messages",
           "Real broker, DB, and retry outcomes are recorded; absent service execution is UNVERIFIED"
         ]
       },
