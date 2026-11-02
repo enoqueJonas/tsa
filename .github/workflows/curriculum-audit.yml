@@ -8,6 +8,7 @@ on:
       - curriculum/delivery-engineer-pedagogical-audit
       - curriculum/delivery-engineer-source-depth-v2
       - curriculum/cloud-engineer-source-depth-v1
+      - curriculum/reliability-engineer-source-depth-v1
       - integration/tsa-audits-master-20261102
       - master
   workflow_dispatch:
@@ -58,6 +59,8 @@ jobs:
         run: node scripts/check-cloud-local-observability-proofs.mjs
       - name: Verify Cloud Building Blocks actual-reading depth, CIDR and VPS patch safety
         run: node scripts/check-cloud-building-block-depth.mjs
+      - name: Execute source-published GELF diagnostic event and malformed negative
+        run: node scripts/check-reliability-graylog-event-trace.mjs
       - name: Report cross-school code example evidence
         run: pnpm report:curriculum-examples
       - name: Execute isolated Platform service recovery drill
