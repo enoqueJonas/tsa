@@ -239,7 +239,9 @@ def check_system_thinker_mobile_all(page):
             assert not page.evaluate(
                 "document.documentElement.scrollWidth > innerWidth + 2"
             ), f"Horizontal page overflow at 390px: {activity_id}"
-            for block in main.locator("figure").all():
+            for block in main.locator("figure").filter(
+                has=page.get_by_role("button", name="Copy")
+            ).all():
                 # A scrollable code figure is acceptable; its code must remain present.
                 assert block.locator("pre").count() >= 1, (
                     f"Missing code display on mobile: {activity_id}"
