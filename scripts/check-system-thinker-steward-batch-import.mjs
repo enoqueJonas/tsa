@@ -10,6 +10,9 @@ const builder=fs.readFileSync("packages/runtime-kernel/src/paths/builder-django-
 const batch=fs.readFileSync("packages/runtime-kernel/src/paths/system-thinker-real-steward-batch-worked.ts","utf8");
 const lesson=fs.readFileSync("packages/runtime-kernel/src/paths/system-thinker-enterprise-file-integration-deep.ts","utf8");
 assert.ok(lesson.includes("realStewardBatchSections"),"Batch practical reading is not actually rendered");
+assert.ok(lesson.includes('id: "steward-batch-domain"'),"Dedicated import lesson is missing");
+assert.ok(lesson.includes('[lesson(spec), lesson(stewardBatchDomainSpec)]'),"Domain import lesson not placed after batch lifecycle");
+assert.ok(lesson.includes("Independently modify a copy of the lab"),"No novel negative learner practice");
 assert.ok(lesson.includes("realStewardBatchResources"),"Missing database transaction research links");
 function builderCode(caption){
   const needles=['"caption":"'+caption+'"','caption: "'+caption+'"'];
