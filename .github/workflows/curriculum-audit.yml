@@ -69,6 +69,8 @@ jobs:
         run: node scripts/check-reliability-logging-source-depth.mjs
       - name: Execute original Observability learner cross-signal negative example
         run: node scripts/check-reliability-observability-source-proof.mjs
+      - name: Verify genuine SRE reading depth and user-facing health negative
+        run: node scripts/check-reliability-sre-source-depth.mjs
       - name: Report cross-school code example evidence
         run: pnpm report:curriculum-examples
       - name: Execute isolated Platform service recovery drill
