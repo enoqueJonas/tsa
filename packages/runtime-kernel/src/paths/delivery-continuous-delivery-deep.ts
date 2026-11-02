@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { cdOperationalDepthById } from "./delivery-cd-operational-depth";
 
 const gitlabEnvironments: LearningResource = { title: "GitLab deployment environments", url: "https://docs.gitlab.com/ci/environments/" };
 const djangoMigrations: LearningResource = { title: "Django migrations", url: "https://docs.djangoproject.com/en/stable/topics/migrations/" };
@@ -14,7 +15,7 @@ function richLesson(
     resources: LearningResource[],
 ): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
-    for (const section of sections) {
+    for (const section of [...sections, ...(cdOperationalDepthById[id] ?? [])]) {
         const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
         blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 });
         blocks.push({ type: "paragraph", text: section.body });
