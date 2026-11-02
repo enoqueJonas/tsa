@@ -6,6 +6,27 @@ export const stewardReliabilityProgramDeepLessons: Lesson[] = [
     title: "Milestone: Steward Reliability Program",
     activities: [
       {
+        id: "steward-reliability-program-milestone-000",
+        title: "Milestone Brief: Build a Falsifiable Reliability Evidence Chain",
+        estimatedMinutes: 45,
+        content: {
+          type: "reading",
+          body: "The final Reliability Engineer milestone is an evidence review, not proof obtained by presenting screenshots of installed tools.",
+          blocks: [
+            { type:"heading", id:"milestone-contract", text:"What a defensible reliability claim contains", level:2 },
+            { type:"paragraph", text:"A claim is testable when it names the service operation, environment and release identity; the indicator and time window; the expected and observed results; the failure introduced or encountered; and the independent recovery check. For example, 'Steward remained available' is too vague. Better: 'At release digest X in test environment Y, authorized synthetic POST /registration requests met a defined success criterion during the bounded experiment, except the identified failure window. We verified a known-good request after recovery.' Do not declare 99.9% availability from a single 10-minute smoke test. Link source-control, build artifact and runtime identity to the same incident and evidence." },
+            { type:"heading", id:"three-signal-chain", text:"Connect user symptom to three distinct signals", level:2 },
+            { type:"paragraph", text:"Record one user-visible failure first. Use an SLI numerator/denominator and a bounded window in Prometheus; find a corresponding sanitized event and request ID in Graylog; use a trace ID/span sequence to locate observed latency where instrumentation exists. A blank panel may be missing telemetry, not zero failures. A Graylog GELF sender acknowledging transport does not establish indexed search or retention. Any missing or sampled-out trace must be acknowledged. A metric label must not contain unbounded user/request IDs. A completed dashboard is only a navigation aid to these separately reproducible facts." },
+            { type:"heading", id:"recoverability", text:"Failure recovery must preserve correctness, not only process uptime", level:2 },
+            { type:"paragraph", text:"Before a bounded fault experiment, document hypothesis, blast-radius limits, measured abort threshold, known-good state, restoration action and post-recovery data/behavior checks. Distinguish API readiness restoration from persisted PostgreSQL correctness, outbox/event processing and dependency recovery. A successful backup job is not proof of restore until synthetic records are recovered into an isolated environment and the RPO/RTO claim is measured. An incident review should identify owners, decisions, timeline, rollback and evidence-backed corrective actions, not simply attach logs." },
+            { type:"heading", id:"evidence-provenance", text:"Separate observed, simulated, inferred and unverified evidence", level:2 },
+            { type:"paragraph", text:"For each gate label what actually ran: real deployed Steward, isolated database restore, local Python model, source-level policy check, browser navigation or a tabletop. These do not carry equal evidentiary weight. A green CI run proves the tested build and scripted assertions, not that a novice can independently diagnose Graylog ingestion or operate a real OpenShift cluster. Leave unverified gates visible and transfer them to the appropriate backlog rather than manufacturing project readiness." },
+            { type:"heading", id:"independent-challenge", text:"Review a claim the dashboards appear to support", level:2 },
+            { type:"paragraph", text:"Suppose a deploy shows all Grafana panels green, a successful Graylog query for a generic health event, and a passing infrastructure build. A business operation still fails because messages remain unacknowledged after RabbitMQ redelivery. Identify the missing user-facing SLI, the relevant worker log and trace correlation, the idempotency/acknowledgement evidence and the bounded recovery test. Only then defend or reject the claim that Steward is reliable. This challenge precedes the practical milestone gates." }
+          ]
+        }
+      },
+      {
         id: "steward-reliability-program-milestone-001",
         title: "Assemble the Reliability Evidence Baseline",
         estimatedMinutes: 150,
