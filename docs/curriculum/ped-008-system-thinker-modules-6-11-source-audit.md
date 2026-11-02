@@ -1,14 +1,14 @@
 # PED-008 — System Thinker complete learner-order source review: modules 6–11
 
 **Date:** 2026-11-02  
-**Status:** **Source remediation and test integration in progress; independent learner validation OPEN.**  
+**Status:** **Eleven-module source review and targeted live domain test ongoing; independent learner validation OPEN.**  
 **Scope lock:** System Thinker only, continuing modules 1–5 in the existing [school audit](./ped-008-system-thinker-school-audit.md).  
 **Issue:** [#332](https://github.com/enoqueJonas/tsa/issues/332); [draft PR #333](https://github.com/enoqueJonas/tsa/pull/333).  
 **Current branch:** `curriculum/system-thinker-pedagogical-audit`.
 
 ## Audit method and the actual defect
 
-The full module is not the single `*-deep.ts` reading. Its authored sections, protocol example modules, quality/practice overlays, runnable setup, negative case and adjacent handoff must be read in learner order. This pass inspected the original six file/transfer lessons, nine SOAP/XML activities/lessons, ten messaging concept lessons plus six staged labs, five failure concepts, four ADR concepts and final portfolio/transfer.
+The full module is not the single `*-deep.ts` reading. Its authored sections, protocol example modules, quality/practice overlays, runnable setup, negative case and adjacent handoff must be read in learner order. This pass inspected the seven file/transfer lessons after separating the real Django import lab (six original plus one focused integration lesson), nine SOAP/XML activities/lessons, ten messaging concept lessons plus six staged labs, five failure concepts, four ADR concepts and final portfolio/transfer.
 
 **Diagnosis:** Most technical components already had substantial teaching and isolated live protocol evidence, so generic lengthening would be counterproductive. The important remaining gap was a broken *meaning chain*. A learner could execute FTP/SFTP, parse SOAP, get Redis PONG, observe RabbitMQ confirms and write an ADR while still being unable to state which observation authorizes a Team ownership change, which is only transported, which was actually committed and which may be stale. Separately, missing dead-letter bindings, operator replay and semantic rather than schema-only SOAP changes had insufficient learner-facing adversarial pressure.
 
@@ -21,6 +21,7 @@ One fictional OBS-01 service-owner escalation (established in modules 1–5) now
 | 6.1 | File-Based Integration Contracts | TARGETED continuity fix | Envelope vs row; recorded/proposed owner not approved transfer; identical/changed-content replay and distinct receipt/validation/application results | Real producer signoff, domain policy and learner-supplied rejection matrix |
 | 6.2 | Legacy FTP Integration | Already substantially taught and previously protocol-tested | **No repetitive appendix:** retain real passive/control-data boundary, failure and legacy confidentiality warning | Actual third-party FTP provider and independent learner diagnosis |
 | 6.3 | Batch File Processing Lifecycle | TARGETED correctness bridge | Row 1 committed, row 2 rejected, row 3 interrupted; distinguish file claim, local SQL atomicity, row ledger and partial acceptance | No live Steward import adapter/approved per-row atomicity agreement |
+| 6.3b | **NEW standalone Steward Batch Import: Authorization, Atomic Commit and Replay** | **New dedicated lesson, not a 9 KB append to Batch Lifecycle** | Real Builder Team/Service `owning_team` ORM, disposable PostgreSQL receipt in same atomic transaction, trusted server-side approval fixture, outer-transaction crash, unauthorized second row, same-ID duplicate/conflict, novel learner-created negative variant | Exact published learner Python passed on real Django/PostgreSQL 17 in earlier CI `a7c2ce5e`. Latest split-layout CI and 218/218 page traverse pending; Group/approval are not enterprise IdP or policy D-01 and no concurrent-importer guarantee |
 | 6.4 | Shared Filesystem versus Managed File Transfer | TARGETED comparison | NFS, FTP, SFTP each transports/stores bytes differently; none supplies owner-change authority; migration preserves domain identity and acceptance rules | Remote shared filesystem semantics and vendor cutover unverified |
 | 6.5 | SSH Trust and SFTP File Delivery | Existing strong live local protocol lab | Retain independently proven host/user-key, .part/rename, SHA-256 and refusal examples; do not label this a secure production server | Managed remote server, OS jail, key rotation and domain ingestion not proven |
 | 6.6 | Secure File Transfer Readiness | TARGETED exit discipline | Split transport trust from business approval; explicit wrong-key/replay/forbidden-owner cutover matrix | Vendor trust, rollback and credential lifecycle not validated |
@@ -48,7 +49,7 @@ One fictional OBS-01 service-owner escalation (established in modules 1–5) now
 - `system-thinker-enterprise-authority-bridge.ts`: **7 authored sections** in four selected file/batch lessons.
 - `system-thinker-soap-authority-bridge.ts`: **7 authored sections** in four selected SOAP lessons.
 - `system-thinker-operational-reasoning-bridge.ts`: **13 authored sections** across six distributed lessons, three failure lessons and four architecture-decision lessons.
-- Existing lesson/activity IDs stay stable; the capstone is tightened directly in `system-thinker-milestone-deep.ts`.
+- All pre-existing lesson/activity IDs stay stable; one focused real Django import lesson adds three new stable activities after Batch Lifecycle instead of bloating that reading. The capstone is tightened directly in `system-thinker-milestone-deep.ts`.
 - The module-specific material is composed at the teaching source. **No generic wrapper or universal filler appended to unrelated lessons.**
 
 ## Completed live RabbitMQ negative and source-head technical verification
@@ -57,7 +58,7 @@ One fictional OBS-01 service-owner escalation (established in modules 1–5) now
 
 ## Evidence and verification restrictions
 
-1. **New source-derived curriculum regression:** `scripts/check-system-thinker-enterprise-to-portfolio.mjs` verifies precisely targeted lesson maps, depth/artifact anchors, per-lesson credible references, composition in real learners' reading sources, and the milestone cross-module transfer gate. It is registered in `scripts/tests/curriculum-smoke.test.mjs`; check latest-head CI before claiming the new regression green.
+1. **New source-derived curriculum regression and separate real-ORM runner:** `scripts/check-system-thinker-steward-batch-import.mjs` extracts exact learner Python and reconstructs real Builder v1 ORM with disposable PostgreSQL. It passed in the first code-head live job; the new separate-lesson source-check and browser traversal still need latest-head results.\n2. **New source-derived curriculum regression:** `scripts/check-system-thinker-enterprise-to-portfolio.mjs` verifies precisely targeted lesson maps, depth/artifact anchors, per-lesson credible references, composition in real learners' reading sources, and the milestone cross-module transfer gate. It is registered in `scripts/tests/curriculum-smoke.test.mjs`; check latest-head CI before claiming the new regression green.
 2. **Historical real protocol CI:** Source-derived Python XML/XSD/SOAP+Zeep/FTP/SFTP and live Redis/RabbitMQ/PostgreSQL outbox and poison-DLX recovery had passing CI at previous branch heads, most recently 19/19 jobs at `6be5b4f7`. Later run #41459105017 **does** execute an unbound DLX route on a disposable live broker, but **does not** execute an enterprise CMDB/IdP or full Steward import processing.
 3. **Browser evidence:** At prior head `6be5b4f7`, 215 System Thinker activities rendered at desktop and 390px, with navigation, no page-level overflow and IndexedDB saved-practical/reflection hard-reload persistence. The revised long readings passed the matching-code-head 215/215 desktop/mobile browser traversal at #41459105017; they still require **manual** comprehension/readability checks.
 4. **Independent transfer:** The revised [11-module municipal maintenance assessment](./ped-008-system-thinker-independent-transfer-review.md) demands novel contract/authorization misuse, missing DLX route, stale read, changed ADR premises, and one end-to-end invariant trace. This is an **unadministered instrument**, not evidence a learner learned.
