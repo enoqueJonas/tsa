@@ -1,0 +1,58 @@
+# PED-008 — System Thinker school-wide instructional-depth audit
+
+**Date:** 2026-11-02
+**Scope:** System Thinker only; all 11 canonical learning paths in learner order.
+**Issue:** [#332](https://github.com/enoqueJonas/tsa/issues/332); governing [#318](https://github.com/enoqueJonas/tsa/issues/318); combined downstream [#322](https://github.com/enoqueJonas/tsa/issues/322).
+**Branch:** `curriculum/system-thinker-pedagogical-audit`, based on Builder `fd8ad881`.
+**Status: AUDIT IN PROGRESS. No school-wide VALIDATED claim.**
+
+## What was actually inspected
+
+Read the canonical runtime assembly `packages/runtime-kernel/src/paths/system-thinker.ts`, inventoried all 11 learning-path source families and their `*-quality.ts` practice overlays, reviewed conceptual sections and milestone/lab requirements, and traced the most conspicuous prerequisites to Builder. The pre-change assembly includes approximately 59 lessons; splitting the overloaded distributed lab into four staged lessons increases that count to approximately 62. A resolved runtime census is required to confirm the exact count at the new head.
+
+This is a **school-wide intake + initial instructional triage**, not a claim that every learner-visible activity has received an independent novice review. The current code build and head CI are separately tracked. The full module-by-module learner review and transfer gate remain open in #332.
+
+## Learner-order matrix — risks and required exit evidence
+
+| # | Path and canonical source | Initial reading and risk | Status at this head / next gate |
+| ---: | --- | --- | --- |
+| 1 | **Requirements and Problem Framing** — `system-thinker-requirements-deep.ts` + quality overlay (6 lessons) | Distinguishes requests, stakeholders, functional/quality requirements, assumptions and acceptance. Several first readings present only two teaching sections, despite non-trivial new vocabulary. Verify worked before/after requirement artifacts and independent ambiguity detection rather than declaring depth from instructions. | **SOURCE TRIAGED — TEACH-BACK OPEN**; evaluate an unfamiliar brief and trace requirement→acceptance evidence. |
+| 2 | **System Boundaries and Context** — `system-thinker-boundaries-deep.ts` + quality overlay (4 lessons + lab) | System/trust/ownership boundaries are distinguished; C4 and identity-provider examples exist. Risk: short readings may leave novices unable to draw and critique context independently. | **SOURCE TRIAGED — EXERCISE REVIEW OPEN**; inspect actual diagram instructions and compare current/planned/external components. |
+| 3 | **Modeling Software Systems** — `system-thinker-modeling-deep.ts` + quality overlay (5 lessons) | Has C4, container/component, lifecycle and visual communication steps. Verify actual produced model, tool-independent notation and learner ability to explain why each view includes/omits a concept. | **SOURCE TRIAGED — TRANSFER OPEN**; require two coherent views and a state-transition correction. |
+| 4 | **Components and Dependencies** — `system-thinker-components-dependencies-deep.ts` + quality overlay (4 lessons) | Worked responsibility example separates authorization, lifecycle and persistence; coupling dimensions and cycles explained. Confirm against actual Steward repository and defend a dependency-direction change without gratuitous layers. | **SOURCE TRIAGED — RUNTIME REPOSITORY REVIEW OPEN**. |
+| 5 | **Data Flow and Integration** — `system-thinker-data-flow-deep.ts` + quality overlay (4 lessons) | Distinguishes synchronous/asynchronous semantics, end-to-end flow and partial failure; examples are source-level narratives. Test a real duplicate/timeout outcome and whether students distinguish transport acceptance from domain acceptance. | **SOURCE TRIAGED — RUNTIME FAILURE EVIDENCE OPEN**. |
+| 6 | **Enterprise File and Batch Integration** — `system-thinker-enterprise-file-integration-deep.ts` (5 lessons) | Strong contract/lifecycle/ack/replay narrative and FTP/SFTP/FTPS trade-offs, but no verified live transfer/partial-upload experiment. Introducing networking/OS tasks before Platform Builder may require self-contained bootstrap. | **TARGETED REMEDIATION REQUIRED**; validate complete handoff, same-ID conflicting replay, crash and recovery on an isolated target. |
+| 7 | **SOAP and XML Enterprise Integration** — `system-thinker-soap-xml-deep.ts` + new `system-thinker-xml-worked-examples.ts` (9 lessons) | Confirmed gap: asks students to build namespaces/XSD/WSDL without first running the contract basics. Added standalone Python ElementTree prefix/URI/malformed tests and lxml XSD validation (success + 3 structural failures), with explanations. WSDL/SOAP provider-client setup still lacks demonstrated live evidence and must not inherit the XML-only pass. | **PARTIALLY REMEDIATED, NOT VALIDATED**; exact learner-source CI pending; real WSDL, provider, client, fault/recovery remains OPEN. |
+| 8 | **Distributed State and Messaging** — `system-thinker-distributed-state-messaging-deep.ts` + new `system-thinker-distributed-staged-labs.ts` (10 concept lessons + 4 labs) | Severe confirmed overloaded 300-minute practical combined Redis, RabbitMQ, deduplication, DLQ, ordering and transactional outbox. Split into separate Redis, RabbitMQ, outbox and integration-defence evidence gates. Added minimal loopback-only disposable Docker bootstrap with prerequisites/cleanup and refusal to claim runtime tests from source. New infrastructure setup must be verified as teachable before Platform/Delivery schools. | **PARTIALLY REMEDIATED — ENVIRONMENT-DEPENDENT TESTS UNVERIFIED**; run actual Redis/RabbitMQ/PostgreSQL experiments and independent scenarios. |
+| 9 | **Failure Modes** — `system-thinker-failure-modes-deep.ts` + quality overlay (5 lessons) | Teaches failure propagation, retries, partial state, exhaustion and operational mistakes. Check whether the learner can generate and diagnose a new failure using concrete logs/behavior rather than reciting a failure catalogue. | **SOURCE TRIAGED — FAILURE INJECTION OPEN**. |
+| 10 | **Architecture Decisions and Trade-offs** — `system-thinker-architecture-decisions-deep.ts` + quality overlay (4 lessons) | Existing ADR/reversibility examples and notification trade-offs; verify competing options against actual measurable pressure, constraints and fallback. | **SOURCE TRIAGED — INDEPENDENT ADR DEFENCE OPEN**. |
+| 11 | **Steward API System Design Portfolio** — `system-thinker-milestone-deep.ts` (1 milestone, 5 applied gates) | Reconciles Builder API baseline with distributed pressure, implementation and defence. This is intentionally transfer/synthesis, not a place to insert new tutorials. Real repository/run artifacts, crash evidence and independent defense are prerequisites. | **UNVERIFIED — CAPSTONE NOT PERFORMED**. |
+
+## Concrete teaching changes
+
+1. **Executable XML namespaces**: The teaching body now includes a complete Python 3 program operating on two equivalent namespace prefixes, a wrong URI and malformed XML. Expected results: identical Service names, `ValueError`, `ParseError`. Distinguishes parsing, namespace identity and domain-required fields; no untrusted-XML security assurance implied.
+2. **Executable XSD**: A complete lxml schema and four documents distinguish valid input, wrong datatype, missing required child and wrong target namespace. Expected Booleans: true/false/false/false, with actual validator diagnostics displayed.
+3. **Source-extracted regression**: `scripts/check-system-thinker-xml-teaching-examples.mjs` reads the exact published learner code rather than a copied standalone fixture. Registered in `scripts/tests/curriculum-smoke.test.mjs`. CI installs lxml and includes this branch. CI passing must be checked against the latest SHA.
+4. **Staged distributed labs**: A 300-minute combined practical was replaced by four lessons: Redis cache-aside and outage; RabbitMQ consumer/ack/replay; PostgreSQL transactional outbox/order/restart; cross-module Steward defence. Each distinguishes setup, expected observation, negative experiment, durable artifact and what remains unverified. Local commands are deliberately loopback-bound and not production recipes.
+
+## Research and verification register
+
+| Source | Role | Verification limitation |
+| --- | --- | --- |
+| [Python ElementTree](https://docs.python.org/3/library/xml.etree.elementtree.html) and [W3C XML Namespaces](https://www.w3.org/TR/xml-names/) | Expanded-name identity and Python namespace lookup used in the XML lab | Documentation inspected; the local Python namespace behavior was exercised separately. Exact published-source runner awaits CI. |
+| [lxml XML Schema validation](https://lxml.de/validation.html), [W3C XSD](https://www.w3.org/TR/xmlschema11-1/) | Schema validator construction, valid/invalid results and diagnostic boundary | Four XML schema examples exercised in a disposable local Python interpreter with lxml; published-source CI remains pending. |
+| [OWASP XXE guidance](https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html) | Parser hardening reminder; no claim that illustrative code is safe for arbitrary external input | Production parser/DoS posture not validated. |
+| [XML Namespace tutorial video](https://www.youtube.com/watch?v=VTQRGDhH6WQ) | Optional prefix/default namespace visual reinforcement after TSA explanation | Video description/metadata checked; not represented as fully watched. |
+| [Redis Docker guide](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/docker/), [RabbitMQ work queues](https://www.rabbitmq.com/tutorials/tutorial-two-python), [RabbitMQ confirms](https://www.rabbitmq.com/docs/confirms) | Lab bootstrap and ack/confirm/redelivery models | Documentation inspected; **live Redis, RabbitMQ and Steward integration not run in this audit environment**. |
+| [Zeep client documentation](https://docs.python-zeep.org/en/latest/) and [W3C WSDL 1.1](https://www.w3.org/TR/2001/NOTE-wsdl-20010315) | Future WSDL/consumer remediation base | No Zeep or SOAP provider runtime verification; still open. |
+
+## School exit gates (not checked by green source build)
+
+- [ ] All lessons and activities independently inspected in actual learner order; defects classified with original reading location and replaced source.
+- [ ] Full `pnpm test`, `pnpm build` and TypeScript validation at **latest branch SHA**.
+- [ ] Exact published XML/XSD samples executed in CI.
+- [ ] Real file exchange, SOAP, Redis, RabbitMQ, PostgreSQL outbox and crash/replay evidence (or explicitly blocked per module).
+- [ ] Rendered browser review of every representative teaching pattern and all complex labs; desktop/mobile, entry scroll, navigation, progress persistence.
+- [ ] Independent novel transfer tasks for each module and a coherent uncued Steward system-design portfolio.
+
+**Decision:** Do not mark System Thinker `VALIDATED`; do not merge or begin the next school on the basis of this source pass alone.
