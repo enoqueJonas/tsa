@@ -47,3 +47,33 @@ For the detailed SQL defect→teaching→evidence map, see [PED-006](./ped-006-s
 - Build/test passes do not establish that current resources have been fully watched. Separate actual source verification from implied video use.
 
 **Current decision:** Builder source remediation is substantial and broad, with multiple executed integration contracts. **Builder learner-validated: NO.** Do not merge this into a school-ready claim without independent evidence and a reviewed latest-head CI report.
+
+## Rendered-activity acceptance follow-up — 2026-11-02
+
+**Finding origin:** the previous 15/15 workflow included a browser traversal reporting **333 Builder activities across seven modules**, but its sorted shortest-reading report (explicitly informational, not failing) exposed real deficiencies. The following conceptual reading pages were just 418–1491 rendered characters:
+
+- `software-craft-internal-package-design-001` — **418** characters; this content was injected through `internal-dependency-management.ts` by `academy-journey.ts`, so the earlier Software Craft source audit missed it.
+- `relational-data-and-postgresql-orm-vs-sql-reading` — 1,128; `n-plus-one-reading` — 1,134; `django-orm-reading` — 1,265; `migrations-reading` — 1,392.
+- `software-craft-performance-awareness-reading` — 1,491.
+
+These readings were **not acceptable as self-contained conceptual instruction** despite structural/browser success. They were rewritten with prerequisite mechanics, worked examples and expected positive/negative outcomes. The Django/SQL lessons now use actual Django/PostgreSQL to demonstrate QuerySet laziness (zero query construction, one evaluation), bound SQL/ORM equivalence, five-to-one N+1 FK queries, two-query prefetch, populated-data expand/backfill/contract migration and a concurrent UNIQUE-name race with two real PostgreSQL sessions. The hidden internal-package lesson now explains Python modules versus import packages versus installable distributions, actual-consumer boundaries, version promises, PEP 440/SemVer nuance, an executable breaking consumer and valid deferral of speculative extraction. Performance Awareness now distinguishes p50/p95, DB execution versus HTTP latency, synthetic slow-tail observation and the decision to make no performance change when evidence is weak. All executable Python examples are covered by source-extracted tests.
+
+**Learner-facing UI defect:** `learning-experience.tsx` updated activity content without resetting scroll position. A long reading could deliver the next lesson with the viewport halfway down the page. On activity/restore changes the UI now scrolls to the top. `check-school-learner-browser.py` explicitly scrolls to the bottom before Builder transitions, checks the new activity starts at scrollY <= 8, checks the first two activities on mobile for **each** of seven modules at 390px, and includes rendered-depth guards for the six previously short conceptual readings with a copyable example.
+
+**Cross-content practical drift:** PostgreSQL practicals still described a removed `active` Service lifecycle stage, despite earlier SQL source fixes, and recommended re-adding existing constraints; Django practicals presented the wrong health route and could imply migrating the SQL fixture rather than using a separate migration-managed database. These were corrected and source-guarded.
+
+**CI infrastructure failure identified and repaired:** GitHub's moving `ubuntu-latest` selected Ubuntu 26.04, unsupported by the installed Playwright 1.58 Chromium browser. All browser jobs failed during installation before exercising the application. Browser jobs are pinned to `ubuntu-24.04`, while SQL/validate jobs can use their own default supported environments.
+
+**Evidence limits:** A rendered character count is a *regression signal*, not proof of intellectual quality. Copyable code that executes on a disposable lab is stronger but does not measure novice teach-back. Browser synthetic progress does not certify learner mastery or real deployment. The latest GitHub Actions run must be checked at the **exact branch head**; never inherit a prior green result after edits. **Learner-validated still NO**.
+
+### Suggested real novice transfer tasks (unobserved)
+
+1. Python: receive a new invalid Service state/ownership example and explain the exact failed condition, repair it and add a test without copying the model answer.
+2. Web/API: trace a request that returns a 404 versus a connection refusal, then diagnose retry/duplicate-write behavior.
+3. PostgreSQL: query a new service deployment dataset with a missing production Environment, explain cardinality and safely repair while preserving constraints; interpret an unexpectedly different query plan.
+4. Django/DRF: build and migrate one new relation from a clean lab, implement permission-scoped read/write endpoints with negative cases and explain generated SQL and N+1 avoidance.
+5. Identity/Auth: diagnose an authenticated cross-Team mutation attempt plus refresh-token reuse, proving both response and unchanged state.
+6. Software Craft: refactor a known slow/unsafe Service query with observable contract tests, justify no-change where measurable benefit is absent, and explain a real package extraction boundary.
+7. Steward API v1: hand off a running repo with a working production transition, cross-Team denial, partial mutation rollback, token/session policy and reproducible setup/diagnosis.
+
+These tasks are specifications for independent learner assessment, **not evidence that a student has completed them**.
