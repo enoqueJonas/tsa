@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { extraSliBlocks } from "./reliability-sli-metrics-worked";
 
 const sreWorkbook: LearningResource = { title: "Google SRE Workbook — Implementing SLOs", url: "https://sre.google/workbook/implementing-slos/" };
 const sreBook: LearningResource = { title: "Google SRE — Service Level Objectives", url: "https://sre.google/sre-book/service-level-objectives/", kind: "reference" };
@@ -21,6 +22,7 @@ function deepLesson(spec: Spec): Lesson {
         { type: "list", items: spec.principles },
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
+        ...extraSliBlocks(spec.id),
         { type: "callout", tone: "steward", title: "Measure user-visible reliability", body: "A service objective is useful only when its indicator represents behavior users or dependent systems actually care about and when the target changes engineering decisions." },
         { type: "resources", title: "Reference material", resources: resourcesBySloTopic[spec.id] ?? [sreWorkbook, sreBook] },
     ];
