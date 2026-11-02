@@ -4,6 +4,7 @@ on:
     branches:
       - curriculum/oop-depth-reconstruction
       - curriculum/system-thinker-pedagogical-audit
+      - curriculum/platform-builder-pedagogical-audit
   workflow_dispatch:
 
 permissions:
