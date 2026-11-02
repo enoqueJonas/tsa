@@ -45,4 +45,4 @@ We added two original, explicitly **fictional** OBS-01 sources at the teaching l
 
 No external video was represented as fully watched. No production Steward identity-policy claim was inferred from the fictional OBS-01 scenario.
 
-**Next same-school source pass:** Failure Modes → Enterprise File/Batch → SOAP/XML → Distributed Messaging → Architecture Decisions → Portfolio, following the actual canonical learner order, not the importance ranking in this note. School #332 and PR #333 remain open/draft.
+**Next same-school source pass:** Enterprise File/Batch → SOAP/XML → Distributed Messaging → Failure Modes → Architecture Decisions → Portfolio, following the actual canonical learner order, not the importance ranking in this note. School #332 and PR #333 remain open/draft.
