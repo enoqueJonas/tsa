@@ -70,6 +70,14 @@ export function LearningExperience({
     onActivityChange?.(current.id);
   }, [activePath.id, initialActivityId, onActivityChange, progressForPath, ready, restored, session]);
 
+  // Every activity replaces the learner's reading surface. A navigation should
+  // begin at the lesson header, never inherit the previous long activity's scroll.
+  // This also applies to sidebar navigation and restored deep links.
+  useEffect(() => {
+    if (!restored) return;
+    window.scrollTo(0, 0);
+  }, [activity.id, restored]);
+
   function primary() {
     const id = session.currentActivity().id;
     const done = session.completedActivityIds().includes(id);
