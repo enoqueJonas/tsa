@@ -61,6 +61,8 @@ jobs:
         run: node scripts/check-cloud-building-block-depth.mjs
       - name: Execute source-published GELF diagnostic event and malformed negative
         run: node scripts/check-reliability-graylog-event-trace.mjs
+      - name: Guard original logging teaching depth and failure transfer across eight topics
+        run: node scripts/check-reliability-logging-source-depth.mjs
       - name: Report cross-school code example evidence
         run: pnpm report:curriculum-examples
       - name: Execute isolated Platform service recovery drill
