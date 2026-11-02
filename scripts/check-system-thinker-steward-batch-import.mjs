@@ -14,7 +14,7 @@ assert.ok(lesson.includes("realStewardBatchSections"),"Batch practical reading i
 assert.ok(lesson.includes('id: "steward-batch-domain"'),"Dedicated import lesson is missing");
 assert.ok(lesson.includes('[lesson(spec), lesson(stewardBatchDomainSpec), lesson(stewardBatchConcurrencySpec)]'),"Domain and concurrency lesson order incorrect");
 assert.ok(lesson.includes('id: "steward-batch-concurrency"'),"Concurrent importer lesson missing");
-assert.ok(lesson.includes("independently devise a novel race"),"No independent concurrency failure challenge");
+assert.ok(/independently devise a novel race/i.test(lesson),"No independent concurrency failure challenge");
 assert.ok(lesson.includes("Independently modify a copy of the lab"),"No novel negative learner practice");
 assert.ok(lesson.includes("realStewardBatchResources"),"Missing database transaction research links");
 function builderCode(caption){
