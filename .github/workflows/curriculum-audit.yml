@@ -54,6 +54,8 @@ jobs:
         run: pnpm test
       - name: Validate exact Cloud Kubernetes teaching manifest and fail-closed selector mismatch
         run: node scripts/check-cloud-k8s-lesson-source.mjs
+      - name: Execute Cloud local TLS, object key and canary evidence learner examples
+        run: node scripts/check-cloud-local-observability-proofs.mjs
       - name: Report cross-school code example evidence
         run: pnpm report:curriculum-examples
       - name: Execute isolated Platform service recovery drill
