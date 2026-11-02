@@ -2,6 +2,7 @@ import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { fileHandoffWorkedSections } from "./system-thinker-file-handoff-examples";
 import {ftpLoopbackWorkedSections} from "./system-thinker-ftp-worked";
+import {sftpWorkedSections,sftpWorkedResources} from "./system-thinker-sftp-worked";
 
 const rfc959: LearningResource = { title: "RFC 959 — File Transfer Protocol", url: "https://www.rfc-editor.org/rfc/rfc959" };
 const opensshSftp: LearningResource = { title: "OpenSSH documentation", url: "https://www.openssh.com/manual.html" };
@@ -146,6 +147,43 @@ const specs: Spec[] = [
         deliverables: ["Shared-filesystem + transfer integration topology", "Failure comparison", "Identity/permission comparison", "Storage placement decision", "Platform Builder implementation handoff note"],
         criteria: ["Shared storage and managed transfer have distinct justified responsibilities.", "The learner can explain continuous mount coupling versus discrete transfer coupling.", "The design does not make the external legacy system mount an internal share merely for convenience.", "Future NFS implementation is handed to Platform Builder rather than assumed as a prerequisite."],
         questions: ["When is NFS a better fit than managed file transfer?", "What new coupling appears when two applications depend on the same mounted filesystem?"],
+    },
+    {
+        id: "sftp-loopback-protocol",
+        title: "SSH Trust and SFTP File Delivery: Executable Boundary",
+        intro: "Before proposing a secure file-transfer migration, directly observe SFTP's actual SSH authentication, host trust and file delivery boundaries. This focused lab demonstrates the wire protocol on a local disposable listener; Security Steward remains responsible for real deployment, policy and cryptographic hardening.",
+        sections: sftpWorkedSections,
+        practiceTitle: "Prove SSH Host Trust and a Completed SFTP Delivery",
+        scenario: "An enterprise vendor will replace Steward's old clear-text FTP file handoff with SFTP. The existing file contract and durable delivery ID must survive the transport change, while both sides need proof that they connected to the intended SSH host and authorized client.",
+        instructions: [
+            "Install AsyncSSH in a disposable virtual environment, run the complete pinned-key SFTP program and save its expected observations.",
+            "Locate the server's authorized user public key and the client's pinned host key; explain why they authenticate different parties.",
+            "Reproduce wrong host-key rejection and wrong user-key authentication refusal as distinct negative controls.",
+            "Observe the .part upload before rename and the final file afterward, then compare SHA-256 digests of source and downloaded bytes.",
+            "Stop the SFTP listener and reproduce connection refusal. Name which of the failure modes are transport failures rather than invalid business records.",
+            "Apply the earlier file-envelope/SQLite replay-identity contract to the final delivery on paper, identifying where its stable business delivery ID must come from.",
+            "Write a handoff to Security Steward for host/user key rotation, audited onboarding, real transfer accounts and remote firewall/service hardening."
+        ],
+        deliverables: [
+            "Exact execution trace with authenticated, rejected-host and rejected-user cases",
+            "Incomplete versus renamed final file listing and SHA-256 integrity",
+            "Credential and host-key trust-boundary diagram",
+            "File-contract/replay-identity continuity note",
+            "Security Steward production-deployment handoff"
+        ],
+        criteria: [
+            "SFTP is demonstrated over a real SSH connection without bypassing host-key verification",
+            "Unauthorized client public key and unexpected SSH host key are rejected",
+            "Only the finished remote filename is consumer-ready, with matching content integrity",
+            "Transport proof is not mistaken for application-level validation or authoritative Steward mutation",
+            "The lab remains separate from production security audit and vendor cutover acceptance"
+        ],
+        questions: [
+            "Why does checking an SSH server host key protect against a different threat than validating the client public key?",
+            "Why is a successful encrypted upload insufficient to prove that the destination can process the business records?",
+            "What recovery must the consumer implement if it crashes immediately after a valid SFTP rename?"
+        ],
+        resources: sftpWorkedResources,
     },
     {
         id: "secure-transfer-readiness",
