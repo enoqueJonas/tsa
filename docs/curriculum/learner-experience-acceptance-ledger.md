@@ -17,6 +17,10 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 - Validate persistence/re-entry, completion states, back/forward navigation, desktop readability and narrow/mobile layout in meaningful longer sessions.
 - At acceptance, compare independent learner work against criteria; internal editorial approval alone cannot prove learning effectiveness.
 
+## System Thinker evidence-tier note (2026-11-02)
+
+The whole-school Playwright traversal from GitHub Actions run [#41425472574](https://github.com/enoqueJonas/tsa/actions/runs/41425472574) inspected **200 composed activities in 11 modules** at desktop and again at 390px mobile, including route activation, scroll-to-top, absence of page-level overflow and copyable code rendering. This is a **scripted rendering/navigation regression**, not independent human visual review or proof of meaningful understanding. The later full workflow at [#41425699402](https://github.com/enoqueJonas/tsa/actions/runs/41425699402) passed on source commit `84f4965476b9bad0e23522b238fbf15cff85410a`. The new messaging teaching and source-extracted projection regression were committed afterward: their latest-head verification must be reported separately. Module status remains In review; no learner transfer outcome has been observed. See [PED-008](./ped-008-system-thinker-school-audit.md).
+
 ## Module acceptance matrix
 
 | School | Module | Concepts | Practicals | Continuity | Resources | UX | Overall / evidence |
@@ -29,17 +33,17 @@ Status legend: **Not started** = full pedagogical review not performed; **In rev
 | builder | `builder-identity-auth-deep` | In review | In review | In review | — | — | Source triage completed; full learner verification pending |
 | builder | `builder-software-craft-quality` | In review | In review | In review | — | — | Source triage completed; full learner verification pending |
 | builder | `builder-milestone-deep` | In review | In review | In review | — | — | Source triage completed; full learner verification pending |
-| system-thinker | `system-thinker-requirements-quality` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
-| system-thinker | `system-thinker-boundaries-quality` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
-| system-thinker | `system-thinker-modeling-quality` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
-| system-thinker | `system-thinker-components-quality` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
-| system-thinker | `system-thinker-data-flow-quality` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
-| system-thinker | `system-thinker-soap-xml-deep` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
-| system-thinker | `system-thinker-enterprise-file-integration-deep` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
-| system-thinker | `system-thinker-distributed-state-messaging-deep` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
-| system-thinker | `system-thinker-failure-quality` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
-| system-thinker | `system-thinker-architecture-decisions-quality` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
-| system-thinker | `system-thinker-milestone-deep` | In review | In review | In review | — | — | Source-composition triage; real learner verification pending |
+| system-thinker | `system-thinker-requirements-quality` | In review | In review | In review | In review | Scripted pass; visual review pending | PED-008 / #332: Six source-depth rewrites; exercised quality-target example; live novel acceptance/teach-back open; **NOT ACCEPTED** |
+| system-thinker | `system-thinker-boundaries-quality` | In review | In review | In review | In review | Scripted pass; visual review pending | PED-008 / #332: Four source-depth rewrites with C4/trust/ownership counterexamples; actual independent context-model critique open; **NOT ACCEPTED** |
+| system-thinker | `system-thinker-modeling-quality` | In review | In review | In review | In review | Scripted pass; visual review pending | PED-008 / #332: Five source-depth rewrites with C4 zoom and lifecycle correction; uncoached diagram transfer open; **NOT ACCEPTED** |
+| system-thinker | `system-thinker-components-quality` | In review | In review | In review | In review | Scripted pass; visual review pending | PED-008 / #332: Four source-depth rewrites with responsibility/coupling tests; real Steward import/change evidence open; **NOT ACCEPTED** |
+| system-thinker | `system-thinker-data-flow-quality` | In review | In review | In review | In review | Scripted pass; visual review pending | PED-008 / #332: Four source-depth rewrites with failure/latency traces; real duplicate/timeout integration evidence open; **NOT ACCEPTED** |
+| system-thinker | `system-thinker-soap-xml-deep` | In review | In review | In review | In review | Scripted pass; visual review pending | PED-008 / #332: XML/XSD and SOAP 1.1/WSDL loopback learner examples in CI; real framework/Zeep/Steward adapter UNVERIFIED; **NOT ACCEPTED** |
+| system-thinker | `system-thinker-enterprise-file-integration-deep` | In review | In review | In review | In review | Scripted pass; visual review pending | PED-008 / #332: File ledger + real loopback pyftpdlib passive-transfer negative lab in CI; real SFTP/FTPS and Steward consumption UNVERIFIED; **NOT ACCEPTED** |
+| system-thinker | `system-thinker-distributed-state-messaging-deep` | In review | In review | In review | In review | Scripted pass; visual review pending | PED-008 / #332: 10 conceptual lessons plus four staged labs; message-order SQLite regression pending CI; Redis/RabbitMQ/outbox crash proof UNVERIFIED; **NOT ACCEPTED** |
+| system-thinker | `system-thinker-failure-quality` | In review | In review | In review | In review | Scripted pass; visual review pending | PED-008 / #332: Five source-depth rewrites including real loopback 503/retry/outage; novel live failure diagnostic transfer open; **NOT ACCEPTED** |
+| system-thinker | `system-thinker-architecture-decisions-quality` | In review | In review | In review | In review | Scripted pass; visual review pending | PED-008 / #332: Four source-depth rewrites including proposed outbox ADR; independent decision defence unassessed; **NOT ACCEPTED** |
+| system-thinker | `system-thinker-milestone-deep` | In review | In review | In review | In review | Scripted pass; visual review pending | PED-008 / #332: New university room-booking uncoached transfer with 12-point rubric; NO learner attempt scored; **NOT ACCEPTED** |
 | platform-builder | `platform-builder-bare-metal-foundations-deep` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
 | platform-builder | `platform-builder-budget-homelab-quality` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
 | platform-builder | `platform-builder-computer-os-quality` | In review | In review | In review | — | — | School-wide composition triage; execution and UI unverified |
