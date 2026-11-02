@@ -132,23 +132,32 @@ export const requirementsRunningCase: Record<string,RequirementsTeachingSection[
     }
   ]
 };
-export const requirementsRunningCaseReferences: LearningResource[] = [
+export const requirementsRunningCaseReferences: Record<string,LearningResource[]> = {
+  "From Requests to Problems": [
   {
     "title": "NASA Systems Engineering Handbook — Appendix C: How to Write a Good Requirement",
     "url": "https://www.nasa.gov/reference/appendix-c-how-to-write-a-good-requirement/",
     "kind": "reference",
     "purpose": "Implementation-independent, unambiguous, traceable, and verifiable requirement review checklist."
   },
+  ],
+  "Stakeholders and Actors": [
   {
     "title": "SEBoK — Requirements Management",
     "url": "https://sebokwiki.org/wiki/Requirements_Management",
     "kind": "reference",
     "purpose": "Baseline management, bidirectional traceability, change impact, verification and validation evidence."
   },
+  ],
+  "Quality Requirements": [
   {
     "title": "arc42 — Quality scenarios",
     "url": "https://docs.arc42.org/section-10/",
     "kind": "reference",
     "purpose": "Six-part measurable quality attributes, usage, change, and failure scenarios."
   }
-];
+  ],
+  "Functional Requirements": [{title:"NASA Systems Engineering Handbook — Appendix C",url:"https://www.nasa.gov/reference/appendix-c-how-to-write-a-good-requirement/",kind:"reference"}],
+  "Constraints and Assumptions": [{title:"SEBoK Requirements Management — Baselines and Change Impact",url:"https://sebokwiki.org/wiki/Requirements_Management",kind:"reference"}],
+  "Acceptance and Evidence": [{title:"NASA requirements verification and validation checklist",url:"https://www.nasa.gov/reference/system-engineering-handbook-appendix/",kind:"reference"}],
+};
