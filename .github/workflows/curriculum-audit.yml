@@ -6,6 +6,7 @@ on:
       - curriculum/system-thinker-pedagogical-audit
       - curriculum/platform-builder-pedagogical-audit
       - curriculum/delivery-engineer-pedagogical-audit
+      - curriculum/delivery-engineer-source-depth-v2
       - integration/tsa-audits-master-20261102
       - master
   workflow_dispatch:
@@ -70,6 +71,10 @@ jobs:
         run: bash -n scripts/platform-systemd-recovery-lab.sh
       - name: Verify isolated Delivery release identity and fail-closed mismatch
         run: python scripts/check-delivery-release-identity.py
+      - name: Execute published Delivery lifecycle artifact gate (allow and block)
+        run: node scripts/check-delivery-lifecycle-identity.mjs
+      - name: Execute published Delivery CI graph failure gate
+        run: node scripts/check-delivery-ci-dependency.mjs
       - name: Build applications
         run: pnpm build
 
@@ -262,6 +267,7 @@ jobs:
         run: |
           node scripts/check-builder-postgresql-live-lab.mjs
           node scripts/check-builder-django-live-lab.mjs
+          node scripts/check-delivery-schema-expansion.mjs
 
   learner-browser:
     runs-on: ubuntu-24.04

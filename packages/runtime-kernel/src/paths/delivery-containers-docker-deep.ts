@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { dockerOperationalDeepeningById } from "./delivery-docker-operational-depth";
 
 const dockerDocs: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
 const dockerfileRef: LearningResource = { title: "Dockerfile reference", url: "https://docs.docker.com/reference/dockerfile/" };
@@ -7,7 +8,7 @@ const composeDocs: LearningResource = { title: "Docker Compose documentation", u
 
 function richLesson(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string; output?: string } }>, resources: LearningResource[] = [dockerDocs]): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
-    for (const section of sections) {
+    for (const section of [...sections, ...(dockerOperationalDeepeningById[id] ?? [])]) {
         const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
         blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
         if (section.items) blocks.push({ type: "list", items: section.items });

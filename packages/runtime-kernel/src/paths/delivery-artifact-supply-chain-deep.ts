@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { supplyChainDepthById } from "./delivery-supply-chain-depth";
 
 const nexusDocs: LearningResource = { title: "Sonatype Nexus Repository documentation", url: "https://help.sonatype.com/en/sonatype-nexus-repository.html" };
 const packaging: LearningResource = { title: "Python Packaging User Guide", url: "https://packaging.python.org/" };
@@ -52,7 +53,7 @@ function richLesson(spec: LessonSpec): Lesson {
     const contract = practicalContracts[spec.id];
     if (!contract) throw new Error(`Missing Artifact Supply Chain practical contract: ${spec.id}`);
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    for (const section of spec.sections) {
+    for (const section of [...spec.sections, ...(supplyChainDepthById[spec.id] ?? [])]) {
         blocks.push({ type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code, caption: section.code.caption });
@@ -183,7 +184,7 @@ const specs: LessonSpec[] = [
         title: "Container Registries",
         intro: "OCI container registries distribute immutable image content and metadata rather than application source code.",
         sections: [
-            { heading: "Tags and manifests", paragraphs: ["An image tag is a convenient mutable reference. The digest identifies specific image content. A registry stores manifests and layers so multiple environments can pull the exact image that CI produced."] , code: { language: "bash", caption: "Inspect immutable image identity", code: "docker image inspect steward-api:1.4.0 --format '{{index .RepoDigests 0}}'" } },
+            { heading: "Tags and manifests", paragraphs: ["An image tag is a convenient mutable reference. The digest identifies specific image content. A registry stores manifests and layers so multiple environments can pull the exact image that CI produced."] , code: { language: "bash", caption: "Inspect immutable image identity", code: "docker image inspect steward-api:1.4.0 --format '{{json .RepoDigests}}'\n# [] means no known registry digest on this local image.\n# Publish/pull from the approved registry before claiming a RepoDigest." } },
             { heading: "Internal distribution", paragraphs: ["Publishing Steward images to Nexus removes the assumption that deployment pulls from a developer workstation. The deployment host can retrieve a versioned image from infrastructure designed for distribution."] },
         ],
         practice: ["Record Steward's current image tag and digest.", "Design the internal image naming convention.", "Explain why production evidence should include digest in addition to tag."],
@@ -232,7 +233,7 @@ const specs: LessonSpec[] = [
         title: "Consuming Internal Packages with pip",
         intro: "A package repository is useful only when consumers can reproduce installation without producer-local paths.",
         sections: [
-            { heading: "Configure the index", paragraphs: ["Configure pip to use the approved Nexus group or index endpoint. Avoid solutions that require every consumer to remember multiple ad-hoc URLs or manually download wheel files."] , code: { language: "bash", caption: "Install through the internal index", code: "python -m pip install --index-url \"$NEXUS_PYPI_GROUP/simple\" steward-common==1.2.0" } },
+            { heading: "Configure the index", paragraphs: ["Configure pip to use the approved Nexus group or index endpoint. Avoid solutions that require every consumer to remember multiple ad-hoc URLs or manually download wheel files.", "Before using the example, choose PACKAGE_SPEC from either an actually earned Steward package or a clearly labeled disposable training fixture. Do not run the historical hardcoded steward-common version when no such package was created. Set NEXUS_PYPI_GROUP to the approved base URL without trailing /simple, confirm no extra-index-url or environment override silently adds a public fallback, and run in a fresh isolated environment. If the approved index is unavailable, the exercise should fail visibly rather than quietly install local files or fetch from an unintended registry."] , code: { language: "bash", caption: "Install through the internal index", code: ": \"${NEXUS_PYPI_GROUP:?Set the approved Nexus PyPI group base URL}\"\n: \"${PACKAGE_SPEC:?Set earned package or explicit training fixture, pinned as name==version}\"\npython -m pip install --no-cache-dir --index-url \"${NEXUS_PYPI_GROUP%/}/simple\" \"$PACKAGE_SPEC\"" } },
             { heading: "Pin what must be repeatable", paragraphs: ["A consumer should express compatible versions deliberately. Exact pins maximize repeatability but increase update work; ranges increase flexibility but can admit new versions. The choice should be conscious and visible in dependency metadata or lock files."] },
         ],
         practice: ["If steward-common exists, configure its real external consumers to resolve it through the Nexus PyPI group; otherwise configure a disposable clean consumer for the training package.", "Install and run each real consumer, or the explicit fixture consumer, in a clean environment using only the Nexus endpoint.", "Prove consumption works with the package producer repository unavailable locally.", "Record the resolved version and source repository for each consumer."],
@@ -298,7 +299,7 @@ const specs: LessonSpec[] = [
             { heading: "Consumer independence", paragraphs: ["Good versioning lets producers and consumers release on different schedules. Without versions, every change becomes an implicit lockstep deployment requirement."] },
             { heading: "Worked compatibility decisions", paragraphs: ["Assume a deliberately scoped internal Python fixture exposes classify_service(name: str) -> str and the consumer pins an approved 1.x version. Fixing an internal crash without altering that public behavior is typically a patch candidate: 1.2.0 → 1.2.1. Adding an optional, backward-compatible keyword argument may justify 1.3.0, but test existing callers before concluding it is compatible. Renaming name to service_id or changing the return contract for existing callers is breaking and normally requires 2.0.0. These are release-policy examples, not automatic truth: a public API includes documented exceptions, serialized formats, side effects and the Python interpreter support policy.", "The producer should publish each candidate as an immutable distinct artifact, run package contract tests, and test at least one clean downstream consumer against the new version. A version number is a compatibility claim that tests can challenge; it is not compatibility evidence on its own. Do not create steward-common merely to make this example possible."] },
         ],
-        practice: ["If steward-common exists, define its public contract; otherwise perform the versioning exercise against the explicit package fixture without claiming a Steward shared-library contract.", "Classify three hypothetical changes as patch, minor or major and justify each.", "Show how Steward API declares its compatibility requirement."],
+        practice: ["If steward-common exists, define its public contract; otherwise perform the versioning exercise against the explicit package fixture without claiming a Steward shared-library contract.", "Classify three hypothetical changes as patch, minor or major and justify each.", "If a real earned internal package exists, show the Steward API compatibility constraint against it; otherwise demonstrate the constraint only in the explicitly labeled disposable fixture consumer and do not invent a Steward runtime dependency."],
         questions: ["Why does internal ownership not remove the need for compatibility contracts?", "What architectural smell appears when every package change forces every consumer to deploy immediately?"],
         resources: [packaging],
     },

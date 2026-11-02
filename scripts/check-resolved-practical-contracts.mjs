@@ -74,6 +74,25 @@ if (!delivery || delivery.paths.length !== 11) {
   problems.push("Delivery Engineer must expose 11 learning paths");
 } else {
   for (const path of delivery.paths) {
+    if (path.id === "software-delivery-foundations") {
+      // Reject shallow generated wrappers: the nine ORIGINAL teaching readings
+      // must now carry substantive sections before their original practicals.
+      if (path.lessons.length !== 9) {
+        problems.push("Delivery foundations must retain all nine authored topics");
+      }
+      for (const lesson of path.lessons) {
+        const reading = lesson.activities?.[0];
+        const blocks = reading?.content?.blocks;
+        const headings = Array.isArray(blocks) ? blocks.filter((block) => block.type === "heading") : [];
+        if (lesson.id.endsWith("-fieldwork-orientation") ||
+            reading?.content?.type !== "reading" ||
+            headings.length < 5 ||
+            !lesson.activities.some((item) => item.content.type === "practical")) {
+          problems.push(`Delivery foundations authored lesson lacks teaching/practice: ${lesson.id}`);
+        }
+      }
+      continue;
+    }
     const first = path.lessons?.[0];
     const activity = first?.activities?.[0];
     const blocks = activity?.content?.blocks;
@@ -87,6 +106,7 @@ if (!delivery || delivery.paths.length !== 11) {
 }
 if (delivery) {
   for (const path of delivery.paths) {
+    if (path.id === "software-delivery-foundations") continue; // Real authored reading and practice already validated above.
     for (const lesson of path.lessons) {
       lesson.activities.forEach((activity, index) => {
         if (activity.content.type !== "practical") return;
