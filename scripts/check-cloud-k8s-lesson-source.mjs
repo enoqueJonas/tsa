@@ -84,7 +84,7 @@ assert.equal(pdb.spec.selector.matchLabels.app,"tsa-web");
 const argo=parseYaml(sections["argocd-operation"].find(x=>x.code?.language==="yaml")?.code?.code);
 assert.equal(argo.kind,"Application");
 assert.equal(argo.apiVersion,"argoproj.io/v1alpha1");
-assert.match(argo.spec.source.repoURL,/example\\.invalid/);
+assert.match(argo.spec.source.repoURL,/example\.invalid/);
 assert.equal(argo.spec.syncPolicy?.automated,undefined,"Automatic reconciliation must not be enabled in a fake-source example");
 for (const id of ["pressure-eviction-rollout","gitops-model"]) {
   const snippet=sections[id].find(x=>x.code?.language==="python")?.code?.code;
