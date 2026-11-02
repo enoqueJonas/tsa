@@ -147,7 +147,9 @@ jobs:
           PGDATABASE: tsa_steward_lab
           PGUSER: tsa_learner
           PGPASSWORD: tsa_local_ci_only
-        run: node scripts/check-system-thinker-real-outbox.mjs
+        run: |
+          node scripts/check-system-thinker-real-outbox.mjs
+          node scripts/check-system-thinker-concurrent-outbox.mjs
 
   system-thinker-wsdl-client:
     runs-on: ubuntu-latest
