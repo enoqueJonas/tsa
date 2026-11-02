@@ -72,6 +72,10 @@ test("Platform Builder network CIDR, next hop and stale-mask examples are source
   runAudit("scripts/check-platform-builder-network-case.mjs", /Platform Builder connected network case passed:/);
 });
 
+test("Platform Builder Packet Tracer real Python VLSM, ordered protocol teaching and homelab direct references", () => {
+  runAudit("scripts/check-platform-builder-packet-tracer-source.mjs", /Platform Builder Packet Tracer and homelab authored-source proof passed:/);
+});
+
 test("System Thinker XML and XSD examples execute from the actual learner source", () => {
   runAudit("scripts/check-system-thinker-xml-teaching-examples.mjs", /System Thinker XML/);
 });
