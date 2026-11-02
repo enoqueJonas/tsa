@@ -336,6 +336,52 @@ def check_system_thinker_reentry(page):
     print("PASS system-thinker IndexedDB reentry: practical evidence and reflection persisted across hard reload", flush=True)
 
 
+
+def check_reliability_retired_activity_progress(page):
+    """Retired generated wrapper IDs may persist in an older learner record.
+
+    They must not count toward current authored-activity completion, and a
+    stale currentActivityId must not prevent re-entry. Synthetic isolated DB.
+    """
+    page.goto(f"{BASE}/?view=curriculum&school=reliability-engineer", wait_until="networkidle")
+    page.get_by_role("button", name=MODULE).first.wait_for()
+    page.evaluate("""async () => {
+      const db = await new Promise((resolve, reject) => {
+        const req = indexedDB.open('tsa-academy', 5);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+      try {
+        const tx = db.transaction('path-progress','readwrite');
+        tx.objectStore('path-progress').put({
+          pathId:'reliability-and-sre',schemaVersion:1,
+          currentActivityId:'reliability-and-sre-reliability-model-reading',
+          completedActivityIds:Array.from({length:50},(_,i)=>
+            'legacy-synthetic-reliability-preparation-'+i),
+          reflectionResponses:{},
+          startedAt:'2026-10-01T00:00:00.000Z',
+          updatedAt:'2026-10-01T00:00:00.000Z'
+        });
+        await new Promise((resolve,reject)=>{
+          tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error);
+        });
+      } finally { db.close(); }
+    }""")
+    page.reload(wait_until="networkidle")
+    module = page.locator("article").filter(
+        has=page.get_by_role("heading",name="Reliability and SRE Foundations",exact=True)
+    ).first
+    module.get_by_text("0%",exact=True).wait_for(timeout=12000)
+    assert module.get_by_text("Completed",exact=True).count() == 0, (
+        "Retired activities were incorrectly counted as completed curriculum")
+    module.get_by_role("button",name="Continue module").click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    activity = page.evaluate("new URLSearchParams(location.search).get('activity')")
+    assert activity and "reliability-model" not in activity, (
+        f"Re-entry followed removed generated wrapper: {activity}")
+    print("PASS Reliability retired-wrapper progress excluded and safe re-entry",flush=True)
+
+
 with sync_playwright() as playwright:
     browser = playwright.chromium.launch(headless=True)
     context = browser.new_context(viewport={"width": 1440, "height": 900})
@@ -352,4 +398,8 @@ with sync_playwright() as playwright:
     else:
         check_mobile_first_module(mobile.new_page())
     mobile.close()
+    if SCHOOL == "reliability-engineer":
+        isolated = browser.new_context(viewport={"width": 1440, "height": 900})
+        check_reliability_retired_activity_progress(isolated.new_page())
+        isolated.close()
     browser.close()
