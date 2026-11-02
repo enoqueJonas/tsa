@@ -21,4 +21,9 @@ for(const line of [
 "wrong namespace reason: Wrong operation namespace",
 "after shutdown: connection refused",
 ]) assert.ok(result.stdout.includes(line),"Missing "+line+" in "+result.stdout);
+if(process.env.TSA_REQUIRE_ZEEP==="1") {
+  for(const line of ["Zeep WSDL-aware success: True","Zeep SOAP Fault surfaced: True"]) {
+    assert.ok(result.stdout.includes(line),"WSDL-aware SOAP client missing '"+line+"': "+result.stdout);
+  }
+}
 console.log("System Thinker SOAP 1.1 learner WSDL/wire trace passed: real loopback success, Fault, namespace mismatch and refusal.");
