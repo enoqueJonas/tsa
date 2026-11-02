@@ -1,4 +1,5 @@
 import type { Lesson } from "./lesson";
+import {kafkaComparisonWorkedSections,kafkaComparisonResources} from "./system-thinker-kafka-comparison-worked";
 import { distributedStateStagedLabs } from "./system-thinker-distributed-staged-labs";
 import { messagingSemanticsWorked, messagingSemanticsReferences } from "./system-thinker-messaging-semantics-worked";
 import type { LearningResource, LessonBlock } from "../activities/content";
@@ -249,6 +250,7 @@ export const distributedStateAndMessagingDeepLessons: Lesson[] = [
         [
             { title: "RabbitMQ emphasizes routed work delivery", paragraphs: ["RabbitMQ fits work queues, routed messages, acknowledgements and per-message delivery/retry patterns naturally. Consumers usually care about receiving work and acknowledging completion; messages need not become a long-term history by default.", "That makes it a strong first implementation for Steward notifications, background jobs and integration events where the immediate problem is asynchronous delivery and failure handling."] },
             { title: "Kafka emphasizes a durable partitioned log", paragraphs: ["Kafka retains ordered records in partitions for a configured period and lets consumer groups track their own offsets. This supports replay, stream processing and high-throughput event histories, but introduces partitioning, retention and consumer-lag concerns.", "Kafka should enter a Steward architecture decision only if those capabilities match real drivers. 'More scalable' is not a sufficient requirement."], code: { language: "text", code: "RabbitMQ question: which queue(s) should receive this message, and was the work acknowledged?\nKafka question: which partition contains this record, how long is it retained, and where is each consumer group's offset?", caption: "The products overlap, but their primary operating models differ." } },
+            ...kafkaComparisonWorkedSections,
         ],
         {
             objective: "Write a RabbitMQ-versus-Kafka decision note for a concrete Steward workload without implementing Kafka.",
@@ -258,7 +260,7 @@ export const distributedStateAndMessagingDeepLessons: Lesson[] = [
             completionCriteria: ["The comparison is workload-specific.", "Kafka is understood conceptually without creating a duplicate implementation track.", "The selected technology is not justified by popularity or vague scale claims.", "Revisit conditions are observable."],
         },
         ["What retained-log capability makes Kafka materially different from a normal queue-first model?", "Why is RabbitMQ a useful first implementation for TSA?", "What evidence should trigger a RabbitMQ-versus-Kafka reevaluation?"],
-        [rabbitmqDocs, kafkaDocs],
+        [rabbitmqDocs, kafkaDocs, ...kafkaComparisonResources],
     ),
     ...distributedStateStagedLabs,
 ];
