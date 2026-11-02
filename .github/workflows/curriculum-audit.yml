@@ -193,6 +193,7 @@ jobs:
           node scripts/check-system-thinker-real-outbox.mjs
           node scripts/check-system-thinker-concurrent-outbox.mjs
           node scripts/check-system-thinker-rabbitmq-poison-replay.mjs
+          node scripts/check-system-thinker-rabbitmq-missing-binding.mjs
 
   system-thinker-wsdl-client:
     runs-on: ubuntu-latest
