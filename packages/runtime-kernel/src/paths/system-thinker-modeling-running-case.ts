@@ -34,7 +34,7 @@ export const modelingRunningCase:Record<string,ModelingSection[]> = {
       "code": {
         "language": "text",
         "caption": "Correspondence across the three C4 zooms for one recorded-owner lookup",
-        "code": "CONTEXT\n  Responder -- requests recorded owner --> [STEWARD]\n\nCONTAINER [STEWARD responsibility boundary]\n  Responder -- lookup --> [Django REST API]\n  [Django REST API] -- owner query --> [PostgreSQL]\n\nCOMPONENT (inside Django API only; conceptual responsibilities)\n  [Request adapter] -> [Access policy] -> [Ownership read] -> [ORM]\n  These are logical responsibilities, NOT proof of four deployed services.\n\nOPEN: enterprise IdP and D-01 approval source are not claimed deployed"
+        "code": "CONTEXT\n  Responder -- requests recorded owner --> [STEWARD]\n\nCONTAINER [STEWARD responsibility boundary]\n  Responder -- lookup --> [Django REST API]\n  [Django REST API] -- owner query --> [PostgreSQL]\n\nCOMPONENT (inside Django API only; conceptual responsibilities)\n  [Request adapter] -> [Access policy] -> [Ownership read] -> [ORM]\n  These are logical responsibilities, NOT proof of four deployed services.\n\nUNCONFIRMED: enterprise IdP and D-01 approval source; not deployed"
       }
     },
     {
