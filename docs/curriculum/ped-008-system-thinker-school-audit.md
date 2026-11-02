@@ -4,7 +4,13 @@
 **Scope:** System Thinker only; all 11 canonical learning paths in learner order.
 **Issue:** [#332](https://github.com/enoqueJonas/tsa/issues/332); governing [#318](https://github.com/enoqueJonas/tsa/issues/318); combined downstream [#322](https://github.com/enoqueJonas/tsa/issues/322).
 **Branch:** `curriculum/system-thinker-pedagogical-audit`, based on Builder `fd8ad881`.
-**Status: AUDIT IN PROGRESS. No school-wide VALIDATED claim.**
+**Status: INSTRUCTIONALLY REMEDIATED — 11-MODULE SOURCE AUDIT CLOSED; independent learner validation still OPEN in #334.**
+
+## Closure of instructional remediation pass — 2026-11-02
+
+**Source remediation is complete for this school; stop expanding System Thinker with speculative runtime edge cases.** All 11 modules were reviewed in learner order, oversized coverage was split into focused lessons, source-extracted protocol/domain negative tests were added, and the matching head [Actions #41467056646](https://github.com/enoqueJonas/tsa/actions/runs/41467056646) passed **19/19** jobs with **221 desktop and 221 mobile** activity traversals and saved-evidence persistence. This satisfies the **source-level REMEDIATED** gate, **not** manual pedagogical or independent learner acceptance.
+
+Missing human review/learner transfer, and actual D-01/IdP/vendor/quorum/external-provider integrations remain accurately UNVERIFIED under [follow-up #334](https://github.com/enoqueJonas/tsa/issues/334). Those separate assessments must not prevent finishing the other TSA schools. **The next active school is [Platform Builder #323](https://github.com/enoqueJonas/tsa/issues/323)**. PR #333 is offered for repository review, not automatically merged or declared learner-validated. Earlier notes saying "do not start another school" describe the previous remediation phase and no longer apply.
 
 ## Concurrent-importer learner-order proof (2026-11-02)
 
