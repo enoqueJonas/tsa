@@ -44,7 +44,7 @@ export const sreSourceDepthById: Record<string, Array<{heading:string;paragraphs
       ]
     },
     {
-      "heading": "Independent recovery challenge",
+      "heading": "Recovery failure and independent challenge",
       "paragraphs": [
         "Suppose the API returns 200 again after restarting a database, but a synthetic registration committed just before the outage is absent. Distinguish process availability restoration from data correctness recovery. Name the known-good probe, the record query and the outbox/worker observation needed before closing the incident."
       ]
