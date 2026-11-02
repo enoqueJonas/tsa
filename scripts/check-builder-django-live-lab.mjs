@@ -15,6 +15,14 @@ function snippet(caption) {
   }
   throw new Error("Missing exact learner-visible Django code: "+caption);
 }
+const pgLessonSource=fs.readFileSync("packages/runtime-kernel/src/paths/builder-postgresql-deep.ts","utf8");
+function pgLessonCode(caption) {
+  const idx=pgLessonSource.indexOf('"caption": "'+caption+'"');
+  assert.ok(idx>=0,"Missing Django-dependent published lesson: "+caption);
+  const m=pgLessonSource.slice(idx,idx+24000).match(/"code":\s*("(?:\\.|[^"\\])*")/);
+  assert.ok(m,"Missing authored code for "+caption);
+  return JSON.parse(m[1]);
+}
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-django-bridge-"));
 const exec=(command,args,env=process.env)=>{
   const p=spawnSync(command,args,{cwd:root,encoding:"utf8",timeout:60000,env});
@@ -69,6 +77,21 @@ DATABASES = {'default': {'ENGINE': 'django.db.backends.postgresql',
   assert.match(plan,/CREATE TABLE "service"/);
   assert.match(plan,/CREATE TABLE "environment"/);
   exec("python3",["manage.py","migrate","--noinput"],env);
+  // Exact Django-dependent PostgreSQL lesson code is executed in the separate
+  // migration-managed database, not merely scanned for method names.
+  assert.match(exec("python3",["manage.py","shell","-c",
+      pgLessonCode("orm_lazy.py — real QuerySet evaluation and related-Team JOIN")],env),
+      /ORM lazy: 0 SQL statements before evaluation; then 1/);
+  assert.match(exec("python3",["manage.py","shell","-c",
+      pgLessonCode("nplusone_fk.py — measure five queries versus one on the same Service rows")],env),
+      /N\+1 owner queries: 5 -> 1/);
+  assert.match(exec("python3",["manage.py","shell","-c",
+      pgLessonCode("nplusone_reverse.py — prefetch a many-valued Environment relation")],env),
+      /N\+1 reverse queries: 2 for 4 Services/);
+  assert.match(exec("python3",["manage.py","shell","-c",
+      pgLessonCode("orm_equivalence.py — identical ORM and bound-SQL results")],env),
+      /ORM\/SQL equivalent: [0-9]+ matching Services/);
+
   assert.match(exec("python3",["manage.py","shell","-c",validation],env),/DRF validation: valid, field failure, cross-field failure/);
   const probe=`from django.test import Client
 from registry.models import Team,Service,Environment
