@@ -72,6 +72,10 @@ test("System Thinker file handoff example demonstrates persisted replay evidence
   runAudit("scripts/check-system-thinker-file-handoff-teaching-example.mjs", /System Thinker file handoff learner example passed:/);
 });
 
+test("System Thinker Modeling module explains C4 zoom, components, state guards and independent critique", () => {
+  runAudit("scripts/check-system-thinker-modeling-running-case.mjs", /System Thinker Modeling running case passed:/);
+});
+
 test("System Thinker Boundaries module carries requirements into context, ownership and trust views", () => {
   runAudit("scripts/check-system-thinker-boundaries-running-case.mjs", /System Thinker Boundaries running case passed:/);
 });
