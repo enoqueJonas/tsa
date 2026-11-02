@@ -44,7 +44,7 @@ export const enterpriseBridgeBySpec:Record<string,EnterpriseBridgeSection[]> = {
       ]
     }
   ],
-  "shared-filesystem-transfer": [
+  "shared-file-boundary": [
     {
       "title": "Transport migration changes a trust boundary, not the business contract",
       "paragraphs": [
@@ -53,7 +53,7 @@ export const enterpriseBridgeBySpec:Record<string,EnterpriseBridgeSection[]> = {
       ]
     }
   ],
-  "secure-readiness": [
+  "secure-transfer-readiness": [
     {
       "title": "Prove the security change does not manufacture authority",
       "paragraphs": [
@@ -85,14 +85,14 @@ export const enterpriseBridgeReferences:Record<string,LearningResource[]> = {
       "kind": "reference"
     }
   ],
-  "shared-filesystem-transfer": [
+  "shared-file-boundary": [
     {
       "title": "OpenSSH SFTP and SSH trust documentation",
       "url": "https://www.openssh.com/manual.html",
       "kind": "reference"
     }
   ],
-  "secure-readiness": [
+  "secure-transfer-readiness": [
     {
       "title": "AsyncSSH SFTP API — protocol scope of the local lab",
       "url": "https://asyncssh.readthedocs.io/en/latest/api.html",
