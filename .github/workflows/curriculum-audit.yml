@@ -61,6 +61,8 @@ jobs:
         run: node scripts/check-cloud-building-block-depth.mjs
       - name: Execute source-published GELF diagnostic event and malformed negative
         run: node scripts/check-reliability-graylog-event-trace.mjs
+      - name: Verify original SLI and metrics lessons using exact executable examples
+        run: node scripts/check-reliability-sli-metrics-worked.mjs
       - name: Guard original logging teaching depth and failure transfer across eight topics
         run: node scripts/check-reliability-logging-source-depth.mjs
       - name: Execute original Observability learner cross-signal negative example
