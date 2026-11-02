@@ -11,7 +11,7 @@ const eq=source.indexOf(" = ",start);
 const end=source.indexOf(";\nexport const platformNetworkingTraceResources",eq);
 assert.ok(eq>start && end>eq,"Cannot parse stable source literal");
 const mapping=JSON.parse(source.slice(eq+3,end));
-const expected=["Ethernet and Switching","IP Addressing","Subnetting","ARP","Routing","Ports and Sockets","DNS","Network Troubleshooting Tools"];
+const expected=["Networking Mental Models: OSI and TCP/IP","Ethernet and Switching","IP Addressing","Subnetting","ARP","Ports and Sockets","Routing","DHCP","DNS","NAT","Firewalls","HTTP and TLS from the Network Perspective","Network Troubleshooting Tools"];
 assert.deepEqual(Object.keys(mapping),expected,"Connected Steward trace changed scope");
 assert.ok(assembled.includes("platformNetworkingTraceByTitle[title]"),"Authored packet traces not rendered in lessons");
 assert.ok(assembled.includes("platformNetworkingTraceResources.slice(0,2)"),"Subnet research references missing");
@@ -35,4 +35,6 @@ for(const phrase of [
   "incorrect /24 treats remote .70 as local: True"
 ])assert.ok(py.stdout.includes(phrase),"Published Python does not prove "+phrase);
 assert.ok(quality.includes("Subnetting")&&quality.includes("ARP"),"Targeted practice no longer available");
-console.log("Platform Builder connected network case passed: 8 rendered lesson traces and exact runnable /26 versus /24 negative CIDR example.");
+assert.ok(assembled.includes("Flow control and congestion control protect different bottlenecks"),"Existing substantial TCP/UDP mechanisms lost");
+assert.ok(quality.includes("new /27 or /28"),"Learner has no unseen subnet transfer");
+console.log("Platform Builder connected network case passed: 13 rendered lesson traces and exact runnable /26 versus /24 negative CIDR example.");
