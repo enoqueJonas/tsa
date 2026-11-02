@@ -10,7 +10,7 @@ assert.ok(assembler.includes('if (path.id === "cloud-orchestration-gitops") retu
 const match = authored.match(/export const kubernetesFoundationsById:[^\n]+ = (\{[\s\S]*\});\s*$/);
 assert.ok(match, "Could not extract authored K8s sections");
 const sections = JSON.parse(match[1]);
-for (const id of ["why-orchestration", "cluster-control-plane", "pods-deployments"]) {
+for (const id of ["why-orchestration", "cluster-control-plane", "pods-deployments", "services-discovery", "scheduling-placement", "dns-network-policy", "persistent-storage"]) {
   assert.ok(Array.isArray(sections[id]) && sections[id].length >= 3, "Missing learning phases for " + id);
   assert.ok(sections[id].some(x => x.code?.code), "Missing guided command/manifest: " + id);
   assert.ok(sections[id].some(x => /transfer|failure|failed/i.test(x.heading+" "+x.paragraphs.join(" "))), "Missing negative or transfer case: " + id);
@@ -48,7 +48,18 @@ assert.equal(empty.kind,"Service");
 assert.equal(empty.metadata.name,"tsa-web-empty");
 assert.notDeepEqual(empty.spec.selector,obj.spec.template.metadata.labels,"Deliberate mismatched selector must remain a negative exercise");
 assert.ok(sections["services-discovery"].some(x => x.code?.code.includes("kubectl --context kind-tsa-ped005")), "Service exercise must name the disposable context");
+const scheduling = parseYaml(sections["scheduling-placement"].find(x => x.code?.language === "yaml")?.code?.code);
+assert.equal(scheduling.kind,"Pod");
+assert.equal(scheduling.metadata.name,"tsa-unschedulable");
+assert.equal(scheduling.spec.nodeSelector["tsa.example/placement"],"missing");
+assert.ok(scheduling.spec.containers[0].resources.requests.memory);
+const claim = parseYaml(sections["persistent-storage"].find(x => x.code?.language === "yaml")?.code?.code);
+assert.equal(claim.kind,"PersistentVolumeClaim");
+assert.equal(claim.metadata.name,"tsa-unbound-claim");
+assert.equal(claim.spec.storageClassName,"tsa-nonexistent-class");
+assert.equal(claim.spec.resources.requests.storage,"64Mi");
+assert.ok(sections["dns-network-policy"].some(x=>x.paragraphs.join(" ").includes("not automatically") || x.paragraphs.join(" ").includes("does NOT prove")), "Kubernetes policy prose must not imply default kind CNI enforcement");
 const changed=structuredClone(obj);
 changed.spec.template.metadata.labels.app="wrong";
 assert.notDeepEqual(changed.spec.selector.matchLabels,changed.spec.template.metadata.labels,"Negative selector mismatch must be rejected");
-console.log("Cloud Kubernetes exact authored Deployment and Service YAML parsed: ready selectors and deliberate negative cases checked; runtime cluster UNVERIFIED.");
+console.log("Cloud Kubernetes 4 exact authored manifests parsed: Deployment, Service pair, Pending Pod and PVC negative fixtures; cluster runtime UNVERIFIED.");
