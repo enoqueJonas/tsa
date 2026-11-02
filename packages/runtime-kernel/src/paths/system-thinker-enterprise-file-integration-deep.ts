@@ -4,6 +4,7 @@ import { fileHandoffWorkedSections } from "./system-thinker-file-handoff-example
 import {ftpLoopbackWorkedSections} from "./system-thinker-ftp-worked";
 import {sftpWorkedSections,sftpWorkedResources} from "./system-thinker-sftp-worked";
 import {enterpriseBridgeBySpec,enterpriseBridgeReferences} from "./system-thinker-enterprise-authority-bridge";
+import {realStewardBatchSections,realStewardBatchResources} from "./system-thinker-real-steward-batch-worked";
 
 const rfc959: LearningResource = { title: "RFC 959 — File Transfer Protocol", url: "https://www.rfc-editor.org/rfc/rfc959" };
 const opensshSftp: LearningResource = { title: "OpenSSH documentation", url: "https://www.openssh.com/manual.html" };
@@ -29,7 +30,7 @@ function lesson(spec: Spec): Lesson {
         { type: "heading", id: `${spec.id}-outcomes`, text: "What you need to reason about", level: 2 },
         { type: "list", items: spec.criteria },
     ];
-    for (const section of [...spec.sections, ...(enterpriseBridgeBySpec[spec.id] ?? [])]) {
+    for (const section of [...spec.sections, ...(enterpriseBridgeBySpec[spec.id] ?? []), ...(spec.id==="batch-lifecycle"?realStewardBatchSections:[])]) {
         blocks.push({ type: "heading", id: `${spec.id}-${section.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`, text: section.title, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.code) blocks.push(section.code.caption
@@ -37,7 +38,7 @@ function lesson(spec: Spec): Lesson {
             : { type: "code", language: section.code.language, code: section.code.code });
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward integration boundary", body: "This path adds a file-based integration channel because a legacy enterprise dependency cannot consume Steward's REST API. The file channel is not allowed to become a second source of truth: Steward remains authoritative for its domain state and must validate every imported change." });
-    blocks.push({ type: "resources", title: "Continue learning", resources: [...(spec.resources ?? [rfc959, opensshSftp, pythonCsv]), ...(enterpriseBridgeReferences[spec.id] ?? [])] });
+    blocks.push({ type: "resources", title: "Continue learning", resources: [...(spec.resources ?? [rfc959, opensshSftp, pythonCsv]), ...(enterpriseBridgeReferences[spec.id] ?? []), ...(spec.id==="batch-lifecycle"?realStewardBatchResources:[])] });
 
     return {
         id: `system-thinker-enterprise-file-${spec.id}`,
