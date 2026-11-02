@@ -92,6 +92,10 @@ test("System Thinker SFTP source executes real SSH host trust, user auth, incomp
   runAudit("scripts/check-system-thinker-sftp.mjs", /System Thinker real pinned-SSH\/SFTP lesson passed:/);
 });
 
+test("System Thinker Data Flow shows lost HTTP response after commit, durable replay and key collision", () => {
+  runAudit("scripts/check-system-thinker-http-ambiguous-commit.mjs", /System Thinker ambiguous HTTP learner example passed:/);
+});
+
 test("System Thinker Kafka comparison teaches independent group offsets and replay, without pretending to run Kafka", () => {
   runAudit("scripts/check-system-thinker-kafka-comparison-model.mjs", /System Thinker Kafka offset model passed:/);
 });
