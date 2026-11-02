@@ -1,6 +1,7 @@
 import type { Lesson } from "./lesson";
 import {redisLivePrimerSections,rabbitLivePrimerSections} from "./system-thinker-distributed-live-primer";
 import {realOutboxWorkedSections} from "./system-thinker-real-outbox-worked";
+import {competingOutboxSections,competingOutboxResources} from "./system-thinker-outbox-concurrent-worked";
 import type { LessonBlock, LearningResource } from "../activities/content";
 
 const redis: LearningResource = { title:"Redis — Run Open Source on Docker", url:"https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/docker/", kind:"reference" };
@@ -22,7 +23,7 @@ function stage(id: string, title: string, intro: string, sections: Section[], pr
         if (section.code) blocks.push({type:"code",language:section.code.language,caption:section.code.caption,code:section.code.code});
     }
     blocks.push({type:"callout",tone:"warning",title:"Evidence tier",body:"Commands are a reproducible local starting point, not evidence of live integration. Redis/RabbitMQ/Steward experiments are UNVERIFIED until executed in the learner environment, including failure injection."});
-    blocks.push({type:"resources",title:"Reference and optional reinforcement",resources:[redis,rabbit,confirms,redisVideo]});
+    blocks.push({type:"resources",title:"Reference and optional reinforcement",resources:[redis,rabbit,confirms,redisVideo,...(id==="outbox-concurrent-lab"?competingOutboxResources:[])]});
     return { id:prefix,title,activities:[
         {id:prefix+"-reading",title:title+": Mechanisms",estimatedMinutes:readMinutes,content:{type:"reading",body:blocks.filter(b=>b.type==="paragraph").map(b=>b.text).join("\n\n"),blocks}},
         {id:prefix+"-practice",title:title+": Runtime Evidence",estimatedMinutes:practiceMinutes,content:{type:"practical",objective:practice.objective,scenario:practice.scenario,instructions:practice.instructions,deliverables:practice.deliverables,completionCriteria:practice.criteria}},
@@ -190,7 +191,42 @@ export const distributedStateStagedLabs: Lesson[] = [
     "Why is the outbox not exactly-once message delivery?",
     "What ordering signal protects one Service without requiring global broker order?"
 ], 35, 165),
-    stage("distributed-defence", "Lab 4: Distributed Steward System Defence", "This is a synthesis, not the place to introduce Redis, message routing or SQL transactions for the first time. It is an independent architecture defence supported by the three preceding runtime labs and a coherent system baseline.", [
+    stage("outbox-concurrent-lab", "Lab 4: Concurrent Outbox Publishers and Expiring Claims",
+        "The previous lab established a durable publication intent for one publisher. Now two *independent worker processes* compete for pending rows, and a crashed claimant must not permanently block the queue. Separate this concurrency problem from the first outbox lesson: its lock, lease and fencing mechanisms require their own observed failure and recovery proof.",
+        competingOutboxSections,
+        {
+            objective:"Execute a concurrent PostgreSQL outbox claim and RabbitMQ confirmation, then explain ownership after a process crash.",
+            scenario:"Two Steward publisher instances poll a shared PostgreSQL outbox. One worker crashes after claiming an event but before sending it, while another must eventually recover that event without corrupting the queue.",
+            instructions:[
+                "Run the entire published competing-publisher example against a disposable PostgreSQL 17 database and local RabbitMQ 4; preserve real stdout and SQL evidence.",
+                "Identify the BEGIN/COMMIT holding worker A's row lock while a separate worker B uses FOR UPDATE SKIP LOCKED and claims the next row.",
+                "Observe a crashed worker's durable claim, an early claimant failing to acquire it, a later worker reclaiming it after lease expiration, and the stale token failing to mark sent.",
+                "Inspect RabbitMQ messages and the final outbox state; account for broker-confirm versus PostgreSQL completion as distinct non-atomic operations.",
+                "Change one lease/lock condition at a time in a disposable copy and record the observed behavior, including whether the change blocks, permits stale completion or causes replay.",
+                "Use the previous idempotent-consumer lab to demonstrate that a duplicate after ambiguous publication produces no duplicate local effect.",
+                "Document what remains unverified: concurrent writers of the same aggregate, external side-effect idempotence, order/version guards and production lease renewal."
+            ],
+            deliverables:[
+                "Exact SQL claim and two-process output with distinct durable owners",
+                "Crash/recovery/expiry and stale-token rejection transcript",
+                "RabbitMQ publisher-confirm and outbox-dispatch evidence",
+                "Independent negative-change outcome and recovery reasoning",
+                "Remaining broker/order/authorization risks recorded"
+            ],
+            criteria:[
+                "Two independent publishers do not claim the same unexpired work item",
+                "A crashed durable claim is recoverable after lease expiration",
+                "Stale lease token cannot mark a reclaimed event as sent",
+                "Duplicate publication remains possible and is explicitly handled at the consumer",
+                "No real PostgreSQL and RabbitMQ run means the practical is UNVERIFIED"
+            ]
+        },
+        [
+            "Why does SKIP LOCKED alone not survive a process crash?",
+            "Why can a stale publisher still send after its lease expires even though its sent-row UPDATE fails?",
+            "What concrete evidence would justify a new outbox row-claim/renewal service in Steward?"
+        ], 35, 110),
+    stage("distributed-defence", "Lab 5: Distributed Steward System Defence", "This is a synthesis, not the place to introduce Redis, message routing or SQL transactions for the first time. It is an independent architecture defence supported by the four preceding runtime labs and a coherent system baseline.", [
     {
         "title": "Defend the simplest working architecture",
         "paragraphs": [
@@ -199,7 +235,7 @@ export const distributedStateStagedLabs: Lesson[] = [
         ]
     }
 ], {
-    "objective": "Reconcile all three staged labs and defend the real observed architecture.",
+    "objective": "Reconcile all four staged labs and defend the real observed architecture.",
     "scenario": "Steward now includes one justified cache and one durable asynchronous side effect. Reviewers challenge every dependency and recovery claim.",
     "instructions": [
         "Present versioned source and the pre-distribution Steward baseline.",
