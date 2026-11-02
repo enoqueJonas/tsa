@@ -68,6 +68,10 @@ test("System Thinker XML and XSD examples execute from the actual learner source
   runAudit("scripts/check-system-thinker-xml-teaching-examples.mjs", /System Thinker XML/);
 });
 
+test("System Thinker file handoff example demonstrates persisted replay evidence from learner source", () => {
+  runAudit("scripts/check-system-thinker-file-handoff-teaching-example.mjs", /System Thinker file handoff learner example passed:/);
+});
+
 test("Java dependency-injection lesson executes and matches published output", () => {
   runAudit("scripts/check-java-teaching-examples.mjs", /Java learner-example validation passed:/);
 });
