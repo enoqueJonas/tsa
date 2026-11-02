@@ -68,6 +68,25 @@ def inspect_school(page):
                 )
                 assert content.get_by_text("Trust starts at the verifier", exact=True).count() == 1
                 assert content.get_by_text("A trusted issuer is only one check", exact=True).count() == 1
+            # PED-007: These exact lessons previously rendered as 418–1491
+            # characters even while all structural/browser smoke checks passed.
+            # Keep the guard tied to the *rendered* learning surface, including
+            # a real copyable code example rather than padded generic prose.
+            if SCHOOL == "builder" and activity_id in {
+                "software-craft-internal-package-design-001",
+                "relational-data-and-postgresql-orm-vs-sql-reading",
+                "relational-data-and-postgresql-n-plus-one-reading",
+                "relational-data-and-postgresql-django-orm-reading",
+                "relational-data-and-postgresql-migrations-reading",
+                "software-craft-performance-awareness-reading",
+            }:
+                assert len(text) >= 2200, (
+                    f"Pedagogical depth regression in critical Builder reading: {activity_id}, "
+                    f"only {len(text)} rendered characters"
+                )
+                assert content.get_by_role("button", name="Copy").count() >= 1, (
+                    f"Missing runnable, copyable example in Builder reading: {activity_id}"
+                )
             code = content.locator("figure").filter(has=page.get_by_role("button", name="Copy"))
             for k in range(code.count()):
                 assert code.nth(k).locator("pre").count() > 0, (
