@@ -1671,49 +1671,236 @@ const specs: DataLessonSpec[] = [
         "warning": "Only execute changing SQL in a dedicated disposable PostgreSQL learning database. Predict the resulting rows and constraints before running a statement, and do not treat a five-row fixture as representative performance evidence."
     },
     {
-        id: "django-orm",
-        title: "Django ORM",
-        introduction: "The Django ORM maps Python expressions to SQL and relational operations. It is productive when you understand the SQL shape it produces. The goal is not to avoid SQL; it is to use a higher-level interface without losing database reasoning.",
-        outcomes: ["Translate basic QuerySets into expected SQL operations.", "Use select_related and prefetch_related deliberately.", "Inspect generated SQL.", "Avoid treating QuerySets as ordinary in-memory lists."],
-        sections: [
-            { id: "lazy", title: "QuerySets are lazy query descriptions", body: "Building a QuerySet usually does not hit the database until evaluation. Chaining methods modifies the query description. Know when iteration, len, serialization or conversion causes execution." },
-            { id: "inspect-sql", title: "Inspect what the ORM asks PostgreSQL to do", body: "Django exposes QuerySet.query and database logging. Use them while learning so model-level convenience remains connected to SQL reality.", code: "# conceptual Django shell example\nqs = Service.objects.filter(lifecycle='production').select_related('owning_team')\nprint(qs.query)" },
+        "id": "django-orm",
+        "title": "Django ORM: QuerySets, Evaluation and SQL",
+        "introduction": "Django QuerySets are lazy descriptions of relational queries, not preloaded Python lists. Their value is expressing familiar data questions through models while PostgreSQL remains responsible for filtering, joins, grouping and transactional consistency. Before optimizing or trusting a serializer, trace a QuerySet from Python construction to actual SQL and identify the exact point at which it queries the server.",
+        "outcomes": [
+            "Construct a QuerySet without accidentally executing it and distinguish its lazy representation from evaluated rows.",
+            "Inspect generated SQL and predict WHERE, JOIN and ORDER BY clauses from the model expression.",
+            "Compare list(), iterator(), count(), exists() and per-object relationship access by database behavior.",
+            "Use the same canonical Service.owning_team FK and production lifecycle semantics as the SQL lab."
         ],
-        assignment: ["Write QuerySets for three Steward questions.", "Inspect the generated SQL.", "Explain where joins and predicates appear."],
-        resources: [djangoQueryDocs, postgresDocs],
-        practiceObjective: "Implement Steward queries in the Django ORM while proving their SQL shape.",
-        practiceInstructions: ["Write one filtered query.", "Write one relationship query with select_related.", "Write one aggregate/annotate query.", "Inspect SQL for all three and compare with hand-written equivalents."],
-        knowledgeCheck: "1. What does QuerySet laziness mean?\n2. Why should generated SQL be inspectable?\n3. When is select_related appropriate?",
+        "sections": [
+            {
+                "id": "map",
+                "title": "Mapping a ForeignKey creates an SQL relationship, not an in-memory pointer",
+                "body": "The Django-managed lab defines Team, Service and Environment. Service.owning_team is a ForeignKey; PostgreSQL stores its identity as service.owning_team_id. In Python the field acts like an attribute: assigning a Team instance makes Django save the referenced identity. PostgreSQL still checks referential integrity; Django's model convenience does not make a missing Team legal. A QuerySet over Service can select related Team fields by generating SQL JOINs. A model object is not a guarantee that related rows have been fetched."
+            },
+            {
+                "id": "lazy",
+                "title": "Query construction is different from execution",
+                "body": "filter(lifecycle='production') returns a QuerySet describing a predicate; .order_by('name','id') changes its SQL sort; select_related('owning_team') instructs the ORM to fetch a single-valued relationship with a JOIN. Most QuerySet construction remains lazy. Iteration/list()/len() evaluates and caches data; count() may issue SELECT COUNT(*) instead of materializing all rows; exists() asks whether a row exists. Beware that repr(), slicing with a step, boolean evaluation or serialization can also trigger SQL. Once a QuerySet result cache exists, repeated iteration of that same instance may reuse rows, but a *new* QuerySet typically queries again."
+            },
+            {
+                "id": "runnable",
+                "title": "Prove no SQL before evaluation, then observe the actual JOIN",
+                "body": "Run this in python manage.py shell after migrating the separate Django-managed lab. CaptureQueriesContext counts actual SQL statements for this connection. Inspecting str(qs.query) renders the planned SQL but does not fetch rows; list(qs) executes. Compare with the generated SQL from the earlier PostgreSQL JOIN lesson. This example works with zero or many Service rows; the measured statement count rather than a guessed record name is the assertion.",
+                "language": "python",
+                "caption": "orm_lazy.py — real QuerySet evaluation and related-Team JOIN",
+                "code": "from django.db import connection\nfrom django.test.utils import CaptureQueriesContext\nfrom registry.models import Service\n\nwith CaptureQueriesContext(connection) as recorded:\n    qs = (Service.objects.filter(lifecycle=\"production\")\n          .select_related(\"owning_team\").order_by(\"name\", \"id\"))\n    query = str(qs.query)\n    assert \"JOIN\" in query.upper() and \"ORDER BY\" in query.upper()\n    before_evaluation = len(recorded)\n    rows = [(s.name, s.owning_team.name) for s in qs]\n    after_evaluation = len(recorded)\nassert before_evaluation == 0\nassert after_evaluation == 1\nprint(\"ORM lazy:\", before_evaluation, \"SQL statements before evaluation; then\", after_evaluation)\nprint(\"Services found:\", len(rows))",
+                "output": "ORM lazy: 0 SQL statements before evaluation; then 1. Services found depends on the Django lab's seeded rows."
+            },
+            {
+                "id": "query-count",
+                "title": "exists, count and list answer different questions",
+                "body": "If the API only needs to decide whether a production-stage Service exists, .exists() avoids transporting the whole relation. For a count, .count() usually issues an aggregate query, but the exact number of server round trips depends on whether the QuerySet result is already cached. list(qs) materializes model instances with associated object allocation and data transfer. Use QuerySet.explain() on a read query to ask PostgreSQL for a plan; query plan cost and network latency are separate concerns. The next N+1 lesson demonstrates how a harmless-looking attribute access can multiply queries."
+            },
+            {
+                "id": "negative",
+                "title": "The cache can hide a bad access pattern in an experiment",
+                "body": "When measuring SQL, create a *fresh* QuerySet inside each CaptureQueriesContext; reusing a previously evaluated list or QuerySet can falsely report zero additional queries. A select_related join is appropriate for owning_team, a single-valued FK, but generally not for the reverse Environment collection; many-valued relationships require a different retrieval plan, introduced later. Explain which real SQL statements the framework sent, not merely which Python methods appeared."
+            }
+        ],
+        "assignment": [
+            "Execute orm_lazy.py in the separate Django/PostgreSQL lab and capture the printed SQL and query count.",
+            "Before executing, predict the roles of WHERE lifecycle, JOIN Team, ORDER BY name and id.",
+            "Compare .exists(), .count() and list() for one question without mistakenly reusing a cached queryset.",
+            "Explain why select_related is not a universal solution for every related collection."
+        ],
+        "resources": [
+            {
+                "title": "Django 5.2 — Making Queries",
+                "url": "https://docs.djangoproject.com/en/5.2/topics/db/queries/",
+                "kind": "reference",
+                "purpose": "QuerySet evaluation and relationships."
+            },
+            {
+                "title": "Django 5.2 — QuerySet API",
+                "url": "https://docs.djangoproject.com/en/5.2/ref/models/querysets/",
+                "kind": "reference",
+                "purpose": "Exact lazy evaluation, select_related and query diagnostics."
+            },
+            {
+                "title": "PostgreSQL — Using EXPLAIN",
+                "url": "https://www.postgresql.org/docs/current/using-explain.html",
+                "kind": "reference",
+                "purpose": "Underlying execution-plan mechanism."
+            }
+        ],
+        "practiceObjective": "Prove that the ORM is a declarative SQL interface by measuring construction, evaluation and one related JOIN.",
+        "practiceInstructions": [
+            "Migrate the isolated Django lab and execute orm_lazy.py.",
+            "Record SQL, row count, zero statements at construction and one at evaluation.",
+            "Compare count/exists/list and show which behavior was actually observed.",
+            "Explain one case in which accessing related fields can unexpectedly trigger queries."
+        ],
+        "knowledgeCheck": "When does a QuerySet query PostgreSQL? Can reading qs.query execute the query? What does select_related change physically? Why should you create a fresh QuerySet when measuring query counts?"
     },
     {
-        id: "orm-vs-sql",
-        title: "ORM versus SQL",
-        introduction: "ORM and SQL are not opposing philosophies. They are interfaces with different strengths. A mature engineer chooses the simplest interface that preserves clarity, correctness and maintainability for the problem at hand.",
-        outcomes: ["Compare ORM and SQL trade-offs.", "Recognize when raw SQL improves clarity or capability.", "Avoid escaping to SQL just because an ORM query is unfamiliar.", "Preserve parameterization when using raw SQL."],
-        sections: [
-            { id: "choose-interface", title: "Choose based on the problem", body: "Routine model queries often belong in the ORM. Complex reporting, database-specific features or carefully tuned queries may be clearer in SQL. Team familiarity and testability matter too." },
-            { id: "safety", title: "Raw SQL must remain parameterized", body: "Moving from ORM to SQL does not justify string interpolation with untrusted values. Use database parameter binding." },
+        "id": "orm-vs-sql",
+        "title": "ORM versus SQL: Equivalent Answers, Different Boundaries",
+        "introduction": "ORM and raw SQL are not rival doctrines. Both submit relational operations to PostgreSQL; the important engineering question is which interface preserves correctness, safety, observability and maintainability for a particular operation. Compare an actual case-insensitive Service name search written in both interfaces, using bound parameters. Then deliberately contrast a string-interpolated query that would be unsafe with untrusted input.",
+        "outcomes": [
+            "Prove an ORM and parameterized SQL query return the same Service identities.",
+            "Explain how bound parameters differ from interpolating untrusted input into executable SQL syntax.",
+            "Choose an ORM, raw SQL or database view based on real complexity and performance evidence.",
+            "Explain which transaction/authorization boundaries remain necessary regardless of query interface."
         ],
-        assignment: ["Implement one Steward query in ORM and SQL.", "Compare readability, generated plan and coupling.", "Write a decision note for which version you would keep."],
-        resources: [djangoQueryDocs, postgresDocs],
-        practiceObjective: "Make an evidence-based ORM-versus-SQL choice for a non-trivial Steward query.",
-        practiceInstructions: ["Choose a join/aggregate registry question.", "Implement it in Django ORM.", "Implement equivalent parameterized SQL.", "Compare SQL plans and maintenance cost.", "Select one and justify the decision."],
-        knowledgeCheck: "1. Give a case where raw SQL can be preferable.\n2. Why should unfamiliar ORM syntax not automatically trigger raw SQL?\n3. What safety rule applies to user-controlled values in raw SQL?",
+        "sections": [
+            {
+                "id": "equivalence",
+                "title": "Start by specifying the same logical relation",
+                "body": "Our query is: return Service names containing 'pay', sorted by name. The ORM form is .filter(name__icontains=needle).order_by('name').values_list('name',flat=True). PostgreSQL ILIKE offers equivalent case-insensitive pattern matching for a simple ASCII substring. QuerySet parameterization is built into Django's expression compiler. Raw cursor.execute supports a SQL text containing %s placeholders plus a separate parameters list; the driver binds those values safely. Both operate on the *same database* and must use the same data and result-order contract before comparing performance."
+            },
+            {
+                "id": "execute",
+                "title": "Run both on the same PostgreSQL connection",
+                "body": "Execute this inside the Django shell with the canonical registry model. The query works even if no matching Service exists, though the full lab ordinarily has Payments API and Payroll API. The percent characters inside the parameter make a substring pattern; do not manually quote the placeholder in the SQL text. Assert result equality and print the outcome. This is SQL-backed execution, not a Python imitation of database filtering.",
+                "language": "python",
+                "caption": "orm_equivalence.py — identical ORM and bound-SQL results",
+                "code": "from django.db import connection\nfrom registry.models import Service\n\nneedle = \"pay\"\norm_names = list(Service.objects.filter(\n    name__icontains=needle).order_by(\"name\").values_list(\"name\", flat=True))\nwith connection.cursor() as cursor:\n    cursor.execute(\n        \"SELECT name FROM service WHERE name ILIKE %s ORDER BY name\",\n        [\"%\" + needle + \"%\"],\n    )\n    sql_names = [row[0] for row in cursor.fetchall()]\nassert orm_names == sql_names, (orm_names, sql_names)\nprint(\"ORM/SQL equivalent:\", len(orm_names), \"matching Services\")",
+                "output": "ORM/SQL equivalent: N matching Services, where N depends on the test database."
+            },
+            {
+                "id": "unsafe",
+                "title": "A SQL injection risk is about syntax crossing a trust boundary",
+                "body": "Do not construct SQL as '... WHERE name = ' + user_input or using f-strings around untrusted values. A malicious value can terminate a quote or introduce an unintended expression, changing the SQL parsed by PostgreSQL. A bound parameter is sent as data, not an SQL identifier or arbitrary syntax. Parameter placeholders generally cannot substitute for table names or ORDER BY column identifiers: those must be chosen from a server-owned allowlist. Do not execute a vulnerable string against the real registry simply to prove it is vulnerable. The safe experiment is to pass a quote or wildcard-like string through the bound parameter and observe a normal zero/matching result, not a changed query structure."
+            },
+            {
+                "id": "tradeoffs",
+                "title": "Choosing based on team and operational cost",
+                "body": "Routine CRUD and relationship traversal are often clearest through the ORM, which integrates with model constraints, transactions and existing Django code. PostgreSQL-specific reporting, window functions, extensions or complex recursive SQL can sometimes be clearer in well-reviewed parameterized SQL. But raw SQL also couples the code to table/column naming, migrations and database dialect. Performance is not decided by ORM-versus-SQL alone: inspect generated SQL and EXPLAIN with representative data. A hand-crafted SQL statement can be slower than an ORM-generated one and vice versa."
+            },
+            {
+                "id": "boundary",
+                "title": "Authorization is not automatically provided by either API",
+                "body": "Neither QuerySet.filter nor cursor.execute proves the subject is allowed to see the requested Service. Apply the same trusted Team scope and query result contract in either implementation. A careless raw-SQL reporting endpoint could bypass an ORM manager that normally scopes rows, while an unscoped Service.objects.all() is equally dangerous. For each query identify where permission filtering, schema assumptions, transaction scope, data binding and output mapping occur. Compare them explicitly in review."
+            }
+        ],
+        "assignment": [
+            "Run orm_equivalence.py with actual data and record both result sets.",
+            "Write a second equivalent query involving Team ownership and compare its returned rows before considering speed.",
+            "Test a name containing a quote via a bound parameter without interpolating it into SQL.",
+            "Write a decision record: choose ORM or SQL, list evidence and name one query-authorization risk to defend."
+        ],
+        "resources": [
+            {
+                "title": "Django — Performing raw SQL queries",
+                "url": "https://docs.djangoproject.com/en/5.2/topics/db/sql/",
+                "kind": "reference",
+                "purpose": "Cursor placeholders and model query alternatives."
+            },
+            {
+                "title": "Django — QuerySet API",
+                "url": "https://docs.djangoproject.com/en/5.2/ref/models/querysets/",
+                "kind": "reference",
+                "purpose": "ORM query semantics and generated SQL."
+            },
+            {
+                "title": "PostgreSQL — SQL Syntax",
+                "url": "https://www.postgresql.org/docs/current/sql-syntax.html",
+                "kind": "reference",
+                "purpose": "SQL literal/identifier distinction and server parsing."
+            }
+        ],
+        "practiceObjective": "Compare equivalent real ORM and bound PostgreSQL queries, including untrusted-input handling and authorization risk.",
+        "practiceInstructions": [
+            "Run orm_equivalence.py and check identical results.",
+            "Add one JOIN-based question and map it to ORM fields versus raw table columns.",
+            "Test a quoted text needle with bound parameters, never with interpolation.",
+            "Inspect explain plans where useful, and document which interface better preserves team needs."
+        ],
+        "knowledgeCheck": "When does ORM syntax still generate SQL? What does cursor.execute's params argument prevent? Can you bind a column name as %s? Why does a raw SQL query require the same authorization as an ORM query?"
     },
     {
-        id: "n-plus-one",
-        title: "The N+1 Query Problem",
-        introduction: "N+1 occurs when loading a collection causes one initial query plus one or more additional queries per row for related data. It is easy to create through serializers and property access, and it often looks harmless on tiny development datasets.",
-        outcomes: ["Recognize N+1 behavior from query logs.", "Use select_related for single-valued relationships.", "Use prefetch_related for multi-valued relationships.", "Measure query count before and after."],
-        sections: [
-            { id: "shape", title: "N+1 is a round-trip pattern", body: "If listing 100 services triggers 101 queries because owning_team is fetched separately for every service, latency grows with result size even if each query is fast." },
-            { id: "fix", title: "Fetch relationships intentionally", body: "select_related uses SQL joins for foreign-key/one-to-one data. prefetch_related performs additional bounded queries and assembles multi-valued relationships in Python." },
+        "id": "n-plus-one",
+        "title": "The N+1 Problem: Measure Related-Object Queries",
+        "introduction": "An ORM query that fetches ten Services can return in one database round trip, yet a loop touching each Service's owning Team may trigger another ten SELECTs. That 1+N pattern is an N+1 query. It matters because network/DB round-trip overhead and repeated work grow with the number of returned rows even if each SELECT is individually fast. Build a deterministic lab, measure the defect, then choose select_related for a single-valued FK and prefetch_related for a many-valued reverse relation.",
+        "outcomes": [
+            "Observe exactly 1+N queries for uncached Service.owning_team access and one query after select_related.",
+            "Demonstrate prefetch_related reduces reverse Environment loading to a bounded number of queries.",
+            "Explain why one-to-many joins can multiply result rows and why select_related is limited to single-valued relationships.",
+            "Defend query-count measurement without conflating it with production latency."
         ],
-        assignment: ["Create an N+1 service listing intentionally.", "Capture query count.", "Fix it using the correct relationship-loading strategy and compare."],
-        resources: [djangoQueryDocs],
-        practiceObjective: "Detect and eliminate an N+1 query in a Steward API-style access pattern.",
-        practiceInstructions: ["Load multiple services and touch owning_team for each.", "Capture database query count/logs.", "Apply select_related.", "Repeat for a multi-valued relation using prefetch_related.", "Record before/after query counts."],
-        knowledgeCheck: "1. Why does N+1 often escape notice in development?\n2. select_related versus prefetch_related: what is the practical distinction?\n3. Why is query count evidence stronger than assuming the optimization worked?",
+        "sections": [
+            {
+                "id": "mechanism",
+                "title": "The hidden SELECT in a seemingly harmless property",
+                "body": "Django normally stores the Team identity in Service.owning_team_id. When an uncached Service object is asked for .owning_team, the ORM must fetch the Team record unless it was populated already. A typical list serializer loops through N distinct Service objects, causing one Service SELECT plus one Team SELECT for every item. Two Services owned by the same Team may still cause separate Team lookups because the objects are not necessarily sharing one global relation cache. This cost is mostly invisible in a five-row development database, but scales with the number of objects."
+            },
+            {
+                "id": "measure",
+                "title": "Run an intentionally inefficient listing and then fix it",
+                "body": "The executable shell lab creates four disposable Services owned by one teaching Team; the name prefix ensures the measurement is isolated from other data. CaptureQueriesContext counts exact SQL statements after seeding. The first fresh QuerySet yields 1+4 = 5 (one list query and four Team lazy fetches). With select_related('owning_team') the second fresh QuerySet performs one SQL query that joins Team. Verify the results are identical and compare statement counts before and after; no timing claims are necessary.",
+                "language": "python",
+                "caption": "nplusone_fk.py — measure five queries versus one on the same Service rows",
+                "code": "from django.db import connection\nfrom django.test.utils import CaptureQueriesContext\nfrom registry.models import Team, Service\n\nteam, _ = Team.objects.get_or_create(name=\"N1 Teaching Team\")\nfor n in range(4):\n    Service.objects.get_or_create(\n        name=f\"N1 Demo {n}\",\n        defaults={\"owning_team\": team, \"endpoint\": f\"https://n1-{n}.example.invalid\"},\n    )\ndef listing(queryset):\n    return [(row.name, row.owning_team.name) for row in queryset]\n\nwith CaptureQueriesContext(connection) as before:\n    slow = listing(Service.objects.filter(name__startswith=\"N1 Demo\").order_by(\"name\"))\nwith CaptureQueriesContext(connection) as after:\n    fast = listing(Service.objects.filter(name__startswith=\"N1 Demo\")\n                   .select_related(\"owning_team\").order_by(\"name\"))\nassert slow == fast and len(slow) == 4\nassert len(before) == 5, len(before)\nassert len(after) == 1, len(after)\nprint(\"N+1 owner queries:\", len(before), \"->\", len(after))",
+                "output": "N+1 owner queries: 5 -> 1"
+            },
+            {
+                "id": "reverse",
+                "title": "The reverse Environment collection needs a different approach",
+                "body": "A Service can have many Environment rows. Combining them through an ordinary JOIN can multiply the Service result rows and change the apparent list cardinality; select_related cannot fetch an arbitrary many-valued reverse FK collection. Instead prefetch_related('environment_set') performs one Service query and one additional Environment query, then associates each child list to the correct Service object in memory. If some Services have no Environments, they still remain in the outer collection. The exact default reverse accessor in this teaching model is environment_set because no related_name was configured; rename it only if the model definition changes and tests follow."
+            },
+            {
+                "id": "verify-reverse",
+                "title": "Prove two queries for a multi-valued relation",
+                "body": "Run this after the preceding N+1 demo so the four Services exist. Seed one Environment per Service without modifying production data; the Django-managed lab is isolated. Inspect the SQL count for the prefetch variant, and verify that every Service has one teaching Environment. A prefetch can still use significant memory for a huge related collection; if the API needs only aggregate counts, a database-side annotation may be better than loading every child.",
+                "language": "python",
+                "caption": "nplusone_reverse.py — prefetch a many-valued Environment relation",
+                "code": "from django.db import connection\nfrom django.test.utils import CaptureQueriesContext\nfrom registry.models import Environment, Service\n\nrows = list(Service.objects.filter(name__startswith=\"N1 Demo\"))\nassert len(rows) == 4\nfor row in rows:\n    Environment.objects.get_or_create(\n        service=row, name=\"Teaching\", defaults={\"kind\": \"development\"},\n    )\nwith CaptureQueriesContext(connection) as queries:\n    results = list(Service.objects.filter(name__startswith=\"N1 Demo\")\n                   .order_by(\"name\").prefetch_related(\"environment_set\"))\n    groups = [[e.name for e in service.environment_set.all()] for service in results]\nassert len(queries) == 2, len(queries)\nassert len(groups) == 4 and all(group == [\"Teaching\"] for group in groups)\nprint(\"N+1 reverse queries:\", len(queries), \"for\", len(results), \"Services\")",
+                "output": "N+1 reverse queries: 2 for 4 Services"
+            },
+            {
+                "id": "diagnose",
+                "title": "Choose the retrieval shape from the relationship, not the method name",
+                "body": "For Service → owning Team (many-to-one) use select_related when the API needs Team fields for each Service. For Service → many Environments, use prefetch_related when the API needs child lists. For a count per Service, annotate a Count rather than loading all Environment records may be more efficient. For paginated lists, apply authorization and page ordering before fetching related rows, then inspect actual query count. Query-count regression guards are valuable, but physical execution time depends on row volume, indexes, DB load, cache and connection distance; do not claim a guaranteed latency improvement from 5→1 queries alone."
+            }
+        ],
+        "assignment": [
+            "Execute nplusone_fk.py and record 5 versus 1 actual database queries and identical output.",
+            "Execute nplusone_reverse.py and record 2 statements for four Services plus their environments.",
+            "Inspect the SQL of one select_related and one prefetch query; describe which joins run in PostgreSQL and which association happens in Python.",
+            "Describe a case in which prefetching every child wastes memory and an aggregate count would be preferable."
+        ],
+        "resources": [
+            {
+                "title": "Django 5.2 — QuerySet select_related and prefetch_related",
+                "url": "https://docs.djangoproject.com/en/5.2/ref/models/querysets/",
+                "kind": "reference",
+                "purpose": "Official FK JOIN, reverse relationship prefetch, evaluation and memory semantics."
+            },
+            {
+                "title": "Django 5.2 — Testing Tools",
+                "url": "https://docs.djangoproject.com/en/5.2/topics/testing/tools/",
+                "kind": "reference",
+                "purpose": "Query-count testing and observable SQL."
+            },
+            {
+                "title": "PostgreSQL — EXPLAIN",
+                "url": "https://www.postgresql.org/docs/current/using-explain.html",
+                "kind": "reference",
+                "purpose": "Database plans remain distinct from network round-trip counts."
+            }
+        ],
+        "practiceObjective": "Reproduce a real N+1 with the canonical Django/PostgreSQL models and prove bounded query counts using the right retrieval tool.",
+        "practiceInstructions": [
+            "Run the exact FK and reverse examples in the dedicated Django lab.",
+            "Record 5→1 and 2 query counts; if they differ inspect caching and QuerySet freshness rather than modifying expected numbers.",
+            "Compare output equality with and without eager loading.",
+            "Write an API serialization example that would trigger N+1 and protect it with an automated query-count regression."
+        ],
+        "knowledgeCheck": "Why does owning_team_id alone not imply Team fields are loaded? Why can't select_related fetch a one-to-many collection? Is fewer SQL statements a proof of faster p95 latency?"
     },
     {
         id: "migrations",
