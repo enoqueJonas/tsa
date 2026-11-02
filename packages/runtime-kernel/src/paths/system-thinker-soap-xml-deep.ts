@@ -1,6 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import {soapWireTeachingSections} from "./system-thinker-soap-wire-worked";
+import {soapAdvancedSections} from "./system-thinker-soap-advanced-worked";
 import { xmlNamespaceWorkedSections, xsdWorkedSections } from "./system-thinker-xml-worked-examples";
 
 const xmlSpec:LearningResource={title:"W3C — Extensible Markup Language (XML) 1.0",url:"https://www.w3.org/TR/xml/",kind:"reference"};
@@ -66,7 +67,7 @@ const teachingBySoap: Record<string, TeachingSection[]> = {
 
 function practical(id: string, title: string, objective: string, scenario: string, instructions: string[], deliverables: string[], completionCriteria: string[], estimatedMinutes = 120): Lesson {
     const resources = resourcesBySoap[id] ?? [soapSpec];
-    const sections = teachingBySoap[id] ?? [];
+    const sections = [...(teachingBySoap[id] ?? []), ...(soapAdvancedSections[id] ?? [])];
     const blocks: LessonBlock[] = [
         { type: "paragraph", text: objective },
         { type: "heading", id: `${id}-mental-model`, text: "Protocol and contract mental model", level: 2 },
@@ -81,7 +82,7 @@ function practical(id: string, title: string, objective: string, scenario: strin
     blocks.push({ type: "callout", tone: "steward", title: "Integration boundary", body: "SOAP/XML belongs at the enterprise integration boundary. Steward's domain model remains independent of generated SOAP types and raw XML representation." });
     blocks.push({ type: "resources", title: "Reference specifications", resources });
     const activities: Lesson["activities"] = [];
-    if (sections.length) activities.push({ id: `${id}-reading`, title: `${title}: Concepts`, estimatedMinutes: 45, content: { type: "reading", body: blocks.filter((block) => block.type === "paragraph").map((block) => block.text).join("\n\n") || objective, blocks } });
+    if (sections.length) activities.push({ id: `${id}-reading`, title: `${title}: Concepts`, estimatedMinutes: (id === "soap-rest-reassessment" || id === "soap-xml-milestone") ? 18 : 45, content: { type: "reading", body: blocks.filter((block) => block.type === "paragraph").map((block) => block.text).join("\n\n") || objective, blocks } });
     activities.push({ id: `${id}-lab`, title, estimatedMinutes, content: { type: "practical", objective, scenario, instructions, deliverables: [...deliverables, `Reference set: ${resources.map(r => r.title).join("; ")}`], completionCriteria } });
     return { id, title, activities };
 }
