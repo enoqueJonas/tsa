@@ -1,6 +1,7 @@
 import type { Lesson } from "./lesson";
 import type { LearningResource, LessonBlock } from "../activities/content";
 import {reviewWorkedByModule,reviewResearch} from "./system-thinker-failures-decisions-worked";
+import {operationalBridgeDecisions,operationalBridgeReferences} from "./system-thinker-operational-reasoning-bridge";
 
 const adr: LearningResource = { title: "Architecture Decision Records", url: "https://adr.github.io/" };
 const arc42: LearningResource = { title: "arc42 Documentation Template", url: "https://arc42.org/overview" };
@@ -27,7 +28,7 @@ function richLesson(
         { type: "list", items: outcomes },
     ];
 
-    for (const section of [...sections, ...(reviewWorkedByModule["decisions"]?.[title] ?? [])]) {
+    for (const section of [...sections, ...(operationalBridgeDecisions[title] ?? []), ...(reviewWorkedByModule["decisions"]?.[title] ?? [])]) {
         blocks.push({ type: "heading", id: slug(section.title), text: section.title, level: 2 });
         for (const text of section.paragraphs) blocks.push({ type: "paragraph", text });
         if (section.code) {
@@ -43,7 +44,7 @@ function richLesson(
         title: "Steward connection",
         body: "Use decisions already exposed by Steward API v1, its failure analysis and its quality requirements. Record evidence and trade-offs before proposing new architecture.",
     });
-    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...(reviewResearch["decisions"] ?? [])] });
+    blocks.push({ type: "resources", title: "Required and supporting reading", resources: [...resources, ...(reviewResearch["decisions"] ?? []), ...(operationalBridgeDecisions[title] ? operationalBridgeReferences.decisions : [])] });
 
     return {
         id,
