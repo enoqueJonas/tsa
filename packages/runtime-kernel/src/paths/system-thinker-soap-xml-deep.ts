@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import {soapWireTeachingSections} from "./system-thinker-soap-wire-worked";
 import { xmlNamespaceWorkedSections, xsdWorkedSections } from "./system-thinker-xml-worked-examples";
 
 const xmlSpec:LearningResource={title:"W3C — Extensible Markup Language (XML) 1.0",url:"https://www.w3.org/TR/xml/",kind:"reference"};
@@ -69,7 +70,7 @@ function practical(id: string, title: string, objective: string, scenario: strin
         { type: "paragraph", text: objective },
         { type: "heading", id: `${id}-mental-model`, text: "Protocol and contract mental model", level: 2 },
     ];
-    for (const section of sections) {
+    for (const section of [...sections, ...(soapWireTeachingSections[id] ?? [])]) {
         blocks.push({ type: "heading", id: `${id}-${section.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`, text: section.title, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.code) blocks.push(section.code.caption
