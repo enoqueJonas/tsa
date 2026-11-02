@@ -76,6 +76,10 @@ test("Platform Builder Packet Tracer real Python VLSM, ordered protocol teaching
   runAudit("scripts/check-platform-builder-packet-tracer-source.mjs", /Platform Builder Packet Tracer and homelab authored-source proof passed:/);
 });
 
+test("Platform Builder budget homelab mechanisms and executable capacity refusal are authored in existing lessons", () => {
+  runAudit("scripts/check-platform-builder-homelab-worked.mjs", /Platform Builder budget homelab authored examples passed:/);
+});
+
 test("System Thinker XML and XSD examples execute from the actual learner source", () => {
   runAudit("scripts/check-system-thinker-xml-teaching-examples.mjs", /System Thinker XML/);
 });
