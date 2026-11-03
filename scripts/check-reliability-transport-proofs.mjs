@@ -41,3 +41,11 @@ assert.ok(resilience.includes("...(resilienceRetryProofById[spec.id] ?? [])"), "
 assert.ok(fault.includes("faultInjectionTransportBlocks"), "Original fault-injection lesson must wire safe experiment");
 runExactSource(root + "reliability-retry-failure-proof.ts", "retryAmbiguousCommitPython", /ambiguous_commit_503=true stable_key_single_effect=true changed_key_duplicates=true/);
 console.log("PASS bounded local HTTP commit failure and stable identity replay; real persistent idempotency UNVERIFIED.");
+
+const perf = readFileSync(root + "reliability-performance-capacity-deep.ts", "utf8");
+const incident = readFileSync(root + "reliability-incident-management-deep.ts", "utf8");
+assert.ok(perf.includes("...(performanceProofById[spec.id] ?? [])"), "Actual Performance readings must expose tail latency experiment");
+assert.ok(incident.includes("...(incidentProofById[spec.id] ?? [])"), "Actual Incident readings must teach evidence chronology");
+runExactSource(root + "reliability-investigation-proofs.ts", "latencyTailPython", /mean_ms=64\.1 median_ms=14\.5 nearest_rank_p95_ms=500/);
+runExactSource(root + "reliability-investigation-proofs.ts", "incidentTimelinePython", /timeline_order=accepted,db_timeout,http_502 duplicate_removed=true hypothesis_excluded=true/);
+console.log("PASS exact source-derived performance tails and factual incident chronology; live performance/incident still UNVERIFIED.");
