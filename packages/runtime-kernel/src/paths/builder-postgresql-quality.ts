@@ -60,19 +60,18 @@ const practices: Record<string, PracticeSpec> = {
         completionCriteria: ["All later-referenced baseline columns exist in the seed schema.", "Five Services, three Teams, four Environment rows and two directed dependencies are proved, not guessed.", "No destructive commands are directed at real or shared data.", "No PostgreSQL pass is inferred from source-only or SQLite-based checks."]
     },
     "relational-data-and-postgresql-sql-crud-practice": {
-        objective: "Perform data changes with a disciplined preview-mutate-verify workflow that makes accidental broad updates difficult.",
-        scenario: "You have been asked to correct several Steward records directly in PostgreSQL after a bad import. The request is legitimate, but a careless UPDATE or DELETE could affect the entire registry.",
+        objective: "Update an existing Steward row with a predictable, verified target set.",
+        scenario: "A disposable Steward Service record contains a clearly incorrect field. Correct precisely that record and prove no other Service was modified.",
         instructions: [
-            "Seed at least five service rows including one disposable test record.",
-            "For every UPDATE or DELETE, first run the exact predicate as a SELECT and save the result.",
-            "Use SELECT expressions/aliases and INSERT ... RETURNING, then use UPDATE ... RETURNING to change one precisely identified service.",
-            "Insert more than one row in one statement and demonstrate one intentional ON CONFLICT behavior against a declared uniqueness rule.",
-            "Delete only the disposable row after proving the target set.",
-            "Intentionally write, but do not execute, one dangerous predicate-free mutation and annotate why PostgreSQL would accept it.",
-            "Compare before/after row sets and record the evidence."
+            "Start from the established five-Service teaching fixture and choose a new, deliberately disposable Service record so you do not change the reference dataset.",
+            "Use SELECT with the exact intended UPDATE predicate to inspect matching rows and record the expected count.",
+            "Apply UPDATE ... SET ... WHERE ... RETURNING to change one known attribute; explain the difference between zero, one and multiple affected rows.",
+            "Run a fresh SELECT to compare before/after values and verify the original five teaching Services remain unchanged.",
+            "Write but do not execute a predicate-free UPDATE example and explain why valid SQL can still be destructive.",
+            "Do not use ON CONFLICT, DISTINCT or DELETE in this practice: those require separate teaching and a separate deletion exercise."
         ],
-        deliverables: ["Preview SELECTs", "Safe mutation SQL using RETURNING", "Before/after evidence", "Mutation safety note"],
-        completionCriteria: ["Every executed mutation has an evidenced target set.", "No destructive statement relies on table order or an implicit assumption.", "The learner can explain why syntactically valid SQL can still be operationally dangerous."],
+        deliverables: ["Read-only preview and expected row count", "UPDATE/RETURNING transcript", "Before/after verification", "Explanation of a broad-predicate failure"],
+        completionCriteria: ["The original canonical fixture rows are left intact.", "The UPDATE result matches the intended single record.", "The learner can diagnose why a WHERE predicate matters."]
     },
     "relational-data-and-postgresql-filtering-ordering-practice": {
         objective: "Predict exact SQL predicate results, diagnose NULL/precedence failures, and produce deterministic ordered queries on the canonical Steward seed.",
