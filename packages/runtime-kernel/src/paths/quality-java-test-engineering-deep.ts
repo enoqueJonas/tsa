@@ -196,4 +196,35 @@ questions:["What state is actually shared between concurrent tests?","Why does i
 const executionMilestone: Lesson={id:"quality-java-execution-backbone-milestone",title:"Milestone: Explain and Control the Maven → JUnit Execution Chain",activities:[{id:"quality-java-execution-backbone-milestone-001",title:"Build and Debug the Execution Backbone",estimatedMinutes:150,content:{type:"practical",objective:"Prove that steward-tests execution is understood from Maven command to individual JUnit invocation.",scenario:"A mature framework engineer must locate failures at the correct layer rather than changing dependencies/plugins until the build turns green.",instructions:["Draw and document: shell/CI → Maven lifecycle → Surefire → JUnit Platform → Jupiter TestEngine → discovery/test plan → test instance/lifecycle → test method.","Pin the important Maven plugin/dependency versions used by the project.","Use `dependency:tree` and `effective-pom` to explain the resolved build.","Demonstrate tag selection through Maven without duplicating suites.","Demonstrate one MethodSource parameterized test.","Implement one tiny JUnit extension or ParameterResolver, then document why most setup should remain ordinary composition.","Create controlled failures at two different layers (for example Maven discovery/configuration and a real assertion) and record how their symptoms differ.","Write the future decision rule for Surefire versus Failsafe in steward-tests."],deliverables:["Execution-chain diagram","Resolved dependency/build note","Tag-selection command/evidence","Parameterized test","Narrow extension experiment","Failure-diagnosis evidence","Surefire/Failsafe decision"],completionCriteria:["The learner can narrate `mvn test` end-to-end.","The learner distinguishes Maven/plugin/discovery/engine/lifecycle/assertion failures.","The build works from CLI, not only an IDE.","No extension exists merely to hide ordinary construction.","Dependency resolution is explainable from the effective `POM` and dependency tree."]}}]};
 
 const milestone: Lesson={id:"quality-java-foundation-milestone",title:"Milestone: steward-tests Java Foundation",activities:[{id:"quality-java-foundation-milestone-001",title:"Build the Framework Substrate Without Hiding the Mechanics",estimatedMinutes:120,content:{type:"practical",objective:"Produce the Java/Maven foundation on which the later REST Assured and Playwright framework will grow.",scenario:"The repository should demonstrate Java engineering fundamentals before specialized automation libraries hide them.",instructions:["Make steward-tests compile and execute with Maven and JUnit 5.","Implement validated immutable configuration.","Use constructor injection for dependencies.","Create test-data models/builders with explicit ownership.","Define the governed JUnit tag vocabulary.","Add one tiny Java HttpClient probe so the learner experiences raw HTTP before REST Assured.","Record concurrency hazards before enabling parallel execution."],deliverables:["steward-tests Maven project","JUnit baseline","Configuration/domain support","Tag policy","Raw HTTP probe","Architecture note"],completionCriteria:["`mvn test` succeeds.","No Spring/DI container is required.","No god BaseTest or mutable global driver/client exists.","Dependencies are explicit.","The learner can explain what JUnit and REST Assured will later abstract."]}}]};
-export const javaForTestFrameworkEngineeringDeepLessons: Lesson[]=[...specs.map(lesson),executionMilestone,milestone];
+// PED-005: establish the Java language and object model before introducing
+// annotations, JUnit discovery, lifecycle hooks and framework extensions.
+// Retain all original lesson IDs so existing learner progress stays attached.
+const javaLearningOrder = [
+  "jvm-maven",
+  "types-modeling",
+  "equality-object-contracts",
+  "interfaces-composition",
+  "dependency-injection",
+  "generics-collections",
+  "exceptions-resources",
+  "functional-java",
+  "concurrency",
+  "annotations-reflection",
+  "maven-lifecycle",
+  "maven-dependencies",
+  "surefire-failsafe",
+  "junit-platform",
+  "junit-lifecycle",
+  "junit-parameterization",
+  "junit-extensions",
+  "junit-tags",
+] as const;
+const javaOrderedSpecs = javaLearningOrder.map((id) => {
+  const spec = specs.find((candidate) => candidate.id === id);
+  if (!spec) throw new Error(`Missing Java prerequisite lesson: ${id}`);
+  return spec;
+});
+if (javaOrderedSpecs.length !== specs.length) {
+  throw new Error("Java learner order must list each source lesson exactly once");
+}
+export const javaForTestFrameworkEngineeringDeepLessons: Lesson[]=[...javaOrderedSpecs.map(lesson),executionMilestone,milestone];
