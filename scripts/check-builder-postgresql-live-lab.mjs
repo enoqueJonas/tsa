@@ -64,6 +64,24 @@ try {
   assert.match(noUnqualifiedTable.err, /relation "books" does not exist/);
   assert.equal(run(["-d", "tsa_library", "-c", "SELECT count(*) FROM library.books"]).out, "2",
     "Permanent books must remain visible from a new client process");
+  // UPDATE and DELETE are taught as separate steps on one fictional library
+  // record; keep the two historical book examples unchanged.
+  assert.equal(runLibrary("SQL — insert one disposable book for updating").out, "INSERT 0 1");
+  assert.equal(runLibrary("SQL — preview the exact record before UPDATE").out, "The Blue Compass|Unverified");
+  const updatedBook = runLibrary("SQL — update the sample book and return its new value").out;
+  assert.match(updatedBook, /The Blue Compass\|M\. Costa/);
+  assert.match(updatedBook, /UPDATE 1/);
+  assert.equal(runLibrary("SQL — verify the updated book").out, "The Blue Compass|M. Costa");
+  assert.equal(runLibrary("SQL — preview the record before DELETE").out, "The Blue Compass|M. Costa");
+  const deletedBook = runLibrary("SQL — delete only the disposable book").out;
+  assert.match(deletedBook, /The Blue Compass\|M\. Costa/);
+  assert.match(deletedBook, /DELETE 1/);
+  assert.deepEqual(runLibrary("SQL — confirm the two original books remain").out.split(/\r?\n/), [
+    "The Hobbit", "Things Fall Apart"
+  ]);
+  assert.equal(run(["-d", "tsa_library", "-c", "SELECT count(*) FROM library.books"]).out, "2",
+    "UPDATE/DELETE lessons must not leave stray rows");
+
   const wrongDatabase = run(["-d", "tsa_invalid_database_name", "-c", "SELECT 1"], 2);
   assert.match(wrongDatabase.err, /database "tsa_invalid_database_name" does not exist/);
 
