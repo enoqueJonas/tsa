@@ -21,7 +21,27 @@ with TemporaryDirectory(prefix="tsa-quality-events-") as tmp, sync_playwright() 
     page.on("pageerror", lambda error: errors.append(str(error)))
     page.goto(BASE + "/labs/quality-browser-events.html", wait_until="load")
     expect(page.get_by_role("heading", name="Browser Events — Local Quality Lab")).to_be_visible()
-    assert not page.evaluate("document.documentElement.scrollWidth > innerWidth + 2")
+    if page.evaluate("document.documentElement.scrollWidth > innerWidth + 2"):
+        offenders = page.evaluate("""() => ({
+          viewport: innerWidth,
+          document: document.documentElement.scrollWidth,
+          elements: [...document.querySelectorAll('body *')].filter(el => {
+            const rect = el.getBoundingClientRect();
+            return rect.width > 0 && rect.right > innerWidth + 2;
+          }).map(el => {
+            const box = el.getBoundingClientRect();
+            return {
+              tag: el.tagName.toLowerCase(), id: el.id,
+              className: String(el.className).slice(0, 120),
+              right: Math.round(box.right), width: Math.round(box.width),
+              scrollWidth: el.scrollWidth,
+              text: (el.innerText || '').slice(0, 100),
+            };
+          }).slice(-16)
+        })""")
+        print(f"QUALITY EVENT SANDBOX MOBILE OVERFLOW: {offenders}", flush=True)
+        page.screenshot(path="artifacts/cross-school-learner/quality-event-overflow.png", full_page=True)
+        raise AssertionError(f"Isolated Quality event lab has horizontal overflow: {offenders}")
 
     # File input is not server persistence: this checks local fixture handling only.
     page.get_by_label("Choose sample text file").set_input_files(str(ROOT / "quality-upload-good.txt"))
