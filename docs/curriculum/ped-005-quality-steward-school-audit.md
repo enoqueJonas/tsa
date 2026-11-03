@@ -109,3 +109,20 @@ The twelve paths have now received a deliberate source review. Each identified *
 **Automated regression hooks:** `check-quality-short-reading-depth.mjs` ensures all topic-specific case maps retain worked explanation, disconfirming failures and independent transfer; `check-resolved-practical-contracts.mjs` enforces the new order; full browser traversal checks exact original headings, meaningful rendered length, no horizontal overflow and unchanged prior activity IDs.
 
 **Claims withheld:** executing Playwright Java against a real product surface, Steward IdP/Postgres/HTTP, actual protected GitLab events, k6 load and independently assessed novice capability remain **UNVERIFIED**. Long text and green CI cannot certify learning. Issue #328 remains open through learner evaluation.
+
+## Focused browser interaction verification: local fixture (2026-11-03)
+
+The post-short-reading pass now includes a committed, **non-product** event laboratory to avoid teaching event-oriented Playwright purely as vocabulary. Its static assets are under `apps/web/public/labs/`; after a normal `pnpm build`, serve `apps/web/out` on loopback and open `/labs/quality-browser-events.html`. The visible interface deliberately states it is a local-only fixture, not a Steward owner console.
+
+The actual scoped proof `scripts/check-quality-browser-event-lab.py` runs **real Chromium** at 390px against the exported site and checks:
+- a deterministic .txt file **accepted** and altered bytes **rejected**;
+- a download event registered before click, saved with the expected filename, with **actual CSV bytes** checked;
+- a popup event registered before click, a distinct Page with record identity, then explicit closure;
+- an iframe-specific locator and labelled input, not an unscoped parent-document query;
+- a blocking `confirm()` explicitly **dismissed then accepted**, with distinct observable state and reset.
+
+The four new focused readings now provide the exact build/server commands, URL, expected output and negative evidence; their practical objective names the local fixture instead of falsely requiring a Steward browser surface. The test uses Python's Playwright bindings to verify browser-event **semantics**, while the course's Java-specific library APIs are documented separately. Neither proves a real Steward UI, authentication, remote GitLab, customer data or independently observed human competence.
+
+A pre-final CI run uncovered one overstrict prerequisite assertion that required specialized dialogs before a diagnostic lesson already taught in the original early browser foundation. Fixed the contract to enforce **diagnostics before specialized browser event ownership**, while retaining files → popups → frames → dialogs order.
+
+**Merge gate:** complete the full 19-job CI matrix including this real local Chromium fixture and strict 12-module 390px traversal at the exact current PR #345 head. Avoid promoting the new teaching from merely existing source files.
