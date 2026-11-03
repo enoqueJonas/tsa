@@ -13,13 +13,16 @@ const databases = marker("postgresql-databases-and-schemas");
 const tables = marker("postgresql-tables-and-rows");
 const temporary = marker("postgresql-temporary-tables");
 const relational = marker("relational-model");
+const firstJoins = marker("postgresql-first-joins");
+const firstGrouping = marker("postgresql-first-grouping");
 const fixture = marker("steward-schema-and-seed");
 const crud = source.indexOf('id: "sql-crud"');
 assert.ok(
   persistence > 0 && system > persistence && connection > system &&
   databases > connection && tables > databases && temporary > tables &&
-  relational > temporary && fixture > relational && crud > fixture,
-  "The learner order must be persistence → DBMS and server → psql → databases/schemas → tables → temporary tables → relational model → fixture → CRUD"
+  relational > temporary && firstJoins > relational &&
+  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture,
+  "The learner order must be persistence → DBMS and server → psql → databases/schemas → tables → temporary tables → relational model → joins → grouping → applied fixture → CRUD"
 );
 assert.doesNotMatch(source, /Two programs, one protocol boundary|Establish prerequisites without inventing credentials/);
 assert.ok(source.includes("schema_name.table_name") || source.includes("library.books"), "Qualified tables must be explained");
@@ -75,6 +78,17 @@ try {
     assert.ok(relationalExample.includes(fragment), `Missing first-principles relational teaching: ${fragment}`);
   }
   assert.doesNotMatch(relationalExample, /CREATE TABLE team/, "New conceptual lessons must not create Steward schema tables");
+  const firstJoinSetup = publishedCode("join_first_setup.sql — temporary writers and books");
+  const joinExample = publishedCode("join_first_left.sql — retain the writer with no book");
+  const crossExample = publishedCode("join_first_cross.sql — count the unwanted combinations");
+  const countSetup = publishedCode("group_first_setup.sql — three writers, three books");
+  const countExample = publishedCode("group_first_left_count.sql — compare correct and wrong counts");
+  assert.match(firstJoinSetup, /CREATE TEMP TABLE join_writer/);
+  assert.match(joinExample, /LEFT JOIN join_book/);
+  assert.match(crossExample, /CROSS JOIN join_book/);
+  assert.match(countSetup, /CREATE TEMP TABLE count_writer/);
+  assert.match(countExample, /COUNT\\(b\\.id\\)/);
+  assert.match(countExample, /GROUP BY/);
   const seed = publishedCode("steward_schema_seed.sql — complete one-time PostgreSQL teaching fixture");
   const verification = publishedCode("verify_steward_seed.sql — three result shapes the learner can predict");
   const tableNames = ["team", "service", "environment", "service_dependency"];
@@ -93,7 +107,7 @@ try {
   assert.ok(verification.includes("LEFT JOIN environment"), "NULL-preserving observation must be taught");
   assert.ok(verification.includes("JOIN service src") && verification.includes("JOIN service dst"), "Directed dependency example missing");
   assert.ok(source.includes("psql -X -v ON_ERROR_STOP=1 -1 -f steward_schema_seed.sql"), "Atomic failure-stopping execution command missing from reading");
-  console.log("Builder data foundations examples passed: persistence recovery, progressive PostgreSQL server/psql/database/schema/table/TEMP teaching order, SQL source contracts, and canonical Steward fixture. Real PostgreSQL execution is separately tested.");
+  console.log("Builder data foundations examples passed: persistence recovery, progressive PostgreSQL server/psql/database/schema/table/TEMP/JOIN/GROUP teaching order, SQL source contracts, and canonical Steward fixture. Real PostgreSQL execution is separately tested.");
 
 } finally {
   fs.rmSync(directory, { recursive: true, force: true });
