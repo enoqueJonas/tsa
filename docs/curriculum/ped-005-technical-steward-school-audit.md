@@ -86,6 +86,18 @@ The **prior** exact-head baseline at `e10e47e`, [Actions #41680816104](https://g
 
 **Scope honesty:** This is a demonstrable executable exercise for **six of the 83 original topic-practical pairs**, not a claim that all governance exercises have command-line actions or that every other case has adequate input data. The other **77** remain candidates for detailed evidence-packet and reviewer-oracle scrutiny. Some legitimately require judgment and review of authoritative artifacts rather than executing code; those must still be independently repeatable with supplied decision data. Human learner transfer and actual organization-provided evidence remain NOT TESTED. The latest exact-head CI outcome is **pending until checked against the final commit**.
 
+## Practical progress integrity — UI/API gap discovered
+
+**Root cause:** `createLearningSession.canCompleteActivity()` returns true for every non-reflection activity; prior to this pass, a learner could mark a Technical Steward practical complete and unlock the next activity without saving any evidence. The Evidence Workspace also presented a learner-selectable **Accepted** status, which could be misread as independent assessor approval.
+
+**Scoped remediation (Technical Steward paths only, existing completions preserved):**
+- The learner-facing Next action now reads the real persisted IndexedDB activity evidence and refuses **new** completion when the practical has no saved evidence notes or outcome, or remains in **Draft** status. It displays an explicit reason rather than silently granting progress.
+- A saved **Ready** record, or a legacy **accepted** record that is now presented as *Self-reviewed*, permits progression. The UI labels this as **self-reporting, not independent content assessment**. The evidence portfolio also calls the learner-selected status Self-reviewed instead of suggesting external certification.
+- Full Technical Steward desktop and 390px synthetic browser traversal now saves clearly labeled **synthetic** notes/outcome and marks each practical Ready before clicking Next. An isolated negative browser case verifies that blank and draft evidence are blocked, a persisted Ready record permits Next and no independent assessor approval is claimed.
+- This is a **record-presence/UX integrity safeguard**, not a grader. A learner can still type poor-quality notes, and legacy completed activities without evidence are not retroactively revoked. The human blind-transfer rubric and actual authorized lab execution remain required before learner validation.
+
+**Verification:** New exact-head CI required: the previous 19/19 pass at `e10e47e` did not include the evidence gate or the new offline lab. Protect non-Technical-Steward journeys with the existing cross-school browser matrix; do not relax their navigation or progress rules. UI/learner evidence tests are synthetic.
+
 ## Required next actions — finish this school, do not jump to Professional Engineer
 
 1. Inspect all newly revised source readings **for actual instructional completeness and prior knowledge assumptions**. Worked examples and text coverage alone do not prove the learner can explain the underlying mechanism; split any remaining overbroad concept cluster while preserving prior IDs.
