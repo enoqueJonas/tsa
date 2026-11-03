@@ -44,6 +44,36 @@ const frameworkCases: Record<string, {title:string; mechanism:string; failure:st
     "mechanism": "Illustrative case: an organization wants traceability for unauthorized ownership-transfer attempts. A source-controlled denial/read-after-denial test, linked to a requirement, reviewed at the correct commit, can support a secure-development practice, a control-assessment record and a service-release gate. Map those three governance questions to the exact same technical artifact, then identify what is NOT proved: live production authorization policy, alert receipt, data retention legality and real user behavior. The efficient decision is to reuse evidence where its scope truly matches, not multiply identical committees.",
     "failure": "Four frameworks produce four identical sign-off forms, while nobody tests state after a 403; or a single green unit test is used to claim every control across all frameworks is satisfied.",
     "transfer": "For a recent restore rehearsal, map the evidence to service continuity, technology risk and assurance needs. Identify two governance claims that the restore log cannot support, and reject at least one unnecessary review meeting."
+  },
+  "technology-governance-business-technology-alignment": {
+    "title": "Trace an outcome through capability, risk and an acceptance decision",
+    "mechanism": "Illustrative stakeholder request: 'onboard service owners twice as fast'. First define the outcome (verified owner assignment within an agreed time), establish the baseline from service records, and trace to the capability that could change it—an accountable owner-lookup and approval workflow. Compare process simplification, an internal workflow and a purchased service. For each, identify security/privacy constraints and measured cycle time, then reject assumptions about a new tool until a controlled pilot demonstrates improvement. Record one decision owner and the trigger for review.",
+    "failure": "Approve a new directory platform because teams ask for 'modern onboarding' without measuring whether the delay is approvals, missing identity data or runtime performance. The platform may ship and the business outcome remain unchanged.",
+    "transfer": "A sponsor wants '90% fewer incidents' in six months. Translate the phrase into one measurable outcome, a plausible capability hypothesis, necessary baseline evidence, realistic alternatives and a governance review trigger."
+  },
+  "technology-governance-value-delivery": {
+    "title": "Separate production output from outcome and causality",
+    "mechanism": "Illustrative improvement: release automation halves manual deployment steps, but production change failures increase. Deployment count is an output; business value depends on whether users receive more reliable functionality with acceptable operating cost. Record pre/post change failure, recovery duration, affected users and support load with comparable definitions. A single before/after correlation is not proof of causality; investigate the change mix and missing mandatory tests. Approve another increment only if evidence supports the expected outcome.",
+    "failure": "Claim value because six dashboards and twenty pipeline jobs were built even though no operational decision changes and outages become longer.",
+    "transfer": "Assess a proposed portal rewrite with an expensive migration. Define a measure of user value, an operational cost signal, an alternative to rewriting and a falsifying pilot outcome."
+  },
+  "technology-governance-resource-stewardship": {
+    "title": "Count recurring human and lifecycle cost, not just purchase price",
+    "mechanism": "Illustrative hosted CI proposal: vendor price is lower than a self-hosted runner invoice, but projected migration, retention, secret handling, operational support and exit work may reverse the comparison. Build a three-year illustrative ledger with one-time, recurring, variable and uncertain items; separately record risk of source unavailability and loss of release evidence. Compare retaining current runners, hardening them and migrating. Use a bounded proof-of-concept to measure execution time and artifact retrieval before committing. An unknown cost is marked unknown, not zero.",
+    "failure": "Approve the cheapest monthly subscription while overlooking required encrypted artifact retention or a vendor-specific build plugin with no exit route.",
+    "transfer": "Compare managed logging with local Graylog for an organization with a small SRE team; list cost categories, nonfinancial constraints and the evidence needed to reject both choices for now."
+  },
+  "technology-governance-performance-oversight": {
+    "title": "Design a metric with source, owner, response and gaming resistance",
+    "mechanism": "Illustrative governance objective: maintain reliable recovery. Indicator A is backup job success count; indicator B is elapsed time for the last isolated restore with application readback. B is closer to the intended objective. Specify collection location, population, timestamp, target as approved by the service owner, confidence/limitations and exactly who acts after a breach. Include a countermeasure that shows if a team has stopped running difficult recovery exercises to keep the score green.",
+    "failure": "Report '100% successful backups' as an RTO guarantee while the only restore took six hours. A metric without a response owner provides decoration rather than oversight.",
+    "transfer": "Design a metric pair for deployment quality that cannot be optimized solely by hiding failed tests or reducing the number of deployments. Provide one intervention if the signals diverge."
+  },
+  "technology-governance-governance-structures": {
+    "title": "Route a real decision to the smallest competent accountable group",
+    "mechanism": "Illustrative changes: a harmless formatting refactor remains with the engineering owner; a new regulated-data export triggers data-owner, security and legal-policy consultation; retirement of a shared identity service involves business continuity, operations, security and lifecycle authority. Construct a decision table: risk scope, accountable decider, required consultation, veto/stop-the-line criteria if delegated, escalation threshold and deadline. A governance forum is justified only where it resolves actual cross-boundary responsibility.",
+    "failure": "A single architecture committee approves every commit and simultaneously claims sole authority to accept every privacy risk, despite lacking the business/legal mandate.",
+    "transfer": "Assign decision rights for a low-risk dependency patch, a new production third-party data processor and a failed critical control. Defend the different participation and evidence requirements."
   }
 };
 
