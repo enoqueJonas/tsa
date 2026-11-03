@@ -1,6 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { qualityOriginalDepth } from "./quality-original-remaining-depth";
+import { qualityMavenDepth } from "./quality-junit-maven-depth-v5";
 import { qualityJavaPrograms, qualityJavaCases } from "./quality-java-first-class-cases";
 const java: LearningResource = { title: "Java Language Guide", url: "https://dev.java/learn/" };
 const maven: LearningResource = { title: "Apache Maven Guides", url: "https://maven.apache.org/guides/" };
@@ -85,6 +86,14 @@ function lesson(spec: Spec): Lesson {
    {type:"paragraph",text:originalDepth.failure},
    {type:"heading",id:`${spec.id}-independent-application`,text:"Independent application",level:2},
    {type:"paragraph",text:originalDepth.transfer},
+  );
+ }
+ const mavenDepth = qualityMavenDepth[spec.id as keyof typeof qualityMavenDepth];
+ if (mavenDepth) for (const [i,part] of mavenDepth.entries()) {
+  blocks.push(
+   {type:"heading",id:`${spec.id}-maven-${i}`,text:part.heading,level:2},
+   {type:"paragraph",text:part.body},
+   ...("code" in part && part.code ? [{type:"code" as const,language:part.language,code:part.code}] : []),
   );
  }
  if(spec.code) { const language = new Set(["jvm-maven","maven-lifecycle","maven-dependencies","surefire-failsafe","junit-platform"]).has(spec.id) ? "bash" : "java"; blocks.push({type:"code",language,code:spec.code,...(spec.id === "dependency-injection" ? {caption:"DependencyInjectionExample.java — compile with javac, then run with java DependencyInjectionExample",output:"https://test.invalid / Bearer demo-token"} : {}),...(spec.id === "interfaces-composition" ? {caption:"Interface declaration fragment — implement and exercise in the practical"} : {})}); }
