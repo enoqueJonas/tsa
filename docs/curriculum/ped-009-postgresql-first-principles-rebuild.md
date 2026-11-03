@@ -19,9 +19,11 @@ The pedagogical correction is not a bigger paragraph or an extra resource link. 
 | 5 | **Create Tables, Insert Rows and Read Data** (`postgresql-tables-and-rows`) | How do tables store rows and enforce rules? | `library.books`, two inserts, ordered SELECT, durable reconnect, NOT NULL failure, unqualified lookup failure |
 | 6 | **Temporary Tables and Session Lifetime** (`postgresql-temporary-tables`) | Why is one table lost on disconnect and another persistent? | Complete source-derived SQL file, expected missing temporary table in new session |
 | 7 | **How Tables Relate: Keys and Relationships** (`relational-model`, **existing ID preserved**) | Why use multiple tables and what do keys actually enforce? | Disposable Author/Book example with real foreign-key rejection, many-to-many model and duplication anomaly |
-| 8 | A Reproducible Steward Schema and Seed Dataset (existing) | Apply learned mechanisms to an application domain | Real Steward SQL fixture, positive/negative tests |
+| 8 | **Combine Tables with JOIN** (`postgresql-first-joins`) | How are related rows matched and how does LEFT JOIN preserve missing books? | Reproducible INNER, LEFT, CROSS JOIN on library data; wrong Cartesian product |
+| 9 | **Count Rows and Summarize Groups** (`postgresql-first-grouping`) | How do COUNT and GROUP BY work, including a zero-book writer? | Real `COUNT(*)` vs `COUNT(b.id)` negative on LEFT JOIN |
+| 10 | Steward Practice: Build a Reusable SQL Dataset (existing) | Apply learned mechanisms to an application domain | Real Steward SQL fixture, positive/negative tests |
 
-Later SQL, transactions, normalization, plans, migration and API lessons retain their own separate audits. This change does **not** declare the whole module learner-validated.
+Later applied SQL, transactions, normalization, plans, migration and API lessons retain their own separate audits. The original Steward seed used JOIN and GROUP BY before either had been taught; two stand-alone book/writer lessons now establish those mechanisms first. The seed is clearly labeled as a practice lab rather than a general PostgreSQL introduction. This change does **not** declare the whole module learner-validated.
 
 ## Research and teaching translation
 
@@ -35,15 +37,17 @@ Primary material was inspected for the precise model and syntax, not copied verb
 | [Schemas](https://www.postgresql.org/docs/17/ddl-schemas.html) | Namespace hierarchy, `public`, `search_path` and permission semantics | Library-schema exercise, qualified `library.books`, unqualified lookup negative |
 | [psql reference](https://www.postgresql.org/docs/17/app-psql.html) | Prompt, `\\conninfo`, `\\l`, script execution | Distinguish shell commands, client meta-commands and SQL, plus a session-lifetime proof |
 | [CREATE TABLE](https://www.postgresql.org/docs/17/sql-createtable.html) / [constraints](https://www.postgresql.org/docs/17/ddl-constraints.html) | Persistent vs temporary tables, NOT NULL, CHECK, primary and foreign keys | Two real rows, invalid title and invalid author references |
+| [Joins Between Tables](https://www.postgresql.org/docs/17/tutorial-join.html) | INNER/LEFT matching and unmatched rows | Three writers/three books; Fátima retained with NULL and 3 × 3 CROSS JOIN |
+| [Aggregate Functions](https://www.postgresql.org/docs/17/tutorial-agg.html) | COUNT and GROUP BY over query rows | Wrong 1 versus correct 0 for writer with no books, before Steward summary queries |
 | [CMU 15-445 schedule](https://15445.courses.cs.cmu.edu/fall2025/schedule.html) | Optional deeper relational model lectures | Reference for deeper study; no claim that a video was watched |
 
 **Important limitation:** source references establish semantics and organization. They do **not** substitute for executing the sample SQL, checking the rendered page and having a new learner use it without prompting.
 
 ## Technical verification and remaining gates
 
-- The previously released `postgresql-first-connection` lesson/activity IDs are retained to minimize progress migration risk; five additional lessons (four new and one retained connection rewrite) introduce new activity IDs in learner order.
+- The previously released `postgresql-first-connection` lesson/activity IDs are retained to minimize progress migration risk; seven additional opening lessons (six new IDs and one retained connection rewrite) introduce new activity IDs in learner order.
 - `scripts/check-builder-data-foundations-examples.mjs` verifies new boundaries, captions and source-extracted example contracts.
-- `scripts/check-builder-postgresql-live-lab.mjs` is extended to execute the **exact published** DB, schema, persistent table and relational example code against a disposable PostgreSQL 17 CI service, including wrong-database, missing table, failed NOT NULL, foreign key and session-lifetime cases. Keep the CI status **PENDING** until the actual workflow on the final branch head succeeds.
+- `scripts/check-builder-postgresql-live-lab.mjs` is extended to execute the **exact published** DB, schema, persistent table, relational example, first JOIN and GROUP BY code against a disposable PostgreSQL 17 CI service, including wrong-database, missing table, failed NOT NULL, foreign key and session-lifetime cases. Keep the CI status **PENDING** until the actual workflow on the final branch head succeeds.
 - The original Steward SQL fixture and downstream tests remain in place; the live runner must pass both new library examples and old Steward exercises.
 
 **Exit gates deliberately still open:** complete same-commit build/test, complete browser traversal of changed lesson pages at desktop/mobile widths, manual review of rendered headings/code scrolling, newcomer independently creating another example database/schema and explaining failed connections or foreign keys. No `VALIDATED` claim without that evidence.
