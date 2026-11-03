@@ -12,9 +12,52 @@ const resourcesBySecData:Record<string,LearningResource[]>={
 const scenario = "Treat Steward as an organization-owned service whose security and data responsibilities follow the final Architect actual-stack inventory: application code, authoritative data stores, retained platform/delivery dependencies, operators and business stakeholders. Cloud/VPS infrastructure, Nexus and internal packages are governed here only when they remain active; retired components remain historical security/migration evidence. Reuse Security Steward evidence; this module governs accountability and decisions rather than reteaching attack techniques.";
 const deliverables = ["Governance artifact", "Evidence and rationale", "Owner, exception or review record"];
 const criteria = ["Security or data accountability is explicit.", "Policy intent is separated from implementation detail.", "Exceptions and residual risk follow defined authority and review rules."];
+// Data and security governance require evidence, authority and observable denials.
+const securityGovernanceCases: Record<string, {title:string;worked:string;failure:string;transfer:string}> = {
+  "data-ownership": {
+    "title": "Assign authority over the meaning and use of data separately from database operation",
+    "worked": "Illustrative Steward owner registry: the business process owner defines the meaning and permitted uses of the authoritative owner field; the service owner is accountable for its integrity and interface behavior; the DBA operates backup, access and recovery controls; QA verifies authorization and data invariants. A correction request must identify who authorizes a business ownership change and how changes are traced. The DBA's ability to edit a row does not make the DBA the legitimate owner of its meaning.",
+    "failure": "The application team declares itself the data owner because it hosts PostgreSQL, then silently extends retention and repurposes owner data without policy approval. Technical custody has been mistaken for authorized purpose.",
+    "transfer": "A downstream analytics team wants to duplicate account-owner records indefinitely. Map decision rights for permitted use, classification, data quality, transport, retention and deletion; identify what depends on organizational/legal approval."
+  },
+  "classification": {
+    "title": "Derive handling controls from harm and authorized use",
+    "worked": "Illustrative classification exercise: a public product name, internal environment topology, a customer-linked owner identifier and a client secret do not merit identical handling. Start with impact of disclosure, unauthorized modification and availability loss; then define a business-approved classification, permitted readers, logging/redaction, encryption/key handling and retention. Verify with negative tests that a low-privilege actor cannot retrieve protected records and logs never contain secrets. Classification is a policy decision applied to actual data flows, not an automatic string search.",
+    "failure": "Mark a field as 'confidential' in a spreadsheet yet expose it unchanged in exception traces and test artifacts. Conversely, classify every harmless system label as top secret and block routine operations.",
+    "transfer": "Classify a support ticket containing an incident trace, employee ID and a rotated credential. For each data element specify an allowed audience, redaction rule, retention question and test proving the rule is enforced."
+  },
+  "retention-privacy": {
+    "title": "Make a retention decision with authority, state transitions and proof",
+    "worked": "Illustrative lifecycle: an onboarding record is collected for a defined service purpose; retention duration must come from applicable legal, contractual and business policy rather than a developer guess. A retention schedule identifies the authoritative record, copies, logs, backups, legal hold/exception path, deletion trigger and verification owner. When the authorized period expires, delete or de-identify accessible copies according to approved policy and record evidence; backup expiry may follow a separately approved technical schedule. Test deletion from the primary store and block continued unauthorized access; do not equate a UI hide action with deletion.",
+    "failure": "The app hides a customer in the UI but the full record remains queryable by an API and in unrestricted exports. A green deletion endpoint is not proof of end-to-end retention compliance.",
+    "transfer": "Draft a retention state diagram for a log containing IP address and account reference, including a legal hold, a failed cleanup job and the evidence required before claiming deletion. Explicitly mark which durations require external policy input."
+  },
+  "access": {
+    "title": "Govern role permission and resource-level effect, not merely login",
+    "worked": "Illustrative access review: actor B has a valid token but is not the owner of record 42. Policy must specify resource-scoped actions, trusted attributes, separation of duties and who approves privilege changes. A negative test sends the request, observes 403 and then reads the authoritative record to verify no unauthorized mutation; an authorized case must succeed so a total outage is not counted as a security pass. Review stale roles and emergency access with an auditable expiry and independent review. Token validity alone cannot confer permission for every resource.",
+    "failure": "A gateway verifies a JWT signature, labels the user authenticated and lets all authenticated users transfer any record. Authentication passed, authorization failed. Another false pass tests only the status code and never checks durable state.",
+    "transfer": "A contractor legitimately accesses test logs but must not read secrets or approve production deployment. Build a role/resource/action matrix, identify one separation-of-duties conflict and the denied action plus after-state test."
+  },
+  "exceptions": {
+    "title": "An emergency security exception needs bounded authority and monitored exit",
+    "worked": "Illustrative identity-provider outage: operations requests a temporary fallback login path. Evaluate safe alternatives, affected population, evidence of outage, scope of bypass, compensating controls, named security/risk acceptance authority, short expiry, monitoring and rollback. Some security invariants may be non-waivable under organizational policy; an engineer cannot invent an exception right. Record every use and require a post-restoration check that the fallback is disabled. The exception register is an active control, not merely minutes of a meeting.",
+    "failure": "Disable JWT signature verification to restore availability, add TODO 'temporary' and ship without authorized review. A compensating network rule is not evidence that identity forgery is contained.",
+    "transfer": "A dependency scanner cannot run during a critical hotfix. Write an exception decision with available alternative controls, release risk owner, duration, verification after recovery and the explicit condition under which the release must not proceed."
+  }
+};
 function lesson(id: string, title: string, body: string, instructions: string[]): Lesson {
   return { id: `security-data-governance-${id}`, title, activities: [
-    { id: `security-data-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 60, content: { type: "reading", body, blocks:[...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),{type:"resources",title:"Governance reference",resources:resourcesBySecData[id] ?? [nistCsf]}] } },
+    { id: `security-data-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 60, content: { type: "reading", body, blocks: [
+  ...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),
+  ...(securityGovernanceCases[id] ? [
+    {type:"heading" as const,id:`security-${id}-case`,text:securityGovernanceCases[id].title,level:2 as const},
+    {type:"paragraph" as const,text:securityGovernanceCases[id].worked},
+    {type:"callout" as const,tone:"warning" as const,title:"False assurance / unauthorized decision",body:securityGovernanceCases[id].failure},
+    {type:"heading" as const,id:`security-${id}-transfer`,text:"Unfamiliar governance exercise",level:2 as const},
+    {type:"paragraph" as const,text:securityGovernanceCases[id].transfer}
+  ] : []),
+  {type:"resources" as const,title:"Governance reference",resources:resourcesBySecData[id] ?? [nistCsf]}
+] } },
     { id: `security-data-governance-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward governance.`, scenario, instructions, deliverables, completionCriteria: criteria } },
   ] };
 }
