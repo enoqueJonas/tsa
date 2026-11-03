@@ -54,7 +54,7 @@ function lesson(spec: DataLessonSpec): Lesson {
         { type: "list", items: spec.outcomes },
         ...spec.sections.flatMap<LessonBlock>((section) => [
             { type: "heading", id: section.id, text: section.title, level: 2 },
-            { type: "paragraph", text: section.body },
+            ...section.body.split(/\n\s*\n/).filter(Boolean).map((text): LessonBlock => ({ type: "paragraph", text })),
             ...(section.code ? [{ type: "code", language: section.language ?? "sql", code: section.code, caption: section.caption, output: section.output } satisfies LessonBlock] : []),
         ]),
         ...(spec.warning
@@ -796,7 +796,7 @@ const specs: DataLessonSpec[] = [
     {
         "id": "postgresql-temporary-tables",
         "title": "Temporary Tables and Session Lifetime",
-        "introduction": "Your library.books table survived a new psql connection. But some data should exist only while one client session is working, such as a short-lived calculation or intermediate result. PostgreSQL provides temporary tables for that. This lesson separates that single idea from general connection setup; the later transactions lesson will teach BEGIN, COMMIT and ROLLBACK in depth.",
+        "introduction": "You have already seen that library.books survives after psql exits. A temporary table follows a different rule: it exists only for one client session. We will isolate that behavior without introducing BEGIN, COMMIT or ROLLBACK, which belong in the later transactions lessons.",
         "outcomes": [
             "Distinguish a permanent table from a PostgreSQL temporary table.",
             "Run a SQL file in one psql process and verify its expected output.",
@@ -807,39 +807,34 @@ const specs: DataLessonSpec[] = [
             {
                 "id": "temporary-meaning",
                 "title": "Why do temporary tables exist?",
-                "body": "A permanent table such as library.books lives in its database until it is deliberately changed or removed. A temporary table is different: PostgreSQL makes it available to its creating session and removes it when that session ends. Other sessions do not see the same temporary table. This is useful for intermediate calculations or isolated experiments. TEMP changes the table's lifetime, not the fundamental meaning of rows and columns. Never use a temporary table as your application's durable source of truth."
+                "body": "A session begins when a client connects to PostgreSQL and ends when the connection closes. A normal table belongs to the database and persists across sessions. A temporary table belongs to its creating session. Other sessions cannot read it and PostgreSQL removes it when its session ends.\n\nA temporary table is still a real PostgreSQL table: the server executes SQL, checks its column rules and stores intermediate rows. TEMP changes scope and lifetime, not the meaning of a row. Temporary data may be useful for one report or calculation; it cannot replace the permanent library catalogue."
             },
             {
                 "id": "sql-file",
                 "title": "Run more than one SQL statement from a file",
-                "body": "Copy the file below into first_session.sql in a disposable directory. Run it from your shell, not inside an existing psql prompt, using a new connection to tsa_steward_lab: for the Docker example use `docker exec -i tsa-pg-lesson psql -X -U tsa_learner -d tsa_steward_lab -v ON_ERROR_STOP=1 < first_session.sql`. For an installed host client with connection variables already configured, use `psql -X -v ON_ERROR_STOP=1 -f first_session.sql`. `-X` avoids user psql startup configuration; ON_ERROR_STOP=1 makes batch execution stop when SQL fails. The output will show two books followed by a final count of two. Notice that the book titles are just example data; the temporary table is not the library.books catalogue.",
+                "body": "Save the SQL below as first_session.sql. Run all four statements in ONE process, so the temporary table still exists when you select its rows. For a Docker lab use `docker exec -i tsa-pg-lesson psql -X -U tsa_learner -d tsa_library -v ON_ERROR_STOP=1 < first_session.sql`. From a configured host psql client use `psql -X -v ON_ERROR_STOP=1 -d tsa_library -f first_session.sql`. Both examples connect to tsa_library, where library.books already exists.\n\nThe first query returns the two book titles and the second reports a count of two. The psql process then exits and closes that session. We deliberately do not include transactions or a rollback here: the question is whether the table survives reconnecting, not how to undo changes.",
                 "language": "sql",
                 "caption": "first_session.sql — run only in a disposable PostgreSQL lab database",
-                "code": "CREATE TEMP TABLE tsa_session_probe (\n  id integer PRIMARY KEY,\n  book_title text NOT NULL\n);\nINSERT INTO tsa_session_probe (id, book_title)\nVALUES (1, 'The Hobbit'), (2, 'Beloved');\nSELECT id, book_title FROM tsa_session_probe ORDER BY id;\nBEGIN;\nINSERT INTO tsa_session_probe (id, book_title) VALUES (3, 'Temporary Book');\nROLLBACK;\nSELECT count(*) AS remaining FROM tsa_session_probe;",
-                "output": "CREATE TABLE\nINSERT 0 2\n id | book_title\n----+------------\n  1 | The Hobbit\n  2 | Beloved\n(2 rows)\nBEGIN\nINSERT 0 1\nROLLBACK\n remaining\n-----------\n         2\n(1 row)"
-            },
-            {
-                "id": "transaction-preview",
-                "title": "What happened to the third row?",
-                "body": "The example includes BEGIN, INSERT and ROLLBACK only as a preview: the temporary table has two rows, an extra row is inserted inside a transaction, and ROLLBACK discards that transaction's extra change. A transaction is a group of operations that can succeed together or be undone together, but detailed commit behavior and isolation levels belong in the later Transactions lessons. The rollback does not end the psql session and does not itself drop the temporary table."
+                "code": "CREATE TEMP TABLE tsa_session_probe (\n  id integer PRIMARY KEY,\n  book_title text NOT NULL\n);\nINSERT INTO tsa_session_probe (id, book_title)\nVALUES (1, 'The Hobbit'), (2, 'Beloved');\nSELECT id, book_title FROM tsa_session_probe ORDER BY id;\nSELECT count(*) AS remaining FROM tsa_session_probe;",
+                "output": "CREATE TABLE\nINSERT 0 2\n id | book_title\n----+------------\n  1 | The Hobbit\n  2 | Beloved\n(2 rows)\n remaining\n-----------\n         2\n(1 row)"
             },
             {
                 "id": "new-session",
-                "title": "Why does a second connection not see it?",
-                "body": "Each noninteractive psql -f or docker exec invocation opens its own database session. After the SQL file completes, that session ends, and PostgreSQL discards tsa_session_probe. Connect again and execute SELECT * FROM tsa_session_probe; You should get relation \"tsa_session_probe\" does not exist. That is the intended result. It does not mean the server lost a permanent table. Compare this with your earlier library.books example, which remained after reconnecting. A table with TEMP and a table without TEMP have different lifecycle rules."
+                "title": "Open a new session and check what remains",
+                "body": "Use a NEW psql process connected to the SAME tsa_library database and run `SELECT * FROM tsa_session_probe;`. PostgreSQL should say relation \"tsa_session_probe\" does not exist. The first process did create the temporary table; the table disappeared because its session ended. A second client cannot see another live session's TEMP table either.\n\nNow run `SELECT count(*) FROM library.books;` in that same second session. It should still report 2 if you inserted the earlier example books. This is the controlled comparison: the database is the same, but one table was temporary and the other persistent. If you kept the first psql session open, its temporary table would still be there; closing a browser tab is not the definition of session end."
             },
             {
                 "id": "failure-to-learn",
-                "title": "Diagnose the expected failure without recreating data blindly",
-                "body": "If the first file fails with a permission or connection error, confirm that the separate tsa_steward_lab database exists, that the chosen role can connect and that your shell is pointing to the right server. If the second session unexpectedly finds the temporary table, check whether you accidentally reused the same interactive session. If your SQL file continues after an error, make sure ON_ERROR_STOP=1 was actually supplied. Capture these observations rather than claiming the example ran when it did not."
+                "title": "Investigate unexpected temporary-table behavior",
+                "body": "If the script fails before returning its two rows, the test has not established a working temporary table. Inspect the connection, role, database and SQL error first. If the new client finds a table named tsa_session_probe, check whether you accidentally reused the original session or created a persistent table with the same name. Do not drop an unknown relation as a debugging shortcut.\n\nKeep the exact command, session boundaries and observed outputs in your evidence. Later transaction lessons will explain BEGIN, COMMIT, ROLLBACK and isolation on their own terms."
             }
         ],
         "warning": "Use an isolated learning server and invented data. Do not modify production or shared databases, publish real credentials, or drop existing objects merely to repeat an exercise.",
         "assignment": [
-            "Execute first_session.sql against the isolated tsa_steward_lab database; record the two-row and final-count outputs.",
-            "Run a fresh psql process and capture the expected missing-relation error.",
-            "Contrast TEMP table lifetime with library.books after reconnect.",
-            "Explain the ROLLBACK preview without claiming you have learned full transaction isolation."
+            "Create and run first_session.sql in one connection to tsa_library.",
+            "Open a new psql connection to tsa_library and capture the missing TEMP table error.",
+            "Show library.books remains readable in the same new session.",
+            "Explain the difference between client process, session and persistent table."
         ],
         "resources": [
             {
@@ -861,15 +856,14 @@ const specs: DataLessonSpec[] = [
                 "purpose": "Precise lifetime and visibility of temporary tables."
             }
         ],
-        "practiceObjective": "Observe a TEMP table in one PostgreSQL session and prove it disappears in a different one.",
+        "practiceObjective": "Compare temporary-table and permanent-table lifetimes using two independent PostgreSQL connections.",
         "practiceInstructions": [
-            "Obtain or create a disposable tsa_steward_lab database separately from tsa_library.",
-            "Run the exact SQL file with ON_ERROR_STOP=1 and capture the two successful SELECT results.",
-            "Open a new client session and attempt SELECT * FROM tsa_session_probe; record the failure.",
-            "Show that library.books still exists in the separate library database.",
-            "Write three sentences comparing client-session lifetime, TEMP table lifetime and permanent table lifetime."
+            "Use the same tsa_library database in both sessions.",
+            "Run the four-statement SQL file and capture both reads.",
+            "Reconnect and attempt to select tsa_session_probe; record the expected error.",
+            "Confirm that library.books still exists; describe why this is not contradictory."
         ],
-        "knowledgeCheck": "Why does SELECT * FROM tsa_session_probe fail after the SQL-file process exits? Is that evidence of PostgreSQL losing durable data? What did ROLLBACK affect?",
+        "knowledgeCheck": "Why does a temporary table disappear when a session ends but a permanent table does not? Can a different simultaneously connected client see your TEMP table? What evidence distinguishes expected session cleanup from a failed CREATE TABLE?",
         "readingTitle": "Understand temporary tables",
         "practiceTitle": "Run and inspect a session-only table",
         "checkTitle": "Check temporary table lifetime",
