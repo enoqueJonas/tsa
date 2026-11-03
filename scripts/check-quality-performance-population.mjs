@@ -10,7 +10,7 @@ assert.ifError(run.error);
 assert.equal(run.status,0,run.stderr);
 for(const expected of [
   "attempted=100 successful=10 errors=90",
-  "mean_all_ms=11.8 offered_rps=10.0 successful_rps=1.0",
+  "mean_all_ms=11.8 completed_rps=10.0 successful_rps=1.0",
   "error_rate=90.0%",
   "negative: naive latency-only gate would incorrectly PASS",
   "success_p95_ms=100",
