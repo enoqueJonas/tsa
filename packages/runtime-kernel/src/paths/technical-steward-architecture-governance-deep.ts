@@ -11,9 +11,51 @@ const resourcesByArchGov:Record<string,LearningResource[]>={
 const scenario = "Treat Steward as a mature organization-owned technology service with established architecture evidence, ADRs, technical-risk records, control evidence, any internal packages that actually exist, the artifact-repository capability retained by Architect where applicable, the infrastructure and hosting model retained by Architect, PostgreSQL, delivery pipelines and operational history. Architecture governance must preserve decision quality and lifecycle accountability without becoming a duplicate architecture school or approval bureaucracy.";
 const deliverables = ["Architecture-governance artifact", "Evidence and rationale", "Ownership, exception or lifecycle record"];
 const criteria = ["The governance mechanism is tied to a real decision or risk.", "Ownership and decision rights are explicit.", "The mechanism is proportionate and avoids unnecessary approval gates."];
+const architectureCases: Record<string, {question:string;example:string;failure:string;transfer:string}> = {
+  "principles": {
+    "question": "Derive a principle from a repeated risk, not a personal preference",
+    "example": "Illustrative Steward principle: 'State-changing operations must enforce resource ownership at the authoritative boundary.' Evidence is a past HTTP 403 with an unexpected owner mutation and an Architect boundary decision. Mechanism: define the intended invariant, locate the boundary that can guarantee it, specify a negative test with read-after-denial, and make any exception require explicit risk authority. A principle guides several architectures while allowing different internal class layouts.",
+    "failure": "A review board publishes 'always use microservices' as an immutable principle because one architect prefers them. It is a technology choice without a stated driver or failure evidence.",
+    "transfer": "An integration sends duplicate financial notifications after retries. Draft a principle that survives a change from RabbitMQ to another transport and define how a team could falsify adherence."
+  },
+  "standards": {
+    "question": "Make the standard actionable, scoped and revisable",
+    "example": "Illustrative version standard: all production consumers of an internal library use a release with recorded origin, API compatibility contract, security-support owner and defined EOL date. Record scope, MUST conditions, a conforming example, nonconforming example, verification method, exceptions and owner/review date. The standard protects supportability; it must not insist on a package registry that the organization no longer uses. A rule's actual target is the current Architect-approved estate.",
+    "failure": "A standard mandates Nexus even after the artifact repository was retired, or says 'use best practices' with no verification. Both enforce documentation history rather than an organizational outcome.",
+    "transfer": "Write a two-rule standard for a new API error contract, including normative language, a versioning example, an exception mechanism and evidence that validates consumer compatibility."
+  },
+  "reviews": {
+    "question": "A design review is a test of decision quality, not a ticket stamp",
+    "example": "Hypothetical proposal: move Steward's authoritative owner table to a second database. The pre-read states drivers (capacity, recovery, data consistency), options (keep and tune the current DB, partition existing storage, add a second database), measured baseline, failure domains and rollback cost. The board checks whether the proposed design actually improves the driver, identifies untested cross-store write failure and requests a reproducible recovery experiment before committing. Decision: defer the irreversible migration; owner schedules the missing proof.",
+    "failure": "Approve because an architecture diagram is visually complete, or reject because an option violates an unstated personal technology preference. Neither relates to the decision's risk.",
+    "transfer": "Review a proposal to introduce a shared API gateway. Name one measurable driver, one missing prerequisite, a viable rejection option and the evidence needed to approve a pilot."
+  },
+  "exceptions": {
+    "question": "Keep a deviation bounded and attributable",
+    "example": "Illustrative architecture exception: a legacy client temporarily cannot supply a newly required idempotency key. Record the affected endpoint/client version, why the exception exists, duplicate-effect exposure, compensating server-side reconciliation, a named risk approver, expiry and migration target. Require read-only monitoring of duplicates and explicit behavior once the expiry passes. The exception does not waive unrelated authorization or record-integrity controls.",
+    "failure": "Mark the architecture compliant because an ADR says 'temporary' but has no client scope, expiry, approval or duplicate-effect evidence. The exception is silently permanent.",
+    "transfer": "An internal service cannot yet migrate to the approved identity provider. Produce an exception with least-privilege boundary, compensation, planned exit and a measurable trigger for revocation."
+  },
+  "lifecycle": {
+    "question": "Govern the decision to retain, replace or retire technology",
+    "example": "Illustrative platform review: a self-hosted message broker has low utilization but creates patching and on-call burden. Options are retain with a named owner, simplify to a scheduled batch, buy a managed service or retire it. Collect actual consumer inventory, failure history, monthly operating cost, data-retention obligations, compatibility and rollback plan. A technology cannot be retired merely because it is unpopular; no consumer should remain silently dependent on it. The decision record includes migration checkpoints and a later review.",
+    "failure": "Remove a broker because the roadmap labels it 'legacy' while a delayed billing workflow still consumes its queues, or keep it indefinitely because the team has already invested time.",
+    "transfer": "Decide whether to retire an internal package registry. Build an evidence checklist covering provenance of existing artifacts, consumer builds, migration/retention, compliance and emergency rollback."
+  }
+};
 function readingPractice(id: string, title: string, body: string, instructions: string[]): Lesson {
   return { id: `architecture-governance-${id}`, title, activities: [
-    { id: `architecture-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 55, content: { type: "reading", body, blocks:[...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),{type:"resources",title:"Architecture governance reference",resources:resourcesByArchGov[id] ?? [adr]}] } },
+    { id: `architecture-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 55, content: { type: "reading", body, blocks: [
+  ...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),
+  ...(architectureCases[id] ? [
+    {type:"heading" as const,id:`arch-${id}-example`,text:architectureCases[id].question,level:2 as const},
+    {type:"paragraph" as const,text:architectureCases[id].example},
+    {type:"callout" as const,tone:"warning" as const,title:"Review failure",body:architectureCases[id].failure},
+    {type:"heading" as const,id:`arch-${id}-transfer`,text:"Unseen governance decision",level:2 as const},
+    {type:"paragraph" as const,text:architectureCases[id].transfer}
+  ] : []),
+  {type:"resources" as const,title:"Architecture governance reference",resources:resourcesByArchGov[id] ?? [adr]}
+] } },
     { id: `architecture-governance-${id}-practice`, title: `${title}: Steward governance exercise`, estimatedMinutes: 55, content: { type: "practical", objective: `Apply ${title} as an architecture-governance capability for Steward.`, scenario, instructions, deliverables, completionCriteria: criteria } },
   ] };
 }
