@@ -65,18 +65,18 @@ function reading(id: string, title: string, body: string): Lesson {
     { id: `${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body, blocks: [
   ...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),
   ...(debtCases[id] ? [
-    {type:"heading" as const,id:`${id}-worked`,text:debtCases[id].title,level:2 as const},
-    {type:"paragraph" as const,text:debtCases[id].worked},
-    {type:"callout" as const,tone:"warning" as const,title:"False engineering-health signal",body:debtCases[id].failure},
+    {type:"heading" as const,id:`${id}-worked`,text:debtCases[id]!.title,level:2 as const},
+    {type:"paragraph" as const,text:debtCases[id]!.worked},
+    {type:"callout" as const,tone:"warning" as const,title:"False engineering-health signal",body:debtCases[id]!.failure},
     {type:"heading" as const,id:`${id}-transfer`,text:"Independent decision",level:2 as const},
-    {type:"paragraph" as const,text:debtCases[id].transfer}
+    {type:"paragraph" as const,text:debtCases[id]!.transfer}
   ] : []),
   {type:"resources" as const,title:"Engineering health reference",resources:resourcesByHealth[id] ?? [fowlerDebt]}
 ] } },
     { id: `${id}-practice`, title: `Practice: ${title}`, estimatedMinutes: 45, content: {
       type: "practical",
       objective: `Apply ${title} to current Steward engineering-health evidence.`,
-      scenario:`${scenario}\n\nINDEPENDENT ENGINEERING-HEALTH DECISION: ${debtCases[id].transfer}`,
+      scenario:`${scenario}\n\nINDEPENDENT ENGINEERING-HEALTH DECISION: ${debtCases[id]!.transfer}`,
       instructions: [
         "Select one concrete Steward example supported by an existing artifact, metric, incident, dependency record, exception or delivery observation.",
         "Apply the lesson concept and separate observed evidence from interpretation or assumption.",
@@ -86,7 +86,7 @@ function reading(id: string, title: string, body: string): Lesson {
       ],
       deliverables: ["Focused engineering-health analysis", "Evidence reference", "Decision and rationale", "Owner and reconsideration trigger"],
       completionCriteria: [
-        `Reject the decision if it repeats this false improvement: ${debtCases[id].failure}`,
+        `Reject the decision if it repeats this false improvement: ${debtCases[id]!.failure}`,
         "The unfamiliar case has a current measurement, explicit uncertainty, decision owner, rejected alternative and observable outcome.",
         "The example is grounded in current Steward evidence rather than a hypothetical dislike of code.",
         "Debt, defect, risk, maintenance and feature work are not conflated.",
