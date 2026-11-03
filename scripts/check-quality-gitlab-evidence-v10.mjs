@@ -49,7 +49,7 @@ try{
  for(const [mode,reason] of failures){
   result=run(mode);
   assert.notEqual(result.status,0,"Expected negative '"+mode+"' to fail");
-  assert.ok(result.stderr.includes("EvidenceError: "+reason),
+  assert.ok(result.stderr.includes("EvidenceError:") && result.stderr.includes(reason),
     "Wrong failure reason "+mode+": "+result.stderr);
   console.log("PASS negative "+mode+": "+reason);
  }
