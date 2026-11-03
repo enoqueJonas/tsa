@@ -12,7 +12,7 @@ const connection = marker("postgresql-first-connection");
 const databases = marker("postgresql-databases-and-schemas");
 const tables = marker("postgresql-tables-and-rows");
 const temporary = marker("postgresql-temporary-tables");
-const relational = source.indexOf('id: "relational-model"');
+const relational = marker("relational-model");
 const fixture = marker("steward-schema-and-seed");
 const crud = source.indexOf('id: "sql-crud"');
 assert.ok(
@@ -70,9 +70,11 @@ try {
   for (const statement of ["CREATE TEMP TABLE", "INSERT INTO tsa_session_probe", "ORDER BY id", "BEGIN;", "ROLLBACK;", "SELECT count(*)"]) {
     assert.ok(sql.includes(statement), `Missing SQL teaching concept: ${statement}`);
   }
-  const relationalShape = source.match(/id: "steward-shape"[\s\S]*?code: ("(?:\\.|[^"\\])*")/);
-  assert.ok(relationalShape, "Relational shape lesson missing");
-  assert.doesNotMatch(JSON.parse(relationalShape[1]), /CREATE TABLE team/, "The lesson must not recreate Team after the prior example");
+  const relationalExample = publishedCode("relational_author_books.sql — two related temporary tables");
+  for (const fragment of ["CREATE TEMP TABLE author_example", "CREATE TEMP TABLE book_example", "REFERENCES author_example(id)", "INSERT INTO author_example"]) {
+    assert.ok(relationalExample.includes(fragment), `Missing first-principles relational teaching: ${fragment}`);
+  }
+  assert.doesNotMatch(relationalExample, /CREATE TABLE team/, "New conceptual lessons must not create Steward schema tables");
   const seed = publishedCode("steward_schema_seed.sql — complete one-time PostgreSQL teaching fixture");
   const verification = publishedCode("verify_steward_seed.sql — three result shapes the learner can predict");
   const tableNames = ["team", "service", "environment", "service_dependency"];
