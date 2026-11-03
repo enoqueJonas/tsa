@@ -66,7 +66,7 @@ try{
  bad=yaml.replace(fallback,'    - when: always');
  result=run("healthy",bad);
  assert.notEqual(result.status,0,"Unconditional workflow fallback must be rejected");
- assert.match(result.stderr,/EvidenceError: selection mismatch source=web/);
+ assert.match(result.stderr,/EvidenceError: selection mismatch source=push branch=feature\/quality/);
  console.log("PASS wrong workflow fallback: web pipelines unintentionally admitted");
 
  const failsafeLine='        - target/failsafe-reports/TEST-*.xml\n';
