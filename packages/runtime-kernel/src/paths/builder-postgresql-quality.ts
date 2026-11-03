@@ -61,14 +61,14 @@ const practices: Record<string, PracticeSpec> = {
     },
     "relational-data-and-postgresql-sql-crud-practice": {
         objective: "Update an existing Steward row with a predictable, verified target set.",
-        scenario: "A disposable Steward Service record contains a clearly incorrect field. Correct precisely that record and prove no other Service was modified.",
+        scenario: "You need to test a corrected Steward Service field without permanently altering the canonical five-Service dataset. Preview one known Service, change one attribute and restore the original value.",
         instructions: [
-            "Start from the established five-Service teaching fixture and choose a new, deliberately disposable Service record so you do not change the reference dataset.",
+            "Start with the canonical five-Service fixture; choose one existing Service and save its current attribute value before any UPDATE.",
             "Use SELECT with the exact intended UPDATE predicate to inspect matching rows and record the expected count.",
             "Apply UPDATE ... SET ... WHERE ... RETURNING to change one known attribute; explain the difference between zero, one and multiple affected rows.",
-            "Run a fresh SELECT to compare before/after values and verify the original five teaching Services remain unchanged.",
+            "Run a fresh SELECT to verify the changed attribute, then use another selective UPDATE to restore the exact original value; prove all five teaching Services remain unchanged.",
             "Write but do not execute a predicate-free UPDATE example and explain why valid SQL can still be destructive.",
-            "Do not use ON CONFLICT, DISTINCT or DELETE in this practice: those require separate teaching and a separate deletion exercise."
+            "Keep this exercise focused on UPDATE; the next lesson treats row deletion separately."
         ],
         deliverables: ["Read-only preview and expected row count", "UPDATE/RETURNING transcript", "Before/after verification", "Explanation of a broad-predicate failure"],
         completionCriteria: ["The original canonical fixture rows are left intact.", "The UPDATE result matches the intended single record.", "The learner can diagnose why a WHERE predicate matters."]
