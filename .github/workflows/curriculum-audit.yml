@@ -19,6 +19,7 @@ on:
       - curriculum/quality-steward-idempotency-partitions-v8
       - curriculum/quality-steward-java-playwright-local-v9
       - curriculum/quality-steward-gitlab-evidence-v10
+      - curriculum/quality-steward-java-concurrency-split-v11
       - integration/tsa-audits-master-20261102
       - master
   workflow_dispatch:
@@ -93,6 +94,8 @@ jobs:
         run: node scripts/check-quality-gitlab-selection.mjs
       - name: Execute source-published GitLab selection and missing-evidence negatives
         run: node scripts/check-quality-gitlab-evidence-v10.mjs
+      - name: Compile split Java concurrency source and fail deterministic races and stale ThreadLocal mutants
+        run: node scripts/check-quality-concurrency-split-v11.mjs
       - name: Execute curriculum smoke test suite
         run: pnpm test
       - name: Guard original Quality short-reading mechanisms and specialized browser lesson splits
