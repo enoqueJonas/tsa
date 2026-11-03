@@ -12,6 +12,10 @@ This tracker is the source of truth for the remediation cycle. Do not mark a sch
 
 ## Quality Steward whole-school audit (2026-11-03)
 
+**Latest Quality audit:** [PR #349](https://github.com/enoqueJonas/tsa/pull/349) merged at `1f1ca6ca` with a 19/19 matching-head CI, 428 rendered activities and a controlled browser defect/keyboard/viewport lab. [Draft PR #350](https://github.com/enoqueJonas/tsa/pull/350) now tests *actual* Maven/JUnit tags, test-instance ownership, phase/report selection and resolved dependency graph, with negative controls. These are classroom source and execution validations only. Real Steward/IdP/PostgreSQL/GitLab/k6 and uncoached learner scoring are still OPEN under #328.
+
+
+
 **Further source remediation:** [PR #347](https://github.com/enoqueJonas/tsa/pull/347) merged at `c95a6df6` with 19/19 CI. Fifth in-progress Quality source work develops executable Maven/Jupiter/Failsafe discovery and Python state-machine/independent-oracle fixtures in the **actual original readings**. These are isolated teaching models, not authenticated Steward/IdP/PostgreSQL or independent learner assessment. Issue #328 remains OPEN.
 
 
