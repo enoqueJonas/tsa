@@ -69,3 +69,47 @@ The original `reliability-distributed-tracing-implementation-deep.ts` reading no
 - [ ] Run complete matching-head CI and only then merge source work. Keep issue #327 open for learner validation.
 
 **Current status:** School-wide source inventory and targeted instructional reconstruction substantially advanced; full matching-head CI, real infrastructure labs and learner transfer remain open. **NOT LEARNER-VALIDATED.**
+
+
+## Consolidated Reliability source execution evidence (from PR #342)
+
+## Original-reading source review — complete school inventory, individual gate status
+
+These statuses describe the **source and executable evidence checked**, not independent learner mastery:
+
+| # | Path | Source-level assessment and evidence | Still unverified |
+|---|---|---|---|
+| 1 | Reliability/SRE | Seven original concept lessons, service quality and failure/recovery questions, risk-map lab. Original sources retained. | Real baseline SLI/risk interview and independent acceptance |
+| 2 | Service Level Engineering | Original SLI, error-budget and window lessons now demonstrate valid/good populations, negative failed SLO and missing-data `UNKNOWN`. Exact local Python is checked. | Real instrumentation and windowed burn-rate |
+| 3 | Observability | Eight existing source concept readings with scenario/question/signal/interpretation cases and telemetry lab. | Real source-to-backend cross-signal completeness |
+| 4 | Production Logging | Original structured and centralized logging readings explain emission/shipper/input/parser/index/query stages; local malformed/uncorrelated negative fixture is executable. | Real Graylog indexing/search, lost log and retention/permissions |
+| 5 | Prometheus/Grafana | Original metrics and PromQL readings now include rate/error ratio and histogram queries; local reset-aware counter fixture corrected from **17 to 14** increments after a CI-found arithmetic defect. | Real Prometheus rate/histogram evaluation and Grafana evidence |
+| 6 | Distributed Tracing | Original OpenTelemetry/Tempo reading now carries a real two-hop localhost HTTP traceparent test with an invalid-header denial. | Actual OTel SDK, collector, sampling, Tempo query and async broker |
+| 7 | Observability Stack Integration | Added an original instructional reading before the former deployment-only lab: metric 502 symptom, log-event cause, propagation/sampling gaps and missing-log negative diagnosis. | Live Graylog+Prometheus+Grafana+Tempo incident |
+| 8 | Alerting/On-call | Eight existing concept readings, paging policy and runbook labs. | Rule/route/runbook exercises with a learner-run receiver |
+| 9 | Alertmanager | Original reading now exercises a real localhost webhook with a successful notification, deliberate receiver 503, and fresh post-recovery delivery. | Actual Prometheus→Alertmanager routing, inhibition/retry/silence |
+| 10 | Database Stewardship | Original slow-query plan lesson adds **real PostgreSQL 17** 50k-row temporary-table SQL, EXPLAIN ANALYZE before/after an index and scoped rollback; source-derived CI runs it against an isolated service. | Steward database locks, transaction recovery, migrations and production plans |
+| 11 | Performance/Capacity | Original latency lesson now executes mean/median/nearest-rank p95 with a synthetic 500 ms tail; small-sample limitation stated. | Controlled real traffic, saturation and representative percentiles |
+| 12 | Resilience/Distributed Failure | Original retry/idempotency readings now execute localhost 503 **after synthetic commit**, stable-key replay and duplicate changed-key negative. | Durable transaction identity, concurrency and real downstream failure |
+| 13 | Data Protection/DR | Original backup-integrity and restore readings now execute isolated filesystem restore with SHA-256 match and deliberate corrupted-backup rejection. | PostgreSQL restore, S3 object recovery, dependency ordering and measured RPO/RTO |
+| 14 | Incident Management | Original timeline/root-cause readings now execute UTC ordering, duplicate removal and separate hypothesis handling; causal certainty explicitly limited. | Genuine incident exercise, independently tested timeline and corrective actions |
+| 15 | Fault Injection | Original controlled-failure lesson uses the same isolated 503-after-commit experiment with explicit recovery/negative behavior and no shared infrastructure. | Scoped real Steward fault injection with abort/rollback |
+| 16 | Reliability Milestone | Added original evidence-chain reading and adversarial transfer reflection; retains all existing milestone practicals. | Independent learner defense, live recovery and cross-signal proof |
+
+### Execution and truthfulness gates
+
+- `scripts/check-reliability-logging-source.mjs` executes the **exact** published SLI, event-parser, counter and associated local models. A past matching-head check correctly found a false 17-increment assertion; code and expectation were corrected to 14.
+- `scripts/check-reliability-transport-proofs.mjs` executes the **exact** published local HTTP tracing, receiver 503/recovery, isolated file restore, ambiguous commit/retry, latency-tail and chronology programs.
+- `scripts/check-reliability-postgres-source.mjs` runs the **exact** authored SQL on a temporary PostgreSQL 17 database in GitHub Actions, with no persistent relation after rollback.
+- `scripts/check-school-learner-browser.py` now expects 14 specifically named new instruction headings in the rendered Reliability school, and copyable code in the relevant original readings. This catches failures that a text source search cannot.
+- The final matching-head 19-job workflow must pass after these additions. Older green runs and superseded/cancelled runs are **not** evidence for the latest commit.
+- The original activity IDs are retained. Previously generated model and preparation activity IDs were removed; progress migration/re-entry for these artificial IDs has not been independently inspected.
+- Infrastructure-dependent labs and **uncoached novice teach-back remain UNVERIFIED**. Do not close issue #327 or advertise full learner validation based on source/execution CI.
+
+### Graylog-specific teaching and learner re-entry evidence
+
+The former Observability Stack Integration practical began with the unexplained instruction "Deploy Graylog." A distinct original `reliability-observability-stack-integration-graylog-lab-guide` source reading now **precedes the actual deployment practical**. It is grounded in the official Graylog 7.2 Compose/Inputs/GELF documentation and explains MongoDB, Data Node/OpenSearch and Graylog responsibilities, prerequisites including Linux Docker `vm.max_map_count`, `GRAYLOG_PASSWORD_SECRET` and `GRAYLOG_ROOT_PASSWORD_SHA2`, disposable host-only ports, official sample files, first-run/preflight login, input stream/index routing, a locally generated synthetic GELF HTTP event, missing-message negative diagnosis and bounded teardown. The learner must select the actual version-matched official Compose files and inspect ports/volumes before using the commands; the guide is **not** a fabricated tested Compose deployment.
+
+Source contracts require these details, and the Reliability browser traversal checks the page's rendered teaching heading and copyable commands. The Reliability browser now also performs a synthetic practical-evidence plus reflection **IndexedDB reload/re-entry** test on the first original path after wrapper removal. This establishes storage/re-entry behavior only when its final matching-head browser job passes; it is not a novice comprehension assessment or a migration test for previously stored synthetic wrapper IDs.
+
+Official authoritative references: [Graylog containerized deployment](https://go2docs.graylog.org/current/downloading_and_installing_graylog/graylog_and_docker.htm), [Graylog Docker first run](https://go2docs.graylog.org/current/downloading_and_installing_graylog/docker_installation.htm), [Inputs](https://go2docs.graylog.org/current/getting_in_log_data/setup_an_input.htm), [GELF HTTP input](https://go2docs.graylog.org/current/getting_in_log_data/gelf.html), and [official demo Compose repository](https://github.com/Graylog2/docker-compose).

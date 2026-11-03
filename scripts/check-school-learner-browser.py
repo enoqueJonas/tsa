@@ -88,6 +88,37 @@ def inspect_school(page):
                     f"Missing runnable, copyable example in Builder reading: {activity_id}"
                 )
             code = content.locator("figure").filter(has=page.get_by_role("button", name="Copy"))
+            if SCHOOL == "reliability-engineer":
+                reliability_source_readings = {
+                    "logging-structured-logs-001": "Run a real parsing and correlation failure",
+                    "logging-centralized-logging-001": "Follow a log from code to Graylog search",
+                    "service-level-engineering-slis-001": "Execute a small positive and negative SLI model",
+                    "metrics-prometheus-grafana-metric-types-001": "Why counters need reset-aware queries",
+                    "reliability-distributed-tracing-implementation-001": "Execute two real local HTTP hops",
+                    "reliability-alertmanager-implementation-001": "Exercise the HTTP notification boundary and its failure",
+                    "data-protection-dr-backup-integrity-001": "Execute a disposable restore and deliberate corruption",
+                    "resilience-distributed-failure-idempotency-001": "Run an ambiguous commit and retry it safely",
+                    "fault-injection-controlled-failure-001": "Inject one bounded response failure after a synthetic commit",
+                    "performance-and-capacity-latency-throughput-001": "Compute a real synthetic tail counterexample",
+                    "incident-management-timeline-001": "Run a shuffled, duplicated evidence fixture",
+                    "database-stewardship-slow-queries-plans-001": "Execute before/after index plans, then roll back all changes",
+                    "reliability-observability-stack-integration-000": "Start with one user-visible failure and three diagnostic questions",
+                    "reliability-observability-stack-integration-graylog-lab-guide": "Three components, three failure boundaries",
+                    "steward-reliability-program-milestone-000": "What a defensible reliability claim contains",
+                }
+                required = reliability_source_readings.get(activity_id)
+                if required:
+                    assert content.get_by_text(required, exact=True).count() == 1, (
+                        f"Original Reliability teaching heading not rendered: {activity_id}: {required}"
+                    )
+                    if activity_id not in {
+                        "logging-centralized-logging-001",
+                        "reliability-observability-stack-integration-000",
+                        "steward-reliability-program-milestone-000",
+                    }:
+                        assert code.count() >= 1, (
+                            f"Source-authored executable or SQL fixture missing from rendered reading: {activity_id}"
+                        )
             for k in range(code.count()):
                 assert code.nth(k).locator("pre").count() > 0, (
                     f"Code block not rendered: {activity_id}"
@@ -382,6 +413,68 @@ def check_reliability_retired_activity_progress(page):
     print("PASS Reliability retired-wrapper progress excluded and safe re-entry",flush=True)
 
 
+def check_reliability_reentry(page):
+    """Persistence regression with a synthetic learner in a fresh browser profile.
+
+    Tests actual IndexedDB read/write across reload, not pedagogy, real lab
+    execution, independent learning or multi-device synchronization.
+    """
+    page.goto(f"{BASE}/?view=curriculum&school=reliability-engineer", wait_until="networkidle")
+    page.get_by_role("button", name=MODULE).first.click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+    params = page.evaluate("new URLSearchParams(location.search).toString()")
+    assert "path=" in params, "Module did not open with durable path identity"
+
+    # First reading -> first practical: evidence must survive a hard reload.
+    page.get_by_role("button", name=NEXT).click()
+    page.get_by_placeholder("What did you build, inspect, break, diagnose, or change? Include commands, observations, and important decisions.").wait_for()
+    notes = "Synthetic Reliability Engineer evidence: a named C4 boundary and a rejected assumption."
+    page.get_by_placeholder("What did you build, inspect, break, diagnose, or change? Include commands, observations, and important decisions.").fill(notes)
+    page.get_by_placeholder("What was the result? What did the evidence prove, and what would you do differently next time?").fill("This is a storage regression, not validated reliability competence.")
+    page.get_by_role("button", name="Save evidence").click()
+    page.get_by_text("Saved locally", exact=True).wait_for()
+    practical_id = page.evaluate("new URLSearchParams(location.search).get('activity')")
+    page.reload(wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+    page.get_by_placeholder("What did you build, inspect, break, diagnose, or change? Include commands, observations, and important decisions.").wait_for()
+    actual = page.get_by_placeholder("What did you build, inspect, break, diagnose, or change? Include commands, observations, and important decisions.").input_value()
+    assert actual == notes, f"Practical evidence lost on reload: {practical_id}"
+
+    # First reflection -> persist the completed text, then reload on the same URL.
+    page.get_by_role("button", name=NEXT).click()
+    reflection = page.get_by_placeholder("Write your response here...")
+    reflection.wait_for()
+    reflection_id = page.evaluate("new URLSearchParams(location.search).get('activity')")
+    path_id = page.evaluate("new URLSearchParams(location.search).get('path')")
+    answer = "Synthetic transfer check only. " * 12
+    reflection.fill(answer)
+    # Wait for IndexedDB commit, not just React state, before navigation.
+    page.wait_for_function("""async ({pathId, activityId, expected}) => {
+      const db = await new Promise((resolve, reject) => {
+        const request = indexedDB.open("tsa-academy", 5);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      try {
+        const tx = db.transaction("path-progress", "readonly");
+        const record = await new Promise((resolve, reject) => {
+          const request = tx.objectStore("path-progress").get(pathId);
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+        return record?.reflectionResponses?.[activityId] === expected;
+      } finally {
+        db.close();
+      }
+    }""", arg={"pathId": path_id, "activityId": reflection_id, "expected": answer}, timeout=12000)
+    page.reload(wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+    assert page.get_by_placeholder("Write your response here...").input_value() == answer, (
+        f"Reflection content lost on reload: {reflection_id}"
+    )
+    print("PASS reliability-engineer IndexedDB reentry: practical evidence and reflection persisted across hard reload", flush=True)
+
+
 with sync_playwright() as playwright:
     browser = playwright.chromium.launch(headless=True)
     context = browser.new_context(viewport={"width": 1440, "height": 900})
@@ -402,4 +495,7 @@ with sync_playwright() as playwright:
         isolated = browser.new_context(viewport={"width": 1440, "height": 900})
         check_reliability_retired_activity_progress(isolated.new_page())
         isolated.close()
+        practice_context = browser.new_context(viewport={"width": 1440, "height": 900})
+        check_reliability_reentry(practice_context.new_page())
+        practice_context.close()
     browser.close()
