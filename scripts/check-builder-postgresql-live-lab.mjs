@@ -82,6 +82,35 @@ try {
   assert.match(relationalRun.stderr, /violates foreign key constraint/);
   assert.equal(relationalRun.stdout.trim().split(/\r?\n/).at(-1), "3");
 
+  // Before the Steward lab, execute the introductory JOIN and GROUP BY lessons
+  // as actual single-session psql files. Separate sessions prevent fixture leakage.
+  const runTeachingSession = (filename, captions, expected) => {
+    const sqlFile = path.join(root, filename);
+    fs.writeFileSync(sqlFile, captions.map(codeFromLesson).join("\n") + "\n");
+    const lines = run(["-d", "tsa_library", "-f", sqlFile]).out.split(/\r?\n/);
+    assert.deepEqual(lines, expected, "Mismatch in published " + filename + " examples");
+  };
+  runTeachingSession("first_joins.sql", [
+    "join_first_setup.sql — temporary writers and books",
+    "join_first_inner.sql — three matched books",
+    "join_first_left.sql — retain the writer with no book",
+    "join_first_cross.sql — count the unwanted combinations"
+  ], [
+    "CREATE TABLE", "CREATE TABLE", "INSERT 0 3", "INSERT 0 3",
+    "1|Ana", "2|Rui", "3|Fatima",
+    "10|Ocean|1", "11|Hill|1", "12|Sky|2",
+    "Ocean|Ana", "Hill|Ana", "Sky|Rui",
+    "Ana|Ocean", "Ana|Hill", "Rui|Sky", "Fatima|", "9"
+  ]);
+  runTeachingSession("first_groups.sql", [
+    "group_first_setup.sql — three writers, three books",
+    "group_first_books.sql — count books in each populated group",
+    "group_first_left_count.sql — compare correct and wrong counts"
+  ], [
+    "CREATE TABLE", "CREATE TABLE", "INSERT 0 3", "INSERT 0 3",
+    "1|2", "2|1", "Ana|2|2", "Rui|1|1", "Fatima|0|1"
+  ]);
+
   const firstFile = path.join(root, "first_session.sql");
   fs.writeFileSync(firstFile, codeFromLesson("first_session.sql — run only in a disposable PostgreSQL lab database"));
   const firstOutput = run(["-f", firstFile]).out;
@@ -290,7 +319,7 @@ try {
   const stageCounts = migration.split(/\r?\n/).filter(v => /^\d+$/.test(v));
   assert.deepEqual(stageCounts, ["5", "0", "5", "0"], "Backfill must retain five rows and leave no new column after rollback");
   assert.equal(run(["-c", "SELECT count(*) FROM information_schema.columns WHERE table_name='service' AND column_name='technical_owner'"]).out, "0");
-  console.log(`Builder PostgreSQL live lab passed: CREATE DATABASE, CREATE SCHEMA, library tables, relational FK negative and temporary-session checks, 4 persisted tables, 20 published SQL examples, 5/6/4 join cardinalities, 2 rejected writes, 3 transaction scripts with savepoint failure, 2-session Read Committed/Repeatable Read, cross-table release-readiness detection and rollback proof, populated migration backfill and two-session unique-name race; database=${process.env.PGDATABASE}.`);
+  console.log(`Builder PostgreSQL live lab passed: CREATE DATABASE, CREATE SCHEMA, library tables, relational FK, introductory JOIN and GROUP BY, and temporary-session checks, 4 persisted tables, 20 published SQL examples, 5/6/4 join cardinalities, 2 rejected writes, 3 transaction scripts with savepoint failure, 2-session Read Committed/Repeatable Read, cross-table release-readiness detection and rollback proof, populated migration backfill and two-session unique-name race; database=${process.env.PGDATABASE}.`);
 
 } finally {
   fs.rmSync(root, { recursive: true, force: true });
