@@ -72,6 +72,20 @@ Classification describes the **actual authored readings**, excluding generated w
 
 **Pedagogical caveat:** A 3–4k-character lesson with headings is not automatically good teaching. The key still missing is a person without coaching interpreting an unseen scenario and creating an evidence-backed artifact against the protocol's explicit critical-failure rubric. External system simulations remain classroom examples unless an authorized environment truly ran them.
 
+## Source-to-executable-practical stress test — 3 November 2026, follow-up
+
+The **prior** exact-head baseline at `e10e47e`, [Actions #41680816104](https://github.com/enoqueJonas/tsa/actions/runs/41680816104), passed **19/19** jobs, including all 219 desktop and all 219 narrow-mobile activities and 83 rendered separate novel cases. That pass predates the new executable lab; it **must not** be transferred to later commits.
+
+**Material defect identified:** Some critical practicals taught the correct decision vocabulary, yet supplied no independently runnable population or observable rejection. A learner could submit generic governance prose, and the assessor had no concrete baseline to challenge. The repaired subset now has a **Node.js 22+ offline, zero-credential lab**, [source and instructions](../../labs/technical-steward/README.md), with:
+
+- A fabricated but attributable **14-release population** (12 evidenced, one emergency release with zero selected mandatory tests, one deployed/tested artifact mismatch). Initial result must be **HOLD 12/14**. Exact digest, nonzero selected tests, zero failed mandatory tests, denied-after-state, evidence/run IDs and timestamp are required to pass the *synthetic* gate.
+- A fabricated **two-observation recovery packet** with a backup-only UNKNOWN and an isolated **360-minute** rehearsal against an explicitly **hypothetical, unapproved 240-minute RTO**. Supplier uptime cannot stand in for a restore. The result must be **RECOVERY_ASSURANCE_NOT_ESTABLISHED**.
+- A **learner-controlled `--file` scratch mutation** and a deliberate **`--require-pass` nonzero negative**. Tests actually execute the documented Node commands and reject false-green, missing provenance, missing denied-after-state, duplicate release IDs and absent recoverability evidence.
+- Embedded executable command/output blocks and linked practical assessment requirements in **six original lesson/practical pairs**: Controls & Assurance **Control Effectiveness**, **Control Testing**; Change & Service Governance **Release Governance**, **Evidence-based Release Approval**; Technology Risk **Inherent/Residual Risk**, **Risk Appetite/Tolerance**. Both source-compiled and browser-rendered layers remain subject to CI.
+- A graded independent prediction, mutation, artifact citation, decision authority and false-result explanation. Editing JSON to say PASS is explicitly **not real control verification**, and no synthetic recovery target is represented as approved policy.
+
+**Scope honesty:** This is a demonstrable executable exercise for **six of the 83 original topic-practical pairs**, not a claim that all governance exercises have command-line actions or that every other case has adequate input data. The other **77** remain candidates for detailed evidence-packet and reviewer-oracle scrutiny. Some legitimately require judgment and review of authoritative artifacts rather than executing code; those must still be independently repeatable with supplied decision data. Human learner transfer and actual organization-provided evidence remain NOT TESTED. The latest exact-head CI outcome is **pending until checked against the final commit**.
+
 ## Required next actions — finish this school, do not jump to Professional Engineer
 
 1. Inspect all newly revised source readings **for actual instructional completeness and prior knowledge assumptions**. Worked examples and text coverage alone do not prove the learner can explain the underlying mechanism; split any remaining overbroad concept cluster while preserving prior IDs.
