@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { performanceProofById } from "./reliability-investigation-proofs";
 
 const sreBook: LearningResource = { title: "Google SRE Book — Addressing Cascading Failures", url: "https://sre.google/sre-book/addressing-cascading-failures/" };
 const prometheus: LearningResource = { title: "Prometheus Documentation", url: "https://prometheus.io/docs/introduction/overview/" };
@@ -14,6 +15,7 @@ function lessonFrom(spec: Spec): Lesson {
         { type: "list", items: spec.principles },
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
+        ...(performanceProofById[spec.id] ?? []),
         { type: "callout", tone: "steward", title: "Baseline before threshold", body: "Performance work starts with measured behavior under a defined workload. Avoid treating arbitrary CPU, latency or throughput numbers as capacity limits until the workload, saturation point and user impact are understood." },
         { type: "resources", title: "Continue learning", resources: [sreBook, prometheus, grafana] },
     ];
