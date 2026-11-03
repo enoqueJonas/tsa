@@ -339,6 +339,70 @@ def check_system_thinker_mobile_all(page):
     print(f"PASS system-thinker 390px mobile traversal: {total} activities", flush=True)
 
 
+def check_quality_mobile_all(page):
+    """Traverse all Quality activities at 390px rather than the first module only.
+
+    Checks rendering, horizontal overflow, code, activity order and scroll reset.
+    It is synthetic navigation, not novice validation or actual lab evidence.
+    """
+    page.goto(f"{BASE}/?view=curriculum&school=quality-steward", wait_until="networkidle")
+    module_count = page.get_by_role("button", name=MODULE).count()
+    assert module_count == 12, f"Expected 12 Quality modules, found {module_count}"
+    errors = []
+    page.on("pageerror", lambda err: errors.append(str(err)))
+    total = 0
+    for module_index in range(module_count):
+        page.goto(f"{BASE}/?view=curriculum&school=quality-steward", wait_until="networkidle")
+        page.get_by_role("button", name=MODULE).nth(module_index).click()
+        page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+        sidebar = page.locator("aside").filter(has=page.get_by_text("Curriculum", exact=True)).first
+        activity_count = sidebar.locator("button").count()
+        assert activity_count > 0, f"Quality mobile module {module_index+1} is empty"
+        seen = set()
+        for activity_index in range(activity_count):
+            activity_id = page.evaluate("new URLSearchParams(location.search).get('activity')")
+            assert activity_id and activity_id not in seen, (
+                f"Quality mobile activity missing/repeated: {activity_id}"
+            )
+            seen.add(activity_id)
+            content = page.locator("main").last
+            assert content.is_visible() and len(content.inner_text().strip()) >= 90, (
+                f"Quality mobile content missing: {activity_id}"
+            )
+            assert not page.evaluate("document.documentElement.scrollWidth > innerWidth + 2"), (
+                f"Quality mobile page overflow: {activity_id}"
+            )
+            for figure in content.locator("figure").filter(
+                has=page.get_by_role("button", name="Copy")
+            ).all():
+                assert figure.locator("pre").count() > 0, (
+                    f"Quality code missing at 390px: {activity_id}"
+                )
+            if activity_index < activity_count - 1:
+                reflection = page.get_by_placeholder("Write your response here...")
+                if reflection.count():
+                    reflection.fill(SYNTHETIC_REFLECTION)
+                can_scroll = page.evaluate(
+                    "document.documentElement.scrollHeight > innerHeight + 120"
+                )
+                if can_scroll:
+                    page.evaluate("window.scrollTo(0, document.documentElement.scrollHeight)")
+                    assert page.evaluate("window.scrollY") > 30, (
+                        f"Quality mobile scroll precondition failed: {activity_id}"
+                    )
+                nxt = page.get_by_role("button", name=NEXT)
+                assert nxt.count() == 1 and nxt.is_enabled(), (
+                    f"Quality mobile navigation unavailable: {activity_id}"
+                )
+                nxt.click()
+                page.wait_for_function("window.scrollY <= 8", timeout=8000)
+            total += 1
+        print(f"PASS Quality mobile module {module_index+1}/{module_count}: "
+              f"{activity_count} authored activities", flush=True)
+    assert not errors, f"Quality mobile browser exceptions: {errors}"
+    print(f"PASS Quality Steward full 390px mobile traversal: {total} activities", flush=True)
+
+
 def check_system_thinker_reentry(page):
     """Persistence regression with a synthetic learner in a fresh browser profile.
 
@@ -557,6 +621,8 @@ with sync_playwright() as playwright:
     mobile = browser.new_context(viewport={"width": 390, "height": 844})
     if SCHOOL == "builder":
         check_builder_mobile_modules(mobile.new_page())
+    elif SCHOOL == "quality-steward":
+        check_quality_mobile_all(mobile.new_page())
     elif SCHOOL == "system-thinker":
         check_system_thinker_mobile_all(mobile.new_page())
         isolated = browser.new_context(viewport={"width": 1440, "height": 900})
