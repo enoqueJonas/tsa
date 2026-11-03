@@ -42,6 +42,12 @@ The lab is embedded in **six original reading/practical pairs** (Technology Risk
 
 **Important open risk:** The other 77 original topic practicals have novel case prompts and rejecting rubrics, but they have **not all been independently executed or supplied with assessor-ready population data**. Some are inherently written decision reviews rather than runnable programs; still demand sufficient facts, a model decision, falsifying evidence and uncoached transfer. All human testing cells remain NOT TESTED.
 
+### PED-005 — no-evidence completion and false-acceptance regression
+
+A serious learner-integrity defect was confirmed: the generic session runtime permits all practical activities to complete without evidence; meanwhile the learner-controlled Evidence Workspace could describe a user-selected status as **Accepted**. For Technical Steward paths, new practical transitions now require a persisted evidence note, outcome and Ready/Self-reviewed status. Empty/Draft states must **not** unlock the next activity. Legacy completions remain intact; no evidence is retroactively fabricated. **Self-reviewed** explicitly means learner-reported, not assessed; the evidence portfolio mirrors that wording.
+
+This is a limited safeguard: the input may be wrong or fabricated; only an independent assessor reviewing the saved work against an unseen case can establish learner competence. Browser tests now submit overtly SYNTHETIC evidence to traverse all 219 activities at desktop and 390px, then separately try blank/Draft transitions to ensure the false-completion path is blocked. The new exact-head CI result remains to be recorded after completion.
+
 ## Cross-module journey gates
 
 - Engineering Apprentice: inspect the school entry point and its actual lessons (the 134-entry structural census starts with Builder; Apprentice must NOT be omitted from the learner journey).
