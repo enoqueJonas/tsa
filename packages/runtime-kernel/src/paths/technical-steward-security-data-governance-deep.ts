@@ -43,6 +43,24 @@ const securityGovernanceCases: Record<string, {title:string;worked:string;failur
     "worked": "Illustrative identity-provider outage: operations requests a temporary fallback login path. Evaluate safe alternatives, affected population, evidence of outage, scope of bypass, compensating controls, named security/risk acceptance authority, short expiry, monitoring and rollback. Some security invariants may be non-waivable under organizational policy; an engineer cannot invent an exception right. Record every use and require a post-restoration check that the fallback is disabled. The exception register is an active control, not merely minutes of a meeting.",
     "failure": "Disable JWT signature verification to restore availability, add TODO 'temporary' and ship without authorized review. A compensating network rule is not evidence that identity forgery is contained.",
     "transfer": "A dependency scanner cannot run during a critical hotfix. Write an exception decision with available alternative controls, release risk owner, duration, verification after recovery and the explicit condition under which the release must not proceed."
+  },
+  "security-governance": {
+    "title": "Govern a security outcome, not a list of installed controls",
+    "worked": "Illustrative risk: a new document-sharing API may expose private records across tenants. The governing objective is that access and mutations follow the authorized principal/resource policy, with attributable evidence and a role permitted to approve exceptions. Security Steward supplies threat modeling and negative test findings; application teams implement enforcement; the accountable data owner defines allowed uses. Define an ownership matrix and a minimum release check that includes an authorized success plus unauthorized denial with unchanged state. Do not infer any real company policy from this classroom example.",
+    "failure": "A steering group reports security governance complete after creating a policy PDF, while permission bypass tests remain absent and exceptions have no accountable authority.",
+    "transfer": "A project wants to expose internal search over sensitive case records. Identify the business risk owner, service implementer, independent assurance function, minimum denial evidence and a decision escalation boundary."
+  },
+  "roles": {
+    "title": "Separate ownership of risk, data purpose, operations and verification",
+    "worked": "Illustrative access issue: a production engineer can grant a temporary elevated role to recover a service. The data owner determines legitimate data purposes, security/risk authority defines the exception boundary, platform operations carries out just-in-time provisioning, audit reviews access events and the service owner monitors business outcomes. A time-limited role must expire automatically and a denial check proves the privilege is gone. Assigning tasks on a RACI chart is useful only if specific people can reproduce evidence at handoff.",
+    "failure": "The same operator creates, approves and indefinitely extends their own elevated permission under a vague 'everyone owns security' motto.",
+    "transfer": "Assign these roles for a vendor incident requiring emergency access to logs containing personal data, and specify a log verification that another employee can perform."
+  },
+  "policy-hierarchy": {
+    "title": "Translate intent into mandatory rules and a reproducible procedure",
+    "worked": "Illustrative organizational direction: protected records must not be accessible to unauthorized principals. Policy states the non-negotiable outcome; standard specifies mandatory resource-level checks, audit-event properties and permitted exception channel; procedure explains how operations verify access after a release; implementation guidelines recommend coding patterns. The standard's tests include actor A can read own record, actor B cannot read A's record, and a refused write does not modify the owner. The authority controlling data purpose is separate from the author of the code.",
+    "failure": "Treat an optional guideline as a compliance law, or write a policy that instructs developers to call one helper method while failing to define the security invariant.",
+    "transfer": "Rewrite a vague instruction 'encrypt data where appropriate' into a hypothetical policy outcome, testable standard, local procedure and a decision that cannot be taken without organizational input."
   }
 };
 function lesson(id: string, title: string, body: string, instructions: string[]): Lesson {
