@@ -149,7 +149,7 @@ def inspect_school(page):
                     "unit-component-mocks-stubs-fakes-001": ("Choose evidence: state after behavior versus incidental call history", False),
                     "test-analysis-and-design-state-transition-testing-001": ("State and event together determine whether an action is permitted", True),
                     "test-analysis-and-design-test-oracles-001": ("The oracle must be independent of the defect it is trying to detect", True),
-                    "browser-environment-playwright-runtime-model-001": ("Own Playwright runtime, Browser, Context and Page at distinct lifetimes", True),
+                    "browser-environment-playwright-runtime-model-001": ("Run an actual Java Playwright BrowserContext instead of only describing one", True),
                     "unit-component-test-doubles-001": ("A substitute must declare what it can and cannot prove", False),
                     "browser-environment-environment-parity-001": ("Parity means accounted-for differences, not equal-looking URLs", True),
                     "browser-environment-browser-differences-001": ("Distinguish engine implementation from the shape of the failure", True),
