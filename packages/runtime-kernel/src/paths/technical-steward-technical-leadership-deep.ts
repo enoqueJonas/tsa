@@ -88,10 +88,10 @@ function lesson(id: string, title: string, body: string, practice: string[]): Le
         content: {
             type: "practical",
             objective: `Apply ${title} to a real Steward technical-leadership situation.`,
-            scenario: "Steward is now a mature internal technology service whose active responsibilities come from the final Architect actual-stack inventory: application and data responsibilities plus the platform, delivery, security and reliability capabilities actually retained. Earlier technologies that were simplified, replaced, retired or deferred remain decision history rather than active ownership targets. You are responsible for improving technical outcomes even when you do not have formal authority over every contributor or stakeholder.",
-            instructions: practice,
+            scenario: `Steward is a mature internal technology service, scoped to the actual final Architect estate and its demonstrably retained responsibilities. This is a fictional assessment case, not a claim about an existing company.\n\nUNSEEN DECISION: ${leadershipCases[id]?.transfer ?? "Use the previous lesson's own evidence and justify an alternative."}` ,
+            instructions: [...practice, "Submit a decision artifact for the unfamiliar assessment case above, separately from your explanation of the worked example.", "Identify a plausible but incorrect outcome, the observation or evidence that would reveal it, and the authority required to resolve it."],
             deliverables: ["Decision or review artifact", "Evidence and rationale", "Follow-up or ownership record"],
-            completionCriteria: ["The recommendation is grounded in evidence and explicit trade-offs.", "Ownership and next actions are clear without relying on positional authority.", "Technical leadership improves decision quality rather than becoming ceremony or control for its own sake."],
+            completionCriteria: ["The new case is answered independently: the artifact names the decision, current evidence versus assumptions, accountable owner, alternatives, a justified decision and a dated revisit trigger.", "No unobserved result or hypothetical policy is represented as a fact from Steward production.", `Reject a superficially convincing answer if it repeats this failure: ${leadershipCases[id]?.failure ?? "A claim is made without evidence."}`, "A reviewer can determine whether the proposed action succeeds or fails using observable evidence; generic leadership phrases alone do not pass."],
         },
     };
     return { id, title, activities: [reading, practical] };
