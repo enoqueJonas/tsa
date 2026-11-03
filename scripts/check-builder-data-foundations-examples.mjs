@@ -11,7 +11,8 @@ const system = marker("postgresql-what-it-is");
 const connection = marker("postgresql-first-connection");
 const databases = marker("postgresql-create-database");
 const schemas = marker("postgresql-create-schema");
-const tables = marker("postgresql-tables-and-rows");
+const tables = marker("postgresql-create-table");
+const rows = marker("postgresql-work-with-rows");
 const temporary = marker("postgresql-temporary-tables");
 const relational = marker("relational-model");
 const firstJoins = marker("postgresql-first-joins");
@@ -20,10 +21,10 @@ const fixture = marker("steward-schema-and-seed");
 const crud = source.indexOf('id: "sql-crud"');
 assert.ok(
   persistence > 0 && system > persistence && connection > system &&
-  databases > connection && schemas > databases && tables > schemas && temporary > tables &&
+  databases > connection && schemas > databases && tables > schemas && rows > tables && temporary > rows &&
   relational > temporary && firstJoins > relational &&
   firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture,
-  "The learner order must be persistence → DBMS and server → psql → database creation → schemas → tables → temporary tables → relational model → joins → grouping → applied fixture → CRUD"
+  "The learner order must be persistence → DBMS and server → psql → database creation → schemas → table definition → rows → temporary tables → relational model → joins → grouping → applied fixture → CRUD"
 );
 assert.doesNotMatch(source, /Two programs, one protocol boundary|Establish prerequisites without inventing credentials/);
 assert.ok(source.includes("schema_name.table_name") || source.includes("library.books"), "Qualified tables must be explained");
@@ -68,6 +69,10 @@ try {
   }
   const insertSQL = publishedCode("SQL — insert two example books");
   assert.match(insertSQL, /INSERT INTO library.books/);
+  const columnCheck = publishedCode("SQL — inspect your book table columns");
+  assert.match(columnCheck, /information_schema.columns/, "First-table lesson needs catalog inspection");
+  const filterSQL = publishedCode("SQL — filter books by publication year");
+  assert.match(filterSQL, /WHERE published_year >= 1950/, "Row-query lesson must teach WHERE");
   const querySQL = publishedCode("SQL — read persistent rows");
   assert.match(querySQL, /ORDER BY book_id;/);
   const sql = publishedCode("first_session.sql — run only in a disposable PostgreSQL lab database");
