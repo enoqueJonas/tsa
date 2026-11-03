@@ -82,6 +82,29 @@ try {
       }
     }
   }
+  // Guard topic-specific conceptual explanation in the original Risk,
+  // Assurance and Architecture readings; copied generic wrappers do not count.
+  for (const [pathId, count, prefix, headings] of [
+    ["technology-risk", 9, "technology-risk-", ["prerequisites", "mechanism", "alternatives"]],
+    ["controls-compliance-assurance", 10, "controls-assurance-", ["prerequisites", "trace", "alternatives"]],
+    ["architecture-governance", 8, "architecture-governance-", ["prerequisites", "mechanism", "alternatives"]],
+  ]) {
+    const pathModel = technicalStewardPaths.find((p) => p.id === pathId);
+    const readings = pathModel.lessons.flatMap((lesson) => lesson.activities)
+      .filter((a) => a.id.startsWith(prefix) && a.id.endsWith("-reading") && a.content.type === "reading");
+    assert.equal(readings.length, count, `Concept depth coverage lost in ${pathId}`);
+    for (const a of readings) {
+      const topic = a.id.slice(prefix.length, -"-reading".length);
+      const headingsFound = a.content.blocks?.filter((block) => block.type === "heading").map((block) => block.id) ?? [];
+      const namespace = pathId === "technology-risk" ? topic : pathId === "architecture-governance" ? `arch-${topic}` : `control-${topic}`;
+      for (const suffix of headings) {
+        assert.ok(headingsFound.includes(`${namespace}-${suffix}`),
+          `Concept depth missing ${suffix} for ${a.id}`);
+      }
+      assert.ok(a.content.blocks.some((block) => block.type === "callout" && block.tone === "warning"),
+        `Need false-decision diagnosis in ${a.id}`);
+    }
+  }
   // A case added to source code but omitted from rendered blocks is not instruction.
   // These minima only verify wiring, NOT depth, accessibility or learner comprehension.
   const caseMinimums = [
