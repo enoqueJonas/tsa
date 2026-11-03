@@ -88,6 +88,32 @@ def inspect_school(page):
                     f"Missing runnable, copyable example in Builder reading: {activity_id}"
                 )
             code = content.locator("figure").filter(has=page.get_by_role("button", name="Copy"))
+            if SCHOOL == "quality-steward":
+                assert not activity_id.endswith("-quality-preparation"), (
+                    f"Generated Quality preparation returned to learner journey: {activity_id}"
+                )
+                assert not activity_id.endswith("-worked-quality-model-reading"), (
+                    f"Generated Quality 30-minute model returned: {activity_id}"
+                )
+                quality_original_readings = {
+                    "quality-engineering-levels-types-001": ("Worked risk-to-boundary map: a forbidden ownership transfer", False),
+                    "test-analysis-and-design-boundary-value-analysis-001": ("Executable inclusive-bound contract and negative control", True),
+                    "quality-java-source-bytecode-jvm-introduction-001": ("Distinguish Java, JDK, bytecode and JVM", True),
+                    "quality-java-objects-constructors-state-introduction-001": ("Definition: class versus object", True),
+                    "unit-component-designing-unit-tests-001": ("An independent oracle, a real assertion, and a wrong implementation", True),
+                    "browser-environment-browser-surface-decision-primer": ("Define the evidence boundary", False),
+                    "non-functional-quality-performance-tool-decision-primer": ("Arrival rate is not the same as concurrent users", False),
+                }
+                target = quality_original_readings.get(activity_id)
+                if target:
+                    heading, code_required = target
+                    assert content.get_by_text(heading, exact=True).count() == 1, (
+                        f"Original Quality instruction was not rendered: {activity_id}: {heading}"
+                    )
+                    if code_required:
+                        assert code.count() >= 1, (
+                            f"Original Quality executable example missing copyable code: {activity_id}"
+                        )
             if SCHOOL == "reliability-engineer":
                 reliability_source_readings = {
                     "logging-structured-logs-001": "Run a real parsing and correlation failure",
@@ -368,6 +394,46 @@ def check_system_thinker_reentry(page):
 
 
 
+def check_quality_retired_activity_progress(page):
+    """Legacy generic Quality wrapper IDs must not count as authored completion."""
+    page.goto(f"{BASE}/?view=curriculum&school=quality-steward", wait_until="networkidle")
+    page.get_by_role("button", name=MODULE).first.wait_for()
+    page.evaluate("""async () => {
+      const db = await new Promise((resolve, reject) => {
+        const req = indexedDB.open('tsa-academy', 5);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+      try {
+        const tx = db.transaction('path-progress','readwrite');
+        tx.objectStore('path-progress').put({
+          pathId:'quality-engineering',schemaVersion:1,
+          currentActivityId:'quality-engineering-worked-quality-model-reading',
+          completedActivityIds:Array.from({length:50},(_,i)=>
+            'synthetic-retired-quality-preparation-'+i),
+          reflectionResponses:{},
+          startedAt:'2026-10-01T00:00:00.000Z',
+          updatedAt:'2026-10-01T00:00:00.000Z'
+        });
+        await new Promise((resolve,reject)=>{
+          tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error);
+        });
+      } finally { db.close(); }
+    }""")
+    page.reload(wait_until="networkidle")
+    module = page.locator("article").filter(
+        has=page.get_by_role("heading",name="Quality Engineering",exact=True)
+    ).first
+    module.get_by_text("0%",exact=True).wait_for(timeout=12000)
+    module.get_by_role("button",name="Continue module").click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    activity = page.evaluate("new URLSearchParams(location.search).get('activity')")
+    assert activity == "quality-engineering-quality-vs-testing-001", (
+        f"Quality re-entry did not return to first actual authored lesson: {activity}"
+    )
+    print("PASS Quality legacy wrapper progress excluded and first author lesson restored",flush=True)
+
+
 def check_reliability_retired_activity_progress(page):
     """Retired generated wrapper IDs may persist in an older learner record.
 
@@ -491,6 +557,10 @@ with sync_playwright() as playwright:
     else:
         check_mobile_first_module(mobile.new_page())
     mobile.close()
+    if SCHOOL == "quality-steward":
+        isolated = browser.new_context(viewport={"width": 1440, "height": 900})
+        check_quality_retired_activity_progress(isolated.new_page())
+        isolated.close()
     if SCHOOL == "reliability-engineer":
         isolated = browser.new_context(viewport={"width": 1440, "height": 900})
         check_reliability_retired_activity_progress(isolated.new_page())
