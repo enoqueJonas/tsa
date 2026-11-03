@@ -1,6 +1,6 @@
 import type { LearningResource } from "../activities/content";
 import type { Lesson } from "./lesson";
-const itil={title:"PeopleCert — ITIL",url:"https://www.peoplecert.org/browse-certifications/it-governance-and-service-management/ITIL-1",kind:"reference"} satisfies LearningResource;
+const itil={title:"PeopleCert — ITIL (Version 5 and ITIL 4 transition)",url:"https://www.peoplecert.org/itil-version-5-explained",kind:"reference"} satisfies LearningResource;
 const sreRelease={title:"Google SRE — Reliable Product Launches at Scale",url:"https://sre.google/sre-book/reliable-product-launches/",kind:"reference"} satisfies LearningResource;
 const sreIncident={title:"Google SRE — Managing Incidents",url:"https://sre.google/sre-book/managing-incidents/",kind:"reference"} satisfies LearningResource;
 const resourcesByChange:Record<string,LearningResource[]>={
