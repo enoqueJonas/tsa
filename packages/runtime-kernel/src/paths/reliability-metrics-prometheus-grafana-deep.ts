@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { metricsDeepSections } from "./reliability-metrics-source-depth";
 
 const prometheus: LearningResource = { title: "Prometheus Documentation", url: "https://prometheus.io/docs/introduction/overview/" };
 const promql: LearningResource = { title: "Prometheus Querying Basics", url: "https://prometheus.io/docs/prometheus/latest/querying/basics/" };
@@ -28,6 +29,7 @@ function lessonFrom(spec: Spec): Lesson {
         { type: "list", items: spec.principles },
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
+        ...(metricsDeepSections[spec.id] ?? []),
         { type: "callout", tone: "steward", title: "Question before chart", body: "A metric is valuable when its meaning, labels and aggregation support a concrete reliability decision. A dashboard full of available numbers is not evidence that Steward is observable." },
         { type: "resources", title: "Continue learning", resources: resourcesByMetricsTopic[spec.id] ?? [prometheus, promql] },
     ];
