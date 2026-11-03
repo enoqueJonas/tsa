@@ -2,8 +2,8 @@
 
 **School:** Quality Steward (issue [#328](https://github.com/enoqueJonas/tsa/issues/328))
 **Parent:** [#318](https://github.com/enoqueJonas/tsa/issues/318)
-**Status:** **SOURCE REWRITE COMPLETE FOR REVIEW — final matching-head CI/whole-school browser confirmation pending; learner validation and external integrations not established.**
-**Branch:** `curriculum/quality-steward-source-depth-v1`
+**Status:** **SOURCE REVISIONS MERGED AND MATCHING-HEAD CI GREEN; rendered browser checked; real integrations and uncoached learner validation remain OPEN.**
+**Merged source branches:** `curriculum/quality-steward-source-depth-v1` (PR #344) and `curriculum/quality-steward-short-readings-depth-v2` (PR #345).
 
 ## What counts as evidence
 
@@ -45,8 +45,8 @@ Follow the **twelve actual paths** below in the published learner order. A gener
 
 ## Exit gates (not yet completed)
 
-- [ ] Run **final matching-head** `pnpm test`, `pnpm build`, curriculum audit and source-derived Python check in GitHub Actions; record SHA and counts.
-- [ ] Traverse **all Quality Steward rendered activities** desktop/mobile, verify exact first lesson, copyable code blocks, practical/reflection completion, reload and legacy-generated-ID re-entry. Scripted browser evidence ≠ independent human experience.
+- [x] Source commits matched successful 19/19 GitHub Actions matrices: #41627876550 (PR #344, 416 activities) and #41632027647 (PR #345, 428 activities), including build, curriculum and source-derived examples.
+- [x] Synthetic Chromium traversed 428 desktop and 428 mobile activities (390px), checked rendered content, no page overflow, progression and legacy generated-ID recovery. This is NOT independent human experience.
 - [ ] Run real local Java/JUnit, isolated API/database, test-runner and negative acceptance cases where safe and feasible.
 - [ ] Resolve remaining explanatory gaps in original authored source modules; do not mistake this initial source survey or wrapper deletion for completion.
 - [ ] Review representative rendered pages manually and obtain scored independent uncoached learner teach-back and unfamiliar-domain transfer.
@@ -125,7 +125,20 @@ The four new focused readings now provide the exact build/server commands, URL, 
 
 A pre-final CI run uncovered one overstrict prerequisite assertion that required specialized dialogs before a diagnostic lesson already taught in the original early browser foundation. Fixed the contract to enforce **diagnostics before specialized browser event ownership**, while retaining files → popups → frames → dialogs order.
 
-**Merge gate:** complete the full 19-job CI matrix including this real local Chromium fixture and strict 12-module 390px traversal at the exact current PR #345 head. Avoid promoting the new teaching from merely existing source files.
+**Technical merge gate met:** [workflow #41632027647](https://github.com/enoqueJonas/tsa/actions/runs/41632027647) passed **19/19 jobs** at exact PR #345 head `de1a9b74a0029ce0288f785d53966ea71aac6ae6`. PR #345 merged into `master` at `35d2d3f9`. This proves the limited classroom/source/browser checks, NOT uncoached learning or real Steward/enterprise integration behavior.
+
+## Final merged-source evidence and learner-validation boundary — 2026-11-03
+
+The original 12 Quality Steward modules have been source-remediated through two merged PRs:
+
+| Integration | Exact verification | Source-to-UI contract |
+|---|---|---|
+| [PR #344](https://github.com/enoqueJonas/tsa/pull/344) → `c76c8782` | [19/19 CI](https://github.com/enoqueJonas/tsa/actions/runs/41627876550), 416 desktop and mobile activities | No generated wrappers, Java prerequisite order, executed examples and original unit/API/browser evidence |
+| [PR #345](https://github.com/enoqueJonas/tsa/pull/345) → `35d2d3f9` | [19/19 CI](https://github.com/enoqueJonas/tsa/actions/runs/41632027647), 428 desktop and mobile activities | Deepened actual shallow readings, 4 focused browser event lessons, exact local Chromium fixture positive/negative verification and overflow repair |
+
+The local Chromium event test specifically observed a rejected bad upload, actual downloaded CSV contents, popup Page identity, iframe-scoped DOM, dialog dismissal/acceptance and safe cleanup. Its native file-control intrinsic width initially overflowed at 390px; element-level geometry identified the cause and the responsive CSS fix passed at exact head. No fake Steward UI was claimed.
+
+**Still open, not implied by source length or automated green:** independent novice teach-back and unseen transfer scored against a rubric; manual qualitative review of rendered lesson clarity; authorized Steward/IdP/real PostgreSQL or Testcontainers-backed workflows; real Playwright Java against a genuine product interface (where one exists); actual GitLab Runner schedules/alert delivery; genuine k6 workload; and accessible human interaction verification. These are the conditions for [#328](https://github.com/enoqueJonas/tsa/issues/328), which remains OPEN. Source-level remediation and learner validation are separate evidence classes.
 
 ## Third short-reading corrective pass — Java and API foundations
 
@@ -135,4 +148,4 @@ The next focused branch `curriculum/quality-steward-java-api-foundations-v3` ret
 
 Three short API readings now have worked mechanism/negative/transfer sections: REST Assured protocol configuration versus independent business oracle, JSON structural validation versus consumer/domain compatibility, and service virtualization versus real provider compatibility. These explain that prior localhost authorization fixtures and simulated services do not establish actual Steward/IdP outcomes.
 
-The remaining shorter browser-state and remote-provider readings still require source review, and real learner proof is still unverified. The third pass is not ready to merge without full exact-head CI and desktop/mobile regression.
+The browser-state/local-remote/provider readings are now deepened in original source too, and a real Chromium fixture demonstrates safe non-authenticated localStorage/sessionStorage/BrowserContext isolation. The code-only branch passed all 19/19 jobs at `da45fd5`, but a merge with newer master documentation requires the new merge-commit head to run the full matrix again. Real learner and external product evidence remains UNVERIFIED.
