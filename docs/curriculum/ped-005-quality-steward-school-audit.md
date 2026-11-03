@@ -2,7 +2,7 @@
 
 **School:** Quality Steward (issue [#328](https://github.com/enoqueJonas/tsa/issues/328))
 **Parent:** [#318](https://github.com/enoqueJonas/tsa/issues/318)
-**Status:** **IN PROGRESS — initial whole-school source survey, targeted repairs committed; CI and independent learner validation not yet established.**
+**Status:** **SOURCE REWRITE COMPLETE FOR REVIEW — final matching-head CI/whole-school browser confirmation pending; learner validation and external integrations not established.**
 **Branch:** `curriculum/quality-steward-source-depth-v1`
 
 ## What counts as evidence
@@ -60,3 +60,31 @@ Follow the **twelve actual paths** below in the published learner order. A gener
 - Java source/object state is taught before typing, annotations and JUnit discovery. These prerequisite relationships are enforced in the source contract.
 - Original Automation Framework retries lesson now contains compilable Java: attempt 1 FAIL, attempt 2 PASS, final RECOVERED_UNSTABLE. A negative mutation removing history must cause nonzero assertion; exact learner program executes in a new CI step and critical rendered copyability check.
 - Final matching-head 19-job CI, real Steward API/DB/GitLab/browser test system, and independent novice transfer remain UNVERIFIED.
+
+## School-wide source checkpoint — final teaching pass (2026-11-03)
+
+The twelve paths have now received a deliberate source review. Each identified *systemic* deficit was repaired **at the actual authored lesson** rather than by a generated path-level wrapper. The following dispositions identify what was changed and what cannot yet be claimed.
+
+| Path | Source-level disposition and direct evidence | External/learner acceptance |
+|---|---|---|
+| 1. Quality Engineering | Original test-level/type reading now follows one forbidden-transfer risk through rule/unit, fake-backed component, real DB, API/read-after-denial and optional real browser boundaries. | Human test-level transfer remains unscored. |
+| 2. Test Analysis | Original boundary lesson publishes executable Python on 3–80 inclusive length, six known outcomes and an exclusive-bound mutation. `check-quality-boundary-value-source.mjs` extracts and runs the **displayed** program. Other original techniques include condition, partition, decision-table, transition, pairwise, exploration and independent oracle reasoning. | Real Steward rules must still be confirmed; synthetic name length is explicitly illustrative. |
+| 3. Java/JUnit | Java/JDK/source/bytecode and classes, constructors, `this`, independent state and static-state failure are separate new lessons before original type/object/JUnit instruction. Original 18 IDs retained and reordered; `check-quality-java-first-principles.mjs` compiles source programs and rejects filename/static-state mutants. | JUnit examples use available CI JDK; an independent novice still must demonstrate Java competence. |
+| 4. Unit/Component | Original unit-reading includes a Java four-case authorization oracle and reproducible `&&`/ `||` mutation; `check-quality-unit-oracle.mjs` compiles it and asserts nonzero failure. Doubles, isolation and real-DB boundaries retained. | Does not establish actual Steward authorization without a real API/DB. |
+| 5. API/Integration | Original HTTP reading now precedes raw-protocol milestone and REST Assured introduction. Runnable Java localhost server/client proves 403 and **read-after-denial unchanged state**; mutation that changes state despite 403 must fail. `check-quality-http-denial.mjs`. | Fixture header is not authentication. Actual Steward/IdP/PostgreSQL and async side effects remain UNVERIFIED. |
+| 6. Framework Engineering | Original retries reading now runs bounded attempts that retain first failure and differentiate RECOVERED_UNSTABLE from clean pass; removing attempt history must produce nonzero assertion. `check-quality-retry-evidence.mjs`. Existing distinct logging, framework boundaries, Allure and quarantine lessons retained. | Product-dependent JUnit/Allure/GitLab plumbing remains UNVERIFIED. |
+| 7. Browser & Environment | Genuine browser-surface decision now teaches DOM/frontend/API evidence boundary before its practice. Original Playwright runtime, contexts, locators, auto-waiting, navigation and state teach before Playwright implementation milestone. | No artificial Steward UI created. Real Playwright/browser product tests remain UNVERIFIED unless a genuine client exists. |
+| 8. Reusable Test Infrastructure | Original boundary reading now explains a versioned Maven library, two-consumer requirement, why a Steward transfer client must remain domain-specific, compatibility/semver, false-generalization negative and an independent StockLedger transfer. | No fake second product or premature tsa-test-core package is claimed. |
+| 9. Non-functional Quality | All **13 original conceptual topics** now receive distinct mechanisms, counterexamples and transfer in `quality-nonfunctional-source-depth.ts`. Original performance reading runs exact-source Python showing fast 503s falsify a latency-only gate and no-success latency is UNKNOWN; `check-quality-performance-population.mjs`. Workload model comes before tool choice. | Actual k6/Locust load, WCAG manual evaluation, real environment and approvals remain UNVERIFIED. |
+| 10. Containers & CI | All **22 original conceptual topics** now receive topic-specific runtime, security, networking, failure and transfer cases in `quality-ci-source-depth.ts`. Original gate reading adds Java six-case decision and fail-open missing-test mutation; `check-quality-ci-gate.mjs`. | CI simulations are distinct from live GitLab Runner/Testcontainers/secret controls; real execution remains UNVERIFIED. |
+| 11. Scheduled Quality | Split original broad path by introducing separate detailed GitLab workflow/job-source teaching and scheduled ownership/notification instruction before their practices. Version-grounded YAML distinguishes MR, default branch and schedule selection with retained JUnit artifacts; `check-quality-gitlab-selection.mjs` parses exact source and rejects a workflow schedule omission. | Real GitLab scheduled trigger and received notification remain UNVERIFIED. |
+| 12. Milestone | Added a separate Q-43/Q-44 evidence-to-decision reading with three false greens (403 with mutation, skipped mandatory check, fast errors), followed by an **unseen asynchronous outcome** practical and five-item scoring rubric. | The rubric is authored but **no uncoached learner has been scored**. |
+
+### Regression/acceptance evidence hierarchy
+
+1. **Source integrity:** original IDs preserved; generated 30-minute and 20-minute wrappers explicitly forbidden; learner-order prerequisite edges enforced in `check-resolved-practical-contracts.mjs`.
+2. **Source execution:** original Java/Python test and mutation programs, plus YAML static selection validation, run in the triggered full workflow; these establish their narrow **classroom/local** claims.
+3. **Scripted learner browser:** `check-school-learner-browser.py` traverses Quality and selected original teaching headings/copyable examples, and verifies synthetic IndexedDB re-entry ignores retired wrapper IDs. This is not manual editorial/learning review.
+4. **Human/external acceptance:** real independently executed Steward, PostgreSQL/Testcontainers, GitLab, Playwright, load/accessibility exercises and scored novice transfer remain **UNVERIFIED** until evidence is collected. No production-level claims arise from locally simulated examples.
+
+**Technical signoff gate:** full matching-head 19-job workflow, including production build, cross-school and Quality browser, must succeed **after the last code and ledger commit**. At that point this school's **instructional source lane** may be recorded as REMEDIATED; #328/#315 remain open for learner and external environment validation.
