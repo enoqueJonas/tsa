@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createRuntime, type LearningPath } from "@tsa/runtime-kernel";
+import { createRuntime, technicalStewardPaths, type LearningPath } from "@tsa/runtime-kernel";
+import { getActivityEvidence } from "../lib/progress-storage";
 import { ActivityEvidencePanel } from "./activity-evidence-panel";
 import { CurriculumSidebar } from "./curriculum-sidebar";
 import { PracticalContent, ReadingContent, ReflectionContent } from "./content";
 import { useAcademyProgress } from "./academy-progress-provider";
 
 const runtime = createRuntime();
+const technicalStewardPathIds = new Set(technicalStewardPaths.map((path) => path.id));
 
 interface LearningExperienceProps {
   path: LearningPath;
@@ -26,6 +28,7 @@ export function LearningExperience({
   const [session] = useState(() => runtime.start(path));
   const activePath = session.currentPath();
   const [restored, setRestored] = useState(false);
+  const [evidenceWarning, setEvidenceWarning] = useState<string | null>(null);
 
   const [lesson, setLesson] = useState(session.currentLesson());
   const [activity, setActivity] = useState(session.currentActivity());
@@ -78,9 +81,32 @@ export function LearningExperience({
     window.scrollTo(0, 0);
   }, [activity.id, restored]);
 
-  function primary() {
-    const id = session.currentActivity().id;
+  async function primary() {
+    const currentActivity = session.currentActivity();
+    const id = currentActivity.id;
     const done = session.completedActivityIds().includes(id);
+    // The shared runtime allows self-paced practical completion with no saved
+    // proof. Technical Steward's assessment-heavy paths require a persisted
+    // evidence record before new completion, not just a rendered checklist.
+    // This is a record-presence gate, NOT automated evaluation of competence.
+    if (!done && currentActivity.content.type === "practical" &&
+        technicalStewardPathIds.has(activePath.id)) {
+      try {
+        const saved = await getActivityEvidence(id);
+        const status = (saved as (typeof saved & {submissionStatus?: string}) | undefined)?.submissionStatus;
+        if (!saved?.notes.trim() || !saved?.outcome.trim() ||
+            (status !== "ready" && status !== "accepted")) {
+          setEvidenceWarning(
+            "Save evidence notes and an outcome in the workspace, set the submission to Ready, and then continue. This records your work; it does not mean an independent reviewer has validated it."
+          );
+          return;
+        }
+      } catch {
+        setEvidenceWarning("Saved evidence could not be read. Check local storage and save again before continuing.");
+        return;
+      }
+    }
+    setEvidenceWarning(null);
     if (!done && !session.completeCurrentActivity()) return;
     if (session.hasNext()) session.next();
     const current = sync();
@@ -90,6 +116,7 @@ export function LearningExperience({
 
   function select(id: string) {
     if (!session.goToActivity(id)) return;
+    setEvidenceWarning(null);
     const current = sync();
     persist();
     onActivityChange?.(current.id);
@@ -187,6 +214,11 @@ export function LearningExperience({
             </div>
           )}
 
+          {evidenceWarning && (
+            <p role="alert" className="mt-7 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
+              {evidenceWarning}
+            </p>
+          )}
           <div className="mt-12 flex items-center justify-between border-t border-zinc-200 pt-6">
             <span className="text-sm text-zinc-500">{done ? "Completed" : `${activity.estimatedMinutes} min`}</span>
             <button
