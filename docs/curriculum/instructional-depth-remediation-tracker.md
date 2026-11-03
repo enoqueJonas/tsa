@@ -12,6 +12,10 @@ This tracker is the source of truth for the remediation cycle. Do not mark a sch
 
 ## Quality Steward whole-school audit (2026-11-03)
 
+**Further source remediation:** [PR #347](https://github.com/enoqueJonas/tsa/pull/347) merged at `c95a6df6` with 19/19 CI. Fifth in-progress Quality source work develops executable Maven/Jupiter/Failsafe discovery and Python state-machine/independent-oracle fixtures in the **actual original readings**. These are isolated teaching models, not authenticated Steward/IdP/PostgreSQL or independent learner assessment. Issue #328 remains OPEN.
+
+
+
 **Further Quality source repair:** [PR #346](https://github.com/enoqueJonas/tsa/pull/346) is merged at `fd5191a0` (19/19 verification), and [draft PR #347](https://github.com/enoqueJonas/tsa/pull/347) revisits the next twelve shortest original readings in risk, isolation, coverage, API persistence, requirements, pairwise, browser support and JUnit extension/composition. Pairwise and Java source models have real executable negative tests. The original-source ledger separates this from external product and uncoached learner evidence, which remain open.
 
 

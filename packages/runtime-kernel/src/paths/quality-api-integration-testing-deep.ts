@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { qualityEvidenceDepthV5 } from "./quality-evidence-depth-v5";
 import { qualityOriginalDepth } from "./quality-original-remaining-depth";
 import { qualityApiDepth } from "./quality-api-depth-cases";
 import { qualityApiUncoveredDepth } from "./quality-api-uncovered-depth";
@@ -60,6 +61,20 @@ function rich(spec: Spec): Lesson {
             {type:"paragraph",text:originalDepth.failure},
             {type:"heading",id:`${spec.id}-independent-application`,text:"Independent application",level:2},
             {type:"paragraph",text:originalDepth.transfer},
+        );
+    }
+    const evidence = qualityEvidenceDepthV5[spec.id];
+    if (evidence) {
+        blocks.push(
+            {type:"heading",id:`${spec.id}-evidence-v5`,text:evidence.heading,level:2},
+            {type:"paragraph",text:evidence.mechanism},
+            {type:"heading",id:`${spec.id}-worked-v5`,text:"Worked mechanism and evidence",level:2},
+            {type:"paragraph",text:evidence.worked},
+            ...(evidence.code ? [{type:"code" as const,language:evidence.language ?? "text",code:evidence.code}] : []),
+            {type:"heading",id:`${spec.id}-negative-v5`,text:"The misleading green case",level:2},
+            {type:"paragraph",text:evidence.negative},
+            {type:"heading",id:`${spec.id}-transfer-v5`,text:"Independent transfer",level:2},
+            {type:"paragraph",text:evidence.transfer},
         );
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward integration checkpoint", body: "Use the smallest real boundary required by the risk. Do not mock away the very contract, database behavior, authentication rule or package compatibility you are trying to prove. Broad tests should add new evidence, not duplicate lower-level checks." });

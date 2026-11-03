@@ -13,6 +13,7 @@ on:
       - curriculum/quality-steward-short-readings-depth-v2
       - curriculum/quality-steward-java-api-foundations-v3
       - curriculum/quality-steward-original-depth-v4
+      - curriculum/quality-steward-state-oracles-junit-v5
       - integration/tsa-audits-master-20261102
       - master
   workflow_dispatch:
@@ -61,6 +62,10 @@ jobs:
         run: node scripts/check-quality-java-deep-lessons.mjs
       - name: Execute original Quality pairwise coverage and Java interface evidence negatives
         run: node scripts/check-quality-original-depth-v4.mjs
+      - name: Execute original source state machine and independent oracle with negative controls
+        run: node scripts/check-quality-state-oracles-v5.mjs
+      - name: Verify real Maven Surefire/Failsafe Jupiter discovery and policy mutation
+        run: node scripts/check-quality-junit-maven-lifecycle.mjs
       - name: Compile original Quality unit oracle and assert authorization mutant fails
         run: node scripts/check-quality-unit-oracle.mjs
       - name: Execute original Quality API localhost denial and forbidden-side-effect mutation

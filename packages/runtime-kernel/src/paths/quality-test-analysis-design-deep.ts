@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { qualityEvidenceDepthV5 } from "./quality-evidence-depth-v5";
 import { qualityOriginalDepth } from "./quality-original-remaining-depth";
 import { qualityTestDesignDepth } from "./quality-test-design-depth-cases";
 
@@ -39,6 +40,20 @@ function rich(spec: Spec): Lesson {
             {type:"paragraph",text:originalDepth.failure},
             {type:"heading",id:`${spec.id}-independent-application`,text:"Independent application",level:2},
             {type:"paragraph",text:originalDepth.transfer},
+        );
+    }
+    const evidence = qualityEvidenceDepthV5[spec.id];
+    if (evidence) {
+        blocks.push(
+            {type:"heading",id:`${spec.id}-evidence-v5`,text:evidence.heading,level:2},
+            {type:"paragraph",text:evidence.mechanism},
+            {type:"heading",id:`${spec.id}-worked-v5`,text:"Worked mechanism and evidence",level:2},
+            {type:"paragraph",text:evidence.worked},
+            ...(evidence.code ? [{type:"code" as const,language:evidence.language ?? "text",code:evidence.code}] : []),
+            {type:"heading",id:`${spec.id}-negative-v5`,text:"The misleading green case",level:2},
+            {type:"paragraph",text:evidence.negative},
+            {type:"heading",id:`${spec.id}-transfer-v5`,text:"Independent transfer",level:2},
+            {type:"paragraph",text:evidence.transfer},
         );
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward analysis checkpoint", body: "Use techniques to reveal meaningful behavior partitions, rules, transitions and interactions in the Steward domain. A technique is useful only when it exposes risk more clearly than ad-hoc case enumeration." });

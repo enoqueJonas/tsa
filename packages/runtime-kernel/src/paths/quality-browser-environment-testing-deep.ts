@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { qualityEvidenceDepthV5 } from "./quality-evidence-depth-v5";
 import { qualityOriginalDepth } from "./quality-original-remaining-depth";
 import { qualityBrowserDepth } from "./quality-browser-depth-cases";
 import { qualityBrowserUncoveredDepth } from "./quality-browser-uncovered-depth";
@@ -90,6 +91,20 @@ function rich(spec: Spec): Lesson {
             { type:"paragraph", text:expected[spec.id as keyof typeof expected] },
             { type:"heading", id:`${spec.id}-run-observable-negative`, text:"Prove the failure as well as the happy path", level:2 },
             { type:"paragraph", text:"Record event registration before action, actual event/result, an intentionally wrong or rejected case, and cleanup. From the repository root, run python3 scripts/check-quality-browser-event-lab.py with Chromium Playwright installed and the local HTTP server running to compare with the maintained executable proof. The Python check verifies this local fixture only; a real Playwright Java test and any actual product requirement remain separate lab deliverables." }
+        );
+    }
+    const evidence = qualityEvidenceDepthV5[spec.id];
+    if (evidence) {
+        blocks.push(
+            {type:"heading",id:`${spec.id}-evidence-v5`,text:evidence.heading,level:2},
+            {type:"paragraph",text:evidence.mechanism},
+            {type:"heading",id:`${spec.id}-worked-v5`,text:"Worked mechanism and evidence",level:2},
+            {type:"paragraph",text:evidence.worked},
+            ...(evidence.code ? [{type:"code" as const,language:evidence.language ?? "text",code:evidence.code}] : []),
+            {type:"heading",id:`${spec.id}-negative-v5`,text:"The misleading green case",level:2},
+            {type:"paragraph",text:evidence.negative},
+            {type:"heading",id:`${spec.id}-transfer-v5`,text:"Independent transfer",level:2},
+            {type:"paragraph",text:evidence.transfer},
         );
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward browser checkpoint", body: "Browser and environment tests must add evidence that service-layer tests cannot provide. Record the exact browser, operating system, viewport, environment and release identity for every meaningful failure." });
