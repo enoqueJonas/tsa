@@ -99,6 +99,49 @@ try {
     (activity.content.blocks ?? []).some((block) => block.type === "callout" && block.title === "Worked scenario"));
   assert.ok(riskWorked.length >= 9, `All 9 Technology Risk topics need source-rendered worked cases; found ${riskWorked.length}`);
 
+  // Original topic practices must actually carry an unseen case and falsifying
+  // assessor condition. This is stricter than checking list length or activity count.
+  const practiceMinimums = [
+    ["technical-leadership", 8],
+    ["engineering-governance", 7],
+    ["technology-strategy-capability", 6],
+    ["technology-risk", 9],
+    ["controls-compliance-assurance", 10],
+    ["architecture-governance", 8],
+    ["security-data-governance", 8],
+    ["change-service-governance", 8],
+    ["third-party-lifecycle-risk", 11],
+    ["technical-debt-health", 8],
+  ];
+  for (const [id, count] of practiceMinimums) {
+    const learnerPath = technicalStewardPaths.find((entry) => entry.id === id);
+    const originalTopicPracticals = learnerPath.lessons.flatMap((lesson) => lesson.activities)
+      .filter((activity) => activity.id.endsWith("-practice") && activity.content.type === "practical");
+    assert.equal(originalTopicPracticals.length, count,
+      `Every original ${id} topic must retain its own assessment, not be replaced with a generated lab`);
+    for (const activity of originalTopicPracticals) {
+      const c = activity.content;
+      assert.match(c.scenario, /INDEPENDENT|UNSEEN|NOVEL/i,
+        `Original assessment must contain a new case: ${activity.id}`);
+      assert.ok(c.completionCriteria.some((rule) => /reject|disqualif|false/i.test(rule)),
+        `Original assessment lacks a disqualifying failure oracle: ${activity.id}`);
+      assert.ok(c.instructions.length >= 3 && c.deliverables.length >= 3,
+        `Original assessment has insufficient concrete work products: ${activity.id}`);
+    }
+  }
+  for (const [id, expectedId, expectedMinutes] of [
+    ["technology-governance", "technology-governance-lab-map-steward-governance-responsibilities-001", 180],
+    ["handbook-and-standards", "handbook-and-standards-lab-build-the-steward-engineering-handbook-001", 390],
+  ]) {
+    const pathModel = technicalStewardPaths.find((entry) => entry.id === id);
+    const lab = pathModel.lessons.find((lesson) => lesson.activities.some((a) => a.id === expectedId));
+    assert.ok(lab, `Missing original multi-phase lab ${id}`);
+    assert.equal(lab.activities.length, 3, `Overbroad ${id} lab must have three independently assessed phases`);
+    assert.equal(lab.activities[0].id, expectedId, `Preserve existing ${id} lab progress ID`);
+    assert.equal(lab.activities.reduce((sum, a) => sum + a.estimatedMinutes, 0), expectedMinutes);
+    assert.ok(lab.activities.every((a) => a.content.type === "practical" &&
+      a.content.completionCriteria.length >= 3 && a.content.deliverables.length >= 3));
+  }
   const capstone = technicalStewardPaths.find((entry) => entry.id === "technical-stewardship-review");
   const phases = capstone.lessons.flatMap((lesson) => lesson.activities);
   assert.equal(phases.length, 4, "The 600-minute capstone must have four independently assessable evidence gates");
