@@ -41,7 +41,13 @@ export function PracticalContent({
                     The situation
                 </p>
                 <div className="mt-3 border-l-4 border-zinc-950 bg-zinc-50 px-6 py-5">
-                    <p className="text-lg leading-8 text-zinc-900"><InlineTechnicalText text={scenario} /></p>
+                    <div className="space-y-5">
+                        {scenario.split(/\\n\\s*\\n/).filter(Boolean).map((paragraph, index) => (
+                            <p key={index} className="text-lg leading-8 text-zinc-900">
+                                <InlineTechnicalText text={paragraph.trim()} />
+                            </p>
+                        ))}
+                    </div>
                 </div>
             </section>
 
@@ -66,9 +72,7 @@ export function PracticalContent({
                             </span>
                             <div className="min-w-0">
                                 <p className="text-lg leading-8 text-zinc-900"><InlineTechnicalText text={instruction} /></p>
-                                <p className="mt-2 text-sm text-zinc-500">
-                                    Preserve useful observations as you work. Evidence matters more than a polished final answer.
-                                </p>
+
                             </div>
                         </li>
                     ))}
