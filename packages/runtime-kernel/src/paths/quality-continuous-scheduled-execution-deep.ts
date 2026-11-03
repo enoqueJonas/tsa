@@ -1,11 +1,12 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { qualityGitlabEvidencePython, qualityGitlabEvidenceLearning } from "./quality-gitlab-evidence-v10";
 
 const gitlabCi: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
 const gitlabSchedules: LearningResource = { title: "GitLab — Scheduled pipelines", url: "https://docs.gitlab.com/ci/pipelines/schedules/" };
 const junit: LearningResource = { title: "JUnit 5 User Guide", url: "https://docs.junit.org/current/user-guide/" };
 
-const gitlabPipelineTeachingYaml = "# Teaching example; adapt project tests, pinned image and report paths.\nworkflow:\n  rules:\n    - if: '$CI_PIPELINE_SOURCE == \"merge_request_event\"'\n    - if: '$CI_PIPELINE_SOURCE == \"schedule\"'\n    - if: '$CI_PIPELINE_SOURCE == \"push\" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'\n    - when: never\nstages: [test]\nquality-fast:\n  stage: test\n  image: maven:3.9.9-eclipse-temurin-17\n  script:\n    - mvn -B test\n  rules:\n    - if: '$CI_PIPELINE_SOURCE == \"merge_request_event\"'\n    - if: '$CI_PIPELINE_SOURCE == \"push\" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'\n  artifacts:\n    when: always\n    reports:\n      junit: target/surefire-reports/TEST-*.xml\n    paths: [target/surefire-reports/]\nquality-scheduled:\n  stage: test\n  image: maven:3.9.9-eclipse-temurin-17\n  script:\n    - mvn -B verify\n  rules:\n    - if: '$CI_PIPELINE_SOURCE == \"schedule\"'\n  artifacts:\n    when: always\n    reports:\n      junit: target/surefire-reports/TEST-*.xml\n    paths: [target/surefire-reports/]";
+const gitlabPipelineTeachingYaml = "# Teaching example; adapt project tests, pinned image and report paths.\nworkflow:\n  rules:\n    - if: '$CI_PIPELINE_SOURCE == \"merge_request_event\"'\n    - if: '$CI_PIPELINE_SOURCE == \"schedule\"'\n    - if: '$CI_PIPELINE_SOURCE == \"push\" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'\n    - when: never\nstages: [test]\nquality-fast:\n  stage: test\n  image: maven:3.9.9-eclipse-temurin-17\n  script:\n    - mvn -B test\n  rules:\n    - if: '$CI_PIPELINE_SOURCE == \"merge_request_event\"'\n    - if: '$CI_PIPELINE_SOURCE == \"push\" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'\n  artifacts:\n    when: always\n    reports:\n      junit: target/surefire-reports/TEST-*.xml\n    paths: [target/surefire-reports/]\nquality-scheduled:\n  stage: test\n  image: maven:3.9.9-eclipse-temurin-17\n  script:\n    - mvn -B verify\n  rules:\n    - if: '$CI_PIPELINE_SOURCE == \"schedule\"'\n  artifacts:\n    when: always\n    reports:\n      junit:\n        - target/surefire-reports/TEST-*.xml\n        - target/failsafe-reports/TEST-*.xml\n    paths: [target/surefire-reports/, target/failsafe-reports/]";
 
 const readingBlocks: LessonBlock[] = [
     { type: "paragraph", text: "A production test-automation system does not wait for a tester to remember to run it. It connects execution cadence to engineering decisions: change-triggered checks provide fast feedback on pushes and merge requests, while scheduled regression searches more broadly for integration, environment and accumulated-regression failures." },
@@ -20,6 +21,11 @@ const readingBlocks: LessonBlock[] = [
     { type: "paragraph", text: "A red build hidden inside GitLab CI/CD is incomplete feedback. The pipeline must publish durable reports and useful failure diagnostics, then notify an appropriate learner-owned channel so a failed automated run becomes an actionable event." },
     { type: "callout", tone: "warning", title: "Do not create notification noise", body: "Notify on actionable failed or unstable runs with enough identity to triage them. Do not send success spam or hide repeated failures behind automatic reruns." },
     { type: "callout", tone: "steward", title: "Mandatory operational proof", body: "Quality Steward is complete only after the learner proves both an SCM-triggered run and a GitLab scheduled-pipeline run, publishes reports/artifacts, deliberately causes a test failure and receives the configured failure notification." },
+    ...qualityGitlabEvidenceLearning.scheduled.flatMap((part, i): LessonBlock[] => [
+        {type:"heading",id:`quality-gitlab-real-evidence-${i}`,text:part.heading,level:2},
+        {type:"paragraph",text:part.body},
+    ]),
+    {type:"code",language:"python",code:qualityGitlabEvidencePython},
     { type: "resources", title: "Continue learning", resources: [gitlabCi, gitlabSchedules, junit] },
 ];
 

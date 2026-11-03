@@ -1,6 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { qualityCiCases } from "./quality-ci-source-depth";
+import { qualityGitlabEvidenceLearning } from "./quality-gitlab-evidence-v10";
 
 const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
 const junit: LearningResource = { title: "JUnit 5 User Guide", url: "https://docs.junit.org/current/user-guide/" };
@@ -95,6 +96,18 @@ function lessonFrom(spec: Spec): Lesson {
         { type:"heading", id:`${spec.id}-independent-check`, text:"Independent application", level:2 },
         { type:"paragraph", text:caseStudy.transfer },
     );
+
+    const artifactDetails = spec.id === "reports-artifacts"
+        ? qualityGitlabEvidenceLearning["reports-artifacts"]
+        : spec.id === "test-selection"
+        ? qualityGitlabEvidenceLearning["test-selection"]
+        : null;
+    if (artifactDetails) for (const [i,part] of artifactDetails.entries()) {
+        blocks.push(
+            {type:"heading",id:`${spec.id}-evidence-oracle-${i}`,text:part.heading,level:2},
+            {type:"paragraph",text:part.body}
+        );
+    }
 
     if (spec.code) blocks.push({ type: "code", language: spec.language ?? "text", code: spec.code });
     if (spec.id === "quality-gates") blocks.push(
