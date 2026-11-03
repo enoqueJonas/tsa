@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { vaultLifecycleBlocks } from "./security-vault-lifecycle-proof";
 
 const vaultDocs: LearningResource = { title: "HashiCorp Vault Documentation", url: "https://developer.hashicorp.com/vault/docs" };
 const databaseEngine: LearningResource = { title: "Vault Database Secrets Engine", url: "https://developer.hashicorp.com/vault/docs/secrets/databases" };
@@ -29,6 +30,7 @@ const blocks: LessonBlock[] = [
         "Vault availability, audit, unseal/recovery and backup responsibilities become part of operating the platform."
     ] },
     { type: "callout", tone: "steward", title: "Scenario-forced implementation", body: "The learning objective is not to install Vault because enterprises use it. Steward now has a concrete database-credential lifecycle problem that dynamic credentials solve. Architect may later retain, simplify or replace the platform after evaluating its operational cost." },
+    ...vaultLifecycleBlocks,
     { type: "resources", title: "Continue learning", resources: [productionHardening, initializeDocs, auditDocs, policyDocs, authDocs, databaseEngine, leaseDocs, healthDocs] },
 ];
 

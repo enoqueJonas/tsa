@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { linuxSecurityDepthById } from "./security-host-permissions-proof";
 
 const rhelUsers: LearningResource = { title: "RHEL 9 — Managing Users and Groups", url: "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/managing-users-and-groups_configuring-basic-system-settings", kind: "documentation" };
 const sudoers: LearningResource = { title: "sudoers manual", url: "https://www.sudo.ws/docs/man/sudoers.man/", kind: "documentation" };
@@ -48,6 +49,8 @@ function blocksFor(spec: Spec): LessonBlock[] {
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
     ];
+
+    blocks.push(...(linuxSecurityDepthById[spec.id] ?? []));
 
     if (spec.warning) {
         blocks.push({ type: "callout", tone: "warning", title: "Operational risk", body: spec.warning });

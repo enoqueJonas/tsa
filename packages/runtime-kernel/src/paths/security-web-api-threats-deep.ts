@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { webAuthorizationDepthById } from "./security-http-object-auth-proof";
 
 const owaspTop10: LearningResource = { title: "OWASP Top 10", url: "https://owasp.org/www-project-top-ten/" };
 const owaspApiTop10: LearningResource = { title: "OWASP API Security Top 10", url: "https://owasp.org/API-Security/" };
@@ -63,6 +64,8 @@ function blocksFor(spec: Spec): LessonBlock[] {
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
     ];
+
+    blocks.push(...(webAuthorizationDepthById[spec.id] ?? []));
 
     if (spec.warning) {
         blocks.push({ type: "callout", tone: "warning", title: "Safety boundary", body: spec.warning });

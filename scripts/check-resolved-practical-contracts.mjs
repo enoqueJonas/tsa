@@ -194,27 +194,53 @@ if (!quality || quality.paths.length !== 12) {
     }
   }
 }
+// These three compact PKI decision exercises intentionally normalize to a
+// single long reasoning instruction, not a multi-step executable lab. Keep
+// explicit artifact requirements while reserving the stricter contract for labs.
+const authoredSecurityDecisionExerciseIds = new Set([
+  "pki-verification-model-trace-the-future-steward-trust-decision",
+  "pki-trust-model-trust-responsibility-map",
+  "pki-vault-integration-pki-ownership-adr",
+]);
 const security = journey.schools.find((school) => school.id === "security-steward");
 if (!security || security.paths.length !== 14) {
   problems.push("Security Steward must expose 14 learning paths");
 } else {
   for (const path of security.paths) {
-    const first = path.lessons?.[0];
-    if (first?.id !== `${path.id}-security-orientation` ||
-        first.activities?.[0]?.content?.type !== "reading") {
-      problems.push(`Security path lacks the worked trust-boundary orientation: ${path.id}`);
+    if (!path.lessons?.length ||
+        path.lessons.some(lesson => lesson.id.endsWith("-security-orientation"))) {
+      problems.push(`Security path must retain original authored lesson IDs only: ${path.id}`);
+      continue;
+    }
+    const activities = path.lessons.flatMap(lesson => lesson.activities);
+    if (!activities.some(a => a.content.type === "reading") ||
+        !activities.some(a => a.content.type === "practical")) {
+      problems.push(`Security path lacks real prerequisite reading and practical: ${path.id}`);
+    }
+    if (activities.some(a => a.title.startsWith("Prepare securely:"))) {
+      problems.push(`Security synthetic preparation obscures actual source: ${path.id}`);
     }
     for (const lesson of path.lessons) {
-      lesson.activities.forEach((activity, index) => {
-        if (activity.content.type !== "practical") return;
-        const intro = lesson.activities[index - 1];
-        if (intro?.content?.type !== "reading" ||
-            !intro.title.startsWith("Prepare securely:") ||
-            !intro.content.body.includes("Negative path and recovery:") ||
-            !intro.content.body.includes("Required evidence:")) {
-          problems.push(`Security lab missing prerequisite security preparation: ${path.id}/${lesson.id}/${activity.id}`);
+      for (const activity of lesson.activities) {
+        const task = activity.content;
+        if (task.type !== "practical") continue;
+        if (authoredSecurityDecisionExerciseIds.has(activity.id)) {
+          if (!task.objective || !task.scenario ||
+              !Array.isArray(task.instructions) || task.instructions.length !== 1 ||
+              typeof task.instructions[0] !== "string" || task.instructions[0].length < 100 ||
+              !Array.isArray(task.deliverables) || task.deliverables.length !== 1 ||
+              !Array.isArray(task.completionCriteria) || task.completionCriteria.length !== 1) {
+            problems.push(`Security compact PKI decision exercise lacks an evidence artifact: ${path.id}/${lesson.id}/${activity.id}`);
+          }
+          continue;
         }
-      });
+        if (!task.objective || !task.scenario ||
+            !Array.isArray(task.instructions) || task.instructions.length < 2 ||
+            !Array.isArray(task.deliverables) || task.deliverables.length < 1 ||
+            !Array.isArray(task.completionCriteria) || task.completionCriteria.length < 1) {
+          problems.push(`Security original practical missing evidence or safe completion contract: ${path.id}/${lesson.id}/${activity.id}`);
+        }
+      }
     }
   }
 }

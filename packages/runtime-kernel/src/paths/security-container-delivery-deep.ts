@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { containerTopicBlocks } from "./security-container-delivery-source-depth";
 
 const owaspSupplyChain: LearningResource = { title: "OWASP Software Supply Chain Security", url: "https://owasp.org/www-project-software-supply-chain-security/" };
 const sigstore: LearningResource = { title: "Sigstore Documentation", url: "https://docs.sigstore.dev/" };
@@ -189,13 +190,13 @@ const guidance: Record<Topic, Guidance> = {
 };
 
 function blocksFor(topic: Topic, item: Guidance): LessonBlock[] {
+    const slug = topic.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     return [
         { type: "paragraph", text: item.intro },
-        { type: "heading", id: `${topic.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-principles`, text: "Security reasoning", level: 2 },
-        { type: "list", items: ["Identify the artifact, identity or trust boundary involved.", "Distinguish verified evidence from assumed trust.", "Reduce privilege and ambiguity before adding more tooling.", "Retest delivery behavior after each security change."] },
-        { type: "heading", id: `${topic.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-steward`, text: "Apply it to Steward", level: 2 },
+        ...containerTopicBlocks(topic, slug),
+        { type: "heading", id: `${slug}-steward-context`, text: "Apply it to Steward", level: 2 },
         { type: "paragraph", text: item.steward },
-        { type: "callout", tone: "steward", title: "Stewardship checkpoint", body: "The trusted path is source → CI identity → build artifact → internal repository/registry → verification → deployment/consumption. Every lesson should make at least one trust decision in that path explicit and evidence-backed." },
+        { type: "callout", tone: "steward", title: "Stewardship checkpoint", body: "The trusted path is source → CI identity → build artifact → internal repository/registry → verification → deployment/consumption. Prove each relevant identity, artifact and failure boundary independently." },
         { type: "resources", title: "Continue learning", resources: resourcesByDeliveryTopic[topic] ?? [owaspSupplyChain] },
     ];
 }
