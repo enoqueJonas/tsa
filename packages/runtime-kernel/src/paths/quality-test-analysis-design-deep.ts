@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { qualityPartitionsAndRetryCases } from "./quality-partitions-retry-v8";
 import { qualityEvidenceDepthV5 } from "./quality-evidence-depth-v5";
 import { qualityOriginalDepth } from "./quality-original-remaining-depth";
 import { qualityTestDesignDepth } from "./quality-test-design-depth-cases";
@@ -54,6 +55,20 @@ function rich(spec: Spec): Lesson {
             {type:"paragraph",text:evidence.negative},
             {type:"heading",id:`${spec.id}-transfer-v5`,text:"Independent transfer",level:2},
             {type:"paragraph",text:evidence.transfer},
+        );
+    }
+    const deeperContract = qualityPartitionsAndRetryCases[spec.id as keyof typeof qualityPartitionsAndRetryCases];
+    if (deeperContract) {
+        blocks.push(
+            {type:"heading",id:`${spec.id}-behavior-partitions`,text:deeperContract.heading,level:2},
+            {type:"paragraph",text:deeperContract.mechanism},
+            {type:"heading",id:`${spec.id}-sql-worked-example`,text:"Run and inspect an independent example",level:2},
+            {type:"paragraph",text:deeperContract.worked},
+            {type:"code",language:"python",code:deeperContract.code},
+            {type:"heading",id:`${spec.id}-false-green`,text:"A failure that a weak test misses",level:2},
+            {type:"paragraph",text:deeperContract.negative},
+            {type:"heading",id:`${spec.id}-unseen-transfer`,text:"Apply without a model answer",level:2},
+            {type:"paragraph",text:deeperContract.transfer},
         );
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward analysis checkpoint", body: "Use techniques to reveal meaningful behavior partitions, rules, transitions and interactions in the Steward domain. A technique is useful only when it exposes risk more clearly than ad-hoc case enumeration." });
