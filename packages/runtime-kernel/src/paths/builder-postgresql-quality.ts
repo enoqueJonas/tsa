@@ -19,18 +19,17 @@ const practices: Record<string, PracticeSpec> = {
         completionCriteria: ["The learner has reproduced persistence across separate Python processes.", "The negative JSON corruption is observed and the recovery documented.", "The limits of the exercise (no concurrency or crash safety) are not presented as verified.", "A database is chosen for explicit Steward requirements rather than assumed universally necessary."]
     },
     "relational-data-and-postgresql-postgresql-first-connection-practice": {
-        objective: "Prove an actual PostgreSQL lab connection and temporary-table lifecycle before the relational schema lab.",
-        scenario: "A following lesson asks for CREATE TABLE, but a learner must first have a server, database, role and client. Establish and diagnose those prerequisites explicitly.",
+        objective: "Connect to a running PostgreSQL server, use psql and locate failures without relying on a Steward project.",
+        scenario: "A new librarian has been given access to a database server but does not know whether psql is the client, whether the server is running, or which database the connection is using.",
         instructions: [
-            "Use the official PostgreSQL setup guide for your OS or an authorized course database. Isolate learning from any production or shared database.",
-            "Prove the psql client version and database connection separately; do not confuse pg_isready with successful authentication.",
-            "Record the selected database and role using SELECT current_database(), current_user, 2 + 2 with expected result 4.",
-            "Save and run first_session.sql using psql -X -v ON_ERROR_STOP=1 -f first_session.sql; compare both result sets with expected outputs.",
-            "In a new psql session, deliberately query tsa_session_probe and capture the missing-relation result to show session-only TEMP table lifetime.",
-            "Document environment/permissions blockers rather than inventing a successful SQL execution or exposing credentials."
+            "Choose the disposable Docker lab from the reading or an authorized training server; record the route, host, port, role and database without publishing a password.",
+            "In the shell, check that the client exists; then connect to the postgres maintenance database. Record what succeeded and what the server returned.",
+            "Inside psql, run \\conninfo, \\l and SELECT current_database(), current_user, 2+2. Explain which are psql commands and which are SQL.",
+            "Exit with \\q, start a new client session and explain why the server continued running.",
+            "Attempt a connection to a deliberately nonexistent database (a disposable lab only); classify the error. Separately explain what an unavailable client, refused transport, bad credentials or SQL error would mean."
         ],
-        deliverables: ["Environment/role/database setup record without secrets", "Successful connection and query output or explicit blocker", "First SQL file transcript", "Expected second-session TEMP-table failure", "Five-boundary diagnostic tree"],
-        completionCriteria: ["The next lab has a real accessible PostgreSQL database or an honest blocked-state record.", "The learner distinguishes client, server, database, schema and role.", "SQL and psql meta-commands are correctly separated.", "No real PostgreSQL execution is claimed solely from static CI tests."]
+        deliverables: ["Connection diagram labeling client/server/database/role", "A successful authenticated SELECT result or an explicit access blocker", "psql navigation transcript without secrets", "Error-classification table with one actual negative observation"],
+        completionCriteria: ["The learner can state which program actually runs SQL.", "A real PostgreSQL session was established or access was honestly marked blocked.", "The learner can identify shell, psql and SQL commands separately.", "No database schema or temporary-table knowledge is required to complete this practice."]
     },
     "relational-data-and-postgresql-relational-model-practice": {
         objective: "Understand Team, Service and relationship semantics through a deliberately temporary PostgreSQL example before creating the permanent Steward schema.",
