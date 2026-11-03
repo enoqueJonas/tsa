@@ -120,7 +120,7 @@ function practical(id: string, title: string, objective: string, instructions: s
     };
 }
 
-export const technologyGovernanceDeepLessons: Lesson[] = [
+const originalTechnologyGovernanceLessons: Lesson[] = [
     reading("technology-governance-business-technology-alignment", "Business and Technology Alignment", `Technology governance begins with a simple question: why does this technology exist for the organization? Alignment means connecting technology decisions to business outcomes, stakeholder needs, risk appetite and operational reality. It does not mean accepting every business request unchanged. A Technical Steward translates between business intent and engineering consequences.\n\nFor Steward, alignment should trace from stakeholder outcomes to service capabilities, architecture characteristics, controls and measures. A request for faster onboarding, for example, may imply availability, usability, security and delivery-speed requirements that compete with each other. The governance task is to make those tensions explicit and ensure decisions remain connected to organizational value rather than local technical preference.\n\nA useful alignment record identifies the business outcome, affected stakeholders, technology capability, decision owner, measurable success signal, material risks and assumptions. If an engineering initiative cannot explain what organizational outcome it supports, its priority should be challenged.`),
     reading("technology-governance-value-delivery", "Value Delivery", `Technology value is not the amount of software produced. Value is the useful outcome achieved relative to cost, risk and opportunity. A feature that is delivered but rarely used, a platform that costs more to operate than the problem warrants, or a control that slows delivery without meaningful risk reduction can all destroy value.\n\nValue delivery therefore requires explicit expected benefits, observable outcomes and review after implementation. Technical Stewards should distinguish outputs such as releases, dashboards and policies from outcomes such as reduced incident frequency, faster recovery, safer releases, lower lead time or more reliable dependency consumption.\n\nFor Steward, value evaluation should reuse evidence already produced across delivery, quality, security and reliability. Governance should ask whether a proposed investment changes an outcome that matters and whether the expected benefit remains plausible after deployment.`),
     reading("technology-governance-resource-stewardship", "Resource Stewardship", `Resource stewardship means using finite engineering capacity, infrastructure, licenses, cloud spend, support attention and specialist skills responsibly. It is broader than cost cutting. Under-investing in maintenance, observability or security can create future cost and risk just as surely as over-engineering can waste current capacity.\n\nA Technical Steward should expose trade-offs: what work is displaced, what recurring operational burden is created, which skills are required, and whether the organization can sustainably own the chosen technology. Build-versus-buy, cloud-service adoption, retained internal platforms such as Nexus, and shared packages such as steward-common when they actually exist, all carry long-term ownership costs.\n\nGood stewardship considers total lifecycle cost: acquisition, implementation, migration, operations, support, security, upgrades, exit and retirement.`),
@@ -163,3 +163,65 @@ export const technologyGovernanceDeepLessons: Lesson[] = [
         ]
     ),
 ];
+
+/**
+ * The 180-minute governance lab originally combined business mapping, retained
+ * platform ownership, framework choices and metric review in one completion.
+ * Make three separately inspectable results; preserve original lab ID in phase 1.
+ */
+const governanceLab = originalTechnologyGovernanceLessons.find((entry) =>
+  entry.id === "technology-governance-lab-map-steward-governance-responsibilities");
+if (!governanceLab) throw new Error("Technology governance lab not found");
+const governanceOriginal = governanceLab.activities[0]!;
+if (governanceOriginal.content.type !== "practical") throw new Error("Technology governance lab must be practical");
+const governanceInput = governanceOriginal.content;
+function governancePhase(id:string,title:string,minutes:number,objective:string,
+  from:number,to:number,deliverables:string[],completionCriteria:string[]) {
+  return {
+    ...governanceOriginal, id, title, estimatedMinutes:minutes,
+    content: {
+      ...governanceInput, objective,
+      instructions:governanceInput.instructions.slice(from,to),
+      deliverables,completionCriteria,
+    },
+  };
+}
+export const technologyGovernanceDeepLessons: Lesson[] = originalTechnologyGovernanceLessons.map((lesson) =>
+  lesson.id !== governanceLab.id ? lesson : {
+    ...lesson,
+    activities: [
+      governancePhase(
+        governanceOriginal.id, "Phase 1 — Map organizational outcomes to actual estate",
+        60, "Identify one real outcome and the current capabilities and owners needed for it, without treating classroom examples as active infrastructure.",
+        0, 3,
+        ["Stakeholder-to-capability trace with dated evidence cutoff",
+         "Active/retired/proposed technology state and business ownership map",
+         "Decision-rights map with at least one explicitly unresolved authority"],
+        ["The map traces an organizational outcome to a measured or explicitly unknown service signal.",
+         "The baseline excludes components the learner has not actually adopted.",
+         "A proposed responsibility can be distinguished from a delegated authority; unsupported approvals remain UNKNOWN."],
+      ),
+      governancePhase(
+        `${governanceOriginal.id}-phase-2`,
+        "Phase 2 — Choose relevant oversight without framework theater",
+        60, "Use the smallest appropriate framework and governance roles to resolve an actual cross-team decision, including a deliberately rejected control or forum.",
+        3, 5,
+        ["Decision-rights and consultation matrix", "Framework purpose-to-evidence map", "One rejection with cost/risk rationale"],
+        ["The chosen concept addresses a specific conflict; memorizing COBIT, ITIL, ISO or NIST names is insufficient.",
+         "The learner explains why an irrelevant framework concept or duplicated review is excluded.",
+         "Business risk acceptance is not silently attributed to a technology implementer."],
+      ),
+      governancePhase(
+        `${governanceOriginal.id}-phase-3`,
+        "Phase 3 — Test the scorecard and choose under conflicting evidence",
+        60, "Make an accountable investment/oversight decision in response to conflicting service signals, and define an evidence-gated next review.",
+        5, 8,
+        ["Scorecard with source, denominator, owner, action threshold and misleading-signal countercheck",
+         "Explicit trade-off table with retain/current-state option",
+         "Governance-gap decision and assigned follow-up evidence"],
+        ["A green KPI cannot pass if its denominator excludes critical failed tests or user outcomes.",
+         "At least one plausible investment is rejected and can be reconsidered against new evidence.",
+         "Owners, decision authority and monitoring response are explicit; fake precision or decorative metrics fail."],
+      ),
+    ],
+  });
