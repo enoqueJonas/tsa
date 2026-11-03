@@ -76,7 +76,7 @@ function lesson(id: string, title: string, body: string, instructions: string[])
   ] : []),
   {type:"resources" as const,title:"Governance reference",resources:resourcesBySecData[id] ?? [nistCsf]}
 ] } },
-    { id: `security-data-governance-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward governance.`, scenario, instructions, deliverables, completionCriteria: criteria } },
+    { id: `security-data-governance-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward governance.`, scenario:`${scenario}\n\nINDEPENDENT SECURITY/DATA CASE: ${securityGovernanceCases[id].transfer}`,instructions:[...instructions,"Name the protected data/resource and authorization authority, a permitted action, a denied action, after-state evidence and which retention or policy assumptions still require actual approval."],deliverables:[...deliverables,"Case-specific authorization/policy matrix and denied-effect oracle"],completionCriteria:[...criteria,`Reject the submission if this apparently reasonable failure persists: ${securityGovernanceCases[id].failure}`,"No signed-in-only check is accepted as resource authorization proof; policy and legal retention durations must not be fabricated.","The proposed denial leaves the protected state unchanged and has independent observable evidence."] } },
   ] };
 }
 
