@@ -87,7 +87,7 @@ try {
   assert.match(joinExample, /LEFT JOIN join_book/);
   assert.match(crossExample, /CROSS JOIN join_book/);
   assert.match(countSetup, /CREATE TEMP TABLE count_writer/);
-  assert.match(countExample, /COUNT\\(b\\.id\\)/);
+  assert.ok(countExample.includes("COUNT(b.id)"));
   assert.match(countExample, /GROUP BY/);
   const seed = publishedCode("steward_schema_seed.sql — complete one-time PostgreSQL teaching fixture");
   const verification = publishedCode("verify_steward_seed.sql — three result shapes the learner can predict");
