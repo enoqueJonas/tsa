@@ -44,6 +44,16 @@ export function assessReleases(packet) {
     } else if (release.failedMandatoryTests > 0) {
       reasons.push("MANDATORY_TEST_FAILED");
     }
+    if (typeof release.testRunId !== "string" || !release.testRunId.trim()) {
+      reasons.push("MANDATORY_TEST_RUN_PROVENANCE_MISSING");
+    }
+    if (typeof release.deniedStateEvidenceId !== "string" || !release.deniedStateEvidenceId.trim()) {
+      reasons.push("DENIED_AFTER_STATE_EVIDENCE_MISSING");
+    }
+    if (typeof release.observedAt !== "string" || !/^\\d{4}-\\d{2}-\\d{2}T/.test(release.observedAt)
+      || !Number.isFinite(Date.parse(release.observedAt))) {
+      reasons.push("EVIDENCE_TIMESTAMP_MISSING_OR_INVALID");
+    }
     if (release.deniedAfterStateVerified !== true) {
       reasons.push("DENIED_AFTER_STATE_UNVERIFIED");
     }
@@ -58,7 +68,7 @@ export function assessReleases(packet) {
     verdict: findings.length ? "HOLD" : "PASS_SYNTHETIC_EVIDENCE_GATE",
     findings,
     limitations: [
-      "A PASS only evaluates fields in this fictional dataset; it does not prove live security or approve production release.",
+      "A PASS only evaluates fields in this fictional dataset; invented testRunId and evidence IDs are NOT verified source documents, live security tests or production approval.",
       "Missing evidence is not proof of a failure event and cannot be counted as a passing control.",
     ],
   };
