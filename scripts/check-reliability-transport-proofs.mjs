@@ -28,3 +28,9 @@ runExactSource(root + "reliability-trace-transport-proof.ts",
 runExactSource(root + "reliability-alert-delivery-proof.ts",
   "receiverLoopbackPython", /firing_delivered=true receiver_503_observed=true resolved_after_recovery=true/);
 console.log("PASS original reader two-hop trace context and webhook 503/recovery HTTP exercises; Tempo/Alertmanager runtime UNVERIFIED.");
+
+const recovery = readFileSync(root + "reliability-data-protection-disaster-recovery-deep.ts", "utf8");
+assert.ok(recovery.includes("...(recoverySourceProofById[spec.id] ?? [])"), "Source restore lessons lost isolated integrity drill");
+runExactSource(root + "reliability-restore-integrity-proof.ts",
+  "restoreIntegrityPython", /restore_hash_verified=true tampered_backup_rejected=true/);
+console.log("PASS isolated exact-source file restore and deliberate corruption; real PostgreSQL RPO and RTO UNVERIFIED.");
