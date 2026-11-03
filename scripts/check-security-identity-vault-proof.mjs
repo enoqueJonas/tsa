@@ -66,3 +66,14 @@ assert.ifError(permissionsRun.error);
 assert.equal(permissionsRun.status,0,"Unix permission proof failed: "+permissionsRun.stderr);
 assert.match(permissionsRun.stdout,/private_file_0600=true group_or_world_readable_0644_rejected=true/);
 console.log("PASS original Linux secret-file mode and world-readable negative proof; real SSH/firewall unverified.");
+
+const migration = readFileSync(root + "security-secure-file-transfer-migration-deep.ts","utf8");
+const milestone = readFileSync(root + "security-steward-milestone-deep.ts","utf8");
+assert.ok(migration.includes("...sftpTrustBlocks"),"SFTP trust/byte-integrity instructions must appear before original lab");
+assert.ok(milestone.includes("security-steward-milestone-assessment-transfer"),"The milestone must require an adversarial independent transfer check");
+const parity = exactProgram("security-sftp-transfer-proof.ts","sftpParityPython");
+const parityRun=spawnSync("python3",["-c",parity],{encoding:"utf8",timeout:10000});
+assert.ifError(parityRun.error);
+assert.equal(parityRun.status,0,"SFTP local integrity example failed: "+parityRun.stderr);
+assert.match(parityRun.stdout,/synthetic_parity_verified=true tampered_staging_rejected=true/);
+console.log("PASS exact SFTP local byte parity/tamper negative; real SSH host trust/FTP decommission UNVERIFIED.");
