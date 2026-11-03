@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { federationDepthById } from "./security-federation-source-proof";
 
 const keycloakDocs: LearningResource = { title: "Keycloak Server Administration", url: "https://www.keycloak.org/docs/latest/server_admin/" };
 const openLdapDocs: LearningResource = { title: "OpenLDAP Administrator's Guide", url: "https://www.openldap.org/doc/admin26/" };
@@ -31,6 +32,7 @@ interface Spec {
 function lesson(spec: Spec): Lesson {
     const blocks: LessonBlock[] = [
         { type: "paragraph", text: spec.intro },
+        ...(federationDepthById[spec.id] ?? []),
         { type: "callout", tone: "steward", title: "Identity ownership boundary", body: "The authoritative workforce directory selected in Platform Builder (AD DS or the bounded OpenLDAP path for the relevant scenario) owns workforce identity data; Keycloak becomes Steward's authentication/federation boundary; Steward still owns domain authorization such as service ownership and governance permissions. Do not collapse these responsibilities or run two competing workforce authorities." },
         { type: "resources", title: "Continue learning", resources: resourcesByFederationTopic[spec.id] ?? [keycloakDocs, ldapRfc] },
     ];
