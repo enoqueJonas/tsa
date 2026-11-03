@@ -146,8 +146,8 @@ with TemporaryDirectory(prefix="tsa-quality-events-") as tmp, sync_playwright() 
     bad_report = Path(tmp) / "wrong-owner.csv"
     wrong_download.save_as(bad_report)
     actual = bad_report.read_text(encoding="utf-8")
-    expected = "record_id,owner\\n42,team7\\n"
-    assert actual == "record_id,owner\\n42,team9\\n"
+    expected = "record_id,owner\n42,team7\n"
+    assert actual == "record_id,owner\n42,team9\n"
     assert actual != expected, "The teaching defect should not falsely pass the correct-owner oracle"
     evidence_dir = Path("artifacts/cross-school-learner")
     evidence_dir.mkdir(parents=True, exist_ok=True)
@@ -159,7 +159,7 @@ with TemporaryDirectory(prefix="tsa-quality-events-") as tmp, sync_playwright() 
         "observed_csv": actual,
         "impact": "Downloaded record 42 attributes ownership to the wrong team",
         "root_cause": "unverified hypothesis - not included",
-    }, indent=2) + "\\n", encoding="utf-8")
+    }, indent=2) + "\n", encoding="utf-8")
     (evidence_dir / "quality-defect-observed.csv").write_text(actual, encoding="utf-8")
     defect_page.screenshot(path=str(evidence_dir / "quality-defect-page.png"), full_page=True)
     defect_page.close()
