@@ -7,11 +7,22 @@ import { spawnSync } from "node:child_process";
 const source = fs.readFileSync("packages/runtime-kernel/src/paths/builder-postgresql-deep.ts", "utf8");
 const marker = (id) => source.indexOf(`"id": "${id}"`);
 const persistence = marker("from-memory-to-durable-data");
+const system = marker("postgresql-what-it-is");
 const connection = marker("postgresql-first-connection");
+const databases = marker("postgresql-databases-and-schemas");
+const tables = marker("postgresql-tables-and-rows");
+const temporary = marker("postgresql-temporary-tables");
 const relational = source.indexOf('id: "relational-model"');
 const fixture = marker("steward-schema-and-seed");
 const crud = source.indexOf('id: "sql-crud"');
-assert.ok(persistence > 0 && connection > persistence && relational > connection && fixture > relational && crud > fixture, "The learner order must be persistence → PostgreSQL connection → relational model → fixture → CRUD");
+assert.ok(
+  persistence > 0 && system > persistence && connection > system &&
+  databases > connection && tables > databases && temporary > tables &&
+  relational > temporary && fixture > relational && crud > fixture,
+  "The learner order must be persistence → DBMS and server → psql → databases/schemas → tables → temporary tables → relational model → fixture → CRUD"
+);
+assert.doesNotMatch(source, /Two programs, one protocol boundary|Establish prerequisites without inventing credentials/);
+assert.ok(source.includes("schema_name.table_name") || source.includes("library.books"), "Qualified tables must be explained");
 
 function publishedCode(caption) {
   const anchor = source.indexOf(`"caption": "${caption}"`);
@@ -43,6 +54,18 @@ try {
   assert.equal(fs.readFileSync(path.join(directory, "steward-snapshot.json"), "utf8"), '{"services": [', "Bad data must not be silently replaced");
   run("reset", 0, "RESET: []");
   run("read", 0, "READ:");
+  const databaseSQL = publishedCode("SQL in the postgres database — create tsa_library");
+  assert.match(databaseSQL, /CREATE DATABASE tsa_library;/, "Learner must see real database creation SQL");
+  const schemaSQL = publishedCode("SQL in tsa_library — create and inspect the library schema");
+  assert.match(schemaSQL, /CREATE SCHEMA library;/, "Learner must see real schema creation SQL");
+  const tableSQL = publishedCode("SQL in tsa_library — create a persistent table");
+  for (const fragment of ["CREATE TABLE library.books", "PRIMARY KEY", "NOT NULL", "CHECK"]) {
+    assert.ok(tableSQL.includes(fragment), `Missing table tutorial concept: ${fragment}`);
+  }
+  const insertSQL = publishedCode("SQL — insert two example books");
+  assert.match(insertSQL, /INSERT INTO library.books/);
+  const querySQL = publishedCode("SQL — read persistent rows");
+  assert.match(querySQL, /ORDER BY book_id;/);
   const sql = publishedCode("first_session.sql — run only in a disposable PostgreSQL lab database");
   for (const statement of ["CREATE TEMP TABLE", "INSERT INTO tsa_session_probe", "ORDER BY id", "BEGIN;", "ROLLBACK;", "SELECT count(*)"]) {
     assert.ok(sql.includes(statement), `Missing SQL teaching concept: ${statement}`);
@@ -68,7 +91,7 @@ try {
   assert.ok(verification.includes("LEFT JOIN environment"), "NULL-preserving observation must be taught");
   assert.ok(verification.includes("JOIN service src") && verification.includes("JOIN service dst"), "Directed dependency example missing");
   assert.ok(source.includes("psql -X -v ON_ERROR_STOP=1 -1 -f steward_schema_seed.sql"), "Atomic failure-stopping execution command missing from reading");
-  console.log("Builder data foundations examples passed: multi-process JSON persistence, corruption exit 2, recovery, SQL session contract, canonical four-table seed and no duplicate Team CREATE. PostgreSQL connection execution remains unverified.");
+  console.log("Builder data foundations examples passed: persistence recovery, progressive PostgreSQL server/psql/database/schema/table/TEMP teaching order, SQL source contracts, and canonical Steward fixture. Real PostgreSQL execution is separately tested.");
 
 } finally {
   fs.rmSync(directory, { recursive: true, force: true });
