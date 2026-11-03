@@ -12,9 +12,19 @@ This tracker is the source of truth for the remediation cycle. Do not mark a sch
 
 ## Quality Steward whole-school audit (2026-11-03)
 
-**SOURCE REWRITE COMPLETE; MATCHING-HEAD CI PENDING:** [#328](https://github.com/enoqueJonas/tsa/issues/328) / draft [PR #344](https://github.com/enoqueJonas/tsa/pull/344) / [12-path source ledger](./ped-005-quality-steward-school-audit.md). The 12 original paths have been surveyed in learner order. Generic 30-minute chapters and 20-minute prep pages removed; Java prerequisite order fixed with two source-executable first-principles lessons; boundary, unit oracle, and localhost HTTP permission-denial negatives added; actual decision readings improved. Matching-head complete CI, independent learner evidence, external environments and the remaining module depth work are **NOT VERIFIED**. Do not mark school REMEDIATED or VALIDATED from this checkpoint.
+**BASELINE SOURCE PR MERGED; QUALITATIVE SHORT-READING REMEDIATION IN PROGRESS:** [#328](https://github.com/enoqueJonas/tsa/issues/328) / draft [PR #344](https://github.com/enoqueJonas/tsa/pull/344) / [12-path source ledger](./ped-005-quality-steward-school-audit.md). The 12 original paths have been surveyed in learner order. Generic 30-minute chapters and 20-minute prep pages removed; Java prerequisite order fixed with two source-executable first-principles lessons; boundary, unit oracle, and localhost HTTP permission-denial negatives added; actual decision readings improved. Matching-head complete CI, independent learner evidence, external environments and the remaining module depth work are **NOT VERIFIED**. Do not mark school REMEDIATED or VALIDATED from this checkpoint.
 
 **Quality source details:** [12-path ledger](./ped-005-quality-steward-school-audit.md) now documents each original module's source edits, 22 distinct Containers/CI cases, 13 distinct Non-functional Quality cases, actual Java/Python/HTTP negative checks, and the uncoached final decision challenge. This is **not** an independent learner validation claim. Final exact-head CI must pass before marking the instructional source lane REMEDIATED.
+
+## Quality Steward qualitative depth follow-up (2026-11-03)
+
+**Automated baseline:** [PR #344](https://github.com/enoqueJonas/tsa/pull/344) merged into master at `c76c8782`, after [workflow #41627876550](https://github.com/enoqueJonas/tsa/actions/runs/41627876550) passed **19/19** jobs. Quality browser checks traversed **416 desktop and 416 mobile activities** and verified synthetic legacy ID recovery. This establishes source/runtime/viewport confidence, **not instruction sufficiency**.
+
+**Editorial finding:** the actual rendered 12 shortest original readings were only **1072–1203 characters**, notably exploratory testing, negative testing, traceability, API auth/specifications/filters and core browser concepts. Passing UI/build tests did not answer the user's pedagogical-depth concern.
+
+**Active [PR #345](https://github.com/enoqueJonas/tsa/pull/345):** deepen those 12 original readings with topic-specific worked mechanism, disconfirming failure and independent transfer. Distinguish `api-auth` (token architecture) from `auth-testing` (role/resource authorization). Split the overloaded Uploads/Downloads/Frames/Popups/Dialogs lesson into four individual, sequential, original-source lessons while retaining its prior activity ID. Require matching-head 19-job CI and full mobile traversal after the edits. No real Steward API/browser/enterprise GitLab or independent novice evidence is claimed.
+
+**Exit still OPEN:** a human reviewer must read representative rendered lesson bodies and an uncoached novice must explain/apply unfamiliar cases, including explicit scoring. Keep [#328](https://github.com/enoqueJonas/tsa/issues/328) open. Do not mark the school learner-validated solely because the new readings are longer or the CI suite is green.
 
 ## Status vocabulary
 
