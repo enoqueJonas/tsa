@@ -76,15 +76,18 @@ function reading(id: string, title: string, body: string): Lesson {
     { id: `${id}-practice`, title: `Practice: ${title}`, estimatedMinutes: 45, content: {
       type: "practical",
       objective: `Apply ${title} to current Steward engineering-health evidence.`,
-      scenario,
+      scenario:`${scenario}\n\nINDEPENDENT ENGINEERING-HEALTH DECISION: ${debtCases[id].transfer}`,
       instructions: [
         "Select one concrete Steward example supported by an existing artifact, metric, incident, dependency record, exception or delivery observation.",
         "Apply the lesson concept and separate observed evidence from interpretation or assumption.",
         "Make one explicit decision: remediate, contain, schedule, tolerate/monitor, reject the proposed debt label, or escalate where authority is insufficient.",
-        "Record the owner, decision consequence and evidence/review trigger that would cause the decision to change."
+        "Record the owner, decision consequence and evidence/review trigger that would cause the decision to change.",
+        "For the unseen case, state one alternative not chosen, a measurable baseline, a negative observation and how the next checkpoint could change the choice."
       ],
       deliverables: ["Focused engineering-health analysis", "Evidence reference", "Decision and rationale", "Owner and reconsideration trigger"],
       completionCriteria: [
+        `Reject the decision if it repeats this false improvement: ${debtCases[id].failure}`,
+        "The unfamiliar case has a current measurement, explicit uncertainty, decision owner, rejected alternative and observable outcome.",
         "The example is grounded in current Steward evidence rather than a hypothetical dislike of code.",
         "Debt, defect, risk, maintenance and feature work are not conflated.",
         "The decision has an engineering or organizational consequence rather than ending at classification.",
