@@ -97,6 +97,16 @@ export const stewardSecurityAssessmentDeepLessons: Lesson[] = [
                     completionCriteria: ["The learner can defend conclusions without overstating certainty.", "Evidence supports the demonstrated claims.", "Tradeoffs and residual risk are explained as engineering decisions.", "Valid review challenges become explicit follow-up work."],
                 },
             },
+            {
+                id: "security-steward-milestone-assessment-transfer",
+                title: "Challenge the Trust Chain Without a Checklist",
+                estimatedMinutes: 35,
+                content: {
+                    type: "reflection",
+                    prompt: "Defend one Steward user-to-API operation through the identity provider, access-token issuer/signature/audience check, gateway, API and object authorization. Counterexamples: (1) the JWT is correctly signed but has the wrong audience; (2) a correct API token belongs to a user who does not own the record; (3) a Vault database credential was previously valid but its lease is expired or revoked; (4) a signed artifact has a valid signature from an unauthorized signer; (5) an SFTP server presents a previously unknown host key. For each, name the exact control owner, the safe refused outcome, a concrete experiment that would distinguish failure from telemetry loss, and a recovery action. Classify which claims in your security report have actually been observed on learner-owned systems versus demonstrated only by local synthetic models. Do not count reading this prompt as independent learner validation.",
+                    minimumCharacters: 600
+                }
+            },
         ],
     },
 ];
