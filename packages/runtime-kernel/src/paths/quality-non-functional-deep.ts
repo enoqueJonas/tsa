@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { qualityNfCases } from "./quality-nonfunctional-source-depth";
 
 const k6: LearningResource = { title: "Grafana k6 documentation", url: "https://grafana.com/docs/k6/latest/" };
 const wcag: LearningResource = { title: "W3C Web Content Accessibility Guidelines (WCAG)", url: "https://www.w3.org/WAI/standards-guidelines/wcag/" };
@@ -47,6 +48,17 @@ function blocksFor(spec: Spec): LessonBlock[] {
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
     ];
+    const scenario = qualityNfCases[spec.id];
+    if (!scenario) throw new Error(`Missing substantive Quality non-functional source case: ${spec.id}`);
+    blocks.push(
+        {type:"heading",id:`${spec.id}-worked-mechanism`,text:scenario.heading,level:2},
+        {type:"paragraph",text:scenario.mechanism},
+        {type:"heading",id:`${spec.id}-failure-analysis`,text:"Failure and limits of inference",level:2},
+        {type:"paragraph",text:scenario.failure},
+        {type:"heading",id:`${spec.id}-independent-application`,text:"Independent transfer to a different situation",level:2},
+        {type:"paragraph",text:scenario.transfer}
+    );
+
 
     if (spec.code) {
         blocks.push({ type: "code", language: spec.language ?? "text", code: spec.code });
