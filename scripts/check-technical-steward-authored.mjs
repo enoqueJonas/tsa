@@ -144,6 +144,32 @@ try {
     }
   }
   assert.equal(checkedConcepts, 101, "All 101 original Technical Steward conceptual readings must be depth-guarded");
+  // PED-005: do not give instructions that merely say 'assess the evidence'.
+  // At least these six high-consequence lessons must expose an executable
+  // *fictional* case, expected output, and the paired practice's mutation task.
+  for (const [pathId, stem] of [
+    ["controls-compliance-assurance", "controls-assurance-effectiveness"],
+    ["controls-compliance-assurance", "controls-assurance-testing"],
+    ["change-service-governance", "change-service-governance-release-governance"],
+    ["change-service-governance", "change-service-governance-evidence-release"],
+    ["technology-risk", "technology-risk-inherent-residual"],
+    ["technology-risk", "technology-risk-appetite-tolerance"],
+  ]) {
+    const learnerPath = technicalStewardPaths.find((path) => path.id === pathId);
+    const activities = learnerPath.lessons.flatMap((lesson) => lesson.activities);
+    const reading = activities.find((a) => a.id === `${stem}-reading`);
+    const practical = activities.find((a) => a.id === `${stem}-practice`);
+    assert.equal(reading?.content.type, "reading", `Missing executable reading ${stem}`);
+    assert.equal(practical?.content.type, "practical", `Missing executable practice ${stem}`);
+    const code = reading.content.blocks?.find((block) =>
+      block.type === "code" &&
+      block.code.includes("node labs/technical-steward/decision-evidence.mjs"));
+    assert.ok(code?.output?.length >= 100, `Lab commands or expected outcome missing in ${stem}`);
+    assert.ok(practical.content.instructions.some((step) => step.includes("labs/technical-steward/README.md")),
+      `Executable practice instructions missing in ${stem}`);
+    assert.ok(practical.content.completionCriteria.some((rule) => /scratch|output|offline/i.test(rule)),
+      `Falsifiable command/output criterion missing in ${stem}`);
+  }
   // A case added to source code but omitted from rendered blocks is not instruction.
   // These minima only verify wiring, NOT depth, accessibility or learner comprehension.
   const caseMinimums = [
