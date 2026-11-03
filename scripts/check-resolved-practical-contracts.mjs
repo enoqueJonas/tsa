@@ -235,6 +235,18 @@ if (quality) {
     "browser-environment-dom-accessibility-locators", "browser-engineering-milestone");
   enforceBefore("browser-and-environment-testing",
     "browser-environment-page-components", "browser-architecture-milestone");
+  // An overbroad event chapter was split into four independently exercised
+  // concepts. Existing advanced-browser-interactions activity IDs are stable.
+  enforceBefore("browser-and-environment-testing",
+    "browser-environment-advanced-browser-interactions", "browser-environment-file-transfer-interactions");
+  enforceBefore("browser-and-environment-testing",
+    "browser-environment-file-transfer-interactions", "browser-environment-popup-browser-ownership");
+  enforceBefore("browser-and-environment-testing",
+    "browser-environment-popup-browser-ownership", "browser-environment-iframe-contexts");
+  enforceBefore("browser-and-environment-testing",
+    "browser-environment-iframe-contexts", "browser-environment-blocking-dialogs");
+  enforceBefore("browser-and-environment-testing",
+    "browser-environment-blocking-dialogs", "browser-environment-browser-diagnostics");
 }
 const security = journey.schools.find((school) => school.id === "security-steward");
 if (!security || security.paths.length !== 14) {
