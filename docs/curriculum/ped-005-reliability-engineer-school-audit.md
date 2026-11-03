@@ -35,3 +35,15 @@ The current Graylog decision gate and Stack Integration practical specify deploy
 - Independent learner teach-back, genuine incident reconstruction, progress persistence and rendered-page instructional review remain **UNVERIFIED**.
 - Preserve existing activity IDs; changing generic wrapper IDs requires a migration/re-entry impact check.
 - Keep [issue #327](https://github.com/enoqueJonas/tsa/issues/327) open until school-wide learner acceptance evidence exists.
+
+## Current source changes (PR #342)
+
+- All 16 Reliability paths now directly expose authored source lessons, removing synthetic `-reliability-model` and `-reliability-preparation` pages; original activity IDs stay unchanged. This reduces inflated activity counts and changes re-entry sequence. Existing progress stored under generated IDs may need a separate migration assessment.
+- The original Production Logging `structured-logs` and `centralized-logging` readings now contain substantive event schema, Graylog ingestion/index/query boundaries, explicit negative diagnostics, and a standalone standard-library Python fixture proving valid correlation plus malformed and uncorrelated cases. Only this local Python example is executable without external services; a CI script extracts the exact learner source.
+- The original Observability Stack Integration module now begins with a source-authored reading that explains each component and a 502 incident trace before requiring multi-tool deployment. Real integration remains UNVERIFIED.
+- The Steward Reliability milestone now starts with a source-authored evidence-chain reading and ends with an independent counterevidence reflection. This is a curriculum requirement, not a completed independent learner assessment.
+- Source contracts reject reintroduction of the generic Reliability wrappers across all 16 paths. Structural tests and whole-school rendered-browser traversal are required on the final matching commit.
+
+## Remaining work within Reliability Engineer
+
+The 16-path inventory is complete, but the full source-by-source quality and independent execution audit remains open. Priority beyond logging: SLI error-budget windows and missing-data counterexamples; Prometheus histogram and label cardinality experiments; trace propagation and sampling loss; Alertmanager route and silence diagnosis; reproducible incident timelines; safe fault injection with abort criteria; disaster recovery from real disposable restores. Do not infer real backend behavior from models or passing website traversal.
