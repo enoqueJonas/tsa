@@ -40,6 +40,24 @@ const debtCases: Record<string, {title:string;worked:string;failure:string;trans
     "worked": "Hypothetical planning choice: a new report feature needs three days, while an unstable CI gate adds a day of failure diagnosis to each release. Options include shipping the feature with an owned test debt exception, repairing the gate first, or isolating a safe feature subset. Review actual critical defect escape and triage evidence, then choose a time-boxed repair with one measurable invariant (a true authorization failure still blocks release) and a review date. Product velocity and reliability are not competing abstract virtues; they are observable constraints on the same service.",
     "failure": "Mandate an arbitrary '20% refactoring time' without an identified consequence, or permanently disable a critical regression check to show faster throughput.",
     "transfer": "Write a two-sprint decision for a team facing a payment integration requirement and a risky untested migration. Include accountable risk owner, capacity choice, one explicit non-choice and the evidence that changes the allocation."
+  },
+  "technical-debt-health-engineering-health-metrics": {
+    "title": "Construct engineering-health measures that resist false improvement",
+    "worked": "Illustrative Steward release process: measure change failure rate alongside median recovery time, escaped authorization defects, test selection completeness and unplanned on-call interruption. Define exact denominators, rolling period, source, owner and incident severity. If release frequency falls to zero, defect escape rate can appear perfect while the team is stuck; pair throughput with quality and service outcomes. Investigate a change in workload mix before treating a single trend as improvement.",
+    "failure": "Publish a '100% green CI' KPI when mandatory test selection executes zero tests, or improve deployment lead time by abandoning critical rollback drills.",
+    "transfer": "Choose two leading and two lagging indicators for a slow CI pipeline. Explain how each could be gamed and what complementary invariant would disprove misleading success."
+  },
+  "technical-debt-health-sustainable-remediation": {
+    "title": "Pay debt without introducing a second hidden ownership problem",
+    "worked": "Illustrative 12-week improvement: replacing a fragile shared fixture will take one sprint, but a complete test-framework rewrite would take a quarter. Evaluate a minimal isolated fixture per worker, verify 20 deterministic replays, ensure no customer data is touched, and use failed-run diagnosis time as a second measure. Assign a maintainer and a removal plan for obsolete fixture code. A remediation is sustainable when it lowers repeated effort without creating unowned infrastructure or large dependency blast radius.",
+    "failure": "A massive platform rewrite is funded because it feels cleaner, but old and new frameworks run in parallel without owners and every test becomes slower to maintain.",
+    "transfer": "Plan a time-boxed remediation of an unreliable logging parser. Include baseline, small experiment, failure oracle, owner, rollback and a decision to stop if benefits fail to appear."
+  },
+  "technical-debt-health-debt-ownership-and-review-cadence": {
+    "title": "Assign one accountable owner and an event-driven review trigger",
+    "worked": "Illustrative tech debt register entry: CI relies on obsolete runner image; evidence is a failed security patch and fragile test setup; owner is pipeline maintainer; impacted consumers are all release teams; risk acceptance authority is distinct. The owner documents a migration option, estimated work, actual failure recurrence and dates tied to support expiry. Review whenever vulnerability, outage or major consumer change occurs, not just because an arbitrary monthly meeting was scheduled.",
+    "failure": "A backlog item says 'cleanup later' with no consequence, decision owner, deadline or event trigger; it can survive years without anyone making an accountable choice.",
+    "transfer": "Make an ownership record for a legacy SQL migration script used by two teams, with explicit customer-impact trigger, cross-team approver and observable evidence for closing the debt."
   }
 };
 function reading(id: string, title: string, body: string): Lesson {
