@@ -17,6 +17,7 @@ on:
       - curriculum/quality-steward-defect-responsive-v6
       - curriculum/quality-steward-maven-tags-learning-v7
       - curriculum/quality-steward-idempotency-partitions-v8
+      - curriculum/quality-steward-java-playwright-local-v9
       - integration/tsa-audits-master-20261102
       - master
   workflow_dispatch:
@@ -73,6 +74,8 @@ jobs:
         run: node scripts/check-quality-maven-selection-v7.mjs
       - name: Prove original partition, idempotent retry and ownership-scoped SQL cleanup negatives
         run: node scripts/check-quality-partitions-retry-v8.mjs
+      - name: Verify original Java Playwright lesson equals executable fixture
+        run: node scripts/check-quality-java-playwright-source-v9.mjs
       - name: Compile original Quality unit oracle and assert authorization mutant fails
         run: node scripts/check-quality-unit-oracle.mjs
       - name: Execute original Quality API localhost denial and forbidden-side-effect mutation
@@ -399,6 +402,11 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      - uses: actions/setup-java@v4
+        if: matrix.school == 'quality-steward'
+        with:
+          distribution: temurin
+          java-version: '17'
       - name: Build learner application
         run: |
           pnpm install --frozen-lockfile
@@ -416,6 +424,13 @@ jobs:
           python scripts/check-school-learner-browser.py
           if [ "$TSA_SCHOOL" = "quality-steward" ]; then
             python scripts/check-quality-browser-event-lab.py
+            mvn -B -ntp -q -f labs/quality-playwright-java/pom.xml compile exec:java -Dexec.mainClass=org.tsa.quality.LocalBrowserProof -Dexec.args=http://127.0.0.1:4173/labs/quality-browser-events.html
+            if mvn -B -ntp -q -f labs/quality-playwright-java/pom.xml compile exec:java -Dexec.mainClass=org.tsa.quality.LocalBrowserProof -Dexec.args="http://127.0.0.1:4173/labs/quality-browser-events.html --wrong-oracle" > /tmp/tsa-quality-java-negative.log 2>&1; then
+              echo "FAIL: wrong Java storage oracle unexpectedly passed"
+              exit 1
+            fi
+            grep -F "EXPECTED_STORAGE_MISMATCH" /tmp/tsa-quality-java-negative.log
+            echo "PASS actual Java Playwright Chromium fixture and deliberate wrong-storage negative"
           fi
       - name: Upload cross-school learner evidence
         if: always()

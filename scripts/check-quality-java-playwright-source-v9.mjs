@@ -1,0 +1,24 @@
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+const published=readFileSync("packages/runtime-kernel/src/paths/quality-java-playwright-local-v9.ts","utf8");
+const get=(name)=>{
+ const anchor="export const "+name+" = ";
+ assert.ok(published.includes(anchor),"Missing learner source "+name);
+ return JSON.parse(published.split(anchor)[1].split(";\n")[0]);
+};
+const source=get("qualityJavaPlaywrightSource");
+const pom=get("qualityJavaPlaywrightPom");
+assert.equal(source,readFileSync("labs/quality-playwright-java/src/main/java/org/tsa/quality/LocalBrowserProof.java","utf8"),"Displayed Java must match executed file");
+assert.equal(pom,readFileSync("labs/quality-playwright-java/pom.xml","utf8"),"Displayed POM must match executable fixture");
+assert.match(pom,/<artifactId>playwright<\/artifactId><version>1\.58\.0<\/version>/);
+const workflow=readFileSync(".github/workflows/curriculum-audit.yml","utf8");
+assert.match(workflow,/playwright==1\.58\.0/);
+assert.match(workflow,/LocalBrowserProof/);
+assert.match(workflow,/EXPECTED_STORAGE_MISMATCH/);
+const reading=readFileSync("packages/runtime-kernel/src/paths/quality-browser-environment-testing-deep.ts","utf8");
+assert.match(reading,/spec\.id === "playwright-runtime-model"/);
+assert.match(reading,/qualityJavaPlaywrightSource/);
+assert.match(source,/BrowserContext firstContext/);
+assert.match(source,/first\.waitForDownload/);
+assert.match(source,/--wrong-oracle/);
+console.log("PASS original Java Playwright reading renders exact runnable fixture; version/negative CLI guarded");
