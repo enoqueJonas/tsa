@@ -26,6 +26,40 @@ export const observabilityStackIntegrationDeepLessons: Lesson[] = [
         }
       },
       {
+        id: "reliability-observability-stack-integration-graylog-lab-guide",
+        title: "Graylog First Run: Three Services, GELF Input and Query Evidence",
+        estimatedMinutes: 90,
+        content: {
+          type: "reading",
+          body: "Understand the actual Graylog components and versioned setup before the larger observability deployment. This is a learner-run procedure, not evidence that our audit deployed Graylog.",
+          blocks: [
+            { type: "heading", id: "graylog-three-service-topology", text: "Three components, three failure boundaries", level: 2 },
+            { type: "paragraph", text: "In the documented Graylog 7.2 Docker Compose learning topology, MongoDB stores Graylog metadata and configuration; Graylog Data Node manages the search/storage role built on OpenSearch; the Graylog server exposes inputs, message processing, index/search control, REST and UI. A green Graylog container cannot prove MongoDB or Data Node is healthy. A search that returns zero results may reflect ingestion, routing, indexing, retention, time filtering or permissions." },
+            { type: "heading", id: "graylog-versioned-prerequisites", text: "Check prerequisites without modifying a shared host", level: 2 },
+            { type: "paragraph", text: "Use a disposable learner-owned Linux Docker host or Docker Desktop VM with sufficient memory and storage for MongoDB, Data Node and Graylog. Docker Compose must be available and the Docker Linux kernel needs vm.max_map_count >= 262144. On macOS, changing the macOS host sysctl does not configure Docker Desktop's Linux VM. Do not blindly apply host sysctl changes on a work machine. Consult the official Graylog 7.2 Compose documentation and document the selected image tags and configuration before running anything." },
+            { type: "code", language: "bash", caption: "Read-only Docker and Linux-container-host preflight", code: "docker compose version\ndocker info --format '{{.ServerVersion}}'\n# On the authorized Docker Linux host/VM only (not the macOS host):\nsysctl vm.max_map_count" },
+            { type: "heading", id: "graylog-first-run", text: "Deploy the official sandbox configuration, not a guessed production stack", level: 2 },
+            { type: "paragraph", text: "Create a unique local directory and obtain the OFFICIAL version-matched open-core example Compose and .env.example from the Graylog project linked below. Inspect its image tags, service dependencies, bound ports and persistent volumes before starting. Store a randomly generated GRAYLOG_PASSWORD_SECRET and the SHA-256 of a strong learner-local admin password in an untracked .env with restrictive permissions; never paste them into commits or audit evidence. Limit UI and input mappings to localhost or an explicitly isolated network, not public 0.0.0.0 host bindings. The example repository itself warns its Compose configurations are for testing/demo, not production." },
+            { type: "code", language: "bash", caption: "After placing and configuring official version-matched files in this directory", code: "mkdir -p \"$HOME/tsa-graylog-lab\"\ncd \"$HOME/tsa-graylog-lab\"\n# First obtain the official compose YAML and .env.example (see resources).\n# Set local secrets, check binds and volume mounts; NEVER commit .env.\ndocker compose config --quiet\ndocker compose up -d\ndocker compose ps\n# Local diagnostic output may contain sensitive bootstrap credentials:\ndocker compose logs --tail=60 graylog\n# Do not publish unredacted logs or expose the UI to the Internet." },
+            { type: "heading", id: "graylog-gelf-http", text: "Configure a real GELF HTTP input and send a synthetic event", level: 2 },
+            { type: "paragraph", text: "After the official first-run/preflight login and Data Node setup, use Graylog System > Inputs to create a GELF HTTP input. Route it to a named lab stream/index set, and inspect Input Diagnosis. Configure the container's mapped input port as 127.0.0.1:12201 on the Docker HOST, with the actual container listener correctly bound inside the isolated network. This assumes the learner has intentionally mapped port 12201/TCP and selected matching GELF HTTP input. Send one synthetic event through POST /gelf, then query by the imported correlation field and a recent UTC window. Inspect the actual parsed field name in Graylog; some ingest formats normalize the leading underscore in GELF extension field names." },
+            { type: "code", language: "bash", caption: "Only after the lab GELF HTTP input listens on host loopback port 12201", code: "curl --fail-with-body --silent --show-error --max-time 10 \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"version\":\"1.1\",\"host\":\"tsa-lab\",\"short_message\":\"synthetic request failed\",\"level\":4,\"_request_id\":\"tsa-ped005-42\",\"_service\":\"steward-demo\"}' \\\n  http://127.0.0.1:12201/gelf\n# Search Graylog in the latest 5 minutes for request_id:tsa-ped005-42\n# Then inspect the actual extracted field name, input counters and index set." },
+            { type: "heading", id: "graylog-negative-verification", text: "Negative test: accepted transport does not prove searchable evidence", level: 2 },
+            { type: "paragraph", text: "Send one deliberately malformed synthetic GELF JSON request, or temporarily stop the disposable input. Record the HTTP outcome AND input/parser diagnostics; do not assume a particular HTTP status across Graylog versions. If the valid event is missing, inspect emitted payload, port binding, input traffic, streams/pipelines, search index, time window, retention, and role permissions in order. A successful HTTP response establishes neither ingestion durability nor correct search fields. Restore the input, send a NEW fixture ID and verify it is searchable; never infer replay of earlier discarded events without evidence." },
+            { type: "heading", id: "graylog-teardown", text: "Stop the sandbox without deleting unrelated state", level: 2 },
+            { type: "paragraph", text: "When evidence is collected, run docker compose down from the dedicated lab directory. By default it removes that Compose project's containers and network while preserving named volumes; do not use -v or a global Docker prune as a shortcut. Record remaining owned volumes and delete them only with explicit consent after ensuring no important evidence or secrets remain." },
+            { type: "code", language: "bash", caption: "Scoped cleanup of this learner-owned Compose project", code: "cd \"$HOME/tsa-graylog-lab\"\ndocker compose down\n# Check only lab-owned volumes before any separately approved deletion:\ndocker volume ls" },
+            { type: "resources", title: "Version-matched Graylog setup and input reference", resources: [
+              { title: "Graylog 7.2 — Containerized Deployment", url: "https://go2docs.graylog.org/current/downloading_and_installing_graylog/graylog_and_docker.htm", kind: "documentation" },
+              { title: "Graylog 7.2 — Run Graylog in Docker", url: "https://go2docs.graylog.org/current/downloading_and_installing_graylog/docker_installation.htm", kind: "documentation" },
+              { title: "Graylog Official Docker Compose Sandbox Examples", url: "https://github.com/Graylog2/docker-compose", kind: "documentation" },
+              { title: "Graylog — Set Up an Input", url: "https://go2docs.graylog.org/current/getting_in_log_data/setup_an_input.htm", kind: "documentation" },
+              { title: "Graylog — GELF Inputs", url: "https://go2docs.graylog.org/current/getting_in_log_data/gelf.html", kind: "documentation" }
+            ] }
+          ]
+        }
+      },
+      {
         id: "reliability-observability-stack-integration-001",
         title: "Implement the Steward Observability Stack",
         estimatedMinutes: 300,
