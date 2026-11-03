@@ -126,6 +126,8 @@ def inspect_school(page):
                     "quality-java-generics-collections-001": ("Choose collection semantics before choosing a generic helper", True),
                     "quality-java-exceptions-resources-001": ("Separate the primary failure from cleanup and rethrow", True),
                     "quality-java-annotations-reflection-001": ("Metadata is not execution: JUnit needs a discovery engine", True),
+                    "quality-java-concurrency-atomicity-001": ("Why a visible value can still lose a write", True),
+                    "quality-java-concurrency-threadlocal-001": ("A ThreadLocal is a thread-scoped slot, not a test-scoped identity", True),
                     "quality-java-functional-java-001": ("Streams are pipelines; Optional is a documented absence", True),
                     "api-integration-rest-assured-model-001": ("Trace HTTP request construction to the response oracle", False),
                     "api-integration-schema-contract-001": ("Structure, semantics and compatibility are separate claims", False),
