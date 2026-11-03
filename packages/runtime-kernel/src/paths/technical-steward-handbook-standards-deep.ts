@@ -84,7 +84,7 @@ function reading(id: string, title: string, body: string, outcomes: string[], ex
   };
 }
 
-export const handbookAndStandardsDeepLessons: Lesson[] = [
+const originalHandbookAndStandardsLessons: Lesson[] = [
   reading("handbook-and-standards-writing-usable-standards", "Writing Usable Standards", "A standard converts governance intent into repeatable engineering expectations. A useful standard states scope, requirement, rationale, ownership, verification and the legitimate exception path. Prefer outcome-oriented requirements where implementation flexibility matters, and prescribe a mechanism only when interoperability, risk or organizational consistency justifies it. Every mandatory rule creates maintenance and compliance cost, so do not standardize choices teams can safely make locally.", ["Distinguish standards from policies, procedures and guidelines.", "Write clear, testable and proportionate requirements.", "Avoid encoding personal tool preferences as organization-wide mandates."], "Require internal packages that actually exist to be published through the approved artifact repository with traceable provenance; use Nexus where it remains the retained implementation, while allowing package-specific choices that do not affect consumers or supply-chain controls.", ["Turning preferences into mandatory standards.", "Writing vague requirements that cannot be verified.", "Copying frameworks without adapting them to Steward.", "Creating requirements without an owner or exception path."], ["Rewrite three vague Steward expectations as testable standards.", "For each, identify scope, rationale, verification evidence and exception authority.", "Remove one proposed rule that does not justify organization-wide standardization."]),
   reading("handbook-and-standards-runbooks-and-playbooks", "Runbooks and Playbooks", "A runbook gives concrete steps for a known operational task or condition; a playbook guides decisions across a class of situations where judgment is still required. Good operational guidance includes prerequisites, safety boundaries, expected observations, verification, rollback or stop conditions, escalation and ownership. A document that has never been exercised is an assumption, so high-consequence procedures must be tested and revised when reality differs.", ["Distinguish runbooks from playbooks.", "Design operational guidance for time-sensitive work.", "Keep procedures aligned with real system behavior."], "A PostgreSQL restore runbook identifies backup source, target, safety checks, commands or automation, validation queries, RTO/RPO evidence and escalation conditions rather than merely saying 'restore the database'.", ["Writing procedures from memory without executing them.", "Omitting stop or rollback conditions.", "Embedding secrets in examples.", "Treating uncertain incidents as deterministic runbooks."], ["Choose one Steward operational capability and classify the needed artifact as runbook or playbook.", "Draft prerequisites, verification and escalation sections.", "Define how it will be exercised and kept current."]),
   reading("handbook-and-standards-decision-records", "Decision Records", "Decision records preserve why consequential choices were made so future engineers can distinguish deliberate trade-offs from accidents. Reuse ADR discipline: context, decision, alternatives, evidence, consequences and status. Historical decisions should normally remain immutable; later decisions supersede them. Do not create ADRs for trivial implementation choices or use them as approval forms.", ["Capture durable decision context without rewriting design documents.", "Record alternatives, evidence and consequences.", "Know when a decision should be superseded rather than silently edited."], "If Steward retains a single PostgreSQL database after evaluating decomposition, preserve the quality-attribute evidence and rejected alternatives so a future team does not split it merely because the rationale disappeared.", ["Recording only the chosen solution.", "Editing away historical rationale.", "Creating records for every code change.", "Using ADRs as substitutes for implementation documentation."], ["Review one Steward architecture or governance decision.", "Identify what a future engineer needs to understand its rationale.", "Draft or supersede the record if the decision changed."]),
@@ -111,3 +111,77 @@ export const handbookAndStandardsDeepLessons: Lesson[] = [
     }],
   },
 ];
+
+/**
+ * Keep the original handbook build activity ID for the source inventory phase.
+ * Subsequent practice phases require their own independent completion. The
+ * previous 390-minute single check was too broad to assess usage/recovery.
+ */
+const originalHandbookLessons = originalHandbookAndStandardsLessons;
+const handbookLab = originalHandbookLessons.find((lesson) =>
+  lesson.id === "handbook-and-standards-lab-build-the-steward-engineering-handbook");
+if (!handbookLab) throw new Error("Handbook practical missing");
+const handbookOriginal = handbookLab.activities[0]!;
+if (handbookOriginal.content.type !== "practical") throw new Error("Handbook practical content missing");
+const handbookInput = handbookOriginal.content;
+function handbookPhase(id: string, title: string, estimatedMinutes: number, objective: string,
+  instructionStart: number, instructionEnd: number, deliverables: string[], completionCriteria: string[]) {
+  return {
+    ...handbookOriginal,
+    id, title, estimatedMinutes,
+    content: {
+      ...handbookInput,
+      objective,
+      instructions: handbookInput.instructions.slice(instructionStart, instructionEnd),
+      deliverables,
+      completionCriteria,
+    },
+  };
+}
+export const handbookAndStandardsDeepLessons: Lesson[] = originalHandbookLessons.map((lesson) =>
+  lesson.id !== handbookLab.id ? lesson : {
+    ...lesson,
+    activities: [
+      handbookPhase(
+        handbookOriginal.id,
+        "Phase 1 — Create a navigable and verifiable handbook",
+        120,
+        "Inventory the actual Steward evidence, then publish one minimal handbook index and testable rule without inventing current infrastructure.",
+        0, 3,
+        ["Authoritative artifact map with verified owner and revision",
+         "Minimal handbook navigation and explicit standards scope",
+         "One MUST-level standard with permitted exception path and negative acceptance check"],
+        ["The index points to current evidence, not dead links or hypothetical retained infrastructure.",
+         "A distinct engineer can find the actual authoritative reference without oral help.",
+         "The standard has a testable obligation, owner, effective date and a rejected false-compliance example."],
+      ),
+      handbookPhase(
+        `${handbookOriginal.id}-phase-2`,
+        "Phase 2 — Exercise runbook, decision and exception evidence",
+        150,
+        "Demonstrate operational guidance and decision trace on an isolated, safe failure rather than claiming that written instructions work.",
+        3, 5,
+        ["Safe dry-run or isolated runbook execution transcript with failed and successful observations",
+         "Decision record with one credible rejected alternative and reconsideration condition",
+         "Risk-sensitive review checklist and time-limited exception with approval authority"],
+        ["The runbook has prerequisites, stop conditions, expected output and a repeatable safe failure probe.",
+         "Unexecuted instructions must be labelled UNVERIFIED; a screenshot of a document does not establish recoverability.",
+         "Exceptions have declared authority, exact scope, expiry, compensating proof and exit criteria.",
+         "A reviewer can state which evidence would falsify the claimed procedure or decision."],
+      ),
+      handbookPhase(
+        `${handbookOriginal.id}-phase-3`,
+        "Phase 3 — Uncoached navigation and stale-guidance correction",
+        120,
+        "Make another authorized person find, follow, challenge and update the handbook independently.",
+        5, 7,
+        ["Dated uncoached discovery/operation observation with pass/fail evidence",
+         "Stale/duplicate/unsafe content report and concrete correction",
+         "Owner and periodic/event-driven maintenance trigger with re-test result"],
+        ["A substitute engineer locates the correct standard, escalation path and runbook without the writer's hints, or the assessment records a failure.",
+         "A deliberate stale-link or superseded-decision case is rejected and corrected rather than silently treated as valid.",
+         "A revised navigation or document passes the same assessment after remediation.",
+         "The result is not marked human-validated until a real authorized independent participant completes the exercise."],
+      ),
+    ],
+  });
