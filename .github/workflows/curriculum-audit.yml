@@ -9,6 +9,7 @@ on:
       - curriculum/delivery-engineer-source-depth-v2
       - curriculum/cloud-engineer-source-depth-v1
       - curriculum/reliability-engineer-source-depth-v1
+      - curriculum/quality-steward-source-depth-v1
       - integration/tsa-audits-master-20261102
       - master
   workflow_dispatch:
@@ -43,14 +44,30 @@ jobs:
           python-version: '3.12'
       - name: Execute Python teaching examples
         run: pnpm check:python-examples
+      - name: Execute original Quality Steward boundary test and deliberate off-by-one mutant
+        run: node scripts/check-quality-boundary-value-source.mjs
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
       - name: Execute Java teaching example
         run: pnpm check:java-examples
+      - name: Compile source-published Quality Java programs and prove compiler and shared-state negatives
+        run: node scripts/check-quality-java-first-principles.mjs
+      - name: Compile original Quality unit oracle and assert authorization mutant fails
+        run: node scripts/check-quality-unit-oracle.mjs
+      - name: Execute original Quality API localhost denial and forbidden-side-effect mutation
+        run: node scripts/check-quality-http-denial.mjs
+      - name: Execute original Quality retries and preserve first-failure proof
+        run: node scripts/check-quality-retry-evidence.mjs
+      - name: Validate original Quality nonfunctional fast-error population
+        run: node scripts/check-quality-performance-population.mjs
+      - name: Compile original Quality release-gate decisions and fail-open mutant
+        run: node scripts/check-quality-ci-gate.mjs
       - name: Install XML schema validator for published System Thinker examples
         run: python -m pip install 'lxml>=5,<8' 'pyftpdlib>=2,<3' 'asyncssh>=2.20,<3' 'PyYAML>=6,<7'
+      - name: Parse authored GitLab CI learner YAML and reject lost schedule gate
+        run: node scripts/check-quality-gitlab-selection.mjs
       - name: Execute curriculum smoke test suite
         run: pnpm test
       - name: Validate exact Cloud Kubernetes teaching manifest and fail-closed selector mismatch

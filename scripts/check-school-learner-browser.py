@@ -88,6 +88,40 @@ def inspect_school(page):
                     f"Missing runnable, copyable example in Builder reading: {activity_id}"
                 )
             code = content.locator("figure").filter(has=page.get_by_role("button", name="Copy"))
+            if SCHOOL == "quality-steward":
+                assert not activity_id.endswith("-quality-preparation"), (
+                    f"Generated Quality preparation returned to learner journey: {activity_id}"
+                )
+                assert not activity_id.endswith("-worked-quality-model-reading"), (
+                    f"Generated Quality 30-minute model returned: {activity_id}"
+                )
+                quality_original_readings = {
+                    "quality-engineering-levels-types-001": ("Worked risk-to-boundary map: a forbidden ownership transfer", False),
+                    "test-analysis-and-design-boundary-value-analysis-001": ("Executable inclusive-bound contract and negative control", True),
+                    "quality-java-source-bytecode-jvm-introduction-001": ("Distinguish Java, JDK, bytecode and JVM", True),
+                    "quality-java-objects-constructors-state-introduction-001": ("Definition: class versus object", True),
+                    "unit-component-designing-unit-tests-001": ("An independent oracle, a real assertion, and a wrong implementation", True),
+                    "api-integration-http-semantics-001": ("Execute a real localhost denial and verify no side effect", True),
+                    "automation-framework-retries-001": ("Execute bounded retry and preserve its failed attempt", True),
+                    "non-functional-performance-measurement-model-001": ("Work a complete request population, not a latency headline", True),
+                    "quality-ci-quality-gates-001": ("Define the required evidence contract first", True),
+                    "quality-continuous-scheduled-execution-pipeline-contract": ("Pipeline creation versus job selection", True),
+                    "quality-continuous-scheduled-execution-schedule-guide": ("The YAML does not create the schedule", False),
+                    "quality-reuse-boundary-001": ("What is a reusable test library, technically?", False),
+                    "quality-steward-milestone-decision-evidence-001": ("Follow three reported green signals to their actual evidence", False),
+                    "browser-environment-browser-surface-decision-primer": ("Define the evidence boundary", False),
+                    "non-functional-quality-performance-tool-decision-primer": ("Arrival rate is not the same as concurrent users", False),
+                }
+                target = quality_original_readings.get(activity_id)
+                if target:
+                    heading, code_required = target
+                    assert content.get_by_text(heading, exact=True).count() == 1, (
+                        f"Original Quality instruction was not rendered: {activity_id}: {heading}"
+                    )
+                    if code_required:
+                        assert code.count() >= 1, (
+                            f"Original Quality executable example missing copyable code: {activity_id}"
+                        )
             if SCHOOL == "reliability-engineer":
                 reliability_source_readings = {
                     "logging-structured-logs-001": "Run a real parsing and correlation failure",
@@ -305,6 +339,113 @@ def check_system_thinker_mobile_all(page):
     print(f"PASS system-thinker 390px mobile traversal: {total} activities", flush=True)
 
 
+def check_quality_mobile_all(page):
+    """Traverse all Quality activities at 390px rather than the first module only.
+
+    Checks rendering, horizontal overflow, code, activity order and scroll reset.
+    It is synthetic navigation, not novice validation or actual lab evidence.
+    """
+    page.goto(f"{BASE}/?view=curriculum&school=quality-steward", wait_until="networkidle")
+    module_count = page.get_by_role("button", name=MODULE).count()
+    assert module_count == 12, f"Expected 12 Quality modules, found {module_count}"
+    errors = []
+    overflow_cases = []
+    page.on("pageerror", lambda err: errors.append(str(err)))
+    total = 0
+    for module_index in range(module_count):
+        page.goto(f"{BASE}/?view=curriculum&school=quality-steward", wait_until="networkidle")
+        page.get_by_role("button", name=MODULE).nth(module_index).click()
+        page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+        sidebar = page.locator("aside").filter(has=page.get_by_text("Curriculum", exact=True)).first
+        activity_count = sidebar.locator("button").count()
+        assert activity_count > 0, f"Quality mobile module {module_index+1} is empty"
+        seen = set()
+        for activity_index in range(activity_count):
+            activity_id = page.evaluate("new URLSearchParams(location.search).get('activity')")
+            assert activity_id and activity_id not in seen, (
+                f"Quality mobile activity missing/repeated: {activity_id}"
+            )
+            seen.add(activity_id)
+            content = page.locator("main").last
+            # Wait for the real persisted-evidence panel rather than assessing
+            # an optimistic loading frame before its select/textarea controls
+            # can contribute to the mobile intrinsic-width calculation.
+            if content.get_by_text("Engineering Practice", exact=True).count():
+                page.get_by_text("Loading evidence workspace…").wait_for(
+                    state="hidden", timeout=30000
+                )
+                assert content.get_by_text("Evidence workspace", exact=True).count() == 1, (
+                    f"Quality practical evidence controls not rendered: {activity_id}"
+                )
+            assert content.is_visible() and len(content.inner_text().strip()) >= 90, (
+                f"Quality mobile content missing: {activity_id}"
+            )
+            if page.evaluate("document.documentElement.scrollWidth > innerWidth + 2"):
+                # Preserve the actual overflowing boxes; hiding overflow would
+                # make CI green while mobile learners still lose readable text.
+                offenders = page.evaluate("""() => [...document.querySelectorAll('body *')]
+                    .filter(el => {
+                        const box = el.getBoundingClientRect();
+                        return box.width > 0 && box.right > innerWidth + 2;
+                    }).map(el => {
+                        const box = el.getBoundingClientRect();
+                        const css = getComputedStyle(el);
+                        return {
+                            element: el.tagName.toLowerCase(),
+                            className: String(el.className).slice(0, 180),
+                            left: Math.round(box.left),
+                            right: Math.round(box.right),
+                            width: Math.round(box.width),
+                            whiteSpace: css.whiteSpace,
+                            minWidth: css.minWidth,
+                            text: (el.innerText || '').slice(0, 140),
+                        };
+                    }).slice(-16)""")
+                print(f"QUALITY MOBILE OVERFLOW {activity_id}: {offenders}", flush=True)
+                overflow_cases.append({"activity": activity_id, "elements": offenders})
+                if len(overflow_cases) <= 6:
+                    page.screenshot(
+                        path=str(ARTIFACTS / f"quality-overflow-{len(overflow_cases)}.png"),
+                        full_page=True
+                    )
+                # Continue through all 12 modules to identify every failing
+                # activity in one strict run rather than fixing the first one
+                # and needing another whole-school CI cycle.
+            for figure in content.locator("figure").filter(
+                has=page.get_by_role("button", name="Copy")
+            ).all():
+                assert figure.locator("pre").count() > 0, (
+                    f"Quality code missing at 390px: {activity_id}"
+                )
+            if activity_index < activity_count - 1:
+                reflection = page.get_by_placeholder("Write your response here...")
+                if reflection.count():
+                    reflection.fill(SYNTHETIC_REFLECTION)
+                can_scroll = page.evaluate(
+                    "document.documentElement.scrollHeight > innerHeight + 120"
+                )
+                if can_scroll:
+                    page.evaluate("window.scrollTo(0, document.documentElement.scrollHeight)")
+                    assert page.evaluate("window.scrollY") > 30, (
+                        f"Quality mobile scroll precondition failed: {activity_id}"
+                    )
+                nxt = page.get_by_role("button", name=NEXT)
+                assert nxt.count() == 1 and nxt.is_enabled(), (
+                    f"Quality mobile navigation unavailable: {activity_id}"
+                )
+                nxt.click()
+                page.wait_for_function("window.scrollY <= 8", timeout=8000)
+            total += 1
+        print(f"PASS Quality mobile module {module_index+1}/{module_count}: "
+              f"{activity_count} authored activities", flush=True)
+    assert not errors, f"Quality mobile browser exceptions: {errors}"
+    assert not overflow_cases, (
+        f"Quality mobile horizontal overflow in {len(overflow_cases)} authored activities: "
+        f"{[case['activity'] for case in overflow_cases]}"
+    )
+    print(f"PASS Quality Steward full 390px mobile traversal: {total} activities", flush=True)
+
+
 def check_system_thinker_reentry(page):
     """Persistence regression with a synthetic learner in a fresh browser profile.
 
@@ -366,6 +507,46 @@ def check_system_thinker_reentry(page):
     )
     print("PASS system-thinker IndexedDB reentry: practical evidence and reflection persisted across hard reload", flush=True)
 
+
+
+def check_quality_retired_activity_progress(page):
+    """Legacy generic Quality wrapper IDs must not count as authored completion."""
+    page.goto(f"{BASE}/?view=curriculum&school=quality-steward", wait_until="networkidle")
+    page.get_by_role("button", name=MODULE).first.wait_for()
+    page.evaluate("""async () => {
+      const db = await new Promise((resolve, reject) => {
+        const req = indexedDB.open('tsa-academy', 5);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+      try {
+        const tx = db.transaction('path-progress','readwrite');
+        tx.objectStore('path-progress').put({
+          pathId:'quality-engineering',schemaVersion:1,
+          currentActivityId:'quality-engineering-worked-quality-model-reading',
+          completedActivityIds:Array.from({length:50},(_,i)=>
+            'synthetic-retired-quality-preparation-'+i),
+          reflectionResponses:{},
+          startedAt:'2026-10-01T00:00:00.000Z',
+          updatedAt:'2026-10-01T00:00:00.000Z'
+        });
+        await new Promise((resolve,reject)=>{
+          tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error);
+        });
+      } finally { db.close(); }
+    }""")
+    page.reload(wait_until="networkidle")
+    module = page.locator("article").filter(
+        has=page.get_by_role("heading",name="Quality Engineering",exact=True)
+    ).first
+    module.get_by_text("0%",exact=True).wait_for(timeout=12000)
+    module.get_by_role("button",name="Continue module").click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    activity = page.evaluate("new URLSearchParams(location.search).get('activity')")
+    assert activity == "quality-engineering-quality-vs-testing-001", (
+        f"Quality re-entry did not return to first actual authored lesson: {activity}"
+    )
+    print("PASS Quality legacy wrapper progress excluded and first author lesson restored",flush=True)
 
 
 def check_reliability_retired_activity_progress(page):
@@ -483,6 +664,8 @@ with sync_playwright() as playwright:
     mobile = browser.new_context(viewport={"width": 390, "height": 844})
     if SCHOOL == "builder":
         check_builder_mobile_modules(mobile.new_page())
+    elif SCHOOL == "quality-steward":
+        check_quality_mobile_all(mobile.new_page())
     elif SCHOOL == "system-thinker":
         check_system_thinker_mobile_all(mobile.new_page())
         isolated = browser.new_context(viewport={"width": 1440, "height": 900})
@@ -491,6 +674,10 @@ with sync_playwright() as playwright:
     else:
         check_mobile_first_module(mobile.new_page())
     mobile.close()
+    if SCHOOL == "quality-steward":
+        isolated = browser.new_context(viewport={"width": 1440, "height": 900})
+        check_quality_retired_activity_progress(isolated.new_page())
+        isolated.close()
     if SCHOOL == "reliability-engineer":
         isolated = browser.new_context(viewport={"width": 1440, "height": 900})
         check_reliability_retired_activity_progress(isolated.new_page())

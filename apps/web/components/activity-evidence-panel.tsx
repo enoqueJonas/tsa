@@ -105,7 +105,7 @@ export function ActivityEvidencePanel({ activityId, pathId, deliverables }: Acti
           <select
             value={submissionStatus}
             onChange={(event) => { setSubmissionStatus(event.target.value as SubmissionStatus); setSaved(false); }}
-            className="rounded-xl border border-zinc-300 bg-white px-4 py-3 font-normal"
+            className="w-full min-w-0 rounded-xl border border-zinc-300 bg-white px-4 py-3 font-normal"
           >
             <option value="draft">Draft — evidence still being assembled</option>
             <option value="ready">Ready — prepared for self-assessment/review</option>
@@ -120,7 +120,7 @@ export function ActivityEvidencePanel({ activityId, pathId, deliverables }: Acti
             onChange={(event) => { setNotes(event.target.value); setSaved(false); }}
             rows={6}
             placeholder="What did you build, inspect, break, diagnose, or change? Include commands, observations, and important decisions."
-            className="rounded-xl border border-zinc-300 bg-white px-4 py-3 font-normal leading-6 outline-none focus:border-zinc-500"
+            className="w-full min-w-0 rounded-xl border border-zinc-300 bg-white px-4 py-3 font-normal leading-6 outline-none focus:border-zinc-500"
           />
         </label>
 
@@ -131,7 +131,7 @@ export function ActivityEvidencePanel({ activityId, pathId, deliverables }: Acti
             onChange={(event) => { setLinksText(event.target.value); setSaved(false); }}
             rows={3}
             placeholder="One URL per line: repository, commit, PR, diagram, document, log, screenshot reference…"
-            className="rounded-xl border border-zinc-300 bg-white px-4 py-3 font-normal leading-6 outline-none focus:border-zinc-500"
+            className="w-full min-w-0 rounded-xl border border-zinc-300 bg-white px-4 py-3 font-normal leading-6 outline-none focus:border-zinc-500"
           />
         </label>
 
@@ -142,7 +142,7 @@ export function ActivityEvidencePanel({ activityId, pathId, deliverables }: Acti
             onChange={(event) => { setOutcome(event.target.value); setSaved(false); }}
             rows={4}
             placeholder="What was the result? What did the evidence prove, and what would you do differently next time?"
-            className="rounded-xl border border-zinc-300 bg-white px-4 py-3 font-normal leading-6 outline-none focus:border-zinc-500"
+            className="w-full min-w-0 rounded-xl border border-zinc-300 bg-white px-4 py-3 font-normal leading-6 outline-none focus:border-zinc-500"
           />
         </label>
       </div>

@@ -5,6 +5,33 @@ export const performanceToolDecisionLesson: Lesson = {
     title: "Decision Gate: Select the Steward Performance Tool",
     activities: [
         {
+            id: "non-functional-quality-performance-tool-decision-primer",
+            title: "Model the workload before choosing a load-testing tool",
+            estimatedMinutes: 45,
+            content: {
+                type: "reading",
+                body: "Performance testing asks how a service behaves under a stated arrival or concurrency model. A tool is useful only if its execution reproduces that model with measurable evidence.",
+                blocks: [
+                    { type: "heading", id: "workload-basics", text: "What is actually being measured?", level: 2 },
+                    { type: "paragraph", text: "Latency is the elapsed time for an operation; throughput is completed operations per unit time; error rate needs both a numerator and a denominator; saturation describes resource pressure such as exhausted connections or CPU. A test must name the population, clock window, success rule and environment. Reporting 'p95 300 ms' without request count, error count and load shape is not enough to justify capacity." },
+                    { type: "heading", id: "open-versus-closed-workloads", text: "Arrival rate is not the same as concurrent users", level: 2 },
+                    { type: "paragraph", text: "In a closed-user model, each virtual user generally waits for its current iteration to finish before starting the next. When response time rises, that user produces fewer requests: achieved arrival rate can fall and conceal overload. In an open-arrival model, new requests are scheduled at a chosen arrival rate independent of the preceding response time, provided the generator has capacity. Neither model is universally correct; choose the one matching the real usage pattern." },
+                    { type: "heading", id: "worked-workload", text: "Worked Steward example", level: 2 },
+                    { type: "paragraph", text: "Suppose the risk is that service-ownership lookups slow during a planned batch import. A disposable test can model 5 new GET /services/{id} arrivals per second for 60 seconds, seeded with authorized data, then compare completed count, 4xx/5xx status population, p95 latency, connection-pool pressure and the post-batch recovery window. Expected scheduled arrivals are 300, not automatically 300 successful responses; generator shortfall must be reported as an invalid test, not as product success." },
+                    { type: "heading", id: "performance-tools-comparison", text: "Choose a tool against the execution contract", level: 2 },
+                    { type: "list", items: [
+                        "k6: JavaScript scenarios, explicit arrival-rate executors, checks and thresholds, CI-friendly machine output; evaluate whether existing team skill and extension needs justify it.",
+                        "Locust: Python-defined task flows and user lifecycle, convenient when a Python team needs expressive stateful behavior; verify whether its selected user model matches the intended arrival pattern.",
+                        "JMeter or a small native harness: useful for particular protocols or initial experiments; compare repeatability, headless CI execution, metrics and maintenance rather than counting features."
+                    ] },
+                    { type: "heading", id: "performance-failure", text: "Failure: a load generator that cannot deliver the load", level: 2 },
+                    { type: "paragraph", text: "If the chosen generator schedules 300 arrivals but achieves only 190 because its own CPU or connection pool is exhausted, the run has not demonstrated that Steward handles 5 arrivals per second. Record both planned and achieved arrivals, generator health, test data and failures. A green threshold over the 190 requests is not an acceptance result for the intended workload." },
+                    { type: "heading", id: "performance-independent-decision", text: "Practice: justify one implementation", level: 2 },
+                    { type: "paragraph", text: "Write a decision record for a local disposable target: workload model, scenario length, setup and cleanup, required metrics, tool selection, why the runner can sustain the load and one controlled negative threshold. Do not run load against shared production or third-party systems without explicit authorization." },
+                ],
+            },
+        },
+        {
             id: "non-functional-quality-performance-tool-decision-001",
             title: "Compare Performance Test Tooling",
             estimatedMinutes: 45,

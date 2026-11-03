@@ -168,31 +168,73 @@ if (!cloud || cloud.paths.length !== 11) {
 }
 const quality = journey.schools.find((school) => school.id === "quality-steward");
 if (!quality || quality.paths.length !== 12) {
-  problems.push("Quality Steward must have 12 learning paths");
+  problems.push("Quality Steward must expose 12 learning paths");
 } else {
   for (const path of quality.paths) {
-    const first = path.lessons[0];
-    const headings = first?.activities?.[0]?.content?.blocks;
-    if (first?.id !== `${path.id}-worked-quality-model` ||
-        !Array.isArray(headings) ||
-        !headings.some((item) => item.type === "heading" && item.id === "quality-worked")) {
-      problems.push(`Quality path lacks worked test model: ${path.id}`);
+    const seen = new Set();
+    const firstActivity = path.lessons?.[0]?.activities?.[0];
+    const firstBlocks = firstActivity?.content?.blocks;
+    if (firstActivity?.content?.type !== "reading" ||
+        !Array.isArray(firstBlocks) ||
+        !firstBlocks.some((block) => block.type === "heading") ||
+        !firstBlocks.some((block) => block.type === "paragraph")) {
+      problems.push(`Quality path must start with original substantive source instruction: ${path.id}`);
     }
-    for (const lesson of path.lessons) {
-      lesson.activities.forEach((activity, index) => {
-        if (activity.content.type !== "practical") return;
-        const before = lesson.activities[index - 1];
-        const blocks = before?.content?.blocks;
-        if (!before?.id?.endsWith("-quality-preparation") ||
-            before?.content?.type !== "reading" ||
-            !Array.isArray(blocks) ||
-            !blocks.some((block) => block.type === "heading" && block.id === "quality-evidence") ||
-            !blocks.some((block) => block.type === "heading" && block.id === "quality-negative")) {
-          problems.push(`Quality lab missing explicit oracle/negative preparation: ${path.id}/${lesson.id}/${activity.id}`);
+    let practices = 0;
+    for (const lesson of path.lessons ?? []) {
+      if (lesson.id === `${path.id}-worked-quality-model`) {
+        problems.push(`Generated 30-minute quality-model chapter must not replace original source: ${path.id}`);
+      }
+      for (const activity of lesson.activities ?? []) {
+        if (seen.has(activity.id)) problems.push(`Duplicated quality activity ID: ${activity.id}`);
+        seen.add(activity.id);
+        if (activity.id.endsWith("-quality-preparation")) {
+          problems.push(`Generic 20-minute quality preparation duplicates original lab: ${activity.id}`);
         }
-      });
+        if (activity.content?.type === "practical") {
+          practices++;
+          if (!activity.content.objective || !activity.content.scenario ||
+              !(activity.content.instructions?.length > 0) ||
+              !(activity.content.completionCriteria?.length > 0)) {
+            problems.push(`Quality practical lacks source-specific observable evidence: ${path.id}/${activity.id}`);
+          }
+        }
+      }
     }
+    if (!practices) problems.push(`Quality path has no practical verification: ${path.id}`);
   }
+}
+// PED-005: verify learner-order prerequisites at the source-lesson boundary.
+// A valid activity count is not evidence that a novice can safely do the lab.
+if (quality) {
+  const lessonsFor = (pathId) => quality.paths.find((path) => path.id === pathId)?.lessons.map((lesson) => lesson.id) ?? [];
+  const enforceBefore = (pathId, prerequisite, dependent) => {
+    const ids = lessonsFor(pathId);
+    const prior = ids.indexOf(prerequisite), later = ids.indexOf(dependent);
+    if (prior < 0 || later < 0 || prior >= later) {
+      problems.push(`Quality prerequisite order incorrect: ${pathId}: ${prerequisite} must precede ${dependent}`);
+    }
+  };
+  enforceBefore("java-for-test-framework-engineering",
+    "quality-java-source-bytecode-jvm-introduction", "quality-java-jvm-maven");
+  enforceBefore("java-for-test-framework-engineering",
+    "quality-java-objects-constructors-state-introduction", "quality-java-types-modeling");
+  enforceBefore("java-for-test-framework-engineering",
+    "quality-java-types-modeling", "quality-java-annotations-reflection");
+  enforceBefore("java-for-test-framework-engineering",
+    "quality-java-annotations-reflection", "quality-java-junit-platform");
+  enforceBefore("api-and-integration-testing",
+    "api-integration-http-semantics", "api-http-engineering-milestone");
+  enforceBefore("api-and-integration-testing",
+    "api-integration-rest-assured-model", "api-integration-rest-assured-build");
+  enforceBefore("browser-and-environment-testing",
+    "browser-environment-browser-surface-decision", "browser-environment-playwright-runtime-model");
+  enforceBefore("browser-and-environment-testing",
+    "browser-environment-playwright-runtime-model", "browser-environment-playwright-build");
+  enforceBefore("browser-and-environment-testing",
+    "browser-environment-dom-accessibility-locators", "browser-engineering-milestone");
+  enforceBefore("browser-and-environment-testing",
+    "browser-environment-page-components", "browser-architecture-milestone");
 }
 const security = journey.schools.find((school) => school.id === "security-steward");
 if (!security || security.paths.length !== 14) {

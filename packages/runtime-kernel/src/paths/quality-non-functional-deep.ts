@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { qualityNfCases } from "./quality-nonfunctional-source-depth";
 
 const k6: LearningResource = { title: "Grafana k6 documentation", url: "https://grafana.com/docs/k6/latest/" };
 const wcag: LearningResource = { title: "W3C Web Content Accessibility Guidelines (WCAG)", url: "https://www.w3.org/WAI/standards-guidelines/wcag/" };
@@ -36,6 +37,9 @@ type Spec = {
     warning?: string;
 };
 
+// Source-executed classroom workload, not a claim of actual k6 or Steward load.
+const measurementEvidencePython = "\"\"\"Illustrative fixed observation window; not a real k6 or Steward run.\"\"\"\ndurations_ms = [100] * 10 + [2] * 90\nstatuses = [200] * 10 + [503] * 90\nseconds = 10\ntotal = len(statuses)\ngood = sum(200 <= status < 400 for status in statuses)\nerrors = total - good\nmean_all = sum(durations_ms) / total\ncompleted_rps = total / seconds\nsuccess_rps = good / seconds\nprint(f\"attempted={total} successful={good} errors={errors}\")\nprint(f\"mean_all_ms={mean_all:.1f} completed_rps={completed_rps:.1f} successful_rps={success_rps:.1f}\")\nprint(f\"error_rate={errors/total:.1%}\")\nlatency_only_gate = mean_all < 50\nsafe_gate = latency_only_gate and errors / total <= 0.01 and success_rps >= 5\nassert latency_only_gate is True and safe_gate is False\nprint(\"negative: naive latency-only gate would incorrectly PASS\")\nassert good > 0\nsuccessful_latencies = sorted(ms for ms, status in zip(durations_ms, statuses) if 200 <= status < 400)\nindex = (95 * len(successful_latencies) + 99) // 100 - 1\nprint(f\"success_p95_ms={successful_latencies[index]}\")\n# A run with no valid requests cannot establish success latency.\nassert [] == [ms for ms, status in zip([2, 3], [503, 503]) if status == 200]\nprint(\"zero-success population: latency=UNKNOWN, not zero\")";
+
 function blocksFor(spec: Spec): LessonBlock[] {
     const blocks: LessonBlock[] = [
         { type: "paragraph", text: spec.intro },
@@ -44,11 +48,33 @@ function blocksFor(spec: Spec): LessonBlock[] {
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
     ];
+    const scenario = qualityNfCases[spec.id];
+    if (!scenario) throw new Error(`Missing substantive Quality non-functional source case: ${spec.id}`);
+    blocks.push(
+        {type:"heading",id:`${spec.id}-worked-mechanism`,text:scenario.heading,level:2},
+        {type:"paragraph",text:scenario.mechanism},
+        {type:"heading",id:`${spec.id}-failure-analysis`,text:"Failure and limits of inference",level:2},
+        {type:"paragraph",text:scenario.failure},
+        {type:"heading",id:`${spec.id}-independent-application`,text:"Independent transfer to a different situation",level:2},
+        {type:"paragraph",text:scenario.transfer}
+    );
+
 
     if (spec.code) {
         blocks.push({ type: "code", language: spec.language ?? "text", code: spec.code });
     }
 
+    if (spec.id === "performance-measurement-model") {
+        blocks.push(
+            {type:"heading",id:"measured-population",text:"Work a complete request population, not a latency headline",level:2},
+            {type:"paragraph",text:"Consider a synthetic ten-second observation window with 100 completed requests. Ten successful requests each take 100 ms; ninety 503 errors return in only 2 ms. A naive mean across all requests appears excellent at 11.8 ms. Yet 90% fail, only 1 request per second succeeds, and the successful-request p95 is 100 ms. Reporting 10 completed responses/sec alone mistakes returned errors for useful throughput. The example is purposely constructed: this is not an actual load test, a measured saturation signal, or a real Steward release result."},
+            {type:"paragraph",text:"Save the complete Python model as measurement_evidence.py and run python3 measurement_evidence.py. Confirm attempted=100, successful=10, errors=90; mean_all_ms=11.8; completed_rps=10.0; successful_rps=1.0; error_rate=90.0%; success_p95_ms=100. A latency-only threshold would pass this defective service; a combined error/throughput gate must reject it. The example also demonstrates why a zero-success population has UNKNOWN success latency, not 0 ms."},
+            {type:"code",language:"python",code:measurementEvidencePython},
+            {type:"heading",id:"measurement-negative-interpretation",text:"Failure and alternative interpretations",level:2},
+            {type:"paragraph",text:"A slow service can lower throughput under a fixed-user (closed) workload, whereas a constant-arrival workload attempts to maintain new arrivals. Distinguish planned arrivals, requests actually issued, successful completions, error counts and generator shortages. p95 is computed over a clearly named population using a specified algorithm; changing populations or rank conventions can change the reported percentile."},
+            {type:"paragraph",text:"Independent transfer: assume a different 20-second window with 80 completed requests and 12 failures; explain separately total completion rate, successful throughput and error rate, decide what extra information is necessary to compute a p95, and justify why a latency result cannot be invented when successful samples are absent."},
+        );
+    }
     if (spec.warning) {
         blocks.push({ type: "callout", tone: "warning", title: "Quality risk", body: spec.warning });
     }

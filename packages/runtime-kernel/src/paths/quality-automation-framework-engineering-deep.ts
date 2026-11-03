@@ -9,6 +9,9 @@ const slf4j: LearningResource = { title: "SLF4J Manual", url: "https://www.slf4j
 const allureJunit: LearningResource = { title: "Allure — JUnit 5", url: "https://allurereport.org/docs/junit5/" };
 const allureAttachments: LearningResource = { title: "Allure — Attachments", url: "https://allurereport.org/docs/attachments/" };
 
+// Executed exact learner code: preserve first failure after a bounded retry.
+const retryEvidenceJava = "import java.util.ArrayList;\nimport java.util.List;\n\npublic class RetryEvidenceProof {\n    static boolean attempt(int number) { return number > 1; }\n    public static void main(String[] args) {\n        List<String> history = new ArrayList<>();\n        boolean success = false;\n        for (int n = 1; n <= 2; n++) {\n            success = attempt(n);\n            history.add(\"attempt=\" + n + \" result=\" + (success ? \"PASS\" : \"FAIL\"));\n            if (success) break;\n        }\n        for (String record : history) System.out.println(record);\n        if (!success || history.size() != 2 || !history.get(0).contains(\"FAIL\")) {\n            throw new AssertionError(\"first failure evidence disappeared\");\n        }\n        System.out.println(\"final=RECOVERED_UNSTABLE, not CLEAN_PASS\");\n    }\n}";
+
 const resourcesFor = (id: string): LearningResource[] => {
     if (id === "logging" || id === "failure-classification") return [slf4j, junit];
     if (id === "allure") return [allureJunit, allureAttachments];
@@ -32,6 +35,14 @@ function lessonFrom(spec: Spec): Lesson {
     if (spec.signals) blocks.push({ type: "heading", id: `${spec.id}-signals`, text: "Evidence and signals", level: 2 }, { type: "list", items: spec.signals });
     if (spec.antiPatterns) blocks.push({ type: "heading", id: `${spec.id}-anti-patterns`, text: "Failure patterns to recognize", level: 2 }, { type: "list", items: spec.antiPatterns });
     if (spec.code) blocks.push({ type: "code", language: "java", code: spec.code });
+    if (spec.id === "retries") blocks.push(
+        { type: "heading", id: "retry-executable-positive-negative", text: "Execute bounded retry and preserve its failed attempt", level: 2 },
+        { type: "paragraph", text: "Save the complete fixture as RetryEvidenceProof.java and run javac RetryEvidenceProof.java followed by java RetryEvidenceProof. This deliberately uses a deterministic classroom response: the first attempt fails and the second returns success. Expected lines are attempt=1 result=FAIL, attempt=2 result=PASS and final=RECOVERED_UNSTABLE, not CLEAN_PASS. No production backend is involved." },
+        { type: "code", language: "java", code: retryEvidenceJava },
+        { type: "paragraph", text: "Negative: remove history.add(...) but keep the retry itself. The final attempt still reports success, yet the independent evidence-preservation assertion now exits nonzero. Restore the history recording. A retry policy may improve transient availability, but erasing the initial failure manufactures a false clean-pass signal." },
+        { type: "paragraph", text: "In real systems, retry eligibility depends on side effects, idempotency and user safety. Do not automatically retry a mutable POST without a server-enforced idempotency contract. Independent transfer: given three attempts FAIL/FAIL/PASS, define a run state and exact evidence fields before implementing any JUnit extension." }
+    );
+
     if (spec.warning) blocks.push({ type: "callout", tone: "warning", title: "Framework risk", body: spec.warning });
     blocks.push({ type: "callout", tone: "steward", title: "Steward automation checkpoint", body: "Generic infrastructure may be reusable. Ownership rules, lifecycle behavior, service registration workflows and Steward-specific assertions are domain code and should remain explicit." });
     blocks.push({ type: "resources", title: "Continue learning", resources: resourcesFor(spec.id) });
