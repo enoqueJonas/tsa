@@ -72,13 +72,15 @@ try {
   const caseMinimums = [
     ["technical-leadership", 8],
     ["engineering-governance", 7],
-    ["technology-governance", 5],
-    ["controls-compliance-assurance", 7],
-    ["architecture-governance", 5],
-    ["security-data-governance", 5],
-    ["change-service-governance", 6],
-    ["third-party-lifecycle-risk", 7],
-    ["technical-debt-health", 5],
+    ["technology-governance", 10],
+    ["technology-strategy-capability", 6],
+    ["controls-compliance-assurance", 10],
+    ["architecture-governance", 8],
+    ["security-data-governance", 8],
+    ["change-service-governance", 8],
+    ["third-party-lifecycle-risk", 11],
+    ["technical-debt-health", 8],
+    ["handbook-and-standards", 8],
   ];
   for (const [id, min] of caseMinimums) {
     const learnerPath = technicalStewardPaths.find((entry) => entry.id === id);
