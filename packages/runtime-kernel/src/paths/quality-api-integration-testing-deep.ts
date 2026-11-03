@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { qualityOriginalDepth } from "./quality-original-remaining-depth";
 import { qualityApiDepth } from "./quality-api-depth-cases";
 import { qualityApiUncoveredDepth } from "./quality-api-uncovered-depth";
 
@@ -46,6 +47,20 @@ function rich(spec: Spec): Lesson {
         const worked = qualityApiDepth[spec.id];
         if (!worked?.length) throw new Error(`Missing original API source depth: ${spec.id}`);
         blocks.push(...worked);
+    }
+    const originalDepth = qualityOriginalDepth[spec.id];
+    if (originalDepth) {
+        blocks.push(
+            {type:"heading",id:`${spec.id}-risk-mechanism`,text:originalDepth.heading,level:2},
+            {type:"paragraph",text:originalDepth.mechanism},
+            {type:"heading",id:`${spec.id}-worked-example`,text:"Worked example and evidence boundary",level:2},
+            {type:"paragraph",text:originalDepth.worked},
+            ...(originalDepth.code ? [{type:"code" as const,language:originalDepth.language ?? "text",code:originalDepth.code}] : []),
+            {type:"heading",id:`${spec.id}-counterexample`,text:"Negative: where a green result lies",level:2},
+            {type:"paragraph",text:originalDepth.failure},
+            {type:"heading",id:`${spec.id}-independent-application`,text:"Independent application",level:2},
+            {type:"paragraph",text:originalDepth.transfer},
+        );
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward integration checkpoint", body: "Use the smallest real boundary required by the risk. Do not mock away the very contract, database behavior, authentication rule or package compatibility you are trying to prove. Broad tests should add new evidence, not duplicate lower-level checks." });
     blocks.push({ type: "resources", title: "Continue learning", resources: resourcesFor(spec.id) });
