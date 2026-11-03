@@ -6,6 +6,26 @@ export const observabilityStackIntegrationDeepLessons: Lesson[] = [
     title: "Observability Stack Integration: Graylog, Prometheus and Grafana",
     activities: [
       {
+        id: "reliability-observability-stack-integration-foundations",
+        title: "Trace a Diagnostic Signal Through the Entire Stack",
+        estimatedMinutes: 75,
+        content: {
+          type: "reading",
+          body: "Before deploying three tools, decide what each actually knows. A metrics spike shows frequency, not the individual failed request. A structured Graylog event shows the failure's local context, but ingestion is not guaranteed and timestamp/field errors can make an existing event invisible. A distributed trace follows sampled requests when context is propagated; a missing span is not proof of a healthy dependency.",
+          blocks: [
+            { type: "heading", id: "one-incident-three-questions", text: "One incident, three diagnostic questions", level: 2 },
+            { type: "paragraph", text: "Suppose the Steward checkout endpoint starts returning 502 for some users. Prometheus exposes bounded-label counters and latency distributions, answering when error rate rose, how many requests failed and what user-facing endpoint was affected. Grafana visualizes those PromQL results, but a dashboard is a view rather than a separate source of metrics. Graylog searches events by UTC window, service and request_id to reveal a worker timeout or gateway upstream error. A trace, if instrumented and sampled, can reveal call ordering and latency; neither log nor trace automatically exists for every request." },
+            { type: "heading", id: "signal-ingestion-boundaries", text: "Follow the transport, not just the dashboard", level: 2 },
+            { type: "paragraph", text: "Log events travel from source through shipper/input, parsing and indexing before Graylog can search them. Prometheus scrapes exporters and evaluates labeled time series; a scrape target marked UP=1 only means the scrape succeeded, not that checkout succeeded. Grafana queries Prometheus. OpenTelemetry span data requires instrumentation, propagation, export, collector/backend and a trace query. Each hop can fail independently." },
+            { type: "heading", id: "worked-incident-transfer", text: "Failure case: metrics report errors but the log query is empty", level: 2 },
+            { type: "paragraph", text: "Do not declare a harmless false alarm. First check whether the metric's numerator/denominator and label filters match the observed 502. Generate a single synthetic, uniquely identified failure, verify the local application log, then check shipping delay, input health, parser fields, index routing, retention, permissions and UTC search window. If trace evidence is absent, inspect propagation and sampling before asserting no downstream call occurred. Recover the service separately from repairing its telemetry." },
+            { type: "heading", id: "diagnostic-proof-criteria", text: "What counts as evidence", level: 2 },
+            { type: "list", items: ["The symptom and PromQL expression are reproducible under known traffic and failure conditions.", "A Graylog query filters a known synthetic request_id, UTC range and correct service field; matching events and missing-event diagnostics are recorded.", "The trace identifier and sampling/propagation limitations are explained; no missing span is interpreted as proof of health.", "The learner demonstrates detection, diagnosis, mitigation and post-recovery observations with no actual secret values in telemetry."], ordered: true },
+            { type: "paragraph", text: "This lesson teaches the architecture and required proof. It does not assert a Graylog server, Prometheus scraper, Grafana instance or tracing backend has been deployed or tested." }
+          ]
+        }
+      },
+      {
         id: "reliability-observability-stack-integration-001",
         title: "Implement the Steward Observability Stack",
         estimatedMinutes: 300,
