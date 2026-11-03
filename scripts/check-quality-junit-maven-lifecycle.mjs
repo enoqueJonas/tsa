@@ -18,6 +18,14 @@ const docs=readFileSync("packages/runtime-kernel/src/paths/quality-junit-maven-d
 for(const token of ["qualitySurefirePom","qualityJupiterJava","qualityFailsafeJava"]){
  assert.ok(docs.includes(token),"Missing original reading source export "+token);
 }
+const published=(name)=>{
+ const prefix="export const "+name+" = ";
+ assert.ok(docs.includes(prefix),"Missing original learner source "+name);
+ return JSON.parse(docs.split(prefix)[1].split(";\n")[0]);
+};
+assert.equal(published("qualitySurefirePom"),pom,"Learner POM must be exact test fixture");
+assert.equal(published("qualityJupiterJava"),source,"Learner Jupiter code must be exact test fixture");
+assert.equal(published("qualityFailsafeJava"),itSource,"Learner Failsafe code must be exact test fixture");
 const exec=(args,cwd)=>{
  const r=spawnSync("mvn",["-B","-ntp","-q",...args],{cwd,encoding:"utf8",timeout:180000});
  assert.ifError(r.error);return r;
