@@ -51,3 +51,7 @@ The 16-path inventory is complete, but the full source-by-source quality and ind
 ## SLI and error-budget worked evidence
 
 Original `service-level-engineering-deep.ts` readings for SLIs, error budgets and measurement windows now contain source-specific explanation and an executable, synthetic Python numerator/denominator model. It distinguishes three valid attempts, two successes, one intentionally excluded event, a failed 90% objective and an empty-window `UNKNOWN` result. The CI source check executes the exact published code and guards against counting missing observations as healthy service. Real traffic metrics, burn-rate paging and trustworthy instrumentation remain **UNVERIFIED**.
+
+## Metrics, PromQL and counter semantics
+
+The original `reliability-metrics-prometheus-grafana-deep.ts` metric-types and PromQL lessons now explain counter resets versus gauges, matching numerator/denominator populations, no-traffic/zero denominators, bounded labels and classic histogram `le` aggregation. A source-published Python reset counterexample is executed in CI: a naïve `last-first` gives a misleading negative count while reset-aware increases remain positive. Actual Prometheus queries/histograms against a deployed Steward instance are **UNVERIFIED**; no live scrape or dashboard claim follows from source text.
