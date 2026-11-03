@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { qualityBrowserDepth } from "./quality-browser-depth-cases";
 
 const playwright: LearningResource = { title: "Playwright — Browsers", url: "https://playwright.dev/java/docs/browsers" };
 const mdnResponsive: LearningResource = { title: "MDN — Responsive web design", url: "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design" };
@@ -37,6 +38,13 @@ function rich(spec: Spec): Lesson {
         section.body.forEach((text) => blocks.push({ type: "paragraph", text }));
         if (section.list) blocks.push({ type: "list", items: section.list });
         if (section.code) blocks.push({ type: "code", language: "java", code: section.code });
+    }
+    // Extend specific original lessons, preserving all published activity IDs.
+    if (["navigation-network", "ui-test-selection", "advanced-browser-interactions",
+         "browser-diagnostics", "browser-parallelism", "page-components"].includes(spec.id)) {
+        const worked = qualityBrowserDepth[spec.id];
+        if (!worked?.length) throw new Error(`Missing browser source explanation: ${spec.id}`);
+        blocks.push(...worked);
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward browser checkpoint", body: "Browser and environment tests must add evidence that service-layer tests cannot provide. Record the exact browser, operating system, viewport, environment and release identity for every meaningful failure." });
     blocks.push({ type: "resources", title: "Continue learning", resources: resourcesFor(spec.id) });
@@ -83,10 +91,190 @@ const specs: Spec[] = [
         { title: "Keep assertions at the right level", body: ["Objects may expose observable state or narrow component invariants, but tests should retain the domain claim so failure intent is obvious. Do not create a page object that returns only booleans and hides diagnostic context." ] },
     ], practice: ["Write a second related direct-locator flow before extraction.", "Mark repeated stable interactions.", "Extract the smallest Page/Component Object justified by those repetitions.", "Compare before/after test readability and delete an abstraction that adds no value."], questions: ["Why should page objects not mirror the DOM?", "When is a component object better than a page object?", "Where should domain assertions normally remain?"] },
 
-    { id: "advanced-browser-interactions", title: "Uploads, Downloads, Frames, Popups and Dialogs", intro: "Real browser workflows cross interaction boundaries that require explicit event ownership. Learn Playwright's event-oriented model rather than adding sleeps around downloads, new tabs or frames.", sections: [
-        { title: "Wait for the event you cause", body: ["Downloads and popups often begin as a consequence of a click. Register the Playwright wait around the triggering action so the event cannot race ahead of the test. Frames require targeting the correct frame context; dialogs can block execution until handled." ] },
-        { title: "Treat files as test resources", body: ["Uploads should use controlled fixtures with known content/type. Downloads should be validated for meaningful filename/content/size semantics and cleaned up; do not rely on a developer machine's Downloads directory." ] },
-    ], practice: ["Implement one controlled upload or download example relevant to Steward or a sandbox page.", "Demonstrate event-safe popup/download waiting.", "Inspect one frame/dialog pattern even if Steward does not currently use it.", "Document cleanup ownership for generated files."], questions: ["Why should the event wait wrap the triggering action?", "What makes file tests non-reproducible on developer machines?", "How do frames change locator context?"] },
+    {
+        "id": "advanced-browser-interactions",
+        "title": "Browser Event Ownership Before Specialized Interactions",
+        "intro": "Some actions create new browser resources rather than only updating the current document. Learn to register waits before triggering actions, obtain event evidence and close the resources you own; the following lessons separate files, popups, frames and dialogs.",
+        "sections": [
+            {
+                "title": "An action is not its outcome",
+                "body": [
+                    "A click can initiate a download, spawn a popup, focus an embedded frame or trigger a blocking dialog. Each requires a different observable event and postcondition. The test must wait for the action-specific signal and inspect the result rather than treating an accomplished click as a pass.",
+                    "In Java Playwright, a download or popup wait encloses the click that triggers it; this makes the event listener active before the event can occur. File inputs, FrameLocators and dialog handlers have different lifecycle rules and are taught separately next."
+                ]
+            },
+            {
+                "title": "A resource has an owner",
+                "body": [
+                    "Record which Page, BrowserContext, file fixture, temporary download and event handler belongs to the test. Close or clean up after both success and failure. A browser event occurring is not sufficient acceptance evidence if the downloaded file is empty, the popup has the wrong identity or the dialog chooses the opposite action."
+                ]
+            }
+        ],
+        "practice": [
+            "Diagram one sample action, the emitted event, the expected result and its cleanup owner.",
+            "Write the ordering of observer registration, user action, event receipt and postcondition without Thread.sleep.",
+            "Compare what remains in the original Page versus a popup, Frame and download.",
+            "Identify which specialized interactions genuinely exist in the target product and defer the rest."
+        ],
+        "questions": [
+            "What makes a click different from the result it triggers?",
+            "Why must event waits observe the triggering action?",
+            "Why should file and popup resources be explicitly owned?"
+        ]
+    },
+
+    {
+        "id": "file-transfer-interactions",
+        "title": "Uploads and Downloads as Reproducible Browser Evidence",
+        "intro": "File upload supplies data to a browser input; download creates a browser-managed artifact. Treat them as separate testable contracts with controlled fixtures, event timing, content checks and cleanup.",
+        "sections": [
+            {
+                "title": "Upload a known fixture, not an arbitrary local file",
+                "body": [
+                    "Prepare a disposable file with deterministic bytes, filename, encoding, expected MIME type and a recorded checksum. Use the actual file chooser or file-input capability exposed by the UI. Test an accepted file and a rejected type or oversized input according to the approved product rules. After the UI reports upload completion, verify the relevant persisted or processed outcome through an independent boundary; a filename displayed in the form is not proof the server stored the file.",
+                    "Never point a test at a developer's personal Downloads/Desktop directory. Use temporary per-run fixtures and delete only artifacts owned by that run. If Steward has no file upload interface, carry out this lesson on an authorized local sandbox and do not claim Steward feature coverage."
+                ]
+            },
+            {
+                "title": "Download: register the wait, then inspect the artifact",
+                "body": [
+                    "For Playwright Java, the essential event sequence is Download download = page.waitForDownload(() -> page.getByText(\"Download file\").click()); followed by download.saveAs(Paths.get(runDirectory, download.suggestedFilename())). The event indicates a download began; checking saved bytes, file format, expected record identifier and appropriate non-empty content supplies the substantive oracle. The temporary download belongs to the BrowserContext and is normally removed when that context closes.",
+                    "Filename suggestions may differ across browsers, so judge them against the approved contract instead of asserting incidental naming. Reject path traversal or absolute output paths from untrusted filenames before persisting. A 200 response that produces an empty or wrong export is a failure, not a valid completed download."
+                ]
+            },
+            {
+                "title": "Negative and independent transfer",
+                "body": [
+                    "Deliberately trigger an invalid file type and prove no record is partially created; then inspect an intentionally empty download and assert the export is rejected by your test. For an unseen payroll export, design one upload fixture and one independent download content assertion, including identity and cleanup policy."
+                ]
+            }
+        ],
+        "practice": [
+            "Prepare one known binary/text fixture in a disposable directory and record its content expectation.",
+            "Perform one UI upload or an authorized sandbox upload and validate the resulting server-side state.",
+            "Use waitForDownload around one download-triggering action and inspect content, not only filename.",
+            "Cause one rejected file and one empty/wrong export; preserve negative evidence and clean up owned files."
+        ],
+        "questions": [
+            "Why is a filename not sufficient upload/download evidence?",
+            "Which download event must be registered before a click?",
+            "What file resources remain after BrowserContext closes?"
+        ]
+    },
+
+    {
+        "id": "popup-browser-ownership",
+        "title": "Popup Windows and Multiple Page Ownership",
+        "intro": "A popup creates an additional Page with its own navigation and DOM. Tests must wait for the correct new Page and preserve the distinction between original and secondary interfaces.",
+        "sections": [
+            {
+                "title": "Popup belongs to an originating page and a browser context",
+                "body": [
+                    "When a link opens a new tab or window, the originating Page receives a popup event and the BrowserContext gains another Page. Register the wait before clicking: Page popup = page.waitForPopup(() -> page.getByText(\"Open details\").click()); then assert the popup's expected destination and accessible content. For unknown originating actions, the context page event may be more appropriate; it listens to all new pages in that context.",
+                    "Authentication is not guaranteed to behave identically across windows. Cookies may be shared inside a context but origin policies, sessionStorage and redirects can still differ. A successful popup event does not prove its actual contents or authorization."
+                ]
+            },
+            {
+                "title": "Failure and resource cleanup",
+                "body": [
+                    "A test that asserts the old page's heading after opening a popup may pass without examining the popup at all. Another test may allow multiple popups to accumulate and later inspect the wrong one. Assert one expected event associated with the deliberate click, test the new Page and close it before releasing its parent context. Handle blocked popups as explicit product/browser outcomes rather than adding fixed sleeps."
+                ]
+            },
+            {
+                "title": "Independent transfer",
+                "body": [
+                    "A report opens a second browser tab for an identity-provider consent screen. Define how the test would distinguish the true consent Page from an unrelated notification window and what observation verifies the user returned to the correct original page."
+                ]
+            }
+        ],
+        "practice": [
+            "Use an authorized local page that opens a popup, enclosing the trigger in a Java Playwright waitForPopup.",
+            "Assert the new Page identity and a meaningful visible result, then close it.",
+            "Test a wrong-destination popup or absent popup and preserve a diagnostic trace.",
+            "Explain when context.waitForPage is preferable to page.waitForPopup."
+        ],
+        "questions": [
+            "What is the relationship between Page and BrowserContext for a popup?",
+            "Why can waiting on the original page miss the new window?",
+            "How will you prevent a stale popup from contaminating another test?"
+        ]
+    },
+
+    {
+        "id": "iframe-contexts",
+        "title": "Iframes and Scoped Locator Boundaries",
+        "intro": "An iframe embeds another document with its own DOM and potentially another origin. Locators evaluated on the parent Page cannot be assumed to see elements inside it.",
+        "sections": [
+            {
+                "title": "Identify a frame before searching inside it",
+                "body": [
+                    "A Page has a main frame and can contain nested frame documents. To locate an input inside one intended frame, choose a specific iframe selector and use page.frameLocator(\"iframe[data-purpose='payment']\").getByLabel(\"Reference\").fill(\"CASE-42\"). The frame selector must uniquely identify the expected frame; broad selectors may match several and fail strictness or reach the wrong form.",
+                    "FrameLocators target document scope. They do not bypass cross-origin security, authentication or CSP. Check the real interface contract, including the iframe's visible dimensions and loading behavior, before treating interaction as complete."
+                ]
+            },
+            {
+                "title": "Failure: the right text in the wrong document",
+                "body": [
+                    "Suppose the parent page and embedded payment frame both contain a 'Submit' button. A parent-level locator may click an unrelated control while the test records success. Use a frame-scoped locator, assert a frame-specific result and verify the correct backend effect if the business action depends on one. If an iframe fails to load because frame-ancestors blocks embedding, record the policy violation instead of disabling CSP for a green test."
+                ]
+            },
+            {
+                "title": "Independent transfer",
+                "body": [
+                    "Design a test for two payment iframes side-by-side. State how you distinguish the intended one without using a global first(), how you wait for its user-facing readiness and what error evidence identifies a frame failing to load."
+                ]
+            }
+        ],
+        "practice": [
+            "Open an authorized local iframe sandbox and identify the parent document and frame separately.",
+            "Interact with a uniquely selected frame input and inspect visible frame-specific confirmation.",
+            "Demonstrate a wrong-scope locator failure rather than silently selecting another element.",
+            "Record how a CSP or origin policy failure would be diagnosed without weakening security controls."
+        ],
+        "questions": [
+            "Why does a parent Page locator not automatically search iframe documents?",
+            "How would you scope two similar frames safely?",
+            "What is the difference between frame navigation and API authorization?"
+        ]
+    },
+
+    {
+        "id": "blocking-dialogs",
+        "title": "JavaScript Dialog Handling Without Event Races",
+        "intro": "alert, confirm and prompt are modal browser dialogs whose handlers can block page actions if registered incorrectly. A test must make an explicit accept/dismiss decision and verify the resulting state.",
+        "sections": [
+            {
+                "title": "Plan handler lifecycle and choice before the click",
+                "body": [
+                    "Playwright Java normally auto-dismisses dialogs if no handler is installed. Once you register an onDialog handler, you must accept or dismiss the dialog; a handler that only logs its message will stall the click because the browser is waiting for a decision. Register the handler before the action that opens the dialog and inspect the dialog type/message to avoid automatically accepting an unexpected destructive operation.",
+                    "For a confirmation negative, explicitly dismiss and assert no destructive state change. For a positive, accept and verify the documented side effect. Prompt inputs require an explicit value, and beforeunload has different browser restrictions. Avoid leaving a global dialog handler installed for later unrelated tests."
+                ]
+            },
+            {
+                "title": "Worked denial and negative control",
+                "body": [
+                    "Imagine a delete button triggering 'Delete service?'. First record the owner and status, dismiss confirm, and reread the record to prove it still exists. In a separate isolated fixture, accept and assert the approved deletion behavior. A test that merely observes the dialog text but does not answer it is not a valid negative. An unattended accept-all handler is dangerous because it silently changes user intent."
+                ]
+            },
+            {
+                "title": "Independent transfer",
+                "body": [
+                    "A form displays a prompt requesting a one-time reason before saving. Design one valid reason, one dismissal and one invalid reason, with explicit expected records and cleanup. State how the test will remove the handler afterward."
+                ]
+            }
+        ],
+        "practice": [
+            "In a disposable browser sandbox, register a dialog handler before triggering an alert, confirm or prompt.",
+            "Demonstrate both an explicit dismiss/no-mutation case and accept/expected-effect case.",
+            "Cause a handler that only logs the dialog to stall under a bounded timeout, then correct it.",
+            "Remove handlers and verify a later independent test is not affected."
+        ],
+        "questions": [
+            "What happens when a registered dialog handler does not accept or dismiss?",
+            "Why is a default auto-dismiss not proof of the intended UX?",
+            "How would a confirmation dismissal protect the product state?"
+        ]
+    },
 
     { id: "browser-diagnostics", title: "Browser Diagnostics: Traces, Screenshots, Console and Network", intro: "A failed browser assertion is often the end of a chain of frontend, network or environment events. Capture layered evidence that explains the chain without producing enormous sensitive artifacts on every passing test.", sections: [
         { title: "Trace tells a richer story", body: ["Playwright traces can preserve actions, DOM snapshots and network context useful for replay/triage. Screenshots show one visual moment; console messages and failed responses expose other failure classes.", "Prefer trace/screenshot retention on failure or targeted investigation. Apply retention, size and secret-handling policies." ] },
