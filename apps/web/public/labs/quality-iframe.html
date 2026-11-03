@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Quality Frame Fixture</title></head>
+<body style="font:1rem/1.5 system-ui,sans-serif;margin:1rem">
+<form id="sample-form">
+  <label for="reference">Reference</label>
+  <input id="reference" name="reference" required>
+  <button type="submit">Save frame reference</button>
+</form>
+<output id="frame-result" role="status">No reference saved</output>
+<script>
+document.getElementById("sample-form").addEventListener("submit",event=>{
+  event.preventDefault();
+  const reference=document.getElementById("reference").value.trim();
+  document.getElementById("frame-result").textContent=
+    reference==="CASE-42"?"Frame reference saved: CASE-42":"Unexpected frame reference";
+});
+</script></body></html>

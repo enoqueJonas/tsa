@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { qualityTestDesignDepth } from "./quality-test-design-depth-cases";
 
 const istqb: LearningResource = { title: "ISTQB — Certified Tester Foundation Level Syllabus", url: "https://www.istqb.org/certifications/certified-tester-foundation-level" };
 const guruDecisionTables: LearningResource = { title: "ISTQB Glossary — Decision Table Testing", url: "https://glossary.istqb.org/en_US/term/decision-table-testing-3" };
@@ -17,6 +18,13 @@ function rich(spec: Spec): Lesson {
         for (const body of section.body) blocks.push({ type: "paragraph", text: body });
         if (section.list) blocks.push({ type: "list", items: section.list });
         if (section.code) blocks.push({ type: "code", language: section.language ?? "text", code: section.code });
+    }
+    // Original activity ID and lesson sequence remain unchanged; the worked
+    // mechanisms below are authored for these three specific shallow readings.
+    if (["exploratory-testing", "negative-testing", "traceability"].includes(spec.id)) {
+        const worked = qualityTestDesignDepth[spec.id];
+        if (!worked?.length) throw new Error(`Missing deep Test Analysis source: ${spec.id}`);
+        blocks.push(...worked);
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward analysis checkpoint", body: "Use techniques to reveal meaningful behavior partitions, rules, transitions and interactions in the Steward domain. A technique is useful only when it exposes risk more clearly than ad-hoc case enumeration." });
     blocks.push({ type: "resources", title: "Continue learning", resources: [istqb, guruDecisionTables, exploratory] });

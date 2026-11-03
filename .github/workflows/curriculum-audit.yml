@@ -10,6 +10,7 @@ on:
       - curriculum/cloud-engineer-source-depth-v1
       - curriculum/reliability-engineer-source-depth-v1
       - curriculum/quality-steward-source-depth-v1
+      - curriculum/quality-steward-short-readings-depth-v2
       - integration/tsa-audits-master-20261102
       - master
   workflow_dispatch:
@@ -70,6 +71,8 @@ jobs:
         run: node scripts/check-quality-gitlab-selection.mjs
       - name: Execute curriculum smoke test suite
         run: pnpm test
+      - name: Guard original Quality short-reading mechanisms and specialized browser lesson splits
+        run: node scripts/check-quality-short-reading-depth.mjs
       - name: Validate exact Cloud Kubernetes teaching manifest and fail-closed selector mismatch
         run: node scripts/check-cloud-k8s-lesson-source.mjs
       - name: Execute Cloud local TLS, object key and canary evidence learner examples
@@ -393,6 +396,9 @@ jobs:
           python -m http.server 4173 --bind 127.0.0.1 --directory apps/web/out > /tmp/tsa-server.log 2>&1 &
           for i in $(seq 1 30); do curl --fail --silent http://127.0.0.1:4173/ > /dev/null && break; sleep 1; done
           python scripts/check-school-learner-browser.py
+          if [ "$TSA_SCHOOL" = "quality-steward" ]; then
+            python scripts/check-quality-browser-event-lab.py
+          fi
       - name: Upload cross-school learner evidence
         if: always()
         uses: actions/upload-artifact@v4
