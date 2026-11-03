@@ -28,7 +28,7 @@ try {
   assert.equal(out.status, 0, out.stderr);
   out = run("java", ["UnitTransferOracle"]);
   assert.notEqual(out.status, 0, "Incorrect authorization rule must not pass its oracle");
-  assert.match(out.stderr, /AssertionError: owner=true active=false locked=false expected=false actual=true/);
+  // The locked-service row is checked first and must reject an owner.\n  // A Java assertion stops execution at that first mismatched expected result.\n  assert.match(out.stderr, /AssertionError: owner=true active=true locked=true expected=false actual=true/);
   console.log("PASS exact original Unit Testing Java: independent 4-case oracle and deterministic forbidden-transfer mutant.");
 } finally {
   rmSync(dir, { recursive: true, force: true });
