@@ -45,6 +45,10 @@ type Spec = {
     warning?: string;
 };
 
+// Self-contained policy example. Real GitLab job selection and report
+// collection are external environment gates, not proved by this Java model.
+const qualityGateJava = "public class QualityGateDecision {\n    record Evidence(int selected, int executed, int failures,\n                    boolean reportPresent, boolean matchingCommit) {}\n    static boolean approve(Evidence e) {\n        return e.selected > 0 && e.executed == e.selected && e.failures == 0\n            && e.reportPresent && e.matchingCommit;\n    }\n    static void expect(String name, Evidence evidence, boolean allowed) {\n        boolean actual = approve(evidence);\n        if (actual != allowed) throw new AssertionError(name + \" expected=\" + allowed + \" actual=\" + actual);\n        System.out.println(name + \"=\" + (actual ? \"APPROVE\" : \"BLOCK\"));\n    }\n    public static void main(String[] args) {\n        expect(\"complete\", new Evidence(8, 8, 0, true, true), true);\n        expect(\"failed-test\", new Evidence(8, 8, 1, true, true), false);\n        expect(\"missing-test\", new Evidence(8, 7, 0, true, true), false);\n        expect(\"missing-report\", new Evidence(8, 8, 0, false, true), false);\n        expect(\"stale-commit\", new Evidence(8, 8, 0, true, false), false);\n        expect(\"zero-selection\", new Evidence(0, 0, 0, true, true), false);\n    }\n}";
+
 const practicalProofs: Record<string, [string, string]> = {
     "testcontainers-lifecycle": ["Executed test-owned container lifecycle trace","A failed setup cannot leave an unnoticed running dependency"],
     "testcontainers-networking": ["Host-to-container mapped-port connection and failure trace","Tests use resolved mapped ports rather than assuming host port constants"],
@@ -81,6 +85,18 @@ function lessonFrom(spec: Spec): Lesson {
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
     ];
     if (spec.code) blocks.push({ type: "code", language: spec.language ?? "text", code: spec.code });
+    if (spec.id === "quality-gates") blocks.push(
+        {type:"heading",id:"gate-evidence-contract",text:"Define the required evidence contract first",level:2},
+        {type:"paragraph",text:"A release gate is a predicate over the evidence actually produced for a specific commit, not the color of a job. At minimum it must distinguish selected tests, executed tests, failures, presence of a parseable report and correct commit/release identity. If one mandatory check was skipped, selected=8 but executed=7; a pipeline can appear green while the release evidence is incomplete."},
+        {type:"heading",id:"gate-executable",text:"Execute six positive/negative gate decisions",level:2},
+        {type:"paragraph",text:"Save this as QualityGateDecision.java, run javac QualityGateDecision.java and java QualityGateDecision using Java 17. It must print complete=APPROVE and BLOCK for failed-test, missing-test, missing-report, stale-commit and zero-selection. The code is an isolated decision model, not a deployed GitLab rule. It tests that green cannot be inferred from absent, skipped or stale results."},
+        {type:"code",language:"java",code:qualityGateJava},
+        {type:"heading",id:"gate-failure",text:"Negative: a dangerous missing-evidence approval",level:2},
+        {type:"paragraph",text:"Deliberately change executed == selected to executed <= selected. In that mutant, missing-test would incorrectly be APPROVE. Its explicit expected=false assertion must fail. Restore the original. Real GitLab implementation must also prove job exit codes, fail-closed rule/needs selection and report publishing even when a test fails; do not confuse the local model with those controls."},
+        {type:"heading",id:"gate-independent-transfer",text:"Independent gate design",level:2},
+        {type:"paragraph",text:"A team runs 12 scheduled checks, 10 execute, none fail, and the report is present for the right commit. Should the release pass? Identify the missing evidence and the triggering CI source. Now decide how you would handle a security-advisory-only check differently, with documented risk and accountable approval; do not silently reclassify mandatory checks as optional."},
+    );
+
     if (spec.warning) blocks.push({ type: "callout", tone: "warning", title: "Pipeline risk", body: spec.warning });
     blocks.push({ type: "callout", tone: "steward", title: "Quality pipeline checkpoint", body: "A pipeline is a decision system around evidence. It must preserve release/environment identity, make missing evidence visible and fail for reasons a human can triage. Green is meaningful only when the intended checks actually ran." });
     blocks.push({ type: "resources", title: "Continue learning", resources: resourcesFor(spec.id) });
