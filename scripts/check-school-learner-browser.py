@@ -107,6 +107,8 @@ def inspect_school(page):
                     "quality-ci-quality-gates-001": ("Define the required evidence contract first", True),
                     "quality-continuous-scheduled-execution-pipeline-contract": ("Pipeline creation versus job selection", True),
                     "quality-continuous-scheduled-execution-schedule-guide": ("The YAML does not create the schedule", False),
+                    "quality-reuse-boundary-001": ("What is a reusable test library, technically?", False),
+                    "quality-steward-milestone-decision-evidence-001": ("Follow three reported green signals to their actual evidence", False),
                     "browser-environment-browser-surface-decision-primer": ("Define the evidence boundary", False),
                     "non-functional-quality-performance-tool-decision-primer": ("Arrival rate is not the same as concurrent users", False),
                 }
