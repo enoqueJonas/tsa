@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { databaseQueryProofById } from "./reliability-postgres-query-proof";
 
 const postgresRoles: LearningResource = {
     title: "PostgreSQL — Database Roles",
@@ -49,6 +50,7 @@ function databaseLesson(spec: DatabaseLessonSpec): Lesson {
         { type: "list", items: spec.principles },
         { type: "heading", id: `${spec.id}-steward`, text: "Steward database context", level: 2 },
         ...spec.stewardContext.map((text): LessonBlock => ({ type: "paragraph", text })),
+        ...(databaseQueryProofById[spec.id] ?? []),
         {
             type: "callout",
             tone: "steward",
