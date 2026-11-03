@@ -23,6 +23,14 @@
     <h1>Browser Events — Local Quality Lab</h1>
     <p>This is a disposable test fixture, <strong>not the Steward product</strong>. No credentials, remote requests or user records are involved.</p>
   </header>
+  <section aria-labelledby="state-title">
+    <h2 id="state-title">Compare session and origin storage</h2>
+    <p>This fixture saves a non-sensitive teaching string in localStorage and sessionStorage. These are not authenticated sessions, access tokens, or evidence of actual login.</p>
+    <button id="save-state" type="button">Save isolated sample state</button>
+    <button id="read-state" type="button">Read sample state</button>
+    <button id="clear-state" type="button">Clear sample state</button>
+    <output id="state-result" role="status">No state inspected</output>
+  </section>
   <section aria-labelledby="upload-title">
     <h2 id="upload-title">Upload a known fixture</h2>
     <label for="fixture-file">Choose sample text file</label>
@@ -50,6 +58,22 @@
     <output id="dialog-result" role="status">Sample record intact</output>
   </section>
   <script>
+    const savedOriginKey="quality_lab_origin";
+    const savedSessionKey="quality_lab_session";
+    const stateResult=document.getElementById("state-result");
+    const stateView=()=>stateResult.textContent="origin="+(localStorage.getItem(savedOriginKey)||"absent")
+      +"; tab="+(sessionStorage.getItem(savedSessionKey)||"absent");
+    document.getElementById("save-state").addEventListener("click",()=>{
+      localStorage.setItem(savedOriginKey,"sample-42");
+      sessionStorage.setItem(savedSessionKey,"tab-42");
+      stateView();
+    });
+    document.getElementById("read-state").addEventListener("click",stateView);
+    document.getElementById("clear-state").addEventListener("click",()=>{
+      localStorage.removeItem(savedOriginKey);
+      sessionStorage.removeItem(savedSessionKey);
+      stateView();
+    });
     const upload=document.getElementById("fixture-file");
     const result=document.getElementById("upload-result");
     upload.addEventListener("change",async()=>{
