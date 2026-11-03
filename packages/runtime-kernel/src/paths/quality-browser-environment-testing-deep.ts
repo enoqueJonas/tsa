@@ -145,4 +145,26 @@ const playwrightBuild: Lesson = { id: "browser-environment-playwright-build", ti
   { id: "browser-environment-playwright-build-002", title: "Extract Page and Component Objects from Proven Repetition", estimatedMinutes: 90, content: { type: "practical", objective: "Introduce UI abstractions only where the first browser flows demonstrate stable repeated behavior.", scenario: "Page/component objects model user-facing capabilities; they must not become a DOM mirror or assertion dumping ground.", instructions: ["Add a second related browser flow.", "Identify repeated stable interactions.", "Extract the smallest page/component object justified by the repetition.", "Prefer accessible locators.", "Keep domain assertions visible in tests."], deliverables: ["Second browser flow", "Small page/component abstraction", "Abstraction decision note"], completionCriteria: ["The abstraction removes demonstrated repetition.", "Assertions remain understandable.", "The object does not expose every DOM element as a field."] } }
 ] };
 
-export const browserAndEnvironmentTestingDeepLessons: Lesson[] = [browserEngineeringMilestone, playwrightBuild, ...specs.map(rich), browserArchitectureMilestone, lab];
+// PED-005: browser runtime, locators, synchronization, state, page/component
+// boundaries and diagnostics are source-authored prerequisites for Playwright
+// implementation milestones, not material to discover after doing the lab.
+const browserFirstPrinciples = [
+    "playwright-runtime-model", "dom-accessibility-locators",
+    "actionability-auto-waiting", "navigation-network",
+    "browser-state", "ui-test-selection", "page-components",
+    "browser-diagnostics",
+];
+const firstBrowserSpecs = browserFirstPrinciples.map((id) => {
+    const spec = specs.find((candidate) => candidate.id === id);
+    if (!spec) throw new Error(`Missing original browser prerequisite: ${id}`);
+    return spec;
+});
+const laterBrowserSpecs = specs.filter((spec) => !browserFirstPrinciples.includes(spec.id));
+export const browserAndEnvironmentTestingDeepLessons: Lesson[] = [
+    ...firstBrowserSpecs.map(rich),
+    playwrightBuild,
+    browserEngineeringMilestone,
+    ...laterBrowserSpecs.map(rich),
+    browserArchitectureMilestone,
+    lab,
+];
