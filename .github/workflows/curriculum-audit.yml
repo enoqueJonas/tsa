@@ -61,6 +61,8 @@ jobs:
         run: node scripts/check-cloud-building-block-depth.mjs
       - name: Validate source-authored Reliability logging and negative parser evidence
         run: node scripts/check-reliability-logging-source.mjs
+      - name: Execute Reliability exact learner two-hop tracing and webhook delivery failure
+        run: node scripts/check-reliability-transport-proofs.mjs
       - name: Report cross-school code example evidence
         run: pnpm report:curriculum-examples
       - name: Execute isolated Platform service recovery drill
