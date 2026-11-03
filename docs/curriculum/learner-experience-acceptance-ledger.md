@@ -10,6 +10,30 @@ For each module inspect the **composed learner-facing module**, including lesson
 
 Status legend: **Not started** = full pedagogical review not performed; **In review** = active findings; **Blocked** = learner-facing defect or material verification gap; **Accepted** = five dimensions reviewed with linked evidence. Technical build/CI is a separate operational gate, not the score for learning quality.
 
+## Technical Steward PED-005 — 13-path learner-acceptance checkpoint (2026-11-03)
+
+This school is **SOURCE REMEDIATION IN PROGRESS / HUMAN LEARNER NOT VALIDATED**. [Draft PR #355](https://github.com/enoqueJonas/tsa/pull/355) removed generic generated governance/preparation wrappers, strengthened the source readings and 83 original topic practicals, and split the Technology Governance, Handbook and final stewardship labs into independently assessed phases. [Canonical source ledger](./ped-005-technical-steward-school-audit.md) contains per-path findings; [blind independent-transfer protocol](./ped-005-technical-steward-independent-transfer-review.md) contains all thirteen novel assessor packets and an unadministered scoring sheet.
+
+**Verified baseline:** the full 19-job curriculum build/audit and scripted browser CI [#41671317459](https://github.com/enoqueJonas/tsa/actions/runs/41671317459) succeeded at source SHA `6040629`. That technical result predates the later practical/reading revisions; newer exact-head results must be checked separately. Scripted browser traversal and hard-reload regression are not human rendered-page critique or measured learning.
+
+| Technical Steward path | Concept teaching | Practical rubric | Cross-school continuity | Resources | Render/UX | Independent learner |
+| --- | --- | --- | --- | --- | --- | --- |
+| Technical Leadership | Revised 8 originals; qualitative reading open | 8 independent scenarios authored | Prior Architect/QA evidence not independently proven | Targeted links exist; slice audit open | Scripted baseline only | NOT TESTED |
+| Engineering Governance | Revised 7 originals | 7 decision/authority scenarios authored | Organizational approval authority unverified | Targeted links; precision review open | Scripted baseline only | NOT TESTED |
+| IT & Technology Governance | Revised 10 originals | 180-minute lab split 3 ways | Real decision roles not supplied | COBIT/ITIL/ISO/NIST boundaries need reviewer | Scripted baseline only | NOT TESTED |
+| Strategy & Capability | Revised 6 originals | 6 novel non-choice scenarios | Real planning inputs unknown | Reference selection unverified | Scripted baseline only | NOT TESTED |
+| Technology Risk | Revised 9 originals | 9 novel risk case packets | Risk acceptance/tolerance authority unknown | Reference scope unverified | Scripted baseline only | NOT TESTED |
+| Controls & Assurance | Revised 10 originals | 10 falsifiable controls cases | Actual operation not observed | NIST/assurance resources to inspect | Scripted baseline only | NOT TESTED |
+| Architecture Governance | Revised 8 originals | 8 independent ADR/exception/retirement cases | Architect actual estate must be verified | ADR/SEI/radar scopes to inspect | Scripted baseline only | NOT TESTED |
+| Security & Data Governance | Revised 8 originals | 8 denied-effect/authority case prompts | Privacy/retention policy unapproved | NIST reference scope unverified | Scripted baseline only | NOT TESTED |
+| Change & Service Governance | Revised 8 originals | 8 exact-artifact/recovery cases | Live incident and release authority absent | ITIL/SRE reference precision open | Scripted baseline only | NOT TESTED |
+| Third-party & Lifecycle | Revised 11 originals | 11 supplier/support/exit scenarios | Actual vendor contract/exit unknown | NIST/SBOM applicability to inspect | Scripted baseline only | NOT TESTED |
+| Technical Debt & Health | Revised 8 originals | 8 new-case priority/health prompts | Actual debt metrics absent | DORA/SRE resource precision open | Scripted baseline only | NOT TESTED |
+| Handbook & Standards | Revised 8 original structured readings | 390-minute lab split 3 ways | Independent deputy/real ops not observed | Handbook sources to inspect | Scripted baseline only | NOT TESTED |
+| Stewardship Review | Cross-school integrated milestone | 600-minute capstone split 4 ways | Approved actual-stack/biz context absent | Consumes prior school materials | Scripted baseline only | NOT TESTED |
+
+**Do not mark Accepted:** The table records authored source features, not scores from a human learner. No reader has independently demonstrated unfamiliar-case competence in this session. Real external controls, participant handoff, desktop/390px manual review and authority-dependent actions remain unverified. Keep #329 and #318 open.
+
 ## Cross-module journey gates
 
 - Engineering Apprentice: inspect the school entry point and its actual lessons (the 134-entry structural census starts with Builder; Apprentice must NOT be omitted from the learner journey).
