@@ -4,6 +4,7 @@ This proves fixture behavior and event-wait mechanics, NOT the Steward product,
 Java Playwright execution, independent learner competence or external systems.
 """
 import os
+import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -42,6 +43,23 @@ with TemporaryDirectory(prefix="tsa-quality-events-") as tmp, sync_playwright() 
         print(f"QUALITY EVENT SANDBOX MOBILE OVERFLOW: {offenders}", flush=True)
         page.screenshot(path="artifacts/cross-school-learner/quality-event-overflow.png", full_page=True)
         raise AssertionError(f"Isolated Quality event lab has horizontal overflow: {offenders}")
+
+    # Four meaningful viewport classes and keyboard execution, not screenshots only.
+    # Reuse the SAME controlled lab fixture, never imply a Steward UI is present.
+    for width in (320, 390, 768, 1280):
+        page.set_viewport_size({"width": width, "height": 844})
+        page.goto(BASE + "/labs/quality-browser-events.html", wait_until="load")
+        expect(page.get_by_role("heading", name="Browser Events — Local Quality Lab")).to_be_visible()
+        right_edge = page.evaluate("document.documentElement.scrollWidth")
+        assert right_edge <= width + 2, f"Responsive lab overflow at {width}px: scrollWidth={right_edge}"
+        control = page.get_by_role("button", name="Read sample state")
+        control.focus()
+        expect(control).to_be_focused()
+        page.keyboard.press("Enter")
+        expect(page.locator("#state-result")).to_have_text("origin=absent; tab=absent")
+        print(f"PASS responsive fixture: {width}px no document overflow and keyboard action works", flush=True)
+    page.set_viewport_size({"width": 390, "height": 844})
+    page.reload(wait_until="load")
 
     # A page reload retains this tab's sessionStorage and its origin's localStorage.
     # This is NOT an authentication test; values are harmless fixture strings.
@@ -116,6 +134,36 @@ with TemporaryDirectory(prefix="tsa-quality-events-") as tmp, sync_playwright() 
     page.get_by_role("button", name="Reset sample record").click()
     expect(page.locator("#dialog-result")).to_have_text("Sample record intact")
     print("PASS browser events: dialog dismissal/acceptance and state restoration", flush=True)
+
+    # Seed a deliberately broken response behind a teaching-only query switch.
+    # Keep the normal fixture green; verify the *real bytes* of a reproducible defect.
+    defect_page = context.new_page()
+    defect_page.goto(BASE + "/labs/quality-browser-events.html?teach-defect=owner-mismatch", wait_until="load")
+    with defect_page.expect_download() as mismatch_event:
+        defect_page.get_by_role("link", name="Download sample report").click()
+    wrong_download = mismatch_event.value
+    assert wrong_download.suggested_filename == "quality-record-42.csv"
+    bad_report = Path(tmp) / "wrong-owner.csv"
+    wrong_download.save_as(bad_report)
+    actual = bad_report.read_text(encoding="utf-8")
+    expected = "record_id,owner\n42,team7\n"
+    assert actual == "record_id,owner\n42,team9\n"
+    assert actual != expected, "The teaching defect should not falsely pass the correct-owner oracle"
+    evidence_dir = Path("artifacts/cross-school-learner")
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "quality-defect-evidence.json").write_text(json.dumps({
+        "fixture": "local Quality browser lab (NOT Steward)",
+        "reproduction_url_path": "/labs/quality-browser-events.html?teach-defect=owner-mismatch",
+        "action": "Download sample report",
+        "expected_csv": expected,
+        "observed_csv": actual,
+        "impact": "Downloaded record 42 attributes ownership to the wrong team",
+        "root_cause": "unverified hypothesis - not included",
+    }, indent=2) + "\n", encoding="utf-8")
+    (evidence_dir / "quality-defect-observed.csv").write_text(actual, encoding="utf-8")
+    defect_page.screenshot(path=str(evidence_dir / "quality-defect-page.png"), full_page=True)
+    defect_page.close()
+    print("PASS controlled defect reproduction: exact mismatching CSV bytes plus redacted evidence artifact", flush=True)
 
     assert not errors, f"Browser fixture JS exceptions: {errors}"
     context.close()

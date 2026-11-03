@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { qualityExperientialDepthV6 } from "./quality-experiential-depth-v6";
 import { qualityEvidenceDepthV5 } from "./quality-evidence-depth-v5";
 import { qualityOriginalDepth } from "./quality-original-remaining-depth";
 
@@ -43,6 +44,13 @@ function rich(spec: Spec): Lesson {
             {type:"paragraph",text:evidence.negative},
             {type:"heading",id:`${spec.id}-transfer-v5`,text:"Independent transfer",level:2},
             {type:"paragraph",text:evidence.transfer},
+        );
+    }
+    const experience = qualityExperientialDepthV6[spec.id as keyof typeof qualityExperientialDepthV6];
+    if (experience) for (const [i,part] of experience.entries()) {
+        blocks.push(
+            {type:"heading",id:`${spec.id}-experience-${i}`,text:part.heading,level:2},
+            {type:"paragraph",text:part.body},
         );
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward quality checkpoint", body: "Quality work must change what the team knows about release risk. Use the real Steward domain, deployed environments and delivery evidence. Do not maximize test counts; maximize useful confidence and make residual uncertainty visible." });

@@ -84,7 +84,10 @@
         ?"Fixture accepted: record 42"
         :"Fixture rejected: unexpected content or file type";
     });
-    const csv="record_id,owner\n42,team7\n";
+    // Controlled defect toggle for training; default behavior remains correct.
+    // The query parameter is public fixture data, not a production feature.
+    const teachOwnerMismatch = new URLSearchParams(window.location.search).get("teach-defect")==="owner-mismatch";
+    const csv="record_id,owner\n42,"+(teachOwnerMismatch?"team9":"team7")+"\n";
     document.getElementById("download-report").href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
     document.getElementById("open-popup").addEventListener("click",()=>{
       window.open("/labs/quality-popup-detail.html","_blank");

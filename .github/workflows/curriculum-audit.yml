@@ -14,6 +14,7 @@ on:
       - curriculum/quality-steward-java-api-foundations-v3
       - curriculum/quality-steward-original-depth-v4
       - curriculum/quality-steward-state-oracles-junit-v5
+      - curriculum/quality-steward-defect-responsive-v6
       - integration/tsa-audits-master-20261102
       - master
   workflow_dispatch:
