@@ -119,6 +119,30 @@ def inspect_school(page):
                         assert code.count() >= 1, (
                             f"Source-authored executable or SQL fixture missing from rendered reading: {activity_id}"
                         )
+            if SCHOOL == "security-steward":
+                source_readings = {
+                    "security-identity-secrets-identity-boundaries-001": "Four identity decisions, four different authorities",
+                    "security-identity-secrets-oidc-oauth-001": "Execute issuer, audience, signature, age and domain-denial cases",
+                    "security-identity-secrets-keycloak-001": "Map Keycloak configuration onto protocol responsibilities",
+                    "security-vault-implementation-001": "Trace a workload credential from authentication to expiry",
+                    "security-directory-federation-keycloak-ldap-001": "Worked mapping: a directory group is not an automatic API permission",
+                    "web-and-api-threats-authorization-idor-001": "Execute the real local 200/401/403 ownership matrix",
+                    "application-security-authorization-design-testing-001": "An authorization policy needs an object and an action",
+                    "security-artifact-signing-verification-001": "Execute valid signature, tamper and untrusted-signer cases",
+                }
+                expected = source_readings.get(activity_id)
+                if expected:
+                    assert content.get_by_text(expected, exact=True).count() == 1, (
+                        f"Security original-source teaching missing at {activity_id}: {expected}"
+                    )
+                    if activity_id not in {
+                        "security-identity-secrets-identity-boundaries-001",
+                        "security-identity-secrets-keycloak-001",
+                        "application-security-authorization-design-testing-001",
+                    }:
+                        assert code.count() >= 1, (
+                            f"Copyable executable security proof absent: {activity_id}"
+                        )
             for k in range(code.count()):
                 assert code.nth(k).locator("pre").count() > 0, (
                     f"Code block not rendered: {activity_id}"
@@ -475,6 +499,68 @@ def check_reliability_reentry(page):
     print("PASS reliability-engineer IndexedDB reentry: practical evidence and reflection persisted across hard reload", flush=True)
 
 
+def check_security_reentry(page):
+    """Persistence regression with a synthetic learner in a fresh browser profile.
+
+    Tests actual IndexedDB read/write across reload, not pedagogy, real lab
+    execution, independent learning or multi-device synchronization.
+    """
+    page.goto(f"{BASE}/?view=curriculum&school=security-steward", wait_until="networkidle")
+    page.get_by_role("button", name=MODULE).first.click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+    params = page.evaluate("new URLSearchParams(location.search).toString()")
+    assert "path=" in params, "Module did not open with durable path identity"
+
+    # First reading -> first practical: evidence must survive a hard reload.
+    page.get_by_role("button", name=NEXT).click()
+    page.get_by_placeholder("What did you build, inspect, break, diagnose, or change? Include commands, observations, and important decisions.").wait_for()
+    notes = "Synthetic Security Steward evidence: a named C4 boundary and a rejected assumption."
+    page.get_by_placeholder("What did you build, inspect, break, diagnose, or change? Include commands, observations, and important decisions.").fill(notes)
+    page.get_by_placeholder("What was the result? What did the evidence prove, and what would you do differently next time?").fill("This is a storage regression, not validated reliability competence.")
+    page.get_by_role("button", name="Save evidence").click()
+    page.get_by_text("Saved locally", exact=True).wait_for()
+    practical_id = page.evaluate("new URLSearchParams(location.search).get('activity')")
+    page.reload(wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+    page.get_by_placeholder("What did you build, inspect, break, diagnose, or change? Include commands, observations, and important decisions.").wait_for()
+    actual = page.get_by_placeholder("What did you build, inspect, break, diagnose, or change? Include commands, observations, and important decisions.").input_value()
+    assert actual == notes, f"Practical evidence lost on reload: {practical_id}"
+
+    # First reflection -> persist the completed text, then reload on the same URL.
+    page.get_by_role("button", name=NEXT).click()
+    reflection = page.get_by_placeholder("Write your response here...")
+    reflection.wait_for()
+    reflection_id = page.evaluate("new URLSearchParams(location.search).get('activity')")
+    path_id = page.evaluate("new URLSearchParams(location.search).get('path')")
+    answer = "Synthetic transfer check only. " * 12
+    reflection.fill(answer)
+    # Wait for IndexedDB commit, not just React state, before navigation.
+    page.wait_for_function("""async ({pathId, activityId, expected}) => {
+      const db = await new Promise((resolve, reject) => {
+        const request = indexedDB.open("tsa-academy", 5);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      try {
+        const tx = db.transaction("path-progress", "readonly");
+        const record = await new Promise((resolve, reject) => {
+          const request = tx.objectStore("path-progress").get(pathId);
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+        return record?.reflectionResponses?.[activityId] === expected;
+      } finally {
+        db.close();
+      }
+    }""", arg={"pathId": path_id, "activityId": reflection_id, "expected": answer}, timeout=12000)
+    page.reload(wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+    assert page.get_by_placeholder("Write your response here...").input_value() == answer, (
+        f"Reflection content lost on reload: {reflection_id}"
+    )
+    print("PASS security-steward IndexedDB reentry: practical evidence and reflection persisted across hard reload", flush=True)
+
+
 with sync_playwright() as playwright:
     browser = playwright.chromium.launch(headless=True)
     context = browser.new_context(viewport={"width": 1440, "height": 900})
@@ -498,4 +584,8 @@ with sync_playwright() as playwright:
         practice_context = browser.new_context(viewport={"width": 1440, "height": 900})
         check_reliability_reentry(practice_context.new_page())
         practice_context.close()
+    if SCHOOL == "security-steward":
+        security_context = browser.new_context(viewport={"width": 1440, "height": 900})
+        check_security_reentry(security_context.new_page())
+        security_context.close()
     browser.close()
