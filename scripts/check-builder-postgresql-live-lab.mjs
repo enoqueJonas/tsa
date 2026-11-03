@@ -35,6 +35,35 @@ try {
   const initial = run(["-c", "SELECT current_database(), current_user, 2+2"]).out;
   assert.equal(initial, "tsa_steward_lab|tsa_learner|4");
 
+  // Execute the exact learner-facing database/schema/table examples in a separate
+  // disposable database before the Steward dataset is populated.
+  const runLibrary = (caption, expectedStatus = 0) =>
+    run(["-d", "tsa_library", "-c", codeFromLesson(caption)], expectedStatus);
+  const dbCreated = run(["-d", "postgres", "-c",
+    codeFromLesson("SQL in the postgres database — create tsa_library")]).out;
+  assert.equal(dbCreated, "CREATE DATABASE");
+  assert.equal(run(["-d", "tsa_library", "-c", "SELECT current_database()"]).out, "tsa_library");
+  const madeSchema = runLibrary("SQL in tsa_library — create and inspect the library schema").out;
+  assert.deepEqual(madeSchema.split(/\\r?\\n/), ["CREATE SCHEMA", "library"]);
+  assert.equal(runLibrary("SQL in tsa_library — create a persistent table").out, "CREATE TABLE");
+  assert.equal(runLibrary("SQL — insert two example books").out, "INSERT 0 2");
+  const orderedBooks = runLibrary("SQL — read persistent rows").out;
+  assert.deepEqual(orderedBooks.split(/\\r?\\n/), [
+    "1|The Hobbit|J. R. R. Tolkien|1937",
+    "2|Things Fall Apart|Chinua Achebe|1958"
+  ]);
+  const fixedYear = runLibrary("SQL — update one identified row").out;
+  assert.deepEqual(fixedYear.split(/\\r?\\n/), ["UPDATE 1", "The Hobbit|1937"]);
+  const badBook = runLibrary("Expected failure — invalid title should not add a row", 1);
+  assert.match(badBook.err, /null value in column "title".*violates not-null constraint/);
+  assert.equal(run(["-d", "tsa_library", "-c", "SELECT count(*) FROM library.books"]).out, "2");
+  const noUnqualifiedTable = run(["-d", "tsa_library", "-c", "SELECT * FROM books;"], 1);
+  assert.match(noUnqualifiedTable.err, /relation "books" does not exist/);
+  assert.equal(run(["-d", "tsa_library", "-c", "SELECT count(*) FROM library.books"]).out, "2",
+    "Permanent books must remain visible from a new client process");
+  const wrongDatabase = run(["-d", "tsa_invalid_database_name", "-c", "SELECT 1"], 2);
+  assert.match(wrongDatabase.err, /database "tsa_invalid_database_name" does not exist/);
+
   const firstFile = path.join(root, "first_session.sql");
   fs.writeFileSync(firstFile, codeFromLesson("first_session.sql — run only in a disposable PostgreSQL lab database"));
   const firstOutput = run(["-f", firstFile]).out;
@@ -243,7 +272,7 @@ try {
   const stageCounts = migration.split(/\r?\n/).filter(v => /^\d+$/.test(v));
   assert.deepEqual(stageCounts, ["5", "0", "5", "0"], "Backfill must retain five rows and leave no new column after rollback");
   assert.equal(run(["-c", "SELECT count(*) FROM information_schema.columns WHERE table_name='service' AND column_name='technical_owner'"]).out, "0");
-  console.log(`Builder PostgreSQL live lab passed: first session/TEMP negative, 4 persisted tables, 20 published SQL examples, 5/6/4 join cardinalities, 2 rejected writes, 3 transaction scripts with savepoint failure, 2-session Read Committed/Repeatable Read, cross-table release-readiness detection and rollback proof, populated migration backfill and two-session unique-name race; database=${process.env.PGDATABASE}.`);
+  console.log(`Builder PostgreSQL live lab passed: CREATE DATABASE, CREATE SCHEMA, library table/rows and negative constraints, first session/TEMP negative, 4 persisted tables, 20 published SQL examples, 5/6/4 join cardinalities, 2 rejected writes, 3 transaction scripts with savepoint failure, 2-session Read Committed/Repeatable Read, cross-table release-readiness detection and rollback proof, populated migration backfill and two-session unique-name race; database=${process.env.PGDATABASE}.`);
 
 } finally {
   fs.rmSync(root, { recursive: true, force: true });
