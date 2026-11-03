@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { loggingDeepSections } from "./reliability-logging-source-depth";
 
 const otelLogs: LearningResource = { title: "OpenTelemetry Logs", url: "https://opentelemetry.io/docs/concepts/signals/logs/" };
 const twelveFactor: LearningResource = { title: "The Twelve-Factor App: Logs", url: "https://12factor.net/logs" };
@@ -28,6 +29,7 @@ function blocksFor(spec: Spec): LessonBlock[] {
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
     ];
+    blocks.push(...(loggingDeepSections[spec.id] ?? []));
     if (spec.warning) blocks.push({ type: "callout", tone: "warning", title: "Operational warning", body: spec.warning });
     blocks.push({ type: "callout", tone: "steward", title: "Diagnostic standard", body: "A production log should help reconstruct what happened, to which component or request, with what outcome and enough context to investigate—without leaking secrets or creating unbounded noise." });
     blocks.push({ type: "resources", title: "Continue learning", resources: resourcesByLoggingTopic[spec.id] ?? [otelLogs, twelveFactor] });
