@@ -110,10 +110,15 @@ export function AcademyProgressProvider({ children }: { children: ReactNode }) {
       return isPathComplete(path, record) ? "completed" : "in-progress";
     },
     pathPercent(path) {
-      const total = pathActivityIds(path).length;
-      if (!total) return 0;
-      const completed = records[path.id]?.completedActivityIds.length ?? 0;
-      return Math.min(100, Math.round((completed / total) * 100));
+      const currentIds = pathActivityIds(path);
+      if (!currentIds.length) return 0;
+      // Removed generated curriculum wrappers may remain in older IndexedDB
+      // records. Count only current authored activities; preserve the old
+      // evidence record until the learner resumes instead of inflating progress.
+      const activeIds = new Set(currentIds);
+      const completed = new Set((records[path.id]?.completedActivityIds ?? [])
+        .filter((id) => activeIds.has(id))).size;
+      return Math.round((completed / currentIds.length) * 100);
     },
     savePathProgress,
     resetAcademyProgress,

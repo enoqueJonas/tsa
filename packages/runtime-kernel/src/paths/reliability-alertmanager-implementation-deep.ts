@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { alertDeliveryBlocks } from "./reliability-alert-delivery-proof";
 
 const alertmanager: LearningResource = { title: "Prometheus Alertmanager", url: "https://prometheus.io/docs/alerting/latest/alertmanager/" };
 const notificationExamples: LearningResource = { title: "Alertmanager notification examples", url: "https://prometheus.io/docs/alerting/latest/notification_examples/" };
@@ -14,6 +15,7 @@ const blocks: LessonBlock[] = [
         "One real learner-owned notification receiver is enough for the lab; do not create a second alerting platform merely for exposure.",
         "Alertmanager availability and delivery failure are themselves operational conditions that must be visible."
     ] },
+    ...alertDeliveryBlocks,
     { type: "resources", title: "Continue learning", resources: [alertmanager, notificationExamples] },
 ];
 

@@ -8,6 +8,7 @@ on:
       - curriculum/delivery-engineer-pedagogical-audit
       - curriculum/delivery-engineer-source-depth-v2
       - curriculum/cloud-engineer-source-depth-v1
+      - curriculum/reliability-engineer-source-depth-v1
       - integration/tsa-audits-master-20261102
       - master
   workflow_dispatch:
@@ -58,6 +59,22 @@ jobs:
         run: node scripts/check-cloud-local-observability-proofs.mjs
       - name: Verify Cloud Building Blocks actual-reading depth, CIDR and VPS patch safety
         run: node scripts/check-cloud-building-block-depth.mjs
+      - name: Execute source-published GELF diagnostic event and malformed negative
+        run: node scripts/check-reliability-graylog-event-trace.mjs
+      - name: Verify original SLI and metrics lessons using exact executable examples
+        run: node scripts/check-reliability-sli-metrics-worked.mjs
+      - name: Execute source-published traceparent handoff and missing-propagation evidence
+        run: node scripts/check-reliability-tracing-propagation.mjs
+      - name: Guard original logging teaching depth and failure transfer across eight topics
+        run: node scripts/check-reliability-logging-source-depth.mjs
+      - name: Execute original Observability learner cross-signal negative example
+        run: node scripts/check-reliability-observability-source-proof.mjs
+      - name: Verify genuine SRE reading depth and user-facing health negative
+        run: node scripts/check-reliability-sre-source-depth.mjs
+      - name: Execute supplemental Reliability source-derived parser, SLI and counter tests
+        run: node scripts/check-reliability-logging-source.mjs
+      - name: Execute supplemental Reliability HTTP transport, recovery and incident tests
+        run: node scripts/check-reliability-transport-proofs.mjs
       - name: Report cross-school code example evidence
         run: pnpm report:curriculum-examples
       - name: Execute isolated Platform service recovery drill
@@ -163,6 +180,7 @@ jobs:
         run: |
           node scripts/check-system-thinker-steward-django-domain.mjs
           node scripts/check-system-thinker-steward-batch-import.mjs
+          node scripts/check-reliability-postgres-source.mjs
 
   system-thinker-outbox-crash-recovery:
     runs-on: ubuntu-latest
