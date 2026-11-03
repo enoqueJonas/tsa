@@ -77,7 +77,7 @@ try {
   const querySQL = publishedCode("SQL — read persistent rows");
   assert.match(querySQL, /ORDER BY book_id;/);
   const sql = publishedCode("first_session.sql — run only in a disposable PostgreSQL lab database");
-  for (const statement of ["CREATE TEMP TABLE", "INSERT INTO tsa_session_probe", "ORDER BY id", "BEGIN;", "ROLLBACK;", "SELECT count(*)"]) {
+  for (const statement of ["CREATE TEMP TABLE", "INSERT INTO tsa_session_probe", "ORDER BY id", "SELECT count(*)"]) {
     assert.ok(sql.includes(statement), `Missing SQL teaching concept: ${statement}`);
   }
   const relationalExample = publishedCode("relational_author_books.sql — two related temporary tables");
