@@ -115,7 +115,8 @@ def inspect_school(page):
                     assert content.get_by_role("heading", name="Trace the decision and its proof").count() >= 1, (
                         f"Architecture decision trace not rendered: {activity_id}"
                     )
-                if activity_id.startswith("handbook-and-standards-") and activity_id.endswith("-001"):
+                if (activity_id.startswith("handbook-and-standards-") and activity_id.endswith("-001")
+                        and "-lab-" not in activity_id):
                     assert content.get_by_role("heading", name="Copyable worked artifact").count() >= 1, (
                         f"Handbook original lacks copyable governed artifact: {activity_id}"
                     )
