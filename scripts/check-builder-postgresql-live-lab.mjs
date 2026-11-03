@@ -116,11 +116,11 @@ try {
 
   const firstFile = path.join(root, "first_session.sql");
   fs.writeFileSync(firstFile, codeFromLesson("first_session.sql — run only in a disposable PostgreSQL lab database"));
-  const firstOutput = run(["-f", firstFile]).out;
+  const firstOutput = run(["-d", "tsa_library", "-f", firstFile]).out;
   assert.match(firstOutput, /The Hobbit/);
   assert.match(firstOutput, /Beloved/);
   assert.match(firstOutput, /\n2$/m);
-  const missingTemp = run(["-c", "SELECT * FROM tsa_session_probe;"], 1);
+  const missingTemp = run(["-d", "tsa_library", "-c", "SELECT * FROM tsa_session_probe;"], 1);
   assert.match(missingTemp.err, /relation "tsa_session_probe" does not exist/);
 
   const file = path.join(root, "steward_schema_seed.sql");
