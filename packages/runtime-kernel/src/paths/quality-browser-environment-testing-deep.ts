@@ -13,6 +13,8 @@ const pwAuth: LearningResource = { title: "Playwright — Authentication", url: 
 const pwPages: LearningResource = { title: "Playwright — Pages and popups", url: "https://playwright.dev/java/docs/pages" };
 const pwFrames: LearningResource = { title: "Playwright — Frames", url: "https://playwright.dev/java/docs/frames" };
 const pwDownloads: LearningResource = { title: "Playwright — Downloads", url: "https://playwright.dev/java/docs/downloads" };
+const pwDialogs: LearningResource = { title: "Playwright — Dialogs", url: "https://playwright.dev/java/docs/dialogs" };
+const pwUploads: LearningResource = { title: "Playwright — File uploads", url: "https://playwright.dev/java/docs/input#upload-files" };
 const pwTrace: LearningResource = { title: "Playwright — Trace viewer", url: "https://playwright.dev/java/docs/trace-viewer" };
 
 const resourcesFor = (id: string): LearningResource[] => {
@@ -22,6 +24,10 @@ const resourcesFor = (id: string): LearningResource[] => {
     if (id === "navigation-network") return [pwNavigation, playwright];
     if (id === "browser-state") return [pwAuth, pwContexts];
     if (id === "advanced-browser-interactions") return [pwPages, pwFrames, pwDownloads];
+    if (id === "file-transfer-interactions") return [pwUploads, pwDownloads];
+    if (id === "popup-browser-ownership") return [pwPages, pwContexts];
+    if (id === "iframe-contexts") return [pwFrames, playwright];
+    if (id === "blocking-dialogs") return [pwDialogs, playwright];
     if (id === "browser-diagnostics") return [pwTrace, playwright];
     if (id === "responsive-testing") return [mdnResponsive, playwright];
     if (id === "cross-browser" || id === "browser-differences" || id === "browserstack" || id === "local-remote") return [playwright, browserstack];
