@@ -9,7 +9,8 @@ const marker = (id) => source.indexOf(`"id": "${id}"`);
 const persistence = marker("from-memory-to-durable-data");
 const system = marker("postgresql-what-it-is");
 const connection = marker("postgresql-first-connection");
-const databases = marker("postgresql-databases-and-schemas");
+const databases = marker("postgresql-create-database");
+const schemas = marker("postgresql-create-schema");
 const tables = marker("postgresql-tables-and-rows");
 const temporary = marker("postgresql-temporary-tables");
 const relational = marker("relational-model");
@@ -19,10 +20,10 @@ const fixture = marker("steward-schema-and-seed");
 const crud = source.indexOf('id: "sql-crud"');
 assert.ok(
   persistence > 0 && system > persistence && connection > system &&
-  databases > connection && tables > databases && temporary > tables &&
+  databases > connection && schemas > databases && tables > schemas && temporary > tables &&
   relational > temporary && firstJoins > relational &&
   firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture,
-  "The learner order must be persistence → DBMS and server → psql → databases/schemas → tables → temporary tables → relational model → joins → grouping → applied fixture → CRUD"
+  "The learner order must be persistence → DBMS and server → psql → database creation → schemas → tables → temporary tables → relational model → joins → grouping → applied fixture → CRUD"
 );
 assert.doesNotMatch(source, /Two programs, one protocol boundary|Establish prerequisites without inventing credentials/);
 assert.ok(source.includes("schema_name.table_name") || source.includes("library.books"), "Qualified tables must be explained");
