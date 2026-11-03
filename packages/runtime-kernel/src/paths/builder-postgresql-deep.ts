@@ -771,6 +771,211 @@ const specs: DataLessonSpec[] = [
         "knowledgeCheck": "A library copies the author name into every book row. What goes wrong when the name changes? How would a foreign key help? Sketch a many-to-many authorship table and explain what its two references mean."
     },
     {
+        "id": "postgresql-first-joins",
+        "title": "Combine Tables with JOIN",
+        "introduction": "Your Author and Book tables are linked by author_id. How do you answer a question that needs data from both tables? JOIN is the SQL operation for combining matching rows. We first teach the mechanism using three writers and three books, including a writer with no books, rather than showing an unexplained query from the Steward application.",
+        "outcomes": [
+            "Explain why two tables may be needed to answer one question.",
+            "Use INNER JOIN and ON to match author identifiers correctly.",
+            "Use LEFT JOIN to retain a writer with no matching books.",
+            "Predict the row-count consequences of CROSS JOIN and missing match conditions."
+        ],
+        "sections": [
+            {
+                "id": "why-join",
+                "title": "Why are two tables involved?",
+                "body": "The Writer table owns each person's name. The Book table records titles and the identifier of their writer. A foreign key ensures references exist, but it does not automatically print the writer name beside the book. A JOIN lets a query match rows from two table sources using a stated condition. The query returns a result made from selected columns; it does not merge the physical tables or copy all writer details into Book."
+            },
+            {
+                "id": "start-small",
+                "title": "Create three writers and three books",
+                "body": "Connect to tsa_library and enter the entire SQL block below in one psql session. It creates TEMP tables so the exercise cannot alter your persistent library.books catalogue. Writer 3 (Fátima) has no books, making unmatched rows visible. The sample data is deliberately tiny: you should be able to predict every result by hand before executing a query.",
+                "language": "sql",
+                "caption": "join_first_setup.sql — temporary writers and books",
+                "code": "CREATE TEMP TABLE join_writer (\n  id integer PRIMARY KEY,\n  name text NOT NULL\n);\nCREATE TEMP TABLE join_book (\n  id integer PRIMARY KEY,\n  title text NOT NULL,\n  writer_id integer NOT NULL REFERENCES join_writer(id)\n);\nINSERT INTO join_writer VALUES\n  (1, 'Ana'), (2, 'Rui'), (3, 'Fatima');\nINSERT INTO join_book VALUES\n  (10, 'Ocean', 1), (11, 'Hill', 1), (12, 'Sky', 2);\nSELECT id, name FROM join_writer ORDER BY id;\nSELECT id, title, writer_id FROM join_book ORDER BY id;",
+                "output": "CREATE TABLE\nCREATE TABLE\nINSERT 0 3\nINSERT 0 3\n1|Ana\n2|Rui\n3|Fatima\n10|Ocean|1\n11|Hill|1\n12|Sky|2"
+            },
+            {
+                "id": "inner",
+                "title": "How INNER JOIN matches records",
+                "body": "FROM join_book b gives the Book table the short name b. INNER JOIN join_writer w asks to match each book to a writer; ON b.writer_id = w.id states the matching rule. For book Ocean, writer_id 1 matches Ana's id 1. Hill also matches Ana, and Sky matches Rui. Fátima has no matching book, so she does not appear when starting from books. Read the ON clause as 'pair rows when this condition is true'. The SELECT lists columns for the result, and ORDER BY makes its display reproducible.",
+                "language": "sql",
+                "caption": "join_first_inner.sql — three matched books",
+                "code": "SELECT b.title, w.name\nFROM join_book AS b\nINNER JOIN join_writer AS w ON b.writer_id = w.id\nORDER BY b.id;",
+                "output": "Ocean|Ana\nHill|Ana\nSky|Rui"
+            },
+            {
+                "id": "left",
+                "title": "How LEFT JOIN keeps unmatched rows",
+                "body": "Now begin with join_writer on the left. A LEFT JOIN includes every writer even if no book matches. The missing book columns for Fátima appear as NULL: that is how SQL represents an absent match, not an empty book title. Every matching book still produces its own row, so Ana appears twice. A LEFT JOIN is not automatically 'safer' than an INNER JOIN; choose based on whether unmatched left-side records belong in the answer.",
+                "language": "sql",
+                "caption": "join_first_left.sql — retain the writer with no book",
+                "code": "SELECT w.name, b.title\nFROM join_writer AS w\nLEFT JOIN join_book AS b ON b.writer_id = w.id\nORDER BY w.id, b.id;",
+                "output": "Ana|Ocean\nAna|Hill\nRui|Sky\nFatima|"
+            },
+            {
+                "id": "cross",
+                "title": "What happens when you forget how to match?",
+                "body": "CROSS JOIN deliberately pairs every row on the left with every row on the right. With three writers and three books, it produces 3 × 3 = 9 combinations, including nonsense such as Sky paired with Ana. It is useful when all combinations are genuinely required, but it is a logical mistake when you meant to match writer_id. Count the rows before executing the query, then compare the outcome. The following query shows why the later seed script's CROSS JOIN must apply a WHERE condition to select the intended specific pair.",
+                "language": "sql",
+                "caption": "join_first_cross.sql — count the unwanted combinations",
+                "code": "SELECT count(*) AS combinations\nFROM join_writer CROSS JOIN join_book;",
+                "output": "9"
+            },
+            {
+                "id": "bad-on",
+                "title": "A correct syntax can still answer the wrong question",
+                "body": "If someone removes ON from a matching query and substitutes CROSS JOIN, PostgreSQL may successfully return nine rows. The absence of an SQL error does not prove the result is correct. For a debugging routine, first ask what each result row represents, then count each input, specify the exact matching keys, and inspect rows that have no match. In later lessons you will learn ON versus WHERE placement for outer joins; do not use a filter that silently removes the very unmatched records you intended to preserve."
+            }
+        ],
+        "warning": "Run the setup and example queries in the same psql session. TEMP tables disappear when that session closes. Never treat a successful but incorrect Cartesian product as a verified relationship query.",
+        "assignment": [
+            "Predict the 3-row INNER JOIN result and 4-row LEFT JOIN result before executing the queries.",
+            "Run the setup and both JOIN queries in the same session; explain why Ana occurs twice and Fatima occurs only in one result.",
+            "Run the CROSS JOIN count. Explain exactly where its nine combinations came from.",
+            "Invent a new question requiring unmatched rows and choose INNER or LEFT with a reason."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Joins Between Tables",
+                "url": "https://www.postgresql.org/docs/17/tutorial-join.html",
+                "kind": "reference",
+                "purpose": "Understand matched rows and unmatched preservation."
+            },
+            {
+                "title": "PostgreSQL 17 — Table Expressions",
+                "url": "https://www.postgresql.org/docs/17/queries-table-expressions.html",
+                "kind": "reference",
+                "purpose": "Precise FROM/JOIN/ON semantics and Cartesian products."
+            }
+        ],
+        "practiceObjective": "Prove how two independent relational tables produce a matched query result.",
+        "practiceInstructions": [
+            "Run the generic writer/book setup first, in one connected psql session.",
+            "Predict and run INNER JOIN, LEFT JOIN and CROSS JOIN; capture results and reconcile cardinality.",
+            "Rewrite the matching condition with aliases of your choice and explain why every output row is present.",
+            "Only after the generic mechanism works, sketch a Steward Team/Service join for the later applied dataset."
+        ],
+        "knowledgeCheck": "Three writers have 2, 1 and 0 books. How many rows appear in an INNER JOIN from Books to Writer, a LEFT JOIN from Writer to Books and a CROSS JOIN? Why does the result contain NULL in the LEFT JOIN?",
+        "readingTitle": "Learn how JOIN matches rows",
+        "practiceTitle": "Match books to writers",
+        "checkTitle": "Check matched and unmatched rows",
+        "practiceScenario": "A library query needs both writer names and book titles. Use a three-writer fixture before applying joins to Steward.",
+        "practiceDeliverables": [
+            "Three query results from one connected psql session",
+            "Manual row-count prediction and explanation",
+            "One intentional wrong-match example"
+        ],
+        "practiceCompletionCriteria": [
+            "All three query results match predicted row sets.",
+            "The learner can explain ON and why CROSS JOIN produces nine rows.",
+            "No Steward schema is needed for the main lab."
+        ]
+    },
+    {
+        "id": "postgresql-first-grouping",
+        "title": "Count Rows and Summarize Groups",
+        "introduction": "Once a query can match books with writers, the next question is 'how many books does each writer have?' SQL aggregate functions turn multiple rows into summaries. We will compare COUNT(*) with COUNT(column) and see why a writer with zero books can accidentally be reported as having one.",
+        "outcomes": [
+            "Use COUNT(*) to count rows and GROUP BY to summarize categories.",
+            "Explain why SELECT includes grouped columns and aggregates.",
+            "Distinguish COUNT(*) from COUNT(non_null_column) after a LEFT JOIN.",
+            "Predict an incorrect count before seeing its output."
+        ],
+        "sections": [
+            {
+                "id": "count",
+                "title": "What does COUNT actually count?",
+                "body": "COUNT(*) counts input rows in the current query result. If there are three book rows, COUNT(*) returns 3. COUNT(column_name) counts only rows whose value in that expression is not NULL. This difference matters later: after a LEFT JOIN, an unmatched writer still generates a result row whose book columns are NULL. Counting that row with COUNT(*) can incorrectly turn zero books into one book. Aggregates answer questions about a collection of rows, not just one row at a time."
+            },
+            {
+                "id": "groups",
+                "title": "Why do we need GROUP BY?",
+                "body": "A plain SELECT returns one result row for each matching input row. GROUP BY divides the input rows into groups based on one or more expressions; an aggregate such as COUNT then produces one summary per group. For example, grouping books by writer_id makes one group for Ana's two books and one for Rui's one book. Writers with no books do not appear if you begin with the Book table alone. We need LEFT JOIN to include them."
+            },
+            {
+                "id": "setup",
+                "title": "Set up three authors again",
+                "body": "This lab is self-contained. The temporary tables from the previous JOIN lesson no longer exist after you disconnected, so recreate the fixture below in your current session. The same three writers and three books make the observed differences visible. All following queries must run before this session ends.",
+                "language": "sql",
+                "caption": "group_first_setup.sql — three writers, three books",
+                "code": "CREATE TEMP TABLE count_writer (\n  id integer PRIMARY KEY,\n  name text NOT NULL\n);\nCREATE TEMP TABLE count_book (\n  id integer PRIMARY KEY,\n  title text NOT NULL,\n  writer_id integer NOT NULL REFERENCES count_writer(id)\n);\nINSERT INTO count_writer VALUES (1, 'Ana'), (2, 'Rui'), (3, 'Fatima');\nINSERT INTO count_book VALUES\n  (10, 'Ocean', 1), (11, 'Hill', 1), (12, 'Sky', 2);",
+                "output": "CREATE TABLE\nCREATE TABLE\nINSERT 0 3\nINSERT 0 3"
+            },
+            {
+                "id": "one-group",
+                "title": "Count books by writer",
+                "body": "This query begins with count_book and groups rows by writer_id. Each group contains only books with the same ID. The order is made explicit by ORDER BY. Predict two rows: writer 1 has two books, writer 2 has one. Writer 3 is absent because count_book contains no reference to that writer. GROUP BY did not create a record for missing input rows.",
+                "language": "sql",
+                "caption": "group_first_books.sql — count books in each populated group",
+                "code": "SELECT writer_id, COUNT(*) AS book_count\nFROM count_book\nGROUP BY writer_id\nORDER BY writer_id;",
+                "output": "1|2\n2|1"
+            },
+            {
+                "id": "empty-groups",
+                "title": "Include writers who have no books",
+                "body": "Start from count_writer and LEFT JOIN count_book to preserve every writer. COUNT(b.id) counts only matched book identifiers. It correctly returns 0 for Fatima because her joined book.id is NULL. COUNT(*) counts every joined result row and returns 1 for her, which is misleading if interpreted as 'books'. Seeing both counts side by side is an evidence check, not a rule to always prefer one COUNT form. Choose the expression that counts the population you mean.",
+                "language": "sql",
+                "caption": "group_first_left_count.sql — compare correct and wrong counts",
+                "code": "SELECT w.name,\n       COUNT(b.id) AS books,\n       COUNT(*) AS joined_rows\nFROM count_writer AS w\nLEFT JOIN count_book AS b ON b.writer_id = w.id\nGROUP BY w.id, w.name\nORDER BY w.id;",
+                "output": "Ana|2|2\nRui|1|1\nFatima|0|1"
+            },
+            {
+                "id": "grouping-rule",
+                "title": "Why can't you select any column beside COUNT?",
+                "body": "When a query groups many book rows into one result, which individual title would belong beside the group's COUNT? There may be more than one, so SELECT expressions generally need to be grouped columns or aggregates of the group's rows. PostgreSQL may accept columns functionally dependent on a grouped primary key, but do not rely on that exception when introducing the model. Later Aggregation and HAVING lessons teach multi-condition group filtering and how joins inflate counts."
+            },
+            {
+                "id": "check-assumptions",
+                "title": "Make your prediction before running SQL",
+                "body": "Given two authors with four books and a third with none, predict COUNT(*) after a LEFT JOIN and COUNT(book.id) for the author with no books. If they differ, identify the unmatched joined row that caused it. A syntax error can be fixed mechanically; a plausible but wrong count demands a clearer definition of what the query is meant to count."
+            }
+        ],
+        "warning": "Use one session for the temporary fixture and its queries. A correct COUNT function can still count the wrong population; always define the unit being counted.",
+        "assignment": [
+            "Run the setup and count-by-writer query; explain why only two writer IDs appear.",
+            "Run the LEFT JOIN grouping query; explain Fatima's 0 versus 1 counts.",
+            "Write a query that reports the total number of books, then count the writers; explain why the totals differ.",
+            "Explain why GROUP BY and COUNT are needed before the Steward fixture's verification query."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Aggregate Functions",
+                "url": "https://www.postgresql.org/docs/17/tutorial-agg.html",
+                "kind": "reference",
+                "purpose": "Introduce COUNT, GROUP BY and summary queries."
+            },
+            {
+                "title": "PostgreSQL 17 — Aggregate Expressions",
+                "url": "https://www.postgresql.org/docs/17/sql-expressions.html#SYNTAX-AGGREGATES",
+                "kind": "reference",
+                "purpose": "Explain COUNT(*) vs COUNT(expression)."
+            }
+        ],
+        "practiceObjective": "Explain grouping and prove zero-count behavior with real SQL and predictable rows.",
+        "practiceInstructions": [
+            "Run the temporary writer/book fixture from the reading in one session.",
+            "Predict before executing which writer disappears when grouping from Book alone.",
+            "Execute the LEFT JOIN count and show why COUNT(*) miscounts the unmatched writer.",
+            "Describe how the later Steward team counts will work without relying on copying the query."
+        ],
+        "knowledgeCheck": "A LEFT JOIN produces one NULL-filled book row for a writer with no books. Why is COUNT(*) equal to 1 but COUNT(book.id) equal to 0? When do you need GROUP BY?",
+        "readingTitle": "Learn COUNT and GROUP BY",
+        "practiceTitle": "Count books by writer",
+        "checkTitle": "Check correct and misleading counts",
+        "practiceScenario": "A library wants each writer's number of books, including writers with zero books.",
+        "practiceDeliverables": [
+            "Source-derived grouped count outputs",
+            "Prediction of zero-book behavior",
+            "Explanation of COUNT(*) versus COUNT(column)"
+        ],
+        "practiceCompletionCriteria": [
+            "The learner produces 2, 1 and 0 counts.",
+            "The learner explains why a LEFT JOIN still produces a row without a matching book.",
+            "The trainee does not equate successful SQL execution with a correct count."
+        ]
+    },
+    {
         "id": "steward-schema-and-seed",
         "title": "A Reproducible Steward Schema and Seed Dataset",
         "introduction": "Knowing the meaning of a relation does not yet give you a working database for every later SQL exercise. Earlier draft material invented service columns, environment kinds and dependencies at different points, producing SQL that cannot be run from the previous lesson's schema. Here we derive one explicit, disposable, versioned teaching dataset and prove it works. The rest of this module should use this baseline unless the activity deliberately evolves it.",
