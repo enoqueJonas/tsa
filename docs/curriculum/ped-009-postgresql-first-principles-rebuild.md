@@ -15,13 +15,14 @@ The pedagogical correction is not a bigger paragraph or an extra resource link. 
 | 1 | From In-Memory State to Durable Data (existing) | Why do we need storage beyond one process? | Python processes and JSON corruption |
 | 2 | **What Is PostgreSQL? Servers, Databases and Clients** (`postgresql-what-it-is`) | Where does the data live, who runs queries, and why use a DBMS? | Diagram and explanation, no database setup assumed |
 | 3 | **Connect to PostgreSQL with psql** (`postgresql-first-connection`, **existing ID preserved**) | How do I reach the server and use psql? | Real connection, `\\conninfo`, `\\l`, `SELECT 2+2`, exit, wrong-database failure |
-| 4 | **Create Databases and Schemas** (`postgresql-databases-and-schemas`) | How is the server's data divided and organized? | `CREATE DATABASE tsa_library`, `\\connect`, `CREATE SCHEMA library`, `SHOW search_path` |
-| 5 | **Create Tables, Insert Rows and Read Data** (`postgresql-tables-and-rows`) | How do tables store rows and enforce rules? | `library.books`, two inserts, ordered SELECT, durable reconnect, NOT NULL failure, unqualified lookup failure |
-| 6 | **Temporary Tables and Session Lifetime** (`postgresql-temporary-tables`) | Why is one table lost on disconnect and another persistent? | Complete source-derived SQL file, expected missing temporary table in new session |
-| 7 | **How Tables Relate: Keys and Relationships** (`relational-model`, **existing ID preserved**) | Why use multiple tables and what do keys actually enforce? | Disposable Author/Book example with real foreign-key rejection, many-to-many model and duplication anomaly |
-| 8 | **Combine Tables with JOIN** (`postgresql-first-joins`) | How are related rows matched and how does LEFT JOIN preserve missing books? | Reproducible INNER, LEFT, CROSS JOIN on library data; wrong Cartesian product |
-| 9 | **Count Rows and Summarize Groups** (`postgresql-first-grouping`) | How do COUNT and GROUP BY work, including a zero-book writer? | Real `COUNT(*)` vs `COUNT(b.id)` negative on LEFT JOIN |
-| 10 | Steward Practice: Build a Reusable SQL Dataset (existing) | Apply learned mechanisms to an application domain | Real Steward SQL fixture, positive/negative tests |
+| 4 | **Create Your First PostgreSQL Database** (`postgresql-create-database`) | What is a named database, how is it created and how do connections change? | `CREATE DATABASE tsa_library`, `\\connect`, and independent database/role verification |
+| 5 | **Understand and Create PostgreSQL Schemas** (`postgresql-create-schema`) | What is the difference between a database and a schema? | `CREATE SCHEMA library`, `\\dn`, `public` and `SHOW search_path` |
+| 6 | **Create Tables, Insert Rows and Read Data** (`postgresql-tables-and-rows`) | How do tables store rows and enforce rules? | `library.books`, two inserts, ordered SELECT, durable reconnect, NOT NULL failure, unqualified lookup failure |
+| 7 | **Temporary Tables and Session Lifetime** (`postgresql-temporary-tables`) | Why is one table lost on disconnect and another persistent? | Complete source-derived SQL file, expected missing temporary table in new session |
+| 8 | **How Tables Relate: Keys and Relationships** (`relational-model`, **existing ID preserved**) | Why use multiple tables and what do keys actually enforce? | Disposable Author/Book example with real foreign-key rejection, many-to-many model and duplication anomaly |
+| 9 | **Combine Tables with JOIN** (`postgresql-first-joins`) | How are related rows matched and how does LEFT JOIN preserve missing books? | Reproducible INNER, LEFT, CROSS JOIN on library data; wrong Cartesian product |
+| 10 | **Count Rows and Summarize Groups** (`postgresql-first-grouping`) | How do COUNT and GROUP BY work, including a zero-book writer? | Real `COUNT(*)` vs `COUNT(b.id)` negative on LEFT JOIN |
+| 11 | Steward Practice: Build a Reusable SQL Dataset (existing) | Apply learned mechanisms to an application domain | Real Steward SQL fixture, positive/negative tests |
 
 Later applied SQL, transactions, normalization, plans, migration and API lessons retain their own separate audits. The original Steward seed used JOIN and GROUP BY before either had been taught; two stand-alone book/writer lessons now establish those mechanisms first. The seed is clearly labeled as a practice lab rather than a general PostgreSQL introduction. This change does **not** declare the whole module learner-validated.
 
@@ -45,7 +46,7 @@ Primary material was inspected for the precise model and syntax, not copied verb
 
 ## Technical verification and remaining gates
 
-- The previously released `postgresql-first-connection` lesson/activity IDs are retained to minimize progress migration risk; seven additional opening lessons (six new IDs and one retained connection rewrite) introduce new activity IDs in learner order.
+- The previously released `postgresql-first-connection` lesson/activity IDs are retained to minimize progress migration risk; eight additional opening lessons (seven new IDs and one retained connection rewrite) introduce new activity IDs in learner order.
 - `scripts/check-builder-data-foundations-examples.mjs` verifies new boundaries, captions and source-extracted example contracts.
 - `scripts/check-builder-postgresql-live-lab.mjs` is extended to execute the **exact published** DB, schema, persistent table, relational example, first JOIN and GROUP BY code against a disposable PostgreSQL 17 CI service, including wrong-database, missing table, failed NOT NULL, foreign key and session-lifetime cases. Keep the CI status **PENDING** until the actual workflow on the final branch head succeeds.
 - The original Steward SQL fixture and downstream tests remain in place; the live runner must pass both new library examples and old Steward exercises.
