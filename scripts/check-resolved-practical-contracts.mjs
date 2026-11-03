@@ -221,26 +221,29 @@ if (!reliability || reliability.paths.length !== 16) {
   problems.push("Reliability Engineer must expose 16 paths");
 } else {
   for (const path of reliability.paths) {
-    const first = path.lessons[0];
-    const blocks = first?.activities?.[0]?.content?.blocks;
-    if (first?.id !== `${path.id}-reliability-model` ||
-        !Array.isArray(blocks) ||
-        !blocks.some((block) => block.type === "heading" && block.id === "worked-experiment")) {
-      problems.push(`Reliability model missing: ${path.id}`);
+    if (path.lessons.some(lesson => lesson.id.endsWith("-reliability-model"))) {
+      problems.push(`Reliability synthetic model obscures authored reading: ${path.id}`);
+    }
+    const activities = path.lessons.flatMap(lesson => lesson.activities);
+    if (!activities.some(a => a.content.type === "reading") ||
+        !activities.some(a => a.content.type === "practical") ||
+        !activities.some(a => a.content.type === "reflection")) {
+      problems.push(`Reliability path lacks authored reading, practical and reflection: ${path.id}`);
+    }
+    if (activities.some(a => a.id.endsWith("-reliability-preparation"))) {
+      problems.push(`Reliability synthetic preparation obscures source practical: ${path.id}`);
     }
     for (const lesson of path.lessons) {
-      lesson.activities.forEach((activity, index) => {
-        if (activity.content.type !== "practical") return;
-        const prep = lesson.activities[index - 1];
-        const reading = prep?.content?.blocks;
-        if (!prep?.id?.endsWith("-reliability-preparation") ||
-            prep?.content?.type !== "reading" ||
-            !Array.isArray(reading) ||
-            !reading.some((block) => block.type === "heading" && block.id === "evidence") ||
-            !reading.some((block) => block.type === "heading" && block.id === "abort-recovery")) {
-          problems.push(`Reliability practical lacks measurable safety preparation: ${path.id}/${lesson.id}/${activity.id}`);
+      for (const activity of lesson.activities) {
+        if (activity.content.type !== "practical") continue;
+        const task = activity.content;
+        if (!task.objective || !task.scenario ||
+            !Array.isArray(task.instructions) || task.instructions.length < 2 ||
+            !Array.isArray(task.deliverables) || task.deliverables.length < 1 ||
+            !Array.isArray(task.completionCriteria) || task.completionCriteria.length < 1) {
+          problems.push(`Reliability practical missing actual evidence contract: ${path.id}/${lesson.id}/${activity.id}`);
         }
-      });
+      }
     }
   }
 }
