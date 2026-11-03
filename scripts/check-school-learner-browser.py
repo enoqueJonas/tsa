@@ -88,6 +88,40 @@ def inspect_school(page):
                     f"Missing runnable, copyable example in Builder reading: {activity_id}"
                 )
             code = content.locator("figure").filter(has=page.get_by_role("button", name="Copy"))
+            if SCHOOL == "technical-steward":
+                # This is a rendered-source guard; a long passage may still be
+                # pedagogically weak and needs human review.
+                risk_reading = activity_id.startswith("technology-risk-") and activity_id.endswith("-reading")
+                control_reading = activity_id.startswith("controls-assurance-") and activity_id.endswith("-reading")
+                arch_reading = activity_id.startswith("architecture-governance-") and activity_id.endswith("-reading")
+                if risk_reading:
+                    assert len(text) >= 2200, (
+                        f"Technology Risk original reading still thin: {activity_id} ({len(text)} chars)"
+                    )
+                    assert content.get_by_role("heading", name="Trace the mechanism and decision").count() >= 1, (
+                        f"Risk mechanism not rendered: {activity_id}"
+                    )
+                if control_reading:
+                    assert len(text) >= 2200, (
+                        f"Control/Assurance original reading still thin: {activity_id} ({len(text)} chars)"
+                    )
+                    assert content.get_by_role("heading", name="Trace the actual decision and evidence").count() >= 1, (
+                        f"Control-evidence trace not rendered: {activity_id}"
+                    )
+                if arch_reading:
+                    assert len(text) >= 2200, (
+                        f"Architecture Governance original reading still thin: {activity_id} ({len(text)} chars)"
+                    )
+                    assert content.get_by_role("heading", name="Trace the decision and its proof").count() >= 1, (
+                        f"Architecture decision trace not rendered: {activity_id}"
+                    )
+                if activity_id.startswith("handbook-and-standards-") and activity_id.endswith("-001"):
+                    assert content.get_by_role("heading", name="Copyable worked artifact").count() >= 1, (
+                        f"Handbook original lacks copyable governed artifact: {activity_id}"
+                    )
+                    assert content.get_by_role("button", name="Copy").count() >= 1, (
+                        f"Handbook source artifact is not copyable: {activity_id}"
+                    )
             if SCHOOL == "quality-steward":
                 assert not activity_id.endswith("-quality-preparation"), (
                     f"Generated Quality preparation returned to learner journey: {activity_id}"
