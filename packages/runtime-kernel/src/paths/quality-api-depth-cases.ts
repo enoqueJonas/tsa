@@ -111,6 +111,58 @@ export const qualityApiDepth: Record<string, LessonBlock[]> = {
       "text": "Design a factory policy for anonymous, normal-user and privileged-admin calls to an OTP-enabled endpoint. Show which settings can be immutable and reused, which credentials must be per-call, and one concurrent test that would expose a shared auth state leak. Explain why expected OTP error codes do not belong in a global ResponseSpecification."
     }
   ],
+  "api-auth": [
+    {
+      "type": "heading",
+      "id": "api-token-ownership",
+      "text": "Token acquisition, identity and authorization are separate dependencies",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "text": "A TokenProvider is an infrastructure boundary responsible for obtaining and refreshing credentials for a specific caller identity, audience and approved scope. The test case owns the behavioral claim and names which caller it needs. The HTTP specification attaches that caller's token to one request. A correct design must never silently switch a non-owner request to a cached admin identity just because the administrator's token is available. Token acquisition itself is not proof that the backend enforces ownership rules; that separate claim is tested later."
+    },
+    {
+      "type": "heading",
+      "id": "api-token-cache-keys",
+      "text": "Worked cache: two people, two audiences, one expiry boundary",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "text": "Suppose caller A belongs to owner team 7 and caller B belongs only to team 9. Both obtain credentials from an authorized disposable identity provider. A cache keyed only by 'token' may return A's credential when the test requests B's, making a forbidden transfer appear permitted. Instead, a cache identity includes principal, issuer, audience, scope and appropriate session context, with expiry checks and an explicit refresh policy. Never reuse a refresh token outside its authorized identity, and never print access/refresh tokens in failure logs."
+    },
+    {
+      "type": "paragraph",
+      "text": "Consider an expiry at 10:00:00 and two parallel tests requesting B's token at 09:59:59. Refresh logic needs a bounded skew, safe synchronization and a way to report acquisition failure without assigning it to the Steward product. Caching an expired token may cause 401; retrying every 401 with a global admin token would be a dangerous false-green workaround. Document what is guaranteed by the real identity provider rather than inferring its policy from local code."
+    },
+    {
+      "type": "heading",
+      "id": "api-token-failure-model",
+      "text": "Failure taxonomy before authentication troubleshooting",
+      "level": 2
+    },
+    {
+      "type": "list",
+      "items": [
+        "No token or invalid signature: authentication failure from the actual identity boundary, not an ordinary application assertion.",
+        "Correctly authenticated B but forbidden transfer: authorization failure, with protected owner state unchanged.",
+        "Token acquired for another audience: reject rather than silently reuse it against Steward.",
+        "Identity provider unreachable: setup/dependency evidence absent; do not report a passed product authorization test.",
+        "Secrets in diagnostic request logs: security defect in test infrastructure even when the HTTP test result is correct."
+      ]
+    },
+    {
+      "type": "heading",
+      "id": "api-token-independent",
+      "text": "Independent transfer: two services with different audiences",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "text": "A tester uses one identity to call both a registration API and a payment API, each requiring an independent audience. Design the cache key, refresh behavior and isolation across two parallel tests. Show how a wrong-audience credential is rejected without falling back to a superuser token. Define the minimal safe diagnostic fields for a failed acquisition and distinguish authentication evidence from payment authorization."
+    }
+  ],
   "auth-testing": [
     {
       "type": "heading",
