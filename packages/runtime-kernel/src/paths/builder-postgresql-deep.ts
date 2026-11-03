@@ -375,240 +375,214 @@ const specs: DataLessonSpec[] = [
         ]
     },
     {
-        "id": "postgresql-databases-and-schemas",
-        "title": "Create Databases and Schemas",
-        "introduction": "Your client can connect to PostgreSQL, but where does your actual data belong? We will create a separate library database and a schema inside it. The distinction becomes visible when you list databases, reconnect and list schemas: database boundaries and schema boundaries are not interchangeable.",
+        "id": "postgresql-create-database",
+        "title": "Create Your First PostgreSQL Database",
+        "introduction": "You are connected to a PostgreSQL server with psql. Now create a separate place for our library records. We will learn exactly what the CREATE DATABASE command creates, which connection runs it, how to enter the new database, and what to do if permissions or the database name prevent success. We are not creating any tables yet.",
         "outcomes": [
-            "Create a database with a role authorized to do so.",
-            "Change connections and verify the active database.",
-            "Create a schema, inspect public and demonstrate schema-qualified names.",
-            "Explain permissions and why an unqualified table name might not resolve."
+            "Distinguish a PostgreSQL server from one of the databases it hosts.",
+            "Create a new database from an existing maintenance connection.",
+            "Reconnect and prove which database the SQL engine is using.",
+            "Diagnose a missing database, duplicate database name and insufficient privilege without deleting someone else's data."
         ],
         "sections": [
             {
-                "id": "database",
-                "title": "What is a PostgreSQL database?",
-                "body": "A running PostgreSQL server can manage several separately named databases. A new installation commonly has a maintenance database named postgres; that name is not the PostgreSQL program itself. A database contains schemas, tables, views and other objects. Each normal PostgreSQL client connection selects one database and cannot directly read another database's table as though it were another schema. Roles are shared across the database cluster but their permissions may differ by database."
+                "id": "database-location",
+                "title": "Where does a database live?",
+                "body": "A PostgreSQL server manages a database cluster: a set of named databases controlled by the same server installation. The server is the running program. A database is one named collection of schemas, tables, functions and other objects managed by that program. The common maintenance database called postgres is just one database; it is not the server program itself.\n\nImagine a library and a school using the same learning server. We can give them separate databases, tsa_library and tsa_school. Their tables do not automatically become visible to each other. The two database names share a server, but each normal psql connection chooses one database at a time. A database does not contain another database. We will inspect schemas in the following lesson.\n\nA PostgreSQL role (the identity that connects or owns objects) is not created inside an individual database: roles are cluster-wide, while privileges are checked for particular databases and objects. Do not confuse a role named tsa_learner, a database named tsa_library and a schema named library."
             },
             {
-                "id": "create-db",
-                "title": "Create your first database",
-                "body": "While connected to the postgres maintenance database in psql, run this SQL statement. You are asking the PostgreSQL server to create a database named tsa_library. The command prints CREATE DATABASE on success. You need CREATEDB privilege; the Docker example's bootstrap role has it, but many managed training roles do not. If you see 'already exists', do not drop an unknown database: inspect \\l and use a distinct authorized lab name. CREATE DATABASE cannot run inside a transaction block.",
+                "id": "before-you-create",
+                "title": "Check which database you are using",
+                "body": "Start psql using the existing lab from the previous lesson. The Docker example opens postgres with `docker exec -it tsa-pg-lesson psql -U tsa_learner -d postgres`; a host-installed psql connects using -h, -p, -U and -d, as already explained.\n\nInside psql, `\\conninfo` shows connection information and `\\l` lists databases on this server. Use the SQL below to establish exactly where you are before changing anything. If current_database() says tsa_library, you are already there, and you should check whether your earlier work exists before attempting to create the same database again. For this first run, the expected database is postgres.\n\nThe prompt also displays the database name. That is useful feedback, but the SQL result is our unambiguous proof of the active database context. The user name in the query is the role used for authorization, not an operating-system account.",
+                "language": "sql",
+                "caption": "SQL — identify the database before creating another",
+                "code": "SELECT current_database() AS connected_database,\n       current_user AS connected_role;",
+                "output": " connected_database | connected_role\n--------------------+----------------\n postgres           | tsa_learner\n(1 row)"
+            },
+            {
+                "id": "create-it",
+                "title": "Create a database called tsa_library",
+                "body": "While connected to postgres, type the command below and end it with a semicolon. CREATE DATABASE is a SQL statement sent by psql to the server. PostgreSQL creates a new database based on the configured template, normally template1; the command does not create a new server process or automatically switch your current connection.\n\nA successful command returns CREATE DATABASE. PostgreSQL requires a role with CREATEDB privilege or suitable administrative rights. The disposable Docker role we created is a lab-only bootstrap role with enough rights. On a course or company server, a restricted student role may lack CREATEDB. In that case request an approved empty database rather than trying passwords or changing account privileges. Do not wrap CREATE DATABASE in BEGIN/COMMIT: PostgreSQL does not allow that command inside a transaction block.\n\nA second run will fail with 'database \"tsa_library\" already exists'. That failure is protective information, not an invitation to DROP DATABASE. You can reuse the existing database if it is your own, or choose a different disposable name.",
                 "language": "sql",
                 "caption": "SQL in the postgres database — create tsa_library",
                 "code": "CREATE DATABASE tsa_library;",
                 "output": "CREATE DATABASE"
             },
             {
-                "id": "switch-db",
-                "title": "Connect to the database you created",
-                "body": "Use \\l to list databases. Type \\connect tsa_library to open a connection to it; the psql prompt should change from postgres to tsa_library. Unlike CREATE DATABASE, \\connect is a psql client command, not SQL. SELECT current_database(); proves you are now in tsa_library. You can also leave psql and start a new client with -d tsa_library. Try to explain why a connection switch is required: databases are distinct connection targets, not folders under postgres.",
+                "id": "list-and-connect",
+                "title": "Switch from postgres to tsa_library",
+                "body": "Your existing psql session is still connected to postgres. First use `\\l` to verify that tsa_library now appears. Then `\\connect tsa_library` (or its short form `\\c tsa_library`) tells the psql client to establish a new connection to that database using the current host and role. `\\connect` is a backslash command understood by psql, not SQL. With a separately installed client, you can instead exit with `\\q` and start `psql -h 127.0.0.1 -p 55432 -U tsa_learner -d tsa_library -W`.\n\nAfter reconnecting, run SELECT current_database(); The result changes to tsa_library. The server is the same one; the selected database has changed. Notice that switching databases has nothing to do with switching schemas (which we have not studied yet).",
                 "language": "text",
                 "caption": "Interactive psql — list databases, reconnect, inspect",
                 "code": "\\l\n\\connect tsa_library\nSELECT current_database();",
                 "output": " current_database\n------------------\n tsa_library\n(1 row)"
             },
             {
-                "id": "schema",
-                "title": "What is a schema inside a database?",
-                "body": "A schema is a named namespace for database objects such as tables, views and functions. Think of it as an organizational label, not a second database: two schemas can contain tables with the same name, such as library.books and archive.books. PostgreSQL normally creates a public schema automatically. A schema cannot contain another schema. Permissions still govern access: a separate schema is not a security boundary unless privileges are configured appropriately. All of these objects belong to the currently connected database."
+                "id": "compare-databases",
+                "title": "What happens to tables in other databases?",
+                "body": "Suppose a coworker creates a school.students table inside tsa_school while you are connected to tsa_library. You cannot type SELECT * FROM tsa_school.school.students; to cross into that other PostgreSQL database. Ordinary SQL names in a connection refer to objects within its current database; PostgreSQL does not treat a dotted database prefix as an automatic cross-database link. You would normally open a separate connection to tsa_school. Advanced options for cross-database access exist, but they are not needed here.\n\nThis also explains why using a database name incorrectly can be confusing. A missing table is not automatically a missing database. First ask: Did my client reach the server? Did it connect to the intended database? Only then ask whether the table exists inside that database.\n\nDo not create a database for every table or every application user. Databases are coarse organizational and administrative boundaries. The next lesson introduces schemas for naming and organizing multiple tables within a single database."
             },
             {
-                "id": "create-schema",
-                "title": "Create a schema named library",
-                "body": "With SELECT current_database() returning tsa_library, run CREATE SCHEMA library; and check that PostgreSQL reports CREATE SCHEMA. Then run \\dn (a psql command) to list schemas, and the SQL query below to inspect your new schema by name. You should see both public and library in a normal lab. CREATE SCHEMA needs CREATE privilege on this database. Never attempt it on an unknown production database just to prove that a command works.",
+                "id": "when-it-fails",
+                "title": "Troubleshoot database creation",
+                "body": "If `CREATE DATABASE` reports permission denied to create database, the server understood the SQL but the role lacks permission. Your connection works; authorization for this particular change does not. If the server refuses a connection, you have not reached SQL at all. If `\\connect tsa_library` reports a nonexistent database, return to a known maintenance database and check `\\l` and your spelling. If it reports insufficient CONNECT privilege, the database may exist but the selected role is not allowed to enter it.\n\nA successful CREATE DATABASE response proves that this server created the database; it does not prove tables or library records exist within it. Capture the relevant output with the server host, port, database and non-secret role name. Avoid publishing connection passwords or using a production server to repeat these experiments."
+            },
+            {
+                "id": "separate-practice-data",
+                "title": "Keep the library and application laboratories separate",
+                "body": "The next lessons will create library tables inside tsa_library. Later applied Steward exercises use a different disposable database, tsa_steward_lab. If your own lab role allows it, you may create that second database from postgres as shown below, but it is optional at this stage. Do not run this command if the lab already has an authorized database named tsa_steward_lab. We will never have to pretend the library.books table belongs to a Steward schema.",
+                "language": "text",
+                "caption": "Optional maintenance command — prepare separate Steward practice database",
+                "code": "\\connect postgres\n-- Only if this is YOUR disposable PostgreSQL lab:\nCREATE DATABASE tsa_steward_lab;\n\\connect tsa_library"
+            }
+        ],
+        "warning": "CREATE DATABASE is a real server-side change. Execute only against an approved disposable server. Never drop an existing database to rerun a lesson. Your lab may be restricted to using a database provided by an administrator.",
+        "assignment": [
+            "Verify that you are initially connected to postgres using SELECT current_database() and \\conninfo.",
+            "Create tsa_library if authorized, list it with \\l, reconnect and verify the new current_database() result.",
+            "State why CREATE DATABASE did not automatically move your existing connection.",
+            "Explain the difference between permission denied for CREATE DATABASE and connection refused.",
+            "Draw a server with two peer databases. Do not place one database inside the other."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Creating a Database",
+                "url": "https://www.postgresql.org/docs/17/tutorial-createdb.html",
+                "kind": "reference",
+                "purpose": "Understand database creation and database-specific connections."
+            },
+            {
+                "title": "PostgreSQL 17 — Managing Databases",
+                "url": "https://www.postgresql.org/docs/17/manage-ag-overview.html",
+                "kind": "reference",
+                "purpose": "Compare database isolation, roles and system catalog views."
+            }
+        ],
+        "practiceObjective": "Create and connect to a separate PostgreSQL learning database, identifying which process and role performed the action.",
+        "practiceInstructions": [
+            "From a known maintenance connection, verify current_database() and current_user.",
+            "Create tsa_library once, capturing the successful statement or an honest CREATEDB permission blocker.",
+            "List databases, reconnect to tsa_library and verify current_database() changed.",
+            "Describe why a table in a different database is not accessible just by prefixing an extra database name."
+        ],
+        "knowledgeCheck": "You run CREATE DATABASE tsa_library while connected to postgres. Does your session switch automatically? What is the minimum privilege required? What changes if the database exists already? Why is tsa_library not a schema under postgres?",
+        "readingTitle": "Understand and create a PostgreSQL database",
+        "practiceTitle": "Create and reconnect to a library database",
+        "checkTitle": "Check database boundaries",
+        "practiceScenario": "Set up the independent library lab while keeping it separate from the later Steward data project.",
+        "practiceDeliverables": [
+            "Safe CREATE DATABASE and \\connect transcript (or explicit permission blocker)",
+            "Two-database diagram and current_database() proof",
+            "Error classification for nonexistent and unauthorized databases"
+        ],
+        "practiceCompletionCriteria": [
+            "The learner proves which database each connection selected.",
+            "No pre-existing database was dropped or overwritten.",
+            "The learner can distinguish cluster-wide roles from database-specific content."
+        ]
+    },
+    {
+        "id": "postgresql-create-schema",
+        "title": "Understand and Create PostgreSQL Schemas",
+        "introduction": "A database can hold many tables, and a large application soon needs a way to organize their names. PostgreSQL schemas solve that problem. We will create library inside tsa_library, compare it with the existing public schema, and learn why the search_path matters. This is about namespaces, not the SQL table definitions we will write in the next lesson.",
+        "outcomes": [
+            "Explain a schema as a namespace inside one database.",
+            "Create, list and inspect a schema using SQL and psql.",
+            "Explain qualified names such as library.books and public.books.",
+            "Predict how search_path resolves an unqualified table name, without pretending it changes databases."
+        ],
+        "sections": [
+            {
+                "id": "schema-meaning",
+                "title": "What is a database schema?",
+                "body": "You already created tsa_library. Picture a university database that stores students, courses, invoices and library books. Those tables can share one database and still be organized by area: academic.students, academic.courses, finance.invoices, library.books. The word before each dot is a schema; the word after the dot is a table. PostgreSQL allows two schemas to have tables with the same short name, for example finance.transactions and audit.transactions. Their complete names are distinct.\n\nA schema is a namespace inside the current database. It is not another server and not another database. A schema cannot contain a nested schema; it contains objects such as tables, views, sequences and functions. The word 'database schema' also sometimes refers to the overall logical design of tables and relationships, but here CREATE SCHEMA means creating a named PostgreSQL namespace.\n\nDefault PostgreSQL databases commonly include a schema called public. Seeing public in the database does not mean the server shares those tables publicly over the internet. Access is still governed by roles and privileges. We will create our own schema called library so the namespace boundary is visible."
+            },
+            {
+                "id": "before-creating",
+                "title": "Check your database before making a schema",
+                "body": "A schema belongs to the database your connection selected. You do not create a schema in postgres and then automatically find it in tsa_library. Start psql with -d tsa_library (or use \\connect tsa_library) and run SELECT current_database(); You should see tsa_library.\n\nUse `\\dn` in psql to list schemas. On a fresh database it normally shows public. Compare this with `\\l`, which lists databases instead. These are two different inventories: \\l is a list at the server/database level; \\dn is a list inside the currently selected database. Keeping that distinction prevents many 'the table disappeared' mistakes.\n\nIf the current database is not tsa_library, fix the connection first. PostgreSQL will obey a valid CREATE SCHEMA in whichever database you are actually using; it will not infer your intended target from the schema name.",
+                "language": "sql",
+                "caption": "SQL — prove your database before creating a schema",
+                "code": "SELECT current_database();",
+                "output": " current_database\n------------------\n tsa_library\n(1 row)"
+            },
+            {
+                "id": "create-library-schema",
+                "title": "Create the library schema",
+                "body": "Run the following code while connected to tsa_library. The first statement asks PostgreSQL to create the namespace named library. PostgreSQL responds CREATE SCHEMA. The second query examines information_schema.schemata, a standardized metadata view, to verify that the new namespace can be seen by your role.\n\nIn psql also type \\dn to list the visible schemas. You should find public and library, although your authorized setup may have others. Creating a schema does not create a books table or change which database is selected. Later, CREATE TABLE library.books will put a table into this new namespace.\n\nThe role needs CREATE privilege on the database to create the schema. On an administrator-managed environment, you may have permission to use a supplied schema but not create one. Ask for a dedicated lab schema or suitable privilege; do not attempt to change production grants.",
                 "language": "sql",
                 "caption": "SQL in tsa_library — create and inspect the library schema",
                 "code": "CREATE SCHEMA library;\nSELECT schema_name\nFROM information_schema.schemata\nWHERE schema_name = 'library';",
                 "output": "CREATE SCHEMA\n schema_name\n-------------\n library\n(1 row)"
             },
             {
-                "id": "search-path",
-                "title": "Why does library.books have a dot?",
-                "body": "The name library.books means table books within schema library, in your current database. If you later type SELECT * FROM books without naming its schema, PostgreSQL uses search_path to decide where to look. The default commonly checks a role-named schema then public, not the newly created library schema. SHOW search_path; displays the rule. This is why a table can exist but still produce 'relation does not exist' when you omit its schema prefix. `SET search_path TO library, public;` can alter name resolution for a session, but it does not switch databases. Explicit library.books is easiest to reason about while learning."
+                "id": "qualified-names",
+                "title": "How schema-qualified names work",
+                "body": "A qualified name is a complete schema plus object name, separated by a dot. library.books means a table named books in schema library, inside the currently connected database. public.books would be a different table with the same short name if it existed. There is no collision because the schema prefix distinguishes them.\n\nUse the full form while learning: CREATE TABLE library.books (...); INSERT INTO library.books ...; SELECT * FROM library.books; This makes it obvious where PostgreSQL should find the object. A schema prefix does not grant you permissions. A role might be allowed to read one schema's table and denied access to another.\n\nThe next lesson will create library.books for real. For now, draw both public and library under tsa_library with no books table yet. Distinguish an existing namespace from an existing object inside it."
             },
             {
-                "id": "permissions",
-                "title": "If creation fails, do not guess passwords or change security",
-                "body": "A role can connect to a database without being allowed to CREATE DATABASE. Creating a schema requires CREATE on the target database. Using an existing schema and creating a table inside it require their own appropriate privileges. Ask for an authorized learning role rather than granting yourself superuser rights on a shared server. For the later Steward SQL fixture, create a second empty database named tsa_steward_lab only in your disposable server; keep its seed in public, not in the library schema. The two applications' objects should not be mixed.",
-                "language": "text",
-                "caption": "Optional lab setup — a separate database for later Steward practice",
-                "code": "-- Back in postgres, only in your disposable lab:\n\\connect postgres\nCREATE DATABASE tsa_steward_lab;\n-- Return to the isolated library course:\n\\connect tsa_library"
+                "id": "search-path",
+                "title": "What does search_path do?",
+                "body": "When you type SELECT * FROM books without naming a schema, PostgreSQL must choose where to look. The search_path setting defines the order of schemas searched for unqualified object names. On many fresh installations the default is \"$user\", public: a schema named after the current role is checked if it exists, then public. The schema you created, library, is not automatically added just because it exists.\n\nRun SHOW search_path; to see the current session's rule. `SELECT current_schemas(false);` shows existing schemas from the effective search path. You can choose an explicit path for just your current session using SET search_path TO library, public; The default path may be overridden by configuration or the role. Changing it does not change databases and does not create tables.\n\nA common failure: library.books exists but SELECT * FROM books reports 'relation does not exist' because library is not on the path. Prefer library.books at first; later learn when a controlled search_path is useful. Name resolution also has security implications: do not add untrusted writable schemas to a privileged application's search_path.",
+                "language": "sql",
+                "caption": "SQL — inspect and change schema search path in your session",
+                "code": "SHOW search_path;\nSET search_path TO library, public;\nSHOW search_path;",
+                "output": "   search_path\n-----------------\n \"$user\", public\n(1 row)\nSET\n   search_path\n-----------------\n library, public\n(1 row)\n(typical default; your configuration may differ)"
+            },
+            {
+                "id": "compare-three-levels",
+                "title": "Check the server, database and schema hierarchy",
+                "body": "Think through the hierarchy using a specific connection: PostgreSQL server → tsa_library database → library schema → books table (to be created next). The server may also have tsa_steward_lab; it is a *peer database*, not a schema beneath tsa_library. The public schema is a peer of library inside tsa_library; it is not a globally shared folder across databases.\n\nTo test your understanding, predict what you would see if you connected to tsa_steward_lab and listed schemas. You might see its own public schema, but not the library schema you made in tsa_library. This is because schemas belong to databases. Do not actually switch to an unknown server just to run a demonstration."
+            },
+            {
+                "id": "schema-errors",
+                "title": "If the schema isn't found",
+                "body": "'schema \"library\" does not exist' often means you are in the wrong database or CREATE SCHEMA never succeeded. Check SELECT current_database(); and \\dn before rerunning anything. 'permission denied for schema library' means the namespace may exist but this role cannot use it. 'relation \"books\" does not exist' after SELECT * FROM library.books means the schema may exist but its table has not been created yet. These are different errors.\n\nIf CREATE SCHEMA reports that the schema already exists, inspect it with \\dn and identify the owner before changing or reusing it. Do not DROP SCHEMA ... CASCADE to repeat a tutorial; CASCADE can delete other objects. Good debugging identifies which object or privilege is absent before attempting a change."
             }
         ],
-        "warning": "Use an isolated learning server and invented data. Do not modify production or shared databases, publish real credentials, or drop existing objects merely to repeat an exercise.",
+        "warning": "Never use DROP SCHEMA ... CASCADE simply to rerun a learning exercise. Schema names do not confer access rights by themselves. Use a disposable lab with an authorized role.",
         "assignment": [
-            "Create tsa_library and demonstrate it appears in \\l.",
-            "Connect to it with \\connect and verify current_database().",
-            "Create the library schema and find it using \\dn and information_schema.",
-            "Explain public versus library schemas and why the dotted name matters.",
-            "Optionally prepare the separate empty tsa_steward_lab database for later Steward practicals; never conflate the two."
+            "Connect to tsa_library and prove the database name with SELECT current_database().",
+            "Use \\dn to inspect the existing public schema; create library and verify it with \\dn and information_schema.",
+            "Show the current search_path, change it for your current session only, and explain what did NOT change.",
+            "Draw two peer schemas under one database and a separate second database under the same server.",
+            "Explain why SELECT * FROM books may fail when the table actually exists as library.books."
         ],
         "resources": [
-            {
-                "title": "PostgreSQL 17 — Getting Started",
-                "url": "https://www.postgresql.org/docs/17/tutorial.html",
-                "kind": "reference",
-                "purpose": "Follow the official sequence from architecture to databases, SQL tables and records."
-            },
             {
                 "title": "PostgreSQL 17 — Schemas",
                 "url": "https://www.postgresql.org/docs/17/ddl-schemas.html",
                 "kind": "reference",
-                "purpose": "Understand public, search_path, schema qualification and privileges."
+                "purpose": "Verify schema namespaces, qualified names, search_path and schema permissions."
             },
             {
-                "title": "PostgreSQL 17 — Creating a Database",
-                "url": "https://www.postgresql.org/docs/17/tutorial-createdb.html",
+                "title": "PostgreSQL 17 — System Information Functions",
+                "url": "https://www.postgresql.org/docs/17/functions-info.html",
                 "kind": "reference",
-                "purpose": "Understand CREATEDB and database creation."
+                "purpose": "Reference current_schema() and current_schemas()."
             }
         ],
-        "practiceObjective": "Create and inspect the database/schema hierarchy using a generic library example.",
+        "practiceObjective": "Create and inspect a PostgreSQL schema without confusing namespaces with databases.",
         "practiceInstructions": [
-            "Use an authorized training role; create tsa_library only when it does not already exist.",
-            "Reconnect to tsa_library; create library, then list schemas and SHOW search_path.",
-            "Explain why 'database.schema.table' is not how you normally query across different PostgreSQL databases.",
-            "Prepare tsa_steward_lab as a separately named disposable database for the subsequent practice if your role permits it."
+            "Inspect \\l and \\dn and describe which lists databases versus schemas.",
+            "Create library in tsa_library, verify using the published query and record the role/permissions.",
+            "Inspect and set search_path, explain how unqualified names are resolved.",
+            "Predict how public and library behave when you reconnect or change databases."
         ],
-        "knowledgeCheck": "Where does a schema live? Is public a different database? What does library.books identify? Why might a table exist yet SELECT * FROM books say relation does not exist?",
-        "readingTitle": "Create a database and schema",
-        "practiceTitle": "Organize a library database",
-        "checkTitle": "Check database and schema boundaries",
-        "practiceScenario": "Create a separate library database and schema before creating objects. Use a second empty database only when setting up subsequent Steward practicals.",
+        "knowledgeCheck": "You created library inside tsa_library. Does it appear in tsa_steward_lab? What does library.books refer to? Does SHOW search_path change which database you are using? What is different between 'schema does not exist' and 'permission denied for schema'?",
+        "readingTitle": "Learn what schemas are and how to create them",
+        "practiceTitle": "Create and inspect a library schema",
+        "checkTitle": "Check schema names and search paths",
+        "practiceScenario": "Organize a database's objects into readable namespaces without touching Steward.",
         "practiceDeliverables": [
-            "Published commands or SQL with observed results",
-            "One documented failure or alternative with cause",
-            "Short explanation of which PostgreSQL layer acted"
+            "Schema creation and inspection transcript",
+            "Database/schema hierarchy diagram",
+            "search_path observation and explanation"
         ],
         "practiceCompletionCriteria": [
-            "Another learner can reproduce the described sequence or explain the diagram from the submitted evidence.",
-            "Every concept in the exercise was introduced in a preceding reading section.",
-            "The explanation distinguishes the database server, selected database and client session where applicable."
-        ]
-    },
-    {
-        "id": "postgresql-tables-and-rows",
-        "title": "Create Tables, Insert Rows and Read Data",
-        "introduction": "You now have a database and a schema. Next comes the central relational object: a table. We will create a small library.books table, insert two rows, inspect what was saved and learn how constraints reject invalid data. No Steward entities are needed to understand any of these steps.",
-        "outcomes": [
-            "Explain table, row, column, data type, primary key and nullability.",
-            "Create and inspect a table in a named schema.",
-            "Insert, select and update sample rows, including deterministic ordered output.",
-            "Demonstrate that a failed insert does not silently alter the saved rows."
-        ],
-        "sections": [
-            {
-                "id": "what-table",
-                "title": "What does a table represent?",
-                "body": "A table describes one kind of record and its permitted columns. Our books table has a row for each book and columns for its identifier, title, author and publication year. This is more than a grid in a spreadsheet: PostgreSQL stores data, applies types and constraints and processes SQL from multiple clients. A schema contains tables; tables contain rows. A row is not a column, and a column is not a separate file."
-            },
-            {
-                "id": "types-rules",
-                "title": "Choose columns and rules",
-                "body": "A primary key provides a unique, non-null identifier for each record. book_id uses bigint for a whole number and GENERATED ALWAYS AS IDENTITY to have PostgreSQL choose the value. title and author use text; NOT NULL makes them mandatory. published_year uses integer and a CHECK constraint to limit this lab to a declared range (a real library might need a richer date model). These rules are enforced by the server, regardless of which client submits a row. The constraint expresses an application assumption, not a universal law about books."
-            },
-            {
-                "id": "create-table",
-                "title": "Create the books table in the right schema",
-                "body": "Connect to tsa_library and verify SELECT current_database(); first. Run the statement below. The dot in library.books tells PostgreSQL to create books inside schema library, not the default public. Parentheses group column definitions; commas separate them; a semicolon ends the SQL statement. You should see CREATE TABLE. In psql, \\dt library.* lists tables in this schema and \\d library.books describes the table. Only run this once on your new isolated database; if it exists, inspect it instead of dropping data.",
-                "language": "sql",
-                "caption": "SQL in tsa_library — create a persistent table",
-                "code": "CREATE TABLE library.books (\n  book_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  title text NOT NULL,\n  author text NOT NULL,\n  published_year integer CHECK (published_year BETWEEN 1450 AND 2100)\n);",
-                "output": "CREATE TABLE"
-            },
-            {
-                "id": "insert-rows",
-                "title": "Insert two book records",
-                "body": "INSERT INTO names the target table and specific columns; VALUES supplies the records. You omit book_id because its identity definition generates a value. Strings use single quotes; the numbers here are integers. The database reports INSERT 0 2, meaning two rows were inserted. Use fictional catalogue rows with known titles rather than any customer or Steward data.",
-                "language": "sql",
-                "caption": "SQL — insert two example books",
-                "code": "INSERT INTO library.books (title, author, published_year)\nVALUES\n  ('The Hobbit', 'J. R. R. Tolkien', 1937),\n  ('Things Fall Apart', 'Chinua Achebe', 1958);",
-                "output": "INSERT 0 2"
-            },
-            {
-                "id": "select-rows",
-                "title": "Read rows and understand SELECT",
-                "body": "SELECT lists the requested columns, FROM picks a table, and ORDER BY makes the order predictable. SQL tables do not promise a natural row order: even when generated IDs increase, use ORDER BY to depend on that sequence. On a fresh lab with only the two example rows, the following query returns book_id 1 and 2. If you repeated the insert or changed the table, your IDs may differ. Close psql and reconnect to tsa_library; unlike a temporary table, these rows remain because we created a persistent table.",
-                "language": "sql",
-                "caption": "SQL — read persistent rows",
-                "code": "SELECT book_id, title, author, published_year\nFROM library.books\nORDER BY book_id;",
-                "output": " book_id |       title       |      author       | published_year\n---------+-------------------+-------------------+---------------\n       1 | The Hobbit        | J. R. R. Tolkien  |          1937\n       2 | Things Fall Apart | Chinua Achebe     |          1958\n(2 rows)"
-            },
-            {
-                "id": "change-one",
-                "title": "Update and inspect one record",
-                "body": "UPDATE changes rows already stored. WHERE selects which rows are affected; without WHERE, an UPDATE can change every row. This example corrects the year of one invented row to the same value, to demonstrate the syntax without altering the historical fact. PostgreSQL reports UPDATE 1; afterward SELECT confirms that only one named book was targeted. DELETE removes rows and likewise requires careful filtering, but we will cover it in the dedicated CRUD lesson. Avoid accidental destructive operations in this introduction.",
-                "language": "sql",
-                "caption": "SQL — update one identified row",
-                "code": "UPDATE library.books\nSET published_year = 1937\nWHERE title = 'The Hobbit';\nSELECT title, published_year FROM library.books WHERE title = 'The Hobbit';",
-                "output": "UPDATE 1\n   title    | published_year\n------------+---------------\n The Hobbit | 1937\n(1 row)"
-            },
-            {
-                "id": "bad-row",
-                "title": "Make an invalid insert fail on purpose",
-                "body": "Try to insert a row with a NULL title. NOT NULL requires a title; PostgreSQL rejects the row and tells you which rule failed. Immediately repeat SELECT count(*) FROM library.books; and check that the count remains 2. This is a safe negative experiment: a failed individual statement does not insert a partly valid book. You can also test an out-of-range publication year and inspect the CHECK error. Do not assume every real-world data rule can be expressed by a simple CHECK.",
-                "language": "sql",
-                "caption": "Expected failure — invalid title should not add a row",
-                "code": "INSERT INTO library.books (title, author, published_year)\nVALUES (NULL, 'Nobody', 2000);\n-- Expected ERROR: null value in column \"title\" violates not-null constraint\nSELECT count(*) FROM library.books;",
-                "output": "ERROR: null value in column \"title\" of relation \"books\" violates not-null constraint\n count\n-------\n     2\n(1 row)"
-            },
-            {
-                "id": "schema-mistake",
-                "title": "What if PostgreSQL cannot find books?",
-                "body": "Suppose you type SELECT * FROM books; and receive relation \"books\" does not exist. Before recreating anything, ask whether your current database is tsa_library, whether \\dt library.* lists the table, and what SHOW search_path; contains. You may simply have omitted the schema prefix. A different error, permission denied for schema library, means the role cannot use that namespace. A table-not-found error and permission error have different remedies. The next lesson compares permanent tables to deliberately temporary ones."
-            }
-        ],
-        "warning": "Use an isolated learning server and invented data. Do not modify production or shared databases, publish real credentials, or drop existing objects merely to repeat an exercise.",
-        "assignment": [
-            "Create library.books exactly once and inspect its definition with \\d library.books.",
-            "Insert two rows and verify ordered SELECT results.",
-            "Disconnect from psql, reconnect and show that both books persist.",
-            "Provoke a NOT NULL violation; prove that the row count remains unchanged.",
-            "Explain why an unqualified books query may fail even when library.books exists."
-        ],
-        "resources": [
-            {
-                "title": "PostgreSQL 17 — Getting Started",
-                "url": "https://www.postgresql.org/docs/17/tutorial.html",
-                "kind": "reference",
-                "purpose": "Follow the official sequence from architecture to databases, SQL tables and records."
-            },
-            {
-                "title": "PostgreSQL 17 — Creating a New Table",
-                "url": "https://www.postgresql.org/docs/17/tutorial-table.html",
-                "kind": "reference",
-                "purpose": "Column types and CREATE TABLE syntax."
-            },
-            {
-                "title": "PostgreSQL 17 — Querying a Table",
-                "url": "https://www.postgresql.org/docs/17/tutorial-sql.html",
-                "kind": "reference",
-                "purpose": "INSERT and SELECT with predictable order."
-            }
-        ],
-        "practiceObjective": "Create and inspect a durable two-row table and independently diagnose one failed insert.",
-        "practiceInstructions": [
-            "Run the published CREATE TABLE, INSERT and SELECT examples only in tsa_library.",
-            "Capture the output of \\dt library.*, \\d library.books and SELECT with ORDER BY.",
-            "Run the NULL-title negative insert, capture the error and verify count 2.",
-            "Open a fresh psql session and repeat the SELECT to demonstrate persistence.",
-            "Explain what created the table: PostgreSQL executed SQL; psql merely transmitted it."
-        ],
-        "knowledgeCheck": "A colleague says a table is the same as a schema, rows have a guaranteed physical order, and closing psql deletes a table. Correct all three. Why did a NULL title fail and why does ORDER BY matter?",
-        "readingTitle": "Create a table of books",
-        "practiceTitle": "Add and inspect book records",
-        "checkTitle": "Check tables and constraints",
-        "practiceScenario": "Build and inspect a durable two-row library catalogue, then deliberately violate a constraint without losing valid records.",
-        "practiceDeliverables": [
-            "Published commands or SQL with observed results",
-            "One documented failure or alternative with cause",
-            "Short explanation of which PostgreSQL layer acted"
-        ],
-        "practiceCompletionCriteria": [
-            "Another learner can reproduce the described sequence or explain the diagram from the submitted evidence.",
-            "Every concept in the exercise was introduced in a preceding reading section.",
-            "The explanation distinguishes the database server, selected database and client session where applicable."
+            "A schema exists within the intended database.",
+            "The learner can explain public and schema-qualified names.",
+            "The learner distinguishes session name resolution from object permissions."
         ]
     },
     {
