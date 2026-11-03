@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quality Steward — Browser Event Lab (Local Only)</title>
+  <style>
+    body{font:1rem/1.6 system-ui,sans-serif;max-width:780px;margin:2rem auto;padding:0 1rem;color:#18212d}
+    header{padding:1rem;border:2px solid #385a72;border-radius:12px;background:#eef5fa}
+    section{margin:1.5rem 0;padding:1.25rem;border:1px solid #b6c2cd;border-radius:12px}
+    button,input,a[download]{font:inherit;padding:.55rem;margin:.35rem .3rem .35rem 0}
+    button,a[download]{background:#16394c;color:white;border-radius:6px;border:0;cursor:pointer}
+    a[download]{display:inline-block;text-decoration:none}
+    iframe{width:100%;min-height:190px;border:2px solid #537086;border-radius:8px}
+    output{display:block;padding:.5rem 0;font-weight:600;overflow-wrap:anywhere}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Browser Events — Local Quality Lab</h1>
+    <p>This is a disposable test fixture, <strong>not the Steward product</strong>. No credentials, remote requests or user records are involved.</p>
+  </header>
+  <section aria-labelledby="upload-title">
+    <h2 id="upload-title">Upload a known fixture</h2>
+    <label for="fixture-file">Choose sample text file</label>
+    <input id="fixture-file" type="file" accept=".txt,text/plain">
+    <output id="upload-result" role="status">No fixture selected</output>
+  </section>
+  <section aria-labelledby="download-title">
+    <h2 id="download-title">Download a deterministic report</h2>
+    <a id="download-report" download="quality-record-42.csv">Download sample report</a>
+    <p>Expected CSV: a header row and exactly one row for record 42 owned by team7.</p>
+  </section>
+  <section aria-labelledby="popup-title">
+    <h2 id="popup-title">Open a second Page</h2>
+    <button id="open-popup" type="button">Open sample detail popup</button>
+    <output id="popup-result" role="status">No popup requested</output>
+  </section>
+  <section aria-labelledby="frame-title">
+    <h2 id="frame-title">Interact with a separate frame document</h2>
+    <iframe title="Sample embedded form" data-purpose="sample-frame" src="/labs/quality-iframe.html"></iframe>
+  </section>
+  <section aria-labelledby="dialog-title">
+    <h2 id="dialog-title">Explicitly accept or dismiss a dialog</h2>
+    <button id="delete-sample" type="button">Remove sample record</button>
+    <button id="reset-sample" type="button">Reset sample record</button>
+    <output id="dialog-result" role="status">Sample record intact</output>
+  </section>
+  <script>
+    const upload=document.getElementById("fixture-file");
+    const result=document.getElementById("upload-result");
+    upload.addEventListener("change",async()=>{
+      const file=upload.files?.[0];
+      if(!file){result.textContent="No fixture selected";return;}
+      const text=await file.text();
+      result.textContent=file.name.endsWith(".txt")&&text==="HELLO-QUALITY-42\n"
+        ?"Fixture accepted: record 42"
+        :"Fixture rejected: unexpected content or file type";
+    });
+    const csv="record_id,owner\n42,team7\n";
+    document.getElementById("download-report").href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
+    document.getElementById("open-popup").addEventListener("click",()=>{
+      window.open("/labs/quality-popup-detail.html","_blank");
+      document.getElementById("popup-result").textContent="Popup requested";
+    });
+    document.getElementById("delete-sample").addEventListener("click",()=>{
+      const allowed=window.confirm("Remove sample record?");
+      document.getElementById("dialog-result").textContent=allowed?"Sample record removed":"Sample record preserved";
+    });
+    document.getElementById("reset-sample").addEventListener("click",()=>{
+      document.getElementById("dialog-result").textContent="Sample record intact";
+    });
+  </script>
+</body>
+</html>
