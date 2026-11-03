@@ -366,6 +366,16 @@ def check_quality_mobile_all(page):
             )
             seen.add(activity_id)
             content = page.locator("main").last
+            # Wait for the real persisted-evidence panel rather than assessing
+            # an optimistic loading frame before its select/textarea controls
+            # can contribute to the mobile intrinsic-width calculation.
+            if content.get_by_text("Engineering Practice", exact=True).count():
+                page.get_by_text("Loading evidence workspace…").wait_for(
+                    state="hidden", timeout=30000
+                )
+                assert content.get_by_text("Evidence workspace", exact=True).count() == 1, (
+                    f"Quality practical evidence controls not rendered: {activity_id}"
+                )
             assert content.is_visible() and len(content.inner_text().strip()) >= 90, (
                 f"Quality mobile content missing: {activity_id}"
             )
