@@ -64,11 +64,29 @@ try {
   const wrongDatabase = run(["-d", "tsa_invalid_database_name", "-c", "SELECT 1"], 2);
   assert.match(wrongDatabase.err, /database "tsa_invalid_database_name" does not exist/);
 
+  // The relational model reading must run from its own book/author example,
+  // not from the later Steward fixture. Test a real foreign-key failure in
+  // the SAME PostgreSQL session where the TEMP parent and child tables exist.
+  const relationalFile = path.join(root, "relational_author_books.sql");
+  fs.writeFileSync(relationalFile,
+    codeFromLesson("relational_author_books.sql — two related temporary tables") +
+    "\\nINSERT INTO book_example (title, author_id) VALUES ('Unknown Author', 999);\\n" +
+    "SELECT count(*) FROM book_example;\\n");
+  const relationalRun = spawnSync("psql",
+    ["-X", "-v", "ON_ERROR_STOP=0", "-At", "-F", "|", "-d", "tsa_library", "-f", relationalFile],
+    {encoding:"utf8",timeout:20000,env:process.env});
+  assert.ifError(relationalRun.error);
+  assert.equal(relationalRun.status, 0, relationalRun.stderr);
+  assert.match(relationalRun.stdout, /1\\|Things Fall Apart\\|1/);
+  assert.match(relationalRun.stdout, /3\\|Home\\|2/);
+  assert.match(relationalRun.stderr, /violates foreign key constraint/);
+  assert.equal(relationalRun.stdout.trim().split(/\\r?\\n/).at(-1), "3");
+
   const firstFile = path.join(root, "first_session.sql");
   fs.writeFileSync(firstFile, codeFromLesson("first_session.sql — run only in a disposable PostgreSQL lab database"));
   const firstOutput = run(["-f", firstFile]).out;
-  assert.match(firstOutput, /Payments API/);
-  assert.match(firstOutput, /Identity API/);
+  assert.match(firstOutput, /The Hobbit/);
+  assert.match(firstOutput, /Beloved/);
   assert.match(firstOutput, /\n2$/m);
   const missingTemp = run(["-c", "SELECT * FROM tsa_session_probe;"], 1);
   assert.match(missingTemp.err, /relation "tsa_session_probe" does not exist/);
@@ -272,7 +290,7 @@ try {
   const stageCounts = migration.split(/\r?\n/).filter(v => /^\d+$/.test(v));
   assert.deepEqual(stageCounts, ["5", "0", "5", "0"], "Backfill must retain five rows and leave no new column after rollback");
   assert.equal(run(["-c", "SELECT count(*) FROM information_schema.columns WHERE table_name='service' AND column_name='technical_owner'"]).out, "0");
-  console.log(`Builder PostgreSQL live lab passed: CREATE DATABASE, CREATE SCHEMA, library table/rows and negative constraints, first session/TEMP negative, 4 persisted tables, 20 published SQL examples, 5/6/4 join cardinalities, 2 rejected writes, 3 transaction scripts with savepoint failure, 2-session Read Committed/Repeatable Read, cross-table release-readiness detection and rollback proof, populated migration backfill and two-session unique-name race; database=${process.env.PGDATABASE}.`);
+  console.log(`Builder PostgreSQL live lab passed: CREATE DATABASE, CREATE SCHEMA, library tables, relational FK negative and temporary-session checks, 4 persisted tables, 20 published SQL examples, 5/6/4 join cardinalities, 2 rejected writes, 3 transaction scripts with savepoint failure, 2-session Read Committed/Repeatable Read, cross-table release-readiness detection and rollback proof, populated migration backfill and two-session unique-name race; database=${process.env.PGDATABASE}.`);
 
 } finally {
   fs.rmSync(root, { recursive: true, force: true });
