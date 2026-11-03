@@ -16,6 +16,7 @@ on:
       - curriculum/quality-steward-state-oracles-junit-v5
       - curriculum/quality-steward-defect-responsive-v6
       - curriculum/quality-steward-maven-tags-learning-v7
+      - curriculum/quality-steward-idempotency-partitions-v8
       - integration/tsa-audits-master-20261102
       - master
   workflow_dispatch:
@@ -70,6 +71,8 @@ jobs:
         run: node scripts/check-quality-junit-maven-lifecycle.mjs
       - name: Verify real Maven dependency tree, JUnit tag filtering and test-instance lifetimes
         run: node scripts/check-quality-maven-selection-v7.mjs
+      - name: Prove original partition, idempotent retry and ownership-scoped SQL cleanup negatives
+        run: node scripts/check-quality-partitions-retry-v8.mjs
       - name: Compile original Quality unit oracle and assert authorization mutant fails
         run: node scripts/check-quality-unit-oracle.mjs
       - name: Execute original Quality API localhost denial and forbidden-side-effect mutation

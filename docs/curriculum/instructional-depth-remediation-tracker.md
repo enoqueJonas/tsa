@@ -12,6 +12,10 @@ This tracker is the source of truth for the remediation cycle. Do not mark a sch
 
 ## Quality Steward whole-school audit (2026-11-03)
 
+**Current executable-source corrective pass:** [PR #350](https://github.com/enoqueJonas/tsa/pull/350) merged at `94ebc47c`, matching-head 19/19 CI, all 428 Quality authored activities verified desktop/mobile; real Maven/JUnit tag filtering, dependency resolution and PER_METHOD lifecycle proved against actual XML. [Draft PR #351](https://github.com/enoqueJonas/tsa/pull/351) adds three separate original-source Python/SQLite exercises for behavior-based partitions, committed-before-timeout idempotent replay and run-owned cleanup, each with a negative mutation. SQLite teaching evidence is **not** real Steward/PostgreSQL and does **not** satisfy independent learner validation under issue #328.
+
+
+
 **Latest Quality audit:** [PR #349](https://github.com/enoqueJonas/tsa/pull/349) merged at `1f1ca6ca` with a 19/19 matching-head CI, 428 rendered activities and a controlled browser defect/keyboard/viewport lab. [Draft PR #350](https://github.com/enoqueJonas/tsa/pull/350) now tests *actual* Maven/JUnit tags, test-instance ownership, phase/report selection and resolved dependency graph, with negative controls. These are classroom source and execution validations only. Real Steward/IdP/PostgreSQL/GitLab/k6 and uncoached learner scoring are still OPEN under #328.
 
 
