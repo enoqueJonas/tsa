@@ -1,7 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
-const isoGovernance: LearningResource = { title: "ISO/IEC 38500 — Governance of IT overview", url: "https://www.iso.org/standard/62816.html", kind: "reference" };
+const isoGovernance: LearningResource = { title: "ISO/IEC 38500:2024 — Governance of IT for the organization", url: "https://www.iso.org/standard/81684.html", kind: "reference" };
 const cobit: LearningResource = { title: "ISACA — COBIT", url: "https://www.isaca.org/resources/cobit", kind: "reference" };
 const techRadar: LearningResource = { title: "Thoughtworks Technology Radar", url: "https://www.thoughtworks.com/radar", kind: "reference" };
 const teamTopologies: LearningResource = { title: "Team Topologies — Key Concepts", url: "https://teamtopologies.com/key-concepts", kind: "reference" };
