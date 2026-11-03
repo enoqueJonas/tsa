@@ -245,8 +245,10 @@ if (quality) {
     "browser-environment-popup-browser-ownership", "browser-environment-iframe-contexts");
   enforceBefore("browser-and-environment-testing",
     "browser-environment-iframe-contexts", "browser-environment-blocking-dialogs");
+  // Diagnostics are introduced earlier in the browser foundation; the
+  // event-specific lessons apply those existing tracing techniques.
   enforceBefore("browser-and-environment-testing",
-    "browser-environment-blocking-dialogs", "browser-environment-browser-diagnostics");
+    "browser-environment-browser-diagnostics", "browser-environment-advanced-browser-interactions");
 }
 const security = journey.schools.find((school) => school.id === "security-steward");
 if (!security || security.paths.length !== 14) {
