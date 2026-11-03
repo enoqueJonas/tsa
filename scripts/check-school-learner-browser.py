@@ -103,6 +103,10 @@ def inspect_school(page):
                     "unit-component-designing-unit-tests-001": ("An independent oracle, a real assertion, and a wrong implementation", True),
                     "api-integration-http-semantics-001": ("Execute a real localhost denial and verify no side effect", True),
                     "automation-framework-retries-001": ("Execute bounded retry and preserve its failed attempt", True),
+                    "non-functional-performance-measurement-model-001": ("Work a complete request population, not a latency headline", True),
+                    "quality-ci-quality-gates-001": ("Define the required evidence contract first", True),
+                    "quality-continuous-scheduled-execution-pipeline-contract": ("Pipeline creation versus job selection", True),
+                    "quality-continuous-scheduled-execution-schedule-guide": ("The YAML does not create the schedule", False),
                     "browser-environment-browser-surface-decision-primer": ("Define the evidence boundary", False),
                     "non-functional-quality-performance-tool-decision-primer": ("Arrival rate is not the same as concurrent users", False),
                 }
