@@ -18,12 +18,14 @@ const relational = marker("relational-model");
 const firstJoins = marker("postgresql-first-joins");
 const firstGrouping = marker("postgresql-first-grouping");
 const fixture = marker("steward-schema-and-seed");
-const crud = source.indexOf('id: "sql-crud"');
+const crud = marker("sql-crud");
+const deletion = marker("postgresql-delete-rows");
+const filtering = marker("filtering-ordering");
 assert.ok(
   persistence > 0 && system > persistence && connection > system &&
   databases > connection && schemas > databases && tables > schemas && rows > tables && temporary > rows &&
   relational > temporary && firstJoins > relational &&
-  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture,
+  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && filtering > deletion,
   "The learner order must be persistence → DBMS and server → psql → database creation → schemas → table definition → rows → temporary tables → relational model → joins → grouping → applied fixture → CRUD"
 );
 assert.doesNotMatch(source, /Two programs, one protocol boundary|Establish prerequisites without inventing credentials/);
