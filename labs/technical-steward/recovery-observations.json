@@ -1,0 +1,20 @@
+{
+  "caseId": "FICTIONAL-RESTORE-EVIDENCE",
+  "disclaimer": "Synthetic training data; the 4-hour recovery objective is a hypothetical course assumption, NOT an approved enterprise RTO.",
+  "hypotheticalRtoMinutes": 240,
+  "providerAvailabilityPercent": 99.9,
+  "observations": [
+    {
+      "id": "BACKUP-ONLY",
+      "backupJobSucceeded": true,
+      "measuredRestoreMinutes": null,
+      "applicationReadbackVerified": false
+    },
+    {
+      "id": "SIX-HOUR-ISOLATED-DRILL",
+      "backupJobSucceeded": true,
+      "measuredRestoreMinutes": 360,
+      "applicationReadbackVerified": true
+    }
+  ]
+}
