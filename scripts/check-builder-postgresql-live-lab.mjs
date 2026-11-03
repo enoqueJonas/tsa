@@ -70,17 +70,17 @@ try {
   const relationalFile = path.join(root, "relational_author_books.sql");
   fs.writeFileSync(relationalFile,
     codeFromLesson("relational_author_books.sql — two related temporary tables") +
-    "\\nINSERT INTO book_example (title, author_id) VALUES ('Unknown Author', 999);\\n" +
-    "SELECT count(*) FROM book_example;\\n");
+    "\nINSERT INTO book_example (title, author_id) VALUES ('Unknown Author', 999);\n" +
+    "SELECT count(*) FROM book_example;\n");
   const relationalRun = spawnSync("psql",
     ["-X", "-v", "ON_ERROR_STOP=0", "-At", "-F", "|", "-d", "tsa_library", "-f", relationalFile],
     {encoding:"utf8",timeout:20000,env:process.env});
   assert.ifError(relationalRun.error);
   assert.equal(relationalRun.status, 0, relationalRun.stderr);
-  assert.match(relationalRun.stdout, /1\\|Things Fall Apart\\|1/);
-  assert.match(relationalRun.stdout, /3\\|Home\\|2/);
+  assert.match(relationalRun.stdout, /1\|Things Fall Apart\|1/);
+  assert.match(relationalRun.stdout, /3\|Home\|2/);
   assert.match(relationalRun.stderr, /violates foreign key constraint/);
-  assert.equal(relationalRun.stdout.trim().split(/\\r?\\n/).at(-1), "3");
+  assert.equal(relationalRun.stdout.trim().split(/\r?\n/).at(-1), "3");
 
   const firstFile = path.join(root, "first_session.sql");
   fs.writeFileSync(firstFile, codeFromLesson("first_session.sql — run only in a disposable PostgreSQL lab database"));
