@@ -718,6 +718,57 @@ def check_quality_retired_activity_progress(page):
     print("PASS Quality legacy wrapper progress excluded and first author lesson restored",flush=True)
 
 
+def check_technical_steward_retired_activity_progress(page):
+    """Old model/preparation completions must not hijack current lesson reentry.
+
+    A real original reading completion must survive even when the saved
+    current activity was a removed generic preparation. Isolated synthetic DB.
+    """
+    page.goto(f"{BASE}/?view=curriculum&school=technical-steward", wait_until="networkidle")
+    page.get_by_role("button", name=MODULE).first.wait_for()
+    page.evaluate("""async () => {
+      const db = await new Promise((resolve, reject) => {
+        const req = indexedDB.open('tsa-academy', 5);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+      try {
+        const tx = db.transaction('path-progress', 'readwrite');
+        tx.objectStore('path-progress').put({
+          pathId:'technical-leadership',schemaVersion:1,
+          currentActivityId:'technical-leadership-technical-ownership-practice-stewardship-preparation',
+          completedActivityIds:[
+            'technical-leadership-stewardship-model-reading',
+            'technical-leadership-technical-ownership-reading',
+            'technical-leadership-technical-ownership-practice-stewardship-preparation',
+            ...Array.from({length:20},(_,i)=>'retired-stewardship-preparation-'+i)
+          ],
+          reflectionResponses:{},
+          startedAt:'2026-10-01T00:00:00.000Z',
+          updatedAt:'2026-10-01T00:00:00.000Z'
+        });
+        await new Promise((resolve,reject)=>{
+          tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error);
+        });
+      } finally { db.close(); }
+    }""")
+    page.reload(wait_until="networkidle")
+    module = page.locator("article").filter(
+        has=page.get_by_role("heading", name="Technical Leadership", exact=True)
+    ).first
+    assert module.count() == 1, "Technical Leadership module card not visible after legacy restore"
+    module.get_by_role("button", name="Continue module").click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+    actual = page.evaluate("new URLSearchParams(location.search).get('activity')")
+    assert actual == "technical-leadership-technical-ownership-practice", (
+        f"Valid original reading progress lost or retired wrapper resumed: {actual}"
+    )
+    assert page.get_by_text("Engineering Practice", exact=True).count() >= 1, (
+        "Reentry failed to render first original Technical Leadership practice"
+    )
+    print("PASS Technical Steward legacy generated IDs excluded; original reading completion and practice resume preserved", flush=True)
+
+
 def check_reliability_retired_activity_progress(page):
     """Retired generated wrapper IDs may persist in an older learner record.
 
@@ -848,6 +899,10 @@ with sync_playwright() as playwright:
     if SCHOOL == "quality-steward":
         isolated = browser.new_context(viewport={"width": 1440, "height": 900})
         check_quality_retired_activity_progress(isolated.new_page())
+        isolated.close()
+    if SCHOOL == "technical-steward":
+        isolated = browser.new_context(viewport={"width": 1440, "height": 900})
+        check_technical_steward_retired_activity_progress(isolated.new_page())
         isolated.close()
     if SCHOOL == "reliability-engineer":
         isolated = browser.new_context(viewport={"width": 1440, "height": 900})
