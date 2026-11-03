@@ -19,12 +19,12 @@ console.log("PASS original Reliability logging readings: exact Python parse/corr
 const sloSource=readFileSync("packages/runtime-kernel/src/paths/reliability-slo-source-depth.ts","utf8");
 const sloLesson=readFileSync("packages/runtime-kernel/src/paths/reliability-service-level-engineering-deep.ts","utf8");
 assert.ok(sloLesson.includes("...(sloDeepSections[spec.id] ?? [])"),"SLO examples must appear in original lessons");
-const sloMatch=sloSource.match(/const sloExperiment = `([\\s\\S]*?)`;/);
+const sloMatch=sloSource.match(/const sloExperiment = `([\s\S]*?)`;/);
 assert.ok(sloMatch,"Source SLI experiment missing");
 const sloRun=spawnSync("python3",["-c",sloMatch[1]],{encoding:"utf8",timeout:10000});
 assert.ifError(sloRun.error); assert.equal(sloRun.status,0,sloRun.stderr);
-assert.match(sloRun.stdout,/valid=3 good=2 sli=0\\.6667/);
-assert.match(sloRun.stdout,/allowed_bad=0\\.30 actual_bad=1/);
+assert.match(sloRun.stdout,/valid=3 good=2 sli=0\.6667/);
+assert.match(sloRun.stdout,/allowed_bad=0\.30 actual_bad=1/);
 assert.match(sloRun.stdout,/empty_window=UNKNOWN/);
 assert.ok(sloSource.includes("missing-data") && sloSource.includes("no traffic"),"SLI must not conflate missing observations and success");
 console.log("PASS source-authored SLI ratio, error-budget and missing-data negative example.");
