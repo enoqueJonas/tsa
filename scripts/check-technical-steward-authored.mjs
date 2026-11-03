@@ -67,6 +67,21 @@ try {
       }
     }
   }
+  // Structural guard for source-authored prerequisite and mechanism sections
+  // in the first two paths. Inspect meaning as a separate human gate.
+  for (const [id, expected] of [["technical-leadership", 8], ["engineering-governance", 7]]) {
+    const originalReadings = technicalStewardPaths.find((entry) => entry.id === id)
+      .lessons.flatMap((lesson) => lesson.activities)
+      .filter((activity) => activity.id.endsWith("-reading") && activity.content.type === "reading");
+    assert.equal(originalReadings.length, expected);
+    for (const activity of originalReadings) {
+      const blocks = activity.content.blocks ?? [];
+      for (const suffix of ["definition", "prerequisites", "mechanism", "alternatives"]) {
+        assert.ok(blocks.some((block) => block.type === "heading" && block.id === `${activity.id.slice(0, -8)}-${suffix}`),
+          `Missing explicit ${suffix} in original reading ${activity.id}`);
+      }
+    }
+  }
   // A case added to source code but omitted from rendered blocks is not instruction.
   // These minima only verify wiring, NOT depth, accessibility or learner comprehension.
   const caseMinimums = [
