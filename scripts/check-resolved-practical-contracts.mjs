@@ -194,6 +194,14 @@ if (!quality || quality.paths.length !== 12) {
     }
   }
 }
+// These three compact PKI decision exercises intentionally normalize to a
+// single long reasoning instruction, not a multi-step executable lab. Keep
+// explicit artifact requirements while reserving the stricter contract for labs.
+const authoredSecurityDecisionExerciseIds = new Set([
+  "pki-verification-model-trace-the-future-steward-trust-decision",
+  "pki-trust-model-trust-responsibility-map",
+  "pki-vault-integration-pki-ownership-adr",
+]);
 const security = journey.schools.find((school) => school.id === "security-steward");
 if (!security || security.paths.length !== 14) {
   problems.push("Security Steward must expose 14 learning paths");
@@ -216,6 +224,16 @@ if (!security || security.paths.length !== 14) {
       for (const activity of lesson.activities) {
         const task = activity.content;
         if (task.type !== "practical") continue;
+        if (authoredSecurityDecisionExerciseIds.has(activity.id)) {
+          if (!task.objective || !task.scenario ||
+              !Array.isArray(task.instructions) || task.instructions.length !== 1 ||
+              typeof task.instructions[0] !== "string" || task.instructions[0].length < 100 ||
+              !Array.isArray(task.deliverables) || task.deliverables.length !== 1 ||
+              !Array.isArray(task.completionCriteria) || task.completionCriteria.length !== 1) {
+            problems.push(`Security compact PKI decision exercise lacks an evidence artifact: ${path.id}/${lesson.id}/${activity.id}`);
+          }
+          continue;
+        }
         if (!task.objective || !task.scenario ||
             !Array.isArray(task.instructions) || task.instructions.length < 2 ||
             !Array.isArray(task.deliverables) || task.deliverables.length < 1 ||
