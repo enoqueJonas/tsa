@@ -586,6 +586,214 @@ const specs: DataLessonSpec[] = [
         ]
     },
     {
+        "id": "postgresql-create-table",
+        "title": "Create Your First PostgreSQL Table",
+        "introduction": "You have a running PostgreSQL server, a connection to tsa_library, and a library schema. Now we need a table. This lesson teaches what tables, columns, types and constraints mean before using CREATE TABLE. Inserting books is a separate lesson; the first step is to understand what we are defining.",
+        "outcomes": [
+            "Explain table, row and column separately from database and schema.",
+            "Choose suitable PostgreSQL types for a simple book record.",
+            "Identify which rules PRIMARY KEY, GENERATED ALWAYS AS IDENTITY, NOT NULL and CHECK enforce.",
+            "Create and inspect a durable table in an explicit schema."
+        ],
+        "sections": [
+            {
+                "id": "table-vocabulary",
+                "title": "What is a table, and where does it live?",
+                "body": "A table holds facts about one kind of thing. In a library application, each row in books describes one book record. Columns describe what values can be stored for that record: an identifier, title, author and publication year. A table definition exists even before any rows have been inserted. A row is a single record, not another table; a column is a field in every row, not a file on disk.\n\nTrace the hierarchy you have built: PostgreSQL server → tsa_library database → library schema → books table → individual book rows. The schema groups the names of tables. PostgreSQL manages the actual storage; you do not create files yourself. The client psql sends a CREATE TABLE request, and the server carries it out in the connected database.\n\nAt this stage we store author as text in each book record for simplicity. That is not how we would necessarily design a mature multi-author library. A later lesson on relationships will demonstrate a separate authors table with foreign keys. Do not try to learn all table relationships before learning one table."
+            },
+            {
+                "id": "select-column-types",
+                "title": "Choose columns and their data types",
+                "body": "Start with a sentence: one row represents a book entry. We need book_id to identify it, title to name it, author to record its writer, and published_year to record a year when known. Types restrict what values a column can hold: bigint stores large whole numbers; text stores variable-length character strings; integer stores ordinary whole numbers. A year is deliberately stored as an integer in this small lab; a calendar date or timestamp is a different fact and would use a different PostgreSQL type.\n\nThe type alone cannot express every business rule. An integer column accepts negative numbers unless a rule rejects them. A text column accepts the empty string even if it has NOT NULL, because empty text and missing/NULL are different values. We will add explicit constraints. Choosing types before writing a table avoids treating SQL as a collection of magic keywords."
+            },
+            {
+                "id": "primary-key-and-rules",
+                "title": "What does a primary key protect?",
+                "body": "The primary key identifies each row uniquely and cannot be NULL. Using GENERATED ALWAYS AS IDENTITY asks PostgreSQL to generate the integer book_id when a book is inserted. We do not have to type 1, 2 or 3 ourselves, and we should not assume generated IDs are a perfect chronological counter; gaps can occur. In real systems, the identifier is not necessarily the same as a title or a business reference.\n\nNOT NULL means title and author must be supplied. published_year is optional in our model: unknown publication dates can be represented as NULL. CHECK (published_year BETWEEN 1450 AND 2100) limits non-null values using an artificial teaching assumption; it is not a universal historical rule. PostgreSQL enforces these constraints no matter whether the write comes from psql, an ORM or a graphical database client. Application validation still adds user-facing messages and rules that cannot conveniently fit a column constraint."
+            },
+            {
+                "id": "create-books",
+                "title": "Create your first table",
+                "body": "Check SELECT current_database(); first. It must say tsa_library. Then run this SQL at the psql prompt. CREATE TABLE names the operation; library.books specifies the schema and new table. Parentheses contain comma-separated column definitions; the semicolon ends the statement. Each column line states a name, type and applicable rules.\n\nAfter execution PostgreSQL returns CREATE TABLE. It has created the *structure*, not any book rows. Do not confuse this with CREATE DATABASE or CREATE SCHEMA: those created enclosing containers earlier. If the message instead says schema \"library\" does not exist, correct your connection or create the missing schema through the preceding lesson—not by silently creating an unrelated public.books table.",
+                "caption": "SQL in tsa_library — create a persistent table",
+                "language": "sql",
+                "code": "CREATE TABLE library.books (\n  book_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  title text NOT NULL,\n  author text NOT NULL,\n  published_year integer CHECK (published_year BETWEEN 1450 AND 2100)\n);",
+                "output": "CREATE TABLE"
+            },
+            {
+                "id": "inspect-books",
+                "title": "Inspect the table definition",
+                "body": "The psql command \\dt library.* lists tables in the library schema; \\d library.books displays the table's column definitions, identity and constraints. These are psql meta-commands: you do not put a semicolon after them. psql asks the server for catalog information and formats it for you. The SQL query below provides another way to inspect columns without relying on psql's display.\n\nBefore running the query, predict four rows in the metadata result: book_id, title, author and published_year. The values describe column types and nullability, not books. The table still has zero book records. This distinction matters when debugging an empty SELECT: the absence of data does not mean the table itself is missing.",
+                "caption": "SQL — inspect your book table columns",
+                "language": "sql",
+                "code": "SELECT column_name, data_type, is_nullable\nFROM information_schema.columns\nWHERE table_schema='library' AND table_name='books'\nORDER BY ordinal_position;",
+                "output": "book_id|bigint|NO\ntitle|text|NO\nauthor|text|NO\npublished_year|integer|YES"
+            },
+            {
+                "id": "reconnect-books",
+                "title": "Does the table survive a new connection?",
+                "body": "Type \\q to leave psql, then reconnect to tsa_library and issue \\dt library.* again. The books table remains because CREATE TABLE creates a persistent table by default. Your terminal window did not own the table; the server manages it. If you connect to postgres instead of tsa_library, you will not see the library schema because you selected the wrong database. Check the connection target before concluding that PostgreSQL deleted anything.\n\nA duplicate-table error on a second CREATE TABLE is also not an invitation to drop existing records. Inspect the table. CREATE TABLE IF NOT EXISTS may suppress a duplicate-name error, but it does not prove that the existing columns or constraints match your intended definition. An actual migration process is taught later, after you understand how persistent structures change."
+            },
+            {
+                "id": "table-errors",
+                "title": "Common CREATE TABLE errors",
+                "body": "\"Schema library does not exist\" means your current database lacks that namespace. \"Permission denied for schema library\" means the role lacks a needed privilege even if the schema exists. \"Relation books already exists\" means there is already a conflicting object name. A syntax error means PostgreSQL could not parse the SQL, often because of a missing comma or parenthesis. These failures occur after the server/client connection is working.\n\nDiagnose in order: SELECT current_database();, \\dn, \\dt library.* and \\d library.books. Do not delete objects or invent credentials as a debugging shortcut. The following lesson inserts rows into the empty table you have just verified."
+            }
+        ],
+        "warning": "Use a disposable, authorized learning database. Do not DROP an existing table to make a tutorial repeat; it may contain data.",
+        "assignment": [
+            "Draw a server, database, schema and table hierarchy with the four columns.",
+            "Explain which statements create metadata and which would insert records.",
+            "Run the CREATE TABLE example and inspect it with \\dt and \\d.",
+            "Verify the column types and NULL rules using the metadata query.",
+            "Close and reopen psql and prove that the table definition remains."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Creating a New Table",
+                "url": "https://www.postgresql.org/docs/17/tutorial-table.html",
+                "kind": "reference",
+                "purpose": "Explain CREATE TABLE and basic types."
+            },
+            {
+                "title": "PostgreSQL 17 — Constraints",
+                "url": "https://www.postgresql.org/docs/17/ddl-constraints.html",
+                "kind": "reference",
+                "purpose": "Learn what primary key, NOT NULL and CHECK enforce."
+            }
+        ],
+        "practiceObjective": "Create and inspect a durable books table.",
+        "practiceInstructions": [
+            "Verify the selected database and library schema.",
+            "Run CREATE TABLE once and inspect the four columns.",
+            "Leave and reopen psql to prove the table remains.",
+            "Explain each column and constraint in your own words."
+        ],
+        "knowledgeCheck": "What did CREATE TABLE change? Why does a table exist before rows? Is an empty string NULL? Where does library.books live, and what persists after \\q?",
+        "readingTitle": "Understand and create a table",
+        "practiceTitle": "Create a books table",
+        "checkTitle": "Check table definitions",
+        "practiceScenario": "Create a generic library catalogue, not a Steward object.",
+        "practiceDeliverables": [
+            "Table DDL and catalog inspection",
+            "Annotated table hierarchy",
+            "Reconnection evidence"
+        ],
+        "practiceCompletionCriteria": [
+            "The table exists in tsa_library.library.",
+            "The learner can explain every column's type and constraints.",
+            "The table remains after reconnecting."
+        ]
+    },
+    {
+        "id": "postgresql-work-with-rows",
+        "title": "Insert and Read Table Rows",
+        "introduction": "Your library.books table exists, but it is empty. We will add two records and then read them back. This lesson separates defining a table from changing its contents, explains SELECT and WHERE with concrete results, and shows how a database constraint prevents an invalid row. UPDATE and DELETE receive their full treatment in the later SQL CRUD lesson.",
+        "outcomes": [
+            "Insert records using a column list and VALUES.",
+            "Understand SELECT projection, FROM and WHERE.",
+            "Use ORDER BY rather than assuming a natural row order.",
+            "Demonstrate a rejected row and verify the previously stored rows remain."
+        ],
+        "sections": [
+            {
+                "id": "empty-table",
+                "title": "A table definition is not a record",
+                "body": "In the previous lesson CREATE TABLE specified column names and rules. Think of that as defining a form with four fields. There may be no completed forms yet. You need INSERT to add rows. SQL commands can affect different kinds of state: CREATE TABLE changes the structure, INSERT adds records, SELECT returns a result without inserting new data.\n\nCheck your connection with SELECT current_database(); and confirm it says tsa_library. Then \\d library.books should show the table's definition. If the table is not found, check the schema or selected database before trying to insert. We will use the exact same books table throughout this lesson so that every result can be explained rather than guessed."
+            },
+            {
+                "id": "insert-two",
+                "title": "Insert two books",
+                "body": "INSERT INTO library.books names the target table. The column list names title, author and published_year in the same order as the values for each record. String values use single quotes. The years are integer values. We omit book_id because the identity rule asks PostgreSQL to generate it. The comma between value groups separates two rows; the semicolon ends the statement.\n\nFor a fresh empty table, PostgreSQL reports INSERT 0 2. That means two rows were added. The same INSERT run again would insert two more books because we did not declare title+author UNIQUE. Constraints only enforce the rules you wrote, not the rules you intended. Do this once, then inspect before continuing.",
+                "caption": "SQL — insert two example books",
+                "language": "sql",
+                "code": "INSERT INTO library.books (title, author, published_year)\nVALUES\n  ('The Hobbit', 'J. R. R. Tolkien', 1937),\n  ('Things Fall Apart', 'Chinua Achebe', 1958);",
+                "output": "INSERT 0 2"
+            },
+            {
+                "id": "read-two",
+                "title": "Read the records using SELECT",
+                "body": "SELECT tells PostgreSQL which columns you want; FROM names the table where the server should look. ORDER BY tells it what sequence to return rows in. Without ORDER BY, SQL does not guarantee a particular order, even when you inserted one book before another. The example asks for all four columns in ascending book_id order.\n\nOn a fresh table the IDs will usually be 1 and 2. Identity sequences can contain gaps, so do not use the exact ID values as proof that the book content is correct. Instead compare titles, authors, years and the count of rows. SELECT reads the stored rows; it does not take ownership of them or erase them when psql exits.",
+                "caption": "SQL — read persistent rows",
+                "language": "sql",
+                "code": "SELECT book_id, title, author, published_year\nFROM library.books\nORDER BY book_id;",
+                "output": "1|The Hobbit|J. R. R. Tolkien|1937\n2|Things Fall Apart|Chinua Achebe|1958"
+            },
+            {
+                "id": "filter-year",
+                "title": "Find books published after 1950",
+                "body": "A database becomes useful when it can answer a question rather than print everything. WHERE limits the rows considered part of the answer. Our predicate published_year >= 1950 includes a book with year 1950 and any later year. The Hobbit (1937) does not meet it; Things Fall Apart (1958) does.\n\nThe SELECT list returns only title and year. ORDER BY makes the result ordering deliberate. Change the cutoff to 2000 and predict zero rows before running it. Zero result rows do not mean the table is missing: the query ran successfully and found no matches. Later lessons cover combining conditions, NULL and joining separate tables.",
+                "caption": "SQL — filter books by publication year",
+                "language": "sql",
+                "code": "SELECT title, published_year\nFROM library.books\nWHERE published_year >= 1950\nORDER BY published_year, title;",
+                "output": "Things Fall Apart|1958"
+            },
+            {
+                "id": "not-null-failure",
+                "title": "Watch a constraint reject invalid data",
+                "body": "The table's title column is NOT NULL. NULL means no value, and PostgreSQL must reject a row without a title even if the author's name and year are otherwise valid. Run the invalid INSERT shown below deliberately. You should see an error explaining the not-null constraint. Then run a separate SELECT count(*) FROM library.books; to verify that the two valid books remain and no invalid third book was inserted.\n\nIf you run scripts with ON_ERROR_STOP=1, the psql process stops at the SQL error; use another command for the verification count. If you are typing interactively, issue SELECT separately after seeing the error. The fact that a row was rejected is not the same as a server outage. The SQL engine was reached and enforced a table rule.",
+                "caption": "Expected failure — invalid title should not add a row",
+                "language": "sql",
+                "code": "INSERT INTO library.books (title, author, published_year)\nVALUES (NULL, 'Nobody', 2000);\n-- Expected error: NOT NULL constraint rejected title\nSELECT count(*) FROM library.books;",
+                "output": "ERROR: null value in column \"title\" of relation \"books\" violates not-null constraint\n2"
+            },
+            {
+                "id": "names-and-results",
+                "title": "Differentiate missing tables from empty results",
+                "body": "If SELECT * FROM books; reports relation \"books\" does not exist, check whether library is in the search_path. Your table is qualified as library.books. Using that full name is the easiest beginner approach. If SELECT * FROM library.books; returns zero rows, the table exists but currently holds no matching records. If you see permission denied, the object may exist but your role cannot access it.\n\nDifferent outcomes require different fixes. Missing database: check -d and the server. Missing schema: inspect \\dn. Missing table: inspect \\dt library.*. Empty result: inspect your WHERE condition. Invalid value: read the constraint error. This diagnostic order avoids rerunning CREATE TABLE or losing data simply because a SELECT did not show the expected books."
+            },
+            {
+                "id": "persisted-rows",
+                "title": "Reopen psql and read the same books",
+                "body": "Exit using \\q, reconnect to tsa_library and run SELECT title FROM library.books ORDER BY title. The two rows should still be present. They belong to a persistent table managed by PostgreSQL, not a temporary list inside the psql process. By now you should be able to trace the complete operation: psql sends INSERT over a connection, the server validates it and stores rows, and a later independent client retrieves them.\n\nFor independent practice, invent a course catalogue with one row per course. State its columns and types, choose a required column, and write a SELECT that answers a useful question without copying book names. The next lesson will show what *temporary* tables do differently; later, relational modeling and SQL CRUD deepen table relationships and safe updates."
+            }
+        ],
+        "warning": "Outputs assume a fresh two-book table; do not delete an existing table to reproduce exact sequence numbers.",
+        "assignment": [
+            "Insert two sample books once and confirm INSERT 0 2.",
+            "Run the ordered SELECT, explain every result column and why ORDER BY appears.",
+            "Run a WHERE-filtered query after predicting which book should match.",
+            "Provoke the NOT NULL failure and separately check the row count.",
+            "Reconnect and prove the two rows remain."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Populating a Table",
+                "url": "https://www.postgresql.org/docs/17/tutorial-populate.html",
+                "kind": "reference",
+                "purpose": "Review INSERT with a column list."
+            },
+            {
+                "title": "PostgreSQL 17 — Querying a Table",
+                "url": "https://www.postgresql.org/docs/17/tutorial-sql.html",
+                "kind": "reference",
+                "purpose": "Review SELECT, WHERE and ORDER BY."
+            }
+        ],
+        "practiceObjective": "Populate and query a real PostgreSQL table, including an error and reconnect.",
+        "practiceInstructions": [
+            "Run the published two-row INSERT and ordered SELECT in tsa_library.",
+            "Predict and run the WHERE predicate with 1950 and 2000 cutoffs.",
+            "Attempt a NULL title, record the server's error, and verify count separately.",
+            "Close psql and show records remain on a new connection."
+        ],
+        "knowledgeCheck": "What does INSERT 0 2 mean? Does SELECT change storage? Why is ORDER BY necessary? How is an empty result different from a missing table? What happened to an invalid NULL-title row?",
+        "readingTitle": "Insert records and query them",
+        "practiceTitle": "Add and inspect book rows",
+        "checkTitle": "Check SQL query results",
+        "practiceScenario": "Learn CRUD basics using a generic library table.",
+        "practiceDeliverables": [
+            "Two-row insert and query outputs",
+            "WHERE-filter experiment",
+            "Failed INSERT and unchanged count"
+        ],
+        "practiceCompletionCriteria": [
+            "The learner explains SQL behavior without treating psql as the server.",
+            "The invalid row is rejected and existing rows remain.",
+            "A fresh session sees the committed books."
+        ]
+    },
+    {
         "id": "postgresql-temporary-tables",
         "title": "Temporary Tables and Session Lifetime",
         "introduction": "Your library.books table survived a new psql connection. But some data should exist only while one client session is working, such as a short-lived calculation or intermediate result. PostgreSQL provides temporary tables for that. This lesson separates that single idea from general connection setup; the later transactions lesson will teach BEGIN, COMMIT and ROLLBACK in depth.",
