@@ -109,9 +109,34 @@ def inspect_school(page):
                     "quality-continuous-scheduled-execution-schedule-guide": ("The YAML does not create the schedule", False),
                     "quality-reuse-boundary-001": ("What is a reusable test library, technically?", False),
                     "quality-steward-milestone-decision-evidence-001": ("Follow three reported green signals to their actual evidence", False),
+                    "test-analysis-and-design-exploratory-testing-001": ("How investigation, test design and execution happen together", False),
+                    "test-analysis-and-design-traceability-001": ("Treat traceability as a versioned evidence graph", False),
+                    "test-analysis-and-design-negative-testing-001": ("Separate invalid input from forbidden action and unavailable dependency", False),
+                    "browser-environment-navigation-network-001": ("Navigation, DOM construction and application readiness are different events", False),
+                    "browser-environment-ui-test-selection-001": ("Choose a test surface by what can fail there", False),
+                    "browser-environment-advanced-browser-interactions-001": ("An action can create a new event, resource or context", False),
+                    "browser-environment-browser-diagnostics-001": ("Reconstruct one failure across four evidence layers", False),
+                    "browser-environment-browser-parallelism-001": ("Separate process, session, page, identity and backend data", False),
+                    "browser-environment-page-components-001": ("Extract behavior after two direct flows reveal the same interaction", False),
+                    "api-integration-filters-observability-001": ("How a REST Assured filter surrounds the HTTP exchange", False),
+                    "api-integration-specifications-001": ("Separate a factory-built transport baseline from scenario identity", False),
+                    "api-integration-auth-testing-001": ("Distinguish identity, permission, resource visibility and state", False),
+                    "browser-environment-file-transfer-interactions-001": ("Upload a known fixture, not an arbitrary local file", False),
+                    "browser-environment-popup-browser-ownership-001": ("Popup belongs to an originating page and a browser context", False),
+                    "browser-environment-iframe-contexts-001": ("Identify a frame before searching inside it", False),
+                    "browser-environment-blocking-dialogs-001": ("Plan handler lifecycle and choice before the click", False),
                     "browser-environment-browser-surface-decision-primer": ("Define the evidence boundary", False),
                     "non-functional-quality-performance-tool-decision-primer": ("Arrival rate is not the same as concurrent users", False),
                 }
+                depth_spotchecks = set(["test-analysis-and-design-exploratory-testing-001","test-analysis-and-design-traceability-001","test-analysis-and-design-negative-testing-001","browser-environment-navigation-network-001","browser-environment-ui-test-selection-001","browser-environment-advanced-browser-interactions-001","browser-environment-browser-diagnostics-001","browser-environment-browser-parallelism-001","browser-environment-page-components-001","api-integration-filters-observability-001","api-integration-specifications-001","api-integration-auth-testing-001","browser-environment-file-transfer-interactions-001","browser-environment-popup-browser-ownership-001","browser-environment-iframe-contexts-001","browser-environment-blocking-dialogs-001"])
+                if activity_id in depth_spotchecks:
+                    assert len(text) >= 1800, (
+                        f"Quality source-depth regression in {activity_id}: "
+                        f"only {len(text)} visible characters"
+                    )
+                    assert content.locator("h2").count() >= 3, (
+                        f"Missing multiple explanation sections in Quality source: {activity_id}"
+                    )
                 target = quality_original_readings.get(activity_id)
                 if target:
                     heading, code_required = target
