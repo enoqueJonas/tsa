@@ -73,6 +73,83 @@ export const qualityStewardMilestoneDeepLessons: Lesson[] = [
     ]
   },
   {
+    id: "quality-steward-milestone-decision-evidence",
+    title: "Case Study: Defend a Release Decision from Contradictory Test Evidence",
+    activities: [
+      {
+        id: "quality-steward-milestone-decision-evidence-001",
+        title: "Read a complete release evidence chain, including counterevidence",
+        estimatedMinutes: 45,
+        content: {
+          type: "reading",
+          body: "A QA engineer does not approve the sum of green cells. A defensible decision ties each acceptance claim to an independent oracle, the exact product/environment tested, real negative proof and evidence gaps.",
+          blocks: [
+            {type:"heading",id:"quality-release-claim",text:"Define the decision and the candidate",level:2},
+            {type:"paragraph",text:"Illustrative release candidate Q-43 targets a non-production Steward registry. The proposed claims are (1) non-owners cannot transfer a service, (2) scheduled critical regression ran for the exact candidate, and (3) lookup load meets an agreed error <= 1% and successful p95 <= 250 ms. The thresholds are scenario assumptions, not established TSA production criteria."},
+            {type:"heading",id:"quality-release-observations",text:"Follow three reported green signals to their actual evidence",level:2},
+            {type:"list",ordered:true,items:[
+              "AUTHORIZATION: API POST by a non-owner returns HTTP 403. A later authorized GET nevertheless reports the service owner changed from team 7 to team 9. The status-only API assertion is green, but the protected non-mutation invariant is broken.",
+              "REGRESSION: the scheduled GitLab pipeline is green, yet the manifest declares 12 mandatory test identities and only 11 executed. A skipped mandatory check is missing evidence, not an equivalent passing result.",
+              "PERFORMANCE: the dashboard reports successful p95 220 ms, but 15% of attempted lookups return errors. Even if successful latency meets the 250 ms target, the stated 1% error objective fails. The total count and sampling window must be retained."
+            ]},
+            {type:"heading",id:"quality-release-reasoning",text:"Decision: BLOCK, with different kinds of evidence failure",level:2},
+            {type:"paragraph",text:"The owner mutation is observed product contract failure: BLOCK. The missing scheduled check is an incomplete release gate: BLOCK until selection and execution can be explained. The performance error ratio independently exceeds the stated threshold: BLOCK. Passing unit tests or a green job color cannot override these facts. Investigate and repair each source, rerun against an immutable candidate and preserve the original failed run in the evidence ledger."},
+            {type:"heading",id:"quality-release-chain",text:"Build a traceable release evidence record",level:2},
+            {type:"list",items:[
+              "Claim and oracle source: requirement text, clarification or approved API rule, not merely the current code behavior.",
+              "Risk/impact: consequence of forbidden ownership transfer or unavailable lookup; name the affected actor and recovery boundary.",
+              "Execution identity: commit, artifact, deployed environment, CI source, build/run ID, test data and observation window.",
+              "Positive, negative and state-after evidence: denied POST plus authorized GET, selection manifest plus executed tests, performance successes plus errors.",
+              "Decision and ownership: BLOCK, open defect/risk with reproduction and owner, retest and review triggers; unresolved assumptions remain explicit."
+            ]},
+            {type:"heading",id:"quality-release-counterfactual",text:"What evidence could permit release?",level:2},
+            {type:"paragraph",text:"For candidate Q-44, suppose the same forbidden POST still returns 403 and an authorized GET confirms unchanged owner, all 12 mandatory regression checks execute and pass with retained reports, and 0.2% of a defined lookup population fail with successful p95 230 ms. These observations address the three illustrated blockers. They do not by themselves prove production authorization, every browser, live security controls or an independent uncoached learner's understanding. Acceptance still depends on all remaining declared release risks and verified environment equivalence."},
+            {type:"heading",id:"quality-release-independent",text:"Unseen transfer must be scored, not narrated by the assistant",level:2},
+            {type:"paragraph",text:"New challenge: a batch-upload endpoint returns 202 Accepted while a downstream worker has not persisted the expected record. The pipeline has 24/24 green HTTP-response assertions but no asynchronous outcome checks; a worker log shows retries exhausted. Without reusing the ownership example, specify the independent oracle, suitable integration boundary, required negative/recovery case, evidence record and release verdict."},
+            {type:"heading",id:"quality-release-rubric",text:"Assessment rubric: five verifiable criteria",level:2},
+            {type:"list",ordered:true,items:[
+              "Distinguishes transport acceptance (202) from durable downstream completion; identifies the actual outcome that must be checked.",
+              "Names the asynchronous persistence/worker boundary and why a pure status-only HTTP test is insufficient.",
+              "Designs a bounded eventual assertion with a missing-event/poison-message negative and idempotent recovery, without inventing observed behavior.",
+              "Records commit, queue/worker correlation identity, environment, deadline, job selection and before/after state.",
+              "Makes an explicit BLOCK or HOLD decision on absent outcome evidence and identifies the conditions for re-evaluation."
+            ]},
+            {type:"paragraph",text:"Scoring: one point per independently explained criterion. Fewer than 5/5 requires targeted remediation before claiming learner validation; a coached answer does not count. This is an illustrative scoring policy, not a substitute for a real novice pilot."},
+          ],
+        },
+      },
+      {
+        id: "quality-steward-milestone-decision-evidence-002",
+        title: "Produce an independent evidence-to-decision record",
+        estimatedMinutes: 70,
+        content: {
+          type: "practical",
+          objective: "Produce a defensible release decision from the previously unseen asynchronous batch outcome, not from test counts.",
+          scenario: "Steward accepts a batch with HTTP 202 while its worker fails later; existing test reports prove only receipt. Treat this as a separate domain-specific evidence problem.",
+          instructions: [
+            "Define the approved asynchronous completion contract and identify any missing clarification before declaring an expected result.",
+            "Specify the exact boundaries, correlation keys and independent observable postconditions the test must inspect after HTTP 202.",
+            "Design a bounded positive and an exhausted-retry/missing-side-effect negative with safe cleanup; do not assert a queue was observed unless tested.",
+            "Show a risk-to-test-to-report-to-release trace including the commit, environment, selected/actually executed tests and ownership.",
+            "State a release decision with an explicit reconsideration condition. Score your record against the five criteria in the reading without relying on a copied solution."
+          ],
+          deliverables:["Contract and ambiguity note","Independent oracle and negative design","Evidence-chain release decision","Self-evaluation against five criteria"],
+          completionCriteria:["The record treats 202 as acceptance of work, not proof of durable completion.","Missing outcome evidence cannot become green.","All five independent reasoning elements have an observable basis and unresolved assumptions remain named."],
+        },
+      },
+      {
+        id: "quality-steward-milestone-decision-evidence-003",
+        title: "Explain what would falsify your release confidence",
+        estimatedMinutes: 15,
+        content: {
+          type:"reflection",
+          prompt:"Explain how a plausible green API, pipeline or performance report can conceal a product failure. For the unseen asynchronous batch case, give one disconfirming observation, one alternative hypothesis and a precise next test without assuming the worker is healthy.",
+          minimumCharacters:300
+        }
+      }
+    ]
+  },
+  {
     id: "quality-steward-milestone-platform",
     title: "Milestone: Steward Quality Platform",
     activities: [
