@@ -396,6 +396,9 @@ jobs:
           python -m http.server 4173 --bind 127.0.0.1 --directory apps/web/out > /tmp/tsa-server.log 2>&1 &
           for i in $(seq 1 30); do curl --fail --silent http://127.0.0.1:4173/ > /dev/null && break; sleep 1; done
           python scripts/check-school-learner-browser.py
+          if [ "$TSA_SCHOOL" = "quality-steward" ]; then
+            python scripts/check-quality-browser-event-lab.py
+          fi
       - name: Upload cross-school learner evidence
         if: always()
         uses: actions/upload-artifact@v4
