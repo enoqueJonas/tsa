@@ -704,24 +704,97 @@ const specs: DataLessonSpec[] = [
         ]
     },
     {
-        id: "relational-model",
-        title: "The Relational Model",
-        introduction: "A relational database stores structured data in tables and lets those tables relate to one another through values such as keys. Rows represent individual records; columns describe the values each record can hold. The relational model goes further than this physical picture: it gives us a disciplined way to represent facts and relationships so that data can change without duplicating or contradicting the same fact in many places. Steward needs that discipline for teams, services, environments and dependencies.",
-        outcomes: ["Explain rows, columns, relations and keys without relying on ORM terminology.", "Distinguish identity from attributes.", "Model many-to-one and many-to-many facts explicitly.", "Recognize when duplicated facts create inconsistency risk."],
-        sections: [
-            { id: "table-mental-model", title: "Start with table, row and column", body: "Suppose we need to store teams. A table named team describes one kind of data. Each row represents one team. Columns such as id and name describe values recorded for every row. A primary key identifies each row independently of display values that may change.", code: "CREATE TEMP TABLE team (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  name text NOT NULL UNIQUE\n);\n\nINSERT INTO team (name) VALUES ('Payments'), ('Platform');\n\nSELECT id, name FROM team ORDER BY id;", caption: "One-session temporary Team relation; close psql after this model", output: " id |   name\n----+----------\n  1 | Payments\n  2 | Platform\n(2 rows)" },
-            { id: "facts-as-relations", title: "From tables to relational facts", body: "These snippets are deliberately TEMP experiments in one psql session; their tables disappear after disconnect. The table/row/column picture is useful, but the relational model is about meaning rather than spreadsheet layout. Treat a table as representing facts of one kind. If a Service belongs to a Team, repeating the team name inside every service row duplicates a fact that can change. Store the Team once, give it stable identity, and let Service reference that identity." },
-            { id: "steward-shape", title: "A first Steward relational shape", body: "Teams own services; services run in environments; services depend on other services. These are separate relations because they have different cardinalities, lifecycles and constraints.", code: "CREATE TEMP TABLE service (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  name text NOT NULL,\n  owning_team_id bigint NOT NULL REFERENCES team(id)\n);" },
-            { id: "database-vocabulary", title: "Database, schema, table, row and column are different scopes", body: "A PostgreSQL server can host multiple databases. Inside a database, schemas are namespaces for objects such as tables. A table defines columns and constraints; each row records one fact instance. PostgreSQL commonly uses the public schema by default, but relying on defaults without understanding the namespace becomes confusing once applications, extensions or multiple teams share a database." },
-            { id: "data-types", title: "Column types constrain representation", body: "Choose types from the fact being stored: bigint/identity for generated numeric identifiers, text for unconstrained text, boolean for true/false state, date for calendar dates, timestamptz for instants that must survive timezone presentation, numeric for exact decimal quantities, and uuid when UUID identity is deliberately required. A type does not encode every domain rule, but it prevents entire classes of invalid representation." , code: "CREATE TEMP TABLE environment (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  service_id bigint NOT NULL REFERENCES service(id),\n  name text NOT NULL,\n  kind text NOT NULL CHECK (kind IN ('development','staging','production')),\n  created_at timestamptz NOT NULL DEFAULT now()\n);" },
-            { id: "null-meaning", title: "NULL means missing/unknown, not empty or zero", body: "NULL is a marker for absence of a value under SQL semantics. It is different from an empty string, zero and false. Decide whether absence is legitimate for each column; use NOT NULL when every valid row must contain the fact. Excessive nullable columns often indicate unclear lifecycle or table boundaries." },
+        "id": "relational-model",
+        "title": "How Tables Relate: Keys and Relationships",
+        "introduction": "You can already create a table of books. Why do databases often need several tables? A library also tracks authors, borrowers and loans. Storing all those facts in one giant table repeats information and creates contradictions when something changes. The relational model gives us a disciplined way to represent independent facts and connect them by values. Learn the ideas using ordinary library records before applying them to a Steward schema in the next practical.",
+        "outcomes": [
+            "Explain the relation/row/column model separately from a rendered spreadsheet.",
+            "Distinguish stable identifiers, primary keys, foreign keys and displayed attributes.",
+            "Draw one-to-many and many-to-many relationships from requirements.",
+            "Demonstrate a rejected reference and a data-duplication anomaly."
         ],
-        warning: "Do not choose table boundaries by mirroring JSON payloads. API representation and relational storage solve different problems.",
-        assignment: ["Sketch the Steward entities and relationships without Django model syntax.", "Mark primary keys, foreign keys and cardinalities.", "Identify one fact that would become inconsistent if duplicated."],
-        resources: [postgresDocs],
-        practiceObjective: "Design the Steward model and prove its identity/relationship semantics using disposable temporary tables.",
-        practiceInstructions: ["Draw the relations and cardinalities first.", "Use temporary example tables in a single psql session; the next lesson creates the durable baseline.", "Insert a small dataset with two teams and three services.", "Demonstrate one relationship query and explain why the model avoids duplicated ownership facts."],
-        knowledgeCheck: "1. Why is a foreign key more than a convenient integer column?\n2. What is the difference between entity identity and an attribute such as service name?\n3. Why should service dependencies be represented as a relation rather than a comma-separated column?",
+        "sections": [
+            {
+                "id": "what-a-relation-means",
+                "title": "Tables hold facts about one kind of thing",
+                "body": "A table is a practical SQL representation of a relation: a collection of rows with the same attributes. In a library, one table describes Authors, another describes Books, and a third could record Loans. Every book row answers a question about one book; it should not also be the authoritative home for a borrower's address. Table columns have types and constraints, but the important design question comes first: what fact does each row represent? If you cannot answer that in one sentence, your table may be combining unrelated things. Relational theory treats relations as unordered sets of tuples; SQL tables may contain duplicate rows unless constrained, so the idealized mathematical model and physical SQL behavior are related but not identical."
+            },
+            {
+                "id": "why-identifiers",
+                "title": "Why do rows need identifiers?",
+                "body": "Imagine two authors both named Maria Silva. Their names look alike but they are not necessarily the same person. A stable author_id can identify each independently of the name displayed to users. A primary key uniquely and non-nullably identifies a row; if you later rename an author, the author_id stays unchanged. An ISBN might be a useful book identifier in a different design, but editions and copies have their own identities, so do not choose a key without defining what a row means. Choosing an integer identity column is a convenient lab decision, not a universal rule."
+            },
+            {
+                "id": "link-by-key",
+                "title": "How does one book point to its author?",
+                "body": "Suppose Author 10 wrote three books. Rather than repeat the author's phone and address in every Book row, each Book can store author_id = 10. That column references the identifier of one author row. A foreign key tells PostgreSQL that referenced authors must exist. This is a one-to-many relationship: one author may be referenced by many books; each book in this simplified model refers to one author. The relationship exists because the referenced values match, not because two tables are placed next to each other in a diagram. A real book can have multiple authors; we will model that as a separate relationship below."
+            },
+            {
+                "id": "try-two-tables",
+                "title": "Create two related tables without changing your catalogue",
+                "body": "Open psql connected to tsa_library. These are deliberately temporary example tables named author_example and book_example, so they cannot overwrite your existing permanent library.books table. Enter the full block in one psql session: both tables must remain visible while the inserts and SELECT run. GENERATED ALWAYS AS IDENTITY creates author identifiers; book_example.author_id must match an existing author_example.id. The final SELECT shows which author each book points to. Close psql to remove these example tables only.",
+                "language": "sql",
+                "caption": "relational_author_books.sql — two related temporary tables",
+                "code": "CREATE TEMP TABLE author_example (\n  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  name text NOT NULL\n);\nCREATE TEMP TABLE book_example (\n  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  title text NOT NULL,\n  author_id integer NOT NULL REFERENCES author_example(id)\n);\nINSERT INTO author_example (name) VALUES ('Chinua Achebe'), ('Toni Morrison');\nINSERT INTO book_example (title, author_id)\nVALUES ('Things Fall Apart', 1), ('Beloved', 2), ('Home', 2);\nSELECT id, title, author_id FROM book_example ORDER BY id;",
+                "output": "CREATE TABLE\nCREATE TABLE\nINSERT 0 2\nINSERT 0 3\n id |       title       | author_id\n----+-------------------+----------\n  1 | Things Fall Apart |        1\n  2 | Beloved           |        2\n  3 | Home              |        2\n(3 rows)"
+            },
+            {
+                "id": "negative-reference",
+                "title": "What happens when a book points to an unknown author?",
+                "body": "Before exiting the same psql session, try INSERT INTO book_example (title, author_id) VALUES ('Lost Book', 999); PostgreSQL should reject it because there is no author with id 999. This is referential integrity: the database enforces that a Book refers to a real Author, regardless of whether the write came from a terminal, a webpage or a backend service. Immediately SELECT count(*) FROM book_example; and verify that the earlier three rows remain. If you run the negative case in a fresh session and get 'relation does not exist', you have tested TEMP lifetime instead of foreign-key validation. This difference is part of the exercise."
+            },
+            {
+                "id": "many-to-many",
+                "title": "How do you represent many-to-many relationships?",
+                "body": "The one-author-per-book example simplified reality: a book may have several authors and an author may write several books. Writing comma-separated IDs such as '10,12' inside Book.author_id would destroy the ability to enforce one foreign-key reference per author. Instead, create a BookAuthor linking table with book_id and author_id, one row per association. The pair can be a composite primary key so the same authorship is not recorded twice. The same idea applies to borrowers and borrowed books, students and courses, and services and dependencies. Start by writing the two one-to-many relationships that make up the many-to-many link."
+            },
+            {
+                "id": "duplication-problem",
+                "title": "Why not copy the author's name into every book row?",
+                "body": "Suppose the table stores author_name alongside each book and the author's name is corrected. A librarian updates one book but misses two others. The same author now has contradictory names. This is an update anomaly caused by duplicated authoritative data. Separate Author from Book to keep one authoritative record and reference its identifier. That does not mean every duplicated value is always wrong: caching and reporting tables can duplicate data deliberately, but they need defined ownership and synchronization rules. The later normalization lesson will revisit those trade-offs in more detail."
+            },
+            {
+                "id": "what-is-next",
+                "title": "From an example to a real schema",
+                "body": "A diagram of Authors, Books and BookAuthor is a model; a working SQL database adds concrete constraints, privileges, types and rows. The next lesson is an explicit Steward application lab that builds one repeatable dataset for subsequent SQL exercises. That is where we apply the concepts to Team, Service and Environment, without turning the introductory explanation of relationships into proprietary application jargon."
+            }
+        ],
+        "warning": "The author/book fixture is a simplified teaching model and uses TEMP tables; it is not a persistent production library schema. Do not claim a foreign-key test succeeded if you opened a new session and the table was gone.",
+        "assignment": [
+            "In one session create the two temporary tables and insert the sample rows; explain each foreign key value.",
+            "Cause the invalid author_id 999 insert and capture the server's foreign-key error; verify three valid books remain.",
+            "Draw Author → Book as one-to-many and Book ↔ Author as many-to-many through BookAuthor.",
+            "Explain how changing one author's name would go wrong in a table that duplicated the name in every book row.",
+            "For another domain, invent two tables that should be connected by a foreign key; identify the source of truth."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Foreign Keys",
+                "url": "https://www.postgresql.org/docs/17/tutorial-fk.html",
+                "kind": "reference",
+                "purpose": "Confirm how referenced keys enforce valid relationships."
+            },
+            {
+                "title": "PostgreSQL 17 — Constraints",
+                "url": "https://www.postgresql.org/docs/17/ddl-constraints.html",
+                "kind": "reference",
+                "purpose": "Compare primary key, foreign key and uniqueness rules."
+            },
+            {
+                "title": "CMU 15-445 — Relational Model",
+                "url": "https://15445.courses.cs.cmu.edu/fall2025/schedule.html",
+                "kind": "course",
+                "purpose": "Optional deeper treatment of relations, keys and algebra."
+            }
+        ],
+        "practiceObjective": "Apply relational keys, cardinalities and reference integrity to the Steward domain after learning them with books.",
+        "practiceInstructions": [
+            "Draw Team/Service/Environment relationships separately from the library example.",
+            "Identify stable identities, authoritative facts and foreign-key references.",
+            "Demonstrate a foreign-key violation against the disposable temporary library example first.",
+            "Propose a directed ServiceDependency linking table and explain how a composite uniqueness rule prevents duplicate edges."
+        ],
+        "knowledgeCheck": "A library copies the author name into every book row. What goes wrong when the name changes? How would a foreign key help? Sketch a many-to-many authorship table and explain what its two references mean."
     },
     {
         "id": "steward-schema-and-seed",
