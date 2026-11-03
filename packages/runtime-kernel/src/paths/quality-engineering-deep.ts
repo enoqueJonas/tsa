@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { qualityOriginalDepth } from "./quality-original-remaining-depth";
 
 const istqb: LearningResource = { title: "ISTQB — Certified Tester Foundation Level Syllabus", url: "https://www.istqb.org/certifications/certified-tester-foundation-level" };
 const googleTesting: LearningResource = { title: "Google — Software Engineering at Google: Testing Overview", url: "https://abseil.io/resources/swe-book/html/ch11.html" };
@@ -14,6 +15,20 @@ function rich(spec: Spec): Lesson {
         section.body.forEach((text) => blocks.push({ type: "paragraph", text }));
         if (section.list) blocks.push({ type: "list", items: section.list });
         if (section.code) blocks.push({ type: "code", language: "text", code: section.code });
+    }
+    const originalDepth = qualityOriginalDepth[spec.id];
+    if (originalDepth) {
+        blocks.push(
+            {type:"heading",id:`${spec.id}-risk-mechanism`,text:originalDepth.heading,level:2},
+            {type:"paragraph",text:originalDepth.mechanism},
+            {type:"heading",id:`${spec.id}-worked-example`,text:"Worked example and evidence boundary",level:2},
+            {type:"paragraph",text:originalDepth.worked},
+            ...(originalDepth.code ? [{type:"code" as const,language:originalDepth.language ?? "text",code:originalDepth.code}] : []),
+            {type:"heading",id:`${spec.id}-counterexample`,text:"Negative: where a green result lies",level:2},
+            {type:"paragraph",text:originalDepth.failure},
+            {type:"heading",id:`${spec.id}-independent-application`,text:"Independent application",level:2},
+            {type:"paragraph",text:originalDepth.transfer},
+        );
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward quality checkpoint", body: "Quality work must change what the team knows about release risk. Use the real Steward domain, deployed environments and delivery evidence. Do not maximize test counts; maximize useful confidence and make residual uncertainty visible." });
     blocks.push({ type: "resources", title: "Continue learning", resources: [istqb, googleTesting, dora] });

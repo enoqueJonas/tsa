@@ -149,3 +149,28 @@ The next focused branch `curriculum/quality-steward-java-api-foundations-v3` ret
 Three short API readings now have worked mechanism/negative/transfer sections: REST Assured protocol configuration versus independent business oracle, JSON structural validation versus consumer/domain compatibility, and service virtualization versus real provider compatibility. These explain that prior localhost authorization fixtures and simulated services do not establish actual Steward/IdP outcomes.
 
 The browser-state/local-remote/provider readings are now deepened in original source too, and a real Chromium fixture demonstrates safe non-authenticated localStorage/sessionStorage/BrowserContext isolation. The code-only branch passed all 19/19 jobs at `da45fd5`, but a merge with newer master documentation requires the new merge-commit head to run the full matrix again. Real learner and external product evidence remains UNVERIFIED.
+
+## Fourth original-reading editorial pass — risk, isolation and pairwise (2026-11-03)
+
+A third accepted [PR #346](https://github.com/enoqueJonas/tsa/pull/346) was merged into `master` at `fd5191a07dd615d6b40a6624494d775747ec7a4e`, after a 19/19 matching-head CI and 428-activity full Quality desktop/mobile traversal. Its final rendered shortest-reading report singled out **12 further original readings** (1463–1577 characters). A short reading can be good; the problem is whether it actually defines, demonstrates, falsifies and transfers the topic.
+
+[Draft PR #347](https://github.com/enoqueJonas/tsa/pull/347) revises **each of those exact original reading activities** without renaming the IDs or adding generic orientation wrappers:
+
+| Original reading (shortlist) | Added mechanism, test and negative | Independent transfer |
+|---|---|---|
+| Cross-browser | Supported OS/engine matrix versus incidental rendering; keyboard defect compared against API evidence | Firefox ESR picker failure and matrix expansion |
+| Unit isolation | Subject/collaborator REAL vs DOUBLE boundaries; live PostgreSQL uniqueness distinct from pure policy oracle | Transactional outbox and adverse publisher failure |
+| Unit coverage | Statement/branch/mutation distinction; owner/active/locked false green | Uncovered high-risk authorization branch despite 96% coverage |
+| Unit feedback | Cost versus evidence level; first-failure signal instead of raw suite speed | Mock-all-DB proposal challenged by real-schema gate |
+| Risk-based Testing | Ordinal **priority index is not probability**; risk→oracle→level→decision mapping | Stale external index, latency and release uncertainty |
+| Shift-left/right | Requirement clarification → JUnit/real API → safe runtime observation, not production mutation | 401 spike after signing-key rotation |
+| API client boundaries | Typed product operation vs transport factory; negative status and after-state retained | 202 accepted batch with independent durable outcome |
+| Database assertions | Response/status versus committed side effects; true transaction visibility and schema | Partial async batch write under bounded polling |
+| Requirements analysis | Actor, state, expected denial and postcondition clarified; no invented contract | Inactive-session revocation ambiguity |
+| Pairwise combinations | **Python 3 full covering-array proof:** 4 rows cover 12/12 pairs from 8 possible three-factor combinations; force a missing three-way critical case | Four dimensions with constrained valid combinations |
+| JUnit extensions | Jupiter engine, BeforeEach/AfterEach, scoped store and parameter-resolver tradeoffs | Reject hidden global auto-setup and scope leaks |
+| Java interfaces/composition | **Java 17 full program:** two independent injected TokenProviders; hardcoded-token mutation fails | When interface vs plain function earns abstraction |
+
+CI source assertions in `scripts/check-quality-original-depth-v4.mjs` execute the **exact authored** Python/Java and verify deterministic negative mutations; the full learner browser traverses all 428 Quality activities at desktop and 390px, checks the new headings and copyable code. These only prove local teaching fixture mechanics, not a real Steward or JUnit extension environment.
+
+**Current exit state:** source revisions in PR #347 are pending matching-head 19/19 CI. Uncoached novice transfer, manual editorial learner evaluation and authorized Steward/PostgreSQL/IdP/Playwright Java/GitLab/k6 remain **UNVERIFIED**. Keep issue #328 open after source merge.

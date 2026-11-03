@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { qualityOriginalDepth } from "./quality-original-remaining-depth";
 import { qualityBrowserDepth } from "./quality-browser-depth-cases";
 import { qualityBrowserUncoveredDepth } from "./quality-browser-uncovered-depth";
 
@@ -51,6 +52,20 @@ function rich(spec: Spec): Lesson {
         blocks.push(
             {type:"heading",id:`${spec.id}-case-${index+1}`,text:entry[0],level:2},
             {type:"paragraph",text:entry[1]},
+        );
+    }
+    const originalDepth = qualityOriginalDepth[spec.id];
+    if (originalDepth) {
+        blocks.push(
+            {type:"heading",id:`${spec.id}-risk-mechanism`,text:originalDepth.heading,level:2},
+            {type:"paragraph",text:originalDepth.mechanism},
+            {type:"heading",id:`${spec.id}-worked-example`,text:"Worked example and evidence boundary",level:2},
+            {type:"paragraph",text:originalDepth.worked},
+            ...(originalDepth.code ? [{type:"code" as const,language:originalDepth.language ?? "text",code:originalDepth.code}] : []),
+            {type:"heading",id:`${spec.id}-counterexample`,text:"Negative: where a green result lies",level:2},
+            {type:"paragraph",text:originalDepth.failure},
+            {type:"heading",id:`${spec.id}-independent-application`,text:"Independent application",level:2},
+            {type:"paragraph",text:originalDepth.transfer},
         );
     }
     // Extend specific original lessons, preserving all published activity IDs.

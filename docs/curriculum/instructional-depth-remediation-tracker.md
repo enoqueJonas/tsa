@@ -12,6 +12,10 @@ This tracker is the source of truth for the remediation cycle. Do not mark a sch
 
 ## Quality Steward whole-school audit (2026-11-03)
 
+**Further Quality source repair:** [PR #346](https://github.com/enoqueJonas/tsa/pull/346) is merged at `fd5191a0` (19/19 verification), and [draft PR #347](https://github.com/enoqueJonas/tsa/pull/347) revisits the next twelve shortest original readings in risk, isolation, coverage, API persistence, requirements, pairwise, browser support and JUnit extension/composition. Pairwise and Java source models have real executable negative tests. The original-source ledger separates this from external product and uncoached learner evidence, which remain open.
+
+
+
 **SOURCE/RENDERING REMEDIATION MERGED; EXTERNAL LABS AND LEARNER VALIDATION OPEN:** [#328](https://github.com/enoqueJonas/tsa/issues/328)  / merged [PR #344](https://github.com/enoqueJonas/tsa/pull/344) and [PR #345](https://github.com/enoqueJonas/tsa/pull/345) / [12-path source ledger](./ped-005-quality-steward-school-audit.md). The 12 original paths have been surveyed in learner order. Generic 30-minute chapters and 20-minute prep pages removed; Java prerequisite order fixed with two source-executable first-principles lessons; boundary, unit oracle, and localhost HTTP permission-denial negatives added; actual decision readings improved. Matching-head complete CI, independent learner evidence, external environments and the remaining module depth work are **NOT VERIFIED**. Do not mark school REMEDIATED or VALIDATED from this checkpoint.
 
 **Quality source details:** [12-path ledger](./ped-005-quality-steward-school-audit.md) now documents each original module's source edits, 22 distinct Containers/CI cases, 13 distinct Non-functional Quality cases, actual Java/Python/HTTP negative checks, and the uncoached final decision challenge. This is **not** an independent learner validation claim. Final exact-head CI must pass before marking the instructional source lane REMEDIATED.
