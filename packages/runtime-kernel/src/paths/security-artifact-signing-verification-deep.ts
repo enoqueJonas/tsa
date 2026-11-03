@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { artifactTrustBlocks } from "./security-artifact-trust-proof";
 
 const cosign: LearningResource = { title: "Sigstore Cosign", url: "https://docs.sigstore.dev/cosign/" };
 const sigstoreSecurity: LearningResource = { title: "Sigstore security model", url: "https://docs.sigstore.dev/about/security/", kind: "reference" };
@@ -19,6 +20,7 @@ const blocks: LessonBlock[] = [
         "SBOM/provenance evidence should remain bound to the same release identity.",
         "A valid signature from an untrusted identity must not become automatic authorization to deploy."
     ] },
+    ...artifactTrustBlocks,
     { type: "resources", title: "Continue learning", resources: [sigstoreSecurity, cosignSigning, cosignVerify, sigstoreKeyless, gitlabIdTokens, slsaProvenance] },
 ];
 
