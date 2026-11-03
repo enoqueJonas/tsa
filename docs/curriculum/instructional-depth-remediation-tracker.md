@@ -12,6 +12,10 @@ This tracker is the source of truth for the remediation cycle. Do not mark a sch
 
 ## Quality Steward whole-school audit (2026-11-03)
 
+**Tenth Quality original-reading evidence pass:** [PR #352](https://github.com/enoqueJonas/tsa/pull/352) merged at `e627d6c7` with exact-head 19/19 GitHub Actions, actual local Java Playwright and 428 rendered activities; the post-merge master run also passed. Current GitLab source work models pipeline/job source selection, adds both Surefire and Failsafe patterns to the scheduled teaching YAML, and rejects missing, empty, skipped, stale, or falsely green JUnit reports via exact-source Python simulation. A local simulator is **not** proof that a real GitLab schedule exists, runs unattended or delivers notifications. Issue #328 stays open for external/novice gates.
+
+
+
 **Quality Java browser evidence:** [PR #351](https://github.com/enoqueJonas/tsa/pull/351) merged at `61761cfe` after exact-head 19/19 CI and source-derived SQLite negative controls. [Draft PR #352](https://github.com/enoqueJonas/tsa/pull/352) now executes **real Java Playwright** (not just Python Playwright) against TSA's disposable local Chromium page, with byte-exact source and deliberately wrong storage oracle. This does **not** validate an actual Steward UI, identity provider, PostgreSQL, GitLab/k6 or novice learning. #328 stays open.
 
 
