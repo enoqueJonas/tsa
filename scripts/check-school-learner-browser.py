@@ -369,9 +369,33 @@ def check_quality_mobile_all(page):
             assert content.is_visible() and len(content.inner_text().strip()) >= 90, (
                 f"Quality mobile content missing: {activity_id}"
             )
-            assert not page.evaluate("document.documentElement.scrollWidth > innerWidth + 2"), (
-                f"Quality mobile page overflow: {activity_id}"
-            )
+            if page.evaluate("document.documentElement.scrollWidth > innerWidth + 2"):
+                # Preserve the actual overflowing boxes; hiding overflow would
+                # make CI green while mobile learners still lose readable text.
+                offenders = page.evaluate("""() => [...document.querySelectorAll('body *')]
+                    .filter(el => {
+                        const box = el.getBoundingClientRect();
+                        return box.width > 0 && box.right > innerWidth + 2;
+                    }).map(el => {
+                        const box = el.getBoundingClientRect();
+                        const css = getComputedStyle(el);
+                        return {
+                            element: el.tagName.toLowerCase(),
+                            className: String(el.className).slice(0, 180),
+                            left: Math.round(box.left),
+                            right: Math.round(box.right),
+                            width: Math.round(box.width),
+                            whiteSpace: css.whiteSpace,
+                            minWidth: css.minWidth,
+                            text: (el.innerText || '').slice(0, 140),
+                        };
+                    }).slice(-16)""")
+                print(f"QUALITY MOBILE OVERFLOW {activity_id}: {offenders}", flush=True)
+                page.screenshot(
+                    path=str(ARTIFACTS / "quality-mobile-overflow.png"),
+                    full_page=True
+                )
+                raise AssertionError(f"Quality mobile page overflow: {activity_id}")
             for figure in content.locator("figure").filter(
                 has=page.get_by_role("button", name="Copy")
             ).all():
