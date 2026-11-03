@@ -44,16 +44,16 @@ try {
   assert.equal(dbCreated, "CREATE DATABASE");
   assert.equal(run(["-d", "tsa_library", "-c", "SELECT current_database()"]).out, "tsa_library");
   const madeSchema = runLibrary("SQL in tsa_library — create and inspect the library schema").out;
-  assert.deepEqual(madeSchema.split(/\\r?\\n/), ["CREATE SCHEMA", "library"]);
+  assert.deepEqual(madeSchema.split(/\r?\n/), ["CREATE SCHEMA", "library"]);
   assert.equal(runLibrary("SQL in tsa_library — create a persistent table").out, "CREATE TABLE");
   assert.equal(runLibrary("SQL — insert two example books").out, "INSERT 0 2");
   const orderedBooks = runLibrary("SQL — read persistent rows").out;
-  assert.deepEqual(orderedBooks.split(/\\r?\\n/), [
+  assert.deepEqual(orderedBooks.split(/\r?\n/), [
     "1|The Hobbit|J. R. R. Tolkien|1937",
     "2|Things Fall Apart|Chinua Achebe|1958"
   ]);
   const fixedYear = runLibrary("SQL — update one identified row").out;
-  assert.deepEqual(fixedYear.split(/\\r?\\n/), ["UPDATE 1", "The Hobbit|1937"]);
+  assert.deepEqual(fixedYear.split(/\r?\n/), ["UPDATE 1", "The Hobbit|1937"]);
   const badBook = runLibrary("Expected failure — invalid title should not add a row", 1);
   assert.match(badBook.err, /null value in column "title".*violates not-null constraint/);
   assert.equal(run(["-d", "tsa_library", "-c", "SELECT count(*) FROM library.books"]).out, "2");
