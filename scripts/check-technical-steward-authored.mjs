@@ -67,6 +67,36 @@ try {
       }
     }
   }
+  // A case added to source code but omitted from rendered blocks is not instruction.
+  // These minima only verify wiring, NOT depth, accessibility or learner comprehension.
+  const caseMinimums = [
+    ["technical-leadership", 8],
+    ["engineering-governance", 7],
+    ["technology-governance", 5],
+    ["controls-compliance-assurance", 7],
+    ["architecture-governance", 5],
+    ["security-data-governance", 5],
+    ["change-service-governance", 6],
+    ["third-party-lifecycle-risk", 7],
+    ["technical-debt-health", 5],
+  ];
+  for (const [id, min] of caseMinimums) {
+    const learnerPath = technicalStewardPaths.find((entry) => entry.id === id);
+    const evidencedReadings = learnerPath.lessons.flatMap((lesson) => lesson.activities).filter((activity) => {
+      if (activity.content.type !== "reading") return false;
+      const blocks = activity.content.blocks ?? [];
+      return blocks.some((block) => block.type === "callout" && block.tone === "warning") &&
+        blocks.some((block) => block.type === "heading" && /transfer|unseen|independent|new decision|unfamiliar/i.test(block.text));
+    });
+    assert.ok(evidencedReadings.length >= min,
+      `Expected >= ${min} source-rendered worked/failure/transfer readings in ${id}; got ${evidencedReadings.length}`);
+  }
+  const riskPath = technicalStewardPaths.find((entry) => entry.id === "technology-risk");
+  const riskWorked = riskPath.lessons.flatMap((lesson) => lesson.activities).filter((activity) =>
+    activity.content.type === "reading" &&
+    (activity.content.blocks ?? []).some((block) => block.type === "callout" && block.title === "Worked scenario"));
+  assert.ok(riskWorked.length >= 9, `All 9 Technology Risk topics need source-rendered worked cases; found ${riskWorked.length}`);
+
   console.log(`Technical Steward authored-path guard passed: ${modules.length} paths, ${total} original activities, no generated governance/preparation wrappers.`);
 } finally {
   fs.rmSync(tmp, { recursive: true, force: true });
