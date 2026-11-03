@@ -349,6 +349,7 @@ def check_quality_mobile_all(page):
     module_count = page.get_by_role("button", name=MODULE).count()
     assert module_count == 12, f"Expected 12 Quality modules, found {module_count}"
     errors = []
+    overflow_cases = []
     page.on("pageerror", lambda err: errors.append(str(err)))
     total = 0
     for module_index in range(module_count):
@@ -401,11 +402,15 @@ def check_quality_mobile_all(page):
                         };
                     }).slice(-16)""")
                 print(f"QUALITY MOBILE OVERFLOW {activity_id}: {offenders}", flush=True)
-                page.screenshot(
-                    path=str(ARTIFACTS / "quality-mobile-overflow.png"),
-                    full_page=True
-                )
-                raise AssertionError(f"Quality mobile page overflow: {activity_id}")
+                overflow_cases.append({"activity": activity_id, "elements": offenders})
+                if len(overflow_cases) <= 6:
+                    page.screenshot(
+                        path=str(ARTIFACTS / f"quality-overflow-{len(overflow_cases)}.png"),
+                        full_page=True
+                    )
+                # Continue through all 12 modules to identify every failing
+                # activity in one strict run rather than fixing the first one
+                # and needing another whole-school CI cycle.
             for figure in content.locator("figure").filter(
                 has=page.get_by_role("button", name="Copy")
             ).all():
@@ -434,6 +439,10 @@ def check_quality_mobile_all(page):
         print(f"PASS Quality mobile module {module_index+1}/{module_count}: "
               f"{activity_count} authored activities", flush=True)
     assert not errors, f"Quality mobile browser exceptions: {errors}"
+    assert not overflow_cases, (
+        f"Quality mobile horizontal overflow in {len(overflow_cases)} authored activities: "
+        f"{[case['activity'] for case in overflow_cases]}"
+    )
     print(f"PASS Quality Steward full 390px mobile traversal: {total} activities", flush=True)
 
 
