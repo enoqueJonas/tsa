@@ -84,10 +84,10 @@ function readingLesson(id: string, title: string, body: string, practice: string
         content: {
           type: "practical",
           objective: `Apply ${title} to the Steward ecosystem.`,
-          scenario: "Use Steward's existing architecture, delivery, QA, security, reliability, dependency and operational evidence. Governance exists to make decision rights, accountability, evidence and exceptions explicit without turning ordinary engineering work into ceremony.",
-          instructions: practice,
+          scenario: `Use a hypothetical Steward governance environment; organizational roles and policy approvals must be identified as assumptions unless actually supplied.\n\nUNSEEN GOVERNANCE CASE: ${governanceCases[id]?.transfer ?? "Apply the prior principle to an unfamiliar governance situation."}`,
+          instructions: [...practice, "Show a worked decision table or concrete policy/control excerpt for the unseen case; include scope, existing evidence, delegated decision rights and actual verification steps.", "Identify at least one attractive but invalid governance conclusion and the evidence that would reject it."],
           deliverables: ["Governance decision or artifact", "Evidence and rationale", "Owner and review/follow-up record"],
-          completionCriteria: ["Decision rights and accountability are explicit.", "The mechanism is proportionate to the risk and decision being governed.", "The artifact can be used by another engineer without relying on oral context."],
+          completionCriteria: ["The independently prepared case names an accountable decider, supporting roles, authority limits, an explicit decision and evidence of its correct operation.", "A generic RACI chart or policy name without observable acceptance criteria does not pass.", `Reject the work if this failure persists: ${governanceCases[id]?.counterexample ?? "Unattributable approval."}`, "The learner distinguishes business authorization, technical implementation and independent review, and states how new evidence would reopen the choice."],
         },
       },
     ],
