@@ -53,7 +53,7 @@ try{
     "Wrong failure reason "+mode+": "+result.stderr);
   console.log("PASS negative "+mode+": "+reason);
  }
- const scheduleRule='    - if: \\'$CI_PIPELINE_SOURCE == "schedule"\\'\n';
+ const scheduleRule="    - if: '$CI_PIPELINE_SOURCE == \"schedule\"'\\n";
  assert.ok(yaml.includes(scheduleRule),"Expected GitLab workflow schedule clause absent");
  let bad=yaml.replace(scheduleRule,"");
  result=run("healthy",bad);
