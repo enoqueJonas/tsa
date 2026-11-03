@@ -42,20 +42,57 @@ const workedCases: Record<string, { question: string; example: string; challenge
     challenge: "Identify entry criteria, dependency, observable success, abort trigger and a deliberately uncommitted later option."
   }
 };
+// Disconfirming cases and transfer probes belong to specific strategic decisions.
+const strategyChecks: Record<string,{failure:string;transfer:string;acceptance:string}> = {
+  "outcomes-horizons": {
+    "failure": "A slide promises an identity-directory migration in month six, while nobody has measured whether missing ownership or approval delay causes incidents. The roadmap cannot assert a solution before a baseline.",
+    "transfer": "A sponsor wants to improve supplier outage recovery over twelve months. Separate an immediate verified obligation, a near-term experiment, a later option and a condition that cancels that option.",
+    "acceptance": "The learner distinguishes observed baseline, committed result and speculative option, with a source and date for each decision gate."
+  },
+  "strategic-choices": {
+    "failure": "A portfolio calls every desirable initiative 'priority one'; no capacity is released, nothing is deferred and every risk is described as critical. This is not a choice.",
+    "transfer": "With capacity for one sprint, decide between a missing unauthorized-write regression check, a cloud migration and a feature enhancement. Write the rejected options and which evidence could change your choice.",
+    "acceptance": "The choice rejects a credible alternative, describes opportunity cost and names a falsifiable reconsideration signal."
+  },
+  "capability-map": {
+    "failure": "The capability map equates 'reliable incident routing' with installing a new alerting vendor, but team ownership data remains wrong and no one responds to alerts.",
+    "transfer": "Map 'restore customer service after supplier failure' into people, process, information and technology dependencies and identify the weakest point without recommending a tool first.",
+    "acceptance": "The map separates business ability from the product that might supply it and shows one nontechnology bottleneck."
+  },
+  "investment-prioritization": {
+    "failure": "A spreadsheet multiplies unsupported 1–5 optimism scores and calls the result financial ROI, then picks the fashionable infrastructure rewrite over a verified critical service gap.",
+    "transfer": "Use a proposed contract-testing initiative, a backup validation project and an identity platform rewrite. Compare time horizon, consequence, confidence, lifecycle cost, learning option and risk. Defend the top choice and an explicit deferment.",
+    "acceptance": "The ranking identifies which assumptions are uncertain and demonstrates how one change in evidence would alter priority."
+  },
+  "capability-building": {
+    "failure": "A team buys an access-management service and assumes the vendor now owns the organization's policy, role approval and incident recovery decisions.",
+    "transfer": "Choose build, buy, learn or retire for an internal certificate issuance process. Show the continuing organizational responsibility after an outsourced or automated solution.",
+    "acceptance": "The chosen operating model includes remaining owner, skills, failure recovery and exit, not procurement cost alone."
+  },
+  "roadmaps-options": {
+    "failure": "A roadmap promises exact calendar dates for unknown integrations four years out, keeping a costly cloud migration alive even after the original performance driver disappeared.",
+    "transfer": "An API latency improvement may eliminate the need for a new cache. Define the measurement and stop threshold that retires the cache option before implementation, and explain who signs off.",
+    "acceptance": "At least one later option has an abort trigger and an expiry/review point, and near-term commitments have attributable owners."
+  }
+};
 function make(s:Spec):Lesson {
   const worked = workedCases[s.id];
-  if (!worked) throw new Error(`Missing worked strategy case for ${s.id}`);
+  const checks = strategyChecks[s.id];
+  if (!worked || !checks) throw new Error(`Missing strategy decision evidence for ${s.id}`);
   const blocks:LessonBlock[]=[
     {type:"paragraph",text:s.body},
     {type:"heading",id:"worked-strategy-case",text:worked.question,level:2},
     {type:"paragraph",text:worked.example},
+    {type:"callout",tone:"warning",title:"Plausible but wrong strategic choice",body:checks.failure},
+    {type:"heading",id:"unseen-strategy-transfer",text:"Apply the strategy to a different decision",level:2},
+    {type:"paragraph",text:checks.transfer},
     {type:"callout",tone:"note",title:"Reason from the case",body:worked.challenge},
     {type:"callout",tone:"steward",title:"Strategy is a coherent set of choices",body:"A technology strategy is not a wishlist, tool catalogue or multi-year prediction. It connects organizational outcomes to a small set of technology choices, capability investments, deliberate non-investments, sequencing and evidence that would cause the strategy to change."},
     {type:"resources",title:"Continue learning",resources:s.resources},
   ];
   return {id:`technical-strategy-${s.id}`,title:s.title,activities:[
     {id:`technical-strategy-${s.id}-reading`,title:s.title,estimatedMinutes:55,content:{type:"reading",body:[s.body, worked.example].join("\n\n"),blocks}},
-    {id:`technical-strategy-${s.id}-practice`,title:`Practice: ${s.title}`,estimatedMinutes:75,content:{type:"practical",objective:`Apply ${s.title} to Steward's next planning horizon.`,scenario:"Use the accumulated Steward evidence and current organizational assumptions. Make explicit choices about what to strengthen, simplify, defer or stop. Do not invent growth or transformation merely to justify investment.",instructions:s.practice,deliverables:["Strategy/capability decision artifact","Evidence and trade-offs","Owner, horizon and review trigger"],completionCriteria:["Choices trace to organizational outcomes and evidence.","At least one credible non-investment or stop/defer choice is explicit.","Capability and operating consequences are considered, not only technology acquisition."]}},
+    {id:`technical-strategy-${s.id}-practice`,title:`Practice: ${s.title}`,estimatedMinutes:75,content:{type:"practical",objective:`Apply ${s.title} to Steward's next planning horizon.`,scenario:"Use the accumulated Steward evidence and current organizational assumptions. Make explicit choices about what to strengthen, simplify, defer or stop. Do not invent growth or transformation merely to justify investment.",instructions:s.practice,deliverables:["Strategy/capability decision artifact","Evidence and trade-offs","Owner, horizon and review trigger"],completionCriteria:["Choices trace to organizational outcomes and evidence.","At least one credible non-investment or stop/defer choice is explicit.","Capability and operating consequences are considered, not only technology acquisition.",checks.acceptance]}},
   ]};
 }
 const specs:Spec[]=[
