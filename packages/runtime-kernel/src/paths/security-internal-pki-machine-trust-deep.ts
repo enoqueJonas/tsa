@@ -1,5 +1,6 @@
 import type { LearningResource } from "../activities/content";
 import type { AuthoredLesson } from "./normalize-authored-curriculum";
+import { pkiTrustProofBlocks } from "./security-pki-chain-proof";
 
 const rfc5280: LearningResource = { title: "RFC 5280 — Internet X.509 PKI Certificate and CRL Profile", url: "https://www.rfc-editor.org/rfc/rfc5280", kind: "reference" };
 const opensslVerify: LearningResource = { title: "OpenSSL verify", url: "https://docs.openssl.org/3.0/man1/openssl-verify/", kind: "documentation" };
@@ -70,6 +71,7 @@ const pkiLessons: AuthoredLesson[] = [
                 { type: "paragraph", text: "Normal server-authenticated TLS lets a client authenticate the server. Mutual TLS additionally makes the server verify a client certificate and proof of its private key. A successful handshake establishes machine identity at the TLS boundary. Steward must still decide whether that authenticated workload is authorized to perform a particular domain action." },
                 { type: "heading", id: "certificate-lifecycle", text: "Expiry, rotation and revocation are different controls", level: 2 },
                 { type: "paragraph", text: "Expiry limits the certificate's normal acceptance period. Rotation replaces certificate and usually key material while preserving the intended workload identity. Revocation attempts to invalidate a credential before expiry, for example after private-key compromise. Revocation affects real connections only when verifiers obtain and enforce sufficiently current status information." },
+                ...pkiTrustProofBlocks,
                 { type: "callout", tone: "warning", title: "Do not bypass failed verification", body: "A chain, identity or purpose failure is evidence that the verifier cannot establish the expected trust relationship. Disabling certificate verification removes the control instead of repairing it." }
             ] },
             { type: "exercise", title: "Trace the future Steward trust decision", description: "For the private Steward machine-to-machine boundary used in the next lesson, identify the expected leaf identity, issuing intermediate, locally trusted root, certificate purpose and private-key owner. Then state which Steward authorization decision still remains after TLS authentication succeeds." }
