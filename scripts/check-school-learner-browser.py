@@ -88,6 +88,36 @@ def inspect_school(page):
                     f"Missing runnable, copyable example in Builder reading: {activity_id}"
                 )
             code = content.locator("figure").filter(has=page.get_by_role("button", name="Copy"))
+            if SCHOOL == "reliability-engineer":
+                reliability_source_readings = {
+                    "logging-structured-logs-001": "Run a real parsing and correlation failure",
+                    "logging-centralized-logging-001": "Follow a log from code to Graylog search",
+                    "service-level-engineering-slis-001": "Execute a small positive and negative SLI model",
+                    "metrics-prometheus-grafana-metric-types-001": "Why counters need reset-aware queries",
+                    "reliability-distributed-tracing-implementation-001": "Execute two real local HTTP hops",
+                    "reliability-alertmanager-implementation-001": "Exercise the HTTP notification boundary and its failure",
+                    "data-protection-dr-backup-integrity-001": "Execute a disposable restore and deliberate corruption",
+                    "resilience-distributed-failure-idempotency-001": "Run an ambiguous commit and retry it safely",
+                    "fault-injection-controlled-failure-001": "Inject one bounded response failure after a synthetic commit",
+                    "performance-and-capacity-latency-throughput-001": "Compute a real synthetic tail counterexample",
+                    "incident-management-timeline-001": "Run a shuffled, duplicated evidence fixture",
+                    "database-stewardship-slow-queries-plans-001": "Execute before/after index plans, then roll back all changes",
+                    "reliability-observability-stack-integration-foundations": "One incident, three diagnostic questions",
+                    "steward-reliability-program-milestone-foundations": "Construct an auditable claim",
+                }
+                required = reliability_source_readings.get(activity_id)
+                if required:
+                    assert content.get_by_text(required, exact=True).count() == 1, (
+                        f"Original Reliability teaching heading not rendered: {activity_id}: {required}"
+                    )
+                    if activity_id not in {
+                        "logging-centralized-logging-001",
+                        "reliability-observability-stack-integration-foundations",
+                        "steward-reliability-program-milestone-foundations",
+                    }:
+                        assert code.count() >= 1, (
+                            f"Source-authored executable or SQL fixture missing from rendered reading: {activity_id}"
+                        )
             for k in range(code.count()):
                 assert code.nth(k).locator("pre").count() > 0, (
                     f"Code block not rendered: {activity_id}"
