@@ -434,6 +434,42 @@ if (!steward || steward.paths.length !== 13) {
     }
   }
 }
+// Legacy completions for the retired generated Technical Steward pages must not
+// inflate current progress or reset an active learner to the first page.
+if (steward && typeof createLearningSession === "function") {
+  const leadership = steward.paths.find((entry) => entry.id === "technical-leadership");
+  const first = leadership?.lessons?.[0]?.activities?.[0];
+  const second = leadership?.lessons?.[0]?.activities?.[1];
+  if (!first || !second || first.content.type !== "reading" || second.content.type !== "practical") {
+    problems.push("Technical Steward leadership source reading/practical order is absent");
+  } else {
+    const session = createLearningSession(leadership);
+    const retiredModel = "technical-leadership-stewardship-model-reading";
+    const retiredPrep = `${second.id}-stewardship-preparation`;
+    session.restoreProgress({
+      currentActivityId: retiredPrep,
+      completedActivityIds: [retiredModel, first.id, retiredPrep],
+      reflectionResponses: {},
+    });
+    if (session.currentActivity().id !== second.id ||
+        !session.completedActivityIds().includes(first.id) ||
+        session.completedActivityIds().includes(retiredModel) ||
+        session.completedActivityIds().includes(retiredPrep)) {
+      problems.push("Retired Technical Steward wrapper IDs must not count; resume after preserved authored reading");
+    }
+    const completed = createLearningSession(leadership);
+    const allIds = leadership.lessons.flatMap((lesson) => lesson.activities.map((activity) => activity.id));
+    completed.restoreProgress({
+      currentActivityId: retiredModel,
+      completedActivityIds: [...allIds, retiredModel, retiredPrep],
+      reflectionResponses: {},
+    });
+    if (completed.completedActivityIds().length !== allIds.length ||
+        completed.currentActivity().id !== allIds[allIds.length - 1]) {
+      problems.push("Fully completed Technical Steward authored path must keep completion without retired generated IDs");
+    }
+  }
+}
 const professional = journey.schools.find((school) => school.id === "professional-engineer");
 if (!professional || professional.paths.length !== 7) {
   problems.push("Professional Engineer must expose 7 paths");
