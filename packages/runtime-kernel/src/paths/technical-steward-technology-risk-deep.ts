@@ -48,6 +48,24 @@ const workedRiskExamples: Record<string, {title:string;problem:string;example:st
     problem:"A low-frequency dependency outage remains after reasonable controls.",
     example:"Risk owner: platform operations. Acceptance authority: designated governance role. Rationale: remaining exposure within approved limits. Evidence: monitoring and incident history. Review: 90 days or after a material outage.",
     reasoning:"Ownership of remediation is not automatically authority to accept risk. The record should identify the actual delegated decision-maker."
+  },
+  registers: {
+    title: "A register row is a decision with falsifiable evidence",
+    problem: "A spreadsheet says 'Database risk: high, closed' without the possible event, consequence or control proof.",
+    example: "R-17; condition: one untested recovery path; event: host loss; consequence: owner records unavailable beyond approved RTO; evidence: last verified backup timestamp, no timed restore; residual exposure: unresolved; risk owner: service owner; control action: isolated restore rehearsal; acceptance authority: designated technology risk role; trigger: a failed restore, infrastructure change or 30-day review.",
+    reasoning: "A row is not closed just because an action ticket was created. Check the actual timed restore and update the exposure. False-green test: remove the evidence URI or responsible owner—another reviewer must reject the row as not decision-ready. Independently apply the same schema to an end-of-support identity-provider dependency."
+  },
+  kri: {
+    title: "A risk signal must point to a decision, not a pretty dashboard",
+    problem: "The team proposes 'number of commits this week' as a KRI for database recoverability.",
+    example: "Risk hypothesis: recovery becomes unreliable when restore tests fall behind infrastructure changes. Signal: age of last successful isolated restore compared with the approved rehearsal cadence, labelled with affected environment and data snapshot; threshold crossing: service owner schedules a protected test and escalates if beyond approved tolerance. A successful backup count is a control-operation KPI, not evidence of restore readiness.",
+    reasoning: "A KRI can be noisy or lagging. Verify data source, scope, owner and action before publishing it. Negative case: 100 green backup jobs but zero successful restore drills must not produce a low recovery-risk verdict. Transfer: choose a signal for third-party EOL exposure and identify its failure mode."
+  },
+  ownership: {
+    title: "Separate risk ownership, control operation and acceptance authority",
+    problem: "An engineer discovers that a privileged CI token is shared across teams and assigns the risk to themself because they know the script.",
+    example: "Risk owner: the accountable service owner for the affected business outcome; control owner: CI platform team implementing named tokens and monitoring; action owner: engineer migrating the pipeline; acceptance authority: independently delegated security/risk leader if residual exposure remains. Evidence: current privilege inventory, exact rotation test, successful build from new token and failure of revoked token. Review trigger: privilege expansion, owner departure or token compromise.",
+    reasoning: "The engineer can own remediation without authority to accept continued credential exposure. Negative case: a token is rotated but the old credential still works; do not mark treatment effective. Transfer: map the four roles for a vendor with unrehearsed outage failover, including a departing action owner."
   }
 };
 function lesson(id: string, title: string, body: string, instructions: string[]): Lesson {
