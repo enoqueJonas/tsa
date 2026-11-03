@@ -13,19 +13,72 @@ const resourcesByHandbook:Record<string,LearningResource[]>={
 
 const scenario = "Steward is a mature organization-owned service whose architecture, delivery, quality, security, reliability, dependency, risk and governance decisions need durable guidance that engineers can find, understand, challenge and maintain. The handbook is an organizational-memory and navigation layer, not a duplicate of every technical artifact.";
 
+const handbookChecks: Record<string,{failure:string;transfer:string}> = {
+  "handbook-and-standards-writing-usable-standards": {
+    "failure": "A 'coding standard' mandates an obsolete Nexus hostname and 'secure code' without a testable invariant. A team can obey the document and still deploy unverified binaries.",
+    "transfer": "Write a short standard for disallowing unauthorized owner changes: scope, MUST requirement, allowed implementation flexibility, negative read-after-denial evidence, owner and exception authority."
+  },
+  "handbook-and-standards-runbooks-and-playbooks": {
+    "failure": "A restore runbook says 'restore the most recent backup' but does not explain how to identify the authoritative source, verify checksum, avoid overwriting production or prove records are readable.",
+    "transfer": "Draft an executable read-only runbook for investigating an unavailable scheduled job, specifying prerequisites, commands or observations, expected output, stop conditions and escalation. State the commands that require staging-only access."
+  },
+  "handbook-and-standards-decision-records": {
+    "failure": "A team rewrites an old ADR to show its current choice and erases the rejected option that explained why a prior migration was risky. The next team repeats the failed experiment.",
+    "transfer": "Produce a superseding ADR for an API authorization design that was initially based on a gateway but now enforces ownership in the domain service. Include evidence, a rejected alternative and a reversal trigger."
+  },
+  "handbook-and-standards-review-checklists": {
+    "failure": "Every engineer marks 'tests passed' on a checklist while the required negative authorization suite ran zero tests. The checklist increases apparent assurance and fails to catch the defect.",
+    "transfer": "Design a risk-tiered release checklist that distinguishes a documentation-only change from an irreversible database migration, and identify a machine-checkable negative criterion that rejects a stale report."
+  },
+  "handbook-and-standards-knowledge-stewardship": {
+    "failure": "A handbook lists the specialist's name but the substitute on-call cannot locate the relevant secret-rotation procedure or access the approved evidence system when the specialist is away.",
+    "transfer": "Run a no-hints simulated handoff for GitLab CI ownership to a deputy. Specify the exact evidence they must find, the allowed read-only actions and the failed/partial/pass rubric."
+  },
+  "handbook-and-standards-standards-ownership-and-versioning": {
+    "failure": "A mandatory provenance requirement changes during a live release but the team cannot identify which version was in force at its approval cutoff.",
+    "transfer": "Define effective-date, migration, exception and retirement metadata for a standard whose signing requirement changes between release candidates; explain how historical evidence remains interpretable."
+  },
+  "handbook-and-standards-exception-and-waiver-records": {
+    "failure": "A scanner exception is marked 'temporary' for an unbounded period; the risk owner left, and no CI gate warns when the affected library passes support end date.",
+    "transfer": "Write a 30-day exception for a broken provenance signing path with affected artifact scope, approved compensating verification, delegated acceptance role, expiry enforcement and exit proof."
+  },
+  "handbook-and-standards-keeping-the-handbook-alive": {
+    "failure": "A recovery procedure was invalidated by a recent database migration but remains the top search result and falsely promises a tested rollback.",
+    "transfer": "Design an event-triggered update workflow that catches stale procedures after incidents, migrations and vendor EOL. Define a reviewer action, freshness signal and one document that should be retired rather than edited."
+  }
+};
 function reading(id: string, title: string, body: string, outcomes: string[], example: string, mistakes: string[], practice: string[]): Lesson {
-  const fullBody = `${scenario}\n\nLearning outcomes\n- ${outcomes.join("\n- ")}\n\n${body}\n\nWorked Steward example\n${example}\n\nCommon mistakes\n- ${mistakes.join("\n- ")}\n\nPractice\n- ${practice.join("\n- ")}`;
+  const check = handbookChecks[id];
+  if (!check) throw new Error(`Missing evidence/failure case for handbook lesson ${id}`);
+  const fullBody = [
+    scenario, "Learning outcomes", outcomes.join("; "), body, "Worked Steward example",
+    example, "Common failure", check.failure, "Independent transfer",
+    check.transfer, "Original practice", practice.join("; ")
+  ].join("\n\n");
   return {
-    id,
-    title,
+    id, title,
     activities: [{
       id: `${id}-001`,
       title,
       estimatedMinutes: 50,
       content: {
         type: "reading",
-        blocks: [...fullBody.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),{type:"resources",title:"Continue learning",resources:resourcesByHandbook[id] ?? [docsCode]}],
         body: fullBody,
+        blocks: [
+          {type:"paragraph",text:scenario},
+          {type:"heading",id:`${id}-outcomes`,text:"What you will learn to demonstrate",level:2},
+          {type:"list",items:outcomes},
+          {type:"heading",id:`${id}-mechanism`,text:"Concept and mechanism",level:2},
+          {type:"paragraph",text:body},
+          {type:"heading",id:`${id}-worked`,text:"Worked Steward decision",level:2},
+          {type:"paragraph",text:example},
+          {type:"callout",tone:"warning",title:"How an apparently reasonable artifact fails",body:check.failure},
+          {type:"heading",id:`${id}-transfer`,text:"Independent transfer",level:2},
+          {type:"paragraph",text:check.transfer},
+          {type:"heading",id:`${id}-practice`,text:"Practice and evidence",level:2},
+          {type:"list",items:practice,ordered:true},
+          {type:"resources",title:"Continue learning",resources:resourcesByHandbook[id] ?? [docsCode]},
+        ],
       },
     }],
   };
