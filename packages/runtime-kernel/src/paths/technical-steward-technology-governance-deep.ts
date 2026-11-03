@@ -1,8 +1,8 @@
 import type { LearningResource } from "../activities/content";
 import type { Lesson } from "./lesson";
 const cobit={title:"ISACA — COBIT",url:"https://www.isaca.org/resources/cobit",kind:"reference"} satisfies LearningResource;
-const itil={title:"PeopleCert — ITIL",url:"https://www.peoplecert.org/browse-certifications/it-governance-and-service-management/ITIL-1",kind:"reference"} satisfies LearningResource;
-const iso38500={title:"ISO/IEC 38500 — Governance of IT overview",url:"https://www.iso.org/standard/62816.html",kind:"reference"} satisfies LearningResource;
+const itil={title:"PeopleCert — ITIL (Version 5 and ITIL 4 transition)",url:"https://www.peoplecert.org/itil-version-5-explained",kind:"reference"} satisfies LearningResource;
+const iso38500={title:"ISO/IEC 38500:2024 — Governance of IT for the organization",url:"https://www.iso.org/standard/81684.html",kind:"reference"} satisfies LearningResource;
 const isoMgmt={title:"ISO — Management System Standards",url:"https://www.iso.org/management-system-standards.html",kind:"reference"} satisfies LearningResource;
 const nistCsf={title:"NIST Cybersecurity Framework 2.0",url:"https://www.nist.gov/cyberframework",kind:"reference"} satisfies LearningResource;
 const resourcesByTechGovernance:Record<string,LearningResource[]>={
