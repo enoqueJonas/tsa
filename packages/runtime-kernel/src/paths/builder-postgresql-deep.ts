@@ -794,6 +794,130 @@ const specs: DataLessonSpec[] = [
         ]
     },
     {
+        "id": "postgresql-tables-and-rows",
+        "title": "Create Tables, Insert Rows and Read Data",
+        "introduction": "You now have a database and a schema. Next comes the central relational object: a table. We will create a small library.books table, insert two rows, inspect what was saved and learn how constraints reject invalid data. No Steward entities are needed to understand any of these steps.",
+        "outcomes": [
+            "Explain table, row, column, data type, primary key and nullability.",
+            "Create and inspect a table in a named schema.",
+            "Insert, select and update sample rows, including deterministic ordered output.",
+            "Demonstrate that a failed insert does not silently alter the saved rows."
+        ],
+        "sections": [
+            {
+                "id": "what-table",
+                "title": "What does a table represent?",
+                "body": "A table describes one kind of record and its permitted columns. Our books table has a row for each book and columns for its identifier, title, author and publication year. This is more than a grid in a spreadsheet: PostgreSQL stores data, applies types and constraints and processes SQL from multiple clients. A schema contains tables; tables contain rows. A row is not a column, and a column is not a separate file."
+            },
+            {
+                "id": "types-rules",
+                "title": "Choose columns and rules",
+                "body": "A primary key provides a unique, non-null identifier for each record. book_id uses bigint for a whole number and GENERATED ALWAYS AS IDENTITY to have PostgreSQL choose the value. title and author use text; NOT NULL makes them mandatory. published_year uses integer and a CHECK constraint to limit this lab to a declared range (a real library might need a richer date model). These rules are enforced by the server, regardless of which client submits a row. The constraint expresses an application assumption, not a universal law about books."
+            },
+            {
+                "id": "create-table",
+                "title": "Create the books table in the right schema",
+                "body": "Connect to tsa_library and verify SELECT current_database(); first. Run the statement below. The dot in library.books tells PostgreSQL to create books inside schema library, not the default public. Parentheses group column definitions; commas separate them; a semicolon ends the SQL statement. You should see CREATE TABLE. In psql, \\dt library.* lists tables in this schema and \\d library.books describes the table. Only run this once on your new isolated database; if it exists, inspect it instead of dropping data.",
+                "language": "sql",
+                "caption": "SQL in tsa_library — create a persistent table",
+                "code": "CREATE TABLE library.books (\n  book_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  title text NOT NULL,\n  author text NOT NULL,\n  published_year integer CHECK (published_year BETWEEN 1450 AND 2100)\n);",
+                "output": "CREATE TABLE"
+            },
+            {
+                "id": "insert-rows",
+                "title": "Insert two book records",
+                "body": "INSERT INTO names the target table and specific columns; VALUES supplies the records. You omit book_id because its identity definition generates a value. Strings use single quotes; the numbers here are integers. The database reports INSERT 0 2, meaning two rows were inserted. Use fictional catalogue rows with known titles rather than any customer or Steward data.",
+                "language": "sql",
+                "caption": "SQL — insert two example books",
+                "code": "INSERT INTO library.books (title, author, published_year)\nVALUES\n  ('The Hobbit', 'J. R. R. Tolkien', 1937),\n  ('Things Fall Apart', 'Chinua Achebe', 1958);",
+                "output": "INSERT 0 2"
+            },
+            {
+                "id": "select-rows",
+                "title": "Read rows and understand SELECT",
+                "body": "SELECT lists the requested columns, FROM picks a table, and ORDER BY makes the order predictable. SQL tables do not promise a natural row order: even when generated IDs increase, use ORDER BY to depend on that sequence. On a fresh lab with only the two example rows, the following query returns book_id 1 and 2. If you repeated the insert or changed the table, your IDs may differ. Close psql and reconnect to tsa_library; unlike a temporary table, these rows remain because we created a persistent table.",
+                "language": "sql",
+                "caption": "SQL — read persistent rows",
+                "code": "SELECT book_id, title, author, published_year\nFROM library.books\nORDER BY book_id;",
+                "output": " book_id |       title       |      author       | published_year\n---------+-------------------+-------------------+---------------\n       1 | The Hobbit        | J. R. R. Tolkien  |          1937\n       2 | Things Fall Apart | Chinua Achebe     |          1958\n(2 rows)"
+            },
+            {
+                "id": "change-one",
+                "title": "Update and inspect one record",
+                "body": "UPDATE changes rows already stored. WHERE selects which rows are affected; without WHERE, an UPDATE can change every row. This example corrects the year of one invented row to the same value, to demonstrate the syntax without altering the historical fact. PostgreSQL reports UPDATE 1; afterward SELECT confirms that only one named book was targeted. DELETE removes rows and likewise requires careful filtering, but we will cover it in the dedicated CRUD lesson. Avoid accidental destructive operations in this introduction.",
+                "language": "sql",
+                "caption": "SQL — update one identified row",
+                "code": "UPDATE library.books\nSET published_year = 1937\nWHERE title = 'The Hobbit';\nSELECT title, published_year FROM library.books WHERE title = 'The Hobbit';",
+                "output": "UPDATE 1\n   title    | published_year\n------------+---------------\n The Hobbit | 1937\n(1 row)"
+            },
+            {
+                "id": "bad-row",
+                "title": "Make an invalid insert fail on purpose",
+                "body": "Try to insert a row with a NULL title. NOT NULL requires a title; PostgreSQL rejects the row and tells you which rule failed. Immediately repeat SELECT count(*) FROM library.books; and check that the count remains 2. This is a safe negative experiment: a failed individual statement does not insert a partly valid book. You can also test an out-of-range publication year and inspect the CHECK error. Do not assume every real-world data rule can be expressed by a simple CHECK.",
+                "language": "sql",
+                "caption": "Expected failure — invalid title should not add a row",
+                "code": "INSERT INTO library.books (title, author, published_year)\nVALUES (NULL, 'Nobody', 2000);\n-- Expected ERROR: null value in column \"title\" violates not-null constraint\nSELECT count(*) FROM library.books;",
+                "output": "ERROR: null value in column \"title\" of relation \"books\" violates not-null constraint\n count\n-------\n     2\n(1 row)"
+            },
+            {
+                "id": "schema-mistake",
+                "title": "What if PostgreSQL cannot find books?",
+                "body": "Suppose you type SELECT * FROM books; and receive relation \"books\" does not exist. Before recreating anything, ask whether your current database is tsa_library, whether \\dt library.* lists the table, and what SHOW search_path; contains. You may simply have omitted the schema prefix. A different error, permission denied for schema library, means the role cannot use that namespace. A table-not-found error and permission error have different remedies. The next lesson compares permanent tables to deliberately temporary ones."
+            }
+        ],
+        "warning": "Use an isolated learning server and invented data. Do not modify production or shared databases, publish real credentials, or drop existing objects merely to repeat an exercise.",
+        "assignment": [
+            "Create library.books exactly once and inspect its definition with \\d library.books.",
+            "Insert two rows and verify ordered SELECT results.",
+            "Disconnect from psql, reconnect and show that both books persist.",
+            "Provoke a NOT NULL violation; prove that the row count remains unchanged.",
+            "Explain why an unqualified books query may fail even when library.books exists."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Getting Started",
+                "url": "https://www.postgresql.org/docs/17/tutorial.html",
+                "kind": "reference",
+                "purpose": "Follow the official sequence from architecture to databases, SQL tables and records."
+            },
+            {
+                "title": "PostgreSQL 17 — Creating a New Table",
+                "url": "https://www.postgresql.org/docs/17/tutorial-table.html",
+                "kind": "reference",
+                "purpose": "Column types and CREATE TABLE syntax."
+            },
+            {
+                "title": "PostgreSQL 17 — Querying a Table",
+                "url": "https://www.postgresql.org/docs/17/tutorial-sql.html",
+                "kind": "reference",
+                "purpose": "INSERT and SELECT with predictable order."
+            }
+        ],
+        "practiceObjective": "Create and inspect a durable two-row table and independently diagnose one failed insert.",
+        "practiceInstructions": [
+            "Run the published CREATE TABLE, INSERT and SELECT examples only in tsa_library.",
+            "Capture the output of \\dt library.*, \\d library.books and SELECT with ORDER BY.",
+            "Run the NULL-title negative insert, capture the error and verify count 2.",
+            "Open a fresh psql session and repeat the SELECT to demonstrate persistence.",
+            "Explain what created the table: PostgreSQL executed SQL; psql merely transmitted it."
+        ],
+        "knowledgeCheck": "A colleague says a table is the same as a schema, rows have a guaranteed physical order, and closing psql deletes a table. Correct all three. Why did a NULL title fail and why does ORDER BY matter?",
+        "readingTitle": "Create a table of books",
+        "practiceTitle": "Add and inspect book records",
+        "checkTitle": "Check tables and constraints",
+        "practiceScenario": "Build and inspect a durable two-row library catalogue, then deliberately violate a constraint without losing valid records.",
+        "practiceDeliverables": [
+            "Published commands or SQL with observed results",
+            "One documented failure or alternative with cause",
+            "Short explanation of which PostgreSQL layer acted"
+        ],
+        "practiceCompletionCriteria": [
+            "Another learner can reproduce the described sequence or explain the diagram from the submitted evidence.",
+            "Every concept in the exercise was introduced in a preceding reading section.",
+            "The explanation distinguishes the database server, selected database and client session where applicable."
+        ]
+    },
+    {
         "id": "postgresql-temporary-tables",
         "title": "Temporary Tables and Session Lifetime",
         "introduction": "Your library.books table survived a new psql connection. But some data should exist only while one client session is working, such as a short-lived calculation or intermediate result. PostgreSQL provides temporary tables for that. This lesson separates that single idea from general connection setup; the later transactions lesson will teach BEGIN, COMMIT and ROLLBACK in depth.",
