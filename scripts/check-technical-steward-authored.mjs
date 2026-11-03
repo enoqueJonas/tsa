@@ -86,7 +86,7 @@ try {
       if (activity.content.type !== "reading") return false;
       const blocks = activity.content.blocks ?? [];
       return blocks.some((block) => block.type === "callout" && block.tone === "warning") &&
-        blocks.some((block) => block.type === "heading" && /transfer|unseen|independent|new decision|unfamiliar/i.test(block.text));
+        blocks.some((block) => block.type === "heading" && /transfer/i.test(block.id));
     });
     assert.ok(evidencedReadings.length >= min,
       `Expected >= ${min} source-rendered worked/failure/transfer readings in ${id}; got ${evidencedReadings.length}`);
