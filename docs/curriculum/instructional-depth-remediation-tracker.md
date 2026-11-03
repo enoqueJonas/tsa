@@ -12,6 +12,10 @@ This tracker is the source of truth for the remediation cycle. Do not mark a sch
 
 ## Quality Steward whole-school audit (2026-11-03)
 
+**Quality concurrency curriculum split:** [PR #353](https://github.com/enoqueJonas/tsa/pull/353) merged at `325b8286`, matching-head 19/19 CI with executable GitLab source rules, eight negative controls and 428 Quality desktop/mobile activities. [Draft PR #354](https://github.com/enoqueJonas/tsa/pull/354) addresses an actual overloaded original Java concurrency reading by retaining its ID and **adding two deeply authored reading+practical pairs**: deterministic barrier-driven lost update versus AtomicInteger, and reused-worker ThreadLocal leakage/cleanup; both compile/run with deliberate negative mutants. Expected Quality activities rise to **432**, not a number-driven fluff expansion. Real integration/learner gates under #328 remain OPEN.
+
+
+
 **Tenth Quality original-reading evidence pass:** [PR #352](https://github.com/enoqueJonas/tsa/pull/352) merged at `e627d6c7` with exact-head 19/19 GitHub Actions, actual local Java Playwright and 428 rendered activities; the post-merge master run also passed. Current GitLab source work models pipeline/job source selection, adds both Surefire and Failsafe patterns to the scheduled teaching YAML, and rejects missing, empty, skipped, stale, or falsely green JUnit reports via exact-source Python simulation. A local simulator is **not** proof that a real GitLab schedule exists, runs unattended or delivers notifications. Issue #328 stays open for external/novice gates.
 
 
