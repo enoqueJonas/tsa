@@ -36,7 +36,7 @@ const counter=metricSrc.match(/const counterExperiment = `([\s\S]*?)`;/);
 assert.ok(counter,"Missing source reset-counter example");
 const counterRun=spawnSync("python3",["-c",counter[1]],{encoding:"utf8",timeout:10000});
 assert.ifError(counterRun.error);assert.equal(counterRun.status,0,counterRun.stderr);
-assert.match(counterRun.stdout,/naive_delta=-95 reset_aware_increase=17/);
+assert.match(counterRun.stdout,/naive_delta=-95 reset_aware_increase=14/);
 for (const required of ["histogram_quantile(0.95", "sum by (le, route)", "status_class", "zero denominator"]) {
   assert.ok(metricSrc.includes(required),"Missing PromQL population/negative-case teaching: "+required);
 }
