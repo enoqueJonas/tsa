@@ -48,6 +48,18 @@ const changeGovernanceCases: Record<string, {question:string;worked:string;failu
     "worked": "Illustrative gate: automated tests report 0 failed but the required authorization suite executed 0 tests due to tag selection. A robust release review requires minimum mandatory test cases, exact commit/artifact provenance, report freshness, denied-state invariant and clear treatment of missing evidence. It separately checks operational readiness and any approved exception. A green shell exit is not equivalent to safe release when tests did not run or ran against the wrong build.",
     "failure": "Approval states 'all jobs green' though no protected-endpoint assertions executed, or the only evidence is a screenshot from another release candidate.",
     "transfer": "Write a release decision for a failed scheduled security test with an otherwise green feature build. Distinguish block, authorized exception and what evidence could safely change the conclusion."
+  },
+  "change-controls": {
+    "question": "Map one change-control gate to its actual failure mode",
+    "worked": "Illustrative release path: source branch receives review, CI tests the exact commit, an immutable artifact is signed and a deployment gate verifies digest against the tested candidate. The control owner defines which environment and identity can override a gate; the auditor can trace any override to risk acceptance. A rollback runbook covers a database-compatible reversal and avoids assuming data writes are always reversible. Work backwards from the risk of untested code reaching users before prescribing the review mechanism.",
+    "failure": "Two humans approve a pull request but the deploy process uses a mutable latest tag. The approvals are real but do not control the artifact actually running.",
+    "transfer": "Design minimum controls for a production feature flag whose toggle may have permanent downstream data effects. Identify one false-green approval and one live-state verification."
+  },
+  "service-ownership": {
+    "question": "The service boundary must include consumers and operational responsibility",
+    "worked": "Illustrative Steward API service map: business consumers depend on registration outcomes, the service owner is accountable for availability and data contracts, on-call operations respond to alerts, the product owner decides change priority and security governs restricted privileges. Define expected event/outcome signals, customer-impact escalation, upstream/downstream dependencies and a substitute on-call who can use a tested runbook. A service catalog entry is only a pointer; test an owner absence scenario where a broken scheduled job has no successful outcome message.",
+    "failure": "Teams own servers but nobody is accountable when consumers receive accepted HTTP responses and no actual registration completion. A green infrastructure dashboard cannot prove the service outcome.",
+    "transfer": "Map ownership for a webhook-based payment notification service, including the person who reconciles missed callbacks, the authorization boundary and the evidence that closes an incident."
   }
 };
 function moduleLesson(id: string, title: string, body: string, instructions: string[]): Lesson {
