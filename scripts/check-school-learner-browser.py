@@ -129,6 +129,8 @@ def inspect_school(page):
                     "web-and-api-threats-authorization-idor-001": "Execute the real local 200/401/403 ownership matrix",
                     "application-security-authorization-design-testing-001": "An authorization policy needs an object and an action",
                     "security-artifact-signing-verification-001": "Execute valid signature, tamper and untrusted-signer cases",
+                    "linux-and-network-security-file-secret-permissions-001": "Prove private permissions and detect world-readable exposure",
+                    "security-secure-file-transfer-migration-001": "Follow the SSH/SFTP trust and file-transfer sequence",
                 }
                 expected = source_readings.get(activity_id)
                 if expected:
