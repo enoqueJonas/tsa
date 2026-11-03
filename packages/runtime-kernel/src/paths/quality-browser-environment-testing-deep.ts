@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { qualityJavaPlaywrightPom, qualityJavaPlaywrightSource, qualityJavaBrowserLesson } from "./quality-java-playwright-local-v9";
 import { qualityExperientialDepthV6 } from "./quality-experiential-depth-v6";
 import { qualityEvidenceDepthV5 } from "./quality-evidence-depth-v5";
 import { qualityOriginalDepth } from "./quality-original-remaining-depth";
@@ -76,6 +77,20 @@ function rich(spec: Spec): Lesson {
             {type:"heading",id:`${spec.id}-experience-${i}`,text:part.heading,level:2},
             {type:"paragraph",text:part.body},
         );
+    }
+    if (spec.id === "playwright-runtime-model") {
+        for (const [i,part] of qualityJavaBrowserLesson.entries()) {
+            blocks.push(
+                {type:"heading",id:`java-playwright-fixture-${i}`,text:part.heading,level:2},
+                {type:"paragraph",text:part.body},
+            );
+            if (i === 2) {
+                blocks.push(
+                    {type:"code",language:"xml",code:qualityJavaPlaywrightPom},
+                    {type:"code",language:"java",code:qualityJavaPlaywrightSource},
+                );
+            }
+        }
     }
     // Extend specific original lessons, preserving all published activity IDs.
     if (["navigation-network", "ui-test-selection", "advanced-browser-interactions",
