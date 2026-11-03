@@ -165,6 +165,18 @@ const riskConcepts: Record<string, {prerequisites:string;mechanism:string;altern
     "failure": "If the only engineer leaves during a supplier outage, an ownership chart is not continuity. Reject any plan that depends on the absent person's private credentials or memory; require safe read-only evidence access and an authorized escalated fallback before claiming readiness."
   }
 };
+const recoveryEvidenceLab:Record<string,{explanation:string;commands:string;expected:string}> = {
+  "inherent-residual":{
+    explanation:"This Node.js 22+ offline experiment isolates what a green backup job can and cannot prove. One fictional backup has no measured restore; another hypothetical rehearsal took 360 minutes against a proposed 240-minute target. Before running, predict each evidence status and the residual unknowns; do not infer a supplier's availability probability applies to your local restore. Complete instructions and safe mutations: labs/technical-steward/README.md.",
+    commands:"node labs/technical-steward/decision-evidence.mjs recovery",
+    expected:"FICTIONAL-RESTORE-EVIDENCE: RECOVERY_ASSURANCE_NOT_ESTABLISHED (hypothetical RTO 240 minutes)\nBACKUP-ONLY: NOT_PROVEN_OR_BREACHED (RESTORE_DURATION_UNOBSERVED, RECOVERED_APPLICATION_DATA_UNVERIFIED)\nSIX-HOUR-ISOLATED-DRILL: NOT_PROVEN_OR_BREACHED (HYPOTHETICAL_RTO_EXCEEDED)"
+  },
+  "appetite-tolerance":{
+    explanation:"The 240-minute recovery target in this exercise is explicitly fictional and unapproved. A 360-minute isolated restore with data readback exceeds that hypothetical bound. Change a SCRATCH JSON copy to 180 minutes: the overall result must still be unverified while another restore has never been executed. Explain why engineering can report the gap but cannot invent a business-approved RTO.",
+    commands:"node labs/technical-steward/decision-evidence.mjs recovery\ncp labs/technical-steward/recovery-observations.json recovery-whatif.json\nnode labs/technical-steward/decision-evidence.mjs recovery --file recovery-whatif.json",
+    expected:"The unchanged fixture is RECOVERY_ASSURANCE_NOT_ESTABLISHED. Editing a proposed measurement without a real observation is only a simulation and cannot establish actual organizational tolerance."
+  }
+};
 function lesson(id: string, title: string, body: string, instructions: string[]): Lesson {
   const teaching = riskConcepts[id];
   if (!teaching || !workedRiskExamples[id] || !riskAssessment[id]) {
@@ -179,8 +191,13 @@ function lesson(id: string, title: string, body: string, instructions: string[])
       {type:"heading" as const,id:`${id}-alternatives`,text:"Alternatives and boundaries",level:2 as const},
       {type:"paragraph" as const,text:teaching.alternatives},
       {type:"callout" as const,tone:"warning" as const,title:"Diagnose a false risk conclusion",body:teaching.failure},
-      ...(workedRiskExamples[id] ? [{type:"heading" as const,id:`${id}-worked`,text:workedRiskExamples[id].title,level:2 as const},{type:"paragraph" as const,text:workedRiskExamples[id].problem},{type:"callout" as const,tone:"note" as const,title:"Worked scenario",body:workedRiskExamples[id].example},{type:"paragraph" as const,text:workedRiskExamples[id].reasoning}] : []),{type:"resources" as const,title:"Risk reference",resources:resourcesByRisk[id] ?? [nistRisk]}] } },
-    { id: `technology-risk-${id}-practice`, title: `${title}: Steward risk exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to a real Steward technology-risk decision.`, scenario:`${scenario}\n\nNOVEL RISK-ASSESSMENT CASE: ${riskAssessment[id]!.transfer}`, instructions:[...instructions,"State observed facts, unknowns and evidence source; make one bounded treatment/acceptance/escalation decision and explain the controlled test that would falsify it."], deliverables:["New-case risk assessment with scoped evidence","Cause/event/consequence and authority/decision record","Counterexample verification and review trigger"], completionCriteria:[...criteria,`Automatically reject this false conclusion: ${riskAssessment[id]!.reject}`,"Risk evidence has a source, time horizon and confidence; the chosen response has accountable authority and an observation that would reverse it."] } },
+      ...(workedRiskExamples[id] ? [{type:"heading" as const,id:`${id}-worked`,text:workedRiskExamples[id].title,level:2 as const},{type:"paragraph" as const,text:workedRiskExamples[id].problem},{type:"callout" as const,tone:"note" as const,title:"Worked scenario",body:workedRiskExamples[id].example},{type:"paragraph" as const,text:workedRiskExamples[id].reasoning}] : []),...(recoveryEvidenceLab[id] ? [
+        {type:"heading" as const,id:`risk-${id}-executable`,text:"Offline recoverability evidence lab — predict and falsify",level:2 as const},
+        {type:"paragraph" as const,text:recoveryEvidenceLab[id]!.explanation},
+        {type:"code" as const,language:"bash",caption:"Synthetic evidence; Node.js 22+ at TSA repository root",code:recoveryEvidenceLab[id]!.commands,output:recoveryEvidenceLab[id]!.expected}
+      ] : []),
+      {type:"resources" as const,title:"Risk reference",resources:resourcesByRisk[id] ?? [nistRisk]}] } },
+    { id: `technology-risk-${id}-practice`, title: `${title}: Steward risk exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to a real Steward technology-risk decision.`, scenario:`${scenario}\n\nNOVEL RISK-ASSESSMENT CASE: ${riskAssessment[id]!.transfer}`, instructions:[...instructions,...(recoveryEvidenceLab[id] ? ["Execute the offline recovery-evidence command in labs/technical-steward/README.md. Record output; distinguish the nonexistent restore from the six-hour hypothetical rehearsal and do NOT call the four-hour threshold approved policy.","Edit a COPY of the JSON recovery fixture and rerun --file. State which observation remains missing and why a synthetic change does not prove a real restore or enterprise appetite."] : []),"State observed facts, unknowns and evidence source; make one bounded treatment/acceptance/escalation decision and explain the controlled test that would falsify it."], deliverables:["New-case risk assessment with scoped evidence","Cause/event/consequence and authority/decision record","Counterexample verification and review trigger"], completionCriteria:[...criteria,...(recoveryEvidenceLab[id] ? ["Evidence includes actual local execution, an expected failed/rejected restoration assertion, a scratch-case comparison and clear classification of unapproved target versus observed restore performance."] : []),`Automatically reject this false conclusion: ${riskAssessment[id]!.reject}`,"Risk evidence has a source, time horizon and confidence; the chosen response has accountable authority and an observation that would reverse it."] } },
   ] };
 }
 
