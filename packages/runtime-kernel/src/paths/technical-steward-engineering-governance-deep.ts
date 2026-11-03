@@ -1,6 +1,6 @@
 import type { LearningResource } from "../activities/content";
 import type { Lesson } from "./lesson";
-const iso38500={title:"ISO/IEC 38500 — Governance of IT overview",url:"https://www.iso.org/standard/62816.html",kind:"reference"} satisfies LearningResource;
+const iso38500={title:"ISO/IEC 38500:2024 — Governance of IT for the organization",url:"https://www.iso.org/standard/81684.html",kind:"reference"} satisfies LearningResource;
 const cobit={title:"ISACA — COBIT",url:"https://www.isaca.org/resources/cobit",kind:"reference"} satisfies LearningResource;
 const adr={title:"Architectural Decision Records",url:"https://adr.github.io/",kind:"reference"} satisfies LearningResource;
 const resourcesByGovernance:Record<string,LearningResource[]>={
