@@ -11,6 +11,12 @@ interface DataLessonSpec {
     assignment: string[];
     resources: LearningResource[];
     practiceObjective: string;
+    readingTitle?: string;
+    practiceTitle?: string;
+    checkTitle?: string;
+    practiceScenario?: string;
+    practiceDeliverables?: string[];
+    practiceCompletionCriteria?: string[];
     practiceInstructions: string[];
     knowledgeCheck: string;
 }
@@ -65,26 +71,26 @@ function lesson(spec: DataLessonSpec): Lesson {
         activities: [
             {
                 id: `relational-data-and-postgresql-${spec.id}-reading`,
-                title: `${spec.title}: Concepts and Mental Model`,
+                title: spec.readingTitle ?? `${spec.title}: Concepts and Mental Model`,
                 estimatedMinutes: 25,
                 content: { type: "reading", body: spec.introduction, blocks },
             },
             {
                 id: `relational-data-and-postgresql-${spec.id}-practice`,
-                title: `${spec.title}: Engineering Practice`,
+                title: spec.practiceTitle ?? `${spec.title}: Engineering Practice`,
                 estimatedMinutes: 35,
                 content: {
                     type: "practical",
                     objective: spec.practiceObjective,
-                    scenario: "Use the evolving Steward service-registry data model. Preserve useful SQL, schema notes and evidence so later Builder modules can build on the same system.",
+                    scenario: spec.practiceScenario ?? "Use the evolving Steward service-registry data model. Preserve useful SQL, schema notes and evidence so later Builder modules can build on the same system.",
                     instructions: spec.practiceInstructions,
-                    deliverables: ["Working SQL or schema change", "Reproducible evidence containing setup/query and observed output", "Short engineering note explaining the result and trade-offs"],
-                    completionCriteria: ["Another learner could reproduce the result against the recorded Steward data/setup.", "At least one failure, edge case or alternative is executed and its observed result is recorded.", "The learner can explain what PostgreSQL is doing rather than only copy syntax."],
+                    deliverables: spec.practiceDeliverables ?? ["Working SQL or schema change", "Reproducible evidence containing setup/query and observed output", "Short engineering note explaining the result and trade-offs"],
+                    completionCriteria: spec.practiceCompletionCriteria ?? ["Another learner could reproduce the result against the recorded Steward data/setup.", "At least one failure, edge case or alternative is executed and its observed result is recorded.", "The learner can explain what PostgreSQL is doing rather than only copy syntax."],
                 },
             },
             {
                 id: `relational-data-and-postgresql-${spec.id}-check`,
-                title: `${spec.title}: Knowledge Check`,
+                title: spec.checkTitle ?? `${spec.title}: Knowledge Check`,
                 estimatedMinutes: 10,
                 content: { type: "reflection", prompt: spec.knowledgeCheck },
             },
@@ -248,7 +254,21 @@ const specs: DataLessonSpec[] = [
             "Explain the difference between the SQL language and the psql application using the diagram.",
             "Predict the effect of closing psql, stopping PostgreSQL and deleting an application process; distinguish predictions from actions you performed."
         ],
-        "knowledgeCheck": "Your colleague says: 'I installed psql and my database is ready.' Explain why that claim does not follow. What actually stores book rows? Why might SQLite be preferable for a single-user desktop catalogue?"
+        "knowledgeCheck": "Your colleague says: 'I installed psql and my database is ready.' Explain why that claim does not follow. What actually stores book rows? Why might SQLite be preferable for a single-user desktop catalogue?",
+        "readingTitle": "Understand the PostgreSQL system",
+        "practiceTitle": "Draw and explain the database system",
+        "checkTitle": "Test your mental model",
+        "practiceScenario": "A library app needs shared records. Build a system diagram and compare simple files, SQLite and PostgreSQL before writing SQL.",
+        "practiceDeliverables": [
+            "Labeled server/client/database/schema/table diagram",
+            "Comparison of JSON file, SQLite and PostgreSQL choices",
+            "One explanation of client-server query execution"
+        ],
+        "practiceCompletionCriteria": [
+            "Another learner can reproduce the described sequence or explain the diagram from the submitted evidence.",
+            "Every concept in the exercise was introduced in a preceding reading section.",
+            "The explanation distinguishes the database server, selected database and client session where applicable."
+        ]
     },
     {
         "id": "postgresql-first-connection",
@@ -338,7 +358,21 @@ const specs: DataLessonSpec[] = [
             "Exit and reconnect, then try a deliberately incorrect -d database name in a fresh invocation.",
             "Record which commands belong to the shell, which belong to psql and which SQL runs on the server."
         ],
-        "knowledgeCheck": "How do PostgreSQL, SQL and psql differ? What are -h, -p, -U and -d? Why do psql --version and pg_isready not prove a successful authenticated query?"
+        "knowledgeCheck": "How do PostgreSQL, SQL and psql differ? What are -h, -p, -U and -d? Why do psql --version and pg_isready not prove a successful authenticated query?",
+        "readingTitle": "Learn psql and connect to a server",
+        "practiceTitle": "Explore your first psql session",
+        "checkTitle": "Check client and server understanding",
+        "practiceScenario": "Connect to an isolated PostgreSQL lab, discover which client/server/database/role you are actually using, and classify failures.",
+        "practiceDeliverables": [
+            "Published commands or SQL with observed results",
+            "One documented failure or alternative with cause",
+            "Short explanation of which PostgreSQL layer acted"
+        ],
+        "practiceCompletionCriteria": [
+            "Another learner can reproduce the described sequence or explain the diagram from the submitted evidence.",
+            "Every concept in the exercise was introduced in a preceding reading section.",
+            "The explanation distinguishes the database server, selected database and client session where applicable."
+        ]
     },
     {
         "id": "postgresql-databases-and-schemas",
@@ -437,7 +471,21 @@ const specs: DataLessonSpec[] = [
             "Explain why 'database.schema.table' is not how you normally query across different PostgreSQL databases.",
             "Prepare tsa_steward_lab as a separately named disposable database for the subsequent practice if your role permits it."
         ],
-        "knowledgeCheck": "Where does a schema live? Is public a different database? What does library.books identify? Why might a table exist yet SELECT * FROM books say relation does not exist?"
+        "knowledgeCheck": "Where does a schema live? Is public a different database? What does library.books identify? Why might a table exist yet SELECT * FROM books say relation does not exist?",
+        "readingTitle": "Create a database and schema",
+        "practiceTitle": "Organize a library database",
+        "checkTitle": "Check database and schema boundaries",
+        "practiceScenario": "Create a separate library database and schema before creating objects. Use a second empty database only when setting up subsequent Steward practicals.",
+        "practiceDeliverables": [
+            "Published commands or SQL with observed results",
+            "One documented failure or alternative with cause",
+            "Short explanation of which PostgreSQL layer acted"
+        ],
+        "practiceCompletionCriteria": [
+            "Another learner can reproduce the described sequence or explain the diagram from the submitted evidence.",
+            "Every concept in the exercise was introduced in a preceding reading section.",
+            "The explanation distinguishes the database server, selected database and client session where applicable."
+        ]
     },
     {
         "id": "postgresql-tables-and-rows",
@@ -547,7 +595,21 @@ const specs: DataLessonSpec[] = [
             "Open a fresh psql session and repeat the SELECT to demonstrate persistence.",
             "Explain what created the table: PostgreSQL executed SQL; psql merely transmitted it."
         ],
-        "knowledgeCheck": "A colleague says a table is the same as a schema, rows have a guaranteed physical order, and closing psql deletes a table. Correct all three. Why did a NULL title fail and why does ORDER BY matter?"
+        "knowledgeCheck": "A colleague says a table is the same as a schema, rows have a guaranteed physical order, and closing psql deletes a table. Correct all three. Why did a NULL title fail and why does ORDER BY matter?",
+        "readingTitle": "Create a table of books",
+        "practiceTitle": "Add and inspect book records",
+        "checkTitle": "Check tables and constraints",
+        "practiceScenario": "Build and inspect a durable two-row library catalogue, then deliberately violate a constraint without losing valid records.",
+        "practiceDeliverables": [
+            "Published commands or SQL with observed results",
+            "One documented failure or alternative with cause",
+            "Short explanation of which PostgreSQL layer acted"
+        ],
+        "practiceCompletionCriteria": [
+            "Another learner can reproduce the described sequence or explain the diagram from the submitted evidence.",
+            "Every concept in the exercise was introduced in a preceding reading section.",
+            "The explanation distinguishes the database server, selected database and client session where applicable."
+        ]
     },
     {
         "id": "postgresql-temporary-tables",
@@ -625,7 +687,21 @@ const specs: DataLessonSpec[] = [
             "Show that library.books still exists in the separate library database.",
             "Write three sentences comparing client-session lifetime, TEMP table lifetime and permanent table lifetime."
         ],
-        "knowledgeCheck": "Why does SELECT * FROM tsa_session_probe fail after the SQL-file process exits? Is that evidence of PostgreSQL losing durable data? What did ROLLBACK affect?"
+        "knowledgeCheck": "Why does SELECT * FROM tsa_session_probe fail after the SQL-file process exits? Is that evidence of PostgreSQL losing durable data? What did ROLLBACK affect?",
+        "readingTitle": "Understand temporary tables",
+        "practiceTitle": "Run and inspect a session-only table",
+        "checkTitle": "Check temporary table lifetime",
+        "practiceScenario": "Use a fresh database connection to show how a temporary SQL table differs from the persistent library catalogue.",
+        "practiceDeliverables": [
+            "Published commands or SQL with observed results",
+            "One documented failure or alternative with cause",
+            "Short explanation of which PostgreSQL layer acted"
+        ],
+        "practiceCompletionCriteria": [
+            "Another learner can reproduce the described sequence or explain the diagram from the submitted evidence.",
+            "Every concept in the exercise was introduced in a preceding reading section.",
+            "The explanation distinguishes the database server, selected database and client session where applicable."
+        ]
     },
     {
         id: "relational-model",
