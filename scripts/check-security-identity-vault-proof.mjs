@@ -77,3 +77,24 @@ assert.ifError(parityRun.error);
 assert.equal(parityRun.status,0,"SFTP local integrity example failed: "+parityRun.stderr);
 assert.match(parityRun.stdout,/synthetic_parity_verified=true tampered_staging_rejected=true/);
 console.log("PASS exact SFTP local byte parity/tamper negative; real SSH host trust/FTP decommission UNVERIFIED.");
+
+const containerSrc = readFileSync(root + "security-container-delivery-source-depth.ts", "utf8");
+const containerLesson = readFileSync(root + "security-container-delivery-deep.ts", "utf8");
+assert.ok(containerLesson.includes("...containerTopicBlocks(topic, slug)"), "Original Container and Delivery readings must use source topic mechanics");
+const listMatch = containerLesson.match(/const titles = \[([\s\S]*?)\] as const;/);
+assert.ok(listMatch, "Original 19 container topics missing");
+const originalTopics = [...listMatch[1].matchAll(/"([^"]+)"/g)].map(x => x[1]);
+const depthMatch = containerSrc.match(/export const securityContainerDepthByTopic: Record<string, TopicDepth> = (\{[\s\S]*?\n\});/);
+assert.ok(depthMatch, "Explicit source topic depth map is missing");
+const depthMap = JSON.parse(depthMatch[1]);
+assert.equal(originalTopics.length, 19);
+assert.equal(Object.keys(depthMap).length, originalTopics.length, "Do not lose or add phantom source topics");
+for (const name of originalTopics) {
+  const d = depthMap[name];
+  assert.ok(d && d.mechanism.length >= 220 && d.caseStudy.length >= 160 && d.failure.length >= 150,
+    "Missing concrete mechanism, Steward case or negative transfer in " + name);
+  assert.ok(d.failure.includes("Negative:"), "Source topic must demonstrate explicit rejection: " + name);
+}
+assert.ok(new Set(originalTopics.map(t => depthMap[t].failure)).size === originalTopics.length,
+  "No copy/paste generic negative path across Container school");
+console.log("PASS 19 distinct original Container and Delivery Security concept, case, and negative sections.");
