@@ -66,6 +66,69 @@ function lesson(spec: Spec): Lesson {
  ]};
 }
 
+// PED-005: explicit Java first principles before Maven, JUnit or extensions.
+// The very code below is executed by check-quality-java-first-principles.mjs.
+const javaFirstProgramSource = "public class FirstJavaProgram {\n    public static void main(String[] args) {\n        System.out.println(\"source -> bytecode -> JVM\");\n    }\n}";
+const javaTwoAccountsSource = "public class TwoAccounts {\n    static final class Account {\n        private final String owner;\n        private int successes;\n\n        Account(String owner) { this.owner = owner; }\n        void succeed() { this.successes++; }\n        String report() { return this.owner + \":\" + this.successes; }\n    }\n\n    public static void main(String[] args) {\n        Account alpha = new Account(\"Alpha\");\n        Account beta = new Account(\"Beta\");\n        alpha.succeed();\n        alpha.succeed();\n        beta.succeed();\n        System.out.println(alpha.report());\n        System.out.println(beta.report());\n        if (!alpha.report().equals(\"Alpha:2\") || !beta.report().equals(\"Beta:1\")) {\n            throw new AssertionError(\"instance state leaked across objects\");\n        }\n    }\n}";
+
+const javaFirstPrinciplesLessons: Lesson[] = [
+  {
+    id: "quality-java-source-bytecode-jvm-introduction",
+    title: "From Java Source to a Running Program",
+    activities: [
+      {
+        id: "quality-java-source-bytecode-jvm-introduction-001",
+        title: "Compile and run a Java class without an IDE or test framework",
+        estimatedMinutes: 35,
+        content: {
+          type: "reading",
+          body: "A Java program starts as source code, is compiled into .class bytecode by the JDK, and runs inside the JVM. Learn this boundary before asking Maven or JUnit to do it for you.",
+          blocks: [
+            {type:"heading",id:"java-jdk-jvm",text:"Distinguish Java, JDK, bytecode and JVM",level:2},
+            {type:"paragraph",text:"Java is the programming language. The JDK contains javac (the compiler) and developer tools. javac turns a .java source file into a .class bytecode file; the JVM loads and executes compatible bytecode. Maven and JUnit are additional tools, not required to run this small program."},
+            {type:"heading",id:"java-first-file",text:"A complete minimal program",level:2},
+            {type:"paragraph",text:"Save the code as FirstJavaProgram.java. The public class name must match the filename. main is a special static entry method: Java runs it without first creating an instance. System.out.println writes one line to standard output."},
+            {type:"code",language:"java",code:javaFirstProgramSource},
+            {type:"heading",id:"java-first-commands",text:"Compile, execute and inspect the result",level:2},
+            {type:"code",language:"bash",code:"javac FirstJavaProgram.java\njava FirstJavaProgram"},
+            {type:"paragraph",text:"Expected terminal output: source -> bytecode -> JVM. The compiler creates FirstJavaProgram.class. The java command uses the class name without .class. These are two separate operations; a passing Java run does not imply that Maven or JUnit has been configured."},
+            {type:"heading",id:"java-first-failure",text:"Negative: compiler source/file mismatch",level:2},
+            {type:"paragraph",text:"Change public class FirstJavaProgram to public class DifferentName while leaving the file named FirstJavaProgram.java, then rerun javac. Compilation must fail, explaining that the public class needs its own matching filename. Restore the name and compile again. The CI regression reproduces this negative without affecting your working file."},
+            {type:"heading",id:"java-first-transfer",text:"Independent transfer",level:2},
+            {type:"paragraph",text:"Create a new public class WelcomeSteward whose main prints two distinct lines. Without copying the provided class name, explain which file must exist, how you compile it, why java receives a class name instead of a filename and what happens if javac fails."},
+          ],
+        },
+      },
+      {id:"quality-java-source-bytecode-jvm-introduction-002",title:"Prove the Java toolchain and compiler error",estimatedMinutes:30,content:{type:"practical",objective:"Build the first Java class independently and distinguish a compilation error from an application assertion.",scenario:"Start with a disposable directory and an installed JDK, before using any Maven dependencies.",instructions:["Create FirstJavaProgram.java from the reading and run javac then java.","Capture the exact stdout and the generated .class artifact.","Deliberately rename the public class without renaming the file; capture the compiler error and exit status.","Restore the file; independently compile and run WelcomeSteward."],deliverables:["Compilable source files","Positive compiler/runtime output","Non-zero compile error evidence","Independent transfer outcome"],completionCriteria:["Both commands execute using only the JDK.","The compiler negative is explained, not mislabeled a JUnit failure.","The independent class is compiled without IDE-only behavior."]}},
+    ],
+  },
+  {
+    id: "quality-java-objects-constructors-state-introduction",
+    title: "Classes, Instances, Constructors, this and State",
+    activities: [
+      {id:"quality-java-objects-constructors-state-introduction-001",title:"Create two independent objects and observe their state",estimatedMinutes:45,content:{type:"reading",
+        body:"A class defines what objects can hold and do. Each constructed object normally has its own instance fields; constructors initialize those fields, and methods operate on one receiver.",
+        blocks:[
+          {type:"heading",id:"java-objects-meaning",text:"Definition: class versus object",level:2},
+          {type:"paragraph",text:"A class is a type definition. An object (instance) is one concrete value made from that definition with new. Fields store its state; methods operate on that state. A constructor runs during new and establishes initial field values. this refers to the receiving instance inside an instance method or constructor."},
+          {type:"heading",id:"java-objects-code",text:"Worked example: two distinct accounts",level:2},
+          {type:"paragraph",text:"Compile this single file as TwoAccounts.java. Account is a nested class used only to keep the example copyable. new Account(...) creates separate instances. The constructor sets this.owner; succeed increments this.successes only for the account receiving that call. main is static because the JVM invokes it before there is a TwoAccounts instance."},
+          {type:"code",language:"java",code:javaTwoAccountsSource},
+          {type:"code",language:"bash",code:"javac TwoAccounts.java\njava TwoAccounts"},
+          {type:"paragraph",text:"Expected stdout is exactly Alpha:2 then Beta:1 on separate lines. Trace each instruction: alpha and beta refer to distinct objects; alpha.succeed executes twice, beta.succeed once. Each report formats its own state. The final assertion protects against accidentally sharing the counter."},
+          {type:"heading",id:"java-instance-static-failure",text:"Negative: instance field accidentally made static",level:2},
+          {type:"paragraph",text:"Change private int successes to private static int successes. A static field belongs to the class, not to each object. All three succeed calls now increment one shared counter: reports become Alpha:3 and Beta:3; the program throws AssertionError. Restore the instance field before moving on. This is a real semantic failure, not an arbitrary syntax error."},
+          {type:"heading",id:"java-instance-vs-other-models",text:"Why this comes before records or JUnit lifecycle",level:2},
+          {type:"paragraph",text:"Later Java records are convenient for immutable data, but ordinary classes are needed when behavior and controlled state evolve. Later JUnit PER_METHOD versus PER_CLASS determines whether a test class instance is recreated; that discussion only makes sense after the learner understands object identity and instance fields."},
+          {type:"heading",id:"java-state-transfer",text:"Independent transfer",level:2},
+          {type:"paragraph",text:"Add a third account, Gamma, with four successful calls. Predict the three outputs before running. Then create an intentional shared-state mutant and explain why the result changes. Define class, constructor, instance field, instance method and this in your own words."},
+        ]
+      }},
+      {id:"quality-java-objects-constructors-state-introduction-002",title:"Demonstrate instance independence and the static-state defect",estimatedMinutes:40,content:{type:"practical",objective:"Verify separate instance state and explain how static fields violate the intended model.",scenario:"A future shared test framework must not leak one test's mutable state into another.",instructions:["Compile and run the original TwoAccounts.java, recording two expected outputs.","Predict output after changing only successes to static, then run and capture the thrown AssertionError.","Restore instance state and independently add a third account with a predicted count.","Explain why a constructor and this refer to the correct account."],deliverables:["Original runnable Java class","Positive stdout","Static-state negative failure","Third-instance transfer"],completionCriteria:["Java 17 compiles the original from terminal.","Positive expected values and negative mutation are observed.","Learner can explain the difference between class-level and instance-level state."]}},
+    ],
+  },
+];
+
 const specs: Spec[]=[
 {id:"jvm-maven",title:"Java, the JVM and Maven Project Model",principle:"A Java test framework is compiled software. Learn how source becomes bytecode, how the JVM loads classes and how Maven constructs the compile/test classpaths so build failures are diagnosable rather than mysterious.",
 mechanics:["JDK tools compile source into JVM bytecode; the JVM executes loaded classes.","Packages provide namespacing; imports are source-level name resolution, not dependency installation.","The classpath determines which compiled classes and JARs are visible at compile/test/runtime.","Maven coordinates identify artifacts as groupId:artifactId:version.","Dependency scopes change classpath visibility; test-scoped automation dependencies should not leak into production artifacts.","Maven phases form a lifecycle; plugins bind goals such as compilation and Surefire test execution.","Surefire discovers/runs unit-style JUnit tests during test; Failsafe can later separate integration-test lifecycle semantics when justified."],
@@ -227,4 +290,4 @@ const javaOrderedSpecs = javaLearningOrder.map((id) => {
 if (javaOrderedSpecs.length !== specs.length) {
   throw new Error("Java learner order must list each source lesson exactly once");
 }
-export const javaForTestFrameworkEngineeringDeepLessons: Lesson[]=[...javaOrderedSpecs.map(lesson),executionMilestone,milestone];
+export const javaForTestFrameworkEngineeringDeepLessons: Lesson[]=[...javaFirstPrinciplesLessons,...javaOrderedSpecs.map(lesson),executionMilestone,milestone];
