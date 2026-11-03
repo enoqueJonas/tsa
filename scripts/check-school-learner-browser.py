@@ -103,6 +103,7 @@ def inspect_school(page):
                     "incident-management-timeline-001": "Run a shuffled, duplicated evidence fixture",
                     "database-stewardship-slow-queries-plans-001": "Execute before/after index plans, then roll back all changes",
                     "reliability-observability-stack-integration-foundations": "One incident, three diagnostic questions",
+                    "reliability-observability-stack-integration-graylog-lab-guide": "Three components, three failure boundaries",
                     "steward-reliability-program-milestone-foundations": "Construct an auditable claim",
                 }
                 required = reliability_source_readings.get(activity_id)
