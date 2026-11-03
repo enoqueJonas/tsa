@@ -201,9 +201,9 @@ const specs: DataLessonSpec[] = [
                 "id": "the-hierarchy",
                 "title": "Databases, schemas, tables and rows",
                 "body": "A server can host named databases, for example tsa_library and tsa_steward_lab. Each database contains one or more schemas. A schema is a named namespace for objects such as tables, not a second database. A table defines columns such as book_id and title, and rows contain individual records. A role is the database identity that controls which connections and operations are permitted; it is not a database. One ordinary PostgreSQL client connection works in one selected database at a time. Remember this order: server → database → schema → table → row.",
-                "code": "PostgreSQL server\n  ├─ postgres  (maintenance database)\n  ├─ tsa_library  (database)\n  │    ├─ public  (default schema)\n  │    └─ library  (our schema)\n  │         └─ books  (table)\n  │              ├─ book_id, title, author (columns)\n  │              └─ one record per book (rows)\n  └─ tsa_steward_lab  (another database)\n\nRoles govern permissions across the cluster.",
+                "language": "text",
                 "caption": "Concept map — object hierarchy (not commands)",
-                "language": "text"
+                "code": "PostgreSQL server\n  ├─ postgres  (maintenance database)\n  ├─ tsa_library  (database)\n  │    ├─ public  (default schema)\n  │    └─ library  (our schema)\n  │         └─ books  (table)\n  │              ├─ book_id, title, author (columns)\n  │              └─ one record per book (rows)\n  └─ tsa_steward_lab  (another database)\n\nRoles govern permissions across the cluster."
             },
             {
                 "id": "client-program",
@@ -270,9 +270,9 @@ const specs: DataLessonSpec[] = [
                 "id": "start-server",
                 "title": "Start a disposable PostgreSQL server (Docker option)",
                 "body": "Type these in your computer's terminal, not inside psql. This example uses an artificial local-only bootstrap password: change it for any non-disposable environment; never reuse it or commit it to Git. Port 55432 on your machine forwards to port 5432 inside the container and binds only to 127.0.0.1. POSTGRES_USER creates a powerful bootstrap role only for this disposable lab. The separate pg_isready command checks whether a listener responds; it does not prove your role's permissions.",
-                "code": "docker run --name tsa-pg-lesson \\\n  -e POSTGRES_USER=tsa_learner \\\n  -e POSTGRES_PASSWORD=throwaway_local_lab_only \\\n  -e POSTGRES_DB=postgres \\\n  -p 127.0.0.1:55432:5432 \\\n  -d postgres:17\n\ndocker exec tsa-pg-lesson pg_isready -U tsa_learner -d postgres\ndocker exec -it tsa-pg-lesson psql -U tsa_learner -d postgres",
+                "language": "bash",
                 "caption": "Shell — launch a local lab server, then launch psql",
-                "language": "bash"
+                "code": "docker run --name tsa-pg-lesson \\\n  -e POSTGRES_USER=tsa_learner \\\n  -e POSTGRES_PASSWORD=throwaway_local_lab_only \\\n  -e POSTGRES_DB=postgres \\\n  -p 127.0.0.1:55432:5432 \\\n  -d postgres:17\n\ndocker exec tsa-pg-lesson pg_isready -U tsa_learner -d postgres\ndocker exec -it tsa-pg-lesson psql -U tsa_learner -d postgres"
             },
             {
                 "id": "psql-prompt",
@@ -288,9 +288,9 @@ const specs: DataLessonSpec[] = [
                 "id": "first-query",
                 "title": "Send your first SQL query to the server",
                 "body": "At the psql prompt type \\conninfo and then the SQL below. SELECT is SQL interpreted and executed by the PostgreSQL server, not a shell command or a psql backslash command. current_database() reports the database of this connection; current_user reports the active role; 2+2 makes a result you can verify without having any tables. The role or database names will vary if you chose a supplied training server.",
-                "code": "SELECT current_database() AS db,\n       current_user AS connected_as,\n       2 + 2 AS answer;",
-                "caption": "SQL in psql — run a real query",
                 "language": "sql",
+                "caption": "SQL in psql — run a real query",
+                "code": "SELECT current_database() AS db,\n       current_user AS connected_as,\n       2 + 2 AS answer;",
                 "output": " db | connected_as | answer\n----+--------------+-------\n postgres | tsa_learner | 4\n(1 row)\n(example names for the Docker lab)"
             },
             {
@@ -360,18 +360,18 @@ const specs: DataLessonSpec[] = [
                 "id": "create-db",
                 "title": "Create your first database",
                 "body": "While connected to the postgres maintenance database in psql, run this SQL statement. You are asking the PostgreSQL server to create a database named tsa_library. The command prints CREATE DATABASE on success. You need CREATEDB privilege; the Docker example's bootstrap role has it, but many managed training roles do not. If you see 'already exists', do not drop an unknown database: inspect \\l and use a distinct authorized lab name. CREATE DATABASE cannot run inside a transaction block.",
-                "code": "CREATE DATABASE tsa_library;",
-                "caption": "SQL in the postgres database — create tsa_library",
                 "language": "sql",
+                "caption": "SQL in the postgres database — create tsa_library",
+                "code": "CREATE DATABASE tsa_library;",
                 "output": "CREATE DATABASE"
             },
             {
                 "id": "switch-db",
                 "title": "Connect to the database you created",
                 "body": "Use \\l to list databases. Type \\connect tsa_library to open a connection to it; the psql prompt should change from postgres to tsa_library. Unlike CREATE DATABASE, \\connect is a psql client command, not SQL. SELECT current_database(); proves you are now in tsa_library. You can also leave psql and start a new client with -d tsa_library. Try to explain why a connection switch is required: databases are distinct connection targets, not folders under postgres.",
-                "code": "\\l\n\\connect tsa_library\nSELECT current_database();",
-                "caption": "Interactive psql — list databases, reconnect, inspect",
                 "language": "text",
+                "caption": "Interactive psql — list databases, reconnect, inspect",
+                "code": "\\l\n\\connect tsa_library\nSELECT current_database();",
                 "output": " current_database\n------------------\n tsa_library\n(1 row)"
             },
             {
@@ -383,9 +383,9 @@ const specs: DataLessonSpec[] = [
                 "id": "create-schema",
                 "title": "Create a schema named library",
                 "body": "With SELECT current_database() returning tsa_library, run CREATE SCHEMA library; and check that PostgreSQL reports CREATE SCHEMA. Then run \\dn (a psql command) to list schemas, and the SQL query below to inspect your new schema by name. You should see both public and library in a normal lab. CREATE SCHEMA needs CREATE privilege on this database. Never attempt it on an unknown production database just to prove that a command works.",
-                "code": "CREATE SCHEMA library;\nSELECT schema_name\nFROM information_schema.schemata\nWHERE schema_name = 'library';",
-                "caption": "SQL in tsa_library — create and inspect the library schema",
                 "language": "sql",
+                "caption": "SQL in tsa_library — create and inspect the library schema",
+                "code": "CREATE SCHEMA library;\nSELECT schema_name\nFROM information_schema.schemata\nWHERE schema_name = 'library';",
                 "output": "CREATE SCHEMA\n schema_name\n-------------\n library\n(1 row)"
             },
             {
@@ -397,9 +397,9 @@ const specs: DataLessonSpec[] = [
                 "id": "permissions",
                 "title": "If creation fails, do not guess passwords or change security",
                 "body": "A role can connect to a database without being allowed to CREATE DATABASE. Creating a schema requires CREATE on the target database. Using an existing schema and creating a table inside it require their own appropriate privileges. Ask for an authorized learning role rather than granting yourself superuser rights on a shared server. For the later Steward SQL fixture, create a second empty database named tsa_steward_lab only in your disposable server; keep its seed in public, not in the library schema. The two applications' objects should not be mixed.",
-                "code": "-- Back in postgres, only in your disposable lab:\n\\connect postgres\nCREATE DATABASE tsa_steward_lab;\n-- Return to the isolated library course:\n\\connect tsa_library",
+                "language": "text",
                 "caption": "Optional lab setup — a separate database for later Steward practice",
-                "language": "text"
+                "code": "-- Back in postgres, only in your disposable lab:\n\\connect postgres\nCREATE DATABASE tsa_steward_lab;\n-- Return to the isolated library course:\n\\connect tsa_library"
             }
         ],
         "warning": "Use an isolated learning server and invented data. Do not modify production or shared databases, publish real credentials, or drop existing objects merely to repeat an exercise.",
@@ -464,45 +464,45 @@ const specs: DataLessonSpec[] = [
                 "id": "create-table",
                 "title": "Create the books table in the right schema",
                 "body": "Connect to tsa_library and verify SELECT current_database(); first. Run the statement below. The dot in library.books tells PostgreSQL to create books inside schema library, not the default public. Parentheses group column definitions; commas separate them; a semicolon ends the SQL statement. You should see CREATE TABLE. In psql, \\dt library.* lists tables in this schema and \\d library.books describes the table. Only run this once on your new isolated database; if it exists, inspect it instead of dropping data.",
-                "code": "CREATE TABLE library.books (\n  book_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  title text NOT NULL,\n  author text NOT NULL,\n  published_year integer CHECK (published_year BETWEEN 1450 AND 2100)\n);",
-                "caption": "SQL in tsa_library — create a persistent table",
                 "language": "sql",
+                "caption": "SQL in tsa_library — create a persistent table",
+                "code": "CREATE TABLE library.books (\n  book_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  title text NOT NULL,\n  author text NOT NULL,\n  published_year integer CHECK (published_year BETWEEN 1450 AND 2100)\n);",
                 "output": "CREATE TABLE"
             },
             {
                 "id": "insert-rows",
                 "title": "Insert two book records",
                 "body": "INSERT INTO names the target table and specific columns; VALUES supplies the records. You omit book_id because its identity definition generates a value. Strings use single quotes; the numbers here are integers. The database reports INSERT 0 2, meaning two rows were inserted. Use fictional catalogue rows with known titles rather than any customer or Steward data.",
-                "code": "INSERT INTO library.books (title, author, published_year)\nVALUES\n  ('The Hobbit', 'J. R. R. Tolkien', 1937),\n  ('Things Fall Apart', 'Chinua Achebe', 1958);",
-                "caption": "SQL — insert two example books",
                 "language": "sql",
+                "caption": "SQL — insert two example books",
+                "code": "INSERT INTO library.books (title, author, published_year)\nVALUES\n  ('The Hobbit', 'J. R. R. Tolkien', 1937),\n  ('Things Fall Apart', 'Chinua Achebe', 1958);",
                 "output": "INSERT 0 2"
             },
             {
                 "id": "select-rows",
                 "title": "Read rows and understand SELECT",
                 "body": "SELECT lists the requested columns, FROM picks a table, and ORDER BY makes the order predictable. SQL tables do not promise a natural row order: even when generated IDs increase, use ORDER BY to depend on that sequence. On a fresh lab with only the two example rows, the following query returns book_id 1 and 2. If you repeated the insert or changed the table, your IDs may differ. Close psql and reconnect to tsa_library; unlike a temporary table, these rows remain because we created a persistent table.",
-                "code": "SELECT book_id, title, author, published_year\nFROM library.books\nORDER BY book_id;",
-                "caption": "SQL — read persistent rows",
                 "language": "sql",
+                "caption": "SQL — read persistent rows",
+                "code": "SELECT book_id, title, author, published_year\nFROM library.books\nORDER BY book_id;",
                 "output": " book_id |       title       |      author       | published_year\n---------+-------------------+-------------------+---------------\n       1 | The Hobbit        | J. R. R. Tolkien  |          1937\n       2 | Things Fall Apart | Chinua Achebe     |          1958\n(2 rows)"
             },
             {
                 "id": "change-one",
                 "title": "Update and inspect one record",
                 "body": "UPDATE changes rows already stored. WHERE selects which rows are affected; without WHERE, an UPDATE can change every row. This example corrects the year of one invented row to the same value, to demonstrate the syntax without altering the historical fact. PostgreSQL reports UPDATE 1; afterward SELECT confirms that only one named book was targeted. DELETE removes rows and likewise requires careful filtering, but we will cover it in the dedicated CRUD lesson. Avoid accidental destructive operations in this introduction.",
-                "code": "UPDATE library.books\nSET published_year = 1937\nWHERE title = 'The Hobbit';\nSELECT title, published_year FROM library.books WHERE title = 'The Hobbit';",
-                "caption": "SQL — update one identified row",
                 "language": "sql",
+                "caption": "SQL — update one identified row",
+                "code": "UPDATE library.books\nSET published_year = 1937\nWHERE title = 'The Hobbit';\nSELECT title, published_year FROM library.books WHERE title = 'The Hobbit';",
                 "output": "UPDATE 1\n   title    | published_year\n------------+---------------\n The Hobbit | 1937\n(1 row)"
             },
             {
                 "id": "bad-row",
                 "title": "Make an invalid insert fail on purpose",
                 "body": "Try to insert a row with a NULL title. NOT NULL requires a title; PostgreSQL rejects the row and tells you which rule failed. Immediately repeat SELECT count(*) FROM library.books; and check that the count remains 2. This is a safe negative experiment: a failed individual statement does not insert a partly valid book. You can also test an out-of-range publication year and inspect the CHECK error. Do not assume every real-world data rule can be expressed by a simple CHECK.",
-                "code": "INSERT INTO library.books (title, author, published_year)\nVALUES (NULL, 'Nobody', 2000);\n-- Expected ERROR: null value in column \"title\" violates not-null constraint\nSELECT count(*) FROM library.books;",
-                "caption": "Expected failure — invalid title should not add a row",
                 "language": "sql",
+                "caption": "Expected failure — invalid title should not add a row",
+                "code": "INSERT INTO library.books (title, author, published_year)\nVALUES (NULL, 'Nobody', 2000);\n-- Expected ERROR: null value in column \"title\" violates not-null constraint\nSELECT count(*) FROM library.books;",
                 "output": "ERROR: null value in column \"title\" of relation \"books\" violates not-null constraint\n count\n-------\n     2\n(1 row)"
             },
             {
@@ -569,9 +569,9 @@ const specs: DataLessonSpec[] = [
                 "id": "sql-file",
                 "title": "Run more than one SQL statement from a file",
                 "body": "Copy the file below into first_session.sql in a disposable directory. Run it from your shell, not inside an existing psql prompt, using a new connection to tsa_steward_lab: for the Docker example use `docker exec -i tsa-pg-lesson psql -X -U tsa_learner -d tsa_steward_lab -v ON_ERROR_STOP=1 < first_session.sql`. For an installed host client with connection variables already configured, use `psql -X -v ON_ERROR_STOP=1 -f first_session.sql`. `-X` avoids user psql startup configuration; ON_ERROR_STOP=1 makes batch execution stop when SQL fails. The output will show two rows followed by a final count of two. This lab intentionally uses generic records, not a persistent Steward table.",
-                "code": "CREATE TEMP TABLE tsa_session_probe (\n  id integer PRIMARY KEY,\n  service_name text NOT NULL\n);\nINSERT INTO tsa_session_probe (id, service_name)\nVALUES (1, 'Payments API'), (2, 'Identity API');\nSELECT id, service_name FROM tsa_session_probe ORDER BY id;\nBEGIN;\nINSERT INTO tsa_session_probe (id, service_name) VALUES (3, 'Temporary Service');\nROLLBACK;\nSELECT count(*) AS remaining FROM tsa_session_probe;",
-                "caption": "first_session.sql — run only in a disposable PostgreSQL lab database",
                 "language": "sql",
+                "caption": "first_session.sql — run only in a disposable PostgreSQL lab database",
+                "code": "CREATE TEMP TABLE tsa_session_probe (\n  id integer PRIMARY KEY,\n  service_name text NOT NULL\n);\nINSERT INTO tsa_session_probe (id, service_name)\nVALUES (1, 'Payments API'), (2, 'Identity API');\nSELECT id, service_name FROM tsa_session_probe ORDER BY id;\nBEGIN;\nINSERT INTO tsa_session_probe (id, service_name) VALUES (3, 'Temporary Service');\nROLLBACK;\nSELECT count(*) AS remaining FROM tsa_session_probe;",
                 "output": "CREATE TABLE\nINSERT 0 2\n id | service_name\n----+----------------\n  1 | Payments API\n  2 | Identity API\n(2 rows)\nBEGIN\nINSERT 0 1\nROLLBACK\n remaining\n-----------\n         2\n(1 row)"
             },
             {
