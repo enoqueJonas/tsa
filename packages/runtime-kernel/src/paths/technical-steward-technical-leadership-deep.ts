@@ -10,13 +10,76 @@ const resourcesByLeadership:Record<string,LearningResource[]>={
  "technical-leadership-escalation-responsible-challenge":[googlePostmortem,googleLeading],
 };
 import type { Lesson } from "./lesson";
+// Each case is tied to its authored reading. Examples are deliberately illustrative,
+// not evidence from a deployed Steward environment or a substitute for novice assessment.
+const leadershipCases: Record<string, { title: string; worked: string; failure: string; transfer: string }> = {
+  "technical-leadership-technical-ownership": {
+    "title": "Trace ownership from detection to an accepted outcome",
+    "worked": "Illustrative incident: a scheduled Steward reconciliation produces no completion record. The QA engineer owns the missing-result assertion and failure evidence; operations owns restoring the job; the service owner owns the external user consequence; a designated risk authority decides whether an incomplete run may be accepted. First record the affected run ID and independently observable absence, then map who can inspect, change, approve and communicate. Give one named owner the end-to-end coordination responsibility, without pretending that owner personally performs every action. Define a recovery checkpoint and a next-run verification. A ticket labelled 'platform team' is an assignment pool, not an accountable individual.",
+    "failure": "Failure to catch: everyone lists the incident as 'owned' because a channel or team was tagged, but nobody has authority to approve the reconciliation exception. The technical owner must escalate the decision rather than silently treat a green rerun as business acceptance.",
+    "transfer": "A privileged access token expires during an incident. Produce a four-role ownership and decision-rights map that prevents the engineer who rotates the token from also silently accepting an authentication bypass. State the independent evidence required to close the issue."
+  },
+  "technical-leadership-influence-without-authority": {
+    "title": "Build alignment without giving away the release safety boundary",
+    "worked": "Illustrative release conflict: a product lead wants to ship on Friday; QA has a reproducible unauthorized ownership change after a denied request. Start by describing the shared goal (safe delivery) and the concrete failed invariant (403 response, but the owner record still changed). Hear product's deadline consequence and operations' rollback constraints. Offer three options: defer the affected change, ship an independently isolated unaffected slice, or repair the authorization defect and retest before release. State which risks cannot be accepted by the engineer alone. Ask the accountable release/risk owner for a time-boxed decision using the same evidence, not for a vote on whether the defect exists.",
+    "failure": "Failure to catch: 'influence' means persuasive rhetoric to secure consensus, while the unauthorized mutation is downgraded without explicit authority. A compromise about schedule is possible; a silent waiver of an ownership invariant is not.",
+    "transfer": "A third-party library enters end-of-support during a busy delivery quarter. Write separate concerns for QA, security, finance and product; propose a minimal agreement with owner, funded next action and an escalation trigger. Do not claim consensus where one party has not agreed."
+  },
+  "technical-leadership-decision-making": {
+    "title": "Use reversibility and evidence to choose how much process is justified",
+    "worked": "Take the original 3-of-20 intermittent test failures as a hypothesis, not proof of flakiness. Before allowing a quarantine, capture failed assertion, commit, runner and fixture state for three clean reruns; compare whether the product invariant ever fails. If the cause is an isolated test race, choose a named, expiring quarantine with a separate enforced product-safety check and an owner to remove the race. If the failures reflect a real product defect, quarantine is the wrong intervention even if it makes delivery faster. A decision record has a deadline, observation threshold, explicit owner and reversal trigger.",
+    "failure": "Failure to catch: disable the test because 85% of recent runs passed. That score is not a product safety oracle, and the absence of red CI output hides rather than eliminates the uncertainty.",
+    "transfer": "A team proposes buying a premium hosted test tool to replace an unreliable self-hosted one. Separate observed operating cost from vendor promises, include retaining the existing system as a real option, and identify the evidence that should reverse a six-month decision."
+  },
+  "technical-leadership-technical-communication": {
+    "title": "Keep one factual core while changing the audience",
+    "worked": "Illustrative evidence: a release candidate failed an owner-change denial check in 2 of 10 isolated runs. For engineers: 'POST /transfer returned 403, but a subsequent GET showed owner B; response trace and IDs are attached; cause unknown.' For service owners: 'An unauthorized ownership effect is possible in the release candidate; QA has blocked the affected change pending a verified fix and retest.' For leadership: 'Release risk: an access-control invariant is not reliably enforced. Proposed decision: hold the affected change; next evidence checkpoint at 15:00.' The three messages preserve the same observation and uncertainty; details vary with the recipient's decision.",
+    "failure": "Failure to catch: an executive slide says 'security breached in production' when only a synthetic candidate test failed. Another failure is 'green build' as reassurance when a higher-risk acceptance invariant is failing.",
+    "transfer": "Translate a timed database restore result that exceeded a proposed recovery objective into an engineer runbook note, a service-owner impact note and an executive decision request. Identify one material uncertainty that must remain in every version."
+  },
+  "technical-leadership-mentoring": {
+    "title": "Diagnose the misconception, then prove independent transfer",
+    "worked": "A junior engineer suggests that retrying every timed-out POST is safe because a timeout means the server did nothing. Ask them to draw two timelines: one where the server never commits, another where it commits but the response is lost. Show only the minimum hint—client timeout does not report transaction state—and ask for a unique request key plus server-side result lookup. Let them write the test plan: original request commits once; replay of the same key returns the same result; replay with a different payload is rejected. Review their evidence without rewriting their answer.",
+    "failure": "Failure to catch: the mentor supplies the exact code and then grades the learner for copying it. Another false positive is a retry test that only asserts HTTP 200 and never checks the durable business effect.",
+    "transfer": "Without access to the preceding example, ask the learner to reason about a queued notification whose consumer restarts after persisting work but before acknowledgement. Require an unseen failure case and the invariant that would detect duplicate effects."
+  },
+  "technical-leadership-knowledge-continuity": {
+    "title": "Test whether a second person can recover without oral context",
+    "worked": "Illustrative on-call tabletop: the only database recovery specialist is unavailable. The deputy is given an incident ID, a runbook and a test restore environment. They must locate the backup, validate its timestamp/checksum, restore to the isolated target, check authoritative record counts and document elapsed time against the approved recovery objective. The primary owner may not give hints. Record each missing permission, ambiguous instruction, undocumented dependency and failed assertion. Give the next owner a dated remediation item and rerun the exercise.",
+    "failure": "Failure to catch: two names appear on the rota but the deputy cannot access the backup key or identify which data snapshot is authoritative. Documentation coverage is not recovery capability.",
+    "transfer": "Design an uncoached handoff for GitLab scheduled pipeline ownership: schedules, protected variable access, failure notification and artifact provenance. Define the exact pass/fail evidence and how to prevent dangerous production writes during the tabletop."
+  },
+  "technical-leadership-engineering-reviews": {
+    "title": "Separate evidence-backed blockers from preferences in a review",
+    "worked": "Illustrative proposal: change authentication token validation in a gateway shared by Steward and another service. The pre-read contains old/new trust boundaries, sample denied and authorized requests, rollback path and the identity owner's constraints. The review chair records a required denial-with-unchanged-state test as a blocker; a request to rename a private helper is advisory. A security reviewer dissents on key-rotation failure mode, so the chair documents the unknown, owner, planned experiment and decision deadline rather than declaring unanimity. The decision record says what can proceed and what must wait.",
+    "failure": "Failure to catch: a review records only 'approved by everyone' without test artifacts, a dissent log or accountable release authority. A design preference must not be upgraded into an unchallengeable security requirement.",
+    "transfer": "Facilitate a hypothetical database schema migration review. Classify one backward-compatibility finding, one monitoring concern, and one naming preference. For each, state the evidence that would justify blocking or proceeding."
+  },
+  "technical-leadership-escalation-responsible-challenge": {
+    "title": "Escalate an unresolved decision rather than a colleague disagreement",
+    "worked": "Illustrative incident: a critical identity-provider integration is rejecting valid users; operators propose bypassing signature checks to meet a recovery target. The engineer first documents the error, test evidence, available safe rollback, expected customer harm and why the bypass would remove authentication assurance. If the normal incident lead cannot resolve the risk within their authority, escalation requests an explicit decision from the security/risk owner: use rollback or maintain degraded service while fixing the trust issue. Include urgency, the decision deadline, fallback and what event will reopen the escalation.",
+    "failure": "Failure to catch: bypass signature verification quietly as a temporary code change without time limit, approval or evidence. The opposite failure is escalating a harmless formatting disagreement as a critical risk to win an argument.",
+    "transfer": "A production emergency change has neither a verified rollback nor clear approver. Write the smallest escalation record that distinguishes the observed facts, unacceptable uncertainty, authorized choices, communication responsibility and closure proof."
+  }
+};
+
 
 function lesson(id: string, title: string, body: string, practice: string[]): Lesson {
     const reading: Activity = {
         id: `${id}-reading`,
         title,
         estimatedMinutes: 55,
-        content: { type: "reading", body, blocks:[...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),{type:"resources",title:"Continue learning",resources:resourcesByLeadership[id] ?? [adr]}] },
+        content: { type: "reading", body, blocks: [
+          ...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({ type: "paragraph" as const, text })),
+          ...(leadershipCases[id] ? [
+            { type: "heading" as const, id: `${id}-worked`, text: leadershipCases[id].title, level: 2 as const },
+            { type: "paragraph" as const, text: leadershipCases[id].worked },
+            { type: "callout" as const, tone: "warning" as const, title: "How a convincing-looking decision fails", body: leadershipCases[id].failure },
+            { type: "heading" as const, id: `${id}-transfer`, text: "Apply without the worked answer", level: 2 as const },
+            { type: "paragraph" as const, text: leadershipCases[id].transfer },
+          ] : []),
+          { type: "resources" as const, title: "Continue learning", resources: resourcesByLeadership[id] ?? [adr] },
+        ] },
     };
     const practical: Activity = {
         id: `${id}-practice`,
