@@ -126,6 +126,10 @@ export const qualityBrowserDepth: Record<string, LessonBlock[]> = {
       "text": "Uploads, downloads, popups, frames and dialogs are related because a user action crosses a browser event or resource boundary, but they are not the same API and should not be crammed into one unexamined script. A download is emitted by the browser and needs an event wait; an upload supplies a controlled file to an input; a popup creates a new Page; a frame adds a separate DOM context; a JavaScript dialog blocks until accepted or dismissed. The next two focused lessons split these mechanisms so each can be exercised independently."
     },
     {
+      "type": "paragraph",
+      "text": "A reliable event trace names the originating Page, the exact action, the event source, the created resource and its postcondition. For example, clicking Export should be connected to the particular download event and its saved non-empty file; clicking Open details should be connected to the new Page and its visible record identity. If a request fails or an event never arrives, record the difference between a missing event and an event carrying an invalid result. The eventual practical is not complete merely because the listener fired."
+    },
+    {
       "type": "heading",
       "id": "browser-events-order",
       "text": "Register the observer before the triggering action",
