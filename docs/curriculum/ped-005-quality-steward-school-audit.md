@@ -52,3 +52,11 @@ Follow the **twelve actual paths** below in the published learner order. A gener
 - [ ] Review representative rendered pages manually and obtain scored independent uncoached learner teach-back and unfamiliar-domain transfer.
 - [ ] Keep unexecuted browser/client, GitLab, production/enterprise and permission-dependent work clearly **UNVERIFIED**.
 - [ ] Update #328 and the canonical tracker only with matching-head evidence; mark **REMEDIATED** only for a completed whole-school source pass, **VALIDATED** only with independent learner evidence.
+
+## Learner-order and retry-evidence continuation (2026-11-03)
+
+- Corrected API prerequisite inversion: original HTTP Semantics before raw HTTP milestone; REST Assured model before REST Assured installation/build. Existing IDs preserved.
+- Corrected Browser prerequisite inversion: original Playwright runtime, DOM/accessibility locators, auto-waiting, navigation, browser state and surface selection before implementation milestones, without changing authored IDs.
+- Java source/object state is taught before typing, annotations and JUnit discovery. These prerequisite relationships are enforced in the source contract.
+- Original Automation Framework retries lesson now contains compilable Java: attempt 1 FAIL, attempt 2 PASS, final RECOVERED_UNSTABLE. A negative mutation removing history must cause nonzero assertion; exact learner program executes in a new CI step and critical rendered copyability check.
+- Final matching-head 19-job CI, real Steward API/DB/GitLab/browser test system, and independent novice transfer remain UNVERIFIED.
