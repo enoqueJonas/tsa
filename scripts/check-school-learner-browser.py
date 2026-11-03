@@ -120,7 +120,7 @@ def inspect_school(page):
                     "browser-environment-page-components-001": ("Extract behavior after two direct flows reveal the same interaction", False),
                     "api-integration-filters-observability-001": ("How a REST Assured filter surrounds the HTTP exchange", False),
                     "api-integration-specifications-001": ("Separate a factory-built transport baseline from scenario identity", False),
-                    "api-integration-auth-testing-001": ("Distinguish identity, permission, resource visibility and state", False),
+                    "api-integration-api-auth-001": ("Token acquisition, identity and authorization are separate dependencies", False),
                     "browser-environment-file-transfer-interactions-001": ("Upload a known fixture, not an arbitrary local file", False),
                     "browser-environment-popup-browser-ownership-001": ("Popup belongs to an originating page and a browser context", False),
                     "browser-environment-iframe-contexts-001": ("Identify a frame before searching inside it", False),
@@ -128,7 +128,7 @@ def inspect_school(page):
                     "browser-environment-browser-surface-decision-primer": ("Define the evidence boundary", False),
                     "non-functional-quality-performance-tool-decision-primer": ("Arrival rate is not the same as concurrent users", False),
                 }
-                depth_spotchecks = set(["test-analysis-and-design-exploratory-testing-001","test-analysis-and-design-traceability-001","test-analysis-and-design-negative-testing-001","browser-environment-navigation-network-001","browser-environment-ui-test-selection-001","browser-environment-advanced-browser-interactions-001","browser-environment-browser-diagnostics-001","browser-environment-browser-parallelism-001","browser-environment-page-components-001","api-integration-filters-observability-001","api-integration-specifications-001","api-integration-auth-testing-001","browser-environment-file-transfer-interactions-001","browser-environment-popup-browser-ownership-001","browser-environment-iframe-contexts-001","browser-environment-blocking-dialogs-001"])
+                depth_spotchecks = set(["test-analysis-and-design-exploratory-testing-001","test-analysis-and-design-traceability-001","test-analysis-and-design-negative-testing-001","browser-environment-navigation-network-001","browser-environment-ui-test-selection-001","browser-environment-advanced-browser-interactions-001","browser-environment-browser-diagnostics-001","browser-environment-browser-parallelism-001","browser-environment-page-components-001","api-integration-filters-observability-001","api-integration-specifications-001","api-integration-api-auth-001","browser-environment-file-transfer-interactions-001","browser-environment-popup-browser-ownership-001","browser-environment-iframe-contexts-001","browser-environment-blocking-dialogs-001"])
                 if activity_id in depth_spotchecks:
                     assert len(text) >= 1800, (
                         f"Quality source-depth regression in {activity_id}: "
