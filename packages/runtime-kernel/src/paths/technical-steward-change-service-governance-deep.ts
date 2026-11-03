@@ -12,9 +12,57 @@ const resourcesByChange:Record<string,LearningResource[]>={
 const scenario = "Treat Steward as a mature organization-owned service with production users, releases, incidents and the application, data, platform, delivery, security and reliability dependencies present in the final Architect actual-stack inventory. Components such as cloud/VPS infrastructure, Nexus or internal packages belong to the active service-governance scope only when retained; retired components remain historical change/migration evidence. Governance should make risky change accountable without slowing low-risk engineering work unnecessarily.";
 const deliverables = ["Governance artifact", "Evidence and rationale", "Owner, approval or follow-up record"];
 const completion = ["The governance mechanism is proportionate to change/service risk.", "Ownership and decision authority are explicit.", "Approval depends on evidence, not ceremony alone."];
+const changeGovernanceCases: Record<string, {question:string;worked:string;failure:string;transfer:string}> = {
+  "change-risk": {
+    "question": "What makes this change more dangerous than a routine merge?",
+    "worked": "Hypothetical Steward change A updates a typo in a dashboard; change B modifies owner authorization and the authoritative database schema. Evaluate blast radius, reversibility, data side effects, runtime dependency and the ability to detect a bad deployment. A receives normal review/CI; B needs denial-with-after-state tests, schema-compatibility proof, staged rollout, recovery evidence and a named release decision. Classify risk using evidence, not team seniority or the number of lines changed.",
+    "failure": "A five-line migration is called low-risk because it has a small diff, while it can irreversibly destroy records. Diff size is not the consequence of failure.",
+    "transfer": "Classify an identity-provider certificate rotation, a logging-label update and a batch-job retry-policy change; identify one missing observation that prevents confident low-risk classification."
+  },
+  "release-governance": {
+    "question": "Approval must attach to exact tested artifacts and remaining risk",
+    "worked": "Illustrative release candidate: CI tests commit C and produces artifact digest D. A deployment plan names D, contains an authorization-denial result, rollback strategy and the service owner who can authorize release after relevant QA/security review. A subsequent change to the image tag means the prior pass no longer covers the deployable artifact. The approval record binds exact revision and target environment. High-impact exceptions need approved risk authority; low-risk releases should not be held solely for ceremony.",
+    "failure": "A dashboard shows green tests from yesterday, but deployment pulls latest and silently runs a different image. The release was approved by reputation rather than evidence.",
+    "transfer": "Given two identical-looking build artifacts produced from different dependency lockfiles, specify which evidence must be renewed and how provenance affects an approval decision."
+  },
+  "incident-problem-change": {
+    "question": "Differentiate restoration, recurrence prevention and controlled modification",
+    "worked": "Hypothetical 09:10–10:05 registration failure: incident response restores a working route or safe degraded mode and communicates impact. A problem record later correlates failed scheduled tasks with exhausted DB connections and asks why monitoring missed them. A change record covers a bounded pool configuration fix and regression checks, staged rollout and rollback. Do not close the incident until affected work is reconciled; do not claim problem elimination merely because an emergency change stopped current symptoms.",
+    "failure": "A patch merged and all three tickets are closed, while failed registration effects remain pending in a queue. Implementation throughput was mistaken for service recovery.",
+    "transfer": "Model a failed supplier webhook during month-end processing: identify incident, problem and change outcomes; explain when reconciliation evidence belongs to incident closure."
+  },
+  "operational-readiness": {
+    "question": "Prove supportability before handing a service to operators",
+    "worked": "Illustrative new scheduled reconciliation: before launch, define service owner, alert route, success/failure signal, input/output contract, retry and idempotency behavior, data retention, dependency timeouts, rollback and a runbook tested by someone other than its author. An isolated execution demonstrates an observed success record, a forced failure alert, operator diagnosis and a safe replay producing no duplicate durable effect. If the alert never reaches the right on-call role, the feature is not operationally ready despite passing a unit test.",
+    "failure": "A handover document contains screenshots and component names, but no operator can identify whether last night's reconciliation produced business outcomes or which run can be replayed safely.",
+    "transfer": "Create a one-page readiness gate for a new document-processing worker. Include one non-happy-path drill, incident owner and evidence that a substitute operator can perform the recovery."
+  },
+  "emergency-change": {
+    "question": "Emergency is a risk-adjusted path, not a bypass of accountability",
+    "worked": "Illustrative critical authorization defect: leaving the vulnerable endpoint active exposes data; shipping an untested patch also carries risk. The incident/release authority compares disabling the affected capability, rolling back to known-good, and a bounded hotfix with essential negative test and rollback proof. Record why normal gates are shortened, who authorized deviation, which controls remain mandatory, immediate monitoring and the retrospective deadline. The action should still bind to an exact artifact and reproducible effect check.",
+    "failure": "Declare 'emergency' to skip all tests, turn off authorization or bypass required approval indefinitely. Urgency does not grant the implementer risk-acceptance authority.",
+    "transfer": "For a compromised service credential, set emergency change steps, communication, evidence and post-change verification without assuming all production access is available."
+  },
+  "evidence-release": {
+    "question": "Reject a plausible false-green release report",
+    "worked": "Illustrative gate: automated tests report 0 failed but the required authorization suite executed 0 tests due to tag selection. A robust release review requires minimum mandatory test cases, exact commit/artifact provenance, report freshness, denied-state invariant and clear treatment of missing evidence. It separately checks operational readiness and any approved exception. A green shell exit is not equivalent to safe release when tests did not run or ran against the wrong build.",
+    "failure": "Approval states 'all jobs green' though no protected-endpoint assertions executed, or the only evidence is a screenshot from another release candidate.",
+    "transfer": "Write a release decision for a failed scheduled security test with an otherwise green feature build. Distinguish block, authorized exception and what evidence could safely change the conclusion."
+  }
+};
 function moduleLesson(id: string, title: string, body: string, instructions: string[]): Lesson {
   return { id: `change-service-governance-${id}`, title, activities: [
-    { id: `change-service-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 55, content: { type: "reading", body, blocks:[...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),{type:"resources",title:"Service/change reference",resources:resourcesByChange[id] ?? [itil]}] } },
+    { id: `change-service-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 55, content: { type: "reading", body, blocks: [
+  ...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),
+  ...(changeGovernanceCases[id] ? [
+    {type:"heading" as const,id:`change-${id}-case`,text:changeGovernanceCases[id].question,level:2 as const},
+    {type:"paragraph" as const,text:changeGovernanceCases[id].worked},
+    {type:"callout" as const,tone:"warning" as const,title:"False evidence / unsafe exception",body:changeGovernanceCases[id].failure},
+    {type:"heading" as const,id:`change-${id}-transfer`,text:"Independent situation",level:2 as const},
+    {type:"paragraph" as const,text:changeGovernanceCases[id].transfer}
+  ] : []),
+  {type:"resources" as const,title:"Service/change reference",resources:resourcesByChange[id] ?? [itil]}
+] } },
     { id: `change-service-governance-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward.`, scenario, instructions, deliverables, completionCriteria: completion } },
   ]};
 }
