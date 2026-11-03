@@ -245,3 +245,15 @@ The seventh source repair [PR #350](https://github.com/enoqueJonas/tsa/pull/350)
 `scripts/check-quality-partitions-retry-v8.mjs` executes the exact three source-published Python programs and tests the three mutants. The full original-lesson browser guard checks the three new headings and rendered code, while the 12-module Quality desktop and 390px mobile traversal remains unchanged. No prelude wrapper chapters were added and previously published lesson IDs remain stable.
 
 **Status:** PR #351 is draft until **matching-head 19/19 CI**. **Learner validated? NO.** Actual authorized Steward/IdP/PostgreSQL, GitLab schedules, real Java Playwright/browser against a product, k6 workload and independently scored uncoached learner competence remain outstanding in [#328](https://github.com/enoqueJonas/tsa/issues/328). Source execution is not product truth.
+
+## Ninth practical evidence pass — actual Java Playwright on the local teaching fixture
+
+The eighth pass [PR #351](https://github.com/enoqueJonas/tsa/pull/351) merged at `61761cfe05169b35b910319e2a500bbccf962a6b`, after 19/19 CI and all 428 Quality desktop/mobile activities. Prior browser-event and responsive behavior proof was executable **Python Playwright**, while Quality teaches **Java Playwright**. Avoiding that gap is more important than another character-count-based source edit.
+
+[Draft PR #352](https://github.com/enoqueJonas/tsa/pull/352) adds the real Java 17 / Playwright 1.58.0 module `labs/quality-playwright-java`, with a complete POM and `LocalBrowserProof.java`. The **original** `browser-environment-playwright-runtime-model-001` now publishes their **byte-exact source**, teaches runtime → Browser → BrowserContext → Page lifetimes and the observed outcome, and provides independent transfer.
+
+The Quality-only CI browser job starts a local server from the built TSA application and executes the Java class in actual Chromium. It must assert same-origin localStorage across two Pages but distinct tab sessionStorage, isolate a second BrowserContext, and verify the actual downloaded CSV bytes. The `--wrong-oracle` mode deliberately expects incorrect storage isolation; Maven must exit nonzero **with an expected oracle failure reason**, not due to an arbitrary compilation or service error. `scripts/check-quality-java-playwright-source-v9.mjs` checks the source/POM against the exact displayed teaching artifact and version parity with Python Playwright 1.58.0.
+
+The fixture uses no real Steward account, database, IdP or external request. It validates **local Java Playwright execution** and the stated browser-storage/download mechanics only, NOT real Steward UI, human learner competence, full product testability or external systems. Keep [#328](https://github.com/enoqueJonas/tsa/issues/328) open until genuine authorized integrations and independent uncoached learner transfers are evaluated.
+
+**Exit gate:** matching-head 19/19 GitHub Actions including all 428 original Quality desktop/mobile activities, the actual Java browser lab and its deliberate wrong-oracle case.
