@@ -9,6 +9,7 @@ on:
       - curriculum/delivery-engineer-source-depth-v2
       - curriculum/cloud-engineer-source-depth-v1
       - curriculum/reliability-engineer-source-depth-v1
+      - curriculum/security-steward-source-depth-v1
       - integration/tsa-audits-master-20261102
       - master
   workflow_dispatch:
@@ -75,6 +76,8 @@ jobs:
         run: node scripts/check-reliability-logging-source.mjs
       - name: Execute supplemental Reliability HTTP transport, recovery and incident tests
         run: node scripts/check-reliability-transport-proofs.mjs
+      - name: Execute exact Security OIDC and Vault source denial tests
+        run: node scripts/check-security-identity-vault-proof.mjs
       - name: Report cross-school code example evidence
         run: pnpm report:curriculum-examples
       - name: Execute isolated Platform service recovery drill
