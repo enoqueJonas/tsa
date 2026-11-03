@@ -781,6 +781,60 @@ def check_quality_retired_activity_progress(page):
     print("PASS Quality legacy wrapper progress excluded and first author lesson restored",flush=True)
 
 
+def check_technical_steward_evidence_gate(page):
+    """An empty or draft practical must not earn new progress in a real browser.
+
+    Only recorded evidence and a learner-selected Ready state are checked;
+    passing this test is NOT evidence correctness or assessor acceptance.
+    """
+    page.goto(f"{BASE}/?view=curriculum&school=technical-steward", wait_until="networkidle")
+    page.get_by_role("button", name=MODULE).first.click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+    first = page.evaluate("new URLSearchParams(location.search).get('activity')")
+    assert first == "technical-leadership-technical-ownership-reading"
+    page.get_by_role("button", name=NEXT).click()
+    page.wait_for_function(
+        "() => new URLSearchParams(location.search).get('activity') === 'technical-leadership-technical-ownership-practice'",
+        timeout=10000,
+    )
+    current = "technical-leadership-technical-ownership-practice"
+    page.get_by_text("Loading evidence workspace…").wait_for(state="hidden", timeout=30000)
+    assert page.get_by_text("Self-reviewed — I believe my evidence meets the criteria (not independently verified)").count() >= 1
+    page.get_by_role("button", name=NEXT).click()
+    page.get_by_role("alert").get_by_text("Save evidence notes and an outcome", exact=False).wait_for()
+    assert page.evaluate("new URLSearchParams(location.search).get('activity')") == current, (
+        "Technical Steward practical advanced without evidence"
+    )
+
+    # Even saving plausible notes as DRAFT must not complete the exercise.
+    notes = page.get_by_placeholder(
+        "What did you build, inspect, break, diagnose, or change? Include commands, observations, and important decisions."
+    )
+    notes.fill("Synthetic browser persistence-only notes. The actual evidence and learner assessment remain untested.")
+    page.get_by_placeholder(
+        "What was the result? What did the evidence prove, and what would you do differently next time?"
+    ).fill("Synthetic result; no validated control, authorization or learner transfer.")
+    page.get_by_role("button", name="Save evidence").click()
+    page.get_by_text("Saved locally", exact=True).wait_for(timeout=10000)
+    page.get_by_role("button", name=NEXT).click()
+    page.get_by_role("alert").get_by_text("set the submission to Ready", exact=False).wait_for()
+    assert page.evaluate("new URLSearchParams(location.search).get('activity')") == current, (
+        "Draft evidence was incorrectly counted as completion"
+    )
+
+    # Only explicit self-reported readiness + saved record permits progression.
+    page.get_by_label("Submission state").select_option("ready")
+    page.get_by_role("button", name="Save evidence").click()
+    page.get_by_text("Saved locally", exact=True).wait_for(timeout=10000)
+    page.get_by_role("button", name=NEXT).click()
+    page.wait_for_function(
+        "(previous) => new URLSearchParams(location.search).get('activity') !== previous",
+        arg=current, timeout=10000
+    )
+    assert page.get_by_role("alert").count() == 0
+    print("PASS Technical Steward browser: empty/draft evidence refused, persisted self-reported Ready permits next; no assessor approval claimed", flush=True)
+
+
 def check_technical_steward_retired_activity_progress(page):
     """Old model/preparation completions must not hijack current lesson reentry.
 
@@ -967,6 +1021,9 @@ with sync_playwright() as playwright:
         isolated = browser.new_context(viewport={"width": 1440, "height": 900})
         check_technical_steward_retired_activity_progress(isolated.new_page())
         isolated.close()
+        gating = browser.new_context(viewport={"width": 1440, "height": 900})
+        check_technical_steward_evidence_gate(gating.new_page())
+        gating.close()
     if SCHOOL == "reliability-engineer":
         isolated = browser.new_context(viewport={"width": 1440, "height": 900})
         check_reliability_retired_activity_progress(isolated.new_page())
