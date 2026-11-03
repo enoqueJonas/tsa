@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { qualityCiCases } from "./quality-ci-source-depth";
 
 const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
 const junit: LearningResource = { title: "JUnit 5 User Guide", url: "https://docs.junit.org/current/user-guide/" };
@@ -84,6 +85,17 @@ function lessonFrom(spec: Spec): Lesson {
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
     ];
+    const caseStudy = qualityCiCases[spec.id];
+    if (!caseStudy) throw new Error(`Missing substantive original CI lesson case: ${spec.id}`);
+    blocks.push(
+        { type:"heading", id:`${spec.id}-worked-mechanism`, text:caseStudy.heading, level:2 },
+        { type:"paragraph", text:caseStudy.mechanism },
+        { type:"heading", id:`${spec.id}-counterexample`, text:"Failure and counterexample", level:2 },
+        { type:"paragraph", text:caseStudy.failure },
+        { type:"heading", id:`${spec.id}-independent-check`, text:"Independent application", level:2 },
+        { type:"paragraph", text:caseStudy.transfer },
+    );
+
     if (spec.code) blocks.push({ type: "code", language: spec.language ?? "text", code: spec.code });
     if (spec.id === "quality-gates") blocks.push(
         {type:"heading",id:"gate-evidence-contract",text:"Define the required evidence contract first",level:2},
