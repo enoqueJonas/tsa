@@ -1307,23 +1307,200 @@ const specs: DataLessonSpec[] = [
         "checkTitle": "Check the dataset and integrity rules"
     },
     {
-        id: "sql-crud",
-        title: "SQL SELECT, INSERT, UPDATE and DELETE",
-        introduction: "SQL is the language used to ask the database for facts and to change those facts deliberately. Builder-level competence means understanding the set-based effect of each statement, not just knowing four verbs.",
-        outcomes: ["Read and write basic data manipulation statements.", "Predict the affected row set before mutation.", "Use RETURNING to inspect mutations.", "Avoid accidental full-table updates and deletes."],
-        sections: [
-            { id: "read-and-write", title: "Read first, then change deliberately", body: "`SELECT` reads rows without changing them. `INSERT` creates rows. `UPDATE` changes existing rows. `DELETE` removes rows. SQL statements operate on sets: a `WHERE` predicate can match zero, one or many rows, so the first skill is understanding which set a statement targets.", code: "SELECT id, name\nFROM service\nORDER BY id;\n\nINSERT INTO service (name, owning_team_id, endpoint)\nSELECT 'Telemetry API', id, 'https://telemetry.example.invalid/api'\nFROM team WHERE name = 'Platform'\nRETURNING id, name;\n\nUPDATE service\nSET name = 'Telemetry Service'\nWHERE name = 'Telemetry API'\nRETURNING id, name;" },
-            { id: "mutation-discipline", title: "Mutation discipline", body: "Before a destructive statement, run the same predicate as a `SELECT`. In production engineering, knowing the target set is part of the change, not optional caution." },
-            { id: "select-shape", title: "SELECT can project expressions, aliases and distinct values", body: "The SELECT list controls the output shape, not only which stored columns appear. Expressions can derive values and AS aliases make result meaning explicit. DISTINCT removes duplicate result rows after projection; use it because duplicate rows are semantically unwanted, not to hide an incorrect join.", code: "SELECT DISTINCT\n  owning_team_id,\n  lower(name) AS normalized_name\nFROM service;" },
-            { id: "insert-many-conflict", title: "INSERT can add sets of rows and handle declared conflicts", body: "A VALUES clause can insert multiple rows. PostgreSQL's ON CONFLICT can deliberately ignore or update a row when a specified uniqueness conflict occurs. That is useful for genuinely idempotent ingestion/upsert semantics, but it should not conceal unexpected duplicates.", code: "INSERT INTO team (name)\nVALUES ('Payments'), ('Identity')\nON CONFLICT (name) DO NOTHING\nRETURNING id, name;" },
-            { id: "ddl-dml", title: "Separate structure changes from data changes", body: "CREATE, ALTER and DROP change database objects/definitions and are commonly described as DDL. SELECT/INSERT/UPDATE/DELETE operate on data and are commonly grouped as DML/query operations. PostgreSQL can execute many DDL changes transactionally, but schema evolution still has compatibility and locking consequences covered later." },
+        "id": "sql-crud",
+        "title": "Update Existing Rows Safely",
+        "introduction": "You already know how to create a table, insert books and read them. UPDATE is a different operation: it changes records that already exist. A command that looks simple can affect zero, one or every row. We will predict the target set, make one small correction and inspect the result before applying the same discipline to a more complex Steward practical.",
+        "outcomes": [
+            "Explain the roles of UPDATE, SET and WHERE.",
+            "Predict which records a predicate matches before changing any data.",
+            "Use RETURNING to inspect what PostgreSQL actually changed.",
+            "Recognize why a missing WHERE condition can silently modify an entire table."
         ],
-        warning: "UPDATE service SET lifecycle = 'retired'; is valid SQL and may be catastrophic. Syntax correctness says nothing about business intent.",
-        assignment: ["Insert Steward teams and services using explicit column lists.", "Update one service using a selective predicate and RETURNING.", "Delete only disposable test data after proving the target set with SELECT."],
-        resources: [postgresDocs],
-        practiceObjective: "Manipulate Steward data while proving exactly which rows each mutation affects.",
-        practiceInstructions: ["Create at least five rows.", "Write a SELECT matching the rows you intend to change.", "Run UPDATE with RETURNING.", "Create and safely delete one disposable row.", "Record the before/after evidence."],
-        knowledgeCheck: "1. Why should a mutation predicate be inspected as a SELECT first?\n2. What does RETURNING give you?\n3. Why is an INSERT column list preferable to relying on table column order?",
+        "sections": [
+            {
+                "id": "update-meaning",
+                "title": "What does UPDATE change?",
+                "body": "UPDATE modifies values in existing rows. It does not create a new database, table or schema. The name after UPDATE specifies the table to change, the SET clause lists new column values, and WHERE determines which existing rows qualify. PostgreSQL evaluates the predicate against stored rows and updates every row that satisfies it.\n\nUnlike editing a single form on a screen, SQL operations are set-based: one UPDATE statement may match zero, one, ten or thousands of records. PostgreSQL will not infer that you intended exactly one row. In a school database, UPDATE students SET grade = 'A'; with no WHERE could change every student's grade. The SQL would be syntactically valid; the human decision could be disastrous.\n\nOur library example uses a clearly fictional book entry. We will insert it once, then correct the author's placeholder. It is an intentionally disposable learning record, not a correction to a real book's bibliographic information."
+            },
+            {
+                "id": "add-draft",
+                "title": "Create one record to correct",
+                "body": "In tsa_library, confirm the existing table is library.books. The two earlier real-book examples can remain untouched. Add this third fictional sample book. Its author is a placeholder called Unverified; the next statement will replace that placeholder.\n\nWhy add a separate practice record? It makes the before and after state visible without altering a known real-world fact. If this example has already been run, inspect the rows instead of repeating the INSERT. The identity column generates an ID, and the server reports one inserted row.",
+                "caption": "SQL — insert one disposable book for updating",
+                "code": "INSERT INTO library.books (title, author, published_year)\nVALUES ('The Blue Compass', 'Unverified', 2001);",
+                "language": "sql",
+                "output": "INSERT 0 1"
+            },
+            {
+                "id": "preview-before-update",
+                "title": "Use SELECT to see which row you will change",
+                "body": "The safest beginner habit is to inspect the target rows before modifying them. Run SELECT with the **same WHERE predicate** you intend to use for UPDATE. Here we require both a title and the existing placeholder author. That specificity reduces the risk of modifying unrelated records. It does not guarantee uniqueness unless the table has a constraint; always inspect the number of matches.\n\nIf the preview returns zero rows, your target may not exist, your spelling may differ, or the placeholder may already have been corrected. Do not broaden WHERE to match more records simply to make the command produce output. If it returns multiple rows, investigate why, because a set-based UPDATE will change all matches.",
+                "caption": "SQL — preview the exact record before UPDATE",
+                "code": "SELECT title, author\nFROM library.books\nWHERE title = 'The Blue Compass'\n  AND author = 'Unverified';",
+                "language": "sql",
+                "output": "The Blue Compass|Unverified"
+            },
+            {
+                "id": "update-one",
+                "title": "Update one matching row and inspect it",
+                "body": "Now issue UPDATE with the same WHERE clause. SET author = 'M. Costa' specifies the new value. RETURNING tells PostgreSQL to return selected columns from the rows actually affected. For a fresh lab with exactly one matching record, you should see one returned row, followed by UPDATE 1. If you see UPDATE 0, no row met the predicate. If you see UPDATE 2, two rows were affected, which is a reason to examine the data, not assume the operation was precise.\n\nNotice that UPDATE is not the same as INSERT. PostgreSQL keeps the same book identity and changes one value of the existing row. With the present table design no historical list of old authors is maintained automatically. Audit history, permissions and migration safety are later subjects.",
+                "caption": "SQL — update the sample book and return its new value",
+                "code": "UPDATE library.books\nSET author = 'M. Costa'\nWHERE title = 'The Blue Compass'\n  AND author = 'Unverified'\nRETURNING title, author;",
+                "language": "sql",
+                "output": "The Blue Compass|M. Costa"
+            },
+            {
+                "id": "no-where",
+                "title": "Why omitting WHERE is dangerous",
+                "body": "Consider UPDATE library.books SET author = 'Unknown'; Without a WHERE clause, every row of that table is eligible for modification. We will not execute this destructive statement, because doing so would damage all of the lab's book records. Predict the effect and write a SELECT that would reveal the same target population before running a real change.\n\nWHERE is not magic protection by itself. A predicate that is too broad—such as WHERE published_year >= 1900—can still update many books. Even an exact title may match duplicate entries. Always ask two questions: what rows does this predicate identify, and what row count do I expect? SELECT first, then UPDATE, then inspect RETURNING and a follow-up SELECT.\n\nThis does not imply all updates should be handwritten in production. Applications, ORMs and migrations also generate UPDATE statements, so the same set-based reasoning is important when reviewing code that hides SQL behind an API."
+            },
+            {
+                "id": "verify-update",
+                "title": "Confirm the stored result in a new query",
+                "body": "A success message is useful but not sufficient evidence that the new state is correct. Query the fictional book once more and compare the stored author with your intention. It should now be M. Costa; the placeholder Unverified no longer matches our earlier predicate. The other two books should still exist. Close psql, reconnect and repeat the SELECT to verify the change was stored in the persistent table.\n\nAn UPDATE may also be rejected for a type violation, NOT NULL rule or other constraint. The server protects declared rules regardless of client. A rollback demonstration belongs in the later dedicated transaction lesson, not in this beginner example.",
+                "caption": "SQL — verify the updated book",
+                "code": "SELECT title, author\nFROM library.books\nWHERE title = 'The Blue Compass';",
+                "language": "sql",
+                "output": "The Blue Compass|M. Costa"
+            }
+        ],
+        "warning": "Never run an unbounded UPDATE on real or shared data merely to test syntax. The example assumes one fictional practice row in a disposable lab.",
+        "assignment": [
+            "Explain the difference between INSERT and UPDATE in terms of rows created or changed.",
+            "Insert the fictional book exactly once, then preview it with SELECT.",
+            "Run UPDATE with RETURNING and verify UPDATE 1 or investigate a different count.",
+            "Predict what would happen if WHERE were omitted, without executing that unsafe statement.",
+            "Reconnect and verify the corrected value remains stored."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Updating Rows",
+                "url": "https://www.postgresql.org/docs/17/dml-update.html",
+                "kind": "reference",
+                "purpose": "Study the SET, WHERE and RETURNING clauses."
+            }
+        ],
+        "practiceObjective": "Apply an intentional SQL UPDATE to Steward data with a prior SELECT target preview.",
+        "practiceInstructions": [
+            "Use the same predicate to preview exactly which Steward record will change.",
+            "Explain expected row cardinality and choose a harmless disposable record.",
+            "Apply UPDATE ... RETURNING and record before/after evidence.",
+            "Explain one way an overly broad WHERE predicate could silently affect multiple records."
+        ],
+        "knowledgeCheck": "What does UPDATE do that INSERT does not? Can a valid UPDATE change every row? Why should SELECT use the same predicate first? How do UPDATE 0 and UPDATE 3 differ?",
+        "readingTitle": "Learn how UPDATE changes records",
+        "practiceTitle": "Update one record and prove the target set",
+        "checkTitle": "Check UPDATE safety",
+        "practiceScenario": "Use a disposable Steward record for the applied mutation exercise; the reading uses independent library examples.",
+        "practiceDeliverables": [
+            "Target preview SQL and expected number of rows",
+            "UPDATE/RETURNING result",
+            "Follow-up verification and mistake analysis"
+        ],
+        "practiceCompletionCriteria": [
+            "The selected records are identified before mutation.",
+            "The reported affected-row set matches the intended change.",
+            "The learner can explain the risk of missing or broad WHERE predicates."
+        ]
+    },
+    {
+        "id": "postgresql-delete-rows",
+        "title": "Delete Records Without Deleting the Wrong Data",
+        "introduction": "UPDATE changes existing rows. DELETE removes them. Deletion deserves a separate lesson because an omitted predicate or an unexpected relationship can destroy much more data than intended. We will remove the fictional practice book created in the previous lesson while preserving the two original books.",
+        "outcomes": [
+            "Explain what DELETE removes and what it leaves unchanged.",
+            "Preview the exact records matching a deletion predicate.",
+            "Use DELETE ... RETURNING to verify what was removed.",
+            "Predict what DELETE without WHERE would do and avoid using it on real data."
+        ],
+        "sections": [
+            {
+                "id": "delete-vs-drop",
+                "title": "What is the difference between DELETE and DROP TABLE?",
+                "body": "DELETE removes matching rows from a table. The table's definition—columns, types, constraints and schema location—remains. DROP TABLE removes the table object itself and can affect dependent objects; it is a very different administrative operation. The fact that both can make rows disappear does not make them interchangeable.\n\nOur library.books table contains two original sample books and, if you completed the preceding lesson, one fictional book named The Blue Compass. We will delete only the fictional practice record. That keeps the example non-destructive with respect to the historical book rows.\n\nLike UPDATE, DELETE is set-based. It can delete zero, one or many rows. PostgreSQL does not know that you intended to remove exactly one entry unless your predicate and data make that true. That is why the first step is a read-only preview."
+            },
+            {
+                "id": "preview-delete",
+                "title": "Preview the rows before DELETE",
+                "body": "Use SELECT with the intended deletion predicate: the fictional title and its corrected author M. Costa. On a fresh sequential lab it returns one row. If it returns nothing, check whether you ran the previous lesson or whether the record was already removed. If it returns several rows, do not proceed until you know why multiple records match.\n\nThe SELECT is only a preview; it does not lock or reserve those rows against other writers. We are using a private training database to avoid concurrent modifications. More advanced production deletion safety, transactions and locking will be taught separately. Here the goal is to understand the exact row set that DELETE would remove.",
+                "caption": "SQL — preview the record before DELETE",
+                "code": "SELECT title, author\nFROM library.books\nWHERE title = 'The Blue Compass'\n  AND author = 'M. Costa';",
+                "language": "sql",
+                "output": "The Blue Compass|M. Costa"
+            },
+            {
+                "id": "delete-one",
+                "title": "Delete the fictional row using RETURNING",
+                "body": "The DELETE FROM clause selects the table. The WHERE clause restricts the qualifying rows. RETURNING asks PostgreSQL to show values from the rows removed, so you can verify what actually happened. For exactly one matching row, the returned values identify The Blue Compass and M. Costa, and PostgreSQL reports DELETE 1.\n\nThe two earlier books remain stored in library.books. Their identities and values have not been changed by this targeted statement. If DELETE reports zero affected rows, the record was not found, perhaps because you already ran the exercise. Do not compensate by removing the WHERE condition.",
+                "caption": "SQL — delete only the disposable book",
+                "code": "DELETE FROM library.books\nWHERE title = 'The Blue Compass'\n  AND author = 'M. Costa'\nRETURNING title, author;",
+                "language": "sql",
+                "output": "The Blue Compass|M. Costa"
+            },
+            {
+                "id": "confirm-delete",
+                "title": "Verify what remains",
+                "body": "Run a fresh SELECT on library.books rather than relying only on the DELETE message. You should see The Hobbit and Things Fall Apart, and no fictional book. On the original clean lab the total number of rows is back to two. This is the observable acceptance criterion.\n\nA database may retain deleted data in internal storage until maintenance reclaims space; SQL DELETE means the rows are no longer part of normal query results, not necessarily that every underlying byte has been physically erased immediately. Physical deletion, retention policies and backups have separate operational considerations. Do not treat DELETE as a secure-erasure method.",
+                "caption": "SQL — confirm the two original books remain",
+                "code": "SELECT title\nFROM library.books\nORDER BY title;",
+                "language": "sql",
+                "output": "The Hobbit\nThings Fall Apart"
+            },
+            {
+                "id": "never-delete-all",
+                "title": "What happens if DELETE has no WHERE?",
+                "body": "DELETE FROM library.books; targets every row in the table. We will not run it here. In a private laboratory, clearing all sample data can be intentional; in a shared application it can be catastrophic. A WHERE clause is not enough by itself if it matches the wrong rows, so preview with SELECT, compare against an expected count and inspect RETURNING afterward.\n\nIn a relational schema, foreign-key constraints may prevent deleting a referenced parent row, or an explicit ON DELETE action may propagate the deletion to related tables. We have not defined such relationships on library.books yet. The relationship lesson introduces foreign keys, and a later constraints lesson explains their deletion consequences. Avoid assuming that a deletion always affects only the table named in one visible line.\n\nA production deletion may also require approvals, backups, a transaction and an audit trail. Those controls are meaningful after their mechanisms are taught; they should not be reduced to magic commands in this introductory lesson."
+            },
+            {
+                "id": "deletion-check",
+                "title": "Transfer the idea to another dataset",
+                "body": "Suppose a school table has records for students in several classes, and you want to remove one duplicated test enrollment. A safe plan starts by identifying what represents one enrollment, previewing the relevant row, understanding which constraints refer to it and recording the expected affected count. It does not start with DELETE WHERE student_name = 'Ana', because several people may share that name.\n\nWrite a SELECT that proves the target is unique, even if you cannot yet execute it. Explain which stable identifier you would prefer and why a displayed name alone might be ambiguous. Then identify the expected outcome of a properly constrained DELETE and the danger of removing WHERE. These ideas apply equally to an ORM delete call and to handwritten SQL."
+            }
+        ],
+        "warning": "DELETE may be irreversible outside a deliberate transaction or backup. Do not execute broad DELETE or DROP TABLE against shared data.",
+        "assignment": [
+            "Preview the fictional practice book and predict the row count.",
+            "Run the targeted DELETE ... RETURNING and capture the affected row.",
+            "Verify the two original books remain and reconnect to confirm persistence.",
+            "Explain why DELETE FROM library.books without WHERE is dangerous; do not execute it.",
+            "Contrast DELETE and DROP TABLE using the database/schema/table hierarchy."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Deleting Rows",
+                "url": "https://www.postgresql.org/docs/17/dml-delete.html",
+                "kind": "reference",
+                "purpose": "Review DELETE, WHERE and RETURNING."
+            },
+            {
+                "title": "PostgreSQL 17 — Foreign Keys",
+                "url": "https://www.postgresql.org/docs/17/ddl-constraints.html#DDL-CONSTRAINTS-FK",
+                "kind": "reference",
+                "purpose": "Preview how dependent rows may affect later deletion rules."
+            }
+        ],
+        "practiceObjective": "Remove one disposable Steward record with a preview and observable deletion proof.",
+        "practiceInstructions": [
+            "Select the exact disposable record using a sufficiently selective predicate.",
+            "Show expected affected count and verify it with DELETE ... RETURNING.",
+            "Run a fresh SELECT to show that the target is gone and unrelated rows remain.",
+            "Explain one scenario where an unexpected foreign-key relationship would change the safety analysis."
+        ],
+        "knowledgeCheck": "How is DELETE different from DROP TABLE? What would DELETE FROM library.books with no WHERE do? How can RETURNING help? Why is a name-only predicate often insufficient?",
+        "readingTitle": "Understand DELETE and its risks",
+        "practiceTitle": "Safely remove one disposable record",
+        "checkTitle": "Check DELETE behavior",
+        "practiceScenario": "Learn with a fictional library entry, then remove a scoped disposable Steward record in applied practice.",
+        "practiceDeliverables": [
+            "Read-only preview",
+            "Targeted deletion and RETURNING evidence",
+            "Verification of surviving records"
+        ],
+        "practiceCompletionCriteria": [
+            "The learner previews and limits the target set.",
+            "Only the chosen disposable record is removed.",
+            "The difference between deleting rows and dropping a table is correctly explained."
+        ]
     },
     {
         "id": "filtering-ordering",
