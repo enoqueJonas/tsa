@@ -32,6 +32,21 @@ SYNTHETIC_REFLECTION = (
 )
 
 
+def save_synthetic_steward_evidence(page, activity_id):
+    """Record synthetic browser data; this is NOT substantive lab execution."""
+    page.get_by_text("Loading evidence workspace…").wait_for(state="hidden", timeout=30000)
+    page.get_by_placeholder(
+        "What did you build, inspect, break, diagnose, or change? Include commands, observations, and important decisions."
+    ).fill("SYNTHETIC browser smoke only for " + activity_id +
+           ". No live service, test evidence, risk decision or independent learner competence exists.")
+    page.get_by_placeholder(
+        "What was the result? What did the evidence prove, and what would you do differently next time?"
+    ).fill("SYNTHETIC: persistence/navigation only; no actual assurance, approval or learner result.")
+    page.get_by_label("Submission state").select_option("ready")
+    page.get_by_role("button", name="Save evidence").click()
+    page.get_by_text("Saved locally", exact=True).wait_for(timeout=10000)
+
+
 def inspect_school(page):
     page.goto(f"{BASE}/?view=curriculum&school={SCHOOL}", wait_until="networkidle")
     module_count = page.get_by_role("button", name=MODULE).count()
@@ -282,6 +297,8 @@ def inspect_school(page):
                 assert content.get_by_text("Evidence to keep", exact=True).count() >= 1, (
                     f"Practical has no visible deliverables: {activity_id}"
                 )
+                if SCHOOL == "technical-steward":
+                    save_synthetic_steward_evidence(page, activity_id)
             else:
                 assert content.locator("p").count() >= 1, (
                     f"Reading lacks a rendered explanatory paragraph: {activity_id}"
@@ -313,6 +330,11 @@ def inspect_school(page):
                         f"Could not establish scroll regression precondition: {activity_id}"
                     )
             nxt.click()
+            if SCHOOL == "technical-steward" and len(visited) < count:
+                page.wait_for_function(
+                    "(previous) => new URLSearchParams(location.search).get('activity') !== previous",
+                    arg=activity_id, timeout=10000
+                )
             if SCHOOL in {"builder", "system-thinker"} and len(visited) < count and has_scroll:
                 page.wait_for_function("window.scrollY <= 8", timeout=8000)
         print(f"PASS {SCHOOL} module {module_index+1}/{module_count}: {count} activities", flush=True)
@@ -508,6 +530,8 @@ def check_technical_steward_mobile_all(page):
                 assert figure.locator("pre").count() >= 1, (
                     f"Missing mobile code content: {activity_id}"
                 )
+            if content.get_by_text("Engineering Practice", exact=True).count():
+                save_synthetic_steward_evidence(page, activity_id)
             if activity_index < activity_count - 1:
                 reflection = page.get_by_placeholder("Write your response here...")
                 if reflection.count():
@@ -525,6 +549,10 @@ def check_technical_steward_mobile_all(page):
                     f"Mobile navigation unavailable: {activity_id}"
                 )
                 nxt.click()
+                page.wait_for_function(
+                    "(previous) => new URLSearchParams(location.search).get('activity') !== previous",
+                    arg=activity_id, timeout=10000
+                )
                 page.wait_for_function("window.scrollY <= 8", timeout=8000)
             count_total += 1
         print(
