@@ -66,15 +66,15 @@ function readingPractice(id: string, title: string, body: string, instructions: 
     { id: `architecture-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 55, content: { type: "reading", body, blocks: [
   ...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),
   ...(architectureCases[id] ? [
-    {type:"heading" as const,id:`arch-${id}-example`,text:architectureCases[id].question,level:2 as const},
-    {type:"paragraph" as const,text:architectureCases[id].example},
-    {type:"callout" as const,tone:"warning" as const,title:"Review failure",body:architectureCases[id].failure},
+    {type:"heading" as const,id:`arch-${id}-example`,text:architectureCases[id]!.question,level:2 as const},
+    {type:"paragraph" as const,text:architectureCases[id]!.example},
+    {type:"callout" as const,tone:"warning" as const,title:"Review failure",body:architectureCases[id]!.failure},
     {type:"heading" as const,id:`arch-${id}-transfer`,text:"Unseen governance decision",level:2 as const},
-    {type:"paragraph" as const,text:architectureCases[id].transfer}
+    {type:"paragraph" as const,text:architectureCases[id]!.transfer}
   ] : []),
   {type:"resources" as const,title:"Architecture governance reference",resources:resourcesByArchGov[id] ?? [adr]}
 ] } },
-    { id: `architecture-governance-${id}-practice`, title: `${title}: Steward governance exercise`, estimatedMinutes: 55, content: { type: "practical", objective: `Apply ${title} as an architecture-governance capability for Steward.`, scenario:`${scenario}\n\nINDEPENDENT ARCHITECTURE-GOVERNANCE CASE: ${architectureCases[id].transfer}`,instructions:[...instructions,"Show current evidence and two alternative decision paths; specify which architecture principle, standard or exception applies and the actual proof that could change the choice."],deliverables:[...deliverables,"Decision/exception table with rejected option, test oracle and reconsideration event"],completionCriteria:[...criteria,`Reject the case if this failure is present: ${architectureCases[id].failure}`,"A reviewer can identify the approved decision boundary, affected current components, control/evidence and a falsifying outcome rather than a diagram or ADR alone."] } },
+    { id: `architecture-governance-${id}-practice`, title: `${title}: Steward governance exercise`, estimatedMinutes: 55, content: { type: "practical", objective: `Apply ${title} as an architecture-governance capability for Steward.`, scenario:`${scenario}\n\nINDEPENDENT ARCHITECTURE-GOVERNANCE CASE: ${architectureCases[id]!.transfer}`,instructions:[...instructions,"Show current evidence and two alternative decision paths; specify which architecture principle, standard or exception applies and the actual proof that could change the choice."],deliverables:[...deliverables,"Decision/exception table with rejected option, test oracle and reconsideration event"],completionCriteria:[...criteria,`Reject the case if this failure is present: ${architectureCases[id]!.failure}`,"A reviewer can identify the approved decision boundary, affected current components, control/evidence and a falsifying outcome rather than a diagram or ADR alone."] } },
   ] };
 }
 
