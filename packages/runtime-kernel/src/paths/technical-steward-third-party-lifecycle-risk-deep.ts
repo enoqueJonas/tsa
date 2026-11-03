@@ -55,6 +55,30 @@ const lifecycleCases: Record<string,{title:string;worked:string;failure:string;t
     "worked": "Illustrative production container investigation: start from deployed digest, resolve build workflow and commit SHA, locate dependency lockfile and SBOM, identify base image and sign/attestation source if available, then check whether a reproducible isolated rebuild resolves the same expected artifacts. Use the chain to answer what was built, by whom/what automation, from which inputs and whether the deployed artifact matches the approved release. Any missing link becomes explicit uncertainty and possibly a release block.",
     "failure": "A security scan runs on source commit A, while an image from commit B is deployed under a mutable tag. The green scan is real but not evidence about the deployed object.",
     "transfer": "Construct a provenance ledger for a Java library pulled through an internal repository, with an attacker-controlled lookalike version. Identify the trust boundary and one negative assertion that rejects substitution."
+  },
+  "saas-cloud": {
+    "title": "A cloud contract shifts operations but not business accountability",
+    "worked": "Illustrative SaaS document store: supplier operates physical infrastructure, but organization remains accountable for lawful data use, identities, recovery expectations, encryption configuration and access approvals. Before selection, inspect shared-responsibility matrix, data export, service availability objective, incident notification, location/retention policy and exit costs. Use a read-only proof environment to test export, role-denied access and restoration of a representative record. Unverified marketing promises should be recorded as assumptions, not evidence.",
+    "failure": "Treat 'cloud' as transferring all privacy and recovery risk to the supplier, or assume contract uptime guarantees the consumer's end-to-end process.",
+    "transfer": "Compare a managed database with a hosted VM database; describe what operational tasks transfer, what remains with the organization, and a failure exercise that exposes responsibility gaps."
+  },
+  "internal-product-ownership": {
+    "title": "An internal library needs a product owner and consumer contract",
+    "worked": "Illustrative shared JSON validation package: a new abstraction has two independent consumers only if both genuinely depend on the same contract. Record API surface, versioning, support owner, security process, release pipeline, compatibility test, deprecation and rollback. If the second consumer does not exist, publishing the package to Nexus creates a maintenance obligation without proven value. The product owner has to resolve consumer-breaking changes and announce support boundaries.",
+    "failure": "An engineer extracts a single-use helper into a shared package, calls it 'platform work' and leaves no support owner or compatibility test; the supposed reuse multiplies dependencies.",
+    "transfer": "Decide whether to create a common authentication error library for two services with different authorization contracts. Identify the stable overlap and one change that must remain service-specific."
+  },
+  "repository-retention": {
+    "title": "Retention of old artifacts must support recovery and compliance objectives",
+    "worked": "Illustrative production release: a rollback may require an older signed image and its dependency metadata for an approved recovery window. Inventory which artifacts have real deployed consumers, define immutability, provenance, vulnerability revocation, retention period set by authorized policy, storage/cost consequences and safe deletion approval. Test retrieving an older digest and matching its signature and SBOM before pruning. Protect audit trails from premature cleanup without assuming all artifacts must be kept forever.",
+    "failure": "An automated cleanup removes the only recoverable version during an incident, or retains all images indefinitely with unreviewed credentials embedded in layers.",
+    "transfer": "Define a retention rule for signed Java libraries, their SBOMs and test reports when one client is long-lived. State which durations must be confirmed and a recovery test before cleanup."
+  },
+  "dependency-exceptions": {
+    "title": "An unsupported dependency exception must preserve guardrails and an exit",
+    "worked": "Illustrative vulnerability fix is blocked by a critical vendor API incompatibility. Record the affected package version and actual runtime exposure, advisory exploit preconditions, mitigation, independent approval authority, compensating network restriction, expiry and replacement plan. The exception gate tracks its own deadline and fails release if the exception has expired. A safe patch trial needs consumer contract tests plus a negative exploit assertion where feasible. No developer may silently accept a business-critical residual risk.",
+    "failure": "A scanner configuration permanently ignores a high-severity advisory based only on an issue label, while the package remains exposed to untrusted input and no owner monitors it.",
+    "transfer": "Write a narrowly scoped exception for an end-of-support cryptography library whose replacement breaks a legacy client. Specify prohibited uses and a test that would terminate the exception early."
   }
 };
 function lesson(id: string, title: string, body: string, instructions: string[]): Lesson { return { id: `third-party-lifecycle-risk-${id}`, title, activities: [
