@@ -391,27 +391,46 @@ const steward = journey.schools.find((school) => school.id === "technical-stewar
 if (!steward || steward.paths.length !== 13) {
   problems.push("Technical Steward must expose 13 paths");
 } else {
-  for (const path of steward.paths) {
-    const intro = path.lessons[0];
-    const sections = intro?.activities?.[0]?.content?.blocks;
-    if (intro?.id !== `${path.id}-stewardship-model` ||
-        !Array.isArray(sections) ||
-        !sections.some((block) => block.type === "heading" && block.id === "worked-decision")) {
-      problems.push(`Technical Steward model missing: ${path.id}`);
+  // PED-005 correction: prior check REQUIRED generic stewardship-model and
+  // preparation wrappers. These inflated completion without giving learners
+  // case-specific instruction. Assert original authored lessons instead.
+  const recordedIds = new Set();
+  for (const learningPath of steward.paths) {
+    if (!learningPath.lessons?.length) {
+      problems.push(`Technical Steward path lacks original authored lessons: ${learningPath.id}`);
+      continue;
     }
-    for (const lesson of path.lessons) {
-      lesson.activities.forEach((activity, i) => {
-        if (activity.content.type !== "practical") return;
-        const before = lesson.activities[i - 1];
-        const sections = before?.content?.blocks;
-        if (!before?.id?.endsWith("-stewardship-preparation") ||
-            before?.content?.type !== "reading" ||
-            !Array.isArray(sections) ||
-            !sections.some((block) => block.type === "heading" && block.id === "accountability-evidence") ||
-            !sections.some((block) => block.type === "heading" && block.id === "challenge-control")) {
-          problems.push(`Technical Steward lab lacks accountable preparation: ${path.id}/${lesson.id}/${activity.id}`);
+    if (learningPath.lessons.some((item) => item.id.endsWith("-stewardship-model"))) {
+      problems.push(`Retired generic Technical Steward model still published: ${learningPath.id}`);
+    }
+    let originalReadings = 0;
+    let practicals = 0;
+    for (const lesson of learningPath.lessons) {
+      for (const activity of lesson.activities) {
+        if (recordedIds.has(activity.id)) {
+          problems.push(`Repeated original Technical Steward activity ID: ${activity.id}`);
         }
-      });
+        recordedIds.add(activity.id);
+        if (activity.id.endsWith("-stewardship-preparation")) {
+          problems.push(`Retired generic Technical Steward practical preparation still published: ${activity.id}`);
+        }
+        if (activity.content.type === "reading") originalReadings++;
+        if (activity.content.type !== "practical") continue;
+        practicals++;
+        const c = activity.content;
+        if (!c.objective?.trim() || !c.scenario?.trim() ||
+            !Array.isArray(c.instructions) || !c.instructions.length ||
+            !Array.isArray(c.deliverables) || !c.deliverables.length ||
+            !Array.isArray(c.completionCriteria) || !c.completionCriteria.length) {
+          problems.push(`Technical Steward original practical lacks its own evidence contract: ${learningPath.id}/${lesson.id}/${activity.id}`);
+        }
+      }
+    }
+    if (learningPath.id !== "technical-stewardship-review" && !originalReadings) {
+      problems.push(`Technical Steward path lacks original authored reading: ${learningPath.id}`);
+    }
+    if (!practicals) {
+      problems.push(`Technical Steward path lacks source-authored practical verification: ${learningPath.id}`);
     }
   }
 }
