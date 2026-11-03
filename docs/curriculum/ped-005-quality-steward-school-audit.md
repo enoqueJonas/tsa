@@ -34,6 +34,15 @@ Follow the **twelve actual paths** below in the published learner order. A gener
 4. Existing Java lesson IDs were *reordered*, not rewritten or discarded. Prior progress should remain attached by stable activity ID; old generated completion IDs may be retained as historical evidence but must not inflate current progress.
 5. Added source-derived off-by-one failure detection for the original Boundary Value Analysis lesson. Its example is explicitly illustrative: no unsupported Steward length rule is asserted.
 
+## Additional source-depth repairs now committed
+
+- **Java first principles (source, not wrapper):** before the 18 existing topics, `From Java Source to a Running Program` and `Classes, Instances, Constructors, this and State` introduce a complete `javac`/`java` program, bytecode/JVM, two independent objects and a deliberate `static` field state-leak failure. Source-derived CI: `scripts/check-quality-java-first-principles.mjs`.
+- **Unit Testing:** added a compilable 4-case illustrative owner/active/unlocked policy oracle inside the ORIGINAL `Designing Unit Tests` reading. Deliberate `&&`-to-`||` mistake must cause real nonzero assertion. Source-derived CI: `scripts/check-quality-unit-oracle.mjs`.
+- **API/Integration:** added isolated Java 17 loopback `HttpServer`/`HttpClient` contract proof in the ORIGINAL HTTP semantics reading. A denied 403 POST must leave the owner unchanged, checked via a subsequent GET; mutating owner before the denial must fail. The precondition header is explicitly a test-only switch, **NOT authentication or Steward production evidence**. Source-derived CI: `scripts/check-quality-http-denial.mjs`.
+- **Quality Engineering:** original Test Levels and Test Types reading now traces a forbidden transfer through unit, component, real database/transaction, API and genuine browser boundaries, naming what a lower-level green check cannot prove.
+- **Rendered source checks:** `scripts/check-school-learner-browser.py` now checks original headings and copyable code in selected Quality readings and seeds obsolete generated IDs to test that old completion history cannot inflate current progress.
+- **Audit disposition:** all original path sources were surveyed; further detailed per-lesson review remains, and original Test Analysis, Java, Unit, API, Browser, Performance and Quality Engineering source have received targeted revisions. No statement of whole-school completion is justified yet.
+
 ## Exit gates (not yet completed)
 
 - [ ] Run **final matching-head** `pnpm test`, `pnpm build`, curriculum audit and source-derived Python check in GitHub Actions; record SHA and counts.
