@@ -75,7 +75,7 @@ function moduleLesson(id: string, title: string, body: string, instructions: str
   ] : []),
   {type:"resources" as const,title:"Service/change reference",resources:resourcesByChange[id] ?? [itil]}
 ] } },
-    { id: `change-service-governance-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward.`, scenario, instructions, deliverables, completionCriteria: completion } },
+    { id: `change-service-governance-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward.`, scenario:`${scenario}\n\nINDEPENDENT CHANGE/SERVICE CASE: ${changeGovernanceCases[id].transfer}`,instructions:[...instructions,"Trace a specific source revision to the deployed artifact and observed user/service effect where relevant; include a negative control or failed release and who can authorize an exception."],deliverables:[...deliverables,"Exact-artifact/service-effect evidence with rollback or stop criterion"],completionCriteria:[...completion,`Reject the submission if it repeats this false success: ${changeGovernanceCases[id].failure}`,"The decision cannot pass from a green job alone: release effect, selected mandatory tests, accountability and safe failure handling are observable."] } },
   ]};
 }
 
