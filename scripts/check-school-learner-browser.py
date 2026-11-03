@@ -452,7 +452,7 @@ def check_technical_steward_mobile_all(page):
             )
             if activity_id.endswith("-practice"):
                 situation = content.locator("section").filter(
-                    has=content.get_by_text("The situation", exact=True)
+                    has_text="The situation"
                 ).first
                 assert situation.count() == 1, (
                     f"Novel-case practical missing situation panel: {activity_id}"
