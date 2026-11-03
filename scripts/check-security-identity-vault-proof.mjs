@@ -57,3 +57,12 @@ assert.ifError(signedArtifact.error);
 assert.equal(signedArtifact.status, 0, "Artifact signing classroom proof failed: "+signedArtifact.stderr);
 assert.match(signedArtifact.stdout,/trusted_artifact_verified=true tampered_digest_denied=true untrusted_valid_signer_denied=true/);
 console.log("PASS exact source RSA artifact subject, digest and signer-denial checks; real Cosign/registry UNVERIFIED.");
+
+const host = readFileSync(root + "security-linux-network-deep.ts", "utf8");
+assert.ok(host.includes("linuxSecurityDepthById[spec.id]"), "Host security negative proof must be source-authored");
+const permissions = exactProgram("security-host-permissions-proof.ts", "hostPermissionsPython");
+const permissionsRun = spawnSync("python3", ["-c", permissions], {encoding:"utf8",timeout:10000});
+assert.ifError(permissionsRun.error);
+assert.equal(permissionsRun.status,0,"Unix permission proof failed: "+permissionsRun.stderr);
+assert.match(permissionsRun.stdout,/private_file_0600=true group_or_world_readable_0644_rejected=true/);
+console.log("PASS original Linux secret-file mode and world-readable negative proof; real SSH/firewall unverified.");
