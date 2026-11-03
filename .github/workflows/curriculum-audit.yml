@@ -168,6 +168,7 @@ jobs:
         run: |
           node scripts/check-system-thinker-steward-django-domain.mjs
           node scripts/check-system-thinker-steward-batch-import.mjs
+          node scripts/check-reliability-postgres-source.mjs
 
   system-thinker-outbox-crash-recovery:
     runs-on: ubuntu-latest
