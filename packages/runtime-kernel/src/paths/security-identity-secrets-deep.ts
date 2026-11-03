@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { oidcSourceBlocksById } from "./security-oidc-source-proof";
 
 const keycloakDocs: LearningResource = { title: "Keycloak Documentation", url: "https://www.keycloak.org/documentation" };
 const oidcCore: LearningResource = { title: "OpenID Connect Core", url: "https://openid.net/specs/openid-connect-core-1_0.html" };
@@ -26,6 +27,7 @@ function lesson(spec: Spec): Lesson {
         section.paragraphs.forEach((text) => blocks.push({ type: "paragraph", text }));
         if (section.list) blocks.push({ type: "list", items: section.list });
     }
+    blocks.push(...(oidcSourceBlocksById[spec.id] ?? []));
     blocks.push({ type: "callout", tone: "steward", title: "Security boundary", body: "Keycloak authenticates identities and issues tokens; Kong enforces edge policy; Kubernetes/OpenShift controls platform access; Steward still owns domain authorization such as who may change service ownership. Do not collapse these responsibilities into one product." });
     blocks.push({ type: "resources", title: "Continue learning", resources: spec.resources ?? [keycloakDocs, oidcCore, vaultDocs, k8sSecrets] });
     return {
