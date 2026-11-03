@@ -105,6 +105,45 @@ try {
         `Need false-decision diagnosis in ${a.id}`);
     }
   }
+  // The other 59 authored conceptual readings must not regress into a
+  // framework label + one vague paragraph. Preserve the sections in the
+  // ACTUALLY EXPORTED learner journey, not just in unreferenced source text.
+  const remainingConceptSpecs = [
+    ["technology-governance", 10, (id) => id, ["prerequisites", "mechanism", "alternatives"]],
+    ["technology-strategy-capability", 6, (id) => id.replace(/^technical-strategy-/, ""), ["prerequisites", "mechanism", "alternatives"]],
+    ["security-data-governance", 8, (id) => `security-${id.replace(/^security-data-governance-/, "")}`, ["prerequisites", "mechanism", "alternatives"]],
+    ["change-service-governance", 8, (id) => `change-${id.replace(/^change-service-governance-/, "")}`, ["prerequisites", "mechanism", "alternatives"]],
+    ["third-party-lifecycle-risk", 11, (id) => `lifecycle-${id.replace(/^third-party-lifecycle-risk-/, "")}`, ["prerequisites", "mechanism", "alternatives"]],
+    ["technical-debt-health", 8, (id) => id, ["prerequisites", "mechanism", "alternatives"]],
+    ["handbook-and-standards", 8, (id) => id, ["prerequisites", "causal-trace", "alternatives", "artifact"]],
+  ];
+  let checkedConcepts = 8 + 7 + 9 + 10 + 8;
+  for (const [pathId, expected, headingStem, sections] of remainingConceptSpecs) {
+    const p = technicalStewardPaths.find((entry) => entry.id === pathId);
+    const readings = p.lessons.filter((lesson) => lesson.activities.some((a) => a.content.type === "reading"));
+    assert.equal(readings.length, expected, `Wrong original conceptual lesson count for ${pathId}`);
+    for (const lesson of readings) {
+      const a = lesson.activities.find((entry) => entry.content.type === "reading");
+      const blocks = a.content.blocks ?? [];
+      const headingsFound = blocks.filter((block) => block.type === "heading").map((block) => block.id);
+      for (const suffix of sections) {
+        assert.ok(headingsFound.includes(`${headingStem(lesson.id)}-${suffix}`),
+          `Missing ${suffix} in authored lesson ${lesson.id}`);
+      }
+      assert.ok(blocks.some((block) => block.type === "callout" && block.tone === "warning"),
+        `Missing falsifying wrong-decision explanation: ${lesson.id}`);
+      const explained = blocks.filter((block) => block.type === "paragraph" && block.text.length >= 220);
+      assert.ok(explained.length >= 3,
+        `No substantial prerequisite, mechanism and trade-off explanations: ${lesson.id}`);
+      if (pathId === "handbook-and-standards") {
+        assert.ok(blocks.some((block) => block.type === "code" &&
+          block.language === "markdown" && block.code.length >= 270),
+          `No copyable worked governance artifact for ${lesson.id}`);
+      }
+      checkedConcepts++;
+    }
+  }
+  assert.equal(checkedConcepts, 101, "All 101 original Technical Steward conceptual readings must be depth-guarded");
   // A case added to source code but omitted from rendered blocks is not instruction.
   // These minima only verify wiring, NOT depth, accessibility or learner comprehension.
   const caseMinimums = [
@@ -193,7 +232,7 @@ try {
     assert.ok(phase.content.deliverables.length >= 3);
     assert.ok(phase.content.completionCriteria.length >= 3);
   }
-  console.log(`Technical Steward authored-path guard passed: ${modules.length} paths, ${total} original activities, no generated governance/preparation wrappers.`);
+  console.log(`Technical Steward authored-path guard passed: ${modules.length} paths, ${total} activities, ${checkedConcepts} original concept readings and 83 new-case practicals.`);
 } finally {
   fs.rmSync(tmp, { recursive: true, force: true });
 }
