@@ -36,7 +36,7 @@ try{
  let result=run("healthy");
  assert.equal(result.status,0,result.stdout+"\n"+result.stderr);
  assert.match(result.stdout,/PASS policy matrix: MR/);
- assert.match(result.stdout,/PASS fail-closed XML: 2 real sample testcase nodes/);
+ assert.match(result.stdout,/PASS fail-closed XML: 2 synthetic sample testcase nodes/);
  console.log("PASS exact authored source: five GitLab trigger contexts and nonempty provenance-bound JUnit XML");
 
  const failures=[
