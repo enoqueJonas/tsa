@@ -41,3 +41,21 @@ for (const required of ["histogram_quantile(0.95", "sum by (le, route)", "status
   assert.ok(metricSrc.includes(required),"Missing PromQL population/negative-case teaching: "+required);
 }
 console.log("PASS source-authored PromQL and exact local reset-aware counter experiment; real Prometheus UNVERIFIED.");
+
+const integrated = readFileSync("packages/runtime-kernel/src/paths/reliability-observability-stack-integration-deep.ts", "utf8");
+for (const marker of [
+  "reliability-observability-stack-integration-graylog-lab-guide",
+  "Three components, three failure boundaries",
+  "MongoDB stores Graylog metadata",
+  "Graylog Data Node",
+  "vm.max_map_count",
+  "GRAYLOG_PASSWORD_SECRET",
+  "GRAYLOG_ROOT_PASSWORD_SHA2",
+  "GELF HTTP input",
+  "http://127.0.0.1:12201/gelf",
+  "https://go2docs.graylog.org/current/downloading_and_installing_graylog/docker_installation.htm",
+  "docker compose down",
+]) {
+  assert.ok(integrated.includes(marker), "Missing original-reading Graylog first-run boundary: " + marker);
+}
+console.log("PASS authored Graylog 7.2 first-run reference, GELF HTTP fixture and safe-scoped cleanup; actual Graylog runtime UNVERIFIED.");
