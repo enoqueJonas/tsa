@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { qualityPartitionsAndRetryCases } from "./quality-partitions-retry-v8";
 import { qualityExperientialDepthV6 } from "./quality-experiential-depth-v6";
 import { qualityEvidenceDepthV5 } from "./quality-evidence-depth-v5";
 import { qualityOriginalDepth } from "./quality-original-remaining-depth";
@@ -83,6 +84,20 @@ function rich(spec: Spec): Lesson {
         blocks.push(
             {type:"heading",id:`${spec.id}-experience-${i}`,text:part.heading,level:2},
             {type:"paragraph",text:part.body},
+        );
+    }
+    const deeperContract = qualityPartitionsAndRetryCases[spec.id as keyof typeof qualityPartitionsAndRetryCases];
+    if (deeperContract) {
+        blocks.push(
+            {type:"heading",id:`${spec.id}-behavior-partitions`,text:deeperContract.heading,level:2},
+            {type:"paragraph",text:deeperContract.mechanism},
+            {type:"heading",id:`${spec.id}-sql-worked-example`,text:"Run and inspect an independent example",level:2},
+            {type:"paragraph",text:deeperContract.worked},
+            {type:"code",language:"python",code:deeperContract.code},
+            {type:"heading",id:`${spec.id}-false-green`,text:"A failure that a weak test misses",level:2},
+            {type:"paragraph",text:deeperContract.negative},
+            {type:"heading",id:`${spec.id}-unseen-transfer`,text:"Apply without a model answer",level:2},
+            {type:"paragraph",text:deeperContract.transfer},
         );
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward integration checkpoint", body: "Use the smallest real boundary required by the risk. Do not mock away the very contract, database behavior, authentication rule or package compatibility you are trying to prove. Broad tests should add new evidence, not duplicate lower-level checks." });
