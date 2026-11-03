@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { applicationAuthorizationDepthById } from "./security-http-object-auth-proof";
 
 const owaspAsvs: LearningResource = { title: "OWASP Application Security Verification Standard", url: "https://owasp.org/www-project-application-security-verification-standard/" };
 const owaspCheatSheets: LearningResource = { title: "OWASP Cheat Sheet Series", url: "https://cheatsheetseries.owasp.org/" };
@@ -70,6 +71,7 @@ function blocksFor(spec: Spec): LessonBlock[] {
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
     ];
+    blocks.push(...(applicationAuthorizationDepthById[spec.id] ?? []));
     if (spec.warning) blocks.push({ type: "callout", tone: "warning", title: "Security warning", body: spec.warning });
     blocks.push({ type: "callout", tone: "steward", title: "Stewardship checkpoint", body: "Application security is complete only when the control is explicit in design, enforced in code or configuration, and verified by positive and negative evidence. A recommendation without implementation and retest remains residual risk." });
     blocks.push({ type: "resources", title: "Continue learning", resources: resourcesByTopic[spec.id] ?? [owaspAsvs, djangoSecurity] });
