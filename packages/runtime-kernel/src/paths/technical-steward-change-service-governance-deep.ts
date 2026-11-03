@@ -114,6 +114,18 @@ const changeServiceConcepts:Record<string,{prerequisites:string;mechanism:string
     "failure": "A browser screenshot of a green dashboard is used to approve a release where mandatory security tests had zero selected cases. Reject the inference and obtain the exact selected-test and after-state evidence."
   }
 };
+const releaseEvidenceLab:Record<string,{explanation:string;commands:string;expected:string}> = {
+  "release-governance":{
+    explanation:"Release approval asks whether the EXACT candidate artifact has mandatory selected tests and a denied-after-state proof. This local Node.js 22+ exercise gives you a fictional 14-release population; predict the verdict before running and distinguish a 12/14 coverage figure from organizational risk acceptance. See labs/technical-steward/README.md for the counterfactual steps.",
+    commands:"node labs/technical-steward/decision-evidence.mjs release\nnode labs/technical-steward/decision-evidence.mjs release --require-pass",
+    expected:"FICTIONAL-Q4-RELEASE-POPULATION: HOLD (12/14 complete)\nEMERG-13: MANDATORY_TESTS_NOT_SELECTED\nEMERG-14: ARTIFACT_PROVENANCE_MISSING_OR_MISMATCHED\nSecond command deliberately exits 1: mandatory gate rejected this packet."
+  },
+  "evidence-release":{
+    explanation:"An evidence packet needs more than a green job. This offline lab distinguishes missing selected tests from a deployed/tested digest mismatch and requires an independently checkable negative oracle. Use a scratch JSON copy to test a corrected input, then reinstate a false denied-after-state outcome. Never present the fictional fixtures as observed production evidence.",
+    commands:"node labs/technical-steward/decision-evidence.mjs release\ncp labs/technical-steward/release-population.json release-whatif.json\nnode labs/technical-steward/decision-evidence.mjs release --file release-whatif.json",
+    expected:"The unchanged fixture HOLDs with 12/14 complete. A corrected synthetic fixture PASSes only when exact digest, selected mandatory checks and denied after-state are all affirmed. No JSON edit can prove an actual production control operated."
+  }
+};
 function moduleLesson(id: string, title: string, body: string, instructions: string[]): Lesson {
   return { id: `change-service-governance-${id}`, title, activities: [
     { id: `change-service-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 55, content: { type: "reading", body, blocks: [
@@ -134,9 +146,14 @@ function moduleLesson(id: string, title: string, body: string, instructions: str
     {type:"heading" as const,id:`change-${id}-transfer`,text:"Independent situation",level:2 as const},
     {type:"paragraph" as const,text:changeGovernanceCases[id]!.transfer}
   ] : []),
+  ...(releaseEvidenceLab[id] ? [
+    {type:"heading" as const,id:`change-${id}-executable`,text:"Run the release-evidence gate and its negative control",level:2 as const},
+    {type:"paragraph" as const,text:releaseEvidenceLab[id]!.explanation},
+    {type:"code" as const,language:"bash",caption:"From TSA repository root with Node.js 22+",code:releaseEvidenceLab[id]!.commands,output:releaseEvidenceLab[id]!.expected}
+  ] : []),
   {type:"resources" as const,title:"Service/change reference",resources:resourcesByChange[id] ?? [itil]}
 ] } },
-    { id: `change-service-governance-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward.`, scenario:`${scenario}\n\nINDEPENDENT CHANGE/SERVICE CASE: ${changeGovernanceCases[id]!.transfer}`,instructions:[...instructions,"Trace a specific source revision to the deployed artifact and observed user/service effect where relevant; include a negative control or failed release and who can authorize an exception."],deliverables:[...deliverables,"Exact-artifact/service-effect evidence with rollback or stop criterion"],completionCriteria:[...completion,`Reject the submission if it repeats this false success: ${changeGovernanceCases[id]!.failure}`,"The decision cannot pass from a green job alone: release effect, selected mandatory tests, accountability and safe failure handling are observable."] } },
+    { id: `change-service-governance-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward.`, scenario:`${scenario}\n\nINDEPENDENT CHANGE/SERVICE CASE: ${changeGovernanceCases[id]!.transfer}`,instructions:[...instructions,...(releaseEvidenceLab[id] ? ["Execute the offline Node.js release-assurance commands documented in labs/technical-steward/README.md, record the HOLD output and expected nonzero gate exit.","Make a scratch JSON copy and change exactly one evidence field; rerun --file and explain why simulated PASS does not verify real deployment or grant release authority."] : []),"Trace a specific source revision to the deployed artifact and observed user/service effect where relevant; include a negative control or failed release and who can authorize an exception."],deliverables:[...deliverables,"Exact-artifact/service-effect evidence with rollback or stop criterion"],completionCriteria:[...completion,...(releaseEvidenceLab[id] ? ["The released fictional evidence case has repeatable command output, a false-green counterexample and an explicit distinction between missing proof, observed failure and legitimate organizational authorization."] : []),`Reject the submission if it repeats this false success: ${changeGovernanceCases[id]!.failure}`,"The decision cannot pass from a green job alone: release effect, selected mandatory tests, accountability and safe failure handling are observable."] } },
   ]};
 }
 
