@@ -54,6 +54,24 @@ const controlCases: Record<string, {question:string;example:string;failure:strin
     "example": "Illustrative change tiers: spelling correction—review and normal CI; protected endpoint access-rule change—automated denied-effect tests and relevant owner/security review; irreversible schema migration—compatible reads, restore rehearsal, staged rollout and authorized exception or rollback decision. Rank exposure, irreversibility and available detection before choosing checks. The control outcome must still be explicit in each tier; proportionality is not permission to omit high-value negative evidence.",
     "failure": "Use the same four manual approvals for a typo and for an irreversible deletion, delaying the critical fix while detecting no actual loss of protection.",
     "transfer": "Specify two different assurance plans for changing a dashboard label and changing log retention of protected records. Identify one approval that cannot be delegated purely to an implementation engineer."
+  },
+  "control-types": {
+    "question": "Choose prevention, detection and correction by what they do",
+    "example": "Illustrative unauthorized owner-transfer risk: a resource-level authorization check before the write is preventive; an immutable audit log alert on mismatched actor/resource is detective; a carefully authorized reversal or reconciliation of an unauthorized change is corrective. Demonstrate that prevention fails closed with a negative request and unchanged authoritative state, that detection emits an attributable event in a controlled violation and that correction restores the right owner without overwriting legitimate later changes. The same mechanism may play multiple roles, but each claim needs distinct evidence.",
+    "failure": "An audit log is labelled a preventive control even though it records misconduct only after records have changed. Or a rollback script is considered tested despite never having been rehearsed.",
+    "transfer": "For a production data-export leak, propose a preventive, detective and corrective control. State which one stops the leak, which alerts a human and which reduces consequences after the fact."
+  },
+  "compliance-security": {
+    "question": "A valid certificate cannot stand in for an outcome test",
+    "example": "Illustrative review: an access-control checklist confirms policy, role mapping and annual attestation, yet a lower-privileged user can change another user's record because one API route ignores resource ownership. Compliance evidence may show that a required review occurred; security evidence asks whether an attack scenario has a damaging outcome. Preserve both claims separately and attach a denial/read-after-denial regression to the control. A compliant process can still have an exploitable implementation.",
+    "failure": "Claim 'secure because audited' or 'not compliant because no ISO certificate' without identifying the actual applicable obligation or tested risk. Certification and actual security are not interchangeable.",
+    "transfer": "An organization has formal privileged-access recertification but shared admin credentials remain active. Explain which statements the audit evidence supports, which control is failing and the test that distinguishes policy from enforcement."
+  },
+  "audit": {
+    "question": "Define scope, criterion, independence and exception treatment",
+    "example": "Illustrative audit of a quarter of high-risk production releases: population is immutable deployment events for the period, criterion is the approved gate requiring exact-revision authorization tests and risk-sign-off for exceptions, evidence is CI logs linked to deployment digests and approval records. Sample selection must be justified if the population is too large; independently reperform a denied release where safe. Findings are attributed to the objective, not personalities. Self-assessment by the same release author is useful input but not independent assurance.",
+    "failure": "A reviewer examines the five easiest releases selected by the deployment owner and concludes all releases met the requirement, without population completeness or an exception trail.",
+    "transfer": "Plan a small audit of third-party access exceptions: state criterion, population, sample approach, independence limit, counterexample, and what evidence would prevent a clean opinion."
   }
 };
 function lesson(id:string,title:string,body:string,instructions:string[]):Lesson { return { id:`controls-assurance-${id}`, title, activities:[{id:`controls-assurance-${id}-reading`,title:`${title}: concepts`,estimatedMinutes:60,content:{type:"reading",body, blocks: [
