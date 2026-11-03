@@ -177,92 +177,455 @@ const specs: DataLessonSpec[] = [
         "knowledgeCheck": "Without looking at the source, explain (1) why restarting an HTTP server can erase records even though the client saw 201; (2) what changed after using a file; (3) how two correct single-process writes can lose data; (4) one case where a PostgreSQL deployment would be unnecessary."
     },
     {
-        "id": "postgresql-first-connection",
-        "title": "PostgreSQL: Server, Client and Your First Session",
-        "introduction": "A PostgreSQL table is not something a code example can conjure up by itself. PostgreSQL is a running database server that accepts authenticated connections. psql is a separate client that sends SQL to that server. Before asking you to CREATE TABLE, this lesson establishes those components, an isolated learning database, a successful command, an intentional failure and repeatable setup evidence.",
+        "id": "postgresql-what-it-is",
+        "title": "What Is PostgreSQL? Servers, Databases and Clients",
+        "introduction": "A small library catalogue makes a good starting point. Several librarians want to find, add and correct books without overwriting each other's work. We begin with what PostgreSQL actually is, not installation commands or a fictional Steward database. You should be able to draw the moving parts before opening a terminal.",
         "outcomes": [
-            "Separate PostgreSQL server, server process, cluster, database, schema, connection role and psql client.",
-            "Connect to an explicitly selected disposable learning database without assuming a preinstalled local server.",
-            "Run a multi-statement SQL file with deterministic error handling and inspect its result.",
-            "Diagnose missing client, refused connection, authentication, missing database and SQL errors as distinct failures."
+            "Explain the problem a database management system addresses.",
+            "Distinguish PostgreSQL server, psql client, database, schema, table and role.",
+            "Trace an SQL request through a client and the server.",
+            "Describe a situation where a file or SQLite might be simpler than a PostgreSQL server."
         ],
         "sections": [
             {
-                "id": "architecture",
-                "title": "Two programs, one protocol boundary",
-                "body": "The server owns and coordinates database state. The client psql is a terminal program that opens a PostgreSQL connection, authenticates as a role, chooses a database, and submits SQL. Your shell, psql and the PostgreSQL server are three different execution contexts. A server instance can manage several named databases; schemas are namespaces inside one database. A PostgreSQL cluster in this context is the managed collection of databases under one server installation, not automatically a high-availability cluster. A role controls identity and privileges; it is not the same object as the database. This vocabulary prevents the common mistake of typing SQL into a shell or believing installation of psql starts a server."
+                "id": "why-a-database",
+                "title": "Why use a database instead of a file?",
+                "body": "A text or JSON file can store book records. For one person and a few entries, that may be enough. But when two librarians edit the same file, one person's copy can overwrite the other's. Finding books by author or date requires application code. Rejecting duplicate catalogue identifiers and recovering interrupted writes also become the programmer's responsibility. A database management system (DBMS) provides ways to query organized data, enforce declared integrity rules and coordinate transactions from multiple clients. PostgreSQL is an open-source relational DBMS. It does not make every bad design safe, and it does not eliminate the need for backups. SQLite is another relational DBMS that runs inside an application rather than as a separate PostgreSQL-style server; it can be a better fit for simpler local applications."
             },
             {
-                "id": "installation",
-                "title": "Establish prerequisites without inventing credentials",
-                "body": "You need an available PostgreSQL server (local, container-based or course-provided), psql installed, and a database/role for which you have permission. Follow the official PostgreSQL installation and Getting Started documentation appropriate to your operating system; do not run arbitrary privileged setup commands from a lesson. Run psql --version to verify the client binary, but recognize that a version string says nothing about server availability. For a local standard setup, inspect pg_isready -h 127.0.0.1 -p 5432; a ready signal means a listener answers, not that your credentials are valid. A hosted course database may use a different host, port or TLS requirement. Have your instructor or installation guide provision a dedicated database named tsa_steward_lab and an authorized non-superuser role. Do not perform these experiments on a production or shared application database."
+                "id": "server-program",
+                "title": "What is the PostgreSQL server?",
+                "body": "The PostgreSQL server is a running program, usually named postgres, responsible for managing stored database data, accepting authorized connections and executing SQL. It can run on your laptop, on another computer or as a managed service. A client does not need to be installed on the same computer. The server listens for a connection and handles requests. Turning off the client does not normally remove the saved records. Stopping the server prevents new queries until it starts again, but does not automatically erase persisted database files. A server manages a PostgreSQL database cluster, meaning databases and certain shared objects such as roles. Here 'cluster' is not a claim that you have several redundant servers."
             },
             {
-                "id": "connection",
-                "title": "Connect deliberately and identify the target",
-                "body": "Use the host, port, role and database from your setup, not arbitrary guesses. PostgreSQL client utilities can use PGHOST, PGPORT, PGUSER and PGDATABASE environment variables; do not put passwords in the command text or committed source. For a local lab, set PGHOST=127.0.0.1, PGPORT=5432, PGDATABASE=tsa_steward_lab and PGUSER to your provisioned role in your shell. Type psql -X to enter an interactive session, use \\conninfo to inspect the active connection, SELECT current_database(), current_user; to prove its context, \\dt to list visible tables, and \\q to exit. Flags and meta-commands are interpreted by psql; SELECT is SQL executed by the server. Record the database/role but never include secrets in your evidence.",
-                "language": "bash",
-                "caption": "Shell commands — connection diagnostics, not SQL",
-                "code": "psql --version\npg_isready -h 127.0.0.1 -p 5432\n# After setting PGHOST, PGPORT, PGUSER, PGDATABASE for YOUR lab:\npsql -X -v ON_ERROR_STOP=1 -c 'SELECT current_database(), current_user, 2 + 2 AS four;'\n# Expected: tsa_steward_lab | <your role> | 4"
+                "id": "the-hierarchy",
+                "title": "Databases, schemas, tables and rows",
+                "body": "A server can host named databases, for example tsa_library and tsa_steward_lab. Each database contains one or more schemas. A schema is a named namespace for objects such as tables, not a second database. A table defines columns such as book_id and title, and rows contain individual records. A role is the database identity that controls which connections and operations are permitted; it is not a database. One ordinary PostgreSQL client connection works in one selected database at a time. Remember this order: server → database → schema → table → row.",
+                "code": "PostgreSQL server\n  ├─ postgres  (maintenance database)\n  ├─ tsa_library  (database)\n  │    ├─ public  (default schema)\n  │    └─ library  (our schema)\n  │         └─ books  (table)\n  │              ├─ book_id, title, author (columns)\n  │              └─ one record per book (rows)\n  └─ tsa_steward_lab  (another database)\n\nRoles govern permissions across the cluster.",
+                "caption": "Concept map — object hierarchy (not commands)",
+                "language": "text"
             },
             {
-                "id": "session-sql",
-                "title": "A complete first SQL file: temporary tables and session scope",
-                "body": "Write the following to first_session.sql, then run psql -X -v ON_ERROR_STOP=1 -f first_session.sql from your shell with the lab PG* variables set. CREATE TEMP TABLE defines a table limited to this database session; INSERT adds two rows; SELECT retrieves the ordered result; BEGIN/ROLLBACK demonstrate that an extra row inside the transaction is discarded. Running a fresh psql command to select from tsa_session_probe afterwards will fail because a temporary table does not survive the original connection. Contrast this intentionally temporary database table with the file snapshot in the previous lesson and the durable Team table we will build next.",
-                "language": "sql",
-                "caption": "first_session.sql — run only in a disposable PostgreSQL lab database",
-                "code": "CREATE TEMP TABLE tsa_session_probe (\n  id integer PRIMARY KEY,\n  service_name text NOT NULL\n);\nINSERT INTO tsa_session_probe (id, service_name)\nVALUES (1, 'Payments API'), (2, 'Identity API');\nSELECT id, service_name FROM tsa_session_probe ORDER BY id;\nBEGIN;\nINSERT INTO tsa_session_probe (id, service_name) VALUES (3, 'Temporary Service');\nROLLBACK;\nSELECT count(*) AS remaining FROM tsa_session_probe;",
-                "output": "CREATE TABLE\nINSERT 0 2\n id | service_name\n----+----------------\n  1 | Payments API\n  2 | Identity API\n(2 rows)\nBEGIN\nINSERT 0 1\nROLLBACK\n remaining\n-----------\n         2\n(1 row)"
+                "id": "client-program",
+                "title": "What is a client, and what is psql?",
+                "body": "A client is a separate program that sends requests to PostgreSQL. psql is PostgreSQL's terminal client. Graphical tools such as pgAdmin or DBeaver and application drivers such as psycopg are also clients. A client selects a server, authenticates as a database role, connects to a database and sends SQL. The server evaluates the SQL, reads or updates its data and returns results. Installing psql does not install or start a PostgreSQL server; psql does not hold the database's persistent records."
             },
             {
-                "id": "negative-cases",
-                "title": "Classify failures by the boundary that actually failed",
-                "body": "If psql --version is not found, the client is not available on PATH; no database query was attempted. If the host refuses a connection, no PostgreSQL session was established. A password or role error means the server responded but denied authentication. A database-does-not-exist error means the requested database name was not available; check PGDATABASE and provisioning. A syntax error or missing-relation error occurs only after reaching the SQL engine. With ON_ERROR_STOP=1 a noninteractive psql script stops on SQL error rather than silently continuing. Prove the missing-table case by running psql -X -v ON_ERROR_STOP=1 -c 'SELECT * FROM tsa_session_probe;' in a NEW session; it should fail even though the earlier session's SELECT worked."
+                "id": "one-query",
+                "title": "Follow one query from the user to the result",
+                "body": "A librarian types a request in psql to find books published before 1960. psql sends the SQL over its connection to PostgreSQL. The server checks whether the role can read the table, runs the query and returns the matching records. psql prints the rows. If a request instead violates a table rule, the server returns an error that psql displays. This division matters when debugging: a 'command not found' error happens before any connection, a connection refusal happens before SQL, and a SQL syntax error happens after a successful database connection."
             },
             {
-                "id": "model-next",
-                "title": "The next durable table is a design decision",
-                "body": "A temporary table is useful for isolated experiments, but Steward Teams must survive a client disconnect. In the next lesson we create persistent tables in the dedicated learning database. SQL column definitions, primary keys, references and nullability will come from the facts the application must maintain, not from copying JSON responses. Keep your connection notes and a clean SQL file as the starting point. When an example says 'run this query,' you can now name the server, database, client and permissions needed to make that instruction meaningful."
+                "id": "vocabulary",
+                "title": "Learn the names without mixing them up",
+                "body": "PostgreSQL is the database server software; SQL is the language used to ask relational databases questions; psql is one client that sends SQL. A database is not the same as a schema inside it. The word 'schema' is also sometimes used loosely for a database's overall table design, so ask which meaning is intended. The server's database cluster does not necessarily have replicas or high availability. You can now explain these concepts without a command or a Steward project."
             }
         ],
-        "warning": "Do not paste passwords into shell history, screenshots, committed environment files or public issue comments. Never create/drop learning tables in a production database. SQL sample outputs assume the disposable database and stated commands; PostgreSQL has not been executed by the automated source-only regression.",
+        "warning": "Use an isolated learning server and invented data. Do not modify production or shared databases, publish real credentials, or drop existing objects merely to repeat an exercise.",
         "assignment": [
-            "Verify the client and server separately and record the observed outcome, including any setup or access blocker.",
-            "Connect to the dedicated lab database; run SELECT current_database(), current_user, 2+2 and record the expected 4.",
-            "Execute first_session.sql and compare both result sets against the published output.",
-            "Open a second psql session and demonstrate that the temporary table is absent; classify the error.",
-            "Document the five diagnostic boundaries and the precise database/role the next lesson will use."
+            "Draw and label one PostgreSQL server, two databases, a schema and a table with three columns.",
+            "Describe what happens when a client sends an SQL query and which component actually reads the data.",
+            "Give one example where SQLite or a file would be a better starting choice.",
+            "Explain what persists when psql is closed versus when the server is stopped."
         ],
         "resources": [
             {
-                "title": "PostgreSQL Official Tutorial — Getting Started",
-                "url": "https://www.postgresql.org/docs/current/tutorial-start.html",
+                "title": "PostgreSQL 17 — Getting Started",
+                "url": "https://www.postgresql.org/docs/17/tutorial.html",
                 "kind": "reference",
-                "purpose": "Server installation, role, database, and connection prerequisites."
+                "purpose": "Follow the official sequence from architecture to databases, SQL tables and records."
             },
             {
-                "title": "PostgreSQL Official Tutorial — Accessing a Database",
-                "url": "https://www.postgresql.org/docs/current/tutorial-accessdb.html",
+                "title": "PostgreSQL 17 — Architectural Fundamentals",
+                "url": "https://www.postgresql.org/docs/17/tutorial-arch.html",
                 "kind": "reference",
-                "purpose": "Interactive psql, SQL commands and psql meta-command distinction."
-            },
-            {
-                "title": "PostgreSQL — psql Reference",
-                "url": "https://www.postgresql.org/docs/current/app-psql.html",
-                "kind": "reference",
-                "purpose": "Script execution, ON_ERROR_STOP, connection flags and error exit behavior."
+                "purpose": "Verify the separate roles of the running server and client applications."
             }
         ],
-        "practiceObjective": "Establish and prove an actual PostgreSQL lab connection before any subsequent schema exercise assumes one.",
+        "practiceObjective": "Build an accurate server/client/data hierarchy without needing the Steward API.",
         "practiceInstructions": [
-            "Provision or obtain a dedicated lab PostgreSQL database and role; document installation choice, privileges and blocked prerequisites without exposing credentials.",
-            "Run the shell diagnostics and the query reporting database, role and 4. Distinguish the client from the server.",
-            "Save and execute first_session.sql with ON_ERROR_STOP; capture its 2-row output and final count 2.",
-            "Use a second psql process to query the temporary table and capture the expected missing-relation error.",
-            "Draw a five-layer failure triage tree covering unavailable client, refused transport, rejected login, nonexistent database and SQL execution failure.",
-            "Explain why the next lesson's permanent Team table differs from the disposable session table."
+            "Draw a PostgreSQL client → server → database → schema → table diagram for a library.",
+            "Explain the difference between the SQL language and the psql application using the diagram.",
+            "Predict the effect of closing psql, stopping PostgreSQL and deleting an application process; distinguish predictions from actions you performed."
         ],
-        "knowledgeCheck": "Without notes, (1) trace shell → psql → PostgreSQL server → selected database/schema; (2) state why psql --version does not prove connectivity; (3) explain temporary vs persistent table lifetime; (4) choose the most informative observation for authentication failure versus missing relation."
+        "knowledgeCheck": "Your colleague says: 'I installed psql and my database is ready.' Explain why that claim does not follow. What actually stores book rows? Why might SQLite be preferable for a single-user desktop catalogue?"
+    },
+    {
+        "id": "postgresql-first-connection",
+        "title": "Connect to PostgreSQL with psql",
+        "introduction": "Now that you know the difference between a server and its client, establish a real connection. We will use the default postgres maintenance database first, because you cannot create new databases without being connected to a server. There is no Steward application dependency.",
+        "outcomes": [
+            "Choose an isolated existing PostgreSQL server or start a disposable local one.",
+            "Read psql prompts and distinguish shell commands, psql meta-commands and server-executed SQL.",
+            "Check the connected server, database and role.",
+            "Diagnose missing client, refused connection, authentication rejection, missing database and SQL errors."
+        ],
+        "sections": [
+            {
+                "id": "choose-lab",
+                "title": "Get access to a PostgreSQL server",
+                "body": "Option A: use your own already-running PostgreSQL or an authorized training database, noting its host, port, database and assigned role. Option B: if Docker is available, run the disposable PostgreSQL 17 container below. The image includes both the server and the psql client; using docker exec avoids installing a separate psql client locally. You must have Docker first. A course-managed server might not allow you to create databases, so request an empty lab database with appropriate privileges rather than guessing an administrator password. Do not use production data."
+            },
+            {
+                "id": "start-server",
+                "title": "Start a disposable PostgreSQL server (Docker option)",
+                "body": "Type these in your computer's terminal, not inside psql. This example uses an artificial local-only bootstrap password: change it for any non-disposable environment; never reuse it or commit it to Git. Port 55432 on your machine forwards to port 5432 inside the container and binds only to 127.0.0.1. POSTGRES_USER creates a powerful bootstrap role only for this disposable lab. The separate pg_isready command checks whether a listener responds; it does not prove your role's permissions.",
+                "code": "docker run --name tsa-pg-lesson \\\n  -e POSTGRES_USER=tsa_learner \\\n  -e POSTGRES_PASSWORD=throwaway_local_lab_only \\\n  -e POSTGRES_DB=postgres \\\n  -p 127.0.0.1:55432:5432 \\\n  -d postgres:17\n\ndocker exec tsa-pg-lesson pg_isready -U tsa_learner -d postgres\ndocker exec -it tsa-pg-lesson psql -U tsa_learner -d postgres",
+                "caption": "Shell — launch a local lab server, then launch psql",
+                "language": "bash"
+            },
+            {
+                "id": "psql-prompt",
+                "title": "Understand the psql prompt",
+                "body": "After the last command, you are inside psql. A prompt such as postgres=# means the active database is postgres and the current role has superuser status; postgres=> is typical for a non-superuser role. The prompt is not text to type. psql collects SQL until you finish a statement with a semicolon; a continuation prompt may appear when the statement is unfinished. Backslash commands are special client instructions, normally without a semicolon: \\conninfo shows connection information, \\l lists databases, \\du shows roles, \\? lists psql commands and \\q exits. Those commands are not SQL syntax."
+            },
+            {
+                "id": "connection-flags",
+                "title": "What does a connection need?",
+                "body": "The client must know where to connect, which database to enter and which role is logging in. If you installed psql on your host instead of using docker exec, `psql -h 127.0.0.1 -p 55432 -U tsa_learner -d postgres -W` requests a TCP connection and prompts for a password. -h is host, -p is port, -U is role, -d is database and -W prompts for the password. Never put a real password in command arguments, screenshots or source control. The Docker exec route uses a local socket and may authenticate differently from TCP. With either route, SELECT current_database() later reveals where you actually connected."
+            },
+            {
+                "id": "first-query",
+                "title": "Send your first SQL query to the server",
+                "body": "At the psql prompt type \\conninfo and then the SQL below. SELECT is SQL interpreted and executed by the PostgreSQL server, not a shell command or a psql backslash command. current_database() reports the database of this connection; current_user reports the active role; 2+2 makes a result you can verify without having any tables. The role or database names will vary if you chose a supplied training server.",
+                "code": "SELECT current_database() AS db,\n       current_user AS connected_as,\n       2 + 2 AS answer;",
+                "caption": "SQL in psql — run a real query",
+                "language": "sql",
+                "output": " db | connected_as | answer\n----+--------------+-------\n postgres | tsa_learner | 4\n(1 row)\n(example names for the Docker lab)"
+            },
+            {
+                "id": "errors",
+                "title": "When the connection fails, locate the failing layer",
+                "body": "If your shell says psql or docker is 'command not found', the required client or container tool is not installed. If connection is refused, check host, port and whether the PostgreSQL server is running. If authentication is rejected, the server was reached but did not accept the role or credentials. If database does not exist, check the selected -d name and whether it was provisioned. If SELECT produces a SQL syntax error, your session reached the server and the failure happened while processing SQL. `psql --version` proves only client availability, not server readiness. `pg_isready` can detect a listener without verifying access rights."
+            },
+            {
+                "id": "disconnect",
+                "title": "Exit psql without deleting the database",
+                "body": "Use \\q to exit psql. You return to your operating-system shell; the PostgreSQL server remains running. Reopen psql and execute SELECT 2+2 again. If using Docker, `docker stop tsa-pg-lesson` stops the server, and `docker start tsa-pg-lesson` restarts the existing container; do not remove the container or its volumes if you want to keep the lab data. We have not created application tables yet. The next lesson creates a separate database and schema."
+            }
+        ],
+        "warning": "Use an isolated learning server and invented data. Do not modify production or shared databases, publish real credentials, or drop existing objects merely to repeat an exercise.",
+        "assignment": [
+            "Start an isolated server or use your approved lab connection; record the environment without passwords.",
+            "Execute \\conninfo, \\l and SELECT current_database(), current_user, 2+2; explain the difference between client and server work.",
+            "Use \\q to exit and reconnect. Explain why closing psql did not delete the server.",
+            "Classify at least one deliberately wrong database-name error and predict four other failure categories."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Getting Started",
+                "url": "https://www.postgresql.org/docs/17/tutorial.html",
+                "kind": "reference",
+                "purpose": "Follow the official sequence from architecture to databases, SQL tables and records."
+            },
+            {
+                "title": "PostgreSQL 17 — Architectural Fundamentals",
+                "url": "https://www.postgresql.org/docs/17/tutorial-arch.html",
+                "kind": "reference",
+                "purpose": "Verify the separate roles of the running server and client applications."
+            },
+            {
+                "title": "PostgreSQL 17 — psql",
+                "url": "https://www.postgresql.org/docs/17/app-psql.html",
+                "kind": "reference",
+                "purpose": "Understand connection flags, prompts, backslash commands and scripts."
+            }
+        ],
+        "practiceObjective": "Establish a real PostgreSQL connection, navigate psql and explain error boundaries.",
+        "practiceInstructions": [
+            "Use the documented Docker route or authorized training server, including a named database and role.",
+            "In one session run \\conninfo, \\l and the first SELECT; record the observed result.",
+            "Exit and reconnect, then try a deliberately incorrect -d database name in a fresh invocation.",
+            "Record which commands belong to the shell, which belong to psql and which SQL runs on the server."
+        ],
+        "knowledgeCheck": "How do PostgreSQL, SQL and psql differ? What are -h, -p, -U and -d? Why do psql --version and pg_isready not prove a successful authenticated query?"
+    },
+    {
+        "id": "postgresql-databases-and-schemas",
+        "title": "Create Databases and Schemas",
+        "introduction": "Your client can connect to PostgreSQL, but where does your actual data belong? We will create a separate library database and a schema inside it. The distinction becomes visible when you list databases, reconnect and list schemas: database boundaries and schema boundaries are not interchangeable.",
+        "outcomes": [
+            "Create a database with a role authorized to do so.",
+            "Change connections and verify the active database.",
+            "Create a schema, inspect public and demonstrate schema-qualified names.",
+            "Explain permissions and why an unqualified table name might not resolve."
+        ],
+        "sections": [
+            {
+                "id": "database",
+                "title": "What is a PostgreSQL database?",
+                "body": "A running PostgreSQL server can manage several separately named databases. A new installation commonly has a maintenance database named postgres; that name is not the PostgreSQL program itself. A database contains schemas, tables, views and other objects. Each normal PostgreSQL client connection selects one database and cannot directly read another database's table as though it were another schema. Roles are shared across the database cluster but their permissions may differ by database."
+            },
+            {
+                "id": "create-db",
+                "title": "Create your first database",
+                "body": "While connected to the postgres maintenance database in psql, run this SQL statement. You are asking the PostgreSQL server to create a database named tsa_library. The command prints CREATE DATABASE on success. You need CREATEDB privilege; the Docker example's bootstrap role has it, but many managed training roles do not. If you see 'already exists', do not drop an unknown database: inspect \\l and use a distinct authorized lab name. CREATE DATABASE cannot run inside a transaction block.",
+                "code": "CREATE DATABASE tsa_library;",
+                "caption": "SQL in the postgres database — create tsa_library",
+                "language": "sql",
+                "output": "CREATE DATABASE"
+            },
+            {
+                "id": "switch-db",
+                "title": "Connect to the database you created",
+                "body": "Use \\l to list databases. Type \\connect tsa_library to open a connection to it; the psql prompt should change from postgres to tsa_library. Unlike CREATE DATABASE, \\connect is a psql client command, not SQL. SELECT current_database(); proves you are now in tsa_library. You can also leave psql and start a new client with -d tsa_library. Try to explain why a connection switch is required: databases are distinct connection targets, not folders under postgres.",
+                "code": "\\l\n\\connect tsa_library\nSELECT current_database();",
+                "caption": "Interactive psql — list databases, reconnect, inspect",
+                "language": "text",
+                "output": " current_database\n------------------\n tsa_library\n(1 row)"
+            },
+            {
+                "id": "schema",
+                "title": "What is a schema inside a database?",
+                "body": "A schema is a named namespace for database objects such as tables, views and functions. Think of it as an organizational label, not a second database: two schemas can contain tables with the same name, such as library.books and archive.books. PostgreSQL normally creates a public schema automatically. A schema cannot contain another schema. Permissions still govern access: a separate schema is not a security boundary unless privileges are configured appropriately. All of these objects belong to the currently connected database."
+            },
+            {
+                "id": "create-schema",
+                "title": "Create a schema named library",
+                "body": "With SELECT current_database() returning tsa_library, run CREATE SCHEMA library; and check that PostgreSQL reports CREATE SCHEMA. Then run \\dn (a psql command) to list schemas, and the SQL query below to inspect your new schema by name. You should see both public and library in a normal lab. CREATE SCHEMA needs CREATE privilege on this database. Never attempt it on an unknown production database just to prove that a command works.",
+                "code": "CREATE SCHEMA library;\nSELECT schema_name\nFROM information_schema.schemata\nWHERE schema_name = 'library';",
+                "caption": "SQL in tsa_library — create and inspect the library schema",
+                "language": "sql",
+                "output": "CREATE SCHEMA\n schema_name\n-------------\n library\n(1 row)"
+            },
+            {
+                "id": "search-path",
+                "title": "Why does library.books have a dot?",
+                "body": "The name library.books means table books within schema library, in your current database. If you later type SELECT * FROM books without naming its schema, PostgreSQL uses search_path to decide where to look. The default commonly checks a role-named schema then public, not the newly created library schema. SHOW search_path; displays the rule. This is why a table can exist but still produce 'relation does not exist' when you omit its schema prefix. `SET search_path TO library, public;` can alter name resolution for a session, but it does not switch databases. Explicit library.books is easiest to reason about while learning."
+            },
+            {
+                "id": "permissions",
+                "title": "If creation fails, do not guess passwords or change security",
+                "body": "A role can connect to a database without being allowed to CREATE DATABASE. Creating a schema requires CREATE on the target database. Using an existing schema and creating a table inside it require their own appropriate privileges. Ask for an authorized learning role rather than granting yourself superuser rights on a shared server. For the later Steward SQL fixture, create a second empty database named tsa_steward_lab only in your disposable server; keep its seed in public, not in the library schema. The two applications' objects should not be mixed.",
+                "code": "-- Back in postgres, only in your disposable lab:\n\\connect postgres\nCREATE DATABASE tsa_steward_lab;\n-- Return to the isolated library course:\n\\connect tsa_library",
+                "caption": "Optional lab setup — a separate database for later Steward practice",
+                "language": "text"
+            }
+        ],
+        "warning": "Use an isolated learning server and invented data. Do not modify production or shared databases, publish real credentials, or drop existing objects merely to repeat an exercise.",
+        "assignment": [
+            "Create tsa_library and demonstrate it appears in \\l.",
+            "Connect to it with \\connect and verify current_database().",
+            "Create the library schema and find it using \\dn and information_schema.",
+            "Explain public versus library schemas and why the dotted name matters.",
+            "Optionally prepare the separate empty tsa_steward_lab database for later Steward practicals; never conflate the two."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Getting Started",
+                "url": "https://www.postgresql.org/docs/17/tutorial.html",
+                "kind": "reference",
+                "purpose": "Follow the official sequence from architecture to databases, SQL tables and records."
+            },
+            {
+                "title": "PostgreSQL 17 — Schemas",
+                "url": "https://www.postgresql.org/docs/17/ddl-schemas.html",
+                "kind": "reference",
+                "purpose": "Understand public, search_path, schema qualification and privileges."
+            },
+            {
+                "title": "PostgreSQL 17 — Creating a Database",
+                "url": "https://www.postgresql.org/docs/17/tutorial-createdb.html",
+                "kind": "reference",
+                "purpose": "Understand CREATEDB and database creation."
+            }
+        ],
+        "practiceObjective": "Create and inspect the database/schema hierarchy using a generic library example.",
+        "practiceInstructions": [
+            "Use an authorized training role; create tsa_library only when it does not already exist.",
+            "Reconnect to tsa_library; create library, then list schemas and SHOW search_path.",
+            "Explain why 'database.schema.table' is not how you normally query across different PostgreSQL databases.",
+            "Prepare tsa_steward_lab as a separately named disposable database for the subsequent practice if your role permits it."
+        ],
+        "knowledgeCheck": "Where does a schema live? Is public a different database? What does library.books identify? Why might a table exist yet SELECT * FROM books say relation does not exist?"
+    },
+    {
+        "id": "postgresql-tables-and-rows",
+        "title": "Create Tables, Insert Rows and Read Data",
+        "introduction": "You now have a database and a schema. Next comes the central relational object: a table. We will create a small library.books table, insert two rows, inspect what was saved and learn how constraints reject invalid data. No Steward entities are needed to understand any of these steps.",
+        "outcomes": [
+            "Explain table, row, column, data type, primary key and nullability.",
+            "Create and inspect a table in a named schema.",
+            "Insert, select and update sample rows, including deterministic ordered output.",
+            "Demonstrate that a failed insert does not silently alter the saved rows."
+        ],
+        "sections": [
+            {
+                "id": "what-table",
+                "title": "What does a table represent?",
+                "body": "A table describes one kind of record and its permitted columns. Our books table has a row for each book and columns for its identifier, title, author and publication year. This is more than a grid in a spreadsheet: PostgreSQL stores data, applies types and constraints and processes SQL from multiple clients. A schema contains tables; tables contain rows. A row is not a column, and a column is not a separate file."
+            },
+            {
+                "id": "types-rules",
+                "title": "Choose columns and rules",
+                "body": "A primary key provides a unique, non-null identifier for each record. book_id uses bigint for a whole number and GENERATED ALWAYS AS IDENTITY to have PostgreSQL choose the value. title and author use text; NOT NULL makes them mandatory. published_year uses integer and a CHECK constraint to limit this lab to a declared range (a real library might need a richer date model). These rules are enforced by the server, regardless of which client submits a row. The constraint expresses an application assumption, not a universal law about books."
+            },
+            {
+                "id": "create-table",
+                "title": "Create the books table in the right schema",
+                "body": "Connect to tsa_library and verify SELECT current_database(); first. Run the statement below. The dot in library.books tells PostgreSQL to create books inside schema library, not the default public. Parentheses group column definitions; commas separate them; a semicolon ends the SQL statement. You should see CREATE TABLE. In psql, \\dt library.* lists tables in this schema and \\d library.books describes the table. Only run this once on your new isolated database; if it exists, inspect it instead of dropping data.",
+                "code": "CREATE TABLE library.books (\n  book_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  title text NOT NULL,\n  author text NOT NULL,\n  published_year integer CHECK (published_year BETWEEN 1450 AND 2100)\n);",
+                "caption": "SQL in tsa_library — create a persistent table",
+                "language": "sql",
+                "output": "CREATE TABLE"
+            },
+            {
+                "id": "insert-rows",
+                "title": "Insert two book records",
+                "body": "INSERT INTO names the target table and specific columns; VALUES supplies the records. You omit book_id because its identity definition generates a value. Strings use single quotes; the numbers here are integers. The database reports INSERT 0 2, meaning two rows were inserted. Use fictional catalogue rows with known titles rather than any customer or Steward data.",
+                "code": "INSERT INTO library.books (title, author, published_year)\nVALUES\n  ('The Hobbit', 'J. R. R. Tolkien', 1937),\n  ('Things Fall Apart', 'Chinua Achebe', 1958);",
+                "caption": "SQL — insert two example books",
+                "language": "sql",
+                "output": "INSERT 0 2"
+            },
+            {
+                "id": "select-rows",
+                "title": "Read rows and understand SELECT",
+                "body": "SELECT lists the requested columns, FROM picks a table, and ORDER BY makes the order predictable. SQL tables do not promise a natural row order: even when generated IDs increase, use ORDER BY to depend on that sequence. On a fresh lab with only the two example rows, the following query returns book_id 1 and 2. If you repeated the insert or changed the table, your IDs may differ. Close psql and reconnect to tsa_library; unlike a temporary table, these rows remain because we created a persistent table.",
+                "code": "SELECT book_id, title, author, published_year\nFROM library.books\nORDER BY book_id;",
+                "caption": "SQL — read persistent rows",
+                "language": "sql",
+                "output": " book_id |       title       |      author       | published_year\n---------+-------------------+-------------------+---------------\n       1 | The Hobbit        | J. R. R. Tolkien  |          1937\n       2 | Things Fall Apart | Chinua Achebe     |          1958\n(2 rows)"
+            },
+            {
+                "id": "change-one",
+                "title": "Update and inspect one record",
+                "body": "UPDATE changes rows already stored. WHERE selects which rows are affected; without WHERE, an UPDATE can change every row. This example corrects the year of one invented row to the same value, to demonstrate the syntax without altering the historical fact. PostgreSQL reports UPDATE 1; afterward SELECT confirms that only one named book was targeted. DELETE removes rows and likewise requires careful filtering, but we will cover it in the dedicated CRUD lesson. Avoid accidental destructive operations in this introduction.",
+                "code": "UPDATE library.books\nSET published_year = 1937\nWHERE title = 'The Hobbit';\nSELECT title, published_year FROM library.books WHERE title = 'The Hobbit';",
+                "caption": "SQL — update one identified row",
+                "language": "sql",
+                "output": "UPDATE 1\n   title    | published_year\n------------+---------------\n The Hobbit | 1937\n(1 row)"
+            },
+            {
+                "id": "bad-row",
+                "title": "Make an invalid insert fail on purpose",
+                "body": "Try to insert a row with a NULL title. NOT NULL requires a title; PostgreSQL rejects the row and tells you which rule failed. Immediately repeat SELECT count(*) FROM library.books; and check that the count remains 2. This is a safe negative experiment: a failed individual statement does not insert a partly valid book. You can also test an out-of-range publication year and inspect the CHECK error. Do not assume every real-world data rule can be expressed by a simple CHECK.",
+                "code": "INSERT INTO library.books (title, author, published_year)\nVALUES (NULL, 'Nobody', 2000);\n-- Expected ERROR: null value in column \"title\" violates not-null constraint\nSELECT count(*) FROM library.books;",
+                "caption": "Expected failure — invalid title should not add a row",
+                "language": "sql",
+                "output": "ERROR: null value in column \"title\" of relation \"books\" violates not-null constraint\n count\n-------\n     2\n(1 row)"
+            },
+            {
+                "id": "schema-mistake",
+                "title": "What if PostgreSQL cannot find books?",
+                "body": "Suppose you type SELECT * FROM books; and receive relation \"books\" does not exist. Before recreating anything, ask whether your current database is tsa_library, whether \\dt library.* lists the table, and what SHOW search_path; contains. You may simply have omitted the schema prefix. A different error, permission denied for schema library, means the role cannot use that namespace. A table-not-found error and permission error have different remedies. The next lesson compares permanent tables to deliberately temporary ones."
+            }
+        ],
+        "warning": "Use an isolated learning server and invented data. Do not modify production or shared databases, publish real credentials, or drop existing objects merely to repeat an exercise.",
+        "assignment": [
+            "Create library.books exactly once and inspect its definition with \\d library.books.",
+            "Insert two rows and verify ordered SELECT results.",
+            "Disconnect from psql, reconnect and show that both books persist.",
+            "Provoke a NOT NULL violation; prove that the row count remains unchanged.",
+            "Explain why an unqualified books query may fail even when library.books exists."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Getting Started",
+                "url": "https://www.postgresql.org/docs/17/tutorial.html",
+                "kind": "reference",
+                "purpose": "Follow the official sequence from architecture to databases, SQL tables and records."
+            },
+            {
+                "title": "PostgreSQL 17 — Creating a New Table",
+                "url": "https://www.postgresql.org/docs/17/tutorial-table.html",
+                "kind": "reference",
+                "purpose": "Column types and CREATE TABLE syntax."
+            },
+            {
+                "title": "PostgreSQL 17 — Querying a Table",
+                "url": "https://www.postgresql.org/docs/17/tutorial-sql.html",
+                "kind": "reference",
+                "purpose": "INSERT and SELECT with predictable order."
+            }
+        ],
+        "practiceObjective": "Create and inspect a durable two-row table and independently diagnose one failed insert.",
+        "practiceInstructions": [
+            "Run the published CREATE TABLE, INSERT and SELECT examples only in tsa_library.",
+            "Capture the output of \\dt library.*, \\d library.books and SELECT with ORDER BY.",
+            "Run the NULL-title negative insert, capture the error and verify count 2.",
+            "Open a fresh psql session and repeat the SELECT to demonstrate persistence.",
+            "Explain what created the table: PostgreSQL executed SQL; psql merely transmitted it."
+        ],
+        "knowledgeCheck": "A colleague says a table is the same as a schema, rows have a guaranteed physical order, and closing psql deletes a table. Correct all three. Why did a NULL title fail and why does ORDER BY matter?"
+    },
+    {
+        "id": "postgresql-temporary-tables",
+        "title": "Temporary Tables and Session Lifetime",
+        "introduction": "Your library.books table survived a new psql connection. But some data should exist only while one client session is working, such as a short-lived calculation or intermediate result. PostgreSQL provides temporary tables for that. This lesson separates that single idea from general connection setup; the later transactions lesson will teach BEGIN, COMMIT and ROLLBACK in depth.",
+        "outcomes": [
+            "Distinguish a permanent table from a PostgreSQL temporary table.",
+            "Run a SQL file in one psql process and verify its expected output.",
+            "Demonstrate that a temporary table is absent in a different session.",
+            "Recognize a missing-relation error after disconnect as expected behavior, not lost persistent data."
+        ],
+        "sections": [
+            {
+                "id": "temporary-meaning",
+                "title": "Why do temporary tables exist?",
+                "body": "A permanent table such as library.books lives in its database until it is deliberately changed or removed. A temporary table is different: PostgreSQL makes it available to its creating session and removes it when that session ends. Other sessions do not see the same temporary table. This is useful for intermediate calculations or isolated experiments. TEMP changes the table's lifetime, not the fundamental meaning of rows and columns. Never use a temporary table as your application's durable source of truth."
+            },
+            {
+                "id": "sql-file",
+                "title": "Run more than one SQL statement from a file",
+                "body": "Copy the file below into first_session.sql in a disposable directory. Run it from your shell, not inside an existing psql prompt, using a new connection to tsa_steward_lab: for the Docker example use `docker exec -i tsa-pg-lesson psql -X -U tsa_learner -d tsa_steward_lab -v ON_ERROR_STOP=1 < first_session.sql`. For an installed host client with connection variables already configured, use `psql -X -v ON_ERROR_STOP=1 -f first_session.sql`. `-X` avoids user psql startup configuration; ON_ERROR_STOP=1 makes batch execution stop when SQL fails. The output will show two rows followed by a final count of two. This lab intentionally uses generic records, not a persistent Steward table.",
+                "code": "CREATE TEMP TABLE tsa_session_probe (\n  id integer PRIMARY KEY,\n  service_name text NOT NULL\n);\nINSERT INTO tsa_session_probe (id, service_name)\nVALUES (1, 'Payments API'), (2, 'Identity API');\nSELECT id, service_name FROM tsa_session_probe ORDER BY id;\nBEGIN;\nINSERT INTO tsa_session_probe (id, service_name) VALUES (3, 'Temporary Service');\nROLLBACK;\nSELECT count(*) AS remaining FROM tsa_session_probe;",
+                "caption": "first_session.sql — run only in a disposable PostgreSQL lab database",
+                "language": "sql",
+                "output": "CREATE TABLE\nINSERT 0 2\n id | service_name\n----+----------------\n  1 | Payments API\n  2 | Identity API\n(2 rows)\nBEGIN\nINSERT 0 1\nROLLBACK\n remaining\n-----------\n         2\n(1 row)"
+            },
+            {
+                "id": "transaction-preview",
+                "title": "What happened to the third row?",
+                "body": "The example includes BEGIN, INSERT and ROLLBACK only as a preview: the temporary table has two rows, an extra row is inserted inside a transaction, and ROLLBACK discards that transaction's extra change. A transaction is a group of operations that can succeed together or be undone together, but detailed commit behavior and isolation levels belong in the later Transactions lessons. The rollback does not end the psql session and does not itself drop the temporary table."
+            },
+            {
+                "id": "new-session",
+                "title": "Why does a second connection not see it?",
+                "body": "Each noninteractive psql -f or docker exec invocation opens its own database session. After the SQL file completes, that session ends, and PostgreSQL discards tsa_session_probe. Connect again and execute SELECT * FROM tsa_session_probe; You should get relation \"tsa_session_probe\" does not exist. That is the intended result. It does not mean the server lost a permanent table. Compare this with your earlier library.books example, which remained after reconnecting. A table with TEMP and a table without TEMP have different lifecycle rules."
+            },
+            {
+                "id": "failure-to-learn",
+                "title": "Diagnose the expected failure without recreating data blindly",
+                "body": "If the first file fails with a permission or connection error, confirm that the separate tsa_steward_lab database exists, that the chosen role can connect and that your shell is pointing to the right server. If the second session unexpectedly finds the temporary table, check whether you accidentally reused the same interactive session. If your SQL file continues after an error, make sure ON_ERROR_STOP=1 was actually supplied. Capture these observations rather than claiming the example ran when it did not."
+            }
+        ],
+        "warning": "Use an isolated learning server and invented data. Do not modify production or shared databases, publish real credentials, or drop existing objects merely to repeat an exercise.",
+        "assignment": [
+            "Execute first_session.sql against the isolated tsa_steward_lab database; record the two-row and final-count outputs.",
+            "Run a fresh psql process and capture the expected missing-relation error.",
+            "Contrast TEMP table lifetime with library.books after reconnect.",
+            "Explain the ROLLBACK preview without claiming you have learned full transaction isolation."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Getting Started",
+                "url": "https://www.postgresql.org/docs/17/tutorial.html",
+                "kind": "reference",
+                "purpose": "Follow the official sequence from architecture to databases, SQL tables and records."
+            },
+            {
+                "title": "PostgreSQL 17 — psql",
+                "url": "https://www.postgresql.org/docs/17/app-psql.html",
+                "kind": "reference",
+                "purpose": "Understand connection flags, prompts, backslash commands and scripts."
+            },
+            {
+                "title": "PostgreSQL 17 — CREATE TABLE (TEMP)",
+                "url": "https://www.postgresql.org/docs/17/sql-createtable.html",
+                "kind": "reference",
+                "purpose": "Precise lifetime and visibility of temporary tables."
+            }
+        ],
+        "practiceObjective": "Observe a TEMP table in one PostgreSQL session and prove it disappears in a different one.",
+        "practiceInstructions": [
+            "Obtain or create a disposable tsa_steward_lab database separately from tsa_library.",
+            "Run the exact SQL file with ON_ERROR_STOP=1 and capture the two successful SELECT results.",
+            "Open a new client session and attempt SELECT * FROM tsa_session_probe; record the failure.",
+            "Show that library.books still exists in the separate library database.",
+            "Write three sentences comparing client-session lifetime, TEMP table lifetime and permanent table lifetime."
+        ],
+        "knowledgeCheck": "Why does SELECT * FROM tsa_session_probe fail after the SQL-file process exits? Is that evidence of PostgreSQL losing durable data? What did ROLLBACK affect?"
     },
     {
         id: "relational-model",
