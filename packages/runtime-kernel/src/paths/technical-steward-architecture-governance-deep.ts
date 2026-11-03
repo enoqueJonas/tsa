@@ -41,6 +41,24 @@ const architectureCases: Record<string, {question:string;example:string;failure:
     "example": "Illustrative platform review: a self-hosted message broker has low utilization but creates patching and on-call burden. Options are retain with a named owner, simplify to a scheduled batch, buy a managed service or retire it. Collect actual consumer inventory, failure history, monthly operating cost, data-retention obligations, compatibility and rollback plan. A technology cannot be retired merely because it is unpopular; no consumer should remain silently dependent on it. The decision record includes migration checkpoints and a later review.",
     "failure": "Remove a broker because the roadmap labels it 'legacy' while a delayed billing workflow still consumes its queues, or keep it indefinitely because the team has already invested time.",
     "transfer": "Decide whether to retire an internal package registry. Build an evidence checklist covering provenance of existing artifacts, consumer builds, migration/retention, compliance and emergency rollback."
+  },
+  "selection": {
+    "question": "Govern the rationale for technology selection rather than pick technology by prestige",
+    "example": "Illustrative proposed event broker: a team wants Kafka for Steward's periodic owner reconciliation. Architecture evidence shows low event volume, a simple queue already exists and incidents are due to retries without idempotency, not throughput. Compare retaining the queue with an idempotency fix, a transactional outbox, and new broker adoption against delivery risk, operational cost, team competence, migration and rollback. Decision: reject new broker now and define an observable trigger—measured consumer lag above the accepted limit after prior fixes—that justifies reevaluation.",
+    "failure": "Require an enterprise-approved 'preferred' broker in all systems even when its operational burden dwarfs the actual problem, or pick the cheapest product without evaluating failure behavior.",
+    "transfer": "A service proposes GraphQL to replace REST because a vendor case study is persuasive. Define the evidence required before making an organization-level standard exception or approval."
+  },
+  "decision-ownership": {
+    "question": "Track one decision across implementer, reviewer and accountable owner",
+    "example": "Illustrative ADR-42 changes data-store ownership. The proposing team owns alternatives and evidence, Architecture owns technical challenge and standard compliance, Security/Data owners assess relevant protected records, service risk authority accepts residual business exposure, and delivery owners implement. Record who can defer or revoke the decision when assumptions fail. Superseding the ADR requires a new decision linking the old one, not silently overwriting history. Ownership is functional, not a title-count exercise.",
+    "failure": "An architecture committee approves a data migration and assumes that approval automatically accepts customer-data loss risk. The committee may not have the mandate for that consequence.",
+    "transfer": "An architect departs after a risky payment integration design was approved. Produce the minimal handoff record and name the parties authorized to change or retire the decision."
+  },
+  "context": {
+    "question": "Set the boundary where a reusable rule stops being valid",
+    "example": "Illustrative standard mandates immutable artifact digests for releases. A disposable local classroom experiment may not require production-grade provenance, while an externally distributed regulated-data service does; the security objective and environment differ. Distinguish mandatory safety properties (e.g. authenticated deployed artifact) from implementation advice (which artifact registry to use). Document who can grant an exception, its compensating controls and expiry. A context-specific design is not automatically noncompliant because it doesn't reuse one tool.",
+    "failure": "Declare every service noncompliant for not using a particular retired Nexus installation, or treat true authorization policy as optional merely because a service is 'special'.",
+    "transfer": "Write an exception decision for an offline edge device that cannot contact the organization's central identity provider continuously. Preserve the invariant and define alternative proof."
   }
 };
 function readingPractice(id: string, title: string, body: string, instructions: string[]): Lesson {
