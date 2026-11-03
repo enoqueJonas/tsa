@@ -12,6 +12,10 @@ This tracker is the source of truth for the remediation cycle. Do not mark a sch
 
 ## Quality Steward whole-school audit (2026-11-03)
 
+**Quality Java browser evidence:** [PR #351](https://github.com/enoqueJonas/tsa/pull/351) merged at `61761cfe` after exact-head 19/19 CI and source-derived SQLite negative controls. [Draft PR #352](https://github.com/enoqueJonas/tsa/pull/352) now executes **real Java Playwright** (not just Python Playwright) against TSA's disposable local Chromium page, with byte-exact source and deliberately wrong storage oracle. This does **not** validate an actual Steward UI, identity provider, PostgreSQL, GitLab/k6 or novice learning. #328 stays open.
+
+
+
 **Current executable-source corrective pass:** [PR #350](https://github.com/enoqueJonas/tsa/pull/350) merged at `94ebc47c`, matching-head 19/19 CI, all 428 Quality authored activities verified desktop/mobile; real Maven/JUnit tag filtering, dependency resolution and PER_METHOD lifecycle proved against actual XML. [Draft PR #351](https://github.com/enoqueJonas/tsa/pull/351) adds three separate original-source Python/SQLite exercises for behavior-based partitions, committed-before-timeout idempotent replay and run-owned cleanup, each with a negative mutation. SQLite teaching evidence is **not** real Steward/PostgreSQL and does **not** satisfy independent learner validation under issue #328.
 
 
