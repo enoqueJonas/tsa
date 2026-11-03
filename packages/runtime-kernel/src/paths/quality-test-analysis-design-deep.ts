@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { qualityOriginalDepth } from "./quality-original-remaining-depth";
 import { qualityTestDesignDepth } from "./quality-test-design-depth-cases";
 
 const istqb: LearningResource = { title: "ISTQB — Certified Tester Foundation Level Syllabus", url: "https://www.istqb.org/certifications/certified-tester-foundation-level" };
@@ -25,6 +26,20 @@ function rich(spec: Spec): Lesson {
         const worked = qualityTestDesignDepth[spec.id];
         if (!worked?.length) throw new Error(`Missing deep Test Analysis source: ${spec.id}`);
         blocks.push(...worked);
+    }
+    const originalDepth = qualityOriginalDepth[spec.id];
+    if (originalDepth) {
+        blocks.push(
+            {type:"heading",id:`${spec.id}-risk-mechanism`,text:originalDepth.heading,level:2},
+            {type:"paragraph",text:originalDepth.mechanism},
+            {type:"heading",id:`${spec.id}-worked-example`,text:"Worked example and evidence boundary",level:2},
+            {type:"paragraph",text:originalDepth.worked},
+            ...(originalDepth.code ? [{type:"code" as const,language:originalDepth.language ?? "text",code:originalDepth.code}] : []),
+            {type:"heading",id:`${spec.id}-counterexample`,text:"Negative: where a green result lies",level:2},
+            {type:"paragraph",text:originalDepth.failure},
+            {type:"heading",id:`${spec.id}-independent-application`,text:"Independent application",level:2},
+            {type:"paragraph",text:originalDepth.transfer},
+        );
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward analysis checkpoint", body: "Use techniques to reveal meaningful behavior partitions, rules, transitions and interactions in the Steward domain. A technique is useful only when it exposes risk more clearly than ad-hoc case enumeration." });
     blocks.push({ type: "resources", title: "Continue learning", resources: [istqb, guruDecisionTables, exploratory] });
