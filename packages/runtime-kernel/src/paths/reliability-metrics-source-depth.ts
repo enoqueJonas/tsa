@@ -7,8 +7,8 @@ observed_increase = 0
 for prev, now in zip(samples, samples[1:]):
     observed_increase += now - prev if now >= prev else now
 assert naive_delta == -95
-assert observed_increase == 17
-print("naive_delta=-95 reset_aware_increase=17")
+assert observed_increase == 14
+print("naive_delta=-95 reset_aware_increase=14")
 # This is a local model; PromQL rate() handles resets and time differently.`;
 
 export const metricsDeepSections: Record<string, LessonBlock[]> = {
