@@ -52,8 +52,8 @@ try {
     "1|The Hobbit|J. R. R. Tolkien|1937",
     "2|Things Fall Apart|Chinua Achebe|1958"
   ]);
-  const metadata = runLibrary("SQL — inspect your book table columns").out;
-  assert.deepEqual(metadata.split(/\r?\n/), [
+  const bookMetadata = runLibrary("SQL — inspect your book table columns").out;
+  assert.deepEqual(bookMetadata.split(/\r?\n/), [
     "book_id|bigint|NO", "title|text|NO", "author|text|NO", "published_year|integer|YES"
   ]);
   assert.equal(runLibrary("SQL — filter books by publication year").out, "Things Fall Apart|1958");
