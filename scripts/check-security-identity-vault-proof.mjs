@@ -48,3 +48,12 @@ assert.ifError(httpRun.error);
 assert.equal(httpRun.status,0,"HTTP security lab failed: "+httpRun.stderr);
 assert.match(httpRun.stdout,/owner_200=true missing_identity_401=true cross_owner_403_no_leak=true/);
 console.log("PASS exact directory mapping negative proof and actual local HTTP object-authorization 200/401/403; live Keycloak, LDAP and Steward UNVERIFIED.");
+
+const signingLesson = readFileSync(root + "security-artifact-signing-verification-deep.ts", "utf8");
+assert.ok(signingLesson.includes("...artifactTrustBlocks"), "Real trusted-signer negative proof missing from signing source");
+const artifactProof = exactProgram("security-artifact-trust-proof.ts", "artifactTrustJavaScript");
+const signedArtifact = spawnSync("node", ["-e", artifactProof], {encoding:"utf8",timeout:15000});
+assert.ifError(signedArtifact.error);
+assert.equal(signedArtifact.status, 0, "Artifact signing classroom proof failed: "+signedArtifact.stderr);
+assert.match(signedArtifact.stdout,/trusted_artifact_verified=true tampered_digest_denied=true untrusted_valid_signer_denied=true/);
+console.log("PASS exact source RSA artifact subject, digest and signer-denial checks; real Cosign/registry UNVERIFIED.");
