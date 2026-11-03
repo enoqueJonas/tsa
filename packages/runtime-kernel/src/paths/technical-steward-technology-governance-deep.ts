@@ -13,6 +13,40 @@ const resourcesByTechGovernance:Record<string,LearningResource[]>={
  "technology-governance-nist-framework-landscape":[nistCsf],"technology-governance-frameworks-without-checklists":[iso38500,cobit],
 };
 
+// Frameworks are not the teaching plan. Cases show when each lens changes a concrete decision.
+const frameworkCases: Record<string, {title:string; mechanism:string; failure:string; transfer:string}> = {
+  "technology-governance-cobit-concepts": {
+    "title": "Use COBIT to separate evaluation, direction and monitoring from execution",
+    "mechanism": "Illustrative Steward situation: failed release gates are being overridden. Governance first EVALUATES stakeholder risk and evidence, then DIRECTS a minimum release-acceptance rule with assigned risk authority, then MONITORS overriden releases and escaped defects. Management PLANs who fixes the pipeline, BUILDs the checks, RUNs the deployment and MONITORS the job status. These are different kinds of accountability; they may be enacted by different people without requiring a separate committee for each objective. The observable artifact is a decision-rights and evidence map, not a completed framework checklist.",
+    "failure": "A team says it has implemented COBIT because an audit spreadsheet marks every process green, yet a developer can still override a failing authorization gate with no traceable approval. Names and ratings are not functioning control evidence.",
+    "transfer": "Create a three-row Evaluate/Direct/Monitor mapping for an untested database restore objective; add management actions underneath and name one observation that would force governance to revisit its direction."
+  },
+  "technology-governance-itil-service-management": {
+    "title": "Follow service value through incident, problem and change",
+    "mechanism": "Illustrative service event: Steward sends an accepted response but the downstream registration outcome never reaches the consumer. The INCIDENT process restores expected service or establishes a safe workaround and communicates customer impact. PROBLEM work investigates the recurring cause, for instance a missing event acknowledgement, even after the incident is resolved. CHANGE work evaluates and deploys a corrective fix with rollback and evidence. A service owner coordinates consumers' expectations and measures whether the service now delivers the intended outcome. A successful deployment alone is an output, not restored service value.",
+    "failure": "Mark an incident resolved because a patch merged, despite the unreconciled records and absent customer outcomes. Another error is forcing every low-risk documentation change through an emergency change meeting.",
+    "transfer": "Map a two-hour database outage to incident restoration, persistent problem investigation, change validation and consumer communication. Explain the point where each activity ends and the evidence of actual recovery."
+  },
+  "technology-governance-iso-management-systems": {
+    "title": "Show a Plan–Do–Check–Act loop with a failing control",
+    "mechanism": "Illustrative management-system cycle for backup recovery: PLAN states approved RTO, owner, control design and measurement; DO configures scheduled backups and a rehearsal; CHECK records the timed isolated restore, checksum and application readback; ACT revises the runbook, recovery design or objective through authorized review when measured recovery misses target. Audit evidence must reference the exact rehearsal date, environment and result. A published policy proves intent, while an observed restore proves operation within that specific tested scope.",
+    "failure": "Claim compliance because backup-job logs are green even though no restore has been tried. Conversely, changing an RTO threshold after a failed exercise without delegated authority is not continuous improvement.",
+    "transfer": "Apply Plan–Do–Check–Act to an access review where user departures are not promptly reflected in privileges; define one corrective action, one verification and a threshold requiring escalation. Do not claim ISO certification."
+  },
+  "technology-governance-nist-framework-landscape": {
+    "title": "Choose the guidance family that matches the decision",
+    "mechanism": "Illustrative change: a Steward API permits a denied ownership transfer to mutate records. Cybersecurity Framework (CSF) outcomes help articulate desired governance/protection/detection responsibilities. Risk Management Framework (RMF) concepts help assign assessment, authorization and monitoring decisions for the affected service boundary. Secure Software Development Framework (SSDF) practices inform the software lifecycle—secure design, code review, test and evidence of defect correction. These are complementary lenses, not three substitute implementations. Start from the failed business invariant, select the smallest relevant guidance, then map it to an accountable owner and test artifact.",
+    "failure": "A report cites one NIST control family and treats that citation as proof that the HTTP denial is safe; or sends a software-design issue solely through enterprise risk paperwork without testing the effect.",
+    "transfer": "A third-party package has unverifiable provenance while an access-control policy exception has expired. Select the first useful NIST guidance families for each, explain which technical evidence still must be produced and who may accept residual risk."
+  },
+  "technology-governance-frameworks-without-checklists": {
+    "title": "One demonstrated control may serve several objectives, but not every objective",
+    "mechanism": "Illustrative case: an organization wants traceability for unauthorized ownership-transfer attempts. A source-controlled denial/read-after-denial test, linked to a requirement, reviewed at the correct commit, can support a secure-development practice, a control-assessment record and a service-release gate. Map those three governance questions to the exact same technical artifact, then identify what is NOT proved: live production authorization policy, alert receipt, data retention legality and real user behavior. The efficient decision is to reuse evidence where its scope truly matches, not multiply identical committees.",
+    "failure": "Four frameworks produce four identical sign-off forms, while nobody tests state after a 403; or a single green unit test is used to claim every control across all frameworks is satisfied.",
+    "transfer": "For a recent restore rehearsal, map the evidence to service continuity, technology risk and assurance needs. Identify two governance claims that the restore log cannot support, and reject at least one unnecessary review meeting."
+  }
+};
+
 function reading(id: string, title: string, body: string): Lesson {
     return {
         id,
@@ -21,7 +55,17 @@ function reading(id: string, title: string, body: string): Lesson {
             id: `${id}-001`,
             title,
             estimatedMinutes: 55,
-            content: { type: "reading", body, blocks:[...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),{type:"resources",title:"Framework/reference",resources:resourcesByTechGovernance[id] ?? [iso38500]}] },
+            content: { type: "reading", body, blocks: [
+              ...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({ type: "paragraph" as const, text })),
+              ...(frameworkCases[id] ? [
+                { type: "heading" as const, id: `${id}-case`, text: frameworkCases[id].title, level: 2 as const },
+                { type: "paragraph" as const, text: frameworkCases[id].mechanism },
+                { type: "callout" as const, tone: "warning" as const, title: "False assurance", body: frameworkCases[id].failure },
+                { type: "heading" as const, id: `${id}-transfer`, text: "New decision without the answer", level: 2 as const },
+                { type: "paragraph" as const, text: frameworkCases[id].transfer },
+              ] : []),
+              { type: "resources" as const, title: "Framework/reference", resources: resourcesByTechGovernance[id] ?? [iso38500] },
+            ] },
         }],
     };
 }
