@@ -34,7 +34,7 @@ function rich(spec: Spec): Lesson {
         if (section.list) blocks.push({ type: "list", items: section.list });
         if (section.code) blocks.push({ type: "code", language: section.language ?? "text", code: section.code });
     }
-    if (["filters-observability", "specifications", "auth-testing"].includes(spec.id)) {
+    if (["api-auth", "filters-observability", "specifications", "auth-testing"].includes(spec.id)) {
         const worked = qualityApiDepth[spec.id];
         if (!worked?.length) throw new Error(`Missing original API source depth: ${spec.id}`);
         blocks.push(...worked);
