@@ -85,15 +85,15 @@ function lesson(id: string, title: string, body: string, instructions: string[])
   { id: `third-party-lifecycle-risk-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 60, content: { type: "reading", body, blocks: [
   ...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),
   ...(lifecycleCases[id] ? [
-    {type:"heading" as const,id:`lifecycle-${id}-case`,text:lifecycleCases[id].title,level:2 as const},
-    {type:"paragraph" as const,text:lifecycleCases[id].worked},
-    {type:"callout" as const,tone:"warning" as const,title:"Misleading evidence",body:lifecycleCases[id].failure},
+    {type:"heading" as const,id:`lifecycle-${id}-case`,text:lifecycleCases[id]!.title,level:2 as const},
+    {type:"paragraph" as const,text:lifecycleCases[id]!.worked},
+    {type:"callout" as const,tone:"warning" as const,title:"Misleading evidence",body:lifecycleCases[id]!.failure},
     {type:"heading" as const,id:`lifecycle-${id}-transfer`,text:"Unseen lifecycle decision",level:2 as const},
-    {type:"paragraph" as const,text:lifecycleCases[id].transfer}
+    {type:"paragraph" as const,text:lifecycleCases[id]!.transfer}
   ] : []),
   {type:"resources" as const,title:"Lifecycle/supply-chain reference",resources:resourcesByLifecycle[id] ?? [nistSupply]}
 ] } },
-  { id: `third-party-lifecycle-risk-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward's dependency ecosystem.`, scenario:`${scenario}\n\nINDEPENDENT SUPPLIER/LIFECYCLE CASE: ${lifecycleCases[id].transfer}`,instructions:[...instructions,"Identify exact active/deferred dependency identity, operational responsibility, support/contract evidence, failure exercise and consumer impact; compare at least one exit or do-not-adopt option."],deliverables:["Dependency/version/consumer and trust-boundary inventory","Lifecycle decision with positive, negative and exit evidence","Named accountable owner and decision or exception record"],completionCriteria:[...criteria,`Reject the claim if it repeats: ${lifecycleCases[id].failure}`,"Ownership and support statements trace to retained capability and observed records, not a product logo, version label or hypothetical supplier guarantee.","The exit/failure assertion would reveal when the chosen option no longer meets service obligations."] } },
+  { id: `third-party-lifecycle-risk-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward's dependency ecosystem.`, scenario:`${scenario}\n\nINDEPENDENT SUPPLIER/LIFECYCLE CASE: ${lifecycleCases[id]!.transfer}`,instructions:[...instructions,"Identify exact active/deferred dependency identity, operational responsibility, support/contract evidence, failure exercise and consumer impact; compare at least one exit or do-not-adopt option."],deliverables:["Dependency/version/consumer and trust-boundary inventory","Lifecycle decision with positive, negative and exit evidence","Named accountable owner and decision or exception record"],completionCriteria:[...criteria,`Reject the claim if it repeats: ${lifecycleCases[id]!.failure}`,"Ownership and support statements trace to retained capability and observed records, not a product logo, version label or hypothetical supplier guarantee.","The exit/failure assertion would reveal when the chosen option no longer meets service obligations."] } },
 ] }; }
 
 export const thirdPartyLifecycleRiskDeepLessons: Lesson[] = [
