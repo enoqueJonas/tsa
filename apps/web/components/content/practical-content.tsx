@@ -42,7 +42,7 @@ export function PracticalContent({
                 </p>
                 <div className="mt-3 border-l-4 border-zinc-950 bg-zinc-50 px-6 py-5">
                     <div className="space-y-5">
-                        {scenario.split(/\\n\\s*\\n/).filter(Boolean).map((paragraph, index) => (
+                        {scenario.split(/\n\s*\n/).filter(Boolean).map((paragraph, index) => (
                             <p key={index} className="text-lg leading-8 text-zinc-900">
                                 <InlineTechnicalText text={paragraph.trim()} />
                             </p>
