@@ -13,8 +13,62 @@ const resourcesByLifecycle:Record<string,LearningResource[]>={
 
 const scenario = "Treat Steward as a mature organization-owned technology service whose governed dependency ecosystem starts from the final Architect actual-stack inventory. It includes PostgreSQL, CI/CD, the retained artifact-repository capability where active and other retained platform/external dependencies; `steward-common` is an internal product only if its earlier extraction gate was earned, while `tsa-test-core` does not exist yet at Technical Steward. Governance must make ownership, provenance, support boundaries, lifecycle state, continuity and exceptions explicit without resurrecting retired or deferred dependencies.";
 const criteria = ["The decision is tied to a real dependency, service objective or technology risk.", "Ownership, lifecycle state, evidence and review triggers are explicit.", "Controls are proportionate and avoid unnecessary approval bureaucracy."];
+const lifecycleCases: Record<string,{title:string;worked:string;failure:string;transfer:string}> = {
+  "vendor-assessment": {
+    "title": "Evaluate the support boundary before choosing a supplier",
+    "worked": "Illustrative identity provider procurement: compare an internally maintained auth service with a managed IdP against availability, identity ownership, data residency obligations (to be confirmed by the organization), emergency recovery, exportability, API limits, audit evidence, patching responsibilities, exit cost and incident contact. Record assumptions separately from signed supplier commitments. Request a practical incident escalation exercise before accepting marketing statements about 24/7 support. The choice is not a logo comparison; it is a transfer of some operational duties while retaining accountability for the service's users.",
+    "failure": "Approve a supplier because its website shows a security badge, without verifying the contract scope, data access, recovery obligations or how to retrieve identities after termination.",
+    "transfer": "Construct a bounded evidence request for a managed logging provider, including retained raw logs, outage handling, tenant isolation, costs at increased volume and a plausible exit test."
+  },
+  "dependency-risk": {
+    "title": "Trace a vulnerable dependency to deployed exposure",
+    "worked": "Illustrative library advisory: a transitive JSON parser is affected, but the team cannot tell which running artifact includes it. Gather current SBOM or resolved dependency graph, exact package version, build SHA, affected runtime paths, exploit preconditions, support status and available remediations. Decide whether patch, isolate or accept through delegated authority; validate the patched artifact, not merely a new manifest. A dependency that is installed but unreachable may have different urgency from a reachable parser on an untrusted endpoint.",
+    "failure": "Report 'fixed' because package.json changes, while lockfile resolution and deployed image still contain the old vulnerable code. Conversely, claim an exploit without proving reachability or the advisory's applicability.",
+    "transfer": "Assess two packages with the same CVSS score but different exposure, support and upgrade risk. Explain which one gets priority and which evidence could reverse the decision."
+  },
+  "end-of-life": {
+    "title": "End-of-support becomes a funded decision, not a calendar note",
+    "worked": "Illustrative dependency: a middleware runtime approaches its published support end date. Record the actual deployed version, vendor support deadline, consumer inventory, known vulnerabilities, skills, compatibility constraints, migration alternatives, owner and budget. Compare upgrading in place, replacing the integration, isolating it temporarily with approved controls or retiring the capability. Set a decision checkpoint before support ends, then check the application in a realistic QA environment and document fallback.",
+    "failure": "Mark EOL remediated because a new version is downloaded but deployment remains on the unsupported runtime, or treat 'the business needs it' as an indefinite risk acceptance.",
+    "transfer": "Produce a three-horizon decision plan for a database driver due to lose security updates, with explicit no-op consequence, acceptance authority and testable compatibility evidence."
+  },
+  "exit-continuity": {
+    "title": "Test an exit strategy before relying on it",
+    "worked": "Illustrative managed log-service exit: enumerate log producers, index/schema mappings, retention obligations, access policies, exported events, dashboards and alert consumers. Make a small isolated export with event count and checksum; import into an alternative; reproduce two named queries and a failure alert. Record rate limits, export fees, recovery duration and secrets cutover. An exit document is credible only if the organization can obtain its data and restore minimum operating capability within its authorized constraints.",
+    "failure": "A contract claims 'data is exportable' but the only available export omits raw message fields needed to reconstruct incident timelines. A CSV download without a successful re-import is not demonstrated continuity.",
+    "transfer": "Plan a rehearsal to replace an expiring email/SMS notification provider. Name failure conditions, number portability or address ownership assumptions, message delivery evidence and consumer rollback."
+  },
+  "approved-sources": {
+    "title": "Approved origin is about trusted provenance and exact artifact identity",
+    "worked": "Illustrative dependency policy: teams may publish to an approved internal artifact repository, but must verify publisher identity, immutable artifact version/digest, dependency graph, access permissions and withdrawal procedure. A package available from the internal mirror is not necessarily trusted if an unreviewed upstream artifact was mirrored. A CI build should record precisely which digest was resolved and reject unexpected registries or mutable tags, while supported exceptions have scoped approval.",
+    "failure": "A checksum confirms a malicious package's bytes have not changed; it says nothing about whether the original publisher was legitimate. Another failure is permitting unpinned 'latest' on production builds.",
+    "transfer": "Compare a private package with signed release metadata, a public package from a lookalike namespace and an old cached package. Decide required admission checks without assuming the repository itself grants trust."
+  },
+  "version-support": {
+    "title": "Compatibility and support are separate promises",
+    "worked": "Illustrative internal library v2: changing a public method's behavior while keeping the method signature may break consumers even if TypeScript/Java compilation still passes. Define supported major versions, owner, security fix window, deprecation notice, consumer test matrix and explicit retirement date. Run an existing consumer's contract test against old and proposed artifacts, plus a negative case where a formerly forbidden input becomes accepted. SemVer communicates intent under a contract; it cannot replace behavioral verification.",
+    "failure": "Increment a patch version for an incompatible authorization semantics change and declare it harmless because the build still succeeds; or support every historic version forever without owner or security capacity.",
+    "transfer": "Write a consumer migration policy for v1→v2 of a shared API client, including supported overlap, measurable adoption, rollback and the evidence needed before deprecating v1."
+  },
+  "provenance": {
+    "title": "Reconstruct where an artifact came from and what entered it",
+    "worked": "Illustrative production container investigation: start from deployed digest, resolve build workflow and commit SHA, locate dependency lockfile and SBOM, identify base image and sign/attestation source if available, then check whether a reproducible isolated rebuild resolves the same expected artifacts. Use the chain to answer what was built, by whom/what automation, from which inputs and whether the deployed artifact matches the approved release. Any missing link becomes explicit uncertainty and possibly a release block.",
+    "failure": "A security scan runs on source commit A, while an image from commit B is deployed under a mutable tag. The green scan is real but not evidence about the deployed object.",
+    "transfer": "Construct a provenance ledger for a Java library pulled through an internal repository, with an attacker-controlled lookalike version. Identify the trust boundary and one negative assertion that rejects substitution."
+  }
+};
 function lesson(id: string, title: string, body: string, instructions: string[]): Lesson { return { id: `third-party-lifecycle-risk-${id}`, title, activities: [
-  { id: `third-party-lifecycle-risk-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 60, content: { type: "reading", body, blocks:[...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),{type:"resources",title:"Lifecycle/supply-chain reference",resources:resourcesByLifecycle[id] ?? [nistSupply]}] } },
+  { id: `third-party-lifecycle-risk-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 60, content: { type: "reading", body, blocks: [
+  ...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),
+  ...(lifecycleCases[id] ? [
+    {type:"heading" as const,id:`lifecycle-${id}-case`,text:lifecycleCases[id].title,level:2 as const},
+    {type:"paragraph" as const,text:lifecycleCases[id].worked},
+    {type:"callout" as const,tone:"warning" as const,title:"Misleading evidence",body:lifecycleCases[id].failure},
+    {type:"heading" as const,id:`lifecycle-${id}-transfer`,text:"Unseen lifecycle decision",level:2 as const},
+    {type:"paragraph" as const,text:lifecycleCases[id].transfer}
+  ] : []),
+  {type:"resources" as const,title:"Lifecycle/supply-chain reference",resources:resourcesByLifecycle[id] ?? [nistSupply]}
+] } },
   { id: `third-party-lifecycle-risk-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward's dependency ecosystem.`, scenario, instructions, deliverables: ["Lifecycle/risk decision artifact", "Evidence and rationale", "Ownership or exception record"], completionCriteria: criteria } },
 ] }; }
 
