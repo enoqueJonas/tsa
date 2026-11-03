@@ -98,3 +98,13 @@ for (const name of originalTopics) {
 assert.ok(new Set(originalTopics.map(t => depthMap[t].failure)).size === originalTopics.length,
   "No copy/paste generic negative path across Container school");
 console.log("PASS 19 distinct original Container and Delivery Security concept, case, and negative sections.");
+
+const pkiLesson = readFileSync(root + "security-internal-pki-machine-trust-deep.ts","utf8");
+assert.ok(pkiLesson.includes("...pkiTrustProofBlocks"),"Real PKI chain/identity proof must appear in original certificate lesson");
+const pkiScript = exactProgram("security-pki-chain-proof.ts","pkiChainBash");
+assert.ok(pkiScript.includes("mktemp -d") && pkiScript.includes("trap 'rm -rf"),"PKI example must use a cleaned disposable directory");
+const pkiRun=spawnSync("bash",["-c",pkiScript],{encoding:"utf8",timeout:45000,maxBuffer:1024*1024});
+assert.ifError(pkiRun.error);
+assert.equal(pkiRun.status,0,"Real OpenSSL learner trust proof failed: "+pkiRun.stderr);
+assert.match(pkiRun.stdout,/trusted_root_hostname_and_purpose_ok=true wrong_hostname_client_purpose_and_root_denied=true/);
+console.log("PASS exact local OpenSSL certificate root/SAN/EKU positive and negative verification; real mTLS and revocation UNVERIFIED.");
