@@ -6,6 +6,24 @@ export const stewardReliabilityProgramDeepLessons: Lesson[] = [
     title: "Milestone: Steward Reliability Program",
     activities: [
       {
+        id: "steward-reliability-program-milestone-foundations",
+        title: "An Evidence Review Is Not a Dashboard Tour",
+        estimatedMinutes: 60,
+        content: {
+          type: "reading",
+          body: "The milestone integrates multiple independent reliability claims. Each claim must identify the exact release, environment, user-visible operation, SLI definition, failure scenario, observation, mitigation and remaining uncertainty. Passing a monitoring smoke check never proves data recovery, high availability or competent incident response.",
+          blocks: [
+            { type: "heading", id: "reliability-review-claim-chain", text: "Construct an auditable claim", level: 2 },
+            { type: "paragraph", text: "For each critical Steward user journey, define the SLI numerator, denominator, observation window and exclusions. Relate its error budget to observed failures. A claim such as 99.9% availability is meaningless without a representative measurement window and instrumentation gaps. Draw the dependency path: edge, API, worker, database and identity/data stores actually present in the current baseline." },
+            { type: "heading", id: "diagnosis-is-not-restoration", text: "Separate detection, diagnosis and recovery", level: 2 },
+            { type: "paragraph", text: "Prometheus alert rules can detect impact; Graylog event queries can explain a request; a trace can reveal timing where sampled and propagated; a backup restore proves recoverability only after measured restoration and integrity checks. None substitutes for another. Measure recovery time against RTO and potential lost data against RPO in a disposable environment before claiming protection." },
+            { type: "heading", id: "evidence-gap-negative-path", text: "Failure and transfer: an apparently green review", level: 2 },
+            { type: "paragraph", text: "A service dashboard is green while one user journey is returning HTTP 502, and the corresponding Graylog query returns nothing. Treat the service as potentially impaired: inspect numerator/denominator and instrumentation, confirm local emitted events, then shipping/parser/index/query access and time windows. Do not invent missing traces or backups. Record unresolved questions as risks rather than marking the milestone passed." },
+            { type: "list", items: ["State the release and environment under review.", "Cite reproducible evidence for each measurable assertion.", "Include at least one controlled failure and observed recovery for each critical boundary.", "Classify each claim as demonstrated, inferred or unverified, with owner and next action.", "Treat screenshots as navigation aids, never proof of a completed restore or real incident."], ordered: true }
+          ]
+        }
+      },
+      {
         id: "steward-reliability-program-milestone-001",
         title: "Assemble the Reliability Evidence Baseline",
         estimatedMinutes: 150,
@@ -162,6 +180,16 @@ export const stewardReliabilityProgramDeepLessons: Lesson[] = [
             "The learner distinguishes confidence from certainty and acknowledges unsupported claims.",
             "The final backlog reflects valid review findings rather than treating the milestone as a pass/fail ceremony."
           ]
+        }
+      },
+      {
+        id: "steward-reliability-program-milestone-transfer",
+        title: "Defend a Reliability Claim Against Counterevidence",
+        estimatedMinutes: 30,
+        content: {
+          type: "reflection",
+          prompt: "Choose one Steward user journey and state a measurable reliability claim, exact observation window and evidence source. Now challenge it: what if the dashboard is green but the customer request fails? What if Graylog is missing the corresponding request event? What if the backup job succeeded but no restore has been attempted? For each, identify a safe distinguishing experiment and classify demonstrated versus unverified evidence. Specify the escalation or repair action and what observation would change your conclusion.",
+          minimumCharacters: 400
         }
       }
     ]
