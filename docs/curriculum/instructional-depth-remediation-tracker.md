@@ -12,7 +12,9 @@ This tracker is the source of truth for the remediation cycle. Do not mark a sch
 
 ## Quality Steward whole-school audit (2026-11-03)
 
-**AUDIT IN PROGRESS:** [#328](https://github.com/enoqueJonas/tsa/issues/328) / draft [PR #344](https://github.com/enoqueJonas/tsa/pull/344) / [12-path source ledger](./ped-005-quality-steward-school-audit.md). The 12 original paths have been surveyed in learner order. Generic 30-minute chapters and 20-minute prep pages removed; Java prerequisite order fixed with two source-executable first-principles lessons; boundary, unit oracle, and localhost HTTP permission-denial negatives added; actual decision readings improved. Matching-head complete CI, independent learner evidence, external environments and the remaining module depth work are **NOT VERIFIED**. Do not mark school REMEDIATED or VALIDATED from this checkpoint.
+**SOURCE REWRITE COMPLETE; MATCHING-HEAD CI PENDING:** [#328](https://github.com/enoqueJonas/tsa/issues/328) / draft [PR #344](https://github.com/enoqueJonas/tsa/pull/344) / [12-path source ledger](./ped-005-quality-steward-school-audit.md). The 12 original paths have been surveyed in learner order. Generic 30-minute chapters and 20-minute prep pages removed; Java prerequisite order fixed with two source-executable first-principles lessons; boundary, unit oracle, and localhost HTTP permission-denial negatives added; actual decision readings improved. Matching-head complete CI, independent learner evidence, external environments and the remaining module depth work are **NOT VERIFIED**. Do not mark school REMEDIATED or VALIDATED from this checkpoint.
+
+**Quality source details:** [12-path ledger](./ped-005-quality-steward-school-audit.md) now documents each original module's source edits, 22 distinct Containers/CI cases, 13 distinct Non-functional Quality cases, actual Java/Python/HTTP negative checks, and the uncoached final decision challenge. This is **not** an independent learner validation claim. Final exact-head CI must pass before marking the instructional source lane REMEDIATED.
 
 ## Status vocabulary
 
