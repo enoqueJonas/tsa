@@ -2,6 +2,7 @@ import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { qualityOriginalDepth } from "./quality-original-remaining-depth";
 import { qualityMavenDepth } from "./quality-junit-maven-depth-v5";
+import { qualityMavenSelectionCases, qualityTaggedSelectionJava, qualityLifecycleOwnershipJava, qualityMavenSelectionPom } from "./quality-maven-selection-v7";
 import { qualityJavaPrograms, qualityJavaCases } from "./quality-java-first-class-cases";
 const java: LearningResource = { title: "Java Language Guide", url: "https://dev.java/learn/" };
 const maven: LearningResource = { title: "Apache Maven Guides", url: "https://maven.apache.org/guides/" };
@@ -96,7 +97,20 @@ function lesson(spec: Spec): Lesson {
    ...("code" in part && part.code ? [{type:"code" as const,language:part.language,code:part.code}] : []),
   );
  }
- if(spec.code) { const language = new Set(["jvm-maven","maven-lifecycle","maven-dependencies","surefire-failsafe","junit-platform"]).has(spec.id) ? "bash" : "java"; blocks.push({type:"code",language,code:spec.code,...(spec.id === "dependency-injection" ? {caption:"DependencyInjectionExample.java — compile with javac, then run with java DependencyInjectionExample",output:"https://test.invalid / Bearer demo-token"} : {}),...(spec.id === "interfaces-composition" ? {caption:"Interface declaration fragment — implement and exercise in the practical"} : {})}); }
+ const selection = qualityMavenSelectionCases[spec.id as keyof typeof qualityMavenSelectionCases];
+ if (selection) for (const [i,section] of selection.entries()) {
+  blocks.push(
+   {type:"heading",id:`${spec.id}-executed-${i}`,text:section[0],level:2},
+   {type:"paragraph",text:section[1]}
+  );
+  if (i === 1 && spec.id === "junit-tags")
+   blocks.push({type:"code",language:"java",code:qualityTaggedSelectionJava});
+  if (i === 1 && spec.id === "junit-lifecycle")
+   blocks.push({type:"code",language:"java",code:qualityLifecycleOwnershipJava});
+  if (i === 1 && spec.id === "maven-dependencies")
+   blocks.push({type:"code",language:"xml",code:qualityMavenSelectionPom});
+ }
+ if(spec.code && spec.id !== "junit-tags") { const language = new Set(["jvm-maven","maven-lifecycle","maven-dependencies","surefire-failsafe","junit-platform"]).has(spec.id) ? "bash" : "java"; blocks.push({type:"code",language,code:spec.code,...(spec.id === "dependency-injection" ? {caption:"DependencyInjectionExample.java — compile with javac, then run with java DependencyInjectionExample",output:"https://test.invalid / Bearer demo-token"} : {}),...(spec.id === "interfaces-composition" ? {caption:"Interface declaration fragment — implement and exercise in the practical"} : {})}); }
  blocks.push({type:"heading",id:`${spec.id}-check`,text:"Check your understanding",level:2},{type:"list",items:spec.questions},{type:"resources",title:"Continue learning",resources:resourcesFor(spec.id)});
  return {id:`quality-java-${spec.id}`,title:spec.title,activities:[
   {id:`quality-java-${spec.id}-001`,title:spec.title,estimatedMinutes:55,content:{type:"reading",body: blocks.filter((b) => b.type === "paragraph").map((b) => b.text).join("\n\n") || spec.principle, blocks}},
