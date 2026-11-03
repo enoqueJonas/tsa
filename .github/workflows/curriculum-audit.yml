@@ -11,6 +11,7 @@ on:
       - curriculum/reliability-engineer-source-depth-v1
       - curriculum/quality-steward-source-depth-v1
       - curriculum/quality-steward-short-readings-depth-v2
+      - curriculum/quality-steward-java-api-foundations-v3
       - integration/tsa-audits-master-20261102
       - master
   workflow_dispatch:
@@ -55,6 +56,8 @@ jobs:
         run: pnpm check:java-examples
       - name: Compile source-published Quality Java programs and prove compiler and shared-state negatives
         run: node scripts/check-quality-java-first-principles.mjs
+      - name: Execute six additional original Java concepts and five negative mutations
+        run: node scripts/check-quality-java-deep-lessons.mjs
       - name: Compile original Quality unit oracle and assert authorization mutant fails
         run: node scripts/check-quality-unit-oracle.mjs
       - name: Execute original Quality API localhost denial and forbidden-side-effect mutation

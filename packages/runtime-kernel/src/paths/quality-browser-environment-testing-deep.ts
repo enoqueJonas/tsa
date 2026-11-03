@@ -1,6 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { qualityBrowserDepth } from "./quality-browser-depth-cases";
+import { qualityBrowserUncoveredDepth } from "./quality-browser-uncovered-depth";
 
 const playwright: LearningResource = { title: "Playwright — Browsers", url: "https://playwright.dev/java/docs/browsers" };
 const mdnResponsive: LearningResource = { title: "MDN — Responsive web design", url: "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design" };
@@ -44,6 +45,13 @@ function rich(spec: Spec): Lesson {
         section.body.forEach((text) => blocks.push({ type: "paragraph", text }));
         if (section.list) blocks.push({ type: "list", items: section.list });
         if (section.code) blocks.push({ type: "code", language: "java", code: section.code });
+    }
+    const more = qualityBrowserUncoveredDepth[spec.id as keyof typeof qualityBrowserUncoveredDepth];
+    if (more) for (const [index, entry] of more.entries()) {
+        blocks.push(
+            {type:"heading",id:`${spec.id}-case-${index+1}`,text:entry[0],level:2},
+            {type:"paragraph",text:entry[1]},
+        );
     }
     // Extend specific original lessons, preserving all published activity IDs.
     if (["navigation-network", "ui-test-selection", "advanced-browser-interactions",

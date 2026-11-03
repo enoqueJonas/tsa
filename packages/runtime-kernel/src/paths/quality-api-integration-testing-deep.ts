@@ -1,6 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { qualityApiDepth } from "./quality-api-depth-cases";
+import { qualityApiUncoveredDepth } from "./quality-api-uncovered-depth";
 
 const junit: LearningResource = { title: "JUnit 5 User Guide", url: "https://docs.junit.org/current/user-guide/" };
 const restAssured: LearningResource = { title: "REST Assured", url: "https://rest-assured.io/" };
@@ -33,6 +34,13 @@ function rich(spec: Spec): Lesson {
         section.body.forEach((text) => blocks.push({ type: "paragraph", text }));
         if (section.list) blocks.push({ type: "list", items: section.list });
         if (section.code) blocks.push({ type: "code", language: section.language ?? "text", code: section.code });
+    }
+    const originalGaps = qualityApiUncoveredDepth[spec.id as keyof typeof qualityApiUncoveredDepth];
+    if (originalGaps) for (const group of originalGaps) {
+        blocks.push(
+            {type:"heading",id:group.heading.toLowerCase().replace(/[^a-z0-9]+/g,"-"),text:group.heading,level:2},
+            {type:"paragraph",text:group.body}
+        );
     }
     if (["api-auth", "filters-observability", "specifications", "auth-testing"].includes(spec.id)) {
         const worked = qualityApiDepth[spec.id];
