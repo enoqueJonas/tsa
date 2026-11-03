@@ -52,8 +52,11 @@ try {
     "1|The Hobbit|J. R. R. Tolkien|1937",
     "2|Things Fall Apart|Chinua Achebe|1958"
   ]);
-  const fixedYear = runLibrary("SQL — update one identified row").out;
-  assert.deepEqual(fixedYear.split(/\r?\n/), ["UPDATE 1", "The Hobbit|1937"]);
+  const metadata = runLibrary("SQL — inspect your book table columns").out;
+  assert.deepEqual(metadata.split(/\r?\n/), [
+    "book_id|bigint|NO", "title|text|NO", "author|text|NO", "published_year|integer|YES"
+  ]);
+  assert.equal(runLibrary("SQL — filter books by publication year").out, "Things Fall Apart|1958");
   const badBook = runLibrary("Expected failure — invalid title should not add a row", 1);
   assert.match(badBook.err, /null value in column "title".*violates not-null constraint/);
   assert.equal(run(["-d", "tsa_library", "-c", "SELECT count(*) FROM library.books"]).out, "2");
