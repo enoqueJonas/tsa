@@ -4,6 +4,7 @@ import { qualityOriginalDepth } from "./quality-original-remaining-depth";
 import { qualityMavenDepth } from "./quality-junit-maven-depth-v5";
 import { qualityMavenSelectionCases, qualityTaggedSelectionJava, qualityLifecycleOwnershipJava, qualityMavenSelectionPom } from "./quality-maven-selection-v7";
 import { qualityJavaPrograms, qualityJavaCases } from "./quality-java-first-class-cases";
+import { qualityConcurrencyDeepCases } from "./quality-concurrency-split-v11";
 const java: LearningResource = { title: "Java Language Guide", url: "https://dev.java/learn/" };
 const maven: LearningResource = { title: "Apache Maven Guides", url: "https://maven.apache.org/guides/" };
 const junit: LearningResource = { title: "JUnit 5 User Guide", url: "https://docs.junit.org/current/user-guide/" };
@@ -19,7 +20,7 @@ const resourcesFor = (id: string): LearningResource[] => {
  if (id === "maven-dependencies") return [mavenDependencies, maven];
  if (id === "junit-parameterization") return [junitParameterized, junit];
  if (id === "junit-extensions" || id === "annotations-reflection") return [junitExtensions, junit];
- if (id === "concurrency") return [javaConcurrency, junit];
+ if (id === "concurrency" || id === "concurrency-atomicity" || id === "concurrency-threadlocal") return [javaConcurrency, junit];
  if (id.startsWith("junit-")) return [junit, java];
  if (id === "jvm-maven") return [java, mavenLifecycle];
  return [java, junit];
@@ -44,6 +45,8 @@ const javaPracticeEvidence: Record<string, string> = {
  "junit-tags": "Tagged inclusion and exclusion run outputs",
  "functional-java": "Stream/Optional transform and empty-case results",
  "concurrency": "Repeatable shared-state race or thread-safety evidence",
+ "concurrency-atomicity": "Executed lost-update versus atomic increment trace and a wrong-read mutation",
+ "concurrency-threadlocal": "Executed reused-worker ThreadLocal leak and proven cleanup mutation",
 };
 
 type Spec = {
@@ -75,6 +78,18 @@ function lesson(spec: Spec): Lesson {
    {type:"paragraph",text:deeper.transfer},
   );
  }
+ const concurrent = qualityConcurrencyDeepCases[spec.id as keyof typeof qualityConcurrencyDeepCases];
+ if (concurrent) blocks.push(
+   {type:"heading",id:`${spec.id}-definition`,text:concurrent.heading,level:2},
+   {type:"paragraph",text:concurrent.mechanism},
+   {type:"heading",id:`${spec.id}-executable`,text:"Execute the full controlled interleaving",level:2},
+   {type:"paragraph",text:concurrent.worked},
+   {type:"code",language:"java",code:concurrent.code},
+   {type:"heading",id:`${spec.id}-negative`,text:"Why a superficially safe implementation fails",level:2},
+   {type:"paragraph",text:concurrent.failure},
+   {type:"heading",id:`${spec.id}-transfer`,text:"Unseen transfer",level:2},
+   {type:"paragraph",text:concurrent.transfer}
+ );
  const originalDepth = qualityOriginalDepth[spec.id];
  if (originalDepth) {
   blocks.push(
@@ -301,12 +316,26 @@ antiPatterns:["Ten-stage streams that are harder to debug than a loop.","Optiona
 practice:["Implement one small transformation with a stream.","Implement the same logic imperatively and compare diagnosis/readability.","Use a method reference where it genuinely improves clarity.","Use Optional only where absence is part of the contract."],
 questions:["What makes an interface functional?","When does a stream actually execute?","When is a loop clearer than a stream?"]},
 
-{id:"concurrency",title:"Concurrency, Shared State and Thread Safety",principle:"Parallel automation is concurrent software. Learn enough Java concurrency to recognize unsafe framework state before JUnit or CI executes tests simultaneously.",
-mechanics:["Threads can interleave access to shared state nondeterministically. Two parallel tests that both assign static currentUser can observe whichever write happens last, so a test may send a request as another test's identity even though each test passes when run alone.","Immutable values reduce synchronization needs because readers cannot race to modify the same object.","Atomicity, visibility and ordering are separate concerns: an operation can consist of multiple steps that interleave, one thread may not immediately observe another thread's write without the required memory guarantees, and operations can become observable in an order the programmer did not assume.","ThreadLocal associates state with a thread, which can isolate some per-thread context, but pooled threads are reused. Values therefore need explicit cleanup, and ThreadLocal does not isolate backend data or repair ownership that should have been per-test objects.","Concurrent collections protect specific collection operations; they do not make a multi-step domain workflow such as read-then-update automatically atomic."],
-frameworkUse:["Recognize why static clients/pages/test data become flaky under parallel execution.","Design unique test identities and isolated browser contexts later.","Make an evidence-based decision before enabling JUnit parallelism."],
-antiPatterns:["static mutable currentUser/currentPage/currentService.","Adding synchronized everywhere after flakes appear.","ThreadLocal used as a global-variable disguise.","Enabling parallel=true because CI is slow before proving isolation."],
-practice:["Identify every mutable singleton/static value in steward-tests.","Create a tiny race demonstration and explain why its outcome is unsafe.","Make test identity/data collision-safe.","Explain one legitimate ThreadLocal use and its cleanup obligation.","Keep parallel execution disabled and write the conditions required to enable it later."],
-questions:["What state is actually shared between concurrent tests?","Why does immutability help?","What problem does ThreadLocal solve, and what problems does it not solve?"]}
+{id:"concurrency",title:"Concurrency, Shared State and Thread Safety",principle:"Two pieces of test code may execute at overlapping times. Before optimizing a suite with parallel threads, identify which values and external records are truly shared and which test owns them.",
+mechanics:["A thread is an independently scheduled path of execution in one Java process. Worker threads can execute test steps in different orders across runs.","Local variables are associated with an invocation, but static fields and referenced heap objects can be shared by threads; even isolated local variables can refer to one shared mutable object.","A data race or interleaving is a source of uncertainty when tests share identities, browser Pages, fixtures or process-wide configuration.","A browser context is a user-session isolation boundary; it does not isolate the backend test record when two contexts refer to the same entity."],
+frameworkUse:["Inventory every shared mutable test value before enabling JUnit concurrency.","Explain which resources must be per test instead of global.","Proceed to the separate atomicity and ThreadLocal lessons before choosing synchronization or thread-bound storage."],
+antiPatterns:["static mutable currentUser/currentPage/currentService without ownership.","Enabling parallel execution to reduce CI time without proving isolation.","Treating unique service IDs as sufficient when two tests still share one account or queue."],
+practice:["Draw a resource-ownership map for two simultaneous tests.","Mark each resource as method-local, shared process object, thread-bound or external system state.","Write a deterministic two-worker schedule hypothesis without running it yet.","Explain which tests would still collide after giving them fresh BrowserContexts."],
+questions:["What is a Java thread?","Which values can be shared across two test methods?","Why does independent browser storage not guarantee independent backend rows?"]},
+
+{id:"concurrency-atomicity",title:"Atomicity versus Visibility: A Controlled Lost Update",principle:"A value being visible between threads does not make a multi-step operation indivisible. See one lost update and one atomic update with an exact forced schedule.",
+mechanics:["Read-modify-write operations contain separate reads, calculations and writes unless an atomic primitive or appropriately scoped lock protects the whole operation.","The volatile keyword supports visibility/ordering for accesses to the field but does not make counter++ an atomic update.","CyclicBarrier can force two local test threads to read the same old value before either writes, making the lost update predictable.","AtomicInteger.incrementAndGet performs a safe atomic counter update, but an AtomicInteger get followed by set is still a non-atomic compound operation."],
+frameworkUse:["Diagnose a race without relying on sleeps or flaky timing.","Separate in-process atomic counters from external transaction/locking guarantees."],
+antiPatterns:["Using volatile as a fix for a compound increment.","Using get() then set() on AtomicInteger and assuming the pair is atomic.","Relying on random interleavings to demonstrate an example."],
+practice:["Compile/run the source-published AtomicityProof.java.","Change atomic increment to get/set and observe a deterministic assertion failure.","Identify one shared state in the current test harness that must be isolated or protected.","Explain why a real PostgreSQL lost update needs its own integration evidence."],
+questions:["What precisely does volatile promise?","Why does forcing both reads make this race deterministic?","Where would a database transaction be needed?"]},
+
+{id:"concurrency-threadlocal",title:"ThreadLocal Ownership on Reused Test Workers",principle:"ThreadLocal state follows the worker thread, not automatically the test method. Demonstrate stale state across pooled tasks and explicitly remove it.",
+mechanics:["ThreadLocal stores a per-thread lookup value, so values set on one worker can survive into later tasks scheduled on that worker.","ExecutorService can reuse a small number of threads for many task submissions; same-thread reuse is deterministic in a single-thread pool.","ThreadLocal.remove() must run in owned cleanup when the thread is reused, including when assertions fail.","Thread-local test identity never isolates a shared backend account, queue, file or browser context."],
+frameworkUse:["Prevent test identities or clients leaking across pooled worker invocations.","Use explicit test-owned object construction when that is simpler than thread-bound ambient state."],
+antiPatterns:["static ThreadLocal without finally removal.","Assuming one worker thread maps one-to-one to one JUnit test.","Treating thread-local identities as authorization-test evidence."],
+practice:["Compile/run ThreadLocalOwnershipProof.java.","Remove cleanup and prove the exact stale-state failure.","Design try/finally cleanup for one legitimate per-thread logging context.","Document where a per-test fixture should replace ThreadLocal."],
+questions:["What is retained when the executor reuses a thread?","Does ThreadLocal make a shared database record safe?","Why must teardown run after a failed assertion?"]}
 ];
 const executionMilestone: Lesson={id:"quality-java-execution-backbone-milestone",title:"Milestone: Explain and Control the Maven → JUnit Execution Chain",activities:[{id:"quality-java-execution-backbone-milestone-001",title:"Build and Debug the Execution Backbone",estimatedMinutes:150,content:{type:"practical",objective:"Prove that steward-tests execution is understood from Maven command to individual JUnit invocation.",scenario:"A mature framework engineer must locate failures at the correct layer rather than changing dependencies/plugins until the build turns green.",instructions:["Draw and document: shell/CI → Maven lifecycle → Surefire → JUnit Platform → Jupiter TestEngine → discovery/test plan → test instance/lifecycle → test method.","Pin the important Maven plugin/dependency versions used by the project.","Use `dependency:tree` and `effective-pom` to explain the resolved build.","Demonstrate tag selection through Maven without duplicating suites.","Demonstrate one MethodSource parameterized test.","Implement one tiny JUnit extension or ParameterResolver, then document why most setup should remain ordinary composition.","Create controlled failures at two different layers (for example Maven discovery/configuration and a real assertion) and record how their symptoms differ.","Write the future decision rule for Surefire versus Failsafe in steward-tests."],deliverables:["Execution-chain diagram","Resolved dependency/build note","Tag-selection command/evidence","Parameterized test","Narrow extension experiment","Failure-diagnosis evidence","Surefire/Failsafe decision"],completionCriteria:["The learner can narrate `mvn test` end-to-end.","The learner distinguishes Maven/plugin/discovery/engine/lifecycle/assertion failures.","The build works from CLI, not only an IDE.","No extension exists merely to hide ordinary construction.","Dependency resolution is explainable from the effective `POM` and dependency tree."]}}]};
 
@@ -324,6 +353,8 @@ const javaLearningOrder = [
   "exceptions-resources",
   "functional-java",
   "concurrency",
+  "concurrency-atomicity",
+  "concurrency-threadlocal",
   "annotations-reflection",
   "maven-lifecycle",
   "maven-dependencies",
