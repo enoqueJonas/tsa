@@ -184,6 +184,16 @@ export const stewardReliabilityProgramDeepLessons: Lesson[] = [
             "The final backlog reflects valid review findings rather than treating the milestone as a pass/fail ceremony."
           ]
         }
+      },
+      {
+        id: "steward-reliability-program-milestone-transfer",
+        title: "Defend a Reliability Claim Against Counterevidence",
+        estimatedMinutes: 30,
+        content: {
+          type: "reflection",
+          prompt: "Choose one Steward user journey and state a measurable reliability claim, exact observation window and evidence source. Now challenge it: what if the dashboard is green but the customer request fails? What if Graylog is missing the corresponding request event? What if the backup job succeeded but no restore has been attempted? For each, identify a safe distinguishing experiment and classify demonstrated versus unverified evidence. Specify the escalation or repair action and what observation would change your conclusion.",
+          minimumCharacters: 400
+        }
       }
     ]
   }

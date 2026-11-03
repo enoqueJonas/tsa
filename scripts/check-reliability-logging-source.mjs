@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 
-const src=readFileSync("packages/runtime-kernel/src/paths/reliability-logging-source-depth.ts","utf8");
+const src=readFileSync("packages/runtime-kernel/src/paths/reliability-logging-parser-extended.ts","utf8");
 const logging=readFileSync("packages/runtime-kernel/src/paths/reliability-production-logging-deep.ts","utf8");
 assert.ok(logging.includes("blocks.push(...(loggingDeepSections[spec.id] ?? []));"),"Evidence must appear in the original lesson, not a separate wrapper");
 const m=src.match(/const diagnosticFixture = `([\s\S]*?)`;/);

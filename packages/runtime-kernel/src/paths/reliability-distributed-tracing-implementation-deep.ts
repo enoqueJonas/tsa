@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { tracingTransportBlocks } from "./reliability-trace-transport-proof";
 import { tracingPropagationBlocks } from "./reliability-tracing-propagation-worked";
 
 const otel: LearningResource = { title: "OpenTelemetry documentation", url: "https://opentelemetry.io/docs/" };
@@ -24,6 +25,7 @@ const blocks: LessonBlock[] = [
         "Trace context must cross meaningful synchronous and asynchronous boundaries rather than decorating one HTTP handler with a single span."
     ] },
     ...tracingPropagationBlocks,
+    ...tracingTransportBlocks,
     { type: "resources", title: "Continue learning", resources: [otel, tempo, jaeger] },
 ];
 
