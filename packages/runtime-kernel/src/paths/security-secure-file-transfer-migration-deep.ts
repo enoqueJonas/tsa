@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { sftpTrustBlocks } from "./security-sftp-transfer-proof";
 
 const openssh: LearningResource = { title: "OpenSSH manuals", url: "https://www.openssh.com/manual.html" };
 const sshKeygen: LearningResource = { title: "ssh-keygen manual", url: "https://man.openbsd.org/ssh-keygen", kind: "documentation" };
@@ -21,6 +22,7 @@ const blocks: LessonBlock[] = [
         "Migration is complete only when FTP credentials/listener/firewall exposure are disabled and post-cutover evidence is healthy."
     ] },
     { type: "callout", tone: "steward", title: "No permanent dual transport", body: "Keeping FTP enabled 'just in case' preserves the original security risk and doubles the operating surface. Rollback is a bounded migration capability, not an indefinite architecture." },
+    ...sftpTrustBlocks,
     { type: "resources", title: "Continue learning", resources: sftpResources },
 ];
 
