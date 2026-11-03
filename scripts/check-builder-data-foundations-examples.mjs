@@ -27,6 +27,7 @@ assert.ok(
   "The learner order must be persistence → DBMS and server → psql → database creation → schemas → table definition → rows → temporary tables → relational model → joins → grouping → applied fixture → CRUD"
 );
 assert.doesNotMatch(source, /Two programs, one protocol boundary|Establish prerequisites without inventing credentials/);
+assert.ok(!source.includes('"id": "postgresql-tables-and-rows"'), "Do not reintroduce a duplicate combined CREATE TABLE/row chapter");
 assert.ok(source.includes("schema_name.table_name") || source.includes("library.books"), "Qualified tables must be explained");
 
 function publishedCode(caption) {
