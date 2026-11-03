@@ -204,6 +204,38 @@ if (!quality || quality.paths.length !== 12) {
     if (!practices) problems.push(`Quality path has no practical verification: ${path.id}`);
   }
 }
+// PED-005: verify learner-order prerequisites at the source-lesson boundary.
+// A valid activity count is not evidence that a novice can safely do the lab.
+if (quality) {
+  const lessonsFor = (pathId) => quality.paths.find((path) => path.id === pathId)?.lessons.map((lesson) => lesson.id) ?? [];
+  const enforceBefore = (pathId, prerequisite, dependent) => {
+    const ids = lessonsFor(pathId);
+    const prior = ids.indexOf(prerequisite), later = ids.indexOf(dependent);
+    if (prior < 0 || later < 0 || prior >= later) {
+      problems.push(`Quality prerequisite order incorrect: ${pathId}: ${prerequisite} must precede ${dependent}`);
+    }
+  };
+  enforceBefore("java-for-test-framework-engineering",
+    "quality-java-source-bytecode-jvm-introduction", "quality-java-jvm-maven");
+  enforceBefore("java-for-test-framework-engineering",
+    "quality-java-objects-constructors-state-introduction", "quality-java-types-modeling");
+  enforceBefore("java-for-test-framework-engineering",
+    "quality-java-types-modeling", "quality-java-annotations-reflection");
+  enforceBefore("java-for-test-framework-engineering",
+    "quality-java-annotations-reflection", "quality-java-junit-platform");
+  enforceBefore("api-and-integration-testing",
+    "api-integration-http-semantics", "api-http-engineering-milestone");
+  enforceBefore("api-and-integration-testing",
+    "api-integration-rest-assured-model", "api-integration-rest-assured-build");
+  enforceBefore("browser-and-environment-testing",
+    "browser-environment-browser-surface-decision", "browser-environment-playwright-runtime-model");
+  enforceBefore("browser-and-environment-testing",
+    "browser-environment-playwright-runtime-model", "browser-environment-playwright-build");
+  enforceBefore("browser-and-environment-testing",
+    "browser-environment-dom-accessibility-locators", "browser-engineering-milestone");
+  enforceBefore("browser-and-environment-testing",
+    "browser-environment-page-components", "browser-architecture-milestone");
+}
 const security = journey.schools.find((school) => school.id === "security-steward");
 if (!security || security.paths.length !== 14) {
   problems.push("Security Steward must expose 14 learning paths");
