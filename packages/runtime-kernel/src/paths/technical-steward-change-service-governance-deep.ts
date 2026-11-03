@@ -67,15 +67,15 @@ function moduleLesson(id: string, title: string, body: string, instructions: str
     { id: `change-service-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 55, content: { type: "reading", body, blocks: [
   ...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),
   ...(changeGovernanceCases[id] ? [
-    {type:"heading" as const,id:`change-${id}-case`,text:changeGovernanceCases[id].question,level:2 as const},
-    {type:"paragraph" as const,text:changeGovernanceCases[id].worked},
-    {type:"callout" as const,tone:"warning" as const,title:"False evidence / unsafe exception",body:changeGovernanceCases[id].failure},
+    {type:"heading" as const,id:`change-${id}-case`,text:changeGovernanceCases[id]!.question,level:2 as const},
+    {type:"paragraph" as const,text:changeGovernanceCases[id]!.worked},
+    {type:"callout" as const,tone:"warning" as const,title:"False evidence / unsafe exception",body:changeGovernanceCases[id]!.failure},
     {type:"heading" as const,id:`change-${id}-transfer`,text:"Independent situation",level:2 as const},
-    {type:"paragraph" as const,text:changeGovernanceCases[id].transfer}
+    {type:"paragraph" as const,text:changeGovernanceCases[id]!.transfer}
   ] : []),
   {type:"resources" as const,title:"Service/change reference",resources:resourcesByChange[id] ?? [itil]}
 ] } },
-    { id: `change-service-governance-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward.`, scenario:`${scenario}\n\nINDEPENDENT CHANGE/SERVICE CASE: ${changeGovernanceCases[id].transfer}`,instructions:[...instructions,"Trace a specific source revision to the deployed artifact and observed user/service effect where relevant; include a negative control or failed release and who can authorize an exception."],deliverables:[...deliverables,"Exact-artifact/service-effect evidence with rollback or stop criterion"],completionCriteria:[...completion,`Reject the submission if it repeats this false success: ${changeGovernanceCases[id].failure}`,"The decision cannot pass from a green job alone: release effect, selected mandatory tests, accountability and safe failure handling are observable."] } },
+    { id: `change-service-governance-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward.`, scenario:`${scenario}\n\nINDEPENDENT CHANGE/SERVICE CASE: ${changeGovernanceCases[id]!.transfer}`,instructions:[...instructions,"Trace a specific source revision to the deployed artifact and observed user/service effect where relevant; include a negative control or failed release and who can authorize an exception."],deliverables:[...deliverables,"Exact-artifact/service-effect evidence with rollback or stop criterion"],completionCriteria:[...completion,`Reject the submission if it repeats this false success: ${changeGovernanceCases[id]!.failure}`,"The decision cannot pass from a green job alone: release effect, selected mandatory tests, accountability and safe failure handling are observable."] } },
   ]};
 }
 
