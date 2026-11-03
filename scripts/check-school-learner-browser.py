@@ -101,6 +101,7 @@ def inspect_school(page):
                     "quality-java-source-bytecode-jvm-introduction-001": ("Distinguish Java, JDK, bytecode and JVM", True),
                     "quality-java-objects-constructors-state-introduction-001": ("Definition: class versus object", True),
                     "unit-component-designing-unit-tests-001": ("An independent oracle, a real assertion, and a wrong implementation", True),
+                    "api-integration-http-semantics-001": ("Execute a real localhost denial and verify no side effect", True),
                     "browser-environment-browser-surface-decision-primer": ("Define the evidence boundary", False),
                     "non-functional-quality-performance-tool-decision-primer": ("Arrival rate is not the same as concurrent users", False),
                 }
