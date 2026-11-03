@@ -68,10 +68,49 @@ const workedRiskExamples: Record<string, {title:string;problem:string;example:st
     reasoning: "The engineer can own remediation without authority to accept continued credential exposure. Negative case: a token is rotated but the old credential still works; do not mark treatment effective. Transfer: map the four roles for a vendor with unrehearsed outage failover, including a departing action owner."
   }
 };
+// Novel assessment inputs, distinct from the worked teaching case and its vocabulary.
+const riskAssessment: Record<string, {transfer:string;reject:string}> = {
+  "identification": {
+    "transfer": "An authorized billing callback was received twice after a lost acknowledgement. A database-level unique key exists but the event-processing owner has not validated whether it covers side effects in another service. Write two distinct future risk scenarios, one present issue and one hypothesis that must be tested.",
+    "reject": "A list saying 'Kafka bad; high risk' without uncertain event, consequence, affected outcome or evidence is not a risk record."
+  },
+  "likelihood-impact": {
+    "transfer": "No restore rehearsal has been conducted since the storage migration. A supplier dashboard reports 99.9% uptime, and operations calls recovery risk 'almost impossible'. Assess likelihood, consequence, time horizon and confidence while identifying the decisive missing observation.",
+    "reject": "Claiming a 0.1% restore-failure probability solely from supplier uptime fabricates statistical evidence and must fail."
+  },
+  "inherent-residual": {
+    "transfer": "A secret is protected by a documented policy and CI scan, but a deliberately expired credential still authenticates in the staging environment. Separate original exposure, claimed controls, observed operation, residual concern and corrective decision.",
+    "reject": "Mark residual risk Low simply because a scanner is installed, despite the observed credential acceptance."
+  },
+  "appetite-tolerance": {
+    "transfer": "A service owner says that losing a night's scheduled reconciliation is 'acceptable' but no business recovery or data-loss threshold has been approved. Produce a proposed threshold table as unapproved and identify exactly who must supply authority before release.",
+    "reject": "Present an invented 24-hour RPO as official policy or claim a management signature exists when none is supplied."
+  },
+  "treatment": {
+    "transfer": "A hosted notification provider has no verified delivery receipts during intermittent outages. Compare retry-with-deduplication, fallback channel, contract renegotiation and temporary manual review using effect, cost, new risks and verification experiments.",
+    "reject": "Treat writing a fallback runbook as proof of fallback effectiveness without executing a safe failure drill."
+  },
+  "acceptance": {
+    "transfer": "A vulnerable unsupported transitive package cannot be upgraded for two weeks without breaking a key service. Propose the smallest possible bounded acceptance record, including exposure evidence, mitigations, actual approval authority, expiry, monitoring and a non-waivable release boundary.",
+    "reject": "An implementer silently accepts a critical dependency risk because a product deadline is close."
+  },
+  "registers": {
+    "transfer": "A service has one untested restore, an overdue owner mapping review, three CI instability tickets and an expired scanner exception. Build a risk register with consolidated scenarios, link current issues without double counting, and mark absent evidence as Unknown.",
+    "reject": "A register of four red cells with no event/consequence, owner, action, evidence link or review trigger is not a decision record."
+  },
+  "kri": {
+    "transfer": "A scheduled pipeline remains green because it executes no mandatory authorization tests; meanwhile old supported dependency packages approach EOL. Propose a KRI for each distinct risk and identify one misleading KPI that could conceal exposure.",
+    "reject": "Equating pipeline success rate with authorization safety without asserting test selection is a false risk indicator."
+  },
+  "ownership": {
+    "transfer": "The only backup operator leaves during an active supplier outage. The business service owner, platform control owner and risk acceptance authority are different people. Construct an emergency handoff and escalation path based on demonstrable access to artifacts and safe rehearsal.",
+    "reject": "List 'DevOps' as sole owner and let the technician who applies a workaround approve unbounded business recovery risk."
+  }
+};
 function lesson(id: string, title: string, body: string, instructions: string[]): Lesson {
   return { id: `technology-risk-${id}`, title, activities: [
     { id: `technology-risk-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 60, content: { type: "reading", body, blocks:[{type:"paragraph",text:body},...(workedRiskExamples[id] ? [{type:"heading" as const,id:`${id}-worked`,text:workedRiskExamples[id].title,level:2 as const},{type:"paragraph" as const,text:workedRiskExamples[id].problem},{type:"callout" as const,tone:"note" as const,title:"Worked scenario",body:workedRiskExamples[id].example},{type:"paragraph" as const,text:workedRiskExamples[id].reasoning}] : []),{type:"resources" as const,title:"Risk reference",resources:resourcesByRisk[id] ?? [nistRisk]}] } },
-    { id: `technology-risk-${id}-practice`, title: `${title}: Steward risk exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to a real Steward technology-risk decision.`, scenario, instructions, deliverables, completionCriteria: criteria } },
+    { id: `technology-risk-${id}-practice`, title: `${title}: Steward risk exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to a real Steward technology-risk decision.`, scenario:`${scenario}\n\nNOVEL RISK-ASSESSMENT CASE: ${riskAssessment[id].transfer}`, instructions:[...instructions,"State observed facts, unknowns and evidence source; make one bounded treatment/acceptance/escalation decision and explain the controlled test that would falsify it."], deliverables:["New-case risk assessment with scoped evidence","Cause/event/consequence and authority/decision record","Counterexample verification and review trigger"], completionCriteria:[...criteria,`Automatically reject this false conclusion: ${riskAssessment[id].reject}`,"Risk evidence has a source, time horizon and confidence; the chosen response has accountable authority and an observation that would reverse it."] } },
   ] };
 }
 
