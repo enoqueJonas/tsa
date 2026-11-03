@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { qualityJavaPrograms, qualityJavaCases } from "./quality-java-first-class-cases";
 const java: LearningResource = { title: "Java Language Guide", url: "https://dev.java/learn/" };
 const maven: LearningResource = { title: "Apache Maven Guides", url: "https://maven.apache.org/guides/" };
 const junit: LearningResource = { title: "JUnit 5 User Guide", url: "https://docs.junit.org/current/user-guide/" };
@@ -58,6 +59,19 @@ function lesson(spec: Spec): Lesson {
   {type:"heading",id:`${spec.id}-failure-patterns`,text:"Failure patterns to recognize",level:2},
   {type:"list",items:spec.antiPatterns},
  ];
+ const deeper = qualityJavaCases[spec.id as keyof typeof qualityJavaCases];
+ if (deeper) {
+  blocks.push(
+   {type:"heading",id:`${spec.id}-case`,text:deeper.heading,level:2},
+   {type:"paragraph",text:deeper.mechanism},
+   {type:"paragraph",text:"Save the following complete Java 17 source as the named public class in a .java file; compile it using javac and execute it with java. All assertions must pass before attempting the negative variation."},
+   {type:"code",language:"java",code:qualityJavaPrograms[spec.id as keyof typeof qualityJavaPrograms]},
+   {type:"heading",id:`${spec.id}-failure`,text:"Negative control and interpretation",level:2},
+   {type:"paragraph",text:deeper.negative},
+   {type:"heading",id:`${spec.id}-transfer`,text:"Independent application",level:2},
+   {type:"paragraph",text:deeper.transfer},
+  );
+ }
  if(spec.code) { const language = new Set(["jvm-maven","maven-lifecycle","maven-dependencies","surefire-failsafe","junit-platform"]).has(spec.id) ? "bash" : "java"; blocks.push({type:"code",language,code:spec.code,...(spec.id === "dependency-injection" ? {caption:"DependencyInjectionExample.java — compile with javac, then run with java DependencyInjectionExample",output:"https://test.invalid / Bearer demo-token"} : {}),...(spec.id === "interfaces-composition" ? {caption:"Interface declaration fragment — implement and exercise in the practical"} : {})}); }
  blocks.push({type:"heading",id:`${spec.id}-check`,text:"Check your understanding",level:2},{type:"list",items:spec.questions},{type:"resources",title:"Continue learning",resources:resourcesFor(spec.id)});
  return {id:`quality-java-${spec.id}`,title:spec.title,activities:[
