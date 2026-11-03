@@ -109,9 +109,10 @@ export function ActivityEvidencePanel({ activityId, pathId, deliverables }: Acti
           >
             <option value="draft">Draft — evidence still being assembled</option>
             <option value="ready">Ready — prepared for self-assessment/review</option>
-            <option value="accepted">Accepted — evidence satisfies the activity</option>
+            <option value="accepted">Self-reviewed — I believe my evidence meets the criteria (not independently verified)</option>
           </select>
         </label>
+        <p className="-mt-2 text-xs leading-5 text-zinc-500">Submission states are chosen by the learner. Saving or self-reviewing evidence is not an independent assessment.</p>
 
         <label className="grid gap-2 text-sm font-medium text-zinc-800">
           Evidence notes
