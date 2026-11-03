@@ -231,3 +231,17 @@ The next substantive weakness was not an arbitrary character threshold: the orig
 `scripts/check-quality-maven-selection-v7.mjs` validates **byte-for-byte displayed POM/Java against executed source**, executes baseline 4+2+2 Surefire plus 1 Failsafe test and three selected tag-expression subsets, checks the dependency graph and proves both mutants. The earlier source-published v5 POM was updated consistently with the exact executable POM.
 
 **Merge gate:** all **19/19** exact-head CI jobs, actual Maven XML counters and 428 rendered desktop/mobile Quality activities. **Still not validated:** actual Steward/IdP/real DB, production-like GitLab schedule, genuine k6, Java Playwright against a real product UI, uncoached independent learner scoring. This is execution-mechanics proof, not a whole-school learning verdict.
+
+## Eighth source-depth pass — partitions, unknown-commit retries and owner-scoped cleanup
+
+The seventh source repair [PR #350](https://github.com/enoqueJonas/tsa/pull/350) merged at `94ebc47ce3643915f3919aa72a7bbfcde51ca0cd` after an exact-head [19/19 successful CI matrix](https://github.com/enoqueJonas/tsa/actions/runs/41653126452) and 428 full Quality desktop/mobile activities. It executed real Maven/JUnit tag selection, test-instance lifetime and dependency evidence.
+
+[Draft PR #351](https://github.com/enoqueJonas/tsa/pull/351) strengthens three additional **original** readings. Each example is a standalone Python 3 program published in the actual lesson and checked against its exact source. None purports to be a real Steward or IdP product test.
+
+- **Equivalence partitioning:** classify hypothetical criticality fields by behavior rather than string shape. Eight cases cover ordinary valid, missing, wrong type, unsupported and a conditional high-approval rule. The deliberate mutant `HIGH → LOW` in the approval predicate must fail. These values/rules are **classroom assumptions**, not approved Steward requirements.
+- **Negative API/resilience:** a disposable SQLite DB with separate writer and observer connections demonstrates a committed business effect followed by a **simulated lost response**. A retry with the same idempotency key and payload must observe only the earlier effect; key reuse with a different payload must conflict; a denied actor must not mutate. A mutant that inserts a second effect on retry fails the independent committed-row-count oracle. This does **not** prove actual HTTP loss, distributed concurrency, expiry/TTL, real PostgreSQL or a live API.
+- **Data setup/cleanup:** a separate in-memory SQLite program creates fixtures owned by run-A/run-B/run-C. It proves a failed test still cleans its own run-C data and cannot delete run-B's state. A broad unscoped DELETE mutant must fail.
+
+`scripts/check-quality-partitions-retry-v8.mjs` executes the exact three source-published Python programs and tests the three mutants. The full original-lesson browser guard checks the three new headings and rendered code, while the 12-module Quality desktop and 390px mobile traversal remains unchanged. No prelude wrapper chapters were added and previously published lesson IDs remain stable.
+
+**Status:** PR #351 is draft until **matching-head 19/19 CI**. **Learner validated? NO.** Actual authorized Steward/IdP/PostgreSQL, GitLab schedules, real Java Playwright/browser against a product, k6 workload and independently scored uncoached learner competence remain outstanding in [#328](https://github.com/enoqueJonas/tsa/issues/328). Source execution is not product truth.
