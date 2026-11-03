@@ -47,3 +47,7 @@ The current Graylog decision gate and Stack Integration practical specify deploy
 ## Remaining work within Reliability Engineer
 
 The 16-path inventory is complete, but the full source-by-source quality and independent execution audit remains open. Priority beyond logging: SLI error-budget windows and missing-data counterexamples; Prometheus histogram and label cardinality experiments; trace propagation and sampling loss; Alertmanager route and silence diagnosis; reproducible incident timelines; safe fault injection with abort criteria; disaster recovery from real disposable restores. Do not infer real backend behavior from models or passing website traversal.
+
+## SLI and error-budget worked evidence
+
+Original `service-level-engineering-deep.ts` readings for SLIs, error budgets and measurement windows now contain source-specific explanation and an executable, synthetic Python numerator/denominator model. It distinguishes three valid attempts, two successes, one intentionally excluded event, a failed 90% objective and an empty-window `UNKNOWN` result. The CI source check executes the exact published code and guards against counting missing observations as healthy service. Real traffic metrics, burn-rate paging and trustworthy instrumentation remain **UNVERIFIED**.
