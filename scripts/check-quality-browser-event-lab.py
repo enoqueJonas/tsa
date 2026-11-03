@@ -43,6 +43,34 @@ with TemporaryDirectory(prefix="tsa-quality-events-") as tmp, sync_playwright() 
         page.screenshot(path="artifacts/cross-school-learner/quality-event-overflow.png", full_page=True)
         raise AssertionError(f"Isolated Quality event lab has horizontal overflow: {offenders}")
 
+    # A page reload retains this tab's sessionStorage and its origin's localStorage.
+    # This is NOT an authentication test; values are harmless fixture strings.
+    page.get_by_role("button", name="Save isolated sample state").click()
+    expect(page.locator("#state-result")).to_have_text("origin=sample-42; tab=tab-42")
+    page.reload(wait_until="load")
+    page.get_by_role("button", name="Read sample state").click()
+    expect(page.locator("#state-result")).to_have_text("origin=sample-42; tab=tab-42")
+
+    # Two Pages in the SAME BrowserContext share origin localStorage, but
+    # independently created tabs have different sessionStorage.
+    sibling = context.new_page()
+    sibling.goto(BASE + "/labs/quality-browser-events.html", wait_until="load")
+    sibling.get_by_role("button", name="Read sample state").click()
+    expect(sibling.locator("#state-result")).to_have_text("origin=sample-42; tab=absent")
+    sibling.close()
+
+    # A new BrowserContext is a separate storage partition, despite the same URL.
+    isolated_context = browser.new_context(viewport={"width": 390, "height": 844})
+    isolated_page = isolated_context.new_page()
+    isolated_page.goto(BASE + "/labs/quality-browser-events.html", wait_until="load")
+    isolated_page.get_by_role("button", name="Read sample state").click()
+    expect(isolated_page.locator("#state-result")).to_have_text("origin=absent; tab=absent")
+    isolated_context.close()
+
+    page.get_by_role("button", name="Clear sample state").click()
+    expect(page.locator("#state-result")).to_have_text("origin=absent; tab=absent")
+    print("PASS browser state: reload persistence, same-context origin sharing, tab session isolation, separate context, cleanup", flush=True)
+
     # File input is not server persistence: this checks local fixture handling only.
     page.get_by_label("Choose sample text file").set_input_files(str(ROOT / "quality-upload-good.txt"))
     expect(page.locator("#upload-result")).to_have_text("Fixture accepted: record 42")
