@@ -1,5 +1,6 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { resilienceRetryProofById } from "./reliability-retry-failure-proof";
 
 const sre: LearningResource = { title: "Google SRE: Addressing Cascading Failures", url: "https://sre.google/sre-book/addressing-cascading-failures/" };
 const aws: LearningResource = { title: "AWS Builders' Library: Timeouts, Retries and Backoff with Jitter", url: "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/" };
@@ -25,6 +26,7 @@ function lessonFrom(spec: Spec): Lesson {
         { type: "list", items: spec.principles },
         { type: "heading", id: `${spec.id}-steward`, text: "Apply it to Steward", level: 2 },
         ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
+        ...(resilienceRetryProofById[spec.id] ?? []),
         { type: "callout", tone: "steward", title: "Resilience is bounded failure", body: "The goal is not to pretend dependencies never fail. Design Steward so a dependency can be slow, unavailable or partially successful without turning one failure into duplicate work, resource exhaustion or ecosystem-wide collapse." },
         { type: "resources", title: "Continue learning", resources: resourcesByResilienceTopic[spec.id] ?? [sre, azure] },
     ];
