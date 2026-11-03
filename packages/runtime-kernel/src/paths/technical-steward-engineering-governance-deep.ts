@@ -10,6 +10,52 @@ const resourcesByGovernance:Record<string,LearningResource[]>={
  "engineering-governance-without-bureaucracy":[iso38500,adr],
 };
 
+// These topic-specific examples belong in original readings, not generated path wrappers.
+const governanceCases: Record<string, { question: string; example: string; counterexample: string; transfer: string }> = {
+  "engineering-governance-governance-vs-management": {
+    "question": "Who defines the boundary, and who executes within it?",
+    "example": "Illustrative Steward control: the organization requires that an ownership-transfer API never modify data for an unauthorized principal. Governance states the non-negotiable outcome, names the accountable risk authority and requires independently repeatable denial/read-after-denial evidence. The engineering manager chooses staffing and sequencing; engineers choose implementation and test doubles; QA produces evidence; a release decision owner determines whether the gate is satisfied. No committee should prescribe the HTTP handler's internal function layout.",
+    "counterexample": "A review board demands sign-off for every refactor but cannot identify a risk owner or acceptance invariant for an actual authorization change. It creates approvals without controlling the consequence.",
+    "transfer": "Classify the following as direction/oversight, work management or technical execution: defining restore tolerance, scheduling a restore rehearsal, selecting a Postgres command, approving an exception and measuring actual recovery time. Defend any overlaps."
+  },
+  "engineering-governance-decision-rights": {
+    "question": "What decision can each role make before the disagreement happens?",
+    "example": "Hypothetical release: a patched service contains a dependency with an unreviewed critical security advisory. A developer can propose and implement a patch; the QA lead can report failing acceptance evidence; security can assess exploitability and exercise a defined stop-the-line criterion; the designated release/risk authority decides on deferral or a documented exception within delegated limits; operations confirms rollback readiness. Write an explicit decision-rights table with decision, proposer, consulted expertise, accountable approver, escalation path and time limit. The table should not invent a universal security veto.",
+    "counterexample": "A group votes to 'accept the risk' without a delegated authority or specifies that only the most senior engineer can merge a harmless documentation edit. Both confuse participation with decision rights.",
+    "transfer": "Design decision rights for a routine minor dependency update and for a production PII retention exception. State why the authority paths differ and identify the observable trigger for escalation."
+  },
+  "engineering-governance-accountability": {
+    "question": "Can the accountable owner demonstrate follow-through?",
+    "example": "Illustrative reconciliation failure: QA raises a missing-result evidence ticket, an SRE repairs the worker, an application maintainer adds a commit, but users have still not received completion outcomes. Assign one accountable service owner for closure; define contributors for the repair, verification and communication. The closure record contains the exact failed run, fix evidence, independent replay result, stakeholder notification and an explicit remaining-risk decision. Personal accountability does not imply that one person performed all actions.",
+    "counterexample": "Three teams each mark their subtask Done, while the affected users still have no valid completion result. A dashboard with named teams but no closure owner has not solved the accountability problem.",
+    "transfer": "A retiring CI maintainer owns a scheduled security scan. Make a handover record sufficient for another person to find the schedule, protected variables, failure artifact and decision authority without asking the former maintainer."
+  },
+  "engineering-governance-policy-standard-procedure-guideline": {
+    "question": "Which artifact makes the correct obligation testable?",
+    "example": "Example hierarchy for illustrative Steward data export: Policy—only authorized actors may export protected records. Standard—every export must check resource-level authorization and record auditable actor, resource and outcome metadata without exposing secrets. Procedure—an operator's reproducible investigation steps for an export-related alert. Guideline—recommended naming and code-organization approaches for export handlers. Each layer has its own owner and change authority. The standard is testable with one authorized export and an unauthorized export that leaves no protected result.",
+    "counterexample": "A policy mandates a specific Java method name, or a guideline says 'it is recommended to authenticate' for a mandatory access control. The former over-constrains implementation; the latter makes an obligation optional.",
+    "transfer": "Classify and rewrite four candidate statements: 'Use short functions', 'Purge protected records according to an approved retention schedule', 'Rotate a leaked credential with these command steps', and 'Show a rollback drill before high-risk deployment'. Identify any missing organizational policy input."
+  },
+  "engineering-governance-exceptions": {
+    "question": "When does a temporary departure become controlled risk rather than a bypass?",
+    "example": "Illustrative exception: a low-risk internal report dependency reaches end-of-support during a supplier outage. The standard forbids unsupported dependencies. An exception record identifies affected package/version, reason, service exposure, evidence of compensating network/isolation controls, approver with risk authority, expiration in 30 days and replacement/rollback owner. A weekly CI check reports the exception's age and fails closed once the approved date passes unless renewed by authorized review.",
+    "counterexample": "A developer adds 'temporary ignore' to a scanner with no ticket, owner or expiry. Another false positive is creating an exception for a requirement that was merely nonbinding guidance.",
+    "transfer": "Draft an exception for a restore rehearsal deferred due to a migration freeze. Specify what can and cannot be waived, the compensating detection measure, expiry, required approver and the evidence that ends the exception."
+  },
+  "engineering-governance-evidence-review-cadence": {
+    "question": "How often should we demand fresh proof, and why?",
+    "example": "Hypothetical control inventory: every protected API change requires per-change denial/read-after-denial evidence; a backup restore needs periodic timed rehearsal; provider end-of-support triggers event-driven review; an ADR needs reconsideration when its documented assumptions change. For each record capture source, revision/time, owner, retention, review trigger and what a failed or missing artifact means. A green pipeline run against another commit is stale evidence, not a pass for this release.",
+    "counterexample": "A quarterly committee sees a screenshot of last month's tests and declares the current release compliant without checking commit or scope. Equally inefficient: forcing an hour-long meeting for every low-risk change already blocked by an automated policy.",
+    "transfer": "Given a new authentication key rotation, a documentation typo and a failed production restore, choose per-change/periodic/event-driven proof; specify the missing-evidence handling for each."
+  },
+  "engineering-governance-without-bureaucracy": {
+    "question": "What is the lightest mechanism that still changes risky behavior?",
+    "example": "Illustrative change classes: (1) a spelling correction merges on normal review, (2) a new endpoint needs automated negative authorization checks and service-owner sign-off on the contract, (3) a major schema migration requires backward-compatibility evidence, rollback rehearsal and accountable production approval. Start by declaring consequence and reversibility, then assign proportional checks. Track median time-to-decision and actual escaped-risk events to discover when oversight costs exceed protection. Exception handling remains available without making every safe path exceptional.",
+    "counterexample": "Introduce a weekly all-hands review for every pull request. Although the process generates signatures, it does not show which defects it prevents and may delay a critical security patch.",
+    "transfer": "Redesign a proposed five-stage manual approval flow for all releases into risk-tiered automated checks and targeted human decisions. For each removed gate state which evidence replaces it and where an explicit human authorization is still essential."
+  }
+};
+
 function readingLesson(id: string, title: string, body: string, practice: string[]): Lesson {
   return {
     id,
@@ -19,7 +65,17 @@ function readingLesson(id: string, title: string, body: string, practice: string
         id: `${id}-reading`,
         title,
         estimatedMinutes: 55,
-        content: { type: "reading", body, blocks:[...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),{type:"resources",title:"Continue learning",resources:resourcesByGovernance[id] ?? [iso38500]}] },
+        content: { type: "reading", body, blocks: [
+          ...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({ type: "paragraph" as const, text })),
+          ...(governanceCases[id] ? [
+            { type: "heading" as const, id: `${id}-worked`, text: governanceCases[id].question, level: 2 as const },
+            { type: "paragraph" as const, text: governanceCases[id].example },
+            { type: "callout" as const, tone: "warning" as const, title: "False assurance", body: governanceCases[id].counterexample },
+            { type: "heading" as const, id: `${id}-transfer`, text: "Unseen decision exercise", level: 2 as const },
+            { type: "paragraph" as const, text: governanceCases[id].transfer },
+          ] : []),
+          { type: "resources" as const, title: "Continue learning", resources: resourcesByGovernance[id] ?? [iso38500] },
+        ] },
       },
       {
         id: `${id}-practice`,
