@@ -11,7 +11,62 @@ const resourcesByControl:Record<string,LearningResource[]>={
 
 const scenario = "Treat Steward as a mature organization-owned technology service governed from the final Architect actual-stack inventory, including the application, authoritative data stores and the platform, delivery, security and reliability capabilities actually retained. Historical cloud/VPS, Nexus, internal-package or other implementation evidence does not make a retired component an active control target. Controls must trace to objectives and risks, and operating effectiveness must be demonstrated with evidence rather than assumed from documentation.";
 const criteria = ["Each control traces to a stated objective or risk.", "Design and operating effectiveness are assessed separately.", "Evidence is reproducible, relevant and proportionate.", "Assurance does not become ceremony or duplicate existing controls without justification."];
-function lesson(id:string,title:string,body:string,instructions:string[]):Lesson { return { id:`controls-assurance-${id}`, title, activities:[{id:`controls-assurance-${id}-reading`,title:`${title}: concepts`,estimatedMinutes:60,content:{type:"reading",body, blocks:[...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),{type:"resources",title:"Control/assurance reference",resources:resourcesByControl[id] ?? [nistControls]}]}},{id:`controls-assurance-${id}-practice`,title:`${title}: Steward exercise`,estimatedMinutes:60,content:{type:"practical",objective:`Apply ${title} to Steward's control environment.`,scenario,instructions,deliverables:["Control/assurance artifact","Evidence and rationale","Owner, gap or remediation record"],completionCriteria:criteria}}]}; }
+// Worked control traces make the original assurance readings testable rather than checklist-driven.
+const controlCases: Record<string, {question:string;example:string;failure:string;transfer:string}> = {
+  "objectives": {
+    "question": "Translate an organizational outcome into a falsifiable control objective",
+    "example": "Illustrative objective: an unauthorized actor must never change a Steward record owner, even if the API returns 403. The objective concerns a business effect, not a particular technology. Candidate controls are authorization middleware, service-layer ownership enforcement and a CI denial-with-read-after-denial test. The acceptance trace has the principal, record ID, prior owner, rejected request, subsequent authorized read and unchanged owner. A scanner or mandatory review may contribute but cannot substitute for observing the relevant effect.",
+    "failure": "A checklist says 'authentication library installed' while the API still mutates records before returning 403. The implemented component is neither the objective nor proof of effective control.",
+    "transfer": "For a recovery objective, write one tool-independent condition and distinguish it from the backup scheduler, retention setting and timed restore test. Explain which observation would falsify the claim."
+  },
+  "design": {
+    "question": "Test whether the planned mechanism can work even when operated perfectly",
+    "example": "Illustrative release-control design: protected branches require reviews, CI verifies authorization negative tests on the exact commit, and deployment permissions block unsigned or unapproved artifacts. Inspect scope (all production release refs), trigger (each deploy), bypass paths (administrator override), ownership and evidence lineage (commit, job, artifact digest, deploy). If an admin can push an untested artifact directly to production with no separately governed exception, the design is insufficient despite a green merge-request pipeline.",
+    "failure": "A scanner executes on the default branch but the deployment reads a different mutable tag. The scan can operate flawlessly and still offer no assurance about the deployed artifact.",
+    "transfer": "Evaluate a backup design where jobs succeed daily but encryption keys reside only on the lost database host. Classify the defect as design or operation and propose the minimum falsifying test."
+  },
+  "effectiveness": {
+    "question": "Ask whether a properly designed control actually operated across the claim period",
+    "example": "Illustrative sampling: 40 deployments occurred this quarter; 38 have attributable CI authorization reports for their exact artifact and two emergency deployments lack the required exception record. A weekly screenshot of the branch rule does not close that gap. The assessor defines the entire population, selects complete deployment/audit logs where possible, reconciles exceptions and reports a qualified conclusion. If the two unknown releases carry high material exposure, '38 of 40 passed' is not an adequate acceptance verdict.",
+    "failure": "A team tests one successful build and claims continuous operating effectiveness for all releases, or silently excludes the two exceptional deployments from the denominator.",
+    "transfer": "Assess 12 scheduled restore rehearsals where two have missing application-level readbacks. State the evidence population, missing-evidence disposition and a defensible conclusion without inventing management thresholds."
+  },
+  "evidence": {
+    "question": "Demonstrate a traceable assertion, not a screenshot collection",
+    "example": "Illustrative denial test record: requirement R-7; release SHA abc123 (placeholder); signed CI job and timestamp; test actor A, protected resource 42, previous owner A; POST /transfer by unauthorized B returned 403; authoritative read immediately afterward still returned A; test runner failure status and raw report location retained. A separate reviewer must be able to reproduce the test and verify that the report belongs to the release being evaluated. Avoid storing credentials or live personal data in the evidence package.",
+    "failure": "A green JUnit screenshot without branch, commit, test count or affected resource is not sufficient proof. Nor is an XML report generated for a different SHA.",
+    "transfer": "Design the minimum evidence pack proving a dependent package is from an approved origin and still supportable. Explicitly label what a checksum cannot establish about publisher trust."
+  },
+  "testing": {
+    "question": "Select a method capable of disproving the control claim",
+    "example": "For a two-person production permission control, inspection alone shows that a rule exists, not that a person with deploy access cannot bypass it. First inspect protected-ref configuration, then reperform a denied deployment using a safe test environment or dry-run with the same permission model, record which action was rejected, and check immutable audit output. Inquiry with the administrator explains intent; it is weaker evidence of operation. Test an authorized path too, so the negative is not a global outage masquerading as enforcement.",
+    "failure": "The assessor asks 'is two-person approval enforced?' and records 'yes' without independently observing a denied action. A disabled pipeline could also reject all attempts and fake a passing denial test.",
+    "transfer": "Choose inspection, reperformance, observation and inquiry for a credential-rotation control. Specify one case that would make an apparently green rotation test fail."
+  },
+  "findings": {
+    "question": "Turn a failed assertion into a remediable, independently closable finding",
+    "example": "Illustrative audit finding: Criterion—unauthorized owner transfers must have no business effect. Condition—an isolated test request returned 403 but changed owner A to B. Evidence—request/response, before/after read and exact artifact SHA. Consequence—records may be reassigned without authority. Suspected cause—mutation before authorization; keep the cause explicitly unconfirmed until investigation. Action—move authorization before mutation, add regression and inspect for other writes. Closure requires the negative test to fail on the vulnerable implementation and pass on the fix, plus appropriate review of affected data.",
+    "failure": "Close a finding because a Jira ticket says Done or a CI run is green, while the original denied-state assertion never executed. Another mistake is calling the root cause certain merely from the symptom.",
+    "transfer": "Write a complete finding for a restore that exceeded its RTO. Separate what the timer measured from the unverified root cause, and define the verification evidence needed for closure."
+  },
+  "proportionate": {
+    "question": "Match assurance strength to consequence and reversibility",
+    "example": "Illustrative change tiers: spelling correction—review and normal CI; protected endpoint access-rule change—automated denied-effect tests and relevant owner/security review; irreversible schema migration—compatible reads, restore rehearsal, staged rollout and authorized exception or rollback decision. Rank exposure, irreversibility and available detection before choosing checks. The control outcome must still be explicit in each tier; proportionality is not permission to omit high-value negative evidence.",
+    "failure": "Use the same four manual approvals for a typo and for an irreversible deletion, delaying the critical fix while detecting no actual loss of protection.",
+    "transfer": "Specify two different assurance plans for changing a dashboard label and changing log retention of protected records. Identify one approval that cannot be delegated purely to an implementation engineer."
+  }
+};
+function lesson(id:string,title:string,body:string,instructions:string[]):Lesson { return { id:`controls-assurance-${id}`, title, activities:[{id:`controls-assurance-${id}-reading`,title:`${title}: concepts`,estimatedMinutes:60,content:{type:"reading",body, blocks: [
+  ...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),
+  ...(controlCases[id] ? [
+    {type:"heading" as const,id:`control-${id}-mechanism`,text:controlCases[id].question,level:2 as const},
+    {type:"paragraph" as const,text:controlCases[id].example},
+    {type:"callout" as const,tone:"warning" as const,title:"False-positive assurance",body:controlCases[id].failure},
+    {type:"heading" as const,id:`control-${id}-transfer`,text:"Independent transfer",level:2 as const},
+    {type:"paragraph" as const,text:controlCases[id].transfer}
+  ] : []),
+  {type:"resources" as const,title:"Control/assurance reference",resources:resourcesByControl[id] ?? [nistControls]}
+]}},{id:`controls-assurance-${id}-practice`,title:`${title}: Steward exercise`,estimatedMinutes:60,content:{type:"practical",objective:`Apply ${title} to Steward's control environment.`,scenario,instructions,deliverables:["Control/assurance artifact","Evidence and rationale","Owner, gap or remediation record"],completionCriteria:criteria}}]}; }
 
 export const controlsComplianceAssuranceDeepLessons: Lesson[] = [
 lesson("control-types","Preventive, Detective and Corrective Controls",`Preventive controls reduce the chance of an unwanted event, detective controls reveal that an event or condition occurred, and corrective controls help restore the intended state or limit consequences. Mature systems normally need combinations rather than one category in isolation. Examples in Steward can include protected branches and dependency allowlists as preventive controls, monitoring and audit trails as detective controls, and rollback or restore procedures as corrective controls. Classify controls by what they actually do, not by labels in a policy.`,["Inventory at least nine existing Steward controls across delivery, security, reliability, data and dependency management.","Classify each as preventive, detective, corrective or hybrid and justify the classification.","Identify one risk currently relying too heavily on a single control type.","Propose a balanced control set only where evidence shows a meaningful gap."]),
