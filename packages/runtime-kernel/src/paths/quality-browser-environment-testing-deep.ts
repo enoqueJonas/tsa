@@ -52,6 +52,23 @@ function rich(spec: Spec): Lesson {
         if (!worked?.length) throw new Error(`Missing browser source explanation: ${spec.id}`);
         blocks.push(...worked);
     }
+    const focusedBrowserEventLessons = ["file-transfer-interactions", "popup-browser-ownership",
+        "iframe-contexts", "blocking-dialogs"];
+    if (focusedBrowserEventLessons.includes(spec.id)) {
+        const expected = {
+            "file-transfer-interactions": "Upload quality-upload-good.txt (exact HELLO-QUALITY-42 newline), reject wrong content and save quality-record-42.csv; verify the actual two CSV lines for record 42.",
+            "popup-browser-ownership": "Click Open sample detail popup with the event listener already registered; assert a distinct Page headed Sample record 42, then close only that popup.",
+            "iframe-contexts": "Scope the locator to iframe[data-purpose='sample-frame']; fill Reference with CASE-42 and assert Frame reference saved: CASE-42 inside the frame document.",
+            "blocking-dialogs": "Dismiss Remove sample record and assert Sample record preserved, then accept and assert Sample record removed; reset the fixture afterwards.",
+        } as const;
+        blocks.push(
+            { type:"heading", id:`${spec.id}-run-local-sandbox`, text:"Run the isolated event lab", level:2 },
+            { type:"paragraph", text:"From the TSA repository root, run pnpm install --frozen-lockfile, pnpm build, then python3 -m http.server 4173 --bind 127.0.0.1 --directory apps/web/out. Open http://127.0.0.1:4173/labs/quality-browser-events.html. The fixtures are committed under apps/web/public/labs and are exported to apps/web/out/labs. This is a local learning surface, not the Steward application or a substitute for real enterprise acceptance testing." },
+            { type:"paragraph", text:expected[spec.id as keyof typeof expected] },
+            { type:"heading", id:`${spec.id}-run-observable-negative`, text:"Prove the failure as well as the happy path", level:2 },
+            { type:"paragraph", text:"Record event registration before action, actual event/result, an intentionally wrong or rejected case, and cleanup. From the repository root, run python3 scripts/check-quality-browser-event-lab.py with Chromium Playwright installed and the local HTTP server running to compare with the maintained executable proof. The Python check verifies this local fixture only; a real Playwright Java test and any actual product requirement remain separate lab deliverables." }
+        );
+    }
     blocks.push({ type: "callout", tone: "steward", title: "Steward browser checkpoint", body: "Browser and environment tests must add evidence that service-layer tests cannot provide. Record the exact browser, operating system, viewport, environment and release identity for every meaningful failure." });
     blocks.push({ type: "resources", title: "Continue learning", resources: resourcesFor(spec.id) });
     return { id: `browser-environment-${spec.id}`, title: spec.title, activities: [
