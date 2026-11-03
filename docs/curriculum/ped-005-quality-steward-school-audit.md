@@ -174,3 +174,30 @@ A third accepted [PR #346](https://github.com/enoqueJonas/tsa/pull/346) was merg
 CI source assertions in `scripts/check-quality-original-depth-v4.mjs` execute the **exact authored** Python/Java and verify deterministic negative mutations; the full learner browser traverses all 428 Quality activities at desktop and 390px, checks the new headings and copyable code. These only prove local teaching fixture mechanics, not a real Steward or JUnit extension environment.
 
 **Current exit state:** source revisions in PR #347 are pending matching-head 19/19 CI. Uncoached novice transfer, manual editorial learner evaluation and authorized Steward/PostgreSQL/IdP/Playwright Java/GitLab/k6 remain **UNVERIFIED**. Keep issue #328 open after source merge.
+
+## Fifth original-reading remediation: test discovery, oracles and state — 2026-11-03
+
+The fourth corrective [PR #347](https://github.com/enoqueJonas/tsa/pull/347) merged to master at `c95a6df63030fc8dd9254d47539c1b3b2edfd853` following exact-head [19/19 CI #41635821612](https://github.com/enoqueJonas/tsa/actions/runs/41635821612) and 428 desktop/mobile learner activities. The next 12 shortest rendered readings still required content review. Length is only a triage signal: what matters is whether the learner can predict, execute, challenge and transfer the mechanism.
+
+The fifth source pass is recorded under `curriculum/quality-steward-state-oracles-junit-v5`. It strengthens **original readings without replacing IDs or injecting generic wrappers**:
+
+| Original scope | Source mechanism | Negative/control evidence |
+|---|---|---|
+| API test design | Contract actor/state matrix; status versus committed and asynchronous outcomes | A 403 may still mutate ownership |
+| Test doubles and mocks/stubs/fakes | Fake/stub/spy responsibilities, isolation and independently observable postconditions | Spy call success with wrong persisted state; fake PostgreSQL constraints |
+| State transitions | Full `proposed → active → deprecated → retired` classroom model with explicit transition relation | Exact source Python test rejects retired→active and verifies no state/event mutation; deliberate mutant must fail |
+| Test oracles | Documented rule versus weak status-only assertion; independent before/after state | Exact source Python shows a simulated 403 with forbidden mutation and failing wrong-implementation control |
+| Playwright runtime | Runtime/Browser/Context/Page ownership, storage lifecycle | Reuses the independently executed local Chromium context-isolation fixture; no fabricated Java browser execution |
+| Environment parity and browser differences | Artifact/config/IdP/CSP/edge differences; supported engine/OS and input-mode evidence | False parity and engine-vs-API root-cause counterexamples |
+| Test strategy and testability | Risk→level→oracle→gate mapping; controllability/observability/isolation | Skipped critical checks, unsafe test-only bypasses and missing async completion |
+| Maven Surefire/Failsafe | **Real committed Maven `pom.xml`** with Surefire `test` and Failsafe `integration-test`+`verify` | Source-aware CI must observe 4 Surefire Jupiter tests and 1 Failsafe Jupiter test; no zero-test false green |
+| JUnit Platform/Jupiter | Full original Java JUnit test with `@Test`, `@BeforeEach`, `@ParameterizedTest`, and a real `BeforeEachCallback` extension | A deliberate policy `OR` mutant must trigger a genuine JUnit assertion failure and non-zero Maven exit |
+
+### New disposable teaching fixture
+
+- `labs/quality-junit-lifecycle/pom.xml`, `PolicyTest.java` and `ProtocolIT.java` are **in-process classroom fixtures**; they do NOT contact Steward, IdP, a database, a browser or real external dependencies. The distinction between 'Failsafe selects *IT' and 'real integration occurred' is explicit.
+- Both Maven/JUnit source examples are printed in their original learner-facing readings and checked **byte-for-byte** against the exact files that CI executes by `scripts/check-quality-junit-maven-lifecycle.mjs`.
+- `scripts/check-quality-state-oracles-v5.mjs` executes the exact source-published Python state/authorization oracle programs plus forbidden side-effect mutants.
+- The school-wide rendered browser guard checks each of the twelve targeted original headings and copyable sources; full desktop and 390px mobile traversals remain release gates.
+
+**Current status:** full matching-head 19/19 CI required before merge. Even if it passes, this does not certify independent novice competence, real Steward permission/persistence behavior, real Java Playwright automation against a product UI, authorized IdP/PostgreSQL integration, production-like environment parity or actual k6/GitLab operational evidence. Keep [#328](https://github.com/enoqueJonas/tsa/issues/328) open for genuine external labs and uncoached learner scoring.
