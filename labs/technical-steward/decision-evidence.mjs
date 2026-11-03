@@ -105,14 +105,23 @@ export function assessRecovery(packet) {
 export function loadFixture(kind) {
   const file = kind === "release" ? "release-population.json"
     : kind === "recovery" ? "recovery-observations.json" : null;
-  if (!file) throw new Error("Usage: node labs/technical-steward/decision-evidence.mjs release|recovery [--require-pass]");
+  if (!file) throw new Error("Usage: node labs/technical-steward/decision-evidence.mjs release|recovery [--file input.json] [--require-pass]");
   return JSON.parse(readFileSync(resolve(here, file), "utf8"));
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
     const kind = process.argv[2];
-    const packet = loadFixture(kind);
+    // --file enables learner-controlled counterfactuals without modifying
+    // the authoritative examples. All input remains local and offline.
+    const fileFlag = process.argv.indexOf("--file");
+    const inputPath = fileFlag === -1 ? null : process.argv[fileFlag + 1];
+    if (fileFlag !== -1 && (!inputPath || inputPath.startsWith("--"))) {
+      throw new Error("--file requires a local JSON filename.");
+    }
+    const packet = inputPath
+      ? JSON.parse(readFileSync(resolve(process.cwd(), inputPath), "utf8"))
+      : loadFixture(kind);
     const report = kind === "release" ? assessReleases(packet) : assessRecovery(packet);
     const unit = kind === "release" ? report.evidenced + "/" + report.population + " complete" :
       "hypothetical RTO " + report.hypotheticalRtoMinutes + " minutes";
