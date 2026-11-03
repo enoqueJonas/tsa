@@ -34,3 +34,10 @@ assert.ok(recovery.includes("...(recoverySourceProofById[spec.id] ?? [])"), "Sou
 runExactSource(root + "reliability-restore-integrity-proof.ts",
   "restoreIntegrityPython", /restore_hash_verified=true tampered_backup_rejected=true/);
 console.log("PASS isolated exact-source file restore and deliberate corruption; real PostgreSQL RPO and RTO UNVERIFIED.");
+
+const resilience = readFileSync(root + "reliability-resilience-distributed-failure-deep.ts", "utf8");
+const fault = readFileSync(root + "reliability-fault-injection-deep.ts", "utf8");
+assert.ok(resilience.includes("...(resilienceRetryProofById[spec.id] ?? [])"), "Original resilience lessons must wire actual replay exercise");
+assert.ok(fault.includes("faultInjectionTransportBlocks"), "Original fault-injection lesson must wire safe experiment");
+runExactSource(root + "reliability-retry-failure-proof.ts", "retryAmbiguousCommitPython", /ambiguous_commit_503=true stable_key_single_effect=true changed_key_duplicates=true/);
+console.log("PASS bounded local HTTP commit failure and stable identity replay; real persistent idempotency UNVERIFIED.");
