@@ -216,3 +216,18 @@ Earlier [PR #348](https://github.com/enoqueJonas/tsa/pull/348) merged at `cf4576
 - All existing activity IDs remain stable. The full school-wide learner browser script checks the updated original reading headings and preserves cross-school regression tests.
 
 **Exit conditions:** exact-head 19/19 GitHub Actions workflow and all 428 original Quality desktop/mobile activities, local responsive and defect fixture proof. **Still open:** real Steward API/UI/IdP/PostgreSQL, actual Java Playwright against a product, genuine k6/GitLab schedules and independently scored uncoached novice transfer. An automated fixture and word count do not satisfy those.
+
+## Seventh original-reading pass — Maven/JUnit selection, lifetime and dependency graph
+
+[PR #349](https://github.com/enoqueJonas/tsa/pull/349) merged at `1f1ca6cab2e89cbe0d89d7322ac46f0f1463d383`. Its final [19/19 matching-head Actions](https://github.com/enoqueJonas/tsa/actions/runs/41651025598) verified all 428 Quality activities desktop/mobile and a real isolated Chromium defect/keyboard/viewport lab. It did **not** prove any live Steward incident or novice teaching competence.
+
+The next substantive weakness was not an arbitrary character threshold: the original Maven and JUnit Tags/Lifecycle lessons did not independently show what Maven actually selected. [Draft PR #350](https://github.com/enoqueJonas/tsa/pull/350) specifically addresses four original readings while retaining all original activity IDs:
+
+- **Maven lifecycle:** run the committed Java 17 fixture with `mvn -B -ntp -f labs/quality-junit-lifecycle/pom.xml clean test` versus `verify`; inspect Surefire and Failsafe XML per-class counts and confirm `*IT` is absent from Surefire. A successful build with no selected tests is not acceptable evidence.
+- **Dependencies:** version-pin Maven's dependency plugin, run `dependency:tree`, distinguish the **direct test-scope** JUnit Jupiter aggregate from transitive Jupiter API/engine and JUnit Platform dependencies, and explain scope/classpath/repository resolution. This deliberately does **not** simulate internal Nexus.
+- **JUnit tags:** publish an actual executable `TagFilteringExampleTest.java` with one `smoke` + `fixture` test and one separate `regression` test. Check exact selected XML count for `-Dgroups=smoke` and `regression`; an empty intersection `smoke & regression` must not authorize a release even if Maven reports success. A mutation that changes a tag must be caught by changed selection count.
+- **JUnit test lifecycle:** publish a second actual `LifecycleOwnershipTest.java` proving two distinct instances, beforeEach/afterEach ownership and afterAll cleanup counts. A PER_CLASS mutation fails the independent expected instance count.
+
+`scripts/check-quality-maven-selection-v7.mjs` validates **byte-for-byte displayed POM/Java against executed source**, executes baseline 4+2+2 Surefire plus 1 Failsafe test and three selected tag-expression subsets, checks the dependency graph and proves both mutants. The earlier source-published v5 POM was updated consistently with the exact executable POM.
+
+**Merge gate:** all **19/19** exact-head CI jobs, actual Maven XML counters and 428 rendered desktop/mobile Quality activities. **Still not validated:** actual Steward/IdP/real DB, production-like GitLab schedule, genuine k6, Java Playwright against a real product UI, uncoached independent learner scoring. This is execution-mechanics proof, not a whole-school learning verdict.
