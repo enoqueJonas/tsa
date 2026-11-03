@@ -415,6 +415,99 @@ def check_system_thinker_mobile_all(page):
     print(f"PASS system-thinker 390px mobile traversal: {total} activities", flush=True)
 
 
+def check_technical_steward_mobile_all(page):
+    """All thirteen Technical Steward modules on a 390px screen.
+
+    This proves synthetic rendering, case paragraphs, completion navigation and
+    horizontal/scroll behavior, not independent learner mastery.
+    """
+    page.goto(f"{BASE}/?view=curriculum&school=technical-steward", wait_until="networkidle")
+    module_count = page.get_by_role("button", name=MODULE).count()
+    assert module_count == 13, f"Technical Steward should expose 13 modules, got {module_count}"
+    errors = []
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    count_total = 0
+    novel_cases = 0
+    for module_index in range(module_count):
+        page.goto(f"{BASE}/?view=curriculum&school=technical-steward", wait_until="networkidle")
+        page.get_by_role("button", name=MODULE).nth(module_index).click()
+        page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+        sidebar = page.locator("aside").filter(has=page.get_by_text("Curriculum", exact=True)).first
+        activity_count = sidebar.locator("button").count()
+        assert activity_count > 0, f"Missing Steward activities in module {module_index + 1}"
+        seen = set()
+        for activity_index in range(activity_count):
+            activity_id = page.evaluate("new URLSearchParams(location.search).get('activity')")
+            assert activity_id and activity_id not in seen, (
+                f"Technical Steward mobile activity missing or repeated: {activity_id}"
+            )
+            seen.add(activity_id)
+            content = page.locator("main").last
+            if content.get_by_text("Engineering Practice", exact=True).count():
+                page.get_by_text("Loading evidence workspace…").wait_for(
+                    state="hidden", timeout=30000
+                )
+            assert content.is_visible() and len(content.inner_text().strip()) >= 90, (
+                f"Blank Technical Steward mobile activity: {activity_id}"
+            )
+            if activity_id.endswith("-practice"):
+                situation = content.locator("section").filter(
+                    has=content.get_by_text("The situation", exact=True)
+                ).first
+                assert situation.count() == 1, (
+                    f"Novel-case practical missing situation panel: {activity_id}"
+                )
+                assert re.search(r"INDEPENDENT|UNSEEN|NOVEL", situation.inner_text(), re.I), (
+                    f"Novel case missing from rendered practical: {activity_id}"
+                )
+                assert situation.locator("div.space-y-5 > p").count() >= 2, (
+                    f"Source scenario and novel case collapsed into one paragraph: {activity_id}"
+                )
+                novel_cases += 1
+            assert not page.evaluate(
+                "document.documentElement.scrollWidth > innerWidth + 2"
+            ), f"Technical Steward horizontal mobile overflow: {activity_id}"
+            for figure in content.locator("figure").filter(
+                has=page.get_by_role("button", name="Copy")
+            ).all():
+                assert figure.locator("pre").count() >= 1, (
+                    f"Missing mobile code content: {activity_id}"
+                )
+            if activity_index < activity_count - 1:
+                reflection = page.get_by_placeholder("Write your response here...")
+                if reflection.count():
+                    reflection.fill(SYNTHETIC_REFLECTION)
+                can_scroll = page.evaluate(
+                    "document.documentElement.scrollHeight > innerHeight + 120"
+                )
+                if can_scroll:
+                    page.evaluate("window.scrollTo(0, document.documentElement.scrollHeight)")
+                    assert page.evaluate("window.scrollY") > 30, (
+                        f"Unable to precondition long mobile scroll: {activity_id}"
+                    )
+                nxt = page.get_by_role("button", name=NEXT)
+                assert nxt.count() == 1 and nxt.is_enabled(), (
+                    f"Mobile navigation unavailable: {activity_id}"
+                )
+                nxt.click()
+                page.wait_for_function("window.scrollY <= 8", timeout=8000)
+            count_total += 1
+        print(
+            f"PASS Technical Steward 390px module {module_index + 1}/{module_count}: "
+            f"{activity_count} activities",
+            flush=True,
+        )
+    assert not errors, f"Technical Steward mobile page exceptions: {errors}"
+    assert novel_cases >= 83, (
+        f"Expected at least 83 rendered original novel practicals, got {novel_cases}"
+    )
+    print(
+        f"PASS Technical Steward all-module 390px traversal: {count_total} activities, "
+        f"{novel_cases} separately rendered novel practical cases",
+        flush=True,
+    )
+
+
 def check_quality_mobile_all(page):
     """Traverse all Quality activities at 390px rather than the first module only.
 
@@ -742,6 +835,8 @@ with sync_playwright() as playwright:
         check_builder_mobile_modules(mobile.new_page())
     elif SCHOOL == "quality-steward":
         check_quality_mobile_all(mobile.new_page())
+    elif SCHOOL == "technical-steward":
+        check_technical_steward_mobile_all(mobile.new_page())
     elif SCHOOL == "system-thinker":
         check_system_thinker_mobile_all(mobile.new_page())
         isolated = browser.new_context(viewport={"width": 1440, "height": 900})
