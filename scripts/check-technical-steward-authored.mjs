@@ -97,6 +97,19 @@ try {
     (activity.content.blocks ?? []).some((block) => block.type === "callout" && block.title === "Worked scenario"));
   assert.ok(riskWorked.length >= 9, `All 9 Technology Risk topics need source-rendered worked cases; found ${riskWorked.length}`);
 
+  const capstone = technicalStewardPaths.find((entry) => entry.id === "technical-stewardship-review");
+  const phases = capstone.lessons.flatMap((lesson) => lesson.activities);
+  assert.equal(phases.length, 4, "The 600-minute capstone must have four independently assessable evidence gates");
+  assert.equal(phases[0].id, "technical-stewardship-review-milestone-technical-stewardship-review-001",
+    "Keep the original capstone activity ID for legacy progress");
+  assert.equal(phases.reduce((sum, activity) => sum + activity.estimatedMinutes, 0), 600,
+    "Splitting the capstone must not create inflated total learner time");
+  for (const phase of phases) {
+    assert.equal(phase.content.type, "practical");
+    assert.ok(phase.content.instructions.length >= 2);
+    assert.ok(phase.content.deliverables.length >= 3);
+    assert.ok(phase.content.completionCriteria.length >= 3);
+  }
   console.log(`Technical Steward authored-path guard passed: ${modules.length} paths, ${total} original activities, no generated governance/preparation wrappers.`);
 } finally {
   fs.rmSync(tmp, { recursive: true, force: true });
