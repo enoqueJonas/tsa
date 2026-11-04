@@ -103,21 +103,32 @@ const practices: Record<string, PracticeSpec> = {
         deliverables: ["Six-case before transcript", "Identical six-case after transcript", "Fail-then-fix boundary evidence", "Before/after responsibility map", "Optional narrow Steward transfer and stopping decision"],
         completionCriteria: ["Both programs run from an empty scratch directory without Django or Steward.", "The public function, responses and state changes are equivalent across all six cases.", "An intentional boundary defect is genuinely rejected, not merely described.", "A feature change is not concealed inside the refactoring diff.", "The learner can explain which abstraction was useful and why additional layers were rejected."]
     },
-    "software-craft-testing-as-a-change-safety-net": {
-        objective: "Build a small Steward safety net that proves a refactor preserves behavior and that a regression test can detect a real defect.",
-        scenario: "A maintainability change is justified, but 'the endpoint still looks fine' is not sufficient evidence. Establish focused automated checks before changing structure, then use the same checks to prove the refactor did not alter the contract.",
+    "software-craft-write-your-first-automated-tests": {
+        objective: "Write real automated tests, run them and prove that a membership regression fails.",
+        scenario: "You have just learned the idea of a test, but not Django fixtures or mocking. Use the published ordinary-Python borrowing function and unittest suite before opening the Steward project.",
         instructions: [
-            "Choose one real Steward behavior and state the observable contract in domain language before writing assertions.",
-            "Choose the narrowest honest test boundary: pure domain logic, database behavior or HTTP/API behavior; explain why a narrower boundary would not prove enough.",
-            "Write one positive case and one meaningful negative case using clear arrange-act-assert structure.",
-            "Run the tests against the current implementation and preserve the green baseline.",
-            "Perform one small behavior-preserving refactor and rerun the same focused tests.",
-            "Reproduce one known defect or create a disposable controlled defect; demonstrate that a regression test fails for the expected reason before the fix and passes after the fix.",
-            "Review assertions and remove any that couple the test to private helper structure without protecting observable behavior.", "If the behavior crosses an external/slow collaborator, choose deliberately among real collaborator, stub, fake or mock/spy and explain why; inject the collaborator through the smallest useful boundary.",
-            "Record which important behavior remains uncovered and why adding more tests is or is not justified now."
+            "Save the complete reading example as test_borrowing.py and execute python3 -m unittest -v test_borrowing.py.",
+            "Identify the arrange, act and assert stages of each test and state the behavior each protects.",
+            "Change the original member-specific condition to bool(allowed_members); rerun without changing assertions and record the failed unauthorized-member case.",
+            "Restore member_id in allowed_members and rerun to show all three tests pass.",
+            "Identify a database or HTTP claim that these isolated function tests cannot prove; explain which new boundary you would need."
         ],
-        deliverables: ["Behavior contract and boundary choice", "Positive/negative automated tests", "Pre/post-refactor test evidence", "Fail-before-fix regression evidence", "Coverage limitation note"],
-        completionCriteria: ["The tests protect observable Steward behavior rather than private implementation trivia.", "The same safety net remains green across a structural refactor.", "At least one regression check is proven capable of failing.", "The learner can explain why each chosen test boundary is appropriate.", "Testing depth remains Builder-sized rather than becoming a premature automation framework."]
+        deliverables: ["Three passing tests from a clean local script", "One deliberate red test with explanation", "Restored green test run", "Boundary limitation note"],
+        completionCriteria: ["No Steward repository, Django fixture or external dependency is assumed.", "The unauthorized member test actually fails on the deliberately weakened policy.", "Assertions are not changed to make an incorrect implementation pass.", "The learner explains the difference between evidence for a pure function and evidence for a real API."]
+    },
+    "software-craft-testing-as-a-change-safety-net": {
+        objective: "Protect a side-effecting operation with real tests, then explain what database and HTTP evidence must add.",
+        scenario: "An order-completion function sends a notification once. Before making Steward-specific tests, use a fake notifier to verify success, denied/no-mutation and repeated-request behavior locally.",
+        instructions: [
+            "Save the published test_order_completion.py and execute python3 -m unittest -v test_order_completion.py.",
+            "Explain what FakeNotifier observes and why no real network or email provider is contacted.",
+            "Remove the already_completed guard, rerun and capture the duplicate-notification assertion failure; restore the guard and rerun all tests.",
+            "Make one small readability refactor while keeping the same result/state/notification assertions green.",
+            "Distinguish what a pure test, a PostgreSQL transaction/constraint test and an authenticated DRF HTTP test can independently establish.",
+            "Transfer to one actual Steward path only after its real route, fixture and model relationships exist; verify negative HTTP response plus unchanged database state."
+        ],
+        deliverables: ["Three-case notification test output", "Fail-before-fix repeated-call proof", "Behavior-preserving refactor evidence", "Test boundary decision", "Optional Steward transfer"],
+        completionCriteria: ["The published code is executable without undefined api_client, user_a or service_b.", "A repeated request is shown not to send a duplicate notification.", "Mutation of the guard fails a test; the corrected script passes.", "The example does not claim to guarantee atomic notification delivery or real HTTP authorization."]
     },
     "software-craft-managing-dependencies": {
         objective: "Audit Steward's dependency ownership and make one evidence-based keep, remove or reuse decision.",
