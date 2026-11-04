@@ -24,11 +24,15 @@ const combineConditions = marker("postgresql-combine-conditions");
 const nullLogic = marker("postgresql-null-logic");
 const sortResults = marker("postgresql-sort-results");
 const filtering = marker("filtering-ordering");
+const subqueryBasics = marker("postgresql-subquery-basics");
+const existsSubqueries = marker("postgresql-exists-subqueries");
+const appliedSubqueries = marker("subqueries");
+const cteLesson = marker("ctes");
 assert.ok(
   persistence > 0 && system > persistence && connection > system &&
   databases > connection && schemas > databases && tables > schemas && rows > tables && temporary > rows &&
   relational > temporary && firstJoins > relational &&
-  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && combineConditions > deletion && nullLogic > combineConditions && sortResults > nullLogic && filtering > sortResults,
+  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && combineConditions > deletion && nullLogic > combineConditions && sortResults > nullLogic && filtering > sortResults && subqueryBasics > filtering && existsSubqueries > subqueryBasics && appliedSubqueries > existsSubqueries && cteLesson > appliedSubqueries,
   "The learner order must be persistence → DBMS and server → psql → database creation → schemas → table definition → rows → temporary tables → relational model → joins → grouping → applied fixture → UPDATE → DELETE → Boolean filters → NULL → ordering → Steward filtering case"
 );
 assert.doesNotMatch(source, /Two programs, one protocol boundary|Establish prerequisites without inventing credentials/);
@@ -100,6 +104,21 @@ try {
   assert.match(pageExample, /LIMIT 2 OFFSET 1/);
   assert.ok(source.includes('"title": "Steward Practice: Filter and Sort SQL Reports"'),
     "Applied Steward example must be labeled as a practice, not the novice's first SQL lesson");
+  const scalarExample = publishedCode("subquery_library_average.sql — a computed scalar threshold");
+  assert.match(scalarExample, /published_year < \(SELECT AVG\(published_year\)/);
+  const wrongScalar = publishedCode("subquery_library_scalar_fail.sql — expected multirow scalar error");
+  assert.match(wrongScalar, /SELECT published_year FROM library.books/);
+  const inSubquery = publishedCode("subquery_library_in.sql — membership in computed authors");
+  assert.match(inSubquery, /WHERE author IN \(/);
+  const existsExample = publishedCode("exists_library_match.sql — one correlated existence check");
+  assert.match(existsExample, /WHERE chosen.author = b.author/);
+  const notExistsExample = publishedCode("exists_library_missing.sql — find books outside a chosen author list");
+  assert.match(notExistsExample, /WHERE NOT EXISTS/);
+  const notInExample = publishedCode("exists_library_not_in_null.sql — NOT IN returns none; NOT EXISTS returns two");
+  assert.match(notInExample, /NULL::integer/);
+  assert.match(notInExample, /WHERE NOT EXISTS/);
+  assert.ok(source.includes('"title": "Steward Practice: Subqueries and Missing Relationships"'),
+    "Steward subquery case must follow, not replace, generic SQL instruction");
   const sql = publishedCode("first_session.sql — run only in a disposable PostgreSQL lab database");
   for (const statement of ["CREATE TEMP TABLE", "INSERT INTO tsa_session_probe", "ORDER BY id", "SELECT count(*)"]) {
     assert.ok(sql.includes(statement), `Missing SQL teaching concept: ${statement}`);
