@@ -94,6 +94,37 @@ assert.ok(source.indexOf('"Review a Code Change"') < source.indexOf('"Managing T
   "Learners must identify a defect before learning rational debt deferral");
 assert.ok(source.includes("stableId ??"),"Renamed lesson must support stable activity IDs");
 
+
+// Execute the exact prerequisite virtual-environment commands from the
+// learner reading without installing any network package or touching Steward.
+const depsCaption = '"caption": "Python dependencies — create and inspect an offline virtual environment"';
+const depsPos = source.indexOf(depsCaption);
+assert.ok(depsPos>=0,"Missing real Python package introduction");
+const depsMatch = source.slice(depsPos,depsPos+12000).match(/"code":\s*("(?:\\.|[^"\\])*")/);
+assert.ok(depsMatch,"Unable to extract published offline venv setup");
+const depsShell = JSON.parse(depsMatch[1]);
+assert.doesNotMatch(depsShell,/pip install/,"The prerequisite lab must not require network installation");
+const depsRoot=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-deps-learning-"));
+try {
+  const setup=spawnSync("bash",["-e","-c",depsShell],{cwd:depsRoot,encoding:"utf8",timeout:90000});
+  assert.ifError(setup.error);
+  assert.equal(setup.status,0,"Published offline venv lab failed:\n"+setup.stdout+"\n"+setup.stderr);
+  assert.match(setup.stdout,/pip distribution:/);
+  assert.match(setup.stdout,/Interpreter:/);
+  assert.match(setup.stdout,/No broken requirements found/);
+  const pythonPath=path.join(depsRoot,"tsa-deps-lab",".venv","bin","python");
+  assert.ok(fs.existsSync(pythonPath),"Source commands must create an isolated Python interpreter");
+  const missing=spawnSync(pythonPath,["-c","import tsa_nonexistent_course_package_984321"],{encoding:"utf8",timeout:10000});
+  assert.notEqual(missing.status,0,"A clean venv must not silently import an invented package");
+  assert.match(missing.stderr,/ModuleNotFoundError/);
+} finally {
+  fs.rmSync(depsRoot,{recursive:true,force:true});
+}
+assert.ok(source.indexOf('"Inspect Python Packages"') < source.indexOf('"Managing Dependencies"'),
+  "pip/interpreter fundamentals must precede dependency ownership decisions");
+assert.match(fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-quality.ts","utf8"),
+  /software-craft-inspect-python-packages/,"Published offline lab must have its own practical");
+
 const publishedPractice=fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-quality.ts","utf8");
 assert.ok(!source.includes("role__in="), "Readable Code must not use an invented membership role list");
 assert.ok(source.includes("Membership.Role.MAINTAINER"), "Django policy must use the real Membership role choice");
