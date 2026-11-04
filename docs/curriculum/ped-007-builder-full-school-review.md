@@ -169,3 +169,17 @@ These tasks are specifications for independent learner assessment, **not evidenc
 - Align both published practical overrides with the learner order; neither requires inventing an existing Steward pull request or issue. Later transfer may use actual repository evidence.
 
 **Evidence gates:** Matching-head full workflow, source-extracted Python checks and browser traversal are separately verified after the final commit. No uncoached novice review or true authenticated API security assessment is implied. Builder learner-validated remains **NO**.
+
+## 2026-11-04 — Software Craft testing prerequisite and credible red/green repair
+
+**Finding:** The single Testing as a Change Safety Net reading introduced undefined DRF test fixtures (`api_client`, `user_a`, `service_b`) before an executable first test, mixed pure/domain and HTTP/database claims, and had a practical demanding a real Steward safety net before novice test syntax and discovery were established.
+
+**Remediation:**
+- Split a new **Write Your First Automated Tests** lesson ahead of the original testing lesson. It uses a full runnable Python `unittest` file, three positive/negative cases, exact commands and output, an intentionally unsafe `bool(allowed_members)` mutation and a required red-to-green rerun.
+- Rebuild **Testing as a Change Safety Net** on a separate complete order-completion example with injected `FakeNotifier`. It tests return values, in-memory state change, denial and duplicate side effects, and deliberately removes the duplicate guard to prove a test fails.
+- Explain the difference between pure unit, database and HTTP tests. Do not claim a mock/fake proves delivery, atomic persistence or real DRF authorization.
+- Align both published practical overrides with the independently executable examples before any optional real Steward transfer; eliminate undefined DRF fixtures from the first runnable path.
+- Run exact source-published scripts in smoke CI, then execute two deliberate mutants and assert their respective test suites fail.
+- Preserve the preexisting remaining Software Craft lessons and stable `Testing as a Change Safety Net` activity ID while inserting a new prerequisite lesson.
+
+**Acceptance:** CI, build and browser checks must pass on the exact head before normal merge. The exercises still require human rendered-page review and an uncoached learner transfer assessment before being marked learner-validated.

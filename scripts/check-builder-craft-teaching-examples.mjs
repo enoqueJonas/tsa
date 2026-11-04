@@ -12,7 +12,6 @@ const cases=[
   ["Readable Code — equivalent pure-Python policy and negative cases", "readable policy: three cases preserved"],
   ["Refactoring — run six contracts against the original function", "Before refactoring: 6 contracts passed"],
   ["Refactoring — extract eligibility and rerun the same six contracts", "After refactoring: 6 contracts passed"],
-  ["Testing — executable unittest authorization boundary", "Ran 2 tests"],
   ["Configuration — executable fail-closed environment parser", "valid False"],
   ["Logging — executable structured-context and secret absence test", "service=42 request=req-demo-7"],
   ["Errors — executable stable public error mapping", "public error mappings: 6"],
@@ -74,6 +73,42 @@ const rejectedRefactor = spawnSync("python3",["-c",refactorMutant],{encoding:"ut
 assert.ifError(rejectedRefactor.error);
 assert.notEqual(rejectedRefactor.status,0,"A 30-day boundary regression must fail a published test");
 assert.match(rejectedRefactor.stderr,/AssertionError/);
+
+
+// Extract actual lesson-level Python code (the source is generated from the
+// authored lesson and contains a quoted JSON string in its code block).
+function noviceTestCode(caption) {
+  const anchor=source.indexOf('"caption": "'+caption+'"');
+  assert.ok(anchor>=0,"Missing beginner testing code: "+caption);
+  const m=source.slice(anchor,anchor+16000).match(/"code":\s*("(?:\\.|[^"\\])*")/);
+  assert.ok(m,"Cannot extract beginner testing code: "+caption);
+  return JSON.parse(m[1]);
+}
+function runNovice(code) {
+  const p=spawnSync("python3",["-c",code],{encoding:"utf8",timeout:10000});
+  assert.ifError(p.error);
+  return p;
+}
+const borrowing=noviceTestCode("Testing fundamentals — runnable three-case unittest suite");
+const borrowingGreen=runNovice(borrowing);
+assert.equal(borrowingGreen.status,0,borrowingGreen.stderr);
+assert.match(borrowingGreen.stderr,/Ran 3 tests/);
+const borrowingMutant=runNovice(borrowing.replace("return member_id in allowed_members and book_available","return bool(allowed_members) and book_available"));
+assert.notEqual(borrowingMutant.status,0,"Borrowing authorization mutant must be rejected");
+assert.match(borrowingMutant.stderr,/test_unregistered_member_is_denied_even_when_someone_is_registered/);
+assert.match(borrowingMutant.stderr,/FAIL/);
+
+const order=noviceTestCode("Testing safety net — runnable fake notifier and side-effect assertions");
+const orderGreen=runNovice(order);
+assert.equal(orderGreen.status,0,orderGreen.stderr);
+assert.match(orderGreen.stderr,/Ran 3 tests/);
+const orderGuard='    if order["completed"]:\n        return "already_completed"\n';
+assert.ok(order.includes(orderGuard),"Missing order-completion duplicate guard in learner code");
+const orderMutant=runNovice(order.replace(orderGuard,""));
+assert.notEqual(orderMutant.status,0,"Duplicate notification mutant must fail");
+assert.match(orderMutant.stderr,/test_repeat_has_no_second_notification/);
+assert.match(orderMutant.stderr,/FAIL/);
+console.log("Beginner testing lesson passed: 3+3 source-published unit tests, member-specific authorization and duplicate-notification mutants rejected.");
 
 console.log("Builder craft examples passed: 12 source-extracted Python labs and their negative boundaries.");
 
