@@ -178,3 +178,20 @@ Primary material was inspected for the precise model and syntax, not copied verb
 - The original Steward SQL fixture and downstream tests remain in place; the live runner must pass both new library examples and old Steward exercises.
 
 **Exit gates deliberately still open:** complete same-commit build/test, complete browser traversal of changed lesson pages at desktop/mobile widths, manual review of rendered headings/code scrolling, newcomer independently creating another example database/schema and explaining failed connections or foreign keys. No `VALIDATED` claim without that evidence.
+
+
+## Learner-reported follow-up — remove premature container prerequisites (2026-11-04)
+
+Issue [#358](https://github.com/enoqueJonas/tsa/issues/358) followed real learner inspection of the merged first-connection page. The previous first-principles rewrite still taught its opening psql connection using an untaught container runtime. This was an actual *learner-order violation*, despite earlier source/CI passes. The learner also needed built-in psql discovery and object introspection taught explicitly, not as scattered mentions.
+
+### Correction on `curriculum/psql-native-first-principles`
+
+- Insert `postgresql-local-setup` between server/client concepts and the existing-ID `postgresql-first-connection`. One setup route only: a supplied authorized server; macOS Homebrew native PostgreSQL 17; Ubuntu native package/peer-authenticated local role; or Windows installer/SQL Shell. No prerequisite container tooling.
+- Rewrite the **existing-ID** `postgresql-first-connection` around psql as a terminal client, the meaning of `-h`, `-p`, `-U`, `-d`, shell vs psql vs SQL, prompt/semicolons, `\\conninfo`, `\\l`, `\\du`, `\\c`, built-in `\\?`, SQL help `\\h`, `\\q`, real SQL and a safe failed connection.
+- Insert `postgresql-psql-object-inspection` **after** CREATE TABLE and **before** inserting rows, so `\\dn`, `\\dt`, `\\dt library.*`, `\\d library.books`, `\\d+` and the search-path visibility trap are explained against real objects. A new table exists even before it contains rows.
+- Correct downstream references that assumed `docker exec` as the original learning connection; restore consistency across later source-published SQL scripts and database operations. Keep existing activity IDs stable; new topics get new IDs.
+- Add a strict source-order and content guard, plus a source-derived real-PostgreSQL script exercising psql's metadata/help commands against the actual new table.
+
+**Research checked:** [PostgreSQL psql reference](https://www.postgresql.org/docs/17/app-psql.html) (meta-commands, syntax help, command-line options), [Homebrew versioned PostgreSQL 17 formula](https://formulae.brew.sh/formula/postgresql@17) (installation, keg-only binary, services), [Ubuntu native PostgreSQL documentation](https://ubuntu.com/server/docs/how-to/databases/install-postgresql/) (package and peer authentication), [PostgreSQL official Windows download](https://www.postgresql.org/download/windows/) (installer). All examples are framed by environment-specific authentication assumptions; neither psql --version nor pg_isready is presented as an authenticated query proof.
+
+**Verification boundary:** Source rewritten does NOT mean build, execution, browser review or independent novice transfer have passed. Record those gates separately against the exact new commit. The current work corrects a prerequisite defect in the same Builder PostgreSQL module; it does not close the school or certify the curriculum.
