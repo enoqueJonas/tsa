@@ -293,7 +293,7 @@ export const djangoAndApiRichLessons: Lesson[] = [
     "body": "Only after you have successfully run the independent book serializer examples, return to the separate Django-managed Steward registry. ModelSerializer can derive fields and default persistence methods from an existing Django model, but it does not replace authorization, domain rules or database constraints. The identifier and Team owner below are server-controlled read-only fields; never let an untrusted client assign ownership merely because the model has a ForeignKey.",
     "code": {
       "language": "python",
-      "caption": "Service serializer",
+      "caption":"Service serializer",
       "value": "from rest_framework import serializers\nfrom .models import Service\n\nclass ServiceSerializer(serializers.ModelSerializer):\n    class Meta:\n        model = Service\n        fields = ['id', 'name', 'endpoint', 'lifecycle', 'criticality', 'owning_team']\n        read_only_fields = ['id', 'owning_team']"
     }
   },
