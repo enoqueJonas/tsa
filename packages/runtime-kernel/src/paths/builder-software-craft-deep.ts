@@ -442,17 +442,72 @@ export const softwareCraftDeepLessons: Lesson[] = [
     ),
     lesson(
         "Separation of Concerns",
-        "Separation of concerns means giving different kinds of change different homes. It does not mean creating a layer, service class or interface for every function.",
+        "Separation of concerns is the practice of giving different responsibilities distinct, understandable places. It is not a rule to create a class or microservice for every function. Begin with a tiny library checkout operation, identify which changes belong to request parsing, membership permission, book state and response formatting, and then compare two implementations against the same five inputs. The Steward application comes only after this mechanism is understood.",
         [
-            { title: "See the problem in one request path", paragraphs: ["Imagine one DRF serializer method that parses the request, checks whether the caller belongs to the owning Team, decides whether a lifecycle transition is valid, writes several models and formats an audit log. It may work today, but five different kinds of change now require editing the same unit.", "Separation of concerns starts by identifying those different reasons to change: HTTP/representation, authentication and authorization, domain policy, persistence and operational evidence are related parts of one request but they are not the same responsibility. Boundaries are useful when they make those responsibilities easier to change and verify independently; extra indirection without a distinct responsibility merely moves complexity around."] },
-            { title: "A practical Steward boundary", paragraphs: ["A DRF view can coordinate request concerns, a permission can answer access policy, and domain/application code can enforce service-registration invariants. Database constraints remain the final integrity backstop where appropriate."] },
-            { title: "Dependency direction matters", paragraphs: ["If core domain policy imports DRF request classes, ORM query details and logging configuration directly, changing infrastructure forces domain code to change. Prefer orchestration/infrastructure depending on stable application/domain contracts where practical. Dependency inversion means policy can depend on an abstraction/capability supplied from outside; it does not mean creating an interface for every function." ] },
-            { title: "SOLID is a diagnostic vocabulary, not five mandatory patterns", paragraphs: ["Single Responsibility asks whether a unit has one coherent reason to change. Open/Closed encourages extension without repeatedly editing fragile condition chains when genuine variation exists. Liskov asks whether subtype substitution preserves caller expectations. Interface Segregation avoids forcing consumers to depend on operations they do not need. Dependency Inversion keeps high-level policy from being controlled by low-level details. Use these questions to diagnose pressure; do not manufacture inheritance/interfaces to claim compliance." ] },
-            { title: "Composition often keeps variation explicit", paragraphs: ["When behavior can be supplied as a collaborator/policy, composition can avoid rigid inheritance trees and make dependencies visible. Inheritance is appropriate when there is a genuine substitutable is-a relationship and the base contract remains valid for subtypes—not merely to reuse a few methods." ] },
-        ],
-        "Map and improve one mixed-responsibility Steward request path.",
-        ["Trace one write endpoint from HTTP request to database.", "Label representation, access-policy, domain and persistence responsibilities.", "Identify one responsibility currently in the wrong place.", "Refactor only that boundary and preserve tests.", "Explain why you did not add more abstraction."],
-        ["What is a reason to change?", "Why is a new class not automatically better separation?", "Which concerns exist in a typical Steward write request?"],
+        {
+                "title": "What is a concern, and why separate it?",
+                "paragraphs": [
+                        "A concern is an aspect of the program that changes for a particular reason. Parsing an incoming request changes when the external data format changes. Permission policy changes when the membership rule changes. Borrowing a book changes when library lending policy changes. Response formatting changes when the API contract changes. These concerns cooperate to deliver one request, but they are not the same decision.",
+                        "Putting all four decisions in one function is not automatically wrong: short local code can be clear. Separation becomes useful when the functions are difficult to review or the same policy must be used from a web endpoint and another caller. Judge the boundary by its responsibility, not by a target number of classes or files."
+                ]
+        },
+        {
+                "title": "First see a request that actually works",
+                "paragraphs": [
+                        "Our simplified community library has two books: bk1 can be borrowed and bk2 is already unavailable. Member 42 may borrow; member 7 is not registered. The old_checkout function takes a Python request dictionary, a dictionary representing stored book state and an allowed-member set. It returns a status/code dictionary. This is a plain Python simulation of an API action, not a running HTTP server and not a database transaction.",
+                        "Before editing structure, predict five outcomes: authorized success, wrong input type, unauthorized member, unknown book and already-borrowed book. Notice that the unauthorized request should not modify the catalogue. The exact statuses and error codes are a small explicit contract."
+                ]
+        },
+        {
+                "title": "Split responsibilities without changing the contract",
+                "paragraphs": [
+                        "The new implementation separates parse_request (input validation), member_can_borrow (permission), borrow_book (state-changing domain action), response (output shape), and new_checkout (orchestration). It uses small exceptions to report missing or unavailable books without making borrow_book return HTTP status codes. This is one design, not a required architecture: explicit result objects are a legitimate alternative when a team uses them consistently.",
+                        "The ordering of checks matters. We validate the request first, check authorization before looking up the book, and only then mutate state. Moving authorization after the mutation would be a serious defect even if all helper names looked elegant. A separation refactor succeeds only if allowed/denied outcomes and state changes remain correct."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "Separation of Concerns — five executable before-and-after cases",
+                        "code": "from copy import deepcopy\n\ndef old_checkout(payload, catalogue, members):\n    member_id = payload.get(\"member_id\")\n    book_id = payload.get(\"book_id\")\n    if type(member_id) is not int or not isinstance(book_id, str) or not book_id.strip():\n        return {\"status\": 400, \"code\": \"invalid_input\"}\n    if member_id not in members:\n        return {\"status\": 403, \"code\": \"not_a_member\"}\n    if book_id not in catalogue:\n        return {\"status\": 404, \"code\": \"book_missing\"}\n    if not catalogue[book_id][\"available\"]:\n        return {\"status\": 409, \"code\": \"already_borrowed\"}\n    catalogue[book_id][\"available\"] = False\n    return {\"status\": 200, \"code\": \"borrowed\"}\n\nclass BookMissing(Exception):\n    pass\n\nclass AlreadyBorrowed(Exception):\n    pass\n\ndef parse_request(payload):\n    member_id = payload.get(\"member_id\")\n    book_id = payload.get(\"book_id\")\n    if type(member_id) is not int or not isinstance(book_id, str) or not book_id.strip():\n        raise ValueError(\"invalid_input\")\n    return member_id, book_id\n\ndef member_can_borrow(member_id, members):\n    return member_id in members\n\ndef borrow_book(book_id, catalogue):\n    if book_id not in catalogue:\n        raise BookMissing\n    if not catalogue[book_id][\"available\"]:\n        raise AlreadyBorrowed\n    catalogue[book_id][\"available\"] = False\n\ndef response(status, code):\n    return {\"status\": status, \"code\": code}\n\ndef new_checkout(payload, catalogue, members):\n    try:\n        member_id, book_id = parse_request(payload)\n    except ValueError:\n        return response(400, \"invalid_input\")\n    if not member_can_borrow(member_id, members):\n        return response(403, \"not_a_member\")\n    try:\n        borrow_book(book_id, catalogue)\n    except BookMissing:\n        return response(404, \"book_missing\")\n    except AlreadyBorrowed:\n        return response(409, \"already_borrowed\")\n    return response(200, \"borrowed\")\n\ncases = [\n    ({\"member_id\": 42, \"book_id\": \"bk1\"}, 200),\n    ({\"member_id\": \"42\", \"book_id\": \"bk1\"}, 400),\n    ({\"member_id\": 7, \"book_id\": \"bk1\"}, 403),\n    ({\"member_id\": 42, \"book_id\": \"missing\"}, 404),\n    ({\"member_id\": 42, \"book_id\": \"bk2\"}, 409),\n]\nfor payload, expected in cases:\n    before = {\"bk1\": {\"available\": True}, \"bk2\": {\"available\": False}}\n    after = deepcopy(before)\n    original_result = old_checkout(payload, before, {42})\n    extracted_result = new_checkout(payload, after, {42})\n    assert original_result == extracted_result\n    assert extracted_result[\"status\"] == expected\n    assert before == after\n    print(expected, extracted_result[\"code\"])\nassert not member_can_borrow(7, {42})\nassert bool({42}) is True  # Flawed shortcut: SOME member exists, not THIS member.\nprint(\"Separation lab: 5 responses and stored state agree\")"
+                }
+        },
+        {
+                "title": "Read the results, including what did not change",
+                "paragraphs": [
+                        "Save the complete script as separation_lab.py and run python3 separation_lab.py in a clean scratch directory. It prints `200 borrowed`, `400 invalid_input`, `403 not_a_member`, `404 book_missing`, `409 already_borrowed`, then `Separation lab: 5 responses and stored state agree`. The assertions check that both implementations return the same result and leave identical book data for every case. They also prove that member 7 is denied even when the member set is not empty.",
+                        "That last case matters: a tempting but broken policy would test only bool(members), which answers whether any member exists rather than whether this caller is a member. A refactor that accidentally substituted the shortcut would pass a happy-path test and fail the independent denied case. The actual state dictionary is copied for each run so one test does not consume a book and contaminate the next."
+                ]
+        },
+        {
+                "title": "Follow the dependency direction",
+                "paragraphs": [
+                        "The orchestration function knows the steps needed to process a checkout. Input parsing should not import HTTP response classes; borrow_book does not need to know whether a browser or command-line client initiated the request. This helps when a second entry point calls the same borrowing rule without copying permission checks or error mapping.",
+                        "In a Django application, a view might accept an HTTP request, an authorization function inspect trusted Membership, and an application command enforce a Service transition with an atomic database operation. Database constraints remain important; our dictionary exercise does not prove concurrency safety, transaction rollback, security against alternate write paths or actual DRF enforcement."
+                ]
+        },
+        {
+                "title": "When not to add another layer",
+                "paragraphs": [
+                        "Do not create an AbstractCheckoutManagerFactory just because you can. A new wrapper with no distinct responsibility adds navigation cost without reducing coupling. The helper functions here are justified because each has a specific question and a testable boundary. If a single cohesive function were equally clear and changed for one reason, retaining it would be acceptable.",
+                        "SOLID and dependency inversion are useful design vocabulary, but this lesson does not need five principles or a dependency-injection framework at once. Later lessons on testing and dependencies examine when substituting real collaborators improves safety. For now, the independent test is whether you can identify what each function owns and whether behavior is preserved."
+                ]
+        }
+],
+        "Separate request parsing, authorization, state change and response formatting in a working example without changing the observable contract.",
+        [
+        "Run the exact five-case Python script before editing it; explain each status code and which cases must leave book availability unchanged.",
+        "Annotate old_checkout to distinguish input validation, membership permission, book-state rules, mutation and response construction.",
+        "Inspect the extracted functions. For each one, state its single responsibility and why a caller needs it.",
+        "Change member_can_borrow deliberately to return bool(members), run the tests and capture which negative check fails; restore the correct function and prove the suite passes again.",
+        "Explain what the dictionary example does not verify: HTTP routing, database transactions, concurrency and real permission enforcement.",
+        "Only then select a real Steward write endpoint, label the four concerns in its actual implementation, move at most one misplaced responsibility and rerun its existing positive/negative tests. Do not invent a request path or migration that is not present."
+],
+        [
+        "Which responsibility changes if a request field is renamed, and which changes if membership policy changes?",
+        "Why must authorization happen before borrow_book changes stored state?",
+        "What makes the bool(members) shortcut a security defect despite sounding related to membership?",
+        "Why is an extra class not automatically a better separation?",
+        "What additional testing would be needed before claiming the same result in a real Django/PostgreSQL endpoint?"
+],
         [refactoringGuru],
     ),
     lesson(
