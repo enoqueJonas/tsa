@@ -46,11 +46,14 @@ const queryPlans = marker("query-plans");
 const indexes = marker("indexes");
 const compositeIndexes = marker("postgresql-composite-indexes");
 const queryPerformance = marker("query-performance");
+const inspection = marker("postgresql-practice");
+const privileges = marker("postgresql-roles-and-privileges");
+const backupRestore = marker("postgresql-backup-and-restore");
 assert.ok(
   persistence > 0 && system > persistence && connection > system &&
   databases > connection && schemas > databases && tables > schemas && rows > tables && temporary > rows &&
   relational > temporary && firstJoins > relational &&
-  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && combineConditions > deletion && nullLogic > combineConditions && sortResults > nullLogic && filtering > sortResults && subqueryBasics > filtering && existsSubqueries > subqueryBasics && appliedSubqueries > existsSubqueries && withBasics > appliedSubqueries && recursiveWith > withBasics && cteLesson > recursiveWith && transactionBasics > cteLesson && savepoints > transactionBasics && transactionCase > savepoints && isolation > transactionCase && readiness > isolation && constraintsBasics > readiness && foreignKeyDeletes > constraintsBasics && constraints > foreignKeyDeletes && schemaBasics > constraints && appliedSchemaDesign > schemaBasics && normalForms > appliedSchemaDesign && appliedNormalization > normalForms && queryPlans > appliedNormalization && indexes > queryPlans && compositeIndexes > indexes && queryPerformance > compositeIndexes,
+  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && combineConditions > deletion && nullLogic > combineConditions && sortResults > nullLogic && filtering > sortResults && subqueryBasics > filtering && existsSubqueries > subqueryBasics && appliedSubqueries > existsSubqueries && withBasics > appliedSubqueries && recursiveWith > withBasics && cteLesson > recursiveWith && transactionBasics > cteLesson && savepoints > transactionBasics && transactionCase > savepoints && isolation > transactionCase && readiness > isolation && constraintsBasics > readiness && foreignKeyDeletes > constraintsBasics && constraints > foreignKeyDeletes && schemaBasics > constraints && appliedSchemaDesign > schemaBasics && normalForms > appliedSchemaDesign && appliedNormalization > normalForms && queryPlans > appliedNormalization && indexes > queryPlans && compositeIndexes > indexes && queryPerformance > compositeIndexes && inspection > queryPerformance && privileges > inspection && backupRestore > privileges,
   "The learner order must be persistence → DBMS and server → psql → database creation → schemas → table definition → rows → temporary tables → relational model → joins → grouping → applied fixture → UPDATE → DELETE → Boolean filters → NULL → ordering → Steward filtering case"
 );
 assert.doesNotMatch(source, /Two programs, one protocol boundary|Establish prerequisites without inventing credentials/);
@@ -179,6 +182,13 @@ try {
   const normalFormSql = publishedCode("normal_forms_demo.sql — normalized university tables and one department rename");
   assert.match(normalFormSql, /REFERENCES tsa_nf_department\(id\)/);
   assert.match(normalFormSql, /UPDATE tsa_nf_department/, "3NF example must prove authoritative rename");
+  const roleSql = publishedCode("postgresql_readonly_role.sql — optional local-only NOLOGIN role and privilege proof");
+  assert.match(roleSql, /NOLOGIN/);
+  assert.match(roleSql, /GRANT SELECT ON library.books/);
+  const backupShell = publishedCode("library_backup_restore.sh — restore a custom-format archive into a separate learning database");
+  for (const command of ["pg_dump -Fc", "createdb tsa_library_restore", "pg_restore --exit-on-error", "SELECT count(*) FROM library.books"]) {
+    assert.ok(backupShell.includes(command), `Incomplete source-published restore sequence: ${command}`);
+  }
   const explainSql = publishedCode("library_explain_analyze.sql — estimate, measure and verify a book query");
   assert.match(explainSql, /EXPLAIN \(ANALYZE, BUFFERS\)/, "Query-plan lesson must execute a measured SELECT");
   const indexSql = publishedCode("index_lab.sql — compare actual physical plans on 15000 temporary rows");
