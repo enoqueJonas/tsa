@@ -213,19 +213,32 @@ const practices: Record<string, PracticeSpec> = {
         deliverables: ["Defect-versus-debt classification", "Evidence-based debt record", "Repay/defer rationale", "Named owner and observable revisit trigger", "Reclassification when current behavior fails"],
         completionCriteria: ["Technical debt is not used to excuse a current correctness or security failure.", "The record distinguishes observed evidence from speculation.", "The decision can be reviewed without oral context.", "A trigger determines when to revisit; 'later' alone is not enough.", "No unverified Steward backlog item is invented."]
     },
-    "software-craft-useful-logging": {
-        objective: "Design logs that let an engineer reconstruct one important Steward operation without exposing sensitive data.",
-        scenario: "A service ownership or lifecycle change is disputed after the fact. Existing logs either say too little to investigate or dump noisy request data. Create a small logging contract that provides evidence another engineer could actually use.",
+    "software-craft-python-logging-records-levels-and-handlers": {
+        objective: "Understand Python loggers, records, handlers, formatters and level filters using a standalone script.",
+        scenario: "Before logging a Steward operation, prove what the Python logging module emits and why DEBUG can be filtered while INFO and WARNING are captured.",
         instructions: [
-            "Choose one important domain operation and one denied/failure path.",
-            "Define the questions an investigator should be able to answer from logs before writing log statements.",
-            "Add stable event names and the minimum useful identifiers/context at appropriate levels.",
-            "Exercise both paths and search the output using the identifiers you chose.",
-            "Explicitly inspect output for passwords, JWTs, cookies, secrets, sensitive headers or unnecessary request bodies.",
-            "Remove one noisy or duplicate log if it adds no investigative value."
+            "Save logging_basics.py from the complete reading block and run it with python3.",
+            "Identify the logger name, handler, formatter and logger/handler level settings.",
+            "Predict and verify the two captured lines and explain why the DEBUG event is absent.",
+            "Set the handler threshold to WARNING temporarily; observe the assertion fail due to the missing INFO record, restore INFO and rerun.",
+            "Explain how a record differs from a print statement and identify one value never suitable for any logging level."
         ],
-        deliverables: ["Logging questions/contract", "Success and failure log evidence", "Secret-leakage check", "Noise-removal note"],
-        completionCriteria: ["The operation can be reconstructed from stable context.", "Log levels match operational meaning.", "Sensitive values are absent.", "The logging change improves signal rather than just increasing volume."]
+        deliverables: ["Runnable logging_basics.py output", "Logger/handler/formatter diagram", "Threshold-mutant failure and corrected rerun", "Sensitive-field exclusion rationale"],
+        completionCriteria: ["The first logging program is complete and independent of Django and Steward.", "The captured events agree with the configured threshold.", "A deliberate level change makes a relevant test fail.", "Real secrets are never required."]
+    },
+    "software-craft-useful-logging": {
+        objective: "Record stable application context while proving request Authorization data is excluded.",
+        scenario: "An application needs to record successful lifecycle changes and permission denials without dumping request bodies or credentials. Use a complete pure-Python program before applying the event contract to real Steward requests.",
+        instructions: [
+            "Run the prior logging basics example to establish what a logger, handler and level are.",
+            "Save logging_events.py from the exact published code and execute it. Verify one INFO and one WARNING record with service ID 42 and request ID req-demo-7.",
+            "Confirm the input mapping contains an artificial Authorization header that the logging code intentionally does not forward.",
+            "Change the emitted event to include the authorization value; observe the secret-absence assertion fail, restore the safe allowlisted fields, and rerun.",
+            "Explain what the in-memory sink proves and what other access logs, proxy settings and operational controls would require independent checks.",
+            "Only then pick one real Steward operation, exercise allowed and denied paths, inspect log output and correlate the outcome to its HTTP response and persisted state."
+        ],
+        deliverables: ["Two contextual event lines", "Secret-exclusion negative proof", "Logger-level and sink explanation", "Optional real Steward correlation evidence"],
+        completionCriteria: ["All variables in the example are defined before use.", "The code never passes the whole request or Authorization header into the log event.", "An intentional secret leak breaks the published assertion.", "Logging evidence is not mistaken for enforcement or production audit completeness."]
     },
     "software-craft-technical-documentation": {
         objective: "Make Steward runnable and understandable by an engineer who did not participate in its development.",
