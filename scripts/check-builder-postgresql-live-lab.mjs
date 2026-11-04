@@ -131,6 +131,18 @@ try {
   assert.equal(run(["-d", "tsa_library", "-c", "SELECT count(*) FROM library.books"]).out, "2",
     "Subquery reading must not alter persistent catalogue records");
 
+  // Ordinary WITH and recursive SQL are verified independently of Steward.
+  verifyLibrary("cte_library_one.sql — named recent books", ["Things Fall Apart"]);
+  verifyLibrary("cte_library_two.sql — staged count and earliest year", ["2|1937"]);
+  const missingCte = runLibrary("cte_library_scope_fail.sql — name unavailable after the statement", 1);
+  assert.match(missingCte.err, /relation "recent_books" does not exist/);
+  verifyLibrary("cte_recursion_numbers.sql — bounded counter", ["1", "2", "3", "4"]);
+  verifyLibrary("cte_recursion_people.sql — a three-link chain",
+    ["Ana|0", "Bia|1", "Ciro|2", "Dina|3"]);
+  verifyLibrary("cte_recursion_cycle.sql — safe walk across A and B", ["A|1", "B|2"]);
+  assert.equal(run(["-d", "tsa_library", "-c", "SELECT count(*) FROM library.books"]).out, "2",
+    "WITH and recursive examples must not mutate the original book records");
+
   const wrongDatabase = run(["-d", "tsa_invalid_database_name", "-c", "SELECT 1"], 2);
   assert.match(wrongDatabase.err, /database "tsa_invalid_database_name" does not exist/);
 
