@@ -2707,7 +2707,7 @@ const specs: DataLessonSpec[] = [
             {
                 "id": "rollback",
                 "title": "Make a transfer, inspect it, then undo it",
-                "body": "Save this example as wallet_rollback.sql and run it from your shell with psql -X -d tsa_library -v ON_ERROR_STOP=1 -f wallet_rollback.sql, or pipe it to the disposable Docker psql client. All statements must execute in one session, because our example table is TEMP.\n\nCREATE TEMP TABLE declares two columns and constraints: owner identifies a balance, and amount must be nonnegative. Two INSERT values establish the initial state. BEGIN opens the transaction. One UPDATE subtracts 30 from Ana, and another adds 30 to Bia. The SELECT inside the transaction shows 70 and 70. ROLLBACK undoes both updates, and the final SELECT shows the original 100 and 40.\n\nThis demonstrates the meaning of rollback with actual SQL. It does not simulate a power failure or prove durability, because the table itself is deliberately temporary.",
+                "body": "Save this example as wallet_rollback.sql and run it from your shell with psql -X -d tsa_library -v ON_ERROR_STOP=1 -f wallet_rollback.sql, or pipe it to the disposable Docker psql client. All statements must execute in one session, because our example table is TEMP.\n\nCREATE TEMP TABLE declares two columns and constraints: owner identifies a balance, and amount must be nonnegative. Two INSERT values establish the initial state. BEGIN opens the transaction. One UPDATE subtracts 30 from Ana, and another adds 30 to Bia. The SELECT inside the transaction shows 70 and 70. ROLLBACK undoes both updates, and the final SELECT shows the original 100 and 40.\n\nThis demonstrates the meaning of rollback with actual SQL. It does not simulate a power failure or prove durability, because the table itself is deliberately temporary.\n\nAn important psql detail: do not pass this entire file as one quoted string to `psql -c`. A single `-c` argument containing several SQL statements is one request to PostgreSQL; the server can group statements before BEGIN into an implicit transaction. In this particular example, a later ROLLBACK can then undo the CREATE TEMP TABLE statement itself, so the final SELECT reports that wallet_example does not exist. Using the published `psql -f wallet_rollback.sql` form (or typing each statement interactively) sends statements separately and gives the intended transaction boundary. This difference is documented in PostgreSQL's psql reference and is a concrete example of why knowing your client matters.",
                 "language": "sql",
                 "caption": "wallet_rollback.sql — transfer and undo two writes",
                 "code": "CREATE TEMP TABLE wallet_example (\n  owner text PRIMARY KEY,\n  amount integer NOT NULL CHECK (amount >= 0)\n);\nINSERT INTO wallet_example VALUES ('Ana', 100), ('Bia', 40);\nBEGIN;\nUPDATE wallet_example SET amount = amount - 30 WHERE owner = 'Ana';\nUPDATE wallet_example SET amount = amount + 30 WHERE owner = 'Bia';\nSELECT owner, amount FROM wallet_example ORDER BY owner;\nROLLBACK;\nSELECT owner, amount FROM wallet_example ORDER BY owner;",
@@ -2753,6 +2753,12 @@ const specs: DataLessonSpec[] = [
                 "url": "https://www.postgresql.org/docs/17/sql-begin.html",
                 "kind": "reference",
                 "purpose": "Reference transaction boundary and default autocommit behavior."
+            },
+            {
+                "title": "PostgreSQL 17 — psql command option",
+                "url": "https://www.postgresql.org/docs/17/app-psql.html",
+                "kind": "reference",
+                "purpose": "Explain why one -c string and -f input are not interchangeable for a multi-statement rollback example."
             }
         ],
         "practiceObjective": "Execute rollback and commit with two related updates in one isolated PostgreSQL session.",
