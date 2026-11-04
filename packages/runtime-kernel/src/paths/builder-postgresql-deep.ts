@@ -2096,9 +2096,211 @@ const specs: DataLessonSpec[] = [
         "knowledgeCheck": "Why can COUNT(*) over a LEFT JOIN show 1 for a team with no services? Why is COUNT(DISTINCT service.id) appropriate for one metric but not a universal fix for SUM? When does a filter belong in JOIN ON instead of WHERE, and when is HAVING required?"
     },
     {
+        "id": "postgresql-subquery-basics",
+        "title": "Use One Query Inside Another",
+        "introduction": "Sometimes a query depends on the answer to another query. Instead of copying a value into your SQL manually, you can place a SELECT inside a larger SELECT. That inner SELECT is a subquery. We will learn the simplest two forms with a library catalogue: a subquery returning one value, and a subquery returning several candidates for IN.",
+        "outcomes": [
+            "Explain what makes a SELECT a subquery.",
+            "Distinguish a scalar result from a set of candidate values.",
+            "Use a computed average as a filter without hard-coding it.",
+            "Recognize the PostgreSQL error when a scalar subquery returns too many rows."
+        ],
+        "sections": [
+            {
+                "id": "query-inside-query",
+                "title": "Why use a subquery at all?",
+                "body": "Suppose you want books published before the catalogue's average publication year. You could run SELECT AVG(published_year), copy the result and type it into a second query. But the average might change after another book is inserted, and a hard-coded year would quickly become wrong. A subquery lets SQL calculate the value as part of the question.\n\nA subquery is a SELECT statement placed inside another SQL statement. The inner query produces a result; the outer query uses it as a comparison value, a membership set or a source of rows. Parentheses separate its SQL from the outer expression. This is about the logical meaning of the query, not a claim that PostgreSQL literally executes the inner query first in every physical plan.\n\nOur persistent library.books table already has The Hobbit (1937) and Things Fall Apart (1958). If you have added more books, inspect the table and understand why outputs differ. We will not create, modify or delete records for these examples. Start by predicting the average of 1937 and 1958."
+            },
+            {
+                "id": "scalar-subquery",
+                "title": "Return a single value to compare against",
+                "body": "A scalar subquery supplies one column and at most one row in a place where SQL expects one value. AVG(published_year) returns one aggregate value for the books table. On the two-book lab, that average is 1947.5. When the outer WHERE asks published_year < (SELECT AVG(...)), it compares each book's year to the computed average and returns The Hobbit.\n\nWalk through the logic: the inner SELECT describes a single average across all known publication years; the outer SELECT describes the titles whose years are below that value. A later insertion would change the calculated average automatically, without editing the query text. PostgreSQL can choose an efficient physical plan; the important point is the result contract.\n\nAVG ignores NULL input years. If every row's year is NULL, the result is NULL, and comparing a known year with NULL produces UNKNOWN. That is not a syntax failure; it follows the NULL rules you learned earlier.",
+                "language": "sql",
+                "caption": "subquery_library_average.sql — a computed scalar threshold",
+                "code": "SELECT ROUND(AVG(published_year), 1) AS average_year\nFROM library.books;\n\nSELECT title\nFROM library.books\nWHERE published_year < (SELECT AVG(published_year) FROM library.books)\nORDER BY title;",
+                "output": "1947.5\nThe Hobbit"
+            },
+            {
+                "id": "shape-matters",
+                "title": "What if the inner query returns two rows?",
+                "body": "A scalar expression cannot substitute two publication years where one number is expected. The deliberately invalid example below asks PostgreSQL to place SELECT published_year FROM library.books into a single output column. Our two-book table produces two rows, so PostgreSQL rejects it with \"more than one row returned by a subquery used as an expression.\"\n\nThat is a useful failure, not a reason to add LIMIT 1 without thought. LIMIT 1 would hide the ambiguity by selecting some candidate year, potentially without a stable order or meaningful business rule. Instead, ask what the outer operation wants: one aggregated value, a list of valid values, or merely the existence of a match.\n\nDo not run a destructive cleanup to force the inner query to one row. The next example uses IN when several candidate values are legitimate.",
+                "language": "sql",
+                "caption": "subquery_library_scalar_fail.sql — expected multirow scalar error",
+                "code": "SELECT (SELECT published_year FROM library.books) AS one_year;",
+                "output": "ERROR: more than one row returned by a subquery used as an expression"
+            },
+            {
+                "id": "in-results",
+                "title": "IN checks membership in an inner result set",
+                "body": "Another question: which catalogue books were written by authors on a small selected-author list? A subquery can produce that list. Here we use an inline VALUES source with two author strings to keep the example read-only and independent of a more complex schema. The inner SELECT chosen.author returns two candidate values. The outer author IN (...) test is TRUE when a book's author equals any of them.\n\nWith the current two-book catalogue, Tolkien matches; Nobody does not. The result is The Hobbit. Do not mistake IN for a substring match: 'Tolkien' is not equal to 'J. R. R. Tolkien'. Use complete values for equality membership, and LIKE/ILIKE for patterns.\n\nA scalar comparison such as author = (subquery) is inappropriate when the subquery can return two rows. IN handles multiple candidate values. A query can also return no candidates; in that case IN is not TRUE for any non-null author. NULLs inside membership sets require additional care, especially with NOT IN, which we will study in the next lesson.",
+                "language": "sql",
+                "caption": "subquery_library_in.sql — membership in computed authors",
+                "code": "SELECT title\nFROM library.books\nWHERE author IN (\n  SELECT chosen.author\n  FROM (VALUES ('J. R. R. Tolkien'), ('Nobody')) AS chosen(author)\n)\nORDER BY title;",
+                "output": "The Hobbit"
+            },
+            {
+                "id": "no-extra-storage",
+                "title": "Does a subquery create a new database object?",
+                "body": "These examples have not created a separate table or schema. The subquery is part of one SQL statement and its result exists as part of evaluating that statement. A derived table in FROM is another valid form: a subquery can produce a temporary result with columns that the outer query then refers to. That is not the same thing as CREATE TEMP TABLE, which creates a named table for one whole session.\n\nA subquery may be logically repeated for different outer rows if it refers to the outer query's columns. We have deliberately avoided that extra complexity here; the average and author-list subqueries do not reference an individual outer book. The next lesson introduces correlated subqueries, where that relationship is essential.\n\nThe terms \"inner\" and \"outer\" describe how SQL is written. They are not instructions to PostgreSQL's optimizer to execute every piece in that literal order. Use EXPLAIN later to investigate physical access paths after you understand the SQL's expected result."
+            },
+            {
+                "id": "new-problem",
+                "title": "Solve a different library question",
+                "body": "Without copying the examples, write a query for titles published after the average year of all catalogued books. Predict Things Fall Apart, then execute it. Use the same scalar shape—one average year—rather than an IN set. Now change the question to books whose author appears in a list containing only Chinua Achebe. Use IN with a one-row inner source and predict one book.\n\nFor the negative case, explain why using equality with a two-row subquery is a type-of-result mistake: it tries to substitute a set where the outer comparison needs one value. Avoid \"fixing\" the error by deleting one of the books.\n\nYou should now be able to identify the needed result shape before writing SQL. The next lesson answers another kind of question: does a matching row exist at all?"
+            }
+        ],
+        "warning": "A scalar subquery may return zero or one row; more than one row in scalar context causes an error. Never add LIMIT 1 just to hide an unclear business rule.",
+        "assignment": [
+            "Calculate the average publication year and predict the below-average book.",
+            "Execute the scalar average and IN examples and inspect the returned rows.",
+            "Deliberately run the multirow scalar example; record and explain the server error.",
+            "Write an independent above-average query.",
+            "State whether each example requires one value, several values or an existence check."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Subquery Expressions",
+                "url": "https://www.postgresql.org/docs/17/functions-subquery.html",
+                "kind": "reference",
+                "purpose": "Confirm SQL scalar and membership subquery semantics."
+            },
+            {
+                "title": "PostgreSQL 17 — Aggregate Functions",
+                "url": "https://www.postgresql.org/docs/17/functions-aggregate.html",
+                "kind": "reference",
+                "purpose": "Reference AVG and its NULL behavior."
+            }
+        ],
+        "practiceObjective": "Use read-only library subqueries to distinguish scalar from set-shaped results.",
+        "practiceInstructions": [
+            "Work against the two-book library dataset, without altering records.",
+            "Run the average scalar query and IN membership query, comparing outputs with predictions.",
+            "Execute the expected multirow scalar error and explain the correct result shape.",
+            "Design one new subquery that calculates a threshold instead of hard-coding it."
+        ],
+        "knowledgeCheck": "When can a subquery be used as a scalar expression? What happens if it returns two rows? Why is IN appropriate for several matching authors? Does a subquery create a permanent database table?",
+        "readingTitle": "Learn scalar and IN subqueries",
+        "practiceTitle": "Query books using inner SELECT results",
+        "checkTitle": "Check subquery result shapes",
+        "practiceScenario": "Learn nested SELECT semantics with generic library data; apply to Steward only after the concept is established.",
+        "practiceDeliverables": [
+            "Computed average and title query",
+            "IN result and shape explanation",
+            "Expected multirow scalar error"
+        ],
+        "practiceCompletionCriteria": [
+            "The learner identifies whether the inner SELECT returns one value or several.",
+            "A deliberate scalar-result error is observed, not merely described.",
+            "The learner does not change persistent records."
+        ]
+    },
+    {
+        "id": "postgresql-exists-subqueries",
+        "title": "Check Whether Matching Rows Exist",
+        "introduction": "A subquery can return one value or a list, but sometimes you only need a yes-or-no answer: is there at least one matching row? SQL provides EXISTS for that. When the inner query refers to the book being considered by the outer query, it is called correlated. We will demonstrate EXISTS, NOT EXISTS and a surprising NULL failure of NOT IN using small read-only book examples.",
+        "outcomes": [
+            "Explain how EXISTS answers a yes/no question without returning the inner columns.",
+            "Identify an inner reference to the current outer row (correlation).",
+            "Compare EXISTS with JOIN when several matches could duplicate output rows.",
+            "Demonstrate why NOT IN with a NULL candidate can wrongly eliminate expected results."
+        ],
+        "sections": [
+            {
+                "id": "exists-meaning",
+                "title": "Why ask whether a row exists?",
+                "body": "Suppose a librarian has a list of preferred authors and wants every catalogue book whose author appears on that list. The result needs book titles, not every preferred-author entry. We could join the two lists, but if a preference list contains duplicate author entries, a normal JOIN may produce duplicate book titles. EXISTS avoids that problem because it tests only whether at least one corresponding row is present.\n\nAn EXISTS expression returns TRUE when its inner query has one or more rows and FALSE when it has none. It does not care which columns the inner SELECT returns; SELECT 1 is a common way to make that intent visible. The outer WHERE then retains books for which EXISTS is TRUE. You should ask what the business question needs: a pair of matching rows, or simply proof of at least one match.\n\nOur example creates a tiny preferred-author list using VALUES within the query. It does not save another table. For each outer book row, the inner WHERE compares chosen.author against that book's author."
+            },
+            {
+                "id": "correlation",
+                "title": "Correlate the inner query to the current book",
+                "body": "In the SQL below, the outer table alias b stands for library.books. Inside EXISTS, chosen.author = b.author refers to the author of the *current outer row*. That reference is called correlation. The first book is by Tolkien and does not match the chosen list; Things Fall Apart is by Chinua Achebe and does. EXISTS is TRUE for the second book, so the outer result contains Things Fall Apart.\n\nRead the aliases carefully. b and chosen are names scoped to different parts of one SQL statement. Removing the condition that relates chosen.author to b.author would make the existence test independent of the current book. If the chosen list had any row, such an uncorrelated EXISTS would become TRUE for every book. A syntactically valid query could therefore return an incorrect report.\n\nPostgreSQL may optimize an EXISTS as a semi-join or another strategy. The essential logical meaning is that each outer book either qualifies once or does not qualify.",
+                "language": "sql",
+                "caption": "exists_library_match.sql — one correlated existence check",
+                "code": "SELECT b.title\nFROM library.books AS b\nWHERE EXISTS (\n  SELECT 1\n  FROM (VALUES ('Chinua Achebe'), ('Nobody')) AS chosen(author)\n  WHERE chosen.author = b.author\n)\nORDER BY b.title;",
+                "output": "Things Fall Apart"
+            },
+            {
+                "id": "not-exists",
+                "title": "Find books without a chosen author match",
+                "body": "NOT EXISTS reverses the yes/no question. A book qualifies if the correlated inner query returns no matching row. With Chinua Achebe on the chosen list, The Hobbit is not represented and is returned.\n\nThere are two separate logical steps: for The Hobbit, the inner equality chosen.author = b.author has no match, so EXISTS is FALSE, then NOT EXISTS becomes TRUE. For Things Fall Apart, the inner SELECT has a match, so EXISTS is TRUE and NOT EXISTS is FALSE. This is a reliable way to express many \"has no related record\" questions.\n\nAlways check that the inner WHERE actually relates the tables by the intended key. If you write NOT EXISTS (SELECT 1 FROM chosen_list) with no correlation and the list has any row, all outer books are excluded, regardless of author. That is a common logic defect that SQL syntax alone will not catch.",
+                "language": "sql",
+                "caption": "exists_library_missing.sql — find books outside a chosen author list",
+                "code": "SELECT b.title\nFROM library.books AS b\nWHERE NOT EXISTS (\n  SELECT 1 FROM (VALUES ('Chinua Achebe')) AS chosen(author)\n  WHERE chosen.author = b.author\n)\nORDER BY b.title;",
+                "output": "The Hobbit"
+            },
+            {
+                "id": "duplicates",
+                "title": "Why EXISTS can differ from a JOIN",
+                "body": "Now deliberately duplicate Chinua Achebe in the read-only preferred-author list. If you JOIN books to those two list rows, one matching book forms two matching pairs. SELECT b.title therefore prints Things Fall Apart twice. EXISTS, in contrast, would return the outer book at most once, because it tests whether *any* matching row exists.\n\nNeither operation is inherently wrong: JOIN returns related pairs, while EXISTS answers a membership question. If the report wants one line per book, EXISTS may express that intention more directly. Using DISTINCT to remove duplicate JOIN rows can sometimes be valid, but it should not hide that the query modeled the wrong question.\n\nPredict the number of output rows before executing. Do not infer that the two identical titles represent two saved book records: the duplication comes from the matching rows in the right-hand source.",
+                "language": "sql",
+                "caption": "exists_library_join_duplicates.sql — ordinary JOIN produces two matching pairs",
+                "code": "SELECT b.title\nFROM library.books AS b\nJOIN (VALUES ('Chinua Achebe'), ('Chinua Achebe')) AS chosen(author)\n  ON chosen.author = b.author\nORDER BY b.title;",
+                "output": "Things Fall Apart\nThings Fall Apart"
+            },
+            {
+                "id": "not-in-null",
+                "title": "Why NOT IN with NULL is a trap",
+                "body": "NOT IN asks whether a value differs from all candidate values, but NULL is unknown rather than an ordinary value. For 2 NOT IN (1, NULL), the comparison against 1 is TRUE (2 differs), but comparison with NULL is UNKNOWN. The full result is UNKNOWN, not TRUE. WHERE excludes it. The same is true for 3, so an innocent-looking anti-membership query can return *zero* rows.\n\nUse a tiny read-only VALUES source with integers 1, 2 and 3. The blocked list contains 1 and NULL. The first query using NOT IN returns nothing. The second uses a correlated NOT EXISTS: it asks whether any known blocked number actually equals the candidate. For 2 and 3 there is no such match, so it returns those numbers.\n\nThis does not mean NOT IN is always wrong: if the candidate set is known to be non-null, it can express the intended logic. The correct choice depends on the schema, NULL policy and question being asked. Understand the truth conditions rather than memorizing a blanket replacement rule.",
+                "language": "sql",
+                "caption": "exists_library_not_in_null.sql — NOT IN returns none; NOT EXISTS returns two",
+                "code": "SELECT c.x FROM (VALUES (1), (2), (3)) AS c(x)\nWHERE c.x NOT IN (\n  SELECT b.y FROM (VALUES (1), (NULL::integer)) AS b(y)\n)\nORDER BY c.x;\n\nSELECT c.x FROM (VALUES (1), (2), (3)) AS c(x)\nWHERE NOT EXISTS (\n  SELECT 1 FROM (VALUES (1), (NULL::integer)) AS b(y)\n  WHERE b.y = c.x\n)\nORDER BY c.x;",
+                "output": "NOT IN: no rows\nNOT EXISTS: 2, 3"
+            },
+            {
+                "id": "independent-scenario",
+                "title": "Transfer the idea to a student-course database",
+                "body": "A university asks for students enrolled in at least one course, and for students with no enrollments. A student may have many enrollment rows, so an ordinary JOIN could return a student several times. Write two query outlines: one using EXISTS and one using NOT EXISTS, relating enrollment.student_id to the current student.id.\n\nExplain what would happen if that correlation predicate were removed. If the Enrollments table is not empty, uncorrelated EXISTS would include every student, and uncorrelated NOT EXISTS would exclude every student. The query might execute perfectly while answering the wrong question.\n\nDo not treat this as a PostgreSQL-only feature. Correlated subqueries are part of SQL and apply across many relational systems, though performance and dialect details vary. The following Steward practice lesson will apply the same mechanisms to services and their production environments."
+            }
+        ],
+        "warning": "A missing correlation condition and a nullable NOT IN candidate set can silently change every result. Check row meaning and NULL policy before interpreting success.",
+        "assignment": [
+            "Run the correlated EXISTS and NOT EXISTS examples and explain which book qualifies.",
+            "Predict why an ordinary JOIN with a repeated author returns a duplicate title.",
+            "Run the nullable NOT IN counterexample and explain the UNKNOWN outcome.",
+            "Demonstrate the correctly correlated NOT EXISTS alternative.",
+            "Design a student/enrollment query with an explicit correlation key."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Subquery Expressions",
+                "url": "https://www.postgresql.org/docs/17/functions-subquery.html",
+                "kind": "reference",
+                "purpose": "Reference EXISTS, NOT EXISTS, NOT IN and correlated subqueries."
+            },
+            {
+                "title": "PostgreSQL 17 — Joined Tables",
+                "url": "https://www.postgresql.org/docs/17/queries-table-expressions.html",
+                "kind": "reference",
+                "purpose": "Understand why ordinary JOIN multiplies matching row pairs."
+            }
+        ],
+        "practiceObjective": "Demonstrate correlated existence checks and the nullable NOT IN failure with read-only data.",
+        "practiceInstructions": [
+            "Run the published EXISTS and NOT EXISTS examples on the two-book library.",
+            "Run the duplicate-JOIN and nullable NOT IN negative controls.",
+            "Explain every output using per-row correlation or UNKNOWN truth values.",
+            "Write an independent anti-existence query for a student/enrollment model."
+        ],
+        "knowledgeCheck": "Why can EXISTS use SELECT 1? What makes a subquery correlated? Can JOIN duplicate a book that EXISTS reports once? What does a NULL in the NOT IN list do to 2 NOT IN (1,NULL)?",
+        "readingTitle": "Learn correlated EXISTS and NOT EXISTS",
+        "practiceTitle": "Prove matching and missing relationships",
+        "checkTitle": "Check EXISTS and NOT IN",
+        "practiceScenario": "Use independent book and author lists to learn correlation before the Steward reporting exercise.",
+        "practiceDeliverables": [
+            "EXISTS/NOT EXISTS output and matching-row reasoning",
+            "Duplicate JOIN comparison",
+            "NULL poisoning demonstration and independent anti-existence query"
+        ],
+        "practiceCompletionCriteria": [
+            "The learner identifies the outer-column reference inside the subquery.",
+            "The incorrect NOT IN result and correct NOT EXISTS result are both observed.",
+            "Examples do not modify the persistent catalogue."
+        ]
+    },
+    {
         "id": "subqueries",
-        "title": "Subqueries",
-        "introduction": "A subquery is a SELECT whose result is used inside another SQL query. It can supply a single value, a set of candidate values, or an existence test. The crucial beginner skill is predicting what *shape* the inner query returns and what the outer query does with that shape. Use the existing Team, Service and Environment fixture; none of the examples creates tables or requires an ORM.",
+        "title": "Steward Practice: Subqueries and Missing Relationships",
+        "introduction": "You have learned scalar and IN subqueries, correlated EXISTS and NOT EXISTS, and how a NULL inside NOT IN can produce an unexpected empty result. Apply those mechanisms now to a five-Service Steward dataset. These are application-specific reporting cases that build on the separate SQL fundamentals; no ORM is needed.",
         "outcomes": [
             "Distinguish scalar, IN and EXISTS subquery results.",
             "Explain correlation: a reference to the current outer row inside the inner query.",
