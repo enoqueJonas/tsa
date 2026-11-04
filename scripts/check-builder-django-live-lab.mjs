@@ -164,6 +164,14 @@ for (const [name, code] of [
   assert.match(code, /from /, "No real runnable source in " + name);
 }
 
+const modelDomainExample = modelLessonSnippet("registry/models_lab.py — safe UAT record and related query");
+assert.match(modelDomainExample, /from registry\.models import Team, Service/,
+  "Django shell model example must use real absolute import");
+assert.match(modelDomainExample, /Service\.Lifecycle\.UAT/,
+  "Training model example must not invent a production Service lacking a deployment");
+assert.match(modelDomainExample, /invalid\.full_clean\(\)/,
+  "Example must demonstrate the model choices validation boundary");
+
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-django-bridge-"));
 const exec=(command,args,env=process.env)=>{
   const p=spawnSync(command,args,{cwd:root,encoding:"utf8",timeout:60000,env});
@@ -327,6 +335,22 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
     /Django readable policy: maintainer allowed; viewer, cross-team and inactive denied/);
   console.log("Builder Software Craft real Django policy passed: matching team/role grants and separate viewer/cross-team/inactive denials.");
 
+
+  // Execute the actual post-primer Steward model example in its isolated
+  // PostgreSQL-backed Django registry, after other contract probes so the new
+  // training Service does not change existing fixture-specific row counts.
+  const uatExampleFirst = exec("python3", ["manage.py", "shell", "-c", modelDomainExample], env);
+  for (const expected of [
+    "query_has_join: True",
+    "returned_rows: 1",
+    "Workshop Reports API Django Workshop uat",
+    "INVALID_LIFECYCLE_REJECTED"
+  ]) assert.ok(uatExampleFirst.includes(expected),
+    "Incorrect published Django model example: " + expected + "\n" + uatExampleFirst);
+  const uatExampleAgain = exec("python3", ["manage.py", "shell", "-c", modelDomainExample], env);
+  assert.equal(uatExampleAgain.trim(), uatExampleFirst.trim(),
+    "The domain model exercise must be safe to repeat without duplicate Services");
+  console.log("Builder Models and Domain Data passed: actual safe UAT Service, FK JOIN, idempotent reuse and invalid lifecycle rejection.");
 
   // Reconstruct the independent beginner lab from the actual authored Django
   // and DRF lessons, rather than testing equivalent code written only here.
