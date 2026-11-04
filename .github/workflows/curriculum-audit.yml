@@ -15,6 +15,7 @@ on:
       - curriculum/builder-craft-code-review-debt-split
       - curriculum/builder-craft-testing-novice-first
       - curriculum/builder-craft-config-env-basics
+      - curriculum/builder-craft-logging-foundations
       - curriculum/psql-published-practice-alignment
       - curriculum/builder-django-beginner-depth-v1
       - curriculum/system-thinker-pedagogical-audit

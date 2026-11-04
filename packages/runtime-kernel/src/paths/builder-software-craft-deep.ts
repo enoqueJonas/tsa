@@ -27,6 +27,7 @@ const craftTeaching: Record<string, { outcomes: string[]; practical: string }> =
   "Static Analysis and Automated Feedback": { outcomes: ["Distinguish formatting, linting, type checking and behavioral tests.", "Run the appropriate tool before committing.", "Treat warnings according to a documented policy rather than hiding them."], practical: "Make static checks actionable" },
   "Review a Code Change": { outcomes: ["Review intended behavior and access rules before style.", "Detect a cross-customer leak with a negative test and verify the fix.", "Classify blockers, requirement questions and optional suggestions by consequence."], practical: "Review and retest an unsafe patch" },
   "Managing Technical Debt": { outcomes: ["Separate a current defect from future maintenance cost.", "Record concrete evidence, affected change, owner and revisit trigger.", "Choose repayment or deliberate deferral based on real risk."], practical: "Make an evidence-based debt decision" },
+  "Python Logging: Records, Levels and Handlers": { outcomes: ["Explain the difference between a log record, logger, handler and formatter.", "Run Python logging with explicit DEBUG/INFO/WARNING thresholds.", "Test which event is filtered without logging sensitive values."], practical: "Run and inspect Python logging levels" },
   "Useful Logging": { outcomes: ["Select events that answer operational questions.", "Capture stable context without leaking credentials.", "Test expected, rejected and unexpected outcomes with useful log levels."], practical: "Capture safe, diagnostic events" },
   "Technical Documentation": { outcomes: ["Choose a document form suited to the reader's job.", "Write reproducible setup and verification instructions.", "Record decisions and check documentation for drift."], practical: "Write and verify developer documentation" },
   "Designing Errors": { outcomes: ["Distinguish expected domain rejections from programming failures.", "Map errors to stable API contracts.", "Avoid logging or returning sensitive implementation details."], practical: "Design and test meaningful errors" },
@@ -961,16 +962,118 @@ export const softwareCraftDeepLessons: Lesson[] = [
         [{"title":"Martin Fowler — Technical Debt","url":"https://martinfowler.com/bliki/TechnicalDebt.html"}],
     ),
     lesson(
-        "Useful Logging",
-        "Logs are operational evidence. A useful log helps an engineer reconstruct what the system did without exposing secrets or forcing them to read source code for every incident.",
+        "Python Logging: Records, Levels and Handlers",
+        "Before configuring application logs, learn what Python's logging module actually does. A logger creates log records, levels classify their importance, handlers send those records to destinations and formatters choose how they appear. This first lesson uses an in-memory stream and prints predictable results without installing packages or running Steward.",
         [
-            { title: "Log events, not noise", paragraphs: ["Choose events that matter: authentication failure categories, denied service mutations, important lifecycle changes, dependency updates and unexpected exceptions. Include stable identifiers and context needed for correlation. Avoid logging every function entry or duplicating framework access logs without purpose.", "Levels communicate expected operational meaning. ERROR is not 'something happened'; DEBUG is not a dumping ground for sensitive request bodies."] },
-            { title: "Structured context improves investigation", paragraphs: ["A consistent event name plus service_id, actor_id and request correlation data is easier to search than prose assembled differently in every call site. Never log passwords, raw tokens or secrets."], code: { language: "python", code: "logger.info(\n    \"service.lifecycle_changed\",\n    extra={\"service_id\": service.id, \"actor_id\": request.user.id, \"from_state\": old, \"to_state\": new},\n)", caption: "Capture operationally useful context without secrets." } },
-            {"title":"Prove logs capture context but not credentials","paragraphs":["A log record needs an event name, a stable entity identifier and a request correlation value; it must not contain authentication material or full request bodies. The following Python standard-library example captures a log message to an in-memory stream so the learner can assert both positive and negative claims. It demonstrates a logging contract, not a full distributed tracing system. Access controls, retention, ingestion and cross-service correlation are later operational topics."],"code":{"language":"python","caption":"Logging — executable structured-context and secret absence test","code":"import io\nimport logging\n\nstream = io.StringIO()\nlogger = logging.getLogger('tsa.steward.demo')\nlogger.setLevel(logging.INFO)\nlogger.handlers.clear()\nhandler = logging.StreamHandler(stream)\nhandler.setFormatter(logging.Formatter('%(levelname)s %(message)s service=%(service_id)s request=%(request_id)s'))\nlogger.addHandler(handler)\nlogger.propagate = False\nsecret = 'demo-access-token-NEVER-LOG'\nlogger.info('service.lifecycle_changed', extra={'service_id': 42, 'request_id': 'req-demo-7'})\nrecord = stream.getvalue()\nassert 'service=42' in record and 'request=req-demo-7' in record\nassert secret not in record\nprint(record.strip())"}},
-        ],
-        "Improve Steward logging around one important operation and one failure path.",
-        ["Choose an operation an on-call engineer would need to reconstruct.", "Define the event and minimum useful context.", "Add logs at appropriate levels.", "Exercise success and failure paths and inspect output.", "Check explicitly that tokens, passwords and secrets are absent."],
-        ["What makes a log operationally useful?", "Why are stable identifiers preferable to display names in logs?", "Which values must not be logged?"],
+        {
+                "title": "A log record is not the same thing as a print statement",
+                "paragraphs": [
+                        "print writes text to a stream, usually standard output. A logging call creates a record with metadata such as level, logger name, message and time. A configured handler then decides whether to emit that record and how to format it. This separation lets an application choose destinations and filtering without changing every call site.",
+                        "In a simple Python program, logging.getLogger('catalogue') retrieves a named logger. The name is a category for records, not a separate background process. A handler can write to the console, a rotating file or another configured sink. More advanced log aggregation is taught later; start with one stream."
+                ]
+        },
+        {
+                "title": "Understand levels before choosing one",
+                "paragraphs": [
+                        "DEBUG helps a developer inspect detailed state; INFO records expected significant events; WARNING describes something concerning or recoverable; ERROR represents an operation that failed; CRITICAL indicates a severe failure demanding special attention. The severity is a classification, not proof that a human was paged. Do not log every function call at INFO simply because it ran.",
+                        "Filters apply at logger and handler boundaries. In the example the logger accepts DEBUG and above, but the handler accepts only INFO and above. Therefore the DEBUG call creates no visible output in that stream. This is different from an assert or program error."
+                ]
+        },
+        {
+                "title": "Create a logger, handler and formatter",
+                "paragraphs": [
+                        "Save the full example below as logging_basics.py and run python3 logging_basics.py. It creates a StringIO stream, a named logger, a StreamHandler with an INFO threshold and a formatter that includes the record level. The explicit handler cleanup and propagate=False make the output deterministic in this disposable learning context.",
+                        "The script must print only the summary line after verifying that the captured stream contains the two expected records. It does not print the stream itself; you can add print(lines) temporarily to inspect the exact representation, then remove it. The assertion is the contract."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "Python logging basics — runnable logger handler and level filter",
+                        "code": "import io\nimport logging\n\noutput = io.StringIO()\nlogger = logging.getLogger(\"tsa.learning.logging.basics\")\nlogger.handlers.clear()\nlogger.propagate = False\nlogger.setLevel(logging.DEBUG)\n\nhandler = logging.StreamHandler(output)\nhandler.setLevel(logging.INFO)\nhandler.setFormatter(logging.Formatter(\"%(levelname)s %(message)s\"))\nlogger.addHandler(handler)\n\nlogger.debug(\"not visible at this handler level\")\nlogger.info(\"catalogue.started\")\nlogger.warning(\"catalogue.retry_later\")\n\nlines = output.getvalue().splitlines()\nassert lines == [\"INFO catalogue.started\", \"WARNING catalogue.retry_later\"], lines\nprint(\"logging basics: INFO and WARNING visible; DEBUG filtered\")"
+                }
+        },
+        {
+                "title": "Why not every event needs a log",
+                "paragraphs": [
+                        "Logs are helpful when they answer a future diagnostic question, such as which action was rejected and which request can be investigated. Repeated messages without useful context create noise and cost. A log message should not be used as a replacement for a correct HTTP response or transaction rollback.",
+                        "Writing DEBUG details may be useful locally, but logging credentials or complete request bodies is unsafe even at DEBUG. Lower visibility is not a security boundary. The next lesson shows how to explicitly select safe context for an application event."
+                ]
+        }
+],
+        "Run a real logger and handler and explain why DEBUG can be filtered while INFO and WARNING are emitted.",
+        [
+        "Create logging_basics.py from the complete code block and execute it using python3.",
+        "Identify the logger, record, handler, formatter and two distinct level thresholds in the source.",
+        "Predict the captured records before running; verify the script reports only INFO and WARNING.",
+        "Change handler.setLevel(logging.INFO) to logging.WARNING and record which assertion fails; restore the threshold and rerun successfully.",
+        "Explain one case where INFO is useful and one piece of data you would never include in any log level."
+],
+        [
+        "What is the job of a logger compared with a handler?",
+        "Why is DEBUG absent from the example's captured output?",
+        "How does a formatter affect a record without changing application behavior?",
+        "Why does DEBUG not make it acceptable to log passwords?"
+],
+        [pythonLogging],
+    ),
+    lesson(
+        "Useful Logging",
+        "Now that logger, level, handler and formatter are familiar, apply logging to two observable application events. A good log answers which action happened, what resource was affected and how to correlate the request, while deliberately excluding credentials and raw request bodies. Learn the mechanism first; the Steward project is a later practical transfer.",
+        [
+        {
+                "title": "Log decisions and outcomes, not just activity",
+                "paragraphs": [
+                        "A useful service event might be a successful lifecycle change at INFO or an authorization denial at WARNING. Their level signals operational meaning, while the message names the domain event. You do not need to emit a line for every function entry or every serializer field to know what happened.",
+                        "A denied mutation should not secretly alter the Service record just because its log says 'denied'. The log is evidence, not the enforcement mechanism. Actual authorization and persistence behavior require separate tests."
+                ]
+        },
+        {
+                "title": "Stable context makes investigation possible",
+                "paragraphs": [
+                        "A consistent event name, stable service ID and request correlation ID support grouping events across one request. Mutable display names can be included if truly useful but should not replace identifiers used by the system. In a single application, a request ID can be a generated opaque string; cross-service tracing is a separate later topic.",
+                        "A logging call can include structured metadata through extra fields; the formatter needs those fields when it references them. If one call omits a required service_id, Python logging can report a formatting failure. Design fields and defaults consistently rather than assuming every record has them."
+                ]
+        },
+        {
+                "title": "Select safe fields explicitly",
+                "paragraphs": [
+                        "The following complete Python program simulates request data that includes a secret Authorization header. Instead of passing the entire mapping to the logger, record_event takes only service_id and request_id and writes a named event. Its assertions prove that useful context appears and the authorization string is absent despite being present in the input data.",
+                        "Save the script as logging_events.py and run python3 logging_events.py. It prints two contextual events, then a summary. Both success and denial are included. A later Django integration must also verify logging middleware, access logs, reverse proxy settings and retention policies; this pure Python example cannot prove those properties."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "Logging — executable structured-context and secret absence test",
+                        "code": "import io\nimport logging\n\nstream = io.StringIO()\nlogger = logging.getLogger(\"tsa.learning.logging.events\")\nlogger.handlers.clear()\nlogger.propagate = False\nlogger.setLevel(logging.INFO)\n\nhandler = logging.StreamHandler(stream)\nhandler.setFormatter(logging.Formatter(\n    \"%(levelname)s %(message)s service=%(service_id)s request=%(request_id)s\"\n))\nlogger.addHandler(handler)\n\nrequest_data = {\n    \"request_id\": \"req-demo-7\",\n    \"authorization\": \"Bearer demo-access-token-NEVER-LOG\",\n}\n\ndef record_event(level, event_name, service_id, request_context):\n    # Explicit allowlist: never pass a complete request or its headers to logging.\n    logger.log(level, event_name, extra={\n        \"service_id\": service_id,\n        \"request_id\": request_context[\"request_id\"],\n    })\n\nrecord_event(logging.INFO, \"service.lifecycle_changed\", 42, request_data)\nrecord_event(logging.WARNING, \"service.change_denied\", 42, request_data)\n\nentries = stream.getvalue()\nassert \"INFO service.lifecycle_changed service=42 request=req-demo-7\" in entries\nassert \"WARNING service.change_denied service=42 request=req-demo-7\" in entries\nassert request_data[\"authorization\"] not in entries\nassert \"Bearer\" not in entries\nassert len(entries.splitlines()) == 2\nprint(entries.strip())\nprint(\"logging events: 2 useful events; authorization header excluded\")"
+                }
+        },
+        {
+                "title": "Make logs diagnostic but not a second error response",
+                "paragraphs": [
+                        "An expected permission denial can be WARNING if it matters operationally, but not every rejected request needs an alert. An unexpected exception should be surfaced to the client through a safe generic error while detailed diagnostic evidence stays in controlled logs. Never return a stack trace or database exception text merely because it is useful in a log.",
+                        "Prefer explicit, stable event names over assembling a different prose sentence in every code path. Do not add secret-looking fields to extra, even if the formatter currently ignores them: another handler may serialize every field."
+                ]
+        },
+        {
+                "title": "Know what the exercise proves",
+                "paragraphs": [
+                        "The assertions prove exactly two records with stable resource/request context and absence of the one supplied Authorization string in the captured sink. They do not prove no other logger or reverse proxy can leak secrets, or that logs are retained and protected appropriately in a production environment. Those require independent integration and security review.",
+                        "For a real Steward operation, test an allowed and a denied request, inspect the application's configured log sink, confirm no token/body leakage and correlate the log to the actual response and unchanged database state on denial. Do this only after the endpoint and identity fixtures are real."
+                ]
+        }
+],
+        "Capture useful allow/deny application events with stable context and prove a secret-bearing request field never enters the controlled sink.",
+        [
+        "Run logging_basics.py from the prerequisite lesson to identify the handler threshold and format.",
+        "Save and execute logging_events.py from the reading, verifying INFO and WARNING events, stable IDs and absence of the supplied Authorization header.",
+        "Identify which input field is deliberately not forwarded into extra and why that is safer than logging an entire request mapping.",
+        "Change record_event to include the Authorization string in the emitted message; prove the secret-absence assertion fails, then restore the safe implementation.",
+        "Explain how to connect one real Steward event to an API response and database state without relying on logs alone."
+],
+        [
+        "Which identifiers should an actionable log event include?",
+        "Why should request headers not be passed wholesale to logging extra?",
+        "What is the difference between recording a denial and actually enforcing one?",
+        "What additional checks are required to claim a real deployed service does not leak secrets?"
+],
         [pythonLogging],
     ),
     lesson(
