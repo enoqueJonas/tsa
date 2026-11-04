@@ -155,3 +155,17 @@ These tasks are specifications for independent learner assessment, **not evidenc
 - Align the final published practical override with the exact independent scripts and move any real Steward refactor to a separate evidence-based transfer step.
 
 **Evidence limits:** Exact-head CI and rendered browser traversal must pass separately. Successful Python execution is not evidence a novice can independently recognize a maintainability problem, stop refactoring appropriately, or transfer to an unfamiliar Steward function. Human review and learner transfer remain OPEN.
+
+## 2026-11-04 — Code Review and Technical Debt split
+
+**Finding:** A single ~3.3k-character lesson compressed reviewing correctness/security changes and managing maintenance costs into one reading. It had no complete patch or executable review target, yet the published practical immediately required an existing Steward PR and a technical-debt item. These are different skills, and no current code defect should be relabeled as deferrable debt.
+
+**Teaching remediation:**
+- Retitle the existing lesson **Review a Code Change** while retaining its original activity ID through a stable-ID override. Read one simplified invoice-export diff against two requirements: keep customer isolation and exclude archived records.
+- Publish an intentionally unsafe, standalone Python candidate that drops ownership filtering. A negative test must raise AssertionError and identify foreign invoice INV-200. The source-extracted smoke test expects the actual failure.
+- Publish a complete corrected program that applies both filters, with customers 11, 22 and no records. The positive and cross-customer negative cases execute in CI.
+- Teach actionable blocker wording, requirement questions versus optional suggestions, evidence-based severity and re-review of the final diff; explicitly distinguish the simple Python list from authenticated HTTP authorization.
+- Add an independent **Managing Technical Debt** lesson that contrasts the existing invoice leak (defect) with two currently functioning but duplicated CSV parsers (plausible debt). Include a concrete example record with evidence, unmeasured cost, options, owner, decision, test requirements and observable revisit trigger.
+- Align both published practical overrides with the learner order; neither requires inventing an existing Steward pull request or issue. Later transfer may use actual repository evidence.
+
+**Evidence gates:** Matching-head full workflow, source-extracted Python checks and browser traversal are separately verified after the final commit. No uncoached novice review or true authenticated API security assessment is implied. Builder learner-validated remains **NO**.
