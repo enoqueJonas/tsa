@@ -40,3 +40,9 @@ The existing `scripts/check-builder-django-live-lab.mjs` now guards the actual a
 - [ ] Uncoached novice transfer: create an unfamiliar table/model in a scratch project, explain its generated migration and diagnose a duplicate or missing-table error without assistant input.
 
 The remaining Django lessons and other Builder modules stay open in the school-level tracker; this is **source remediation**, not module-wide learner validation.
+
+## Independent ForeignKey lesson added before the applied bridge
+
+The first Book model and migration cannot by themselves explain the multi-table `Service.owning_team` relationship. A separate **Connect Django Models With ForeignKey** lesson now follows the initial migration, keeping the broader Steward ORM chapter *after* all three prerequisites. It adds `catalogue_writer` and optional `Book.writer` with a second migration rather than deleting existing records. The reading and practical explain `writer_id`, forward `book.writer`, reverse `writer.books`, temporary nullable migration compatibility and the distinction between Django `on_delete=PROTECT` and actual database-level constraints. `book_writer_lab.py` demonstrates the saved foreign key and an actual rejected deletion, proving the existing Book remains.
+
+The Django CI runner extracts the **exact published replacement models.py**, generates and inspects migration `0002`, checks its writer table and FK column, applies it, runs the source-published relationship script and asserts the real `ProtectedError`. Source order now requires Model → First Migration → ForeignKey → Steward ORM. This strengthens the initial remediation; it is still subject to matching-head CI and independent learner validation.
