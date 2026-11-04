@@ -6,6 +6,7 @@ on:
       - curriculum/postgresql-first-principles-rebuild
       - curriculum/psql-native-first-principles
       - curriculum/django-published-practice-sequencing
+      - curriculum/builder-identity-novice-progression
       - curriculum/psql-published-practice-alignment
       - curriculum/builder-django-beginner-depth-v1
       - curriculum/system-thinker-pedagogical-audit

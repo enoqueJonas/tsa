@@ -5,6 +5,18 @@ import path from "node:path";
 import {spawnSync} from "node:child_process";
 
 const source = fs.readFileSync("packages/runtime-kernel/src/paths/builder-django-rich.ts","utf8");
+const identitySource = fs.readFileSync("packages/runtime-kernel/src/paths/builder-identity-auth-deep.ts","utf8");
+function identitySnippet(caption) {
+  const anchor = identitySource.indexOf('caption: "' + caption + '"');
+  assert.ok(anchor >= 0, 'Missing exact identity learner snippet: ' + caption);
+  const after = identitySource.slice(anchor, anchor + 3000).match(/\bcode:\s*("(?:\\.|[^"\\])*")/);
+  if (after && after.index < 150) return JSON.parse(after[1]);
+  const before = identitySource.slice(Math.max(0, anchor - 6000), anchor);
+  const matches = [...before.matchAll(/\bcode:\s*("(?:\\.|[^"\\])*")/g)];
+  assert.ok(matches.length, 'No identity source code for ' + caption);
+  return JSON.parse(matches.at(-1)[1]);
+}
+
 const publishedPracticeSource=fs.readFileSync("packages/runtime-kernel/src/paths/builder-django-quality.ts","utf8");
 function publishedPractice(id) {
   const key='  "django-and-api-engineering-'+id+'": {';
@@ -176,6 +188,39 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   const output=exec("python3",["manage.py","shell","-c",probe],env);
   assert.match(output,/DJANGO_BRIDGE_OK Payments API Payments production production/);
   assert.match(output,/DJANGO_READINESS_OK rejected-then-promoted then-final-deletion-blocked/);
+
+  // The first identity lesson only teaches the concept; the following lesson
+  // must create Membership using the existing built-in auth.User in the same
+  // already migrated Django project, not switch AUTH_USER_MODEL retroactively.
+  const membership = identitySnippet("registry/models.py — add Membership without replacing existing models");
+  fs.appendFileSync(path.join(root, "registry", "models.py"), "\n" + membership + "\n");
+  const migrationOutput = exec("python3", ["manage.py", "makemigrations", "registry", "--noinput"], env);
+  assert.match(migrationOutput, /0002_membership/, "Membership should be a new migration after the original ORM models");
+  const membershipSql = exec("python3", ["manage.py", "sqlmigrate", "registry", "0002"], env);
+  assert.match(membershipSql, /registry_membership/i, "Actual SQL must create an explicit Membership table");
+  exec("python3", ["manage.py", "migrate", "registry", "--noinput"], env);
+  const seedIdentity = identitySnippet("identity_membership_lab.py — real users and two Team memberships");
+  assert.match(exec("python3", ["manage.py", "shell", "-c", seedIdentity], env),
+    /Identity lab: 2 accounts, 2 memberships; disabled account retained/);
+  const credentialLab = identitySnippet("Delegate password hashing to Django.");
+  assert.match(exec("python3", ["manage.py", "shell", "-c", credentialLab], env),
+    /Password lab: verifier, correct\/wrong login and inactive denial/);
+  const duplicateMembership = [
+    "from django.contrib.auth import get_user_model",
+    "from registry.models import Team, Membership",
+    "from django.db import IntegrityError",
+    "ana = get_user_model().objects.get(username='tsa_ana')",
+    "team = Team.objects.get(name='Platform')",
+    "try:",
+    "    Membership.objects.create(user=ana, team=team, role='viewer')",
+    "except IntegrityError:",
+    "    print('MEMBERSHIP_DUPLICATE_REJECTED')",
+    "else:",
+    "    raise AssertionError('duplicate team membership was accepted')",
+  ].join("\n");
+  assert.match(exec("python3", ["manage.py", "shell", "-c", duplicateMembership], env),
+    /MEMBERSHIP_DUPLICATE_REJECTED/);
+  console.log("Builder Identity Django lab passed: real built-in users, new membership migration, duplicate FK pair refusal, hashed credential, correct/wrong/inactive authentication.");
 
   // Reconstruct the independent beginner lab from the actual authored Django
   // and DRF lessons, rather than testing equivalent code written only here.

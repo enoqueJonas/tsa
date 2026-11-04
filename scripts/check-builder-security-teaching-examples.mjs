@@ -2,6 +2,23 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import {spawnSync} from "node:child_process";
 const source=fs.readFileSync("packages/runtime-kernel/src/paths/builder-identity-auth-deep.ts","utf8");
+const identity = source.indexOf('"identity-authentication-authorization-identity-in-software-systems"');
+const membership = source.indexOf('"identity-authentication-authorization-create-user-and-team-membership"');
+const authvs = source.indexOf('"identity-authentication-authorization-authentication-versus-authorization"');
+const password = source.indexOf('"identity-authentication-authorization-password-storage-and-hashing"');
+assert.ok(identity >= 0 && membership > identity && authvs > membership && password > authvs,
+  "Identity concepts must precede account modeling, auth decisions and password storage");
+assert.doesNotMatch(source.slice(identity, membership), /manage\.py|registry\/models\.py/,
+  "Conceptual Identity lesson may not require Django implementation before account modeling");
+assert.match(source.slice(membership, authvs), /settings\.AUTH_USER_MODEL/,
+  "Membership must reference Django's configured account model");
+assert.match(source.slice(membership, authvs), /password=None/,
+  "Initial identity lab must not introduce password verification before teaching password storage");
+assert.match(source.slice(password, source.indexOf('"identity-authentication-authorization-jwt-structure-and-lifecycle"', password)), /get_user_model\(\)/,
+  "Password example must use the previously created Django user model");
+assert.doesNotMatch(source, /User\(email=/, "Do not reintroduce an unexecutable custom User example");
+assert.doesNotMatch(source, /title: "Steward connection"/, "Do not repeat an injected Steward callout in every Identity reading");
+
 const cases=[
 ["Refresh rotation — executable replay and family revocation state machine",["OK: rotated","REPLAY: family revoked","DENIED: family revoked"]],
 ["Authorization — executable subject/action/object decision matrix",["authorization matrix passed: 6 cases"]]
