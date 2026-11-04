@@ -512,18 +512,77 @@ export const softwareCraftDeepLessons: Lesson[] = [
     ),
     lesson(
         "Refactoring",
-        "Refactoring changes internal structure while preserving observable behavior. That constraint is what separates refactoring from feature development and makes tests and small steps so important.",
+        "Refactoring is changing how code is organized without changing what the code does for its callers. That is a stricter goal than making code shorter. Work through a complete refund example: first run a baseline with allowed, denied and boundary cases; then extract a named policy function, run the same tests again, and deliberately introduce a defect to prove those tests are capable of catching one. No Steward application or test framework is required for the first exercise.",
         [
-            { title: "Preserve behavior deliberately", paragraphs: ["Establish a safety net before structural change. A refactor that also changes lifecycle rules, response fields and authorization semantics is difficult to review because failures have too many possible causes.", "Use small transformations and rerun focused checks. If behavior must change, name that separately rather than hiding it inside cleanup."] },
-            { title: "Refactor toward a problem", paragraphs: ["Do not refactor because code feels old. Refactor to reduce duplication that causes inconsistent policy, expose a domain concept, remove harmful coupling, or make a required change safer. Stop when the problem is solved."] },
-            { title: "Use named transformations instead of rewrite impulses", paragraphs: ["Common small refactorings include Rename, Extract Function, Extract Variable, Inline, Move Function, Introduce Parameter Object and Replace Conditional with Polymorphism when variation genuinely warrants it. Knowing the transformation helps keep each step behavior-preserving and reviewable rather than turning 'refactor' into an unbounded rewrite." ] },
-            { title: "Characterization tests can protect unfamiliar legacy behavior", paragraphs: ["When existing behavior is poorly documented, first write tests that capture what the system currently does at the boundary you must change. These tests do not claim every existing behavior is desirable; they create a baseline so deliberate behavior changes can be separated from accidental ones." ] },
-            { title: "Refactoring and feature changes should be separable in the diff", paragraphs: ["A preparatory refactor may make a feature safer, but reviewers should be able to identify structural changes versus changed behavior. Small commits or clearly separated patches reduce the number of hypotheses when a regression appears." ] },
-            {"title":"Execute a before-and-after contract rather than trusting a prettier diff","paragraphs":["This pure-Python example intentionally changes the implementation while retaining behavior. We first state the domain contract: only matching Team identity grants update permission. A display name is not identity; two Teams could share a label in other models. The old expression and the extracted named predicate must produce exactly the same result for both authorized and unauthorized inputs. Run the assertions BEFORE and AFTER the structural change. When the tests change expected outcomes, that is a feature or policy change, not mere refactoring.","Characterization tests are narrow: these two cases do not prove every role or scope permutation in Steward. Later Quality Steward adds systematic test design; here the lesson is to prove the unchanged boundary of a refactor."],"code":{"language":"python","caption":"Refactoring — executable behavior-preservation check","code":"def old_policy(actor_team_id, owner_team_id):\n    return actor_team_id == owner_team_id\n\ndef is_same_team(actor_team_id, owner_team_id):\n    return actor_team_id == owner_team_id\n\ndef new_policy(actor_team_id, owner_team_id):\n    return is_same_team(actor_team_id, owner_team_id)\n\ncases = [(4, 4, True), (4, 7, False), (0, 7, False)]\nfor actor, owner, expected in cases:\n    assert old_policy(actor, owner) == expected\n    assert new_policy(actor, owner) == expected\nprint('refactor contracts preserved:', len(cases))"}},
-        ],
-        "Refactor one Steward hotspot while proving behavior remains stable.",
-        ["Choose a concrete maintainability problem.", "Capture current happy and failure behavior with tests or reproducible requests.", "Perform the smallest structural improvement.", "Rerun the evidence after each meaningful step.", "Document the problem removed and any remaining debt."],
-        ["How is refactoring different from adding a feature?", "Why should behavior checks exist first?", "When should a refactor stop?"],
+        {
+                "title": "What counts as refactoring?",
+                "paragraphs": [
+                        "An online shop accepts a refund only when an order is paid, not already refunded and no more than 30 days old. The result is a two-item tuple containing an outcome and a reason code. An approved request sets the order's refunded flag; a denied request must leave it unchanged. Those observable results and state effects form the contract.",
+                        "Renaming a helper, extracting a function or moving code without altering those observations is refactoring. Increasing the refund window to 45 days, changing denial priority, or approving pending payments is a feature or policy change, not refactoring. Keeping these changes separate makes failures and reviews easier to diagnose."
+                ]
+        },
+        {
+                "title": "First establish a baseline you can actually run",
+                "paragraphs": [
+                        "Save the complete example as refund_before.py and run python3 refund_before.py from your terminal. You do not need Django, a database or external packages. The original request_refund function handles eligibility checks and mutation together. Its nested structure is not catastrophic, but the eligibility rules may later need to be reused by an administrative preview without mutating the order.",
+                        "The six tests include an eligible order, an already-refunded order, an unpaid order, an expired order, exactly 30 days, and a case with more than one reason to deny. That final case locks down rejection priority: already_refunded must win before payment_required or window_expired. Each test uses a fresh copy so state changes do not leak into the next example. Notice that a denied request must not create a refund flag."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "Refactoring — run six contracts against the original function",
+                        "code": "def request_refund(order, days_since_purchase):\n    if order[\"refunded\"]:\n        return (\"denied\", \"already_refunded\")\n    if order[\"state\"] != \"paid\":\n        return (\"denied\", \"payment_required\")\n    if days_since_purchase > 30:\n        return (\"denied\", \"window_expired\")\n    order[\"refunded\"] = True\n    return (\"approved\", \"refund_created\")\n\nfrom copy import deepcopy\n\n# (order, elapsed days, expected result, expected refunded flag)\ncases = [\n    ({\"state\": \"paid\", \"refunded\": False}, 12, (\"approved\", \"refund_created\"), True),\n    ({\"state\": \"paid\", \"refunded\": True}, 12, (\"denied\", \"already_refunded\"), True),\n    ({\"state\": \"pending\", \"refunded\": False}, 12, (\"denied\", \"payment_required\"), False),\n    ({\"state\": \"paid\", \"refunded\": False}, 31, (\"denied\", \"window_expired\"), False),\n    ({\"state\": \"paid\", \"refunded\": False}, 30, (\"approved\", \"refund_created\"), True),\n    ({\"state\": \"pending\", \"refunded\": True}, 40, (\"denied\", \"already_refunded\"), True),\n]\nfor original, days, expected_result, expected_refunded in cases:\n    order = deepcopy(original)\n    outcome = request_refund(order, days)\n    assert outcome == expected_result, (original, days, outcome)\n    assert order[\"refunded\"] is expected_refunded\n    print(f\"{outcome[0]}: {outcome[1]}\")\n\nprint(\"Before refactoring: 6 contracts passed\")"
+                }
+        },
+        {
+                "title": "Extract one responsibility, not a framework",
+                "paragraphs": [
+                        "Our concrete reason to change is that eligibility rules and the operation that mutates the order are intermixed. Extract Function (sometimes called Extract Method) moves the checks into refund_rejection_reason. This helper answers one question: if this order cannot be refunded, what is the first reason? The request_refund entry point keeps the same arguments, returns the same tuple and performs the same state mutation.",
+                        "Save the next complete example as refund_after.py and run python3 refund_after.py. The test cases are identical, not conveniently weakened to match the refactor. All six results and refunded flags must remain unchanged. This shows a named, reviewable change that can be made in one commit without inventing a RefundManager interface, extra layer or network service."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "Refactoring — extract eligibility and rerun the same six contracts",
+                        "code": "def refund_rejection_reason(order, days_since_purchase):\n    if order[\"refunded\"]:\n        return \"already_refunded\"\n    if order[\"state\"] != \"paid\":\n        return \"payment_required\"\n    if days_since_purchase > 30:\n        return \"window_expired\"\n    return None\n\ndef request_refund(order, days_since_purchase):\n    reason = refund_rejection_reason(order, days_since_purchase)\n    if reason is not None:\n        return (\"denied\", reason)\n    order[\"refunded\"] = True\n    return (\"approved\", \"refund_created\")\n\nfrom copy import deepcopy\n\n# (order, elapsed days, expected result, expected refunded flag)\ncases = [\n    ({\"state\": \"paid\", \"refunded\": False}, 12, (\"approved\", \"refund_created\"), True),\n    ({\"state\": \"paid\", \"refunded\": True}, 12, (\"denied\", \"already_refunded\"), True),\n    ({\"state\": \"pending\", \"refunded\": False}, 12, (\"denied\", \"payment_required\"), False),\n    ({\"state\": \"paid\", \"refunded\": False}, 31, (\"denied\", \"window_expired\"), False),\n    ({\"state\": \"paid\", \"refunded\": False}, 30, (\"approved\", \"refund_created\"), True),\n    ({\"state\": \"pending\", \"refunded\": True}, 40, (\"denied\", \"already_refunded\"), True),\n]\nfor original, days, expected_result, expected_refunded in cases:\n    order = deepcopy(original)\n    outcome = request_refund(order, days)\n    assert outcome == expected_result, (original, days, outcome)\n    assert order[\"refunded\"] is expected_refunded\n    print(f\"{outcome[0]}: {outcome[1]}\")\n\nprint(\"After refactoring: 6 contracts passed\")"
+                }
+        },
+        {
+                "title": "Make the test fail deliberately",
+                "paragraphs": [
+                        "Passing tests only demonstrate that the cases you wrote pass. To check whether the test can catch an important regression, change exactly one operator in refund_after.py: replace days_since_purchase > 30 with days_since_purchase >= 30. Now a refund at precisely 30 days becomes incorrectly denied. Run python3 refund_after.py again: the assertion must fail on the boundary case. Restore the > operator and confirm all six tests pass again.",
+                        "A meaningful regression test has to fail for a credible defect, not just execute without crashing. This deliberate mutation also illustrates why a single happy-path test would not have protected the refund-window boundary. You do not need mutation-testing software to learn the idea."
+                ]
+        },
+        {
+                "title": "Refactor in small steps and inspect the diff",
+                "paragraphs": [
+                        "In a real repository, first commit or otherwise preserve a passing baseline. Make one named transformation at a time: Rename, Extract Function, Move Function or Extract Variable. After each step, run focused tests and inspect git diff. If the behavior changes, undo or isolate that change before continuing. Use tests of public behavior, not assertions that freeze the private helper's name or line count.",
+                        "Characterization tests are especially useful when existing behavior is not documented: they record what a program currently does, including awkward edge cases, so structural changes do not alter it accidentally. They are a temporary map of current behavior, not a claim that all legacy behavior is desirable."
+                ]
+        },
+        {
+                "title": "When to stop—and when not to refactor",
+                "paragraphs": [
+                        "The named policy helper now makes eligibility easier to review and reuse, and the entry point's mutation is visible. Stop here unless a real change calls for more. A generalized rule engine or class hierarchy would add more reading and maintenance cost than this small example needs.",
+                        "A refactor is justified by reduced change risk, duplication or ambiguity, not age or aesthetic preference. If the business asks to accept refunds for 45 days, add a separate policy-change task and tests. The later Steward practical transfers the method to one actual hotspot with its own database and HTTP contracts; this scratch exercise does not prove those paths."
+                ]
+        }
+],
+        "Perform one named Extract Function refactor from a known-good baseline, preserve six contracts, and show a deliberately introduced defect is caught.",
+        [
+        "Copy the first complete block to refund_before.py and run it from a new scratch directory. Record the six results and explain why the denied cases must not mutate state.",
+        "Copy the second complete block to refund_after.py and run it separately. Identify what moved into refund_rejection_reason and what remained in the request entry point.",
+        "Compare the two scripts. Confirm the public function name, arguments, result tuple, denial priority and refunded flags did not change.",
+        "In refund_after.py, deliberately change > 30 to >= 30, rerun and record the failing 30-day boundary assertion. Restore the original condition and show the green rerun.",
+        "Explain why this is a bounded refactor rather than a new business rule or a new architecture.",
+        "Only after the scratch proof, identify a real Steward method whose structure creates change risk, establish its positive and negative behavior, make one named transformation, and rerun those same tests. Do not add fictional project files."
+],
+        [
+        "What observable behavior must remain unchanged during a refactor?",
+        "Why is exactly 30 days a stronger regression test than only 12 days?",
+        "What would change if a business request increased the allowed refund window to 45 days?",
+        "Why should a test preserve the public request_refund contract instead of locking down the new helper?",
+        "When is creating a new abstraction more expensive than keeping the current function?"
+],
         [refactoringGuru],
     ),
     lesson(
