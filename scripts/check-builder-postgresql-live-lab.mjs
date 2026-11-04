@@ -46,6 +46,20 @@ try {
   const madeSchema = runLibrary("SQL in tsa_library — create and inspect the library schema").out;
   assert.deepEqual(madeSchema.split(/\r?\n/), ["CREATE SCHEMA", "library"]);
   assert.equal(runLibrary("SQL in tsa_library — create a persistent table").out, "CREATE TABLE");
+  assert.equal(runLibrary("SQL in psql — inspect table contents (empty before inserts)").out, "",
+    "A freshly created table is structurally visible even with zero rows");
+  const psqlMetaFile = path.join(root, "psql_object_inspection.txt");
+  fs.writeFileSync(psqlMetaFile,
+    codeFromLesson("psql commands — compare database, schema and table listings") + "\\n" +
+    codeFromLesson("psql commands — describe the existing library table") + "\\n" +
+    String.raw`\\h CREATE TABLE` + "\\n" + String.raw`\\?` + "\\n");
+  const psqlMeta = run(["-d", "tsa_library", "-f", psqlMetaFile]).out;
+  assert.match(psqlMeta, /library/);
+  assert.match(psqlMeta, /books/);
+  assert.match(psqlMeta, /book_id/);
+  assert.match(psqlMeta, /books_pkey/);
+  assert.match(psqlMeta, /CREATE TABLE/i, "psql SQL help must be available");
+
   assert.equal(runLibrary("SQL — insert two example books").out, "INSERT 0 2");
   const orderedBooks = runLibrary("SQL — read persistent rows").out;
   assert.deepEqual(orderedBooks.split(/\r?\n/), [
