@@ -289,6 +289,15 @@ export const djangoAndApiRichLessons: Lesson[] = [
     }
   },
   {
+    "heading": "Apply the same rules to a Steward ModelSerializer",
+    "body": "Only after you have successfully run the independent book serializer examples, return to the separate Django-managed Steward registry. ModelSerializer can derive fields and default persistence methods from an existing Django model, but it does not replace authorization, domain rules or database constraints. The identifier and Team owner below are server-controlled read-only fields; never let an untrusted client assign ownership merely because the model has a ForeignKey.",
+    "code": {
+      "language": "python",
+      "caption": "Service serializer",
+      "value": "from rest_framework import serializers\nfrom .models import Service\n\nclass ServiceSerializer(serializers.ModelSerializer):\n    class Meta:\n        model = Service\n        fields = ['id', 'name', 'endpoint', 'lifecycle', 'criticality', 'owning_team']\n        read_only_fields = ['id', 'owning_team']"
+    }
+  },
+  {
     "heading": "Decide what belongs in a serializer",
     "body": "Basic input shape, type conversion, external field names, read-only fields and cross-field representation rules are strong serializer responsibilities. An operation such as authorizing a librarian to edit a restricted record or deciding whether a Service may become production-ready is a reusable application/domain decision and may also require a database transaction. Do not hide it in validate_title simply because that hook is available. Field validation is not authorization; server-generated IDs remain server-owned even when the client tries to send them."
   }
