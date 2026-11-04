@@ -45,6 +45,21 @@ The earlier `filtering-ordering` ID and source-extracted `filter_boolean.sql`, `
 
 **Executable evidence:** the source guard now checks the three new lessons occur after the safe UPDATE/DELETE readings and before the Steward filter audit. The PostgreSQL 17 integration script runs ten new exact published SQL blocks against the separate `tsa_library` database and asserts book set, NULL, sorting, pagination and no-persistent-change evidence. **Do not mark this pass verified until workflow success at the matching new head**, and do not mark rendered UX or learner teach-back verified from CI.
 
+## Follow-up — subqueries and CTEs split (2026-11-04)
+
+The original `Subqueries` and `Common Table Expressions` readings combined several independent SQL mechanics within short, Steward-dependent source sections. Their original source-derived SQL blocks and activity IDs remain in place as **application exercises**, while two beginner subquery lessons and two beginner WITH lessons now precede them.
+
+| New lesson | What must be understood before the applied lab | Executable positive and negative example |
+| --- | --- | --- |
+| `postgresql-subquery-basics` — **Use One Query Inside Another** | Inner SELECT result shapes: one scalar versus an IN candidate set | Actual below-average book; an invalid multirow scalar expression rejected by PostgreSQL |
+| `postgresql-exists-subqueries` — **Check Whether Matching Rows Exist** | Correlated predicate, EXISTS/NOT EXISTS vs paired JOIN rows, NULL behavior of NOT IN | Book-author membership, duplicate JOIN, empty NOT IN result and safe anti-existence comparison |
+| `postgresql-with-basics` — **Make a Long Query Easier to Read with WITH** | Single query's named steps and statement scope versus persistent/TEMP objects | One- and two-stage library reports; missing relation in a subsequent statement |
+| `postgresql-recursive-with` — **Follow Relationships with Recursive Queries** | Anchor, repeated transition, bounded termination, cycles and per-path visited state | Bounded 1–4 counter, Ana→Dina traversal and A↔B cycle safely stopped with an array |
+
+**Authority and research (inspected 2026-11-04):** [PostgreSQL 17 Subquery Expressions](https://www.postgresql.org/docs/17/functions-subquery.html) defines EXISTS, IN, NOT IN and NULL-aware outcomes, including the fact that EXISTS concerns row existence rather than inner SELECT values. [PostgreSQL 17 WITH Queries](https://www.postgresql.org/docs/17/queries-with.html) defines statement-scoped expressions, recursive anchor/working-table evaluation, query optimization and explicit cycle detection. [PostgreSQL wiki CTEReadme](https://wiki.postgresql.org/wiki/CTEReadme) and [LearnSQL recursive course curriculum](https://learnsql.com/course/postgresql-recursive-queries/) are secondary structural references, not outsourced core lessons; no claim of attending the course or watching videos.
+
+**Source and execution evidence:** the existing script `check-builder-data-foundations-examples.mjs` now checks subquery → WITH → recursion → Steward applied ordering and inspects the exact source code blocks. `check-builder-postgresql-live-lab.mjs` executes all published simple queries, verifies expected SQL failures (multirow scalar and expired WITH name), checks two NULL/duplicate traps, and verifies the guarded cycle terminates without altering the library table. **Source changes are REMEDIATED; CI and learner gates remain separate until current-head evidence is checked.**
+
 ## Research and teaching translation
 
 Primary material was inspected for the precise model and syntax, not copied verbatim:
