@@ -62,18 +62,18 @@ const practices: Record<string, PracticeSpec> = {
         completionCriteria: ["The conflict is reproduced, not narrated.", "Both required greeting values exist in the resolved file.", "The merge is committed without markers or unintended file changes.", "The learner distinguishes textual conflict from semantic compatibility."]
     },
     "software-craft-readable-code": {
-        objective: "Reduce the mental reconstruction cost of one difficult Steward code path without changing behavior.",
-        scenario: "A teammate can make the code pass tests but cannot quickly explain what one authorization or lifecycle path means. Your job is to improve domain readability while resisting cosmetic churn.",
+        objective: "Make a precise authorization rule easier to understand while preserving its existing allowed and denied cases.",
+        scenario: "The learner knows what a Team and Membership are from Identity, but should first learn readability through an ordinary Python predicate. Only then translate the exact rule into the Django-backed Steward model. The actual roles are viewer and maintainer; a role named owner does not exist in the teaching model.",
         instructions: [
-            "Choose one difficult function or request path and write what makes it hard to understand before editing it; assess its cohesion and the coupling it creates to neighboring code.",
-            "Capture current success and failure behavior with focused tests or reproducible requests.",
-            "Rename ambiguous variables/functions using Steward domain language.",
-            "Extract at most one concept that has a real domain or responsibility name; do not create abstraction only to shorten the function.",
-            "Compare the before/after code and ask a reviewer to identify the policy without tracing every line.",
-            "List one cleanup you intentionally rejected because it would add churn without improving comprehension."
+            "Write the rule before coding: a maintainer membership for the Service's owning Team is required to manage it.",
+            "Save and run the source-published independent pure-Python example. Explain the approved maintainer, denied same-Team viewer and denied other-Team membership cases.",
+            "Compare old_check with has_maintainer_membership and can_manage_service. Identify what the improved names clarify and which outputs remain unchanged.",
+            "Run the published Django policy in the existing tsa_steward_django_lab after the Identity membership seed; verify an allowed maintainer and distinct denied viewer, cross-Team and inactive cases.",
+            "Check the actual Membership.Role choices instead of inventing a role; prove the test script restores the originally assigned role and account state.",
+            "Apply one small readability improvement to an unrelated Steward code path, rerun its existing positive/negative tests and state one unnecessary extraction you rejected."
         ],
-        deliverables: ["Before/after code excerpt", "Behavior-preservation evidence", "Readability rationale", "Rejected-cleanup note"],
-        completionCriteria: ["Domain policy is easier to identify.", "Behavior is unchanged and demonstrated.", "The refactor adds no unnecessary abstraction.", "You can explain why the final names/boundaries are better for review."]
+        deliverables: ["Three-case standalone Python output", "Before/after readability rationale", "Four real Django membership decisions", "State-restoration evidence", "Optional focused Steward refactor"],
+        completionCriteria: ["The beginner experiment is independently runnable without Django.", "Django authorization uses the real Membership.Role.MAINTAINER value.", "Viewer, cross-Team and inactive denials are distinct and proved against the database.", "No role is introduced in the example without a corresponding model change.", "A readability change is not mistaken for a permission-policy change."]
     },
     "software-craft-separation-of-concerns": {
         objective: "Untangle one Steward request path by moving exactly one responsibility to the boundary that should own it.",
