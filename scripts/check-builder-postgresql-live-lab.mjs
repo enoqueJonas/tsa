@@ -456,11 +456,25 @@ try {
   const anomaly = run(["-c", codeFromLesson("normalization_anomaly.sql — two competing team names in one duplicated column")]).out;
   assert.match(anomaly, /Payments Division/);
   assert.match(anomaly, /Payroll API\|Payments/);
+  const libraryPlanOnly = run(["-d", "tsa_library", "-c",
+    codeFromLesson("library_explain_only.sql — estimate a book lookup without executing it")]).out;
+  assert.match(libraryPlanOnly, /(Scan|scan)/);
+  const libraryMeasuredPlan = run(["-d", "tsa_library", "-c",
+    codeFromLesson("library_explain_analyze.sql — estimate, measure and verify a book query")]).out;
+  assert.match(libraryMeasuredPlan, /Execution Time/);
+  assert.equal(libraryMeasuredPlan.split(/\r?\n/).at(-1), "1",
+    "The published library plan must still answer the learner's one-book question");
   const smallPlan = run(["-c", codeFromLesson("index_small.sql — inspect an already indexed unique Service name")]).out;
   assert.match(smallPlan, /(Scan|scan)/);
   const largePlan = run(["-c", codeFromLesson("index_lab.sql — compare actual physical plans on 15000 temporary rows")]).out;
   assert.match(largePlan, /Execution Time/);
   assert.match(largePlan, /CREATE INDEX/);
+  const compositeIndex = run(["-d", "tsa_library", "-c",
+    codeFromLesson("index_composite_lab.sql — compare leading and non-leading predicates on 4000 books")]).out;
+  assert.match(compositeIndex, /CREATE INDEX/);
+  assert.match(compositeIndex, /Execution Time/);
+  assert.equal(compositeIndex.split(/\r?\n/).at(-1), "40|400|t",
+    "Published multicolumn index exercise must prove exactly 40 combined and 400 second-column rows");
   const joinPlan = run(["-c", codeFromLesson("explain_join.sql — inspect query plan and correct grouped result")]).out;
   assert.match(joinPlan, /Execution Time/);
   const perfPlan = run(["-c", codeFromLesson("performance_probe.sql — compare selective and broad predicates")]).out;
