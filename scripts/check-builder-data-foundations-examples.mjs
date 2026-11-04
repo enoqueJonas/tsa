@@ -8,10 +8,12 @@ const source = fs.readFileSync("packages/runtime-kernel/src/paths/builder-postgr
 const marker = (id) => source.indexOf(`"id": "${id}"`);
 const persistence = marker("from-memory-to-durable-data");
 const system = marker("postgresql-what-it-is");
+const setup = marker("postgresql-local-setup");
 const connection = marker("postgresql-first-connection");
 const databases = marker("postgresql-create-database");
 const schemas = marker("postgresql-create-schema");
 const tables = marker("postgresql-create-table");
+const objectInspection = marker("postgresql-psql-object-inspection");
 const rows = marker("postgresql-work-with-rows");
 const temporary = marker("postgresql-temporary-tables");
 const relational = marker("relational-model");
@@ -52,13 +54,26 @@ const inspection = marker("postgresql-practice");
 const privileges = marker("postgresql-roles-and-privileges");
 const backupRestore = marker("postgresql-backup-and-restore");
 assert.ok(
-  persistence > 0 && system > persistence && connection > system &&
-  databases > connection && schemas > databases && tables > schemas && rows > tables && temporary > rows &&
+  persistence > 0 && system > persistence && setup > system && connection > setup &&
+  databases > connection && schemas > databases && tables > schemas && objectInspection > tables && rows > objectInspection && temporary > rows &&
   relational > temporary && firstJoins > relational &&
   firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && combineConditions > deletion && nullLogic > combineConditions && sortResults > nullLogic && filtering > sortResults && subqueryBasics > filtering && existsSubqueries > subqueryBasics && appliedSubqueries > existsSubqueries && withBasics > appliedSubqueries && recursiveWith > withBasics && cteLesson > recursiveWith && transactionBasics > cteLesson && savepoints > transactionBasics && transactionCase > savepoints && isolation > transactionCase && readiness > isolation && constraintsBasics > readiness && foreignKeyDeletes > constraintsBasics && constraints > foreignKeyDeletes && schemaBasics > constraints && appliedSchemaDesign > schemaBasics && normalForms > appliedSchemaDesign && appliedNormalization > normalForms && queryPlans > appliedNormalization && indexes > queryPlans && compositeIndexes > indexes && performanceBasics > compositeIndexes && queryPerformance > performanceBasics && pagination > queryPerformance && inspection > pagination && privileges > inspection && backupRestore > privileges,
   "The learner order must be persistence → DBMS and server → psql → database creation → schemas → table definition → rows → temporary tables → relational model → joins → grouping → applied fixture → UPDATE → DELETE → Boolean filters → NULL → ordering → Steward filtering case"
 );
 assert.doesNotMatch(source, /Two programs, one protocol boundary|Establish prerequisites without inventing credentials/);
+assert.doesNotMatch(source, /\\bdocker\\b/i, "Beginner PostgreSQL may not require container tooling taught later");
+const connectionLesson = source.slice(connection, databases);
+const inspectionLesson = source.slice(objectInspection, rows);
+const escaped = (command) => JSON.stringify(command).slice(1, -1);
+for (const command of [String.raw`\\conninfo`, String.raw`\\l`, String.raw`\\c`, String.raw`\\du`, String.raw`\\?`, String.raw`\\h`, String.raw`\\q`]) {
+  assert.ok(connectionLesson.includes(escaped(command)), `First psql lesson must explain ${command}`);
+}
+for (const command of [String.raw`\\dn`, String.raw`\\dt`, String.raw`\\d`, String.raw`\\d+`, String.raw`\\h`]) {
+  assert.ok(inspectionLesson.includes(escaped(command)), `Object inspection must teach ${command}`);
+}
+assert.ok(source.slice(setup, connection).includes("brew install postgresql@17"));
+assert.ok(source.slice(setup, connection).includes("sudo -u postgres psql"));
+
 assert.ok(!source.includes('"id": "postgresql-tables-and-rows"'), "Do not reintroduce a duplicate combined CREATE TABLE/row chapter");
 assert.ok(source.includes("schema_name.table_name") || source.includes("library.books"), "Qualified tables must be explained");
 
