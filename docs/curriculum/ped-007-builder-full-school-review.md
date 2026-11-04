@@ -116,3 +116,16 @@ These tasks are specifications for independent learner assessment, **not evidenc
 - Add source-derived Bash tests verifying branch state, merge ancestry, intentional conflict, clean resolution, absence of markers, final values and restored clean worktree. Keep the earlier Git staging and bisect regression tests intact.
 
 **Evidence limits:** Passing shell CI would prove reproducible Git operations, not that an uncoached learner independently knows when to select merge/squash/rebase or resolve a real product conflict. Human rendered review and transfer remain OPEN. Do not call the entire Builder school learner-validated.
+
+## 2026-11-04 — Readable Code role-contract correction
+
+**Finding:** The existing Readable Code lesson displayed a short Django `can_manage_service()` query using the literal role values `maintainer` and `owner`, although the preceding, actually executed Identity lesson defined only `Membership.Role.VIEWER` and `Membership.Role.MAINTAINER`. It also omitted the Membership import and user/Service fixtures. Thus a learner could copy a non-runnable code fragment or infer an invented permission, while the published practical required a real Steward refactor without first teaching an independent example.
+
+**Remediation:**
+- Rebuild the concept around a stated, precise policy: the active actor must have a maintainer membership in the Service's actual owning Team; neither a viewer nor a member of a different Team can manage it.
+- Start with complete pure-Python data and two implementations. Explain meaningful names, cohesion, coupling, and focused extraction; execute three allow/deny cases and prove unchanged outputs.
+- Only then use the real Django Membership model and `Membership.Role.MAINTAINER`, with explicit imports, seeded learner accounts and a disposable Service, four real decisions (authorized, viewer, cross-Team, disabled account), and a `finally` restoring mutated account/role state.
+- Update the final published practical override to rehearse the same sequence rather than introduce unrelated project complexity first.
+- Add the pure-Python script to source-derived Craft smoke checks and add the Django script to the existing dedicated PostgreSQL/Django integration test after the Identity source-published seed. Guard against reintroducing an undeclared owner role.
+
+**Evidence:** branch source is changed, full matching-head CI and rendered browser checks must be verified after final commit. Source execution does not demonstrate novice independent understanding or real endpoint authorization. **Human reviewed / learner validated: NO.** Remaining Software Craft lessons and the Builder synthesis milestone remain open in issue #321.
