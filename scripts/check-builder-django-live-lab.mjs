@@ -164,6 +164,9 @@ for (const [name, code] of [
   assert.match(code, /from /, "No real runnable source in " + name);
 }
 
+const domainInspectExample = modelLessonSnippet("registry/inspect_models.py — inspect the migrated domain model");
+assert.match(domainInspectExample, /from registry\.models import Team, Service, Environment/,
+  "Model inspection example must use absolute import in Django shell");
 const modelDomainExample = modelLessonSnippet("registry/models_lab.py — safe UAT record and related query");
 assert.match(modelDomainExample, /from registry\.models import Team, Service/,
   "Django shell model example must use real absolute import");
@@ -231,6 +234,16 @@ DATABASES = {'default': {'ENGINE': 'django.db.backends.postgresql',
   assert.match(plan,/CREATE TABLE "service"/);
   assert.match(plan,/CREATE TABLE "environment"/);
   exec("python3",["manage.py","migrate","--noinput"],env);
+  const inspectedModels = exec("python3", ["manage.py", "shell", "-c", domainInspectExample], env);
+  for (const expected of [
+    "Team ['id', 'name']",
+    "Service ['id', 'name', 'owning_team', 'endpoint', 'lifecycle', 'criticality', 'active', 'retired_at']",
+    "Environment ['id', 'service', 'name', 'kind']",
+    "lifecycle_example: uat",
+    "deployment_kind_example: production"
+  ]) assert.ok(inspectedModels.includes(expected),
+    "Published model field inspection failed: " + expected + "\n" + inspectedModels);
+
   // Exact Django-dependent PostgreSQL lesson code is executed in the separate
   // migration-managed database, not merely scanned for method names.
   assert.match(exec("python3",["manage.py","shell","-c",
