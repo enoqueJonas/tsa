@@ -11,6 +11,24 @@ function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
+const craftTeaching: Record<string, { outcomes: string[]; practical: string }> = {
+  "Git as an Engineering Tool": { outcomes: ["Distinguish working-directory changes, staged content and committed history.", "Create and inspect two local commits without staging unrelated files.", "Safely restore a deliberate scratch edit without rewriting history."], practical: "Build and inspect two local commits" },
+  "Investigate Bugs with Git History": { outcomes: ["Define a repeatable pass/fail condition for a regression.", "Find its first bad commit with a real Git bisect session.", "Restore the original branch and explain when bisect evidence is unreliable."], practical: "Find the first bad Git commit" },
+  "Branching and Collaboration": { outcomes: ["Explain the purpose of a branch and a pull request.", "Distinguish merge, squash and rebase based on review and shared-history consequences.", "Handle a conflict and clean up obsolete branches without losing work."], practical: "Prepare a reviewable branch" },
+  "Readable Code": { outcomes: ["Recognize names that hide domain rules.", "Explain cohesion and coupling using a concrete function.", "Make one behavior-preserving readability change and reject unnecessary abstraction."], practical: "Make a domain function easier to understand" },
+  "Separation of Concerns": { outcomes: ["Identify HTTP, domain, persistence and policy responsibilities.", "Draw a dependency direction that avoids cycles.", "Compare a minimal separation with unnecessary layers."], practical: "Separate responsibilities in one request path" },
+  "Refactoring": { outcomes: ["Distinguish restructuring from changing externally observed behavior.", "Use a characterization test before editing unfamiliar code.", "Apply a small, named refactoring and know when to stop."], practical: "Refactor with a verified safety net" },
+  "Testing as a Change Safety Net": { outcomes: ["Define observable behavior to protect with tests.", "Prove a negative test fails for the intended defect.", "Choose the narrowest honest test boundary and record remaining risks."], practical: "Prove a refactor preserves behavior" },
+  "Managing Dependencies": { outcomes: ["Justify a dependency from real consumer needs.", "Review version compatibility and update risks.", "Recognize when a new shared package is premature."], practical: "Review an external or internal dependency" },
+  "Configuration": { outcomes: ["Separate code from environment-owned settings.", "Validate types and fail visibly when required configuration is absent.", "Avoid exposing credentials through defaults or logs."], practical: "Prove configuration fails safely" },
+  "Static Analysis and Automated Feedback": { outcomes: ["Distinguish formatting, linting, type checking and behavioral tests.", "Run the appropriate tool before committing.", "Treat warnings according to a documented policy rather than hiding them."], practical: "Make static checks actionable" },
+  "Code Review and Technical Debt": { outcomes: ["Review risk, correctness and tests before style.", "Classify blocking defects versus optional improvements.", "Describe technical debt as an explicit cost rather than any imperfect code."], practical: "Review a change and classify findings" },
+  "Useful Logging": { outcomes: ["Select events that answer operational questions.", "Capture stable context without leaking credentials.", "Test expected, rejected and unexpected outcomes with useful log levels."], practical: "Capture safe, diagnostic events" },
+  "Technical Documentation": { outcomes: ["Choose a document form suited to the reader's job.", "Write reproducible setup and verification instructions.", "Record decisions and check documentation for drift."], practical: "Write and verify developer documentation" },
+  "Designing Errors": { outcomes: ["Distinguish expected domain rejections from programming failures.", "Map errors to stable API contracts.", "Avoid logging or returning sensitive implementation details."], practical: "Design and test meaningful errors" },
+  "Performance Awareness": { outcomes: ["State a measurable performance hypothesis and baseline.", "Separate SQL execution, HTTP latency and tail behavior.", "Recommend a change only when evidence supports it."], practical: "Measure before optimizing" },
+};
+
 function lesson(
     title: string,
     introduction: string,
@@ -24,11 +42,7 @@ function lesson(
     const blocks: LessonBlock[] = [
         { type: "paragraph", text: introduction },
         { type: "heading", id: "learning-outcomes", text: "Learning outcomes", level: 2 },
-        { type: "list", items: [
-            `Explain the engineering purpose of ${title.toLowerCase()} rather than treating it as ceremony.`,
-            "Apply the idea to the evolving Steward API with reviewable evidence.",
-            "Recognize a common failure mode and make a deliberate trade-off.",
-        ] },
+        { type: "list", items: craftTeaching[title]?.outcomes ?? ["Explain the concept and demonstrate it with evidence."] },
     ];
 
     for (const section of sections) {
@@ -42,7 +56,6 @@ function lesson(
         }
     }
 
-    blocks.push({ type: "callout", tone: "steward", title: "Steward connection", body: "Software craft is the work that makes Steward safe for another engineer to change. The goal is not aesthetic perfection; it is reducing ambiguity, accidental coupling, review cost and operational surprise while preserving useful delivery speed." });
     blocks.push({ type: "resources", title: "Required and supporting reading", resources });
 
     return {
@@ -51,7 +64,7 @@ function lesson(
         activities: [
             { id: `${id}-reading`, title, estimatedMinutes: 30, content: { type: "reading", body: blocks.filter((block) => block.type === "paragraph").map((block) => block.text).join("\n\n") || introduction, blocks } },
             {
-                id: `${id}-practice`, title: `${title}: Engineering Practice`, estimatedMinutes: 40,
+                id: `${id}-practice`, title: craftTeaching[title]?.practical ?? `Practise ${title}`, estimatedMinutes: 40,
                 content: {
                     type: "practical",
                     objective,
@@ -61,7 +74,7 @@ function lesson(
                     completionCriteria: ["Behavior is demonstrated, not merely described.", "The change has a clear engineering reason.", "The learner can identify what deliberately remains unchanged."],
                 },
             },
-            { id: `${id}-check`, title: `${title}: Knowledge Check`, estimatedMinutes: 10, content: { type: "reflection", prompt: questions.map((q, i) => `${i + 1}. ${q}`).join("\n") } },
+            { id: `${id}-check`, title: `Check: ${title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: questions.map((q, i) => `${i + 1}. ${q}`).join("\n") } },
         ],
     };
 }
