@@ -29,6 +29,22 @@ The pedagogical correction is not a bigger paragraph or an extra resource link. 
 
 Filtering, complex joins/aggregation, subqueries, CTEs, transactions, normalization, plans, migrations and API lessons retain their own separate instructional audits. The original Steward seed used JOIN and GROUP BY before either had been taught; two stand-alone book/writer lessons now establish those mechanisms first. The seed is clearly labeled as a practice lab rather than a general PostgreSQL introduction. This change does **not** declare the whole module learner-validated.
 
+## Follow-up — SQL filtering, NULL and ordering split (2026-11-04)
+
+The original `Filtering and Ordering Queries` text had five short sections that mixed the logical query pipeline, operator precedence, SQL's UNKNOWN truth value, sort ties and Steward-specific business results. These are different beginner mechanisms. As with the connection lesson, app-specific SQL tests must not become the first explanation of the general topic.
+
+Three independent library lessons now precede the existing Steward filtering case:
+
+1. **Combine Conditions with WHERE** (`postgresql-combine-conditions`): true/false selection, AND, OR, NOT, precedence, parentheses, literal `IN`, `LIKE` and PostgreSQL `ILIKE`. Worked incorrect and corrected predicates select deliberately different books.
+2. **Understand NULL in SQL** (`postgresql-null-logic`): optional data, SQL NULL vs `0`/empty text, `VALUES` read-only fixture, `= NULL` failure, `IS NULL`, `NOT UNKNOWN` and a complete executed truth-table sample. No permanent data changes.
+3. **Sort and Limit Query Results** (`postgresql-sort-results`): tied years, explicit secondary key, `NULLS LAST`, `LIMIT` and `OFFSET`, plus the distinction between ambiguous tie ordering and page shifts caused by concurrent writes.
+
+The earlier `filtering-ordering` ID and source-extracted `filter_boolean.sql`, `filter_null.sql` and `filter_order.sql` captions remain in place, but the section is titled **Steward Practice: Filter and Sort SQL Reports**. Its activity remains a real application, not a replacement for teaching generic SQL. New reading/practical/check IDs are additive; no existing learner progress IDs for this applied lesson are changed.
+
+**Mechanism references, inspected 2026-11-04:** [PostgreSQL 17 comparison semantics](https://www.postgresql.org/docs/17/functions-comparison.html) establish ordinary comparisons and NULL-aware predicates; [PostgreSQL 17 pattern matching](https://www.postgresql.org/docs/17/functions-matching.html) describes `LIKE`/`ILIKE` and wildcard matching; [sorting reference](https://www.postgresql.org/docs/17/queries-order.html) establishes unspecified ordering without ORDER BY, tie-breaking and NULLS modifiers; [LIMIT/OFFSET reference](https://www.postgresql.org/docs/17/queries-limit.html) establishes how skipping and limiting interact. A [PostgreSQL 17 beginner course](https://courses.interlab.app/en/lessons/sql-select) was sampled for sequencing, but its example corpus and wording were not copied. Its database resets are not appropriate for TSA's progression, which preserves sample tables and makes destructive operations explicit.
+
+**Executable evidence:** the source guard now checks the three new lessons occur after the safe UPDATE/DELETE readings and before the Steward filter audit. The PostgreSQL 17 integration script runs ten new exact published SQL blocks against the separate `tsa_library` database and asserts book set, NULL, sorting, pagination and no-persistent-change evidence. **Do not mark this pass verified until workflow success at the matching new head**, and do not mark rendered UX or learner teach-back verified from CI.
+
 ## Research and teaching translation
 
 Primary material was inspected for the precise model and syntax, not copied verbatim:
