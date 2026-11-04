@@ -501,6 +501,36 @@ try {
   assert.match(perfPlan, /Execution Time/);
   const metadata = run(["-c", codeFromLesson("postgresql_inspect.sql — verify connection and visible Service relation")]).out;
   for (const table of ["team","service","environment","service_dependency"]) assert.ok(metadata.split(/\r?\n/).includes(table), `Cannot see ${table}`);
+  // Operational fundamentals from exact source-published SQL and shell exercises.
+  const sessionProof = run(["-d", "tsa_library", "-c",
+    codeFromLesson("postgresql_session.sql — inspect only your own backend")]).out;
+  assert.deepEqual(sessionProof.split(/\r?\n/).map(x => x.split("|").at(-1)), ["t", "t"]);
+
+  const rights = run(["-d", "tsa_library", "-c",
+    codeFromLesson("postgresql_privileges.sql — inspect database, schema and table rights")]).out;
+  assert.equal(rights, "tsa_learner|t|t|t");
+  const readonlyRole = run(["-d", "tsa_library", "-c",
+    codeFromLesson("postgresql_readonly_role.sql — optional local-only NOLOGIN role and privilege proof")]).out;
+  assert.equal(readonlyRole.split(/\r?\n/).at(-1), "t|f",
+    "Source-published role must have SELECT but not INSERT");
+
+  const backupScript = codeFromLesson("library_backup_restore.sh — restore a custom-format archive into a separate learning database");
+  const backupRun = spawnSync("bash", ["-e", "-c", backupScript], {
+    cwd: root, encoding: "utf8", timeout: 90000, env: process.env
+  });
+  assert.ifError(backupRun.error);
+  assert.equal(backupRun.status, 0,
+    `Published PostgreSQL logical backup and restore failed:\n${backupRun.stdout}\n${backupRun.stderr}`);
+  assert.ok(fs.statSync(path.join(root, "tsa_library_backup.dump")).size > 0,
+    "pg_dump archive must exist and contain bytes");
+  assert.equal(backupRun.stdout.trim().split(/\r?\n/).at(-1), "2",
+    "Published restore must independently recover the two original books");
+  assert.equal(run(["-d", "tsa_library_restore", "-c",
+    "SELECT string_agg(title, ',' ORDER BY title) FROM library.books"]).out,
+    "The Hobbit,Things Fall Apart", "Restored data must match the expected titles");
+  assert.equal(run(["-d", "tsa_library", "-c", "SELECT count(*) FROM library.books"]).out,
+    "2", "Source library must remain unchanged by backup/restore");
+
   const migration = run(["-c",
     codeFromLesson("migration_expand_contract.sql — populated-data backfill with reversible DDL")]).out;
   const stageCounts = migration.split(/\r?\n/).filter(v => /^\d+$/.test(v));
