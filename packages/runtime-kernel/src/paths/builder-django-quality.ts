@@ -45,6 +45,45 @@ const practices: Record<string, PracticeSpec> = {
     deliverables: ["Generated SQL and evaluation transcript", "N+1 before/after counts with identical results", "Relationship-loading decision"],
     completionCriteria: ["The measured SQL statements are real, not estimated.", "No unexplained fixture or absent Django model is assumed.", "Single-valued and many-valued relationships are distinguished."]
   },
+  "django-and-api-engineering-define-your-first-django-model": {
+    objective: "Define and inspect a complete Book model in the previously built catalogue scratch project.",
+    scenario: "The PostgreSQL module already established tables and columns. Use the independent Django catalogue before mapping the Steward domain; no new Docker or Steward dependency.",
+    instructions: [
+      "Open the existing tsa-django-intro project, verify the catalogue application is registered and identify its models.py.",
+      "Replace the starter catalogue/models.py with the Book class from the reading. Explain Model, CharField, PositiveIntegerField, unique=True and the implicit id.",
+      "Run python manage.py check and distinguish the source model from a database table. Do not assume the table exists until a migration runs.",
+      "Write down the expected SQL columns, constraints and primary key; identify which aspects depend on the database backend.",
+      "Predict what an ORM query will do before any catalogue migrations are applied, and document the observed error without deleting files or tables."
+    ],
+    deliverables: ["Complete catalogue/models.py", "Model-to-table explanation", "Django system-check output", "Unmigrated-table diagnosis"],
+    completionCriteria: ["The model definition is runnable and novice-readable.", "A class declaration is not confused with table creation.", "No application-domain deployment prerequisites are assumed."]
+  },
+  "django-and-api-engineering-turn-a-model-into-a-database-table": {
+    objective: "Apply and inspect the first Django migration, then differentiate Python field validation from database uniqueness.",
+    scenario: "Use the same tsa-django-intro project and its disposable SQLite database; do not connect the migration to tsa_library or the Steward PostgreSQL dataset.",
+    instructions: [
+      "Run makemigrations catalogue, inspect 0001_initial.py and run sqlmigrate catalogue 0001 without falsely claiming SQL was executed.",
+      "Run showmigrations catalogue before and after migrate; identify the applied [X] state.",
+      "Create catalogue/books_lab.py exactly as in the lesson and execute it once through manage.py shell.",
+      "Explain the stored Book instance and separately reproduce BLANK_TITLE_REJECTED through full_clean and DUPLICATE_TITLE_REJECTED from the database.",
+      "If the database table is missing, diagnose with showmigrations and DATABASES before attempting a repair."
+    ],
+    deliverables: ["First migration and SQL review", "Before/after migration evidence", "Saved Book row", "Two different rejection outcomes", "Database-target note"],
+    completionCriteria: ["The model and table now agree.", "The learner understands why full_clean and save have different validation behavior.", "The database rejected a duplicate title rather than a mocked branch."]
+  },
+  "django-and-api-engineering-create-relationships-between-django-models": {
+    objective: "Build two connected models and prove two deletion policies plus a composite uniqueness rule.",
+    scenario: "Continue the same catalogue and Book row. This is the prerequisite for applying multiple relations to the Steward schema.",
+    instructions: [
+      "Append ReadingList and ReadingListEntry below Book, retaining the existing model and import.",
+      "Generate and inspect migration 0002 before migrate, checking the foreign keys and compound uniqueness rule.",
+      "Run the source-published relations_lab.py and capture list_items=1, duplicate rejection, protected Book delete, list cascade and preserved Book.",
+      "Add a second distinct Book and explain the pair uniqueness behavior before executing the write.",
+      "Identify which deletions are enforced by Django's ORM collector and what would require a separate raw-SQL verification."
+    ],
+    deliverables: ["Related model classes", "Reviewed migration 0002", "Actual membership/deletion/constraint evidence", "ORM versus raw SQL deletion distinction"],
+    completionCriteria: ["The same Book data survives cascade list deletion.", "Composite uniqueness and PROTECT are observed, not merely described.", "The learner can explain one-to-many, through models and relation direction."]
+  },
   "django-and-api-engineering-steward-sql-to-django-orm-one-canonical-domain": {
     objective: "Map the previously learned PostgreSQL relational facts into a new Django-managed training database.",
     scenario: "After the scratch Django/DRF introduction, create an isolated Steward Django project. Do not run migrations over the manually seeded tsa_steward_lab or assume the book catalogue is the Steward registry.",
