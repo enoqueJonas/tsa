@@ -152,10 +152,10 @@ const practices: Record<string, PracticeSpec> = {
             "Trace one actual transitive distribution and state whether application code imports it directly. If it does, propose declaring it explicitly.",
             "For one candidate library, compare the standard library/framework alternatives, supported versions, license, maintenance, advisories, transitive footprint and replacement costs.",
             "Define permitted version range versus exact reproducible environment; assess a proposed upgrade in a disposable installation or branch and rerun the affected tests.",
-            "Check whether any proposed internal package genuinely has two independent consumers and an agreed contract. If not, document a decision to keep that behavior local.",
+            "Check whether any proposed internal package has more than one real consumer and an agreed contract. If not, document a decision to keep that behavior local.",
             "Record your final keep/remove/upgrade decision with validation evidence, owner and a future revisit trigger."
         ],
-        deliverables: ["Direct versus transitive dependency table", "One candidate and alternatives evaluation", "Safe upgrade/removal validation", "Internal reuse decision"],
+        deliverables: ["Direct versus transitive dependency table", "One candidate and alternatives evaluation", "Safe upgrade/removal validation", "Internal-package boundary assessment"],
         completionCriteria: ["Decisions are grounded in actually declared project requirements and consumers.", "One fresh/resolved installation path and test outcome are distinguished from an arbitrary pip freeze.", "A green dependency check is not misrepresented as a security audit.", "No publication or package-sharing infrastructure is invented as a prerequisite."]
     },
     "software-craft-read-environment-variables-in-python": {
