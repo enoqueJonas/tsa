@@ -90,18 +90,18 @@ const practices: Record<string, PracticeSpec> = {
         completionCriteria: ["All five cases execute without any assumed Steward files or Django setup.", "The authorization check uses the actual requesting member rather than membership-list existence.", "A refactor preserves response codes and state changes.", "No needless class, framework, transaction or remote dependency is introduced.", "Later Steward transfer is clearly distinguished from the mechanism exercise."]
     },
     "software-craft-refactoring": {
-        objective: "Refactor one concrete Steward hotspot using a safety net and small reversible steps.",
-        scenario: "A maintainability problem is slowing a real change, but the team does not want a broad cleanup project. You must remove the specific friction while proving that externally visible behavior stays stable.",
+        objective: "Perform a controlled Extract Function refactor that demonstrably preserves public behavior and detects a deliberate regression.",
+        scenario: "An online store refund rule is embedded in one function. Learn the refactoring mechanics on two complete stand-alone Python programs with six positive, negative, boundary and state-effect cases. Transfer the method to Steward only after the exercise runs without assumed infrastructure.",
         instructions: [
-            "Name the maintainability problem in operational terms: duplicated policy, confusing coupling, repeated branching, hidden side effects or similar.",
-            "Capture the current behavior with tests or reproducible API evidence before structural changes.",
-            "Name the first refactoring transformation (for example Rename, Extract Function, Move Function or Introduce Parameter Object), perform it, and rerun the safety net.", "If behavior is poorly understood, add a characterization test before restructuring it.",
-            "Continue only while each step clearly reduces the named problem.",
-            "If you discover a behavior change that is actually needed, stop and record it as separate feature work rather than hiding it inside the refactor.",
-            "Write the stopping condition that tells you the refactor is complete enough."
+            "Save the source-published first script as refund_before.py and execute python3 refund_before.py; record all six baseline contract results and the original order state in each case.",
+            "Save the second script as refund_after.py and run it independently. Identify the extracted refund_rejection_reason responsibility and unchanged request_refund entry point.",
+            "Compare outcome codes, denial priority (already_refunded first), exact 30-day boundary and refunded state for every input.",
+            "Change the after script's > 30 condition to >= 30 as a controlled defect; show the boundary assertion fails. Revert that one operator and confirm all six tests pass again.",
+            "Explain why this extraction is a structural refactor, while extending the window to 45 days would be a separate product change.",
+            "Only then find a concrete Steward hotspot, capture its existing positive and negative behavior, make one named transformation and rerun the same behavioral checks. Stop when the named maintainability problem is resolved."
         ],
-        deliverables: ["Named hotspot/problem", "Pre-refactor behavior evidence", "Small-step refactor evidence", "Stopping-condition note"],
-        completionCriteria: ["The original behavior remains stable.", "The named maintainability problem is measurably reduced.", "Feature changes are not smuggled into cleanup.", "You can explain why further refactoring is not justified yet."]
+        deliverables: ["Six-case before transcript", "Identical six-case after transcript", "Fail-then-fix boundary evidence", "Before/after responsibility map", "Optional narrow Steward transfer and stopping decision"],
+        completionCriteria: ["Both programs run from an empty scratch directory without Django or Steward.", "The public function, responses and state changes are equivalent across all six cases.", "An intentional boundary defect is genuinely rejected, not merely described.", "A feature change is not concealed inside the refactoring diff.", "The learner can explain which abstraction was useful and why additional layers were rejected."]
     },
     "software-craft-testing-as-a-change-safety-net": {
         objective: "Build a small Steward safety net that proves a refactor preserves behavior and that a regression test can detect a real defect.",
