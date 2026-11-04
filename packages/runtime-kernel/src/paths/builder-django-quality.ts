@@ -6,37 +6,96 @@ import { djangoDependentPostgresqlQualityLessons } from "./builder-postgresql-qu
 type PracticeSpec = Omit<PracticalContent, "type">;
 
 const practices: Record<string, PracticeSpec> = {
-  "django-and-api-engineering-django-foundations": {
-    objective: "Create Steward's first Django application and connect it to artifacts the learner already designed: the HTTP contract and PostgreSQL-backed domain.",
-    scenario: "You now have three real inputs: a Python Steward domain history, an HTTP contract designed before frameworks, and a PostgreSQL schema you can query directly. Django does not exist yet. In this increment you will create it deliberately and trace one request through the framework without pretending a starter project was already provided.",
+  "django-and-api-engineering-production-readiness-commands-and-atomic-updates": {
+    objective: "Prove the production-readiness rule through real transactional Django operations.",
+    scenario: "The canonical Service model and Environment relationship are already established. A service must not become production-stage without a production deployment, and its last production deployment must not be removed while active in that stage.",
     instructions: [
-      "The Django primer created a disposable tsa-django-intro scratch project for the first HTTP experiment. Return to the existing steward-core project and create a coherent checkpoint before introducing Django there; reuse the validated primer concepts, not the scratch database.",
-      "Add Django as an explicit project dependency, then create the Steward Django project and a registry app. Record the generated files and explain manage.py, settings.py, urls.py, asgi.py/wsgi.py, apps.py and migrations instead of treating them as magic.",
-      "Configure a local PostgreSQL connection using environment-owned configuration rather than embedding credentials in committed source.",
-      "Use a NEW, empty tsa_steward_django_lab database owned by Django migrations; do not run migrate on the manually seeded tsa_steward_lab. Map the canonical Team/Service/Environment concepts, and record every intentional difference from the SQL design.",
-      "Implement GET /health/ as the first narrow endpoint, preserving the exact route and response contract proven in the disposable Django primer. Create /services/health/ later only with a documented contract reason.",
-      "Send a real request and trace ordered URL resolution, middleware request/response traversal, HttpRequest/view execution and HttpResponse creation.",
-      "Annotate the important project files as framework configuration, HTTP orchestration, persistence mapping or domain/application behavior.",
-      "Commit this checkpoint: later Django exercises may now rely on an actual Steward Django project."
+      "Save registry/services.py exactly as shown in the reading and identify how both commands lock the same Service row inside transaction.atomic().",
+      "With a new UAT Service, attempt promotion without a production Environment and verify the exception leaves lifecycle unchanged.",
+      "Add a production Environment, promote successfully and read the saved lifecycle again; then attempt deletion of the only production Environment and prove the row remains.",
+      "Map the explicit ReadinessConflict to a stable API 409 without swallowing programming errors; explain which Team authorization the API must check separately.",
+      "Plan a real two-session race test and distinguish an unexecuted concurrency plan from proven transactional behavior."
     ],
-    deliverables: ["Created Steward Django project and registry app", "Declared Django/PostgreSQL dependencies", "Environment-based database configuration", "Initial model/migration mapping", "Working health endpoint", "Request-flow diagram"],
-    completionCriteria: ["The Django project is created in this exercise rather than assumed to pre-exist.", "The application connects to the dedicated Django-managed PostgreSQL lab, not the existing raw-SQL fixture.", "GET /health/ returns the expected JSON, consistent with the primer and API documentation lessons.", "The learner can trace the request path through Django.", "Framework configuration, persistence and domain responsibilities are distinguishable.", "Later Django lessons have an explicit checkpoint to continue from."]
+    deliverables: ["Executable command implementation", "Three positive/negative database transcripts", "Domain error contract", "Authorization and concurrency limitations"],
+    completionCriteria: ["Database state is checked after each outcome.", "The implementation coordinates both mutation paths.", "No untested concurrency claim is presented as validated."]
+  },
+  "django-and-api-engineering-schema-evolution-with-django-migrations": {
+    objective: "Safely extend a populated Django-managed table rather than pretending a new model field changes existing data automatically.",
+    scenario: "Your tsa_steward_django_lab database already contains Services. Add a slug without collisions or loss of existing records.",
+    instructions: [
+      "Capture the existing Service row count and immutable IDs, inspect showmigrations, and confirm that Django owns this isolated schema.",
+      "Add a nullable slug field and inspect makemigrations/sqlmigrate before applying it; explain why making it unique and required in one step would be unsafe.",
+      "Create the historical-model RunPython backfill from the reading, with an explicit dependency on the preceding nullable migration. Demonstrate a deliberate duplicate slug collision in disposable data.",
+      "Resolve collisions, verify backfilled rows and only then enforce the unique/required constraint with an appropriately staged migration.",
+      "Prove IDs, names and Team references survived, and document application compatibility, index locks and rollback/roll-forward risks."
+    ],
+    deliverables: ["Versioned migration sequence", "Actual collision error and resolution", "Before/after SQL and row identity evidence", "Deployment compatibility explanation"],
+    completionCriteria: ["The database was populated before migration.", "The backfill uses historical Django models.", "Collision and recovery are observed rather than hypothetical."]
+  },
+  "django-and-api-engineering-orm-query-behavior-and-performance": {
+    objective: "Observe QuerySet evaluation and eliminate a real N+1 query pattern.",
+    scenario: "Use the isolated Django-managed Steward registry created earlier; apply the SQL understanding already learned in PostgreSQL before evaluating ORM abstractions.",
+    instructions: [
+      "Seed multiple Service records with known Team ownership in tsa_steward_django_lab; verify database and model identity before running queries.",
+      "Build a filtered QuerySet and inspect its SQL without evaluating it. Use a fresh QuerySet and query-capture tooling to record when iteration executes SQL.",
+      "Access owning_team for N objects without eager loading and record the actual SQL count. Repeat on fresh data with select_related and compare identical result rows and query counts.",
+      "Explain why a many-valued reverse Environment collection calls for prefetch_related, and name a case where raw parameterized SQL is clearer.",
+      "Document one failure caused by measuring an already evaluated/cached QuerySet; distinguish statement counts from measured latency."
+    ],
+    deliverables: ["Generated SQL and evaluation transcript", "N+1 before/after counts with identical results", "Relationship-loading decision"],
+    completionCriteria: ["The measured SQL statements are real, not estimated.", "No unexplained fixture or absent Django model is assumed.", "Single-valued and many-valued relationships are distinguished."]
+  },
+  "django-and-api-engineering-steward-sql-to-django-orm-one-canonical-domain": {
+    objective: "Map the previously learned PostgreSQL relational facts into a new Django-managed training database.",
+    scenario: "After the scratch Django/DRF introduction, create an isolated Steward Django project. Do not run migrations over the manually seeded tsa_steward_lab or assume the book catalogue is the Steward registry.",
+    instructions: [
+      "Select and verify a NEW empty tsa_steward_django_lab database; explicitly distinguish it from the manually managed tsa_steward_lab and the scratch catalogue project.",
+      "Create the registry app and enter the reading's Team, Service and Environment model definitions, including owning_team, lifecycle choices and Environment.kind.",
+      "Run makemigrations, inspect sqlmigrate and apply migrate to the new Django-managed database only. Record generated tables and Django migration ownership.",
+      "Create one Team, Service and production Environment, then query ownership and lifecycle to compare them with SQL facts.",
+      "Explain why production lifecycle does not imply a production Environment and why a ModelSerializer belongs in the later serializers lesson."
+    ],
+    deliverables: ["Database target and migration history proof", "Model-to-SQL mapping", "One working relationship query", "Lifecycle versus deployment explanation"],
+    completionCriteria: ["No manually seeded database is overwritten.", "The reading's explicit fields and table names are used.", "No serializer is required before the serializer prerequisite."]
+  },
+  "django-and-api-engineering-django-from-zero-a-running-http-endpoint": {
+    objective: "Run the first Django HTTP endpoint without requiring a Steward project, database or DRF.",
+    scenario: "In an empty scratch directory, build a disposable Django project and observe one real HTTP response. The next lesson will introduce reusable applications and routing.",
+    instructions: [
+      "Create tsa-django-intro in a new empty directory, activate an isolated Python virtual environment and install Django exactly as the reading specifies.",
+      "Generate config and manage.py, inspect the new files and explain which program starts the HTTP listener.",
+      "Create the complete URL/view example from the reading, run the development server in terminal A and send a real curl request in terminal B.",
+      "Capture status, content type and response body; then stop the server and distinguish an unreachable listener from a Django HTTP 404.",
+      "Keep this scratch project for the following Django Foundations and DRF lessons. Do not create a Steward service or PostgreSQL schema here."
+    ],
+    deliverables: ["New project file tree and active interpreter", "HTTP request/response evidence", "Server-off connection failure and explanation"],
+    completionCriteria: ["A novice can reproduce the endpoint from an empty directory.", "No unintroduced app, database model or Steward repository is necessary.", "Both successful and failed network behavior are correctly identified."]
+  },
+  "django-and-api-engineering-django-foundations": {
+    objective: "Create and understand a Django application within the already-running scratch project.",
+    scenario: "Continue tsa-django-intro from the previous lesson. The project exists, but the learner has not yet created the catalogue app, included app URLs or traced Django's request path.",
+    instructions: [
+      "Reuse the activated environment and existing config project. Run startapp catalogue once; inspect its generated files before editing anything.",
+      "Register catalogue in INSTALLED_APPS, create catalogue/views.py and catalogue/urls.py and include catalogue.urls under /catalogue/ exactly as shown in the reading.",
+      "Send GET /catalogue/books/, GET /books/ and POST /catalogue/books/ and record 200, 404 and 405 respectively. Explain which layer caused each outcome.",
+      "Execute the published Django test-client assertions and contrast an in-process client with a real listening network server.",
+      "Draw the path from the HTTP listener through middleware, project URLs, app URLs, view and response. Keep the scratch project for the next DRF lesson."
+    ],
+    deliverables: ["Catalogue app and exact route files", "Three HTTP response transcripts", "Test-client proof", "Project/app/request-flow diagram"],
+    completionCriteria: ["Every path and file used is taught in this or the preceding lesson.", "The plain Django app works without Steward or DRF.", "The learner explains an HTTP 404 versus 405 without guessing."]
   },
   "django-and-api-engineering-django-rest-framework": {
-    objective: "Introduce Django REST Framework only after observing plain Django HTTP behavior, then use it to begin implementing the Service contract designed earlier.",
-    scenario: "The previous checkpoint created a real Django project and a plain JSON health endpoint. Web/API Foundations already defined the intended Service contract. Now evaluate what DRF contributes before using it for the first contract-backed Service endpoint.",
+    objective: "Prove what Django REST Framework adds to a working plain Django endpoint.",
+    scenario: "Continue the same tsa-django-intro catalogue app. Compare the earlier JsonResponse endpoint with a second DRF endpoint rather than silently switching projects or using unexplained ORM models.",
     instructions: [
-      "Continue from the Django project created in the previous checkpoint; do not create another project.",
-      "Add Django REST Framework as an explicit dependency.",
-      "Keep the existing plain Django health endpoint as a reference point.",
-      "Implement a narrow read-only GET /services endpoint with DRF using persisted Service data from the current PostgreSQL-backed model.",
-      "Compare plain Django HttpRequest/JsonResponse with DRF Request/Response for parsing, rendering and content negotiation; vary Content-Type and Accept independently.",
-      "Send an unsupported method and unsupported request/response representation and capture the behavior. Identify where authentication, permission and throttling would occur even if those policies are not all implemented yet.",
-      "Map the response fields back to the Service response contract created in Web/API Foundations and record any justified contract adjustment.",
-      "Do not introduce a ViewSet merely because DRF provides one; later exercises will evaluate routing/view abstractions."
+      "Install DRF in the existing virtual environment and add rest_framework to INSTALLED_APPS; retain catalogue and the plain /catalogue/books/ route.",
+      "Create catalogue/api_views.py with the published @api_view greet implementation and add /catalogue/greet/ without removing the existing route.",
+      "Send the successful POST with JSON Content-Type and Accept headers, then reproduce all four published negative requests (400, 405, 415, 406).",
+      "For each response, identify whether routing, method dispatch, parsing, field checking or content negotiation explains it.",
+      "Explain why the endpoint does not require a database, serializer, ViewSet or Steward application. Save this project for the later standalone serializer lesson."
     ],
-    deliverables: ["DRF dependency declaration", "Working GET /services endpoint", "Plain Django versus DRF comparison", "Failure-case evidence", "Contract traceability note"],
-    completionCriteria: ["DRF is added to an existing Django application rather than appearing as hidden setup.", "GET /services reads real persisted Service data.", "The learner can explain what DRF contributes beyond JsonResponse.", "The endpoint is checked against the earlier HTTP contract.", "No framework abstraction is adopted before its trade-off is understood."]
+    deliverables: ["One working Django endpoint and one DRF endpoint", "Five actual request/response captures", "Explanation of Content-Type versus Accept and failure layers"],
+    completionCriteria: ["All requests target the explicitly created catalogue app.", "The learner can explain DRF Request and Response without models or ViewSets.", "The 400/405/415/406 outcomes are reproduced rather than asserted."]
   },
   "django-and-api-engineering-projects-applications-and-boundaries": {
     objective: "Design Django app boundaries for Steward from cohesion and dependency direction rather than database nouns.",
@@ -61,11 +120,17 @@ const practices: Record<string, PracticeSpec> = {
     completionCriteria: ["Django models trace back to the relational model the learner actually built.", "Core relationships are not silently redesigned by framework convenience.", "At least one invariant is protected below the HTTP layer.", "Operation-level behavior is not forced into an inappropriate field constraint.", "Intentional schema changes are documented."]
   },
   "django-and-api-engineering-serializers-and-representation": {
-    objective: "Treat serializers as a trust boundary and deliberately control what external clients can send and receive.",
-    scenario: "A generated ModelSerializer exposes every model field as writable. Before clients depend on that contract, review the representation as untrusted input rather than a convenient mirror of the database.",
-    instructions: ["Create separate examples of accepted input, syntactically valid but rejected input, and server-controlled output. Trace initial_data → is_valid() → validated_data → save()/instance → serialized .data for one request.", "Mark at least one field read-only and prove client input cannot override it.", "Add one validate_<field> hook and one validate(attrs) cross-field example; then perform a partial=True update and prove omitted fields are preserved rather than treated as null/reset.", "Move one rule out of the serializer if it clearly belongs to reusable domain/application logic.", "Compare serializer representation with the underlying model and note one intentional difference."],
-    deliverables: ["Serializer implementation", "Accepted/rejected payload evidence", "Writable/read-only field table", "Validation-boundary decision"],
-    completionCriteria: ["The serializer does not expose fields merely because the model has them.", "Representation validation and reusable domain rules are distinguished.", "Rejected client control is demonstrated with evidence."]
+    objective: "Learn representation validation with an independent book example before applying ModelSerializer to the Steward model.",
+    scenario: "An HTTP client submits untrusted JSON. The learner must first prove which fields a plain DRF Serializer accepts and rejects, without assuming that validation writes to a database.",
+    instructions: [
+      "In the existing tsa-django-intro catalogue app, create BookSerializer exactly as taught; do not start with ModelSerializer.",
+      "Execute serializer_lab.py, serializer_negatives.py and serializer_patch.py. Record initial_data, validated_data, errors and outgoing .data.",
+      "Prove that an incoming read-only book_id is excluded, a malformed year and missing digital URL are rejected, and partial=True does not erase unchanged fields.",
+      "Explain why is_valid() did not persist a row. Compare field-level validation with cross-field validation and distinguish both from domain authorization.",
+      "Only after the book experiment, apply a ModelSerializer to the separately created Steward Service model with deliberately read-only id and owning_team. Do not infer that the serializer enforces Team authorization or deployment-readiness rules."
+    ],
+    deliverables: ["Three executable book-serializer scripts and results", "Input/output field contract", "One controlled Steward ModelSerializer application after prerequisites"],
+    completionCriteria: ["The first serializer experiment works without database models.", "The learner proves read-only and partial-field behavior.", "Steward ModelSerializer is clearly a later application, not an assumed prerequisite."]
   },
   "django-and-api-engineering-views-viewsets-and-routing": {
     objective: "Keep HTTP orchestration thin and choose view abstractions that make Steward behavior easier, not harder, to understand.",
