@@ -32,6 +32,46 @@ const practices: Record<string, PracticeSpec> = {
     deliverables: ["Versioned migration sequence", "Actual collision error and resolution", "Before/after SQL and row identity evidence", "Deployment compatibility explanation"],
     completionCriteria: ["The database was populated before migration.", "The backfill uses historical Django models.", "Collision and recovery are observed rather than hypothetical."]
   },
+  "django-and-api-engineering-build-and-execute-your-first-queryset": {
+    objective: "Construct an actual QuerySet, trace when database work happens and inspect its returned rows.",
+    scenario: "Continue the independent tsa-django-intro catalogue and its migrated Book, ReadingList and ReadingListEntry models. Do not introduce Steward or Docker before mastering the ORM basics.",
+    instructions: [
+      "Save catalogue/query_seed.py from the reading, run it from the directory containing manage.py and verify four books, three lists and three entries. If the scratch dataset differs, inspect it before taking cleanup action.",
+      "Save catalogue/queryset_first.py and execute it using the published manage.py shell command.",
+      "Record zero queries during queryset construction, one during iteration, and zero when reusing the evaluated QuerySet. Inspect the generated WHERE/ORDER BY without asserting a backend-independent raw SQL string.",
+      "Change the year filter to 2023; predict the result from actual catalogue data before executing.",
+      "Explain the difference between an empty valid queryset and an unmigrated-table/database connection error."
+    ],
+    deliverables: ["Actual fixture transcript", "Captured SQL count and filtered results", "SQL-to-ORM explanation", "Negative diagnosis"],
+    completionCriteria: ["The example runs using only the established catalogue project.", "Query execution and result reuse are measured rather than guessed.", "No database or schema is silently replaced."]
+  },
+  "django-and-api-engineering-choose-django-query-methods-and-reuse-results": {
+    objective: "Match query methods to their return contracts and prove QuerySet cache boundaries.",
+    scenario: "Use the four Book rows from the preceding learner-created fixture rather than assuming services, tokens or permissions.",
+    instructions: [
+      "Save and run catalogue/queryset_methods.py exactly as printed.",
+      "Explain the different outputs and failures of get, first, exists, count and a fully evaluated list, including zero, one and multiple matching rows.",
+      "Compare SQL counts from reusing one evaluated QuerySet, creating two fresh QuerySets and indexing an unevaluated QuerySet twice.",
+      "Deliberately make a naive benchmark with an already-evaluated QuerySet; explain why the second iteration reports zero queries.",
+      "Choose between a count-only endpoint and an endpoint that will immediately render full results, and defend the number of SQL operations."
+    ],
+    deliverables: ["Actual query-count transcript", "Return-contract table", "Two get() failure explanations", "Cache measurement pitfall"],
+    completionCriteria: ["The two get() failures are observed, not hypothetical.", "The learner distinguishes already-cached from newly constructed QuerySets.", "Method choice follows the caller's real data requirement."]
+  },
+  "django-and-api-engineering-load-related-django-rows-without-repeating-queries": {
+    objective: "Prove N+1 as real repeated SQL and choose relation loading based on direction and cardinality.",
+    scenario: "Use the same three ReadingList-to-entry memberships and model definitions already developed in the scratch catalogue.",
+    instructions: [
+      "Run catalogue/queryset_relations.py and record 4→2 for reverse entries and 4→1 for forward book references.",
+      "For each CaptureQueriesContext scope, identify the main SELECT and the per-row SELECTs, and show the result dataset has not changed.",
+      "Add one more list and relationship. Predict which counts grow and which should remain bounded, then verify with a new run.",
+      "Change select_related('book') to select_related('reading_list') while still accessing entry.book and explain the wrong-target failure.",
+      "Before applying the technique to Steward, confirm the actual ForeignKey and related_name paths from models.py. Do not guess an environments field; inspect the model.",
+      "Distinguish query-count reduction from a demonstrated API latency improvement."
+    ],
+    deliverables: ["Four real query-count measurements", "Identical before/after result proof", "Cardinality and relation-direction explanation", "Expanded-fixture transfer evidence"],
+    completionCriteria: ["No unrelated process or external database is required.", "Both loading strategies are selected for the correct relationship direction.", "A smaller number of queries is not misrepresented as a measured latency gain."]
+  },
   "django-and-api-engineering-orm-query-behavior-and-performance": {
     objective: "Observe QuerySet evaluation and eliminate a real N+1 query pattern.",
     scenario: "Use the isolated Django-managed Steward registry created earlier; apply the SQL understanding already learned in PostgreSQL before evaluating ORM abstractions.",
