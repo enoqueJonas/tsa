@@ -140,7 +140,7 @@ const appliedOrmStart = source.indexOf('richLesson("ORM Query Behavior and Perfo
 assert.ok(querysetLessonStart > modelRelationshipIntro &&
   querysetLessonStart < querysetMethodsStart &&
   querysetMethodsStart < querysetRelationsStart &&
-  querysetRelationsStart < appliedOrmStart,
+  querysetRelationsStart < stewardModelBridge && stewardModelBridge < appliedOrmStart,
   "QuerySet evaluation, cache/methods and relationship-loading teaching must precede applied Steward ORM");
 for (const id of [
   "build-and-execute-your-first-queryset",
