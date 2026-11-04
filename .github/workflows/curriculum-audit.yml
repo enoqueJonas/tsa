@@ -10,6 +10,7 @@ on:
       - curriculum/builder-craft-git-real-labs
       - curriculum/builder-craft-branch-conflict-labs
       - curriculum/builder-craft-readable-policy
+      - curriculum/builder-craft-separation-first-principles
       - curriculum/psql-published-practice-alignment
       - curriculum/builder-django-beginner-depth-v1
       - curriculum/system-thinker-pedagogical-audit
