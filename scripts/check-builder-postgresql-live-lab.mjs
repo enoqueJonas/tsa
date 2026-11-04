@@ -50,9 +50,9 @@ try {
     "A freshly created table is structurally visible even with zero rows");
   const psqlMetaFile = path.join(root, "psql_object_inspection.txt");
   fs.writeFileSync(psqlMetaFile,
-    codeFromLesson("psql commands — compare database, schema and table listings") + "\\n" +
-    codeFromLesson("psql commands — describe the existing library table") + "\\n" +
-    String.raw`\\h CREATE TABLE` + "\\n" + String.raw`\\?` + "\\n");
+    codeFromLesson("psql commands — compare database, schema and table listings") + "\n" +
+    codeFromLesson("psql commands — describe the existing library table") + "\n" +
+    String.raw`\h CREATE TABLE` + "\n" + String.raw`\?` + "\n");
   const psqlMeta = run(["-d", "tsa_library", "-f", psqlMetaFile]).out;
   assert.match(psqlMeta, /library/);
   assert.match(psqlMeta, /books/);
