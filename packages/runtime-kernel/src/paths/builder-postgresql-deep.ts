@@ -3397,9 +3397,105 @@ const specs: DataLessonSpec[] = [
         "warning": "Only execute changing SQL in a dedicated disposable PostgreSQL learning database. Predict the resulting rows and constraints before running a statement, and do not treat a five-row fixture as representative performance evidence."
     },
     {
+        "id": "postgresql-schema-design-basics",
+        "title": "Design Tables from Requirements",
+        "introduction": "Before building tables, you have to decide what each row means. We will design a small university-course enrollment database from ordinary questions: Which students are enrolled? Which courses exist? Which student takes which course? This is a design lesson, not a PostgreSQL syntax contest or an application-specific Steward requirement.",
+        "outcomes": [
+            "Derive separate tables from independent real-world facts rather than from a screen or JSON payload.",
+            "Identify the primary key, foreign key and cardinality of each relationship.",
+            "Choose whether missing values and repeated events are legitimate before defining constraints.",
+            "Build and test a three-table design that rejects nonexistent references."
+        ],
+        "sections": [
+            {
+                "id": "facts-before-columns",
+                "title": "Begin with questions the database must answer",
+                "body": "Imagine a university asking three questions: Which students exist? Which courses can students take? Which students are enrolled in each course? A student's name is a fact about a student. A course title is a fact about a course. Enrollment is a separate fact connecting a particular student to a particular course. Each fact can change independently: a student may change their name, a course may be renamed, and enrollment may be added or removed.\n\nIf you put student_name, course_title and every enrollment into one repeating spreadsheet, changing a course title means changing multiple rows. If you store one comma-separated list of course IDs inside the student row, you make individual enrollments hard to validate or query. The fact that a webpage displays all this information together does not mean it belongs in one table.\n\nWrite a sentence for every proposed table: Student represents one enrolled or prospective learner; Course represents one course; Enrollment represents one relationship between a student and a course. These row meanings are more durable than the shape of a form."
+            },
+            {
+                "id": "choose-identities",
+                "title": "Give each kind of fact a stable identity",
+                "body": "A primary key identifies one row regardless of changes to descriptive attributes. A student_id distinguishes learners even when two students share a name. A course_id continues identifying the same course after its title changes. For Enrollment, the pair (student_id, course_id) can be the primary key in this simple model because we allow at most one enrollment per student/course pair.\n\nThat last rule is a deliberate assumption. If the university allows the same learner to repeat a course next year, the pair is no longer sufficient. We might include an academic_term identifier in the key or give each enrollment event its own identity. Database design is the act of making these policy choices explicit, not merely running CREATE TABLE."
+            },
+            {
+                "id": "cardinality-in-plain-english",
+                "title": "One-to-many and many-to-many relationships",
+                "body": "One student can have several enrollments; each enrollment belongs to exactly one student. That is one-to-many from Student to Enrollment. One course can have several enrollments; each enrollment refers to one Course. That is one-to-many from Course to Enrollment. Combined, those two relationships implement a many-to-many connection between Student and Course.\n\nA foreign key column must refer to a valid row in its parent table (unless NULL is deliberately allowed). Enrollment.student_id therefore references Student.id, and Enrollment.course_id references Course.id. The database can reject a request to enroll student 999 when no such student exists. This is referential integrity; it is enforced by PostgreSQL no matter which client sends the INSERT."
+            },
+            {
+                "id": "write-constraints",
+                "title": "Choose missing values and lifecycle rules",
+                "body": "Suppose the date of enrollment is mandatory, but the student's eventual grade is not yet known. Then enrolled_on is NOT NULL, while grade may be NULL until assessment is complete. NULL is not the string 'unknown' and should not be used to hide a genuine data rule. A CHECK could restrict grades to allowed values, but you must decide whether incomplete, withdrawn or failed courses need additional states before declaring that rule.\n\nForeign-key actions on deletion also require thought. Should deleting a Course automatically remove historical enrollments? Usually that would erase important records. A restrictive relationship may be safer. A different design might mark a course inactive rather than deleting it. No universal ON DELETE default captures all domains. Our first lab uses the default reference protection and keeps historical questions explicit."
+            },
+            {
+                "id": "make-tables",
+                "title": "Create a small enrollment schema you can explain",
+                "body": "The following script creates three TEMP tables in one psql session; they disappear after the connection ends. It does not modify your persistent library.books table. CREATE TABLE declares Student and Course first so they exist when Enrollment references them. The primary key of Enrollment is the two-column pair, and both foreign keys are NOT NULL. After inserting two learners, two courses and three enrollments, the final SELECT uses the already-taught JOIN operation to reconstruct who takes which course.\n\nRun this as one file or one complete block inside psql connected to tsa_library. If you split it into separate terminal invocations, the temporary parent tables will be lost before later commands execute. Predict the three result rows before you run it.",
+                "caption": "enrollment_schema_demo.sql — three linked tables from university requirements",
+                "code": "CREATE TEMP TABLE tsa_student (id integer PRIMARY KEY, name text NOT NULL);\nCREATE TEMP TABLE tsa_course (id integer PRIMARY KEY, title text NOT NULL);\nCREATE TEMP TABLE tsa_enrollment (\n  student_id integer NOT NULL REFERENCES tsa_student(id),\n  course_id integer NOT NULL REFERENCES tsa_course(id),\n  enrolled_on date NOT NULL,\n  PRIMARY KEY (student_id, course_id)\n);\nINSERT INTO tsa_student VALUES (1,'Ana'),(2,'Beto');\nINSERT INTO tsa_course VALUES (10,'SQL'),(20,'Linux');\nINSERT INTO tsa_enrollment VALUES\n(1,10,'2026-02-01'), (1,20,'2026-02-01'), (2,10,'2026-02-02');\nSELECT st.name, c.title\nFROM tsa_enrollment e\nJOIN tsa_student st ON st.id=e.student_id\nJOIN tsa_course c ON c.id=e.course_id\nORDER BY st.name,c.title;",
+                "language": "sql",
+                "output": "Ana|Linux\nAna|SQL\nBeto|SQL"
+            },
+            {
+                "id": "reject-an-orphan",
+                "title": "Make PostgreSQL reject an impossible enrollment",
+                "body": "In the same psql session, attempt INSERT INTO tsa_enrollment VALUES (999,10,'2026-02-03'); PostgreSQL should reject the row because student 999 does not exist. Then run SELECT count(*) FROM tsa_enrollment; and confirm it is still 3. If instead you see 'relation tsa_enrollment does not exist', you started a new session and tested temporary-table lifetime, not reference integrity.\n\nThe failure illustrates why foreign keys matter. They do not verify whether Ana attended class or whether a date is truthful; they only enforce relationships declared by the schema. A data model must distinguish what the database can guarantee from what the business process and application still need to validate."
+            },
+            {
+                "id": "change-scenario",
+                "title": "Check whether the design survives a policy change",
+                "body": "Now suppose a student can take the same course again in a later academic term. Our primary key (student_id, course_id) would reject that second event even though it is legitimate under the new rule. We must modify the model: add an academic term to the key or introduce a distinct enrollment identity with a constraint appropriate to the new meaning.\n\nThis is why asking about future changes matters before implementing columns. How long must enrollment history be kept? Can a course title change? Is deleting a student allowed when grades exist? Who is the authoritative source of student identity? These questions shape keys, nullability, referential actions, history and access. In the next applied schema-design lesson you will answer equivalent questions for Steward."
+            }
+        ],
+        "assignment": [
+            "Identify three independent facts and corresponding table row meanings from the university story.",
+            "Draw the two one-to-many links that implement the student/course many-to-many relationship.",
+            "Execute the temporary-schema script and explain its three output rows.",
+            "Try the invalid student 999 enrollment in the same session and show the count remains 3.",
+            "Propose a key change for repeated enrollments across years and defend its implications."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Data Definition",
+                "url": "https://www.postgresql.org/docs/17/ddl.html",
+                "kind": "reference",
+                "purpose": "Link table definitions, constraints and object ownership to relational facts."
+            },
+            {
+                "title": "PostgreSQL 17 — Foreign Keys",
+                "url": "https://www.postgresql.org/docs/17/ddl-constraints.html#DDL-CONSTRAINTS-FK",
+                "kind": "reference",
+                "purpose": "Validate references, composite keys and parent-deletion behavior."
+            }
+        ],
+        "practiceObjective": "Derive a defensible relational structure from a new domain before applying the pattern to Steward.",
+        "practiceInstructions": [
+            "Draw the university Student, Course and Enrollment relationship diagram and label cardinality.",
+            "Run the published temporary schema and the rejected missing-student insert in the same psql session.",
+            "Explain how a repeated-course policy would change the Enrollment key.",
+            "Use the same question-to-table procedure to prepare the Steward design lab."
+        ],
+        "knowledgeCheck": "Why is Enrollment a table rather than a comma-separated list in Student? Why must student_id reference Student? Why would a composite key fail if retaking a course is allowed?",
+        "readingTitle": "Understand how to design related tables",
+        "practiceTitle": "Build a university enrollment model",
+        "checkTitle": "Check schema-design decisions",
+        "practiceScenario": "Create and test a generic enrollment database; reserve Steward domain design for the next applied practical.",
+        "practiceDeliverables": [
+            "Row-meaning and cardinality diagram",
+            "Three-table session transcript",
+            "Foreign-key negative evidence",
+            "Repeated-enrollment design revision"
+        ],
+        "practiceCompletionCriteria": [
+            "Each table has an independently defensible fact meaning.",
+            "The student 999 insert is rejected by a real FK, not a missing TEMP table.",
+            "The learner can justify its key assumption and a policy-driven revision."
+        ]
+    },
+    {
         "id": "schema-design",
-        "title": "Schema Design",
-        "introduction": "A schema is a model of durable facts and the questions an application must answer—not an arbitrary mapping from screen fields to database columns. Steward's initial four-table fixture intentionally excludes Membership and ServiceReview history. We will make those missing concepts explicit, determine their cardinalities and show why overwriting one column destroys historical evidence.",
+        "title": "Steward Practice: Design a Service-Registry Schema",
+        "introduction": "Apply the table-design method from the university example to Steward. The four-table seed covers Teams, Services, Environments and dependencies, but real ownership and service reviews have distinct relationships and lifetimes. This applied lesson models those missing facts, chooses constraints and records what historical evidence must survive updates.",
         "outcomes": [
             "Derive relations and keys from independently evolving domain facts.",
             "Use one-to-many and many-to-many cardinalities to choose appropriate foreign keys and unique pairs.",
@@ -3467,14 +3563,109 @@ const specs: DataLessonSpec[] = [
         "warning": "Only execute changing SQL in a dedicated disposable PostgreSQL learning database. Predict the resulting rows and constraints before running a statement, and do not treat a five-row fixture as representative performance evidence."
     },
     {
-        "id": "normalization",
-        "title": "Normalization and Denormalization Trade-offs",
-        "introduction": "Normalization is not a contest to remove every repeated string. It is the discipline of giving a durable fact one authoritative home so that changes cannot create contradictory truths. Work through a failed ownership design, identify its functional dependency, and then prove the normalized model handles the same question without repeating Team names.",
+        "id": "postgresql-normal-forms",
+        "title": "Understand First, Second and Third Normal Form",
+        "introduction": "You have seen what can go wrong when a fact is copied into several rows. Database normalization gives us a precise way to identify which table should own each fact. Rather than memorize '1NF, 2NF, 3NF' as slogans, we will derive them using student and course records, identify a real update anomaly, and then reconstruct the correct answer from separate related tables.",
         "outcomes": [
-            "Demonstrate an actual update anomaly in a deliberately flawed representation.",
-            "Use functional dependency to distinguish key ownership from another table's facts.",
-            "Explain practical 1NF, 2NF and 3NF without applying them as slogans.",
-            "Justify denormalization only with a measured query and an explicit consistency owner."
+            "Describe what the first three normal forms protect, with their assumptions and limitations.",
+            "Explain a functional dependency and a partial dependency on a composite key.",
+            "Identify a transitive dependency and give the fact its correct authoritative table.",
+            "Reconstruct correct enrolment information from normalized tables without duplicating student, course or department names."
+        ],
+        "sections": [
+            {
+                "id": "what-normalization-solves",
+                "title": "What problem does normalization solve?",
+                "body": "Suppose one flat Enrollment spreadsheet stores student_id, student_name, course_id, course_title, department_name and grade on every row. Ana takes SQL and Linux, so her name and department appear twice. A course rename must be copied into every enrollment row. One missed update creates contradictory 'truths'. Deleting the final enrollment row for a course could accidentally delete the only recorded course title. These are update and deletion anomalies.\n\nNormalization is the process of deciding which facts belong together according to relationships among attributes. It is not a contest to maximize the number of tables. Good schema design makes facts easy to change consistently and relationships explicit. Sometimes reporting systems deliberately duplicate facts for speed or historical snapshots, but then the copies need a clear synchronization policy."
+            },
+            {
+                "id": "first-normal-form",
+                "title": "First normal form: decide what each attribute represents",
+                "body": "First Normal Form (1NF) is the foundation for representing rows in a relation with named attributes drawn from domains of values, not repeating columns such as course_1, course_2, course_3. Instead of a student's courses stored as one comma-separated string, give each enrollment its own row with one student reference and one course reference. That supports arbitrary numbers of enrollments and lets PostgreSQL enforce separate foreign keys.\n\nDo not turn this lesson into the false slogan 'PostgreSQL arrays and JSON are forbidden'. PostgreSQL supports complex values and they can be appropriate when the value genuinely represents a single document or collection. The issue is whether you are hiding several independently updateable business facts inside one field and thereby losing relational keys, constraints and useful queries."
+            },
+            {
+                "id": "functional-dependency",
+                "title": "What does 'one attribute determines another' mean?",
+                "body": "A functional dependency X → Y means that for every permitted state of the relation, two rows with the same X must also have the same Y. Under our university rules, student_id → student_name, because one ID identifies one student and their current name; course_id → course_title, because a course ID identifies a course. If a student is allowed only one grade for each student/course pair, (student_id, course_id) → grade.\n\nThe arrow is a statement about the domain's rules, not a coincidence in today’s small dataset. Two students might currently share the name Ana; that does not mean student_name determines student_id. A reliable dependency comes from the definition of an entity and its identifier. Define the keys before evaluating which non-key values belong in each table."
+            },
+            {
+                "id": "second-normal-form",
+                "title": "Second normal form: avoid facts dependent on only part of a key",
+                "body": "Second Normal Form (2NF) builds on 1NF: a non-prime attribute must not depend on only a proper subset of a candidate key. In a flat enrollment table whose composite key is (student_id, course_id), the student_name depends on student_id alone, and course_title depends on course_id alone. These are partial dependencies; copying those names on every enrollment is unnecessary and vulnerable to anomalies.\n\nThe grade of a student in a particular course, on the other hand, depends on the combination of the student and course, in our simplified policy. It belongs in Enrollment. Move student_name into Student, course_title into Course and leave their IDs plus grade in Enrollment. The need for 2NF is easiest to see when a key contains multiple attributes. A table with a single-column candidate key cannot have this specific kind of partial-key dependency."
+            },
+            {
+                "id": "third-normal-form",
+                "title": "Third normal form: avoid indirect non-key dependencies",
+                "body": "Suppose Student stores id, name, department_id and department_name. If department_id determines department_name, then student_id → department_id → department_name. The current department name is an authoritative fact about Department, not Student. Storing it on every student row creates another update anomaly: renaming a department requires updating every student.\n\nThird Normal Form (3NF) addresses these non-key-to-non-key dependencies, under the formal rule that for each nontrivial functional dependency X → A, X is a superkey or A is a prime attribute. In simple everyday cases the practical lesson is to place department_name in Department and store only department_id in Student. That is a teaching simplification of the formal definition, not a claim that every transitive-looking dependency violates 3NF.\n\nNormalize the current authoritative fact. A historical enrollment document may deliberately preserve the department label as it was at the time; that is a different kind of fact, not a contradictory second source of current truth."
+            },
+            {
+                "id": "build-normalized",
+                "title": "Run the corrected schema and prove one rename changes every answer",
+                "body": "Create four temporary tables in one psql session: Department, Student, Course and Enrollment. A student references a department; each enrollment references a student and a course. The data provides two course enrollments for Ana, both in the Computing department. Now rename the Department once and JOIN the tables to display both course rows. The same updated name appears in both results without updating any Student or Enrollment row.\n\nThe sample is intentionally tiny. It proves the *logical ownership* of the department name, not the performance of a four-table JOIN. The later Steward normalization case uses the same idea for current Team names.",
+                "caption": "normal_forms_demo.sql — normalized university tables and one department rename",
+                "code": "CREATE TEMP TABLE tsa_nf_department (id integer PRIMARY KEY, name text NOT NULL);\nCREATE TEMP TABLE tsa_nf_student (id integer PRIMARY KEY, name text NOT NULL,\n  department_id integer NOT NULL REFERENCES tsa_nf_department(id));\nCREATE TEMP TABLE tsa_nf_course (id integer PRIMARY KEY, title text NOT NULL);\nCREATE TEMP TABLE tsa_nf_enrollment (\n  student_id integer NOT NULL REFERENCES tsa_nf_student(id),\n  course_id integer NOT NULL REFERENCES tsa_nf_course(id),\n  grade text,\n  PRIMARY KEY(student_id,course_id)\n);\nINSERT INTO tsa_nf_department VALUES (1,'Computing');\nINSERT INTO tsa_nf_student VALUES (1,'Ana',1);\nINSERT INTO tsa_nf_course VALUES (10,'SQL'),(20,'Linux');\nINSERT INTO tsa_nf_enrollment VALUES (1,10,'A'),(1,20,'B');\nUPDATE tsa_nf_department SET name='Computer Science' WHERE id=1;\nSELECT st.name, c.title, d.name AS department\nFROM tsa_nf_enrollment e\nJOIN tsa_nf_student st ON st.id=e.student_id\nJOIN tsa_nf_course c ON c.id=e.course_id\nJOIN tsa_nf_department d ON d.id=st.department_id\nORDER BY c.title;",
+                "language": "sql",
+                "output": "Ana|Linux|Computer Science\nAna|SQL|Computer Science"
+            },
+            {
+                "id": "when-to-denormalize",
+                "title": "Do normal forms mean never duplicating anything?",
+                "body": "No. A derived count may be cached for a reporting workload, a materialized view may precompute an expensive query, and an audit event may preserve a historical snapshot that must not change when the current record changes. These are not all the same decision. The key questions are whether the copy represents current authoritative state or historical evidence, what synchronizes it, how stale it may become and how errors are repaired.\n\nNormalize first when you are still discovering the meaning of data. If later measurements show a genuine bottleneck, consider a measured and controlled denormalization. Do not add a dependency_count column 'for speed' without knowing which process maintains it on inserts, deletes and rollbacks. The next applied lesson tests duplicated Steward Team names and asks you to defend the authoritative source."
+            }
+        ],
+        "assignment": [
+            "Identify one 1NF concern, one 2NF partial dependency and one 3NF transitive dependency in a deliberately flat university enrollment design.",
+            "Explain why grade belongs with the student/course pair rather than the Student or Course table.",
+            "Run normal_forms_demo.sql and prove that one Department rename produces a consistent name across two enrollment results.",
+            "Contrast current authoritative department names with historical snapshots in a course certificate.",
+            "Explain one situation in which storing a derived value might be justified and what could make that copy stale."
+        ],
+        "resources": [
+            {
+                "title": "CMU 15-445/645 Database Systems — Relational Model and Normalization",
+                "url": "https://15445.courses.cs.cmu.edu/fall2025/schedule.html",
+                "kind": "reference",
+                "purpose": "Optional formal treatment of functional dependencies and relational design."
+            },
+            {
+                "title": "PostgreSQL 17 — Table Basics and Constraints",
+                "url": "https://www.postgresql.org/docs/17/ddl.html",
+                "kind": "reference",
+                "purpose": "Apply normalization choices through real tables, keys and references."
+            }
+        ],
+        "practiceObjective": "Detect partial and transitive dependencies in a flat enrollment table and test an explicit normalized reconstruction.",
+        "practiceInstructions": [
+            "Mark the candidate key and each functional dependency in a flattened Student–Course–Department example.",
+            "Separate Student, Course, Enrollment and Department into authoritative tables.",
+            "Run the published temporary SQL and show the department rename appears consistently in both results.",
+            "Explain why the corresponding Steward Team-name duplication is an anomaly rather than a separate independent fact."
+        ],
+        "knowledgeCheck": "What fact belongs to Enrollment rather than Student? Why does student_name violate 2NF when duplicated in a table keyed by student_id and course_id? Why is department_name a 3NF concern? Can a historical snapshot legitimately repeat a label?",
+        "readingTitle": "Learn what 1NF, 2NF and 3NF protect",
+        "practiceTitle": "Repair a university enrollment design",
+        "checkTitle": "Check functional dependencies and normal forms",
+        "practiceScenario": "Learn normal forms using university data before applying them to Steward.",
+        "practiceDeliverables": [
+            "Dependency analysis with composite keys",
+            "Normalized schema and two-row join output",
+            "One justified denormalization or historical-snapshot distinction"
+        ],
+        "practiceCompletionCriteria": [
+            "The three normal forms are explained through concrete dependencies.",
+            "The learner can trace one value to its single authoritative table.",
+            "The executed rename proves two consistent join results."
+        ]
+    },
+    {
+        "id": "normalization",
+        "title": "Steward Practice: Repair Duplicated Team Names",
+        "introduction": "You have now studied 1NF, 2NF and 3NF through independent university examples. Apply the same reasoning to an intentionally flawed Steward ownership representation: two service rows repeat a Team's name, so a partial rename creates contradictory results. The goal is to diagnose the dependency, use one authoritative Team row and justify any later denormalized copy.",
+        "outcomes": [
+            "Demonstrate the Steward Team-name update anomaly without altering permanent data.",
+            "Trace Team.id → Team.name and Service.id → owning_team_id and explain why copying current names is risky.",
+            "Join Service to its authoritative Team name and identify the trade-off.",
+            "Defend a denormalization only when measured workload, synchronization and staleness policy justify it."
         ],
         "sections": [
             {
