@@ -184,6 +184,10 @@ try {
   const normalFormSql = publishedCode("normal_forms_demo.sql — normalized university tables and one department rename");
   assert.match(normalFormSql, /REFERENCES tsa_nf_department\(id\)/);
   assert.match(normalFormSql, /UPDATE tsa_nf_department/, "3NF example must prove authoritative rename");
+  const denialSql = publishedCode("readonly_denial.sql — demonstrate allowed SELECT and rejected INSERT");
+  assert.match(denialSql, /SET ROLE tsa_books_readonly/);
+  assert.match(denialSql, /INSERT INTO library.books/);
+  assert.match(denialSql, /RESET ROLE/);
   const roleSql = publishedCode("postgresql_readonly_role.sql — optional local-only NOLOGIN role and privilege proof");
   assert.match(roleSql, /NOLOGIN/);
   assert.match(roleSql, /GRANT SELECT ON library.books/);
