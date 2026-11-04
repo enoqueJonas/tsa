@@ -183,3 +183,16 @@ These tasks are specifications for independent learner assessment, **not evidenc
 - Preserve the preexisting remaining Software Craft lessons and stable `Testing as a Change Safety Net` activity ID while inserting a new prerequisite lesson.
 
 **Acceptance:** CI, build and browser checks must pass on the exact head before normal merge. The exercises still require human rendered-page review and an uncoached learner transfer assessment before being marked learner-validated.
+
+## 2026-11-04 — Environment variables before application configuration
+
+**Finding:** Software Craft's Configuration lesson used an undefined `env.str(...)` / `env.bool(...)` helper before showing the learner where environment variables come from or how Python receives them. Its practical jumped directly to an existing Steward configuration, while the stand-alone parser later in the reading taught a different API.
+
+**Remediation:**
+- Split a prerequisite **Read Environment Variables in Python** lesson explaining shell variables versus exported process variables, one-command POSIX prefixes, Python `os.environ`, absence/default/invalid values, .env file versus actual inherited environment, and why string `"false"` must not be passed to `bool()`.
+- Provide one complete, framework-free `environment_lab.py` with a safe artificial name/value. Give exact POSIX command invocations and expected successful/negative results; note PowerShell syntax differs.
+- Replace the unexplained `env.str` example in the Configuration reading with visible standard-library `os.environ` access and explicit required/boolean checks. Preserve the separate existing executable fail-closed settings parser.
+- Align both final published practical overrides with these independent examples before any project-specific Django/Steward transfer. No production secret is printed or assumed.
+- Add source-derived CI verifying an unset variable, a temporary valid value and an invalid value causing a nonzero exit. Guard against reintroducing the unexplained `env.str` API.
+
+**Evidence limit:** Source and CI checks prove the demonstrations execute, not that the learner independently configures the deployed Steward API. Human rendered review and transfer remain open.
