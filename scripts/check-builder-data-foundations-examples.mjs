@@ -30,11 +30,17 @@ const appliedSubqueries = marker("subqueries");
 const withBasics = marker("postgresql-with-basics");
 const recursiveWith = marker("postgresql-recursive-with");
 const cteLesson = marker("ctes");
+const transactionBasics = marker("postgresql-transaction-basics");
+const savepoints = marker("postgresql-savepoints");
+const transactionCase = marker("transactions-acid");
+const isolation = marker("concurrent-transactions-and-isolation-levels");
+const readiness = marker("production-readiness-invariant");
+const constraints = marker("constraints-keys");
 assert.ok(
   persistence > 0 && system > persistence && connection > system &&
   databases > connection && schemas > databases && tables > schemas && rows > tables && temporary > rows &&
   relational > temporary && firstJoins > relational &&
-  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && combineConditions > deletion && nullLogic > combineConditions && sortResults > nullLogic && filtering > sortResults && subqueryBasics > filtering && existsSubqueries > subqueryBasics && appliedSubqueries > existsSubqueries && withBasics > appliedSubqueries && recursiveWith > withBasics && cteLesson > recursiveWith,
+  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && combineConditions > deletion && nullLogic > combineConditions && sortResults > nullLogic && filtering > sortResults && subqueryBasics > filtering && existsSubqueries > subqueryBasics && appliedSubqueries > existsSubqueries && withBasics > appliedSubqueries && recursiveWith > withBasics && cteLesson > recursiveWith && transactionBasics > cteLesson && savepoints > transactionBasics && transactionCase > savepoints && isolation > transactionCase && readiness > isolation && constraints > readiness,
   "The learner order must be persistence → DBMS and server → psql → database creation → schemas → table definition → rows → temporary tables → relational model → joins → grouping → applied fixture → UPDATE → DELETE → Boolean filters → NULL → ordering → Steward filtering case"
 );
 assert.doesNotMatch(source, /Two programs, one protocol boundary|Establish prerequisites without inventing credentials/);
@@ -134,6 +140,16 @@ try {
   assert.match(cycle, /ANY\(walk.seen\)/);
   assert.ok(source.includes('"title": "Steward Practice: CTE Reports and Dependency Traversal"'),
     "Steward CTE case must be an application of previously taught SQL");
+  const txnRollback = publishedCode("wallet_rollback.sql — transfer and undo two writes");
+  assert.match(txnRollback, /BEGIN;/);
+  assert.match(txnRollback, /ROLLBACK;/);
+  const txnCommit = publishedCode("wallet_commit.sql — commit both transfer updates");
+  assert.match(txnCommit, /COMMIT;/);
+  const stockSavepoint = publishedCode("stock_savepoint.sql — recover after an expected CHECK error");
+  assert.match(stockSavepoint, /SAVEPOINT before_bad_update;/);
+  assert.match(stockSavepoint, /ROLLBACK TO SAVEPOINT before_bad_update;/);
+  assert.ok(source.includes('"title": "Steward Practice: Transactions and ACID"'));
+  assert.ok(source.includes('"title": "Steward Practice: Verify Production Readiness"'));
   const sql = publishedCode("first_session.sql — run only in a disposable PostgreSQL lab database");
   for (const statement of ["CREATE TEMP TABLE", "INSERT INTO tsa_session_probe", "ORDER BY id", "SELECT count(*)"]) {
     assert.ok(sql.includes(statement), `Missing SQL teaching concept: ${statement}`);
