@@ -23,7 +23,8 @@ const craftTeaching: Record<string, { outcomes: string[]; practical: string }> =
   "Managing Dependencies": { outcomes: ["Justify a dependency from real consumer needs.", "Review version compatibility and update risks.", "Recognize when a new shared package is premature."], practical: "Review an external or internal dependency" },
   "Configuration": { outcomes: ["Separate code from environment-owned settings.", "Validate types and fail visibly when required configuration is absent.", "Avoid exposing credentials through defaults or logs."], practical: "Prove configuration fails safely" },
   "Static Analysis and Automated Feedback": { outcomes: ["Distinguish formatting, linting, type checking and behavioral tests.", "Run the appropriate tool before committing.", "Treat warnings according to a documented policy rather than hiding them."], practical: "Make static checks actionable" },
-  "Code Review and Technical Debt": { outcomes: ["Review risk, correctness and tests before style.", "Classify blocking defects versus optional improvements.", "Describe technical debt as an explicit cost rather than any imperfect code."], practical: "Review a change and classify findings" },
+  "Review a Code Change": { outcomes: ["Review intended behavior and access rules before style.", "Detect a cross-customer leak with a negative test and verify the fix.", "Classify blockers, requirement questions and optional suggestions by consequence."], practical: "Review and retest an unsafe patch" },
+  "Managing Technical Debt": { outcomes: ["Separate a current defect from future maintenance cost.", "Record concrete evidence, affected change, owner and revisit trigger.", "Choose repayment or deliberate deferral based on real risk."], practical: "Make an evidence-based debt decision" },
   "Useful Logging": { outcomes: ["Select events that answer operational questions.", "Capture stable context without leaking credentials.", "Test expected, rejected and unexpected outcomes with useful log levels."], practical: "Capture safe, diagnostic events" },
   "Technical Documentation": { outcomes: ["Choose a document form suited to the reader's job.", "Write reproducible setup and verification instructions.", "Record decisions and check documentation for drift."], practical: "Write and verify developer documentation" },
   "Designing Errors": { outcomes: ["Distinguish expected domain rejections from programming failures.", "Map errors to stable API contracts.", "Avoid logging or returning sensitive implementation details."], practical: "Design and test meaningful errors" },
@@ -38,8 +39,9 @@ function lesson(
     instructions: string[],
     questions: string[],
     resources: LearningResource[],
+    stableId?: string,
 ): Lesson {
-    const id = `software-craft-${slug(title)}`;
+    const id = stableId ?? `software-craft-${slug(title)}`;
     const blocks: LessonBlock[] = [
         { type: "paragraph", text: introduction },
         { type: "heading", id: "learning-outcomes", text: "Learning outcomes", level: 2 },
@@ -647,18 +649,141 @@ export const softwareCraftDeepLessons: Lesson[] = [
         [refactoringGuru],
     ),
     lesson(
-        "Code Review and Technical Debt",
-        "Code review is risk analysis and shared understanding, not a style contest. Technical debt is a future change cost created by a current design or delivery choice; managing it means making that cost visible enough to decide when repayment is worthwhile.",
+        "Review a Code Change",
+        "Code review is about checking whether a proposed change is correct, safe and understandable. It is not a style contest. Start with the requested behavior, look for an existing guarantee the patch might remove, and verify the risk with a small test. This exercise provides a complete, deliberately unsafe invoice-export change before any Steward pull request is required.",
         [
-            { title: "Review from behavior and risk inward", paragraphs: ["Start with the change's purpose and contract: what behavior changes, which invariants/security boundaries are touched, what data/migration/configuration consequences exist, and what evidence proves it. Then inspect implementation structure. A beautifully named function can still implement the wrong authorization rule." ] },
-            { title: "Classify review feedback", paragraphs: ["Separate correctness/security blockers from maintainability concerns, questions and optional suggestions. Explain the consequence behind a requested change. 'I prefer this shape' is weaker than 'this duplicates ownership policy, so the two endpoints can diverge'." ] },
-            { title: "Debt is not a synonym for defect or imperfection", paragraphs: ["A correctness or security defect that violates the required behavior should normally be treated as a defect, not relabeled as technical debt to make it optional. Likewise, code is not debt merely because a cleaner design exists. Technical debt is most useful as a concept when a current design or delivery choice creates a known future cost or risk that the team consciously carries.", "'This code is ugly' is therefore not a useful debt record. State the shortcut or constraint, evidence, expected future cost/risk, affected area and trigger for revisiting it. Some debt is rational when delivery value exceeds current repayment cost; accidental permanent ambiguity is not." ] },
-            { title: "Repay debt when it intersects real work or risk", paragraphs: ["Prioritize debt that repeatedly slows changes, creates incidents/security risk, blocks required architecture or has increasing carrying cost. Avoid large cleanup projects whose benefit cannot be connected to actual work. The Boy Scout instinct is useful only when the nearby improvement is safe, scoped and owned." ] },
-        ],
-        "Review one real Steward diff and turn its findings into actionable engineering decisions.",
-        ["Read the change goal and validation evidence before reviewing implementation.", "Inspect behavior/API, authorization/data integrity, migrations/configuration, tests, observability and maintainability in that order or another explicit risk order.", "Write at least one blocker-level finding if one genuinely exists, one question and one optional suggestion; do not manufacture severity.", "Identify one piece of technical debt in Steward and record consequence, evidence, affected area and revisit trigger.", "Decide whether to repay that debt now or defer it and defend the choice.", "Re-read the final diff after fixes as a complete change rather than only reviewing the edited lines."],
-        ["What should a reviewer understand before debating implementation style?", "What makes review feedback actionable?", "When is technical debt rational?", "Why should a debt item include a revisit trigger?"],
-        [refactoringGuru],
+        {
+                "title": "Know the required behavior before inspecting code",
+                "paragraphs": [
+                        "An invoice export currently returns only invoices belonging to the signed-in customer. A new requirement says archived invoices must also be omitted. Both rules must hold: exclude archived records AND preserve customer isolation. The new requirement does not cancel the old permission boundary.",
+                        "Write down the actor, the resource, the expected result and where identity comes from. In a real application the customer identity must come from a trusted authenticated principal, not a number a caller can freely choose. In this pure Python example we assume the caller supplied a trusted customer ID; HTTP authentication is beyond the exercise."
+                ]
+        },
+        {
+                "title": "A diff can be valid Git and still be wrong software",
+                "paragraphs": [
+                        "The proposed patch replaces the customer filter with an archived-record filter. It looks like a direct implementation of the request, but it forgets the existing rule. Tests containing only one customer's invoices could pass while a different customer's invoices become visible.",
+                        "Read the conceptual diff below. The removed condition is not merely an implementation detail: it is an access-control guarantee. The next runnable example adds a second customer's invoice to reveal the defect."
+                ],
+                "code": {
+                        "language": "diff",
+                        "caption": "Review patch — the new archive filter accidentally drops ownership",
+                        "code": " def export_visible_invoices(customer_id, records):\n-    return [row for row in records if row['customer_id'] == customer_id]\n+    return [row for row in records if row['state'] != 'archived']"
+                }
+        },
+        {
+                "title": "Reproduce a blocking defect",
+                "paragraphs": [
+                        "Save the complete code as invoice_review_candidate.py and run python3 invoice_review_candidate.py. An AssertionError is expected, mentioning INV-200. Customer 11 received a record belonging to customer 22. The failure is the point of the exercise, not a broken Python setup.",
+                        "This is a blocker because it violates a current permission requirement. The fact that the code is concise and runs without a syntax error is irrelevant to the data leak. Never use real customer invoices in this scratch example."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "Code review — intentionally unsafe candidate must fail the cross-customer test",
+                        "code": "invoices = [\n    {\"id\": \"INV-100\", \"customer_id\": 11, \"state\": \"open\"},\n    {\"id\": \"INV-101\", \"customer_id\": 11, \"state\": \"archived\"},\n    {\"id\": \"INV-200\", \"customer_id\": 22, \"state\": \"open\"},\n]\n\ndef export_visible_invoices(customer_id, records):\n    # Deliberately unsafe: filters by archive status, not ownership.\n    return [row for row in records if row[\"state\"] != \"archived\"]\n\nactual = [row[\"id\"] for row in export_visible_invoices(11, invoices)]\nassert actual == [\"INV-100\"], f\"Cross-customer exposure: {actual}\"\nprint(\"UNEXPECTED: unsafe review candidate passed\")"
+                }
+        },
+        {
+                "title": "Write review feedback that can be acted on",
+                "paragraphs": [
+                        "A useful blocker comment identifies evidence, consequence and the requested proof: 'The new filter removes customer isolation; requesting as customer 11 also returns INV-200, owned by customer 22. Keep the ownership rule alongside the archive filter and add a cross-customer negative test before merge.' This is more useful than 'this looks wrong' or a formatting suggestion.",
+                        "Separately, you might ask whether archived invoices remain accessible through an audit endpoint. That is a requirement question, not a proven defect. A naming improvement can be optional. Do not invent a blocker simply to fill a review template."
+                ]
+        },
+        {
+                "title": "Verify the corrected behavior and review the final diff",
+                "paragraphs": [
+                        "Save the second program as invoice_review_fixed.py and run python3 invoice_review_fixed.py. It checks customer 11, customer 22 and a customer with no invoices. The expected message is 'Code review: 3 scoped exports, no cross-customer rows'. The implementation applies both the ownership and archive filters.",
+                        "Before approving a real patch, re-read the whole final diff and verify the trusted identity source, negative HTTP access cases, related endpoints, migrations and logs in proportion to the change. These three local Python checks do not establish that a deployed API enforces permissions."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "Code review — corrected export with three independent customer checks",
+                        "code": "invoices = [\n    {\"id\": \"INV-100\", \"customer_id\": 11, \"state\": \"open\"},\n    {\"id\": \"INV-101\", \"customer_id\": 11, \"state\": \"archived\"},\n    {\"id\": \"INV-200\", \"customer_id\": 22, \"state\": \"open\"},\n]\n\ndef export_visible_invoices(trusted_customer_id, records):\n    return [\n        row for row in records\n        if row[\"customer_id\"] == trusted_customer_id\n        and row[\"state\"] != \"archived\"\n    ]\n\ncases = [(11, [\"INV-100\"]), (22, [\"INV-200\"]), (99, [])]\nfor actor, expected in cases:\n    visible = export_visible_invoices(actor, invoices)\n    assert [row[\"id\"] for row in visible] == expected\n    assert all(row[\"customer_id\"] == actor for row in visible)\nprint(\"Code review: 3 scoped exports, no cross-customer rows\")"
+                }
+        }
+],
+        "Review a risky patch against its contract, prove a negative failure and verify the corrected behavior.",
+        [
+        "Write both requirements (same-customer records only, no archived records) before inspecting the patch.",
+        "Run invoice_review_candidate.py; capture the expected failure and explain how INV-200 proves cross-customer exposure.",
+        "Draft one blocker comment including evidence, consequence and the test required before merge.",
+        "Run invoice_review_fixed.py; verify all three results and that no record crosses customer boundaries.",
+        "Record one legitimate question and one optional improvement, explicitly separate from the blocker; then explain the trusted-identity limitation.",
+        "Only after the scratch exercise, review one real Steward diff if available, using the actual requirement and final tested revision."
+],
+        [
+        "Why can a clean Git diff still violate security policy?",
+        "What exactly does the cross-customer negative case prove?",
+        "What belongs in an actionable blocker comment?",
+        "How is a requirement question different from a confirmed defect?",
+        "What must be rechecked after the author changes the patch?"
+],
+        [{"title":"Pro Git","url":"https://git-scm.com/book/en/v2"}],
+        "software-craft-code-review-and-technical-debt",
+    ),
+    lesson(
+        "Managing Technical Debt",
+        "Technical debt is a future change cost created by a design or delivery decision. It is not a label for code that looks unattractive, and it cannot turn a present correctness or security defect into optional work. This lesson uses a hypothetical CSV-import shortcut to show how to document a real trade-off without inventing costs or committing to endless cleanup.",
+        [
+        {
+                "title": "Distinguish an existing defect from a future cost",
+                "paragraphs": [
+                        "The cross-customer invoice leak in the preceding lesson violates today's contract and is a defect. It needs correction before that change can be approved. Calling it 'technical debt' would conceal its immediate impact.",
+                        "Now imagine two CSV importers: orders and refunds. Each currently parses its supported dates correctly, but each has a separate copy of similar parsing logic. Future format changes require coordinated edits and tests in both places. That is a plausible maintenance-cost debt item, even when both importers work today."
+                ]
+        },
+        {
+                "title": "Identify evidence and the actual shortcut",
+                "paragraphs": [
+                        "In this fictional case the first importer shipped quickly, and the second copied a simple date parser because their requirements were not yet stable. Reviews have since involved changing both parser copies for a shared format rule. A third importer is being considered. The known facts are duplication and repeated dual maintenance; the financial cost and risk of divergence have not been measured.",
+                        "Record the code paths involved, what changes have actually required duplicate work, which tests exist and what could go wrong. If there is no evidence of added cost or risk, state uncertainty rather than manufacture a performance estimate."
+                ]
+        },
+        {
+                "title": "Repay now or defer deliberately",
+                "paragraphs": [
+                        "Option A is to consolidate the parser now and add shared positive/negative tests for both callers. It may make the next change easier, but can couple two workflows that are still evolving differently. Option B is to retain two small parsers with explicit ownership and return to the decision when a third importer is approved or a second divergence occurs.",
+                        "Neither answer is universally correct. Evaluate upcoming work, incident risk, ease of regression testing and the likely carrying cost. Deferring needs a named owner and a trigger. A vague 'clean up eventually' ticket cannot guide a future maintainer."
+                ]
+        },
+        {
+                "title": "Write a useful technical-debt record",
+                "paragraphs": [
+                        "An actionable record says what the shortcut is, how it affects future changes, what evidence supports that judgment, the alternatives, the current decision, the owner, a review trigger and the tests needed for safe repayment. The example below is a decision record, not a terminal command.",
+                        "If the importer already accepts the wrong date today, reclassify that observed incorrect behavior as a defect and fix it. The presence of duplication does not lower the severity of a real data-integrity failure."
+                ],
+                "code": {
+                        "language": "text",
+                        "caption": "Example technical-debt decision record with a concrete revisit trigger",
+                        "code": "Title: Duplicate CSV date parsing\nCurrent contract: Both order and refund importers handle supported dates correctly\nShortcut: Two independently maintained parsers\nEvidence: Recent format changes needed edits in both modules\nRisk: Future changes may diverge; current cost is not quantified\nOptions: Consolidate with shared tests now, or defer with monitoring\nDecision: Defer while the two import formats are still evolving\nOwner: Import feature maintainer\nRevisit: Third importer approved, or a repeated divergent date change\nRepayment proof: Positive and negative cases for each importer remain green\nImportant: A wrong date already imported is a defect, not optional debt"
+                }
+        },
+        {
+                "title": "Prioritize what the team can actually justify",
+                "paragraphs": [
+                        "Debt that blocks an imminent feature or repeatedly causes risky updates deserves more attention than an abstract desire to tidy every helper. A small consolidation with a real second consumer may be worthwhile; a speculative shared framework with no stable contract may make things worse.",
+                        "Use the same evidence standard when transferring to Steward: if the cost/risk cannot be explained, do not create a debt item solely to show activity. A rational decision can be to make no change and revisit when the stated condition occurs."
+                ]
+        }
+],
+        "Recognize real technical debt, separate it from a correctness defect, and make an evidence-backed repayment decision.",
+        [
+        "Classify the previous invoice leak and the two working CSV parsers. Explain which one is a defect and why.",
+        "Use the fictional scenario to fill out the debt record without inventing measured hours or incidents.",
+        "Compare consolidation now versus deferral; identify the tests and change risks in both alternatives.",
+        "Choose a decision, an owner and an observable revisit trigger. State what would change your decision.",
+        "Reclassify the situation if you discover that the current CSV importer already produces incorrect dates.",
+        "Only then inspect an actual Steward design choice for documented future cost; if evidence is absent, record that rather than fabricating debt."
+],
+        [
+        "Why must the invoice leak be treated as a current defect?",
+        "What evidence would show that duplicated parsing creates real debt?",
+        "What makes a revisit trigger actionable?",
+        "Why might premature shared abstraction increase costs?",
+        "What changes if a current data-integrity problem is discovered?"
+],
+        [{"title":"Martin Fowler — Technical Debt","url":"https://martinfowler.com/bliki/TechnicalDebt.html"}],
     ),
     lesson(
         "Useful Logging",
