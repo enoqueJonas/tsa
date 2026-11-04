@@ -258,6 +258,23 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
     /Rejected duplicate ISBN as expected[\s\S]*BOOK_MODEL_LAB_OK/);
   const durableProof = "from catalogue.models import Book; print('DURABLE_BOOK_OK', Book.objects.get(isbn='0000000000001').title)";
   assert.match(beginnerExec(["manage.py", "shell", "-c", durableProof]), /DURABLE_BOOK_OK Beloved/);
+
+  const foreignOrder = source.indexOf('richLesson("Connect Django Models With ForeignKey"');
+  assert.ok(foreignOrder > migrationOrder && bridgeOrder > foreignOrder,
+    "Teach ForeignKey behavior after first migration and before applied Steward ORM");
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "models.py"),
+    authoredSnippet("catalogue/models.py — add the protected Writer relationship") + "\n");
+  beginnerExec(["manage.py", "check"]);
+  beginnerExec(["manage.py", "makemigrations", "catalogue", "--noinput"]);
+  const foreignSql = beginnerExec(["manage.py", "sqlmigrate", "catalogue", "0002"]);
+  assert.match(foreignSql, /catalogue_writer/, "Second migration must create the writer table");
+  assert.match(foreignSql, /writer_id/, "Second migration must add a real Book foreign-key column");
+  beginnerExec(["manage.py", "migrate", "--noinput"]);
+  assert.match(beginnerExec(["manage.py", "shell", "-c",
+    authoredSnippet("book_writer_lab.py — save the relation and reject deletion")]),
+    /RELATION_OK Beloved Toni Morrison[\s\S]*PROTECTED_DELETE_OK/);
+  console.log("Builder Django ForeignKey passed: source-published additive migration, persisted relation, reverse query and protected deletion.");
+
   console.log("Builder Django model/migration passed: exact source model, first generated SQL, real uniqueness error and independent-shell persistence.");
 
   console.log("Builder Django beginner lab passed: actual lesson snippets for projects, DRF, plain serializer, APIView and ViewSet plus negative HTTP/validation cases.");
