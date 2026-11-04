@@ -60,6 +60,27 @@ The original `Subqueries` and `Common Table Expressions` readings combined sever
 
 **Source and execution evidence:** the existing script `check-builder-data-foundations-examples.mjs` now checks subquery → WITH → recursion → Steward applied ordering and inspects the exact source code blocks. `check-builder-postgresql-live-lab.mjs` executes all published simple queries, verifies expected SQL failures (multirow scalar and expired WITH name), checks two NULL/duplicate traps, and verifies the guarded cycle terminates without altering the library table. **Source changes are REMEDIATED; CI and learner gates remain separate until current-head evidence is checked.**
 
+## Follow-up — transactions, integrity and prerequisite repair (2026-11-04)
+
+Two pre-existing pedagogical defects were identified in learner order.
+
+First, the **production-readiness invariant** exercise executed `BEGIN` / `ROLLBACK` before the transaction module explained these commands. The entire original `production-readiness-invariant` lesson is now placed **after** the original transaction/isolation lessons, retaining its identifiers and exact SQL example captions. The original `transactions-acid` lesson has become an explicitly applied **Steward Practice: Transactions and ACID**, following two new independent lessons.
+
+Second, the **constraints** reading assumed the learner could already distinguish UNIQUE, PRIMARY KEY, CHECK, NOT NULL and FOREIGN KEY and reason about delete actions. We now teach those mechanisms with generic advisor/course records before the original Steward constraint verification.
+
+| Added lesson | Main concept | Live source-derived evidence |
+| --- | --- | --- |
+| `postgresql-transaction-basics` — **What Is a Database Transaction?** | Autocommit, BEGIN, COMMIT, ROLLBACK, atomicity versus durability/other ACID properties | Separate executable wallet_rollback.sql and wallet_commit.sql files with different final balances |
+| `postgresql-savepoints` — **Recover from a Failed Statement with SAVEPOINT** | Transaction error state, savepoint rollback versus full rollback | Intentional negative CHECK, recovery, COMMIT and final valid quantity |
+| `postgresql-constraints-basics` — **How PostgreSQL Prevents Invalid Data** | PRIMARY KEY, UNIQUE, NOT NULL, CHECK, FOREIGN KEY with precise meanings | Temporary advisor/course tables and four distinct rejected inserts with one valid record surviving |
+| `postgresql-foreign-key-deletes` — **What Happens When You Delete a Referenced Row?** | Default parent-deletion rejection versus explicitly selected ON DELETE CASCADE, SET NULL caveats | One rejected parent deletion retaining a parent; one deliberate cascade removing a child |
+
+**Live regression discovered a real psql boundary error.** The initial source-derived test invoked the *entire* wallet rollback script as one `psql -c` string; PostgreSQL processes a multi-command `-c` request as one server request, whose implicit transaction grouping can mean an explicit later ROLLBACK also undoes the preceding TEMP-table creation. The final SELECT then failed because the table was gone. The published lesson, however, instructed `psql -f wallet_rollback.sql`. The integration test has been corrected to execute the **exact published file** with `-f`, and the lesson now explicitly teaches this behavior instead of weakening the expected assertion. Official [psql command-option documentation](https://www.postgresql.org/docs/17/app-psql.html) confirms the multi-statement `-c` semantics.
+
+**Primary references inspected:** [PostgreSQL transactions tutorial](https://www.postgresql.org/docs/17/tutorial-transactions.html), [BEGIN and autocommit](https://www.postgresql.org/docs/17/sql-begin.html), [isolation guarantees](https://www.postgresql.org/docs/17/transaction-iso.html), [constraints and foreign-key actions](https://www.postgresql.org/docs/17/ddl-constraints.html), and [ALTER TABLE](https://www.postgresql.org/docs/17/ddl-alter.html). All published examples were rewritten in independent language; the actual error and subsequent patch are verifiable in CI history.
+
+**Verification boundary:** matching-head full CI, rendered UX inspection and independent learner teach-back remain separate. The first wallet regression failed as described; the corrected test is not a pass until a new matching-head workflow succeeds. The original Steward business-rule tests remain required and must not be waived.
+
 ## Research and teaching translation
 
 Primary material was inspected for the precise model and syntax, not copied verbatim:
