@@ -130,19 +130,33 @@ const practices: Record<string, PracticeSpec> = {
         deliverables: ["Three-case notification test output", "Fail-before-fix repeated-call proof", "Behavior-preserving refactor evidence", "Test boundary decision", "Optional Steward transfer"],
         completionCriteria: ["The published code is executable without undefined api_client, user_a or service_b.", "A repeated request is shown not to send a duplicate notification.", "Mutation of the guard fails a test; the corrected script passes.", "The example does not claim to guarantee atomic notification delivery or real HTTP authorization."]
     },
-    "software-craft-managing-dependencies": {
-        objective: "Audit Steward's dependency ownership and make one evidence-based keep, remove or reuse decision.",
-        scenario: "Steward has accumulated packages across Builder. Before later CI, artifact-repository and supply-chain work, the team needs to know which dependencies are intentional and whether any code truly deserves an internal-package boundary.",
+    "software-craft-understand-python-packages-and-dependencies": {
+        objective: "Inspect one Python interpreter and its installed distributions without confusing imports with declared application dependencies.",
+        scenario: "An engineer can import a standard-library module but gets ModuleNotFoundError for an unfamiliar package. Before installing anything into Steward, diagnose the active interpreter, installed distributions and project's declarations in a scratch virtual environment.",
         instructions: [
-            "List direct runtime/development dependencies and record the concrete capability each provides.",
-            "Choose one transitive dependency and prove whether Steward code imports or relies on it directly.",
-            "Find one dependency that can plausibly be removed, replaced by the standard library/framework, or retained; test the decision rather than arguing from preference.",
-            "Inspect current reusable-code candidates and identify whether there is more than one real consumer with a stable boundary.",
-            "For one important dependency, inspect maintenance/release expectations, license/security/compatibility signals and transitive footprint, then define version/upgrade validation expectations.",
-            "Write a short decision separating external dependency ownership, local application code and a genuinely justified future internal package."
+            "Create a disposable virtual environment, activate it, and print sys.executable before using pip.",
+            "Save the complete source-published inspect_packages.py example and run it. Explain json, the optional pip distribution metadata and the deliberately missing import.",
+            "Run python -m pip --version, python -m pip list and python -m pip check; write down what each output proves and does not prove.",
+            "Save and run the source-published pyproject.toml reader using tomllib in Python 3.11+. Distinguish runtime and optional development dependencies and explain why version ranges are not installed versions.",
+            "Write a no-guesswork diagnosis for a missing third-party import that checks interpreter, import/distribution names and project manifest before any installation.",
+            "Find one import in the real Steward project and identify its supplying distribution without altering the application environment."
         ],
-        deliverables: ["Dependency ownership table", "Transitive-dependency evidence", "One keep/remove decision with validation", "Internal-package boundary assessment"],
-        completionCriteria: ["Every examined direct dependency has a known reason to exist.", "No transitive package is treated as an accidental public API.", "The internal-package decision is based on real consumers rather than curriculum pressure.", "Upgrade ownership is explicit."]
+        deliverables: ["Scratch interpreter/pip evidence", "Executed module/distribution inspection", "Runtime versus optional declaration evidence", "Missing-import troubleshooting steps"],
+        completionCriteria: ["No network, Docker, Steward database or global sudo installation is required.", "The learner can distinguish a module, import package and installable distribution.", "Installed-package listings are not misrepresented as direct requirements.", "A version range is not confused with a resolved version."]
+    },
+    "software-craft-managing-dependencies": {
+        objective: "Make an evidence-backed keep, remove or upgrade decision for one declared Steward dependency.",
+        scenario: "After learning how Python imports and distribution metadata work, inspect the project's actual declared dependencies. Do not invent installed versions or a speculative internal shared package merely to fulfil the curriculum.",
+        instructions: [
+            "Identify direct runtime and development requirements from the current manifest, not just the output of pip list.",
+            "Trace one actual transitive distribution and state whether application code imports it directly. If it does, propose declaring it explicitly.",
+            "For one candidate library, compare the standard library/framework alternatives, supported versions, license, maintenance, advisories, transitive footprint and replacement costs.",
+            "Define permitted version range versus exact reproducible environment; assess a proposed upgrade in a disposable installation or branch and rerun the affected tests.",
+            "Check whether any proposed internal package has more than one real consumer and an agreed contract. If not, document a decision to keep that behavior local.",
+            "Record your final keep/remove/upgrade decision with validation evidence, owner and a future revisit trigger."
+        ],
+        deliverables: ["Direct versus transitive dependency table", "One candidate and alternatives evaluation", "Safe upgrade/removal validation", "Internal-package boundary assessment"],
+        completionCriteria: ["Decisions are grounded in actually declared project requirements and consumers.", "One fresh/resolved installation path and test outcome are distinguished from an arbitrary pip freeze.", "A green dependency check is not misrepresented as a security audit.", "No publication or package-sharing infrastructure is invented as a prerequisite."]
     },
     "software-craft-read-environment-variables-in-python": {
         objective: "Observe how a terminal supplies string environment values to Python, including missing, accepted and rejected settings.",

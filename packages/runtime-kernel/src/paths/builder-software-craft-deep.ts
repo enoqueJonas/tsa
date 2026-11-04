@@ -21,7 +21,8 @@ const craftTeaching: Record<string, { outcomes: string[]; practical: string }> =
   "Refactoring": { outcomes: ["Distinguish restructuring from changing externally observed behavior.", "Use a characterization test before editing unfamiliar code.", "Apply a small, named refactoring and know when to stop."], practical: "Refactor with a verified safety net" },
   "Write Your First Automated Tests": { outcomes: ["Create a real unittest suite with positive and negative assertions.", "Run the tests independently of Django and explain arrange, act and assert.", "Mutate an authorization rule and prove the negative test fails."], practical: "Run and deliberately break three unit tests" },
   "Testing as a Change Safety Net": { outcomes: ["Define observable behavior to protect with tests.", "Prove a negative test fails for the intended defect.", "Choose the narrowest honest test boundary and record remaining risks."], practical: "Prove a refactor preserves behavior" },
-  "Managing Dependencies": { outcomes: ["Justify a dependency from real consumer needs.", "Review version compatibility and update risks.", "Recognize when a new shared package is premature."], practical: "Review an external or internal dependency" },
+  "Understand Python Packages and Dependencies": { outcomes: ["Distinguish a module, import package, installed distribution and project dependency.", "Inspect the interpreter and pip that own an environment.", "Read declared direct requirements without confusing them with all installed distributions."], practical: "Inspect a Python environment and requirements" },
+  "Managing Dependencies": { outcomes: ["Justify a dependency using actual project consumers and alternatives.", "Separate version ranges, installed resolutions and safe upgrade checks.", "Avoid premature internal packages without real reuse."], practical: "Review an external or internal dependency" },
   "Read Environment Variables in Python": { outcomes: ["Explain how process environment variables are inherited by Python.", "Run missing, accepted and rejected settings without third-party libraries.", "Distinguish a shell export from a .env file and validate string inputs."], practical: "Read and validate environment variables" },
   "Configuration": { outcomes: ["Separate code from environment-owned settings.", "Validate types and fail visibly when required configuration is absent.", "Avoid exposing credentials through defaults or logs."], practical: "Prove configuration fails safely" },
   "Static Analysis and Automated Feedback": { outcomes: ["Distinguish formatting, linting, type checking and behavioral tests.", "Run the appropriate tool before committing.", "Treat warnings according to a documented policy rather than hiding them."], practical: "Make static checks actionable" },
@@ -720,17 +721,141 @@ export const softwareCraftDeepLessons: Lesson[] = [
         [refactoringGuru],
     ),
     lesson(
-        "Managing Dependencies",
-        "Every dependency is code you choose to trust, update, distribute and support. Dependency management is therefore an engineering ownership decision, not just a package-install command.",
+        "Understand Python Packages and Dependencies",
+        "Before choosing a library, understand what Python imports, what pip installs, and which interpreter owns the installation. A module, a Python import package, an installable distribution and a dependency are related but not interchangeable. This lesson uses only the Python standard library and a local interpreter; it does not install Django, connect to Steward or require network access.",
         [
-            { title: "Know why a dependency exists", paragraphs: ["Prefer a dependency when it provides substantial, maintained capability that would be risky or wasteful to recreate. Avoid adding packages for trivial helpers or speculative future reuse. Distinguish direct dependencies from transitive ones and understand which public APIs your code actually relies on.", "Version constraints express compatibility policy. Locking and reproducible environments reduce accidental drift, but upgrades still require deliberate testing."] },
-            { title: "Internal packages need real consumers", paragraphs: ["Do not extract steward-common merely to demonstrate modularity. A reusable package earns its boundary when multiple consumers need a stable capability with little domain coupling. Later TSA work will publish real internal artifacts through Nexus; Builder should avoid manufacturing fake reuse."], code: { language: "text", code: "application need → evaluate library → add direct dependency → lock/record version → test → maintain/upgrade\n\nreal repeated capability + multiple consumers → candidate internal package\none consumer + speculative reuse → keep local", caption: "Dependencies create continuing ownership." } },
-            { title: "Evaluate more than package popularity", paragraphs: ["Before adopting a dependency, check maintenance activity, release/support expectations, license compatibility, security history/advisories, transitive footprint, platform/runtime compatibility and how difficult replacement would be. A dependency that owns a critical boundary deserves more scrutiny than a development-only formatter." ] },
-            { title: "Pinning and upgrading solve different risks", paragraphs: ["Reproducible resolution protects builds from surprise drift; staying permanently pinned protects you from fixes as well. Define how dependency updates are proposed, tested and rolled out. Read release notes for important libraries instead of treating every version bump as equivalent." ] },
-        ],
-        "Audit Steward dependencies and justify what should remain external, local or potentially reusable later.",
-        ["List direct application dependencies and their purpose.", "Identify one transitive dependency and explain why application code should avoid relying on it accidentally.", "Find one dependency that could be removed or replaced with standard-library/framework capability.", "Assess whether any current code truly qualifies for an internal shared package.", "Record upgrade and validation expectations for one important dependency."],
-        ["Why is a dependency an ownership decision?", "What is the danger of relying directly on a transitive dependency?", "When should steward-common be extracted?"],
+        {
+                "title": "A module, package and distribution are different things",
+                "paragraphs": [
+                        "A Python module is code you can import, commonly one .py file. An import package is an organized namespace that can contain submodules. A distribution is what a packaging tool installs and tracks; it may expose one import package, many modules, or an import name different from its distribution name. For example, the distribution `djangorestframework` exposes imports under `rest_framework`. Do not assume the name written after `pip install` is always the name used after `import`.",
+                        "The standard-library module `json` imports without installing anything from PyPI. A missing import can mean no distribution is installed, but it can also mean the active interpreter differs from the one where a package was installed, or a package uses a different import name. Diagnosis starts by identifying the interpreter, not by guessing an administrator password or installing arbitrary packages."
+                ]
+        },
+        {
+                "title": "Which Python interpreter is actually running?",
+                "paragraphs": [
+                        "The terminal command `python -m pip` runs pip with that Python interpreter, instead of hoping a standalone `pip` executable points to the same environment. `python -m pip --version` shows its path; `python -m pip list` lists distributions installed in the active environment. A virtual environment has its own interpreter path and installed-package view. It isolates typical Python installations, not the operating system or database server.",
+                        "Run `python3 -m venv tsa-package-lab` in an empty directory and activate it (POSIX: `source tsa-package-lab/bin/activate`; Windows PowerShell: `tsa-package-lab\\\\Scripts\\\\Activate.ps1`). Run `python -c \"import sys; print(sys.executable)\"` to confirm the path ends inside the environment, then `python -m pip --version`. If pip was not bootstrapped, `python -m ensurepip --upgrade` may be available. Use `deactivate` when finished. Do not assume a Python installation or virtual environment has internet connectivity."
+                ]
+        },
+        {
+                "title": "Inspect imports and installed distributions without installing anything",
+                "paragraphs": [
+                        "Save this as `inspect_packages.py` and run `python inspect_packages.py` in your activated local environment. The script identifies the interpreter, proves that standard-library `json` imports, inspects whether a `pip` distribution is installed, and demonstrates a module that is not importable. It does not hardcode a pip version and does not change any environment.",
+                        "The result distinguishes 'import is possible' from 'an installed distribution is present'. It does not claim that every import corresponds to one distribution. An application can also contain its own locally authored importable modules."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "Python dependency foundations — inspect active interpreter and module availability",
+                        "code": "import importlib.util\nimport importlib.metadata as metadata\nimport sys\n\nprint(\"interpreter:\", sys.executable)\nassert importlib.util.find_spec(\"json\") is not None\nprint(\"standard-library json: importable\")\ntry:\n    pip_version = metadata.version(\"pip\")\nexcept metadata.PackageNotFoundError:\n    print(\"pip distribution: not installed in this interpreter\")\nelse:\n    print(\"pip distribution: installed, version\", pip_version)\nassert importlib.util.find_spec(\"tsa_package_that_does_not_exist_927\") is None\nprint(\"invented package: not importable\")\nprint(\"An importable module is not automatically a separately installed distribution.\")"
+                }
+        },
+        {
+                "title": "Direct dependencies and transitive dependencies",
+                "paragraphs": [
+                        "A direct dependency is a distribution your application explicitly declares because its own code requires its capability. A transitive dependency is installed because another declared distribution requires it. For example, a web framework may itself depend on a lower-level package. Your code should not silently import that lower-level package and assume it will always be present; if your application needs it directly, declare it directly.",
+                        "`python -m pip list` shows the installed environment, NOT which items the application intentionally declared. `python -m pip show <distribution>` shows installed metadata and reported requirements; `python -m pip check` checks installed distribution requirements for conflicts. Neither establishes that your declared application requirements are correct or that no security advisory exists. Consult the project manifest and the environment together."
+                ]
+        },
+        {
+                "title": "A manifest describes what a project needs",
+                "paragraphs": [
+                        "Python projects commonly declare distributions and supported version ranges in `pyproject.toml`; older projects may use `requirements.txt`. The manifest is a statement of intended dependencies, not proof of which exact versions happened to be installed. A lockfile or resolved, pinned installation record may be needed for reproducible environments, depending on the packaging workflow. A range such as `>=5.2,<6` allows multiple versions and is not equivalent to an exact pin.",
+                        "This example reads a small `pyproject.toml` manifest using Python's `tomllib` (Python 3.11+). It does not install anything. Notice that runtime dependencies and optional development tools are separately declared. Record the distinction before adopting a new package."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "Python dependencies — parse a real project manifest without installing packages",
+                        "code": "from pathlib import Path\nimport tempfile\nimport tomllib\n\nproject = \"\"\"\n[project]\nname = \"library-checkout\"\nversion = \"0.1.0\"\ndependencies = [\"Django>=5.2,<6\", \"djangorestframework>=3.16,<4\"]\n[project.optional-dependencies]\ndev = [\"pytest>=8,<10\"]\n\"\"\"\n\nwith tempfile.TemporaryDirectory() as location:\n    manifest = Path(location) / \"pyproject.toml\"\n    manifest.write_text(project, encoding=\"utf-8\")\n    parsed = tomllib.loads(manifest.read_text(encoding=\"utf-8\"))\n    direct = parsed[\"project\"][\"dependencies\"]\n    development = parsed[\"project\"][\"optional-dependencies\"][\"dev\"]\n    assert len(direct) == 2\n    assert len(development) == 1\n    assert any(value.startswith(\"Django\") for value in direct)\n    print(\"declared runtime:\", len(direct))\n    print(\"declared optional development:\", len(development))\n    print(\"installed versions: NOT established by this manifest\")\n\nprint(\"A version range expresses an allowed set, not an exact resolved installation.\")"
+                }
+        },
+        {
+                "title": "Diagnose a missing import without random installation",
+                "paragraphs": [
+                        "First print `sys.executable`. Second inspect the actual import name and check `importlib.util.find_spec`, then inspect installed distribution metadata with `python -m pip show` using the distribution name. Third read `pyproject.toml` and confirm the dependency is intended; only then install using the project's prescribed, isolated procedure. Do not run `sudo pip install` into a managed operating-system Python or copy unfamiliar commands into production.",
+                        "If the module still cannot import, check the error traceback, environment activation, import spelling and compatibility. Record what happened rather than treating repeated installation attempts as troubleshooting."
+                ]
+        }
+],
+        "Distinguish imports, distributions, environment ownership and direct versus transitive requirements with runnable evidence.",
+        [
+        "Create and activate a disposable Python virtual environment and confirm the interpreter path before using pip.",
+        "Run the source-published `inspect_packages.py` script. Explain what it proves about `json`, `pip` and the invented module.",
+        "Run `python -m pip --version`, `python -m pip list` and `python -m pip check` in that same environment, and distinguish installed state from declared application requirements.",
+        "Run the complete `pyproject.toml` reader script; explain which dependencies are runtime versus optional and why a version range is not a lockfile.",
+        "Write a troubleshooting sequence for a missing import without assuming a network connection or mutating a real Steward project.",
+        "Only after the independent example, identify one import from the existing Steward project and determine its owning distribution."
+],
+        [
+        "Why can `pip install some-name` and `import other_name` both be correct?",
+        "Why does `python -m pip` help with environment confusion?",
+        "Does `pip list` prove which packages the application directly requires?",
+        "Does a permitted version range describe the exact software installed?"
+],
+        [twelveFactor],
+    ),
+    lesson(
+        "Managing Dependencies",
+        "Now that you can identify the interpreter, installed distributions and declared requirements, choose dependencies deliberately. Every external package introduces compatibility, licensing, maintenance, upgrade and security responsibilities. This lesson is about deciding whether to depend on a package and how to keep that decision safe—not about inventing a package-sharing platform for Steward.",
+        [
+        {
+                "title": "When should you add a package?",
+                "paragraphs": [
+                        "Begin with the needed capability, not a list of popular packages. Decide whether Python's standard library or an already installed, directly declared framework provides the capability. If a new distribution would save significant implementation and maintenance risk, evaluate it; a two-line helper seldom justifies a new transitive graph.",
+                        "Write down what application code will import, where it will be used and what happens if the package stops receiving updates. A development-only formatter creates a different operational obligation from a runtime authentication library."
+                ]
+        },
+        {
+                "title": "Direct requirements versus an installed dependency tree",
+                "paragraphs": [
+                        "Read the actual project's `pyproject.toml` and dependency groups or requirements files to identify declared direct dependencies. Compare them with `python -m pip list` only in the intended virtual environment. A transitive distribution can be present today and disappear after a parent library changes; if application code imports it directly, record it as an explicit dependency instead of relying on chance.",
+                        "Inspect `python -m pip show django` or another distribution actually installed in your environment. Its Requires field is informative, but not a substitute for your project's manifest. `python -m pip check` reports some installed dependency incompatibilities; a clean result does not prove your application behavior or package security."
+                ]
+        },
+        {
+                "title": "Decide using evidence, not package popularity",
+                "paragraphs": [
+                        "For a candidate dependency, record maintained releases, compatibility with the supported Python/Django version, license obligations, published security advisories, transitive footprint and replacement cost. Security advisories and compatibility change over time, so recheck current first-party release notes and security sources before adopting or upgrading. Do not guess an advisory from the package name.",
+                        "A package is not automatically unsafe because it has dependencies, and a small package is not automatically safe. Classify critical runtime dependencies separately from test-only helpers, then make a decision whose criteria another engineer can reproduce."
+                ]
+        },
+        {
+                "title": "Version ranges, repeatability and upgrades",
+                "paragraphs": [
+                        "An allowed range sets compatibility expectations; a lock or pinned environment establishes a reproducible resolution. Neither eliminates the need to test an upgrade. Permanent pins can avoid surprise changes but leave known defects unpatched. A safe upgrade process proposes a version change, reviews release notes, resolves a fresh environment, runs focused tests and records whether observed behavior changed.",
+                        "If a dependency upgrade requires a database migration or API contract change, assess those separately. Do not present `pip freeze` of an arbitrary developer laptop as the canonical project manifest, because unrelated tools can appear in it."
+                ]
+        },
+        {
+                "title": "Internal packages are earned by real reuse",
+                "paragraphs": [
+                        "Keep a capability local while only one application owns it. If two independent consumers genuinely need the same stable behavior, a shared internal package may become useful. Before extracting, identify consumers, change cadence, version compatibility and who reviews breaking changes.",
+                        "Creating `steward-common` as an architecture ornament introduces publication, upgrades and consumer coordination without proving a benefit. Artifact repositories and release automation belong to later TSA studies; here, write a boundary decision and explain why."
+                ]
+        },
+        {
+                "title": "Document one keep/remove decision",
+                "paragraphs": [
+                        "Choose an actual declared distribution and write its name, purpose, runtime/development category, direct imports, alternatives, upgrade strategy and validation. Then test a proposed removal only in a disposable branch or environment. A decision is stronger when it has evidence of a real consumer than when it merely says 'modern', 'well maintained', or 'best practice'.",
+                        "For the first independent case, compare the built-in `json` module with installing a third-party JSON helper merely to encode a tiny dictionary. If the standard library already meets the requirement, defer the new dependency. This example is a judgment exercise, not a claim that specialized JSON packages can never be justified."
+                ]
+        }
+],
+        "Justify one real project dependency and an upgrade or removal path, using declared requirements and reproducible evidence.",
+        [
+        "Inventory direct runtime and development requirements from the Steward manifest or requirements files, not only `pip list`.",
+        "Choose one installed transitive package and check whether Steward imports it directly; if so, propose an explicit declaration rather than silently relying on it.",
+        "Evaluate one candidate against existing standard-library/framework functionality, supported versions, maintenance/security signals, license and replacement risk.",
+        "In a disposable environment or branch, test one keep/remove/version-change hypothesis and record the exact affected checks. Do not mutate production or unreviewed shared lockfiles.",
+        "Evaluate an internal-package proposal against at least two real consumers and an explicit version contract; reject extraction if those facts are missing.",
+        "Write an evidence-backed decision with owner, alternative, validation and a future upgrade/revisit trigger."
+],
+        [
+        "Why is a transitive distribution not a reliable undeclared direct API?",
+        "How do version ranges differ from an exact resolved environment?",
+        "Why does a successful import not settle security or license concerns?",
+        "What concrete evidence would justify an internal shared package?"
+],
         [twelveFactor],
     ),
     lesson(
