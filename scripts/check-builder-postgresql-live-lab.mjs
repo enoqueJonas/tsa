@@ -112,6 +112,25 @@ try {
   assert.equal(run(["-d", "tsa_library", "-c", "SELECT count(*) FROM library.books"]).out, "2",
     "Generic WHERE/NULL/ORDER lessons must not modify library books");
 
+  // Subquery foundations: execute generic scalar, IN, EXISTS and NOT EXISTS
+  // results (and deliberate failure) before the Steward-specific cases.
+  verifyLibrary("subquery_library_average.sql — a computed scalar threshold",
+    ["1947.5", "The Hobbit"]);
+  const multirowScalar = runLibrary("subquery_library_scalar_fail.sql — expected multirow scalar error", 1);
+  assert.match(multirowScalar.err, /more than one row returned by a subquery used as an expression/);
+  verifyLibrary("subquery_library_in.sql — membership in computed authors",
+    ["The Hobbit"]);
+  verifyLibrary("exists_library_match.sql — one correlated existence check",
+    ["Things Fall Apart"]);
+  verifyLibrary("exists_library_missing.sql — find books outside a chosen author list",
+    ["The Hobbit"]);
+  verifyLibrary("exists_library_join_duplicates.sql — ordinary JOIN produces two matching pairs",
+    ["Things Fall Apart", "Things Fall Apart"]);
+  verifyLibrary("exists_library_not_in_null.sql — NOT IN returns none; NOT EXISTS returns two",
+    ["2", "3"]);
+  assert.equal(run(["-d", "tsa_library", "-c", "SELECT count(*) FROM library.books"]).out, "2",
+    "Subquery reading must not alter persistent catalogue records");
+
   const wrongDatabase = run(["-d", "tsa_invalid_database_name", "-c", "SELECT 1"], 2);
   assert.match(wrongDatabase.err, /database "tsa_invalid_database_name" does not exist/);
 
