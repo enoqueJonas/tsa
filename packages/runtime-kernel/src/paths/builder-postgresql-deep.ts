@@ -1503,9 +1503,310 @@ const specs: DataLessonSpec[] = [
         ]
     },
     {
+        "id": "postgresql-combine-conditions",
+        "title": "Combine Conditions with WHERE",
+        "introduction": "You already know how to select library books using one WHERE condition. Real questions often require several conditions: books after a date AND by a certain author; books by one author OR another; titles beginning with a phrase. Before writing advanced Steward reports, learn what AND, OR, NOT, parentheses, IN and LIKE actually mean using two ordinary library rows whose answers you can predict.",
+        "outcomes": [
+            "Predict a WHERE result for AND, OR and NOT against known rows.",
+            "Explain AND-before-OR precedence and make intent explicit with parentheses.",
+            "Use IN to compare one value with a small set.",
+            "Understand LIKE and ILIKE patterns, including the meaning of % and _."
+        ],
+        "sections": [
+            {
+                "id": "where-tests-each-row",
+                "title": "How does WHERE choose which rows to return?",
+                "body": "A SELECT query describes the data you want. FROM library.books identifies our existing table; WHERE tests a condition against each candidate row; SELECT names the columns in the result. When a condition is TRUE, that row qualifies. When it is FALSE, the row does not qualify. SQL also has UNKNOWN for conditions involving NULL; we will give that a full lesson next.\n\nAssume our earlier exercises left the two original books in library.books: The Hobbit (1937, J. R. R. Tolkien) and Things Fall Apart (1958, Chinua Achebe). If you have more rows, your outputs may differ; inspect your current table first rather than deleting data to match an example. We will select only those titles to keep our comparison reproducible.\n\nWith WHERE published_year >= 1950, Things Fall Apart qualifies and The Hobbit does not. The comparison is applied per row; the text printed by psql is the result, not an instruction to change the table. Try describing the two TRUE/FALSE decisions before executing any of the examples below."
+            },
+            {
+                "id": "and-or-not",
+                "title": "AND, OR and NOT ask different questions",
+                "body": "AND requires both conditions to be TRUE. For example, published_year >= 1950 AND author = 'Chinua Achebe' identifies Things Fall Apart. OR requires at least one condition to be TRUE; author = 'Chinua Achebe' OR author = 'J. R. R. Tolkien' matches both records. NOT reverses TRUE and FALSE, so NOT (published_year >= 1950) matches The Hobbit in this dataset.\n\nWrite the conditions in natural language first. \"Published in or after 1950 AND written by Achebe\" is different from \"Published after 1950 OR written by Achebe.\" Only one book happens to match both questions here, but that coincidence does not make the predicates equivalent.\n\nThink of WHERE as a test that gives one decision for each book, not as a loop that runs in your client. PostgreSQL's optimizer may evaluate the query using different physical operations; the SQL expresses the logical result. NULL can change the outcome of NOT, so do not infer that NOT always includes every row rejected by an ordinary comparison.",
+                "language": "sql",
+                "caption": "where_and_not.sql — two simple predicates",
+                "code": "SELECT title FROM library.books\nWHERE published_year >= 1950 AND author = 'Chinua Achebe'\nORDER BY title;\n\nSELECT title FROM library.books\nWHERE NOT (published_year >= 1950)\nORDER BY title;",
+                "output": "First query: Things Fall Apart\nSecond query: The Hobbit"
+            },
+            {
+                "id": "parentheses-matter",
+                "title": "Why parentheses can change the answer",
+                "body": "SQL evaluates AND before OR when you do not supply parentheses. Thus A AND B OR C is understood as (A AND B) OR C. This is a defined operator-precedence rule, not a random implementation detail. A condition at the end of an OR expression may let a row through even when it fails the earlier AND group.\n\nThe first query below asks for books published after 1950 by Achebe, OR books called The Hobbit. That includes both titles. The second query requires publication after 1950 AND either Achebe or the title The Hobbit. Now The Hobbit is excluded because 1937 fails the year test. The SQL is valid in both cases; only one expresses an intended minimum publication-year rule.\n\nUse parentheses whenever you combine AND and OR in a business rule, even where precedence would already give the expected answer. They make the rule easier to review. Before querying, write a two-row prediction table with each book and whether it passes the year condition, author condition and title condition.",
+                "language": "sql",
+                "caption": "where_parentheses.sql — two different sets of books",
+                "code": "SELECT title FROM library.books\nWHERE published_year >= 1950 AND author = 'Chinua Achebe'\n   OR title = 'The Hobbit'\nORDER BY title;\n\nSELECT title FROM library.books\nWHERE published_year >= 1950\n  AND (author = 'Chinua Achebe' OR title = 'The Hobbit')\nORDER BY title;",
+                "output": "Without outer parentheses: The Hobbit; Things Fall Apart\nWith intended parentheses: Things Fall Apart"
+            },
+            {
+                "id": "in-membership",
+                "title": "Use IN when one value may match several choices",
+                "body": "Sometimes you want books by one of several writers. You could repeat author = ... OR author = ... for each author, but IN is clearer. The expression author IN ('Chinua Achebe', 'Nobody') tests whether an author's value equals any value in that set. With our table, it matches Things Fall Apart.\n\nIN does not mean PostgreSQL creates a new table automatically. Here the parentheses are a short literal list; later a subquery can produce such a list from a separate table. NOT IN is more subtle when NULL is present in the candidate set, so its hazards will be covered in the subqueries lesson.\n\nIN is not SQL's general substring search. It tests equality with whole values. The expression title IN ('The') does not match The Hobbit, because the stored title is not exactly The. To search for title patterns, use LIKE or ILIKE instead.",
+                "language": "sql",
+                "caption": "where_in.sql — match a list of authors",
+                "code": "SELECT title FROM library.books\nWHERE author IN ('Chinua Achebe', 'Nobody')\nORDER BY title;",
+                "output": "Things Fall Apart"
+            },
+            {
+                "id": "text-patterns",
+                "title": "Find matching text with LIKE and ILIKE",
+                "body": "LIKE compares a text value with a pattern. The percent sign % matches zero or more characters; underscore _ matches exactly one character. Thus title LIKE 'The%' matches titles beginning with The. PostgreSQL's ILIKE is a case-insensitive variant useful when users may type different capitalization, though exact Unicode and locale behavior requires care for production search.\n\nOur two books both begin with the letters The or Things? Things does not begin with The: the third letter is i, not e. So LIKE 'The%' returns The Hobbit only. If you try ILIKE 'the%', the case difference is ignored and you still get only The Hobbit. By contrast, LIKE '%the%' searches for that sequence anywhere, and you should reason separately about case and punctuation.\n\nA leading wildcard often makes simple B-tree indexes less useful for search; do not turn that observation into a performance guarantee. Full-text search, trigram indexes and collations have distinct lessons later. For now, predict the actual rows with the two sample titles and state exactly what each wildcard means.",
+                "language": "sql",
+                "caption": "where_like.sql — compare LIKE and ILIKE",
+                "code": "SELECT title FROM library.books\nWHERE title LIKE 'The%'\nORDER BY title;\n\nSELECT title FROM library.books\nWHERE title ILIKE 'the%'\nORDER BY title;",
+                "output": "LIKE: The Hobbit\nILIKE: The Hobbit"
+            },
+            {
+                "id": "new-question",
+                "title": "Try an unfamiliar question before leaving",
+                "body": "Suppose a catalogue manager asks: \"Return titles by Tolkien or Achebe that were published before 1950, alphabetically.\" Write it first in ordinary language: choose one of those two authors AND require the year before 1950. Translate the choices with IN and the time condition with AND. You should predict The Hobbit as the only match. Run the query with ORDER BY title and explain why Things Fall Apart is excluded.\n\nNow change the rule to \"written before 1950 OR by Achebe.\" Predict two titles and verify them. If your results disagree, do not randomly add parentheses until something looks right. Evaluate the year and author tests for each row and compare with the rule as spoken.\n\nDo not yet use NULL as though it were just another year. The next lesson will show why neither = NULL nor NOT (...) behaves like ordinary TRUE/FALSE comparisons."
+            }
+        ],
+        "warning": "Do not judge correctness from syntactically valid SQL. Parentheses change selected row sets; NULL requires three-valued logic and receives a separate lesson.",
+        "assignment": [
+            "Run the AND and NOT examples and explain the selected titles.",
+            "Predict both parentheses queries before executing them, and show a two-row truth table for each condition.",
+            "Use IN to find a book by one of two authors.",
+            "Test LIKE 'The%' and ILIKE 'the%' without confusing prefix matches with substrings.",
+            "Write an independent query for books before 1950 by Tolkien or Achebe."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Comparison Functions and Operators",
+                "url": "https://www.postgresql.org/docs/17/functions-comparison.html",
+                "kind": "reference",
+                "purpose": "Reference SQL comparisons, IN and Boolean conditions."
+            },
+            {
+                "title": "PostgreSQL 17 — Pattern Matching",
+                "url": "https://www.postgresql.org/docs/17/functions-matching.html",
+                "kind": "reference",
+                "purpose": "Reference LIKE, ILIKE, % and _ patterns."
+            }
+        ],
+        "practiceObjective": "Combine multiple WHERE conditions correctly on a known two-row library example.",
+        "practiceInstructions": [
+            "Verify library.books contains the two original books from the earlier reading.",
+            "Run the published AND, precedence, IN and pattern examples, recording outputs.",
+            "Explain each condition for each book before writing a new query.",
+            "Write a new compound predicate and compare it with a deliberately misplaced OR branch."
+        ],
+        "knowledgeCheck": "If A is FALSE and B is TRUE, what does A OR B mean? What is the default grouping of A AND B OR C? Which books match LIKE 'The%'? How is IN different from LIKE?",
+        "readingTitle": "Learn WHERE, AND, OR and text patterns",
+        "practiceTitle": "Filter library books with combined conditions",
+        "checkTitle": "Check Boolean filtering",
+        "practiceScenario": "Filter a generic library catalogue before applying SQL to Steward reports.",
+        "practiceDeliverables": [
+            "Predicted and actual rows for each query",
+            "One two-row Boolean decision table",
+            "Independent query with its explanation"
+        ],
+        "practiceCompletionCriteria": [
+            "The learner correctly predicts which books each predicate includes.",
+            "The parentheses experiment changes the row set as expected.",
+            "The learner distinguishes list membership from prefix matching."
+        ]
+    },
+    {
+        "id": "postgresql-null-logic",
+        "title": "Understand NULL in SQL",
+        "introduction": "What if a database does not know a book's publication year? SQL has a marker for absent or unknown values: NULL. It is neither the number zero nor an empty string. It also changes the way comparisons and WHERE work. Before writing reports about missing values, learn three-valued logic with a small read-only dataset.",
+        "outcomes": [
+            "Explain NULL as the absence of a SQL value rather than a literal string.",
+            "Distinguish TRUE, FALSE and UNKNOWN in WHERE conditions.",
+            "Predict the outcomes of = NULL, IS NULL, IS NOT NULL and NOT with UNKNOWN.",
+            "Use a small VALUES table to test missing values without modifying stored books."
+        ],
+        "sections": [
+            {
+                "id": "missing-value",
+                "title": "What is NULL?",
+                "body": "Imagine that a book record has a known title and author but no confirmed publication year. Storing 0 would falsely claim the book was published in year zero. Storing the text 'unknown' in an integer field would violate the type. SQL uses NULL to mean that a value is absent. Depending on the domain, absence may mean unknown, not yet collected or not applicable; you must decide which interpretation your application intends.\n\nNULL is not an ordinary value in comparisons. A text column may contain an empty string '', which is still a present string of length zero. A column may contain the literal word 'NULL', which is ordinary text. These are different from SQL NULL.\n\nEarlier we defined published_year integer without NOT NULL, so the library table permits unknown publication years. We will not insert a third book here. Instead, use a tiny read-only VALUES dataset so the experiment works even after your previous practice cleaned up its fictional records."
+            },
+            {
+                "id": "values-source",
+                "title": "Create a tiny result source without a table",
+                "body": "The SQL VALUES expression can produce rows from literal values. When we place it in FROM and give it an alias such as sample(title, year), we can refer to it much like a small table during a query. It is not permanently saved in tsa_library and it is not a CREATE TEMP TABLE. It is a query-local row source.\n\nThe code below creates two candidate rows for this one SELECT: a book with year 1937 and one without a year. NULL::integer explicitly declares the missing value's type as integer, matching the other row's year. The cast syntax ::integer is PostgreSQL shorthand for selecting a type. The query displays both records; your psql output may render the NULL field as a blank by default, which does not mean it is an empty string.\n\nUnderstand why we use VALUES: we can test comparison behavior without altering the persistent books table or risking conflicts with later Steward exercises.",
+                "language": "sql",
+                "caption": "null_values.sql — inspect a read-only sample with a missing year",
+                "code": "SELECT sample.title,\n       COALESCE(sample.year::text, '[missing]') AS displayed_year\nFROM (VALUES ('Known', 1937), ('Unknown', NULL::integer))\n  AS sample(title, year)\nORDER BY sample.title;",
+                "output": "Known|1937\nUnknown|[missing]"
+            },
+            {
+                "id": "not-equal-null",
+                "title": "Why does = NULL not find the missing row?",
+                "body": "A comparison such as year = 1937 can be TRUE or FALSE when the year is known. But year = NULL is not the correct way to ask \"is there no year?\" Because NULL does not represent an ordinary comparable value, comparisons with it produce UNKNOWN in SQL's three-valued logic. Even NULL = NULL produces UNKNOWN rather than TRUE.\n\nWHERE retains rows only when the condition is TRUE. It rejects both FALSE and UNKNOWN. Therefore WHERE year = NULL matches neither our known row nor the missing-year row. The server does not report a syntax error: the statement is valid SQL with a condition that never becomes TRUE in this example.\n\nUse IS NULL when testing absence. The second query shows that IS NULL returns the Unknown row. If you want rows where a year is present, use IS NOT NULL. Predict the result before executing.",
+                "language": "sql",
+                "caption": "null_equality.sql — compare = NULL with IS NULL",
+                "code": "SELECT sample.title\nFROM (VALUES ('Known', 1937), ('Unknown', NULL::integer)) AS sample(title, year)\nWHERE sample.year = NULL\nORDER BY sample.title;\n\nSELECT sample.title\nFROM (VALUES ('Known', 1937), ('Unknown', NULL::integer)) AS sample(title, year)\nWHERE sample.year IS NULL\nORDER BY sample.title;",
+                "output": "First query: no rows\nSecond query: Unknown"
+            },
+            {
+                "id": "three-valued-logic",
+                "title": "TRUE, FALSE and UNKNOWN are three different outcomes",
+                "body": "SQL predicate logic has three possible results. Comparing 1958 >= 1950 produces TRUE. Comparing 1937 >= 1950 produces FALSE. Comparing NULL >= 1950 produces UNKNOWN. If you negate a normal TRUE predicate with NOT, it becomes FALSE; if you negate a normal FALSE, it becomes TRUE. But NOT UNKNOWN remains UNKNOWN. That means NOT (year >= 1950) does not automatically include books whose year is missing.\n\nAND and OR have corresponding UNKNOWN behavior: TRUE AND UNKNOWN is UNKNOWN; FALSE AND UNKNOWN is FALSE; TRUE OR UNKNOWN is TRUE; FALSE OR UNKNOWN is UNKNOWN. Think of a missing fact as an unanswered question: some combinations remain determinable, while others cannot be decided.\n\nThe query below uses COALESCE to display an explicit word UNKNOWN rather than psql's usual blank representation of NULL. COALESCE picks the first non-null argument, and ::text turns a Boolean into its textual name for display. Neither operation changes SQL's actual truth value.",
+                "language": "sql",
+                "caption": "null_truth_table.sql — inspect TRUE FALSE and UNKNOWN",
+                "code": "SELECT label,\n       COALESCE((year >= 1950)::text, 'UNKNOWN') AS after_1950,\n       COALESCE((NOT (year >= 1950))::text, 'UNKNOWN') AS not_after\nFROM (VALUES ('Known old', 1937), ('Known new', 1958), ('Unknown', NULL::integer))\n  AS examples(label, year)\nORDER BY label;",
+                "output": "Known new|true|false\nKnown old|false|true\nUnknown|UNKNOWN|UNKNOWN"
+            },
+            {
+                "id": "null-in-practice",
+                "title": "Use IS NULL and IS NOT NULL deliberately",
+                "body": "For an optional publication year, `published_year IS NULL` selects books whose year has not been recorded. `published_year IS NOT NULL` selects books with a present value. Unlike = NULL and <> NULL, these are explicit absence tests that return TRUE or FALSE.\n\nThere are other tools for missing-value behavior. COALESCE(year, 0) can provide a fallback number for display, but 0 might be mistaken for a real year, so choose fallback values carefully. IS DISTINCT FROM gives a comparison that treats two NULLs as not distinct and a NULL compared with a non-NULL value as distinct. Those constructs are useful later; they should not replace first understanding WHERE and UNKNOWN.\n\nA missing publication year is not always an error. Whether it is allowed is a schema decision. Our book table allowed it deliberately. By contrast, title was NOT NULL because every valid book entry needs a title. SQL NULL behavior and table constraints are two sides of that same domain decision."
+            },
+            {
+                "id": "independent-check",
+                "title": "Diagnose a missing-data query that returns zero rows",
+                "body": "A colleague tries SELECT title FROM library.books WHERE published_year = NULL; and finds no books, even though they believe some years are absent. There are at least two possible reasons for an empty result: the table has no rows with missing years, or the predicate is logically wrong. The first query is wrong regardless of the stored data.\n\nRewrite it using IS NULL, then verify how many records in your own library.books actually have a missing year. If the result is still empty, that may be correct: the two original sample books both have known publication years. Use the read-only VALUES exercise above to prove that the corrected predicate works on known missing data, without inventing or deleting permanent books.\n\nNext you will learn ordering and pagination. Keep in mind that sorting rows with NULL values also requires an explicit placement decision when a report's order matters."
+            }
+        ],
+        "warning": "SQL NULL is not the quoted string 'NULL', the number 0, or an empty string. Ordinary comparisons with NULL yield UNKNOWN; WHERE keeps only TRUE rows.",
+        "assignment": [
+            "Explain why NULL and an empty string are different.",
+            "Run the VALUES example, identify which row has no year and explain the cast.",
+            "Run = NULL and IS NULL against the same sample; explain the different result.",
+            "Predict the truth table for a known old year, known recent year and NULL.",
+            "Write an independent query using IS NOT NULL and explain why NOT (year >= 1950) excludes missing years."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Comparison Functions and Operators",
+                "url": "https://www.postgresql.org/docs/17/functions-comparison.html",
+                "kind": "reference",
+                "purpose": "Authoritative explanation of NULL comparisons and IS DISTINCT FROM."
+            },
+            {
+                "title": "PostgreSQL 17 — Conditional Expressions",
+                "url": "https://www.postgresql.org/docs/17/functions-conditional.html",
+                "kind": "reference",
+                "purpose": "Explain COALESCE for display-only fallbacks."
+            }
+        ],
+        "practiceObjective": "Explain and reproduce three-valued SQL logic using nonpersistent sample rows.",
+        "practiceInstructions": [
+            "Run the three published VALUES-based queries without modifying stored records.",
+            "Compare = NULL, IS NULL and NOT comparisons with expected row sets.",
+            "Construct an independent IS NOT NULL query for the two original books.",
+            "Explain why a query may be valid yet select zero rows."
+        ],
+        "knowledgeCheck": "What does WHERE do with UNKNOWN? Why is NOT UNKNOWN still UNKNOWN? If a book's year is absent, does published_year <> 1950 select it? What is the correct missing-value predicate?",
+        "readingTitle": "Learn SQL NULL and missing values",
+        "practiceTitle": "Test missing-value predicates",
+        "checkTitle": "Check three-valued logic",
+        "practiceScenario": "Use read-only tiny book examples to learn NULL without changing the canonical Steward dataset.",
+        "practiceDeliverables": [
+            "VALUES query output",
+            "Incorrect versus correct NULL test",
+            "Truth table and independent explanation"
+        ],
+        "practiceCompletionCriteria": [
+            "No persistent database contents change.",
+            "The learner explains UNKNOWN rather than treating it as FALSE.",
+            "The learner can rewrite a faulty = NULL query into an IS NULL query."
+        ]
+    },
+    {
+        "id": "postgresql-sort-results",
+        "title": "Sort and Limit Query Results",
+        "introduction": "A database does not promise that rows will come out alphabetically or in insertion order. ORDER BY lets you request an order, and LIMIT can return only part of that sorted result. We will go beyond the two-row book example to inspect ties, missing values, and pagination using a read-only miniature list.",
+        "outcomes": [
+            "Explain why SELECT without ORDER BY has no guaranteed row order.",
+            "Sort by several columns, using ASC, DESC and NULLS FIRST/LAST.",
+            "Explain why tie-breakers matter when LIMIT or OFFSET is used.",
+            "Distinguish stable sorting from consistent pagination while data changes."
+        ],
+        "sections": [
+            {
+                "id": "no-natural-order",
+                "title": "Why query results have no natural order",
+                "body": "A relational table describes a collection of records; it does not promise that SELECT will return them in the order they were inserted. PostgreSQL may read table pages in physical order, traverse an index, or use parallel query plans. A two-row test that repeats in the same order is not evidence of a guaranteed contract.\n\nORDER BY is the SQL clause that requests result ordering. ORDER BY title ASC sorts text titles in ascending order according to the applicable collation. DESC reverses the sort direction. The columns in ORDER BY do not have to be printed in the SELECT list in every query form, although SELECT DISTINCT introduces extra restrictions.\n\nYour earlier library.books example used ORDER BY book_id, because a predictable displayed order was part of its expected output. Here we examine what happens when the primary sort column has equal values and the user wants just the first page."
+            },
+            {
+                "id": "sort-multiple",
+                "title": "Use two sort keys to settle ties",
+                "body": "Imagine a report listing books by publication year from newest to oldest. If two books have the same year, ORDER BY published_year DESC leaves their relative order unspecified. Adding title ASC as a second key decides the order among those tied years. For robust pagination, a unique identifier can serve as the final tie-breaker when two titles can also be equal.\n\nThe code uses a read-only VALUES expression as a temporary result source, not a stored table. Alpha and Beta both have year 2000; title alphabetically puts Alpha first. Old has 1990. Undated has a NULL year. The NULLS LAST instruction places missing years after known ones even though the year sort is DESC.\n\nPredict all four rows before running. The display order is Alpha, Beta, Old, Undated. No INSERT occurs, and no stored book has been modified.",
+                "language": "sql",
+                "caption": "sort_all.sql — tie-breakers and missing years",
+                "code": "SELECT title, published_year\nFROM (VALUES ('Beta', 2000), ('Alpha', 2000),\n             ('Undated', NULL::integer), ('Old', 1990))\n  AS sample(title, published_year)\nORDER BY published_year DESC NULLS LAST, title ASC;",
+                "output": "Alpha|2000\nBeta|2000\nOld|1990\nUndated|"
+            },
+            {
+                "id": "limit-results",
+                "title": "What does LIMIT do after sorting?",
+                "body": "LIMIT bounds how many result rows PostgreSQL returns. It does not guarantee which rows are first unless you specify an ORDER BY contract. In our example ORDER BY year DESC NULLS LAST, title ASC creates a predictable four-row sequence; LIMIT 3 returns Alpha, Beta and Old.\n\nThis does not mean the underlying table contains only three rows. LIMIT changes the returned result set. If the same query is executed against a table that later gains more records, the first three results can change because the data changed, even though the query syntax did not.\n\nUse LIMIT for a preview or a page of results, but do not mistake the limited output for a complete count. A separate COUNT query may be needed when the application asks how many records exist, and JOINs can change which rows you are counting.",
+                "language": "sql",
+                "caption": "sort_limit.sql — return the top three ordered rows",
+                "code": "SELECT title\nFROM (VALUES ('Beta', 2000), ('Alpha', 2000),\n             ('Undated', NULL::integer), ('Old', 1990))\n  AS sample(title, published_year)\nORDER BY published_year DESC NULLS LAST, title ASC\nLIMIT 3;",
+                "output": "Alpha\nBeta\nOld"
+            },
+            {
+                "id": "offset-results",
+                "title": "Why OFFSET is not a complete pagination solution",
+                "body": "OFFSET skips a number of rows from the ordered result before LIMIT selects a page. With a stable four-row read-only dataset, LIMIT 2 OFFSET 1 returns Beta and Old. OFFSET 0 would begin with Alpha. A unique tie-breaker is necessary to make repeated pages deterministic for the same unchanged data.\n\nHowever, ORDER BY alone does not freeze the database while a user requests several pages. If someone inserts a new first row between page requests, the original row positions shift; OFFSET 2 may repeat a previously seen row or skip a row. The result can be perfectly ordered and still represent different snapshots over time. For many live-feed APIs, keyset/cursor pagination anchored to stable sort keys is preferable to large offsets, but it also needs a clear consistency contract.\n\nWe are not introducing transaction isolation in this lesson. For now, name the two distinct problems: ambiguous order caused by tied keys, and changing pages caused by data changing between requests.",
+                "language": "sql",
+                "caption": "sort_offset.sql — skip one row then take two",
+                "code": "SELECT title\nFROM (VALUES ('Beta', 2000), ('Alpha', 2000),\n             ('Undated', NULL::integer), ('Old', 1990))\n  AS sample(title, published_year)\nORDER BY published_year DESC NULLS LAST, title ASC\nLIMIT 2 OFFSET 1;",
+                "output": "Beta\nOld"
+            },
+            {
+                "id": "wrong-sort",
+                "title": "Sorting a category is not the same as ranking its severity",
+                "body": "Suppose a report contains labels low, medium, high and critical. ORDER BY criticality DESC sorts the *text* values lexicographically according to a collation; it does not know that critical is more urgent than high. A query can be deterministic and still be semantically wrong for a business priority.\n\nIf a categorical field has a specific order, represent that order explicitly—for example with a CASE expression that assigns a numeric rank—or use a constrained domain model that preserves business meaning. The first task is to define that rank with the domain owner. Do not hide an arbitrary alphabetical order behind a confident chart.\n\nFor our book data, year is naturally numeric, so descending published_year has a meaningful numeric order. Missing years still need explicit placement. The takeaway is to ask what order the user actually requested before choosing ORDER BY columns."
+            },
+            {
+                "id": "transfer-sorting",
+                "title": "Try sorting a different kind of record",
+                "body": "A library wants a list of due loans ordered by due date ascending, then borrower ID ascending. Draw four sample rows, including two with the same due date. Show how the borrower ID breaks ties. Then decide what should happen when a due date is NULL. Should missing dates come first, last or be excluded by WHERE? There is no universal correct answer without defining the report's purpose.\n\nNow consider a second page. If a new loan is added with an earlier due date between requests, what might OFFSET do? Explain the difference between ordering a fixed dataset and retrieving a consistent multi-page history as writes continue. Those questions are the foundation for later pagination and isolation lessons.\n\nThe next reading returns to the Steward teaching dataset for a deliberate filtering/sorting audit. There you should apply these principles, not learn them for the first time."
+            }
+        ],
+        "warning": "Ordering by a nonunique field alone cannot guarantee order among ties. A stable ORDER BY does not prevent changes between page requests, and text order is not a severity ranking.",
+        "assignment": [
+            "Run the full four-row sort and explain its two keys and NULL placement.",
+            "Run LIMIT 3 and LIMIT 2 OFFSET 1 and predict their outputs.",
+            "Explain why equal years need a tie-breaker.",
+            "Describe how an insert between page requests can shift an OFFSET result.",
+            "Design a two-key sort for a different data set, including what to do with unknown values."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Sorting Rows",
+                "url": "https://www.postgresql.org/docs/17/queries-order.html",
+                "kind": "reference",
+                "purpose": "Reference ASC/DESC, multiple keys and NULLS FIRST/LAST."
+            },
+            {
+                "title": "PostgreSQL 17 — LIMIT and OFFSET",
+                "url": "https://www.postgresql.org/docs/17/queries-limit.html",
+                "kind": "reference",
+                "purpose": "Reference LIMIT and OFFSET behavior."
+            }
+        ],
+        "practiceObjective": "Sort a read-only sample by several columns and explain LIMIT/OFFSET reliability.",
+        "practiceInstructions": [
+            "Run all four-row sorting examples; predict tied and missing-year placement.",
+            "Explain why sorting by year alone does not determine the order of same-year books.",
+            "Show LIMIT/OFFSET outputs using the exact code.",
+            "Describe a hypothetical insert that would cause an offset page to shift, without claiming a concurrent experiment occurred."
+        ],
+        "knowledgeCheck": "Does a SELECT without ORDER BY promise row order? Why add a tie-breaker? What does NULLS LAST do? Does LIMIT 3 mean the table has three rows? Can OFFSET pages shift after a new insert?",
+        "readingTitle": "Learn ORDER BY, LIMIT and OFFSET",
+        "practiceTitle": "Sort and paginate a book list",
+        "checkTitle": "Check ordering and pagination",
+        "practiceScenario": "Understand SQL ordering through a fixed read-only library list rather than an evolving Steward query.",
+        "practiceDeliverables": [
+            "Expected and actual order for four rows",
+            "LIMIT/OFFSET results",
+            "Tie-breaker and changing-data explanation"
+        ],
+        "practiceCompletionCriteria": [
+            "The learner can predict sort and limit outputs before running SQL.",
+            "The learner separates stable ordering from data-snapshot consistency.",
+            "No stored tables are modified."
+        ]
+    },
+    {
         "id": "filtering-ordering",
-        "title": "Filtering and Ordering Queries",
-        "introduction": "A registry query can return the wrong answer even though its SQL is syntactically valid. Before relying on filters and ordering for operational decisions, understand the logical pipeline: read candidate rows from a named table, evaluate one predicate per row, retain only TRUE results, project the requested columns, and order the resulting rows. The five-Service dataset from the previous lab is the reproducible reference throughout. You do not need an ORM, Django project or production environment.",
+        "title": "Steward Practice: Filter and Sort SQL Reports",
+        "introduction": "You have already learned how WHERE combines predicates, how NULL makes a condition UNKNOWN, and how ORDER BY, LIMIT and tie-breakers work. This is a Steward application lab: use that knowledge to inspect a five-Service dataset, catch a filter that accidentally returns a retired Service, and prove the corrected SQL against real PostgreSQL. This section applies previous lessons; it is not where those SQL fundamentals are first defined.",
         "outcomes": [
             "Predict the exact selected rows for AND, OR, IN, parentheses, pattern and NULL predicates.",
             "Explain why SQL has TRUE, FALSE and UNKNOWN in predicate evaluation.",
