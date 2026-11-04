@@ -5,6 +5,36 @@ import path from "node:path";
 import {spawnSync} from "node:child_process";
 
 const source = fs.readFileSync("packages/runtime-kernel/src/paths/builder-django-rich.ts","utf8");
+const publishedPracticeSource=fs.readFileSync("packages/runtime-kernel/src/paths/builder-django-quality.ts","utf8");
+function publishedPractice(id) {
+  const key='  "django-and-api-engineering-'+id+'": {';
+  const start=publishedPracticeSource.indexOf(key);
+  assert.ok(start>=0,'Django practical must have explicit learner-order override: '+id);
+  const end=publishedPracticeSource.indexOf('\\n  "django-and-api-engineering-',start+key.length);
+  return publishedPracticeSource.slice(start,end<0?publishedPracticeSource.length:end);
+}
+for (const id of ["django-from-zero-a-running-http-endpoint","django-foundations","django-rest-framework",
+  "steward-sql-to-django-orm-one-canonical-domain","orm-query-behavior-and-performance",
+  "schema-evolution-with-django-migrations","serializers-and-representation",
+  "production-readiness-commands-and-atomic-updates"]) {
+  assert.ok(publishedPractice(id).includes("instructions:"),"Django practical lacks substantive instructions: "+id);
+}
+for(const id of ["django-from-zero-a-running-http-endpoint","django-foundations","django-rest-framework"]){
+  const practice=publishedPractice(id);
+  assert.match(practice,/tsa-django-intro/,'First Django/DRF exercises must reuse scratch project');
+  assert.doesNotMatch(practice,/Create Steward's first Django application|Continue the same Steward codebase/,
+    'Django scratch primer cannot require an untaught Steward application');
+}
+assert.match(publishedPractice("serializers-and-representation"),/serializer_lab\\.py/,
+  "Published serializer practice must start from the standalone book experiment");
+assert.match(publishedPractice("schema-evolution-with-django-migrations"),/historical-model/,
+  "Migration practice must explicitly teach historical models");
+const bridge=source.indexOf('richLesson("Steward SQL to Django ORM: One Canonical Domain"');
+const serializers=source.indexOf('richLesson("Serializers and Representation"');
+const modelSerializer=source.indexOf('"caption":"Service serializer"');
+assert.ok(bridge>=0 && serializers>bridge && modelSerializer>serializers,
+  "ModelSerializer code must be introduced only after the standalone serializer lesson starts");
+
 function snippet(caption) {
   for(const needle of [`"caption":"${caption}"`, `caption: "${caption}"`]) {
     const ix=source.indexOf(needle);
