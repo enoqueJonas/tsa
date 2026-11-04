@@ -3537,152 +3537,284 @@ const specs: DataLessonSpec[] = [
         "warning": "Only execute changing SQL in a dedicated disposable PostgreSQL learning database. Predict the resulting rows and constraints before running a statement, and do not treat a five-row fixture as representative performance evidence."
     },
     {
-        "id": "indexes",
-        "title": "Indexes",
-        "introduction": "Why not put an index on every column? An index is an additional physical structure maintained during writes to let PostgreSQL locate or order selected rows efficiently. First prove that the planner can choose not to use an available index on a small table, then build a larger disposable table to observe scan behavior and describe the B-tree's trade-offs. This lesson is about evidence, not promising faster queries.",
+        "id": "query-plans",
+        "title": "How PostgreSQL Executes a Query: Reading EXPLAIN",
+        "introduction": "You already know what a SELECT query means. There is another question: how does PostgreSQL actually find and combine the rows needed to answer it? A query plan describes the physical work PostgreSQL chooses. We will learn to read a simple plan using library books before studying indexes or trying to make anything faster.",
         "outcomes": [
-            "Distinguish heap/sequential scanning from B-tree index lookup and ordering.",
-            "Measure a candidate index on representative, disposable data and inspect the plan.",
-            "Explain composite ordering, selectivity, write amplification and why unused indexes cost resources.",
-            "Identify UNIQUE constraint enforcement versus ordinary performance indexes."
+            "Explain the difference between the SQL result and the work chosen to produce it.",
+            "Read a simple plan tree and distinguish scans, filters, joins, sorts and aggregates.",
+            "Explain estimated rows, cost, actual rows, loops and buffer measurements without treating costs as milliseconds.",
+            "Use EXPLAIN safely and identify when EXPLAIN ANALYZE actually executes a statement."
         ],
         "sections": [
             {
-                "id": "mechanism",
-                "title": "What an index changes physically",
-                "body": "A B-tree maps ordered key values to locations of matching rows, reducing the need to inspect unrelated heap pages when a query is selective. PostgreSQL usually stores table tuples separately from index entries, so an Index Scan may still fetch heap data. An Index Only Scan is possible only when required columns are available through the index and tuple visibility permits it. A Seq Scan may outperform an index for a tiny table or when a large fraction of rows matches. PostgreSQL's planner estimates costs from statistics, table size, locality and available algorithms."
+                "id": "sql-and-plan",
+                "title": "SQL describes the answer; a plan describes the work",
+                "body": "Consider SELECT title FROM library.books WHERE published_year >= 1950. SQL tells PostgreSQL which columns and rows you want. It does not say whether PostgreSQL must visit every row or how it should find matching records. The PostgreSQL planner considers available tables, indexes, statistics and possible algorithms and chooses an execution plan; the executor performs that plan.\n\nTwo databases can have exactly the same table definition but different row counts. In the tiny library, reading every row may be cheapest. In a very large library with a suitable index, consulting that index might save work. Both plans can return the same correct row. Query correctness and query cost are different questions.\n\nWe need to know how to observe the plan before learning which index to build. An index is not an instruction that forces the server to use it. A plan is a decision the server made for a specific query and set of conditions."
             },
             {
-                "id": "small",
-                "title": "Show why five Service rows cannot prove a speedup",
-                "body": "The canonical Steward fixture contains only five Services. Run EXPLAIN SELECT ... WHERE name='Payments API' and read the reported scan node; it may be an index lookup because Service.name UNIQUE created a unique index, or the optimizer may choose a Seq Scan. Neither means a rule that indexes always/never help. Do not infer a production-scale latency improvement from a tiny microsecond result. Use the next disposable dataset for a meaningful change in row shape and candidate filtering.",
-                "caption": "index_small.sql — inspect an already indexed unique Service name",
-                "code": "EXPLAIN SELECT id,name FROM service WHERE name='Payments API';"
+                "id": "first-plan",
+                "title": "View a plan without running the SELECT",
+                "body": "`EXPLAIN` asks PostgreSQL to show its intended plan. Without ANALYZE it does not execute the main SELECT, so it reports estimates but no measured run time for the actual query. Type the query below in tsa_library, where library.books already contains The Hobbit and Things Fall Apart. A fresh small table will often show a Seq Scan, meaning the server expects to inspect table rows directly. The exact cost numbers and chosen node can differ by database state, PostgreSQL version and configuration.\n\nThe plan may include a Filter expression: that is the condition checked for each row scanned. If a filter excludes a row, that row simply does not appear in the query result. Scan is about *how* to access candidates; WHERE is about *which* candidates qualify. Do not treat the words Seq Scan as an error message.",
+                "caption": "library_explain_only.sql — estimate a book lookup without executing it",
+                "code": "EXPLAIN\nSELECT title FROM library.books WHERE published_year >= 1950;",
+                "language": "sql"
             },
             {
-                "id": "lab",
-                "title": "Build a deliberately larger scratch relation",
-                "body": "Generate 15,000 predictable records into a TEMP table with generate_series (PostgreSQL's set-returning series function, introduced here). Start without an index; ANALYZE collects statistics; EXPLAIN (ANALYZE, BUFFERS) records actual plan, row count and buffer behavior. Create a B-tree index on the lookup key, ANALYZE again and compare the plan for a selective exact match. Record whether the planner actually switched methods; performance measurements vary with caching and CI hardware and are not universal. This is scratch data only: TEMP table disappears with its connection.",
-                "caption": "index_lab.sql — compare actual physical plans on 15000 temporary rows",
-                "code": "CREATE TEMP TABLE tsa_index_probe AS\nSELECT n AS id, 'service-' || lpad(n::text,5,'0') AS slug, (n % 4) AS priority\nFROM generate_series(1,15000) AS g(n);\nANALYZE tsa_index_probe;\nEXPLAIN (ANALYZE, BUFFERS)\nSELECT * FROM tsa_index_probe WHERE slug='service-14999';\nCREATE INDEX tsa_probe_slug_idx ON tsa_index_probe(slug);\nANALYZE tsa_index_probe;\nEXPLAIN (ANALYZE, BUFFERS)\nSELECT * FROM tsa_index_probe WHERE slug='service-14999';"
+                "id": "tree-nodes",
+                "title": "Read query plans as trees, not as paragraphs",
+                "body": "A plan is a tree of nodes. At the bottom, scan nodes obtain rows from stored tables or other row sources. Above them, a Filter rejects rows, a Join may combine two inputs, a Sort arranges rows and an Aggregate summarizes them. The topmost node produces the final requested result. Read a tree from its leaf inputs toward its output; indentation and arrows show which node consumes the results of another.\n\nA plan can contain Seq Scan (inspect table pages), Index Scan (use an index to find candidate row locations), Bitmap Heap Scan (collect matching locations then visit the relevant heap pages), Hash Join, Merge Join, Nested Loop, Sort, Aggregate and other nodes. You do not need to memorize every node yet. When a plan contains a join, say first which rows it combines and then which algorithm the executor selected.\n\nTwo different plans can answer the same SELECT. Adding an index, changing statistics, or increasing the number of books can change the plan without changing the query's meaning."
             },
             {
-                "id": "composite",
-                "title": "Index order is a property of workload, not naming preference",
-                "body": "A B-tree on (lifecycle, criticality) has ordered entries first by lifecycle, then criticality within each lifecycle. Equality on the leading lifecycle column may help bound the search; criticality alone need not use the same prefix efficiently. PostgreSQL can use various access strategies, including skip scans in applicable versions, so 'never used' is too absolute. Columns used for equality, range, join and ordering—and their selectivity—should drive the choice. For a selective slug lookup, a single-column B-tree is simpler."
+                "id": "actual-versus-estimated",
+                "title": "What do cost, rows, loops and time mean?",
+                "body": "`EXPLAIN` typically reports estimated startup and total cost, estimated rows and average row width. The planner's cost numbers are relative units for comparing alternative plans; they are not milliseconds. The estimate of rows describes how many records the planner expects a node to emit, not necessarily how many table rows exist.\n\n`EXPLAIN (ANALYZE, BUFFERS)` actually executes the statement and reports measured timing and row counts as well as buffer-access counters. When a node runs multiple times, PostgreSQL displays actual rows averaged per loop. For a useful measure of the rows the node produced in total, multiply actual rows by loops. A node that outputs 3 rows per loop across 20 loops contributed about 60 result rows across those invocations; do not mistake the displayed 3 for the whole workload.\n\nBuffers labeled shared hit and read describe PostgreSQL's buffer activity, not a direct count of physical disk seeks. A cached page can still incur CPU work. Even a very fast lab plan is not a prediction of production latency."
             },
             {
-                "id": "costs",
-                "title": "Indexes slow some writes and occupy storage",
-                "body": "An INSERT often needs to add entries to every relevant index; UPDATE of indexed values must maintain those entries; DELETE later requires cleanup/vacuum. Unique indexes reject duplicate keys, but declare business uniqueness as a UNIQUE constraint to express domain intent. Do not create a redundant index on an existing primary/unique key without checking catalog definitions. You should be able to justify both the read improvement and the write/storage cost in a short review."
+                "id": "observe-books",
+                "title": "Measure the same read-only query",
+                "body": "This block first obtains a non-executing estimate, then executes the same SELECT with instrumentation, then runs a normal count query whose answer you can verify. In our two-book lab only Things Fall Apart is published in or after 1950, so the final count is one. Compare the two plans: the measured one includes actual times, rows and loops, while the first does not. The plan may use different nodes if your environment has changed; that is not a failed lesson.\n\n`ANALYZE` in EXPLAIN (ANALYZE) means 'execute this query and measure it'. That is distinct from the standalone SQL command ANALYZE table_name, which collects statistics for the planner. The difference matters because both use a similar word for different operations. Record both the actual result and the observed access path.",
+                "caption": "library_explain_analyze.sql — estimate, measure and verify a book query",
+                "code": "EXPLAIN SELECT title FROM library.books WHERE published_year >= 1950;\nEXPLAIN (ANALYZE, BUFFERS) SELECT title FROM library.books WHERE published_year >= 1950;\nSELECT count(*) AS matching_books FROM library.books WHERE published_year >= 1950;",
+                "output": "(EXPLAIN node names and costs vary)\nExecution Time: ... ms\nmatching_books = 1",
+                "language": "sql"
+            },
+            {
+                "id": "safe-analyze",
+                "title": "Why EXPLAIN ANALYZE can be dangerous",
+                "body": "Never assume EXPLAIN ANALYZE is only an inspection command. Unlike plain EXPLAIN, it executes the SQL. If you use it on an UPDATE, DELETE or INSERT, the data-changing operation takes effect unless you deliberately control it with a transaction and rollback. Some external or sequence-related effects might not be undone by rolling back. In this module we use EXPLAIN ANALYZE only on harmless SELECTs in disposable data.\n\nAnother common trap is treating a single run on two books as performance evidence. Its plan teaches you where to find node names, but not whether an index is beneficial at a realistic scale. For performance decisions, use representative row counts, data distributions, parameters, repeated measurements and a specific objective. A query that is fastest on a warmed local cache may not be fastest elsewhere."
+            },
+            {
+                "id": "applied-plan",
+                "title": "Apply the same reading technique to Steward",
+                "body": "The read-only query below joins Team to Service and counts related Services. It should answer the business question with the same result whether PostgreSQL chooses a Nested Loop, a Hash Join or another valid plan. Its five-row fixture is useful for learning join and aggregate nodes, not for proving scalability. Before tuning, identify what each node produces, which join condition relates the rows, and where grouping occurs. You should be able to explain the difference between the query's logical answer and the particular plan used to compute it.",
+                "caption": "explain_join.sql — inspect query plan and correct grouped result",
+                "code": "EXPLAIN (ANALYZE, BUFFERS)\nSELECT t.name, COUNT(s.id) AS n\nFROM team t LEFT JOIN service s ON s.owning_team_id=t.id\nGROUP BY t.id,t.name\nORDER BY t.name;",
+                "language": "sql"
             }
         ],
         "assignment": [
-            "Execute EXPLAIN on the canonical Service fixture and explain why its five rows are inconclusive.",
-            "Run index_lab.sql in one psql session; record pre/post plan nodes, actual row counts and buffer activity.",
-            "Explain which real Service queries benefit from an index on (lifecycle,criticality) versus a unique slug.",
-            "Write a measurable decision: when should the extra index remain or be removed?"
+            "Open tsa_library and predict which book matches published_year >= 1950 before executing either EXPLAIN example.",
+            "Run both published EXPLAIN blocks, identify the scan node and explain the difference between estimates and measurements.",
+            "Draw the plan as a small tree from its scan node to result, then identify one condition under which a different plan might be chosen.",
+            "Run the Steward join plan and explain what the JOIN and grouping do independently of the chosen algorithm.",
+            "Explain why EXPLAIN ANALYZE on DELETE is not a harmless way to inspect an operation."
         ],
         "resources": [
             {
-                "title": "PostgreSQL — Indexes",
-                "url": "https://www.postgresql.org/docs/current/indexes.html",
+                "title": "PostgreSQL 17 — Using EXPLAIN",
+                "url": "https://www.postgresql.org/docs/17/using-explain.html",
                 "kind": "reference",
-                "purpose": "B-tree access, multicolumn index rules and index costs"
+                "purpose": "Precise meanings of plan nodes, estimated costs, actual rows/loops and buffers."
             },
             {
-                "title": "PostgreSQL — EXPLAIN",
-                "url": "https://www.postgresql.org/docs/current/using-explain.html",
+                "title": "PostgreSQL 17 — Planner Statistics",
+                "url": "https://www.postgresql.org/docs/17/planner-stats.html",
                 "kind": "reference",
-                "purpose": "Plan behavior and cost evidence"
+                "purpose": "Understand how table statistics influence estimates."
             },
             {
-                "title": "CMU 15-445 Fall 2025 — Indexes, Query Planning and Execution",
+                "title": "CMU 15-445 Fall 2025 — Query Execution and Planning",
                 "url": "https://15445.courses.cs.cmu.edu/fall2025/schedule.html",
-                "kind": "course",
-                "read": "Lectures #08–#09 and #13–#15, optional deep dive",
-                "purpose": "Compare B-tree internals and physical query algorithms with declarative SQL; full recordings not claimed watched"
+                "kind": "reference",
+                "purpose": "Optional deeper course-level treatment of physical query algorithms."
             }
         ],
-        "practiceObjective": "Distinguish heap/sequential scanning from B-tree index lookup and ordering.",
+        "practiceObjective": "Read and explain the physical plan selected for a real SQL query before trying to optimize it.",
         "practiceInstructions": [
-            "Execute EXPLAIN on the canonical Service fixture and explain why its five rows are inconclusive.",
-            "Run index_lab.sql in one psql session; record pre/post plan nodes, actual row counts and buffer activity.",
-            "Explain which real Service queries benefit from an index on (lifecycle,criticality) versus a unique slug.",
-            "Write a measurable decision: when should the extra index remain or be removed?"
+            "Compare ordinary EXPLAIN against EXPLAIN (ANALYZE, BUFFERS) on the harmless book query.",
+            "Annotate estimated and actual row counts and explain why cost numbers are not milliseconds.",
+            "Trace the Steward join/aggregation plan from scan nodes to final output.",
+            "Form one falsifiable reason the plan might change on a large or skewed dataset."
         ],
-        "knowledgeCheck": "Why might PostgreSQL deliberately use Seq Scan when an index exists? What work does each index add to writes? Why does creating a UNIQUE constraint imply indexing but not all indexes imply uniqueness?",
-        "warning": "Only execute changing SQL in a dedicated disposable PostgreSQL learning database. Predict the resulting rows and constraints before running a statement, and do not treat a five-row fixture as representative performance evidence."
+        "knowledgeCheck": "Why can two physical plans return the same SQL result? What does EXPLAIN measure without ANALYZE? What does rows=3 loops=20 imply? Why must EXPLAIN ANALYZE on DELETE be treated as a real deletion?",
+        "warning": "EXPLAIN ANALYZE executes its statement. Use only read-only SELECTs in this lesson; do not explain-analyze destructive SQL on real data.",
+        "readingTitle": "Understand what a PostgreSQL query plan shows",
+        "practiceTitle": "Read an EXPLAIN plan from bottom to top",
+        "checkTitle": "Check your understanding of query plans",
+        "practiceScenario": "First interpret a simple library query; then apply plan-reading to a read-only Steward report."
     },
     {
-        "id": "query-plans",
-        "title": "Query Plans and EXPLAIN",
-        "introduction": "SQL expresses which answer you want. PostgreSQL's query planner selects how to produce it: scans, joins, sorts and aggregate operators. EXPLAIN reveals that physical plan, while EXPLAIN ANALYZE executes the query and adds actual observations. The goal is to explain each plan node's role and avoid false performance inferences.",
+        "id": "indexes",
+        "title": "What Is a Database Index, and When Does It Help?",
+        "introduction": "You now know how to read a PostgreSQL query plan. We can ask a more specific question: when can an index save work compared with reading all the rows? An index adds a separate structure that helps locate or order records; it does not change what a correct SELECT returns. We will observe it on temporary book records, not make performance claims from a five-row Steward dataset.",
         "outcomes": [
-            "Distinguish estimates from measured rows, loops and buffers.",
-            "Read a plan from lower operators through final output.",
-            "Explain when Hash Join, Nested Loop, Sort and Aggregate nodes can appear.",
-            "Use a safe read-only EXPLAIN ANALYZE without changing business data."
+            "Explain a B-tree index, a sequential scan and an index scan in plain language.",
+            "Compare real pre-index and post-index query plans on disposable data.",
+            "Explain why an index may not be used and why indexed results still need table-visibility checks.",
+            "Distinguish an ordinary lookup index from one supporting a PRIMARY KEY or UNIQUE constraint."
         ],
         "sections": [
             {
-                "id": "physical",
-                "title": "Logical join versus physical implementation",
-                "body": "The previous JOIN lesson taught the set of row pairs returned by ON. PostgreSQL may execute that logical join as a Nested Loop (probe another input per row), a Hash Join (build an in-memory hash table on one side then probe with the other), or a Merge Join (consume sorted inputs). The same query can use different physical plans when table size or statistics change. Do not rewrite correct SQL solely because one tiny sample shows an unfamiliar node."
+                "id": "analogy",
+                "title": "Why searching a book index differs from reading every page",
+                "body": "Imagine a catalogue with 15,000 cards. To find a book with a rare catalogue number, you could examine every card until you find it. That is conceptually like a sequential scan. Alternatively, a sorted index can guide you quickly to the relevant number and point you to its card. That is conceptually like a B-tree index lookup. PostgreSQL B-trees store ordered keys and references to table rows in their own database structures. They are not Python dictionaries and they do not automatically store every column.\n\nThe book analogy has limits: the database's planner may still prefer reading the table when there are few pages or when a query requests most rows. An index lookup can involve additional pages and random access. The existence of an index does not promise PostgreSQL will use it."
             },
             {
-                "id": "read-plan",
-                "title": "Read the plan from the leaves upward",
-                "body": "Scans produce rows; a Join combines them; Sort orders them; Aggregate/HashAggregate groups and calculates metrics. Plans usually show estimated startup/total cost and estimated rows, then, with ANALYZE, actual times/rows/loops. The actual row count is per loop, so loops matter when estimating total work. With BUFFERS, shared hit/read show buffer-cache activity, not necessarily physical disk writes in a simple one-to-one mapping. Costs are planner units, not milliseconds. The final runtime includes startup, execution and instrumentation factors."
+                "id": "how-btree-works",
+                "title": "What is stored in a B-tree index?",
+                "body": "A B-tree index stores keys in sorted order across pages and maintains a tree of navigation pages leading to leaf entries. A search for a particular key can descend to a relevant leaf rather than inspecting all table rows. Each matching entry identifies where the corresponding table tuple can be found. For an ordinary index scan, PostgreSQL may still need to visit the table heap to retrieve non-indexed columns and check which version of a row is visible to the current transaction.\n\nThere is also an Index Only Scan optimization, but 'only' does not mean visibility is ignored. The index must cover the requested columns and PostgreSQL may consult its visibility map or the heap to establish whether rows are visible. A beginner should avoid claiming every index lookup is an entirely separate, memory-only shortcut.\n\nThe index itself occupies space and must be maintained when relevant row values change. We will measure access paths first and then discuss maintenance costs in a dedicated follow-up lesson."
             },
             {
-                "id": "run",
-                "title": "Observe a safe join/aggregate plan",
-                "body": "The fixture query below is read-only. It must return Identity 1, Payments 2, Platform 2 independent of the physical join plan. Compare EXPLAIN without ANALYZE and EXPLAIN (ANALYZE, BUFFERS) to see the added evidence; record scan nodes, join type, aggregation node and row estimates. The five-row source is suitable for learning node names, not for judging scalability.",
-                "caption": "explain_join.sql — inspect query plan and correct grouped result",
-                "code": "EXPLAIN (ANALYZE, BUFFERS)\nSELECT t.name, COUNT(s.id) AS n\nFROM team t LEFT JOIN service s ON s.owning_team_id=t.id\nGROUP BY t.id,t.name\nORDER BY t.name;"
+                "id": "five-rows",
+                "title": "A tiny table can be faster without an index",
+                "body": "The canonical Steward seed has only five Services. Some columns are indexed through PRIMARY KEY or UNIQUE constraints. Running EXPLAIN on that data may show either Seq Scan or Index Scan, depending on PostgreSQL's estimates and configuration. A sequential scan of a tiny table is often reasonable; there is very little data to read, and opening an index could cost extra work. Neither outcome is a universal rule.\n\nUse the source query below only to practice interpreting its plan. Do not interpret one microsecond-scale run as proof that an index should be added or removed in production. The next scratch experiment creates many more records without changing Steward's persistent schema.",
+                "caption": "index_small.sql — inspect an already indexed unique Service name",
+                "code": "EXPLAIN SELECT id,name FROM service WHERE name='Payments API';",
+                "language": "sql"
             },
             {
-                "id": "wrong-fix",
-                "title": "Estimated rows are hypotheses, not guarantees",
-                "body": "PostgreSQL uses statistics to estimate selectivity and result sizes. A bad row estimate may arise from stale statistics, correlated predicates, skew or misleading sample size. ANALYZE updates statistics; it is not the same as EXPLAIN ANALYZE. Before adding an index, inspect predicates, row counts, result width and the data distribution. EXPLAIN ANALYZE on UPDATE/DELETE actually performs the mutation; never run it on live data without an appropriately controlled rollback, and remember even rolled-back changes can cause side effects in some operations."
+                "id": "scratch-table",
+                "title": "Build a larger scratch table and predict the result",
+                "body": "PostgreSQL's generate_series(1,15000) produces each integer from 1 through 15000. The expression 'book-' || lpad(n::text,5,'0') constructs a catalogue code such as book-00001 or book-14999. The TEMP table created below is disposable and vanishes when the psql connection closes. The final predicate identifies exactly one generated row: book-14999.\n\nFirst create the table with no slug index, run standalone ANALYZE to collect table statistics, then observe EXPLAIN (ANALYZE, BUFFERS) for the selective lookup. Next CREATE INDEX on slug, collect statistics again and run the same query. The record returned is unchanged, but the planner may choose a different physical route. Do not confuse standalone ANALYZE (collect statistics) with EXPLAIN ANALYZE (run and measure a query).",
+                "caption": "index_lab.sql — compare actual physical plans on 15000 temporary rows",
+                "code": "CREATE TEMP TABLE tsa_index_probe AS\nSELECT n AS id, 'book-' || lpad(n::text,5,'0') AS slug, (n % 4) AS priority\nFROM generate_series(1,15000) AS g(n);\nANALYZE tsa_index_probe;\nEXPLAIN (ANALYZE, BUFFERS)\nSELECT * FROM tsa_index_probe WHERE slug='book-14999';\nCREATE INDEX tsa_probe_slug_idx ON tsa_index_probe(slug);\nANALYZE tsa_index_probe;\nEXPLAIN (ANALYZE, BUFFERS)\nSELECT * FROM tsa_index_probe WHERE slug='book-14999';",
+                "language": "sql"
             },
             {
-                "id": "interpret",
-                "title": "Avoid optimizing a synthetic benchmark",
-                "body": "If query A is 0.1ms and B 0.08ms on a CI runner, noise and cache warmth can dominate. Record hardware, PostgreSQL version, data size, parameters, plan and repeated runs. A plan may improve CPU work while increasing storage/write cost, or behave differently with real correlated data. The learner's task is to form a falsifiable performance hypothesis rather than award a trophy to an index after one execution."
+                "id": "what-to-compare",
+                "title": "Compare evidence, not just execution times",
+                "body": "For each measured plan, record which scan node PostgreSQL used, how many rows it expected, how many rows it actually returned, how many rows were filtered out and which buffer counters appeared. It may use Seq Scan before the index and Index Scan after, but this is a prediction to test, not a guaranteed output. If it chooses a sequential scan even after the index exists, the correct conclusion is that the planner estimated that access path to be cheaper under those conditions. Do not force an index and declare victory from a single measurement.\n\nThe number of selected rows matters: a query matching one in 15,000 rows is very different from a query returning all 15,000. Reading every row may be cheaper than chasing thousands of pointers. Also inspect query shape: selecting a column missing from an index can require heap visits, and accessing table data at random locations can dominate. Think in terms of work saved versus additional work introduced."
+            },
+            {
+                "id": "unique-versus-lookup",
+                "title": "Does an index enforce a business rule?",
+                "body": "PostgreSQL creates an index to support a PRIMARY KEY or UNIQUE constraint. That index helps enforce the rule that a key is unique, even if no query ever uses it for a lookup. By contrast, a normal CREATE INDEX on a book's published_year does not forbid duplicate publication years. It is primarily an access path, not an integrity policy.\n\nDo not add a redundant ordinary index on a primary key just because a colleague asks for 'more indexes'. Inspect existing constraints and indexes first. Keep key and integrity decisions separate from performance tuning: uniqueness reflects domain meaning, whereas a non-unique index should respond to a query workload. The next lesson covers multicolumn indexes and why index column order and write overhead matter."
             }
         ],
         "assignment": [
-            "Execute explain_join.sql and annotate source scans, join and aggregate nodes.",
-            "Explain planner cost versus actual time and why loops × rows per loop matters.",
-            "Produce an EXPLAIN (non-executing) plan for a different read query.",
-            "Identify one realistic row-estimation hypothesis and design a safe experiment to test it."
+            "Explain in your own words why an index differs from the table rows it helps find.",
+            "Run the five-row Steward EXPLAIN without treating the result as a performance benchmark.",
+            "Run index_lab.sql inside one psql connection and record pre/post scan nodes, row counts and buffer activity.",
+            "Explain why the same query result can be produced by two different plans.",
+            "Predict whether a lookup returning 14,000 of 15,000 rows is likely to justify the same index path."
         ],
         "resources": [
             {
-                "title": "PostgreSQL — Using EXPLAIN",
-                "url": "https://www.postgresql.org/docs/current/using-explain.html",
+                "title": "PostgreSQL 17 — Introduction to Indexes",
+                "url": "https://www.postgresql.org/docs/17/indexes-intro.html",
                 "kind": "reference",
-                "purpose": "Planner outputs, timings and scan strategies"
+                "purpose": "Explain what an index stores and why it improves some queries."
             },
             {
-                "title": "CMU 15-445 Fall 2025 — Indexes, Query Planning and Execution",
-                "url": "https://15445.courses.cs.cmu.edu/fall2025/schedule.html",
-                "kind": "course",
-                "read": "Lectures #08–#09 and #13–#15, optional deep dive",
-                "purpose": "Compare B-tree internals and physical query algorithms with declarative SQL; full recordings not claimed watched"
+                "title": "PostgreSQL 17 — Index-Only Scans",
+                "url": "https://www.postgresql.org/docs/17/indexes-index-only-scans.html",
+                "kind": "reference",
+                "purpose": "Learn why covered columns do not eliminate all visibility checks."
+            },
+            {
+                "title": "PostgreSQL 17 — Using EXPLAIN",
+                "url": "https://www.postgresql.org/docs/17/using-explain.html",
+                "kind": "reference",
+                "purpose": "Interpret physical scan choices and avoid misleading timing claims."
             }
         ],
-        "practiceObjective": "Distinguish estimates from measured rows, loops and buffers.",
+        "practiceObjective": "Measure whether a simple lookup index changes the work of one selective query.",
         "practiceInstructions": [
-            "Execute explain_join.sql and annotate source scans, join and aggregate nodes.",
-            "Explain planner cost versus actual time and why loops × rows per loop matters.",
-            "Produce an EXPLAIN (non-executing) plan for a different read query.",
-            "Identify one realistic row-estimation hypothesis and design a safe experiment to test it."
+            "Execute the 15,000-row temporary catalogue script and compare measured plans before and after an index.",
+            "Record actual result, scan node, observed row counts and memory/buffer counters.",
+            "Use the tiny Steward fixture to demonstrate why data scale affects plan choice.",
+            "Justify whether a real Steward slug lookup needs another index given any existing UNIQUE rule."
         ],
-        "knowledgeCheck": "What is the difference between EXPLAIN and EXPLAIN ANALYZE? Why is cost not latency? What makes a plan decision credible if a query has a small dataset?",
-        "warning": "Only execute changing SQL in a dedicated disposable PostgreSQL learning database. Predict the resulting rows and constraints before running a statement, and do not treat a five-row fixture as representative performance evidence."
+        "knowledgeCheck": "Why does PostgreSQL sometimes prefer Seq Scan even when an index exists? Does a normal index make values unique? Why can Index Scan still need table rows, and what does Index Only Scan require?",
+        "warning": "An index changes data structures, not SQL meaning. Do not promise a speed improvement based on one synthetic run, and never alter production indexes to satisfy a teaching exercise.",
+        "readingTitle": "Understand simple PostgreSQL indexes",
+        "practiceTitle": "Compare a selective lookup with and without an index",
+        "checkTitle": "Check index mechanisms",
+        "practiceScenario": "Learn using a disposable 15,000-book catalogue, then evaluate the existing Steward key indexes."
+    },
+    {
+        "id": "postgresql-composite-indexes",
+        "title": "Multicolumn Indexes and Their Trade-offs",
+        "introduction": "A single-column index helps some lookups, but real queries often filter or sort by several columns. A multicolumn B-tree indexes combinations of values in a chosen order. The most important skill is to predict which search patterns benefit from the index and which still require scanning many entries. We will use an independent 4,000-book scratch table before proposing any index for Steward.",
+        "outcomes": [
+            "Explain how a B-tree on (shelf_id, priority) is ordered and why column order matters.",
+            "Compare a two-column equality lookup with one using only the second index column.",
+            "Read query plans without assuming every eligible predicate produces Index Scan.",
+            "Explain additional storage/write cost and distinguish a partial or covering index from a multicolumn key."
+        ],
+        "sections": [
+            {
+                "id": "ordered-pairs",
+                "title": "How does a two-column B-tree sort its entries?",
+                "body": "An index on (shelf_id, priority) is ordered first by shelf_id. Within each shelf group, entries are ordered by priority. Think of a printed catalogue organized by shelf number, then by urgency. Looking for 'shelf 3, priority 7' identifies a narrow range of the sorted entries. Looking for 'priority 7 across every shelf' does not share that left-to-right narrowing in the same simple way.\n\nThis is the leading-column principle for PostgreSQL 17 B-trees: equality constraints on leftmost columns usually let the engine bound a smaller part of the index. Constraints on later columns can still be checked, and the planner can choose alternative strategies, but they need not eliminate scanning entries for other leading-key values. The rule is about how data is sorted, not a ban on every non-leading predicate.\n\nA B-tree on (priority, shelf_id) would produce a different ordering and could serve a different workload better. Neither order is universally best."
+            },
+            {
+                "id": "build-pairs",
+                "title": "Create a scratch dataset with predictable pairs",
+                "body": "The SQL block below makes 4,000 temporary rows. Each row gets a shelf_id from 0 to 9 and priority from 0 to 9. Because priority derives from a different part of the generated integer, each shelf has a mixture of priority values; the exercise is not secretly making priority a function of shelf alone. We create one multicolumn B-tree, then use two SELECT queries with EXPLAIN (ANALYZE, BUFFERS).\n\nOne predicate specifies BOTH shelf_id=3 and priority=7. The other specifies only priority=7. Before running, predict the counts: there are 40 matches for the combined condition and 400 for priority alone. The final SELECT also verifies that the index consumes storage. Execution times, node choice and buffer counts may vary.",
+                "caption": "index_composite_lab.sql — compare leading and non-leading predicates on 4000 books",
+                "code": "CREATE TEMP TABLE tsa_index_order_probe AS\nSELECT n AS id, (n % 10) AS shelf_id, ((n / 10) % 10) AS priority,\n       'book-' || n::text AS title\nFROM generate_series(1,4000) AS g(n);\nANALYZE tsa_index_order_probe;\nCREATE INDEX tsa_probe_shelf_priority_idx ON tsa_index_order_probe(shelf_id, priority);\nANALYZE tsa_index_order_probe;\nEXPLAIN (ANALYZE, BUFFERS)\nSELECT id FROM tsa_index_order_probe WHERE shelf_id = 3 AND priority = 7;\nEXPLAIN (ANALYZE, BUFFERS)\nSELECT id FROM tsa_index_order_probe WHERE priority = 7;\nSELECT (SELECT count(*) FROM tsa_index_order_probe WHERE shelf_id=3 AND priority=7) AS both_columns,\n       (SELECT count(*) FROM tsa_index_order_probe WHERE priority=7) AS second_column,\n       pg_relation_size('tsa_probe_shelf_priority_idx'::regclass) > 0 AS index_has_storage;",
+                "output": "both_columns = 40; second_column = 400; index_has_storage = true. Plan algorithms vary.",
+                "language": "sql"
+            },
+            {
+                "id": "comparing-plans",
+                "title": "Read the plans and explain what they do",
+                "body": "Do not simply circle 'Index Scan' as a success. Find the plan line that describes row access for each query, any Index Cond and Filter lines, the estimated rows and actual rows, and the work reported by BUFFERS. If an Index Scan is used, determine which predicates can bound the index search and which are checked afterward. If PostgreSQL uses Seq Scan, ask whether the table is small and how many rows qualify; the optimizer is free to choose the estimated cheapest path.\n\nNotice that both queries can still return correct answers even if one plan scans more data. The index cannot make a logically wrong WHERE predicate correct. A composite index designed for one access pattern may be less effective for another query, which is why workload analysis must precede index design."
+            },
+            {
+                "id": "partial-and-covering",
+                "title": "How are partial and covering indexes different?",
+                "body": "A partial index includes only rows meeting a condition specified when the index is created. For example, an index over active loans could omit already-closed loans if the application's frequent queries consistently include that same predicate. The planner must be able to reason that the query matches the index predicate; a partial index is not automatically applicable to every query.\n\nA covering index can use INCLUDE columns that are stored for return but are not part of the index's key search ordering. That can help index-only scans for some queries, subject to PostgreSQL's visibility rules and current row versions. Included columns enlarge index entries and can raise write costs. A multicolumn key and INCLUDE are different design decisions.\n\nWe do not implement either extension in this introductory lab: first understand the two-key ordering and measure a real need before adding complexity."
+            },
+            {
+                "id": "maintenance-cost",
+                "title": "Why not index every column?",
+                "body": "Each additional index occupies storage. INSERT must update relevant indexes, changes to indexed values require index maintenance, and cleanup of dead index entries adds background work. More indexes can also increase the effort required to choose and maintain a good plan. A separate B-tree on every column is not an automatic substitute for a carefully chosen composite index.\n\nBefore approving one on a production system, identify a real query, representative parameter values and the data distribution. Then document which rows the query needs, the observed plan, whether existing unique or foreign-key-related indexes already help, and what write/storage overhead the new index introduces. Measure before and after under comparable conditions. For an application with high write throughput, a small read win may not justify expensive extra indexes."
+            },
+            {
+                "id": "transfer",
+                "title": "Choose an index for a new query",
+                "body": "Consider two frequent library queries. Query A lists recent loans for one borrower ordered by checkout time. Query B lists every late loan regardless of borrower. An index beginning with borrower_id could help A narrow the search; it does not necessarily help B in the same way. An index on overdue status or due date might better serve B, depending on data distribution and query shape.\n\nDo not answer with the longest possible index. Write both SQL shapes, choose one candidate index for one workload and explain which other workload it is not optimized for. State a measurement that could falsify your choice. A single query does not justify an index until you know its frequency, latency requirements and surrounding write workload."
+            }
+        ],
+        "assignment": [
+            "Draw how (shelf_id, priority) orders keys and explain why shelf_id=3 differs from priority=7.",
+            "Run the published 4,000-row scratch lab; confirm the final counts 40 and 400 and nonzero index storage.",
+            "Compare actual plans without requiring an Index Scan to appear.",
+            "Explain when you would choose a partial index or INCLUDE instead of another key column.",
+            "Propose one Steward index only after stating the exact query and how you would measure its benefit and write cost."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Multicolumn Indexes",
+                "url": "https://www.postgresql.org/docs/17/indexes-multicolumn.html",
+                "kind": "reference",
+                "purpose": "Authoritative PostgreSQL 17 leading-column B-tree rules and trade-offs."
+            },
+            {
+                "title": "PostgreSQL 17 — Partial Indexes",
+                "url": "https://www.postgresql.org/docs/17/indexes-partial.html",
+                "kind": "reference",
+                "purpose": "When predicates define the subset of rows worth indexing."
+            },
+            {
+                "title": "PostgreSQL 17 — Index-Only Scans",
+                "url": "https://www.postgresql.org/docs/17/indexes-index-only-scans.html",
+                "kind": "reference",
+                "purpose": "Distinguish covering indexes and included payload columns from visibility guarantees."
+            },
+            {
+                "title": "PostgreSQL 17 — Indexes and ORDER BY",
+                "url": "https://www.postgresql.org/docs/17/indexes-ordering.html",
+                "kind": "reference",
+                "purpose": "Learn how ordered B-trees may support sorting queries."
+            }
+        ],
+        "practiceObjective": "Evaluate a two-column B-tree against two different predicate shapes, with explicit write/storage costs.",
+        "practiceInstructions": [
+            "Run the published 4,000-row lab and confirm both stable counts.",
+            "Explain which WHERE condition can exploit the leading column and why.",
+            "Annotate the selected plans and note any sequential scans without calling them failures.",
+            "Write a measured decision for one realistic Steward query with a composite predicate."
+        ],
+        "knowledgeCheck": "Why can (shelf_id, priority) be different from (priority, shelf_id)? Why is an index on both columns not necessarily efficient for priority alone? What does INCLUDE mean and why does an index have maintenance costs?",
+        "warning": "Use only a disposable session for CREATE INDEX experiments. A before/after synthetic demonstration is not production performance proof.",
+        "readingTitle": "Learn how multicolumn indexes are ordered",
+        "practiceTitle": "Compare composite-index query patterns",
+        "checkTitle": "Check index design trade-offs",
+        "practiceScenario": "Use scratch book data to understand index ordering, then evaluate one applied Steward query."
     },
     {
         "id": "query-performance",
