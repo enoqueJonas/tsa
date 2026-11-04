@@ -76,18 +76,18 @@ const practices: Record<string, PracticeSpec> = {
         completionCriteria: ["The beginner experiment is independently runnable without Django.", "Django authorization uses the real Membership.Role.MAINTAINER value.", "Viewer, cross-Team and inactive denials are distinct and proved against the database.", "No role is introduced in the example without a corresponding model change.", "A readability change is not mistaken for a permission-policy change."]
     },
     "software-craft-separation-of-concerns": {
-        objective: "Untangle one Steward request path by moving exactly one responsibility to the boundary that should own it.",
-        scenario: "A single API path currently mixes HTTP representation, access policy, domain rules and persistence. Changes are risky because nobody can tell which concern owns which decision.",
+        objective: "Prove why request parsing, permission, domain mutation and response formatting deserve distinct boundaries.",
+        scenario: "A small library checkout currently handles four separate concerns in one function. Before refactoring a real Steward endpoint, learn the boundaries from a complete executable pure-Python example with five observable responses.",
         instructions: [
-            "Trace one write request from DRF entry point to database and label representation, authentication/authorization, domain-rule and persistence responsibilities.",
-            "Identify the single most harmful responsibility leak and explain why it makes change harder.",
-            "Move only that responsibility to a more appropriate boundary and draw the dependency direction before/after.", "Use SOLID as diagnostic questions against the path, but reject any interface/class extraction that lacks a concrete variation or responsibility.",
-            "Keep database constraints as integrity backstops where applicable rather than duplicating or removing them casually.",
-            "Run focused behavior checks and inspect the resulting call path.",
-            "Explain why at least one other mixed concern is acceptable to leave in place for now."
+            "Save the source-published separation_lab.py code and run it with python3. Verify the 200, 400, 403, 404 and 409 cases, including identical before/after availability state.",
+            "Identify input validation, current member authorization, book lookup/availability, state change and response formatting inside old_checkout.",
+            "Inspect the extracted functions parse_request, member_can_borrow, borrow_book and response. Explain what each owns and how new_checkout orchestrates them.",
+            "Deliberately replace member_can_borrow with bool(members), show that the unauthorized-member case fails, then restore the correct check and rerun all five cases.",
+            "State why the sample is not a real network server, database, transaction or production-ready authorization solution.",
+            "Only after the independent example, locate one actual Steward write request and separate one misplaced concern while preserving its real positive and negative behavior."
         ],
-        deliverables: ["Responsibility map", "Focused boundary refactor", "Behavior evidence", "Boundary decision note"],
-        completionCriteria: ["One reason-to-change is clearer after the refactor.", "The new boundary owns a real responsibility.", "The request still behaves correctly.", "You demonstrate restraint instead of layering for its own sake."]
+        deliverables: ["Five-case source-script output", "Before/after responsibility map", "Failing permission mutant and corrected rerun", "Limits of the Python simulation", "Optional focused Steward change with behavior evidence"],
+        completionCriteria: ["All five cases execute without any assumed Steward files or Django setup.", "The authorization check uses the actual requesting member rather than membership-list existence.", "A refactor preserves response codes and state changes.", "No needless class, framework, transaction or remote dependency is introduced.", "Later Steward transfer is clearly distinguished from the mechanism exercise."]
     },
     "software-craft-refactoring": {
         objective: "Refactor one concrete Steward hotspot using a safety net and small reversible steps.",

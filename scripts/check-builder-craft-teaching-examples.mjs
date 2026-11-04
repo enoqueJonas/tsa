@@ -7,6 +7,7 @@ import {spawnSync} from "node:child_process";
 const source=fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-deep.ts","utf8");
 const injected=fs.readFileSync("packages/runtime-kernel/src/paths/internal-dependency-management.ts","utf8");
 const cases=[
+  ["Separation of Concerns — five executable before-and-after cases", "Separation lab: 5 responses and stored state agree"],
   ["Readable Code — equivalent pure-Python policy and negative cases", "readable policy: three cases preserved"],
   ["Refactoring — executable behavior-preservation check", "refactor contracts preserved: 3"],
   ["Testing — executable unittest authorization boundary", "Ran 2 tests"],
@@ -37,7 +38,23 @@ for(const [caption,expected,origin] of cases){
     assert.match(r.stdout,/invalid DJANGO_DEBUG must be true or false/);
   }
 }
-console.log("Builder craft examples passed: 9 source-extracted Python labs and their negative boundaries.");
+
+// Mutation proof: a policy based on "some members exist" instead of this
+// member's identity must fail the published authorization/state assertions.
+const separationCaption = '"caption": "Separation of Concerns — five executable before-and-after cases"';
+const separationPos = source.indexOf(separationCaption);
+assert.ok(separationPos >= 0,"Missing actual Separation of Concerns learner code");
+const separationMatch = source.slice(separationPos,separationPos+20000).match(/"code":\s*("(?:\\.|[^"\\])*")/);
+assert.ok(separationMatch,"Cannot extract separation exercise");
+const separated = JSON.parse(separationMatch[1]);
+assert.match(separated,/return member_id in members/,"The correct policy must compare the specific actor");
+const mutant = separated.replace("return member_id in members", "return bool(members)");
+const negative = spawnSync("python3",["-c",mutant],{encoding:"utf8",timeout:10000});
+assert.ifError(negative.error);
+assert.notEqual(negative.status,0,"Broken any-membership policy unexpectedly passed the lesson's negative checks");
+assert.match(negative.stderr,/AssertionError/,"The mutant must be rejected by a real assertion");
+
+console.log("Builder craft examples passed: 10 source-extracted Python labs and their negative boundaries.");
 
 const publishedPractice=fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-quality.ts","utf8");
 assert.ok(!source.includes("role__in="), "Readable Code must not use an invented membership role list");
