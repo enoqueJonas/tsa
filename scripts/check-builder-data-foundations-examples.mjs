@@ -46,7 +46,7 @@ assert.ok(
   persistence > 0 && system > persistence && connection > system &&
   databases > connection && schemas > databases && tables > schemas && rows > tables && temporary > rows &&
   relational > temporary && firstJoins > relational &&
-  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && combineConditions > deletion && nullLogic > combineConditions && sortResults > nullLogic && filtering > sortResults && subqueryBasics > filtering && existsSubqueries > subqueryBasics && appliedSubqueries > existsSubqueries && withBasics > appliedSubqueries && recursiveWith > withBasics && cteLesson > recursiveWith && transactionBasics > cteLesson && savepoints > transactionBasics && transactionCase > savepoints && isolation > transactionCase && readiness > isolation && constraintsBasics > readiness && foreignKeyDeletes > constraintsBasics && constraints > foreignKeyDeletes,
+  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && combineConditions > deletion && nullLogic > combineConditions && sortResults > nullLogic && filtering > sortResults && subqueryBasics > filtering && existsSubqueries > subqueryBasics && appliedSubqueries > existsSubqueries && withBasics > appliedSubqueries && recursiveWith > withBasics && cteLesson > recursiveWith && transactionBasics > cteLesson && savepoints > transactionBasics && transactionCase > savepoints && isolation > transactionCase && readiness > isolation && constraintsBasics > readiness && foreignKeyDeletes > constraintsBasics && constraints > foreignKeyDeletes && queryPlans > constraints && indexes > queryPlans && compositeIndexes > indexes && queryPerformance > compositeIndexes,
   "The learner order must be persistence → DBMS and server → psql → database creation → schemas → table definition → rows → temporary tables → relational model → joins → grouping → applied fixture → UPDATE → DELETE → Boolean filters → NULL → ordering → Steward filtering case"
 );
 assert.doesNotMatch(source, /Two programs, one protocol boundary|Establish prerequisites without inventing credentials/);
@@ -169,6 +169,13 @@ try {
   const cascadingDelete = publishedCode("fk_delete_cascade.sql — child removed with deleted parent");
   assert.match(cascadingDelete, /ON DELETE CASCADE/);
   assert.ok(source.includes('"title": "Steward Practice: Enforce Data Constraints"'));
+  const explainSql = publishedCode("library_explain_analyze.sql — estimate, measure and verify a book query");
+  assert.match(explainSql, /EXPLAIN \\(ANALYZE, BUFFERS\\)/, "Query-plan lesson must execute a measured SELECT");
+  const indexSql = publishedCode("index_lab.sql — compare actual physical plans on 15000 temporary rows");
+  assert.match(indexSql, /CREATE INDEX tsa_probe_slug_idx/, "Index lesson must compare before and after a real index");
+  const compositeSql = publishedCode("index_composite_lab.sql — compare leading and non-leading predicates on 4000 books");
+  assert.match(compositeSql, /ON tsa_index_order_probe\\(shelf_id, priority\\)/);
+  assert.match(compositeSql, /WHERE priority = 7/, "Must contrast non-leading predicate");
   const sql = publishedCode("first_session.sql — run only in a disposable PostgreSQL lab database");
   for (const statement of ["CREATE TEMP TABLE", "INSERT INTO tsa_session_probe", "ORDER BY id", "SELECT count(*)"]) {
     assert.ok(sql.includes(statement), `Missing SQL teaching concept: ${statement}`);
