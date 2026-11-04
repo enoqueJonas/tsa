@@ -742,7 +742,7 @@ export const softwareCraftDeepLessons: Lesson[] = [
         "What does pip check miss about application behavior?",
         "When is internal-package extraction justified?"
 ],
-        [{"title":"Python Packaging User Guide — Dependency Management","url":"https://packaging.python.org/en/latest/tutorials/managing-dependencies/"},{"title":"Django — Supported Versions","url":"https://docs.djangoproject.com/en/dev/internals/release-process/"}],
+        [{"title":"Python Packaging User Guide — Dependency specifiers","url":"https://packaging.python.org/en/latest/specifications/dependency-specifiers/"},{"title":"pip — User Guide","url":"https://pip.pypa.io/en/stable/user_guide/"}],
     ),
     lesson(
         "Configuration",
