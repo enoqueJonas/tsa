@@ -4395,6 +4395,15 @@ const specs: DataLessonSpec[] = [
                 "body": "A database migration often creates or alters tables. A typical API process only reads and updates domain records. If the API runs as a superuser or the owner of all tables, a bug or SQL injection vulnerability has a much larger destructive surface. A dedicated runtime role with narrowly granted rights can limit the damage.\n\nThat does not mean 'read-only' is automatically safe: SELECT can still expose confidential records. PostgreSQL grants control table and column access at different levels, while row-level security requires additional explicit policies and careful testing. The principle is to state which operations the component truly needs, test what it can do and verify what it cannot do.\n\nWhen authentication fails, granting table rights will not repair it. When authorization fails, changing the host or password is the wrong first remedy."
             },
             {
+                "id": "run-actual-denial",
+                "title": "Prove that SELECT succeeds but INSERT is denied",
+                "body": "A permission inspection such as has_table_privilege(...) is useful, but the strongest beginner evidence is an actual authorized operation followed by an actual rejected one. In our private disposable PostgreSQL container, the bootstrap role can assume the NOLOGIN group role created above using SET ROLE. PostgreSQL checks subsequent SQL using that role's privileges. This requires the session's login role to have SET permission for the target role (a lab superuser can assume it); an ordinary training role may be forbidden to do so, which should be reported rather than bypassed.\n\nSave the script below as readonly_denial.sql and run it in ONE psql process against tsa_library, using `psql -X -v ON_ERROR_STOP=0 -d tsa_library -f readonly_denial.sql`. We use ON_ERROR_STOP=0 here deliberately: we expect the INSERT to fail, and still want the script to RESET ROLE and verify the unchanged book count. Do not use ON_ERROR_STOP=0 for normal migrations or batch loads, where ignored errors would be dangerous.\n\nExpected: the role reads two existing books; PostgreSQL rejects INSERT with 'permission denied for table books'; RESET ROLE restores the prior role; the final count remains two. This is a real negative authorization test, not a guessed error. If the lab contains additional books, verify the actual starting count instead of forcing it to two. The script does not grant the group role LOGIN and it does not change production permissions.",
+                "caption": "readonly_denial.sql — demonstrate allowed SELECT and rejected INSERT",
+                "code": "SET ROLE tsa_books_readonly;\nSELECT current_user, count(*) AS readable_books FROM library.books;\nINSERT INTO library.books (title, author, published_year)\nVALUES ('Blocked Book', 'No Author', 2001);\nRESET ROLE;\nSELECT count(*) AS books_after_rejection FROM library.books;",
+                "language": "sql",
+                "output": "tsa_books_readonly | 2\nERROR: permission denied for table books\n2 (unchanged after RESET ROLE)"
+            },
+            {
                 "id": "negative-case",
                 "title": "Distinguish denied privileges from a missing table",
                 "body": "A nonexistent relation produces a name-lookup error; an existing table that a role cannot read produces a permission error. With a genuine restricted training role, test SELECT and an INSERT against disposable data and capture the expected outcomes. Do not perform this experiment on shared business tables and do not assume that a simulated privilege-function result proves a failed SQL command was executed.\n\nA DBA can inspect permissions with \\dp library.books and roles with \\du. Effective rights may also come from inherited membership or ownership. Record the relevant role, database, schema, table and requested action in every permission-failure report. The next lesson moves from authorization to data recoverability: preserving and restoring a disposable database, not just copying SQL scripts."
@@ -4406,7 +4415,8 @@ const specs: DataLessonSpec[] = [
             "Run the read-only permission-inspection query and interpret the result for your assigned role.",
             "On an authorized isolated lab, create NOLOGIN read-only group role and verify SELECT true, INSERT false; otherwise document a permission blocker.",
             "Draft the minimum rights a read-only book-listing application requires and name two rights it should not have.",
-            "Describe how a runtime role differs from the role that applies schema migrations."
+            "Describe how a runtime role differs from the role that applies schema migrations.",
+            "In a private authorized lab, execute readonly_denial.sql and show an actual permission error plus unchanged row count; otherwise document why SET ROLE is unavailable."
         ],
         "resources": [
             {
@@ -4426,6 +4436,12 @@ const specs: DataLessonSpec[] = [
                 "url": "https://www.postgresql.org/docs/17/user-manag.html",
                 "kind": "reference",
                 "purpose": "Learn LOGIN, NOLOGIN and role membership."
+            },
+            {
+                "title": "PostgreSQL 17 — SET ROLE",
+                "url": "https://www.postgresql.org/docs/17/sql-set-role.html",
+                "kind": "reference",
+                "purpose": "Show the role-switching authorization rules and how to restore the session role."
             }
         ],
         "practiceObjective": "Inspect and, where authorized, demonstrate a read-only role's permitted and denied operations.",
@@ -4433,9 +4449,10 @@ const specs: DataLessonSpec[] = [
             "Explain the minimum permissions for the library and Steward read-only queries.",
             "Run the safe privilege SQL using the current connection.",
             "Only in an isolated administrator-controlled lab, create a NOLOGIN read-only role and verify effective SELECT/INSERT flags.",
-            "Document how an application would authenticate with its own LOGIN role without sharing a superuser account."
+            "Document how an application would authenticate with its own LOGIN role without sharing a superuser account.",
+            "When authorized to SET ROLE in a disposable server, execute the real denial script and verify both the SELECT and the failed INSERT."
         ],
-        "knowledgeCheck": "Does database CONNECT grant table SELECT? Does schema USAGE let you CREATE tables? Can a NOLOGIN role directly connect? Why should a web API not own the schema it uses?",
+        "knowledgeCheck": "Does database CONNECT grant table SELECT? Does schema USAGE let you CREATE tables? Can a NOLOGIN role directly connect? Why should a web API not own the schema it uses? Why is testing a failed INSERT stronger evidence than merely querying a grant flag? Why is ON_ERROR_STOP=0 used here but unsafe for routine migrations?",
         "readingTitle": "Understand PostgreSQL roles and privileges",
         "practiceTitle": "Prove the rights of a read-only role",
         "checkTitle": "Check permission boundaries",
