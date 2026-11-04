@@ -104,3 +104,15 @@ These tasks are specifications for independent learner assessment, **not evidenc
 - Add a real source-extracted Bash regression suite which creates both scratch repositories, verifies only the intended file was committed, detects the defect with `git bisect`, and confirms branch restoration. It deliberately does not run arbitrary Git cleanup on the learner's actual repository.
 
 **Evidence limits:** Full matching-head CI and rendered browser checks are separate gates. This source correction does not establish that a beginner can use the material independently. **Learner validated: NO.** Continue the remaining Software Craft lessons, their resolved practicals and actual learner transfer before marking the whole module complete.
+
+## 2026-11-04 — Branch and merge-conflict learner-order repair
+
+**Finding:** Software Craft's Branching and Collaboration lesson explained merge strategies but assumed a working Steward branch or remote PR and did not provide an independent executable branch or conflict experiment. The one existing code block only inspected an arbitrary repository, and conflict resolution remained purely conceptual.
+
+**Teaching changes:**
+- Rebuild **Branching and Collaboration** using a fresh `tsa-git-branch-lab` with one base commit, one feature commit, a three-dot diff against the merge base, a deliberately no-fast-forward merge with two parents, and safe local branch deletion. Pull requests and squash/rebase are compared without making an external provider or shared history a prerequisite.
+- Split **Resolve a Merge Conflict** into its own lesson. A scratch `tsa-git-conflict-lab` creates truly conflicting same-line edits to greeting.txt, captures the expected merge refusal and markers, resolves the explicit Portuguese-default/French-fallback requirement, and commits a two-parent merge.
+- Revise both published practical overrides to match the actual lab commands, expected evidence and domain-compatibility checks. No real Steward repository is modified by the introductory lessons.
+- Add source-derived Bash tests verifying branch state, merge ancestry, intentional conflict, clean resolution, absence of markers, final values and restored clean worktree. Keep the earlier Git staging and bisect regression tests intact.
+
+**Evidence limits:** Passing shell CI would prove reproducible Git operations, not that an uncoached learner independently knows when to select merge/squash/rebase or resolve a real product conflict. Human rendered review and transfer remain OPEN. Do not call the entire Builder school learner-validated.
