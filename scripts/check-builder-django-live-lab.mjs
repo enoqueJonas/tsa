@@ -10,7 +10,7 @@ function publishedPractice(id) {
   const key='  "django-and-api-engineering-'+id+'": {';
   const start=publishedPracticeSource.indexOf(key);
   assert.ok(start>=0,'Django practical must have explicit learner-order override: '+id);
-  const end=publishedPracticeSource.indexOf('\\n  "django-and-api-engineering-',start+key.length);
+  const end=publishedPracticeSource.indexOf('\n  "django-and-api-engineering-',start+key.length);
   return publishedPracticeSource.slice(start,end<0?publishedPracticeSource.length:end);
 }
 for (const id of ["django-from-zero-a-running-http-endpoint","django-foundations","django-rest-framework",
@@ -25,7 +25,7 @@ for(const id of ["django-from-zero-a-running-http-endpoint","django-foundations"
   assert.doesNotMatch(practice,/Create Steward's first Django application|Continue the same Steward codebase/,
     'Django scratch primer cannot require an untaught Steward application');
 }
-assert.match(publishedPractice("serializers-and-representation"),/serializer_lab\\.py/,
+assert.match(publishedPractice("serializers-and-representation"),/serializer_lab\.py/,
   "Published serializer practice must start from the standalone book experiment");
 assert.match(publishedPractice("schema-evolution-with-django-migrations"),/historical-model/,
   "Migration practice must explicitly teach historical models");
