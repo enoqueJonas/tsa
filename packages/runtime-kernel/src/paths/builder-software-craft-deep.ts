@@ -30,7 +30,8 @@ const craftTeaching: Record<string, { outcomes: string[]; practical: string }> =
   "Review a Code Change": { outcomes: ["Review intended behavior and access rules before style.", "Detect a cross-customer leak with a negative test and verify the fix.", "Classify blockers, requirement questions and optional suggestions by consequence."], practical: "Review and retest an unsafe patch" },
   "Managing Technical Debt": { outcomes: ["Separate a current defect from future maintenance cost.", "Record concrete evidence, affected change, owner and revisit trigger.", "Choose repayment or deliberate deferral based on real risk."], practical: "Make an evidence-based debt decision" },
   "Useful Logging": { outcomes: ["Select events that answer operational questions.", "Capture stable context without leaking credentials.", "Test expected, rejected and unexpected outcomes with useful log levels."], practical: "Capture safe, diagnostic events" },
-  "Technical Documentation": { outcomes: ["Choose a document form suited to the reader's job.", "Write reproducible setup and verification instructions.", "Record decisions and check documentation for drift."], practical: "Write and verify developer documentation" },
+  "Write a README Someone Can Follow": { outcomes: ["Explain what a new engineer needs before running a command.", "Execute a documented successful and rejected command in a controlled environment.", "Recognize what simple documentation verification cannot prove."], practical: "Write and test runnable README commands" },
+  "Technical Documentation": { outcomes: ["Choose README, API docs, ADR and runbook for the correct readers.", "Verify actual setup, API and database claims before promising a handoff.", "Document consequential decisions and safe diagnostic stopping points."], practical: "Document and verify the Steward handoff" },
   "Designing Errors": { outcomes: ["Distinguish expected domain rejections from programming failures.", "Map errors to stable API contracts.", "Avoid logging or returning sensitive implementation details."], practical: "Design and test meaningful errors" },
   "Performance Awareness": { outcomes: ["State a measurable performance hypothesis and baseline.", "Separate SQL execution, HTTP latency and tail behavior.", "Recommend a change only when evidence supports it."], practical: "Measure before optimizing" },
 };
@@ -1213,18 +1214,116 @@ export const softwareCraftDeepLessons: Lesson[] = [
         [pythonLogging],
     ),
     lesson(
-        "Technical Documentation",
-        "Documentation should reduce the amount of private knowledge required to operate or change a system. Good documentation is executable enough to be checked against reality and scoped enough that engineers can keep it current.",
+        "Write a README Someone Can Follow",
+        "A good README lets another engineer start from an unfamiliar repository and accomplish a real task without guessing. Before documenting a Django server, learn to write and verify instructions for a tiny Python program. This exercise creates all its own files in a temporary folder, including a README, and executes the commands it documents. No external service, database or Steward project is needed.",
         [
-            { title: "Document for a reader with a job to do", paragraphs: ["A new engineer needs to know what Steward is, how to run it, how its major domain concepts relate, how authentication works, how to exercise the API and where important decisions live. A reviewer needs different detail than an API consumer, so avoid one giant document that serves nobody well.", "Prefer commands, examples and links to canonical sources over vague prose such as 'configure the database normally.'"] },
-            { title: "Documentation can drift", paragraphs: ["Treat setup steps and API examples as claims that can become false. Where possible, generate API schemas from runtime definitions, execute documented commands in CI later, and review documentation in the same PR as behavior changes."] },
-            { title: "Decision records preserve why", paragraphs: ["For a consequential architectural/engineering decision, a short ADR-style record can capture context, decision, alternatives/trade-offs and consequences. It should not document every trivial choice. The value is preserving why a future engineer encounters a constraint or dependency that otherwise looks arbitrary." ] },
-            { title: "Runbooks and design docs serve different jobs", paragraphs: ["A README helps someone orient/run the repository; API/OpenAPI docs serve consumers; a decision record explains a durable choice; a runbook gives operators concrete diagnosis/recovery steps. Avoid duplicating the same mutable fact across all of them—link to a canonical source where possible." ] },
-            {"title":"Turn documented setup into a verified precondition contract","paragraphs":["A useful README must name the interpreter, package installation command, required nonsecret variables, how the database is provisioned, migration state, the command to start the app, one working request and a negative request. A sentence 'install dependencies and start' is not operational documentation. The example below turns a small text checklist into an executable documentation-lint test. This does not actually provision PostgreSQL or execute the documented commands: those require a second integration test in a disposable environment.","For Steward specifically the README must link the canonical product spec, distinguish `tsa_steward_lab` (SQL teaching fixture) from `tsa_steward_django_lab` (Django-managed migrations), and warn that the Payroll fixture is intentionally not production-ready. An ADR should explain *why* the two DBs were separated rather than copying configuration literals across docs."],"code":{"language":"python","caption":"Documentation — executable setup instructions completeness gate","code":"required = {'python', 'postgresql', 'migrate', 'runserver', 'curl', 'authentication', 'authorization'}\nreadme = '''Python environment; PostgreSQL lab;\nrun python manage.py migrate, then python manage.py runserver;\ncurl GET /health/; authentication and authorization guide.'''\nmissing = sorted(item for item in required if item not in readme.lower())\nassert not missing, missing\nbroken = 'install and run as usual'\nassert any(item not in broken for item in required)\nprint('documentation checklist passed; vague instructions rejected')"}},
-        ],
-        "Make Steward understandable to an engineer who has not followed its development history.",
-        ["Write or revise the project overview and domain summary.", "Document clean local setup from clone to first successful API request.", "Link to OpenAPI rather than duplicating the entire contract manually.", "Add one architecture or engineering decision that explains why, not just what.", "Have the documentation identify known limitations and the next TSA stage."],
-        ["What private knowledge should project documentation eliminate?", "Why are concrete commands valuable?", "How can documentation drift be reduced?"],
+        {
+                "title": "A README has a reader and a job",
+                "paragraphs": [
+                        "A new engineer asks different questions from an API client or reviewer. A README for a small application should explain what the project does, prerequisites, how to create an environment, how to run it, one working example and what a normal failure looks like. If a step requires credentials, data or a running server, say so explicitly; never invent those details.",
+                        "Words such as 'configure normally' hide prerequisites. A usable instruction tells the reader where to run the command, which tool version it expects, which output confirms success and what to inspect if it fails. The following example deliberately uses no installation step or network access because its Python program requires only the standard library."
+                ]
+        },
+        {
+                "title": "Commands in documentation are claims you can test",
+                "paragraphs": [
+                        "A code fence containing `python app.py --check` claims that a file named app.py exists, that Python can run it, and that it produces a meaningful result. Check the actual exit status and output. A negative command such as `python app.py --unknown` also deserves an expected failure, rather than being treated as a broken setup.",
+                        "A test that merely looks for the words 'python', 'database', 'migrate' and 'curl' can pass when no command is executable. It is a vocabulary check, not a setup test. The first documented example below contains two real runnable commands and verifies their results with subprocess."
+                ]
+        },
+        {
+                "title": "Execute the README instead of searching for keywords",
+                "paragraphs": [
+                        "Save the following as verify_readme.py and run `python verify_readme.py`. It writes app.py and README.md into a temporary scratch folder, extracts the two documented Bash command lines, runs them with the current Python interpreter and checks exact expected outcomes. The first command must succeed and print READY. The second must reject an unknown flag with exit code 2.",
+                        "The harness deliberately accepts only the trusted, locally authored tutorial command pattern before it runs anything. In a real repository, do not blindly execute arbitrary Markdown from a pull request or external documentation. Review which commands are safe, isolate databases and secrets, and run only the intended test setup."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "Documentation — executable setup instructions completeness gate",
+                        "code": "from pathlib import Path\nfrom tempfile import TemporaryDirectory\nimport re\nimport shlex\nimport subprocess\nimport sys\n\napp_source = \"\"\"import argparse\nparser = argparse.ArgumentParser()\nparser.add_argument(\"--check\", action=\"store_true\")\nargs = parser.parse_args()\nif args.check:\n    print(\"READY\")\n\"\"\"\n\nfence = chr(96) * 3\nwith TemporaryDirectory() as temp:\n    root = Path(temp)\n    (root / \"app.py\").write_text(app_source, encoding=\"utf-8\")\n    readme = (\n        \"# Small Python CLI\\n\"\n        \"Requirement: Python 3.11 or newer. Work in this scratch folder.\\n\\n\"\n        \"Check that the command runs:\\n\"\n        + fence + \"bash\\npython app.py --check\\n\" + fence + \"\\n\\n\"\n        \"Expected output: READY and exit status 0.\\n\\n\"\n        \"Try an invalid option:\\n\"\n        + fence + \"bash\\npython app.py --unknown\\n\" + fence + \"\\n\\n\"\n        \"Expected: exit status 2 with an unrecognized-arguments error.\\n\"\n    )\n    (root / \"README.md\").write_text(readme, encoding=\"utf-8\")\n    fenced = re.findall(re.escape(fence) + r\"bash\\n(.*?)\\n\" + re.escape(fence), readme, re.S)\n    commands = [line.strip() for block in fenced for line in block.splitlines() if line.strip()]\n    assert len(commands) == 2\n    for command, expected_exit in zip(commands, (0, 2)):\n        tokens = shlex.split(command)\n        assert tokens[0] == \"python\"  # Only this trusted local tutorial command.\n        result = subprocess.run(\n            [sys.executable, *tokens[1:]],\n            cwd=root,\n            capture_output=True,\n            text=True,\n            check=False,\n        )\n        assert result.returncode == expected_exit, (command, result.stderr)\n        if expected_exit == 0:\n            assert result.stdout.strip() == \"READY\"\n        else:\n            assert \"unrecognized arguments\" in result.stderr.lower()\n\n    vague = \"Install dependencies and run the application as usual.\"\n    assert not re.findall(re.escape(fence) + r\"bash\\n(.*?)\\n\" + re.escape(fence), vague, re.S)\n    print(\"documented commands executed: 2 (success and expected failure)\")\n    print(\"documentation checklist passed; vague instructions rejected\")"
+                }
+        },
+        {
+                "title": "Recognize what the experiment has not proved",
+                "paragraphs": [
+                        "The experiment verifies that the included toy commands work in the controlled scratch environment. It does not prove another person's operating system has Python installed, that PostgreSQL is accessible, that a Django migration has been applied or that a real API has appropriate authentication. Those claims require a separate integration environment and evidence.",
+                        "For an actual Steward README, test prerequisites, database name, migrations, server startup, a working HTTP request and a rejected request in a clean, disposable setup. If an instruction cannot be safely automated, record that limitation and have another engineer follow it manually."
+                ]
+        }
+],
+        "Write and execute two documented setup commands, including a deliberate negative case, rather than treating a list of keywords as working documentation.",
+        [
+        "Write down the reader, prerequisite interpreter and expected success and failure before drafting the README.",
+        "Run the full source-published verify_readme.py example and inspect the expected outputs and exit statuses.",
+        "Deliberately change the documented successful command from `--check` to `--missing`; rerun and prove the documentation verification fails. Restore the correct command.",
+        "Explain why the harness restricts its executed commands instead of blindly running all Markdown code fences.",
+        "State what the small scratch test cannot establish about Django, PostgreSQL, authentication or deployed environments.",
+        "Choose one actual Steward README claim and describe a safe, clean way to test it without relying on undocumented local data."
+],
+        [
+        "Why is the presence of setup keywords not proof of reproducibility?",
+        "What should a reader learn from both a successful and a failed command?",
+        "Why is a clean scratch environment stronger evidence than commands run only on the author's machine?",
+        "Which documentation commands must not be executed automatically without review?"
+],
+        [twelveFactor],
+    ),
+    lesson(
+        "Technical Documentation",
+        "Once you can write setup instructions someone can actually follow, decide what kind of documentation each reader needs. A README, API reference, architecture decision record and operational runbook answer different questions; combining everything into one long page makes facts easy to duplicate and forget. Use actual Steward files and verified behavior only after the independent README exercise.",
+        [
+        {
+                "title": "Choose the document for the job",
+                "paragraphs": [
+                        "A README or getting-started guide explains what the project is and how to run it. API documentation explains endpoints, request/response shapes and authentication for consumers. A design document explains a system's structure; an Architecture Decision Record (ADR) preserves the context and trade-offs behind a consequential choice. A runbook gives an operator a tested, ordered diagnosis or recovery procedure. None is a synonym for the others.",
+                        "A new contributor should not need to read an incident runbook to learn where the application starts. An API consumer should not search a development README for the current JSON contract. Link to a canonical, maintained source where possible instead of copying the same mutable settings across multiple files."
+                ]
+        },
+        {
+                "title": "Document the actual setup rather than an imagined one",
+                "paragraphs": [
+                        "For Steward, identify the real Python and PostgreSQL prerequisites, environment variables, Django project path, database migration command and verified first request. Keep the manually created SQL teaching database separate from the Django-managed training database. An unverified health route or a guessed password is worse than marking a missing instruction as unresolved.",
+                        "List any setup steps that require externally provided access or data; explain how a clean local substitute can be created if the project supports one. Do not claim a command is executable merely because it appears in a Markdown code fence. Re-run the setup against the actual target as part of a controlled handoff."
+                ]
+        },
+        {
+                "title": "Preserve decisions without narrating every edit",
+                "paragraphs": [
+                        "A concise ADR records the problem, relevant context, actual decision, plausible alternatives, consequences and how the decision may be revisited. An ADR for separate teaching databases might explain why raw SQL fixtures cannot share the same migration-managed database. It should not include internal assistant notes or speculative architectural work that was never approved.",
+                        "Treat documentation changes as part of feature work. If the authentication or API contract changes, update the canonical reference and dependent setup examples in the same review; stale documentation is a behavior defect for its reader."
+                ]
+        },
+        {
+                "title": "Write useful runbooks with safe stopping points",
+                "paragraphs": [
+                        "A runbook includes what symptom triggers it, the non-destructive evidence to collect, preconditions, exact checks, expected outcomes, recovery steps if authorized, and escalation/rollback conditions. It should not casually prescribe deleting data or changing production credentials to make an example pass.",
+                        "Builder needs a concise local diagnostic handoff, not a fully operated monitoring platform. Later Reliability and Delivery material can extend incident response and release automation using real operational requirements."
+                ]
+        },
+        {
+                "title": "Review documentation as an engineering contract",
+                "paragraphs": [
+                        "Ask another engineer to use the documented steps starting from a clean environment, record every place they need to guess, then update the relevant source. Automated verification should exercise safe commands where possible, and manual checks should be explicitly labelled rather than silently assumed.",
+                        "The earlier README exercise intentionally tested its own claims with an isolated executable harness. The same principle extends to production documentation, but additional controls are necessary when commands can mutate a database, deploy a release or access private data."
+                ]
+        }
+],
+        "Create a usable Steward handoff with verified setup, reader-specific documentation and one evidence-backed decision record.",
+        [
+        "Complete the independent Write a README Someone Can Follow exercise before modifying actual project documentation.",
+        "Review the current Steward setup and list unverified assumptions, missing prerequisites and commands that rely on a local-only environment.",
+        "Verify a clean local setup path from project checkout through the actual database migration and one permitted and one rejected request, using an isolated database.",
+        "Document core Steward relationships (Team, Service, Environment and relevant membership), link to canonical API schema and record known limitations.",
+        "Write one concise ADR with context, decision, alternative and consequence. Keep it separate from operator troubleshooting instructions.",
+        "Have another engineer reproduce the safe setup or record which steps still require credentials, approvals or manual verification; fix all falsified claims.",
+        "Draft one small runbook for an observed, non-destructive diagnostic and specify when to stop/escalate."
+],
+        [
+        "Which kind of document should explain an API payload, a setup command, a design decision and a recovery procedure?",
+        "What evidence distinguishes documented commands from verified commands?",
+        "Why is a guessed local database password an unacceptable handoff instruction?",
+        "When should documentation be updated alongside code?"
+],
         [twelveFactor],
     ),
     lesson(

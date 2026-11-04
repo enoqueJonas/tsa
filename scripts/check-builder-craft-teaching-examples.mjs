@@ -43,6 +43,26 @@ for(const [caption,expected,origin] of cases){
   }
 }
 
+
+// A documentation gate is credible only if its actual published commands run.
+// Mutate the successful command inside the source-published README and require
+// the command-execution harness to reject the stale instructions.
+const docCaption = '"caption": "Documentation — executable setup instructions completeness gate"';
+const docIndex = source.indexOf(docCaption);
+assert.ok(docIndex>=0,"The beginner README must publish a runnable verification harness");
+const docCodeMatch = source.slice(docIndex,docIndex+16000).match(/"code":\s*("(?:\\.|[^"\\])*")/);
+assert.ok(docCodeMatch,"The README harness has no source-extractable code");
+const docProgram = JSON.parse(docCodeMatch[1]);
+assert.match(docProgram,/subprocess\.run/,"Docs must execute documented commands, not just scan keywords");
+assert.match(docProgram,/result\.returncode == expected_exit/,"Docs must verify actual exit statuses");
+assert.match(docProgram,/python app\.py --check/,"Documentation must contain a successful command");
+const brokenDoc=docProgram.replace("python app.py --check","python app.py --missing");
+assert.notEqual(brokenDoc,docProgram,"README mutant did not change the documented command");
+const brokenDocCheck=spawnSync("python3",["-c",brokenDoc],{encoding:"utf8",timeout:10000});
+assert.ifError(brokenDocCheck.error);
+assert.notEqual(brokenDocCheck.status,0,"A stale README command wrongly passed verification");
+assert.match(brokenDocCheck.stderr,/AssertionError/,"Expected the README execution check to fail");
+
 // Mutation proof: a policy based on "some members exist" instead of this
 // member's identity must fail the published authorization/state assertions.
 const separationCaption = '"caption": "Separation of Concerns — five executable before-and-after cases"';
@@ -155,6 +175,13 @@ assert.ok(source.indexOf('"Review a Code Change"') < source.indexOf('"Managing T
 assert.ok(source.includes("stableId ??"),"Renamed lesson must support stable activity IDs");
 
 const publishedPractice=fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-quality.ts","utf8");
+const readmeFirst=source.indexOf('"Write a README Someone Can Follow"');
+const documentDecisions=source.indexOf('"Technical Documentation"',readmeFirst);
+assert.ok(readmeFirst>=0 && documentDecisions>readmeFirst,
+  "The learner must verify runnable README basics before documenting real Steward decisions");
+assert.match(publishedPractice,/software-craft-write-a-readme-someone-can-follow/,
+  "The first real README verification must have its own post-composition practical");
+
 const syntaxBeforeStatic=source.indexOf('"Check Python Code Before Running It"');
 const staticLesson=source.indexOf('"Static Analysis and Automated Feedback"',syntaxBeforeStatic);
 assert.ok(syntaxBeforeStatic>=0 && staticLesson>syntaxBeforeStatic,
