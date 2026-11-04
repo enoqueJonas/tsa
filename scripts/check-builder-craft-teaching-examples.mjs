@@ -85,7 +85,7 @@ try {
   const bisect=path.join(gitRoot,"tsa-git-bisect-lab");
   assert.equal(gitCommand(bisect,["rev-list","--count","HEAD"]),"4");
   const output=runGit("Git bisect lab — run a real good-bad test and restore the branch",bisect);
-  assert.match(output,/first bad commit/);
+  assert.match(output,/first [\x27\x22]?bad[\x27\x22]? commit/, "Git should identify the actual first faulty commit despite its output quoting convention");
   assert.match(gitCommand(bisect,["show","-s","--format=%s","HEAD~1"]),/accidentally set zero limit/);
   assert.equal(gitCommand(bisect,["branch","--show-current"]),"main");
   assert.equal(gitCommand(bisect,["status","--short"]),"");
