@@ -61,14 +61,14 @@ assert.ok(
   "The learner order must be persistence → DBMS and server → psql → database creation → schemas → table definition → rows → temporary tables → relational model → joins → grouping → applied fixture → UPDATE → DELETE → Boolean filters → NULL → ordering → Steward filtering case"
 );
 assert.doesNotMatch(source, /Two programs, one protocol boundary|Establish prerequisites without inventing credentials/);
-assert.doesNotMatch(source, /\\bdocker\\b/i, "Beginner PostgreSQL may not require container tooling taught later");
+assert.doesNotMatch(source, /\bdocker\b/i, "Beginner PostgreSQL may not require container tooling taught later");
 const connectionLesson = source.slice(connection, databases);
 const inspectionLesson = source.slice(objectInspection, rows);
 const escaped = (command) => JSON.stringify(command).slice(1, -1);
-for (const command of [String.raw`\\conninfo`, String.raw`\\l`, String.raw`\\c`, String.raw`\\du`, String.raw`\\?`, String.raw`\\h`, String.raw`\\q`]) {
+for (const command of [String.raw`\conninfo`, String.raw`\l`, String.raw`\c`, String.raw`\du`, String.raw`\?`, String.raw`\h`, String.raw`\q`]) {
   assert.ok(connectionLesson.includes(escaped(command)), `First psql lesson must explain ${command}`);
 }
-for (const command of [String.raw`\\dn`, String.raw`\\dt`, String.raw`\\d`, String.raw`\\d+`, String.raw`\\h`]) {
+for (const command of [String.raw`\dn`, String.raw`\dt`, String.raw`\d`, String.raw`\d+`, String.raw`\h`]) {
   assert.ok(inspectionLesson.includes(escaped(command)), `Object inspection must teach ${command}`);
 }
 assert.ok(source.slice(setup, connection).includes("brew install postgresql@17"));
