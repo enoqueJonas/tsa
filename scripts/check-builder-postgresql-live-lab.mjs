@@ -143,6 +143,31 @@ try {
   assert.equal(run(["-d", "tsa_library", "-c", "SELECT count(*) FROM library.books"]).out, "2",
     "WITH and recursive examples must not mutate the original book records");
 
+  // Transaction fundamentals run on temporary fictional balances; the original
+  // Steward transaction evidence remains later in this integration runner.
+  verifyLibrary("wallet_rollback.sql — transfer and undo two writes", [
+    "CREATE TABLE", "INSERT 0 2", "BEGIN", "UPDATE 1", "UPDATE 1",
+    "Ana|70", "Bia|70", "ROLLBACK", "Ana|100", "Bia|40"
+  ]);
+  verifyLibrary("wallet_commit.sql — commit both transfer updates", [
+    "CREATE TABLE", "INSERT 0 2", "BEGIN", "UPDATE 1", "UPDATE 1",
+    "COMMIT", "Ana|70", "Bia|70"
+  ]);
+  const savepointFile = path.join(root, "stock_savepoint.sql");
+  fs.writeFileSync(savepointFile,
+    codeFromLesson("stock_savepoint.sql — recover after an expected CHECK error") + "\n");
+  const recoveredStock = spawnSync("psql",
+    ["-X", "-v", "ON_ERROR_STOP=0", "-At", "-F", "|", "-d", "tsa_library", "-f", savepointFile],
+    {encoding: "utf8", timeout: 20000, env: process.env});
+  assert.ifError(recoveredStock.error);
+  assert.equal(recoveredStock.status, 0, recoveredStock.stderr);
+  assert.match(recoveredStock.stderr, /violates check constraint/);
+  assert.match(recoveredStock.stdout, /ROLLBACK/);
+  assert.match(recoveredStock.stdout, /COMMIT/);
+  assert.equal(recoveredStock.stdout.trim().split(/\r?\n/).at(-1), "Apples|4");
+  assert.equal(run(["-d", "tsa_library", "-c", "SELECT count(*) FROM library.books"]).out, "2",
+    "Transaction examples must not change persistent library rows");
+
   const wrongDatabase = run(["-d", "tsa_invalid_database_name", "-c", "SELECT 1"], 2);
   assert.match(wrongDatabase.err, /database "tsa_invalid_database_name" does not exist/);
 
