@@ -497,8 +497,19 @@ try {
     "Published multicolumn index exercise must prove exactly 40 combined and 400 second-column rows");
   const joinPlan = run(["-c", codeFromLesson("explain_join.sql — inspect query plan and correct grouped result")]).out;
   assert.match(joinPlan, /Execution Time/);
-  const perfPlan = run(["-c", codeFromLesson("performance_probe.sql — compare selective and broad predicates")]).out;
-  assert.match(perfPlan, /Execution Time/);
+  const perfPlan = run(["-d", "tsa_library", "-c",
+    codeFromLesson("performance_probe.sql — baseline and after-index plans with stable row counts")]).out;
+  assert.match(perfPlan, /CREATE INDEX/, "Performance experiment must actually add its candidate index");
+  assert.equal((perfPlan.match(/Execution Time/g) ?? []).length, 4,
+    "Published performance experiment must compare both predicates before and after indexing");
+  assert.deepEqual(perfPlan.split(/\r?\n/).filter(line => /^\d+$/.test(line)),
+    ["1", "3750", "1", "3750"], "Baseline and post-index query results must be identical");
+  const paginationResult = run(["-d", "tsa_library", "-c",
+    codeFromLesson("paging_stability.sql — observe OFFSET overlap and keyset cursor")]).out;
+  const paginationLines = paginationResult.split(/\r?\n/);
+  assert.deepEqual(paginationLines.filter(line => /^\d+(?:,\d+)+$/.test(line)),
+    ["1,2,3,4,5", "5,6,7,8,9", "6,7,8,9,10"],
+    "Pagination must reproduce OFFSET overlap and stable keyset continuation");
   const metadata = run(["-c", codeFromLesson("postgresql_inspect.sql — verify connection and visible Service relation")]).out;
   for (const table of ["team","service","environment","service_dependency"]) assert.ok(metadata.split(/\r?\n/).includes(table), `Cannot see ${table}`);
   // Operational fundamentals from exact source-published SQL and shell exercises.
