@@ -38,6 +38,10 @@ const readiness = marker("production-readiness-invariant");
 const constraintsBasics = marker("postgresql-constraints-basics");
 const foreignKeyDeletes = marker("postgresql-foreign-key-deletes");
 const constraints = marker("constraints-keys");
+const queryPlans = marker("query-plans");
+const indexes = marker("indexes");
+const compositeIndexes = marker("postgresql-composite-indexes");
+const queryPerformance = marker("query-performance");
 assert.ok(
   persistence > 0 && system > persistence && connection > system &&
   databases > connection && schemas > databases && tables > schemas && rows > tables && temporary > rows &&
