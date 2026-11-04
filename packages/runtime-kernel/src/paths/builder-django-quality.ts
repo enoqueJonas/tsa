@@ -109,6 +109,30 @@ const practices: Record<string, PracticeSpec> = {
     "No existing Steward database or history is overwritten."
   ]
 },
+  "django-and-api-engineering-connect-django-models-with-foreignkey": {
+  "objective": "Use a real one-to-many ForeignKey and inspect its second migration before applying the same mechanism to the Steward domain.",
+  "scenario": "Continue the independent catalogue Book table after migration 0001. Add one Writer and an optional Book.writer field, then prove both the relationship and a protected parent deletion.",
+  "instructions": [
+    "Replace catalogue/models.py using the complete relationship example; keep the previous Book columns and data intact.",
+    "Run makemigrations, inspect the separate migration 0002 SQL and apply migrate; explain why writer is initially nullable.",
+    "Execute source-published book_writer_lab.py and prove writer_id references the stored Writer primary key, while writer.books queries the Book from the reverse side.",
+    "Attempt to delete the referenced writer and capture the real ProtectedError. Confirm the Book and Writer still exist.",
+    "Compare PROTECT, CASCADE and SET_NULL as domain decisions; distinguish Django deletion behavior from direct SQL foreign-key behavior.",
+    "Now explain how Steward Service.owning_team relates to Team, without copying the larger Steward schema before the next applied chapter."
+  ],
+  "deliverables": [
+    "Migration 0002 with before/after schema evidence",
+    "Book.writer_id and Writer.books query proof",
+    "ProtectedError negative case",
+    "Parent deletion-policy decision note"
+  ],
+  "completionCriteria": [
+    "All work runs against an isolated local scratch catalogue database.",
+    "The initial book is preserved and not rebuilt by deleting migration history.",
+    "One-to-many relationship and deletion failure are actually demonstrated.",
+    "The student can transfer the mechanism to the later applied Team/Service bridge."
+  ]
+},
   "django-and-api-engineering-serializers-and-representation": {
     objective: "Treat serializers as a trust boundary and deliberately control what external clients can send and receive.",
     scenario: "A generated ModelSerializer exposes every model field as writable. Before clients depend on that contract, review the representation as untrusted input rather than a convenient mirror of the database.",
