@@ -99,6 +99,38 @@ const loggingModule = loggingLessonSnippet("catalogue/logging_demo.py — two ob
 const loggingExampleCli = loggingLessonSnippet("Terminal — execute the Django logging example");
 assert.match(loggingExampleCli, /python manage\.py shell -c/, "Lesson must give runnable Django terminal instructions");
 
+function modelLessonSnippet(caption) {
+  const needle = 'caption: "' + caption + '"';
+  const at = source.indexOf(needle);
+  assert.ok(at >= 0, "Missing first-principles Django model code: " + caption);
+  const match = source.slice(at, at + 12000).match(/value: ("(?:\\.|[^"\\])*")/);
+  assert.ok(match, "Published model example has no value: " + caption);
+  return JSON.parse(match[1]);
+}
+const modelIntro = source.indexOf('richLesson("Define Your First Django Model"');
+const modelMigrationIntro = source.indexOf('richLesson("Turn a Model into a Database Table"');
+const modelRelationshipIntro = source.indexOf('richLesson("Create Relationships Between Django Models"');
+const stewardModelBridge = source.indexOf('richLesson("Steward SQL to Django ORM: One Canonical Domain"');
+assert.ok(modelIntro >= 0 && modelIntro < modelMigrationIntro &&
+  modelMigrationIntro < modelRelationshipIntro && modelRelationshipIntro < stewardModelBridge,
+  "The beginner Book, initial migration and relation mechanics must precede Steward ORM");
+for (const id of [
+  "define-your-first-django-model",
+  "turn-a-model-into-a-database-table",
+  "create-relationships-between-django-models"
+]) {
+  const exercise = publishedPractice(id);
+  assert.match(exercise, /tsa-django-intro|catalogue/, "Django model practical must remain beginner-first");
+}
+const firstBookModel = modelLessonSnippet("catalogue/models.py — first complete model");
+const firstMigrationCommands = modelLessonSnippet("Terminal — create and inspect the first catalogue migration");
+const bookLab = modelLessonSnippet("catalogue/books_lab.py — persistence and two independent rejections");
+const relationModel = modelLessonSnippet("catalogue/models.py — append two related models");
+const relationMigrationCommands = modelLessonSnippet("Terminal — inspect and apply the relationship migration");
+const relationLab = modelLessonSnippet("catalogue/relations_lab.py — uniqueness, PROTECT and CASCADE");
+assert.match(firstMigrationCommands, /sqlmigrate catalogue 0001/);
+assert.match(relationMigrationCommands, /sqlmigrate catalogue 0002/);
+
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-django-bridge-"));
 const exec=(command,args,env=process.env)=>{
   const p=spawnSync(command,args,{cwd:root,encoding:"utf8",timeout:60000,env});
@@ -338,6 +370,48 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   fs.writeFileSync(settingsPath, fs.readFileSync(settingsPath, "utf8").replace(warningOnly, loggingSettings));
   console.log("Builder Django logging passed: actual settings/module, normal and rejected event, no duplication, handler threshold failure case.");
 
+
+  // The same independent catalogue scratch project now teaches models before
+  // the full Steward SQL/ORM bridge. Execute the published source and both
+  // migration and database-rejection boundaries, not equivalent test fixtures.
+  const modelPath = path.join(beginnerRoot, "catalogue", "models.py");
+  fs.writeFileSync(modelPath, firstBookModel + "\n");
+  beginnerExec(["manage.py", "check"]);
+  const unmigrated = spawnSync("python3",
+    ["manage.py", "shell", "-c", "from catalogue.models import Book; Book.objects.count()"],
+    {cwd: beginnerRoot, encoding: "utf8", timeout: 60000, env});
+  assert.notEqual(unmigrated.status, 0, "An uncreated model table must not be queryable");
+  assert.match(unmigrated.stderr, /no such table|does not exist/i,
+    "Unmigrated model must produce a recognizable database-table failure");
+
+  beginnerExec(["manage.py", "makemigrations", "catalogue", "--noinput"]);
+  const firstSql = beginnerExec(["manage.py", "sqlmigrate", "catalogue", "0001"]);
+  assert.match(firstSql, /CREATE TABLE.+catalogue_book/s);
+  assert.match(beginnerExec(["manage.py", "showmigrations", "catalogue"]), /\[ \] 0001_initial/);
+  beginnerExec(["manage.py", "migrate", "--noinput"]);
+  assert.match(beginnerExec(["manage.py", "showmigrations", "catalogue"]), /\[X\] 0001_initial/);
+
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "books_lab.py"), bookLab + "\n");
+  const saved = beginnerExec(["manage.py", "shell", "-c", "exec(open('catalogue/books_lab.py').read())"]);
+  for (const expected of ["saved_books: 1", "titles: ['The River']", "BLANK_TITLE_REJECTED", "DUPLICATE_TITLE_REJECTED"]) {
+    assert.ok(saved.includes(expected), "Missing published Book lab outcome: " + expected + "\n" + saved);
+  }
+
+  fs.appendFileSync(modelPath, "\n\n" + relationModel + "\n");
+  beginnerExec(["manage.py", "check"]);
+  beginnerExec(["manage.py", "makemigrations", "catalogue", "--noinput"]);
+  const relationSql = beginnerExec(["manage.py", "sqlmigrate", "catalogue", "0002"]);
+  assert.match(relationSql, /catalogue_readinglist/);
+  assert.match(relationSql, /catalogue_readinglistentry/);
+  beginnerExec(["manage.py", "migrate", "catalogue", "--noinput"]);
+  assert.match(beginnerExec(["manage.py", "showmigrations", "catalogue"]), /\[X\] 0002_/);
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "relations_lab.py"), relationLab + "\n");
+  const related = beginnerExec(["manage.py", "shell", "-c", "exec(open('catalogue/relations_lab.py').read())"]);
+  for (const expected of ["list_items: 1", "DUPLICATE_MEMBERSHIP_REJECTED", "BOOK_DELETE_PROTECTED",
+    "entries_after_list_delete: 0", "books_after_list_delete: 1"]) {
+    assert.ok(related.includes(expected), "Missing published relation proof: " + expected + "\n" + related);
+  }
+  console.log("Builder Django model/migration/relationship lessons passed: missing-table negative, SQL migration inspection, blank/unique rejections, PROTECT/CASCADE/paired uniqueness.");
 
   for (const name of ["serializer_lab.py", "serializer_negatives.py", "serializer_patch.py"]) {
     const captions = {
