@@ -131,6 +131,39 @@ const relationLab = modelLessonSnippet("catalogue/relations_lab.py — uniquenes
 assert.match(firstMigrationCommands, /sqlmigrate catalogue 0001/);
 assert.match(relationMigrationCommands, /sqlmigrate catalogue 0002/);
 
+// The first-principles QuerySet lessons must precede the applied Steward ORM
+// chapter. Extract exactly the code the learner sees, not equivalent scripts.
+const querysetLessonStart = source.indexOf('richLesson("Build and Execute Your First QuerySet"');
+const querysetMethodsStart = source.indexOf('richLesson("Choose Django Query Methods and Reuse Results"');
+const querysetRelationsStart = source.indexOf('richLesson("Load Related Django Rows Without Repeating Queries"');
+const appliedOrmStart = source.indexOf('richLesson("ORM Query Behavior and Performance"');
+assert.ok(querysetLessonStart > modelRelationshipIntro &&
+  querysetLessonStart < querysetMethodsStart &&
+  querysetMethodsStart < querysetRelationsStart &&
+  querysetRelationsStart < stewardModelBridge && stewardModelBridge < appliedOrmStart,
+  "QuerySet evaluation, cache/methods and relationship-loading teaching must precede applied Steward ORM");
+for (const id of [
+  "build-and-execute-your-first-queryset",
+  "choose-django-query-methods-and-reuse-results",
+  "load-related-django-rows-without-repeating-queries"
+]) {
+  const practice = publishedPractice(id);
+  assert.match(practice, /tsa-django-intro|catalogue/,
+    "Published QuerySet practical must use migrated beginner catalogue before Steward: " + id);
+}
+const publishedQuerySeed = modelLessonSnippet("catalogue/query_seed.py — four books and three reading lists");
+const publishedQueryRun = modelLessonSnippet("catalogue/queryset_first.py — construction versus evaluation");
+const publishedQueryMethods = modelLessonSnippet("catalogue/queryset_methods.py — query method and cache experiments");
+const publishedQueryRelations = modelLessonSnippet("catalogue/queryset_relations.py — N+1 before and after");
+for (const [name, code] of [
+  ["query_seed.py", publishedQuerySeed],
+  ["queryset_first.py", publishedQueryRun],
+  ["queryset_methods.py", publishedQueryMethods],
+  ["queryset_relations.py", publishedQueryRelations]
+]) {
+  assert.match(code, /from /, "No real runnable source in " + name);
+}
+
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-django-bridge-"));
 const exec=(command,args,env=process.env)=>{
   const p=spawnSync(command,args,{cwd:root,encoding:"utf8",timeout:60000,env});
@@ -412,6 +445,69 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
     assert.ok(related.includes(expected), "Missing published relation proof: " + expected + "\n" + related);
   }
   console.log("Builder Django model/migration/relationship lessons passed: missing-table negative, SQL migration inspection, blank/unique rejections, PROTECT/CASCADE/paired uniqueness.");
+
+  const queryExamples = {
+    "query_seed.py": publishedQuerySeed,
+    "queryset_first.py": publishedQueryRun,
+    "queryset_methods.py": publishedQueryMethods,
+    "queryset_relations.py": publishedQueryRelations,
+  };
+  const runPublishedQueryExample = (name) => {
+    fs.writeFileSync(path.join(beginnerRoot, "catalogue", name), queryExamples[name] + "\n");
+    return beginnerExec(["manage.py", "shell", "-c", "exec(open('catalogue/" + name + "').read())"]);
+  };
+
+  const seedEvidence = runPublishedQueryExample("query_seed.py");
+  for (const expected of ["books_ready: 4", "lists_ready: 3", "entries_ready: 3"]) {
+    assert.ok(seedEvidence.includes(expected), "Missing published SQL fixture observation: " + expected);
+  }
+  const repeatedSeed = runPublishedQueryExample("query_seed.py");
+  assert.equal(repeatedSeed.trim(), seedEvidence.trim(), "Seed must be safe and idempotent on repeated runs");
+
+  const queried = runPublishedQueryExample("queryset_first.py");
+  for (const expected of [
+    "construction_queries: 0", "generated_sql_has_where: True",
+    "evaluation_queries: 1", "titles: ['River Guide', 'The River']",
+    "reuse_queries: 0"
+  ]) assert.ok(queried.includes(expected), "Published QuerySet evaluation example failed: " + expected + "\n" + queried);
+
+  const methodResults = runPublishedQueryExample("queryset_methods.py");
+  for (const expected of [
+    "same_queryset_queries: 1", "fresh_querysets_queries: 2",
+    "count: 4 queries: 1", "exists: True queries: 1",
+    "first: Third Story queries: 1", "get: The River queries: 1",
+    "GET_MISSING_REJECTED", "GET_MULTIPLE_REJECTED",
+    "uncached_index_queries: 2", "count_then_list_queries: 2"
+  ]) assert.ok(methodResults.includes(expected), "Published QuerySet cache/method example failed: " + expected + "\n" + methodResults);
+
+  const relationshipResults = runPublishedQueryExample("queryset_relations.py");
+  for (const expected of [
+    "reverse_plain_queries: 4", "reverse_prefetch_queries: 2",
+    "reverse_results_match: True", "forward_plain_queries: 4",
+    "forward_join_queries: 1", "forward_results_match: True"
+  ]) assert.ok(relationshipResults.includes(expected), "Published N+1 demonstration failed: " + expected + "\n" + relationshipResults);
+
+  // Independent transfer: a fourth related record changes the N+1 count but
+  // not the bounded prefetch count. Do not change the published lesson code
+  // just to make its fixed three-parent baseline pass here.
+  const transfer = [
+    "from django.db import connection",
+    "from django.test.utils import CaptureQueriesContext",
+    "from catalogue.models import Book, ReadingList, ReadingListEntry",
+    "reading_list = ReadingList.objects.create(name='New Transfer List')",
+    "ReadingListEntry.objects.create(reading_list=reading_list, book=Book.objects.get(title='Third Story'))",
+    "def rows(q):",
+    "    return [(item.name, [entry.book_id for entry in item.entries.all()]) for item in q]",
+    "with CaptureQueriesContext(connection) as plain_queries:",
+    "    unoptimized = rows(ReadingList.objects.order_by('name'))",
+    "with CaptureQueriesContext(connection) as fixed_queries:",
+    "    optimized = rows(ReadingList.objects.order_by('name').prefetch_related('entries'))",
+    "assert unoptimized == optimized",
+    "assert len(plain_queries) == 5 and len(fixed_queries) == 2",
+    "print('N_PLUS_ONE_TRANSFER_OK plain=5 prefetch=2')",
+  ].join("\n");
+  assert.match(beginnerExec(["manage.py", "shell", "-c", transfer]), /N_PLUS_ONE_TRANSFER_OK plain=5 prefetch=2/);
+  console.log("Builder Django QuerySet lessons passed: 0/1/cache SQL execution, get/count/exists contracts, forward/reverse N+1 and unseen-fourth-list transfer.");
 
   for (const name of ["serializer_lab.py", "serializer_negatives.py", "serializer_patch.py"]) {
     const captions = {

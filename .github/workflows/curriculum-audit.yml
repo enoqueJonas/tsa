@@ -22,6 +22,7 @@ on:
       - curriculum/builder-django-beginner-depth-v1
       - curriculum/builder-django-logging-mechanisms
       - curriculum/builder-django-models-first-principles
+      - curriculum/builder-django-querysets-first-principles
       - curriculum/system-thinker-pedagogical-audit
       - curriculum/platform-builder-pedagogical-audit
       - curriculum/delivery-engineer-pedagogical-audit
