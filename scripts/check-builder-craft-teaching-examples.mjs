@@ -7,6 +7,7 @@ import {spawnSync} from "node:child_process";
 const source=fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-deep.ts","utf8");
 const injected=fs.readFileSync("packages/runtime-kernel/src/paths/internal-dependency-management.ts","utf8");
 const cases=[
+  ["Readable Code — equivalent pure-Python policy and negative cases", "readable policy: three cases preserved"],
   ["Refactoring — executable behavior-preservation check", "refactor contracts preserved: 3"],
   ["Testing — executable unittest authorization boundary", "Ran 2 tests"],
   ["Configuration — executable fail-closed environment parser", "valid False"],
@@ -39,6 +40,10 @@ for(const [caption,expected,origin] of cases){
 console.log("Builder craft examples passed: 9 source-extracted Python labs and their negative boundaries.");
 
 const publishedPractice=fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-quality.ts","utf8");
+assert.doesNotMatch(source, /role__in=\\{[^}]*owner/, "Readable Code must not grant nonexistent owner membership role");
+assert.match(source, /Membership\\.Role\\.MAINTAINER/, "Django policy must use the real Membership role choice");
+assert.match(publishedPractice, /software-craft-readable-code/, "Readable Code practice must exist after composition");
+
 assert.ok(source.includes('"Investigate Bugs with Git History"'), "Git regression investigation must be a separate lesson");
 assert.ok(source.indexOf('"Git as an Engineering Tool"') < source.indexOf('"Investigate Bugs with Git History"'),
   "Git staging must precede history bisect");
