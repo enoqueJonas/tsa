@@ -558,6 +558,15 @@ try {
   assert.equal(run(["-d", "tsa_library_restore", "-c",
     "SELECT string_agg(title, ',' ORDER BY title) FROM library.books"]).out,
     "The Hobbit,Things Fall Apart", "Restored data must match the expected titles");
+  // A restore must preserve integrity rules as well as matching book titles.
+  // This deliberately invalid statement must fail in the recovered copy.
+  const restoredConstraint = run(["-d", "tsa_library_restore", "-c",
+    "INSERT INTO library.books (title, author, published_year) VALUES (NULL, 'Invalid', 2001);"], 1);
+  assert.match(restoredConstraint.err, /null value in column "title".*violates not-null constraint/,
+    "Restored table must still enforce the original NOT NULL rule");
+  assert.equal(run(["-d", "tsa_library_restore", "-c",
+    "SELECT count(*) FROM library.books"]).out, "2",
+    "Rejected insert must leave the restored copy unchanged");
   assert.equal(run(["-d", "tsa_library", "-c", "SELECT count(*) FROM library.books"]).out,
     "2", "Source library must remain unchanged by backup/restore");
 
