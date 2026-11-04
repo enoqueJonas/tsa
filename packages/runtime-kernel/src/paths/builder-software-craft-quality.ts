@@ -34,18 +34,32 @@ const practices: Record<string, PracticeSpec> = {
         completionCriteria: ["The actual defect commit, not the final documentation commit, is identified.", "The test returns zero for good and nonzero for bad revisions.", "The working tree and branch are restored after investigation.", "No production environment or unknown commit placeholder is required."]
     },
     "software-craft-branching-and-collaboration": {
-        objective: "Prepare a small Steward change for collaboration with the minimum branch and pull-request ceremony needed for safe review.",
-        scenario: "A teammate will review your change without access to your chat history or local context. Your branch and pull request must explain the problem, scope, validation and deferred work while staying easy to integrate.",
+        objective: "Build, compare, integrate and retire a local Git feature branch before assuming remote pull requests.",
+        scenario: "You have already learned to commit locally. Now practise creating a focused feature branch and reviewing its changes in tsa-git-branch-lab, without touching the continuing Steward project or requiring a GitHub account.",
         instructions: [
-            "Define the branch goal in one sentence and remove any work that does not serve it.",
-            "Compare the branch against master and identify any accidental scope growth.",
-            "Write a PR description with problem, approach, validation, risks and intentionally deferred work.",
-            "Choose whether the branch should preserve multiple commits or be squash-merged, based on whether the commits carry useful review structure.",
-            "Describe how you would update the branch if master moved ahead without creating another unnecessary branch.",
-            "After a hypothetical merge, write the exact local and remote branch-cleanup steps."
+            "Run the source-published Branch lab setup to create the initial main commit and one feature/add-note commit. Verify git branch --show-current.",
+            "Before merging, inspect main...feature/add-note and state which file the change proposes to add.",
+            "Run the merge block and show the new file on main, the two-parent merge commit and a clean Git status.",
+            "List merged branches and delete only the integrated local feature branch using git branch -d.",
+            "Write a concise PR-style summary of this exact change and compare an explicit merge, squash and rebase based on how they affect history.",
+            "Explain how you would move the practice into a real Steward branch without force-pushing shared work or including generated files."
         ],
-        deliverables: ["Branch-scope statement", "Review-ready PR description", "Merge-strategy decision", "Post-merge cleanup procedure"],
-        completionCriteria: ["The branch has one coherent goal.", "The PR can be reviewed without undocumented context.", "The merge strategy is justified rather than habitual.", "Branch deletion is treated as part of finishing the work."]
+        deliverables: ["Two-branch local history transcript", "Pre-merge three-dot comparison", "Successful no-fast-forward merge and retained README", "Safe local branch deletion", "Review-summary and merge-strategy decision"],
+        completionCriteria: ["Every command executes in a fresh local repository.", "The feature commit is preserved and main contains the merged change.", "A learner can explain the difference between local branches, commits and a remote PR.", "No unknown files, force pushes or external approvals are prerequisites."]
+    },
+    "software-craft-resolve-a-merge-conflict": {
+        objective: "Reproduce an actual conflicting edit, resolve it against a stated requirement and verify Git and application-visible content.",
+        scenario: "A greeting configuration is changed independently on main and a feature branch. The correct requirement is Portuguese by default with French fallback; Git cannot decide this from two competing edits.",
+        instructions: [
+            "Create tsa-git-conflict-lab with the published exact setup block. Confirm that Git reports EXPECTED_CONFLICT and that greeting.txt contains both branch versions with conflict markers.",
+            "Identify the common ancestor, current main change and feature change, then explain why choosing HEAD or the other side mechanically is insufficient.",
+            "Apply the published resolution with greeting=ola and fallback=bonjour. Stage and commit the merge.",
+            "Verify both expected keys, zero conflict markers, a clean working tree and the actual merge history.",
+            "Describe a Steward migration or API change that could merge cleanly at the text level while breaking product behavior, and specify the additional check you would run.",
+            "State when a developer should stop and seek a product decision instead of guessing at conflict resolution."
+        ],
+        deliverables: ["Recorded intentional conflict and both contributions", "Requirement-grounded resolution", "Merge history and clean-status proof", "Semantic-compatibility check plan"],
+        completionCriteria: ["The conflict is reproduced, not narrated.", "Both required greeting values exist in the resolved file.", "The merge is committed without markers or unintended file changes.", "The learner distinguishes textual conflict from semantic compatibility."]
     },
     "software-craft-readable-code": {
         objective: "Reduce the mental reconstruction cost of one difficult Steward code path without changing behavior.",

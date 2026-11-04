@@ -46,6 +46,10 @@ assert.doesNotMatch(source, /git show <commit>|title: "Steward connection"/,
   "Do not reintroduce unknown commit placeholders or generic Steward callouts");
 assert.match(publishedPractice, /software-craft-investigate-bugs-with-git-history/,
   "Published Git investigation must have its own explicit practical");
+assert.match(publishedPractice,/software-craft-resolve-a-merge-conflict/,
+  "Published conflict resolution must have an independent exercise");
+assert.ok(source.indexOf('"Branching and Collaboration"')<source.indexOf('"Resolve a Merge Conflict"'),
+  "Branch creation must precede conflict resolution");
 
 function gitSnippet(caption) {
   const marker='"caption": "'+caption+'"';
@@ -89,9 +93,38 @@ try {
   assert.match(gitCommand(bisect,["show","-s","--format=%s","HEAD~1"]),/accidentally set zero limit/);
   assert.equal(gitCommand(bisect,["branch","--show-current"]),"main");
   assert.equal(gitCommand(bisect,["status","--short"]),"");
+
+
+  // Branching and conflict resolution are taught only after the initial
+  // staging and bisect labs; execute real independent repository states.
+  runGit("Branch lab — create an isolated feature branch",gitRoot);
+  const branch=path.join(gitRoot,"tsa-git-branch-lab");
+  assert.equal(gitCommand(branch,["branch","--show-current"]),"feature/add-note");
+  assert.equal(gitCommand(branch,["rev-list","--count","HEAD"]),"2");
+  runGit("Branch lab — compare and merge the focused change",branch);
+  assert.equal(gitCommand(branch,["branch","--show-current"]),"main");
+  assert.match(fs.readFileSync(path.join(branch,"README.md"),"utf8"),/Change reviewed before release/);
+  assert.equal(gitCommand(branch,["rev-list","--parents","-n","1","HEAD"]).split(/\s+/).length,3,
+    "A no-fast-forward merge must actually record two parents");
+  runGit("Branch lab — delete only the merged local feature branch",branch);
+  assert.equal(gitCommand(branch,["branch","--list"]).replace(/^\*\s*/,""),"main");
+
+  const conflictText=runGit("Merge-conflict lab — reproduce two incompatible changes",gitRoot);
+  assert.match(conflictText,/EXPECTED_CONFLICT/,"The teaching lab must really encounter a merge refusal");
+  const conflict=path.join(gitRoot,"tsa-git-conflict-lab");
+  assert.match(gitCommand(conflict,["status","--short"]),/UU greeting\.txt/);
+  assert.match(fs.readFileSync(path.join(conflict,"greeting.txt"),"utf8"),/<<<<<<< HEAD/);
+  runGit("Merge-conflict lab — resolve the requirements and commit the merge",conflict);
+  const resolved=fs.readFileSync(path.join(conflict,"greeting.txt"),"utf8");
+  assert.match(resolved,/^greeting=ola$/m);
+  assert.match(resolved,/^fallback=bonjour$/m);
+  assert.doesNotMatch(resolved,/<<<<<<<|=======|>>>>>>>/);
+  assert.equal(gitCommand(conflict,["status","--short"]),"");
+  assert.equal(gitCommand(conflict,["rev-list","--parents","-n","1","HEAD"]).split(/\s+/).length,3,
+    "Resolution should create a real merge commit with both parents");
 } finally {
   fs.rmSync(gitRoot,{recursive:true,force:true});
 }
-console.log("Builder Git lessons passed: two source-derived scratch repositories, selective staging, safe restore and real four-commit bisect.");
+console.log("Builder Git lessons passed: four source-derived scratch repositories, selective staging, real bisect, focused branch merge and deliberate conflict resolution.");
 
 

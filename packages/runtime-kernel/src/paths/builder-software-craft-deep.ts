@@ -14,7 +14,8 @@ function slug(value: string) {
 const craftTeaching: Record<string, { outcomes: string[]; practical: string }> = {
   "Git as an Engineering Tool": { outcomes: ["Distinguish working-directory changes, staged content and committed history.", "Create and inspect two local commits without staging unrelated files.", "Safely restore a deliberate scratch edit without rewriting history."], practical: "Build and inspect two local commits" },
   "Investigate Bugs with Git History": { outcomes: ["Define a repeatable pass/fail condition for a regression.", "Find its first bad commit with a real Git bisect session.", "Restore the original branch and explain when bisect evidence is unreliable."], practical: "Find the first bad Git commit" },
-  "Branching and Collaboration": { outcomes: ["Explain the purpose of a branch and a pull request.", "Distinguish merge, squash and rebase based on review and shared-history consequences.", "Handle a conflict and clean up obsolete branches without losing work."], practical: "Prepare a reviewable branch" },
+  "Branching and Collaboration": { outcomes: ["Explain what a local branch points to and how commits diverge.", "Create, compare, merge and delete a small focused branch with evidence.", "Compare merge, squash and rebase without rewriting shared history."], practical: "Create and merge a focused branch" },
+  "Resolve a Merge Conflict": { outcomes: ["Reproduce a real same-line merge conflict in a scratch repository.", "Decide a correct combined result from the stated requirement rather than marker position.", "Commit and verify the resolution while recognizing semantic conflicts Git may miss."], practical: "Resolve and verify a real Git conflict" },
   "Readable Code": { outcomes: ["Recognize names that hide domain rules.", "Explain cohesion and coupling using a concrete function.", "Make one behavior-preserving readability change and reject unnecessary abstraction."], practical: "Make a domain function easier to understand" },
   "Separation of Concerns": { outcomes: ["Identify HTTP, domain, persistence and policy responsibilities.", "Draw a dependency direction that avoids cycles.", "Compare a minimal separation with unnecessary layers."], practical: "Separate responsibilities in one request path" },
   "Refactoring": { outcomes: ["Distinguish restructuring from changing externally observed behavior.", "Use a characterization test before editing unfamiliar code.", "Apply a small, named refactoring and know when to stop."], practical: "Refactor with a verified safety net" },
@@ -226,17 +227,142 @@ export const softwareCraftDeepLessons: Lesson[] = [
     ),
     lesson(
         "Branching and Collaboration",
-        "Branches are temporary collaboration boundaries. Their value comes from isolating a coherent change long enough to review and integrate it—not from creating elaborate branch taxonomies.",
+        "A Git branch is a movable name pointing to a commit. It lets you develop and review a focused change without changing the main line of work. Learn creating, comparing, merging and retiring a local branch before adding pull requests, remote synchronization or rebasing to the story.",
         [
-            { title: "Keep branches purposeful", paragraphs: ["A short-lived branch should have one understandable goal and stay close enough to its base that integration remains cheap. Mixing feature work, cleanup and generated artifacts makes review harder and increases conflict risk.", "The pull request is a communication artifact: explain what changed, why, how it was validated, and what was intentionally deferred."] },
-            { title: "Integrate deliberately", paragraphs: ["Merge, squash and rebase shape history differently. Squashing is useful when intermediate branch commits are implementation noise; preserving commits is useful when each commit carries meaningful reviewable structure. There is no universal moral winner—choose a repository policy and understand its consequences."] },
-            { title: "Rebase rewrites commit identity", paragraphs: ["Rebase replays commits onto a new base and creates new commit IDs. It can produce a clean local branch but is hazardous when collaborators depend on the old published history. Merge preserves the branch topology; squash records the integrated outcome as one commit. Understand whether history is private or shared before rewriting it." ] },
-            { title: "Resolve conflicts by understanding both intents", paragraphs: ["A conflict marker is not asking you to choose 'ours' or 'theirs' mechanically. Read the surrounding behavior and the purpose of both changes, construct the intended combined result, then run the same validation expected for an ordinary code change. A syntactically resolved conflict can still be semantically wrong." ] },
-            {"title":"Demonstrate an integration decision instead of memorizing merge commands","paragraphs":["Suppose branch A changes the canonical Service.lifecycle allowed values, while branch B adds a migration that assumes an obsolete lifecycle state. Git may merge the files without any textual conflict because they edit separate paths. That successful merge is still semantically wrong. Before integration inspect the diff against the product specification, search related model/API/test files, run the domain-continuity guard and require a migration/API compatibility decision. A textual conflict is a stronger signal, but the absence of markers is not proof of behavioral compatibility.","Practice the safe local workflow in a scratch clone: `git switch -c feat/steward-readiness`, make one focused change, `git diff --check`, run tests, commit, then inspect `git log --oneline --decorate -5` and write a PR rationale. Never force-push a shared branch without coordinating rewritten history. Rebase is an operation on commit graph ancestry, not a code quality improvement by itself; record expected new base and test again after replay."],"code":{"language":"bash","caption":"Git collaboration — inspect changed intent before a review","code":"git status --short\ngit diff --check\ngit diff --stat\ngit diff -- packages/runtime-kernel/src/paths/builder-postgresql-deep.ts\n# Run project test/build commands from package.json before requesting review.\ngit log --oneline --decorate -5"}},
-        ],
-        "Prepare a Steward change for collaboration without introducing unnecessary branching ceremony.",
-        ["Define one coherent branch goal.", "Write a PR description containing problem, approach, validation and deferred work.", "Identify files that would make the PR noisy or unrelated.", "Explain whether squash or preserved commits better fit the example and why."],
-        ["Why are long-lived feature branches costly?", "What information should a useful PR description preserve?", "When can squash merging improve history?"],
+        {
+                "title": "What a branch actually is",
+                "paragraphs": [
+                        "A commit identifies a snapshot and parent history. A branch name such as main or feature/add-note points to the latest commit on one line of work. git switch changes which branch is checked out; git switch -c creates a new branch at the current commit and switches to it. Creating a branch does not copy a whole project into another server or publish it on GitHub.",
+                        "Two branches may have a common ancestor, then accumulate different commits. Merging combines those lines, potentially creating a merge commit with two parents. It is a history and content operation, not proof the resulting application works. You still have to run tests and inspect the final behavior."
+                ]
+        },
+        {
+                "title": "Create a local feature branch in a fresh repository",
+                "paragraphs": [
+                        "Use this entire block in an empty directory, not inside an existing Steward repository. The example is deliberately about a small review note and a configuration file. It creates one initial commit on main, switches to a feature branch and commits README.md there. No GitHub remote or review account is required.",
+                        "After git switch -c, verify git branch --show-current reports feature/add-note. The feature branch contains the new README commit; main still points to the original configuration commit. Both branches refer to the same underlying Git object database."
+                ],
+                "code": {
+                        "language": "bash",
+                        "caption": "Branch lab — create an isolated feature branch",
+                        "code": "mkdir tsa-git-branch-lab && cd tsa-git-branch-lab\ngit init -b main\ngit config user.name \"TSA Learner\"\ngit config user.email \"learner@example.invalid\"\nprintf 'mode=development\\n' > config.txt\ngit add config.txt\ngit commit -m \"start development configuration\"\ngit switch -c feature/add-note\nprintf 'Change reviewed before release.\\n' > README.md\ngit add README.md\ngit commit -m \"document review checkpoint\"\ngit branch --show-current\ngit status --short\ngit log --oneline --decorate -3"
+                }
+        },
+        {
+                "title": "Compare a branch before merging it",
+                "paragraphs": [
+                        "First return to main. git diff main...feature/add-note compares the feature tip against their common ancestor and shows the patch proposed for review. A pull request on a hosting service performs a similar comparison and adds conversation, approvals and automation. The three-dot comparison is useful before merging; after merging into main, that same comparison may become empty.",
+                        "Before review, ask what problem the branch solves, which files are part of the change, how it was checked and what remains intentionally deferred. A correct-looking diff does not prove the code works; tests and domain behavior must still be checked. This example only modifies a README, so the observable evidence is the resulting file and history."
+                ],
+                "code": {
+                        "language": "bash",
+                        "caption": "Branch lab — compare and merge the focused change",
+                        "code": "git switch main\ngit diff --stat main...feature/add-note\ngit merge --no-ff -m \"merge reviewed documentation\" feature/add-note\ngit log --graph --oneline --decorate --all -5\ngit status --short\ngrep -q 'Change reviewed before release.' README.md"
+                }
+        },
+        {
+                "title": "Choose a merge strategy deliberately",
+                "paragraphs": [
+                        "A normal merge preserves both branch commits and can create a two-parent merge commit. A squash merge creates one combined commit on the target branch and does not preserve the feature-branch topology there. Rebase replays commits onto a different base and gives them new identities; it can simplify a private branch but must be coordinated before rewriting shared history. These are distinct operations with trade-offs, not style rankings.",
+                        "For the scratch example we used --no-ff to make the integration commit visible even though Git could have fast-forwarded. On a real team, follow the repository's agreed review/merge policy. Do not force-push a branch other people depend on merely to make the graph attractive. Never treat a successful textual merge as proof an API contract or database migration is compatible."
+                ]
+        },
+        {
+                "title": "Remove a local branch only after confirming integration",
+                "paragraphs": [
+                        "After the feature change is merged, git branch --merged main lists locally merged branches. git branch -d feature/add-note refuses to delete a branch that Git still considers unmerged; that safety check is useful. Deleting the local branch name does not remove the integrated commit history. A remote branch, if one exists later, is a separate object with separate cleanup steps.",
+                        "Run the following only in the disposable repository. A real project may require pull-request approval, release evidence and branch-protection checks before deleting a remote branch. The next lesson demonstrates why branches sometimes need a real conflict resolution rather than this clean merge."
+                ],
+                "code": {
+                        "language": "bash",
+                        "caption": "Branch lab — delete only the merged local feature branch",
+                        "code": "git branch --merged main\ngit branch -d feature/add-note\ngit branch --list\ngit status --short"
+                }
+        }
+],
+        "Create, review, merge and safely retire a feature branch in an actual local Git repository.",
+        [
+        "Run the source-published setup block in an empty directory, verifying which branch holds the initial and feature commits.",
+        "Before merging, predict what git diff main...feature/add-note should show.",
+        "Run the compare/merge block and confirm that README.md appears on main and the merge commit connects both lines of history.",
+        "Run the merged-branch cleanup block and explain why git branch -d was safe here.",
+        "Draft a pull-request summary for this exact change: problem, content, validation and deferred work. Explain whether squash or preserve-merge is preferable and why.",
+        "Only after this disposable exercise, describe how you would create a focused Steward branch without mixing unrelated files."
+],
+        [
+        "Does a local branch create a separate repository or server?",
+        "What is the difference between a feature-branch commit and a merge commit?",
+        "Why inspect the three-dot diff before integration?",
+        "When is rebase appropriate, and why is forcing a shared history risky?",
+        "What has git branch -d checked before deleting a branch?"
+],
+        [gitBook],
+    ),
+    lesson(
+        "Resolve a Merge Conflict",
+        "Git can combine most changes automatically, but two branches may edit the same line differently. A merge conflict is not a reason to pick a side blindly. You need to inspect both intended changes, decide the correct final behavior and then record a tested resolution. This exercise creates a conflict on purpose in a separate local repository.",
+        [
+        {
+                "title": "Why Git sometimes stops a merge",
+                "paragraphs": [
+                        "A merge compares changes made since the branches' common ancestor. If the same line is changed incompatibly in two branches, Git cannot know the correct product decision. It leaves markers such as <<<<<<< HEAD, ======= and >>>>>>> feature/name inside the affected file. HEAD is the currently checked-out branch, not automatically the morally correct choice. A file that still contains those markers is not a resolved configuration.",
+                        "Not all integration defects produce textual conflicts. Two branches can change different files and merge cleanly while violating the same database or API contract. A conflict is an explicit request for human judgment, while a clean merge is only a claim that Git could combine the text."
+                ]
+        },
+        {
+                "title": "Create two incompatible edits from the same starting point",
+                "paragraphs": [
+                        "The scratch requirement is: a default Portuguese greeting plus a French fallback. We intentionally begin with a single greeting field, then make feature and main branches edit it differently. No service or external data is involved. After the merge attempt, expect Git to stop and report a conflict in greeting.txt; the shell block treats that as the successful negative case instead of pretending the command passed.",
+                        "Run in a new empty directory. The two branches share the initial greeting=hello commit. One changes greeting to ola and the other changes it to bonjour. The feature branch cannot be merged cleanly because both touched the same original line."
+                ],
+                "code": {
+                        "language": "bash",
+                        "caption": "Merge-conflict lab — reproduce two incompatible changes",
+                        "code": "mkdir tsa-git-conflict-lab && cd tsa-git-conflict-lab\ngit init -b main\ngit config user.name \"TSA Learner\"\ngit config user.email \"learner@example.invalid\"\nprintf 'greeting=hello\\n' > greeting.txt\ngit add greeting.txt\ngit commit -m \"add initial greeting\"\ngit switch -c feature/portuguese-greeting\nprintf 'greeting=ola\\n' > greeting.txt\ngit add greeting.txt\ngit commit -m \"translate greeting to Portuguese\"\ngit switch main\nprintf 'greeting=bonjour\\n' > greeting.txt\ngit add greeting.txt\ngit commit -m \"translate greeting to French\"\nif git merge feature/portuguese-greeting; then echo 'UNEXPECTED_CLEAN_MERGE'; exit 1; else echo 'EXPECTED_CONFLICT'; fi\ngit status --short\ncat greeting.txt"
+                }
+        },
+        {
+                "title": "Decide the correct combined result, then resolve it",
+                "paragraphs": [
+                        "The product requirement is not 'choose HEAD' or 'choose the incoming branch'. It is to keep Portuguese as the default and French as a fallback. Inspect the conflict markers, then replace them with the two explicit keys shown below. This is a product decision expressed in text; neither Git nor the conflict marker itself can invent it for you.",
+                        "Stage the corrected file and commit the merge resolution. Verify the result contains no conflict markers, the merge history includes the two parent lines, and git status is clean. In an actual application, run a parser/test against both greetings rather than checking only that the markers disappeared."
+                ],
+                "code": {
+                        "language": "bash",
+                        "caption": "Merge-conflict lab — resolve the requirements and commit the merge",
+                        "code": "printf 'greeting=ola\\nfallback=bonjour\\n' > greeting.txt\ngit add greeting.txt\ngit commit -m \"resolve greeting with Portuguese default and French fallback\"\ngrep -q '^greeting=ola$' greeting.txt\ngrep -q '^fallback=bonjour$' greeting.txt\nif grep -q '^<<<<<<<' greeting.txt; then echo 'UNRESOLVED_MARKER'; exit 1; fi\ngit log --graph --oneline --decorate --all -5\ngit status --short"
+                }
+        },
+        {
+                "title": "Textual resolution and semantic compatibility are different",
+                "paragraphs": [
+                        "Conflict markers are a syntactic warning. Even when the file contains no markers, the resulting configuration or code might still be wrong. An application could require one greeting key instead of two. The correct response would be to revisit the requirement and update the implementation/tests, not to preserve both keys just because it satisfies Git.",
+                        "In Steward, independent branches might change lifecycle choices in one file and a migration in another. Git could merge both automatically, but the combination could still be invalid. Check domain constraints, migration history, API responses and tests after any integration, whether or not Git reported a conflict."
+                ]
+        },
+        {
+                "title": "When to stop and request review",
+                "paragraphs": [
+                        "If you cannot explain the intended final behavior, do not resolve a conflict by guessing. Ask for the requirement or design decision, record it and then implement the tested combined state. Avoid deleting one side's work or force-pushing merely to silence the conflict. A commit that passes a text merge but fails domain tests is not integrated successfully.",
+                        "On a shared repository, also confirm whose branch history you may rewrite. The scratch lab is intentionally local so a learner can practise conflict markers without putting colleagues' work at risk."
+                ]
+        }
+],
+        "Reproduce a real Git conflict, explain both changes, implement the intended combined content and verify a clean merge.",
+        [
+        "Execute the conflict setup block in a disposable repository and record EXPECTED_CONFLICT and the unmerged-file status.",
+        "Read the actual conflict markers and explain which branch authored each conflicting greeting.",
+        "Follow the published requirements to produce Portuguese greeting and French fallback, rather than discarding either change blindly.",
+        "Run the resolution block and verify both values, a merge commit, no marker text and a clean status.",
+        "Write one example of a semantic conflict in Steward that Git would not necessarily detect.",
+        "Explain what you would do if the product owner had not specified the intended combined behavior."
+],
+        [
+        "What do HEAD and incoming branch labels mean in a conflict?",
+        "Why might a textual conflict require a product decision rather than an arbitrary merge choice?",
+        "How can a clean Git merge still break an API or database?",
+        "What evidence is needed beyond deleting conflict markers?"
+],
         [gitBook],
     ),
     lesson(
