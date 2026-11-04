@@ -27,12 +27,14 @@ const filtering = marker("filtering-ordering");
 const subqueryBasics = marker("postgresql-subquery-basics");
 const existsSubqueries = marker("postgresql-exists-subqueries");
 const appliedSubqueries = marker("subqueries");
+const withBasics = marker("postgresql-with-basics");
+const recursiveWith = marker("postgresql-recursive-with");
 const cteLesson = marker("ctes");
 assert.ok(
   persistence > 0 && system > persistence && connection > system &&
   databases > connection && schemas > databases && tables > schemas && rows > tables && temporary > rows &&
   relational > temporary && firstJoins > relational &&
-  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && combineConditions > deletion && nullLogic > combineConditions && sortResults > nullLogic && filtering > sortResults && subqueryBasics > filtering && existsSubqueries > subqueryBasics && appliedSubqueries > existsSubqueries && cteLesson > appliedSubqueries,
+  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && combineConditions > deletion && nullLogic > combineConditions && sortResults > nullLogic && filtering > sortResults && subqueryBasics > filtering && existsSubqueries > subqueryBasics && appliedSubqueries > existsSubqueries && withBasics > appliedSubqueries && recursiveWith > withBasics && cteLesson > recursiveWith,
   "The learner order must be persistence → DBMS and server → psql → database creation → schemas → table definition → rows → temporary tables → relational model → joins → grouping → applied fixture → UPDATE → DELETE → Boolean filters → NULL → ordering → Steward filtering case"
 );
 assert.doesNotMatch(source, /Two programs, one protocol boundary|Establish prerequisites without inventing credentials/);
@@ -119,6 +121,19 @@ try {
   assert.match(notInExample, /WHERE NOT EXISTS/);
   assert.ok(source.includes('"title": "Steward Practice: Subqueries and Missing Relationships"'),
     "Steward subquery case must follow, not replace, generic SQL instruction");
+  const withOne = publishedCode("cte_library_one.sql — named recent books");
+  assert.match(withOne, /WITH recent_books AS/);
+  const withTwo = publishedCode("cte_library_two.sql — staged count and earliest year");
+  assert.match(withTwo, /year_summary AS/);
+  const missingCTE = publishedCode("cte_library_scope_fail.sql — name unavailable after the statement");
+  assert.match(missingCTE, /SELECT \* FROM recent_books/);
+  const counter = publishedCode("cte_recursion_numbers.sql — bounded counter");
+  assert.match(counter, /WITH RECURSIVE counter/);
+  assert.match(counter, /WHERE n < 4/);
+  const cycle = publishedCode("cte_recursion_cycle.sql — safe walk across A and B");
+  assert.match(cycle, /ANY\(walk.seen\)/);
+  assert.ok(source.includes('"title": "Steward Practice: CTE Reports and Dependency Traversal"'),
+    "Steward CTE case must be an application of previously taught SQL");
   const sql = publishedCode("first_session.sql — run only in a disposable PostgreSQL lab database");
   for (const statement of ["CREATE TEMP TABLE", "INSERT INTO tsa_session_probe", "ORDER BY id", "SELECT count(*)"]) {
     assert.ok(sql.includes(statement), `Missing SQL teaching concept: ${statement}`);
