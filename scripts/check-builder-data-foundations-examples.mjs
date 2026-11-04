@@ -38,6 +38,10 @@ const readiness = marker("production-readiness-invariant");
 const constraintsBasics = marker("postgresql-constraints-basics");
 const foreignKeyDeletes = marker("postgresql-foreign-key-deletes");
 const constraints = marker("constraints-keys");
+const schemaBasics = marker("postgresql-schema-design-basics");
+const appliedSchemaDesign = marker("schema-design");
+const normalForms = marker("postgresql-normal-forms");
+const appliedNormalization = marker("normalization");
 const queryPlans = marker("query-plans");
 const indexes = marker("indexes");
 const compositeIndexes = marker("postgresql-composite-indexes");
@@ -46,7 +50,7 @@ assert.ok(
   persistence > 0 && system > persistence && connection > system &&
   databases > connection && schemas > databases && tables > schemas && rows > tables && temporary > rows &&
   relational > temporary && firstJoins > relational &&
-  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && combineConditions > deletion && nullLogic > combineConditions && sortResults > nullLogic && filtering > sortResults && subqueryBasics > filtering && existsSubqueries > subqueryBasics && appliedSubqueries > existsSubqueries && withBasics > appliedSubqueries && recursiveWith > withBasics && cteLesson > recursiveWith && transactionBasics > cteLesson && savepoints > transactionBasics && transactionCase > savepoints && isolation > transactionCase && readiness > isolation && constraintsBasics > readiness && foreignKeyDeletes > constraintsBasics && constraints > foreignKeyDeletes && queryPlans > constraints && indexes > queryPlans && compositeIndexes > indexes && queryPerformance > compositeIndexes,
+  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && combineConditions > deletion && nullLogic > combineConditions && sortResults > nullLogic && filtering > sortResults && subqueryBasics > filtering && existsSubqueries > subqueryBasics && appliedSubqueries > existsSubqueries && withBasics > appliedSubqueries && recursiveWith > withBasics && cteLesson > recursiveWith && transactionBasics > cteLesson && savepoints > transactionBasics && transactionCase > savepoints && isolation > transactionCase && readiness > isolation && constraintsBasics > readiness && foreignKeyDeletes > constraintsBasics && constraints > foreignKeyDeletes && schemaBasics > constraints && appliedSchemaDesign > schemaBasics && normalForms > appliedSchemaDesign && appliedNormalization > normalForms && queryPlans > appliedNormalization && indexes > queryPlans && compositeIndexes > indexes && queryPerformance > compositeIndexes,
   "The learner order must be persistence → DBMS and server → psql → database creation → schemas → table definition → rows → temporary tables → relational model → joins → grouping → applied fixture → UPDATE → DELETE → Boolean filters → NULL → ordering → Steward filtering case"
 );
 assert.doesNotMatch(source, /Two programs, one protocol boundary|Establish prerequisites without inventing credentials/);
@@ -169,6 +173,12 @@ try {
   const cascadingDelete = publishedCode("fk_delete_cascade.sql — child removed with deleted parent");
   assert.match(cascadingDelete, /ON DELETE CASCADE/);
   assert.ok(source.includes('"title": "Steward Practice: Enforce Data Constraints"'));
+  const enrollmentSql = publishedCode("enrollment_schema_demo.sql — three linked tables from university requirements");
+  assert.match(enrollmentSql, /PRIMARY KEY \(student_id, course_id\)/);
+  assert.match(enrollmentSql, /REFERENCES tsa_student\(id\)/);
+  const normalFormSql = publishedCode("normal_forms_demo.sql — normalized university tables and one department rename");
+  assert.match(normalFormSql, /REFERENCES tsa_nf_department\(id\)/);
+  assert.match(normalFormSql, /UPDATE tsa_nf_department/, "3NF example must prove authoritative rename");
   const explainSql = publishedCode("library_explain_analyze.sql — estimate, measure and verify a book query");
   assert.match(explainSql, /EXPLAIN \(ANALYZE, BUFFERS\)/, "Query-plan lesson must execute a measured SELECT");
   const indexSql = publishedCode("index_lab.sql — compare actual physical plans on 15000 temporary rows");
