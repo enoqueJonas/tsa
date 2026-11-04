@@ -367,17 +367,77 @@ export const softwareCraftDeepLessons: Lesson[] = [
     ),
     lesson(
         "Readable Code",
-        "Readable code minimizes the amount of hidden reconstruction a maintainer must perform. Names, structure and explicit domain language should help a reviewer understand what the code means before they have to simulate every line mentally.",
+        "Readable code lets a future engineer identify the rule without mentally running every line. It is not the same as short code: names, explicit conditions and one coherent responsibility often matter more than line count. We will first make a tiny authorization predicate readable with ordinary Python, then apply the same rule to the Django Membership model built earlier. The result must behave exactly as before.",
         [
-            { title: "Name the domain", paragraphs: ["Prefer names such as owning_team, dependency_service and can_manage_service over generic names such as data, obj or check. Comments should explain non-obvious constraints or reasons, not translate syntax into English.", "Readable code is contextual. A clever one-liner can be shorter while making policy harder to review."] },
-            { title: "Make policy visible", paragraphs: ["Steward authorization is easier to reason about when the policy reads like the domain instead of being scattered through nested boolean expressions."], code: { language: "python", code: "def can_manage_service(user, service) -> bool:\n    return Membership.objects.filter(\n        user=user,\n        team=service.owning_team,\n        role__in={\"maintainer\", \"owner\"},\n    ).exists()", caption: "Domain language makes an authorization rule reviewable." } },
-            { title: "Cohesion asks whether code belongs together", paragraphs: ["A cohesive module/class/function groups behavior around one meaningful responsibility. A file that handles HTTP parsing, ownership policy, email delivery and report formatting has weak cohesion because unrelated reasons to change accumulate together. Splitting purely by line count does not improve cohesion." ] },
-            { title: "Coupling asks what must move together", paragraphs: ["Coupling is dependency between parts. Some coupling is necessary: a Service policy must know relevant domain concepts. Accidental coupling appears when unrelated modules know framework internals, global mutable state or each other's private representation. Prefer narrow explicit contracts and dependency direction that keeps volatile infrastructure from contaminating stable domain rules." ] },
-            { title: "Complexity should buy domain value", paragraphs: ["Deep nesting, long parameter lists, boolean flags that switch unrelated modes, duplicated conditionals and distant side effects are useful code-smell signals. A smell is evidence to investigate, not automatic proof that a class/extraction is required. Refactor when the structure creates real comprehension/change risk." ] },
-        ],
-        "Improve a difficult Steward code path without changing its behavior.",
-        ["Find one function or request path that requires unnecessary mental reconstruction.", "Rename ambiguous domain concepts.", "Extract only a concept that has a meaningful name and boundary.", "Run the same behavior checks before and after.", "Explain one tempting cleanup you intentionally did not perform."],
-        ["What should comments explain?", "Why can shorter code be less readable?", "How do domain names improve review?"],
+        {
+                "title": "Start with the question the code must answer",
+                "paragraphs": [
+                        "Suppose a service belongs to Team 10. Only a user with a maintainer membership for Team 10 may manage it. A viewer cannot write, and a maintainer from another team cannot write. That one sentence is the contract. A function that returns True merely because the user has any membership is wrong, no matter how elegant it looks.",
+                        "Write the rule in plain language before naming functions: Who is acting? Which resource is affected? Which team owns it? Which role is required? Are there other gates, such as an inactive account? Once those facts are explicit, naming and structure have a purpose."
+                ]
+        },
+        {
+                "title": "Short code can hide a correct rule",
+                "paragraphs": [
+                        "The original one-line expression in the example below is logically correct for the given data, but variables u, t and m make a reviewer translate each symbol back into domain meaning. The longer version names the actor, owner team and membership. It extracts has_maintainer_membership because that phrase describes one coherent question, not simply to reduce the length of the function.",
+                        "Run this example with python3 in a scratch file. Its three cases deliberately separate authorized maintainer, viewer on the same Team, and a viewer on another Team. The assertions prove that the readable version preserved each expected result. There is no Django import or hidden database fixture in this first experiment."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "Readable Code — equivalent pure-Python policy and negative cases",
+                        "code": "memberships = [\n    {\"user_id\": 1, \"team_id\": 10, \"role\": \"maintainer\"},\n    {\"user_id\": 2, \"team_id\": 10, \"role\": \"viewer\"},\n    {\"user_id\": 1, \"team_id\": 20, \"role\": \"viewer\"},\n]\n\ndef old_check(u, t, rows):\n    return any(m[\"user_id\"] == u and m[\"team_id\"] == t and m[\"role\"] == \"maintainer\" for m in rows)\n\ndef has_maintainer_membership(actor_id, owning_team_id, memberships):\n    return any(\n        membership[\"user_id\"] == actor_id\n        and membership[\"team_id\"] == owning_team_id\n        and membership[\"role\"] == \"maintainer\"\n        for membership in memberships\n    )\n\ndef can_manage_service(actor_id, owning_team_id, memberships):\n    return has_maintainer_membership(actor_id, owning_team_id, memberships)\n\ncases = [(1, 10, True), (2, 10, False), (1, 20, False)]\nfor actor_id, team_id, expected in cases:\n    assert old_check(actor_id, team_id, memberships) is expected\n    assert can_manage_service(actor_id, team_id, memberships) is expected\nprint(\"readable policy: three cases preserved\")"
+                }
+        },
+        {
+                "title": "Cohesion: one function should answer one kind of question",
+                "paragraphs": [
+                        "Cohesion asks whether a unit's responsibilities belong together. A function that loads HTTP input, sends an email, checks Team membership and updates a Service combines unrelated reasons to change. A focused membership query, by contrast, answers a single policy question. That can make independent tests and review easier.",
+                        "Do not split every line into a helper or wrap a simple expression in a hierarchy of classes. Extraction is useful when the new name and boundary remove real ambiguity. A function named process_data or do_check is not an improvement merely because it is short."
+                ]
+        },
+        {
+                "title": "Coupling: know which parts depend on one another",
+                "paragraphs": [
+                        "Coupling is the degree to which a module depends on other parts of the system. Some coupling is necessary: authorization must inspect the authenticated user, the target Service and stored Membership. Accidental coupling appears when the domain policy imports HTTP request objects, reads arbitrary environment variables or rewrites a token itself.",
+                        "Keep the policy's inputs explicit and move HTTP response formatting to the API boundary. Django's ORM query is an implementation detail of the persistence model; callers should not infer access merely from the existence of a serializer or a UI button. The previous Identity lesson defines the actual roles before this code refers to them."
+                ]
+        },
+        {
+                "title": "Use the exact roles and fields your Django model defines",
+                "paragraphs": [
+                        "In the earlier Identity module we defined Membership.Role.VIEWER and Membership.Role.MAINTAINER. There is no owner membership role in that model. A previous example allowed a string owner anyway, which taught a nonexistent permission. The correct policy below requires an active account, a membership for the resource's owning Team and the MAINTAINER role. It uses the real user and Team references rather than trusting mutable names.",
+                        "Run the script in the existing tsa-steward-django-app project after completing the Identity membership seed. It creates only an artificial TSA Report API record in the dedicated lab. The tests prove allowed, cross-Team denied, viewer denied and inactive denied independently. A finally block restores the users' activity and role states even if a test fails. This script tests the policy query, not full HTTP authorization."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "Readable Code — Django Membership policy with four real decisions",
+                        "code": "from django.contrib.auth import get_user_model\nfrom registry.models import Team, Service, Membership\n\ndef can_manage_service(user, service):\n    if not user.is_active:\n        return False\n    return Membership.objects.filter(\n        user=user,\n        team_id=service.owning_team_id,\n        role=Membership.Role.MAINTAINER,\n    ).exists()\n\nUser = get_user_model()\nana = User.objects.get(username=\"tsa_ana\")\nbo = User.objects.get(username=\"tsa_bo\")\nplatform = Team.objects.get(name=\"Platform\")\nservice, _ = Service.objects.get_or_create(\n    name=\"TSA Report API\",\n    defaults={\n        \"owning_team\": platform,\n        \"endpoint\": \"https://reports.example.invalid/api\",\n        \"lifecycle\": Service.Lifecycle.UAT,\n    },\n)\nmembership = Membership.objects.get(user=ana, team=platform)\noriginal_role = membership.role\noriginal_ana_active = ana.is_active\noriginal_bo_active = bo.is_active\n\ntry:\n    ana.is_active = True\n    ana.save(update_fields=[\"is_active\"])\n    bo.is_active = True\n    bo.save(update_fields=[\"is_active\"])\n    membership.role = Membership.Role.MAINTAINER\n    membership.save(update_fields=[\"role\"])\n    assert can_manage_service(ana, service)\n    assert not can_manage_service(bo, service)  # no Platform membership\n    membership.role = Membership.Role.VIEWER\n    membership.save(update_fields=[\"role\"])\n    assert not can_manage_service(ana, service)  # same Team, insufficient role\n    membership.role = Membership.Role.MAINTAINER\n    membership.save(update_fields=[\"role\"])\n    ana.is_active = False\n    ana.save(update_fields=[\"is_active\"])\n    assert not can_manage_service(ana, service)  # disabled account\nfinally:\n    membership.role = original_role\n    membership.save(update_fields=[\"role\"])\n    ana.is_active = original_ana_active\n    ana.save(update_fields=[\"is_active\"])\n    bo.is_active = original_bo_active\n    bo.save(update_fields=[\"is_active\"])\nprint(\"Django readable policy: maintainer allowed; viewer, cross-team and inactive denied\")"
+                }
+        },
+        {
+                "title": "Make the behavior readable and verifiable",
+                "paragraphs": [
+                        "A readable function must still be correct. Compare the pure Python and Django examples: both require a Team match and maintainer role. The Django version also checks active-account state, which is a distinct additional precondition. Call that difference out instead of claiming the two snippets have identical scopes.",
+                        "When reviewing a change, write what stays the same and what changes. If you add a new owner role later, define it in the Membership model, migrate the database if necessary and write permission tests first. Do not introduce a role string just to make an example look realistic. Use comments for reasons and surprising constraints, not line-by-line narration of straightforward Python syntax."
+                ]
+        }
+],
+        "Make one authorization predicate understandable without introducing invented roles or changing its observed behavior.",
+        [
+        "State the policy in one sentence and identify actor, Team owner, membership and required role.",
+        "Run the independent Python script from the reading and explain each of its three expected decisions.",
+        "Compare the old and readable implementations, identify the renamed facts and explain why the extracted helper has a real responsibility.",
+        "In the dedicated Django Steward lab with the seeded users, execute the published Membership policy script and record one allow plus three independent denials.",
+        "Verify that the Django Membership model defines only viewer and maintainer; describe why a made-up owner role would be a correctness defect.",
+        "Review an unrelated Steward function, propose one readability change and preserve its positive and negative contract."
+],
+        [
+        "How can code with more lines be easier to maintain?",
+        "What responsibility does has_maintainer_membership own?",
+        "Why must a role string agree with the actual Membership model?",
+        "How does the Django policy differ from the pure Python predicate?",
+        "What evidence proves a readability refactor did not accidentally broaden permissions?"
+],
         [refactoringGuru],
     ),
     lesson(
