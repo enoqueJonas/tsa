@@ -256,19 +256,34 @@ const practices: Record<string, PracticeSpec> = {
         deliverables: ["Logging questions/contract", "Success and failure log evidence", "Secret-leakage check", "Noise-removal note"],
         completionCriteria: ["The operation can be reconstructed from stable context.", "Log levels match operational meaning.", "Sensitive values are absent.", "The logging change improves signal rather than just increasing volume."]
     },
-    "software-craft-technical-documentation": {
-        objective: "Make Steward runnable and understandable by an engineer who did not participate in its development.",
-        scenario: "You hand the repository to a teammate who knows Django but has none of your TSA history. They have 30 minutes to understand the product, configure it, migrate the database and make one useful request without asking you for missing steps.",
+    "software-craft-write-a-readme-someone-can-follow": {
+        objective: "Prove README setup commands actually execute and report their expected success or failure.",
+        scenario: "A new engineer has never seen the project. Before assuming a complete Django setup or live database, rehearse reliable README writing with one tiny Python application and a safe, reproducible command executor.",
         instructions: [
-            "Start from the current documentation and list every piece of private knowledge you would currently need to supply verbally.",
-            "Rewrite the setup path from clone to environment configuration, database migration and first useful request using concrete commands.",
-            "Describe Steward's domain at the level needed to understand Team, Service, Environment, dependency and review relationships.",
-            "Link to the generated OpenAPI/schema instead of manually duplicating the entire API contract.",
-            "Add one ADR-style decision/rationale note (context, decision, alternatives/consequences) and one known limitation or next-stage concern.", "State which information belongs in README, generated API docs, decision record or future runbook so mutable facts are not duplicated blindly.",
-            "Walk the instructions from a clean checkout or have another engineer simulate them; record every step that proved ambiguous or false and correct it."
+            "Run the source-published verify_readme.py program; inspect its generated scratch README and simple app.py file.",
+            "Verify that the documented python app.py --check command exits zero and prints READY, and that the --unknown command fails with the expected error and exit 2.",
+            "Deliberately change the documented successful command to --missing; observe the assertion fail because the README is now false, then restore the original command.",
+            "Explain why checking for words such as Python, database or curl cannot establish that a command actually works.",
+            "Explain why automatically executing arbitrary external Markdown is unsafe, and which commands require deliberate isolation or manual review.",
+            "Identify one claim in the real Steward README that could be tested with a disposable local environment; do not assume undocumented access or secrets."
         ],
-        deliverables: ["Updated runnable setup documentation", "Domain orientation section", "Decision/limitation note", "Documentation verification evidence"],
-        completionCriteria: ["The setup is executable rather than aspirational.", "The reader can understand the core Steward domain without chat history.", "Documentation does not duplicate generated contracts unnecessarily.", "At least one documentation claim has been tested against reality."]
+        deliverables: ["Executed README success and expected-failure evidence", "Failing stale-command mutation", "Notes on safe command execution and limits", "One proposed real-project verification"],
+        completionCriteria: ["A beginner can run the example with the standard library alone.", "The README commands are executed from the documented context, not merely scanned for keywords.", "A stale documented command causes a real test failure.", "No database, remote account or production credentials are required."]
+    },
+    "software-craft-technical-documentation": {
+        objective: "Verify the actual Steward setup and select the right documentation form for each reader.",
+        scenario: "After completing the independent README example, prepare a real project handoff. A new contributor needs accurate environment and migration steps, an API consumer needs a maintained contract, and future maintainers need reasons behind important decisions.",
+        instructions: [
+            "Read the current Steward README and classify statements as actually verified, clearly conditional, or still assumed.",
+            "Using a clean, isolated training environment, verify actual Python, PostgreSQL, migration and first HTTP request instructions; include a permitted and a rejected request.",
+            "Do not guess a password, health route, database name or migration output. Record any external access prerequisites and safe alternatives.",
+            "Write a concise domain orientation and link to the canonical API schema rather than duplicating mutable request/response details.",
+            "Write one ADR that captures a real decision, alternatives, consequences and a revisit trigger; keep it separate from a runbook.",
+            "Draft one safe, non-destructive diagnostic runbook with symptom, preconditions, checks, expected outputs and escalation boundary.",
+            "Ask another engineer to follow the safe steps or record explicit manual gates; correct failed instructions before claiming a reproducible handoff."
+        ],
+        deliverables: ["Verified Steward setup evidence", "Reader-specific documentation links", "Evidence-backed decision record", "Safe diagnostic runbook", "Unverified-gates list"],
+        completionCriteria: ["At least one real setup claim is executed against the actual documented environment.", "The project documentation does not invent credentials or deployed endpoints.", "README, API reference, ADR and runbook serve distinct reader needs.", "Unverified setup claims remain explicitly open, not labelled ready."]
     },
     "software-craft-designing-errors": {
         objective: "Turn inconsistent Steward failures into an API error contract that tells clients what action is possible without leaking internals.",
