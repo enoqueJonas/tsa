@@ -129,3 +129,16 @@ These tasks are specifications for independent learner assessment, **not evidenc
 - Add the pure-Python script to source-derived Craft smoke checks and add the Django script to the existing dedicated PostgreSQL/Django integration test after the Identity source-published seed. Guard against reintroducing an undeclared owner role.
 
 **Evidence:** branch source is changed, full matching-head CI and rendered browser checks must be verified after final commit. Source execution does not demonstrate novice independent understanding or real endpoint authorization. **Human reviewed / learner validated: NO.** Remaining Software Craft lessons and the Builder synthesis milestone remain open in issue #321.
+
+## 2026-11-04 — Separation of Concerns beginner mechanism and negative transfer
+
+**Finding:** The existing reading named HTTP, authorization, domain policy, persistence and SOLID concepts but did not define any runnable example before requiring students to refactor an unspecified Steward request path. A beginner could repeat architectural terms without understanding the reason to split functions, how to preserve behavior or how authorization order prevents unwanted mutation.
+
+**Remediation:**
+- Replace the generic passage with an independent community-library checkout example: precise concerns, reasons to change, original all-in-one function and focused parsing/permission/domain/response functions.
+- Publish one complete pure-Python script with five cases and exact outputs (200, 400, 403, 404 and 409). Compare original and separated response objects and stored book state for each case so structural changes do not silently change behavior.
+- Demonstrate a deliberately incorrect `bool(members)` authorization shortcut that would permit unregistered users whenever any member exists. The source-derived smoke test mutates `member_can_borrow`, executes the actual script and requires an AssertionError, instead of claiming a check is effective solely because the happy path passed.
+- Explicitly state that the catalogue dictionary is neither a database transaction nor a running HTTP application. Explain what additional evidence an actual Django/PostgreSQL write requires. SOLID/DI architecture is not piled into the same lesson.
+- Replace the published practical override with the same independently executable learning order; only then invite a narrow, verified Steward transfer.
+
+**Status:** Matching-head full CI and browser checks not yet established for this branch. Independent novice understanding, manual rendered UX, and a real Steward request-path transfer remain OPEN. **Builder learner-validated: NO.**
