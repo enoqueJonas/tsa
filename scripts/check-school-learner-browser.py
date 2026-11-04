@@ -95,8 +95,12 @@ def inspect_school(page):
             builder_postgresql_readings = {
                 "relational-data-and-postgresql-postgresql-what-it-is-reading":
                     ("Why use a database instead of a file?", False),
+                "relational-data-and-postgresql-postgresql-local-setup-reading":
+                    ("Option 2A: install PostgreSQL on macOS", True),
                 "relational-data-and-postgresql-postgresql-first-connection-reading":
-                    ("Understand the psql prompt", True),
+                    ("Read the psql prompt and finish a statement", True),
+                "relational-data-and-postgresql-postgresql-psql-object-inspection-reading":
+                    ("See columns and constraints with \\d", True),
                 "relational-data-and-postgresql-postgresql-create-schema-reading":
                     ("Create the library schema", True),
                 "relational-data-and-postgresql-postgresql-schema-design-basics-reading":
