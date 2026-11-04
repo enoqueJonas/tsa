@@ -226,6 +226,57 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   ].join("\n");
   assert.match(beginnerExec(["manage.py", "shell", "-c", httpProbe]),
     /DJANGO_BEGINNER_LABS_OK 200 201 400 404 405 406 415/);
+
+  // Learner-order gate: generic model and first real migration must precede
+  // the canonical Steward ORM bridge and its multi-table migration.
+  const modelOrder = source.indexOf('richLesson("Models and Domain Data"');
+  const migrationOrder = source.indexOf('richLesson("Create Your First Django Migration"');
+  const bridgeOrder = source.indexOf('richLesson("Steward SQL to Django ORM: One Canonical Domain"');
+  assert.ok(modelOrder >= 0 && migrationOrder > modelOrder && bridgeOrder > migrationOrder,
+    "Teach a model and first migration before the Steward ORM mapping exercise");
+  const qualitySource = fs.readFileSync("packages/runtime-kernel/src/paths/builder-django-quality.ts", "utf8");
+  const preModelPractical = qualitySource.slice(
+    qualitySource.indexOf('"django-and-api-engineering-django-foundations": {'),
+    qualitySource.indexOf('"django-and-api-engineering-models-and-domain-data": {')
+  );
+  assert.doesNotMatch(preModelPractical, /Implement a narrow read-only GET \/services|Map the canonical Team\/Service\/Environment/,
+    "Before the model lesson, HTTP/DRF practicals must not demand persisted Service models");
+
+  // Write the exact source-published first Book model, generate the migration
+  // using real Django tooling and prove a duplicate ISBN is rejected by SQL.
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "models.py"),
+    authoredSnippet("catalogue/models.py — first persistent Book model") + "\n");
+  beginnerExec(["manage.py", "check"]);
+  beginnerExec(["manage.py", "makemigrations", "catalogue", "--noinput"]);
+  const bookSchema = beginnerExec(["manage.py", "sqlmigrate", "catalogue", "0001"]);
+  assert.match(bookSchema, /CREATE TABLE ["']?catalogue_book["']?/,
+    "First migration must create the actual Book table");
+  assert.match(bookSchema, /UNIQUE/i, "First Book migration must enforce an ISBN uniqueness rule");
+  beginnerExec(["manage.py", "migrate", "--noinput"]);
+  const bookLab = authoredSnippet("book_model_lab.py — persist, read and reject a duplicate ISBN");
+  assert.match(beginnerExec(["manage.py", "shell", "-c", bookLab]),
+    /Rejected duplicate ISBN as expected[\s\S]*BOOK_MODEL_LAB_OK/);
+  const durableProof = "from catalogue.models import Book; print('DURABLE_BOOK_OK', Book.objects.get(isbn='0000000000001').title)";
+  assert.match(beginnerExec(["manage.py", "shell", "-c", durableProof]), /DURABLE_BOOK_OK Beloved/);
+
+  const foreignOrder = source.indexOf('richLesson("Connect Django Models With ForeignKey"');
+  assert.ok(foreignOrder > migrationOrder && bridgeOrder > foreignOrder,
+    "Teach ForeignKey behavior after first migration and before applied Steward ORM");
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "models.py"),
+    authoredSnippet("catalogue/models.py — add the protected Writer relationship") + "\n");
+  beginnerExec(["manage.py", "check"]);
+  beginnerExec(["manage.py", "makemigrations", "catalogue", "--noinput"]);
+  const foreignSql = beginnerExec(["manage.py", "sqlmigrate", "catalogue", "0002"]);
+  assert.match(foreignSql, /catalogue_writer/, "Second migration must create the writer table");
+  assert.match(foreignSql, /writer_id/, "Second migration must add a real Book foreign-key column");
+  beginnerExec(["manage.py", "migrate", "--noinput"]);
+  assert.match(beginnerExec(["manage.py", "shell", "-c",
+    authoredSnippet("book_writer_lab.py — save the relation and reject deletion")]),
+    /RELATION_OK Beloved Toni Morrison[\s\S]*PROTECTED_DELETE_OK/);
+  console.log("Builder Django ForeignKey passed: source-published additive migration, persisted relation, reverse query and protected deletion.");
+
+  console.log("Builder Django model/migration passed: exact source model, first generated SQL, real uniqueness error and independent-shell persistence.");
+
   console.log("Builder Django beginner lab passed: actual lesson snippets for projects, DRF, plain serializer, APIView and ViewSet plus negative HTTP/validation cases.");
 
   console.log("Builder Django bridge passed: actual learner-visible config URL, models, serializer, PostgreSQL migrations, query, and HTTP test client 200/404/405.");
