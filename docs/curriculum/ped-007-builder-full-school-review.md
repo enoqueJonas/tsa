@@ -196,3 +196,17 @@ These tasks are specifications for independent learner assessment, **not evidenc
 - Add source-derived CI verifying an unset variable, a temporary valid value and an invalid value causing a nonzero exit. Guard against reintroducing the unexplained `env.str` API.
 
 **Evidence limit:** Source and CI checks prove the demonstrations execute, not that the learner independently configures the deployed Steward API. Human rendered review and transfer remain open.
+
+## 2026-11-04 — Python logging mechanism before application logging
+
+**Finding:** The old Useful Logging lesson first displayed `logger.info(...)` using undefined `logger`, `service`, `request`, `old` and `new` variables. It mentioned levels and structured context but did not teach where log records go, what a handler does or how formatter fields are supplied. The published practical immediately required instrumenting an unspecified Steward operation.
+
+**Remediation:**
+- Insert **Python Logging: Records, Levels and Handlers**, which defines logger, record, handler, formatter and logger/handler thresholds. Its complete `logging_basics.py` uses in-memory output and proves INFO/WARNING are visible while DEBUG is filtered.
+- Rebuild **Useful Logging** after those foundations, with a standalone `logging_events.py` that writes a lifecycle change and a denied operation, includes service/request identifiers, and deliberately excludes a secret-looking Authorization header present in the input mapping.
+- Replace the undefined fragment with executable code; discuss that formatting fields must match `extra`, and why a log line does not enforce a permission or database invariant.
+- Match both post-composition practicals to the exact examples, then allow real Steward instrumentation only after the mechanism is understood.
+- Execute source-extracted examples in the curriculum smoke suite. A deliberately changed handler threshold must cause a failed assertion; a deliberately leaked Authorization value must also cause a failed assertion.
+- No claim is made that an in-memory stream proves production logs, reverse proxies, retention or actual API enforcement secure.
+
+**Status:** Full matching-head CI, human rendered-page checks and uncoached learner transfer must be verified separately. Builder-school learner validation remains open.
