@@ -28,6 +28,28 @@ const resourcesByDjangoLesson: Record<string, LearningResource[]> = {
 
 function slug(value: string) { return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 
+const djangoActivityNames: Record<string, [string, string, string]> = {
+  "Django from Zero: A Running HTTP Endpoint": ["Run your first Django endpoint", "Build an HTTP endpoint from scratch", "Check the HTTP request path"],
+  "Django Foundations": ["Understand projects, applications and routing", "Trace requests through a Django application", "Check Django request handling"],
+  "Django REST Framework": ["Send and receive API requests with DRF", "Probe request parsing and response negotiation", "Check DRF request handling"],
+  "Projects, Applications and Boundaries": ["Organize applications by responsibility", "Design application boundaries", "Check project structure"],
+  "Steward SQL to Django ORM: One Canonical Domain": ["Map a relational domain to Django", "Map Steward tables to models", "Review the domain mapping"],
+  "Models and Domain Data": ["Understand Django models and fields", "Map relationships and constraints", "Check model semantics"],
+  "ORM Query Behavior and Performance": ["Understand when QuerySets execute", "Inspect ORM SQL and query counts", "Check QuerySet behavior"],
+  "Schema Evolution with Django Migrations": ["Understand Django database migrations", "Apply a safe schema change", "Check migration safety"],
+  "Serializers and Representation": ["Validate input and produce API output", "Validate standalone book payloads", "Check serializer boundaries"],
+  "Views, ViewSets and Routing": ["Route requests with APIView and ViewSets", "Compare explicit and router-generated routes", "Check API routing"],
+  "Production Readiness Commands and Atomic Updates": ["Update records safely in transactions", "Apply a controlled state change", "Check atomic updates"],
+  "Validation and Business Rules": ["Separate validation from business rules", "Test domain rules independently", "Check rule ownership"],
+  "API Error Handling": ["Return meaningful API errors", "Reproduce and classify API failures", "Check error contracts"],
+  "Filtering, Searching and Ordering": ["Build reliable query filters", "Filter and order API results", "Check query parameters"],
+  "Pagination": ["Split API results into stable pages", "Prove pagination boundaries", "Check pagination behavior"],
+  "API Versioning": ["Change an API without breaking clients", "Test a versioned API contract", "Check compatibility"],
+  "OpenAPI and Swagger Documentation": ["Document the API you actually serve", "Verify an OpenAPI contract", "Check API documentation"],
+  "Configuration and Environments": ["Configure Django for different environments", "Validate settings and failure paths", "Check configuration safety"],
+  "Application Logging": ["Write useful application logs", "Inspect diagnostic events", "Check logging boundaries"],
+};
+
 function richLesson(title: string, introduction: string, outcomes: string[], concepts: Array<{ heading: string; body: string; code?: { language: string; caption: string; value: string; output?: string } }>, practice: string[], check: string[], resources: LearningResource[] = resourcesByDjangoLesson[title] ?? [djangoDocs, drfDocs]): Lesson {
   const id = `django-and-api-engineering-${slug(title)}`;
   const blocks: LessonBlock[] = [
@@ -41,7 +63,6 @@ function richLesson(title: string, introduction: string, outcomes: string[], con
     blocks.push({ type: "paragraph", text: concept.body });
     if (concept.code) blocks.push({ type: "code", language: concept.code.language, caption: concept.code.caption, code: concept.code.value, output: concept.code.output });
   }
-  blocks.push({ type: "callout", tone: "steward", title: "Steward connection", body: "Apply this concept to Steward's engineering service registry. Framework features are valuable only when they preserve the domain rules around teams, service ownership, environments, lifecycle, criticality and service dependencies." });
   blocks.push({ type: "heading", id: "assignment", text: "Assignment" });
   blocks.push({ type: "list", ordered: true, items: practice });
   blocks.push({ type: "resources", title: "Required and supporting reading", resources });
@@ -52,9 +73,9 @@ function richLesson(title: string, introduction: string, outcomes: string[], con
     id,
     title,
     activities: [
-      { id: `${id}-concepts`, title: `${title}: Concepts and Mental Model`, estimatedMinutes: 50, content: { type: "reading", body: blocks.filter((block) => block.type === "paragraph").map((block) => block.text).join("\n\n") || introduction, blocks } },
-      { id: `${id}-practice`, title: `${title}: Engineering Practice`, estimatedMinutes: 55, content: { type: "practical", objective: `Apply ${title} to the evolving Steward API with observable behavior and evidence.`, scenario: "Continue the same Steward codebase. Preserve useful implementation, notes and decisions for later Builder modules.", instructions: practice, deliverables: ["Working Steward implementation or focused experiment", "Reproducible evidence note containing the command/request or setup, observed result, one failure path and one design decision"], completionCriteria: ["Another learner could reproduce the demonstrated behavior from the recorded setup and action.", "The implementation is connected to Steward rather than a disposable tutorial domain.", "At least one boundary/failure case is exercised and its observed result is recorded.", "The learner can explain what Django/DRF is doing rather than only copy framework syntax."] } },
-      { id: `${id}-check`, title: `${title}: Knowledge Check`, estimatedMinutes: 10, content: { type: "reflection", prompt: check.join("\n\n") } },
+      { id: `${id}-concepts`, title: djangoActivityNames[title]?.[0] ?? `Understand ${title}`, estimatedMinutes: 50, content: { type: "reading", body: blocks.filter((block) => block.type === "paragraph").map((block) => block.text).join("\n\n") || introduction, blocks } },
+      { id: `${id}-practice`, title: djangoActivityNames[title]?.[1] ?? `Practise ${title}`, estimatedMinutes: 55, content: { type: "practical", objective: `Apply ${title} to the evolving Steward API with observable behavior and evidence.`, scenario: "Continue the same Steward codebase. Preserve useful implementation, notes and decisions for later Builder modules.", instructions: practice, deliverables: ["Working Steward implementation or focused experiment", "Reproducible evidence note containing the command/request or setup, observed result, one failure path and one design decision"], completionCriteria: ["Another learner could reproduce the demonstrated behavior from the recorded setup and action.", "The implementation is connected to Steward rather than a disposable tutorial domain.", "At least one boundary/failure case is exercised and its observed result is recorded.", "The learner can explain what Django/DRF is doing rather than only copy framework syntax."] } },
+      { id: `${id}-check`, title: djangoActivityNames[title]?.[2] ?? `Check ${title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: check.join("\n\n") } },
     ],
   };
 }
@@ -81,7 +102,7 @@ export const djangoAndApiRichLessons: Lesson[] = [
     "code": {
       "language": "python",
       "caption": "config/settings.py — add this item to the existing list, do not replace the list",
-      "value": "INSTALLED_APPS = [\n    # Keep every entry Django generated here.\n    # ...\n    'catalogue',\n]"
+      "value": "# Add this *after* the generated INSTALLED_APPS list; keep all defaults.\nINSTALLED_APPS += ['catalogue']"
     }
   },
   {
