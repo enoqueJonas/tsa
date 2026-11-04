@@ -87,6 +87,75 @@ def inspect_school(page):
                 assert content.get_by_role("button", name="Copy").count() >= 1, (
                     f"Missing runnable, copyable example in Builder reading: {activity_id}"
                 )
+            # Targeted PostgreSQL learner-surface checks. The normal Builder
+            # mobile smoke only inspects two activities per module, so it
+            # cannot prove the rebuilt deep readings fit a phone. Check
+            # specific rendered mechanism headings, copyable examples, and
+            # 390px document overflow without granting learner validation.
+            builder_postgresql_readings = {
+                "relational-data-and-postgresql-postgresql-what-it-is-reading":
+                    ("Why use a database instead of a file?", False),
+                "relational-data-and-postgresql-postgresql-first-connection-reading":
+                    ("Understand the psql prompt", True),
+                "relational-data-and-postgresql-postgresql-create-schema-reading":
+                    ("Create the library schema", True),
+                "relational-data-and-postgresql-postgresql-schema-design-basics-reading":
+                    ("One-to-many and many-to-many relationships", True),
+                "relational-data-and-postgresql-postgresql-normal-forms-reading":
+                    ("Second normal form: avoid facts dependent on only part of a key", True),
+                "relational-data-and-postgresql-postgresql-measurement-basics-reading":
+                    ("What are p50 and p95?", False),
+                "relational-data-and-postgresql-query-performance-reading":
+                    ("Run the complete baseline and intervention as one SQL file", True),
+                "relational-data-and-postgresql-postgresql-pagination-reading":
+                    ("Create two pages, insert an earlier book, and compare", True),
+                "relational-data-and-postgresql-postgresql-roles-and-privileges-reading":
+                    ("Prove that SELECT succeeds but INSERT is denied", True),
+                "relational-data-and-postgresql-postgresql-backup-and-restore-reading":
+                    ("Run the complete dump-and-restore sequence", True),
+            }
+            target = builder_postgresql_readings.get(activity_id) if SCHOOL == "builder" else None
+            if target is not None:
+                expected_heading, needs_code = target
+                assert len(text) >= 2400, (
+                    f"PostgreSQL reading remains too superficial in rendered page: "
+                    f"{activity_id}: {len(text)} characters"
+                )
+                assert content.get_by_text(expected_heading, exact=True).count() >= 1, (
+                    f"Missing teaching mechanism in rendered PostgreSQL reading: "
+                    f"{activity_id}: {expected_heading}"
+                )
+                assert "Two programs, one protocol boundary" not in text, (
+                    f"Old architecture-review heading returned to {activity_id}"
+                )
+                if needs_code:
+                    assert content.get_by_role("button", name="Copy").count() >= 1, (
+                        f"Published PostgreSQL executable example not rendered: {activity_id}"
+                    )
+                # Render exactly this activity on a mobile viewport, not the
+                # module's earlier entry page. Code figures may scroll inside
+                # their container; the document itself must not overflow.
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert not page.evaluate(
+                    "document.documentElement.scrollWidth > innerWidth + 2"
+                ), f"Horizontal 390px overflow in PostgreSQL reading: {activity_id}"
+                for fig in content.locator("figure").filter(
+                    has=page.get_by_role("button", name="Copy")
+                ).all():
+                    assert fig.locator("pre").count() >= 1, (
+                        f"Missing mobile code source in PostgreSQL reading: {activity_id}"
+                    )
+                if activity_id in {
+                    "relational-data-and-postgresql-postgresql-first-connection-reading",
+                    "relational-data-and-postgresql-query-performance-reading",
+                    "relational-data-and-postgresql-postgresql-pagination-reading",
+                    "relational-data-and-postgresql-postgresql-roles-and-privileges-reading",
+                }:
+                    page.screenshot(
+                        path=str(ARTIFACTS / f"builder-postgresql-{activity_id.split('-')[-2]}-390.png"),
+                        full_page=True,
+                    )
+                page.set_viewport_size({"width": 1440, "height": 900})
             code = content.locator("figure").filter(has=page.get_by_role("button", name="Copy"))
             if SCHOOL == "quality-steward":
                 assert not activity_id.endswith("-quality-preparation"), (
