@@ -142,3 +142,16 @@ These tasks are specifications for independent learner assessment, **not evidenc
 - Replace the published practical override with the same independently executable learning order; only then invite a narrow, verified Steward transfer.
 
 **Status:** Matching-head full CI and browser checks not yet established for this branch. Independent novice understanding, manual rendered UX, and a real Steward request-path transfer remain OPEN. **Builder learner-validated: NO.**
+
+## 2026-11-04 — Refactoring taught through a real before/after boundary
+
+**Finding:** The Refactoring lesson described behavior-preserving restructuring but its only example declared an old and new one-line Team-ID equality check side by side. A learner was never given a real original program to change, a verifiable sequence of transformations, a boundary condition, or a test demonstrated to fail after an accidental change. The published practice jumped directly into an unspecified Steward hotspot.
+
+**Teaching correction:**
+- Give an independent refund policy with a concrete contract (paid order, not previously refunded, up to and including day 30). The original script is a complete standalone Python program and tests six positive, negative, boundary, denial-priority and mutation-side-effect cases.
+- Introduce Extract Function as one named transformation to a separate refund_rejection_reason helper. Publish a second complete Python program whose externally observed request_refund arguments, results and refunded flags remain unchanged for all six cases.
+- Explicitly mutate `> 30` into `>= 30` on the after example and require the day-30 assertion to fail; source-extracted curriculum smoke executes both original and new scripts and the faulty mutant.
+- Explain why a 45-day policy or a changed denial priority would be a business change rather than refactoring; avoid introducing a hierarchy or speculative framework to teach one function extraction.
+- Align the final published practical override with the exact independent scripts and move any real Steward refactor to a separate evidence-based transfer step.
+
+**Evidence limits:** Exact-head CI and rendered browser traversal must pass separately. Successful Python execution is not evidence a novice can independently recognize a maintainability problem, stop refactoring appropriately, or transfer to an unfamiliar Steward function. Human review and learner transfer remain OPEN.
