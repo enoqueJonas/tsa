@@ -13,18 +13,22 @@ function publishedPractice(id) {
   const end=publishedPracticeSource.indexOf('\n  "django-and-api-engineering-',start+key.length);
   return publishedPracticeSource.slice(start,end<0?publishedPracticeSource.length:end);
 }
-for (const id of ["django-from-zero-a-running-http-endpoint","django-foundations","django-rest-framework",
+for (const id of ["django-from-zero-a-running-http-endpoint","django-foundations","django-rest-framework","projects-applications-and-boundaries",
   "steward-sql-to-django-orm-one-canonical-domain","orm-query-behavior-and-performance",
   "schema-evolution-with-django-migrations","serializers-and-representation",
   "production-readiness-commands-and-atomic-updates"]) {
   assert.ok(publishedPractice(id).includes("instructions:"),"Django practical lacks substantive instructions: "+id);
 }
-for(const id of ["django-from-zero-a-running-http-endpoint","django-foundations","django-rest-framework"]){
+for(const id of ["django-from-zero-a-running-http-endpoint","django-foundations","django-rest-framework","projects-applications-and-boundaries"]){
   const practice=publishedPractice(id);
   assert.match(practice,/tsa-django-intro/,'First Django/DRF exercises must reuse scratch project');
   assert.doesNotMatch(practice,/Create Steward's first Django application|Continue the same Steward codebase/,
     'Django scratch primer cannot require an untaught Steward application');
 }
+assert.match(source, /"caption":"Terminal — start a separate Steward Django application"/,
+  "ORM bridge must publish the independent Steward project bootstrap commands");
+assert.doesNotMatch(publishedPractice("projects-applications-and-boundaries"), /run manage.py check on registry/,
+  "Boundaries practical must not require a registry app before creation");
 assert.match(publishedPractice("serializers-and-representation"),/serializer_lab\.py/,
   "Published serializer practice must start from the standalone book experiment");
 assert.match(publishedPractice("schema-evolution-with-django-migrations"),/historical-model/,
