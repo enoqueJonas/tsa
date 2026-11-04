@@ -4008,80 +4008,253 @@ const specs: DataLessonSpec[] = [
         "practiceScenario": "Use scratch book data to understand index ordering, then evaluate one applied Steward query."
     },
     {
-        "id": "query-performance",
-        "title": "Query Performance",
-        "introduction": "Performance engineering means defining a symptom, creating a representative workload, recording a baseline, changing one factor and retaining only changes justified by evidence. A clever SQL rewrite is not a goal; a measured improvement for an actual use case is.",
+        "id": "postgresql-measurement-basics",
+        "title": "Understand Query Latency, Throughput and Percentiles",
+        "introduction": "Before optimizing a query, decide what 'slow' means and where the delay actually occurs. A database query, a Python endpoint and a page in a browser have different boundaries. This lesson makes latency, throughput, percentiles and a useful performance objective concrete before we touch indexes or benchmarks.",
         "outcomes": [
-            "Define p50/p95 latency, throughput and row-volume requirements rather than 'fast'.",
-            "Separate database server time from network and application serialization time.",
-            "Design a controlled before/after comparison including data distribution and warm-up.",
-            "Identify risks of unbounded lists, N+1 requests, OFFSET pagination and premature indexes."
+            "Explain latency and throughput using one request's timeline.",
+            "Interpret p50 and p95 with real ordered observations, not just acronyms.",
+            "Separate PostgreSQL execution time from client transfer and application response time.",
+            "Write a falsifiable performance objective with dataset, traffic and correctness conditions."
         ],
         "sections": [
             {
-                "id": "goal",
-                "title": "An objective has a workload and a threshold",
-                "body": "'Search p95 ≤ 300ms at 40 requests/s over 100,000 Services' is testable; 'faster SQL' is not. p95 summarizes the slow tail of a latency distribution; throughput describes work completed per unit time. PostgreSQL EXPLAIN ANALYZE measures database execution in a local query, not HTTP end-to-end time, TLS, queueing, DRF serialization or network effects. Define which layer you measured. A query can have good p50 and unacceptable p95 under load."
+                "id": "user-experience",
+                "title": "What does a user experience as slow?",
+                "body": "Imagine a librarian searches for one book in an application. They click Search at 10:00:00.000 and see the answer at 10:00:00.280. That 280 ms is an *end-to-end response time*: it includes the request travelling to the application, any queueing, authentication, application logic, the SQL request to PostgreSQL, the result transfer and the formatting of the response. Even a perfectly indexed SELECT would not remove all of those stages.\n\nLatency means the elapsed time for one operation. Throughput means how much work completes in a period, such as 40 completed HTTP requests per second. One system can have good average latency when idle and much worse latency when requests arrive concurrently. High throughput without acceptable response times is not automatically a good user experience.\n\nStart every performance investigation by naming the operation and its boundary: database query, API endpoint or fully rendered interaction. A measured value from one boundary is not a valid substitute for another."
             },
             {
-                "id": "control",
-                "title": "Change one variable at a time",
-                "body": "Seed a representative number of rows with relevant selectivity and skew, run the same query/parameters repeatedly before and after an index or rewritten predicate, and record row counts, plan nodes and median/spread. Avoid changing query, index, hardware and data simultaneously. Cold-cache and warm-cache conditions may differ. A tiny sample with only five Services is inadequate for most optimization conclusions."
+                "id": "db-versus-http",
+                "title": "What does PostgreSQL actually time?",
+                "body": "PostgreSQL EXPLAIN (ANALYZE, BUFFERS) executes the statement and reports plan execution measurements. The reported Execution Time is *not* the whole browser-to-server experience. It excludes delivering the query's result rows over the network to the client, and its measurement instrumentation can add overhead. PostgreSQL 17's EXPLAIN options can separately measure serialization work, but do not assume that a basic EXPLAIN report has timed your API serializer or network.\n\nFor a Django API endpoint you may need database timing, query count, application time, network measurements and user-visible latency. If SELECT takes 8 ms but the API takes 900 ms, immediately adding another SQL index is unlikely to fix the remaining 892 ms. Investigate serialization, excessive round trips, queueing or external work first.\n\nAn EXPLAIN cost value is a planner estimate in relative units—not a duration in milliseconds. You already learned that in the query-plan lesson; here we add the larger performance boundary."
             },
             {
-                "id": "patterns",
-                "title": "What typical bottlenecks look like",
-                "body": "An unbounded list returns excessive rows and JSON bytes; pagination must define stable ordering and permission filtering. An N+1 Django view can send one query per Service relationship; the remedy is usually fetching related data deliberately, not changing one index. A large OFFSET forces skipping many rows; keyset pagination can help when the ordering keys and consistency semantics are suitable. A wide SELECT * may fetch data that the client never uses. Indexing helps selective predicates, but an index on every field increases write costs."
+                "id": "median-and-tail",
+                "title": "What are p50 and p95?",
+                "body": "Suppose ten identical book searches take 10, 12, 12, 13, 14, 15, 16, 17, 20 and 100 milliseconds, sorted from fastest to slowest. The median (p50 for this sample) is halfway between the fifth and sixth values: 14.5 ms. Most searches appear fast, but one slow request takes 100 ms. A high percentile such as p95 expresses how slow requests near the tail behave; it is not '95% faster' or an average of the slowest requests.\n\nPercentiles are estimated from a distribution, and common quantile calculation methods use different interpolation rules on small samples. Ten observations are **not enough** for a trustworthy p95 service-level claim. Real traffic needs many representative requests, time windows, parameter mixes and load conditions. Record the method and sample size.\n\nFor an API, a test might require p95 below 300 ms during a representative 40-request/s workload. That target concerns end-to-end requests; an EXPLAIN Execution Time below 300 ms cannot prove it."
             },
             {
-                "id": "baseline",
-                "title": "A repeatable workload and inspectable result",
-                "body": "Use the 15,000-row scratch fixture from Indexes or establish it in a new psql session. Compare an equality lookup and a low-selectivity priority predicate. Record the before/after EXPLAIN plan and actual row count, but do not claim an SLA based on one local run. Explain whether the query is CPU-bound, scan-heavy or round-trip-bound from evidence rather than guesses.",
-                "caption": "performance_probe.sql — compare selective and broad predicates",
-                "code": "CREATE TEMP TABLE tsa_perf_probe AS\nSELECT n AS id, (n % 4) AS priority, 'svc-' || n::text AS name\nFROM generate_series(1,15000) AS g(n);\nANALYZE tsa_perf_probe;\nEXPLAIN (ANALYZE, BUFFERS) SELECT id FROM tsa_perf_probe WHERE id=14777;\nEXPLAIN (ANALYZE, BUFFERS) SELECT id FROM tsa_perf_probe WHERE priority=1;"
+                "id": "correctness-first",
+                "title": "Fast but wrong is not a successful optimization",
+                "body": "A query that drops needed rows or omits a permission filter can appear faster because it does less correct work. An index change might leave results unchanged, while rewriting a join could accidentally count duplicate entities. Before comparing timings, define the expected result set and a basic correctness check, such as the number of matching books and their identity.\n\nAlso describe the workload: how many rows exist, how often the query runs, which parameter values occur, and how many requests arrive simultaneously. A lookup that finds 1 of 15,000 books is different from a report that needs 14,000. An index can help one and hurt the other through added maintenance cost.\n\nCorrectness and measurement boundaries belong in the acceptance criteria, not as afterthoughts attached to a graph."
             },
             {
-                "id": "decision",
-                "title": "Decide what to keep, and write down uncertainty",
-                "body": "State the observed baseline, intervention, resulting plan and timings, test environment and known limitations. If plans do not change after creating an index, that is valuable evidence: investigate selectivity, table size, ANALYZE statistics and query shape instead of forcing an index. If improving one query slows writes, quantify the cost and decide based on the actual product workload. This is an evidence-backed choice, not a rule that every measured improvement deserves a deployment."
+                "id": "write-acceptance",
+                "title": "Write a performance objective that can be tested",
+                "body": "A useful statement might be: 'For searches by unique catalogue code over an approximately 100,000-book dataset, with representative code distributions and 40 requests/s, at least 95% of completed API requests should respond within 300 ms while returning the correct authorized book.' This states the interface, data, workload, percentile, threshold and correctness expectation. The numbers are illustrative targets, not an SLA TSA has actually measured.\n\nContrast this with 'make PostgreSQL fast'. That second instruction gives no comparison standard. Could a fix that saves one millisecond but increases CPU load be accepted? Could deleting a database index that no production query uses be acceptable? With a clear target and measured baseline you can answer those questions.\n\nThe next lesson will measure a local SQL experiment only. It does not claim to simulate an HTTP endpoint, real concurrency or production-scale data."
+            },
+            {
+                "id": "transfer-metric",
+                "title": "Decide which metric would answer each question",
+                "body": "Question A: 'Which PostgreSQL scan did the server use?' Inspect the query plan with EXPLAIN. Question B: 'How many database queries did the Python endpoint issue?' Instrument query count on the application path. Question C: 'What did 95% of real users experience?' Collect distributed end-to-end response durations over a defined window and compute the appropriate percentile.\n\nThose three measures have different jobs. A correct engineering report should label each. Measuring PostgreSQL alone cannot identify a slow upstream authentication service, and measuring HTTP alone cannot tell you which table scan the optimizer chose. Choose the tool according to the question rather than the metric that is easiest to obtain."
             }
         ],
+        "warning": "Never invent benchmark timings or infer production service-level performance from a small local SQL exercise.",
         "assignment": [
-            "Write a measurable query objective with traffic/data assumptions and acceptance threshold.",
-            "Run the disposable performance_probe.sql and inspect two contrasting plans.",
-            "Choose one candidate index or predicate change, run controlled comparisons and document results and caveats.",
-            "Explain how you would measure HTTP end-to-end p95 separately from database EXPLAIN timing."
+            "Explain one end-to-end book-search request as a timeline, marking where SQL execution occurs.",
+            "Interpret the ten sample durations and explain why one mean or a tiny-sample p95 could mislead.",
+            "Write one query-level objective and one separate API-level objective with correctly labeled measurement boundaries.",
+            "Explain what evidence would tell you to investigate an application N+1 problem rather than add an index."
         ],
         "resources": [
             {
-                "title": "PostgreSQL — Performance Tips",
-                "url": "https://www.postgresql.org/docs/current/performance-tips.html",
+                "title": "PostgreSQL 17 — Using EXPLAIN",
+                "url": "https://www.postgresql.org/docs/17/using-explain.html",
                 "kind": "reference",
-                "purpose": "Explain, statistics and benchmark limits"
+                "purpose": "Distinguish plan estimation, instrumented server execution and client/network costs."
             },
             {
-                "title": "PostgreSQL — EXPLAIN",
-                "url": "https://www.postgresql.org/docs/current/using-explain.html",
+                "title": "PostgreSQL 17 — Performance Tips",
+                "url": "https://www.postgresql.org/docs/17/performance-tips.html",
                 "kind": "reference",
-                "purpose": "Interpretation of actual-versus-estimated query costs"
+                "purpose": "Review statistics, indexing and plan-related performance evidence."
             },
             {
-                "title": "CMU 15-445 Fall 2025 — Indexes, Query Planning and Execution",
-                "url": "https://15445.courses.cs.cmu.edu/fall2025/schedule.html",
-                "kind": "course",
-                "read": "Lectures #08–#09 and #13–#15, optional deep dive",
-                "purpose": "Compare B-tree internals and physical query algorithms with declarative SQL; full recordings not claimed watched"
+                "title": "PostgreSQL 17 — Monitoring Database Activity",
+                "url": "https://www.postgresql.org/docs/17/monitoring-stats.html",
+                "kind": "reference",
+                "purpose": "Understand server-side statistics and their interpretation limits."
             }
         ],
-        "practiceObjective": "Define p50/p95 latency, throughput and row-volume requirements rather than 'fast'.",
+        "practiceObjective": "Define the boundaries and acceptance criteria for a measurable book lookup without fabricating production results.",
         "practiceInstructions": [
-            "Write a measurable query objective with traffic/data assumptions and acceptance threshold.",
-            "Run the disposable performance_probe.sql and inspect two contrasting plans.",
-            "Choose one candidate index or predicate change, run controlled comparisons and document results and caveats.",
-            "Explain how you would measure HTTP end-to-end p95 separately from database EXPLAIN timing."
+            "Draw an end-to-end request timeline with client, application and PostgreSQL stages.",
+            "Distinguish database plan execution from HTTP response latency.",
+            "Choose a data volume, parameter mix, request rate and percentile-based success criterion.",
+            "State what a benchmark would not prove without representative conditions."
         ],
-        "knowledgeCheck": "How do database execution time and API request latency differ? Why could a valid index change slow overall throughput? What makes a before/after comparison credible?",
-        "warning": "Only execute changing SQL in a dedicated disposable PostgreSQL learning database. Predict the resulting rows and constraints before running a statement, and do not treat a five-row fixture as representative performance evidence."
+        "knowledgeCheck": "If EXPLAIN shows 5 ms but the endpoint takes 900 ms, what have you actually learned? What does p95 mean? Why does a 10-request sample not establish a production p95?",
+        "readingTitle": "Learn to measure the right performance problem",
+        "practiceTitle": "Define a measurable performance objective",
+        "checkTitle": "Check latency and throughput",
+        "practiceScenario": "Use a generic book-search endpoint to separate user-visible delay from database execution."
+    },
+    {
+        "id": "query-performance",
+        "title": "Run a Controlled PostgreSQL Performance Experiment",
+        "introduction": "You can read an execution plan and understand what latency means. Now investigate one concrete performance hypothesis: will a B-tree help an exact lookup in a 15,000-row book catalogue? We will keep the query and dataset constant while changing one factor—the existence of an index—and compare a selective lookup with a much broader filter.",
+        "outcomes": [
+            "Construct repeatable disposable data and prove the expected row counts.",
+            "Record an EXPLAIN (ANALYZE, BUFFERS) baseline before changing indexes.",
+            "Create exactly one candidate index and rerun the same SELECT under comparable conditions.",
+            "Explain what the experiment proves and does not prove about planner choice, timing and production traffic."
+        ],
+        "sections": [
+            {
+                "id": "what-question",
+                "title": "Choose one hypothesis before using EXPLAIN",
+                "body": "Our question is: can an index on id reduce the work required to retrieve book number 14777 from 15,000 rows? That lookup returns exactly one record. We will also query priority = 1, which returns 3,750 of the 15,000 rows. Because these predicates differ in selectivity, PostgreSQL may choose different scan strategies. The broader query provides a counterexample to 'indexes always help'.\n\nWe must compare the *same* selective SELECT before and after CREATE INDEX. Changing the query and adding an index simultaneously would prevent us from knowing which factor caused the observed plan change. The meaning and expected result must remain stable. The index is added only to an isolated TEMP table, never to the canonical Steward fixture."
+            },
+            {
+                "id": "generate-data",
+                "title": "Understand every value in the scratch dataset",
+                "body": "The SQL below uses generate_series(1,15000), a PostgreSQL function that returns consecutive integers. Each integer becomes a book id. `n % 4` is the remainder after division by four, producing priority values 0, 1, 2 and 3 in equal-sized groups. The name expression builds a readable label such as book-14777. These are fictional rows generated only for measurement.\n\n`CREATE TEMP TABLE ... AS SELECT` creates the table and populates it from the generated rows in one operation. The following standalone ANALYZE asks PostgreSQL to collect statistics used for planning. That is different from EXPLAIN ANALYZE, which executes a query and records observations.\n\nOur fixed correctness checks are: 15,000 total rows, one match for id = 14777 and 3,750 matches for priority = 1. If these numbers differ, stop: the experiment is not running on the dataset you think it is."
+            },
+            {
+                "id": "baseline",
+                "title": "Measure the baseline without a candidate index",
+                "body": "First run EXPLAIN (ANALYZE, BUFFERS) for the exact id lookup while no user-created index exists on the scratch table. Record the chosen scan node, estimated rows, actual rows and buffer activity. Then run the broad priority query. On an ordinary 15,000-row table, the id lookup may use a sequential scan before the index is created, but the exact plan is selected by PostgreSQL and may vary with environment.\n\nDo not compare two different queries' millisecond numbers and conclude that an index changed anything: no index has been created yet. These are separate baseline cases. Also do not treat the execution time as an HTTP response time; no API or browser is involved."
+            },
+            {
+                "id": "index-change",
+                "title": "Make exactly one planned change",
+                "body": "Now CREATE INDEX on the id column of the same TEMP table and ANALYZE it again. Run the exact same id query and the same priority query. The server is now free to use the index for the rare id value. It may continue to use a sequential scan for priority because we did not index that column and because the filter matches many rows.\n\nIndex creation itself takes work and storage. A sensible decision considers query frequency, read improvement and update/insert overhead, not only whether the selected EXPLAIN plan mentions Index Scan. You are looking for evidence of a changed access path and repeatable benefit; one plan trace cannot establish a production improvement."
+            },
+            {
+                "id": "run-script",
+                "title": "Run the complete baseline and intervention as one SQL file",
+                "body": "Save the entire snippet below as performance_probe.sql and run it in one psql session against your disposable database, for example `psql -X -v ON_ERROR_STOP=1 -d tsa_library -f performance_probe.sql`. The TEMP table must exist throughout the baseline and post-index observations. The SQL reports a count after each measured query so you can distinguish correctness from plan choice. In order, the four counts must be 1, 3750, 1, 3750.\n\nYou will see two EXPLAIN plans before the index, a CREATE INDEX response, and two plans after it. Record the node names and reported timings rather than copying any exact costs from this prose; PostgreSQL chooses them under your environment. If the planner does not switch scans, investigate the row-count estimates and workload instead of forcing an index merely to match a screenshot.",
+                "caption": "performance_probe.sql — baseline and after-index plans with stable row counts",
+                "code": "CREATE TEMP TABLE tsa_perf_probe AS\nSELECT n AS id, (n % 4) AS priority, 'book-' || n::text AS name\nFROM generate_series(1,15000) AS g(n);\nANALYZE tsa_perf_probe;\nEXPLAIN (ANALYZE, BUFFERS) SELECT id FROM tsa_perf_probe WHERE id = 14777;\nSELECT count(*) AS exact_before FROM tsa_perf_probe WHERE id = 14777;\nEXPLAIN (ANALYZE, BUFFERS) SELECT id FROM tsa_perf_probe WHERE priority = 1;\nSELECT count(*) AS broad_before FROM tsa_perf_probe WHERE priority = 1;\nCREATE INDEX tsa_perf_id_idx ON tsa_perf_probe(id);\nANALYZE tsa_perf_probe;\nEXPLAIN (ANALYZE, BUFFERS) SELECT id FROM tsa_perf_probe WHERE id = 14777;\nSELECT count(*) AS exact_after FROM tsa_perf_probe WHERE id = 14777;\nEXPLAIN (ANALYZE, BUFFERS) SELECT id FROM tsa_perf_probe WHERE priority = 1;\nSELECT count(*) AS broad_after FROM tsa_perf_probe WHERE priority = 1;",
+                "language": "sql",
+                "output": "Correctness counts in sequence: 1, 3750, 1, 3750; scan plans and times depend on the server."
+            },
+            {
+                "id": "repeat-and-judge",
+                "title": "What does a credible before/after comparison require?",
+                "body": "This script provides a deterministic *correctness* test and examples of measured plans. It is not yet a rigorous performance benchmark: the second run benefits from warmed caches and different timing overhead, and only one synthetic distribution is represented. To estimate a real effect, repeat measurements, alternate baseline/index conditions where feasible, keep parameters and hardware stable, and collect a distribution rather than one execution time.\n\nKeep a short evidence sheet: dataset size; expected and actual result rows; before/after plan nodes; buffer hits/reads; measured timings over multiple runs; what changed; and any limitations. A query may get a faster lookup while inserts become more expensive due to index maintenance. If the application hardly ever looks up by id, the trade-off might not be worthwhile.\n\nThe conclusion can legitimately be 'inconclusive'. That is better than pretending a microsecond difference on a laptop is production evidence."
+            },
+            {
+                "id": "transfer-case",
+                "title": "Apply the experiment method to a new domain",
+                "body": "Imagine a warehouse table with 100,000 package records and frequent searches by tracking_code, but also bulk reports by status. Build a candidate index for the exact tracking-code lookup and explain why it is not automatically the best access path for a report that retrieves 60% of the table.\n\nWrite the expected query shape, how you would preserve a representative data distribution, how you would check result correctness, and what you would measure before and after. Only after that should you consider the analogous Steward Service lookup. The broader pagination and result-size issues are treated separately next, rather than being squeezed into an index checklist."
+            }
+        ],
+        "warning": "Use a disposable PostgreSQL session. Avoid drawing production latency or throughput conclusions from one synthetic plan, and never benchmark destructive writes on shared data.",
+        "assignment": [
+            "Predict the 1 and 3,750 matching-row counts before executing the lab.",
+            "Run the full source-published performance_probe.sql in one session and confirm the four stable counts.",
+            "Record the selective and broad scans before/after the candidate index, including observed rows and buffers.",
+            "Write a keep/remove/inconclusive decision based on evidence, explicitly noting caching, write overhead and synthetic-data limitations.",
+            "Define an equivalent new problem that does not use Steward book or Service fields."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Using EXPLAIN",
+                "url": "https://www.postgresql.org/docs/17/using-explain.html",
+                "kind": "reference",
+                "purpose": "Distinguish plan estimation, instrumented server execution and client/network costs."
+            },
+            {
+                "title": "PostgreSQL 17 — Performance Tips",
+                "url": "https://www.postgresql.org/docs/17/performance-tips.html",
+                "kind": "reference",
+                "purpose": "Review statistics, indexing and plan-related performance evidence."
+            }
+        ],
+        "practiceObjective": "Measure one controlled SQL access-path change with a fixed dataset and validated results.",
+        "practiceInstructions": [
+            "Use a fresh disposable PostgreSQL session and run the exact published SQL script.",
+            "Show all four correctness counts and the presence of pre/post EXPLAIN plans.",
+            "Compare the id-query access path before/after the single CREATE INDEX statement.",
+            "Explain whether this evidence supports a production change or merely a lab observation."
+        ],
+        "knowledgeCheck": "What was the one independent variable in the experiment? Why are the counts 1 and 3750? Why can one post-index timing be misleading? What if PostgreSQL keeps using Seq Scan?",
+        "readingTitle": "Learn to test one performance hypothesis",
+        "practiceTitle": "Run a measured before-and-after SQL experiment",
+        "checkTitle": "Check controlled benchmarking",
+        "practiceScenario": "Use disposable book-like rows for the SQL experiment; reserve a production-like Steward scenario for later applied analysis."
+    },
+    {
+        "id": "postgresql-pagination",
+        "title": "Return Results Safely: LIMIT, OFFSET and Keyset Pagination",
+        "introduction": "A query that returns every matching row may consume more time, memory and network bandwidth than a caller needs. Pagination returns a defined slice, but its correctness depends on a stable ordering and how records change between requests. We will demonstrate OFFSET and keyset pagination on a twelve-row book catalogue, including a new row inserted between page requests.",
+        "outcomes": [
+            "Explain why SQL results must have a deterministic order before paginating.",
+            "Use LIMIT/OFFSET and predict what work large OFFSET may require.",
+            "Understand keyset pagination using a compound ordering key.",
+            "Observe a duplicated OFFSET row after an earlier record is inserted and compare it with keyset results."
+        ],
+        "sections": [
+            {
+                "id": "why-pages",
+                "title": "Why not return every book in a single response?",
+                "body": "If a library has 500,000 books, sending all of them to a phone when the user wants the first ten wastes server work, response bytes, application memory and client rendering time. A useful endpoint returns a bounded page of fields with a documented sort order. Reducing the response shape can help independently of adding an index.\n\nSQL SELECT chooses which records match the query; ORDER BY defines the order in which they are returned; LIMIT restricts how many rows appear; OFFSET skips a specified number before returning a page. Filtering for authorized records must happen as part of the query—not as an afterthought after pagination—otherwise the pages can have incorrect content or counts.\n\nA database index may support sorting, but LIMIT does not guarantee a cheap query in every plan. Pagination is primarily a response-contract and query-shape design decision."
+            },
+            {
+                "id": "stable-order",
+                "title": "A page is meaningless without a unique order",
+                "body": "Suppose several books have the same published_year. ORDER BY published_year alone does not determine which book is first among tied years. With LIMIT 5, different valid plans could return different subsets of tied rows. Add a unique tie-breaker such as id: ORDER BY published_year, id. Now the order is completely defined for our data.\n\nA stable order is also required for a reliable cursor. If the client only knows 'last year = 2001' but several books share 2001, it cannot know which 2001 book should appear next. The compound cursor (published_year, id) solves that ambiguity.\n\nThis lesson assumes the ordering keys do not change while traversing the sample. In real applications, changing sort keys or concurrent deletes still require a documented consistency model."
+            },
+            {
+                "id": "offset",
+                "title": "How LIMIT and OFFSET work",
+                "body": "A query with LIMIT 5 OFFSET 0 returns the first five ordered books. LIMIT 5 OFFSET 5 returns the next five **for the dataset at the time of that second query**. It does not remember which records were returned in the first request. PostgreSQL still has to determine and skip the preceding five rows to reach the offset.\n\nFor deep pages, an OFFSET of 100,000 may require PostgreSQL to process many skipped rows even if only ten are returned. An index can sometimes reduce the work but does not make a large OFFSET inherently free. Use OFFSET when pages are shallow and simple navigation matters; be aware of its cost and consistency behavior.\n\nA second query can return overlapping records if an earlier-positioned row was inserted after the first page was loaded. This is not a database corruption error; the offset was applied to a changed ordered set."
+            },
+            {
+                "id": "cursor",
+                "title": "What does a keyset cursor remember?",
+                "body": "Keyset pagination does not say 'skip the first five records from today's table'. Instead, it says 'return the next five rows strictly after the last ordering key from the previous page'. For ascending (published_year, id), the second page uses WHERE (published_year, id) > (2001, 5) and the same ORDER BY published_year, id LIMIT 5.\n\nThat predicate compares the two values lexicographically: later years come after earlier years; for equal years, a larger id comes later. PostgreSQL can use a suitable B-tree index for this ordering pattern when the workload justifies it. The cursor must contain all values needed for the order; in real APIs it may be encoded and validated rather than exposed as raw SQL.\n\nKeyset pagination is not automatically a snapshot of the database. An inserted row *after* your cursor may still appear on a later page, and updates to ordering keys can move rows. The goal here is to prove why it avoids this specific earlier-row overlap."
+            },
+            {
+                "id": "run-pages",
+                "title": "Create two pages, insert an earlier book, and compare",
+                "body": "Run the entire SQL file below in **one** psql session to keep its TEMP table alive. The first query returns ids 1–5, ordered by publication year then id. At that moment id 5, year 2001, is the final book of page one. We then insert a fictional book with year 1999, which sorts **before** all existing rows. On the changed dataset, LIMIT 5 OFFSET 5 returns ids 5–9, repeating book 5. The keyset query uses the saved last key (2001, 5) and instead returns ids 6–10.\n\nThis example is deterministic even though plan nodes may differ, because the ordering key includes a unique id. The final two string results summarize the page IDs so you can verify the duplicate clearly. They are evidence of this one scenario, not a guarantee that cursors solve all concurrent-modification problems.",
+                "caption": "paging_stability.sql — observe OFFSET overlap and keyset cursor",
+                "code": "CREATE TEMP TABLE tsa_paging_books AS\nSELECT n AS id, 2000 + ((n-1)/3) AS published_year, 'book-' || n::text AS title\nFROM generate_series(1,12) AS g(n);\nSELECT string_agg(id::text, ',' ORDER BY published_year,id) AS page_one\nFROM (\n  SELECT id,published_year FROM tsa_paging_books\n  ORDER BY published_year,id LIMIT 5\n) first_page;\nINSERT INTO tsa_paging_books VALUES (99,1999,'Earlier book');\nSELECT string_agg(id::text, ',' ORDER BY published_year,id) AS offset_page_two\nFROM (\n  SELECT id,published_year FROM tsa_paging_books\n  ORDER BY published_year,id LIMIT 5 OFFSET 5\n) offset_result;\nSELECT string_agg(id::text, ',' ORDER BY published_year,id) AS keyset_page_two\nFROM (\n  SELECT id,published_year FROM tsa_paging_books\n  WHERE (published_year,id) > (2001,5)\n  ORDER BY published_year,id LIMIT 5\n) keyset_result;",
+                "language": "sql",
+                "output": "page_one = 1,2,3,4,5; offset_page_two = 5,6,7,8,9; keyset_page_two = 6,7,8,9,10"
+            },
+            {
+                "id": "choose-paging",
+                "title": "Which pagination approach should you choose?",
+                "body": "OFFSET is straightforward for stable datasets, shallow navigation and use cases where exact numbered pages are important. A keyset cursor is often better for continuing through large ordered results with high offsets or frequent inserts, provided the caller accepts the cursor navigation contract. The choice depends on the query and product semantics, not a rule that OFFSET is always wrong.\n\nFor keyset navigation choose a deterministic ordering key, decide whether NULL values can appear, and specify whether the cursor is invalidated when filters or sort order change. If a user's permissions can change between requests, recalculate authorization every time; a cursor must not bypass filtering.\n\nFor independent transfer, design pagination over course enrollments sorted by (enrolled_on, enrollment_id). Explain why two enrollments on one day need the second key and how an earlier insertion would affect page numbers."
+            }
+        ],
+        "warning": "This lesson demonstrates one concurrent insert, not full snapshot consistency. Do not claim keyset pagination guarantees no duplicates under all edits, or that OFFSET has no valid use.",
+        "assignment": [
+            "Predict which book IDs belong to the first page before running SQL.",
+            "Execute paging_stability.sql and verify the three exact ID sequences.",
+            "Explain why OFFSET repeated id 5 after an earlier insertion.",
+            "Describe the lexicographic comparison for the keyset predicate and why id breaks ties.",
+            "Design a pagination cursor for a different table, including one changing-sort-key caveat."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — LIMIT and OFFSET",
+                "url": "https://www.postgresql.org/docs/17/queries-limit.html",
+                "kind": "reference",
+                "purpose": "Verify stable ordering and skipped-row costs."
+            },
+            {
+                "title": "PostgreSQL 17 — Sorting Rows",
+                "url": "https://www.postgresql.org/docs/17/queries-order.html",
+                "kind": "reference",
+                "purpose": "Review deterministic ORDER BY, ties and NULL placement."
+            }
+        ],
+        "practiceObjective": "Demonstrate both correct ordering and a real OFFSET overlap caused by an intervening insert.",
+        "practiceInstructions": [
+            "Run the published paging file in one PostgreSQL session.",
+            "Record the three page ID lists exactly and identify which row repeated.",
+            "Explain why the keyset cursor (published_year,id) advances past the previous page.",
+            "Design and defend a cursor for a different table with non-unique timestamps."
+        ],
+        "knowledgeCheck": "Why is ORDER BY published_year insufficient for pagination? Why did OFFSET repeat id 5? What does WHERE (published_year,id) > (2001,5) mean, and what change could still disturb keyset results?",
+        "readingTitle": "Learn to paginate ordered SQL results",
+        "practiceTitle": "Compare OFFSET and keyset page continuity",
+        "checkTitle": "Check pagination correctness",
+        "practiceScenario": "Use a fictional twelve-book catalogue so page stability can be understood without any Steward API."
     },
     {
         "id": "postgresql-practice",
