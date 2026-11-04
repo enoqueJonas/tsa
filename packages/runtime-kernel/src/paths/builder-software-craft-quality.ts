@@ -6,18 +6,32 @@ type PracticeSpec = Omit<PracticalContent, "type">;
 
 const practices: Record<string, PracticeSpec> = {
     "software-craft-git-as-an-engineering-tool": {
-        objective: "Turn a messy Steward working tree into one reviewable change whose history explains exactly what happened.",
-        scenario: "You are about to submit a Steward change, but the working tree contains intended code, generated output and unrelated local edits. A reviewer should be able to inspect one commit and understand the engineering outcome without reconstructing your workstation state.",
+        objective: "Make two reviewable local Git commits and explain working-tree, staged and committed content.",
+        scenario: "You have not yet rehearsed Git's three local states. Use a disposable two-file repository first, so no Steward change or remote GitHub account is needed. Only transfer the workflow to the real project after the mechanics are understood.",
         instructions: [
-            "Inspect git status, the unstaged diff and the staged diff separately; classify every changed file as intended, generated/local, or unrelated.",
-            "Choose one coherent Steward change and stage only the files that belong to it.",
-            "Write a commit message that names the engineering outcome rather than the editing activity.",
-            "Use git show on the final commit and review it as if it came from another engineer.",
-            "Create a tiny controlled regression on a disposable branch or sequence of commits, then demonstrate how git log, show or bisect would narrow the introduction point.",
-            "Record what you deliberately refused to include in the commit and why."
+            "Create tsa-git-review-lab from the exact commands in the reading. Confirm the first root commit, HEAD and a clean initial status.",
+            "Make the documented README change and an unrelated personal-notes.txt file; inspect git status, git diff and git diff --cached before committing anything.",
+            "Stage README.md alone and commit it; prove git show --name-only HEAD excludes the unrelated file.",
+            "Use git log and git diff HEAD~1 HEAD to explain the two snapshots. Deliberately append a scratch line then safely restore only that line in the disposable repository.",
+            "Document which commands alter the working tree, staging area or history, and distinguish local commits from pushing to a remote.",
+            "Only after completing the scratch proof, apply the same staging/review discipline to one real Steward edit without mixing unrelated/generated work."
         ],
-        deliverables: ["Change classification from the original working tree", "One coherent Steward commit", "git show review evidence", "Short regression-investigation note"],
-        completionCriteria: ["The commit contains one defensible engineering reason for change.", "Generated or unrelated files are not mixed into the change.", "The history can answer what changed and why.", "You can explain when history tools are evidence rather than ceremony."]
+        deliverables: ["Two-commit disposable repository transcript", "Staged/unstaged/untracked classification", "Proof personal-notes.txt was excluded", "Safe restore evidence", "Optional Steward transfer review"],
+        completionCriteria: ["A novice can reproduce every command in an empty local directory.", "The last commit contains README.md but not the untracked note.", "No unknown Steward file or remote is required to learn the Git mechanism.", "Restore was tested only on a deliberately disposable edit."]
+    },
+    "software-craft-investigate-bugs-with-git-history": {
+        objective: "Use a deterministic test and git bisect to find the real first-bad commit in an isolated four-commit history.",
+        scenario: "A small configuration was safe at limit=10, then a later commit accidentally changed it to limit=0. Construct the known-good and known-bad revisions rather than guessing commit hashes or running a bisect inside an active work repository.",
+        instructions: [
+            "Create tsa-git-bisect-lab from the reading's complete setup script and verify exactly four commits exist.",
+            "Explain which commit should be the earliest failing revision before executing the regression test.",
+            "Run the second source-published block in the same shell: bisect start with recorded GOOD/BAD revisions, bisect run with the deterministic grep predicate, bisect log and bisect reset.",
+            "Capture the actual first-bad commit and show its config.txt change; explain why git blame alone would not prove that it caused a symptom.",
+            "After git bisect reset, verify HEAD is back on main and the work tree contains the last documentation commit.",
+            "Name one unsafe or flaky test case that should not be used to automate a bisect against real Steward data."
+        ],
+        deliverables: ["Four-commit local history and recorded good/bad revisions", "First-bad bisect output and inspected diff", "Restored branch state", "Unreliable/unsafe test warning"],
+        completionCriteria: ["The actual defect commit, not the final documentation commit, is identified.", "The test returns zero for good and nonzero for bad revisions.", "The working tree and branch are restored after investigation.", "No production environment or unknown commit placeholder is required."]
     },
     "software-craft-branching-and-collaboration": {
         objective: "Prepare a small Steward change for collaboration with the minimum branch and pull-request ceremony needed for safe review.",

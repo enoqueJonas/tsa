@@ -11,6 +11,24 @@ function slug(value: string) {
     return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
+const craftTeaching: Record<string, { outcomes: string[]; practical: string }> = {
+  "Git as an Engineering Tool": { outcomes: ["Distinguish working-directory changes, staged content and committed history.", "Create and inspect two local commits without staging unrelated files.", "Safely restore a deliberate scratch edit without rewriting history."], practical: "Build and inspect two local commits" },
+  "Investigate Bugs with Git History": { outcomes: ["Define a repeatable pass/fail condition for a regression.", "Find its first bad commit with a real Git bisect session.", "Restore the original branch and explain when bisect evidence is unreliable."], practical: "Find the first bad Git commit" },
+  "Branching and Collaboration": { outcomes: ["Explain the purpose of a branch and a pull request.", "Distinguish merge, squash and rebase based on review and shared-history consequences.", "Handle a conflict and clean up obsolete branches without losing work."], practical: "Prepare a reviewable branch" },
+  "Readable Code": { outcomes: ["Recognize names that hide domain rules.", "Explain cohesion and coupling using a concrete function.", "Make one behavior-preserving readability change and reject unnecessary abstraction."], practical: "Make a domain function easier to understand" },
+  "Separation of Concerns": { outcomes: ["Identify HTTP, domain, persistence and policy responsibilities.", "Draw a dependency direction that avoids cycles.", "Compare a minimal separation with unnecessary layers."], practical: "Separate responsibilities in one request path" },
+  "Refactoring": { outcomes: ["Distinguish restructuring from changing externally observed behavior.", "Use a characterization test before editing unfamiliar code.", "Apply a small, named refactoring and know when to stop."], practical: "Refactor with a verified safety net" },
+  "Testing as a Change Safety Net": { outcomes: ["Define observable behavior to protect with tests.", "Prove a negative test fails for the intended defect.", "Choose the narrowest honest test boundary and record remaining risks."], practical: "Prove a refactor preserves behavior" },
+  "Managing Dependencies": { outcomes: ["Justify a dependency from real consumer needs.", "Review version compatibility and update risks.", "Recognize when a new shared package is premature."], practical: "Review an external or internal dependency" },
+  "Configuration": { outcomes: ["Separate code from environment-owned settings.", "Validate types and fail visibly when required configuration is absent.", "Avoid exposing credentials through defaults or logs."], practical: "Prove configuration fails safely" },
+  "Static Analysis and Automated Feedback": { outcomes: ["Distinguish formatting, linting, type checking and behavioral tests.", "Run the appropriate tool before committing.", "Treat warnings according to a documented policy rather than hiding them."], practical: "Make static checks actionable" },
+  "Code Review and Technical Debt": { outcomes: ["Review risk, correctness and tests before style.", "Classify blocking defects versus optional improvements.", "Describe technical debt as an explicit cost rather than any imperfect code."], practical: "Review a change and classify findings" },
+  "Useful Logging": { outcomes: ["Select events that answer operational questions.", "Capture stable context without leaking credentials.", "Test expected, rejected and unexpected outcomes with useful log levels."], practical: "Capture safe, diagnostic events" },
+  "Technical Documentation": { outcomes: ["Choose a document form suited to the reader's job.", "Write reproducible setup and verification instructions.", "Record decisions and check documentation for drift."], practical: "Write and verify developer documentation" },
+  "Designing Errors": { outcomes: ["Distinguish expected domain rejections from programming failures.", "Map errors to stable API contracts.", "Avoid logging or returning sensitive implementation details."], practical: "Design and test meaningful errors" },
+  "Performance Awareness": { outcomes: ["State a measurable performance hypothesis and baseline.", "Separate SQL execution, HTTP latency and tail behavior.", "Recommend a change only when evidence supports it."], practical: "Measure before optimizing" },
+};
+
 function lesson(
     title: string,
     introduction: string,
@@ -24,11 +42,7 @@ function lesson(
     const blocks: LessonBlock[] = [
         { type: "paragraph", text: introduction },
         { type: "heading", id: "learning-outcomes", text: "Learning outcomes", level: 2 },
-        { type: "list", items: [
-            `Explain the engineering purpose of ${title.toLowerCase()} rather than treating it as ceremony.`,
-            "Apply the idea to the evolving Steward API with reviewable evidence.",
-            "Recognize a common failure mode and make a deliberate trade-off.",
-        ] },
+        { type: "list", items: craftTeaching[title]?.outcomes ?? ["Explain the concept and demonstrate it with evidence."] },
     ];
 
     for (const section of sections) {
@@ -42,7 +56,6 @@ function lesson(
         }
     }
 
-    blocks.push({ type: "callout", tone: "steward", title: "Steward connection", body: "Software craft is the work that makes Steward safe for another engineer to change. The goal is not aesthetic perfection; it is reducing ambiguity, accidental coupling, review cost and operational surprise while preserving useful delivery speed." });
     blocks.push({ type: "resources", title: "Required and supporting reading", resources });
 
     return {
@@ -51,7 +64,7 @@ function lesson(
         activities: [
             { id: `${id}-reading`, title, estimatedMinutes: 30, content: { type: "reading", body: blocks.filter((block) => block.type === "paragraph").map((block) => block.text).join("\n\n") || introduction, blocks } },
             {
-                id: `${id}-practice`, title: `${title}: Engineering Practice`, estimatedMinutes: 40,
+                id: `${id}-practice`, title: craftTeaching[title]?.practical ?? `Practise ${title}`, estimatedMinutes: 40,
                 content: {
                     type: "practical",
                     objective,
@@ -61,7 +74,7 @@ function lesson(
                     completionCriteria: ["Behavior is demonstrated, not merely described.", "The change has a clear engineering reason.", "The learner can identify what deliberately remains unchanged."],
                 },
             },
-            { id: `${id}-check`, title: `${title}: Knowledge Check`, estimatedMinutes: 10, content: { type: "reflection", prompt: questions.map((q, i) => `${i + 1}. ${q}`).join("\n") } },
+            { id: `${id}-check`, title: `Check: ${title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: questions.map((q, i) => `${i + 1}. ${q}`).join("\n") } },
         ],
     };
 }
@@ -69,16 +82,146 @@ function lesson(
 export const softwareCraftDeepLessons: Lesson[] = [
     lesson(
         "Git as an Engineering Tool",
-        "Git is more than a backup mechanism. A useful history explains how a system evolved, isolates coherent changes, supports review and gives engineers safe ways to inspect or reverse decisions.",
+        "Git records snapshots of a project over time. This lesson is about understanding what you are changing, what you are committing and what another engineer can inspect. Work first in a disposable local repository so a misplaced command cannot damage an existing Steward project. The next lesson teaches how to locate a regression through history.",
         [
-            { title: "Commits are engineering evidence", paragraphs: ["A commit should represent a coherent reason for change. Huge mixed commits hide causality; tiny meaningless commits create noise. The useful unit is a reviewable decision: add service ownership validation, fix dependency uniqueness, or document a configuration contract.", "Before committing, inspect the diff. Stage intentionally. A good message explains the outcome or reason rather than narrating keystrokes."] },
-            { title: "History supports investigation", paragraphs: ["log, show, diff, blame and bisect turn repository history into diagnostic evidence. Blame is not a people-ranking tool; it is a path to the context in which a line changed. Bisect is especially valuable when a regression has a known good and known bad revision."], code: { language: "bash", code: "git diff\ngit diff --staged\ngit log --oneline --decorate -10\ngit show <commit>\ngit bisect start", caption: "Use history to answer questions, not only to publish code." } },
-            { title: "The staging area lets you design the commit", paragraphs: ["git add is not merely 'prepare everything to save'. Stage only the hunks that belong to the same engineering decision, inspect with git diff --staged, and leave unrelated work unstaged. git add -p is useful when one file contains changes for more than one intended commit."], code: { language: "bash", code: "git status\ngit add -p steward/services.py\ngit diff --staged\ngit commit -m \"enforce service ownership transfer policy\"", caption: "Construct the review unit deliberately." } },
-            { title: "Restore, revert and reset solve different problems", paragraphs: ["restore changes working-tree/index content; revert creates a new commit that inverses an earlier commit; reset moves a branch/reference and can rewrite local history depending on mode. On shared history, prefer operations such as revert that preserve what collaborators already fetched. Never use destructive cleanup commands blindly around unknown work." ] },
-        ],
-        "Turn one Steward change into a coherent, reviewable Git history.",
-        ["Choose a small real Steward change and inspect the working-tree diff before staging.", "Separate unrelated generated or local files from the intended change.", "Create a commit whose message communicates the engineering outcome.", "Use git show to review the final commit as a reviewer would.", "Write one example of when bisect would be more useful than reading code manually."],
-        ["What makes a commit coherent?", "Why inspect staged changes before committing?", "When is git bisect useful?"],
+        {
+                "title": "What Git tracks: working directory, staging area and commits",
+                "paragraphs": [
+                        "The working directory contains the files you are editing. The staging area (also called the index) holds the exact version of each file that the next commit would record. A commit records a snapshot plus its parent, author and message; the branch name points to the latest commit in that line of history. A remote repository is a separate copy you can exchange commits with, not a requirement for local commits.",
+                        "Changing a file does not update the staging area. Staging a file does not create a commit. Committing does not push anything to GitHub. Read git status to learn which of these states your current files occupy. For example, a modified but unstaged README can differ from the staged copy of that same README."
+                ]
+        },
+        {
+                "title": "Create a real repository without touching your project",
+                "paragraphs": [
+                        "Use an empty scratch directory. The commands configure a name and email only inside this repository, initialize its main branch, create two small text files and make the first commit. The address uses the reserved .invalid domain and is not a real recipient. If your Git does not support git init -b main, run git init followed by git branch -M main.",
+                        "The terminal should report a new root commit and git status should show a clean working tree. There is no remote or Steward application in this exercise. Do not copy prompts or explanatory output as part of the commands."
+                ],
+                "code": {
+                        "language": "bash",
+                        "caption": "Git lab — create a disposable repository and first commit",
+                        "code": "mkdir tsa-git-review-lab && cd tsa-git-review-lab\ngit init -b main\ngit config user.name \"TSA Learner\"\ngit config user.email \"learner@example.invalid\"\nprintf 'threshold=24\\n' > rules.txt\nprintf 'Dispatch threshold is 24 hours.\\n' > README.md\ngit add rules.txt README.md\ngit commit -m \"add dispatch threshold and explanation\"\ngit status --short\ngit log --oneline -1"
+                }
+        },
+        {
+                "title": "See the difference between an edit and a staged edit",
+                "paragraphs": [
+                        "Add one documentation sentence and an unrelated local note. Before staging, git diff -- README.md shows the changed tracked file but not the new untracked note. git status --short uses M for modified tracked files and ?? for untracked files. This is the point to decide what belongs in the next commit, not merely to run git add -A.",
+                        "Stage only README.md. git diff --cached now shows the contents proposed for the next commit. Commit it with a message describing the change. Inspect git show --name-only HEAD: it should name README.md, not personal-notes.txt. The unrelated note remains untracked. Do not use any real passwords or private customer data in your scratch note."
+                ],
+                "code": {
+                        "language": "bash",
+                        "caption": "Git lab — stage one change but leave unrelated work out",
+                        "code": "printf 'Check the threshold before dispatch.\\n' >> README.md\nprintf 'local example, not a secret\\n' > personal-notes.txt\ngit status --short\ngit diff -- README.md\ngit add README.md\ngit diff --cached -- README.md\ngit commit -m \"explain when dispatch threshold is checked\"\ngit show --name-only --format=oneline HEAD\ngit status --short"
+                }
+        },
+        {
+                "title": "Inspect exactly what a commit changed",
+                "paragraphs": [
+                        "git log --oneline lists commits from newest to older. HEAD names the current commit and HEAD~1 its first parent. git show HEAD displays one commit and patch; git diff HEAD~1 HEAD compares two snapshots, so you can explain exactly what the second commit changed. The output is evidence, not an invitation to blame a teammate.",
+                        "Use Git's built-in git help show, git help diff and git help status when you do not remember options. The later regression-investigation lesson covers blame and bisect with a complete known-good/known-bad experiment; do not start a bisect session simply because it looks advanced."
+                ],
+                "code": {
+                        "language": "bash",
+                        "caption": "Git lab — inspect a real pair of commits",
+                        "code": "git log --oneline --decorate -3\ngit show --stat HEAD\ngit diff HEAD~1 HEAD -- README.md\ngit status --short"
+                }
+        },
+        {
+                "title": "Restore, revert and reset are not interchangeable",
+                "paragraphs": [
+                        "git restore restores selected working-tree content (or, with --staged, removes selected changes from the index). git revert records a new commit that reverses a chosen earlier commit, which keeps a shared history readable. git reset moves a branch reference and may discard local work depending on its mode; beginners should not run reset --hard in a real repository to solve an unfamiliar status message.",
+                        "For a safe demonstration, edit README.md in this disposable repository without staging, inspect git diff and use git restore README.md to discard that one deliberate scratch edit. Verify git diff is empty afterward. Do not execute restore on a real file until you have verified it contains nothing you need to keep."
+                ],
+                "code": {
+                        "language": "bash",
+                        "caption": "Git lab — restore one deliberately disposable edit",
+                        "code": "printf 'SCRATCH EDIT TO DISCARD\\n' >> README.md\ngit diff -- README.md\ngit restore README.md\ngit diff -- README.md\ngit status --short"
+                }
+        }
+],
+        "Create two reviewable local commits, distinguish working/staged/committed content, and prove unrelated files were excluded.",
+        [
+        "Run the first command block in an empty directory and identify the working tree, index, HEAD and branch.",
+        "Execute the second block, inspect unstaged and staged diffs, and explain why the local note is not in the latest commit.",
+        "Run the history commands and identify what changed from HEAD~1 to HEAD.",
+        "Use restore only on the deliberately disposable edit and verify the staged diff and committed history remain intact.",
+        "Show git status --short and git show --name-only HEAD to another learner; describe what remains intentionally untracked.",
+        "Only after the scratch exercise, apply the same review process to a small real Steward change without adding unrelated/generated files."
+],
+        [
+        "What is the difference between an edited file, a staged file and a committed file?",
+        "Does git commit publish your change to GitHub? What is missing?",
+        "Why can git status show an untracked file even after a successful commit?",
+        "When is git revert safer than resetting shared history?"
+],
+        [gitBook],
+    ),
+    lesson(
+        "Investigate Bugs with Git History",
+        "When a defect appears after several commits, guessing which recent change caused it wastes time. Git can answer a precise question: between a known-good revision and a known-bad revision, which commit first produced the failure? Learn how to investigate evidence and use git bisect without risking an existing working tree.",
+        [
+        {
+                "title": "Begin with a reproducible failure",
+                "paragraphs": [
+                        "A regression is behavior that worked in an earlier version but fails in a later one. Before blaming a commit, define a test that returns success for the behavior you want and failure for the behavior you do not. The test must be repeatable and free of unrelated dependencies, otherwise the search can identify the wrong revision.",
+                        "git log, git show and git diff help when the candidate interval is small. git blame identifies the commit that last touched particular lines, but the most recent editor is not necessarily the cause of the defect. git bisect uses test results across a known interval to narrow the search, normally in logarithmic rather than linear steps."
+                ]
+        },
+        {
+                "title": "Build four real commits, including one deliberate defect",
+                "paragraphs": [
+                        "Use a second disposable directory so the first Git lab and any real Steward work remain untouched. This script creates two good commits, one commit that changes limit=10 to limit=0 (the defect), and a later documentation-only commit. It tags the known-good and known-bad commits as teaching-good and teaching-bad. Unlike temporary shell variables, these tags remain available in later terminal sessions. All commits are local and use a fake identity configured only for this repository.",
+                        "The domain here is a simple configuration threshold, not the Steward application. The goal is to learn the history mechanism independently of a framework or database. Do not include real credentials or production files in a bisect demonstration."
+                ],
+                "code": {
+                        "language": "bash",
+                        "caption": "Git bisect lab — create a known good and known bad history",
+                        "code": "mkdir tsa-git-bisect-lab && cd tsa-git-bisect-lab\ngit init -b main\ngit config user.name \"TSA Learner\"\ngit config user.email \"learner@example.invalid\"\nprintf 'limit=10\\n' > config.txt\ngit add config.txt\ngit commit -m \"set initial safe limit\"\ngit tag teaching-good\nprintf 'A safe limit is 10.\\n' > README.md\ngit add README.md\ngit commit -m \"document safe limit\"\nprintf 'limit=0\\n' > config.txt\ngit add config.txt\ngit commit -m \"accidentally set zero limit\"\nprintf 'Deployment notes.\\n' >> README.md\ngit add README.md\ngit commit -m \"add deployment notes\"\ngit tag teaching-bad\ngit log --oneline --decorate -4"
+                }
+        },
+        {
+                "title": "Run a test against each candidate revision",
+                "paragraphs": [
+                        "The test checks whether config.txt still contains exactly limit=10. The sh command exits 0 when the condition passes (good), and 1 when it fails (bad). git bisect start teaching-bad teaching-good establishes the interval. git bisect run executes the same test at selected revisions and prints the first bad commit. This is not the author of the change being judged; it is the source revision that first made our specific condition false.",
+                        "Run this block from the same tsa-git-bisect-lab directory after the preceding block; it may be a new terminal because the good/bad revisions were saved as Git tags. On completion git bisect reset returns to the original branch/working state. Inspect the found commit after reset using git show HEAD~1 for this known four-commit example. If the tags are missing, verify you are in the correct disposable repository instead of guessing commit hashes."
+                ],
+                "code": {
+                        "language": "bash",
+                        "caption": "Git bisect lab — run a real good-bad test and restore the branch",
+                        "code": "git bisect start teaching-bad teaching-good\ngit bisect run sh -c 'grep -q \"^limit=10$\" config.txt'\ngit bisect log\ngit bisect reset\ngit show HEAD~1 -- config.txt\ngit status --short"
+                }
+        },
+        {
+                "title": "When automated bisect is not appropriate",
+                "paragraphs": [
+                        "A test might require data that is not available in an older revision or may be flaky. git bisect skip can mark an untestable commit, but repeated skips may leave multiple possible first-bad commits. A failure that depends on an external service or changing environment can make a clean source-history answer impossible. Do not misreport those cases as a proven culprit.",
+                        "Running a test against historical commits may execute untrusted scripts or destructive database operations. Use isolated test data and review the test command first. Never run an integration script that modifies production while bisect changes the source."
+                ]
+        },
+        {
+                "title": "Transfer the method to a real project",
+                "paragraphs": [
+                        "When Steward has a regression, first record a failing unit/API/database contract, the earliest known passing revision and the current failing revision. Inspect the relevant files and commits with git log -- path and git show. Use bisect only if each candidate can be built and tested in an isolated environment. Stop after identifying a candidate change; then explain the causal behavior rather than assuming the commit message proves why it failed.",
+                        "Write down the test, its observed outputs and the final revision. This evidence should be reproducible by another engineer who has never seen your chat history."
+                ]
+        }
+],
+        "Identify the exact commit that introduces a controlled regression using a repeatable Git test and restore the repository state.",
+        [
+        "Create the four-commit disposable repository and mark the known GOOD and BAD commits.",
+        "Before running bisect, predict which of the four commit messages should be identified as the first bad revision.",
+        "Run the actual bisect command using a deterministic grep test; capture the printed first bad commit and inspect its patch.",
+        "Run git bisect reset and verify you are back on the original main branch with a clean working tree.",
+        "Explain one case where a flaky or destructive test would invalidate the investigation.",
+        "On a separate real Steward change, describe the smallest safe test you would use before trusting bisect."
+],
+        [
+        "What does git bisect need in addition to a list of commits?",
+        "Why is the most recent line editor not necessarily the source of a regression?",
+        "What does exit code zero mean to git bisect run?",
+        "Why must you run git bisect reset and keep the test isolated?"
+],
         [gitBook],
     ),
     lesson(

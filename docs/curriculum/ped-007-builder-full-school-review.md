@@ -91,3 +91,16 @@ These tasks are specifications for independent learner assessment, **not evidenc
 - The source guard checks the actual Identity → Membership → Authentication/Authorization → Password chapter order and rejects the former unexecutable User snippet.
 
 **State:** This branch is an instructional/source correction. The matching-head workflow, browser rendering and any manual novice independent transfer must be recorded separately. **Learner validated: NO.** Identity remains open for later token and resource-permission end-to-end testing; the earlier pure-Python refresh-token and authorization matrix checks do not prove a real authenticated DRF API.
+
+## 2026-11-04 — Software Craft Git basics and regression investigation (source pass)
+
+**Finding:** Software Craft opened with abstract Git narration plus `git show <commit>` (a shell-unfriendly placeholder) and `git bisect start` without known good/bad revisions. Its practical override immediately required an existing, suitably dirty Steward repository and an unexplained regression, so the learner had no reproducible first Git exercise.
+
+**Remediation:**
+- Rebuild **Git as an Engineering Tool** around two complete local commits in `tsa-git-review-lab`: working tree → index → history, selective staging, a deliberately untracked note, safe restore of a scratch edit, HEAD/HEAD~1 inspection and real expected observations.
+- Split **Investigate Bugs with Git History** into a second lesson with a reproducible four-commit `tsa-git-bisect-lab`. A known-good and known-bad commit are identified by persistent local tags; `git bisect run` executes a deterministic test and the learner checks the first faulty commit and resets bisect state.
+- Update both published practical overrides so neither lesson requires an unexplained Steward change or remote repository to teach Git mechanics; apply the method to Steward only as a later transfer.
+- Replace the common injected Steward callout and generic learning-outcome text in Software Craft with explicit outcomes per topic and human-oriented practical titles.
+- Add a real source-extracted Bash regression suite which creates both scratch repositories, verifies only the intended file was committed, detects the defect with `git bisect`, and confirms branch restoration. It deliberately does not run arbitrary Git cleanup on the learner's actual repository.
+
+**Evidence limits:** Full matching-head CI and rendered browser checks are separate gates. This source correction does not establish that a beginner can use the material independently. **Learner validated: NO.** Continue the remaining Software Craft lessons, their resolved practicals and actual learner transfer before marking the whole module complete.
