@@ -45,7 +45,9 @@ const appliedNormalization = marker("normalization");
 const queryPlans = marker("query-plans");
 const indexes = marker("indexes");
 const compositeIndexes = marker("postgresql-composite-indexes");
+const performanceBasics = marker("postgresql-measurement-basics");
 const queryPerformance = marker("query-performance");
+const pagination = marker("postgresql-pagination");
 const inspection = marker("postgresql-practice");
 const privileges = marker("postgresql-roles-and-privileges");
 const backupRestore = marker("postgresql-backup-and-restore");
@@ -53,7 +55,7 @@ assert.ok(
   persistence > 0 && system > persistence && connection > system &&
   databases > connection && schemas > databases && tables > schemas && rows > tables && temporary > rows &&
   relational > temporary && firstJoins > relational &&
-  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && combineConditions > deletion && nullLogic > combineConditions && sortResults > nullLogic && filtering > sortResults && subqueryBasics > filtering && existsSubqueries > subqueryBasics && appliedSubqueries > existsSubqueries && withBasics > appliedSubqueries && recursiveWith > withBasics && cteLesson > recursiveWith && transactionBasics > cteLesson && savepoints > transactionBasics && transactionCase > savepoints && isolation > transactionCase && readiness > isolation && constraintsBasics > readiness && foreignKeyDeletes > constraintsBasics && constraints > foreignKeyDeletes && schemaBasics > constraints && appliedSchemaDesign > schemaBasics && normalForms > appliedSchemaDesign && appliedNormalization > normalForms && queryPlans > appliedNormalization && indexes > queryPlans && compositeIndexes > indexes && queryPerformance > compositeIndexes && inspection > queryPerformance && privileges > inspection && backupRestore > privileges,
+  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && combineConditions > deletion && nullLogic > combineConditions && sortResults > nullLogic && filtering > sortResults && subqueryBasics > filtering && existsSubqueries > subqueryBasics && appliedSubqueries > existsSubqueries && withBasics > appliedSubqueries && recursiveWith > withBasics && cteLesson > recursiveWith && transactionBasics > cteLesson && savepoints > transactionBasics && transactionCase > savepoints && isolation > transactionCase && readiness > isolation && constraintsBasics > readiness && foreignKeyDeletes > constraintsBasics && constraints > foreignKeyDeletes && schemaBasics > constraints && appliedSchemaDesign > schemaBasics && normalForms > appliedSchemaDesign && appliedNormalization > normalForms && queryPlans > appliedNormalization && indexes > queryPlans && compositeIndexes > indexes && performanceBasics > compositeIndexes && queryPerformance > performanceBasics && pagination > queryPerformance && inspection > pagination && privileges > inspection && backupRestore > privileges,
   "The learner order must be persistence → DBMS and server → psql → database creation → schemas → table definition → rows → temporary tables → relational model → joins → grouping → applied fixture → UPDATE → DELETE → Boolean filters → NULL → ordering → Steward filtering case"
 );
 assert.doesNotMatch(source, /Two programs, one protocol boundary|Establish prerequisites without inventing credentials/);
@@ -188,6 +190,16 @@ try {
   const backupShell = publishedCode("library_backup_restore.sh — restore a custom-format archive into a separate learning database");
   for (const command of ["pg_dump -Fc", "createdb tsa_library_restore", "pg_restore --exit-on-error", "SELECT count(*) FROM library.books"]) {
     assert.ok(backupShell.includes(command), `Incomplete source-published restore sequence: ${command}`);
+  }
+  const performanceSql = publishedCode("performance_probe.sql — baseline and after-index plans with stable row counts");
+  for (const concept of ["CREATE INDEX tsa_perf_id_idx", "WHERE id = 14777", "WHERE priority = 1"]) {
+    assert.ok(performanceSql.includes(concept), `Incomplete source-published controlled performance experiment: ${concept}`);
+  }
+  assert.equal((performanceSql.match(/EXPLAIN \(ANALYZE, BUFFERS\)/g) ?? []).length, 4,
+    "Performance lesson needs four matching before/after plan observations");
+  const paginationSql = publishedCode("paging_stability.sql — observe OFFSET overlap and keyset cursor");
+  for (const fragment of ["ORDER BY published_year,id", "OFFSET 5", "(published_year,id) > (2001,5)"]) {
+    assert.ok(paginationSql.includes(fragment), `Missing keyset-pagination teaching mechanism: ${fragment}`);
   }
   const explainSql = publishedCode("library_explain_analyze.sql — estimate, measure and verify a book query");
   assert.match(explainSql, /EXPLAIN \(ANALYZE, BUFFERS\)/, "Query-plan lesson must execute a measured SELECT");
