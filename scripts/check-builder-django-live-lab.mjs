@@ -79,6 +79,26 @@ function pgLessonCode(caption) {
   assert.ok(m,"Missing authored code for "+caption);
   return JSON.parse(m[1]);
 }
+// Extract the real learner-visible logging snippets, not rewritten test substitutes.
+function loggingLessonSnippet(caption) {
+  const target = '"caption":"' + caption + '"';
+  const at = source.indexOf(target);
+  assert.ok(at >= 0, "Missing published logging snippet: " + caption);
+  const code = source.slice(at, at + 18000).match(/"value":("(?:\\\\.|[^"\\\\])*")/);
+  assert.ok(code, "Missing published logging code: " + caption);
+  return JSON.parse(code[1]);
+}
+const pythonLoggingIntro = source.indexOf('richLesson("Python Logging: Follow a Message to Its Destination"');
+const djangoLoggingIntro = source.indexOf('richLesson("Application Logging"');
+assert.ok(pythonLoggingIntro >= 0 && djangoLoggingIntro > pythonLoggingIntro,
+  "Teach standard-library logging before Django LOGGING settings");
+const loggingBasics = loggingLessonSnippet("logging_first_steps.py — real logger and handler levels");
+const loggingPropagation = loggingLessonSnippet("logging_propagation.py — reproduce and fix duplicate messages");
+const loggingSettings = loggingLessonSnippet("config/settings.py — configure a dedicated catalogue logger");
+const loggingModule = loggingLessonSnippet("catalogue/logging_demo.py — two observable application events");
+const loggingExampleCli = loggingLessonSnippet("Terminal — execute the Django logging example");
+assert.match(loggingExampleCli, /python manage\.py shell -c/, "Lesson must give runnable Django terminal instructions");
+
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-django-bridge-"));
 const exec=(command,args,env=process.env)=>{
   const p=spawnSync(command,args,{cwd:root,encoding:"utf8",timeout:60000,env});
@@ -88,6 +108,11 @@ const exec=(command,args,env=process.env)=>{
 };
 try {
   assert.equal(process.env.PGDATABASE,"tsa_steward_lab","Live Django test requires dedicated CI PostgreSQL service");
+  const loggingBasicsOutput = exec("python3", ["-c", loggingBasics]);
+  assert.equal(loggingBasicsOutput, "WARNING catalogue.example book_rejected reason=missing_title");
+  const propagationOutput = exec("python3", ["-c", loggingPropagation]);
+  assert.match(propagationOutput, /before: 2\\nafter: 1/);
+  console.log("Builder logging primer passed: exact learner source, INFO suppression, WARNING delivery and propagation duplication.");
   const cli=snippet("config/urls.py — first runnable Django endpoint");
   const model=snippet("registry/models.py — canonical Steward ORM foundation");
   const serializer=snippet("Service serializer");
@@ -283,6 +308,36 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   ].join("\n\n");
   fs.writeFileSync(path.join(beginnerRoot, "catalogue", "urls.py"), urls + "\n");
   beginnerExec(["manage.py", "check"]);
+  // Apply the published Django LOGGING setting to the real scratch project.
+  const settingsPath = path.join(beginnerRoot, "config", "settings.py");
+  fs.appendFileSync(settingsPath, "\\n" + loggingSettings + "\\n");
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "logging_demo.py"), loggingModule + "\\n");
+  beginnerExec(["manage.py", "check"]);
+  const loggingProbe = () => {
+    const result = spawnSync("python3", ["manage.py", "shell", "-c",
+      "from catalogue.logging_demo import find_book; print(find_book(5)); print(find_book(-1))"],
+      {cwd: beginnerRoot, encoding: "utf8", timeout: 60000, env});
+    assert.ifError(result.error);
+    assert.equal(result.status, 0, "Django logging example failed: " + result.stdout + result.stderr);
+    assert.match(result.stdout, /\\{'id': 5\\}/);
+    assert.match(result.stdout, /None/);
+    return result.stderr;
+  };
+  const logged = loggingProbe();
+  assert.match(logged, /INFO catalogue\\.logging_demo book_lookup_requested book_id=5/);
+  assert.match(logged, /WARNING catalogue\\.logging_demo book_lookup_rejected reason=invalid_id/);
+  assert.equal((logged.match(/book_lookup_requested/g) ?? []).length, 1, "Unexpected duplicate INFO event");
+  assert.equal((logged.match(/book_lookup_rejected/g) ?? []).length, 1, "Unexpected duplicate WARNING event");
+
+  const warningOnly = loggingSettings.replace('"level": "INFO"', '"level": "WARNING"');
+  assert.notEqual(warningOnly, loggingSettings, "No handler level to tighten");
+  fs.writeFileSync(settingsPath, fs.readFileSync(settingsPath, "utf8").replace(loggingSettings, warningOnly));
+  const filtered = loggingProbe();
+  assert.doesNotMatch(filtered, /book_lookup_requested/, "INFO must be filtered at WARNING handler");
+  assert.match(filtered, /WARNING catalogue\\.logging_demo book_lookup_rejected reason=invalid_id/);
+  fs.writeFileSync(settingsPath, fs.readFileSync(settingsPath, "utf8").replace(warningOnly, loggingSettings));
+  console.log("Builder Django logging passed: actual settings/module, normal and rejected event, no duplication, handler threshold failure case.");
+
 
   for (const name of ["serializer_lab.py", "serializer_negatives.py", "serializer_patch.py"]) {
     const captions = {
