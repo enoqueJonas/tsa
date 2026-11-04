@@ -162,19 +162,32 @@ const practices: Record<string, PracticeSpec> = {
         completionCriteria: ["Tools have distinct understood responsibilities.", "The feedback gate is reproducible.", "Warnings are not ignored by habit.", "The learner does not confuse static cleanliness with behavioral correctness."]
     },
     "software-craft-code-review-and-technical-debt": {
-        objective: "Perform a risk-oriented review of a real Steward change and make one explicit technical-debt decision.",
-        scenario: "A teammate submits a working change. Your task is to determine whether it is safe and maintainable to merge, then distinguish must-fix risk from debt that can rationally remain.",
+        objective: "Review a concrete patch against its permissions contract, demonstrate the leak and verify the corrected version.",
+        scenario: "A new requirement hides archived invoices, but the candidate patch accidentally removes the existing customer-ownership restriction. Practise identifying and proving this defect in complete, disposable Python scripts before assuming a Steward pull request is available.",
         instructions: [
-            "Read the stated problem, intended behavior and validation before inspecting implementation details.",
-            "Review contract/behavior, authorization and data integrity, migrations/configuration, tests, observability and maintainability using an explicit risk order.",
-            "Classify findings as blocker, maintainability concern, question or optional suggestion and explain the consequence behind each.",
-            "Do not manufacture a blocker if none exists; record a clean finding when evidence supports it.",
-            "Identify one real debt item and record the shortcut/problem, evidence, future cost/risk, affected area and revisit trigger.",
-            "Decide repay-now versus defer and defend the decision from current delivery/risk context.",
-            "After changes, re-read the complete final diff rather than only the lines that responded to comments."
+            "Write the two required conditions: only invoices owned by the trusted customer and no archived invoices.",
+            "Inspect the reading's diff. Identify the permission guarantee that disappears, not just the newly added archive filter.",
+            "Run invoice_review_candidate.py from the source-published example. Observe the expected failing assertion that exposes customer 22's invoice INV-200 to customer 11.",
+            "Write a blocker comment grounded in that concrete data exposure, with a requested ownership fix and cross-customer negative test. Distinguish one product clarification and one optional style suggestion.",
+            "Run invoice_review_fixed.py; verify the three customers' expected results and the absence of cross-customer rows.",
+            "Re-review the final change and explain what an actual authenticated endpoint would additionally need to prove; optionally transfer to a real Steward diff if one exists."
         ],
-        deliverables: ["Risk-oriented review notes", "Classified findings", "One technical-debt record", "Repay/defer decision", "Final-diff review evidence"],
-        completionCriteria: ["Review begins with behavior/risk rather than style preference.", "Feedback explains consequences.", "Debt is concrete and has a revisit trigger.", "Deferral is an explicit decision rather than forgotten cleanup."]
+        deliverables: ["Requirements and patch-risk note", "Expected unsafe-candidate failure", "Actionable blocker plus nonblocker classifications", "Passing corrected-candidate evidence", "Final-review and trusted-identity limitations"],
+        completionCriteria: ["The initial review uses runnable code rather than an unspecified Steward PR.", "The failure identifies the exact foreign invoice.", "The correction preserves both ownership and archive conditions across positive and negative cases.", "Review severity is tied to impact, not style.", "An authentic API-level security result is not inferred from a Python list."]
+    },
+    "software-craft-managing-technical-debt": {
+        objective: "Distinguish an existing defect from a maintenance shortcut and record a rational debt decision with evidence and an observable trigger.",
+        scenario: "Two working CSV importers duplicate date parsing. A third importer may be needed, but no current incorrect date result has been observed. Decide whether sharing a parser now reduces future cost or prematurely couples evolving formats.",
+        instructions: [
+            "Explain why the previous invoice leak is a must-fix defect and cannot become optional merely by recording it as debt.",
+            "Inspect the fictional duplicate parser scenario and list only the evidence given: two working consumers, repeated coordinated edits, and potential new usage. Leave unknown costs unmeasured.",
+            "Write a debt record with current contract, shortcut, evidence, future risk, affected module, options, decision, owner, trigger and tests required before repayment.",
+            "Compare consolidating today with deferring until a third importer or repeated divergence; justify your chosen trade-off.",
+            "Change the scenario so an importer already produces incorrect dates. Reclassify the issue as a defect and state the immediate validation needed.",
+            "Optionally examine a real Steward trade-off after this standalone exercise; create no invented debt ticket if evidence is missing."
+        ],
+        deliverables: ["Defect-versus-debt classification", "Evidence-based debt record", "Repay/defer rationale", "Named owner and observable revisit trigger", "Reclassification when current behavior fails"],
+        completionCriteria: ["Technical debt is not used to excuse a current correctness or security failure.", "The record distinguishes observed evidence from speculation.", "The decision can be reviewed without oral context.", "A trigger determines when to revisit; 'later' alone is not enough.", "No unverified Steward backlog item is invented."]
     },
     "software-craft-useful-logging": {
         objective: "Design logs that let an engineer reconstruct one important Steward operation without exposing sensitive data.",
