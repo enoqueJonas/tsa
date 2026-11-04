@@ -20,6 +20,7 @@ on:
       - curriculum/builder-craft-documentation-real-verification
       - curriculum/psql-published-practice-alignment
       - curriculum/builder-django-beginner-depth-v1
+      - curriculum/builder-django-logging-mechanisms
       - curriculum/system-thinker-pedagogical-audit
       - curriculum/platform-builder-pedagogical-audit
       - curriculum/delivery-engineer-pedagogical-audit
