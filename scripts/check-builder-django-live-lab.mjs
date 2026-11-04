@@ -6,6 +6,16 @@ import {spawnSync} from "node:child_process";
 
 const source = fs.readFileSync("packages/runtime-kernel/src/paths/builder-django-rich.ts","utf8");
 const identitySource = fs.readFileSync("packages/runtime-kernel/src/paths/builder-identity-auth-deep.ts","utf8");
+
+const craftSource = fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-deep.ts","utf8");
+function craftSnippet(caption) {
+  const anchor = craftSource.indexOf('"caption": "' + caption + '"');
+  assert.ok(anchor >= 0, 'Missing source-published Software Craft example: ' + caption);
+  const code = craftSource.slice(anchor, anchor + 18000).match(/"code":\s*("(?:\\.|[^"\\])*")/);
+  assert.ok(code, 'No executable source for ' + caption);
+  return JSON.parse(code[1]);
+}
+
 function identitySnippet(caption) {
   const anchor = identitySource.indexOf('caption: "' + caption + '"');
   assert.ok(anchor >= 0, 'Missing exact identity learner snippet: ' + caption);
@@ -221,6 +231,12 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   assert.match(exec("python3", ["manage.py", "shell", "-c", duplicateMembership], env),
     /MEMBERSHIP_DUPLICATE_REJECTED/);
   console.log("Builder Identity Django lab passed: real built-in users, new membership migration, duplicate FK pair refusal, hashed credential, correct/wrong/inactive authentication.");
+
+  const readablePolicy = craftSnippet("Readable Code — Django Membership policy with four real decisions");
+  assert.match(exec("python3",["manage.py","shell","-c",readablePolicy],env),
+    /Django readable policy: maintainer allowed; viewer, cross-team and inactive denied/);
+  console.log("Builder Software Craft real Django policy passed: matching team/role grants and separate viewer/cross-team/inactive denials.");
+
 
   // Reconstruct the independent beginner lab from the actual authored Django
   // and DRF lessons, rather than testing equivalent code written only here.
