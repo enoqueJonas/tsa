@@ -226,3 +226,18 @@ These tasks are specifications for independent learner assessment, **not evidenc
 
 **Status:** Source correction and exact-head CI are independent from rendered novice validation. **Builder learner-validated: NO.**
 
+
+
+## 2026-11-04 — Technical Documentation: execute the README, do not scan keywords
+
+**Finding:** The old standalone "documentation completeness" sample checked whether a synthetic README string happened to contain words like "Python", "PostgreSQL", "migrate" and "curl", then asserted that one missing keyword was enough to reject a vague README. No documented setup command was executed. The final practical immediately required a running Steward handoff, while the conceptual lesson compressed READMEs, API docs, ADRs and runbooks.
+
+**Teaching remediation:**
+- Introduce **Write a README Someone Can Follow**, a prerequisite lesson with explicit reader/prerequisite/outcome reasoning and a fully independent Python-standard-library lab. It writes an actual README and a tiny app.py in a disposable temporary folder, extracts only controlled Bash command fences, executes the documented success and expected failure with the active Python interpreter, and asserts both exit codes/output.
+- Test a deliberate documentation defect by mutating `python app.py --check` into `python app.py --missing`; the source-extracted smoke check requires the existing README execution harness to fail. This is stronger than checking text for words.
+- Keep **Technical Documentation** as the next lesson, with separate README/API reference/ADR/runbook purposes, actual Steward project setup verification, canonical schema links, safe diagnostic stopping points and explicit evidence limits.
+- Align both post-composition practicals with the new teaching order. The scratch README does not falsely prove Django migrations, API authentication or external database setup; these require a separately controlled integration environment and human review.
+- Retain the existing smoke-test caption and expected success marker so source checks remain anchored to the learner-visible code rather than a substitute.
+
+**State:** Source corrected. Full latest-head CI, browser rendering and uncoached learner transfer must be checked separately. **Builder learner-validated: NO.**
+
