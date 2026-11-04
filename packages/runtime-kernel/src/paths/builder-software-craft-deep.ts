@@ -20,7 +20,8 @@ const craftTeaching: Record<string, { outcomes: string[]; practical: string }> =
   "Separation of Concerns": { outcomes: ["Identify HTTP, domain, persistence and policy responsibilities.", "Draw a dependency direction that avoids cycles.", "Compare a minimal separation with unnecessary layers."], practical: "Separate responsibilities in one request path" },
   "Refactoring": { outcomes: ["Distinguish restructuring from changing externally observed behavior.", "Use a characterization test before editing unfamiliar code.", "Apply a small, named refactoring and know when to stop."], practical: "Refactor with a verified safety net" },
   "Testing as a Change Safety Net": { outcomes: ["Define observable behavior to protect with tests.", "Prove a negative test fails for the intended defect.", "Choose the narrowest honest test boundary and record remaining risks."], practical: "Prove a refactor preserves behavior" },
-  "Managing Dependencies": { outcomes: ["Justify a dependency from real consumer needs.", "Review version compatibility and update risks.", "Recognize when a new shared package is premature."], practical: "Review an external or internal dependency" },
+  "Inspect Python Packages": { outcomes: ["Explain how Python, pip and a virtual environment relate.", "Create and inspect an isolated environment without downloading packages.", "Distinguish installed distributions from imports and direct from transitive dependencies."], practical: "Create and inspect a Python environment" },
+  "Managing Dependencies": { outcomes: ["Distinguish declared application dependencies from transitive packages.", "Explain compatibility ranges, reproducible resolution and safe update checks.", "Justify an external, local or internal-package choice from actual consumer need."], practical: "Decide which dependencies to keep or change" },
   "Configuration": { outcomes: ["Separate code from environment-owned settings.", "Validate types and fail visibly when required configuration is absent.", "Avoid exposing credentials through defaults or logs."], practical: "Prove configuration fails safely" },
   "Static Analysis and Automated Feedback": { outcomes: ["Distinguish formatting, linting, type checking and behavioral tests.", "Run the appropriate tool before committing.", "Treat warnings according to a documented policy rather than hiding them."], practical: "Make static checks actionable" },
   "Review a Code Change": { outcomes: ["Review intended behavior and access rules before style.", "Detect a cross-customer leak with a negative test and verify the fix.", "Classify blockers, requirement questions and optional suggestions by consequence."], practical: "Review and retest an unsafe patch" },
@@ -606,18 +607,142 @@ export const softwareCraftDeepLessons: Lesson[] = [
         [refactoringGuru],
     ),
     lesson(
-        "Managing Dependencies",
-        "Every dependency is code you choose to trust, update, distribute and support. Dependency management is therefore an engineering ownership decision, not just a package-install command.",
+        "Inspect Python Packages",
+        "Before making architectural decisions about dependencies, learn what Python actually installs and where. Python is the interpreter; pip is a tool that installs Python distributions into a particular environment; a virtual environment gives one project an isolated installation location. First inspect an empty local environment, then inspect a real library and the packages it brings with it. No Docker, server or Steward application is needed for the first lab.",
         [
-            { title: "Know why a dependency exists", paragraphs: ["Prefer a dependency when it provides substantial, maintained capability that would be risky or wasteful to recreate. Avoid adding packages for trivial helpers or speculative future reuse. Distinguish direct dependencies from transitive ones and understand which public APIs your code actually relies on.", "Version constraints express compatibility policy. Locking and reproducible environments reduce accidental drift, but upgrades still require deliberate testing."] },
-            { title: "Internal packages need real consumers", paragraphs: ["Do not extract steward-common merely to demonstrate modularity. A reusable package earns its boundary when multiple consumers need a stable capability with little domain coupling. Later TSA work will publish real internal artifacts through Nexus; Builder should avoid manufacturing fake reuse."], code: { language: "text", code: "application need → evaluate library → add direct dependency → lock/record version → test → maintain/upgrade\n\nreal repeated capability + multiple consumers → candidate internal package\none consumer + speculative reuse → keep local", caption: "Dependencies create continuing ownership." } },
-            { title: "Evaluate more than package popularity", paragraphs: ["Before adopting a dependency, check maintenance activity, release/support expectations, license compatibility, security history/advisories, transitive footprint, platform/runtime compatibility and how difficult replacement would be. A dependency that owns a critical boundary deserves more scrutiny than a development-only formatter." ] },
-            { title: "Pinning and upgrading solve different risks", paragraphs: ["Reproducible resolution protects builds from surprise drift; staying permanently pinned protects you from fixes as well. Define how dependency updates are proposed, tested and rolled out. Read release notes for important libraries instead of treating every version bump as equivalent." ] },
-        ],
-        "Audit Steward dependencies and justify what should remain external, local or potentially reusable later.",
-        ["List direct application dependencies and their purpose.", "Identify one transitive dependency and explain why application code should avoid relying on it accidentally.", "Find one dependency that could be removed or replaced with standard-library/framework capability.", "Assess whether any current code truly qualifies for an internal shared package.", "Record upgrade and validation expectations for one important dependency."],
-        ["Why is a dependency an ownership decision?", "What is the danger of relying directly on a transitive dependency?", "When should steward-common be extracted?"],
-        [twelveFactor],
+        {
+                "title": "Interpreter, module, package and distribution are different things",
+                "paragraphs": [
+                        "An interpreter executes Python code. A module is importable code such as datetime; an import package can contain several modules. A distribution is an installable unit published through packaging tools. Distribution names and import names do not always match: the Django distribution is installed as Django and used in code as import django.",
+                        "pip does not run the program; it installs and reports packages for the Python interpreter you invoke it with. Run python -m pip rather than trusting an unrelated pip command found on your PATH. This reduces the classic mistake of installing a package under one Python and running code under another."
+                ]
+        },
+        {
+                "title": "Create one isolated environment from scratch",
+                "paragraphs": [
+                        "Open a terminal in a safe scratch directory and run these commands as shown on macOS or Linux. They create tsa-deps-lab/.venv and use that exact interpreter; activation is optional. On Windows the interpreter path differs (such as .venv\\\\Scripts\\\\python.exe), but the concept is the same. A virtual environment is not a PostgreSQL server, container or new operating system.",
+                        "pip --version names the pip installation and the Python version it targets. pip list shows installed distributions; pip show pip gives metadata and location. pip freeze prints version pins for installed non-bootstrap packages and can be empty in a fresh environment. pip check verifies that installed distributions' declared requirements are compatible; it does not prove an application works."
+                ],
+                "code": {
+                        "language": "bash",
+                        "caption": "Python dependencies — create and inspect an offline virtual environment",
+                        "code": "mkdir tsa-deps-lab\ncd tsa-deps-lab\npython3 -m venv .venv\n./.venv/bin/python -m pip --version\n./.venv/bin/python -m pip list\n./.venv/bin/python -m pip show pip\n./.venv/bin/python -m pip freeze\n./.venv/bin/python -m pip check\n./.venv/bin/python -c \"import sys, importlib.metadata as m; print('Interpreter:', sys.executable); print('pip distribution:', m.version('pip'))\""
+                }
+        },
+        {
+                "title": "Why an import can fail even after you installed a package",
+                "paragraphs": [
+                        "If Python says ModuleNotFoundError, first check which interpreter is executing the program and which environment received the installation. Inspect sys.executable, python -m pip --version and the distribution's metadata before guessing a new username, running sudo or changing system paths.",
+                        "Import and distribution naming may differ, and some distributions contain more than one importable package. The clean lab intentionally includes only the initial environment packages. It cannot import Django until Django has been installed into this particular environment; it does not inherit whatever is installed globally."
+                ]
+        },
+        {
+                "title": "Install a real library only after choosing the environment",
+                "paragraphs": [
+                        "The following is an optional online extension in the disposable lab. It installs a compatible Django release into the scratch environment and allows pip to resolve its dependencies. The quotes protect the version operators from your shell. This step needs access to your configured, trusted package index; skip it if you have no network rather than guessing credentials.",
+                        "After installation, compare pip show Django with pip show asgiref. Django is a direct choice in this example, while asgiref is installed to satisfy Django's dependency metadata. You should not start importing asgiref directly from your own application just because it happens to be present. A future Django upgrade could change its transitive set."
+                ],
+                "code": {
+                        "language": "bash",
+                        "caption": "Python dependencies — optional online Django installation and metadata inspection",
+                        "code": "# Only in the disposable tsa-deps-lab, with a trusted package source and network:\n./.venv/bin/python -m pip install \"Django>=5.2,<6\"\n./.venv/bin/python -m pip show Django\n./.venv/bin/python -m pip show asgiref\n./.venv/bin/python -c \"import django; print('Django import:', django.get_version())\"\n./.venv/bin/python -m pip check"
+                }
+        },
+        {
+                "title": "What the basic commands do and do not establish",
+                "paragraphs": [
+                        "pip list is a view of the current environment; pip show gives information about one installed distribution; pip freeze captures resolved versions; pip check checks installed requirement metadata. None of these alone expresses why the application needs each dependency, whether the chosen versions are supported or whether the code is correct.",
+                        "Your application's direct requirements should be declared deliberately. A reproducible lock or resolved dependency artifact preserves the full tested set for installation. Do not treat a random pip freeze from a workstation as a considered dependency policy. The next lesson covers how to choose, constrain, review and upgrade packages."
+                ]
+        }
+],
+        "Learn to create a Python virtual environment and inspect pip, installed distributions and import resolution without requiring any external service.",
+        [
+        "Create an empty tsa-deps-lab outside Steward, execute the complete offline command block and confirm the interpreter path points inside .venv.",
+        "Explain which command shows the pip environment, installed distributions, one distribution's metadata, resolved pins and requirement consistency.",
+        "Predict why import django fails in a new offline environment and why a global Django installation should not be assumed available there.",
+        "If a trusted package source and network are available, run the optional Django block; inspect Django and asgiref without altering any production or Steward environment.",
+        "Write a sentence distinguishing direct Django dependency, its transitive asgiref dependency and the import statement import django.",
+        "Explain why a successful pip check cannot substitute for code tests and why a frozen environment snapshot is not automatically a reviewed lock policy."
+],
+        [
+        "How does python -m pip identify where to install a package?",
+        "What is the difference between a distribution and an import name?",
+        "What can pip freeze tell you that pip list does not?",
+        "Why might a package work in one terminal but fail to import in another?",
+        "What does a clean pip check not prove?"
+],
+        [{"title":"Python — venv","url":"https://docs.python.org/3/library/venv.html"},{"title":"Python Packaging User Guide — Installing Packages","url":"https://packaging.python.org/en/latest/tutorials/installing-packages/"}],
+    ),
+    lesson(
+        "Managing Dependencies",
+        "Once you can inspect an environment, decide which external packages your application should rely on and how the team will maintain them. Every dependency has a purpose, a version contract, an update risk and a long-term owner. This lesson moves from what pip installed to why a project declares it; do not invent a shared library or CI platform just to practise the vocabulary.",
+        [
+        {
+                "title": "Direct and transitive dependencies in a real project",
+                "paragraphs": [
+                        "A direct dependency is a package your application intentionally declares because it uses its supported capability. In the earlier Django training project, Django and Django REST Framework are direct choices. Django may bring asgiref and sqlparse as transitive dependencies because its own metadata requires them. The transitive graph is resolved by the installer; it does not mean your application has promised to support those transitives as public APIs.",
+                        "Inspect the actual training environment after activating it: python -m pip show Django, python -m pip show asgiref, python -m pip freeze and python -m pip check. Compare the Requires and Required-by fields where available. If this environment does not have Django installed, return to the preceding optional lab rather than inventing an installed package."
+                ],
+                "code": {
+                        "language": "text",
+                        "caption": "A conceptual dependency graph, not a command to run",
+                        "code": "Application (declares Django, djangorestframework)\n  ├─ Django (direct)\n  │    ├─ asgiref (transitive through Django)\n  │    └─ sqlparse (transitive through Django)\n  └─ djangorestframework (direct)\n\nPackage names and exact resolved versions depend on the environment."
+                }
+        },
+        {
+                "title": "Decide whether a dependency is worth owning",
+                "paragraphs": [
+                        "Ask what capability is needed, what the standard library/framework already provides and what it would cost to implement, test and maintain yourself. A trusted, maintained library for difficult protocol or security behavior often reduces risk; a new package for a three-line formatting helper may increase it.",
+                        "Review support and maintenance activity, releases, license compatibility, known advisories, runtime/platform compatibility and the cost of replacing it. Not every dependency has equal risk: application authentication and a local development formatter deserve different levels of scrutiny."
+                ]
+        },
+        {
+                "title": "Version constraints and reproducibility solve different problems",
+                "paragraphs": [
+                        "A requirement such as Django>=5.2,<6 expresses a compatibility range, not one installed build. A fully pinned resolved dependency set records exact versions selected in a tested environment, including transitives. Constraints do not guarantee the newest compatible version is safe for your application, and pinning permanently would prevent security and bug fixes.",
+                        "Keep a clear distinction between the dependencies the application deliberately declares, the versions the installer resolved and the versions actually exercised by tests. Different Python versions or operating systems may select different wheels or conditional dependencies. Make environment and resolution assumptions explicit rather than treating pip freeze as a universal lockfile."
+                ]
+        },
+        {
+                "title": "Upgrade with evidence and a rollback path",
+                "paragraphs": [
+                        "Choose one important dependency. Read its release notes and documented compatibility requirements, update in an isolated environment, run pip check and then run the application's focused and integration tests. If a migration or API contract changes, verify that explicitly. A green pip check only says installed distribution metadata is consistent; it does not prove your Django views still work.",
+                        "Record the previous version or resolution so you can reproduce the known-good environment if an update breaks behavior. Do not casually modify the shared/system Python or production dependency set while learning these steps."
+                ]
+        },
+        {
+                "title": "Do not make an internal package before it has a real consumer",
+                "paragraphs": [
+                        "An internal shared package creates a versioned contract and a release/upgrade obligation. One current module and a vague possibility of reuse do not justify creating steward-common or introducing an artifact repository. Keep a small capability local until multiple actual consumers need a stable interface and the coupling trade-off is understood.",
+                        "Later TSA delivery work can teach publishing through an artifact repository when real reuse exists. Builder needs to recognize the engineering boundary and avoid prematurely adding infrastructure."
+                ]
+        },
+        {
+                "title": "Make one deliberate keep, replace or defer decision",
+                "paragraphs": [
+                        "Write down one actual direct package, why it exists, the tested version range, its criticality, which package APIs are imported and what check would detect a breaking upgrade. Then choose whether to keep it, replace it with already-supported capability or defer a speculative dependency. The decision should be grounded in an existing consumer, not a desire for an impressive dependency table.",
+                        "If the dependency is not installed in your real project, do not list it as present. If no package is unjustified, a well-supported 'keep' decision is more useful than manufacturing unnecessary cleanup."
+                ]
+        }
+],
+        "Make a justified dependency decision using real installed metadata, declared requirements and testable upgrade expectations.",
+        [
+        "Identify one direct package in the earlier Django training project and inspect its purpose and actual imports.",
+        "Using the active project environment, compare pip show Django and pip show asgiref; explain what is direct, what is transitive and which declaration controls each.",
+        "Document one version constraint versus the exact resolved version from pip freeze, and explain their different responsibilities.",
+        "Assess one real dependency for maintenance, license, advisories and compatibility. Make no claims about unsupported versions without checking the package's documented requirements.",
+        "Choose keep, replace or defer and describe how to verify the decision with focused and integration tests after an update.",
+        "Consider an internal reusable module only if there are multiple concrete consumers and a stable contract; do not create a package simply for the lesson."
+],
+        [
+        "Why is a dependency an ongoing ownership decision?",
+        "Why is it risky to rely directly on a transitive package without declaring it?",
+        "What is the difference between version compatibility and a reproducible resolution?",
+        "What does pip check miss about application behavior?",
+        "When is internal-package extraction justified?"
+],
+        [{"title":"Python Packaging User Guide — Dependency specifiers","url":"https://packaging.python.org/en/latest/specifications/dependency-specifiers/"},{"title":"pip — User Guide","url":"https://pip.pypa.io/en/stable/user_guide/"}],
     ),
     lesson(
         "Configuration",

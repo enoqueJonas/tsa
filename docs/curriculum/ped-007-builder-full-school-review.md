@@ -169,3 +169,17 @@ These tasks are specifications for independent learner assessment, **not evidenc
 - Align both published practical overrides with the learner order; neither requires inventing an existing Steward pull request or issue. Later transfer may use actual repository evidence.
 
 **Evidence gates:** Matching-head full workflow, source-extracted Python checks and browser traversal are separately verified after the final commit. No uncoached novice review or true authenticated API security assessment is implied. Builder learner-validated remains **NO**.
+
+## 2026-11-04 — Python package basics before dependency ownership
+
+**Finding:** The original Managing Dependencies lesson gave high-level advice about direct/transitive packages, security and internal reuse, but never taught a complete `python -m pip` and virtual-environment inspection sequence. Its practical immediately demanded a mature Steward dependency audit. The learner had no independent way to verify where pip installed packages or why an import succeeded in one environment and failed in another.
+
+**Remediation:**
+- Add an independently understandable **Inspect Python Packages** lesson before Managing Dependencies, explicitly defining interpreter, import module/package, installable distribution, pip and virtual environment.
+- Provide a complete macOS/Linux `python3 -m venv` lab without network, Docker or server prerequisites. Use the isolated interpreter to inspect pip version, list, show, freeze, check and `sys.executable`/`importlib.metadata` and distinguish what each command proves.
+- Provide a clearly optional Django install in the disposable environment when a trusted package source and network exist; inspect its direct versus transitive package metadata, without pretending it is present in an offline venv.
+- Rebuild **Managing Dependencies** around real Django/DRF direct requirements versus Django's asgiref/sqlparse transitives, version ranges versus resolved versions, selection criteria, updates and tested rollback, and avoiding speculative internal packages.
+- Align the two post-composition practical overrides with this order and actual commands. The source-extracted CI check executes the exact offline shell block in a temporary directory, validates the interpreter and metadata output, checks `pip check` and verifies that a deliberately nonexistent import is unavailable. No download is necessary.
+- Verify external learning references against Python Packaging User Guide and pip guidance rather than pointing learners to a mismatched Pipenv tutorial.
+
+**Evidence limits:** Full matching-head CI, rendered browser inspection and independent novice transfer remain separate from source correctness. Package security, supported versions and a real Steward dependency-upgrade decision are not established merely by running pip metadata commands. Builder learner-validated remains NO.

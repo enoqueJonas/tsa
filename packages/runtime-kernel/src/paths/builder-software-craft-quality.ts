@@ -119,19 +119,33 @@ const practices: Record<string, PracticeSpec> = {
         deliverables: ["Behavior contract and boundary choice", "Positive/negative automated tests", "Pre/post-refactor test evidence", "Fail-before-fix regression evidence", "Coverage limitation note"],
         completionCriteria: ["The tests protect observable Steward behavior rather than private implementation trivia.", "The same safety net remains green across a structural refactor.", "At least one regression check is proven capable of failing.", "The learner can explain why each chosen test boundary is appropriate.", "Testing depth remains Builder-sized rather than becoming a premature automation framework."]
     },
-    "software-craft-managing-dependencies": {
-        objective: "Audit Steward's dependency ownership and make one evidence-based keep, remove or reuse decision.",
-        scenario: "Steward has accumulated packages across Builder. Before later CI, artifact-repository and supply-chain work, the team needs to know which dependencies are intentional and whether any code truly deserves an internal-package boundary.",
+    "software-craft-inspect-python-packages": {
+        objective: "Inspect the actual Python interpreter, pip installation and isolated package metadata before making dependency-management decisions.",
+        scenario: "The beginner has used Python and Django but still needs to understand why a package imported in one environment may not exist in another. Use an independent offline scratch environment before inspecting any application packages.",
         instructions: [
-            "List direct runtime/development dependencies and record the concrete capability each provides.",
-            "Choose one transitive dependency and prove whether Steward code imports or relies on it directly.",
-            "Find one dependency that can plausibly be removed, replaced by the standard library/framework, or retained; test the decision rather than arguing from preference.",
-            "Inspect current reusable-code candidates and identify whether there is more than one real consumer with a stable boundary.",
-            "For one important dependency, inspect maintenance/release expectations, license/security/compatibility signals and transitive footprint, then define version/upgrade validation expectations.",
-            "Write a short decision separating external dependency ownership, local application code and a genuinely justified future internal package."
+            "Run the complete offline shell block in a new scratch directory, creating tsa-deps-lab/.venv and using that interpreter explicitly instead of an ambiguous global pip.",
+            "Locate the interpreter using the printed sys.executable path. Compare python -m pip --version, pip list and pip show pip and explain what each returns.",
+            "Inspect pip freeze and pip check in this fresh environment. Explain why a freeze may be empty and what a successful metadata check does not prove.",
+            "Explain the difference between a distribution's name and its importable module name, using Django/import django as the subsequent example.",
+            "If a trusted package index and network are available, try the optional online Django installation only in this disposable venv and inspect its asgiref dependency. Otherwise explain the expected steps without pretending they ran.",
+            "Explain why installing to one interpreter does not automatically make the module available to another Python or virtual environment."
         ],
-        deliverables: ["Dependency ownership table", "Transitive-dependency evidence", "One keep/remove decision with validation", "Internal-package boundary assessment"],
-        completionCriteria: ["Every examined direct dependency has a known reason to exist.", "No transitive package is treated as an accidental public API.", "The internal-package decision is based on real consumers rather than curriculum pressure.", "Upgrade ownership is explicit."]
+        deliverables: ["Isolated interpreter path", "pip version/list/show/freeze/check observations", "Direct-versus-transitive distinction", "Optional Django metadata observations or explicit offline limitation"],
+        completionCriteria: ["The required exercise runs offline from a fresh local directory.", "No Django installation or Steward database is silently assumed.", "The learner can identify which Python receives package installations.", "A clean pip check is not confused with app tests or secure dependency choice."]
+    },
+    "software-craft-managing-dependencies": {
+        objective: "Use actual package metadata and application needs to justify external, transitive and future internal dependency decisions.",
+        scenario: "The earlier Django/DRF lab depends on specific packages. The team must distinguish what the application deliberately declares, what the installer brings transitively, and what must be tested before upgrades, without introducing premature shared packages or release infrastructure.",
+        instructions: [
+            "Activate the separate Django training environment and list its declared application dependencies and actual installed versions. If the environment is unavailable, complete the preceding Python package inspection lesson first.",
+            "Run python -m pip show Django, python -m pip show asgiref, python -m pip freeze and python -m pip check. Explain the difference between Django as a direct choice and asgiref as a dependency of Django.",
+            "Write down a compatible version range and the exact version resolved in this environment; explain why one is not a substitute for the other.",
+            "For one relevant package, inspect its public API use, maintenance, release notes, license, advisories and runtime compatibility before deciding on a version update.",
+            "Choose to keep, replace or defer a package with a concrete reason and identify the focused and integration tests that would establish a safe upgrade. Do not modify production or system Python.",
+            "Only propose an internal shared library if at least two real consumers need a stable interface; explain why a single hypothetical Steward consumer is not enough."
+        ],
+        deliverables: ["Direct/transitive dependency map", "Range versus resolved-version evidence", "One documented keep/replace/defer decision", "Upgrade validation boundary", "Justification for local code versus a genuine internal package"],
+        completionCriteria: ["The decision uses real observed packages, not invented installations.", "The learner understands what pip show/freeze/check do and do not prove.", "Upgrade evidence includes application tests, not metadata checks alone.", "Internal extraction is justified by actual consumers rather than curriculum ceremony."]
     },
     "software-craft-configuration": {
         objective: "Define Steward's configuration contract and prove that configuration mistakes fail visibly and safely.",
