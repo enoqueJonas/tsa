@@ -20,13 +20,16 @@ const firstGrouping = marker("postgresql-first-grouping");
 const fixture = marker("steward-schema-and-seed");
 const crud = marker("sql-crud");
 const deletion = marker("postgresql-delete-rows");
+const combineConditions = marker("postgresql-combine-conditions");
+const nullLogic = marker("postgresql-null-logic");
+const sortResults = marker("postgresql-sort-results");
 const filtering = marker("filtering-ordering");
 assert.ok(
   persistence > 0 && system > persistence && connection > system &&
   databases > connection && schemas > databases && tables > schemas && rows > tables && temporary > rows &&
   relational > temporary && firstJoins > relational &&
-  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && filtering > deletion,
-  "The learner order must be persistence → DBMS and server → psql → database creation → schemas → table definition → rows → temporary tables → relational model → joins → grouping → applied fixture → CRUD"
+  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && combineConditions > deletion && nullLogic > combineConditions && sortResults > nullLogic && filtering > sortResults,
+  "The learner order must be persistence → DBMS and server → psql → database creation → schemas → table definition → rows → temporary tables → relational model → joins → grouping → applied fixture → UPDATE → DELETE → Boolean filters → NULL → ordering → Steward filtering case"
 );
 assert.doesNotMatch(source, /Two programs, one protocol boundary|Establish prerequisites without inventing credentials/);
 assert.ok(!source.includes('"id": "postgresql-tables-and-rows"'), "Do not reintroduce a duplicate combined CREATE TABLE/row chapter");
@@ -78,6 +81,25 @@ try {
   assert.match(filterSQL, /WHERE published_year >= 1950/, "Row-query lesson must teach WHERE");
   const querySQL = publishedCode("SQL — read persistent rows");
   assert.match(querySQL, /ORDER BY book_id;/);
+  const booleanExample = publishedCode("where_parentheses.sql — two different sets of books");
+  assert.match(booleanExample, /author = 'Chinua Achebe'/);
+  assert.match(booleanExample, /AND \(author = 'Chinua Achebe' OR title = 'The Hobbit'\)/);
+  const inExample = publishedCode("where_in.sql — match a list of authors");
+  assert.match(inExample, /author IN \(/);
+  const patternExample = publishedCode("where_like.sql — compare LIKE and ILIKE");
+  assert.match(patternExample, /ILIKE 'the%'/);
+  const nullExample = publishedCode("null_equality.sql — compare = NULL with IS NULL");
+  assert.match(nullExample, /year = NULL/);
+  assert.match(nullExample, /year IS NULL/);
+  const truthExample = publishedCode("null_truth_table.sql — inspect TRUE FALSE and UNKNOWN");
+  assert.match(truthExample, /COALESCE/);
+  assert.match(truthExample, /NOT \(year >= 1950\)/);
+  const sortExample = publishedCode("sort_all.sql — tie-breakers and missing years");
+  assert.match(sortExample, /ORDER BY published_year DESC NULLS LAST, title ASC/);
+  const pageExample = publishedCode("sort_offset.sql — skip one row then take two");
+  assert.match(pageExample, /LIMIT 2 OFFSET 1/);
+  assert.ok(source.includes('"title": "Steward Practice: Filter and Sort SQL Reports"'),
+    "Applied Steward example must be labeled as a practice, not the novice's first SQL lesson");
   const sql = publishedCode("first_session.sql — run only in a disposable PostgreSQL lab database");
   for (const statement of ["CREATE TEMP TABLE", "INSERT INTO tsa_session_probe", "ORDER BY id", "SELECT count(*)"]) {
     assert.ok(sql.includes(statement), `Missing SQL teaching concept: ${statement}`);
