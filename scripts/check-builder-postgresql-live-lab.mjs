@@ -82,6 +82,36 @@ try {
   assert.equal(run(["-d", "tsa_library", "-c", "SELECT count(*) FROM library.books"]).out, "2",
     "UPDATE/DELETE lessons must not leave stray rows");
 
+  // Generic filtering, NULL and ordering lessons run against the library
+  // sample or isolated read-only VALUES rows before the Steward audit case.
+  const verifyLibrary = (caption, expected) => {
+    const actual = runLibrary(caption).out;
+    assert.deepEqual(actual ? actual.split(/\r?\n/) : [], expected,
+      "Published library SQL mismatch: " + caption);
+  };
+  verifyLibrary("where_and_not.sql — two simple predicates",
+    ["Things Fall Apart", "The Hobbit"]);
+  verifyLibrary("where_parentheses.sql — two different sets of books",
+    ["The Hobbit", "Things Fall Apart", "Things Fall Apart"]);
+  verifyLibrary("where_in.sql — match a list of authors",
+    ["Things Fall Apart"]);
+  verifyLibrary("where_like.sql — compare LIKE and ILIKE",
+    ["The Hobbit", "The Hobbit"]);
+  verifyLibrary("null_values.sql — inspect a read-only sample with a missing year",
+    ["Known|1937", "Unknown|[missing]"]);
+  verifyLibrary("null_equality.sql — compare = NULL with IS NULL",
+    ["Unknown"]);
+  verifyLibrary("null_truth_table.sql — inspect TRUE FALSE and UNKNOWN",
+    ["Known new|true|false", "Known old|false|true", "Unknown|UNKNOWN|UNKNOWN"]);
+  verifyLibrary("sort_all.sql — tie-breakers and missing years",
+    ["Alpha|2000", "Beta|2000", "Old|1990", "Undated|"]);
+  verifyLibrary("sort_limit.sql — return the top three ordered rows",
+    ["Alpha", "Beta", "Old"]);
+  verifyLibrary("sort_offset.sql — skip one row then take two",
+    ["Beta", "Old"]);
+  assert.equal(run(["-d", "tsa_library", "-c", "SELECT count(*) FROM library.books"]).out, "2",
+    "Generic WHERE/NULL/ORDER lessons must not modify library books");
+
   const wrongDatabase = run(["-d", "tsa_invalid_database_name", "-c", "SELECT 1"], 2);
   assert.match(wrongDatabase.err, /database "tsa_invalid_database_name" does not exist/);
 
