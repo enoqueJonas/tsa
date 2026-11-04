@@ -3144,9 +3144,182 @@ const specs: DataLessonSpec[] = [
         "knowledgeCheck": "Why does a valid Environment.service_id FK permit a production-stage Service without a production Environment? How could a concurrent last-Environment deletion invalidate a previously checked transition?"
     },
     {
+        "id": "postgresql-constraints-basics",
+        "title": "How PostgreSQL Prevents Invalid Data",
+        "introduction": "A data type tells PostgreSQL whether a value is text, a number or something else. It cannot express every rule that makes a record valid. Constraints are rules enforced by the database server on every INSERT or UPDATE, regardless of which client sends the SQL. We will examine the five foundational types using a small course catalogue.",
+        "outcomes": [
+            "Explain PRIMARY KEY, UNIQUE, NOT NULL, CHECK and FOREIGN KEY in distinct terms.",
+            "Predict a rule violation before executing the SQL.",
+            "Distinguish column types from constraints and from business rules outside one row.",
+            "Verify that four rejected inserts do not modify valid data."
+        ],
+        "sections": [
+            {
+                "id": "types-vs-rules",
+                "title": "A type is not a complete validity rule",
+                "body": "An integer is a valid type for a class size, but a negative class size makes no sense. Text is a valid type for a course title, but a missing title may be unacceptable. A column's data type limits representation; a constraint enforces a declared rule about acceptable values or relationships.\n\nThe database server checks constraints independently of your UI or application code. If a Python API validates a field but another program writes directly through psql, PostgreSQL still enforces the table rules. Conversely, a rule not declared in the database cannot be assumed to exist simply because your application normally checks it.\n\nOur example has advisors and courses. Each course has a code, title, advisor reference and available seats. The advisor and course tables are temporary and contain only fictional data. This lets us test failures without changing library.books or the later Steward practice fixture."
+            },
+            {
+                "id": "five-constraints",
+                "title": "What each constraint means",
+                "body": "PRIMARY KEY uniquely identifies one row and rejects NULLs. We use a course code as the primary key in the small example; other designs could use generated numeric IDs. UNIQUE prevents two rows from using the same declared value or combination of values. By default PostgreSQL UNIQUE allows multiple NULL values, which is why it is not a substitute for NOT NULL.\n\nNOT NULL requires a value to be present. It does not reject an empty text string by itself. CHECK evaluates a Boolean condition, for example seats >= 0. SQL CHECK rejects FALSE, but UNKNOWN from NULL passes; combine with NOT NULL when absence is invalid. FOREIGN KEY requires a referencing value to correspond to an eligible row in another table: a course with advisor_id 999 is rejected if no such advisor exists.\n\nA constraint is a precise technical promise. It cannot by itself guarantee that the chosen advisor was the *right* advisor or that the seat count reflects real-world occupancy."
+            },
+            {
+                "id": "create-example",
+                "title": "Create two tables with meaningful rules",
+                "body": "Run the complete SQL block in one psql session connected to tsa_library. The first TEMP table defines advisors, with id as its primary key. The second defines courses, with a primary course code, required unique title, nonnegative seat count and required advisor_id. REFERENCES advisor_example(id) is the foreign-key rule.\n\nAn INSERT adds fictional advisor Ana with id 1, then one valid course DB101 with 30 seats. The final SELECT returns DB101|1|30. Every part matters: the key names identify records, CHECK prevents negative seats, and the foreign key ensures advisor_id points to a real advisor. The example uses a tiny lab; in a mature university schema a title may not truly be unique, and that domain rule would need reconsideration.\n\nThe TEMP tables are visible only in the creating session. The next negative test creates its own fresh tables to avoid assuming that the original client is still open.",
+                "caption": "constraints_lab_valid.sql — create two constrained course tables",
+                "language": "sql",
+                "code": "CREATE TEMP TABLE advisor_example (\n  id integer PRIMARY KEY,\n  name text NOT NULL\n);\nINSERT INTO advisor_example VALUES (1, 'Ana');\nCREATE TEMP TABLE course_example (\n  code text PRIMARY KEY,\n  title text NOT NULL UNIQUE,\n  advisor_id integer NOT NULL REFERENCES advisor_example(id),\n  seats integer NOT NULL CHECK (seats >= 0)\n);\nINSERT INTO course_example VALUES ('DB101', 'Databases', 1, 30);\nSELECT code, advisor_id, seats FROM course_example ORDER BY code;",
+                "output": "DB101|1|30"
+            },
+            {
+                "id": "four-failures",
+                "title": "Watch four different invalid writes fail",
+                "body": "The next complete file repeats the safe table setup, then deliberately attempts four invalid inserts: (1) duplicate DB101 violates the primary key; (2) advisor_id 999 has no matching parent row and violates the foreign key; (3) seats -1 violates CHECK; and (4) a NULL title violates NOT NULL. Each has a different cause, even though all are rejected by the same database server.\n\nSave the published code as constraints_lab_failures.sql and run it only in your disposable lab with ON_ERROR_STOP=0 to observe all four expected failures in one process. Ordinary release scripts should use ON_ERROR_STOP=1 to stop at the first unexpected error. The final SELECT count(*) must still report exactly one valid course. That unchanged count is evidence that the rejected statements did not insert partial rows.\n\nDo not try each invalid INSERT in a separate psql process unless you also recreate the TEMP tables. They belong to one session.",
+                "caption": "constraints_lab_failures.sql — four independent constraint errors",
+                "language": "sql",
+                "code": "CREATE TEMP TABLE advisor_example (id integer PRIMARY KEY, name text NOT NULL);\nINSERT INTO advisor_example VALUES (1, 'Ana');\nCREATE TEMP TABLE course_example (\n  code text PRIMARY KEY,\n  title text NOT NULL UNIQUE,\n  advisor_id integer NOT NULL REFERENCES advisor_example(id),\n  seats integer NOT NULL CHECK (seats >= 0)\n);\nINSERT INTO course_example VALUES ('DB101', 'Databases', 1, 30);\nINSERT INTO course_example VALUES ('DB101', 'Duplicate', 1, 5);\nINSERT INTO course_example VALUES ('ORPHAN', 'Missing Advisor', 999, 5);\nINSERT INTO course_example VALUES ('NEGATIVE', 'Negative Seats', 1, -1);\nINSERT INTO course_example VALUES ('NO-TITLE', NULL, 1, 5);\nSELECT count(*) FROM course_example;",
+                "output": "Expected stderr: duplicate key, foreign key, CHECK, NOT NULL\nFinal valid row count: 1"
+            },
+            {
+                "id": "rules-limits",
+                "title": "What constraints do not automatically guarantee",
+                "body": "A CHECK condition ordinarily applies to the row being inserted or updated. It is not a general-purpose way to assert arbitrary facts about other tables. For example, \"every production Service must have a production Environment\" is a cross-table business rule; a normal foreign key can require that a referenced Environment exists in one direction, but cannot necessarily enforce that a required child row exists in every relevant state.\n\nConstraints also depend on correct modeling. Declaring a course title UNIQUE may be too restrictive if different courses legitimately share a title. Declaring an advisor foreign key does not prove the assignment matches university policy. Business stakeholders still need to state which facts and relationships must hold.\n\nThe later Steward constraint lab applies these distinctions to real Service requirements and inspects what the database actually enforces. It should not be the learner's first encounter with the meanings of these five constraints."
+            },
+            {
+                "id": "transfer",
+                "title": "Design constraints for another domain",
+                "body": "Imagine a library loan table with loan_id, book_id, borrower_id and due_date. Which column should identify a loan? Which references need foreign keys? Is due_date allowed to be NULL? Can one borrower have several loans? Avoid automatically declaring borrower_id UNIQUE, because doing so would prevent multiple loans even when that is legitimate.\n\nFor each proposed constraint, write the invalid row it must reject and the legitimate row it must allow. This is stronger than merely adding keywords to CREATE TABLE. The next lesson asks a separate question: what happens if you try to delete a parent row that still has dependent rows?"
+            }
+        ],
+        "warning": "Run deliberate failing inserts only on disposable TEMP tables. ON_ERROR_STOP=0 is for observing the controlled errors, not for ordinary deployment scripts.",
+        "assignment": [
+            "Explain each foundational constraint using a different example.",
+            "Run the valid lab and inspect the one course.",
+            "Run the four-failure script and classify each PostgreSQL error.",
+            "Verify the course count remains one despite the rejected rows.",
+            "Choose constraints for an independent loan table and identify one rule needing application-level enforcement."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Constraints",
+                "url": "https://www.postgresql.org/docs/17/ddl-constraints.html",
+                "kind": "reference",
+                "purpose": "Define all five constraints, NULL semantics and cross-table CHECK limitations."
+            }
+        ],
+        "practiceObjective": "Observe how PostgreSQL rejects invalid records independently of the client.",
+        "practiceInstructions": [
+            "Run the valid disposable advisor/course example.",
+            "Run the full controlled failure script with ON_ERROR_STOP=0 and capture distinct errors.",
+            "Verify the count of valid rows and explain why a partial invalid row was not added.",
+            "Design a different table with intentional constraints and one clear negative case."
+        ],
+        "knowledgeCheck": "How does PRIMARY KEY differ from UNIQUE? Does CHECK(seats >= 0) forbid NULL? Why does a FOREIGN KEY reject advisor_id=999? What rule cannot be captured simply by copying a column's type?",
+        "readingTitle": "Learn primary, unique, check and foreign key rules",
+        "practiceTitle": "Test four constraint violations",
+        "checkTitle": "Check database integrity",
+        "practiceScenario": "Use fictional course records to learn data integrity before verifying Steward business rules.",
+        "practiceDeliverables": [
+            "Constrained temporary table definitions",
+            "Four distinct errors and unchanged count",
+            "Independent domain rules"
+        ],
+        "practiceCompletionCriteria": [
+            "Each error is correctly attributed to the enforced rule.",
+            "Valid data remains after rejected writes.",
+            "The learner distinguishes technical constraints from unstated domain assumptions."
+        ]
+    },
+    {
+        "id": "postgresql-foreign-key-deletes",
+        "title": "What Happens When You Delete a Referenced Row?",
+        "introduction": "Foreign keys protect relationships, but what should happen when a parent record is deleted? PostgreSQL supports different ON DELETE actions. We will contrast the default protection of a referenced advisor with an explicit cascading deletion, using fresh temporary tables instead of real university or Steward data.",
+        "outcomes": [
+            "Explain parent and referencing child rows.",
+            "Observe a foreign-key rejection when a referenced parent is deleted.",
+            "Demonstrate deliberate ON DELETE CASCADE and its consequences.",
+            "Choose a delete policy from domain requirements instead of convenience."
+        ],
+        "sections": [
+            {
+                "id": "parent-child",
+                "title": "What is a referenced parent row?",
+                "body": "An advisor record may be referenced by several course rows. The advisor is the parent of those references; each course containing advisor_id is a referencing child. The foreign key protects the relationship by preventing a child from pointing to a nonexistent parent.\n\nWhen you delete a parent, PostgreSQL must decide what to do with any remaining children. Under the default NO ACTION behavior, deleting a still-referenced parent is rejected when the constraint is checked, unless the required relationship has been repaired first. A DEFERRABLE constraint can change when that check happens; we use the ordinary immediate default here.\n\nThis protection is not a nuisance to bypass blindly. If a course must always have an advisor, refusing deletion preserves the declared rule. In a real university you might first reassign the courses, mark the advisor inactive, or ask for an approved data-retention process."
+            },
+            {
+                "id": "default-rejection",
+                "title": "Observe the default foreign-key protection",
+                "body": "The SQL file below creates two TEMP tables and one parent and child. It then tries to DELETE advisor id 1 while course DB101 still references it. PostgreSQL rejects the parent deletion. The following SELECT proves that the advisor is still present.\n\nUse ON_ERROR_STOP=0 only to collect this expected negative result. The error is not a connection failure and not a syntax error; the server is enforcing a relationship that was declared in CREATE TABLE. We deliberately do not drop anything to resolve the failure. The tables disappear when the psql session ends.\n\nMake sure the test is executed as one SQL file in one session, otherwise the TEMP parent might not exist when you create the child.",
+                "caption": "fk_delete_restrict.sql — referenced parent cannot be deleted",
+                "language": "sql",
+                "code": "CREATE TEMP TABLE advisor_restrict (id integer PRIMARY KEY, name text NOT NULL);\nCREATE TEMP TABLE course_restrict (\n  code text PRIMARY KEY,\n  advisor_id integer NOT NULL REFERENCES advisor_restrict(id)\n);\nINSERT INTO advisor_restrict VALUES (1, 'Ana');\nINSERT INTO course_restrict VALUES ('DB101', 1);\nDELETE FROM advisor_restrict WHERE id = 1;\nSELECT count(*) FROM advisor_restrict;",
+                "output": "Expected stderr: violates foreign key constraint\nAdvisor count after failed delete: 1"
+            },
+            {
+                "id": "cascade",
+                "title": "What does ON DELETE CASCADE actually do?",
+                "body": "Cascading deletion is a different deliberate rule. ON DELETE CASCADE tells PostgreSQL to remove referencing child rows automatically when their parent is deleted. The next disposable example uses advisor_cascade and course_cascade so it cannot collide with the restrictive tables.\n\nAfter inserting one parent and one child, DELETE FROM advisor_cascade WHERE id=1; removes the advisor. PostgreSQL also removes the related course as instructed by the foreign-key action. The final child count is zero. It would be dangerous to choose CASCADE merely because the default foreign-key restriction blocked a task: deleting one parent may silently remove many related child records.\n\nUse cascade only when children truly have no independent existence without the parent, such as certain join-table memberships. In other domains, reassigning, soft-deleting or preserving history may be more appropriate.",
+                "caption": "fk_delete_cascade.sql — child removed with deleted parent",
+                "language": "sql",
+                "code": "CREATE TEMP TABLE advisor_cascade (id integer PRIMARY KEY, name text NOT NULL);\nCREATE TEMP TABLE course_cascade (\n  code text PRIMARY KEY,\n  advisor_id integer NOT NULL REFERENCES advisor_cascade(id) ON DELETE CASCADE\n);\nINSERT INTO advisor_cascade VALUES (1, 'Ana');\nINSERT INTO course_cascade VALUES ('DB101', 1);\nDELETE FROM advisor_cascade WHERE id = 1;\nSELECT count(*) FROM course_cascade;",
+                "output": "DELETE 1\nRemaining courses: 0"
+            },
+            {
+                "id": "set-null",
+                "title": "What about SET NULL and SET DEFAULT?",
+                "body": "Another foreign-key action is ON DELETE SET NULL: when the parent is deleted, the referencing column becomes NULL. That can make sense when a child may legitimately exist without an assigned parent. But if that column is also NOT NULL, the action conflicts with the rule and the deletion can fail. The schema must express the actual domain rather than combine incompatible constraints.\n\nON DELETE SET DEFAULT replaces the reference with its declared default, but that default must also satisfy the foreign-key relation unless it is NULL and allowed. NO ACTION and RESTRICT are often similar but differ around deferrable constraint timing; do not flatten those details into a claim that all delete policies are identical.\n\nThe action is attached to a particular FOREIGN KEY definition, not a setting for every table in the database. Different relationships can have different policies based on data ownership and history requirements."
+            },
+            {
+                "id": "decision",
+                "title": "Choose a deletion rule based on the meaning of the data",
+                "body": "Ask what the child row represents before choosing an action. A join table recording a temporary membership may be safe to cascade when the parent membership is removed. A payment or audit record often must survive even after a customer account is closed; cascading it could violate retention and accountability requirements. An active course may need reassignment rather than deletion when an advisor leaves.\n\nWrite the expected post-delete state for each relationship: parent present or absent, child present or absent, foreign-key value changed or unchanged, and any history retained. Only then choose a PostgreSQL action. A command that executes successfully but deletes required evidence is an engineering failure.\n\nThe next Steward lab uses explicit domain constraints and tests to decide which operations are actually acceptable. Having witnessed both default rejection and cascade, you can evaluate that policy without guessing."
+            }
+        ],
+        "warning": "Cascading foreign keys can delete many dependent rows. Never use ON DELETE CASCADE merely to bypass a rejected parent deletion.",
+        "assignment": [
+            "Execute the restrictive relationship test, capture the error and verify the advisor remains.",
+            "Execute the cascading relationship test and verify its course disappears.",
+            "Explain why ON DELETE SET NULL requires a nullable foreign-key column.",
+            "Design deletion policies for a membership table versus a financial audit table.",
+            "State how the expected child-row lifecycle informs the schema."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Foreign Keys",
+                "url": "https://www.postgresql.org/docs/17/ddl-constraints.html#DDL-CONSTRAINTS-FK",
+                "kind": "reference",
+                "purpose": "Authoritative parent/child and ON DELETE action semantics."
+            }
+        ],
+        "practiceObjective": "Observe restrictive and cascading foreign-key deletion in separate disposable sessions.",
+        "practiceInstructions": [
+            "Run the NO ACTION example and record the rejected parent DELETE.",
+            "Run the ON DELETE CASCADE example and verify child rows disappear.",
+            "Contrast the outcomes with one hypothetical SET NULL policy.",
+            "Explain which behavior would be appropriate for a second domain."
+        ],
+        "knowledgeCheck": "What happens when a referenced parent is deleted with the default action? Does CASCADE delete the child automatically? Why can SET NULL conflict with NOT NULL? Who should decide which policy is correct?",
+        "readingTitle": "Learn foreign key deletion behavior",
+        "practiceTitle": "Compare protected and cascading deletes",
+        "checkTitle": "Check delete actions",
+        "practiceScenario": "Test generic advisor/course relationships before choosing Steward ownership rules.",
+        "practiceDeliverables": [
+            "Expected parent delete failure",
+            "Cascading delete and missing child evidence",
+            "Deletion policy for a different domain"
+        ],
+        "practiceCompletionCriteria": [
+            "Both outcomes are observed in disposable tables.",
+            "No real application records are deleted.",
+            "The learner chooses delete semantics from domain requirements."
+        ]
+    },
+    {
         "id": "constraints-keys",
-        "title": "Constraints, Keys and Relationships",
-        "introduction": "A database is useful partly because a rule can survive multiple clients. What does it mean to make an invariant executable rather than put it in a comment? We will inspect existing Steward constraints, predict four real constraint failures, then evolve the schema with one explicit, reversible example. This builds on the SQL fixture; do not recreate its tables.",
+        "title": "Steward Practice: Enforce Data Constraints",
+        "introduction": "You have already learned PRIMARY KEY, UNIQUE, NOT NULL, CHECK, FOREIGN KEY and the consequences of parent deletion. Apply those rules to the Steward five-Service database by inspecting declared constraints, observing rejected operations and considering a reversible schema change. The business-rule mapping is the task here; this is not where basic constraint definitions are first introduced.",
         "outcomes": [
             "Explain PRIMARY KEY, UNIQUE, NOT NULL, CHECK and FOREIGN KEY by the condition each prevents.",
             "Observe a rejected direct SQL write even when no API or Django validation runs.",
