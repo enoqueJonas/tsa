@@ -81,6 +81,45 @@ Second, the **constraints** reading assumed the learner could already distinguis
 
 **Verification boundary:** matching-head full CI, rendered UX inspection and independent learner teach-back remain separate. The first wallet regression failed as described; the corrected test is not a pass until a new matching-head workflow succeeds. The original Steward business-rule tests remain required and must not be waived.
 
+## 2026-11-04 continuation — design, normal forms, plan literacy, indexes and operations
+
+**Same-school scope:** Builder → Relational Data and PostgreSQL. Do not resume Technical Steward source work before this learner-sequence defect is closed.
+
+### Pedagogical deficits corrected in this pass
+
+| Topic | Defect observed in the old reading | New / revised learner sequence | Executable evidence on branch |
+| --- | --- | --- | --- |
+| Schema design | Abstract Steward-only relation/cardinality checklist without an independent design example | New `postgresql-schema-design-basics`: university Student, Course and Enrollment; keys, independent facts, optionality and repeated-course policy; then the existing `schema-design` becomes an explicitly applied Steward design activity | `enrollment_schema_demo.sql`, missing-student FK failure and count 3 in one session |
+| Normalization | 1NF/2NF/3NF named in one paragraph; only a Steward Team name anomaly shown | New `postgresql-normal-forms`: first normal form and repeating groups; functional dependencies; partial dependencies on composite keys; transitive department dependency; then existing `normalization` is an applied Steward anomaly | `normal_forms_demo.sql`: one Department rename is reflected by both joined course rows |
+| Query plans | Indexes were taught **before** the physical-plan reading despite using EXPLAIN; cost and loops were jargon | Move retained-ID `query-plans` before `indexes`, teach logical answer vs physical algorithm, EXPLAIN vs EXPLAIN ANALYZE, costs vs times, loops and safe measurement on library.books | `library_explain_only.sql`, `library_explain_analyze.sql`, expected matching count 1 |
+| Simple indexes | Compact mixed mechanics, multicolumn design and write-cost list; five-row Steward data used for introduction | Rebuild retained-ID `indexes` on book B-tree navigation, heap access, Seq/Index scans, index-only visibility and 15,000 disposable book records | Existing `index_lab.sql` caption/source regression preserved; new content uses `book-14999` |
+| Multicolumn indexes | Leading-key and index maintenance mentioned once without a worked example | New `postgresql-composite-indexes`: explain lexicographic B-tree key order, leading and non-leading filters, partial and INCLUDE distinction, and write/storage consequences | `index_composite_lab.sql` constructs 4,000 rows and asserts **40** two-key matches, **400** non-leading matches and nonzero index storage |
+| PostgreSQL inspection | psql, sessions, privileges and backups compressed into one reading | Rewrite retained-ID `postgresql-practice` solely for client/server/catalog/session diagnosis | Existing `postgresql_inspect.sql` kept, plus `postgresql_session.sql` for own backend |
+| Roles and privileges | No independent privilege lab; privileges named without demonstrating effective rights | New `postgresql-roles-and-privileges`: LOGIN/NOLOGIN, database CONNECT, schema USAGE/CREATE and table rights, owner/migration vs runtime roles | `postgresql_privileges.sql` plus local-only NOLOGIN `tsa_books_readonly` with SELECT true / INSERT false; requires role-create rights |
+| Backup and restore | Describes pg_dump but never performs a recovery drill | New `postgresql-backup-and-restore`: custom-format dump, isolated destination, pg_restore, table count and value verification, explicit RPO/RTO/cluster-global limits | Exact shell source `library_backup_restore.sh` executed by live CI on isolated PostgreSQL, expected two titles after restore |
+
+### Research mapping
+
+- [PostgreSQL 17 — Using EXPLAIN](https://www.postgresql.org/docs/17/using-explain.html): plan tree, Seq/Index Scan, cost versus actual time, row and loop semantics. Translation: learner-facing explanation of plans and read-only `EXPLAIN ANALYZE` before index experiments.
+- [PostgreSQL 17 — Multicolumn Indexes](https://www.postgresql.org/docs/17/indexes-multicolumn.html): B-tree leftmost key constraints and behavior of non-leading predicates. Translation: two queries on the *same* 4,000-row scratch dataset, comparing 40 and 400 matching rows without promising one particular plan.
+- [PostgreSQL 17 — Index Only Scans](https://www.postgresql.org/docs/17/indexes-index-only-scans.html) and [Visibility Map](https://www.postgresql.org/docs/17/storage-vm.html): heap visibility condition. Translation: no claim that every index-only scan avoids heap visibility checks.
+- [PostgreSQL 17 — Table Privileges](https://www.postgresql.org/docs/17/ddl-priv.html) and [Schemas](https://www.postgresql.org/docs/17/ddl-schemas.html): privilege scope. Translation: read-only effective-privilege proof and separation from authentication.
+- [PostgreSQL 17 — pg_dump](https://www.postgresql.org/docs/17/app-pgdump.html), [pg_restore](https://www.postgresql.org/docs/17/app-pgrestore.html): custom-format single-database dump and controlled restore. Translation: source-published shell lab, archive existence, restored rows and untouched source database.
+- [PostgreSQL 17 — Monitoring Statistics](https://www.postgresql.org/docs/17/monitoring-stats.html): pg_stat_activity and ordinary role visibility restrictions. Translation: inspect only the learner's own backend.
+
+Primary references were consulted for mechanisms and exact commands. CMU's database course schedule is available as an optional academic route, not claimed as a fully watched lecture.
+
+### Status of verification for this continuation
+
+- **Source rewritten:** yes, on draft [PR #357](https://github.com/enoqueJonas/tsa/pull/357). Prior IDs retained wherever an established lesson was being revised.
+- **Source-extracted regression:** expanded to require ordering from schema-design basics through normalization, EXPLAIN before indexes and then operations lessons; exact runnable SQL extracted from authored source.
+- **Actual PostgreSQL 17 integration:** expanded to cover real university FK failure, normal forms, EXPLAIN, multicolumn access, role permission proof and pg_dump/pg_restore. **Treat as UNVERIFIED until matching-head CI succeeds.** Binary client version and backup prerequisites must be confirmed on the CI runner; do not assume psql availability proves pg_dump compatibility.
+- **Structural build and browser traversal:** requires a matching-head job after the final edits; prior 19/19 CI run does not verify this new content.
+- **Manual learner-facing rendered inspection and uncoached novice transfer:** **OPEN**. A green workflow does not evaluate whether a learner can independently set up PostgreSQL, draw keys/normal forms, read a plan or perform a restore.
+- **Other Builder PostgreSQL depth work:** controlled query-performance experiments, full operation/permission negative cases and any remaining incomplete module readings must be reviewed before marking the module learner-validated.
+
+---
+
 ## Research and teaching translation
 
 Primary material was inspected for the precise model and syntax, not copied verbatim:
