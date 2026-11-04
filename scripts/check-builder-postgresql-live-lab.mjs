@@ -168,6 +168,40 @@ try {
   assert.equal(run(["-d", "tsa_library", "-c", "SELECT count(*) FROM library.books"]).out, "2",
     "Transaction examples must not change persistent library rows");
 
+  // Explain each integrity rule with independent temporary course tables
+  // before applying constraints to the permanent Steward teaching schema.
+  const validCourse = runLibrary("constraints_lab_valid.sql — create two constrained course tables").out;
+  assert.equal(validCourse.split(/\r?\n/).at(-1), "DB101|1|30");
+  const runErrorFile = (name, caption) => {
+    const sourceFile = path.join(root, name);
+    fs.writeFileSync(sourceFile, codeFromLesson(caption) + "\n");
+    const p = spawnSync("psql",
+      ["-X", "-v", "ON_ERROR_STOP=0", "-At", "-F", "|", "-d", "tsa_library", "-f", sourceFile],
+      {encoding: "utf8", timeout: 20000, env: process.env});
+    assert.ifError(p.error);
+    assert.equal(p.status, 0, p.stderr);
+    return {out:p.stdout.trim(),err:p.stderr};
+  };
+  const constraintFailures = runErrorFile("constraints_lab_failures.sql",
+    "constraints_lab_failures.sql — four independent constraint errors");
+  assert.match(constraintFailures.err, /duplicate key value violates unique constraint/);
+  assert.match(constraintFailures.err, /violates foreign key constraint/);
+  assert.match(constraintFailures.err, /violates check constraint/);
+  assert.match(constraintFailures.err, /null value in column "title"/);
+  assert.equal(constraintFailures.out.split(/\r?\n/).at(-1), "1",
+    "Four rejected writes must leave exactly one valid course");
+  const restrictive = runErrorFile("fk_delete_restrict.sql",
+    "fk_delete_restrict.sql — referenced parent cannot be deleted");
+  assert.match(restrictive.err, /violates foreign key constraint/);
+  assert.equal(restrictive.out.split(/\r?\n/).at(-1), "1",
+    "Failed delete must preserve the referenced advisor");
+  const cascading = runLibrary("fk_delete_cascade.sql — child removed with deleted parent").out;
+  assert.match(cascading, /DELETE 1/);
+  assert.equal(cascading.split(/\r?\n/).at(-1), "0",
+    "Explicit cascade must remove the dependent child");
+  assert.equal(run(["-d", "tsa_library", "-c", "SELECT count(*) FROM library.books"]).out, "2",
+    "Integrity teaching examples must not alter the stored library books");
+
   const wrongDatabase = run(["-d", "tsa_invalid_database_name", "-c", "SELECT 1"], 2);
   assert.match(wrongDatabase.err, /database "tsa_invalid_database_name" does not exist/);
 
