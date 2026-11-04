@@ -450,6 +450,26 @@ try {
   const slug = run(["-c", codeFromLesson("constraints_slug.sql — reversible uniqueness evolution")]).out;
   assert.match(slug, /payments-api/);
   assert.equal(run(["-c", "SELECT count(*) FROM information_schema.columns WHERE table_name='service' AND column_name='slug'"]).out, "0");
+  // Learn schema-design and normal forms against unrelated university data.
+  // Keep TEMP tables and the expected foreign-key failure in one psql session.
+  const enrollmentFile = path.join(root, "enrollment_schema_demo.sql");
+  fs.writeFileSync(enrollmentFile,
+    codeFromLesson("enrollment_schema_demo.sql — three linked tables from university requirements") +
+    "\nINSERT INTO tsa_enrollment (student_id,course_id,enrolled_on) VALUES (999,10,'2026-02-03');\n" +
+    "SELECT count(*) FROM tsa_enrollment;\n");
+  const enrollmentLab = spawnSync("psql",
+    ["-X", "-v", "ON_ERROR_STOP=0", "-At", "-F", "|", "-d", "tsa_library", "-f", enrollmentFile],
+    { encoding: "utf8", timeout: 20000, env: process.env });
+  assert.ifError(enrollmentLab.error);
+  assert.equal(enrollmentLab.status, 0, enrollmentLab.stderr);
+  assert.match(enrollmentLab.stderr, /violates foreign key constraint/);
+  const enrollmentLines = enrollmentLab.stdout.trim().split(/\r?\n/);
+  assert.deepEqual(enrollmentLines.slice(-4), ["Ana|Linux", "Ana|SQL", "Beto|SQL", "3"]);
+
+  const normalizedLab = run(["-d", "tsa_library", "-c",
+    codeFromLesson("normal_forms_demo.sql — normalized university tables and one department rename")]).out;
+  assert.deepEqual(normalizedLab.split(/\r?\n/).slice(-2),
+    ["Ana|Linux|Computer Science", "Ana|SQL|Computer Science"]);
   const schema = run(["-c", codeFromLesson("schema_extension.sql — disposable memberships and historical reviews")]).out;
   assert.match(schema, /followup/);
   assert.match(schema, /pass/);
