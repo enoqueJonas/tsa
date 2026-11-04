@@ -19,18 +19,17 @@ const practices: Record<string, PracticeSpec> = {
         completionCriteria: ["The learner has reproduced persistence across separate Python processes.", "The negative JSON corruption is observed and the recovery documented.", "The limits of the exercise (no concurrency or crash safety) are not presented as verified.", "A database is chosen for explicit Steward requirements rather than assumed universally necessary."]
     },
     "relational-data-and-postgresql-postgresql-first-connection-practice": {
-        objective: "Prove an actual PostgreSQL lab connection and temporary-table lifecycle before the relational schema lab.",
-        scenario: "A following lesson asks for CREATE TABLE, but a learner must first have a server, database, role and client. Establish and diagnose those prerequisites explicitly.",
+        objective: "Connect to a running PostgreSQL server, use psql and locate failures without relying on a Steward project.",
+        scenario: "A new librarian has been given access to a database server but does not know whether psql is the client, whether the server is running, or which database the connection is using.",
         instructions: [
-            "Use the official PostgreSQL setup guide for your OS or an authorized course database. Isolate learning from any production or shared database.",
-            "Prove the psql client version and database connection separately; do not confuse pg_isready with successful authentication.",
-            "Record the selected database and role using SELECT current_database(), current_user, 2 + 2 with expected result 4.",
-            "Save and run first_session.sql using psql -X -v ON_ERROR_STOP=1 -f first_session.sql; compare both result sets with expected outputs.",
-            "In a new psql session, deliberately query tsa_session_probe and capture the missing-relation result to show session-only TEMP table lifetime.",
-            "Document environment/permissions blockers rather than inventing a successful SQL execution or exposing credentials."
+            "Choose the disposable Docker lab from the reading or an authorized training server; record the route, host, port, role and database without publishing a password.",
+            "In the shell, check that the client exists; then connect to the postgres maintenance database. Record what succeeded and what the server returned.",
+            "Inside psql, run \\conninfo, \\l and SELECT current_database(), current_user, 2+2. Explain which are psql commands and which are SQL.",
+            "Exit with \\q, start a new client session and explain why the server continued running.",
+            "Attempt a connection to a deliberately nonexistent database (a disposable lab only); classify the error. Separately explain what an unavailable client, refused transport, bad credentials or SQL error would mean."
         ],
-        deliverables: ["Environment/role/database setup record without secrets", "Successful connection and query output or explicit blocker", "First SQL file transcript", "Expected second-session TEMP-table failure", "Five-boundary diagnostic tree"],
-        completionCriteria: ["The next lab has a real accessible PostgreSQL database or an honest blocked-state record.", "The learner distinguishes client, server, database, schema and role.", "SQL and psql meta-commands are correctly separated.", "No real PostgreSQL execution is claimed solely from static CI tests."]
+        deliverables: ["Connection diagram labeling client/server/database/role", "A successful authenticated SELECT result or an explicit access blocker", "psql navigation transcript without secrets", "Error-classification table with one actual negative observation"],
+        completionCriteria: ["The learner can state which program actually runs SQL.", "A real PostgreSQL session was established or access was honestly marked blocked.", "The learner can identify shell, psql and SQL commands separately.", "No database schema or temporary-table knowledge is required to complete this practice."]
     },
     "relational-data-and-postgresql-relational-model-practice": {
         objective: "Understand Team, Service and relationship semantics through a deliberately temporary PostgreSQL example before creating the permanent Steward schema.",
@@ -61,19 +60,18 @@ const practices: Record<string, PracticeSpec> = {
         completionCriteria: ["All later-referenced baseline columns exist in the seed schema.", "Five Services, three Teams, four Environment rows and two directed dependencies are proved, not guessed.", "No destructive commands are directed at real or shared data.", "No PostgreSQL pass is inferred from source-only or SQLite-based checks."]
     },
     "relational-data-and-postgresql-sql-crud-practice": {
-        objective: "Perform data changes with a disciplined preview-mutate-verify workflow that makes accidental broad updates difficult.",
-        scenario: "You have been asked to correct several Steward records directly in PostgreSQL after a bad import. The request is legitimate, but a careless UPDATE or DELETE could affect the entire registry.",
+        objective: "Update an existing Steward row with a predictable, verified target set.",
+        scenario: "You need to test a corrected Steward Service field without permanently altering the canonical five-Service dataset. Preview one known Service, change one attribute and restore the original value.",
         instructions: [
-            "Seed at least five service rows including one disposable test record.",
-            "For every UPDATE or DELETE, first run the exact predicate as a SELECT and save the result.",
-            "Use SELECT expressions/aliases and INSERT ... RETURNING, then use UPDATE ... RETURNING to change one precisely identified service.",
-            "Insert more than one row in one statement and demonstrate one intentional ON CONFLICT behavior against a declared uniqueness rule.",
-            "Delete only the disposable row after proving the target set.",
-            "Intentionally write, but do not execute, one dangerous predicate-free mutation and annotate why PostgreSQL would accept it.",
-            "Compare before/after row sets and record the evidence."
+            "Start with the canonical five-Service fixture; choose one existing Service and save its current attribute value before any UPDATE.",
+            "Use SELECT with the exact intended UPDATE predicate to inspect matching rows and record the expected count.",
+            "Apply UPDATE ... SET ... WHERE ... RETURNING to change one known attribute; explain the difference between zero, one and multiple affected rows.",
+            "Run a fresh SELECT to verify the changed attribute, then use another selective UPDATE to restore the exact original value; prove all five teaching Services remain unchanged.",
+            "Write but do not execute a predicate-free UPDATE example and explain why valid SQL can still be destructive.",
+            "Keep this exercise focused on UPDATE; the next lesson treats row deletion separately."
         ],
-        deliverables: ["Preview SELECTs", "Safe mutation SQL using RETURNING", "Before/after evidence", "Mutation safety note"],
-        completionCriteria: ["Every executed mutation has an evidenced target set.", "No destructive statement relies on table order or an implicit assumption.", "The learner can explain why syntactically valid SQL can still be operationally dangerous."],
+        deliverables: ["Read-only preview and expected row count", "UPDATE/RETURNING transcript", "Before/after verification", "Explanation of a broad-predicate failure"],
+        completionCriteria: ["The original canonical fixture rows are left intact.", "The UPDATE result matches the intended single record.", "The learner can diagnose why a WHERE predicate matters."]
     },
     "relational-data-and-postgresql-filtering-ordering-practice": {
         objective: "Predict exact SQL predicate results, diagnose NULL/precedence failures, and produce deterministic ordered queries on the canonical Steward seed.",
