@@ -111,6 +111,27 @@ assert.match(rejected.stderr,/TSA_EXAMPLE_MODE must be training or production/);
 assert.ok(!source.includes('env.str('),"Do not reintroduce undefined env helper into Configuration reading");
 console.log("Process environment lesson passed: unset/default, accepted process value and invalid fail-fast case.");
 
+
+const loggerBasics=noviceTestCode("Python logging basics — runnable logger handler and level filter");
+const basicsGreen=runNovice(loggerBasics);
+assert.equal(basicsGreen.status,0,basicsGreen.stderr);
+assert.match(basicsGreen.stdout,/logging basics: INFO and WARNING visible; DEBUG filtered/);
+const thresholdMutant=loggerBasics.replace("handler.setLevel(logging.INFO)","handler.setLevel(logging.WARNING)");
+assert.notEqual(thresholdMutant,loggerBasics,"The threshold mutant must change the actual lesson code");
+const basicsRed=runNovice(thresholdMutant);
+assert.notEqual(basicsRed.status,0,"A missing INFO record must fail the lesson assertion");
+assert.match(basicsRed.stderr,/AssertionError/);
+const safeEvents=noviceTestCode("Logging — executable structured-context and secret absence test");
+const eventGreen=runNovice(safeEvents);
+assert.equal(eventGreen.status,0,eventGreen.stderr);
+assert.match(eventGreen.stdout,/logging events: 2 useful events; authorization header excluded/);
+const leakedEvents=safeEvents.replace('"request_id": request_context["request_id"],','"request_id": request_context["authorization"],');
+assert.notEqual(leakedEvents,safeEvents,"The logging leak mutant must change selected context");
+const eventRed=runNovice(leakedEvents);
+assert.notEqual(eventRed.status,0,"Leaking request Authorization must fail the published logging assertion");
+assert.match(eventRed.stderr,/AssertionError/);
+console.log("Python logging lessons passed: emitted/filtered records, safe allowlisted events and two rejected mutants.");
+
 const borrowing=noviceTestCode("Testing fundamentals — runnable three-case unittest suite");
 const borrowingGreen=runNovice(borrowing);
 assert.equal(borrowingGreen.status,0,borrowingGreen.stderr);
