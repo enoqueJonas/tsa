@@ -196,3 +196,18 @@ These tasks are specifications for independent learner assessment, **not evidenc
 - Add source-derived CI verifying an unset variable, a temporary valid value and an invalid value causing a nonzero exit. Guard against reintroducing the unexplained `env.str` API.
 
 **Evidence limit:** Source and CI checks prove the demonstrations execute, not that the learner independently configures the deployed Steward API. Human rendered review and transfer remain open.
+
+
+## 2026-11-04 — Python package and dependency foundations split
+
+**Finding:** The Managing Dependencies lesson began with direct/transitive requirements, version constraints, maintenance and internal package extraction. It never showed the difference between a Python module, import package, installed distribution, virtual environment and dependency manifest, nor how to inspect which interpreter owns a pip installation. The final practical immediately demanded an audit of unspecified Steward dependency inventory. Those prerequisites are especially important before dependency-troubleshooting advice.
+
+**Remediation:**
+- Split a new **Understand Python Packages and Dependencies** lesson ahead of **Managing Dependencies**. Teach module vs import package vs distribution, import name vs PyPI distribution name, standard library vs third party, interpreter/venv and `python -m pip`, direct vs transitive requirements, manifest vs installed packages and version ranges vs exact environment.
+- Publish two complete framework-free Python scripts: `inspect_packages.py` reads the interpreter and import/distribution metadata with optional pip presence; the `pyproject.toml` reader parses a real local TOML manifest with `tomllib` and proves declarations do **not** establish installed versions. Both run without network access or installing anything.
+- Rebuild **Managing Dependencies** as the next decision-making lesson: evidence for capability and direct consumer, compatibility/license/security, reproducible resolution and upgrade testing, justified internal package boundaries, and keep/remove/upgrade decisions. Do not invent `steward-common` or Nexus setup to make the example feel architectural.
+- Align post-composition practical overrides for both lessons with the independently executable examples before Steward-specific decisions. Add source-extracted regression tests and a learner-sequence guard.
+- Explain that `pip list` is an installed-environment inventory, not the project's direct requirements; `pip check` is not a vulnerability audit.
+
+**Acceptance:** Exact branch-head CI, build/browser checks and later manual learner observation must be recorded separately. **Builder learner-validated: NO.**
+
