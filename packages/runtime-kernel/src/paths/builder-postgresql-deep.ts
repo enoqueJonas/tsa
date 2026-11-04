@@ -2394,9 +2394,205 @@ const specs: DataLessonSpec[] = [
         "knowledgeCheck": "If a subquery yields three rows, can it be a scalar expression? Why does EXISTS ignore SELECT 1 values? What does NULL do to NOT IN, and why can EXISTS avoid outer-row duplication?"
     },
     {
+        "id": "postgresql-with-basics",
+        "title": "Make a Long Query Easier to Read with WITH",
+        "introduction": "A subquery nests one SELECT inside another. When a report needs several intermediate steps, nested parentheses can become difficult to explain. WITH lets you give those intermediate results meaningful names. We will learn ordinary, non-recursive WITH queries on the library catalogue before using them for Steward reports.",
+        "outcomes": [
+            "Explain what a Common Table Expression (CTE) means without jargon.",
+            "Name and reuse a SELECT result inside one SQL statement.",
+            "Combine two named steps into one readable query.",
+            "Distinguish a CTE from a saved table, a view and a session temporary table."
+        ],
+        "sections": [
+            {
+                "id": "why-names",
+                "title": "Why name an intermediate result?",
+                "body": "A query may need to answer several smaller questions before producing a final report. For example, select books with known publication years, then count them and find the earliest year. You could nest one SELECT inside another, but naming an intermediate result makes the question easier to audit and explain.\n\nA Common Table Expression, or CTE, is a named query expression defined by a WITH clause. The name exists for the SQL statement that follows it. It is not automatically a permanent table, a separate database or a session temporary table. PostgreSQL can decide how to execute and optimize the expression; the SQL name primarily helps the reader understand the logical stages.\n\nThe library table already exists in tsa_library. We use its two original books as known data and do not create or delete any persistent records."
+            },
+            {
+                "id": "one-step",
+                "title": "Name a list of books published since 1950",
+                "body": "The syntax starts with WITH and a chosen name, followed by AS and a parenthesized SELECT. The final SELECT can read that name. Here recent_books contains the rows from library.books with a year of at least 1950. On our two-book fixture, it contains Things Fall Apart. The final SELECT returns only its title.\n\nNotice that the CTE name recent_books has no library schema prefix: it is a temporary name inside this one statement, not a database object under the library namespace. The semicolon belongs after the final SELECT, so the WITH definition and final SELECT remain part of a single SQL statement.\n\nBefore running, describe the first SELECT's columns and rows and then the second SELECT's output. That habit makes multi-stage SQL easier to debug.",
+                "caption": "cte_library_one.sql — named recent books",
+                "language": "sql",
+                "code": "WITH recent_books AS (\n  SELECT title, published_year\n  FROM library.books\n  WHERE published_year >= 1950\n)\nSELECT title FROM recent_books ORDER BY title;",
+                "output": "Things Fall Apart"
+            },
+            {
+                "id": "two-steps",
+                "title": "Use one named step in another",
+                "body": "Several CTEs can appear in the same WITH clause, separated by commas. A later CTE can use the results of a preceding one. The first step below, dated_books, removes records whose publication year is missing; the second, year_summary, counts the remaining records and calculates the earliest year. The final SELECT returns those summary values.\n\nA reader can inspect each named result independently: dated_books should have two rows in the original library, year_summary should have one row containing 2 and 1937, and the final query should return 2|1937. An aggregate reduces many input rows to one result row here. The names tell you which question each step answers.\n\nA WITH query can also be written using nested subqueries. Neither form is always faster. Use the form that makes the logical rules and expected row counts clearest.",
+                "caption": "cte_library_two.sql — staged count and earliest year",
+                "language": "sql",
+                "code": "WITH dated_books AS (\n  SELECT title, published_year FROM library.books\n  WHERE published_year IS NOT NULL\n), year_summary AS (\n  SELECT COUNT(*) AS total_books,\n         MIN(published_year) AS earliest_year\n  FROM dated_books\n)\nSELECT total_books, earliest_year FROM year_summary;",
+                "output": "2|1937"
+            },
+            {
+                "id": "scope",
+                "title": "What happens after the statement ends?",
+                "body": "The previous query ended after its final SELECT. The name recent_books was available only while that query was being evaluated. If you now type SELECT * FROM recent_books; as a separate statement, PostgreSQL reports that the relation does not exist. This is an expected error: the first SELECT succeeded, but the CTE name was never saved as a table.\n\nCompare lifetimes carefully. library.books is persistent across psql connections. A table declared CREATE TEMP TABLE lasts for its creating session. A WITH name lasts for one statement. CREATE VIEW saves a reusable query definition; it is neither the same as a WITH name nor a guarantee that result rows are stored permanently.\n\nDo not repair this expected error by running CREATE TABLE recent_books. The purpose is to prove statement scope, not to create more state.",
+                "caption": "cte_library_scope_fail.sql — name unavailable after the statement",
+                "language": "sql",
+                "code": "SELECT * FROM recent_books;",
+                "output": "ERROR: relation \"recent_books\" does not exist"
+            },
+            {
+                "id": "when-with-helps",
+                "title": "Do not turn WITH into a default for every SELECT",
+                "body": "For a short query such as SELECT title FROM library.books;, a CTE may add complexity without improving clarity. It becomes useful when multiple stages have independent meanings, repeated logic, or conditions that are otherwise difficult to read. Name the intermediate result after its purpose, such as active_books or overdue_loans, not temp1.\n\nThe optimizer may inline a suitable CTE rather than materialize it, so the CTE name does not promise an intermediate physical table or a performance improvement. The query-plan lesson later shows how to inspect the chosen physical operations. Some data-modifying WITH forms exist, but they are not part of this beginner exercise.\n\nThe next lesson introduces WITH RECURSIVE, which adds a repeatedly evaluated relationship. Do not jump to recursion before you understand how an ordinary WITH name is scoped and used."
+            },
+            {
+                "id": "transfer",
+                "title": "Build a second report without copying the first",
+                "body": "Write a query with an older_books CTE containing books published before 1950, then count those rows in the final SELECT. With our two books the answer is 1. Before running it, state which condition belongs in the CTE and what the final COUNT is counting.\n\nThen write the same logical request with a derived subquery in FROM instead of WITH. The two should select the same source rows and return the same count. If they differ, inspect the WHERE predicate and the scope of the selected rows, rather than blaming the CTE syntax.\n\nYou now have one new technique: naming a result to make a larger query understandable. The following reading adds a new mechanism—repeating a query until a stopping rule is reached."
+            }
+        ],
+        "warning": "WITH does not create a permanent table and does not guarantee a faster query. Keep one clear reason for each named step.",
+        "assignment": [
+            "Run the single- and two-step library queries, predicting outputs.",
+            "Run the missing-relation negative example in a separate statement.",
+            "Explain CTE vs permanent table, session TEMP table and view.",
+            "Write an independent older_books CTE and equivalent nested SELECT."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — WITH Queries",
+                "url": "https://www.postgresql.org/docs/17/queries-with.html",
+                "kind": "reference",
+                "purpose": "Official non-recursive WITH syntax, scope and materialization semantics."
+            },
+            {
+                "title": "PostgreSQL Wiki — CTEReadme",
+                "url": "https://wiki.postgresql.org/wiki/CTEReadme",
+                "kind": "reference",
+                "purpose": "Secondary practical CTE examples; prefer current official docs for exact behavior."
+            }
+        ],
+        "practiceObjective": "Create readable single- and two-stage read-only queries without new schema objects.",
+        "practiceInstructions": [
+            "Run both authored CTE blocks against library.books.",
+            "Prove the name disappears in a later SQL statement.",
+            "Explain each stage's input/output rows and write another two-step query."
+        ],
+        "knowledgeCheck": "Does WITH create a table? Can a later CTE read an earlier CTE? What does a missing-relation error after the statement mean? Does WITH necessarily make SQL faster?",
+        "readingTitle": "Understand named SQL steps with WITH",
+        "practiceTitle": "Build a library report in two stages",
+        "checkTitle": "Check CTE scope",
+        "practiceScenario": "Learn SQL query structure using books before application-specific Steward reports.",
+        "practiceDeliverables": [
+            "One- and two-step query results",
+            "Missing relation negative",
+            "Independent two-stage report"
+        ],
+        "practiceCompletionCriteria": [
+            "The learner can identify the output of each named step.",
+            "The named result's statement lifetime is understood.",
+            "No persistent data is modified."
+        ]
+    },
+    {
+        "id": "postgresql-recursive-with",
+        "title": "Follow Relationships with Recursive Queries",
+        "introduction": "A basic WITH names intermediate rows, but some questions require following a chain whose length is not known in advance. WITH RECURSIVE supplies a starting set, a rule for finding next rows and a way to stop. We will learn that mechanism with numbers and a small people hierarchy, then handle a deliberate cycle without running an unbounded query.",
+        "outcomes": [
+            "Explain anchor rows, recursive step and stopping condition.",
+            "Predict the iterations of a bounded number generator.",
+            "Follow a small chain of named people using repeated JOINs.",
+            "Detect a loop using a visited-path guard and explain its limitations."
+        ],
+        "sections": [
+            {
+                "id": "recursive-purpose",
+                "title": "Why use recursion for a hierarchy?",
+                "body": "Suppose Ana manages Bia, Bia manages Ciro, and Ciro manages Dina. One JOIN can retrieve direct reports. Several JOINs can retrieve a fixed number of levels, but an organization chart might be many levels deep, and its maximum depth may change. A recursive query follows one relationship repeatedly until it can go no further.\n\nPostgreSQL's WITH RECURSIVE allows a named result to refer to itself. It has a non-recursive starting part (the anchor) and a recursive part that uses rows from the previous step to find further rows. UNION ALL combines those results. PostgreSQL evaluates the operation iteratively internally, even though the SQL is written recursively.\n\nEvery such query needs a trustworthy stopping policy. Without one, cyclic relationships or an unbounded rule can consume resources indefinitely. We start with counting because its stop condition is easy to inspect."
+            },
+            {
+                "id": "count",
+                "title": "Count from one to four",
+                "body": "The anchor SELECT 1 produces the first row. The recursive SELECT produces n+1 from the current counter rows while n<4. That yields 2, then 3, then 4; when n reaches 4 the predicate is FALSE and no next row is generated. The final SELECT shows 1, 2, 3, 4 in explicit ascending order.\n\nRead the code as three separate decisions: what is the first row, how do I get another row, and when should I stop? Change the stopping rule mentally to n<3 and predict the resulting sequence. Do not remove the bound merely to see what happens: an unbounded recursive expression is not a safe lab experiment.\n\nThe words anchor and recursive term name the two SELECTs around UNION ALL. They will appear again in the hierarchy example.",
+                "caption": "cte_recursion_numbers.sql — bounded counter",
+                "language": "sql",
+                "code": "WITH RECURSIVE counter(n) AS (\n  SELECT 1\n  UNION ALL\n  SELECT n + 1 FROM counter WHERE n < 4\n)\nSELECT n FROM counter ORDER BY n;",
+                "output": "1\n2\n3\n4"
+            },
+            {
+                "id": "people",
+                "title": "Walk from Ana to Dina",
+                "body": "Represent each direct relationship as two values: from_person and to_person. We use a read-only VALUES list instead of creating a permanent employee table. The anchor selects Ana at depth 0. The recursive step finds an edge whose from_person matches the current person's name and returns its to_person at the next depth.\n\nThe result is Ana at 0, Bia at 1, Ciro at 2 and Dina at 3. A WHERE depth<3 condition bounds the demonstration at three transitions. This works for the sample; a real organization may require deeper traversal. Explain each join matching the previous person to the next row rather than memorizing the query text.\n\nThe direction matters. Reversing the relation would walk toward managers instead of toward reports. We have not executed any Steward SQL in this example.",
+                "caption": "cte_recursion_people.sql — a three-link chain",
+                "language": "sql",
+                "code": "WITH RECURSIVE chain(person, depth) AS (\n  SELECT 'Ana'::text, 0\n  UNION ALL\n  SELECT link.to_person, chain.depth + 1\n  FROM chain\n  JOIN (VALUES ('Ana','Bia'), ('Bia','Ciro'), ('Ciro','Dina'))\n    AS link(from_person, to_person)\n    ON link.from_person = chain.person\n  WHERE chain.depth < 3\n)\nSELECT person, depth FROM chain ORDER BY depth;",
+                "output": "Ana|0\nBia|1\nCiro|2\nDina|3"
+            },
+            {
+                "id": "cycles",
+                "title": "Stop before following the same node again",
+                "body": "Now consider edges A→B and B→A. With no check, following each edge leads back to the earlier node, and the repeated operation may never finish. A depth limit terminates after a fixed number of steps but can hide legitimate longer paths. Another approach is to remember nodes visited along each path.\n\nThe query below carries an array named seen. ARRAY['A'] starts the path. The operator || appends the next node, and = ANY(seen) tests whether it was already visited. NOT excludes edges that revisit a seen node. After returning A and B, it refuses B→A because A is already in the array. The final array_length counts the nodes in each path.\n\nThis is a small executed cycle test, not a claim that arbitrary graph traversal is cheap. Different branches can still reach the same node via different paths and produce several rows.",
+                "caption": "cte_recursion_cycle.sql — safe walk across A and B",
+                "language": "sql",
+                "code": "WITH RECURSIVE walk(node, seen) AS (\n  SELECT 'A'::text, ARRAY['A'::text]\n  UNION ALL\n  SELECT e.to_node, walk.seen || e.to_node\n  FROM walk\n  JOIN (VALUES ('A'::text,'B'::text), ('B','A'))\n    AS e(from_node, to_node)\n    ON e.from_node = walk.node\n  WHERE NOT (e.to_node = ANY(walk.seen))\n)\nSELECT node, array_length(seen, 1) AS path_length\nFROM walk ORDER BY path_length;",
+                "output": "A|1\nB|2"
+            },
+            {
+                "id": "limits",
+                "title": "A safe stop is part of the business question",
+                "body": "A recursion guard can have different meanings. The counter's n<4 condition gives the desired mathematical endpoint. A hierarchy with depth<3 intentionally truncates paths deeper than three links. A seen-array condition prevents cycles on one path. These are not interchangeable. The correct choice depends on whether you want all reachable nodes, paths to a target, a bounded preview or an error on unexpected cycles.\n\nUsing UNION instead of UNION ALL can remove exact duplicate rows, but it does not necessarily stop a loop when a changing depth or path column makes each repeated visit a distinct output row. PostgreSQL also has SEARCH and CYCLE syntax for graph traversal; we leave it as optional further study once the manual guard is clear.\n\nDo not claim a query is safe merely because it returned a few rows on a small example. Check the termination rule, possible cycles and expected result cardinality."
+            },
+            {
+                "id": "new-hierarchy",
+                "title": "Explain an unfamiliar chain independently",
+                "body": "Draw an organization of four people or a product category hierarchy. Name its anchor node, edge direction, recursive join key and stopping policy. Write a two-step trace showing the current working rows and the next rows added. Then draw a cycle and explain which exact predicate rejects the repeated node.\n\nDo not execute an intentionally unbounded query; predicting the failure is sufficient. The following Steward applied case follows service dependencies. At that stage you should recognize the anchor, repeated edge match, cycle policy and resulting row meaning without having the instructor reinterpret every command for you."
+            }
+        ],
+        "warning": "Unbounded recursion can consume server resources. Do not test infinite cycles without a guard; a depth cutoff can also truncate a valid long chain.",
+        "assignment": [
+            "Execute the bounded number query, tracing each iteration.",
+            "Execute the Ana→Dina hierarchy and explain edge direction.",
+            "Run the guarded A↔B cycle and explain its two output rows.",
+            "Describe why UNION does not always solve recursion with changing depth.",
+            "Design a different hierarchy and its stopping policy."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Recursive WITH",
+                "url": "https://www.postgresql.org/docs/17/queries-with.html",
+                "kind": "reference",
+                "purpose": "Official anchor/step evaluation, cycle detection and recursive search mechanics."
+            },
+            {
+                "title": "LearnSQL — PostgreSQL Recursive Queries",
+                "url": "https://learnsql.com/course/postgresql-recursive-queries/",
+                "kind": "reference",
+                "purpose": "Optional practice course with progression from CTEs to hierarchies."
+            }
+        ],
+        "practiceObjective": "Execute a bounded recursive query and safely traverse a cyclic graph.",
+        "practiceInstructions": [
+            "Run the published number, chain and cycle examples.",
+            "Trace the generated rows at each step, not just the final output.",
+            "Explain what would go wrong without the cycle guard without executing it.",
+            "Model an independent hierarchy with a deliberate termination policy."
+        ],
+        "knowledgeCheck": "What are anchor and recursive terms? When does the number example stop? Why is a visited-node guard different from a depth limit? Can UNION alone always prevent cycling?",
+        "readingTitle": "Learn recursion, hierarchy and cycle guards",
+        "practiceTitle": "Traverse a safe recursive hierarchy",
+        "checkTitle": "Check recursive SQL termination",
+        "practiceScenario": "Work on tiny read-only hierarchies before applying recursion to Steward dependencies.",
+        "practiceDeliverables": [
+            "Number sequence and trace",
+            "Person hierarchy result",
+            "Cycle-safe result and explanation"
+        ],
+        "practiceCompletionCriteria": [
+            "The learner identifies anchor, step and stop.",
+            "The cyclic query terminates through an explicit guard.",
+            "The learner can reason about a different hierarchy."
+        ]
+    },
+    {
         "id": "ctes",
-        "title": "Common Table Expressions",
-        "introduction": "As queries grow, repeatedly nested expressions become hard to inspect. WITH gives intermediate SELECT results names so that a query can be read and verified in stages. The name is only scoped to the single statement: it is not a persistent table, a migration or a guaranteed optimization fence. Recursive CTEs can also follow graph edges using a seed step and a repeat step, but only when termination and cycles are deliberately handled.",
+        "title": "Steward Practice: CTE Reports and Dependency Traversal",
+        "introduction": "You already know how WITH names intermediate query steps, and how a recursive CTE repeats an anchor/transition until it stops. Apply those ideas to service-dependency reports using the existing Steward SQL dataset. This is application practice, not the first introduction to CTE syntax or graph cycles.",
         "outcomes": [
             "Write a nonrecursive CTE as a staged query and inspect each stage.",
             "Distinguish the temporary query result of WITH from persistent and TEMP PostgreSQL tables.",
