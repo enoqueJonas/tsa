@@ -7,6 +7,7 @@ on:
       - curriculum/psql-native-first-principles
       - curriculum/django-published-practice-sequencing
       - curriculum/builder-identity-novice-progression
+      - curriculum/builder-craft-git-real-labs
       - curriculum/psql-published-practice-alignment
       - curriculum/builder-django-beginner-depth-v1
       - curriculum/system-thinker-pedagogical-audit
