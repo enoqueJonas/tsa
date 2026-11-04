@@ -22,6 +22,7 @@ const craftTeaching: Record<string, { outcomes: string[]; practical: string }> =
   "Write Your First Automated Tests": { outcomes: ["Create a real unittest suite with positive and negative assertions.", "Run the tests independently of Django and explain arrange, act and assert.", "Mutate an authorization rule and prove the negative test fails."], practical: "Run and deliberately break three unit tests" },
   "Testing as a Change Safety Net": { outcomes: ["Define observable behavior to protect with tests.", "Prove a negative test fails for the intended defect.", "Choose the narrowest honest test boundary and record remaining risks."], practical: "Prove a refactor preserves behavior" },
   "Managing Dependencies": { outcomes: ["Justify a dependency from real consumer needs.", "Review version compatibility and update risks.", "Recognize when a new shared package is premature."], practical: "Review an external or internal dependency" },
+  "Read Environment Variables in Python": { outcomes: ["Explain how process environment variables are inherited by Python.", "Run missing, accepted and rejected settings without third-party libraries.", "Distinguish a shell export from a .env file and validate string inputs."], practical: "Read and validate environment variables" },
   "Configuration": { outcomes: ["Separate code from environment-owned settings.", "Validate types and fail visibly when required configuration is absent.", "Avoid exposing credentials through defaults or logs."], practical: "Prove configuration fails safely" },
   "Static Analysis and Automated Feedback": { outcomes: ["Distinguish formatting, linting, type checking and behavioral tests.", "Run the appropriate tool before committing.", "Treat warnings according to a documented policy rather than hiding them."], practical: "Make static checks actionable" },
   "Review a Code Change": { outcomes: ["Review intended behavior and access rules before style.", "Detect a cross-customer leak with a negative test and verify the fix.", "Classify blockers, requirement questions and optional suggestions by consequence."], practical: "Review and retest an unsafe patch" },
@@ -733,11 +734,72 @@ export const softwareCraftDeepLessons: Lesson[] = [
         [twelveFactor],
     ),
     lesson(
+        "Read Environment Variables in Python",
+        "An environment variable is a named string supplied to a running process by its parent process or operating environment. It is not the same as a Python variable, a database column or a .env file. Before configuring Django, learn how a terminal supplies environment variables, how Python reads them and why missing values and text-to-boolean conversion require explicit decisions.",
+        [
+        {
+                "title": "Where an environment variable comes from",
+                "paragraphs": [
+                        "When a shell launches Python, Python inherits an environment mapping. In a POSIX shell, `export TSA_EXAMPLE_MODE=training` makes that name available to commands launched afterward from that shell. A variable assigned only as `TSA_EXAMPLE_MODE=training` without export is usually a shell variable, not automatically inherited by a separately launched Python process. A one-command prefix such as `TSA_EXAMPLE_MODE=production python3 example.py` supplies a value to that command without changing subsequent commands.",
+                        "This is configuration of a process, not an authenticated secret store. A `.env` file is merely a text convention consumed by a tool or library that reads it; Python does not magically load every `.env` file. Later deployment tooling may provide variables through another mechanism, but the process still receives string values."
+                ]
+        },
+        {
+                "title": "Run Python with and without a value",
+                "paragraphs": [
+                        "Save the complete script as environment_lab.py. Run the terminal commands in the same directory. First, without the variable, it prints `Process setting: not set`. Then pass a temporary value and it prints `Process setting: training`. The invalid value must raise ValueError, so it is a deliberate negative demonstration, not a successful invocation.",
+                        "The example avoids credentials, network access and project-specific files. If you already have TSA_EXAMPLE_MODE defined in your shell, run `unset TSA_EXAMPLE_MODE` before the first example, but only after checking that it is not needed by unrelated work. Do not unset real application secrets as part of this lab."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "Environment variables — runnable Python reader and validation",
+                        "code": "import os\n\nprint(\"Process setting:\", os.environ.get(\"TSA_EXAMPLE_MODE\", \"not set\"))\nprint(\"Missing optional setting:\", os.environ.get(\"TSA_OPTIONAL\", \"default\"))\n\nvalue = os.environ.get(\"TSA_EXAMPLE_MODE\")\nif value not in (None, \"training\", \"production\"):\n    raise ValueError(\"TSA_EXAMPLE_MODE must be training or production\")\n\nprint(\"Mode validation passed\")"
+                }
+        },
+        {
+                "title": "What the shell actually passes",
+                "paragraphs": [
+                        "Use your terminal to run `python3 environment_lab.py`, then `TSA_EXAMPLE_MODE=training python3 environment_lab.py`, and finally `TSA_EXAMPLE_MODE=unexpected python3 environment_lab.py`. The third run should exit nonzero with `TSA_EXAMPLE_MODE must be training or production`. This demonstrates both a useful default and deliberate validation.",
+                        "On Windows PowerShell, the equivalent process environment value is set with `$env:TSA_EXAMPLE_MODE = 'training'` before launching Python. The portable core is the Python script; shell syntax depends on the host. For this academy's Linux/macOS learning path, the POSIX commands are the primary runnable sequence."
+                ]
+        },
+        {
+                "title": "Why strings must be parsed",
+                "paragraphs": [
+                        "os.environ returns strings: the characters `false` are not the Python boolean False. In Python, `bool('false')` evaluates to True because the string is not empty. Likewise `int('abc')` fails, and a URL might be syntactically invalid or point to the wrong server. Parse and validate types at the boundary rather than scattering magic conversions throughout business logic.",
+                        "Required and optional settings differ. If a database URL is essential for the application to function, missing it should stop startup with an actionable error; a harmless optional display preference may have an explicit default. Never print real passwords or access tokens to explain a missing setting."
+                ]
+        },
+        {
+                "title": "Configuration can be external without becoming public",
+                "paragraphs": [
+                        "Environment variables can contain sensitive values, but they can still leak through logs, process diagnostics, child processes and improperly configured debugging endpoints. Treat them as one input mechanism, not as a complete secret-management solution. Use artificial test values in this lesson; production secret distribution belongs in later platform/security material.",
+                        "A deployment can vary a database host without changing application code. It should not freely change core authorization or service-lifecycle rules just by setting an arbitrary environment flag. The next lesson distinguishes deployment configuration from product policy and validates several settings together."
+                ]
+        }
+],
+        "Explain and run the complete terminal-to-Python environment variable path, including missing/default/invalid values, without introducing Django or third-party parsers.",
+        [
+        "Create environment_lab.py from the complete published script in an empty scratch directory.",
+        "Run python3 environment_lab.py with TSA_EXAMPLE_MODE not set, then with a one-command `TSA_EXAMPLE_MODE=training` prefix; record the differing outputs.",
+        "Run with `TSA_EXAMPLE_MODE=unexpected`, confirm the error and nonzero exit code, then repeat the accepted training case.",
+        "Explain what `export` changes, what Python inherits, and why a `.env` file is not automatically loaded by Python.",
+        "Show why `bool('false')` is True and identify one required setting versus one safe optional setting without disclosing a real secret."
+],
+        [
+        "How does a shell environment variable reach Python?",
+        "Why is a `.env` file not the same thing as an environment variable?",
+        "Why is `bool('false')` unsafe for a DEBUG flag?",
+        "What should happen when a required deployment value is absent?"
+],
+        [twelveFactor],
+    ),
+    lesson(
         "Configuration",
         "Configuration lets the same code run safely in different environments. The important boundary is between deploy-specific values and application behavior—not between 'things in a .env file' and everything else.",
         [
             { title: "Separate config from code", paragraphs: ["Database addresses, secrets, allowed hosts and log levels vary by deployment. Lifecycle rules such as which criticality values Steward accepts are domain behavior and should not become arbitrary environment variables merely because configuration is convenient.", "Validate required configuration at startup. Silent fallback to insecure or incorrect defaults turns deployment mistakes into runtime surprises."] },
-            { title: "Secrets are configuration with stricter handling", paragraphs: ["Do not commit secrets, print them in diagnostics or expose them through API errors. Local .env files can be useful developer ergonomics, but production secret distribution is an operational concern that later TSA schools will deepen."], code: { language: "python", code: "SECRET_KEY = env.str(\"DJANGO_SECRET_KEY\")\nDEBUG = env.bool(\"DJANGO_DEBUG\", default=False)\nDATABASE_URL = env.str(\"DATABASE_URL\")", caption: "Deployment-specific values are external; safe defaults remain deliberate." } },
+            { title: "Secrets are configuration with stricter handling", paragraphs: ["Do not commit secrets, print them in diagnostics or expose them through API errors. Local .env files can be useful developer ergonomics, but production secret distribution is an operational concern that later TSA schools will deepen. The following Python snippet uses standard-library os.environ, not an unexplained third-party env object. It is a configuration fragment for an application already supplied with DATABASE_URL: a bare execution with no value is expected to fail rather than silently connect to an arbitrary database."], code: { language: "python", code: "import os\n\n# This displays the supported boundary, not real secrets.\ndatabase_url = os.environ.get(\"DATABASE_URL\")\nif not database_url:\n    raise RuntimeError(\"DATABASE_URL is required\")\n\nraw_debug = os.environ.get(\"DJANGO_DEBUG\", \"false\").lower()\nif raw_debug not in (\"true\", \"false\"):\n    raise RuntimeError(\"DJANGO_DEBUG must be true or false\")\nDEBUG = raw_debug == \"true\"", caption: "Deployment-specific values are external; safe defaults remain deliberate." } },
             { title: "Parse configuration into typed validated values once", paragraphs: ["Environment variables arrive as strings. Convert booleans, integers, URLs and enumerated values deliberately at startup, validate cross-setting requirements, and expose the rest of the application to a coherent configuration object/settings boundary. Scattered os.environ reads make defaults and failure behavior difficult to review." ] },
             { title: "Precedence must be understandable", paragraphs: ["If settings can come from defaults, environment, local files or command-line/deployment overrides, document which source wins. Hidden precedence creates incidents where an engineer changes one value but another source silently overrides it." ] },
             {"title":"Parse and reject invalid settings with no third-party dependency","paragraphs":["Environment variables are strings, not native Python booleans. bool('false') is True, so naïve conversion can silently turn DEBUG on. Make the permitted values explicit and fail on a missing required database URL. This code uses a passed mapping rather than the real process environment, so the negative cases are deterministic and no secret is read or printed. Production deployment would load credentials through an approved secret manager and validate startup before accepting traffic."],"code":{"language":"python","caption":"Configuration — executable fail-closed environment parser","code":"def settings(env):\n    database = env.get('DATABASE_URL')\n    if not database:\n        raise ValueError('DATABASE_URL is required')\n    raw = env.get('DJANGO_DEBUG', 'false').lower()\n    if raw not in ('true', 'false'):\n        raise ValueError('DJANGO_DEBUG must be true or false')\n    return {'debug': raw == 'true', 'database_configured': True}\n\nfor label, value in [('missing', {}), ('invalid', {'DATABASE_URL':'local','DJANGO_DEBUG':'maybe'}), ('valid', {'DATABASE_URL':'local','DJANGO_DEBUG':'false'})]:\n    try:\n        print(label, settings(value)['debug'])\n    except ValueError as exc:\n        print(label, str(exc))"}},

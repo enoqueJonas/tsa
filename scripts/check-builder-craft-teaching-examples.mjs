@@ -89,6 +89,28 @@ function runNovice(code) {
   assert.ifError(p.error);
   return p;
 }
+
+const environmentReader=noviceTestCode("Environment variables — runnable Python reader and validation");
+function runEnvironment(value){
+  const env={...process.env};
+  delete env.TSA_EXAMPLE_MODE;
+  if(value!==undefined)env.TSA_EXAMPLE_MODE=value;
+  const result=spawnSync("python3",["-c",environmentReader],{encoding:"utf8",timeout:10000,env});
+  assert.ifError(result.error);
+  return result;
+}
+const unset=runEnvironment(undefined);
+assert.equal(unset.status,0,unset.stderr);
+assert.match(unset.stdout,/Process setting: not set/);
+const accepted=runEnvironment("training");
+assert.equal(accepted.status,0,accepted.stderr);
+assert.match(accepted.stdout,/Process setting: training/);
+const rejected=runEnvironment("unexpected");
+assert.notEqual(rejected.status,0,"Invalid environment mode must reject startup");
+assert.match(rejected.stderr,/TSA_EXAMPLE_MODE must be training or production/);
+assert.ok(!source.includes('env.str('),"Do not reintroduce undefined env helper into Configuration reading");
+console.log("Process environment lesson passed: unset/default, accepted process value and invalid fail-fast case.");
+
 const borrowing=noviceTestCode("Testing fundamentals — runnable three-case unittest suite");
 const borrowingGreen=runNovice(borrowing);
 assert.equal(borrowingGreen.status,0,borrowingGreen.stderr);

@@ -144,19 +144,32 @@ const practices: Record<string, PracticeSpec> = {
         deliverables: ["Dependency ownership table", "Transitive-dependency evidence", "One keep/remove decision with validation", "Internal-package boundary assessment"],
         completionCriteria: ["Every examined direct dependency has a known reason to exist.", "No transitive package is treated as an accidental public API.", "The internal-package decision is based on real consumers rather than curriculum pressure.", "Upgrade ownership is explicit."]
     },
-    "software-craft-configuration": {
-        objective: "Define Steward's configuration contract and prove that configuration mistakes fail visibly and safely.",
-        scenario: "Steward works on one developer machine because settings, secrets and domain choices have been mixed together. Before delivery automation begins, another engineer must be able to tell which values vary by deployment and which rules belong in code.",
+    "software-craft-read-environment-variables-in-python": {
+        objective: "Observe how a terminal supplies string environment values to Python, including missing, accepted and rejected settings.",
+        scenario: "Before Django configuration is taught, work in a scratch folder with ordinary Python and the shell. Do not use a mystery env object, a .env loader, actual database credentials or a running Steward application.",
         instructions: [
-            "Inventory current settings and classify each as secret, deployment-specific configuration, safe default or domain behavior.",
-            "Move one inappropriate hard-coded deployment value out of code if such a case exists.",
-            "Choose one required variable and make startup fail clearly when it is missing.",
-            "Demonstrate the failure and confirm the diagnostic does not print the secret value.",
-            "Parse at least one non-string setting into a validated typed value at startup and demonstrate invalid input failure.", "Document local-development defaults separately from production requirements and state configuration-source precedence where multiple sources exist.",
-            "Identify one tempting environment variable that should remain domain policy in code and explain why."
+            "Save environment_lab.py from the reading and run it without TSA_EXAMPLE_MODE; expect Process setting: not set.",
+            "Run TSA_EXAMPLE_MODE=training python3 environment_lab.py and confirm the accepted value.",
+            "Run TSA_EXAMPLE_MODE=unexpected python3 environment_lab.py; record the expected nonzero exit and specific ValueError, then restore a successful run.",
+            "Explain the difference between a shell assignment, export, a one-command prefix and a .env file, and state which syntax is POSIX-specific.",
+            "Show why bool('false') evaluates to True; classify a required secret/configuration value versus an optional setting without printing real credentials."
         ],
-        deliverables: ["Configuration classification", "Validated configuration change", "Safe startup-failure evidence", "Configuration contract documentation"],
-        completionCriteria: ["Deployment config and domain behavior are not conflated.", "Required configuration fails fast.", "Secret values do not leak through diagnostics.", "Another engineer can understand what must be supplied in each environment."]
+        deliverables: ["Three terminal runs with expected outputs", "Shell-to-Python explanation", "String parsing negative case", "No-secret-handling note"],
+        completionCriteria: ["No Django, third-party parser or preexisting Steward file is required.", "The invalid case fails for the intended reason.", "The learner distinguishes a .env file from inherited process environment.", "Real secret values are never published."]
+    },
+    "software-craft-configuration": {
+        objective: "Validate application configuration without hiding errors or confusing deployment values with domain rules.",
+        scenario: "The learner now understands environment variables. The existing Steward application's configuration must reject a missing database URL and invalid DEBUG text while preserving safe defaults and never logging secrets.",
+        instructions: [
+            "First rerun the preceding environment_lab.py; confirm Python receives string values from the process.",
+            "Run the published Configuration fail-closed parser example with simulated mappings; verify missing, invalid and valid cases.",
+            "Explain which configuration values are deployment-owned and why core Service lifecycle/authorization rules are not arbitrary environment switches.",
+            "Identify one actual configuration boundary in the training Django project, verify it checks required values and converts flags explicitly, and record the chosen precedence.",
+            "Trigger one missing required value only in an isolated lab and prove the application refuses startup without printing the actual secret or connecting to the wrong database.",
+            "Document the expected setup and diagnostic action another learner can follow."
+        ],
+        deliverables: ["Three-case parser evidence", "Deployment/domain setting classification", "Required and optional setting policy", "Safe negative startup behavior in a disposable project"],
+        completionCriteria: ["The independent parser runs without an undefined env dependency.", "A missing database setting does not silently fall back.", "Text false is parsed as False rather than bool('false').", "No real secret appears in logs or diagnostics.", "Steward transfer follows the self-contained fundamentals rather than replacing them."]
     },
     "software-craft-static-analysis-and-automated-feedback": {
         objective: "Make Steward's repeatable code-quality rules executable and prove what each tool can and cannot detect.",
