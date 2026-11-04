@@ -120,6 +120,38 @@ Primary references were consulted for mechanisms and exact commands. CMU's datab
 
 ---
 
+## 2026-11-04 continuation — performance measurement, controlled tuning and real permission-denial proof
+
+### Learner defect repaired
+
+The old `query-performance` reading was an approximately five-section checklist. It defined p95 and throughput in a sentence, then instructed learners to compare index performance, but its only executable SQL **never created a candidate index or reran the same query after a change**. The earlier integration test merely asserted that `EXPLAIN` printed Execution Time. Thus even a passing test did not establish a useful before/after experiment.
+
+The previous roles chapter contained a NOLOGIN group role and a `has_table_privilege` query proving its expected grants, but it did not show the actual error when that role attempts an unauthorized SQL command. That is weaker evidence than a positive read followed by a failed write.
+
+### New learner sequence and checks
+
+| Lesson | Why it is separate | Published evidence |
+| --- | --- | --- |
+| `postgresql-measurement-basics` — **Understand Query Latency, Throughput and Percentiles** | Explain the user-request timeline, SQL server execution versus HTTP latency, percentile interpretation, representative samples and correctness criteria without prematurely asking for an index | Learner writes two separate, measurable objectives; small ordered latency example is explicitly *not* treated as production p95 evidence |
+| `query-performance` (existing ID) — **Run a Controlled PostgreSQL Performance Experiment** | Change precisely one factor: create an index on the same 15,000-row TEMP dataset; compare the same selective and broad queries before and after, with deterministic correctness checks | `performance_probe.sql`: four instrumented query plans, an actual `CREATE INDEX`, expected counts `1, 3750, 1, 3750`; no fixed scan-plan or millisecond assertion |
+| `postgresql-pagination` — **Return Results Safely: LIMIT, OFFSET and Keyset Pagination** | Teach large result sets, unique ordering keys, pagination work and one concrete failure caused by data inserted between page requests | `paging_stability.sql`: first page `1,2,3,4,5`; insert a book that sorts earlier; OFFSET returns `5,6,7,8,9` (duplicate 5), keyset returns `6,7,8,9,10` |
+| `postgresql-roles-and-privileges` (existing new lesson ID) — additional **Prove that SELECT succeeds but INSERT is denied** section | A Boolean privilege flag does not replace a real authorization experiment | `readonly_denial.sql`: `SET ROLE tsa_books_readonly`, permitted SELECT, rejected INSERT, RESET ROLE, unchanged book count 2; **the test is run with psql -f, ON_ERROR_STOP=0 only because the error is expected** |
+
+These are deliberately independent library/SQL exercises; only the later practice applies the results to Steward. Existing activity IDs are retained for revised existing lessons. Every new topic includes novice-oriented explanations, command context, negative interpretation and an independent transfer question.
+
+### Verification contract
+
+The real PostgreSQL 17 CI job extracts SQL from the actual lesson source and checks **both effects and correct results**. In addition to earlier cases, it must execute all four measured plans and stable counts, demonstrate the OFFSET overlap, and prove a denied INSERT left no row behind. The forbidden INSERT must run in the same session as `SET ROLE` and `RESET ROLE`; the test intentionally uses `psql -f` rather than the misleading multi-statement `psql -c` transaction context described earlier in this ledger.
+
+- **Source/CI gates:** pending matching-head GitHub Actions after this change. Old green runs are explicitly not evidence for the new content.
+- **Rendered learner experience:** manual desktop/mobile reading, code-block legibility, navigation and persisted progress remain open.
+- **Independent learner transfer:** completion without coaching, including an unfamiliar pagination or privilege scenario, remains open.
+- **Broader module coverage:** Django query behavior/N+1, migrations and remaining operational trade-offs still need final learner-depth inspection.
+
+**Primary references checked:** [PostgreSQL 17 EXPLAIN semantics](https://www.postgresql.org/docs/17/using-explain.html) (instrumentation and network-output caveats), [PostgreSQL 17 LIMIT/OFFSET](https://www.postgresql.org/docs/17/queries-limit.html) (deterministic ordering and skipped-row cost), and [PostgreSQL 17 SET ROLE](https://www.postgresql.org/docs/17/sql-set-role.html) (effective privileges after role switching).
+
+---
+
 ## Research and teaching translation
 
 Primary material was inspected for the precise model and syntax, not copied verbatim:
@@ -140,7 +172,7 @@ Primary material was inspected for the precise model and syntax, not copied verb
 
 ## Technical verification and remaining gates
 
-- The previously released `postgresql-first-connection` lesson/activity IDs are retained to minimize progress migration risk; nine new lesson IDs and substantial rewrites of the existing connection and relational-model lessons introduce new activity IDs in learner order.
+- The previously released `postgresql-first-connection` lesson/activity IDs are retained to minimize progress migration risk; new lesson IDs and substantial rewrites of the existing connection and relational-model lessons introduce new activity IDs in learner order.
 - `scripts/check-builder-data-foundations-examples.mjs` verifies new boundaries, captions and source-extracted example contracts.
 - `scripts/check-builder-postgresql-live-lab.mjs` is extended to execute the **exact published** DB, schema, persistent table, relational example, first JOIN/GROUP BY, UPDATE and DELETE source code against a disposable PostgreSQL 17 CI service, including wrong-database, missing table, failed NOT NULL, foreign key and session-lifetime cases. Keep the CI status **PENDING** until the actual workflow on the final branch head succeeds.
 - The original Steward SQL fixture and downstream tests remain in place; the live runner must pass both new library examples and old Steward exercises.
