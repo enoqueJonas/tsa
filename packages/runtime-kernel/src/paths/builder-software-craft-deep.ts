@@ -25,7 +25,8 @@ const craftTeaching: Record<string, { outcomes: string[]; practical: string }> =
   "Managing Dependencies": { outcomes: ["Justify a dependency using actual project consumers and alternatives.", "Separate version ranges, installed resolutions and safe upgrade checks.", "Avoid premature internal packages without real reuse."], practical: "Review an external or internal dependency" },
   "Read Environment Variables in Python": { outcomes: ["Explain how process environment variables are inherited by Python.", "Run missing, accepted and rejected settings without third-party libraries.", "Distinguish a shell export from a .env file and validate string inputs."], practical: "Read and validate environment variables" },
   "Configuration": { outcomes: ["Separate code from environment-owned settings.", "Validate types and fail visibly when required configuration is absent.", "Avoid exposing credentials through defaults or logs."], practical: "Prove configuration fails safely" },
-  "Static Analysis and Automated Feedback": { outcomes: ["Distinguish formatting, linting, type checking and behavioral tests.", "Run the appropriate tool before committing.", "Treat warnings according to a documented policy rather than hiding them."], practical: "Make static checks actionable" },
+  "Check Python Code Before Running It": { outcomes: ["Compile real files to recognize syntax failures without running application logic.", "Explain what py_compile can and cannot prove.", "Distinguish a syntax check from a negative behavior test."], practical: "Check Python syntax and a wrong-result case" },
+  "Static Analysis and Automated Feedback": { outcomes: ["Distinguish formatting, linting, type checking, framework checks and behavior tests.", "Run only configured tools with reproducible evidence.", "Use a negative authorization test to expose a rule static checks cannot prove."], practical: "Build a credible local feedback sequence" },
   "Review a Code Change": { outcomes: ["Review intended behavior and access rules before style.", "Detect a cross-customer leak with a negative test and verify the fix.", "Classify blockers, requirement questions and optional suggestions by consequence."], practical: "Review and retest an unsafe patch" },
   "Managing Technical Debt": { outcomes: ["Separate a current defect from future maintenance cost.", "Record concrete evidence, affected change, owner and revisit trigger.", "Choose repayment or deliberate deferral based on real risk."], practical: "Make an evidence-based debt decision" },
   "Useful Logging": { outcomes: ["Select events that answer operational questions.", "Capture stable context without leaking credentials.", "Test expected, rejected and unexpected outcomes with useful log levels."], practical: "Capture safe, diagnostic events" },
@@ -935,18 +936,131 @@ export const softwareCraftDeepLessons: Lesson[] = [
         [twelveFactor, djangoSettings],
     ),
     lesson(
-        "Static Analysis and Automated Feedback",
-        "Formatting, linting, type checking and framework checks turn repeatable review rules into fast feedback. Their purpose is not to replace engineering judgment; it is to remove avoidable noise and catch classes of defects before a human reviewer spends attention on them.",
+        "Check Python Code Before Running It",
+        "Before learning linters and type checkers, practise one basic distinction: Python can reject malformed source without executing your program, but that cannot tell you whether your program follows business rules. This lesson creates two disposable files and uses the same interpreter that is running the exercise. It needs only Python, no installed analyzer, database or Steward application.",
         [
-            { title: "Different tools answer different questions", paragraphs: ["A formatter makes layout deterministic. A linter detects configured code patterns and possible defects. A static type checker reasons about declared types without executing ordinary runtime paths. Django's system checks validate framework configuration/model concerns. Tests execute behavior. One green tool does not imply the others are redundant." ] },
-            { title: "Automate rules that are objective and repeatable", paragraphs: ["If every reviewer repeatedly comments on formatting/import order or a known unsafe pattern, encode that rule in tooling where practical. Keep configuration versioned with the repository so local and CI feedback agree. Avoid enabling hundreds of rules nobody understands and then suppressing them everywhere." ] },
-            { title: "Warnings need an ownership policy", paragraphs: ["A warning baseline that only grows becomes background noise. New code should not casually add warnings; existing debt should be explicit and reduced deliberately. Suppress a diagnostic only when you can explain why it is false-positive or intentionally accepted, and keep the suppression as narrow as possible." ] },
-            {"title":"Execute a syntax failure and prove what this static check cannot detect","paragraphs":["Python's ast parser can reject malformed code without running it; the deliberately malformed example below must fail at parse time. The second program parses successfully while its authorization predicate is wrong, demonstrating that syntax or type validity does not imply domain correctness. A linter might flag suspicious constructions; a static type checker with annotations would catch some type errors; neither can prove the app's Team ownership policy unless the rule is explicitly encoded in tests or a stronger analysis. Run this exact file to observe both outcomes.","For a real Steward repository, a useful local sequence is formatting check, linter, type checker if configured, `python manage.py check` and then tests. Version-pin tools and reproduce the same commands in CI. Record a negative example each tool actually catches rather than labeling every green output 'secure'."],"code":{"language":"python","caption":"Static analysis — parse error versus valid but wrong authorization","code":"import ast\n\ntry:\n    ast.parse('def check(:\\n  pass')\nexcept SyntaxError:\n    print('syntax defect detected')\nelse:\n    raise AssertionError('invalid source parsed')\n\nsource = 'def can_update(actor_team, owner_team):\\n    return True'\nmodule = ast.parse(source)\nassert isinstance(module, ast.Module)\nnamespace = {}\nexec(compile(module, '<demo>', 'exec'), namespace)\nassert namespace['can_update'](5, 8) is True\nprint('syntax valid; authorization policy still wrong')"}},
-        ],
-        "Create a fast, reproducible local quality-check command for Steward.",
-        ["Inventory formatter, linter, type checker, Django checks and test commands already available.", "Add only missing high-value tooling that fits the current Python/Django project rather than collecting tools.", "Make one documented command or small sequence reproduce the expected local checks.", "Introduce one safe example defect and prove the appropriate tool catches it, then remove/fix it.", "Review any suppressions and justify one or remove it.", "Record which important defects these tools still cannot prove."],
-        ["How does a linter differ from a formatter and type checker?", "Why should local and CI rules use the same configuration?", "Why can a completely green static-analysis run still contain business defects?"],
-        [refactoringGuru],
+        {
+                "title": "What is a syntax error?",
+                "paragraphs": [
+                        "Python source must follow the language's grammar. A line such as `def twice(:` is not a valid function definition, so the interpreter cannot construct the function. This differs from a valid function that returns the wrong answer: the latter can run and produce incorrect results.",
+                        "The `py_compile` module compiles a specified Python file without running its business logic. Its command-line exit status is zero for a successfully compiled file and nonzero when compilation fails. `python -m compileall` can check files under a directory, but it can also create bytecode caches; use a scratch directory rather than compiling an arbitrary production tree."
+                ]
+        },
+        {
+                "title": "Use the interpreter that owns the environment",
+                "paragraphs": [
+                        "Run `python -m py_compile filename.py` with the active virtual environment's Python. The `-m` flag means 'run this module with this interpreter'. This is the same interpreter-selection principle used in the Python packages lesson. The syntax checker does not fetch packages or connect to a server.",
+                        "If you see an error, read its filename, line and description. A syntax error in the demonstration is intentional; do not fix a different file or silence output just to make the check green."
+                ]
+        },
+        {
+                "title": "Run a complete pass/fail compilation experiment",
+                "paragraphs": [
+                        "Save the following as `syntax_check_lab.py` in a disposable directory and run `python syntax_check_lab.py`. It creates two temporary files, invokes `py_compile` on each and asserts the expected exit statuses. The broken file must report a SyntaxError; the valid file must compile. Since the program uses `sys.executable`, it checks with the interpreter that actually runs the experiment.",
+                        "After those checks, the script executes an intentionally incorrect authorization function that permits every caller. Its Python syntax is fine, but a separate expected-denial assertion detects the defect. The exact last three lines of output distinguish syntax validity from domain correctness."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "Python checks — source-executed syntax success, failure and business negative",
+                        "code": "from pathlib import Path\nfrom tempfile import TemporaryDirectory\nimport subprocess\nimport sys\n\nwith TemporaryDirectory() as folder:\n    good = Path(folder) / \"good.py\"\n    bad = Path(folder) / \"broken.py\"\n    good.write_text(\"def twice(number):\\n    return number * 2\\n\", encoding=\"utf-8\")\n    bad.write_text(\"def twice(:\\n    pass\\n\", encoding=\"utf-8\")\n    def check(path):\n        return subprocess.run(\n            [sys.executable, \"-m\", \"py_compile\", str(path)],\n            capture_output=True,\n            text=True,\n            check=False,\n        )\n    good_result = check(good)\n    bad_result = check(bad)\n    assert good_result.returncode == 0\n    assert bad_result.returncode != 0\n    assert \"SyntaxError\" in bad_result.stderr\n    print(\"valid source: compiled\")\n    print(\"invalid source: rejected with SyntaxError\")\n\ncorrect_syntax_bad_policy = \"def may_edit(actor_team, owner_team):\\n    return True\\n\"\nnamespace = {}\nexec(correct_syntax_bad_policy, namespace)\nassert namespace[\"may_edit\"](11, 99) is True  # A syntactically valid, insecure result.\ntry:\n    assert namespace[\"may_edit\"](11, 99) is False\nexcept AssertionError:\n    print(\"business rule: independent negative test detects wrong permission\")\nelse:\n    raise AssertionError(\"negative authorization check should fail\")"
+                }
+        },
+        {
+                "title": "What this test does and does not establish",
+                "paragraphs": [
+                        "The source checker proves the file can be compiled, not that its functions return expected values, that imports succeed in a deployed environment, or that an API endpoint is secure. A valid function body can still be logically wrong or raise exceptions when run. No warning-free status can establish all possible program behavior.",
+                        "Later in this module, linters detect configured suspicious patterns, formatters normalize layout, static type checkers reason about type contracts, and actual tests run behavior. Learn what each signal proves instead of treating 'static analysis' as one magical pass/fail button."
+                ]
+        }
+],
+        "Run Python's built-in source compilation and distinguish syntax feedback from actual behavioral tests.",
+        [
+        "Save the exact published syntax_check_lab.py example and run it with the active interpreter.",
+        "Observe a zero exit from valid.py and a nonzero SyntaxError from broken.py; explain why the program checks both.",
+        "Read the intentionally incorrect may_edit function and explain why compilation alone cannot reject cross-team access.",
+        "Change its body to return `actor_team == owner_team`, rerun the file and observe the first equality assertion now fails; explain why expected results and source changes must be considered together, then restore the original demonstration.",
+        "Write one syntax defect and one business-rule defect of your own; say which check detects each.",
+        "Only after the independent example, consider where a syntax check belongs in the real Steward project's local feedback flow."
+],
+        [
+        "What is the difference between syntax failure and a wrong result?",
+        "Why use sys.executable or `python -m` rather than an arbitrary global executable?",
+        "What does a passing py_compile check actually establish?",
+        "What extra evidence would you require before trusting a permission rule?"
+],
+        [{ title: "Python py_compile documentation", url: "https://docs.python.org/3/library/py_compile.html" }, { title: "Ruff configuration", url: "https://docs.astral.sh/ruff/configuration/" }],
+    ),
+    lesson(
+        "Static Analysis and Automated Feedback",
+        "Once you can run a basic Python source check, learn the other automated quality checks without conflating their purposes. Formatting checks layout, linting checks configured patterns, type checking reasons about types, framework checks inspect application configuration, and tests exercise behavior. Useful automation produces fast, explainable feedback; it does not replace understanding or application-specific assertions.",
+        [
+        {
+                "title": "Formatting, linting and types answer different questions",
+                "paragraphs": [
+                        "A formatter normalizes whitespace, quotes and line wrapping so reviewers can focus on logic. A linter finds configured suspicious patterns such as unused imports or risky constructs. A static type checker reasons about annotated value types and call signatures without running each application path. Python's `py_compile` checks grammar; it is not a full linter or type checker.",
+                        "For example, code can contain an unused import (a possible lint issue) and still execute. A valid function can return a string where the calling contract expects an integer (a type issue a configured checker might catch). A syntactically valid `return True` in a security predicate can pass all these checks while incorrectly authorizing a caller. A negative test is needed to encode the intended domain rule."
+                ]
+        },
+        {
+                "title": "First inspect which tools are actually installed",
+                "paragraphs": [
+                        "Do not assume a Steward environment already has Ruff, mypy, Black or another analyzer. In the project's disposable virtual environment, use `python -m pip list` and read the project's declared development requirements before running a named tool. A missing command means that tool is not installed in the active environment, not that the application has been checked.",
+                        "A developer can use Ruff as a formatter and linter. If the project has explicitly installed it, `ruff check .` performs linting and `ruff format --check .` checks formatting without rewriting files. Consult the project's versioned configuration and use the same supported commands locally and in CI. Do not silently install every possible tool or mutate unrelated files."
+                ],
+                "code": {
+                        "language": "bash",
+                        "caption": "Static checks — inspect project tools before running them",
+                        "code": "python -m pip --version\npython -m pip list\npython -m py_compile your_file.py\n# Only if Ruff is declared and installed in this environment:\nruff check your_file.py\nruff format --check your_file.py"
+                }
+        },
+        {
+                "title": "Use a small versioned rule set before widening it",
+                "paragraphs": [
+                        "Tool behavior depends on its version and configuration. A project can start with a narrow set of useful lint rules and expand when reviewers understand and own the results. Store that configuration in the repository so local runs and CI use the same policy, not personal IDE settings.",
+                        "For example, Ruff can read a `[tool.ruff]` and `[tool.ruff.lint]` section in `pyproject.toml`. The following illustrative configuration selects common errors and unused-import rules while using an 88-character formatter width. This is not a claim the current Steward Python project has Ruff installed or that copying this into an unrelated project is required."
+                ],
+                "code": {
+                        "language": "toml",
+                        "caption": "Static checks — illustrative version-controlled Ruff configuration",
+                        "code": "[tool.ruff]\nline-length = 88\n\n[tool.ruff.lint]\nselect = [\"E4\", \"E7\", \"E9\", \"F\"]"
+                }
+        },
+        {
+                "title": "Prove that syntax validity does not prove authorization",
+                "paragraphs": [
+                        "Python's `ast` parser can reject malformed code without executing it; the malformed example below must raise SyntaxError. The second program parses and compiles but its authorization predicate always returns True. This is a deliberate mistake, not an example to copy into production. The goal is to make the boundary visible: syntax validity says nothing about who should be allowed to edit a Team-owned resource.",
+                        "After running the script, write an expected-denial test for a cross-Team actor. It must fail against the wrong policy. Then replace the wrong policy with an actor/owner comparison and prove the denial passes. Static checks and behavior checks answer distinct questions."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "Static analysis — parse error versus valid but wrong authorization",
+                        "code": "import ast\n\ntry:\n    ast.parse('def check(:\\n  pass')\nexcept SyntaxError:\n    print('syntax defect detected')\nelse:\n    raise AssertionError('invalid source parsed')\n\nsource = 'def can_update(actor_team, owner_team):\\n    return True'\nmodule = ast.parse(source)\nassert isinstance(module, ast.Module)\nnamespace = {}\nexec(compile(module, '<demo>', 'exec'), namespace)\nassert namespace['can_update'](5, 8) is True\nprint('syntax valid; authorization policy still wrong')"
+                }
+        },
+        {
+                "title": "Build a local feedback sequence without false assurances",
+                "paragraphs": [
+                        "A reasonable workflow is: identify your project environment, run the formatter in check mode, run the configured linter, run the configured type checker if present, run Django system checks when the project uses Django, and finally run focused behavior tests. Record actual commands from the repository rather than guessing their presence. A formatter does not replace tests, a Django system check does not prove response contracts, and `pip check` does not perform a security audit.",
+                        "When a tool reports a diagnostic, read the rule and the affected code before suppressing it. Warnings are actionable work or deliberately documented exceptions; broad ignore lists can hide regressions. Automated feedback should be fast enough to run before review and reproducible enough for CI, while remaining honest about untested domain behavior."
+                ]
+        }
+],
+        "Distinguish code-quality signals and create one reproducible project-sized feedback sequence with an observed failure.",
+        [
+        "Run the first syntax-check lab before this lesson, then classify the outputs as source compilation versus behavior evidence.",
+        "Check the actual Steward project manifest and environment for a declared formatter, linter, type checker and Django system-check command; do not invent tools.",
+        "Use the actual supported tool (or create a separate disposable Python tool environment if internet/package access is available) to demonstrate one safe unused-import or formatting diagnostic and its corrected rerun.",
+        "Execute the exact source-published AST example and explain why the wrong permission rule is still accepted by syntax checking.",
+        "Write a negative authorization test that catches that rule; make the one-line correction and prove the test now passes.",
+        "Document a short local check sequence matching the tool versions/configuration the real project uses, and explain what each signal cannot establish."
+],
+        [
+        "Which tool checks syntax, which checks style, and which actually executes application behavior?",
+        "What is the risk of running tools you did not install or declare in the current environment?",
+        "Why should local and CI checks share configuration?",
+        "Why can a syntactically valid policy still allow a cross-Team write?"
+],
+        [{ title: "Python py_compile documentation", url: "https://docs.python.org/3/library/py_compile.html" }, { title: "Ruff configuration", url: "https://docs.astral.sh/ruff/configuration/" }],
     ),
     lesson(
         "Review a Code Change",

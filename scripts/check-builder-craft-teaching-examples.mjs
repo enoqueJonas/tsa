@@ -7,6 +7,7 @@ import {spawnSync} from "node:child_process";
 const source=fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-deep.ts","utf8");
 const injected=fs.readFileSync("packages/runtime-kernel/src/paths/internal-dependency-management.ts","utf8");
 const cases=[
+  ["Python checks — source-executed syntax success, failure and business negative", "business rule: independent negative test detects wrong permission"],
   ["Python dependency foundations — inspect active interpreter and module availability", "invented package: not importable"],
   ["Python dependencies — parse a real project manifest without installing packages", "installed versions: NOT established by this manifest"],
   ["Code review — corrected export with three independent customer checks", "Code review: 3 scoped exports, no cross-customer rows"],
@@ -154,6 +155,15 @@ assert.ok(source.indexOf('"Review a Code Change"') < source.indexOf('"Managing T
 assert.ok(source.includes("stableId ??"),"Renamed lesson must support stable activity IDs");
 
 const publishedPractice=fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-quality.ts","utf8");
+const syntaxBeforeStatic=source.indexOf('"Check Python Code Before Running It"');
+const staticLesson=source.indexOf('"Static Analysis and Automated Feedback"',syntaxBeforeStatic);
+assert.ok(syntaxBeforeStatic>=0 && staticLesson>syntaxBeforeStatic,
+  "Learners must check Python syntax before discussing the full static-analysis toolchain");
+assert.match(publishedPractice,/software-craft-check-python-code-before-running-it/,
+  "The source-first syntax-check lesson requires a separate final practical");
+assert.match(source,/ruff format --check/,
+  "Static lesson should distinguish the non-writing format-check command");
+
 const fundamentals=source.indexOf('"Understand Python Packages and Dependencies"');
 const decisions=source.indexOf('"Managing Dependencies"',fundamentals);
 const environment=source.indexOf('"Read Environment Variables in Python"',decisions);

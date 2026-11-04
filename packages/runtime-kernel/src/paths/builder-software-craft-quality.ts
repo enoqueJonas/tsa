@@ -185,19 +185,34 @@ const practices: Record<string, PracticeSpec> = {
         deliverables: ["Three-case parser evidence", "Deployment/domain setting classification", "Required and optional setting policy", "Safe negative startup behavior in a disposable project"],
         completionCriteria: ["The independent parser runs without an undefined env dependency.", "A missing database setting does not silently fall back.", "Text false is parsed as False rather than bool('false').", "No real secret appears in logs or diagnostics.", "Steward transfer follows the self-contained fundamentals rather than replacing them."]
     },
-    "software-craft-static-analysis-and-automated-feedback": {
-        objective: "Make Steward's repeatable code-quality rules executable and prove what each tool can and cannot detect.",
-        scenario: "Reviewers are spending time on deterministic formatting/static issues while subtle business defects still require tests and judgment. Establish a small local feedback gate without pretending tooling proves correctness.",
+    "software-craft-check-python-code-before-running-it": {
+        objective: "Prove the difference between a Python source compilation error and a correct-syntax, wrong-behavior function.",
+        scenario: "A novice must inspect what Python can reject before installing linters, formatters or type-checking tools. Use a disposable syntax example, not a live Steward project.",
         instructions: [
-            "Inventory the repository's formatter, linter, type checker, Django system-check and test commands and state the question each answers.",
-            "Add only a missing high-value tool/configuration if the current project has a concrete gap.",
-            "Create one documented local quality command/sequence using repository-versioned configuration.",
-            "Introduce one disposable formatting/lint/type/configuration defect and prove the appropriate tool catches it, then fix it.",
-            "Inspect warnings/suppressions and justify or remove one rather than normalizing noise.",
-            "List two important Steward defects that could still survive all static checks."
+            "Save the reading's complete syntax_check_lab.py example and execute it with the current Python interpreter.",
+            "Observe valid source compilation and the intentionally rejected SyntaxError, identifying the nonzero result and filename.",
+            "Explain why the third expected line reports a business-rule defect even though the source compiles.",
+            "Modify the example deliberately so its cross-team permission becomes correct; demonstrate how the original expected-unsafe assertion needs to change as well, then restore the published example.",
+            "Create one new tiny invalid Python file and use python -m py_compile to reproduce the syntax diagnostic without running its business logic.",
+            "Record what syntax checks cannot prove about imports, runtime behavior or protected API operations."
         ],
-        deliverables: ["Tool-purpose map", "Reproducible local quality gate", "Catch-and-fix evidence", "Static-analysis limitation note"],
-        completionCriteria: ["Tools have distinct understood responsibilities.", "The feedback gate is reproducible.", "Warnings are not ignored by habit.", "The learner does not confuse static cleanliness with behavioral correctness."]
+        deliverables: ["Source-extracted compilation transcript", "Observed SyntaxError and valid-result distinction", "Written source-versus-business verification limits"],
+        completionCriteria: ["The exercise runs with Python standard library alone.", "No external linter, network access, Django fixture or Steward credentials is assumed.", "The learner can state why passing py_compile is not evidence of authorization correctness."]
+    },
+    "software-craft-static-analysis-and-automated-feedback": {
+        objective: "Build a reproducible, bounded set of quality checks and demonstrate their different detection limits.",
+        scenario: "The learner already knows how to compile source and write a failing behavioral test. Now inspect which formatter, linter, type checker and Django checks the current project has actually declared before invoking them.",
+        instructions: [
+            "Inventory the active interpreter and the actual project's versioned development tools; do not claim Ruff, mypy or Black is installed without evidence.",
+            "Classify concrete examples as formatting differences, lint diagnostics, type errors, Django configuration issues or failing behavior tests.",
+            "In a disposable environment, run the existing configured linter/formatter or deliberately install an approved tool. Produce one safe unused-import/formatting failure followed by a corrected rerun.",
+            "Execute the source-published AST demonstration and explain why a syntactically valid authorization function remains unsafe.",
+            "Write a denied cross-Team behavior test, prove it fails against the intentionally wrong function, then make a small correction and rerun.",
+            "Record an exact local check sequence using the team's actual tool configuration and explain what each check does not prove.",
+            "Document any warnings and justify narrow suppressions instead of broadly ignoring them."
+        ],
+        deliverables: ["Tool inventory and responsibilities", "Observed static diagnostic and corrected rerun", "Negative behavior test", "Reproducible local checks with limitations"],
+        completionCriteria: ["Source compilation, linting, formatting, type analysis, framework checks and behavior tests are not conflated.", "At least one actual diagnostic is shown with its owning tool.", "No undocumented checker installation or nonexistent project command is assumed.", "The learner can show a concrete wrong policy that static syntax checks cannot reject."]
     },
     "software-craft-code-review-and-technical-debt": {
         objective: "Review a concrete patch against its permissions contract, demonstrate the leak and verify the corrected version.",
