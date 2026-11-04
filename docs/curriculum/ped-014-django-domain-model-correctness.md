@@ -4,13 +4,13 @@
 
 ## Demonstrated defect
 
-The `Models and Domain Data` reading used `from .models import Team, Service` as though it were executable in a top-level `python manage.py shell`. Without a package context, that relative import fails. The same example used `Service.Lifecycle.PRODUCTION` and saved a Service without a production Environment, silently violating Steward's published cross-table rule. Its caption claimed that the output selected *active* services even though the QuerySet filtered by lifecycle, not the separate `active` flag.
+The `Models and Domain Data` reading contained **two** examples using `from .models import ...` as though those were executable in a top-level `python manage.py shell`. Without a package context, that relative import fails. The same example used `Service.Lifecycle.PRODUCTION` and saved a Service without a production Environment, silently violating Steward's published cross-table rule. Its caption claimed that the output selected *active* services even though the QuerySet filtered by lifecycle, not the separate `active` flag.
 
 These are correctness failures, not wording issues. The lesson previously told the learner to copy code that either failed or taught an invalid domain example.
 
 ## Repair
 
-The original `Models and Domain Data` lesson ID is retained. Its example is now a complete, isolated-registry script:
+The original `Models and Domain Data` lesson ID is retained. Its model inspection and query/validation examples are now complete, isolated-registry scripts. The first, `registry/inspect_models.py`, imports actual classes, reads `Model._meta.fields`, distinguishes the `uat` lifecycle from a `production` deployment kind and reports the schema fields without mutating rows. The second, `registry/models_lab.py`:
 
 - uses `from registry.models import Team, Service` in the correctly initialized `tsa_steward_django_lab` shell;
 - creates/reuses a uniquely named Workshop Team and UAT Service with `get_or_create`, without falsely claiming production readiness;
@@ -18,7 +18,7 @@ The original `Models and Domain Data` lesson ID is retained. Its example is now 
 - demonstrates a true `ValidationError` when a made-up lifecycle value passes through `full_clean()`, and explains that choices aren't automatically enforced on bare `save()`;
 - explicitly differentiates the PostgreSQL-backed Steward registry from the independent local catalogue used for the prior QuerySet primers.
 
-The source-derived `check-builder-django-live-lab.mjs` runs this exact authored example twice against the real migrated PostgreSQL-backed Django registry. It asserts stable output, successful JOIN behavior, no duplicate Workshop Service and an actual invalid-lifecycle rejection. The example runs **after** the previous Steward fixture-specific tests so its new UAT row does not invalidate existing expected counts.
+The source-derived `check-builder-django-live-lab.mjs` runs the exact read-only model inspection and runs the UAT model/validation example twice against the real migrated PostgreSQL-backed Django registry. It asserts stable output, correct actual field names, successful JOIN behavior, no duplicate Workshop Service and an actual invalid-lifecycle rejection. The example runs **after** the previous Steward fixture-specific tests so its new UAT row does not invalidate existing expected counts.
 
 ## Evidence and limits
 
