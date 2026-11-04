@@ -98,11 +98,17 @@ const practices: Record<string, PracticeSpec> = {
     completionCriteria: ["All requests target the explicitly created catalogue app.", "The learner can explain DRF Request and Response without models or ViewSets.", "The 400/405/415/406 outcomes are reproduced rather than asserted."]
   },
   "django-and-api-engineering-projects-applications-and-boundaries": {
-    objective: "Design Django app boundaries for Steward from cohesion and dependency direction rather than database nouns.",
-    scenario: "A proposed refactor creates one Django app per model: services, teams, environments and dependencies. Review the proposal before the repository becomes a web of cross-app imports.",
-    instructions: ["Sketch at least two candidate app structures for Steward.", "For each, draw dependency arrows and identify likely coupling or cycles.", "Choose a structure and state the responsibility owned by each app.", "Implement only the minimum package/app changes needed to prove imports remain directional.", "Record one future signal that would justify splitting a boundary later."],
-    deliverables: ["Alternative boundary sketches", "Dependency-direction diagram", "Chosen app structure", "Boundary decision record"],
-    completionCriteria: ["Boundaries follow responsibilities rather than one-app-per-model convention.", "The selected design avoids unexplained circular dependencies.", "A rejected alternative is documented with a concrete cost."]
+    objective: "Understand Django project/application boundaries using an app the learner has already created.",
+    scenario: "The catalogue app and DRF greet route now exist. Examine that actual codebase first, then compare two possible designs for a future Steward registry; the registry app is created in the following ORM bridge, not assumed here.",
+    instructions: [
+      "In tsa-django-intro, sketch configuration, catalogue.urls, catalogue.views and catalogue.api_views; identify what imports what and how one request reaches a response.",
+      "Run python manage.py check and import catalogue.views using the existing virtual environment; verify GET /catalogue/books/ still works.",
+      "Describe where catalogue models and database persistence would live if this app gained stored books, without creating unnecessary model code.",
+      "Compare a hypothetical one-app-per-table Steward structure with a cohesive registry app; show how circular imports could appear.",
+      "Draw a proposed future registry.views → registry.services → registry.models dependency without claiming those files exist yet. Explain which coupling or ownership change would justify splitting the app."
+    ],
+    deliverables: ["Actual catalogue file/import diagram", "Django check and route result", "Two compared Steward designs clearly labeled hypothetical", "Rule for when to separate an app"],
+    completionCriteria: ["Every executable instruction uses files created in earlier lessons.", "The learner distinguishes concrete catalogue evidence from proposed registry design.", "The first Steward registry project remains a later, explicit build step."]
   },
   "django-and-api-engineering-models-and-domain-data": {
     objective: "Complete Steward's Django persistence model by mapping the relational design already built in PostgreSQL rather than inventing a new framework-shaped domain.",
