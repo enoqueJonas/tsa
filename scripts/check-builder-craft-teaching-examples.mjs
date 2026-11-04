@@ -7,6 +7,8 @@ import {spawnSync} from "node:child_process";
 const source=fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-deep.ts","utf8");
 const injected=fs.readFileSync("packages/runtime-kernel/src/paths/internal-dependency-management.ts","utf8");
 const cases=[
+  ["Python dependency foundations — inspect active interpreter and module availability", "invented package: not importable"],
+  ["Python dependencies — parse a real project manifest without installing packages", "installed versions: NOT established by this manifest"],
   ["Code review — corrected export with three independent customer checks", "Code review: 3 scoped exports, no cross-customer rows"],
   ["Separation of Concerns — five executable before-and-after cases", "Separation lab: 5 responses and stored state agree"],
   ["Readable Code — equivalent pure-Python policy and negative cases", "readable policy: three cases preserved"],
@@ -152,6 +154,15 @@ assert.ok(source.indexOf('"Review a Code Change"') < source.indexOf('"Managing T
 assert.ok(source.includes("stableId ??"),"Renamed lesson must support stable activity IDs");
 
 const publishedPractice=fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-quality.ts","utf8");
+const fundamentals=source.indexOf('"Understand Python Packages and Dependencies"');
+const decisions=source.indexOf('"Managing Dependencies"',fundamentals);
+const environment=source.indexOf('"Read Environment Variables in Python"',decisions);
+assert.ok(fundamentals>=0 && decisions>fundamentals && environment>decisions,
+  "The actual learner sequence must teach interpreter/distribution mechanics before package selection");
+assert.match(publishedPractice,/software-craft-understand-python-packages-and-dependencies/,
+  "The independent package-foundations lesson needs its own published practical");
+assert.ok(!source.includes("pip install -U --break-system-packages"), "Do not teach bypassing managed Python environments");
+
 assert.ok(!source.includes("role__in="), "Readable Code must not use an invented membership role list");
 assert.ok(source.includes("Membership.Role.MAINTAINER"), "Django policy must use the real Membership role choice");
 assert.match(publishedPractice, /software-craft-readable-code/, "Readable Code practice must exist after composition");
