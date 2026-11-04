@@ -7,6 +7,7 @@ import {spawnSync} from "node:child_process";
 const source=fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-deep.ts","utf8");
 const injected=fs.readFileSync("packages/runtime-kernel/src/paths/internal-dependency-management.ts","utf8");
 const cases=[
+  ["Code review — corrected export with three independent customer checks", "Code review: 3 scoped exports, no cross-customer rows"],
   ["Separation of Concerns — five executable before-and-after cases", "Separation lab: 5 responses and stored state agree"],
   ["Readable Code — equivalent pure-Python policy and negative cases", "readable policy: three cases preserved"],
   ["Refactoring — run six contracts against the original function", "Before refactoring: 6 contracts passed"],
@@ -75,6 +76,23 @@ assert.notEqual(rejectedRefactor.status,0,"A 30-day boundary regression must fai
 assert.match(rejectedRefactor.stderr,/AssertionError/);
 
 console.log("Builder craft examples passed: 12 source-extracted Python labs and their negative boundaries.");
+
+
+const unsafeCaption = '"caption": "Code review — intentionally unsafe candidate must fail the cross-customer test"';
+const unsafePos = source.indexOf(unsafeCaption);
+assert.ok(unsafePos >= 0,"Missing unsafe learner code review example");
+const unsafeMatch = source.slice(unsafePos,unsafePos+12000).match(/"code":\s*("(?:\\.|[^"\\])*")/);
+assert.ok(unsafeMatch,"Cannot extract unsafe review candidate");
+const unsafe = JSON.parse(unsafeMatch[1]);
+const unsafeResult = spawnSync("python3",["-c",unsafe],{encoding:"utf8",timeout:10000});
+assert.ifError(unsafeResult.error);
+assert.notEqual(unsafeResult.status,0,"Unsafe review candidate must fail its negative test");
+assert.match(unsafeResult.stderr,/AssertionError/);
+assert.match(unsafeResult.stderr,/INV-200/,"The leak must identify a foreign customer invoice");
+assert.ok(source.includes('"Managing Technical Debt"'),"Code review and technical debt must be separate lessons");
+assert.ok(source.indexOf('"Review a Code Change"') < source.indexOf('"Managing Technical Debt"'),
+  "Learners must identify a defect before learning rational debt deferral");
+assert.ok(source.includes("stableId ??"),"Renamed lesson must support stable activity IDs");
 
 const publishedPractice=fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-quality.ts","utf8");
 assert.ok(!source.includes("role__in="), "Readable Code must not use an invented membership role list");
