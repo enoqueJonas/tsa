@@ -286,78 +286,186 @@ const specs: DataLessonSpec[] = [
         ]
     },
     {
-        "id": "postgresql-first-connection",
-        "title": "Connect to PostgreSQL with psql",
-        "introduction": "Now that you know the difference between a server and its client, establish a real connection. We will use the default postgres maintenance database first, because you cannot create new databases without being connected to a server. There is no Steward application dependency.",
+        "id": "postgresql-local-setup",
+        "title": "Set Up PostgreSQL for Practice",
+        "introduction": "Before you can learn psql, you need a running PostgreSQL server and a client. They are different programs. Choose ONE path: an existing authorized training server, or a native installation for your own computer. There is no application framework or container required.",
         "outcomes": [
-            "Choose an isolated existing PostgreSQL server or start a disposable local one.",
-            "Read psql prompts and distinguish shell commands, psql meta-commands and server-executed SQL.",
-            "Check the connected server, database and role.",
-            "Diagnose missing client, refused connection, authentication rejection, missing database and SQL errors."
+            "Identify the running server and the psql client.",
+            "Choose an authorized existing server or install PostgreSQL on your operating system.",
+            "Distinguish client installed, server listening and successful authenticated SQL.",
+            "Save a working connection method without storing passwords."
         ],
         "sections": [
             {
-                "id": "choose-lab",
-                "title": "Get access to a PostgreSQL server",
-                "body": "Option A: use your own already-running PostgreSQL or an authorized training database, noting its host, port, database and assigned role. Option B: if Docker is available, run the disposable PostgreSQL 17 container below. The image includes both the server and the psql client; using docker exec avoids installing a separate psql client locally. You must have Docker first. A course-managed server might not allow you to create databases, so request an empty lab database with appropriate privileges rather than guessing an administrator password. Do not use production data."
+                "id": "server-client",
+                "title": "What needs to be installed?",
+                "body": "PostgreSQL is the database server. It manages database files, executes SQL and can serve multiple client connections. psql is a command-line client: you start it from a shell and use it to send SQL to the server. SQL is a language, not an installed program. Having psql available does not mean the server is running. A server may run on your own computer or another approved computer.\n\nOur first task is not to create tables or configure user permissions. It is to connect to a disposable learning environment where later lessons can create a database and schema. Never use a production database for these exercises."
             },
             {
-                "id": "start-server",
-                "title": "Start a disposable PostgreSQL server (Docker option)",
-                "body": "Type these in your computer's terminal, not inside psql. This example uses an artificial local-only bootstrap password: change it for any non-disposable environment; never reuse it or commit it to Git. Port 55432 on your machine forwards to port 5432 inside the container and binds only to 127.0.0.1. POSTGRES_USER creates a powerful bootstrap role only for this disposable lab. The separate pg_isready command checks whether a listener responds; it does not prove your role's permissions.",
+                "id": "existing-server",
+                "title": "Option 1: use a provided PostgreSQL server",
+                "body": "If your organization or instructor already provides PostgreSQL, you may not need to install a server. Request the approved host, port (often 5432), database (often postgres or an existing lab database), role name, authentication method and any VPN/TLS requirements. Install only a compatible psql client if needed. Ask whether the role can CREATE DATABASE and CREATE SCHEMA; if not, request an isolated pre-created lab database. Do not guess or copy someone else's credentials.\n\nA connection is not just a password. The hostname selects the computer, the port selects a service, the role identifies you and the database selects one named data space. Record those non-secret values and the approved way to connect."
+            },
+            {
+                "id": "macos",
+                "title": "Option 2A: install PostgreSQL on macOS",
+                "body": "If you already use Homebrew and do not have a PostgreSQL installation, run the commands below in macOS Terminal. `brew install` installs the versioned PostgreSQL 17 package. `brew services start` starts its server in the background. The formula is keg-only, so its psql binary may not be on PATH; the complete executable path below works without changing PATH. A fresh Homebrew cluster normally has a role matching the macOS account that initialized it.\n\nIf a server is already installed, inspect it instead of reinstalling, reinitializing or overwriting an existing database directory. `-d postgres` selects the standard maintenance database. Do not type these shell commands into psql.",
                 "language": "bash",
-                "caption": "Shell — launch a local lab server, then launch psql",
-                "code": "docker run --name tsa-pg-lesson \\\n  -e POSTGRES_USER=tsa_learner \\\n  -e POSTGRES_PASSWORD=throwaway_local_lab_only \\\n  -e POSTGRES_DB=postgres \\\n  -p 127.0.0.1:55432:5432 \\\n  -d postgres:17\n\ndocker exec tsa-pg-lesson pg_isready -U tsa_learner -d postgres\ndocker exec -it tsa-pg-lesson psql -U tsa_learner -d postgres"
+                "caption": "macOS Terminal — install a local server and open psql",
+                "code": "brew install postgresql@17\nbrew services start postgresql@17\n\"$(brew --prefix postgresql@17)/bin/psql\" --version\n\"$(brew --prefix postgresql@17)/bin/psql\" -d postgres"
             },
             {
-                "id": "psql-prompt",
-                "title": "Understand the psql prompt",
-                "body": "After the last command, you are inside psql. A prompt such as postgres=# means the active database is postgres and the current role has superuser status; postgres=> is typical for a non-superuser role. The prompt is not text to type. psql collects SQL until you finish a statement with a semicolon; a continuation prompt may appear when the statement is unfinished. Backslash commands are special client instructions, normally without a semicolon: \\conninfo shows connection information, \\l lists databases, \\du shows roles, \\? lists psql commands and \\q exits. Those commands are not SQL syntax."
+                "id": "ubuntu",
+                "title": "Option 2B: install PostgreSQL on Ubuntu",
+                "body": "On Ubuntu, package installation includes the database service and command-line client. The installed major version depends on the distribution. On systemd-based Ubuntu, `systemctl` starts the service. Ubuntu usually uses local peer authentication: `sudo -u postgres` starts psql as the operating-system account postgres, matching the PostgreSQL role postgres. That is why a bare `psql -U postgres` from your personal account may fail even when the server is fine.\n\nThis route assumes sudo permission on a machine you administer. Later shell commands must keep the `sudo -u postgres` prefix, unless you deliberately configure an approved different login. Do not disable authentication or expose the service to the internet.",
+                "language": "bash",
+                "caption": "Ubuntu Terminal — install and open psql locally",
+                "code": "sudo apt update\nsudo apt install postgresql postgresql-client\nsudo systemctl start postgresql\npsql --version\nsudo -u postgres psql -d postgres"
             },
             {
-                "id": "where-command-runs",
-                "title": "Understand shell commands, psql commands and SQL",
-                "body": "There are three distinct contexts in the hands-on exercise. In your computer's shell, commands such as docker run, docker exec and psql --version start or inspect programs. Inside the psql prompt, backslash commands such as \\conninfo, \\l and \\q control the client. At that same prompt, SQL such as SELECT 2 + 2; is sent to PostgreSQL for execution.\n\nThe prompt is important. A shell prompt may end with `$`; an interactive psql prompt may look like `postgres=#` for a lab superuser or `postgres=>` for a non-superuser. Do not type prompt symbols when copying an example. When you enter SQL without a terminating semicolon, psql may show a continuation prompt because it is waiting for the rest of the statement. That does not mean the database crashed.\n\nIf you type CREATE TABLE directly into your shell, the shell may say command not found. If you type docker exec at the psql prompt, PostgreSQL will not interpret it as a shell command. Correct the execution context before diagnosing the server. The short transcript below shows the boundary.",
-                "code": "shell$ docker exec -it tsa-pg-lesson psql -U tsa_learner -d postgres\npsql (17.x)\npostgres=# \\conninfo\npostgres=# SELECT 2 + 2 AS answer;\n answer\n--------\n      4\n(1 row)\npostgres=# \\q\nshell$",
-                "caption": "Sample terminal transcript — prompts are not commands",
-                "language": "text"
+                "id": "windows",
+                "title": "Option 2C: install PostgreSQL on Windows",
+                "body": "Use the installer linked by the official PostgreSQL Windows download page. Select the server and command-line tools, note the configured port (typically 5432), and keep the password you choose for the postgres administrator role private. Open the installed SQL Shell (psql); it asks for server, database, port, user and password. On a fresh local install, use localhost, postgres, 5432 and postgres respectively.\n\nIf psql is on PATH, the Command Prompt or PowerShell example below is equivalent; `-W` prompts for a password rather than placing it in the command line. If Windows reports that psql is not recognized, open SQL Shell from the installed shortcuts. Do not install additional tools just to repair PATH.",
+                "language": "bash",
+                "caption": "Windows shell — only if psql is on PATH",
+                "code": "psql -h 127.0.0.1 -p 5432 -U postgres -d postgres -W"
             },
             {
-                "id": "connection-flags",
-                "title": "What does a connection need?",
-                "body": "The client must know where to connect, which database to enter and which role is logging in. If you installed psql on your host instead of using docker exec, `psql -h 127.0.0.1 -p 55432 -U tsa_learner -d postgres -W` requests a TCP connection and prompts for a password. -h is host, -p is port, -U is role, -d is database and -W prompts for the password. Never put a real password in command arguments, screenshots or source control. The Docker exec route uses a local socket and may authenticate differently from TCP. With either route, SELECT current_database() later reveals where you actually connected."
+                "id": "first-connection",
+                "title": "Verify a real connection",
+                "body": "`psql --version` only proves that the client executable is present. `pg_isready` can check whether a server listener responds, but not whether your account can log in or run queries. The real proof is a PostgreSQL prompt and a successful SQL statement. Inside psql, type the following SQL with its semicolon. The maintenance database should be called postgres if you followed the local route. A provided server may assign a different starting database.\n\nA prompt such as `postgres=#` or `postgres=>` means psql is connected. Do not type the prompt itself. Run the SQL, inspect the result and use `\\q` to leave. The next lesson explains the prompt and the backslash command.",
+                "language": "sql",
+                "caption": "SQL inside psql — first connection proof",
+                "code": "SELECT current_database();",
+                "output": " current_database\n------------------\n postgres\n(1 row)"
+            },
+            {
+                "id": "diagnose-setup",
+                "title": "If it does not work, find the right layer",
+                "body": "`command not found` or `not recognized` for psql is a client installation or PATH problem. `connection refused` means the client cannot reach a listener at the chosen host and port; check the server service. `password authentication failed` or a missing role means the server responded, but the identity or authentication did not match. `database does not exist` means the server could not find the named database. Do not delete data, reinitialize the cluster or edit server-wide security settings to make a tutorial command run.\n\nIf software installation is restricted, use a supplied training server and document the missing prerequisite. The lesson is complete when you can prove one SQL query succeeded, or accurately identify a blocker outside your permissions."
+            }
+        ],
+        "warning": "Choose only one setup route. Never reinitialize an existing cluster, expose a training server publicly, or publish authentication secrets.",
+        "assignment": [
+            "Explain why installing psql is not the same as starting PostgreSQL.",
+            "Follow ONE platform or approved-server route, not every installation option.",
+            "Connect and execute SELECT current_database();, recording the result without secrets.",
+            "If blocked, distinguish client executable, network/service and authentication failure."
+        ],
+        "resources": [
+            {
+                "title": "Homebrew PostgreSQL 17 formula",
+                "url": "https://formulae.brew.sh/formula/postgresql@17",
+                "kind": "reference"
+            },
+            {
+                "title": "Ubuntu Server — Install PostgreSQL",
+                "url": "https://ubuntu.com/server/docs/how-to/databases/install-postgresql/",
+                "kind": "reference"
+            },
+            {
+                "title": "PostgreSQL Windows download",
+                "url": "https://www.postgresql.org/download/windows/",
+                "kind": "reference"
+            },
+            {
+                "title": "PostgreSQL 17 — Getting Started",
+                "url": "https://www.postgresql.org/docs/17/tutorial-start.html",
+                "kind": "reference"
+            }
+        ],
+        "practiceObjective": "Connect to one authorized native PostgreSQL environment without unrelated technology prerequisites.",
+        "practiceInstructions": [
+            "Pick an already-provisioned server or native setup for your operating system.",
+            "Record client version and non-secret connection command.",
+            "Run SELECT current_database(); and quit with \\q.",
+            "Explain how a missing psql executable differs from a refused connection or rejected login."
+        ],
+        "knowledgeCheck": "What does psql --version prove? Can a server be listening and still reject your login? Which component persists when you quit psql?",
+        "readingTitle": "Install or access PostgreSQL",
+        "practiceTitle": "Prepare your PostgreSQL learning environment",
+        "checkTitle": "Check your setup",
+        "practiceScenario": "Prepare a safe beginner PostgreSQL environment.",
+        "practiceDeliverables": [
+            "One chosen setup route",
+            "One successful SQL query or precise environment blocker",
+            "Server-versus-client explanation"
+        ],
+        "practiceCompletionCriteria": [
+            "The learner uses no untaught container workflow.",
+            "The observed evidence comes from a real PostgreSQL session.",
+            "Credentials and shared data remain protected."
+        ]
+    },
+    {
+        "id": "postgresql-first-connection",
+        "title": "Connect to PostgreSQL with psql",
+        "introduction": "You have a running PostgreSQL server or access to an approved one. Now learn psql as an interactive client. You will connect, understand what the prompt means, ask PostgreSQL a question, discover built-in commands and leave safely. No table or Steward application is needed.",
+        "outcomes": [
+            "Distinguish your shell, psql meta-commands and server-executed SQL.",
+            "Explain host (-h), port (-p), role (-U) and database (-d) and reuse the setup method that worked.",
+            "Use \\conninfo, \\l, \\c, \\du, \\?, \\h and \\q in a connected session.",
+            "Run a simple SELECT and diagnose wrong-database, connection and SQL errors."
+        ],
+        "sections": [
+            {
+                "id": "psql-client",
+                "title": "What is psql?",
+                "body": "PostgreSQL is a database server; SQL is a language the server executes; psql is a separate terminal program that connects to the server. psql sends SQL and prints results, but it also has special backslash shortcuts for listing databases, finding help and controlling your session. A graphical client such as DBeaver works on the same basic principle.\n\nWhen you close psql, you end one client session. PostgreSQL continues running and its stored records do not normally disappear. The terminal window does not contain the database."
+            },
+            {
+                "id": "start-client",
+                "title": "Open a session with the connection you already tested",
+                "body": "Run the same connection method that worked in the previous lesson. On macOS Homebrew use its versioned psql binary with `-d postgres`. On Ubuntu's default local installation, run `sudo -u postgres psql -d postgres`. On Windows use SQL Shell or the local TCP command. For a supplied server, use the given host, port, role, database and authentication method.\n\n`-h` selects the host computer, `-p` the server listener port, `-U` the database role and `-d` the database. `-W` prompts for a password on connections configured to need one; it is not required for Ubuntu's peer-authenticated local socket. On Unix, omitting `-h` usually selects a local socket, which can authenticate differently from TCP `127.0.0.1`. Do not invent credentials or assume a fictional example role exists.",
+                "language": "text",
+                "caption": "Choose only your own previously verified shell command",
+                "code": "macOS Homebrew:\n  \"$(brew --prefix postgresql@17)/bin/psql\" -d postgres\nUbuntu local:\n  sudo -u postgres psql -d postgres\nWindows local TCP (if psql is on PATH):\n  psql -h 127.0.0.1 -p 5432 -U postgres -d postgres -W"
+            },
+            {
+                "id": "prompt",
+                "title": "Read the psql prompt and finish a statement",
+                "body": "A connected session may display `postgres=#` for a superuser or `postgres=>` for an ordinary role. The word postgres is the selected database; the prompt is NOT text you should type. SQL needs a terminating semicolon. If you forget it, a continuation prompt like `postgres-#` means psql is still collecting your statement, not that it has executed it or crashed.\n\nBackslash commands are different: they are instructions to psql itself and usually run immediately when Enter is pressed, without a semicolon. If a long listing opens in a terminal pager, press `q` to close the pager and return to psql."
             },
             {
                 "id": "first-query",
-                "title": "Send your first SQL query to the server",
-                "body": "At the psql prompt type \\conninfo and then the SQL below. SELECT is SQL interpreted and executed by the PostgreSQL server, not a shell command or a psql backslash command. current_database() reports the database of this connection; current_user reports the active role; 2+2 makes a result you can verify without having any tables. The role or database names will vary if you chose a supplied training server.",
+                "title": "Ask PostgreSQL a question",
+                "body": "Type the SQL below inside psql. `SELECT` is sent to the SERVER, not interpreted as a client shortcut. `current_database()` returns the selected database, `current_user` names the current role and `2 + 2` calculates a value without any table. The database should be postgres for the native starting routes; the role differs across systems, particularly on macOS. Seeing answer 4 proves authentication and SQL execution.",
                 "language": "sql",
-                "caption": "SQL in psql — run a real query",
-                "code": "SELECT current_database() AS db,\n       current_user AS connected_as,\n       2 + 2 AS answer;",
-                "output": " db | connected_as | answer\n----+--------------+-------\n postgres | tsa_learner | 4\n(1 row)\n(example names for the Docker lab)"
+                "caption": "SQL in psql — query the server",
+                "code": "SELECT current_database() AS db,\n       current_user AS role_name,\n       2 + 2 AS answer;",
+                "output": " db       | role_name | answer\n----------+-----------+-------\n postgres | postgres  |     4\n(1 row)\n(example role_name; your local role may differ)"
             },
             {
-                "id": "errors",
-                "title": "When the connection fails, locate the failing layer",
-                "body": "If your shell says psql or docker is 'command not found', the required client or container tool is not installed. If connection is refused, check host, port and whether the PostgreSQL server is running. If authentication is rejected, the server was reached but did not accept the role or credentials. If database does not exist, check the selected -d name and whether it was provisioned. If SELECT produces a SQL syntax error, your session reached the server and the failure happened while processing SQL. `psql --version` proves only client availability, not server readiness. `pg_isready` can detect a listener without verifying access rights."
+                "id": "help",
+                "title": "Discover commands instead of guessing",
+                "body": "Inside psql, type `\\?` for the list of psql's own backslash commands. Type `\\h` to list SQL statements that psql can explain, then `\\h SELECT` for the syntax of the SELECT statement you just ran. **\\? answers 'What can the CLIENT do?' while \\h answers 'What SQL can I send to the SERVER?'** Neither is the SQL statement HELP.\n\n`\\conninfo` reports the currently connected host/database/role. `\\l` (lowercase letter L) lists databases managed by the server. `\\du` lists roles, without changing them. `\\c postgres` reopens the connection to the existing postgres database (the next lesson creates another). `\\q` exits the psql client. Type these at the psql prompt, not in the shell, and do not add SQL semicolons.",
+                "language": "text",
+                "caption": "psql meta-commands — run in order inside psql",
+                "code": "\\conninfo\n\\l\n\\du\n\\?\n\\h\n\\h SELECT\n\\c postgres\n\\q"
             },
             {
-                "id": "connection-lifetime",
-                "title": "What happens when two people connect?",
-                "body": "A successful client connection begins a PostgreSQL session in a selected database. The server can serve other sessions at the same time. Each client knows its own current connection, and PostgreSQL checks privileges for the role that session uses. One person's terminal window is not the shared database: it is just one way of talking to the server.\n\nA psql process generally creates one connection at a time. Running it again opens another. The queries in two sessions can see committed data from the same persistent tables, subject to access rules and transaction isolation. We are not studying transactions in this introductory lesson; the simple point is that the server's data is independent of one terminal. A later lab uses this distinction to explain why a temporary table can disappear when a particular session ends.\n\nTo verify the target, compare the result of SELECT current_database(), current_user; with \\conninfo. One confirms the server-executed SQL context; the other is psql's own connection description."
+                "id": "table-preview",
+                "title": "Where are \\d and \\dt?",
+                "body": "psql also provides `\\dn` to list schemas, `\\dt` to list tables visible in your search path, and `\\d` to describe database objects. In a brand-new database, `\\dt` may say it found no relations. That is expected: we have not yet created a table. After you create a database, schema and table in the next lessons, a separate practical lesson will teach `\\dn`, `\\dt library.*`, `\\d library.books` and `\\d+ library.books` using real objects. For now, remember they inspect metadata; they do not create rows."
             },
             {
-                "id": "disconnect",
-                "title": "Exit psql without deleting the database",
-                "body": "Use \\q to exit psql. You return to your operating-system shell; the PostgreSQL server remains running. Reopen psql and execute SELECT 2+2 again. If using Docker, `docker stop tsa-pg-lesson` stops the server, and `docker start tsa-pg-lesson` restarts the existing container; do not remove the container or its volumes if you want to keep the lab data. We have not created application tables yet. The next lesson creates a separate database and schema."
+                "id": "failure",
+                "title": "Diagnose a failed connection",
+                "body": "If your operating-system shell says `psql: command not found`, check installation and PATH before troubleshooting PostgreSQL SQL. `connection refused` points to host, port or stopped server. An authentication error means the server responded but rejected the login. `database does not exist` means the named database is missing. A SQL syntax error means you connected successfully and submitted invalid SQL.\n\nFor a safe negative test, quit psql and use the same shell command with `-d tsa_database_that_does_not_exist`, then restore `-d postgres`. Expect the database-not-found error. Do not create or drop databases just to force a result. `psql --version` proves only that the client exists; `pg_isready` is a listener probe, not proof your role can execute queries."
+            },
+            {
+                "id": "session-end",
+                "title": "Quit without deleting anything",
+                "body": "Use `\\q` to leave psql, then reconnect with the same working shell command. The database server continues running and `SELECT 2 + 2;` still returns 4. A second psql window can connect to the same server independently. Practice explaining which commands run in the operating-system shell, which begin with backslash and are processed by psql, and which are SQL sent to PostgreSQL."
             }
         ],
         "warning": "Use an isolated learning server and invented data. Do not modify production or shared databases, publish real credentials, or drop existing objects merely to repeat an exercise.",
         "assignment": [
-            "Start an isolated server or use your approved lab connection; record the environment without passwords.",
-            "Execute \\conninfo, \\l and SELECT current_database(), current_user, 2+2; explain the difference between client and server work.",
-            "Use \\q to exit and reconnect. Explain why closing psql did not delete the server.",
-            "Classify at least one deliberately wrong database-name error and predict four other failure categories."
+            "Open psql with your own platform's verified connection method.",
+            "Run the SQL calculation and compare current_database()/current_user with \\conninfo.",
+            "Use \\l, \\du, \\?, \\h SELECT and \\c postgres; explain what each displays.",
+            "Quit with \\q and reconnect without losing server data.",
+            "Demonstrate one safe wrong-database error and explain why it is different from an SQL syntax error."
         ],
         "resources": [
             {
@@ -379,15 +487,15 @@ const specs: DataLessonSpec[] = [
                 "purpose": "Understand connection flags, prompts, backslash commands and scripts."
             }
         ],
-        "practiceObjective": "Establish a real PostgreSQL connection, navigate psql and explain error boundaries.",
+        "practiceObjective": "Use an actual psql session and find commands without a container prerequisite.",
         "practiceInstructions": [
-            "Use the documented Docker route or authorized training server, including a named database and role.",
-            "In one session run \\conninfo, \\l and the first SELECT; record the observed result.",
-            "Exit and reconnect, then try a deliberately incorrect -d database name in a fresh invocation.",
-            "Record which commands belong to the shell, which belong to psql and which SQL runs on the server."
+            "Use the previously verified native client or supplied authorized server; do not introduce another tool.",
+            "Run \\conninfo, \\l, \\?, \\h SELECT and a SELECT query in one session.",
+            "Quit with \\q, reconnect and try a deliberately nonexistent database once.",
+            "Separate shell commands, psql shortcuts and server-executed SQL in your evidence."
         ],
-        "knowledgeCheck": "How do PostgreSQL, SQL and psql differ? What are -h, -p, -U and -d? Why do psql --version and pg_isready not prove a successful authenticated query?",
-        "readingTitle": "Learn psql and connect to a server",
+        "knowledgeCheck": "What is PostgreSQL versus psql versus SQL? Why is \\? different from \\h SELECT? When can \\dt correctly say no relations were found? What do -h, -p, -U and -d mean?",
+        "readingTitle": "Use psql to connect and get help",
         "practiceTitle": "Explore your first psql session",
         "checkTitle": "Check client and server understanding",
         "practiceScenario": "Connect to an isolated PostgreSQL lab, discover which client/server/database/role you are actually using, and classify failures.",
@@ -421,16 +529,16 @@ const specs: DataLessonSpec[] = [
             {
                 "id": "before-you-create",
                 "title": "Check which database you are using",
-                "body": "Start psql using the existing lab from the previous lesson. The Docker example opens postgres with `docker exec -it tsa-pg-lesson psql -U tsa_learner -d postgres`; a host-installed psql connects using -h, -p, -U and -d, as already explained.\n\nInside psql, `\\conninfo` shows connection information and `\\l` lists databases on this server. Use the SQL below to establish exactly where you are before changing anything. If current_database() says tsa_library, you are already there, and you should check whether your earlier work exists before attempting to create the same database again. For this first run, the expected database is postgres.\n\nThe prompt also displays the database name. That is useful feedback, but the SQL result is our unambiguous proof of the active database context. The user name in the query is the role used for authorization, not an operating-system account.",
+                "body": "Start psql using the existing lab from the previous lesson. Use the verified psql connection from your setup lesson: macOS's versioned Homebrew binary, Ubuntu's `sudo -u postgres psql -d postgres`, or the authorized host/role settings from your training server.\n\nInside psql, `\\conninfo` shows connection information and `\\l` lists databases on this server. Use the SQL below to establish exactly where you are before changing anything. If current_database() says tsa_library, you are already there, and you should check whether your earlier work exists before attempting to create the same database again. For this first run, the expected database is postgres.\n\nThe prompt also displays the database name. That is useful feedback, but the SQL result is our unambiguous proof of the active database context. The user name in the query is the role used for authorization, not an operating-system account.",
                 "language": "sql",
                 "caption": "SQL — identify the database before creating another",
                 "code": "SELECT current_database() AS connected_database,\n       current_user AS connected_role;",
-                "output": " connected_database | connected_role\n--------------------+----------------\n postgres           | tsa_learner\n(1 row)"
+                "output": " connected_database | connected_role\n--------------------+----------------\n postgres           | postgres\n(1 row)\n(example role; your role may differ)"
             },
             {
                 "id": "create-it",
                 "title": "Create a database called tsa_library",
-                "body": "While connected to postgres, type the command below and end it with a semicolon. CREATE DATABASE is a SQL statement sent by psql to the server. PostgreSQL creates a new database based on the configured template, normally template1; the command does not create a new server process or automatically switch your current connection.\n\nA successful command returns CREATE DATABASE. PostgreSQL requires a role with CREATEDB privilege or suitable administrative rights. The disposable Docker role we created is a lab-only bootstrap role with enough rights. On a course or company server, a restricted student role may lack CREATEDB. In that case request an approved empty database rather than trying passwords or changing account privileges. Do not wrap CREATE DATABASE in BEGIN/COMMIT: PostgreSQL does not allow that command inside a transaction block.\n\nA second run will fail with 'database \"tsa_library\" already exists'. That failure is protective information, not an invitation to DROP DATABASE. You can reuse the existing database if it is your own, or choose a different disposable name.",
+                "body": "While connected to postgres, type the command below and end it with a semicolon. CREATE DATABASE is a SQL statement sent by psql to the server. PostgreSQL creates a new database based on the configured template, normally template1; the command does not create a new server process or automatically switch your current connection.\n\nA successful command returns CREATE DATABASE. PostgreSQL requires a role with CREATEDB privilege or suitable administrative rights. A fresh local learning installation may give the connected maintenance role sufficient rights; restricted training accounts may not have CREATEDB. On a course or company server, a restricted student role may lack CREATEDB. In that case request an approved empty database rather than trying passwords or changing account privileges. Do not wrap CREATE DATABASE in BEGIN/COMMIT: PostgreSQL does not allow that command inside a transaction block.\n\nA second run will fail with 'database \"tsa_library\" already exists'. That failure is protective information, not an invitation to DROP DATABASE. You can reuse the existing database if it is your own, or choose a different disposable name.",
                 "language": "sql",
                 "caption": "SQL in the postgres database — create tsa_library",
                 "code": "CREATE DATABASE tsa_library;",
@@ -439,7 +547,7 @@ const specs: DataLessonSpec[] = [
             {
                 "id": "list-and-connect",
                 "title": "Switch from postgres to tsa_library",
-                "body": "Your existing psql session is still connected to postgres. First use `\\l` to verify that tsa_library now appears. Then `\\connect tsa_library` (or its short form `\\c tsa_library`) tells the psql client to establish a new connection to that database using the current host and role. `\\connect` is a backslash command understood by psql, not SQL. With a separately installed client, you can instead exit with `\\q` and start `psql -h 127.0.0.1 -p 55432 -U tsa_learner -d tsa_library -W`.\n\nAfter reconnecting, run SELECT current_database(); The result changes to tsa_library. The server is the same one; the selected database has changed. Notice that switching databases has nothing to do with switching schemas (which we have not studied yet).",
+                "body": "Your existing psql session is still connected to postgres. First use `\\l` to verify that tsa_library now appears. Then `\\connect tsa_library` (or its short form `\\c tsa_library`) tells the psql client to establish a new connection to that database using the current host and role. `\\connect` is a backslash command understood by psql, not SQL. You can also quit with `\\q` and reconnect using the previously verified command, replacing `-d postgres` with `-d tsa_library`. On Ubuntu local peer authentication, retain the `sudo -u postgres` prefix.\n\nAfter reconnecting, run SELECT current_database(); The result changes to tsa_library. The server is the same one; the selected database has changed. Notice that switching databases has nothing to do with switching schemas (which we have not studied yet).",
                 "language": "text",
                 "caption": "Interactive psql — list databases, reconnect, inspect",
                 "code": "\\l\n\\connect tsa_library\nSELECT current_database();",
@@ -714,6 +822,97 @@ const specs: DataLessonSpec[] = [
         ]
     },
     {
+        "id": "postgresql-psql-object-inspection",
+        "title": "Explore Tables and Schemas with psql",
+        "introduction": "You have created tsa_library, the library schema and library.books. Now there are real database objects for psql's inspection commands to display. This lesson makes \\d, \\dt and their related commands familiar before you start inserting book records.",
+        "outcomes": [
+            "Use \\l, \\conninfo, \\dn and \\dt to locate objects in the correct database.",
+            "Describe a table's columns and constraints using \\d and \\d+.",
+            "Explain why \\dt can omit a table that \\dt library.* finds.",
+            "Distinguish psql help and metadata commands from SQL that reads rows."
+        ],
+        "sections": [
+            {
+                "id": "hierarchy",
+                "title": "Start with your database",
+                "body": "Connect to `tsa_library` using the same command you used earlier, changing only `-d postgres` to `-d tsa_library`, or use `\\c tsa_library` inside psql. On Ubuntu's peer-authenticated installation, retain the `sudo -u postgres` prefix for a new session. Check with `\\conninfo` or `SELECT current_database();` before inspecting anything.\n\n`\\l` lists databases on the connected server; `\\dn` lists schemas inside the selected database. They do not answer the same question. If you see `public` and `library` in `\\dn`, both are schemas of tsa_library. The name `public` does not grant internet access."
+            },
+            {
+                "id": "list",
+                "title": "Find your table with \\dt",
+                "body": "The short command `\\dt` lists tables visible to the current search path. But you created `library.books` inside a schema that may not be on the default path (often `\"$user\", public`). Therefore `\\dt` may legitimately display no relations. The explicit pattern `\\dt library.*` asks psql to show tables in that schema, and should show `books`. `\\dt public.*` asks for tables in the different public schema.\n\nCompare the output. If the qualified listing succeeds but the default listing does not, your table has not vanished: you are asking psql two different questions. This is one reason to prefer schema-qualified SQL names while learning.",
+                "language": "text",
+                "caption": "psql commands — compare database, schema and table listings",
+                "code": "\\conninfo\n\\l\n\\dn\n\\dt\n\\dt library.*\n\\dt public.*"
+            },
+            {
+                "id": "describe",
+                "title": "See columns and constraints with \\d",
+                "body": "`\\d library.books` describes one named table. You should see column names such as book_id and title, their PostgreSQL data types, nullable status and a section describing indexes or constraints. Compare that description to the CREATE TABLE statement from the preceding lesson. `\\d+ library.books` requests more details, potentially including storage and descriptions. You can also use bare `\\d` to list relations visible in the search path, but it may omit library.books for the same reason as bare `\\dt`.\n\nThese commands are psql meta-commands. They inspect database metadata and do not add rows. The exact layout of their output can differ by server version, so check the meaning rather than attempting to reproduce a screenshot character for character.",
+                "language": "text",
+                "caption": "psql commands — describe the existing library table",
+                "code": "\\d library.books\n\\d+ library.books"
+            },
+            {
+                "id": "rows-vs-metadata",
+                "title": "A table can have columns but no rows",
+                "body": "Compare `\\d library.books` with `SELECT * FROM library.books;`. The former asks for the table definition; the latter asks the PostgreSQL server for stored rows. Right after CREATE TABLE, the SQL query may return zero rows even though the table's columns and constraints exist. That is not a contradiction. Structure is created in one step, and data is inserted in a later step.\n\nTo find help, type `\\?` for psql's backslash commands and `\\h CREATE TABLE` for SQL syntax help. Notice the difference: `\\d` inspects an object; `\\h` explains a kind of SQL statement; `SELECT` actually asks PostgreSQL to return row values.",
+                "language": "sql",
+                "caption": "SQL in psql — inspect table contents (empty before inserts)",
+                "code": "SELECT * FROM library.books;",
+                "output": "(0 rows)\n(on a newly created, still-empty books table)"
+            },
+            {
+                "id": "missing-table",
+                "title": "Diagnose a missing-table report without guessing",
+                "body": "Suppose `\\dt` says 'Did not find any relations' while `\\dt library.*` displays books. Check `SHOW search_path;` and explain why the unqualified listing omitted it. If both are empty, run `SELECT current_database();` and `\\dn` before assuming a table was deleted. If the database is correct and the schema exists, ask whether CREATE TABLE actually succeeded in this database.\n\nUse `\\d library.books` after reconnecting. The table remains available because it is persistent server data. Never run DROP TABLE or recreate an object as the first reaction to a listing surprise. The next lesson will insert actual book rows so both metadata and data queries have useful results."
+            }
+        ],
+        "warning": "Run inspection commands only in your own learning database; do not delete or recreate a table merely because \\dt did not list it.",
+        "assignment": [
+            "In tsa_library run \\conninfo, \\l, \\dn, \\dt and \\dt library.*; classify the hierarchy level of each result.",
+            "Run \\d library.books and \\d+ library.books; identify at least one actual constraint from the CREATE TABLE lesson.",
+            "Explain the difference between these metadata displays and SELECT * FROM library.books; before inserts.",
+            "Use \\? and \\h CREATE TABLE to look up commands.",
+            "Explain how search_path can hide a table from an unqualified listing."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — psql meta-commands",
+                "url": "https://www.postgresql.org/docs/17/app-psql.html",
+                "kind": "reference"
+            },
+            {
+                "title": "PostgreSQL 17 — Schemas and search_path",
+                "url": "https://www.postgresql.org/docs/17/ddl-schemas.html",
+                "kind": "reference"
+            }
+        ],
+        "practiceObjective": "Inspect real PostgreSQL objects using psql rather than blindly memorizing commands.",
+        "practiceInstructions": [
+            "Reconnect to tsa_library using your established authorized connection.",
+            "Run \\l, \\dn, \\dt, \\dt library.*, \\d library.books and \\d+ library.books.",
+            "Compare table metadata with a SQL SELECT from the table.",
+            "Use \\? and \\h to identify the right reference for an unfamiliar operation.",
+            "Explain and reproduce the search_path visibility distinction without changing data."
+        ],
+        "knowledgeCheck": "Why can \\dt find nothing while \\dt library.* shows a table? How does \\d library.books differ from SELECT * FROM library.books? Why are \\? and \\h not interchangeable?",
+        "readingTitle": "Inspect PostgreSQL objects with psql",
+        "practiceTitle": "Find and describe library.books",
+        "checkTitle": "Check psql command navigation",
+        "practiceScenario": "A new learner thinks the library table disappeared. Inspect, locate and explain it without changing any data.",
+        "practiceDeliverables": [
+            "Table metadata transcript",
+            "Hierarchy map for \\l, \\dn, \\dt and \\d",
+            "Search-path diagnosis"
+        ],
+        "practiceCompletionCriteria": [
+            "The existing table is located without modifying it.",
+            "The learner accurately explains metadata versus stored rows.",
+            "The learner uses psql built-in help to resolve unfamiliar syntax."
+        ]
+    },
+    {
         "id": "postgresql-work-with-rows",
         "title": "Insert and Read Table Rows",
         "introduction": "Your library.books table exists, but it is empty. We will add two records and then read them back. This lesson separates defining a table from changing its contents, explains SELECT and WHERE with concrete results, and shows how a database constraint prevents an invalid row. UPDATE and DELETE receive their full treatment in the later SQL CRUD lesson.",
@@ -840,7 +1039,7 @@ const specs: DataLessonSpec[] = [
             {
                 "id": "sql-file",
                 "title": "Run more than one SQL statement from a file",
-                "body": "Save the SQL below as first_session.sql. Run all four statements in ONE process, so the temporary table still exists when you select its rows. For a Docker lab use `docker exec -i tsa-pg-lesson psql -X -U tsa_learner -d tsa_library -v ON_ERROR_STOP=1 < first_session.sql`. From a configured host psql client use `psql -X -v ON_ERROR_STOP=1 -d tsa_library -f first_session.sql`. Both examples connect to tsa_library, where library.books already exists.\n\nThe first query returns the two book titles and the second reports a count of two. The psql process then exits and closes that session. We deliberately do not include transactions or a rollback here: the question is whether the table survives reconnecting, not how to undo changes.",
+                "body": "Save the SQL below as first_session.sql. Run all four statements in ONE process, so the temporary table still exists when you select its rows. Run `psql -X -v ON_ERROR_STOP=1 -d tsa_library -f first_session.sql` using the configured client and role, or prefix it with `sudo -u postgres` on an Ubuntu local peer-authenticated installation. On macOS, substitute the full Homebrew psql path if the command is not on PATH. The file executes in one session connected to tsa_library, where library.books already exists.\n\nThe first query returns the two book titles and the second reports a count of two. The psql process then exits and closes that session. We deliberately do not include transactions or a rollback here: the question is whether the table survives reconnecting, not how to undo changes.",
                 "language": "sql",
                 "caption": "first_session.sql — run only in a disposable PostgreSQL lab database",
                 "code": "CREATE TEMP TABLE tsa_session_probe (\n  id integer PRIMARY KEY,\n  book_title text NOT NULL\n);\nINSERT INTO tsa_session_probe (id, book_title)\nVALUES (1, 'The Hobbit'), (2, 'Beloved');\nSELECT id, book_title FROM tsa_session_probe ORDER BY id;\nSELECT count(*) AS remaining FROM tsa_session_probe;",
@@ -2707,7 +2906,7 @@ const specs: DataLessonSpec[] = [
             {
                 "id": "rollback",
                 "title": "Make a transfer, inspect it, then undo it",
-                "body": "Save this example as wallet_rollback.sql and run it from your shell with psql -X -d tsa_library -v ON_ERROR_STOP=1 -f wallet_rollback.sql, or pipe it to the disposable Docker psql client. All statements must execute in one session, because our example table is TEMP.\n\nCREATE TEMP TABLE declares two columns and constraints: owner identifies a balance, and amount must be nonnegative. Two INSERT values establish the initial state. BEGIN opens the transaction. One UPDATE subtracts 30 from Ana, and another adds 30 to Bia. The SELECT inside the transaction shows 70 and 70. ROLLBACK undoes both updates, and the final SELECT shows the original 100 and 40.\n\nThis demonstrates the meaning of rollback with actual SQL. It does not simulate a power failure or prove durability, because the table itself is deliberately temporary.\n\nAn important psql detail: do not pass this entire file as one quoted string to `psql -c`. A single `-c` argument containing several SQL statements is one request to PostgreSQL; the server can group statements before BEGIN into an implicit transaction. In this particular example, a later ROLLBACK can then undo the CREATE TEMP TABLE statement itself, so the final SELECT reports that wallet_example does not exist. Using the published `psql -f wallet_rollback.sql` form (or typing each statement interactively) sends statements separately and gives the intended transaction boundary. This difference is documented in PostgreSQL's psql reference and is a concrete example of why knowing your client matters.",
+                "body": "Save this example as wallet_rollback.sql and run it from your shell with psql -X -d tsa_library -v ON_ERROR_STOP=1 -f wallet_rollback.sql, or prefix the psql command with `sudo -u postgres` on Ubuntu's default local connection. All statements must execute in one session, because our example table is TEMP.\n\nCREATE TEMP TABLE declares two columns and constraints: owner identifies a balance, and amount must be nonnegative. Two INSERT values establish the initial state. BEGIN opens the transaction. One UPDATE subtracts 30 from Ana, and another adds 30 to Bia. The SELECT inside the transaction shows 70 and 70. ROLLBACK undoes both updates, and the final SELECT shows the original 100 and 40.\n\nThis demonstrates the meaning of rollback with actual SQL. It does not simulate a power failure or prove durability, because the table itself is deliberately temporary.\n\nAn important psql detail: do not pass this entire file as one quoted string to `psql -c`. A single `-c` argument containing several SQL statements is one request to PostgreSQL; the server can group statements before BEGIN into an implicit transaction. In this particular example, a later ROLLBACK can then undo the CREATE TEMP TABLE statement itself, so the final SELECT reports that wallet_example does not exist. Using the published `psql -f wallet_rollback.sql` form (or typing each statement interactively) sends statements separately and gives the intended transaction boundary. This difference is documented in PostgreSQL's psql reference and is a concrete example of why knowing your client matters.",
                 "language": "sql",
                 "caption": "wallet_rollback.sql — transfer and undo two writes",
                 "code": "CREATE TEMP TABLE wallet_example (\n  owner text PRIMARY KEY,\n  amount integer NOT NULL CHECK (amount >= 0)\n);\nINSERT INTO wallet_example VALUES ('Ana', 100), ('Bia', 40);\nBEGIN;\nUPDATE wallet_example SET amount = amount - 30 WHERE owner = 'Ana';\nUPDATE wallet_example SET amount = amount + 30 WHERE owner = 'Bia';\nSELECT owner, amount FROM wallet_example ORDER BY owner;\nROLLBACK;\nSELECT owner, amount FROM wallet_example ORDER BY owner;",
@@ -2808,7 +3007,7 @@ const specs: DataLessonSpec[] = [
             {
                 "id": "exercise",
                 "title": "Prove the failure and a scoped recovery",
-                "body": "Save the SQL below as stock_savepoint.sql and execute it in one psql session. This is a special negative exercise: use ON_ERROR_STOP=0 so psql continues reading the file after the deliberate CHECK error. For example, from your host shell with configured psql: psql -X -d tsa_library -v ON_ERROR_STOP=0 -f stock_savepoint.sql. If using Docker, pipe the file to docker exec -i tsa-pg-lesson psql -X -U tsa_learner -d tsa_library -v ON_ERROR_STOP=0. Do not use this continuation setting for ordinary migrations.\n\nThe first UPDATE tries to set qty=-1 and PostgreSQL reports a CHECK violation. ROLLBACK TO SAVEPOINT undoes the failed sub-operation and clears the transaction's failed state. The subsequent valid UPDATE sets qty=4, COMMIT completes the transaction and the final SELECT shows Apples|4.\n\nNotice the difference between the *expected stderr error* and the *successful recovered final state*. Both are required evidence.",
+                "body": "Save the SQL below as stock_savepoint.sql and execute it in one psql session. This is a special negative exercise: use ON_ERROR_STOP=0 so psql continues reading the file after the deliberate CHECK error. For example, from your host shell with configured psql: psql -X -d tsa_library -v ON_ERROR_STOP=0 -f stock_savepoint.sql. For a local Ubuntu peer-authenticated connection, prefix the same command with `sudo -u postgres`. Do not use this continuation setting for ordinary migrations.\n\nThe first UPDATE tries to set qty=-1 and PostgreSQL reports a CHECK violation. ROLLBACK TO SAVEPOINT undoes the failed sub-operation and clears the transaction's failed state. The subsequent valid UPDATE sets qty=4, COMMIT completes the transaction and the final SELECT shows Apples|4.\n\nNotice the difference between the *expected stderr error* and the *successful recovered final state*. Both are required evidence.",
                 "language": "sql",
                 "caption": "stock_savepoint.sql — recover after an expected CHECK error",
                 "code": "CREATE TEMP TABLE stock_demo (\n  item text PRIMARY KEY,\n  qty integer NOT NULL CHECK (qty >= 0)\n);\nINSERT INTO stock_demo VALUES ('Apples', 5);\nBEGIN;\nSAVEPOINT before_bad_update;\nUPDATE stock_demo SET qty = -1 WHERE item = 'Apples';\nROLLBACK TO SAVEPOINT before_bad_update;\nUPDATE stock_demo SET qty = 4 WHERE item = 'Apples';\nCOMMIT;\nSELECT item, qty FROM stock_demo;",
@@ -4375,7 +4574,7 @@ const specs: DataLessonSpec[] = [
             {
                 "id": "verify-your-rights",
                 "title": "Read the privileges of your current connection",
-                "body": "The following read-only query runs in tsa_library after you have created library.books. PostgreSQL functions has_database_privilege, has_schema_privilege and has_table_privilege report whether the specified role currently has the named right. In the disposable Docker bootstrap role, the three results should be true because it owns the lab. A restricted training role may legitimately have different results.\n\nThe query demonstrates the three levels, not a denial. You will only observe a real denial by using an authorized deliberately restricted role. Do not test whether a production account can DELETE by actually deleting records.",
+                "body": "The following read-only query runs in tsa_library after you have created library.books. PostgreSQL functions has_database_privilege, has_schema_privilege and has_table_privilege report whether the specified role currently has the named right. On a local lab that you own, an adequately privileged role may report three true values; a restricted training role may report different rights. A restricted training role may legitimately have different results.\n\nThe query demonstrates the three levels, not a denial. You will only observe a real denial by using an authorized deliberately restricted role. Do not test whether a production account can DELETE by actually deleting records.",
                 "caption": "postgresql_privileges.sql — inspect database, schema and table rights",
                 "code": "SELECT current_user,\n       has_database_privilege(current_user, current_database(), 'CONNECT') AS can_connect,\n       has_schema_privilege(current_user, 'library', 'USAGE') AS can_use_schema,\n       has_table_privilege(current_user, 'library.books', 'SELECT') AS can_read_books;",
                 "language": "sql"
@@ -4493,7 +4692,7 @@ const specs: DataLessonSpec[] = [
             {
                 "id": "take-and-restore",
                 "title": "Run the complete dump-and-restore sequence",
-                "body": "These are operating-system shell commands, not SQL to type into psql. They assume pg_dump, createdb and pg_restore are available on the machine where you execute them and PGHOST, PGPORT, PGUSER and secure authentication are already configured for the disposable server. We do not put passwords into command arguments.\n\nFirst pg_dump -Fc writes a custom archive file. Second createdb creates the new empty destination (with the authenticated role authorized to create databases). Third pg_restore reads the archive and reconstructs library and its books table in the new destination. Finally psql executes a SELECT against the restored table. In the clean two-book lab the last output is 2. In a pre-existing or managed database, the role may lack CREATEDB and you must ask for a separate authorized destination instead of assuming administrator rights.\n\nThe source database is never dropped. The archive filename belongs to your disposable working directory; keep it private if it contains personal data. A Docker-only learner can run pg_dump inside the teaching container and stream to a host file, but must explicitly arrange that path and use a fresh destination before restoring.",
+                "body": "These are operating-system shell commands, not SQL to type into psql. They assume pg_dump, createdb and pg_restore are available on the machine where you execute them and PGHOST, PGPORT, PGUSER and secure authentication are already configured for the disposable server. We do not put passwords into command arguments.\n\nFirst pg_dump -Fc writes a custom archive file. Second createdb creates the new empty destination (with the authenticated role authorized to create databases). Third pg_restore reads the archive and reconstructs library and its books table in the new destination. Finally psql executes a SELECT against the restored table. In the clean two-book lab the last output is 2. In a pre-existing or managed database, the role may lack CREATEDB and you must ask for a separate authorized destination instead of assuming administrator rights.\n\nThe source database is never dropped. The archive filename belongs to your disposable working directory; keep it private if it contains personal data. Run `pg_dump` and `pg_restore` from an installed PostgreSQL client that can connect to the approved server; check file permissions, choose a fresh destination and verify credentials without putting passwords on the command line.",
                 "caption": "library_backup_restore.sh — restore a custom-format archive into a separate learning database",
                 "code": "pg_dump -Fc -f tsa_library_backup.dump -d tsa_library\ncreatedb tsa_library_restore\npg_restore --exit-on-error -d tsa_library_restore tsa_library_backup.dump\npsql -X -v ON_ERROR_STOP=1 -At -d tsa_library_restore -c 'SELECT count(*) FROM library.books;'",
                 "output": "2 (with the original clean two-book lab)",
