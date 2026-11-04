@@ -57,7 +57,15 @@ try {
   assert.match(psqlMeta, /library/);
   assert.match(psqlMeta, /books/);
   assert.match(psqlMeta, /book_id/);
-  assert.match(psqlMeta, /books_pkey/);
+  // -At (unaligned, tuples-only) deliberately suppresses psql's table footer,
+  // including the indexes line. Verify the learner's normal \d display separately.
+  const described = spawnSync("psql", ["-X", "-v", "ON_ERROR_STOP=1", "-d", "tsa_library",
+    "-c", String.raw`\d library.books`], {
+    encoding: "utf8", timeout: 20000, env: process.env
+  });
+  assert.ifError(described.error);
+  assert.equal(described.status, 0, described.stderr);
+  assert.match(described.stdout, /books_pkey/, "Default psql table description should show the primary-key index");
   assert.match(psqlMeta, /CREATE TABLE/i, "psql SQL help must be available");
 
   assert.equal(runLibrary("SQL — insert two example books").out, "INSERT 0 2");
