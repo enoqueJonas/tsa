@@ -77,3 +77,17 @@ These readings were **not acceptable as self-contained conceptual instruction** 
 7. Steward API v1: hand off a running repo with a working production transition, cross-Team denial, partial mutation rollback, token/session policy and reproducible setup/diagnosis.
 
 These tasks are specifications for independent learner assessment, **not evidence that a student has completed them**.
+
+## 2026-11-04 — Identity/Auth learner-order repair (source pass, human review open)
+
+**Finding:** The previous first identity lesson mixed vocabulary with an unexplained instruction to implement a new Django User model. By that point the Builder learner has already migrated Django's default auth tables. Changing AUTH_USER_MODEL after initial migrations is a major migration operation, not a novice setup step. The subsequent password lesson then showed unexecutable pseudocode (`User(email=...)`, undefined `raw_password`, undefined `candidate`, undefined `AuthenticationFailed`) instead of a runnable verifier demonstration.
+
+**Teaching remediation:**
+- Keep the initial Identity in Software Systems lesson conceptual: identity versus account, profile, credential and session; stable identifiers; trusted claims; human versus machine subjects; memberships. It uses a generic community library example, not an obligatory Steward project.
+- Split out **Create User Accounts and Team Memberships in Django** after the concept lesson. Use the already-migrated built-in Django User, reference `settings.AUTH_USER_MODEL` in a new Membership table, teach explicit team role and uniqueness, generate/review a dedicated migration, and seed two accounts with no usable passwords. Introduce machine-identity infrastructure neither here nor by accident.
+- The Password Storage lesson now runs a complete `get_user_model()` / `set_password()` / `check_password()` / `authenticate()` experiment against the seeded learner, including a deliberately rejected wrong password and a disabled account with a correct password. The script restores account state, and no real password is printed.
+- Remove the generic repeated Steward callout from every Identity reading and give practical/reflection activities topic-specific titles.
+- The real PostgreSQL/Django integration test extends the existing migrated registry schema, applies an independently generated Membership migration, executes the exact source-published seed and credential code, and rejects a duplicate membership with a database constraint.
+- The source guard checks the actual Identity → Membership → Authentication/Authorization → Password chapter order and rejects the former unexecutable User snippet.
+
+**State:** This branch is an instructional/source correction. The matching-head workflow, browser rendering and any manual novice independent transfer must be recorded separately. **Learner validated: NO.** Identity remains open for later token and resource-permission end-to-end testing; the earlier pure-Python refresh-token and authorization matrix checks do not prove a real authenticated DRF API.
