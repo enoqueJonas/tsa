@@ -4085,73 +4085,298 @@ const specs: DataLessonSpec[] = [
     },
     {
         "id": "postgresql-practice",
-        "title": "PostgreSQL in Practice",
-        "introduction": "The database is a server with roles, connections, schemas and maintenance responsibilities. A local exercise may function when connected as the owner, yet fail when an application role lacks SELECT or a table exists in another schema. Learn to inspect effective identity, privileges and running sessions before assuming an ORM or PostgreSQL server has broken.",
+        "title": "Inspect PostgreSQL Connections and Database Objects",
+        "introduction": "A PostgreSQL connection may succeed even when a query fails, because client installation, server reachability, selected database, schema visibility and object permissions are separate issues. This lesson teaches how to gather evidence with psql and database metadata. Roles, grants and backups are deliberately taught in their own lessons rather than compressed into an operations checklist.",
         "outcomes": [
-            "Inspect connection, current database, role, search path, visible tables and constraints.",
-            "Distinguish a role that owns schema objects from a narrowly privileged application role.",
-            "Use psql introspection and SQL metadata to diagnose failures without exposing credentials.",
-            "Explain which backups and restore tests must be owned by operations and reliability work."
+            "Identify the connected database, effective role, current schema and backend session.",
+            "Use psql meta-commands to inspect databases, schemas, tables and roles.",
+            "Distinguish a missing client, refused connection, missing object and permission error.",
+            "Read safe server session information without assuming ordinary users can inspect every other user's queries."
         ],
         "sections": [
             {
-                "id": "context",
-                "title": "A connection has more identity than its hostname",
-                "body": "psql is a client; it connects to one PostgreSQL server endpoint, selects a database, authenticates as a role and uses a search_path to resolve unqualified table names into schemas. SELECT current_database(), current_user, current_schema() are real checks, not assumptions. A successful login does not grant every table privilege. Database CONNECT, schema USAGE and table SELECT/INSERT/UPDATE/DELETE are distinct authorization boundaries."
+                "id": "what-to-inspect",
+                "title": "Begin with the server connection you actually have",
+                "body": "The database you intended to use is not necessarily the one your client selected. PostgreSQL client programs can get defaults from arguments, environment variables and connection configuration. A login establishes a session tied to one database. SQL current_database() and current_user reveal the active database and authorization role; current_schema() reveals the first existing schema in the effective search path, not the name of every schema.\n\nBefore debugging a missing table, record host, port, database, role and current_schema without showing credentials. If an application crashes, do not assume a bad table definition when the DSN points to another database. If a psql prompt shows the wrong database, reconnect explicitly. The same server can host many databases; a schema named library in tsa_library is not visible in the postgres maintenance database."
             },
             {
-                "id": "toolkit",
-                "title": "Use the client and catalogs as evidence",
-                "body": "In interactive psql, \\conninfo explains the current connection, \\l lists databases, \\dn schemas, \\dt tables, \\d service describes an object and \\du describes roles. These backslash commands are interpreted by the client, not sent as SQL; the command-line syntax must use an actual backslash in a psql terminal. The following SQL query can run noninteractively in the dedicated lab. Compare the reported database/user/schema with what your project config expects.",
+                "id": "psql-inventory",
+                "title": "Use psql to explore objects",
+                "body": "At the psql prompt, \\conninfo displays connection details; \\l lists databases; \\dn lists schemas within the current database; \\dt library.* lists tables in the library schema; \\d library.books describes the table and its constraints; \\du lists roles. A backslash command belongs to the psql client, not to SQL itself; do not paste it into Django's query API or into a raw SQL file handled by a different driver.\n\nEach command answers a particular question. Does tsa_library exist? Use \\l. Does the library schema exist in the selected database? Use \\dn. Does the books table have the four expected columns? Use \\d library.books. Who is my connection using as a role? Compare \\conninfo with SELECT current_user;. The habit is evidence-first diagnosis rather than blindly rerunning migration commands."
+            },
+            {
+                "id": "sql-catalogs",
+                "title": "Use SQL when psql meta-commands are unavailable",
+                "body": "Not every database client understands psql backslash commands. PostgreSQL exposes information_schema views and system catalogs that SQL can query. The existing Steward exercise below proves which database, user and current schema are active, then lists visible tables in public. It is read-only and deliberately does not modify the fixture. The four names are expected in the disposable Steward learning database, not in tsa_library.\n\nThe SQL query does not test every possible privilege or prove that all migrations were applied. It provides a basic inventory that you can compare with the application's expected schema and connection target.",
                 "caption": "postgresql_inspect.sql — verify connection and visible Service relation",
                 "code": "SELECT current_database(), current_user, current_schema();\nSELECT table_name FROM information_schema.tables\nWHERE table_schema='public' AND table_name IN ('team','service','environment','service_dependency')\nORDER BY table_name;",
-                "output": "First query: tsa_steward_lab | tsa_learner | public (under the CI lab setup).\nSecond query: environment, service, service_dependency, team."
+                "output": "Database/user/schema depend on connection; four Steward tables appear in the disposable fixture.",
+                "language": "sql"
             },
             {
-                "id": "privilege",
-                "title": "Least privilege is a design that can be tested",
-                "body": "A schema owner/migration role may CREATE/ALTER tables, while a runtime application role should normally receive only the minimum operations needed. An API that lists Services may need SELECT on Service and Team, but creating Services requires INSERT and SELECT of related tables, with extra sequence privileges depending on identity/default setup. Avoid application superuser credentials and never commit passwords to a repo. Some privileges are inherited through roles; explain the effective privileges rather than blindly guessing GRANT strings."
+                "id": "inspect-sessions",
+                "title": "What is a PostgreSQL backend session?",
+                "body": "The server serves multiple clients using backend processes. pg_backend_pid() reports the server process for your current connection. The pg_stat_activity view exposes information about connected backends such as database, role, application name and state. Run the read-only query below while connected to your learning database; it returns at least your current session. A managed system may show additional sessions, and this output is not meant to have a fixed row count.\n\nAn ordinary role cannot necessarily see detailed queries and other sensitive fields for everyone else's sessions. That restriction is expected, not proof that the monitoring view is broken. Avoid copying other users' query text into public evidence. Understanding a connection pool, lock wait or idle-in-transaction backlog takes more study in later platform and reliability courses.",
+                "caption": "postgresql_session.sql — inspect only your own backend",
+                "code": "SELECT current_database(), current_user, pg_backend_pid() > 0 AS has_backend;\nSELECT count(*) >= 1 AS sees_self\nFROM pg_stat_activity\nWHERE pid = pg_backend_pid();",
+                "output": "has_backend = true; sees_self = true.",
+                "language": "sql"
             },
             {
-                "id": "operational",
-                "title": "Connection failures have distinct causes",
-                "body": "Missing psql executable is a client setup failure; connection refused is usually a transport/listener issue; role authentication failure happens before authorization; missing database is a target-selection error; permission denied on a relation is an authenticated session that lacks a SQL privilege; missing relation may be wrong search_path, schema or migration state. The next action differs for each. Use psql -X -v ON_ERROR_STOP=1 when scripting; inspect errors rather than swallowing failures."
+                "id": "diagnostic-order",
+                "title": "Find which stage failed",
+                "body": "A client saying 'psql: command not found' has not tried to connect to PostgreSQL. A connection-refused error means the client did not establish the expected transport connection; check server/listener and host/port. Authentication failure means a server responded but rejected the account or credentials. 'Database does not exist' means the target name was wrong or not provisioned. 'Schema does not exist' and 'relation does not exist' occur after a connection and indicate object lookup issues. 'Permission denied' means the current role is not authorized for the requested operation.\n\nDo not use the same remedy for every failure. Reinstalling the client cannot grant SELECT on a table; issuing GRANT cannot fix an unreachable host. A reliable investigation records the precise error, current connection context, expected object and next discriminating test."
             },
             {
-                "id": "backup",
-                "title": "A backup is not a recoverability claim until restore works",
-                "body": "pg_dump produces a logical export for a chosen database; it is not the same as a physical WAL-based backup or point-in-time recovery. A restore drill must verify that the data can be reconstructed and queried in an isolated destination, with tested credentials and time limits. These operations belong to later Platform and Reliability courses; Builder must recognize the handoff, not pretend that a copied SQL file proves recovery."
+                "id": "what-you-are-not-doing",
+                "title": "Inspection does not mean administration",
+                "body": "Builder-level fluency includes knowing what information to collect when a database operation fails. It does not mean granting yourself superuser access, changing production configuration, terminating others' sessions or altering retention policies. The next lesson explains which privileges control connection, schema usage and table operations. A later lesson demonstrates a logical backup and a real restore in a second disposable database, without claiming full production recovery readiness."
             }
         ],
+        "warning": "Inspect only authorized databases and avoid exposing credentials, session query text or customer records. Do not terminate backends or change roles just to complete this reading.",
         "assignment": [
-            "Run the connection/catalog query and document observed database, role and visible objects without secrets.",
-            "Use psql meta-commands to inspect one table and one role; map each to the relevant SQL catalog.",
-            "Design a least-privilege role for a read-only Service viewer and predict permission-denied behavior.",
-            "Write a diagnosis table for client missing, listener failure, bad credentials, schema mismatch and insufficient privileges."
+            "Inspect your database and schema with \\l and \\dn and explain their different scope.",
+            "Identify one table definition with \\d and verify the current role with SQL.",
+            "Run the published safe session query; explain why its result is not proof of administrative rights.",
+            "Classify five representative errors by the stage that failed.",
+            "Write a short investigation report that includes observations, unknowns and next checks."
         ],
         "resources": [
             {
-                "title": "PostgreSQL — psql Client",
-                "url": "https://www.postgresql.org/docs/current/app-psql.html",
+                "title": "PostgreSQL 17 — psql Client",
+                "url": "https://www.postgresql.org/docs/17/app-psql.html",
                 "kind": "reference",
-                "purpose": "Connection and object introspection"
+                "purpose": "Use meta-commands correctly and distinguish client commands from SQL."
             },
             {
-                "title": "PostgreSQL — Privileges",
-                "url": "https://www.postgresql.org/docs/current/ddl-priv.html",
+                "title": "PostgreSQL 17 — Database Monitoring",
+                "url": "https://www.postgresql.org/docs/17/monitoring-stats.html",
                 "kind": "reference",
-                "purpose": "Rights and schema/table boundaries"
+                "purpose": "Understand pg_stat_activity and visibility limits."
             }
         ],
-        "practiceObjective": "Inspect connection, current database, role, search path, visible tables and constraints.",
+        "practiceObjective": "Collect reproducible PostgreSQL connection and object evidence without making any structural changes.",
         "practiceInstructions": [
-            "Run the connection/catalog query and document observed database, role and visible objects without secrets.",
-            "Use psql meta-commands to inspect one table and one role; map each to the relevant SQL catalog.",
-            "Design a least-privilege role for a read-only Service viewer and predict permission-denied behavior.",
-            "Write a diagnosis table for client missing, listener failure, bad credentials, schema mismatch and insufficient privileges."
+            "Use psql to inspect the connected database, schema, tables and role.",
+            "Execute read-only metadata SQL and identify the expected Steward tables.",
+            "Inspect only your own backend session using pg_backend_pid and pg_stat_activity.",
+            "Classify an observed or safely simulated missing-object failure."
         ],
-        "knowledgeCheck": "Why does successful login not prove SELECT privilege on Service? How do database versus schema differ? What evidence would prove an actual backup can be restored?",
-        "warning": "Only execute changing SQL in a dedicated disposable PostgreSQL learning database. Predict the resulting rows and constraints before running a statement, and do not treat a five-row fixture as representative performance evidence."
+        "knowledgeCheck": "What can \\dn show that \\l cannot? Why can a table exist but be invisible to an unqualified query? Why might pg_stat_activity not show another user's full SQL?",
+        "readingTitle": "Learn how to inspect PostgreSQL safely",
+        "practiceTitle": "Investigate a connection and object inventory",
+        "checkTitle": "Check inspection and diagnosis",
+        "practiceScenario": "Practice the general psql/database inventory, then inspect the disposable Steward fixture without changing it.",
+        "practiceDeliverables": [
+            "Connection and database inventory",
+            "psql object descriptions",
+            "Session metadata and failure-classification note"
+        ],
+        "practiceCompletionCriteria": [
+            "Commands and outputs identify the actual target rather than assuming it.",
+            "The learner distinguishes missing objects from permission problems.",
+            "No administrative changes or secrets are required."
+        ]
+    },
+    {
+        "id": "postgresql-roles-and-privileges",
+        "title": "Roles, Ownership, and Permissions in PostgreSQL",
+        "introduction": "A role can connect to PostgreSQL but still be unable to read or edit a table. Roles, database CONNECT, schema USAGE, table SELECT and object ownership are separate checks. We will learn the model, inspect effective privileges and deliberately create a NOLOGIN teaching role only when using our own disposable administrator-controlled lab.",
+        "outcomes": [
+            "Explain roles, LOGIN versus NOLOGIN, object owners and granted privileges.",
+            "Distinguish CONNECT on a database, USAGE/CREATE on a schema and SELECT/INSERT/UPDATE/DELETE on tables.",
+            "Inspect effective privileges without guessing whether a password or role was accepted.",
+            "Explain why an application account should not be a superuser or table-migration owner by default."
+        ],
+        "sections": [
+            {
+                "id": "what-is-role",
+                "title": "What is a PostgreSQL role?",
+                "body": "A PostgreSQL role is an identity that can own database objects, receive privileges, and be a member of other roles. A role with LOGIN can authenticate as a database connection principal; a role created NOLOGIN cannot directly log in but can be useful to group privileges. Roles are cluster-wide: a role is not another schema or database. Access to one database or one table still depends on permissions.\n\nAn object's owner usually has rights to alter or drop it, and has grant options. That is much more authority than an application normally needs simply to run SELECT, INSERT or UPDATE. Separate a migration/owner identity from the runtime application's identity so a compromised API cannot casually redefine schema structures.\n\nA database user name is not the same as an operating-system user; PostgreSQL's authentication configuration decides how a login is verified."
+            },
+            {
+                "id": "three-permission-levels",
+                "title": "Understand the three permission boundaries",
+                "body": "First, a connecting role normally needs CONNECT on the target database. Second, to reference objects in a schema it generally needs USAGE on that schema. Third, to read book rows it needs SELECT on library.books; to insert it needs INSERT and possibly the relevant sequence privileges for generated IDs; to update or delete it needs the corresponding table privileges and sometimes SELECT for predicates or RETURNING.\n\nCREATE on a database allows creating schemas; CREATE on a schema allows creating objects inside it. These are different grants. A role might have SELECT on a table but fail before reading it because it lacks USAGE on the containing schema. Likewise, successful login and \\dt output are not proof that DELETE is allowed.\n\nOwnership and role inheritance can affect the effective rights. Use permission-inspection functions rather than assuming privileges from a role name."
+            },
+            {
+                "id": "verify-your-rights",
+                "title": "Read the privileges of your current connection",
+                "body": "The following read-only query runs in tsa_library after you have created library.books. PostgreSQL functions has_database_privilege, has_schema_privilege and has_table_privilege report whether the specified role currently has the named right. In the disposable Docker bootstrap role, the three results should be true because it owns the lab. A restricted training role may legitimately have different results.\n\nThe query demonstrates the three levels, not a denial. You will only observe a real denial by using an authorized deliberately restricted role. Do not test whether a production account can DELETE by actually deleting records.",
+                "caption": "postgresql_privileges.sql — inspect database, schema and table rights",
+                "code": "SELECT current_user,\n       has_database_privilege(current_user, current_database(), 'CONNECT') AS can_connect,\n       has_schema_privilege(current_user, 'library', 'USAGE') AS can_use_schema,\n       has_table_privilege(current_user, 'library.books', 'SELECT') AS can_read_books;",
+                "language": "sql"
+            },
+            {
+                "id": "create-a-lab-role",
+                "title": "Create a read-only group role in an authorized disposable lab",
+                "body": "If and only if you control a disposable PostgreSQL server with permission to CREATE ROLE and GRANT, the SQL below creates a NOLOGIN role and gives it the minimum permissions for reading the library books. It has CONNECT on tsa_library, USAGE on library and SELECT on library.books. It deliberately does not grant INSERT, UPDATE, DELETE or CREATE. These permissions may be inherited by a separate LOGIN role when a DBA assigns membership; no password is shown here.\n\nBecause the role is NOLOGIN, this script itself is not a complete client-authentication test. The last SELECT checks the role's granted table rights directly: SELECT is true and INSERT is false. Running this a second time fails because the named role exists; do not drop a real role to repeat the exercise. A course-managed environment without CREATEROLE should treat this as an instructor-provisioned optional lab and focus on the read-only query above.",
+                "caption": "postgresql_readonly_role.sql — optional local-only NOLOGIN role and privilege proof",
+                "code": "CREATE ROLE tsa_books_readonly NOLOGIN;\nGRANT CONNECT ON DATABASE tsa_library TO tsa_books_readonly;\nGRANT USAGE ON SCHEMA library TO tsa_books_readonly;\nGRANT SELECT ON library.books TO tsa_books_readonly;\nSELECT has_table_privilege('tsa_books_readonly','library.books','SELECT') AS can_read,\n       has_table_privilege('tsa_books_readonly','library.books','INSERT') AS can_insert;",
+                "output": "can_read = true; can_insert = false.",
+                "language": "sql"
+            },
+            {
+                "id": "permissions-in-workflows",
+                "title": "Why separate runtime and migration roles?",
+                "body": "A database migration often creates or alters tables. A typical API process only reads and updates domain records. If the API runs as a superuser or the owner of all tables, a bug or SQL injection vulnerability has a much larger destructive surface. A dedicated runtime role with narrowly granted rights can limit the damage.\n\nThat does not mean 'read-only' is automatically safe: SELECT can still expose confidential records. PostgreSQL grants control table and column access at different levels, while row-level security requires additional explicit policies and careful testing. The principle is to state which operations the component truly needs, test what it can do and verify what it cannot do.\n\nWhen authentication fails, granting table rights will not repair it. When authorization fails, changing the host or password is the wrong first remedy."
+            },
+            {
+                "id": "negative-case",
+                "title": "Distinguish denied privileges from a missing table",
+                "body": "A nonexistent relation produces a name-lookup error; an existing table that a role cannot read produces a permission error. With a genuine restricted training role, test SELECT and an INSERT against disposable data and capture the expected outcomes. Do not perform this experiment on shared business tables and do not assume that a simulated privilege-function result proves a failed SQL command was executed.\n\nA DBA can inspect permissions with \\dp library.books and roles with \\du. Effective rights may also come from inherited membership or ownership. Record the relevant role, database, schema, table and requested action in every permission-failure report. The next lesson moves from authorization to data recoverability: preserving and restoring a disposable database, not just copying SQL scripts."
+            }
+        ],
+        "warning": "CREATE ROLE/GRANT are cluster-wide administrative changes and may require CREATEROLE or ownership. Execute the role-creation example only once on your own disposable server. No real passwords or production roles are used.",
+        "assignment": [
+            "Explain CONNECT, USAGE and SELECT in the order PostgreSQL checks the access path.",
+            "Run the read-only permission-inspection query and interpret the result for your assigned role.",
+            "On an authorized isolated lab, create NOLOGIN read-only group role and verify SELECT true, INSERT false; otherwise document a permission blocker.",
+            "Draft the minimum rights a read-only book-listing application requires and name two rights it should not have.",
+            "Describe how a runtime role differs from the role that applies schema migrations."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — Privileges",
+                "url": "https://www.postgresql.org/docs/17/ddl-priv.html",
+                "kind": "reference",
+                "purpose": "Understand GRANT/REVOKE, ownership, database, schema and table privileges."
+            },
+            {
+                "title": "PostgreSQL 17 — Schemas and Privileges",
+                "url": "https://www.postgresql.org/docs/17/ddl-schemas.html",
+                "kind": "reference",
+                "purpose": "Distinguish schema USAGE and CREATE from table rights."
+            },
+            {
+                "title": "PostgreSQL 17 — Database Roles",
+                "url": "https://www.postgresql.org/docs/17/user-manag.html",
+                "kind": "reference",
+                "purpose": "Learn LOGIN, NOLOGIN and role membership."
+            }
+        ],
+        "practiceObjective": "Inspect and, where authorized, demonstrate a read-only role's permitted and denied operations.",
+        "practiceInstructions": [
+            "Explain the minimum permissions for the library and Steward read-only queries.",
+            "Run the safe privilege SQL using the current connection.",
+            "Only in an isolated administrator-controlled lab, create a NOLOGIN read-only role and verify effective SELECT/INSERT flags.",
+            "Document how an application would authenticate with its own LOGIN role without sharing a superuser account."
+        ],
+        "knowledgeCheck": "Does database CONNECT grant table SELECT? Does schema USAGE let you CREATE tables? Can a NOLOGIN role directly connect? Why should a web API not own the schema it uses?",
+        "readingTitle": "Understand PostgreSQL roles and privileges",
+        "practiceTitle": "Prove the rights of a read-only role",
+        "checkTitle": "Check permission boundaries",
+        "practiceScenario": "Learn access control using a disposable library database before designing an application role for Steward.",
+        "practiceDeliverables": [
+            "Privilege map by database, schema and table",
+            "Effective-rights query output",
+            "Optional NOLOGIN role proof or explicitly blocked lab",
+            "Runtime-versus-migration responsibility note"
+        ],
+        "practiceCompletionCriteria": [
+            "The learner distinguishes successful authentication from authorized table access.",
+            "A role-name label is not used as proof of effective permissions.",
+            "Administrative writes are limited to authorized disposable environments."
+        ]
+    },
+    {
+        "id": "postgresql-backup-and-restore",
+        "title": "Back Up and Restore a PostgreSQL Learning Database",
+        "introduction": "A backup file is not the same as proof that your database can be recovered. We will produce a logical PostgreSQL backup and restore it into a separately named learning database, then query the restored rows. This lesson teaches one concrete recovery check, not a production disaster-recovery architecture.",
+        "outcomes": [
+            "Distinguish a logical database dump from the database server's live storage files.",
+            "Create a custom-format pg_dump archive of a single learning database.",
+            "Restore that archive to a separate empty target and validate the recovered table and rows.",
+            "Explain what this exercise does not prove about roles, recovery time, point-in-time recovery and disaster readiness."
+        ],
+        "sections": [
+            {
+                "id": "what-is-backup",
+                "title": "What does a PostgreSQL logical backup contain?",
+                "body": "PostgreSQL stores live data in server-managed files, but copying arbitrary files while a server is running is not a safe substitute for a supported backup method. The pg_dump utility connects as a client and exports the logical contents of one database, including definitions and records you have rights to read. It can generate plain SQL or an archive format. A custom-format archive (-Fc) is suitable for pg_restore, which can select and rebuild objects from the archive.\n\nA dump of tsa_library does not automatically include every database in the server cluster. Cluster-wide objects such as roles are not included in a single-database pg_dump; they need separate handling if required. A logical dump also is not automatically a continuous WAL archive, a replication setup or point-in-time recovery. The purpose here is to prove that our small library's schema and rows can be recreated in an independent database."
+            },
+            {
+                "id": "backup-preconditions",
+                "title": "Prepare a safe recovery experiment",
+                "body": "Complete the library table and two-book exercises first. Start from a private PostgreSQL server, not a production or shared environment, and ensure the host PostgreSQL 17 client utilities pg_dump, pg_restore, createdb and psql are installed and reachable. Your existing connection configuration must point to the disposable server and an authorized role. Record the source database tsa_library and choose an unused restore target named tsa_library_restore.\n\nBefore taking a dump, query SELECT count(*) FROM library.books; in tsa_library and record the source count. In the canonical lab it is two, but your earlier exploratory inserts may legitimately change it. The restore must be compared to the actual source rather than forcing a screenshot to match two rows. An existing database named tsa_library_restore is a blocker, not permission to overwrite it."
+            },
+            {
+                "id": "take-and-restore",
+                "title": "Run the complete dump-and-restore sequence",
+                "body": "These are operating-system shell commands, not SQL to type into psql. They assume pg_dump, createdb and pg_restore are available on the machine where you execute them and PGHOST, PGPORT, PGUSER and secure authentication are already configured for the disposable server. We do not put passwords into command arguments.\n\nFirst pg_dump -Fc writes a custom archive file. Second createdb creates the new empty destination (with the authenticated role authorized to create databases). Third pg_restore reads the archive and reconstructs library and its books table in the new destination. Finally psql executes a SELECT against the restored table. In the clean two-book lab the last output is 2. In a pre-existing or managed database, the role may lack CREATEDB and you must ask for a separate authorized destination instead of assuming administrator rights.\n\nThe source database is never dropped. The archive filename belongs to your disposable working directory; keep it private if it contains personal data. A Docker-only learner can run pg_dump inside the teaching container and stream to a host file, but must explicitly arrange that path and use a fresh destination before restoring.",
+                "caption": "library_backup_restore.sh — restore a custom-format archive into a separate learning database",
+                "code": "pg_dump -Fc -f tsa_library_backup.dump -d tsa_library\ncreatedb tsa_library_restore\npg_restore --exit-on-error -d tsa_library_restore tsa_library_backup.dump\npsql -X -v ON_ERROR_STOP=1 -At -d tsa_library_restore -c 'SELECT count(*) FROM library.books;'",
+                "output": "2 (with the original clean two-book lab)",
+                "language": "bash"
+            },
+            {
+                "id": "verify-beyond-success",
+                "title": "How do you know the restore worked?",
+                "body": "Do not stop when pg_dump exits with status zero. The archive might be stored in the wrong directory, have incorrect permissions or be unreadable by the recovery operator. Check that the file exists and has nonzero size. Use pg_restore -l on the archive to inspect its table of contents. Then validate the restored database independently: is the library schema present, does library.books have the expected columns and constraints, and does SELECT return the expected count and values?\n\nA count alone is necessary but not sufficient for large or critical data: two different datasets can have the same count. For this introductory proof compare titles and years as well as the count. The original tsa_library should still be readable and unchanged. The restore destination is isolated by design so that the experiment cannot overwrite your source database."
+            },
+            {
+                "id": "what-backup-misses",
+                "title": "What this lab does NOT guarantee",
+                "body": "The lab does not prove backup scheduling, retention, offsite storage, encryption, key management, restore-time objective, recovery-point objective, data consistency across several databases or point-in-time recovery. pg_dump does not include cluster-wide role definitions automatically, and restoring into a different server may require roles or extensions that the destination lacks. We are restoring within the same temporary teaching cluster, where the relevant role already exists.\n\nProduction recovery also needs a tested procedure for handling untrusted archives; restoring a dump can execute definitions from its source and should only be done from trusted backups in an approved environment. A single successful local restore is evidence of this particular snapshot and setup. It is not evidence that a production service can be recovered within its operational commitments. Those requirements belong to Platform Builder and Reliability Engineering."
+            },
+            {
+                "id": "what-to-do-on-failure",
+                "title": "Understand common backup/restore failures",
+                "body": "If pg_dump cannot connect, diagnose the client connection first. If it reports insufficient privileges, the account may not be able to read all required objects. If createdb fails because the destination already exists, stop; do not DROP a populated database to make the tutorial repeat. If pg_restore reports missing roles, extensions or object conflicts, inspect the archive contents, destination state and permissions instead of suppressing errors.\n\nA restore is a separate engineering operation with its own failure modes. Record the exact command, source and target database names, exit statuses, relevant error text and verification results. Never present a dump file alone as proof that recovery is possible."
+            }
+        ],
+        "warning": "Only dump/restore disposable data you own. Never overwrite or drop an existing database to repeat this lab, and never restore an untrusted archive on a privileged server.",
+        "assignment": [
+            "Explain why pg_dump and pg_restore are different tools and why -Fc uses an archive format.",
+            "Run the published shell sequence in a fresh lab or record an honest environment/permission blocker.",
+            "Verify the backup artifact and compare restored schema, row count and book values against the source.",
+            "Explain why a single-database dump does not include every role in a PostgreSQL cluster.",
+            "Write three operational questions that the local restore does not answer."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — pg_dump",
+                "url": "https://www.postgresql.org/docs/17/app-pgdump.html",
+                "kind": "reference",
+                "purpose": "Authoritative custom-format dump and single-database scope."
+            },
+            {
+                "title": "PostgreSQL 17 — pg_restore",
+                "url": "https://www.postgresql.org/docs/17/app-pgrestore.html",
+                "kind": "reference",
+                "purpose": "Restore custom-format archives and inspect archive contents."
+            },
+            {
+                "title": "PostgreSQL 17 — Backup and Restore",
+                "url": "https://www.postgresql.org/docs/17/backup.html",
+                "kind": "reference",
+                "purpose": "Understand logical versus physical backups and recovery limits."
+            }
+        ],
+        "practiceObjective": "Prove a logical PostgreSQL backup restores into a separate empty database without modifying the source.",
+        "practiceInstructions": [
+            "Record the source library count and objects.",
+            "Create a custom-format dump using an authorized client.",
+            "Restore into a new separately named database, never the original source.",
+            "Verify a real table and its data in the restore target.",
+            "Document what remains untested about full recovery and operational readiness."
+        ],
+        "knowledgeCheck": "Why does a successful pg_dump not prove recoverability? What does pg_dump -Fc produce? Why is a new destination safer? Which cluster-wide objects are not included, and what does point-in-time recovery require beyond this lab?",
+        "readingTitle": "Learn the backup and restore process",
+        "practiceTitle": "Recover an independent database copy",
+        "checkTitle": "Check recovery evidence",
+        "practiceScenario": "Use a disposable library copy to understand recovery before Steward production operations.",
+        "practiceDeliverables": [
+            "Source snapshot inventory",
+            "Custom dump archive (kept private)",
+            "Restored database queries and comparison",
+            "Operational limitations list"
+        ],
+        "practiceCompletionCriteria": [
+            "The source database is never overwritten.",
+            "A fresh target is actually restored and queried.",
+            "The learner distinguishes local restore proof from disaster-recovery readiness."
+        ]
     },
     {
         "id": "django-orm",
