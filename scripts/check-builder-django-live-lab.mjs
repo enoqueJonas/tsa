@@ -142,6 +142,92 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   const output=exec("python3",["manage.py","shell","-c",probe],env);
   assert.match(output,/DJANGO_BRIDGE_OK Payments API Payments production production/);
   assert.match(output,/DJANGO_READINESS_OK rejected-then-promoted then-final-deletion-blocked/);
+
+  // Reconstruct the independent beginner lab from the actual authored Django
+  // and DRF lessons, rather than testing equivalent code written only here.
+  // Its app has no database models and must never mutate the Steward fixture.
+  const authoredSnippet = (caption) => {
+    const index = source.indexOf('"caption": "' + caption + '"');
+    assert.ok(index >= 0, "Missing beginner Django code block: " + caption);
+    const match = source.slice(index, index + 12000).match(/"value":\s*("(?:\\.|[^"\\])*")/);
+    assert.ok(match, "Missing code for beginner Django caption: " + caption);
+    return JSON.parse(match[1]);
+  };
+  assert.doesNotMatch(source, /title: "Steward connection"/, "Do not inject generic Steward callouts into every conceptual reading");
+  assert.ok(source.includes("djangoActivityNames"), "Django learner headings need intentional names");
+
+  const beginnerRoot = path.join(root, "django-beginner");
+  fs.mkdirSync(beginnerRoot);
+  const beginnerExec = (args) => {
+    const process = spawnSync("python3", args, { cwd: beginnerRoot, encoding: "utf8", timeout: 60000, env });
+    assert.ifError(process.error);
+    assert.equal(process.status, 0,
+      "Beginner Django example failed: python3 " + args.join(" ") + "\n" + process.stdout + "\n" + process.stderr);
+    return process.stdout;
+  };
+  beginnerExec(["-m", "django", "startproject", "config", "."]);
+  beginnerExec(["manage.py", "startapp", "catalogue"]);
+  fs.appendFileSync(path.join(beginnerRoot, "config", "settings.py"),
+    "\nINSTALLED_APPS += ['catalogue', 'rest_framework']\nALLOWED_HOSTS += ['testserver']\n");
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "views.py"),
+    authoredSnippet("catalogue/views.py — full view, without a database") + "\n");
+  fs.writeFileSync(path.join(beginnerRoot, "config", "urls.py"),
+    authoredSnippet("config/urls.py — project-level URL delegation") + "\n");
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "api_views.py"),
+    authoredSnippet("catalogue/api_views.py — complete request/response example") + "\n");
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "serializers.py"),
+    authoredSnippet("catalogue/serializers.py — complete plain serializer") + "\n");
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "book_api.py"),
+    authoredSnippet("catalogue/book_api.py — explicit class-based dispatch") + "\n");
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "viewset_demo.py"),
+    authoredSnippet("catalogue/viewset_demo.py — named actions over a fixed catalogue") + "\n");
+  const urls = [
+    authoredSnippet("catalogue/urls.py — preserve the original plain Django endpoint"),
+    authoredSnippet("catalogue/urls.py — add these lines, keep existing urlpatterns"),
+    authoredSnippet("catalogue/urls.py — append a ViewSet through SimpleRouter")
+  ].join("\n\n");
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "urls.py"), urls + "\n");
+  beginnerExec(["manage.py", "check"]);
+
+  for (const name of ["serializer_lab.py", "serializer_negatives.py", "serializer_patch.py"]) {
+    const captions = {
+      "serializer_lab.py": "serializer_lab.py — run with python manage.py shell < serializer_lab.py",
+      "serializer_negatives.py": "serializer_negatives.py — expected independent failures",
+      "serializer_patch.py": "serializer_patch.py — a partial payload, not an automatic database write"
+    };
+    const actual = authoredSnippet(captions[name]);
+    const result = beginnerExec(["manage.py", "shell", "-c", actual]);
+    assert.match(result, /Accepted:|Rejected bad year|Accepted PATCH fields:/,
+      "Missing actual serializer outcome for " + name);
+  }
+  const httpProbe = [
+    "from django.test import Client",
+    "c = Client()",
+    "assert c.get('/catalogue/books/').status_code == 200",
+    "assert c.get('/books/').status_code == 404",
+    "assert c.post('/catalogue/books/').status_code == 405",
+    "greet = c.post('/catalogue/greet/', data='{\"name\":\"Ada\"}', content_type='application/json', HTTP_ACCEPT='application/json')",
+    "assert greet.status_code == 200 and greet.json()['greeting'] == 'Hello, Ada'",
+    "assert c.post('/catalogue/greet/', data='{\"name\":\"\"}', content_type='application/json').status_code == 400",
+    "assert c.get('/catalogue/greet/').status_code == 405",
+    "assert c.post('/catalogue/greet/', data='Ada', content_type='text/plain').status_code == 415",
+    "assert c.post('/catalogue/greet/', data='{\"name\":\"Ada\"}', content_type='application/json', HTTP_ACCEPT='text/plain').status_code == 406",
+    "books = c.get('/catalogue/books-demo/')",
+    "assert books.status_code == 200 and len(books.json()) == 2",
+    "created = c.post('/catalogue/books-demo/', data='{\"title\":\"Home\",\"published_year\":2012,\"format\":\"print\"}', content_type='application/json')",
+    "assert created.status_code == 201 and created.json()['book_id'] == 99",
+    "assert len(c.get('/catalogue/books-demo/').json()) == 2",
+    "assert c.post('/catalogue/books-demo/', data='{\"published_year\":2012,\"format\":\"print\"}', content_type='application/json').status_code == 400",
+    "assert c.get('/catalogue/router-books/').status_code == 200",
+    "assert c.get('/catalogue/router-books/2/').json()['title'] == 'Things Fall Apart'",
+    "assert c.get('/catalogue/router-books/999/').status_code == 404",
+    "assert c.post('/catalogue/router-books/').status_code == 405",
+    "print('DJANGO_BEGINNER_LABS_OK 200 201 400 404 405 406 415 and serializer negatives')",
+  ].join("\n");
+  assert.match(beginnerExec(["manage.py", "shell", "-c", httpProbe]),
+    /DJANGO_BEGINNER_LABS_OK 200 201 400 404 405 406 415/);
+  console.log("Builder Django beginner lab passed: actual lesson snippets for projects, DRF, plain serializer, APIView and ViewSet plus negative HTTP/validation cases.");
+
   console.log("Builder Django bridge passed: actual learner-visible config URL, models, serializer, PostgreSQL migrations, query, and HTTP test client 200/404/405.");
 } finally {
   fs.rmSync(root,{recursive:true,force:true});
