@@ -40,8 +40,8 @@ for(const [caption,expected,origin] of cases){
 console.log("Builder craft examples passed: 9 source-extracted Python labs and their negative boundaries.");
 
 const publishedPractice=fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-quality.ts","utf8");
-assert.doesNotMatch(source, /role__in=\\{[^}]*owner/, "Readable Code must not grant nonexistent owner membership role");
-assert.match(source, /Membership\\.Role\\.MAINTAINER/, "Django policy must use the real Membership role choice");
+assert.ok(!source.includes("role__in="), "Readable Code must not use an invented membership role list");
+assert.ok(source.includes("Membership.Role.MAINTAINER"), "Django policy must use the real Membership role choice");
 assert.match(publishedPractice, /software-craft-readable-code/, "Readable Code practice must exist after composition");
 
 assert.ok(source.includes('"Investigate Bugs with Git History"'), "Git regression investigation must be a separate lesson");
