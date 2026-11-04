@@ -19,31 +19,32 @@ const practices: Record<string, PracticeSpec> = {
         completionCriteria: ["The learner has reproduced persistence across separate Python processes.", "The negative JSON corruption is observed and the recovery documented.", "The limits of the exercise (no concurrency or crash safety) are not presented as verified.", "A database is chosen for explicit Steward requirements rather than assumed universally necessary."]
     },
     "relational-data-and-postgresql-postgresql-first-connection-practice": {
-        objective: "Connect to a running PostgreSQL server, use psql and locate failures without relying on a Steward project.",
-        scenario: "A new librarian has been given access to a database server but does not know whether psql is the client, whether the server is running, or which database the connection is using.",
+        objective: "Use a real PostgreSQL connection and independently discover psql's built-in commands.",
+        scenario: "A librarian has access to an approved PostgreSQL server but needs to learn how to inspect the connection, find built-in help and distinguish the shell, psql and SQL. No database objects or containers are required.",
         instructions: [
-            "Choose the disposable Docker lab from the reading or an authorized training server; record the route, host, port, role and database without publishing a password.",
-            "In the shell, check that the client exists; then connect to the postgres maintenance database. Record what succeeded and what the server returned.",
-            "Inside psql, run \\conninfo, \\l and SELECT current_database(), current_user, 2+2. Explain which are psql commands and which are SQL.",
-            "Exit with \\q, start a new client session and explain why the server continued running.",
-            "Attempt a connection to a deliberately nonexistent database (a disposable lab only); classify the error. Separately explain what an unavailable client, refused transport, bad credentials or SQL error would mean."
+            "Reuse the native PostgreSQL installation or approved training-server connection verified in the preceding setup lesson. Record the host, port, role and database without copying any password.",
+            "From your operating-system shell, run the working psql command. Explain what -h, -p, -U and -d select; do not copy prompts into the command.",
+            "At the psql prompt, run \\conninfo, \\l and \\du. Then enter SELECT current_database(), current_user, 2+2; with a semicolon. Classify the three backslash commands as client instructions and SELECT as server-executed SQL.",
+            "Run \\? to find psql's built-in command list. Run \\h SELECT to obtain help for an SQL statement. Explain why \\? and \\h are different; identify \\d and \\dt in help but save table inspection until the lesson in which a real table exists.",
+            "Use \\c to reconnect to a database for which you already have permission (the same maintenance database is fine). Verify the selected database again and quit using \\q. Start a fresh session and explain why PostgreSQL still runs after psql exits.",
+            "On a disposable local setup, try connecting to a deliberately nonexistent database and classify the error. On a restricted supplied server, do not test unauthorized access; instead explain how a missing client, refused connection, rejected login, missing database and SQL syntax error differ."
         ],
-        deliverables: ["Connection diagram labeling client/server/database/role", "A successful authenticated SELECT result or an explicit access blocker", "psql navigation transcript without secrets", "Error-classification table with one actual negative observation"],
-        completionCriteria: ["The learner can state which program actually runs SQL.", "A real PostgreSQL session was established or access was honestly marked blocked.", "The learner can identify shell, psql and SQL commands separately.", "No database schema or temporary-table knowledge is required to complete this practice."]
+        deliverables: ["Connection diagram labeling shell, psql client, server, database and role", "Authenticated SELECT result or precise access blocker", "Transcript using \\conninfo, \\l, \\du, \\?, \\h, \\c and \\q", "One observed safe error or justified restriction plus error classification"],
+        completionCriteria: ["The learner can identify the program that executes SQL and the one that interprets backslash commands.", "The session is real and no future tooling is required.", "The learner uses help rather than guessing unfamiliar commands.", "No database table, container runtime or production credentials are needed."]
     },
     "relational-data-and-postgresql-relational-model-practice": {
-        objective: "Understand Team, Service and relationship semantics through a deliberately temporary PostgreSQL example before creating the permanent Steward schema.",
-        scenario: "The preceding lesson gave you a working psql connection. Now you can observe keys and relationships without prematurely making persistent tables and silently committing to a schema before you understand its facts.",
+        objective: "Explain keys and relationships using an isolated Author/Book experiment before applying the model to Steward.",
+        scenario: "The preceding PostgreSQL lessons created a durable books table and introduced temporary-table lifetime. Now build a separate two-table example to show how a foreign key connects facts without copying author information into every book.",
         instructions: [
-            "Inventory Service fields and the Team ownership relationship from earlier Builder Python work. Define identity, attribute, one-to-many and directed many-to-many with examples.",
-            "In a single psql session, execute the lesson's CREATE TEMP TABLE team/service/environment sketches in sequence, not in separate sessions; observe the Team rows and foreign-key relationship.",
-            "Explain why service.owning_team_id is a foreign key rather than a duplicate team name; sketch a directed service_dependency relation and its integrity rules.",
-            "Compare a normalized Team/Service model with a flawed duplicate-team-name design; predict the effect of a Team rename.",
-            "Close that psql session. Open another and show that the temporary example tables are absent. The next lesson will create the permanent teaching dataset.",
-            "State which Steward fields existed in the Python core and which database columns are proposed extensions, rather than pretending the previous app already implemented them."
+            "In tsa_library, inspect the existing library.books table without changing it, then create author_example and book_example using the reading's exact CREATE TEMP TABLE statements in a single psql session.",
+            "Insert the two authors and three books. For each book, identify the author_id that references author_example(id). Explain why this relationship is one-to-many.",
+            "Attempt the published insert with author_id 999 and capture the foreign-key violation. Count the remaining three books; distinguish a rejected reference from a missing table.",
+            "Draw Author → Book and a proposed BookAuthor linking table for the many-to-many case. Explain the duplicate-author-name update anomaly.",
+            "Close psql and reconnect. Demonstrate that the temporary example tables have disappeared while the durable library.books table remains.",
+            "Only after understanding the library example, transfer the idea to Steward: explain why service.owning_team_id should reference a Team identifier and how a ServiceDependency link can represent a directed relationship. The later Steward seed lab establishes the permanent project dataset."
         ],
-        deliverables: ["Fact and cardinality diagram", "One-session TEMP table transcript", "Independent post-disconnect missing-table evidence", "Ownership anomaly explanation", "Proposed schema notes for the next lesson"],
-        completionCriteria: ["Every command is run only after establishing an actual PostgreSQL connection.", "The learner can explain TEMP lifetime and why key references matter.", "The exercise does not create conflicting permanent tables before the canonical seed lab.", "Previously implemented domain and proposed persistence extensions are distinguished."]
+        deliverables: ["Author/Book relationship diagram and proposed many-to-many link", "Foreign-key rejection and unchanged three-row evidence", "Temporary-versus-durable table lifetime proof", "Short explanation transferring the model to Team and Service"],
+        completionCriteria: ["Examples match the authored lesson's actual author_example/book_example names and records.", "A real FK rejection is observed before the temporary session ends.", "The learner does not confuse table lifetime with referential integrity.", "Steward is used as an application after the general mechanism is understood."]
     },
     "relational-data-and-postgresql-steward-schema-and-seed-practice": {
         objective: "Build one permanent, consistent, disposable PostgreSQL teaching dataset that supports the next SQL lessons.",
@@ -255,18 +256,18 @@ const practices: Record<string, PracticeSpec> = {
         completionCriteria: ["The investigation starts from a measurable symptom rather than 'make SQL faster'.", "Conditions are controlled enough for the comparison to mean something.", "The conclusion includes limitations and may legitimately reject the attempted optimization."],
     },
     "relational-data-and-postgresql-postgresql-practice-practice": {
-        objective: "Operate Steward's PostgreSQL instance directly enough to distinguish application behavior from database facts and to collaborate intelligently with a DBA later.",
-        scenario: "A direct Steward database operation is failing and the Python-side error does not establish the database cause. You have shell access to the learner-owned database host and must inspect PostgreSQL directly without using superuser privileges for the application.",
+        objective: "Diagnose a PostgreSQL connection, schema or object problem using read-only client and server evidence.",
+        scenario: "A learner reports that a table has disappeared although psql connects successfully. Gather evidence about the actual database, schema, role, objects and current backend before deciding what failed.",
         instructions: [
-            "Connect with psql using an administrative learning account and separately identify the application's non-superuser role.",
-            "Inspect databases/schemas, tables, columns, constraints and indexes using psql metadata commands or catalog queries. Demonstrate at least \\l, \\dn, \\dt, \\d and \\du and explain which are psql commands rather than SQL.",
-            "Inspect current connections and identify which role/database the Steward application uses.",
-            "Create or document the minimum database/schema/table privileges the application role needs and name at least two privileges it should not have. Distinguish object ownership from granted application privileges.",
-            "Take a logical backup of the local Steward database using the PostgreSQL tooling appropriate to your setup and verify that the backup artifact exists and is readable by the intended operator.",
-            "Write a short handoff note listing what a future DBA/reliability investigation would still need to cover: restore testing, pooling, locks, replication/HA, capacity and operational monitoring."
+            "Connect to the authorized learning database. Record \\conninfo, \\l, \\dn, \\du and the results of SELECT current_database(), current_user, current_schema(); without exposing secrets.",
+            "Use \\dt library.* and \\d library.books against tsa_library, or inspect the documented public tables in the disposable Steward SQL fixture. Explain which database and schema each listing refers to.",
+            "Run the source-published postgresql_inspect.sql when using the Steward fixture, comparing the actual table names with the expected inventory instead of assuming every database has those tables.",
+            "Run the source-published read-only postgresql_session.sql to observe pg_backend_pid() and your own row in pg_stat_activity. Explain why another user's query text may be unavailable.",
+            "Investigate a harmless missing-object lookup or an unqualified search_path surprise. Distinguish client-not-found, refused connection, failed authentication, wrong database, missing relation and permission-denied errors.",
+            "Write a short diagnosis listing observed facts, remaining uncertainties and a next check. Do not issue GRANT, modify roles, take backups or change server settings here: the next two lessons teach permissions and backup/restore separately."
         ],
-        deliverables: ["psql inspection transcript", "Application-role privilege note", "Local logical-backup evidence", "DBA/reliability handoff note"],
-        completionCriteria: ["The learner can inspect core PostgreSQL objects without depending on Django admin tooling.", "The application is not assumed to require superuser privileges.", "Backup creation is introduced as an operational concept without pretending Builder has completed production DBA training."],
+        deliverables: ["psql connection/schema/table inventory", "Read-only catalog and own-session evidence", "Error-stage diagnosis with a justified next check"],
+        completionCriteria: ["The reported connection and database are established from observations rather than guesses.", "A missing object is not conflated with an authentication or privilege problem.", "No administrative changes, backups, secrets or destructive commands are required."]
     },
     "relational-data-and-postgresql-django-orm-practice": {
         objective: "Use Django's ORM productively while maintaining a visible mental link to the SQL and database work it causes.",

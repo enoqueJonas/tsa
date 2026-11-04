@@ -195,3 +195,18 @@ Issue [#358](https://github.com/enoqueJonas/tsa/issues/358) followed real learne
 **Research checked:** [PostgreSQL psql reference](https://www.postgresql.org/docs/17/app-psql.html) (meta-commands, syntax help, command-line options), [Homebrew versioned PostgreSQL 17 formula](https://formulae.brew.sh/formula/postgresql@17) (installation, keg-only binary, services), [Ubuntu native PostgreSQL documentation](https://ubuntu.com/server/docs/how-to/databases/install-postgresql/) (package and peer authentication), [PostgreSQL official Windows download](https://www.postgresql.org/download/windows/) (installer). All examples are framed by environment-specific authentication assumptions; neither psql --version nor pg_isready is presented as an authenticated query proof.
 
 **Verification boundary:** Source rewritten does NOT mean build, execution, browser review or independent novice transfer have passed. Record those gates separately against the exact new commit. The current work corrects a prerequisite defect in the same Builder PostgreSQL module; it does not close the school or certify the curriculum.
+
+---
+## 2026-11-04 — published practical override remained stale after source merge
+
+**Live learner requirement:** PostgreSQL must be teachable before Docker, and the student must learn to use psql built-in help and metadata commands.
+
+**Failure in prior validation:** The authored reading in `builder-postgresql-deep.ts` was corrected and its source-only guard rejected Docker references. However, `builder-postgresql-quality.ts` overrides the practice activity **after** lesson construction. It still instructed students to choose the Docker lab. The published practical could therefore contradict the reading despite green source/CI checks.
+
+**Corrections in this branch:**
+- The first connection practical now uses one verified native or authorized server route. It rehearses shell, psql and SQL distinctions; `\conninfo`, `\l`, `\du`, `\?`, `\h`, `\c`, `\q`; and safe error diagnosis.
+- The relational-model practical now matches its reading's `author_example` and `book_example` temporary tables, including a rejected author reference. Steward is a transfer exercise, not a hidden example prerequisite.
+- The database-inspection practical is limited to read-only connection, catalog, own-session and error diagnosis. The later privileges and backup/restore lessons retain their own practical work.
+- The curriculum guard inspects **both** source lesson and post-composition practical overrides. It rejects Docker from the latter and checks expected commands/examples and lesson separation.
+
+**Verification boundary:** This is a source-level correction, not learner validation. Full source checks, PostgreSQL integration, build, and browser traversal require matching-head CI. Manual hosted-page inspection, progress persistence, and independent novice transfer remain OPEN.
