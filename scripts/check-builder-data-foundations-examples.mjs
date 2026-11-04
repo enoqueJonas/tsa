@@ -5,6 +5,27 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 
 const source = fs.readFileSync("packages/runtime-kernel/src/paths/builder-postgresql-deep.ts", "utf8");
+// The published Builder activity can override its source practical in a second
+// composition layer. Inspect both, otherwise a repaired reading can still ship
+// an obsolete exercise (for example, requiring Docker before it is taught).
+const qualitySource = fs.readFileSync("packages/runtime-kernel/src/paths/builder-postgresql-quality.ts", "utf8");
+assert.doesNotMatch(qualitySource, /\bdocker\b/i, "Published PostgreSQL practical overrides must not require Docker");
+const qualityPractice = (id) => {
+    const start = qualitySource.indexOf('    "' + id + '": {');
+    assert.ok(start >= 0, 'Missing practical override: ' + id);
+    const next = qualitySource.indexOf('\n    "relational-data-and-postgresql-', start + id.length);
+    return qualitySource.slice(start, next < 0 ? qualitySource.length : next);
+};
+const firstConnectionPractice = qualityPractice("relational-data-and-postgresql-postgresql-first-connection-practice");
+for (const command of [String.raw`\\conninfo`, String.raw`\\l`, String.raw`\\du`, String.raw`\\?`, String.raw`\\h`, String.raw`\\c`, String.raw`\\q`]) {
+    assert.ok(firstConnectionPractice.includes(command), 'psql beginner practical must teach ' + command);
+}
+const relationshipPractice = qualityPractice("relational-data-and-postgresql-relational-model-practice");
+assert.match(relationshipPractice, /author_example/, "Relationship practical should use authored temporary author table");
+assert.match(relationshipPractice, /book_example/, "Relationship practical should use authored temporary book table");
+const inventoryPractice = qualityPractice("relational-data-and-postgresql-postgresql-practice-practice");
+assert.match(inventoryPractice, /postgresql_session\.sql/, "Inspection practice must exercise published own-session SQL");
+assert.match(inventoryPractice, /next two lessons teach permissions and backup\/restore/, "Keep permissions and backup separate from connection inspection");
 const marker = (id) => source.indexOf(`"id": "${id}"`);
 const persistence = marker("from-memory-to-durable-data");
 const system = marker("postgresql-what-it-is");
