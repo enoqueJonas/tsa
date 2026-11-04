@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import {spawnSync} from "node:child_process";
 
 const source=fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-deep.ts","utf8");
@@ -35,3 +37,61 @@ for(const [caption,expected,origin] of cases){
   }
 }
 console.log("Builder craft examples passed: 9 source-extracted Python labs and their negative boundaries.");
+
+const publishedPractice=fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-quality.ts","utf8");
+assert.ok(source.includes('"Investigate Bugs with Git History"'), "Git regression investigation must be a separate lesson");
+assert.ok(source.indexOf('"Git as an Engineering Tool"') < source.indexOf('"Investigate Bugs with Git History"'),
+  "Git staging must precede history bisect");
+assert.doesNotMatch(source, /git show <commit>|title: "Steward connection"/,
+  "Do not reintroduce unknown commit placeholders or generic Steward callouts");
+assert.match(publishedPractice, /software-craft-investigate-bugs-with-git-history/,
+  "Published Git investigation must have its own explicit practical");
+
+function gitSnippet(caption) {
+  const marker='"caption": "'+caption+'"';
+  const i=source.indexOf(marker);
+  assert.ok(i>=0, "Missing learner-facing Git code block: "+caption);
+  const m=source.slice(i,i+5000).match(/"code":\s*("(?:\\.|[^"\\])*")/);
+  assert.ok(m, "Missing Git shell code: "+caption);
+  return JSON.parse(m[1]);
+}
+const gitRoot=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-craft-git-"));
+function runGit(caption,cwd){
+  const proc=spawnSync("bash",["-e","-c",gitSnippet(caption)],{cwd,encoding:"utf8",timeout:20000});
+  assert.ifError(proc.error);
+  assert.equal(proc.status,0,"Git learner code failed: "+caption+"\n"+proc.stdout+"\n"+proc.stderr);
+  return proc.stdout+proc.stderr;
+}
+function gitCommand(cwd,args){
+  const proc=spawnSync("git",args,{cwd,encoding:"utf8",timeout:10000});
+  assert.ifError(proc.error);
+  assert.equal(proc.status,0,"Git command failed: "+args.join(" ")+"\n"+proc.stderr);
+  return proc.stdout.trim();
+}
+try {
+  runGit("Git lab — create a disposable repository and first commit",gitRoot);
+  const first=path.join(gitRoot,"tsa-git-review-lab");
+  runGit("Git lab — stage one change but leave unrelated work out",first);
+  const changed=gitCommand(first,["show","--name-only","--format=oneline","HEAD"]);
+  assert.match(changed,/README\.md/);
+  assert.doesNotMatch(changed,/personal-notes\.txt/,"Unrelated local notes must not enter the commit");
+  assert.match(gitCommand(first,["status","--short"]),/\?\? personal-notes\.txt/);
+  runGit("Git lab — inspect a real pair of commits",first);
+  runGit("Git lab — restore one deliberately disposable edit",first);
+  assert.equal(gitCommand(first,["diff","--","README.md"]),"");
+  assert.equal(gitCommand(first,["rev-list","--count","HEAD"]),"2");
+
+  runGit("Git bisect lab — create a known good and known bad history",gitRoot);
+  const bisect=path.join(gitRoot,"tsa-git-bisect-lab");
+  assert.equal(gitCommand(bisect,["rev-list","--count","HEAD"]),"4");
+  const output=runGit("Git bisect lab — run a real good-bad test and restore the branch",bisect);
+  assert.match(output,/first bad commit/);
+  assert.match(gitCommand(bisect,["show","-s","--format=%s","HEAD~1"]),/accidentally set zero limit/);
+  assert.equal(gitCommand(bisect,["branch","--show-current"]),"main");
+  assert.equal(gitCommand(bisect,["status","--short"]),"");
+} finally {
+  fs.rmSync(gitRoot,{recursive:true,force:true});
+}
+console.log("Builder Git lessons passed: two source-derived scratch repositories, selective staging, safe restore and real four-commit bisect.");
+
+
