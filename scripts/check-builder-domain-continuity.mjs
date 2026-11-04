@@ -55,7 +55,9 @@ assert.ok(!sources.postgresPractice.includes("active-only result"), "Practical s
 assert.match(sources.postgresPractice, /production-stage Service report/, "Practical omits canonical lifecycle");
 assert.match(sources.postgresPractice, /diagnostic negative data/, "Practical hides the intentionally invalid Payroll seed");
 assert.ok(!sources.djangoPractice.includes("GET /services/health"), "Django practical health path disagrees with runnable primer");
-assert.match(sources.djangoPractice, /GET \/health\//, "Django practical must use its published route");
+assert.match(sources.djangoPractice, /GET \/catalogue\/books\//, "Plain Django practical must teach the published catalogue endpoint");
+assert.match(sources.djangoPractice, /\/catalogue\/greet\//, "DRF practical must teach the published greet endpoint");
+assert.match(sources.django, /path\(\x27catalogue\/\x27, include\(\x27catalogue.urls\x27\)\)/, "Django foundation should publish its actual catalogue route");
 const flow=sources.milestone;
 for(const concept of ["ServiceDependency","ServiceReview","owning Team","Cross-Team"])assert.ok(flow.includes(concept));
 console.log("Builder school continuity passed: learner order, Python/WebAPI/Django lifecycle, ORM ownership, six-case authorization and milestone gates.");
