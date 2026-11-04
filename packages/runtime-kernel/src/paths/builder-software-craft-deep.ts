@@ -19,6 +19,7 @@ const craftTeaching: Record<string, { outcomes: string[]; practical: string }> =
   "Readable Code": { outcomes: ["Recognize names that hide domain rules.", "Explain cohesion and coupling using a concrete function.", "Make one behavior-preserving readability change and reject unnecessary abstraction."], practical: "Make a domain function easier to understand" },
   "Separation of Concerns": { outcomes: ["Identify HTTP, domain, persistence and policy responsibilities.", "Draw a dependency direction that avoids cycles.", "Compare a minimal separation with unnecessary layers."], practical: "Separate responsibilities in one request path" },
   "Refactoring": { outcomes: ["Distinguish restructuring from changing externally observed behavior.", "Use a characterization test before editing unfamiliar code.", "Apply a small, named refactoring and know when to stop."], practical: "Refactor with a verified safety net" },
+  "Write Your First Automated Tests": { outcomes: ["Create a real unittest suite with positive and negative assertions.", "Run the tests independently of Django and explain arrange, act and assert.", "Mutate an authorization rule and prove the negative test fails."], practical: "Run and deliberately break three unit tests" },
   "Testing as a Change Safety Net": { outcomes: ["Define observable behavior to protect with tests.", "Prove a negative test fails for the intended defect.", "Choose the narrowest honest test boundary and record remaining risks."], practical: "Prove a refactor preserves behavior" },
   "Managing Dependencies": { outcomes: ["Justify a dependency from real consumer needs.", "Review version compatibility and update risks.", "Recognize when a new shared package is premature."], practical: "Review an external or internal dependency" },
   "Configuration": { outcomes: ["Separate code from environment-owned settings.", "Validate types and fail visibly when required configuration is absent.", "Avoid exposing credentials through defaults or logs."], practical: "Prove configuration fails safely" },
@@ -588,21 +589,133 @@ export const softwareCraftDeepLessons: Lesson[] = [
         [refactoringGuru],
     ),
     lesson(
-        "Testing as a Change Safety Net",
-        "Automated tests give software craft a feedback mechanism. At Builder level, the goal is not to construct a sophisticated test architecture; it is to capture important behavior at the smallest useful boundary so refactoring, bug fixes and review can distinguish intended change from regression.",
+        "Write Your First Automated Tests",
+        "A test is code that checks whether another piece of code behaves as expected. Before Django tests, API fixtures, test doubles or coverage reports, learn what a test does by writing and running a small standard-library Python test suite. A passing test is evidence for the behavior it actually checks, not proof that every input is safe.",
         [
-            { title: "Test behavior, not implementation trivia", paragraphs: ["A useful test states a behavior the system must preserve: a maintainer can update its team's service, a cross-team user receives a denial, or a duplicate dependency is rejected. Tests that assert private helper call order or duplicate framework internals can make harmless refactoring unnecessarily expensive.", "Choose the narrowest boundary that can prove the behavior honestly. Pure domain logic can often be tested without HTTP or a database. Persistence constraints require database evidence. API contracts require requests and responses. One test style cannot prove every layer."] },
-            { title: "Arrange, act, assert makes evidence readable", paragraphs: ["Arrange establishes the relevant state, act performs one meaningful operation, and assert checks the observable result. The labels are a reasoning model, not mandatory comments. Keep each test focused enough that a failure points toward one violated behavior."], code: { language: "python", code: "def test_maintainer_cannot_update_other_teams_service(api_client, user_a, service_b):\n    api_client.force_authenticate(user_a)\n\n    response = api_client.patch(\n        f\"/services/{service_b.id}/\",\n        {\"name\": \"forged change\"},\n        format=\"json\",\n    )\n\n    assert response.status_code == 403\n    service_b.refresh_from_db()\n    assert service_b.name != \"forged change\"", caption: "Prove both the public denial and the absence of the forbidden state change." } },
-            { title: "A regression test turns a discovered defect into a permanent claim", paragraphs: ["When fixing a bug, first reproduce the failure with a focused test when practical. Observe it fail for the expected reason, apply the fix, then observe it pass. This red-to-green evidence is stronger than adding a test after the implementation and never proving that it could detect the defect.", "For refactoring, the starting state should already be green. Make a small structural change and rerun the relevant safety net. If behavior must change, separate that feature change from the structural cleanup."] },
-            { title: "Fast feedback and realistic evidence serve different purposes", paragraphs: ["A small pure test is fast and localizes logic failures. A database/API test covers more integration behavior but has more setup and possible failure causes. Builder should maintain a useful mix driven by risk, not chase a test-count target. Quality Steward later develops systematic test design, automation architecture, advanced isolation and quality strategy in depth."] },
-            { title: "Test doubles belong at controllable boundaries", paragraphs: ["A stub supplies predetermined data; a fake is a lightweight working implementation; a mock/spy can verify interactions. Use doubles when a real collaborator is slow, nondeterministic, destructive or outside the test's scope. Do not mock your own implementation so heavily that the test only proves the mocks were configured consistently." ] },
-            { title: "Dependency injection improves controllability when there is a real collaborator", paragraphs: ["Passing a clock, notifier or external client into application code can make behavior deterministic and keep infrastructure replaceable in tests. Injection is not automatically a framework/container: ordinary constructor/function parameters are often sufficient." ] },
-            { title: "Coverage is a clue, not a quality score", paragraphs: ["Coverage can reveal code that no test executes, but high percentage does not prove meaningful assertions, important boundaries or negative cases. Use risk and behavior to decide tests; use coverage to ask better questions rather than optimize for a number." ] },
-            {"title":"Run two domain tests without inventing a running API","paragraphs":["Start with the narrowest honest boundary. An ownership predicate can be tested as ordinary Python without installing Django or creating a database. The built-in unittest runner provides executable arrange/act/assert behavior. The negative case matters because accidentally returning True to an external Team would create an authorization defect. After these tests pass, changing the predicate should make the negative test fail, then restoring it should return to green. This is local domain evidence only; the later API-level authorization test remains necessary to prove routing, identity and persistence."],"code":{"language":"python","caption":"Testing — executable unittest authorization boundary","code":"import unittest\n\ndef can_manage(actor_team_id, service_team_id):\n    return actor_team_id == service_team_id\n\nclass OwnershipTests(unittest.TestCase):\n    def test_same_team_allowed(self):\n        self.assertTrue(can_manage(2, 2))\n    def test_other_team_rejected(self):\n        self.assertFalse(can_manage(2, 9))\n\nif __name__ == '__main__':\n    unittest.main()"}},
-        ],
-        "Create a focused safety net around one Steward behavior before changing its implementation.",
-        ["Choose one domain behavior that matters to the current refactor or review.", "State what observable result must remain stable.", "Choose the narrowest honest boundary: pure logic, database behavior or API contract.", "Write at least one positive and one relevant negative case.", "Run the tests before the refactor and record the baseline.", "Perform one small structural change and rerun the same tests.", "For one known or deliberately introduced defect, demonstrate a regression test failing before the fix and passing after it.", "Identify one implementation detail you deliberately did not assert."],
-        ["Why can a test that asserts private implementation details make refactoring harder?", "When is a database/API test necessary instead of a pure unit-style test?", "What does observing a regression test fail before the fix prove?", "Why should Builder avoid optimizing for raw test count?"],
+        {
+                "title": "Start with one claim you can verify",
+                "paragraphs": [
+                        "Our library rule is simple: a registered member may borrow an available book; someone not in the membership set may not borrow, and an unavailable book may not be borrowed. The function receives a member ID, the registered member IDs and a book-availability flag. It returns a boolean, not an HTTP response or a database write.",
+                        "The first test's claim is that member 42 is allowed when the book is available. The second guards against a dangerous shortcut: asking whether any registered member exists rather than whether the caller is a member. The third denies an unavailable book. These are distinct outcomes, not three repetitions of the same happy path."
+                ]
+        },
+        {
+                "title": "Read a test: arrange, act, assert",
+                "paragraphs": [
+                        "Arrange establishes inputs: members = {42}. Act calls can_borrow(42, members, True). Assert compares the returned result with the expected True. unittest.TestCase groups related tests; methods whose names start with test_ are collected and run. self.assertTrue and self.assertFalse raise an AssertionError on a mismatch.",
+                        "The Python interpreter is the test runner here. Save the complete example below as test_borrowing.py and run python3 -m unittest -v test_borrowing.py. You should see three test names followed by OK. You do not need pip, pytest, Django or a Steward repository."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "Testing fundamentals — runnable three-case unittest suite",
+                        "code": "import unittest\n\ndef can_borrow(member_id, allowed_members, book_available):\n    return member_id in allowed_members and book_available\n\nclass BorrowTests(unittest.TestCase):\n    def test_registered_member_can_borrow_available_book(self):\n        members = {42}\n        actual = can_borrow(42, members, True)\n        self.assertTrue(actual)\n\n    def test_unregistered_member_is_denied_even_when_someone_is_registered(self):\n        members = {42}\n        actual = can_borrow(7, members, True)\n        self.assertFalse(actual)\n\n    def test_unavailable_book_is_denied(self):\n        self.assertFalse(can_borrow(42, {42}, False))\n\nif __name__ == \"__main__\":\n    unittest.main(verbosity=2)"
+                }
+        },
+        {
+                "title": "Prove the negative test catches a real mistake",
+                "paragraphs": [
+                        "After all three tests pass, change the return line to: return bool(allowed_members) and book_available. That version checks whether any member exists, not whether the particular caller is registered. Run the same tests again; test_unregistered_member_is_denied_even_when_someone_is_registered must fail. Restore member_id in allowed_members and confirm all three pass.",
+                        "This is a controlled fail-before-fix exercise. If the test still passes after the mutation, your assertion is not protecting the intended boundary. Do not change the expected False to True to make a broken implementation green."
+                ]
+        },
+        {
+                "title": "Choose test inputs that challenge assumptions",
+                "paragraphs": [
+                        "A positive and a negative case protect different rules. Boundary values can reveal mistakes hidden by ordinary cases, such as exactly 30 days versus 31 days in a refund policy. Tests should isolate their inputs so one test does not alter the next; here the membership set is local and no database state is changed.",
+                        "A test that calls a function and only checks that it did not crash cannot detect an incorrect True. The assertion must state the expected behavior. A small precise suite is more useful than a large set of assertions that never examine meaningful results."
+                ]
+        },
+        {
+                "title": "Know what these tests do not prove",
+                "paragraphs": [
+                        "This three-case suite does not prove the real Django user was authenticated, that database permissions were enforced, that HTTP status codes are correct, or that concurrent borrowing is safe. Each claim needs a boundary that can observe it. The next lesson shows how to decide which kind of test to use and how to test a collaborator without depending on a live external service.",
+                        "Coverage reports show which lines executed, but executing a line does not prove that its behavior was asserted. Here the important evidence is that an unauthorized caller is explicitly denied and the test fails when that denial is weakened."
+                ]
+        }
+],
+        "Write and run three real Python unit tests and demonstrate that a permission regression makes the expected test fail.",
+        [
+        "Save and run the complete published test_borrowing.py with python3 -m unittest -v test_borrowing.py; capture three passing tests.",
+        "Explain the arrange, act and assert parts of test_registered_member_can_borrow_available_book in your own words.",
+        "Mutate the member-specific check into bool(allowed_members), rerun the same suite and record exactly which test fails and why.",
+        "Restore the correct function and show the same three tests passing, without weakening any assertion.",
+        "Describe one missing test relevant to a later API/database integration and explain why this pure function cannot prove it."
+],
+        [
+        "How does unittest discover tests?",
+        "Why is a negative test different from checking that a function runs without error?",
+        "Which assertion detects a mistaken any-member authorization rule?",
+        "What does a green pure-function suite not prove about an actual HTTP endpoint?"
+],
+        [refactoringGuru],
+    ),
+    lesson(
+        "Testing as a Change Safety Net",
+        "Now that you can run and deliberately break a test, use tests to protect a change involving side effects and collaborators. An order-completion operation should change a paid order once and notify another system once. We will inject a simple fake notifier to inspect those effects without sending a real message. Then we will distinguish unit, database and HTTP evidence.",
+        [
+        {
+                "title": "What is the right test boundary?",
+                "paragraphs": [
+                        "A pure function test checks a rule without a network or database. A database test is needed to prove a UNIQUE constraint or transaction rollback, because a Python list cannot enforce PostgreSQL concurrency. An HTTP/API test is needed to prove authentication middleware, routes, response codes and persisted state together. Choose the narrowest test that can honestly observe the claim you are making.",
+                        "A wrong cross-Team mutation must be rejected and leave the database unchanged. A boolean policy test alone cannot prove that an actual PATCH endpoint calls the policy. Keep such integration tests for the running Django exercise, after the foundational unit test is understood."
+                ]
+        },
+        {
+                "title": "Make a side effect observable without sending anything",
+                "paragraphs": [
+                        "A collaborator is another component called by the function under test. Here complete_order receives notify as an argument: in production it might send a real email; in the lesson a FakeNotifier records calls in a list. That lightweight working substitute is a fake. It avoids an external service and gives the test observable evidence of a call and its argument.",
+                        "The complete example below contains the application function, the fake and three tests. Save it as test_order_completion.py and run python3 -m unittest -v test_order_completion.py. The tests cover success, denial without state changes and a repeat request without a second notification. Note that a real system would also need an atomic durable outbox or equivalent mechanism to avoid losing a notification if the process crashes between writes and sends; this exercise does not provide those guarantees."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "Testing safety net — runnable fake notifier and side-effect assertions",
+                        "code": "import unittest\n\nclass NotificationError(Exception):\n    pass\n\ndef complete_order(order, notify):\n    if order[\"status\"] != \"paid\":\n        return \"not_paid\"\n    if order[\"completed\"]:\n        return \"already_completed\"\n    order[\"completed\"] = True\n    notify(order[\"id\"])\n    return \"completed\"\n\nclass FakeNotifier:\n    def __init__(self):\n        self.delivered_ids = []\n    def __call__(self, order_id):\n        self.delivered_ids.append(order_id)\n\nclass OrderTests(unittest.TestCase):\n    def setUp(self):\n        self.order = {\"id\": 24, \"status\": \"paid\", \"completed\": False}\n        self.notifier = FakeNotifier()\n\n    def test_success_has_result_state_and_one_notification(self):\n        self.assertEqual(complete_order(self.order, self.notifier), \"completed\")\n        self.assertTrue(self.order[\"completed\"])\n        self.assertEqual(self.notifier.delivered_ids, [24])\n\n    def test_unpaid_has_no_mutation_or_notification(self):\n        self.order[\"status\"] = \"pending\"\n        self.assertEqual(complete_order(self.order, self.notifier), \"not_paid\")\n        self.assertFalse(self.order[\"completed\"])\n        self.assertEqual(self.notifier.delivered_ids, [])\n\n    def test_repeat_has_no_second_notification(self):\n        complete_order(self.order, self.notifier)\n        self.assertEqual(complete_order(self.order, self.notifier), \"already_completed\")\n        self.assertEqual(self.notifier.delivered_ids, [24])\n\nif __name__ == \"__main__\":\n    unittest.main(verbosity=2)"
+                }
+        },
+        {
+                "title": "Fail a test for the right reason",
+                "paragraphs": [
+                        "Deliberately remove the line if order[\"completed\"]: return \"already_completed\" and run the suite. The repeat test must fail because the notifier records [24, 24] instead of [24]. Restore the guard and verify all three tests pass. This is strong evidence that the suite would catch duplicate notifications caused by that specific change.",
+                        "Make a separate small refactor, such as renaming the local completed check or extracting a helper, without changing results or call count. Run the same tests before and after. If the expected behavior changes, call it a feature or defect fix rather than disguising it as refactoring."
+                ]
+        },
+        {
+                "title": "Stub, fake, spy and mock are not synonyms",
+                "paragraphs": [
+                        "A stub returns predetermined values. A fake provides a small working implementation, like FakeNotifier. A spy records interactions so a test can inspect them; the fake in this example also acts as a spy because it records delivered_ids. A mock generally supplies programmed expectations about interactions. Use the simplest substitute that answers the test's question.",
+                        "Do not mock the function being tested or preprogram your fake to claim that the result passed. If notification contents and delivery guarantees are the requirement, a real integration test against the provider boundary is eventually necessary. This fake proves only what this local function attempted to send."
+                ]
+        },
+        {
+                "title": "Take the evidence to the actual API",
+                "paragraphs": [
+                        "A proper Steward test for cross-Team modification must authenticate a specific actor, send a request to an actual supported route, assert its response and refresh the affected database record to prove no mutation occurred. If a route, fixture or permission setup is not yet built, do not copy an isolated DRF test snippet that invents api_client, user_a or service_b without showing how they are created.",
+                        "Separately state and test success for a maintainer, failure for a viewer, failure across Teams, and failure for inactive users. Positive and negative API tests complement, but do not replace, the domain-level unit tests. They are a later transfer exercise, not hidden prerequisites for running the source-published examples."
+                ]
+        },
+        {
+                "title": "Measure what tests protect, not how many exist",
+                "paragraphs": [
+                        "Code coverage may help locate unexercised branches, but a high percentage is not proof that important assertions are correct. Mutation exercises and test names tied to observable behavior give more meaningful evidence. Keep tests deterministic and independently repeatable; avoid using a changing live service for a small unit policy.",
+                        "Builder's goal is to create a dependable developer safety net. Later Quality Steward work deepens automation frameworks, test design across large systems and organization-level quality strategy."
+                ]
+        }
+],
+        "Use executable tests to protect a state change and an external call, prove duplicate-notification detection, then select appropriate future database/API tests.",
+        [
+        "Run the source-published test_order_completion.py in a scratch directory and capture all three passing tests.",
+        "Explain what FakeNotifier records, why injection helps, and why the test cannot claim real email delivery.",
+        "Delete the duplicate-completion guard temporarily; observe the repeated-call assertion fail, then restore it and pass all three tests.",
+        "Perform one small behavior-preserving refactor and rerun the exact same assertions.",
+        "Explain which claim requires an actual PostgreSQL constraint/transaction test and which requires a real authenticated DRF request with post-request database inspection.",
+        "Only then transfer the method to one actual Steward behavior with known fixtures and routes; do not invent missing URLs or client objects."
+],
+        [
+        "Why test the side effect and returned value separately?",
+        "What is a fake compared with a stub?",
+        "Why does a domain test not prove HTTP or database authorization?",
+        "How can high coverage coexist with weak assertions?"
+],
         [refactoringGuru],
     ),
     lesson(
