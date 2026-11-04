@@ -35,12 +35,14 @@ const savepoints = marker("postgresql-savepoints");
 const transactionCase = marker("transactions-acid");
 const isolation = marker("concurrent-transactions-and-isolation-levels");
 const readiness = marker("production-readiness-invariant");
+const constraintsBasics = marker("postgresql-constraints-basics");
+const foreignKeyDeletes = marker("postgresql-foreign-key-deletes");
 const constraints = marker("constraints-keys");
 assert.ok(
   persistence > 0 && system > persistence && connection > system &&
   databases > connection && schemas > databases && tables > schemas && rows > tables && temporary > rows &&
   relational > temporary && firstJoins > relational &&
-  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && combineConditions > deletion && nullLogic > combineConditions && sortResults > nullLogic && filtering > sortResults && subqueryBasics > filtering && existsSubqueries > subqueryBasics && appliedSubqueries > existsSubqueries && withBasics > appliedSubqueries && recursiveWith > withBasics && cteLesson > recursiveWith && transactionBasics > cteLesson && savepoints > transactionBasics && transactionCase > savepoints && isolation > transactionCase && readiness > isolation && constraints > readiness,
+  firstGrouping > firstJoins && fixture > firstGrouping && crud > fixture && deletion > crud && combineConditions > deletion && nullLogic > combineConditions && sortResults > nullLogic && filtering > sortResults && subqueryBasics > filtering && existsSubqueries > subqueryBasics && appliedSubqueries > existsSubqueries && withBasics > appliedSubqueries && recursiveWith > withBasics && cteLesson > recursiveWith && transactionBasics > cteLesson && savepoints > transactionBasics && transactionCase > savepoints && isolation > transactionCase && readiness > isolation && constraintsBasics > readiness && foreignKeyDeletes > constraintsBasics && constraints > foreignKeyDeletes,
   "The learner order must be persistence → DBMS and server → psql → database creation → schemas → table definition → rows → temporary tables → relational model → joins → grouping → applied fixture → UPDATE → DELETE → Boolean filters → NULL → ordering → Steward filtering case"
 );
 assert.doesNotMatch(source, /Two programs, one protocol boundary|Establish prerequisites without inventing credentials/);
@@ -150,6 +152,19 @@ try {
   assert.match(stockSavepoint, /ROLLBACK TO SAVEPOINT before_bad_update;/);
   assert.ok(source.includes('"title": "Steward Practice: Transactions and ACID"'));
   assert.ok(source.includes('"title": "Steward Practice: Verify Production Readiness"'));
+  const validConstraints = publishedCode("constraints_lab_valid.sql — create two constrained course tables");
+  for (const name of ["PRIMARY KEY", "NOT NULL", "UNIQUE", "REFERENCES advisor_example", "CHECK (seats >= 0)"]) {
+    assert.ok(validConstraints.includes(name), "Missing introductory constraint: " + name);
+  }
+  const invalidConstraints = publishedCode("constraints_lab_failures.sql — four independent constraint errors");
+  for (const invalid of ["'DB101', 'Duplicate'", "'ORPHAN'", "'NEGATIVE'", "'NO-TITLE', NULL"]) {
+    assert.ok(invalidConstraints.includes(invalid), "Missing deliberate invalid insert: " + invalid);
+  }
+  const restrictiveDelete = publishedCode("fk_delete_restrict.sql — referenced parent cannot be deleted");
+  assert.match(restrictiveDelete, /REFERENCES advisor_restrict\(id\)/);
+  const cascadingDelete = publishedCode("fk_delete_cascade.sql — child removed with deleted parent");
+  assert.match(cascadingDelete, /ON DELETE CASCADE/);
+  assert.ok(source.includes('"title": "Steward Practice: Enforce Data Constraints"'));
   const sql = publishedCode("first_session.sql — run only in a disposable PostgreSQL lab database");
   for (const statement of ["CREATE TEMP TABLE", "INSERT INTO tsa_session_probe", "ORDER BY id", "SELECT count(*)"]) {
     assert.ok(sql.includes(statement), `Missing SQL teaching concept: ${statement}`);
