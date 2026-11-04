@@ -525,6 +525,25 @@ try {
   assert.equal(readonlyRole.split(/\r?\n/).at(-1), "t|f",
     "Source-published role must have SELECT but not INSERT");
 
+  // A grant-flag query alone is not an authorization test. Execute one
+  // successful SELECT and one intentionally rejected INSERT as the restricted
+  // NOLOGIN group role, then verify the table is unchanged.
+  const readonlyScript = path.join(root, "readonly_denial.sql");
+  fs.writeFileSync(readonlyScript,
+    codeFromLesson("readonly_denial.sql — demonstrate allowed SELECT and rejected INSERT"));
+  const deniedInsert = spawnSync("psql",
+    ["-X", "-v", "ON_ERROR_STOP=0", "-At", "-F", "|", "-d", "tsa_library", "-f", readonlyScript],
+    {encoding:"utf8",timeout:20000,env:process.env});
+  assert.ifError(deniedInsert.error);
+  assert.equal(deniedInsert.status, 0,
+    `Unexpected client failure during intentionally rejected INSERT: ${deniedInsert.stderr}`);
+  assert.match(deniedInsert.stderr, /permission denied for table books/);
+  const denialOutputs = deniedInsert.stdout.trim().split(/\r?\n/);
+  assert.ok(denialOutputs.includes("tsa_books_readonly|2"), "Restricted role must read two books");
+  assert.equal(denialOutputs.at(-1), "2", "Denied INSERT must not modify the table");
+  assert.equal(run(["-d", "tsa_library", "-c",
+    "SELECT count(*) FROM library.books"]).out, "2", "No rejected row should be persisted");
+
   const backupScript = codeFromLesson("library_backup_restore.sh — restore a custom-format archive into a separate learning database");
   const backupRun = spawnSync("bash", ["-e", "-c", backupScript], {
     cwd: root, encoding: "utf8", timeout: 90000, env: process.env
