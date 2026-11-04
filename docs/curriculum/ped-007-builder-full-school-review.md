@@ -211,3 +211,18 @@ These tasks are specifications for independent learner assessment, **not evidenc
 
 **Acceptance:** Exact branch-head CI, build/browser checks and later manual learner observation must be recorded separately. **Builder learner-validated: NO.**
 
+
+
+## 2026-11-04 — Static analysis prerequisite and feedback-depth repair
+
+**Finding:** The prior Static Analysis and Automated Feedback lesson named formatter, linter, type checker, Django checks and testing in broad strokes, then assumed a configured Steward quality toolchain. The first executable example was an AST demonstration buried after tool categories, and the final practical required adding missing tools before the learner could demonstrate basic Python source-check behavior. That risks presenting 'static analysis' as one magical validation step.
+
+**Remediation:**
+- Split **Check Python Code Before Running It** ahead of **Static Analysis and Automated Feedback**. Explain syntax errors, which interpreter executes `python -m py_compile`, the nonzero failure exit, and why valid source is not proof of correct business logic.
+- Provide an independent Python-standard-library `syntax_check_lab.py` that writes a valid source and a deliberately malformed source in a temporary directory, invokes `py_compile` with `sys.executable`, checks both exit statuses, then demonstrates an insecure but syntactically valid permission function and an expected-denial test catching it.
+- Rebuild the following Static Analysis lesson around distinct tool purposes, checks for whether a project really declares/installs each tool, optional Ruff check/format commands, a small version-controlled `pyproject.toml` configuration, and the preserved source-published AST example. Do not assume Ruff/mypy/Black are already present or claim Python compilation is a linter.
+- Align the final published practicals with each reading and guard the actual learner order; add a source-extracted syntax check to curriculum smoke CI. Reference first-party Python and Ruff documentation for the example command semantics.
+- Require an observed static diagnostic and an independent negative business test; a green format/lint/type run is not proof of Steward authorization correctness.
+
+**Status:** Source correction and exact-head CI are independent from rendered novice validation. **Builder learner-validated: NO.**
+
