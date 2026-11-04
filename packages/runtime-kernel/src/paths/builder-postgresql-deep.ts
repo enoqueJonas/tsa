@@ -2684,91 +2684,190 @@ const specs: DataLessonSpec[] = [
         "knowledgeCheck": "What survives after a WITH statement ends? Why does recursive UNION ALL need a termination guard on graph cycles? What does the visited array prevent, and what are the differences between a query CTE and a persistent view?"
     },
     {
-        "id": "production-readiness-invariant",
-        "title": "Production Readiness: A Cross-Table Business Invariant",
-        "introduction": "A database can satisfy every declared foreign key and still contain a Service that violates Steward's release-readiness rule. In the canonical product, a production-stage Service must have at least one production Environment. The five-Service SQL teaching fixture deliberately includes Payroll API with lifecycle production but no production Environment: this is negative test data, not a valid production registry. Diagnose, temporarily repair and reason about the invariant.",
+        "id": "postgresql-transaction-basics",
+        "title": "What Is a Database Transaction?",
+        "introduction": "One change to a database may require several SQL statements that must succeed together. A transaction groups related operations so they can be committed or rolled back as a unit. We will learn that idea using fictional account balances in a disposable temporary table, then apply it to Steward records in a later exercise.",
         "outcomes": [
-            "Translate a written business invariant into a correlated NOT EXISTS query.",
-            "Explain the difference between a lifecycle stage and a registered deployment.",
-            "Prove a one-direction foreign key cannot require every qualifying parent to have a matching child.",
-            "Demonstrate a reversible repair and specify which authorized API operations must protect the invariant."
+            "Explain why separate SQL statements can leave partial results.",
+            "Use BEGIN, COMMIT and ROLLBACK intentionally.",
+            "Observe changes inside a transaction that disappear after ROLLBACK.",
+            "Distinguish atomicity, consistency, isolation and durability without claiming the lab proves all four."
         ],
         "sections": [
             {
-                "id": "two-dimensions",
-                "title": "Production stage and production deployment are distinct facts",
-                "body": "Service.lifecycle describes development, UAT, production or retired stage. Environment.kind describes a deployed placement. The same word production occurs in both, but one does not imply the other. If a Service claims production lifecycle without a production Environment, Steward's product rule is broken. In the fixture Payroll API intentionally demonstrates this condition; do not call the fixture production-ready."
+                "id": "why-transaction",
+                "title": "Why isn't one UPDATE always enough?",
+                "body": "Imagine two account balances: Ana has 100 units and Bia has 40. You want to transfer 30 from Ana to Bia. This is one logical operation but two SQL updates. If the first succeeds and the second fails outside a deliberate transaction, you could leave Ana debited without Bia receiving the money.\n\nA database transaction is a boundary around related statements. Inside it, you can make several changes and choose whether to make them permanent as a group. PostgreSQL does not guess which statements belong to one business operation. Your SQL must mark that boundary with BEGIN and end it with either COMMIT or ROLLBACK.\n\nWe will use CREATE TEMP TABLE for the exercise, which you already learned. It keeps imaginary balances isolated from the permanent library.books table. The simple amounts are for demonstrating SQL mechanics, not a real banking or accounting system."
             },
             {
-                "id": "detect",
-                "title": "Find the missing child without false positives",
-                "body": "For every Service in the production stage, the correlated NOT EXISTS checks whether at least one production Environment exists. It returns Payroll API on the teaching seed. A LEFT JOIN followed by e.kind <> 'production' is wrong: it could flag a staging row even when another production row exists. Ask which absence the business rule really cares about.",
+                "id": "transaction-commands",
+                "title": "What do BEGIN, COMMIT and ROLLBACK mean?",
+                "body": "BEGIN starts an explicit transaction. Statements issued afterward operate inside that transaction until you end it. COMMIT makes the transaction's successful changes permanent for a persistent table and visible under the appropriate isolation rules. ROLLBACK abandons changes made within the transaction. Neither command creates a database or starts the PostgreSQL server.\n\nWithout an explicit BEGIN, PostgreSQL's usual autocommit behavior treats each successful statement as its own transaction. That is convenient for single independent statements but dangerous when two writes must be one logical operation. Notice that the first and second UPDATE are not automatically grouped just because you typed them one after another.\n\nIn psql, transaction state can also affect the prompt. A failed statement may leave the transaction aborted until you roll back. The following examples run all statements within a single psql process; running each line in a separate connection would not be the same experiment."
+            },
+            {
+                "id": "rollback",
+                "title": "Make a transfer, inspect it, then undo it",
+                "body": "Save this example as wallet_rollback.sql and run it from your shell with psql -X -d tsa_library -v ON_ERROR_STOP=1 -f wallet_rollback.sql, or pipe it to the disposable Docker psql client. All statements must execute in one session, because our example table is TEMP.\n\nCREATE TEMP TABLE declares two columns and constraints: owner identifies a balance, and amount must be nonnegative. Two INSERT values establish the initial state. BEGIN opens the transaction. One UPDATE subtracts 30 from Ana, and another adds 30 to Bia. The SELECT inside the transaction shows 70 and 70. ROLLBACK undoes both updates, and the final SELECT shows the original 100 and 40.\n\nThis demonstrates the meaning of rollback with actual SQL. It does not simulate a power failure or prove durability, because the table itself is deliberately temporary.",
                 "language": "sql",
-                "caption": "readiness_missing.sql — detect production-stage Services without production deployment",
-                "code": "SELECT s.name\nFROM service s\nWHERE s.lifecycle='production'\n  AND NOT EXISTS (\n    SELECT 1 FROM environment e\n    WHERE e.service_id=s.id AND e.kind='production'\n  )\nORDER BY s.name;",
-                "output": "Payroll API"
+                "caption": "wallet_rollback.sql — transfer and undo two writes",
+                "code": "CREATE TEMP TABLE wallet_example (\n  owner text PRIMARY KEY,\n  amount integer NOT NULL CHECK (amount >= 0)\n);\nINSERT INTO wallet_example VALUES ('Ana', 100), ('Bia', 40);\nBEGIN;\nUPDATE wallet_example SET amount = amount - 30 WHERE owner = 'Ana';\nUPDATE wallet_example SET amount = amount + 30 WHERE owner = 'Bia';\nSELECT owner, amount FROM wallet_example ORDER BY owner;\nROLLBACK;\nSELECT owner, amount FROM wallet_example ORDER BY owner;",
+                "output": "During transaction: Ana 70, Bia 70\nAfter ROLLBACK: Ana 100, Bia 40"
             },
             {
-                "id": "reversible",
-                "title": "Repair the evidence in a transaction, then roll it back",
-                "body": "Insert Payroll's missing production Environment inside BEGIN/ROLLBACK, count remaining violations, and verify zero inside the transaction. ROLLBACK keeps the seed unchanged so future lessons can reproduce the negative case. A real release operation would COMMIT a valid state; this reversible learning demonstration is not a production release procedure.",
+                "id": "commit",
+                "title": "Commit the same transfer in a separate session",
+                "body": "Run the next file as a new psql invocation. It creates a fresh TEMP table with the same starting balances, then performs the same two updates and COMMIT instead of ROLLBACK. The final SELECT in that session shows 70 for Ana and 70 for Bia: both operations were kept.\n\nThe TEMP table will still disappear when this session closes. That is not a failure of COMMIT; the lifetime of a TEMP table is a different rule. To prove durability across connections, you must use a persistent table and controlled recovery test. The later Steward transaction lab creates a durable Service record and checks it from another session.\n\nOne successful transfer is not proof that every possible transaction is correct. You still need to ensure the right accounts, amounts and domain rules were selected. SQL can atomically commit the wrong business operation.",
                 "language": "sql",
-                "caption": "readiness_repair.sql — reversible cross-table invariant repair",
-                "code": "BEGIN;\nINSERT INTO environment(service_id,name,kind)\nSELECT id,'Primary','production'\nFROM service WHERE name='Payroll API';\nSELECT count(*) AS violations\nFROM service s\nWHERE s.lifecycle='production'\n  AND NOT EXISTS (\n    SELECT 1 FROM environment e\n    WHERE e.service_id=s.id AND e.kind='production'\n  );\nROLLBACK;",
-                "output": "INSERT 0 1; violations 0; ROLLBACK; rerunning readiness_missing.sql returns Payroll API."
+                "caption": "wallet_commit.sql — commit both transfer updates",
+                "code": "CREATE TEMP TABLE wallet_example (\n  owner text PRIMARY KEY,\n  amount integer NOT NULL CHECK (amount >= 0)\n);\nINSERT INTO wallet_example VALUES ('Ana', 100), ('Bia', 40);\nBEGIN;\nUPDATE wallet_example SET amount = amount - 30 WHERE owner = 'Ana';\nUPDATE wallet_example SET amount = amount + 30 WHERE owner = 'Bia';\nCOMMIT;\nSELECT owner, amount FROM wallet_example ORDER BY owner;",
+                "output": "After COMMIT: Ana 70, Bia 70"
             },
             {
-                "id": "foreign-key",
-                "title": "A foreign key only enforces the direction you declared",
-                "body": "Environment.service_id REFERENCES service(id) prevents an Environment from pointing to a missing Service. It does not require every Service to have an Environment, even when its lifecycle is production. A simple Service CHECK cannot generally query another table. The authorized application/domain transition may need to create or validate a deployment in one transaction; triggers/stored procedures may offer stronger centralized enforcement at a complexity cost. Every update path—and removal of the last production deployment—must preserve the rule."
+                "id": "acid",
+                "title": "What do the four ACID letters actually guarantee?",
+                "body": "Atomicity means the transaction's changes commit as a unit or are rolled back, rather than leaving a partial set of its writes. Consistency means declared database rules—such as NOT NULL, CHECK and FOREIGN KEY—are enforced during transaction processing; it does not prove that every business requirement was correctly modeled.\n\nIsolation concerns what concurrent sessions can observe and whether their overlapping operations can interfere. Different isolation levels have different guarantees; the later two-session lesson shows them rather than reducing isolation to a slogan. Durability means changes to persistent data that are acknowledged as committed are protected according to PostgreSQL's storage and crash-recovery guarantees, assuming a correctly configured and functioning environment.\n\nOur two TEMP-table examples demonstrate transactional COMMIT/ROLLBACK behavior but do not establish persistent durability or independent concurrent visibility. Those require other tests. Treat each ACID claim as a specific mechanism with evidence, not as a word to memorize."
             },
             {
-                "id": "transfer",
-                "title": "Convert the SQL diagnosis into two negative API tests",
-                "body": "Test a request setting lifecycle from UAT to production with no production Environment. The API may reject with a documented conflict or atomically create a valid deployment under authorization, but it must not silently commit incomplete state. Also test deletion of the last production Environment from an already production-stage Service. Changing the route shape cannot bypass the policy. Verify not only the response but the unchanged database state after each forbidden operation; consider concurrent requests changing related records."
+                "id": "practice-question",
+                "title": "What could still go wrong even with a transaction?",
+                "body": "Suppose Ana has only 10 units but the transfer asks for 30. Our CHECK (amount >= 0) would reject a negative balance. That is a database-enforced integrity rule, but it is only as good as the declared model. Without the CHECK, a perfectly atomic transfer could still produce an invalid negative balance.\n\nNow suppose the programmer debits the wrong person. Both updates could commit successfully, preserving the total balance while violating the real request. Transactions cannot infer human intent. You must still choose correct predicates and verify affected rows.\n\nIn your notes, identify the beginning and end of each transaction and state what is visible after the rollback and after the commit. The next lesson explains what happens if one statement fails inside an open transaction and how SAVEPOINT can recover one part of the work."
             }
         ],
-        "warning": "This is an intentionally noncompliant fixture for learning. Do not claim that a valid FOREIGN KEY implies release readiness.",
+        "warning": "Use invented values in a disposable learning database. This TEMP-table experiment cannot prove crash durability or real banking transfer correctness.",
         "assignment": [
-            "Run readiness_missing.sql and explain why Payroll API is returned.",
-            "Run readiness_repair.sql, confirm zero violations inside its transaction, then verify Payroll API is again reported after rollback.",
-            "Diagram the FK direction and the inverse business requirement.",
-            "Write API-level negative tests for production transition and deletion of the final production Environment, with unchanged-state assertions.",
-            "Explain where authorization, transactions and race conditions affect this rule."
+            "Predict each SELECT result in the rollback script before execution.",
+            "Run both published files in separate sessions and compare the final balances.",
+            "Explain what autocommit would do if two updates were executed as separate statements without BEGIN.",
+            "Define the four ACID properties with one concrete example and one limitation.",
+            "Explain why atomic changes can still violate an unstated business rule."
         ],
         "resources": [
             {
-                "title": "Steward canonical product contract",
-                "url": "https://github.com/enoqueJonas/tsa/blob/curriculum/oop-depth-reconstruction/docs/product/steward.md",
+                "title": "PostgreSQL 17 — Transactions",
+                "url": "https://www.postgresql.org/docs/17/tutorial-transactions.html",
                 "kind": "reference",
-                "purpose": "Canonical lifecycle and deployment readiness invariant."
+                "purpose": "Official introduction to transaction atomicity and isolation of intermediate state."
             },
             {
-                "title": "PostgreSQL — Subquery Expressions",
-                "url": "https://www.postgresql.org/docs/current/functions-subquery.html",
+                "title": "PostgreSQL 17 — BEGIN",
+                "url": "https://www.postgresql.org/docs/17/sql-begin.html",
                 "kind": "reference",
-                "purpose": "Correlated NOT EXISTS semantics."
-            },
-            {
-                "title": "PostgreSQL — Constraints",
-                "url": "https://www.postgresql.org/docs/current/ddl-constraints.html",
-                "kind": "reference",
-                "purpose": "Foreign-key direction and cross-table limitations."
+                "purpose": "Reference transaction boundary and default autocommit behavior."
             }
         ],
-        "practiceObjective": "Prove a cross-table Steward production-readiness violation, reverse a temporary repair and design proper API enforcement.",
+        "practiceObjective": "Execute rollback and commit with two related updates in one isolated PostgreSQL session.",
         "practiceInstructions": [
-            "Execute published readiness_missing.sql and verify Payroll API is the only violation.",
-            "Execute readiness_repair.sql and verify zero inside, then confirm the negative fixture remains after rollback.",
-            "Explain why foreign-key integrity does not imply existence of a qualifying Environment.",
-            "Specify both API mutation routes that must enforce the rule and record negative test outcomes."
+            "Use separate one-session files for ROLLBACK and COMMIT, each on a disposable TEMP table.",
+            "Capture both before/after states and explain which changes persisted within each session.",
+            "Identify the limits of TEMP-table evidence for ACID durability.",
+            "Predict one domain failure that atomicity alone cannot prevent."
         ],
-        "knowledgeCheck": "Why does a valid Environment.service_id FK permit a production-stage Service without a production Environment? How could a concurrent last-Environment deletion invalidate a previously checked transition?"
+        "knowledgeCheck": "How do BEGIN, COMMIT and ROLLBACK differ? Without BEGIN, what happens to individual statements by default? Why is a TEMP table not proof of persistent durability? Can a transaction commit the wrong business choice?",
+        "readingTitle": "Understand transactions and ACID",
+        "practiceTitle": "Commit and roll back two changes",
+        "checkTitle": "Check transaction boundaries",
+        "practiceScenario": "Learn transaction mechanics with fictional, disposable balances; Steward practicals come after this foundation.",
+        "practiceDeliverables": [
+            "Rollback transcript and expected balance",
+            "Commit transcript",
+            "ACID evidence and limitations"
+        ],
+        "practiceCompletionCriteria": [
+            "Each multi-statement experiment runs in one session.",
+            "The rollback discards both updates and commit retains both within the session.",
+            "The learner distinguishes atomicity from business correctness and durability."
+        ]
+    },
+    {
+        "id": "postgresql-savepoints",
+        "title": "Recover from a Failed Statement with SAVEPOINT",
+        "introduction": "What if the first part of a transaction is correct but a later statement fails? PostgreSQL puts an open transaction into a failed state after an SQL error. SAVEPOINT gives you a named point to return to so you can recover a portion of the work instead of abandoning the whole transaction. We will practice this deliberately before encountering it in the applied Steward transaction lab.",
+        "outcomes": [
+            "Explain why an error aborts the current PostgreSQL transaction until recovery.",
+            "Create a SAVEPOINT and roll back to it.",
+            "Distinguish ROLLBACK TO SAVEPOINT from a full ROLLBACK.",
+            "Execute a controlled failed CHECK constraint and then complete the remaining valid update."
+        ],
+        "sections": [
+            {
+                "id": "error-state",
+                "title": "What happens after an error inside BEGIN?",
+                "body": "PostgreSQL does not simply ignore a constraint violation inside an explicit transaction. If a statement fails, subsequent ordinary statements in that transaction cannot proceed until the transaction is rolled back or the failed part is recovered through a suitable savepoint. psql may display \"current transaction is aborted, commands ignored until end of transaction block.\"\n\nThis is different from a failure to connect to PostgreSQL or a SQL error in a separate autocommitted statement. Here the connection still exists, but the transaction has entered an error state. Trying to issue another UPDATE without repairing the state will not quietly continue.\n\nWe need to distinguish an unexpected production failure, which should usually stop a script, from a deliberately controlled teaching error. The next exercise intentionally violates a CHECK rule in a disposable TEMP table; it must not be copied into a real financial or shared database."
+            },
+            {
+                "id": "savepoint-meaning",
+                "title": "What does a SAVEPOINT keep?",
+                "body": "A SAVEPOINT creates a named location inside an existing transaction. ROLLBACK TO SAVEPOINT returns database changes to that point but leaves the surrounding transaction open. Full ROLLBACK abandons the entire transaction. You can then continue with valid statements and COMMIT the remaining work.\n\nThe mechanism is not a second independent transaction and does not commit anything by itself. It is useful when a batch has a sub-operation that may fail and the application knows exactly how to recover. If an error violates a fundamental business assumption, automatically continuing from a savepoint may conceal a defect. Choose recovery policy deliberately.\n\nOur example tracks one fictional stock quantity. The CHECK rule refuses negative stock. We will attempt -1 on purpose, roll back to a savepoint and then set the quantity to a valid 4 before committing."
+            },
+            {
+                "id": "exercise",
+                "title": "Prove the failure and a scoped recovery",
+                "body": "Save the SQL below as stock_savepoint.sql and execute it in one psql session. This is a special negative exercise: use ON_ERROR_STOP=0 so psql continues reading the file after the deliberate CHECK error. For example, from your host shell with configured psql: psql -X -d tsa_library -v ON_ERROR_STOP=0 -f stock_savepoint.sql. If using Docker, pipe the file to docker exec -i tsa-pg-lesson psql -X -U tsa_learner -d tsa_library -v ON_ERROR_STOP=0. Do not use this continuation setting for ordinary migrations.\n\nThe first UPDATE tries to set qty=-1 and PostgreSQL reports a CHECK violation. ROLLBACK TO SAVEPOINT undoes the failed sub-operation and clears the transaction's failed state. The subsequent valid UPDATE sets qty=4, COMMIT completes the transaction and the final SELECT shows Apples|4.\n\nNotice the difference between the *expected stderr error* and the *successful recovered final state*. Both are required evidence.",
+                "language": "sql",
+                "caption": "stock_savepoint.sql — recover after an expected CHECK error",
+                "code": "CREATE TEMP TABLE stock_demo (\n  item text PRIMARY KEY,\n  qty integer NOT NULL CHECK (qty >= 0)\n);\nINSERT INTO stock_demo VALUES ('Apples', 5);\nBEGIN;\nSAVEPOINT before_bad_update;\nUPDATE stock_demo SET qty = -1 WHERE item = 'Apples';\nROLLBACK TO SAVEPOINT before_bad_update;\nUPDATE stock_demo SET qty = 4 WHERE item = 'Apples';\nCOMMIT;\nSELECT item, qty FROM stock_demo;",
+                "output": "Expected stderr: violates check constraint\nExpected final query: Apples|4"
+            },
+            {
+                "id": "failure-contrast",
+                "title": "What if you do not roll back to the savepoint?",
+                "body": "Imagine the same sequence without ROLLBACK TO SAVEPOINT. Once the invalid UPDATE fails, the following UPDATE would be rejected because the transaction is aborted. A COMMIT attempt on an aborted transaction effectively rolls it back; you do not get the intended qty=4. You can predict this without running an unguarded script against shared tables.\n\nContrast that with a full ROLLBACK after the error: the transaction would end and the original 5 would be restored in its temporary table. The savepoint solution is useful only because the programmer explicitly chose to keep the earlier valid part of the surrounding transaction.\n\nThe lesson here is not \"always recover and commit.\" It is \"know whether the current state permits continuing, and choose deliberately what portion of work is safe to retain.\" In production, an unexpected CHECK error may signal a broken assumption that requires stopping rather than recovery."
+            },
+            {
+                "id": "new-task",
+                "title": "Explain a nested operation with a clear policy",
+                "body": "Suppose you are importing several independent, optional catalogue tags inside a larger book import. Some tag might violate a uniqueness rule. A savepoint could allow you to skip exactly that optional tag and continue, provided the overall operation's acceptance criteria permit it. If the book itself fails to insert, however, the whole transaction may need to be abandoned.\n\nWrite down which data changes occurred before the savepoint, which failed, which are retained after recovery and which become visible after COMMIT. Do not assume a savepoint creates a durable checkpoint on disk or makes other sessions see partially committed changes.\n\nThe applied Steward transaction lesson now builds on this mechanism. There, the business invariant determines whether recovery is appropriate at all."
+            }
+        ],
+        "warning": "Use ON_ERROR_STOP=0 only for this deliberate disposable failure test; normal automated migration and release scripts should stop on unexpected SQL errors.",
+        "assignment": [
+            "Run the published savepoint file, capturing both the CHECK error and the final Apples|4 output.",
+            "Explain transaction state immediately after the failed UPDATE.",
+            "Contrast ROLLBACK TO SAVEPOINT with full ROLLBACK.",
+            "Predict the outcome if the savepoint rollback line were removed.",
+            "Describe one optional sub-operation where continuing after an error would be legitimate and one where it would be unsafe."
+        ],
+        "resources": [
+            {
+                "title": "PostgreSQL 17 — SAVEPOINT",
+                "url": "https://www.postgresql.org/docs/17/sql-savepoint.html",
+                "kind": "reference",
+                "purpose": "Explain savepoint lifetime and rollback semantics."
+            },
+            {
+                "title": "PostgreSQL 17 — ROLLBACK TO SAVEPOINT",
+                "url": "https://www.postgresql.org/docs/17/sql-rollback-to.html",
+                "kind": "reference",
+                "purpose": "Explain recovery of failed subtransactions."
+            }
+        ],
+        "practiceObjective": "Demonstrate and explain a recoverable SQL error in one explicit transaction.",
+        "practiceInstructions": [
+            "Run the isolated stock script with deliberate ON_ERROR_STOP=0.",
+            "Capture the server CHECK error, ROLLBACK TO SAVEPOINT, COMMIT and resulting quantity.",
+            "Explain the failure that would occur if recovery were omitted.",
+            "State why a real unexpected SQL error should normally stop the release."
+        ],
+        "knowledgeCheck": "After a constraint violation inside BEGIN, can you simply issue another UPDATE? How does ROLLBACK TO SAVEPOINT differ from full ROLLBACK? When should you refuse to continue?",
+        "readingTitle": "Understand savepoints and transaction errors",
+        "practiceTitle": "Recover an intentionally failed transaction step",
+        "checkTitle": "Check failure recovery",
+        "practiceScenario": "Use a disposable stock table to learn savepoints; reserve Steward business decisions for the applied practical.",
+        "practiceDeliverables": [
+            "CHECK error and recovery transcript",
+            "Final valid stock value",
+            "Explicit explanation of recover-versus-abort policy"
+        ],
+        "practiceCompletionCriteria": [
+            "The failure and successful recovery were both observed.",
+            "The learner understands which state the savepoint restores.",
+            "No production or shared data was touched."
+        ]
     },
     {
         "id": "transactions-acid",
-        "title": "Transactions and ACID",
-        "introduction": "The Steward schema now contains a Service and its production Environment in two related tables. Writing those facts with two unrelated autocommit statements can leave a half-created Service if the second write fails. A transaction is the database-controlled boundary that lets related writes become visible together or be abandoned together. We will observe that behavior in PostgreSQL before asking what happens when *two* transactions run concurrently; that is the separate next lesson.",
+        "title": "Steward Practice: Transactions and ACID",
+        "introduction": "You have already learned how a transaction groups SQL changes, the meanings of BEGIN, COMMIT and ROLLBACK, and how SAVEPOINT recovers a controlled error. Now apply those mechanisms to a Steward Service and its production Environment. The task is to prove a real multi-table business invariant with positive and negative outcomes; this is not the first lesson that defines transaction commands.",
         "outcomes": [
             "Predict which rows persist when COMMIT versus ROLLBACK ends one multi-statement operation.",
             "Prove atomicity using two distinct PostgreSQL connections, not a Python simulation.",
@@ -2961,6 +3060,88 @@ const specs: DataLessonSpec[] = [
             "Remove only the dedicated probe table when the exercise is finished."
         ],
         "knowledgeCheck": "Why can A at Read Committed see different committed values without ever seeing dirty data? What event establishes PostgreSQL's Repeatable Read snapshot? Can two Repeatable Read transactions still cause serialization anomalies, and what must a client retry on SQLSTATE 40001?"
+    },
+    {
+        "id": "production-readiness-invariant",
+        "title": "Steward Practice: Verify Production Readiness",
+        "introduction": "This applied case comes after the transaction and concurrency lessons. The domain's production lifecycle stage and its production Environment are separate facts; a foreign key alone cannot guarantee their required relationship. Use the earlier SQL and rollback mechanisms to detect the missing relationship, demonstrate a reversible repair and explain what the application must protect.",
+        "outcomes": [
+            "Translate a written business invariant into a correlated NOT EXISTS query.",
+            "Explain the difference between a lifecycle stage and a registered deployment.",
+            "Prove a one-direction foreign key cannot require every qualifying parent to have a matching child.",
+            "Demonstrate a reversible repair and specify which authorized API operations must protect the invariant."
+        ],
+        "sections": [
+            {
+                "id": "two-dimensions",
+                "title": "Production stage and production deployment are distinct facts",
+                "body": "Service.lifecycle describes development, UAT, production or retired stage. Environment.kind describes a deployed placement. The same word production occurs in both, but one does not imply the other. If a Service claims production lifecycle without a production Environment, Steward's product rule is broken. In the fixture Payroll API intentionally demonstrates this condition; do not call the fixture production-ready."
+            },
+            {
+                "id": "detect",
+                "title": "Find the missing child without false positives",
+                "body": "For every Service in the production stage, the correlated NOT EXISTS checks whether at least one production Environment exists. It returns Payroll API on the teaching seed. A LEFT JOIN followed by e.kind <> 'production' is wrong: it could flag a staging row even when another production row exists. Ask which absence the business rule really cares about.",
+                "language": "sql",
+                "caption": "readiness_missing.sql — detect production-stage Services without production deployment",
+                "code": "SELECT s.name\nFROM service s\nWHERE s.lifecycle='production'\n  AND NOT EXISTS (\n    SELECT 1 FROM environment e\n    WHERE e.service_id=s.id AND e.kind='production'\n  )\nORDER BY s.name;",
+                "output": "Payroll API"
+            },
+            {
+                "id": "reversible",
+                "title": "Repair the evidence in a transaction, then roll it back",
+                "body": "Insert Payroll's missing production Environment inside BEGIN/ROLLBACK, count remaining violations, and verify zero inside the transaction. ROLLBACK keeps the seed unchanged so future lessons can reproduce the negative case. A real release operation would COMMIT a valid state; this reversible learning demonstration is not a production release procedure.",
+                "language": "sql",
+                "caption": "readiness_repair.sql — reversible cross-table invariant repair",
+                "code": "BEGIN;\nINSERT INTO environment(service_id,name,kind)\nSELECT id,'Primary','production'\nFROM service WHERE name='Payroll API';\nSELECT count(*) AS violations\nFROM service s\nWHERE s.lifecycle='production'\n  AND NOT EXISTS (\n    SELECT 1 FROM environment e\n    WHERE e.service_id=s.id AND e.kind='production'\n  );\nROLLBACK;",
+                "output": "INSERT 0 1; violations 0; ROLLBACK; rerunning readiness_missing.sql returns Payroll API."
+            },
+            {
+                "id": "foreign-key",
+                "title": "A foreign key only enforces the direction you declared",
+                "body": "Environment.service_id REFERENCES service(id) prevents an Environment from pointing to a missing Service. It does not require every Service to have an Environment, even when its lifecycle is production. A simple Service CHECK cannot generally query another table. The authorized application/domain transition may need to create or validate a deployment in one transaction; triggers/stored procedures may offer stronger centralized enforcement at a complexity cost. Every update path—and removal of the last production deployment—must preserve the rule."
+            },
+            {
+                "id": "transfer",
+                "title": "Convert the SQL diagnosis into two negative API tests",
+                "body": "Test a request setting lifecycle from UAT to production with no production Environment. The API may reject with a documented conflict or atomically create a valid deployment under authorization, but it must not silently commit incomplete state. Also test deletion of the last production Environment from an already production-stage Service. Changing the route shape cannot bypass the policy. Verify not only the response but the unchanged database state after each forbidden operation; consider concurrent requests changing related records."
+            }
+        ],
+        "warning": "This is an intentionally noncompliant fixture for learning. Do not claim that a valid FOREIGN KEY implies release readiness.",
+        "assignment": [
+            "Run readiness_missing.sql and explain why Payroll API is returned.",
+            "Run readiness_repair.sql, confirm zero violations inside its transaction, then verify Payroll API is again reported after rollback.",
+            "Diagram the FK direction and the inverse business requirement.",
+            "Write API-level negative tests for production transition and deletion of the final production Environment, with unchanged-state assertions.",
+            "Explain where authorization, transactions and race conditions affect this rule."
+        ],
+        "resources": [
+            {
+                "title": "Steward canonical product contract",
+                "url": "https://github.com/enoqueJonas/tsa/blob/curriculum/oop-depth-reconstruction/docs/product/steward.md",
+                "kind": "reference",
+                "purpose": "Canonical lifecycle and deployment readiness invariant."
+            },
+            {
+                "title": "PostgreSQL — Subquery Expressions",
+                "url": "https://www.postgresql.org/docs/current/functions-subquery.html",
+                "kind": "reference",
+                "purpose": "Correlated NOT EXISTS semantics."
+            },
+            {
+                "title": "PostgreSQL — Constraints",
+                "url": "https://www.postgresql.org/docs/current/ddl-constraints.html",
+                "kind": "reference",
+                "purpose": "Foreign-key direction and cross-table limitations."
+            }
+        ],
+        "practiceObjective": "Prove a cross-table Steward production-readiness violation, reverse a temporary repair and design proper API enforcement.",
+        "practiceInstructions": [
+            "Execute published readiness_missing.sql and verify Payroll API is the only violation.",
+            "Execute readiness_repair.sql and verify zero inside, then confirm the negative fixture remains after rollback.",
+            "Explain why foreign-key integrity does not imply existence of a qualifying Environment.",
+            "Specify both API mutation routes that must enforce the rule and record negative test outcomes."
+        ],
+        "knowledgeCheck": "Why does a valid Environment.service_id FK permit a production-stage Service without a production Environment? How could a concurrent last-Environment deletion invalidate a previously checked transition?"
     },
     {
         "id": "constraints-keys",
