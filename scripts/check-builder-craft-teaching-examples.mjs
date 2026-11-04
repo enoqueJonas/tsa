@@ -9,7 +9,8 @@ const injected=fs.readFileSync("packages/runtime-kernel/src/paths/internal-depen
 const cases=[
   ["Separation of Concerns — five executable before-and-after cases", "Separation lab: 5 responses and stored state agree"],
   ["Readable Code — equivalent pure-Python policy and negative cases", "readable policy: three cases preserved"],
-  ["Refactoring — executable behavior-preservation check", "refactor contracts preserved: 3"],
+  ["Refactoring — run six contracts against the original function", "Before refactoring: 6 contracts passed"],
+  ["Refactoring — extract eligibility and rerun the same six contracts", "After refactoring: 6 contracts passed"],
   ["Testing — executable unittest authorization boundary", "Ran 2 tests"],
   ["Configuration — executable fail-closed environment parser", "valid False"],
   ["Logging — executable structured-context and secret absence test", "service=42 request=req-demo-7"],
@@ -54,7 +55,26 @@ assert.ifError(negative.error);
 assert.notEqual(negative.status,0,"Broken any-membership policy unexpectedly passed the lesson's negative checks");
 assert.match(negative.stderr,/AssertionError/,"The mutant must be rejected by a real assertion");
 
-console.log("Builder craft examples passed: 10 source-extracted Python labs and their negative boundaries.");
+
+// Refactoring regression evidence must come from the exact published after
+// example and not from a separate hand-written test substitute.
+const afterRefactorCaption = '"caption": "Refactoring — extract eligibility and rerun the same six contracts"';
+const refactorIndex = source.indexOf(afterRefactorCaption);
+assert.ok(refactorIndex >= 0,"Missing learner-visible refactored refund program");
+const refactorMatch = source.slice(refactorIndex,refactorIndex+24000).match(/"code":\s*("(?:\\.|[^"\\])*")/);
+assert.ok(refactorMatch,"Cannot extract exact after-refactoring Python example");
+const afterRefactorCode = JSON.parse(refactorMatch[1]);
+assert.match(afterRefactorCode,/if days_since_purchase > 30:/);
+assert.match(afterRefactorCode,/return "already_refunded"/,"Denial priority must remain explicit");
+assert.match(afterRefactorCode,/assert order\["refunded"\] is expected_refunded/,"The test must verify state changes");
+const refactorMutant = afterRefactorCode.replace("if days_since_purchase > 30:","if days_since_purchase >= 30:");
+assert.notEqual(refactorMutant,afterRefactorCode,"Boundary mutant must actually alter the code");
+const rejectedRefactor = spawnSync("python3",["-c",refactorMutant],{encoding:"utf8",timeout:10000});
+assert.ifError(rejectedRefactor.error);
+assert.notEqual(rejectedRefactor.status,0,"A 30-day boundary regression must fail a published test");
+assert.match(rejectedRefactor.stderr,/AssertionError/);
+
+console.log("Builder craft examples passed: 12 source-extracted Python labs and their negative boundaries.");
 
 const publishedPractice=fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-quality.ts","utf8");
 assert.ok(!source.includes("role__in="), "Readable Code must not use an invented membership role list");
