@@ -145,11 +145,23 @@ try {
 
   // Transaction fundamentals run on temporary fictional balances; the original
   // Steward transaction evidence remains later in this integration runner.
-  verifyLibrary("wallet_rollback.sql — transfer and undo two writes", [
+  // psql -c sends a multi-command string as one server request; PostgreSQL
+  // can group pre-BEGIN statements into an implicit transaction. A later
+  // ROLLBACK could then undo CREATE TEMP TABLE itself. The *published* lesson
+  // explicitly tells the learner to use psql -f, which dispatches statements
+  // separately and preserves the initial temporary table across ROLLBACK.
+  const runWalletFile = (filename, caption, expectedLines) => {
+    const filepath = path.join(root, filename);
+    fs.writeFileSync(filepath, codeFromLesson(caption) + "\n");
+    const result = run(["-d", "tsa_library", "-f", filepath]).out;
+    assert.deepEqual(result ? result.split(/\r?\n/) : [], expectedLines,
+      "Published multi-statement transaction example did not behave as taught: " + caption);
+  };
+  runWalletFile("wallet_rollback.sql", "wallet_rollback.sql — transfer and undo two writes", [
     "CREATE TABLE", "INSERT 0 2", "BEGIN", "UPDATE 1", "UPDATE 1",
     "Ana|70", "Bia|70", "ROLLBACK", "Ana|100", "Bia|40"
   ]);
-  verifyLibrary("wallet_commit.sql — commit both transfer updates", [
+  runWalletFile("wallet_commit.sql", "wallet_commit.sql — commit both transfer updates", [
     "CREATE TABLE", "INSERT 0 2", "BEGIN", "UPDATE 1", "UPDATE 1",
     "COMMIT", "Ana|70", "Bia|70"
   ]);
