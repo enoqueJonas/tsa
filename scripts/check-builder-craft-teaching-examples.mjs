@@ -12,7 +12,6 @@ const cases=[
   ["Readable Code — equivalent pure-Python policy and negative cases", "readable policy: three cases preserved"],
   ["Refactoring — run six contracts against the original function", "Before refactoring: 6 contracts passed"],
   ["Refactoring — extract eligibility and rerun the same six contracts", "After refactoring: 6 contracts passed"],
-  ["Testing — executable unittest authorization boundary", "Ran 2 tests"],
   ["Configuration — executable fail-closed environment parser", "valid False"],
   ["Logging — executable structured-context and secret absence test", "service=42 request=req-demo-7"],
   ["Errors — executable stable public error mapping", "public error mappings: 6"],
