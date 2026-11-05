@@ -27,6 +27,18 @@ function identitySnippet(caption) {
   return JSON.parse(matches.at(-1)[1]);
 }
 
+function identityJsonSnippet(caption) {
+  // New independently navigable Identity checkpoint publishes complete source
+  // inside a structured richLesson section, not a generated test replacement.
+  const anchor = '"caption":' + JSON.stringify(caption);
+  const at = identitySource.indexOf(anchor);
+  assert.ok(at >= 0, "Missing first-JWT learner code: " + caption);
+  const code = identitySource.slice(at, at + 28000).match(
+    /"code":\s*("(?:\\.|[^"\\])*")/);
+  assert.ok(code, "Missing complete first-JWT code block: " + caption);
+  return JSON.parse(code[1]);
+}
+
 const publishedPracticeSource=fs.readFileSync("packages/runtime-kernel/src/paths/builder-django-quality.ts","utf8");
 function publishedPractice(id) {
   const key='  "django-and-api-engineering-'+id+'": {';
@@ -1098,6 +1110,48 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   assert.match(freshPasswordEvidence,
     /IDENTITY_0007_PASSWORD_FRESH_PROCESS_AND_0006_HISTORY_OK/);
   console.log("Builder Identity password continuity passed: same 0007 PostgreSQL registry, hashed verifier, valid/wrong/inactive login, fresh-process auth and unchanged Review history.");
+
+  // Execute the EXACT learner-visible JWT teaching files, after Membership
+  // 0007 and framework password verification in the SAME schemaRoot. This
+  // is a real signed HTTP contract, not an illustrative decoded JSON token.
+  const firstJwtLesson = identitySource.indexOf(
+    '"identity-authentication-authorization-first-jwt-http-request"');
+  const jwtIntegrationLesson = identitySource.indexOf(
+    '"identity-authentication-authorization-drf-jwt-integration"');
+  assert.ok(firstJwtLesson >= 0 && firstJwtLesson < jwtIntegrationLesson,
+    "Prove one actual JWT request before asking learners to implement full JWT integration");
+  const firstJwtExamples = {
+    settings: identityJsonSnippet(
+      "config/settings.py — append first real Steward JWT training policy"),
+    api: identityJsonSnippet(
+      "registry/jwt_training_api.py — resolve a real access-token principal"),
+    urls: identityJsonSnippet(
+      "registry/jwt_training_urls.py — test-only token and principal routes"),
+    lab: identityJsonSnippet(
+      "registry/jwt_first_http_lab.py — real JWT 200 401 405 and PostgreSQL invariants"),
+  };
+  fs.appendFileSync(path.join(schemaRoot, "config", "settings.py"),
+    "\n" + firstJwtExamples.settings + "\n");
+  for (const [name, body] of [
+    ["jwt_training_api.py", firstJwtExamples.api],
+    ["jwt_training_urls.py", firstJwtExamples.urls],
+    ["jwt_first_http_lab.py", firstJwtExamples.lab],
+  ]) fs.writeFileSync(path.join(schemaRoot, "registry", name), body + "\n");
+  schemaExec(["manage.py", "check"]);
+  const jwtProof = schemaExec(["manage.py", "shell", "-c",
+    "exec(open('registry/jwt_first_http_lab.py').read())"]);
+  for (const expected of [
+    "JWT_REAL_LOGIN_AND_REQUEST_USER_200",
+    "JWT_MISSING_MALFORMED_EXPIRED_AND_REFRESH_AS_ACCESS_401",
+    "JWT_REFRESH_NEW_ACCESS_200_AND_METHOD_405",
+    "JWT_PRINCIPAL_NOT_TEAM_PERMISSION_AND_DOMAIN_UNCHANGED",
+  ]) assert.ok(jwtProof.includes(expected),
+    "Source-published real JWT checkpoint is not proven: " + expected + "\n" + jwtProof);
+  assert.doesNotMatch(fs.readFileSync(path.join(schemaRoot, "config", "urls.py"), "utf8"),
+    /jwt_training_urls|TrainingWhoAmI|TokenObtainPairView/,
+    "Do not publish the tutorial-only identity token routes");
+  console.log("Builder Identity JWT first request passed: same migrated PostgreSQL, actual signed 200 and denied 401/405 HTTP plus data invariant without Team authorization claims.");
+
 
 
 
