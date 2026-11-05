@@ -78,10 +78,18 @@ const lessonAt = title => source.indexOf("        " + JSON.stringify(title) + ",
 for (const t of previousOrder) assert.ok(lessonAt(t) > 0, "Existing lesson lost: " + t);
 assert.ok(lessonAt("Python Logging from First Principles") < lessonAt("Useful Logging"));
 assert.ok(lessonAt("Failure Boundaries and Public Error Contracts") < lessonAt("Designing Errors"));
+assert.ok(lessonAt("Technical Documentation") < lessonAt("Architecture Decision Records"));
+assert.ok(lessonAt("Architecture Decision Records") < lessonAt("Operational Runbooks and Safe Diagnostic Handoffs"));
+assert.ok(lessonAt("Operational Runbooks and Safe Diagnostic Handoffs") < lessonAt("Failure Boundaries and Public Error Contracts"));
+assert.ok(source.includes('"caption":"ADR — complete Steward SQL and migration isolation decision with evidence and revisit trigger"'));
+assert.ok(source.includes('"caption":"Runbook — read-only Steward diagnosis, status triage and mandatory stop conditions"'));
+
 const count = [...source.matchAll(/^\s*lesson\(\s*$/gm)].length;
-assert.equal(count, 24, "Software Craft authored lesson count unexpectedly changed");
+assert.equal(count, 26, "Software Craft authored lesson count unexpectedly changed");
 for (const id of [
   "software-craft-python-logging-from-first-principles",
+  "software-craft-architecture-decision-records",
+  "software-craft-operational-runbooks-and-safe-diagnostic-handoffs",
   "software-craft-failure-boundaries-and-public-error-contracts",
   "software-craft-useful-logging",
   "software-craft-designing-errors",
@@ -107,4 +115,4 @@ try {
 } finally {
   fs.rmSync(root, { recursive: true, force: true });
 }
-console.log("Software Craft source teaching passed: 24 ordered lessons, 4 executable programs, 4 rejected negatives, stable rubrics.");
+console.log("Software Craft source teaching passed: 26 ordered lessons, 4 executable programs, 4 rejected negatives, stable rubrics.");
