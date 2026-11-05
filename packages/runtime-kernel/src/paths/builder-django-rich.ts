@@ -589,7 +589,7 @@ export const djangoAndApiRichLessons: Lesson[] = [
               "items": [
                 "Implemented and independently tested: Team/Service/Environment, staged Service.slug migrations, readiness commands, limited training queries, real generated OpenAPI in the separate Book catalogue, and Django settings/logging examples.",
                 "Newly taught in complete source: ServiceDependency directional constraints and ServiceReview historical rows, each with real PostgreSQL schema and negative tests.",
-                "Still to integrate: full Service list/create/detail and review create/list HTTP endpoints backed by these exact rows; schema/runtime evidence and operational behavior as one project.",
+                "The next lesson provides integrated test-only Service/Review HTTP endpoints; the final build still needs schema/runtime conformance, readiness and operational evidence assembled into one application.",
                 "Not yet implemented: authenticated user, Team Membership-derived authorization, secure public registration, and immutable audit guarantees."
               ]
             },
@@ -600,7 +600,7 @@ export const djangoAndApiRichLessons: Lesson[] = [
             },
             {
               "type": "paragraph",
-              "text": "Use the existing PostgreSQL Django schema lab as the source of truth. The prior Django examples included an independent Book tutorial and multiple separate test-only Steward projects; their file paths are examples to transfer deliberately, not proof they were already assembled in the same application. The final assembly must be verified against one coherent project before calling this module complete."
+              "text": "Use the existing PostgreSQL Django schema lab as the source of truth. The prior Django examples included an independent Book tutorial and multiple separate test-only Steward projects; their file paths are examples to transfer deliberately, not proof they were already assembled in the same application. The three database/HTTP checkpoints must be run and verified against the same coherent registry project; final readiness/OpenAPI/logging assembly remains a separate exit criterion."
             }
           ]
         }
@@ -666,17 +666,50 @@ export const djangoAndApiRichLessons: Lesson[] = [
         }
       },
       {
+        "id": "django-and-api-engineering-lab-steward-api-skeleton-http-checkpoint",
+        "title": "Checkpoint 3: Persist real Service and Review HTTP requests",
+        "estimatedMinutes": 90,
+        "content": {
+          "type": "practical",
+          "objective": "Run the exact real PostgreSQL DRF integration that persists Services and Reviews, refuses forged ownership and reviewer input, and scopes both results and counts to a server-selected fictional Team.",
+          "scenario": "After the two relational checkpoints and migrations 0005–0006, the preceding Serve Real Steward Services and Reviews Through DRF lesson provides complete files for an isolated training-only URLConf. Authentication and membership still belong to the following Identity module.",
+          "instructions": [
+            "Read the actual existing registry migrations 0001–0006 and verify both dependency and review history data remain intact. The integrated HTTP example must reuse this same PostgreSQL project.",
+            "Save the complete integrated_serializers.py, integrated_api.py, integrated_training_urls.py and integrated_http_lab.py. Ensure prior training_scope.py, api_errors.py and services.py were added from their source-published lessons.",
+            "Append the two required settings without replacing DATABASES or other settings; run manage.py check and the exact HTTP test script.",
+            "Record persisted Service POST 201, independent GET 200, scoped list/count/page results and four invalid Service POST attempts returning 400 without changing stored rows.",
+            "Record real ServiceReview POST/list results, enforced server-selected reviewer and Team scope, failed forged reviewer and other-Team attempts, 405 for unsupported operations, and unchanged review count.",
+            "Inspect actual review SELECT SQL and query count for select_related, prove the stored history is still present after a new Python interpreter starts.",
+            "Confirm config/urls.py never includes integrated_training_urls.py. Explain precisely why the test-selected Team and synthetic reviewer cannot establish real user identity or production permission checks."
+          ],
+          "deliverables": [
+            "Real persisted HTTP exchange transcript",
+            "Service and Review counts/negative states",
+            "Query count/SQL evidence",
+            "Independent process reread",
+            "Unpublished URLConf check",
+            "Identity/audit limitations"
+          ],
+          "completionCriteria": [
+            "Every advertised HTTP status is supported by a real Django Client request.",
+            "All retained data comes from the same migrated Steward schema.",
+            "No client-controlled field broadens the server-selected Team scope.",
+            "The example remains a private tutorial, not an authorized production route."
+          ]
+        }
+      },
+      {
         "id": "django-and-api-engineering-lab-steward-api-skeleton-build",
         "title": "Build Steward API Skeleton",
-        "estimatedMinutes": 150,
+        "estimatedMinutes": 95,
         "content": {
           "type": "practical",
           "objective": "Integrate the proven Steward models into real DRF endpoints, then demonstrate contract and operational behavior in one coherent test-only application.",
           "scenario": "Start only after the two schema checkpoints are green. Work in the same already migrated Steward Django project rather than silently combining unrelated scratch installations. The remaining endpoint assembly is not independently learner-validated yet; use the named earlier source examples as reference and record any missing support before claiming completion.",
           "instructions": [
             "Inventory the actual existing registry files and migrations 0001–0006. Explain where the previously taught service serializer, command, exception handler, query scope, OpenAPI generator, settings and logging lessons can be reused, and which files must be added deliberately.",
-            "Build a narrowly testable Service collection/detail API, including explicitly selected writable and read-only fields. Test one persisted creation, a second independent read, a missing record and a rejected invalid field without data changes.",
-            "Add ServiceReview create/list through the actual historical model, and demonstrate that an unauthorized cross-Team write cannot be claimed blocked until Identity-backed authorization exists. Keep all interim routes isolated from public config/urls.py.",
+            "Reuse the preceding complete integrated Service collection/detail API and its real HTTP proof; explain which write fields are excluded and how the test-selected Team scope limits list and detail views.",
+            "Reuse the preceding verified ServiceReview create/list implementation and demonstrate what it proves (scoped training context, database persistence) and what it does not (Identity-based authorization or reviewer identity).",
             "Apply lifecycle and criticality filters plus deterministic pagination on a *server-selected teaching Team*, never a client-selected Team authority. Inspect executed PostgreSQL SQL and N+1 behavior rather than hand-writing a pretend query.",
             "Reuse the real readiness command for an HTTP 409 conflict and demonstrate unchanged stored Service lifecycle after rejection. Do not treat serializer validation as a replacement for domain rules.",
             "Generate the API's actual OpenAPI document and compare paths, parameters, response fields and success/failure statuses against real HTTP exchanges. Verify application logging is useful and excludes secrets.",
