@@ -420,6 +420,20 @@ const practices: Record<string, PracticeSpec> = {
     deliverables: ["Steward operations/failure matrix", "409 domain error contract evidence", "Security implementation gap", "Schema/HTTP drift detection plan"],
     completionCriteria: ["No public route is documented as implemented before its code exists.", "Business conflicts are described accurately rather than inferred from serializers.", "Structural validity and HTTP behavior are separately tested.", "Swagger availability is not misrepresented as runtime or authorization proof."]
   },
+  "django-and-api-engineering-make-django-refuse-unsafe-training-configuration": {
+    objective: "Prove the actual Django settings module refuses unsafe database, DEBUG, host, mode and secret values BEFORE an ORM operation executes.",
+    scenario: "Reuse the migrated tsa-django-intro catalogue with Book rows and its existing settings.py. This lab-only opt-in refuses any database except the known local db.sqlite3; no bank credentials, Docker, new Django project or remote database are needed.",
+    instructions: [
+      "Save config/lab_guard.py exactly as published. Trace each accepted setting and explain why this particular function is an intentionally narrow local-only policy, not a deployment-wide configuration standard.",
+      "Append the settings snippet at the end of config/settings.py without removing existing Django, DRF or logging configuration. Explain what TSA_VALIDATE_TRAINING_SETTINGS=1 switches on.",
+      "Run python manage.py check and the source-published catalogue/settings_startup_lab.py through manage.py shell. A newly spawned Django process must actually read the validated DATABASES, DEBUG and ALLOWED_HOSTS and connect to the migrated local Book database.",
+      "Observe five separate startup refusals: wrong target bank_production, mixed-case boolean, wildcard host, non-local mode, missing secret. Each subprocess must exit nonzero before executing its sentinel write. Confirm the generated key is absent from diagnostics.",
+      "Verify no wrong-target database file was created and existing Book rows were unchanged. Add an unseen invalid hostname and explain why the result does not depend on any client identity.",
+      "Describe why this opt-in learning guard is not production security: a real deployment must enforce restrictions unconditionally and address HTTPS, CSRF, secrets, database permissions and Identity policy."
+    ],
+    deliverables: ["Complete guard/settings and runnable subprocess script", "Effective Django configuration evidence", "Five fail-before-application-command cases", "Wrong-target and unchanged-data evidence", "Production limits"],
+    completionCriteria: ["The test launches actual new Django processes, not just a Python dict parser.", "Unsafe configuration fails before the provided shell body executes.", "The learner does not print keys or use real credentials.", "Production security is not inferred from an opt-in lab setting."]
+  },
   "django-and-api-engineering-configuration-and-environments": {
     objective: "Turn environment-specific assumptions into an explicit configuration contract with safe defaults and fail-fast production behavior.",
     scenario: "The development setup works because DEBUG, hosts and service URLs are embedded in settings.py. A production deployment using the same defaults would be unsafe. Make environment ownership visible before Delivery school.",

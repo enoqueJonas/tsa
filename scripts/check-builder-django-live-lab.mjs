@@ -383,6 +383,24 @@ assert.match(schemaExamples.lab, /OPENAPI_TWO_VALID_LOOKING_DRIFTS_DETECTED/,
 assert.match(schemaExamples.lab, /Book\.objects\.count\(\) == before \+ 1/,
   "Successful/failed API operations must check actual stored state");
 
+const configPrimerStart = source.indexOf('richLesson("Make Django Refuse Unsafe Training Configuration"');
+const appliedConfigStart = source.indexOf('richLesson("Configuration and Environments"');
+const openApiLessonStart = source.indexOf('richLesson("OpenAPI and Swagger Documentation"');
+assert.ok(openApiLessonStart < configPrimerStart && configPrimerStart < appliedConfigStart,
+  "Actual Django startup settings must precede applied environment design");
+assert.match(publishedPractice("make-django-refuse-unsafe-training-configuration"),
+  /tsa-django-intro|catalogue/,
+  "The settings lab must reuse the existing migrated beginner project");
+const realSettingsExamples = {
+  guard: modelLessonSnippet("config/lab_guard.py — check the effective training database target"),
+  settings: modelLessonSnippet("config/settings.py — append guarded environment configuration"),
+  lab: modelLessonSnippet("catalogue/settings_startup_lab.py — prove actual startup denial before a query"),
+};
+assert.match(realSettingsExamples.settings, /TSA_VALIDATE_TRAINING_SETTINGS/);
+assert.match(realSettingsExamples.lab, /subprocess\.run\(/);
+assert.match(realSettingsExamples.lab, /UNSAFE_DJANGO_QUERY_EXECUTED/);
+assert.match(realSettingsExamples.lab, /secrets\.token_urlsafe/);
+
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-django-bridge-"));
 const exec=(command,args,env=process.env)=>{
   const p=spawnSync(command,args,{cwd:root,encoding:"utf8",timeout:60000,env});
@@ -1172,6 +1190,36 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   assert.doesNotMatch(actualUrls, /BrokenOldVersion|version_bug_urls/,
     "The deliberately broken v1 route may not be included in normal catalogue URLs");
   console.log("Builder DRF versioning passed: real URLPathVersioning request.version, old v1 remains stable, breaking v2, 404/405, test-only mutant is rejected.");
+
+  // Execute the EXACT published opt-in settings module in the existing
+  // migrated Book scratch project. All negative checks launch a NEW Django
+  // interpreter and reject before shell -c can execute any body.
+  fs.writeFileSync(path.join(beginnerRoot, "config", "lab_guard.py"),
+    realSettingsExamples.guard + "\n");
+  fs.appendFileSync(path.join(beginnerRoot, "config", "settings.py"),
+    "\n" + realSettingsExamples.settings + "\n");
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "settings_startup_lab.py"),
+    realSettingsExamples.lab + "\n");
+  beginnerExec(["manage.py", "check"]);
+  const settingsEvidence = beginnerExec(["manage.py", "shell", "-c",
+    "exec(open('catalogue/settings_startup_lab.py').read())"]);
+  for (const label of [
+    "STARTUP_VALID_CONFIG_REAL_DATABASE_OK",
+    "STARTUP_REJECTED_WRONG_DB",
+    "STARTUP_REJECTED_INVALID_BOOLEAN",
+    "STARTUP_REJECTED_WILDCARD_HOST",
+    "STARTUP_REJECTED_NOT_LOCAL",
+    "STARTUP_REJECTED_MISSING_SECRET",
+    "STARTUP_NO_WRONG_DATABASE_NO_WRITES",
+    "DJANGO_LAB_CONFIGURATION_OK",
+  ]) assert.ok(settingsEvidence.includes(label),
+    "Published Django startup gate failed: " + label + "\n" + settingsEvidence);
+  assert.ok(!fs.existsSync(path.join(beginnerRoot, "UNSAFE_DJANGO_QUERY_EXECUTED")),
+    "No unsafe application sentinel may be written under a rejected startup");
+  assert.ok(!fs.existsSync(path.join(beginnerRoot, "bank_production")),
+    "Wrong-target database must never be created by the lab");
+  console.log("Builder Django startup configuration passed: effective real SQLite settings and five subprocess failures before application execution with no leaked secret.");
+
 
   // The same working catalogue now generates a maintained OpenAPI document.
   // It is generated from an annotated real endpoint, never copied from a
