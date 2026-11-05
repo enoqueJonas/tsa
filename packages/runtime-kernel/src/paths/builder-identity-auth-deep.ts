@@ -385,22 +385,16 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
                             "type": "heading",
                             "id": "prerequisites",
                             "text": "Check the same project and database",
-                            "level": 2,
+                            "level": 2
+                        },
+                        {
+                            "type": "list",
                             "items": [
                                 "Remain in the SAME Steward Django project and PostgreSQL database; never restart at 0001 or silently switch to SQLite.",
                                 "At the JWT baseline checkpoint, registry 0007 and the hashed tsa_ana account must exist; record the first no-rotation JWT lab outcome BEFORE appending the later token_blacklist rotation settings.",
                                 "After the ownership checkpoint, inspect the registry 0008 migration and Owner/audit models; after the refresh checkpoint, inspect applied token_blacklist migrations.",
                                 "Check python manage.py check and python manage.py makemigrations --check --dry-run on the final state; normal config/urls.py must not publish any tutorial URLConf.",
                                 "Retain time-stamped evidence from each prior stage rather than rerunning a now-incompatible baseline script under a different JWT policy."
-                            ]
-                        },
-                        {
-                            "type": "list",
-                            "items": [
-                                "Start in the Steward Django project used since the ORM and integrated API lessons, not a new project.",
-                                "Run python manage.py check; python manage.py showmigrations registry token_blacklist; python manage.py makemigrations --check --dry-run.",
-                                "Confirm registry 0001–0008 and token_blacklist migrations are applied before running the final checks. Do not reset, rebuild or migrate the schema into SQLite.",
-                                "Keep all tutorial authentication URLConfs isolated under override_settings; verify config/urls.py does not include them."
                             ]
                         },
                         {
@@ -429,16 +423,13 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
                             "type": "heading",
                             "id": "exact-commands",
                             "text": "Run the published labs without inventing test code",
-                            "level": 2,
-                            "title": "Record evidence at the correct configuration stage",
-                            "code": "# STAGE 1 — registry 0007, before enabling refresh rotation.\n# Retain the output from the FIRST JWT lesson; DO NOT rerun this after\n# switching ROTATE_REFRESH_TOKENS to True.\npython manage.py showmigrations registry\npython manage.py shell -c \"exec(open('registry/jwt_first_http_lab.py').read())\"\n\n# STAGE 2 — current Membership, nested writes and owner transfer checkpoints.\n# Run each after its corresponding source files are saved and its migrations applied.\npython manage.py shell -c \"exec(open('registry/membership_http_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/membership_read_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/membership_create_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/environment_membership_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/dependency_membership_lab.py').read())\"\npython manage.py showmigrations registry\npython manage.py shell -c \"exec(open('registry/transfer_membership_lab.py').read())\"\n\n# STAGE 3 — after appending ROTATE_REFRESH_TOKENS=True and blacklist settings.\npython manage.py migrate token_blacklist --noinput\npython manage.py showmigrations registry token_blacklist\npython manage.py check\npython manage.py makemigrations --check --dry-run\npython manage.py shell -c \"exec(open('registry/session_lifecycle_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/secure_contract_lab.py').read())\"\n",
-                            "caption": "Run Stage 1 with rotation OFF, Stage 2 after each lesson's setup, and Stage 3 with rotation ON. Preserve earlier proof rather than rerunning an old state-specific script under different settings."
+                            "level": 2
                         },
                         {
                             "type": "code",
                             "language": "bash",
-                            "code": "python manage.py check\npython manage.py showmigrations registry token_blacklist\npython manage.py makemigrations --check --dry-run\npython manage.py shell -c \"exec(open('registry/jwt_first_http_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/membership_http_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/membership_read_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/membership_create_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/environment_membership_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/dependency_membership_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/transfer_membership_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/session_lifecycle_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/secure_contract_lab.py').read())\"\n",
-                            "caption": "Run each source-complete lab only after saving its corresponding published API/URLConf and applying its required migrations; do not assume later checkpoints are already present."
+                            "code": "# STAGE 1 — registry 0007, before enabling refresh rotation.\n# Retain the output from the FIRST JWT lesson; DO NOT rerun this after\n# switching ROTATE_REFRESH_TOKENS to True.\npython manage.py showmigrations registry\npython manage.py shell -c \"exec(open('registry/jwt_first_http_lab.py').read())\"\n\n# STAGE 2 — current Membership, nested writes and owner transfer checkpoints.\n# Run each after its corresponding source files are saved and its migrations applied.\npython manage.py shell -c \"exec(open('registry/membership_http_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/membership_read_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/membership_create_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/environment_membership_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/dependency_membership_lab.py').read())\"\npython manage.py showmigrations registry\npython manage.py shell -c \"exec(open('registry/transfer_membership_lab.py').read())\"\n\n# STAGE 3 — after appending ROTATE_REFRESH_TOKENS=True and blacklist settings.\npython manage.py migrate token_blacklist --noinput\npython manage.py showmigrations registry token_blacklist\npython manage.py check\npython manage.py makemigrations --check --dry-run\npython manage.py shell -c \"exec(open('registry/session_lifecycle_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/secure_contract_lab.py').read())\"\n",
+                            "caption": "Run Stage 1 with rotation OFF, Stage 2 after each lesson's setup, and Stage 3 with rotation ON. Preserve earlier proof rather than rerunning an old state-specific script under different settings."
                         },
                         {
                             "type": "heading",
