@@ -489,6 +489,36 @@ assert.match(integratedReadinessExamples.view, /logger\.warning\(/);
 assert.match(integratedReadinessExamples.lab, /private-training-marker/);
 assert.match(integratedReadinessExamples.lab, /remove_environment\(production\.pk\)/);
 
+// The final Steward OpenAPI lesson must exercise the SAME previously
+// migrated PostgreSQL registry and its real integrated Service/Review and
+// readiness views. Do not replace them with fabricated Book-only handlers.
+const integratedSchemaLesson = source.indexOf(
+  'richLesson("Verify Steward OpenAPI Against the Integrated Registry"');
+const integratedSchemaCheckpoint = source.indexOf(
+  '"id": "django-and-api-engineering-lab-steward-api-skeleton-schema-checkpoint"');
+const readinessCheckpointForSchema = source.indexOf(
+  '"id": "django-and-api-engineering-lab-steward-api-skeleton-readiness-checkpoint"');
+const retainedFinalBuildForSchema = source.indexOf(
+  '"id": "django-and-api-engineering-lab-steward-api-skeleton-build"');
+assert.ok(integratedSchemaLesson >= 0 &&
+  readinessCheckpointForSchema < integratedSchemaCheckpoint &&
+  integratedSchemaCheckpoint < retainedFinalBuildForSchema,
+  "Do not require final integrated OpenAPI before readiness models and HTTP");
+assert.match(publishedPractice("verify-steward-openapi-against-the-integrated-registry"),
+  /integrated_schema_contract_lab.py|integrated_contract_urls.py/,
+  "Executable schema practical must name its real HTTP/URL source");
+const stewardSchemaExamples = {
+  annotated: modelLessonSnippet("registry/integrated_contract_views.py — annotate existing handlers without changing them"),
+  routes: modelLessonSnippet("registry/integrated_contract_urls.py — shared real training routes"),
+  docs: modelLessonSnippet("registry/integrated_schema_urls.py — isolated schema and Swagger routes"),
+  settings: modelLessonSnippet("config/settings.py — append integrated Steward schema generator"),
+  lab: modelLessonSnippet("registry/integrated_schema_contract_lab.py — actual HTTP, PostgreSQL and schema drift"),
+};
+assert.match(stewardSchemaExamples.annotated, /class DocumentedPromotion\(TrainingPromotion\)/);
+assert.match(stewardSchemaExamples.routes, /DocumentedServices\.as_view\(\)/);
+assert.match(stewardSchemaExamples.lab, /INTEGRATED_SCHEMA_FIELD_MUTANT_REJECTED/);
+assert.match(stewardSchemaExamples.lab, /INTEGRATED_SCHEMA_PATH_MUTANT_REJECTED/);
+
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-django-bridge-"));
 const exec=(command,args,env=process.env)=>{
   const p=spawnSync(command,args,{cwd:root,encoding:"utf8",timeout:60000,env});
@@ -926,6 +956,55 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   assert.doesNotMatch(registryMainUrls, /integrated_final_urls|TrainingPromotion/,
     "Unauthenticated transaction commands must never be public project routes");
   console.log("Builder Steward readiness checkpoint passed: real PostgreSQL transaction 409 no-write, 200 persistent promotion, final deployment protected, scoped 403/404/405, and nonsecret INFO/WARNING.");
+
+  // Continue the SAME postgres schemaRoot after ServiceReview migrations and
+  // the actual integrated HTTP and readiness tests. Schema exports and
+  // response tests cannot substitute a fabricated second data store.
+  for (const [file, body] of [
+    ["integrated_contract_views.py", stewardSchemaExamples.annotated],
+    ["integrated_contract_urls.py", stewardSchemaExamples.routes],
+    ["integrated_schema_urls.py", stewardSchemaExamples.docs],
+    ["integrated_schema_contract_lab.py", stewardSchemaExamples.lab],
+  ]) fs.writeFileSync(path.join(schemaRoot, "registry", file), body + "\n");
+  fs.appendFileSync(path.join(schemaRoot, "config", "settings.py"),
+    "\n" + stewardSchemaExamples.settings + "\n");
+  schemaExec(["manage.py", "check"]);
+  const exported = schemaExec([
+    "manage.py", "spectacular",
+    "--urlconf", "registry.integrated_contract_urls",
+    "--format", "openapi-json",
+    "--file", "registry/integrated_openapi.json",
+    "--validate", "--fail-on-warn",
+  ]);
+  const exportedSchema = JSON.parse(fs.readFileSync(
+    path.join(schemaRoot, "registry", "integrated_openapi.json"), "utf8"));
+  assert.equal(Object.keys(exportedSchema.paths).length, 4,
+    "Published schema must describe four real Steward integration paths");
+  const contractProof = schemaExec(["manage.py", "shell", "-c",
+    "exec(open('registry/integrated_schema_contract_lab.py').read())"]);
+  for (const expected of [
+    "INTEGRATED_OPENAPI_PATHS_METHODS_STATUSES",
+    "INTEGRATED_SCHEMA_AND_SWAGGER_HTTP_200",
+    "INTEGRATED_SCHEMA_SERVICE_LIST_SCOPED",
+    "INTEGRATED_SCHEMA_SERVICE_201_AND_FRESH_GET_200",
+    "INTEGRATED_SCHEMA_INVALID_400_UNCHANGED",
+    "INTEGRATED_SCHEMA_REVIEW_201_AND_LIST_200",
+    "INTEGRATED_SCHEMA_READINESS_409_THEN_200_404_405",
+    "INTEGRATED_SCHEMA_OTHER_TEAM_NOT_VISIBLE",
+    "INTEGRATED_SCHEMA_FIELD_MUTANT_REJECTED",
+    "INTEGRATED_SCHEMA_PATH_MUTANT_REJECTED",
+    "INTEGRATED_STEWARD_SCHEMA_CONTRACT_OK",
+  ]) assert.ok(contractProof.includes(expected),
+    "Published Steward schema/runtime exercise failed: " + expected +
+    "\n" + exported + "\n" + contractProof);
+  const checkedRoot = fs.readFileSync(
+    path.join(schemaRoot, "config", "urls.py"), "utf8");
+  assert.doesNotMatch(checkedRoot,
+    /integrated_contract_urls|integrated_schema_urls|DocumentedPromotion/,
+    "Test-only Steward schema or mutation routes must never be published");
+  console.log("Builder Steward final schema contract passed: real generated DRF schema, 201/400/403/404/405/409 over persisted PostgreSQL and two false-schema mutants.");
+
+
 
 
 
