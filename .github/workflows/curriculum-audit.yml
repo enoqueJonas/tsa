@@ -36,6 +36,7 @@ on:
       - curriculum/builder-steward-integrated-http-checkpoint
       - curriculum/builder-steward-readiness-log-checkpoint
       - curriculum/builder-steward-integrated-openapi-exit
+      - curriculum/builder-steward-capstone-exit
       - curriculum/system-thinker-pedagogical-audit
       - curriculum/platform-builder-pedagogical-audit
       - curriculum/delivery-engineer-pedagogical-audit
