@@ -1392,7 +1392,9 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
     '"identity-authentication-authorization-refresh-logout-http"');
   const mistakesLesson = identitySource.indexOf(
     '"identity-authentication-authorization-common-authentication-and-authorization-mistakes"');
-  assert.ok(lifecycleLesson > transferLesson && lifecycleLesson < mistakesLesson,
+  assert.ok(lifecycleLesson > identitySource.indexOf(
+    '"identity-authentication-authorization-atomic-ownership-transfer"') &&
+    lifecycleLesson < mistakesLesson,
     "Executable session lifecycle must follow real ownership authorization");
   const lifecycle = {
     settings: identityJsonSnippet(
