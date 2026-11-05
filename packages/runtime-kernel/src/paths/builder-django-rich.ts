@@ -707,4 +707,5 @@ export const djangoAndApiRichLessons: Lesson[] = [
         }
       }
     ]
-  },];
+  },
+];
