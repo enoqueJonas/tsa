@@ -440,6 +440,34 @@ assert.match(stewardDataExamples.dependencyLab, /IntegrityError/);
 assert.match(stewardDataExamples.reviewModel, /models\.CheckConstraint/);
 assert.match(stewardDataExamples.reviewLab, /ProtectedError/);
 
+const stewardHttpPrimerStart = source.indexOf('richLesson("Serve Real Steward Services and Reviews Through DRF"');
+const stewardHttpLabIndex = source.indexOf('"id": "django-and-api-engineering-lab-steward-api-skeleton-http-checkpoint"');
+const stewardDataBeforeHttp = source.indexOf('richLesson("Persist a Steward Service Review History"');
+const stewardFinalLabIndex = source.indexOf('"id": "django-and-api-engineering-lab-steward-api-skeleton-build"');
+assert.ok(stewardDataBeforeHttp < stewardHttpPrimerStart &&
+  stewardHttpPrimerStart < stewardHttpLabIndex &&
+  stewardHttpLabIndex < stewardFinalLabIndex,
+  "Complete PostgreSQL-backed Service/Review HTTP lesson must precede preserved final build checkpoint");
+assert.match(publishedPractice("serve-real-steward-services-and-reviews-through-drf"),
+  /migrations 0001–0006|integrated_http_lab.py/,
+  "The HTTP practical must reuse the migrated registry and exact test source");
+const integratedHttpExamples = {
+  serializers: modelLessonSnippet("registry/integrated_serializers.py — bounded Service and Review fields"),
+  api: modelLessonSnippet("registry/integrated_api.py — persisted list create detail and review endpoints"),
+  urls: modelLessonSnippet("registry/integrated_training_urls.py — test-only integrated URL routes"),
+  lab: modelLessonSnippet("registry/integrated_http_lab.py — actual POST GET state boundaries and SQL"),
+  settings: modelLessonSnippet("config/settings.py — append DRF for isolated Steward HTTP requests"),
+};
+assert.match(integratedHttpExamples.api, /scoped_services\(/,
+  "Integrated HTTP GETs must start from a trusted server-selected Team QuerySet");
+assert.match(integratedHttpExamples.api, /IntegrityError/,
+  "Duplicate Service writes must use the database constraint and safe HTTP mapping");
+assert.match(integratedHttpExamples.api, /select_related\("service"\)/,
+  "Review representation must avoid N+1 queries");
+assert.doesNotMatch(integratedHttpExamples.urls, /config\/urls.py.*urlpatterns \+=/,
+  "Unprotected review write API cannot be appended to the project's normal URLs");
+assert.match(integratedHttpExamples.lab, /CaptureQueriesContext\(connection\)/);
+
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-django-bridge-"));
 const exec=(command,args,env=process.env)=>{
   const p=spawnSync(command,args,{cwd:root,encoding:"utf8",timeout:60000,env});
@@ -798,6 +826,52 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
     "print('REVIEW_HISTORY_REOPENED_OK')",
   ].join("\n")]), /REVIEW_HISTORY_REOPENED_OK/);
   console.log("Builder Steward data checkpoints passed: generated 0005/0006, directed edge/self/duplicate/FK/PROTECT, three persistent historical reviews, invalid verdict, no original slug regression.");
+
+  // Assemble the published HTTP source in the SAME schemaRoot where actual
+  // ServiceDependency 0005 and ServiceReview 0006 were generated/migrated.
+  // Reuse existing source-published application boundaries: no invented
+  // principal/membership policy, no normal-project URL publication.
+  fs.appendFileSync(path.join(schemaRoot, "config", "settings.py"),
+    "\n" + integratedHttpExamples.settings + "\n");
+  for (const [file, body] of [
+    ["training_scope.py", scopedExamples.scope],
+    ["services.py", commands],
+    ["api_errors.py", errorExamples.domainHandler],
+    ["integrated_serializers.py", integratedHttpExamples.serializers],
+    ["integrated_api.py", integratedHttpExamples.api],
+    ["integrated_training_urls.py", integratedHttpExamples.urls],
+    ["integrated_http_lab.py", integratedHttpExamples.lab],
+  ]) fs.writeFileSync(path.join(schemaRoot, "registry", file), body + "\n");
+  schemaExec(["manage.py", "check"]);
+  const integratedHttpProof = schemaExec(["manage.py", "shell", "-c",
+    "exec(open('registry/integrated_http_lab.py').read())"]);
+  for (const expected of [
+    "INTEGRATED_SERVICE_LIST_SCOPED_AND_PAGED",
+    "INTEGRATED_SERVICE_CREATED_SAVED_AND_REOPENED",
+    "INTEGRATED_SERVICE_BAD_INPUT_400_CROSS_TEAM_404_METHOD_405",
+    "INTEGRATED_REVIEW_POST_AND_SCOPED_HISTORY",
+    "INTEGRATED_REVIEW_BAD_INPUT_AND_CROSS_TEAM_NO_WRITES",
+    "INTEGRATED_REVIEW_SELECT_RELATED_NO_N_PLUS_ONE",
+    "INTEGRATED_SERVER_SELECTED_SCOPE_NOT_IDENTITY",
+    "INTEGRATED_TRAINING_HTTP_OK",
+  ]) assert.ok(integratedHttpProof.includes(expected),
+    "Published Steward HTTP did not establish: " + expected +
+    "\n" + integratedHttpProof);
+  assert.match(schemaExec(["manage.py", "shell", "-c", [
+    "from registry.models import Service,ServiceReview",
+    "service=Service.objects.get(slug='integrated-http-ember')",
+    "assert service.owning_team.name=='Integrated HTTP Team A'",
+    "assert ServiceReview.objects.filter(service=service).count()==2",
+    "print('INTEGRATED_HTTP_FRESH_SHELL_OK')",
+  ].join("\n")]), /INTEGRATED_HTTP_FRESH_SHELL_OK/);
+  const liveRegistryUrls = fs.readFileSync(
+    path.join(schemaRoot, "config", "urls.py"), "utf8");
+  assert.doesNotMatch(liveRegistryUrls,
+    /integrated_training_urls|TrainingServices|TrainingReviews/,
+    "Unprotected training HTTP write routes must not be published");
+  console.log("Builder Steward HTTP checkpoint passed: actual Postgres Service create/reread, server-owned Team and synthetic reviewer, scoped Reviews, 400/403/404/405, JOIN query counts and no rejected writes.");
+
+
 
 
 
