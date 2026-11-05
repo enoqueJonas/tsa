@@ -228,6 +228,37 @@ assert.match(persistedApi, /serializer\.save\(\)/,
 assert.match(persistedLab, /Book\.objects\.filter\(pk=book_id\)/,
   "Published HTTP lab must check database persistence, not just response status");
 
+// Both error-handling lessons must prove real HTTP semantics, not just a
+// pure mapping that returns Python dictionaries without framework dispatch.
+const errorPrimerStart = source.indexOf('richLesson("See How DRF Turns Exceptions into HTTP Responses"');
+const readinessStart = source.indexOf('richLesson("Production Readiness Commands and Atomic Updates"');
+const validationStart = source.indexOf('richLesson("Validation and Business Rules"');
+const errorAppliedStart = source.indexOf('richLesson("API Error Handling"');
+const filteringStart = source.indexOf('richLesson("Filtering, Searching and Ordering"');
+assert.ok(errorPrimerStart > validationStart && errorPrimerStart < errorAppliedStart &&
+  readinessStart < validationStart && errorAppliedStart < filteringStart,
+  "Real framework exception handling must precede the Steward error-contract application");
+for (const id of ["see-how-drf-turns-exceptions-into-http-responses","api-error-handling"]) {
+  assert.match(publishedPractice(id), /instructions:/,
+    "Published error exercise must provide a concrete executable procedure: " + id);
+}
+const errorExamples = {
+  handler: modelLessonSnippet("catalogue/error_handlers.py — preserve DRF status and headers"),
+  views: modelLessonSnippet("catalogue/error_views.py — real parsing, validation and lookup"),
+  routes: modelLessonSnippet("catalogue/urls.py — append error demo routes"),
+  settings: modelLessonSnippet("config/settings.py — use the catalogue exception handler"),
+  crashUrls: modelLessonSnippet("catalogue/error_test_urls.py — isolated unexpected-500 test only"),
+  requestLab: modelLessonSnippet("catalogue/error_contract_lab.py — verify actual statuses and no writes"),
+  domainHandler: modelLessonSnippet("registry/api_errors.py — real ReadinessConflict to HTTP 409"),
+  domainView: modelLessonSnippet("registry/readiness_api.py — call the domain command"),
+  domainUrls: modelLessonSnippet("registry/training_urls.py — isolated training route"),
+  domainLab: modelLessonSnippet("registry/error_contract_lab.py — real HTTP 409 and unchanged state"),
+};
+assert.match(errorExamples.handler, /return None  # Unexpected failures remain HTTP 500/);
+assert.match(errorExamples.domainHandler, /ReadinessConflict/);
+assert.match(errorExamples.domainLab, /service\.refresh_from_db\(\)/);
+assert.match(errorExamples.requestLab, /Book\.objects\.count\(\) == before/);
+
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-django-bridge-"));
 const exec=(command,args,env=process.env)=>{
   const p=spawnSync(command,args,{cwd:root,encoding:"utf8",timeout:60000,env});
@@ -530,6 +561,28 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   ]) assert.ok(verifySteward.includes(expect),
     "Published Steward migration evidence missing: " + expect + "\n" + verifySteward);
   console.log("Builder Steward schema evolution passed: actual 0002/0003/0004 migration chain, collision rollback, recovery, original FKs, full model-state alignment, unique DB rejection.");
+
+  // Existing domain command and PostgreSQL migration lab completed above.
+  // Exercise published HTTP exception code against its real stored state;
+  // training URLs are ONLY passed through override_settings in the source.
+  for (const [file, body] of [
+    ["api_errors.py", errorExamples.domainHandler],
+    ["readiness_api.py", errorExamples.domainView],
+    ["training_urls.py", errorExamples.domainUrls],
+    ["error_contract_lab.py", errorExamples.domainLab],
+  ]) fs.writeFileSync(path.join(root, "registry", file), body + "\n");
+  exec("python3", ["manage.py", "check"], env);
+  const errorDomainProof = exec("python3", ["manage.py", "shell", "-c",
+    "exec(open('registry/error_contract_lab.py').read())"], env);
+  for (const expected of [
+    "READINESS_409_NO_MUTATION", "READINESS_PROMOTION_200",
+    "READINESS_404_405", "TRAINING_ONLY_NOT_AUTHORIZED_FOR_PUBLIC_DEPLOYMENT"
+  ]) assert.ok(errorDomainProof.includes(expected),
+    "Missing real Steward HTTP domain result: " + expected + "\n" + errorDomainProof);
+  const realRootUrls = fs.readFileSync(path.join(root, "config", "urls.py"), "utf8");
+  assert.doesNotMatch(realRootUrls, /training_urls|TrainingPromotionView/,
+    "Do not accidentally publish the unauthenticated training promotion endpoint");
+  console.log("Builder DRF applied error contract passed: actual 409/200/404/405 HTTP and unchanged PostgreSQL state after denied transition.");
 
   // Reconstruct the independent beginner lab from the actual authored Django
   // and DRF lessons, rather than testing equivalent code written only here.
@@ -866,6 +919,31 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   ].join("\n")]);
   assert.match(freshShell, /REOPENED_STORED_BOOK_OK/);
   console.log("Builder DRF persistence passed: exact ModelSerializer/APIView files, durable POST, fresh HTTP GET/shell, partial PATCH and 400/404/405 unchanged-data negatives.");
+
+  // The source-published real DRF error flow runs after persisted Book API.
+  for (const [file, body] of [
+    ["error_handlers.py", errorExamples.handler],
+    ["error_views.py", errorExamples.views],
+    ["error_test_urls.py", errorExamples.crashUrls],
+    ["error_contract_lab.py", errorExamples.requestLab],
+  ]) fs.writeFileSync(path.join(beginnerRoot, "catalogue", file), body + "\n");
+  fs.appendFileSync(path.join(beginnerRoot, "catalogue", "urls.py"),
+    "\n" + errorExamples.routes + "\n");
+  fs.appendFileSync(path.join(beginnerRoot, "config", "settings.py"),
+    "\n" + errorExamples.settings + "\n");
+  beginnerExec(["manage.py", "check"]);
+  const errorRequestProof = beginnerExec(["manage.py", "shell", "-c",
+    "exec(open('catalogue/error_contract_lab.py').read())"]);
+  for (const expected of [
+    "DRF_HANDLED_ERRORS_OK 200 400 404 405 406 415 no writes",
+    "DRF_UNEXPECTED_500_OK no internal string in response"
+  ]) assert.ok(errorRequestProof.includes(expected),
+    "Actual HTTP error handler must prove: " + expected + "\n" + errorRequestProof);
+  const publishedUrls = fs.readFileSync(path.join(beginnerRoot, "catalogue", "urls.py"), "utf8");
+  assert.doesNotMatch(publishedUrls, /DeliberatelyBroken|error_test_urls/,
+    "A deliberately failing 500 test route may not be published in the normal URL tree");
+  console.log("Builder DRF exception primer passed: 200/400/404/405/406/415 and genuine unexpected 500 with no leaked internals.");
+
 
   console.log("Builder Django beginner lab passed: actual lesson snippets for projects, DRF, plain serializer, APIView and ViewSet plus negative HTTP/validation cases.");
 
