@@ -32,6 +32,7 @@ on:
       - curriculum/builder-drf-versioned-book-http-contract
       - curriculum/builder-drf-openapi-runtime-contract
       - curriculum/builder-django-runtime-config-guard
+      - curriculum/builder-steward-integrated-lab-data-checkpoints
       - curriculum/system-thinker-pedagogical-audit
       - curriculum/platform-builder-pedagogical-audit
       - curriculum/delivery-engineer-pedagogical-audit
