@@ -27,6 +27,7 @@ const captions = [
   "config/settings.py — enable actual rotating and blacklisted refresh credentials",
   "registry/session_lifecycle_urls.py — isolated real refresh logout routes",
   "registry/session_lifecycle_lab.py — signed refresh replay logout and database state",
+  "config/settings.py — register drf-spectacular for the existing signed API",
   "registry/secure_contract_views.py — document actual signed detail and transfer",
   "registry/secure_contract_api_urls.py — signed route objects for runtime and schema",
   "registry/secure_contract_urls.py — private generated OpenAPI endpoint",
@@ -50,6 +51,17 @@ for (const caption of captions) {
 }
 // A denied signed request must prove persisted state, not a stale Python instance;
 // log redaction evidence must also reject an empty log capture.
+
+const schemaCaption = "config/settings.py — register drf-spectacular for the existing signed API";
+const schemaAt = source.indexOf('"caption":' + JSON.stringify(schemaCaption));
+assert.ok(schemaAt >= 0, "Signed schema must configure the SAME Django project");
+const schemaCodeMatch = source.slice(schemaAt, schemaAt + 9000).match(
+  /"code":("(?:\\.|[^"\\])*")/);
+assert.ok(schemaCodeMatch, "Missing schema settings published as executable Python");
+const schemaCode = JSON.parse(schemaCodeMatch[1]);
+assert.ok(schemaCode.includes('REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"]'),
+  "The secure contract cannot rely on schema settings from an unrelated Django project");
+
 const contractCaption = "registry/secure_contract_lab.py — generated JWT contract versus actual HTTP SQL and logs";
 const contractAt = source.indexOf('"caption":' + JSON.stringify(contractCaption));
 assert.ok(contractAt >= 0, "Missing real signed contract exercise");
@@ -98,4 +110,4 @@ assert.ok(source.includes("Require at least 14/16"),
   "Capstone teach-back must have an explicit scoring threshold");
 assert.doesNotMatch(source.slice(source.indexOf('"id": "' + labId + '"')), /"estimatedMinutes": 180/,
   "Do not restore the original 180-minute security omnibus");
-console.log("Identity module integrity passed: ordered checkpoints, 7 syntax-valid published Python files, preserved capstone IDs and independent transfer rubric.");
+console.log("Identity module integrity passed: ordered checkpoints, 8 syntax-valid published Python files, preserved capstone IDs and independent transfer rubric.");
