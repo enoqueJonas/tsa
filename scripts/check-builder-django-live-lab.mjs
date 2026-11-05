@@ -1193,6 +1193,171 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
     "Never publish tutorial Membership mutation routes");
   console.log("Builder Identity current Membership HTTP passed: signed same-team 200, viewer/cross-team/revoked 403 with unchanged rows, forged 400, absent 404 and preserved Review history.");
 
+  // PED-029C: execute exact learner sources on the SAME migrated registry.
+  const membershipReadLesson = identitySource.indexOf(
+    '"identity-authentication-authorization-current-membership-reads"');
+  assert.ok(membershipReadLesson > objectAuthorizationLesson &&
+    membershipReadLesson < ownershipLesson,
+    "Signed collection visibility must follow actual Membership PATCH");
+  const readExamples = {
+    api: identityJsonSnippet(
+      "registry/membership_read_api.py — current principal collection and detail scope"),
+    urls: identityJsonSnippet(
+      "registry/membership_read_urls.py — isolated current Membership reads"),
+    lab: identityJsonSnippet(
+      "registry/membership_read_lab.py — real signed collection detail revocation and SQL checks"),
+  };
+  for (const [file, content] of [
+    ["membership_read_api.py", readExamples.api],
+    ["membership_read_urls.py", readExamples.urls],
+    ["membership_read_lab.py", readExamples.lab],
+  ]) fs.writeFileSync(path.join(schemaRoot, "registry", file), content);
+  const readProof = schemaExec(["manage.py", "shell", "-c",
+    "exec(open('registry/membership_read_lab.py').read())"]);
+  for (const expected of [
+    "MEMBERSHIP_READ_SQL_SCOPE_BEFORE_COUNT_AND_LIMIT",
+    "MEMBERSHIP_READ_REAL_JWT_VIEWER_PAGES_DETAIL_AND_CONCEALED_404",
+    "MEMBERSHIP_READ_SAME_JWT_MULTI_TEAM_UNKNOWN_ROLE_AND_REVOCATION",
+    "MEMBERSHIP_READ_ALL_SERVICE_ROWS_UNCHANGED",
+    "MEMBERSHIP_READ_REAL_POSTGRES_OK",
+  ]) assert.ok(readProof.includes(expected), expected + "\n" + readProof);
+  assert.doesNotMatch(fs.readFileSync(path.join(schemaRoot, "config", "urls.py"), "utf8"),
+    /membership_read_urls|membership_read_api|VisibleServiceList/,
+    "Never publish the training-only collection routes");
+
+  // Rollback in the learner script allows independent broken-policy runs.
+  // Each subprocess reloads the changed source; remove bytecode to avoid
+  // timestamp/size cache reuse. Restore correct source even on failure.
+  const readApiPath = path.join(schemaRoot, "registry", "membership_read_api.py");
+  try {
+    for (const [name, old, replacement] of [
+      ["unscoped-list",
+        "page.paginate_queryset(visible_services(request.user), request)",
+        'page.paginate_queryset(Service.objects.order_by("pk"), request)'],
+      ["unscoped-detail",
+        "get_object_or_404(visible_services(request.user), pk=service_id)",
+        "get_object_or_404(Service.objects.all(), pk=service_id)"],
+      ["unrecognized-role-grants-read",
+        'role__in=[Membership.Role.VIEWER,\n                            Membership.Role.MAINTAINER]',
+        'role__in=[Membership.Role.VIEWER, Membership.Role.MAINTAINER, "unknown"]'],
+    ]) {
+      assert.ok(readExamples.api.includes(old), "Missing policy mutation target: " + name);
+      fs.writeFileSync(readApiPath, readExamples.api.replace(old, replacement));
+      fs.rmSync(path.join(schemaRoot, "registry", "__pycache__"), {recursive: true, force: true});
+      const mutant = spawnSync("python3", ["manage.py", "shell", "-c",
+        "exec(open('registry/membership_read_lab.py').read())"],
+        {cwd: schemaRoot, env: schemaEnv, encoding: "utf8", timeout: 60000});
+      assert.ifError(mutant.error);
+      assert.notEqual(mutant.status, 0, "Broken policy escaped learner assertions: " + name);
+      assert.match(mutant.stderr, /AssertionError/, "Mutant must fail an evidence assertion: " + name);
+    }
+  } finally {
+    fs.writeFileSync(readApiPath, readExamples.api);
+    fs.rmSync(path.join(schemaRoot, "registry", "__pycache__"), {recursive: true, force: true});
+  }
+  console.log("Builder Identity collection reads passed: real JWT, scoped count/pages/detail, current multi-Team roles, revoked access, unchanged rows; three broken policies rejected.");
+
+  // The POST boundary has no persisted Service for an object hook to check.
+  const membershipCreateLesson = identitySource.indexOf(
+    '"identity-authentication-authorization-current-membership-create"');
+  assert.ok(membershipCreateLesson > membershipReadLesson &&
+    membershipCreateLesson < ownershipLesson,
+    "Create authorization must follow signed reads and precede ownership commands");
+  const createExamples = {
+    api: identityJsonSnippet(
+      "registry/membership_create_api.py — authorize current maintainer before Service insert"),
+    urls: identityJsonSnippet(
+      "registry/membership_create_urls.py — private signed Service creation route"),
+    lab: identityJsonSnippet(
+      "registry/membership_create_lab.py — signed create denials committed row and cleanup"),
+  };
+  for (const [file, content] of [
+    ["membership_create_api.py", createExamples.api],
+    ["membership_create_urls.py", createExamples.urls],
+    ["membership_create_lab.py", createExamples.lab],
+  ]) fs.writeFileSync(path.join(schemaRoot, "registry", file), content);
+  const createProof = schemaExec(["manage.py", "shell", "-c",
+    "exec(open('registry/membership_create_lab.py').read())"]);
+  for (const expected of [
+    "MEMBERSHIP_CREATE_401_AND_VIEWER_CROSS_TEAM_403_NO_WRITES",
+    "MEMBERSHIP_CREATE_FORGED_FIELDS_AND_INVALID_INPUT_400_NO_WRITES",
+    "MEMBERSHIP_CREATE_REAL_201_DETAIL_200_AND_FRESH_PROCESS_COMMITTED",
+    "MEMBERSHIP_CREATE_DB_UNIQUENESS_400_AND_SUBSEQUENT_201",
+    "MEMBERSHIP_CREATE_SAME_JWT_DOWNGRADE_REVOCATION_AND_OTHER_TEAM_201",
+    "MEMBERSHIP_CREATE_ORIGINAL_ROWS_PRESERVED_FIXTURES_CLEANED",
+    "MEMBERSHIP_CREATE_REAL_POSTGRES_OK",
+  ]) assert.ok(createProof.includes(expected), expected + "\n" + createProof);
+  assert.doesNotMatch(fs.readFileSync(path.join(schemaRoot, "config", "urls.py"), "utf8"),
+    /membership_create_urls|membership_create_api|MembershipServiceCreate/,
+    "Never publish the training-only create route");
+  const createApiPath = path.join(schemaRoot, "registry", "membership_create_api.py");
+  try {
+    for (const [name, old, replacement] of [
+      ["viewer-can-create", "role=Membership.Role.MAINTAINER",
+        "role__in=[Membership.Role.VIEWER, Membership.Role.MAINTAINER]"],
+      ["destination-team-unchecked", "user=request.user, team_id=team_id,",
+        "user=request.user,"],
+      ["authority-field-input-accepted",
+        'not isinstance(request.data, dict)\n                    or set(request.data) - {"name", "slug", "endpoint", "criticality"}',
+        "not isinstance(request.data, dict)"],
+    ]) {
+      assert.ok(createExamples.api.includes(old), "Missing create mutation target: " + name);
+      fs.writeFileSync(createApiPath, createExamples.api.replace(old, replacement));
+      fs.rmSync(path.join(schemaRoot, "registry", "__pycache__"), {recursive: true, force: true});
+      const mutant = spawnSync("python3", ["manage.py", "shell", "-c",
+        "exec(open('registry/membership_create_lab.py').read())"],
+        {cwd: schemaRoot, env: schemaEnv, encoding: "utf8", timeout: 60000});
+      assert.ifError(mutant.error);
+      assert.notEqual(mutant.status, 0, "Broken creation policy escaped: " + name);
+      assert.match(mutant.stderr, /AssertionError/, "Must fail evidence, not imports: " + name);
+      // Cleanup also runs on failed assertions. Prove no mutant fixtures leaked.
+      assert.match(schemaExec(["manage.py", "shell", "-c",
+        "from registry.models import Team; from django.contrib.auth import get_user_model; " +
+        "assert not Team.objects.filter(name__startswith='Identity create lab ').exists(); " +
+        "assert not get_user_model().objects.filter(username__startswith='tsa_create_lab_').exists(); " +
+        "print('CREATE_MUTANT_FIXTURES_CLEAN')"]), /CREATE_MUTANT_FIXTURES_CLEAN/);
+    }
+  } finally {
+    fs.writeFileSync(createApiPath, createExamples.api);
+    fs.rmSync(path.join(schemaRoot, "registry", "__pycache__"), {recursive: true, force: true});
+  }
+  console.log("Builder Identity Service create passed: signed maintainer 201 committed across processes, viewer/cross-Team/revoked 403 no writes, forged/duplicate 400, recovery 201, exact fixture cleanup and three policy mutants rejected.");
+  for (const [file, caption] of [
+    ["environment_membership_api.py", "registry/environment_membership_api.py — authorize the stored parent"],
+    ["environment_membership_urls.py", "registry/environment_membership_urls.py — private nested route"],
+    ["environment_membership_lab.py", "registry/environment_membership_lab.py — signed nested negatives"],
+  ]) fs.writeFileSync(path.join(schemaRoot, "registry", file), identityJsonSnippet(caption));
+  const nestedProof = schemaExec(["manage.py", "shell", "-c",
+    "exec(open('registry/environment_membership_lab.py').read())"]);
+  assert.match(nestedProof, /NESTED_ENVIRONMENT_SIGNED_PARENT_POLICY_AND_UNCHANGED_ROWS_OK/);
+  assert.match(nestedProof, /NESTED_ENVIRONMENT_FIXTURES_ROLLED_BACK/);
+  assert.doesNotMatch(fs.readFileSync(path.join(schemaRoot, "config", "urls.py"), "utf8"), /environment_membership/);
+  console.log("Builder signed nested Environment parent policy passed.");
+  for (const [file, caption] of [
+    ["dependency_membership_api.py", "registry/dependency_membership_api.py — authorize both stored edge endpoints"],
+    ["dependency_membership_urls.py", "registry/dependency_membership_urls.py — private signed edge route"],
+    ["dependency_membership_lab.py", "registry/dependency_membership_lab.py — signed directed-edge evidence"],
+  ]) fs.writeFileSync(path.join(schemaRoot, "registry", file), identityJsonSnippet(caption));
+  const edgeProof = schemaExec(["manage.py", "shell", "-c", "exec(open('registry/dependency_membership_lab.py').read())"]);
+  assert.match(edgeProof, /DEPENDENCY_SIGNED_SOURCE_TARGET_DIRECTION_AND_REVOCATION_OK/);
+  assert.match(edgeProof, /DEPENDENCY_FIXTURES_ROLLED_BACK/);
+  assert.doesNotMatch(fs.readFileSync(path.join(schemaRoot,"config","urls.py"),"utf8"), /dependency_membership/);
+  console.log("Builder signed dependency source and target policy passed.");
+  for (const [file, caption] of [
+    ["prepare_transfer_models.py", "registry/prepare_transfer_models.py — add Owner and transfer event"],
+    ["transfer_membership_api.py", "registry/transfer_membership_api.py — atomic owner and audit write"],
+    ["transfer_membership_urls.py", "registry/transfer_membership_urls.py — private ownership command"],
+    ["transfer_membership_lab.py", "registry/transfer_membership_lab.py — signed transfer and audit rollback"],
+  ]) fs.writeFileSync(path.join(schemaRoot,"registry",file),identityJsonSnippet(caption));
+  schemaExec(["registry/prepare_transfer_models.py"]);
+  assert.match(schemaExec(["manage.py","makemigrations","registry","--name","ownership_transfer"]), /0008_ownership_transfer/);
+  assert.match(schemaExec(["manage.py","sqlmigrate","registry","0008"]), /ownershiptransfer/i);
+  schemaExec(["manage.py","migrate","--noinput"]);
+  schemaExec(["manage.py","makemigrations","--check","--dry-run"]);
+  const transferProof=schemaExec(["manage.py","shell","-c","exec(open('registry/transfer_membership_lab.py').read())"]);
+  for (const label of ["TRANSFER_DENIALS_AND_AUDIT_FAILURE_ROLLBACK_OK","TRANSFER_OWNER_AND_AUDIT_SAME_TRANSACTION_ACCESS_CHANGED_OK","TRANSFER_FIXTURES_ROLLED_BACK"]) assert.ok(transferProof.includes(label),transferProof);
+  assert.doesNotMatch(fs.readFileSync(path.join(schemaRoot,"config","urls.py"),"utf8"),/transfer_membership/);
+  console.log("Builder atomic Owner transfer and audit rollback passed on migration 0008.");
 
 
 
@@ -1214,6 +1379,89 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
 
 
 
+
+
+
+
+
+
+
+  // PED-029E: finish the real refresh/logout lifecycle on the SAME 0008
+  // PostgreSQL registry. The earlier JWT lab deliberately had rotation OFF.
+  const lifecycleLesson = identitySource.indexOf(
+    '"identity-authentication-authorization-refresh-logout-http"');
+  const mistakesLesson = identitySource.indexOf(
+    '"identity-authentication-authorization-common-authentication-and-authorization-mistakes"');
+  assert.ok(lifecycleLesson > identitySource.indexOf(
+    '"identity-authentication-authorization-atomic-ownership-transfer"') &&
+    lifecycleLesson < mistakesLesson,
+    "Executable session lifecycle must follow real ownership authorization");
+  const lifecycle = {
+    settings: identityJsonSnippet(
+      "config/settings.py — enable actual rotating and blacklisted refresh credentials"),
+    urls: identityJsonSnippet(
+      "registry/session_lifecycle_urls.py — isolated real refresh logout routes"),
+    lab: identityJsonSnippet(
+      "registry/session_lifecycle_lab.py — signed refresh replay logout and database state"),
+  };
+  fs.appendFileSync(path.join(schemaRoot, "config", "settings.py"),
+    "\n" + lifecycle.settings + "\n");
+  for (const [filename, body] of [
+    ["session_lifecycle_urls.py", lifecycle.urls],
+    ["session_lifecycle_lab.py", lifecycle.lab],
+  ]) fs.writeFileSync(path.join(schemaRoot, "registry", filename), body + "\n");
+  schemaExec(["manage.py", "migrate", "token_blacklist", "--noinput"]);
+  schemaExec(["manage.py", "check"]);
+  const lifecycleProof = schemaExec(["manage.py", "shell", "-c",
+    "exec(open('registry/session_lifecycle_lab.py').read())"]);
+  for (const label of [
+    "SESSION_ROTATED_REFRESH_200_OLD_REFRESH_REPLAY_401",
+    "SESSION_LOGOUT_BLACKLIST_PERSISTED_REUSE_401",
+    "SESSION_EXISTING_ACCESS_VALID_UNTIL_EXPIRY_REFRESH_NOT_ACCESS",
+    "SESSION_BLACKLIST_STATE_AND_STEWARD_DOMAIN_INVARIANT_OK",
+  ]) assert.ok(lifecycleProof.includes(label), label + "\n" + lifecycleProof);
+  assert.doesNotMatch(
+    fs.readFileSync(path.join(schemaRoot, "config", "urls.py"), "utf8"),
+    /session_lifecycle_urls|TokenBlacklistView|token\/logout/,
+    "Private token lifecycle routes must not be added to ordinary config URLs");
+  console.log("Builder Identity real refresh rotation/replay/logout passed on the SAME PostgreSQL registry.");
+
+  // PED-029F: generated API security contract uses the same signed handler
+  // objects for real HTTP responses, backed by the 0008 PostgreSQL project.
+  const securedContractLesson = identitySource.indexOf(
+    '"identity-authentication-authorization-secured-openapi-evidence"');
+  assert.ok(securedContractLesson > lifecycleLesson &&
+    securedContractLesson < mistakesLesson,
+    "Signed OpenAPI must follow token lifecycle and transfer authorization");
+  // The earlier catalogue OpenAPI lab was a different Django project.
+  // Apply the learner-published schema settings to the SAME migrated Steward registry.
+  const secureContractSettings = identityJsonSnippet(
+    "config/settings.py — register drf-spectacular for the existing signed API");
+  fs.appendFileSync(path.join(schemaRoot,"config","settings.py"),
+    "\n" + secureContractSettings + "\n");
+  schemaExec(["manage.py","check"]);
+  const secureContractFiles = [
+    ["secure_contract_views.py", "registry/secure_contract_views.py — document actual signed detail and transfer"],
+    ["secure_contract_api_urls.py", "registry/secure_contract_api_urls.py — signed route objects for runtime and schema"],
+    ["secure_contract_urls.py", "registry/secure_contract_urls.py — private generated OpenAPI endpoint"],
+    ["secure_contract_lab.py", "registry/secure_contract_lab.py — generated JWT contract versus actual HTTP SQL and logs"],
+  ];
+  for (const [filename, caption] of secureContractFiles)
+    fs.writeFileSync(path.join(schemaRoot,"registry",filename),
+      identityJsonSnippet(caption) + "\n");
+  schemaExec(["manage.py", "check"]);
+  const signedSchemaProof = schemaExec(["manage.py", "shell", "-c",
+    "exec(open('registry/secure_contract_lab.py').read())"]);
+  for (const label of [
+    "SECURE_CONTRACT_REAL_401_403_404_AND_FORGED_400",
+    "SECURE_CONTRACT_REAL_TRANSFER_AUDIT_200_STALE_409",
+    "SECURE_CONTRACT_GENERATED_OPENAPI_JWT_AND_STATUSES",
+    "SECURE_CONTRACT_LOCAL_LOG_SAMPLE_REDACTED_FIXTURES_ROLLED_BACK",
+  ]) assert.ok(signedSchemaProof.includes(label),label + "\n" + signedSchemaProof);
+  assert.doesNotMatch(fs.readFileSync(path.join(schemaRoot,"config","urls.py"),"utf8"),
+    /secure_contract_urls|secure_contract_api_urls|DocumentedSignedTransfer/,
+    "Secure documentation workshop remains private to test-only URLConfs");
+  console.log("Builder Identity secured OpenAPI: real JWT HTTP 401/403/404/409/200, audit, contract security and bounded log sample passed.");
 
   // Existing domain command and PostgreSQL migration lab completed above.
   // Exercise published HTTP exception code against its real stored state;

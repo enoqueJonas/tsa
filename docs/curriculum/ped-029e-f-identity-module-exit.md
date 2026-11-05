@@ -1,0 +1,112 @@
+# PED-029E/F — Builder Identity module remediation evidence (2026-11-05)
+
+Related issues: #396, #321, #318, #315. Draft PR: #399.
+
+## Learner sequence and changes
+
+The completed PostgreSQL and earlier Django/DRF lessons are not rewritten. The continuing **Identity, Authentication & Authorization** module now has independently navigable checkpoints for real JWT authentication, current Membership authorization, scoped collection/detail reads, server-authorized creation, nested Environment and directed ServiceDependency creation, explicit Owner transfer policy, atomic ownership/audit transfer, and two newly added lessons:
+
+- **PED-029E — Rotate Refresh Tokens and Prove Logout with Real HTTP.** Complete published `config/settings.py` append, `registry/session_lifecycle_urls.py`, `registry/session_lifecycle_lab.py`. Uses original hashed account and the SAME 0008 PostgreSQL registry; migrates Simple JWT blacklist, rotates twice, rejects stale refresh, blacklists at logout, proves separate access-token expiry and unchanged domain rows.
+- **PED-029F — Publish a Secure Steward Contract and Inspect Token-Safe Logs.** Complete `registry/secure_contract_views.py`, `registry/secure_contract_api_urls.py`, `registry/secure_contract_urls.py`, `registry/secure_contract_lab.py`. Delegates to REAL signed Service detail and atomic transfer handlers, generates the API contract from the same routes, compares JWT and 200/400/401/403/404/409 behavior and audit persistence, and inspects a bounded `django.request` log sample.
+
+The previously thin Authentication Flows and Ownership and Access Rules now trace prerequisites, actors, stored authority and failure decisions. Common Authentication and Authorization Mistakes explicitly separates implemented behavior from unimplemented DELETE/rate controls.
+
+The original final Lab: Secure Steward API activity IDs are preserved. Its 180-minute undifferentiated build is replaced by a **seven-boundary evidence matrix**, ordered executable checkpoints, an independent Team A/Team B case and an eight-question teach-back scored 0–2 with 14/16 pass threshold and no zero on key security concepts.
+
+## Module-wide order and baseline-policy correction
+
+The module has 26 lessons and 78 unique activity IDs (including the preserved capstone IDs). The formerly shallow **Authentication Flows** and **Ownership and Access Rules** now each have seven prerequisite-first sections and concrete policy/HTTP decision traces. The flow uses the actual signed rename route `/training/identity/services/<id>/rename/`, not a fictional generic PATCH endpoint.
+
+**Important staged execution constraint:** the first real JWT lab is intended to run with `ROTATE_REFRESH_TOKENS=False` and asserts no replacement refresh field. PED-029E later changes that setting to `True`, applies `token_blacklist` migrations, and asserts the opposite policy. The capstone has been corrected to preserve the first lab's actual baseline evidence and then verify rotation in the later environment; replaying the baseline script after the policy change is an invalid test, not a learning failure. The stage-specific instructions are in the final lab's code block.
+
+## Safeguards
+
+- `scripts/check-builder-django-live-lab.mjs` extracts exact new learner source and attempts real HTTP/SQL work over the same migrated registry, not mock JWTs or a separate SQLite demo.
+- `scripts/check-identity-module-integrity.mjs` checks order, exact source captions, Python AST syntax, preserved activity identifiers and the transfer rubric.
+- `scripts/tests/curriculum-smoke.test.mjs` invokes the module integrity check.
+- All tutorial URLConfs stay private; `config/urls.py` is inspected for accidental inclusion.
+
+## Evidence status
+
+- **SOURCE WRITTEN:** yes, committed on PR #399. Manual source/ID inspection found 26 lessons and the expected new snippets.
+- **AUTOMATED PR CODE VERIFICATION:** PASSED on PR merge candidate for head `38eae9844819aeceed0155794846049415c27845`, run [#42038667009](https://github.com/enoqueJonas/tsa/actions/runs/42038667009): Identity integrity, TypeScript, the complete real Django/PostgreSQL source-derived lab, 38/38 smoke tests, production build, and strict structural audit. This result is specific to that code head and its tested PR merge candidate; separate future commits require re-verification.
+- **RENDERED PAGE/PROGRESS AND INDEPENDENT NOVICE TRANSFER:** NOT VERIFIED. Never mark `VALIDATED` based on green TypeScript/test/build alone.
+- **PRODUCTION SECURITY:** not claimed.
+
+Run against latest branch/head:
+
+```bash
+git fetch origin
+git switch curriculum/forward-identity-checkpoints
+git pull --ff-only origin curriculum/forward-identity-checkpoints
+node scripts/check-identity-module-integrity.mjs
+node scripts/check-builder-django-live-lab.mjs
+pnpm test
+pnpm build
+node scripts/audit-learner-facing-curriculum.mjs --strict
+```
+
+The live Django lab requires the PostgreSQL/dependencies established for earlier real labs. Include actual output and SHA before changing evidence status.
+
+## Explicit residual work
+
+Concurrent refresh single-use/family revocation; immediate access logout; account-wide logout; nested child update/delete/reparenting; cross-Team dependency reconciliation; multi-writer transfer guarantees; secure OpenAPI for all deployed routes; reverse-proxy/WAF/APM log safety; manual rendered navigation/progress and uncoached learner scoring. Those are separate claims and are not automatically solved by source remediation.
+
+**Classification:** Instructional source remediated, latest-head execution and learner validation pending. Keep #396, #321, #318 and #315 open.
+
+## 2026-11-05 local execution report and targeted correction
+
+A real learner-local run after checking out this PR branch established the following, rather than only relying on a previous green head:
+
+- `node scripts/check-identity-module-integrity.mjs`: **passed** before the fix.
+- `pnpm test`: **34 passed, 4 failed out of 38**. The failures were one **Identity TypeScript error** and three separate System Thinker prerequisites: XML/XSD lacked `lxml`; SFTP lacked `asyncssh`; the FTP subprocess exited before listening. FTP launches `python -m pyftpdlib` with stderr hidden, so missing `pyftpdlib` is a plausible diagnosis, **not established** solely from that message.
+- `pnpm build`: **failed** with TS2353 in `builder-identity-auth-deep.ts` on final capstone reading blocks; a heading incorrectly included `items` and another heading incorrectly included `title`/`code`/`caption`. The learner-facing strict structural inventory reported zero findings but did not catch those type errors.
+- `node scripts/check-builder-django-live-lab.mjs`: **did not run its PostgreSQL work**, because `PGDATABASE` was undefined rather than the guarded disposable `tsa_steward_lab`. This is not evidence that signed JWT/SQL logic passed or failed.
+- Strict learner-facing structural audit: **passed** (12 schools, 128 paths, 1,384 lessons, 4,102 activities, zero structural findings). This is not a manual depth or learner-transfer result.
+
+**Committed source correction:** replace invalid heading extras with properly typed separate `heading` / `list` / `code` blocks, remove duplicate contradictory post-rotation commands, and preserve the three-stage JWT baseline → Membership/Ownership → refresh-blacklist chronology. Commit `c9bfbd182ef6b7fbb01f741d9087055bcb6619b1`. New gate `scripts/check-identity-module-integrity.mjs` parses the final lab, rejects extra properties on heading blocks and requires a single three-stage command block with correct policy transition order. Commit `11afe0d62416bd777f85cbe42fa1f69831481a07`.
+
+**Verification honesty:** the fix and stronger guard are committed, and the resulting capstone block was parsed/inspected through the connected repository. Matching-head TypeScript compilation, full test/build, PostgreSQL HTTP regression, browser rendering and novice scoring **still require actual execution output**. Do not promote these to passed from the correction alone.
+
+For a repeat local Python smoke run, use an activated disposable Python environment and install the CI-declared requirements (`lxml>=5,<8`, `pyftpdlib>=2,<3`, `asyncssh>=2.20,<3`). Confirm those imports under the *same* `python3` used by Node subprocesses. The FTP port must be bindable on localhost; inspect server startup separately if the package is present.
+
+For the live Django lab, use a **dedicated disposable PostgreSQL instance**, configured with `PGHOST`, `PGPORT`, `PGDATABASE=tsa_steward_lab`, `PGUSER` and `PGPASSWORD` verified via `psql`. The script creates additional specifically named training databases, so do not point it at a valuable PostgreSQL cluster or rerun blindly against persistent training databases. CI uses PostgreSQL 17 and installs Django/DRF/psycopg/drf-spectacular/SimpleJWT; a separate local run needs those dependencies. Never bypass the database guard by setting only `PGDATABASE`.
+
+
+### 2026-11-05: strengthen real denial and logging evidence
+
+A subsequent source audit found two assertions that could claim success without proving their intended property:
+
+1. The signed transfer lab checked `target.owning_team_id` on a **stale in-memory ORM instance** after denied HTTP requests. It now queries `Service.objects.filter(...).exists()` against PostgreSQL and asserts that the audit-row count and ServiceReview snapshot remain unchanged before allowing the successful transfer.
+2. The bounded `django.request` capture only checked that tokens were absent. An **empty log** would pass that check. The lab now requires a denied secure-request path to be present in the captured logs before asserting no bearer token was logged. This still proves only the bounded local Django logger, not proxy/APM production logs.
+
+These source corrections are committed on the draft PR and have a source-derived guard in `scripts/check-identity-module-integrity.mjs`. Manual remote-source inspection confirms the published extracted Python text, stage order, capstone block types and new assertions. **The real Django HTTP/PostgreSQL execution, matching-head TS build and learner-browser check remain unverified**.
+
+The GitHub workflow is configured for `push` (plus manual `workflow_dispatch`), not `pull_request`. The available connected workflow-run retrieval filters for pull-request-triggered runs, so an empty result cannot be interpreted as either a passing check or proof that no push CI ran.
+
+### 2026-11-05: explicit Steward OpenAPI project configuration
+
+Source comparison of the real PostgreSQL-backed Steward integration runner and the earlier Book/Catalogue OpenAPI project exposed a missing prerequisite. The secured contract lesson assumed DRF's schema generator had been configured in the Steward project, but the earlier drf-spectacular settings were only applied to a **different Django training project**. The secured Steward project had no explicit `DEFAULT_SCHEMA_CLASS`; a generated schema might therefore omit operations or emit incompatibility warnings.
+
+Correction: added an eighth complete, learner-visible Python snippet, `config/settings.py — register drf-spectacular for the existing signed API`, before the secured API view annotations. It registers `drf_spectacular` on the current `INSTALLED_APPS` and sets `REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "drf_spectacular.openapi.AutoSchema"` without replacing JWT authentication settings. The exact source is appended to the **same** migrated Steward project in `scripts/check-builder-django-live-lab.mjs` before its schema experiment. The integrity gate now requires the settings source, and the capstone tells learners when to apply it. Thus the secured stage contains **8 source-complete Python files** rather than 7.
+
+Static comparison confirms the source captions are extractable and the Node scripts parse as JavaScript. **No PostgreSQL HTTP integration, drf-spectacular schema export, matching-head TypeScript build or browser run has been executed against these latest changes.** Keep PR #399 in draft pending actual head-specific results.
+
+## Acceptance evidence — 2026-11-05 successful real CI run
+
+The new PR-specific gate `.github/workflows/identity-postgresql-pr.yml` executed on the **actual PR merge candidate** for source head `38eae9844819aeceed0155794846049415c27845` with PostgreSQL 17, Python 3.12, Node 22, Java 17, and the exercise's required libraries.
+
+**GitHub Actions run:** [Identity module PostgreSQL PR gate #42038667009](https://github.com/enoqueJonas/tsa/actions/runs/42038667009) — job `identity-real-http-and-build` completed **successfully**.
+
+The complete returned job log supports all of the following:
+
+- `node scripts/check-identity-module-integrity.mjs` **PASS**: lesson order, 8 exact AST-valid Python sources, final block schema, command staging, persistent-denial assertions and transfer rubric.
+- TypeScript runtime-kernel `tsc --noEmit` **PASS**.
+- `node scripts/check-builder-django-live-lab.mjs` **PASS**, including explicit output for migration 0008 atomic ownership/audit, signed real refresh rotation/replay/logout, and JWT-secured OpenAPI plus bounded logger on the same migrated PostgreSQL registry.
+- `pnpm test` **38 passed / 0 failed**.
+- `pnpm build` **PASS**, 2 successful Turbo build tasks, including application static export.
+- `node scripts/audit-learner-facing-curriculum.mjs --strict` **PASS**, zero structural findings.
+
+**Crucial distinction:** this verifies the behavior of the specific source-derived labs and the build; it is not a comprehensive security audit, concurrency proof, evidence of deployment readiness, or an independent novice successfully using the rendered website. Keep learner-browser/progress review and 14/16 novice teach-back explicitly pending. **Do not close the global instructional-depth or learner-validation issues on the basis of CI alone.**
+
+This evidence was recorded in the repository after the successful run; the documentation-only commit itself is not asserted to have been tested by the earlier run. The PR workflow re-runs when its configured paths change, and any later run should be checked independently.
