@@ -18,9 +18,25 @@ import type { LearningPath } from "./learning-path";
 function extendBuilderPath(path: LearningPath): LearningPath {
     if (path.id === "programming-with-python") return { ...path, lessons: programmingWithPythonQualityLessons };
     if (path.id === "software-craft") {
-        const labIndex = path.lessons.findIndex((lesson) => lesson.title === "Lab: Refine Steward API for Review");
-        const insertionIndex = labIndex === -1 ? path.lessons.length : labIndex;
-        return { ...path, lessons: [...path.lessons.slice(0, insertionIndex), reusableInternalPackageLesson, extractStewardCommonLesson, ...path.lessons.slice(insertionIndex)] };
+        // The two separately authored internal-dependency checkpoints must be
+        // completed BEFORE the staged engineering review begins. Previously
+        // they were injected immediately before the old final lab, silently
+        // locking that lab even when every new staged review was completed.
+        const firstReviewStage = path.lessons.findIndex((lesson) =>
+            lesson.id === "software-craft-lab-change-safety-review");
+        const finalReview = path.lessons.findIndex((lesson) =>
+            lesson.id === "software-craft-lab-refine-steward-api-for-review");
+        const insertionIndex = firstReviewStage >= 0 ? firstReviewStage
+            : finalReview >= 0 ? finalReview : path.lessons.length;
+        return {
+            ...path,
+            lessons: [
+                ...path.lessons.slice(0, insertionIndex),
+                reusableInternalPackageLesson,
+                extractStewardCommonLesson,
+                ...path.lessons.slice(insertionIndex),
+            ],
+        };
     }
     if (path.id === "steward-api-v1") {
         return { ...path, lessons: path.lessons.map((lesson) => ({ ...lesson, activities: lesson.activities.map((activity) => {
