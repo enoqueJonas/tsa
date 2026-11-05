@@ -403,12 +403,22 @@ assert.match(realSettingsExamples.lab, /secrets\.token_urlsafe/);
 
 const dependencyLessonStart = source.indexOf('richLesson("Map a Directed Service Dependency into Django"');
 const historyLessonStart = source.indexOf('richLesson("Persist a Steward Service Review History"');
-const integratedLabStart = source.indexOf('id: "django-and-api-engineering-lab-steward-api-skeleton"');
+const integratedLabStart = source.indexOf('"id": "django-and-api-engineering-lab-steward-api-skeleton"');
 const configBeforeData = source.indexOf('richLesson("Configuration and Environments"');
 assert.ok(configBeforeData < dependencyLessonStart &&
   dependencyLessonStart < historyLessonStart &&
   historyLessonStart < integratedLabStart,
   "The directed edge and review history prerequisites must precede integrated Steward lab");
+for (const checkpoint of [
+  "django-and-api-engineering-lab-steward-api-skeleton-dependency-checkpoint",
+  "django-and-api-engineering-lab-steward-api-skeleton-review-history-checkpoint",
+  "django-and-api-engineering-lab-steward-api-skeleton-build",
+]) {
+  assert.ok(source.includes('"id": "' + checkpoint + '"'),
+    "The lab must expose independent activity checkpoints and preserve its original build ID: " + checkpoint);
+}
+assert.match(source, /the next Identity module/,
+  "The unfinished identity/authorization boundary must be visible to the learner");
 for (const id of [
   "map-a-directed-service-dependency-into-django",
   "persist-a-steward-service-review-history",
