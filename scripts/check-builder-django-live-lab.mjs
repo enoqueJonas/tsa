@@ -175,6 +175,39 @@ assert.match(modelDomainExample, /Service\.Lifecycle\.UAT/,
 assert.match(modelDomainExample, /invalid\.full_clean\(\)/,
   "Example must demonstrate the model choices validation boundary");
 
+// Source-published migration files and programs are the tests' only inputs.
+const migrationExamples = {
+  optionalBook: modelLessonSnippet("catalogue/models.py — Book with an optional field"),
+  optionalCheck: modelLessonSnippet("catalogue/optional_migration_check.py — verify rows survive"),
+  nullableShelfBook: modelLessonSnippet("catalogue/models.py — nullable shelf_code stage"),
+  shelfBaseline: modelLessonSnippet("catalogue/migration_baseline.py — create deliberate collision and capture IDs"),
+  shelfBackfill: modelLessonSnippet("catalogue/migrations/0005_backfill_shelf_code.py — historical backfill"),
+  shelfRepair: modelLessonSnippet("catalogue/repair_shelf_collision.py — preserve the row and change its title"),
+  finalShelfBook: modelLessonSnippet("catalogue/models.py — final required unique shelf_code"),
+  shelfContract: modelLessonSnippet("catalogue/migrations/0006_require_unique_shelf_code.py — enforce constraints"),
+  shelfVerify: modelLessonSnippet("catalogue/verify_shelf_migration.py — positive and negative database evidence"),
+  registryBaseline: modelLessonSnippet("registry/migration_identity_snapshot.py — preserve original IDs and foreign keys"),
+  registryExpand: modelLessonSnippet("registry/migrations/0002_service_slug_nullable.py — expand"),
+  registryCollision: modelLessonSnippet("registry/create_slug_collision.py — two UAT Services with matching slug"),
+  registryBackfill: modelLessonSnippet("registry/migrations/0003_backfill_service_slugs.py — detect and backfill"),
+  registryRepair: modelLessonSnippet("registry/repair_slug_collision.py — keep the Service identity"),
+  registryContract: modelLessonSnippet("registry/migrations/0004_require_unique_service_slug.py — enforce"),
+  registryVerify: modelLessonSnippet("registry/verify_service_slugs.py — applied-domain check"),
+};
+const optionalMigrationStart = source.indexOf('richLesson("Add a Field Without Losing Existing Django Rows"');
+const uniqueMigrationStart = source.indexOf('richLesson("Backfill a Unique Field Without Losing Data"');
+const stewardMigrationStart = source.indexOf('richLesson("Schema Evolution with Django Migrations"');
+const serializerAfterMigrations = source.indexOf('richLesson("Serializers and Representation"');
+assert.ok(optionalMigrationStart > querysetRelationsStart &&
+  optionalMigrationStart < uniqueMigrationStart &&
+  uniqueMigrationStart < stewardMigrationStart &&
+  stewardMigrationStart < serializerAfterMigrations,
+  "Populated-table changes must follow QuerySet basics and precede the serializer chapter");
+assert.match(migrationExamples.shelfBackfill, /apps\.get_model\("catalogue", "Book"\)/);
+assert.match(migrationExamples.registryBackfill, /apps\.get_model\("registry", "Service"\)/);
+assert.doesNotMatch(migrationExamples.shelfBackfill, /RunPython\.noop/, "No fake reverse for irreversible data migration");
+assert.doesNotMatch(migrationExamples.registryBackfill, /RunPython\.noop/, "No fake reverse for irreversible data migration");
+
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-django-bridge-"));
 const exec=(command,args,env=process.env)=>{
   const p=spawnSync(command,args,{cwd:root,encoding:"utf8",timeout:60000,env});
@@ -365,6 +398,119 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
     "The domain model exercise must be safe to repeat without duplicate Services");
   console.log("Builder Models and Domain Data passed: actual safe UAT Service, FK JOIN, idempotent reuse and invalid lifecycle rejection.");
 
+  // A clean PostgreSQL Django registry is required here. The original
+  // integration project has already added a Membership 0002 from the later
+  // Identity module; that schema history must not contaminate this lesson.
+  exec("psql", ["-X", "-v", "ON_ERROR_STOP=1", "-c",
+    "CREATE DATABASE tsa_steward_schema_lab;"]);
+  const schemaRoot = path.join(root, "django-steward-schema");
+  fs.mkdirSync(schemaRoot);
+  const schemaEnv = {...env, PGDATABASE: "tsa_steward_schema_lab"};
+  const schemaExec = (args) => {
+    const p = spawnSync("python3", args,
+      {cwd: schemaRoot, encoding: "utf8", timeout: 60000, env: schemaEnv});
+    assert.ifError(p.error);
+    assert.equal(p.status, 0, "Schema lab failed: python3 " + args.join(" ") +
+      "\n" + p.stdout + "\n" + p.stderr);
+    return p.stdout.trim();
+  };
+  schemaExec(["-m", "django", "startproject", "config", "."]);
+  schemaExec(["manage.py", "startapp", "registry"]);
+  fs.writeFileSync(path.join(schemaRoot, "registry", "models.py"), model + "\n");
+  fs.appendFileSync(path.join(schemaRoot, "config", "settings.py"), [
+    "", "import os", "INSTALLED_APPS += ['registry']",
+    "DATABASES = {'default': {'ENGINE': 'django.db.backends.postgresql',",
+    "    'NAME': os.environ['PGDATABASE'], 'USER': os.environ['PGUSER'],",
+    "    'PASSWORD': os.environ['PGPASSWORD'], 'HOST': os.environ['PGHOST'],",
+    "    'PORT': os.environ['PGPORT']}}", ""
+  ].join("\n"));
+  schemaExec(["manage.py", "check"]);
+  schemaExec(["manage.py", "makemigrations", "registry", "--noinput"]);
+  schemaExec(["manage.py", "migrate", "--noinput"]);
+  assert.match(schemaExec(["manage.py", "showmigrations", "registry"]),
+    /\[X\] 0001_initial/);
+  const seedSchema = [
+    "from registry.models import Team, Service, Environment",
+    "team = Team.objects.create(name='Django Workshop')",
+    "service = Service.objects.create(name='Workshop Reports API', owning_team=team,",
+    "    endpoint='https://workshop.example.invalid/api', lifecycle=Service.Lifecycle.UAT)",
+    "Environment.objects.create(service=service, name='UAT', kind=Environment.Kind.UAT)",
+    "assert Service.objects.count() == 1 and Environment.objects.count() == 1",
+    "print('SCHEMA_BASELINE_READY')"
+  ].join("\n");
+  assert.match(schemaExec(["manage.py", "shell", "-c", seedSchema]), /SCHEMA_BASELINE_READY/);
+
+  // Transfer the complete migration workflow to the actual PostgreSQL-backed
+  // registry. All earlier Steward examples already ran before changing schema.
+  const registryRun = (name, content) => {
+    fs.writeFileSync(path.join(schemaRoot, "registry", name), content + "\n");
+    return schemaExec(["manage.py", "shell", "-c",
+      "exec(open('registry/" + name + "').read())"]);
+  };
+  const originalRegistry = fs.readFileSync(path.join(schemaRoot, "registry", "models.py"), "utf8");
+  const originalServicePosition = originalRegistry.indexOf("class Service(models.Model):");
+  const serviceNameNeedle = "    name = models.TextField(unique=True)\n";
+  const fieldPosition = originalRegistry.indexOf(serviceNameNeedle, originalServicePosition);
+  assert.ok(originalServicePosition >= 0 && fieldPosition > originalServicePosition,
+    "Cannot locate the actual Service.name definition without modifying Team.name");
+  const snapshot = registryRun("migration_identity_snapshot.py", migrationExamples.registryBaseline);
+  assert.match(snapshot, /original_services: \d+/);
+  assert.match(snapshot, /original_environments: \d+/);
+  const nullableRegistry = originalRegistry.slice(0, fieldPosition + serviceNameNeedle.length) +
+    "    slug = models.SlugField(max_length=160, null=True, blank=True)\n" +
+    originalRegistry.slice(fieldPosition + serviceNameNeedle.length);
+  fs.writeFileSync(path.join(schemaRoot, "registry", "models.py"), nullableRegistry);
+  fs.writeFileSync(path.join(schemaRoot, "registry", "migrations", "0002_service_slug_nullable.py"),
+    migrationExamples.registryExpand + "\n");
+  const registrySql = schemaExec(["manage.py", "sqlmigrate", "registry", "0002"]);
+  assert.match(registrySql, /slug/);
+  schemaExec(["manage.py", "migrate", "registry", "0002", "--noinput"]);
+
+  const conflictSetup = registryRun("create_slug_collision.py", migrationExamples.registryCollision);
+  assert.match(conflictSetup, /collision_service_pk: \d+/);
+  assert.match(conflictSetup, /all_slugs_still_empty: True/);
+  fs.writeFileSync(path.join(schemaRoot, "registry", "migrations", "0003_backfill_service_slugs.py"),
+    migrationExamples.registryBackfill + "\n");
+  const failedRegistryBackfill = spawnSync("python3",
+    ["manage.py", "migrate", "registry", "--noinput"],
+    {cwd: schemaRoot, encoding: "utf8", timeout: 60000, env: schemaEnv});
+  assert.notEqual(failedRegistryBackfill.status, 0, "Unresolved Service slug collision must fail");
+  assert.match(failedRegistryBackfill.stdout + failedRegistryBackfill.stderr,
+    /duplicate Service slug: 'workshop-reports-api'/,
+    "Missing real slugify collision in registry migration");
+  assert.match(schemaExec(["manage.py", "showmigrations", "registry"]),
+    /\[ \] 0003_backfill_service_slugs/);
+  const undone = schemaExec(["manage.py", "shell", "-c",
+    "from registry.models import Service; assert not Service.objects.exclude(slug__isnull=True).exists(); print('REGISTRY_BACKFILL_ROLLED_BACK')"]);
+  assert.match(undone, /REGISTRY_BACKFILL_ROLLED_BACK/);
+
+  assert.match(registryRun("repair_slug_collision.py", migrationExamples.registryRepair),
+    /service_collision_repaired: \d+/);
+  schemaExec(["manage.py", "migrate", "registry", "--noinput"]);
+  assert.match(schemaExec(["manage.py", "showmigrations", "registry"]),
+    /\[X\] 0003_backfill_service_slugs/);
+  const finalRegistry = nullableRegistry.replace(
+    "    slug = models.SlugField(max_length=160, null=True, blank=True)",
+    "    slug = models.SlugField(max_length=160, unique=True)");
+  assert.notEqual(finalRegistry, nullableRegistry);
+  fs.writeFileSync(path.join(schemaRoot, "registry", "models.py"), finalRegistry);
+  fs.writeFileSync(path.join(schemaRoot, "registry", "migrations", "0004_require_unique_service_slug.py"),
+    migrationExamples.registryContract + "\n");
+  assert.match(schemaExec(["manage.py", "sqlmigrate", "registry", "0004"]),
+    /slug/);
+  schemaExec(["manage.py", "migrate", "registry", "--noinput"]);
+  assert.match(schemaExec(["manage.py", "makemigrations", "registry", "--check", "--dry-run"]),
+    /No changes detected/);
+  const verifySteward = registryRun("verify_service_slugs.py", migrationExamples.registryVerify);
+  for (const expect of [
+    "original_ids_and_owners_preserved: True",
+    "service_slugs_valid:",
+    "owner_still_present: True",
+    "DUPLICATE_SERVICE_SLUG_REJECTED"
+  ]) assert.ok(verifySteward.includes(expect),
+    "Published Steward migration evidence missing: " + expect + "\n" + verifySteward);
+  console.log("Builder Steward schema evolution passed: actual 0002/0003/0004 migration chain, collision rollback, recovery, original FKs, full model-state alignment, unique DB rejection.");
+
   // Reconstruct the independent beginner lab from the actual authored Django
   // and DRF lessons, rather than testing equivalent code written only here.
   // Its app has no database models and must never mutate the Steward fixture.
@@ -545,6 +691,93 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   ].join("\n");
   assert.match(beginnerExec(["manage.py", "shell", "-c", transfer]), /N_PLUS_ONE_TRANSFER_OK plain=5 prefetch=2/);
   console.log("Builder Django QuerySet lessons passed: 0/1/cache SQL execution, get/count/exists contracts, forward/reverse N+1 and unseen-fourth-list transfer.");
+
+  // First prove a populated-table ALTER with a new nullable Book field.
+  const bookModelFile = path.join(beginnerRoot, "catalogue", "models.py");
+  const bookContents = fs.readFileSync(bookModelFile, "utf8");
+  assert.ok(bookContents.includes(firstBookModel), "The first Book model must still exist verbatim");
+  fs.writeFileSync(bookModelFile, bookContents.replace(
+    firstBookModel, migrationExamples.optionalBook));
+  const missingColumn = spawnSync("python3", [
+    "manage.py", "shell", "-c",
+    "from catalogue.models import Book; list(Book.objects.values_list('edition_note', flat=True))"
+  ], {cwd: beginnerRoot, encoding: "utf8", timeout: 60000, env});
+  assert.notEqual(missingColumn.status, 0, "Unmigrated optional field must really be missing");
+  assert.match(missingColumn.stderr, /no such column|does not exist/i);
+  beginnerExec(["manage.py", "check"]);
+  beginnerExec(["manage.py", "makemigrations", "catalogue", "--noinput"]);
+  assert.match(beginnerExec(["manage.py", "sqlmigrate", "catalogue", "0003"]), /edition_note/);
+  assert.match(beginnerExec(["manage.py", "showmigrations", "catalogue"]), /\[ \] 0003_/);
+  beginnerExec(["manage.py", "migrate", "catalogue", "--noinput"]);
+  assert.match(beginnerExec(["manage.py", "showmigrations", "catalogue"]), /\[X\] 0003_/);
+
+  const migrateRun = (file, content) => {
+    fs.writeFileSync(path.join(beginnerRoot, "catalogue", file), content + "\n");
+    return beginnerExec(["manage.py", "shell", "-c",
+      "exec(open('catalogue/" + file + "').read())"]);
+  };
+  const optionalProof = migrateRun("optional_migration_check.py", migrationExamples.optionalCheck);
+  for (const expected of ["old_rows_retained: 4", "optional_field_updated: True",
+    "ids_unchanged: True"]) assert.ok(optionalProof.includes(expected),
+      "Optional field lab failed: " + expected + "\n" + optionalProof);
+
+  // Expand, fail an atomic data migration, fix training data, backfill, then
+  // enforce a UNIQUE and NOT NULL constraint. No fake-initial or toy mock.
+  const bookOptionalContents = fs.readFileSync(bookModelFile, "utf8");
+  assert.ok(bookOptionalContents.includes(migrationExamples.optionalBook));
+  fs.writeFileSync(bookModelFile,
+    bookOptionalContents.replace(migrationExamples.optionalBook, migrationExamples.nullableShelfBook));
+  beginnerExec(["manage.py", "makemigrations", "catalogue", "--noinput"]);
+  assert.match(beginnerExec(["manage.py", "sqlmigrate", "catalogue", "0004"]), /shelf_code/);
+  beginnerExec(["manage.py", "migrate", "catalogue", "--noinput"]);
+  const beforeShelf = migrateRun("migration_baseline.py", migrationExamples.shelfBaseline);
+  assert.match(beforeShelf, /before_books: 5/);
+  assert.match(beforeShelf, /same_slug: river-guide/);
+
+  beginnerExec(["manage.py", "makemigrations", "--empty", "catalogue",
+    "--name", "backfill_shelf_code"]);
+  const dataMigrationFile = path.join(beginnerRoot, "catalogue",
+    "migrations", "0005_backfill_shelf_code.py");
+  assert.ok(fs.existsSync(dataMigrationFile), "Django must create migration 0005");
+  fs.writeFileSync(dataMigrationFile, migrationExamples.shelfBackfill + "\n");
+  const badBackfill = spawnSync("python3",
+    ["manage.py", "migrate", "catalogue", "--noinput"],
+    {cwd: beginnerRoot, encoding: "utf8", timeout: 60000, env});
+  assert.notEqual(badBackfill.status, 0, "A real duplicate slug must prevent backfill");
+  assert.match(badBackfill.stdout + badBackfill.stderr,
+    /duplicate shelf code: 'river-guide'/);
+  assert.match(beginnerExec(["manage.py", "showmigrations", "catalogue"]),
+    /\[ \] 0005_backfill_shelf_code/);
+  const rolledBack = beginnerExec(["manage.py", "shell", "-c",
+    "from catalogue.models import Book; assert not Book.objects.exclude(shelf_code__isnull=True).exists(); print('BOOK_BACKFILL_ROLLED_BACK')"]);
+  assert.match(rolledBack, /BOOK_BACKFILL_ROLLED_BACK/);
+
+  const repaired = migrateRun("repair_shelf_collision.py", migrationExamples.shelfRepair);
+  assert.match(repaired, /collision_repaired: \d+/);
+  assert.match(repaired, /code_still_empty: True/);
+  beginnerExec(["manage.py", "migrate", "catalogue", "--noinput"]);
+  assert.match(beginnerExec(["manage.py", "showmigrations", "catalogue"]),
+    /\[X\] 0005_backfill_shelf_code/);
+
+  const bookNullableContents = fs.readFileSync(bookModelFile, "utf8");
+  assert.ok(bookNullableContents.includes(migrationExamples.nullableShelfBook));
+  fs.writeFileSync(bookModelFile,
+    bookNullableContents.replace(migrationExamples.nullableShelfBook, migrationExamples.finalShelfBook));
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "migrations",
+    "0006_require_unique_shelf_code.py"), migrationExamples.shelfContract + "\n");
+  assert.match(beginnerExec(["manage.py", "sqlmigrate", "catalogue", "0006"]), /shelf_code/);
+  beginnerExec(["manage.py", "migrate", "catalogue", "--noinput"]);
+  assert.match(beginnerExec(["manage.py", "showmigrations", "catalogue"]),
+    /\[X\] 0006_require_unique_shelf_code/);
+  assert.match(beginnerExec(["manage.py", "makemigrations", "catalogue",
+    "--check", "--dry-run"]), /No changes detected/);
+  const verifiedBooks = migrateRun("verify_shelf_migration.py", migrationExamples.shelfVerify);
+  for (const expected of [
+    "ids_and_links_preserved: True", "unique_shelf_codes: 5",
+    "DUPLICATE_CODE_REJECTED", "NULL_CODE_REJECTED"
+  ]) assert.ok(verifiedBooks.includes(expected),
+    "Published Book schema and data migration proof failed: " + expected + "\n" + verifiedBooks);
+  console.log("Builder Book schema evolution passed: applied 0003/0004/0005/0006, missing-column negative, atomic backfill collision rollback, identity/FK preservation and real UNIQUE/NOT NULL denials.");
 
   for (const name of ["serializer_lab.py", "serializer_negatives.py", "serializer_patch.py"]) {
     const captions = {
