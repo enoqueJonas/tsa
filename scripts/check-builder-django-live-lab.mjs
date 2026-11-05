@@ -1433,6 +1433,13 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   assert.ok(securedContractLesson > lifecycleLesson &&
     securedContractLesson < mistakesLesson,
     "Signed OpenAPI must follow token lifecycle and transfer authorization");
+  // The earlier catalogue OpenAPI lab was a different Django project.
+  // Apply the learner-published schema settings to the SAME migrated Steward registry.
+  const secureContractSettings = identityJsonSnippet(
+    "config/settings.py — register drf-spectacular for the existing signed API");
+  fs.appendFileSync(path.join(schemaRoot,"config","settings.py"),
+    "\n" + secureContractSettings + "\n");
+  schemaExec(["manage.py","check"]);
   const secureContractFiles = [
     ["secure_contract_views.py", "registry/secure_contract_views.py — document actual signed detail and transfer"],
     ["secure_contract_api_urls.py", "registry/secure_contract_api_urls.py — signed route objects for runtime and schema"],
