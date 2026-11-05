@@ -335,18 +335,32 @@ const practices: Record<string, PracticeSpec> = {
     completionCriteria: ["Queryset order is explicit before any slicing.", "The moving-page duplicate is observed via two separate database-backed requests.", "Cursor evidence is not misrepresented as transactional snapshot isolation.", "The demo is not presented as multi-tenant secured."]
   },
   "django-and-api-engineering-filtering-searching-and-ordering": {
-    objective: "Expose query capabilities that answer real Steward questions without accidentally publishing an unbounded query language.",
-    scenario: "A generic filter backend makes every field searchable and orderable. It is convenient, but nobody has decided whether those capabilities belong to the public contract or what they cost.",
-    instructions: ["List the actual collection questions Steward clients need to ask.", "Implement explicit lifecycle, criticality and owner-team filters using an allowlisted FilterSet/backend contract rather than passing arbitrary query parameters into ORM lookups.", "Add bounded name search and deliberate ordering_fields. Include slug search only after the dedicated slug migration exists; inspect the public query-parameter contract and generated SQL.", "Attempt one unsupported query and confirm it is rejected or ignored predictably.", "Inspect at least one generated SQL query and identify a future performance concern."],
-    deliverables: ["Supported-query matrix", "Implemented filters/search/order", "Unsupported-query evidence", "SQL observation note"],
-    completionCriteria: ["Every exposed query capability maps to a known use case.", "Search, filtering and ordering are distinguished.", "The public surface is intentionally bounded."]
+    objective: "Prove a real server-selected Team visibility boundary before applying user-supplied Service query parameters.",
+    scenario: "Reuse the already migrated tsa_steward_django_lab. Authentication and Membership are taught in the next module, so this applied practice uses a disposable, server-owned TSA_TRAINING_TEAM_ID configured only through override_settings. It is not authentication and its routes must not be published.",
+    instructions: [
+      "Save registry/training_scope.py from the lesson and identify the exact Service.objects.filter(owning_team_id=team_id) that executes before any untrusted query option.",
+      "Save registry/training_query_views.py and registry/training_scoped_urls.py. Explain why the URLConf is loaded ONLY inside the tests and must never be added to normal config/urls.py.",
+      "In the same managed PostgreSQL Django project, run python manage.py check and execute registry/seed_scoped_services.py through manage.py shell. Observe five Team A and three Team B synthetic UAT Services.",
+      "Run registry/scoped_filter_lab.py. Record actual HTTP result count 5 and captured SQL showing the owner predicate plus sorting; then intersect lifecycle=uat and criticality=high to obtain two named rows.",
+      "Attempt ?owning_team=<Team B PK> while the server selects Team A. Verify response count 0 rather than accessing Team B; then reproduce seven invalid/repeated queries yielding HTTP 400 and unchanged stored count.",
+      "Temporarily unset the server-selected Team scope in test settings and verify HTTP 403; restore it. Explain why this deliberately limited evidence does not prove real user membership or object permissions."
+    ],
+    deliverables: ["Executable scoped query and isolated URL files", "Five/three fixture evidence", "SQL and GET response checks", "Forged Team/invalid parameters transcript", "Unimplemented Identity-layer requirements"],
+    completionCriteria: ["Client query parameters cannot broaden the server-owned scope.", "Both result rows and count exclude the other Team.", "The test-only endpoint is not exposed in production URLs.", "Authentication and authorization remain explicitly unimplemented."]
   },
   "django-and-api-engineering-pagination": {
-    objective: "Make collection pagination deterministic, bounded and understandable under changing data.",
-    scenario: "A client reports seeing duplicate services while paging through /services. The API uses framework-default pagination but never defined ordering or maximum size.",
-    instructions: ["Create enough services to require multiple pages.", "Demonstrate the current ordering behavior and identify whether it is deterministic.", "Set explicit ordering, a sensible default page size and a maximum. Implement/compare page-number or limit-offset behavior with cursor pagination on the same changing collection.", "Test empty, one-page and multi-page collections.", "Insert or modify data between page requests and document what consistency guarantee the chosen pagination style does and does not provide."],
-    deliverables: ["Pagination configuration", "Multi-page evidence", "Ordering/consistency experiment", "Client-contract note"],
-    completionCriteria: ["Pagination uses deterministic ordering.", "Response size is bounded.", "You can explain the consistency limitations of the chosen approach."]
+    objective: "Paginate the real PostgreSQL-backed Service QuerySet AFTER trusted server-side Team scoping, with bounded size and changing-row evidence.",
+    scenario: "Continue the same tsa_steward_django_lab, eight synthetic scoped Services and training-only URLConf. Team context is the server-selected TSA_TRAINING_TEAM_ID test setting, NOT an authenticated user or membership system; do not publish these routes.",
+    instructions: [
+      "Re-read registry/training_scope.py and show where its Team filter executes before COUNT, ORDER BY, LIMIT and OFFSET. Use the existing TrainingServicePages implementation in registry/training_query_views.py; do not write another framework or replace the tutorial URLConf.",
+      "Run registry/scoped_page_lab.py once through manage.py shell. Capture the first Team A page (Birch/Cedar) with count 5, and inspect actual SQL for the owner predicate, ORDER BY and OFFSET.",
+      "Insert the local fictional Scope Lab Aardvark between the first and second requests; reproduce Cedar appearing twice across numbered pages while the count changes from 5 to 6.",
+      "Request page_size=100 and verify the three-row maximum. Reproduce invalid and repeated page filters as 400 and page 999 as 404.",
+      "Change the trusted Team setting inside the isolated test to Team B and verify its count 3 and only its own rows. Do not expose Team B through a client-selected owner parameter in Team A context.",
+      "Compare this numbered-page behavior with the real Book cursor lab, and explain which membership/permission and consistency guarantees remain unimplemented."
+    ],
+    deliverables: ["Actual scoped DRF pagination evidence", "COUNT/ORDER BY/OFFSET SQL", "Moving-page failure with retained Team scoping", "Size cap and error responses", "Team A/B server-context comparison"],
+    completionCriteria: ["Scope is applied before count and page selection.", "Observed page mutation is actual stored database behavior.", "Other Team rows and count are not exposed.", "The training setting is not described as deployable authentication."]
   },
   "django-and-api-engineering-api-versioning": {
     objective: "Classify API changes by compatibility impact before reaching for a new version.",

@@ -100,10 +100,18 @@ const loggingExampleCli = loggingLessonSnippet("Terminal — execute the Django 
 assert.match(loggingExampleCli, /python manage\.py shell -c/, "Lesson must give runnable Django terminal instructions");
 
 function modelLessonSnippet(caption) {
-  const needle = 'caption: "' + caption + '"';
-  const at = source.indexOf(needle);
-  assert.ok(at >= 0, "Missing first-principles Django model code: " + caption);
-  const match = source.slice(at, at + 12000).match(/value: ("(?:\\.|[^"\\])*")/);
+  // The rich lesson source legitimately contains both authored TS object
+  // syntax (caption: "x", value: "...") and JSON-style literal entries
+  // ("caption":"x","value":"..."). Always extract the exact published
+  // snippet; do not substitute a CI-only reimplementation.
+  const tsAt = source.indexOf('caption: "' + caption + '"');
+  const jsonAt = source.indexOf('"caption":' + JSON.stringify(caption));
+  const at = tsAt >= 0 ? tsAt : jsonAt;
+  assert.ok(at >= 0, "Missing exact learner-visible Django code: " + caption);
+  const content = source.slice(at, at + 16000);
+  const match = tsAt >= 0
+    ? content.match(/value: ("(?:\\.|[^"\\])*")/)
+    : content.match(/"value":("(?:\\.|[^"\\])*")/);
   assert.ok(match, "Published model example has no value: " + caption);
   return JSON.parse(match[1]);
 }
@@ -293,6 +301,32 @@ assert.match(queryPaginationExamples.pageView, /max_page_size = 3/,
 assert.match(queryPaginationExamples.pageView, /CursorPagination/,
   "The cursor exercise must use real DRF pagination, not Python list slicing");
 
+// Applied Service filtering/paging now run through actual framework HTTP and
+// a server-selected fixture. No authentication/Membership is silently invented.
+const scopedExamples = {
+  scope: modelLessonSnippet("registry/training_scope.py — server-selected Team scope and allowlisted Service lookups"),
+  views: modelLessonSnippet("registry/training_query_views.py — real Service list and bounded page view"),
+  urls: modelLessonSnippet("registry/training_scoped_urls.py — unpublished teaching endpoints"),
+  seed: modelLessonSnippet("registry/seed_scoped_services.py — eight fictional UAT Services"),
+  filterLab: modelLessonSnippet("registry/scoped_filter_lab.py — real SQL-backed boundary and negative queries"),
+  pageLab: modelLessonSnippet("registry/scoped_page_lab.py — scoped HTTP page shift, cap and non-leak"),
+};
+assert.match(scopedExamples.scope,
+  /Service\.objects\.filter\(owning_team_id=team_id\)/,
+  "Visibility scope must originate in a server-selected Team before client filtering");
+assert.doesNotMatch(scopedExamples.scope, /request\.GET\['team_id'\]|HTTP_X_TEAM|request\.headers/,
+  "Client-controlled headers or Team ID cannot stand in for authentication");
+assert.match(scopedExamples.filterLab, /CaptureQueriesContext\(connection\)/,
+  "Applied scoping must capture SQL actually executed by the database");
+assert.match(scopedExamples.pageLab, /"count"\] == 5/,
+  "A scoped page must demonstrate counts, not only filtered response rows");
+for (const id of ["filtering-searching-and-ordering", "pagination"]) {
+  assert.match(publishedPractice(id), /TSA_TRAINING_TEAM_ID/,
+    "Applied exercise must explain its test-only server-selected Team scope");
+  assert.doesNotMatch(publishedPractice(id), /Authenticate as Team A|authenticated Team maintainer/,
+    "Do not require untaught authentication/Membership in the Django module");
+}
+
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-django-bridge-"));
 const exec=(command,args,env=process.env)=>{
   const p=spawnSync(command,args,{cwd:root,encoding:"utf8",timeout:60000,env});
@@ -313,17 +347,13 @@ try {
   const commands=snippet("registry/services.py — protect production transitions and last-deployment deletion");
   const versioning=snippet("API versioning — executable old-client compatibility test");
   const validation=snippet("DRF validation — executable field and cross-field rejection");
-  const pagination=snippet("DRF pagination — executable offset shift failure");
-  const filtering=snippet("DRF filters — executable lifecycle and ordering whitelist");
   const config=snippet("Django configuration — executable environment contract");
   const openapi=snippet("OpenAPI — minimal health contract with deliberate path mismatch");
-  assert.match(exec("python3",["-c",filtering]),/filter contract: valid and 2 invalid parameters/);
   assert.match(exec("python3",["-c",config]),/configuration: valid local and 3 rejected setups/);
   const documented=JSON.parse(openapi);
   assert.equal(documented.openapi,"3.0.3");
   assert.ok(documented.paths["/health"] && !documented.paths["/health/"],"Published mismatch must be deliberate and observable");
 
-  assert.match(exec("python3",["-c",pagination]),/offset shift duplicates: Identity/);
   assert.match(exec("python3",["-c",versioning]),/versioning contract rejects semantic drift/);
 
   exec("psql",["-X","-v","ON_ERROR_STOP=1","-c","CREATE DATABASE tsa_steward_django_lab;"]);
@@ -615,6 +645,47 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   assert.doesNotMatch(realRootUrls, /training_urls|TrainingPromotionView/,
     "Do not accidentally publish the unauthenticated training promotion endpoint");
   console.log("Builder DRF applied error contract passed: actual 409/200/404/405 HTTP and unchanged PostgreSQL state after denied transition.");
+
+  for (const [filename, body] of [
+    ["training_scope.py", scopedExamples.scope],
+    ["training_query_views.py", scopedExamples.views],
+    ["training_scoped_urls.py", scopedExamples.urls],
+    ["seed_scoped_services.py", scopedExamples.seed],
+    ["scoped_filter_lab.py", scopedExamples.filterLab],
+    ["scoped_page_lab.py", scopedExamples.pageLab],
+  ]) fs.writeFileSync(path.join(root, "registry", filename), body + "\n");
+  exec("python3", ["manage.py", "check"], env);
+  const scopedSeed = exec("python3", ["manage.py", "shell", "-c",
+    "exec(open('registry/seed_scoped_services.py').read())"], env);
+  assert.match(scopedSeed, /SCOPED_FIXTURE_FIVE_AND_THREE/);
+  const scopedHttp = exec("python3", ["manage.py", "shell", "-c",
+    "exec(open('registry/scoped_filter_lab.py').read())"], env);
+  for (const expected of [
+    "SCOPE_FIVE_NO_OTHER_TEAM_SQL_CONFIRMED",
+    "SCOPE_CRITICALITY_LIFECYCLE_INTERSECTION_TWO",
+    "SCOPE_OTHER_TEAM_REQUEST_RETURNS_ZERO",
+    "SCOPE_SEVEN_BAD_QUERIES_400_NO_WRITES",
+    "SCOPE_NOT_CONFIGURED_403",
+    "SCOPED_STEWARD_QUERY_OK"
+  ]) assert.ok(scopedHttp.includes(expected),
+    "Published applied-scoping request failed: " + expected + "\n" + scopedHttp);
+  const scopedPageHttp = exec("python3", ["manage.py", "shell", "-c",
+    "exec(open('registry/scoped_page_lab.py').read())"], env);
+  for (const expected of [
+    "SCOPED_FIRST_PAGE_FIVE",
+    "SCOPED_OFFSET_DUPLICATE_AFTER_INSERT",
+    "SCOPED_PAGE_SIZE_CAPPED_THREE",
+    "SCOPED_BAD_PAGES_400_OUT_OF_RANGE_404",
+    "TRUSTED_SCOPE_CHANGES_WITH_SERVER_CONFIG_NOT_QUERY",
+    "SCOPED_STEWARD_PAGINATION_OK"
+  ]) assert.ok(scopedPageHttp.includes(expected),
+    "Published scoped pagination failed: " + expected + "\n" + scopedPageHttp);
+  const deployedUrls = fs.readFileSync(path.join(root, "config", "urls.py"), "utf8");
+  assert.doesNotMatch(deployedUrls, /training_scoped_urls|TrainingServicePages|TrainingServiceList/,
+    "Lab-only Team scoped URL may not become a public endpoint");
+  console.log("Builder Steward scoped queries/pages passed: 5/3 real Team rows, client cannot broaden visibility, scoped SQL/COUNT, 403/400/404 negatives, bounded pages and moving-offset duplicate.");
+
+
 
   // Reconstruct the independent beginner lab from the actual authored Django
   // and DRF lessons, rather than testing equivalent code written only here.
