@@ -136,6 +136,28 @@ with sync_playwright() as playwright:
             "Capstone predecessor check is not completed in the browser fixture")
         print("PASS synthetic 75 prerequisite completions persisted across lesson routes",
               flush=True)
+        # Observe UI authorization directly. A source-session pass cannot
+        # substitute for the actual rendered lock state and selected activity.
+        sidebar = page.locator("aside").filter(
+            has=page.get_by_text("Curriculum", exact=True)).first
+        locked_titles = []
+        capstone_section = None
+        for section in sidebar.locator("section").all():
+            heading = section.locator("h2").inner_text()
+            if section.get_by_text("Locked", exact=True).count():
+                locked_titles.append(heading)
+            if heading == "Lab: Refine Steward API for Review":
+                capstone_section = section
+        assert capstone_section is not None, (
+            "Capstone exists in source but not the rendered sidebar")
+        print("SOFTWARE_CRAFT_LOCKED_LESSONS:", repr(locked_titles), flush=True)
+        assert not capstone_section.get_by_text("Locked", exact=True).count(), (
+            "Capstone locked with 75 stored prerequisites: " + repr(locked_titles))
+        first_capstone = capstone_section.get_by_role(
+            "button", name="From working API to reviewable engineering system")
+        assert first_capstone.count() == 1 and first_capstone.is_enabled(), (
+            "Capstone first activity unavailable despite synthetic completion")
+
 
         capstone, capstone_id = open_activity(
             page, "Lab: Refine Steward API for Review", "brief")
