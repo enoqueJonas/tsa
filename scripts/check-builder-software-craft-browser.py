@@ -212,11 +212,18 @@ def inspect_readings(page):
             "actual": fresh_actual,
             "headings": fresh_headings
         }, flush=True)
-        final_button = page.get_by_role(
-            "button", name="From working API to reviewable engineering system", exact=True
-        )
+        final_section = page.locator("aside section").filter(
+            has=page.get_by_role(
+                "heading", name="Lab: Refine Steward API for Review", exact=True
+            )
+        ).first
         final_button_status = (
-            final_button.first.is_disabled() if final_button.count() else "MISSING"
+            final_section.locator("button").first.is_disabled()
+            if final_section.count() else "FINAL_SECTION_MISSING"
+        )
+        final_section_text = (
+            final_section.inner_text()[:650]
+            if final_section.count() else "FINAL_SECTION_MISSING"
         )
         stage3_section = page.locator("aside section").filter(
             has=page.get_by_role(
@@ -231,6 +238,7 @@ def inspect_readings(page):
             "headings": page.locator("main").last.locator("h1,h2").all_inner_texts()[:6],
             "saved": last_progress,
             "final_button_disabled": final_button_status,
+            "final_section_sidebar": final_section_text,
             "last_stage_sidebar": stage3_section.inner_text()[:650]
                 if stage3_section.count() else "MISSING"
         }, flush=True)
