@@ -1386,6 +1386,44 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
 
 
 
+  // PED-029E: finish the real refresh/logout lifecycle on the SAME 0008
+  // PostgreSQL registry. The earlier JWT lab deliberately had rotation OFF.
+  const lifecycleLesson = identitySource.indexOf(
+    '"identity-authentication-authorization-refresh-logout-http"');
+  const mistakesLesson = identitySource.indexOf(
+    '"identity-authentication-authorization-common-authentication-and-authorization-mistakes"');
+  assert.ok(lifecycleLesson > transferLesson && lifecycleLesson < mistakesLesson,
+    "Executable session lifecycle must follow real ownership authorization");
+  const lifecycle = {
+    settings: identityJsonSnippet(
+      "config/settings.py — enable actual rotating and blacklisted refresh credentials"),
+    urls: identityJsonSnippet(
+      "registry/session_lifecycle_urls.py — isolated real refresh logout routes"),
+    lab: identityJsonSnippet(
+      "registry/session_lifecycle_lab.py — signed refresh replay logout and database state"),
+  };
+  fs.appendFileSync(path.join(schemaRoot, "config", "settings.py"),
+    "\\n" + lifecycle.settings + "\\n");
+  for (const [filename, body] of [
+    ["session_lifecycle_urls.py", lifecycle.urls],
+    ["session_lifecycle_lab.py", lifecycle.lab],
+  ]) fs.writeFileSync(path.join(schemaRoot, "registry", filename), body + "\\n");
+  schemaExec(["manage.py", "migrate", "token_blacklist", "--noinput"]);
+  schemaExec(["manage.py", "check"]);
+  const lifecycleProof = schemaExec(["manage.py", "shell", "-c",
+    "exec(open('registry/session_lifecycle_lab.py').read())"]);
+  for (const label of [
+    "SESSION_ROTATED_REFRESH_200_OLD_REFRESH_REPLAY_401",
+    "SESSION_LOGOUT_BLACKLIST_PERSISTED_REUSE_401",
+    "SESSION_EXISTING_ACCESS_VALID_UNTIL_EXPIRY_REFRESH_NOT_ACCESS",
+    "SESSION_BLACKLIST_STATE_AND_STEWARD_DOMAIN_INVARIANT_OK",
+  ]) assert.ok(lifecycleProof.includes(label), label + "\\n" + lifecycleProof);
+  assert.doesNotMatch(
+    fs.readFileSync(path.join(schemaRoot, "config", "urls.py"), "utf8"),
+    /session_lifecycle_urls|TokenBlacklistView|token\/logout/,
+    "Private token lifecycle routes must not be added to ordinary config URLs");
+  console.log("Builder Identity real refresh rotation/replay/logout passed on the SAME PostgreSQL registry.");
+
   // Existing domain command and PostgreSQL migration lab completed above.
   // Exercise published HTTP exception code against its real stored state;
   // training URLs are ONLY passed through override_settings in the source.
