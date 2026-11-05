@@ -417,8 +417,11 @@ for (const checkpoint of [
   assert.ok(source.includes('"id": "' + checkpoint + '"'),
     "The lab must expose independent activity checkpoints and preserve its original build ID: " + checkpoint);
 }
-assert.match(source, /the next Identity module/,
-  "The unfinished identity/authorization boundary must be visible to the learner");
+const integratedLabEvidence = source.slice(integratedLabStart);
+assert.match(integratedLabEvidence, /Not proved: login, verified principal/,
+  "The final lab must explicitly distinguish completed integration from missing Identity");
+assert.match(integratedLabEvidence, /django-and-api-engineering-lab-steward-api-skeleton-boundary-transfer/,
+  "Integrated Steward lab must include an independent, navigable trust-boundary transfer");
 for (const id of [
   "map-a-directed-service-dependency-into-django",
   "persist-a-steward-service-review-history",
