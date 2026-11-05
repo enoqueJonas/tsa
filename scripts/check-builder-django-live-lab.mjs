@@ -1333,6 +1333,17 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   assert.match(nestedProof, /NESTED_ENVIRONMENT_FIXTURES_ROLLED_BACK/);
   assert.doesNotMatch(fs.readFileSync(path.join(schemaRoot, "config", "urls.py"), "utf8"), /environment_membership/);
   console.log("Builder signed nested Environment parent policy passed.");
+  for (const [file, caption] of [
+    ["dependency_membership_api.py", "registry/dependency_membership_api.py — authorize both stored edge endpoints"],
+    ["dependency_membership_urls.py", "registry/dependency_membership_urls.py — private signed edge route"],
+    ["dependency_membership_lab.py", "registry/dependency_membership_lab.py — signed directed-edge evidence"],
+  ]) fs.writeFileSync(path.join(schemaRoot, "registry", file), identityJsonSnippet(caption));
+  const edgeProof = schemaExec(["manage.py", "shell", "-c", "exec(open('registry/dependency_membership_lab.py').read())"]);
+  assert.match(edgeProof, /DEPENDENCY_SIGNED_SOURCE_TARGET_DIRECTION_AND_REVOCATION_OK/);
+  assert.match(edgeProof, /DEPENDENCY_FIXTURES_ROLLED_BACK/);
+  assert.doesNotMatch(fs.readFileSync(path.join(schemaRoot,"config","urls.py"),"utf8"), /dependency_membership/);
+  console.log("Builder signed dependency source and target policy passed.");
+
 
 
 
