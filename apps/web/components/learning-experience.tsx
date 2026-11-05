@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createRuntime, type LearningPath } from "@tsa/runtime-kernel";
 import { ActivityEvidencePanel } from "./activity-evidence-panel";
 import { CurriculumSidebar } from "./curriculum-sidebar";
@@ -35,8 +35,12 @@ export function LearningExperience({
   const [unlockedActivityIds, setUnlockedActivityIds] = useState(session.unlockedActivityIds());
   const [reflectionResponse, setReflectionResponse] = useState(session.reflectionResponse(session.currentActivity().id));
   const [canCompleteCurrentActivity, setCanCompleteCurrentActivity] = useState(session.canCompleteCurrentActivity());
+  // A route callback is recreated by the parent on ordinary progress renders.
+  // Keep it current without making URL re-entry restart the learner's session.
+  const activityChangeRef = useRef(onActivityChange);
+  useEffect(() => { activityChangeRef.current = onActivityChange; }, [onActivityChange]);
 
-  function sync() {
+  const sync = useCallback(() => {
     const currentActivity = session.currentActivity();
     setLesson(session.currentLesson());
     setActivity(currentActivity);
@@ -47,7 +51,7 @@ export function LearningExperience({
     setReflectionResponse(session.reflectionResponse(currentActivity.id));
     setCanCompleteCurrentActivity(session.canCompleteCurrentActivity());
     return currentActivity;
-  }
+  }, [session]);
 
   function persist() {
     void savePathProgress(activePath, session.progress());
@@ -67,8 +71,21 @@ export function LearningExperience({
 
     const current = sync();
     setRestored(true);
-    onActivityChange?.(current.id);
-  }, [activePath.id, initialActivityId, onActivityChange, progressForPath, ready, restored, session]);
+    activityChangeRef.current?.(current.id);
+  }, [activePath.id, initialActivityId, progressForPath, ready, restored, session, sync]);
+
+  // A direct activity route can arrive after an existing path session has
+  // restored. The initial restore effect deliberately runs only once; if the
+  // requested activity changes afterward, it must still be honoured provided
+  // it is unlocked. Do not depend on the changing parent callback here:
+  // advancing with Next must never snap the learner back to an old route.
+  useEffect(() => {
+    if (!restored || !initialActivityId) return;
+    if (session.currentActivity().id === initialActivityId) return;
+    if (!session.goToActivity(initialActivityId)) return;
+    const current = sync();
+    activityChangeRef.current?.(current.id);
+  }, [initialActivityId, restored, session, sync]);
 
   // Every activity replaces the learner's reading surface. A navigation should
   // begin at the lesson header, never inherit the previous long activity's scroll.
