@@ -72,3 +72,14 @@ For a repeat local Python smoke run, use an activated disposable Python environm
 
 For the live Django lab, use a **dedicated disposable PostgreSQL instance**, configured with `PGHOST`, `PGPORT`, `PGDATABASE=tsa_steward_lab`, `PGUSER` and `PGPASSWORD` verified via `psql`. The script creates additional specifically named training databases, so do not point it at a valuable PostgreSQL cluster or rerun blindly against persistent training databases. CI uses PostgreSQL 17 and installs Django/DRF/psycopg/drf-spectacular/SimpleJWT; a separate local run needs those dependencies. Never bypass the database guard by setting only `PGDATABASE`.
 
+
+### 2026-11-05: strengthen real denial and logging evidence
+
+A subsequent source audit found two assertions that could claim success without proving their intended property:
+
+1. The signed transfer lab checked `target.owning_team_id` on a **stale in-memory ORM instance** after denied HTTP requests. It now queries `Service.objects.filter(...).exists()` against PostgreSQL and asserts that the audit-row count and ServiceReview snapshot remain unchanged before allowing the successful transfer.
+2. The bounded `django.request` capture only checked that tokens were absent. An **empty log** would pass that check. The lab now requires a denied secure-request path to be present in the captured logs before asserting no bearer token was logged. This still proves only the bounded local Django logger, not proxy/APM production logs.
+
+These source corrections are committed on the draft PR and have a source-derived guard in `scripts/check-identity-module-integrity.mjs`. Manual remote-source inspection confirms the published extracted Python text, stage order, capstone block types and new assertions. **The real Django HTTP/PostgreSQL execution, matching-head TS build and learner-browser check remain unverified**.
+
+The GitHub workflow is configured for `push` (plus manual `workflow_dispatch`), not `pull_request`. The available connected workflow-run retrieval filters for pull-request-triggered runs, so an empty result cannot be interpreted as either a passing check or proof that no push CI ran.
