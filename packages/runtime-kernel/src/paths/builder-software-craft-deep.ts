@@ -13,6 +13,7 @@ function slug(value: string) {
 
 const craftTeaching: Record<string, { outcomes: string[]; practical: string }> = {
   "Configuration Precedence and Startup Gates": { outcomes: ["Trace a setting from source through precedence, parsing, validation and startup.","Reject unsafe cross-setting combinations before any listener starts.","Explain why a typed configuration object is safer than scattered environment reads."], practical: "Prove a fail-closed configuration startup boundary" },
+  "Logging Failure Paths and Correlation": { outcomes: ["Define bounded, queryable log events for real success and denial paths.","Use a safe field allowlist and distinguish sensitive input from correlation context.","Prove a negative secret-leak control while limiting the conclusions to the test logger."], practical: "Prove secret-safe success and denial log events" },
   "Git as an Engineering Tool": { outcomes: ["Distinguish working-directory changes, staged content and committed history.", "Create and inspect two local commits without staging unrelated files.", "Safely restore a deliberate scratch edit without rewriting history."], practical: "Build and inspect two local commits" },
   "Investigate Bugs with Git History": { outcomes: ["Define a repeatable pass/fail condition for a regression.", "Find its first bad commit with a real Git bisect session.", "Restore the original branch and explain when bisect evidence is unreliable."], practical: "Find the first bad Git commit" },
   "Branching and Collaboration": { outcomes: ["Explain what a local branch points to and how commits diverge.", "Create, compare, merge and delete a small focused branch with evidence.", "Compare merge, squash and rebase without rewriting shared history."], practical: "Create and merge a focused branch" },
@@ -1281,6 +1282,73 @@ export const softwareCraftDeepLessons: Lesson[] = [
         ["What makes a log operationally useful?", "Why are stable identifiers preferable to display names in logs?", "Which values must not be logged?"],
         [pythonLogging],
     ),
+    lesson(
+        "Logging Failure Paths and Correlation",
+        "A single successful logging call is not enough to establish an operational contract. This checkpoint distinguishes the event worth recording, its severity, correlation context and deliberately excluded secrets. It then runs both a permitted and a denied operation through a bounded Python logger and proves that an intentionally unsafe mutant is detected. It follows Useful Logging and prepares for later observability work without assuming a centralized logging platform.",
+        [
+        {
+                "title": "Choose a log event by the question an investigator must answer",
+                "paragraphs": [
+                        "A log event represents an observed occurrence such as service.change_denied, not a prose dump of program variables. An investigator trying to explain a failed change needs the request correlation ID, the affected Service ID, the actor's stable ID and a bounded denial reason. A password, bearer token or entire request body does not answer that question and creates additional risk.",
+                        "Separate events from metrics and traces: this exercise writes two local log events; it does not calculate error rates, propagate a distributed trace or establish log ingestion. Correlation is useful only when all relevant code paths consistently carry the same request ID."
+                ]
+        },
+        {
+                "title": "Severity is a decision about expected behavior",
+                "paragraphs": [
+                        "An expected denial is not necessarily an ERROR: rejecting a forbidden Team mutation is the application behaving correctly. Use a documented WARNING for a security-relevant denial in this example, INFO for an allowed change and ERROR for an unexpected backend fault. Real volume and monitoring policies may warrant a different level, but the selection must be deliberate.",
+                        "The executable table below declares allowed fields per event; this is a policy checklist, not a live logger. Run it first and inspect why every event requires request_id and why no field list contains raw authentication material."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "event_level_contract.py — bounded event, level and field-policy table",
+                        "code": "# Compare levels and the minimum safe context before choosing events.\n# This table documents policy; log destinations and retention are not configured.\nevents = {\n    \"service.change_allowed\": (\"INFO\", {\"request_id\", \"service_id\", \"actor_id\"}),\n    \"service.change_denied\": (\"WARNING\", {\"request_id\", \"service_id\", \"actor_id\", \"reason\"}),\n    \"unexpected_backend_failure\": (\"ERROR\", {\"request_id\", \"service_id\"}),\n}\nfor name, (level, fields) in events.items():\n    assert level in {\"INFO\", \"WARNING\", \"ERROR\"}\n    assert \"request_id\" in fields\n    assert not fields.intersection({\"Authorization\", \"password\", \"access_token\"})\nprint(\"LOG_LEVEL_AND_CONTEXT_POLICY_OK\")"
+                }
+        },
+        {
+                "title": "Use an allowlist formatter rather than serializing everything",
+                "paragraphs": [
+                        "Python logging supports extra contextual attributes. It does not automatically ensure those attributes are safe to store: logging record.__dict__ or a request's headers can expose secrets. A custom formatter here emits only an event name, level and four explicitly allowed attributes, never the full request body. For a real service, the logger's lifecycle and handlers should be configured centrally, not rebuilt inside each request.",
+                        "This example owns one isolated logger and disables propagation so the test cannot accidentally duplicate its events via a parent handler. That containment is a test technique, not evidence that production application, reverse-proxy and APM logs have equivalent controls."
+                ]
+        },
+        {
+                "title": "Capture the success and denial paths with positive and negative oracles",
+                "paragraphs": [
+                        "Run python3 event_logging_lab.py with a local Python interpreter. The first half asserts two actual emitted JSON lines, their order and severity, the identity/correlation fields, and absence of a synthetic token and password key. A blank log cannot pass because the test asserts exactly two events.",
+                        "The negative control deliberately sends a fake token into a separate in-memory bad logger, then proves the same redaction oracle catches it. Nothing from that unsafe logger is printed. If the negative control stops being detected, the test is no longer proving protection against the intended error."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "event_logging_lab.py — real JSON log events, forbidden request and unsafe-leak mutant",
+                        "code": "# Save as event_logging_lab.py; run: python3 event_logging_lab.py\n# No Django, DB, remote logging service, credentials or network calls.\nimport io\nimport json\nimport logging\n\nclass SafeEventFormatter(logging.Formatter):\n    ALLOWED = (\"request_id\", \"service_id\", \"actor_id\", \"reason\")\n    def format(self, record):\n        # Never serialize record.__dict__, headers, request body or stack trace.\n        event = {\"level\": record.levelname, \"event\": record.getMessage()}\n        for name in self.ALLOWED:\n            value = getattr(record, name, None)\n            if value is not None:\n                event[name] = value\n        return json.dumps(event, sort_keys=True)\n\nstream = io.StringIO()\nlogger = logging.getLogger(\"tsa.craft.event_lab\")\nlogger.handlers.clear()  # This lab owns the isolated logger only.\nlogger.setLevel(logging.INFO)\nlogger.propagate = False\nhandler = logging.StreamHandler(stream)\nhandler.setFormatter(SafeEventFormatter())\nlogger.addHandler(handler)\n\ndef change_service(actor_team, owner_team, service_id, actor_id, request_id, body):\n    # body is deliberately untrusted and must never be passed to the logger.\n    if actor_team != owner_team:\n        logger.warning(\"service.change_denied\",\n                       extra={\"service_id\": service_id, \"actor_id\": actor_id,\n                              \"request_id\": request_id, \"reason\": \"wrong_team\"})\n        return False\n    logger.info(\"service.change_allowed\",\n                extra={\"service_id\": service_id, \"actor_id\": actor_id,\n                       \"request_id\": request_id})\n    return True\n\nfake_token = \"SYNTHETIC_TOKEN_NOT_FOR_LOGS\"\nmalicious_body = {\"Authorization\": \"Bearer \" + fake_token, \"password\": fake_token}\nassert change_service(2, 1, 41, 9, \"req-01\", malicious_body) is False\nassert change_service(1, 1, 41, 9, \"req-02\", malicious_body) is True\nevents = [json.loads(line) for line in stream.getvalue().splitlines()]\nassert len(events) == 2, \"No log evidence or wrong event cardinality\"\nassert [event[\"event\"] for event in events] == [\n    \"service.change_denied\", \"service.change_allowed\"]\nassert events[0][\"level\"] == \"WARNING\" and events[0][\"reason\"] == \"wrong_team\"\nassert events[0][\"request_id\"] == \"req-01\" and events[1][\"service_id\"] == 41\nassert fake_token not in stream.getvalue() and \"password\" not in stream.getvalue()\nprint(\"LOG_SUCCESS_AND_DENIAL_CONTEXT_NO_SECRET_OK\")\n\n# Wrong implementation: a developer interpolates the raw synthetic token.\n# Contain this ONLY in a second in-memory logger; never print the string.\nbad_stream = io.StringIO()\nbad = logging.getLogger(\"tsa.craft.unsafe_control\")\nbad.handlers.clear()\nbad.propagate = False\nbad.setLevel(logging.INFO)\nbad_handler = logging.StreamHandler(bad_stream)\nbad.addHandler(bad_handler)\nbad.warning(\"auth_denied token=%s\", fake_token)\ndef assert_no_secret(text):\n    assert fake_token not in text\ntry:\n    assert_no_secret(bad_stream.getvalue())\nexcept AssertionError:\n    print(\"LOG_UNSAFE_MUTANT_DETECTED\")\nelse:\n    raise AssertionError(\"The secret-leak negative oracle failed\")\nbad.removeHandler(bad_handler)\nlogger.removeHandler(handler)\nprint(\"LOG_EVENT_CONTRACT_AND_NEGATIVE_ORACLE_OK\")"
+                }
+        },
+        {
+                "title": "Make an evidence-limited claim about observability",
+                "paragraphs": [
+                        "This source-derived exercise proves local log shape and the selected absence properties for two calls. It does not prove that no other code path leaks credentials, that a distributed request identifier propagates through every service, that audit trails are immutable, or that access and retention are correctly configured.",
+                        "Transfer one event to the signed Steward endpoint only after locating its actual service and authorization boundary. Record before/after behavior and redact any diagnostic excerpts; never claim that a local in-memory sample represents proxy, WAF or hosted telemetry logs."
+                ]
+        }
+],
+        "Emit useful structured success and denial events, prove a real secret-exclusion oracle and detect an intentionally unsafe logger in isolation.",
+        [
+        "Write an event contract including event name, expected level, stable identifiers, correlation and fields explicitly excluded.",
+        "Run the published event_level_contract.py and event_logging_lab.py examples with Python 3 using only scratch files and standard library.",
+        "Verify the two positive/denied JSON log records and confirm a missing or duplicate event would fail the cardinality assertion.",
+        "Run the unsafe logging mutant; identify the exact oracle that detects it without printing the synthetic token.",
+        "Find one Steward operation to instrument in a disposable lab, explain the request-ID source and list the downstream logging layers not covered by this test."
+],
+        [
+        "Which details let an operator correlate an authorized and denied Service change without exposing credentials?",
+        "Why is an expected 403 not necessarily an ERROR-level application failure?",
+        "How does the lab prevent a vacuous 'no secrets in logs' claim?",
+        "Which logging and tracing boundaries remain untested by the local logger?"
+],
+        [pythonLogging],
+    ),
+
     lesson(
         "Write a README Someone Can Follow",
         "A good README lets another engineer start from an unfamiliar repository and accomplish a real task without guessing. Before documenting a Django server, learn to write and verify instructions for a tiny Python program. This exercise creates all its own files in a temporary folder, including a README, and executes the commands it documents. No external service, database or Steward project is needed.",
