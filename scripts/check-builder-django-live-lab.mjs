@@ -208,6 +208,26 @@ assert.match(migrationExamples.registryBackfill, /apps\.get_model\("registry", "
 assert.doesNotMatch(migrationExamples.shelfBackfill, /RunPython\.noop/, "No fake reverse for irreversible data migration");
 assert.doesNotMatch(migrationExamples.registryBackfill, /RunPython\.noop/, "No fake reverse for irreversible data migration");
 
+const persistedLessonStart = source.indexOf('richLesson("Persist a Book Through a Real DRF API"');
+const genericViewStart = source.indexOf('richLesson("Views, ViewSets and Routing"');
+const readinessStart = source.indexOf('richLesson("Production Readiness Commands and Atomic Updates"');
+assert.ok(persistedLessonStart > genericViewStart && persistedLessonStart < readinessStart,
+  "Teach real persistence after introductory dispatch and before Steward readiness");
+assert.match(publishedPractice("persist-a-book-through-a-real-drf-api"),
+  /tsa-django-intro|catalogue/, "Persistent DRF practice must reuse the actual beginner project");
+const persistedSerializer = modelLessonSnippet(
+  "catalogue/stored_serializers.py — model-backed input and representation");
+const persistedApi = modelLessonSnippet(
+  "catalogue/stored_api.py — real GET, POST and PATCH operations");
+const persistedUrls = modelLessonSnippet(
+  "catalogue/urls.py — append real stored-book routes");
+const persistedLab = modelLessonSnippet(
+  "catalogue/stored_request_lab.py — persistent HTTP flow with failures");
+assert.match(persistedApi, /serializer\.save\(\)/,
+  "A real POST must save validated data before promising 201");
+assert.match(persistedLab, /Book\.objects\.filter\(pk=book_id\)/,
+  "Published HTTP lab must check database persistence, not just response status");
+
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-django-bridge-"));
 const exec=(command,args,env=process.env)=>{
   const p=spawnSync(command,args,{cwd:root,encoding:"utf8",timeout:60000,env});
@@ -816,6 +836,37 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   ].join("\n");
   assert.match(beginnerExec(["manage.py", "shell", "-c", httpProbe]),
     /DJANGO_BEGINNER_LABS_OK 200 201 400 404 405 406 415/);
+  // The introductory APIView's fake 201 is no longer the final learner
+  // outcome. Execute the source-published ModelSerializer.save and explicit
+  // database-backed APIView in the same migrated Book catalogue.
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "stored_serializers.py"),
+    persistedSerializer + "\n");
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "stored_api.py"),
+    persistedApi + "\n");
+  fs.appendFileSync(path.join(beginnerRoot, "catalogue", "urls.py"),
+    "\n" + persistedUrls + "\n");
+  beginnerExec(["manage.py", "check"]);
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "stored_request_lab.py"),
+    persistedLab + "\n");
+  const persistedEvidence = beginnerExec(["manage.py", "shell", "-c",
+    "exec(open('catalogue/stored_request_lab.py').read())"]);
+  for (const expected of [
+    "CREATE_201_SAVED", "FRESH_REQUEST_READ_200",
+    "PATCH_CHANGED_ONLY_NOTE", "MISSING_TITLE_400",
+    "DUPLICATE_SLUG_400_NO_WRITE", "MISSING_404_AND_UNSUPPORTED_405",
+    "STORED_BOOK_API_OK"
+  ]) assert.ok(persistedEvidence.includes(expected),
+    "Published persistent API source did not establish: " + expected +
+    "\n" + persistedEvidence);
+  const freshShell = beginnerExec(["manage.py", "shell", "-c", [
+    "from catalogue.models import Book",
+    "book = Book.objects.get(shelf_code='stored-api-test-book')",
+    "assert book.edition_note == 'Checked through PATCH'",
+    "print('REOPENED_STORED_BOOK_OK')",
+  ].join("\n")]);
+  assert.match(freshShell, /REOPENED_STORED_BOOK_OK/);
+  console.log("Builder DRF persistence passed: exact ModelSerializer/APIView files, durable POST, fresh HTTP GET/shell, partial PATCH and 400/404/405 unchanged-data negatives.");
+
   console.log("Builder Django beginner lab passed: actual lesson snippets for projects, DRF, plain serializer, APIView and ViewSet plus negative HTTP/validation cases.");
 
   console.log("Builder Django bridge passed: actual learner-visible config URL, models, serializer, PostgreSQL migrations, query, and HTTP test client 200/404/405.");
