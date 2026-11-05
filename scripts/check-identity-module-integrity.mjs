@@ -52,6 +52,19 @@ for (const caption of captions) {
 // A denied signed request must prove persisted state, not a stale Python instance;
 // log redaction evidence must also reject an empty log capture.
 
+const lifecycleCaption = "registry/session_lifecycle_lab.py — signed refresh replay logout and database state";
+const lifecycleAt = source.indexOf('"caption":' + JSON.stringify(lifecycleCaption));
+assert.ok(lifecycleAt >= 0, "Missing refresh lifecycle code");
+const lifecycleMatch = source.slice(lifecycleAt, lifecycleAt + 14000).match(
+  /"code":("(?:\\.|[^"\\])*")/);
+assert.ok(lifecycleMatch, "Missing Python refresh lifecycle program");
+const lifecycleCode = JSON.parse(lifecycleMatch[1]);
+assert.ok(lifecycleCode.includes('token__token__in=[first_refresh, second_refresh, latest_refresh]'),
+  "Blacklist count alone does not establish that issued refresh credentials were revoked");
+assert.ok(lifecycleCode.includes(
+    'blacklisted_refreshes == {first_refresh, second_refresh, latest_refresh}'),
+  "Require exact persisted token-specific blacklist evidence, not aggregate row count");
+
 const schemaCaption = "config/settings.py — register drf-spectacular for the existing signed API";
 const schemaAt = source.indexOf('"caption":' + JSON.stringify(schemaCaption));
 assert.ok(schemaAt >= 0, "Signed schema must configure the SAME Django project");
@@ -72,6 +85,7 @@ const contractCode = JSON.parse(contractCodeMatch[1]);
 for (const check of [
   "Service.objects.filter(pk=target.pk, owning_team_id=team_a.pk).exists()",
   "OwnershipTransfer.objects.count() == audit_count_before",
+  'document["components"]["securitySchemes"]["jwtAuth"]["scheme"] == "bearer"',
   'assert "secure/services/" in log_text',
 ]) assert.ok(contractCode.includes(check),
   "Real signed contract lab is missing a non-vacuous denial/log assertion: " + check);
