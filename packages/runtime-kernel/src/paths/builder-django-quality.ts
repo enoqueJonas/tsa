@@ -391,12 +391,34 @@ const practices: Record<string, PracticeSpec> = {
     deliverables: ["Ten-change compatibility matrix", "Old-client contract oracles", "Versioning scheme decision", "Deprecation and maintenance plan"],
     completionCriteria: ["Versioning is recommended only for demonstrated client incompatibility.", "Old and new contract tests are defined.", "Security parity across versions is explicitly required.", "Retirement depends on evidence, not an arbitrary deployment date."]
   },
+  "django-and-api-engineering-generate-and-verify-openapi-from-a-real-book-api": {
+    objective: "Generate an actual OpenAPI schema for existing Django/DRF Book endpoints, serve it and compare documented fields/status codes with persisted HTTP requests.",
+    scenario: "Continue tsa-django-intro after its actual stored-book, error contract, query, pagination and versioning lessons. The maintained drf-spectacular generator is an explicit extra dependency; built-in DRF schema generation is deprecated. Do not require Docker or any production authentication.",
+    instructions: [
+      "Using the existing Python interpreter, install drf-spectacular and append the supplied config/settings.py fragment retaining EXCEPTION_HANDLER and the earlier settings. Explain what a schema generator and Swagger UI each do.",
+      "Create catalogue/contract_api.py with full annotated APIView GET/POST and ErrorEnvelopeSerializer. Explain why @extend_schema is attached to actual APIView entrypoint methods and why POST calls serializer.save().",
+      "Create catalogue/contract_urls.py and catalogue/openapi_urls.py. Append only the given routes to catalogue/urls.py; verify both runtime and schema URLConfs include the same contract_urls module.",
+      "Run python manage.py check, then python manage.py spectacular --urlconf catalogue.openapi_urls --format openapi-json --file catalogue/openapi.json --validate --fail-on-warn. Inspect paths, operations, requestBody, 201/400/404 responses and StoredBook component.",
+      "Execute catalogue/openapi_contract_lab.py via manage.py shell. Verify actual 201 with stored row and new-request 200, invalid/duplicate 400, missing 404 and unsupported detail POST 405; compare actual JSON keys to the generated component and confirm no extra writes.",
+      "Verify GET /catalogue/training-schema/ and GET /catalogue/training-docs/ return HTTP 200 locally. Distinguish Swagger HTML response from full availability of optional CDN-hosted browser assets.",
+      "Inspect two deliberate but syntactically plausible contract mutations: removed published_year property and a nonexistent documented path. Demonstrate both are rejected by separate live contract checks."
+    ],
+    deliverables: ["Generated validated OpenAPI JSON", "Source-annotated actual GET/POST implementation", "Shared runtime/schema routing evidence", "HTTP success/error and stored-state transcript", "Two drift rejection results"],
+    completionCriteria: ["OpenAPI is generated from actual DRF code, not pasted hard-coded JSON.", "No schema-only path or response-field mismatch is accepted as a valid runtime contract.", "Swagger is correctly distinguished from the schema.", "Authentication remains explicitly not implemented for this training endpoint."]
+  },
   "django-and-api-engineering-openapi-and-swagger-documentation": {
-    objective: "Use OpenAPI as contract evidence and detect drift between generated documentation and real runtime behavior.",
-    scenario: "Swagger UI looks complete, but it documents only success responses and one field is writable in the schema even though runtime rejects it. Treat generated documentation as something to verify, not trust automatically.",
-    instructions: ["Generate the Steward OpenAPI schema and identify its paths, operations, parameters/requestBody, responses, components/schemas and securitySchemes where applicable.", "Inspect /services request and response schemas field by field.", "Document at least two non-2xx responses with stable error shapes.", "Compare one documented request/response with a real curl exchange.", "Find and fix at least one meaningful schema/runtime mismatch."],
-    deliverables: ["Generated OpenAPI schema", "Contract review notes", "Documented failure responses", "Before/after drift evidence"],
-    completionCriteria: ["Documentation includes important failures, not only happy paths.", "At least one runtime comparison is performed.", "Generated output is reviewed as contract evidence rather than accepted blindly."]
+    objective: "Transfer the demonstrated schema-generation and runtime-conformance method to Steward's real domain and explicitly document non-2xx business outcomes.",
+    scenario: "The Book API has a validated generated OpenAPI contract. Steward additionally has a real readiness command returning 409 when a production Environment is missing, while actual user authentication/Team membership belongs to the following Identity module.",
+    instructions: [
+      "Inspect the Book generator/export and actual HTTP tests, explaining which claims structural validation and which claims only observed HTTP behavior prove.",
+      "Build an operation review matrix for Steward list/create/detail, query/page, and readiness transition, recording paths, fields, responses, data-state side effects and implemented status.",
+      "Document the previously observed ReadinessConflict→409 error envelope and compare its code/details with the real registry/error_contract_lab.py output.",
+      "Mark Team-scoped training routes as nonpublic: server-selected TSA_TRAINING_TEAM_ID is not actual authentication or a membership-derived authorization guarantee.",
+      "Distinguish possible future bearer securitySchemes from implementation of permissions; defer live 401/403 and Team membership tests until the Identity module.",
+      "Specify CI checks for public schema completeness and generated/observed field, status and method conformance. Include one deliberately false schema change that the CI must reject."
+    ],
+    deliverables: ["Steward operations/failure matrix", "409 domain error contract evidence", "Security implementation gap", "Schema/HTTP drift detection plan"],
+    completionCriteria: ["No public route is documented as implemented before its code exists.", "Business conflicts are described accurately rather than inferred from serializers.", "Structural validity and HTTP behavior are separately tested.", "Swagger availability is not misrepresented as runtime or authorization proof."]
   },
   "django-and-api-engineering-configuration-and-environments": {
     objective: "Turn environment-specific assumptions into an explicit configuration contract with safe defaults and fail-fast production behavior.",
