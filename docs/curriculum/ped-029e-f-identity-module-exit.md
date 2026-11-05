@@ -53,3 +53,22 @@ The live Django lab requires the PostgreSQL/dependencies established for earlier
 Concurrent refresh single-use/family revocation; immediate access logout; account-wide logout; nested child update/delete/reparenting; cross-Team dependency reconciliation; multi-writer transfer guarantees; secure OpenAPI for all deployed routes; reverse-proxy/WAF/APM log safety; manual rendered navigation/progress and uncoached learner scoring. Those are separate claims and are not automatically solved by source remediation.
 
 **Classification:** Instructional source remediated, latest-head execution and learner validation pending. Keep #396, #321, #318 and #315 open.
+
+## 2026-11-05 local execution report and targeted correction
+
+A real learner-local run after checking out this PR branch established the following, rather than only relying on a previous green head:
+
+- `node scripts/check-identity-module-integrity.mjs`: **passed** before the fix.
+- `pnpm test`: **34 passed, 4 failed out of 38**. The failures were one **Identity TypeScript error** and three separate System Thinker prerequisites: XML/XSD lacked `lxml`; SFTP lacked `asyncssh`; the FTP subprocess exited before listening. FTP launches `python -m pyftpdlib` with stderr hidden, so missing `pyftpdlib` is a plausible diagnosis, **not established** solely from that message.
+- `pnpm build`: **failed** with TS2353 in `builder-identity-auth-deep.ts` on final capstone reading blocks; a heading incorrectly included `items` and another heading incorrectly included `title`/`code`/`caption`. The learner-facing strict structural inventory reported zero findings but did not catch those type errors.
+- `node scripts/check-builder-django-live-lab.mjs`: **did not run its PostgreSQL work**, because `PGDATABASE` was undefined rather than the guarded disposable `tsa_steward_lab`. This is not evidence that signed JWT/SQL logic passed or failed.
+- Strict learner-facing structural audit: **passed** (12 schools, 128 paths, 1,384 lessons, 4,102 activities, zero structural findings). This is not a manual depth or learner-transfer result.
+
+**Committed source correction:** replace invalid heading extras with properly typed separate `heading` / `list` / `code` blocks, remove duplicate contradictory post-rotation commands, and preserve the three-stage JWT baseline → Membership/Ownership → refresh-blacklist chronology. Commit `c9bfbd182ef6b7fbb01f741d9087055bcb6619b1`. New gate `scripts/check-identity-module-integrity.mjs` parses the final lab, rejects extra properties on heading blocks and requires a single three-stage command block with correct policy transition order. Commit `11afe0d62416bd777f85cbe42fa1f69831481a07`.
+
+**Verification honesty:** the fix and stronger guard are committed, and the resulting capstone block was parsed/inspected through the connected repository. Matching-head TypeScript compilation, full test/build, PostgreSQL HTTP regression, browser rendering and novice scoring **still require actual execution output**. Do not promote these to passed from the correction alone.
+
+For a repeat local Python smoke run, use an activated disposable Python environment and install the CI-declared requirements (`lxml>=5,<8`, `pyftpdlib>=2,<3`, `asyncssh>=2.20,<3`). Confirm those imports under the *same* `python3` used by Node subprocesses. The FTP port must be bindable on localhost; inspect server startup separately if the package is present.
+
+For the live Django lab, use a **dedicated disposable PostgreSQL instance**, configured with `PGHOST`, `PGPORT`, `PGDATABASE=tsa_steward_lab`, `PGUSER` and `PGPASSWORD` verified via `psql`. The script creates additional specifically named training databases, so do not point it at a valuable PostgreSQL cluster or rerun blindly against persistent training databases. CI uses PostgreSQL 17 and installs Django/DRF/psycopg/drf-spectacular/SimpleJWT; a separate local run needs those dependencies. Never bypass the database guard by setting only `PGDATABASE`.
+
