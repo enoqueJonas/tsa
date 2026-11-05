@@ -8,6 +8,7 @@ on:
       - packages/runtime-kernel/src/paths/builder-identity-auth-deep.ts
       - scripts/check-identity-module-integrity.mjs
       - scripts/check-builder-django-live-lab.mjs
+      - scripts/check-builder-identity-browser.py
       - scripts/tests/curriculum-smoke.test.mjs
       - docs/curriculum/ped-029e-f-identity-module-exit.md
       - .github/workflows/identity-postgresql-pr.yml
@@ -95,5 +96,24 @@ jobs:
         run: pnpm test
       - name: Build all applications
         run: pnpm build
+      - name: Install Chromium for real Identity learner navigation
+        run: |
+          python3 -m pip install playwright==1.58.0
+          python3 -m playwright install --with-deps chromium
+      - name: Prove rendered Identity learning, 390px layout, scroll and IndexedDB re-entry
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory apps/web/out > /tmp/tsa-identity-server.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl --fail --silent http://127.0.0.1:4173/ > /dev/null && break
+            sleep 1
+          done
+          python3 scripts/check-builder-identity-browser.py
+      - name: Upload Identity learner browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: builder-identity-browser
+          path: artifacts/identity-learner/
+          if-no-files-found: warn
       - name: Audit all learner-facing curriculum structure
         run: node scripts/audit-learner-facing-curriculum.mjs --strict
