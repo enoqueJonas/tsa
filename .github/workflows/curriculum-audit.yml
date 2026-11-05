@@ -26,6 +26,7 @@ on:
       - curriculum/builder-django-domain-query-contract
       - curriculum/builder-django-schema-evolution-depth
       - curriculum/builder-drf-persisted-book-api
+      - curriculum/builder-drf-real-error-contract
       - curriculum/system-thinker-pedagogical-audit
       - curriculum/platform-builder-pedagogical-audit
       - curriculum/delivery-engineer-pedagogical-audit

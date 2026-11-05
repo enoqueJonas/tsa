@@ -279,12 +279,32 @@ const practices: Record<string, PracticeSpec> = {
     deliverables: ["Multi-entry-point reproduction", "Reusable rule implementation", "Constraint decision", "Rule-to-API translation evidence"],
     completionCriteria: ["The same rule holds across more than one caller.", "Critical invariants are reinforced where justified.", "HTTP error translation is separated from domain-rule ownership."]
   },
+  "django-and-api-engineering-see-how-drf-turns-exceptions-into-http-responses": {
+    objective: "Trace raised DRF exceptions through a real configured handler to HTTP responses without silently changing stored Book rows.",
+    scenario: "Reuse the already migrated tsa-django-intro catalogue and its working persistent Book API. This lesson does not need a production Service, Docker, tokens, Identity or an external API gateway.",
+    instructions: [
+      "Create catalogue/error_handlers.py and catalogue/error_views.py exactly as in the reading. Explain what exception_handler may return and why unhandled failures must remain 500.",
+      "Append only the two new URLs to catalogue/urls.py, retaining every earlier route, and configure REST_FRAMEWORK.EXCEPTION_HANDLER in config/settings.py without wiping other settings.",
+      "Run python manage.py check. Save catalogue/error_contract_lab.py and execute it from manage.py shell. Record actual 200, 400, 404, 405, 406, 415 and the Book count before and after.",
+      "Save catalogue/error_test_urls.py as a deliberately isolated URLConf, NOT in the deployed urlpatterns. Trigger RuntimeError with DEBUG=False and Client(raise_request_exception=False); verify status 500 and no exposed internal text.",
+      "Change one handler mapping in a disposable copy and verify which HTTP status/header remains unchanged while your public code changes; restore the original.",
+      "Explain why a returned Response(status=400) bypasses custom exception handling and why a regular Django 404 outside APIView may have a different body."
+    ],
+    deliverables: ["Source files and configuration", "HTTP failure and no-write transcript", "Unexpected 500 leak test", "Exception-vs-direct-Response explanation"],
+    completionCriteria: ["The expected HTTP errors are actual framework responses, not mock status dictionaries.", "The handler does not relabel unexpected exceptions as 400.", "The deliberately broken route is test-only and never added to public urlpatterns."]
+  },
   "django-and-api-engineering-api-error-handling": {
-    objective: "Build a stable error contract that preserves the distinction between client mistakes, domain rejection and unexpected server failure.",
-    scenario: "Steward currently returns framework-default errors for validation and a different shape for custom exceptions. A client team cannot implement reliable handling. Normalize deliberate failures without hiding server defects.",
-    instructions: ["Define a stable error body with machine-readable code and human-readable message.", "Map malformed input, validation failure, missing resource, conflict and unexpected failure to deliberate status semantics.", "Trigger each category locally and capture the public response.", "Trigger one unexpected exception and verify sensitive internals are absent from the client response; route known application exceptions through a central DRF exception-translation boundary without swallowing unexpected defects.", "Record what diagnostic evidence remains available to operators."],
-    deliverables: ["Error-contract specification", "Failure/status matrix", "Captured public responses", "Operator-evidence note"],
-    completionCriteria: ["Distinct failure categories remain distinguishable.", "Clients do not receive stack traces or database internals.", "Unexpected failures are not disguised as client errors."]
+    objective: "Map the existing transaction-safe Steward readiness command to real HTTP 409 and verify that a rejected request makes no database change.",
+    scenario: "The Book catalogue already taught real DRF exception handling, and registry/services.py already owns the atomic cross-table readiness rule. Now join them in a strictly isolated training URLConf. Actual authentication and Team authorization belong to the next Builder module.",
+    instructions: [
+      "In the separate migrated tsa_steward_django_lab, create registry/api_errors.py, registry/readiness_api.py and registry/training_urls.py from the reading. Do not add training_urls to production config/urls.py.",
+      "Read registry/services.py and identify the database transaction, Service row lock and ReadinessConflict boundary. The view must call this existing command, not duplicate its business decision.",
+      "Run registry/error_contract_lab.py inside manage.py shell. Verify real 409 with unchanged lifecycle and Environment count, a successful 200 after adding a production Environment, and missing 404/unsupported method 405.",
+      "Explain why a random exception should not be converted into 400 or 409, and why the public message is intentionally less detailed than private diagnostic evidence.",
+      "Write the separate future authorization requirements for cross-Team 403/404 and object-scoped mutations; do not claim this unsecured demonstration is ready for external clients."
+    ],
+    deliverables: ["Working domain-to-HTTP handler", "Isolated test-only URLConf", "Reproducible 409/200/404/405 results", "Database nonmutation evidence", "Explicit unimplemented authorization contract"],
+    completionCriteria: ["ReadinessConflict is translated to 409 by the configured DRF handler.", "A failed promotion leaves persisted state unchanged.", "The normal application URLConf has no training promotion route.", "No production authorization or concurrency guarantee is inferred from the local exercise."]
   },
   "django-and-api-engineering-filtering-searching-and-ordering": {
     objective: "Expose query capabilities that answer real Steward questions without accidentally publishing an unbounded query language.",
