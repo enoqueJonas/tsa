@@ -109,6 +109,27 @@ with sync_playwright() as playwright:
             page.set_viewport_size({"width": 1440, "height": 900})
             print("PASS Software Craft rendered desktop/mobile:", title, flush=True)
 
+        capstone, capstone_id = open_activity(
+            page, "Lab: Refine Steward API for Review", "brief")
+        assert len(capstone.inner_text().strip()) >= 3500, (
+            "Software Craft integration rubric is not fully rendered")
+        assert capstone.get_by_text(
+            "Build an eight-row evidence matrix, not a green checklist",
+            exact=True).count() == 1
+        assert capstone.get_by_text(
+            "Independent review rubric and pass threshold",
+            exact=True).count() == 1
+        assert capstone.get_by_role("button", name="Copy").count() >= 1
+        page.set_viewport_size({"width": 390, "height": 844})
+        assert not page.evaluate(
+            "document.documentElement.scrollWidth > innerWidth + 2"
+        ), "Software Craft capstone 390px horizontal overflow"
+        page.screenshot(path=str(ARTIFACTS / "capstone-390.png"),
+                        full_page=True)
+        page.set_viewport_size({"width": 1440, "height": 900})
+        print("PASS Software Craft capstone evidence/rubric rendered on mobile",
+              flush=True)
+
         main, _ = open_activity(page, "HTTP Error Contracts and Client Oracles")
         page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
         page.wait_for_function("window.scrollY > 8")
