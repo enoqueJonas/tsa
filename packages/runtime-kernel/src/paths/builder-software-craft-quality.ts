@@ -301,6 +301,32 @@ const practices: Record<string, PracticeSpec> = {
         deliverables: ["Verified Steward setup evidence", "Reader-specific documentation links", "Evidence-backed decision record", "Safe diagnostic runbook", "Unverified-gates list"],
         completionCriteria: ["At least one real setup claim is executed against the actual documented environment.", "The project documentation does not invent credentials or deployed endpoints.", "README, API reference, ADR and runbook serve distinct reader needs.", "Unverified setup claims remain explicitly open, not labelled ready."]
     },
+    "software-craft-architecture-decision-records": {
+        objective: "Create, challenge and verify a consequential Steward decision record with a defensible alternative.",
+        scenario: "A future contributor finds two PostgreSQL training databases and cannot tell whether the separation is intentional or incidental. Write an ADR they can use to decide how to change the boundary safely.",
+        instructions: [
+            "Read the full worked SQL-versus-Django ADR and mark its status, scope, alternatives, trade-offs and revisit trigger.",
+            "Verify the current database identity and migration status only against disposable training environments; label unexecuted claims unverified.",
+            "Propose a second consequential decision for Steward with at least two plausible alternatives and independent reasons not to choose one.",
+            "Have a reviewer challenge one assumption and record an evidence-based response without inventing a past approval.",
+            "Specify how the decision could later be superseded while preserving its original rationale."
+        ],
+        deliverables: ["Completed or explicitly proposed ADR", "Read-only verification evidence or honest unverified labels", "Reviewer challenge and response"],
+        completionCriteria: ["The alternatives are credible and materially different.", "Claims requiring execution are distinguished from a written example.", "Scope, owner and revisit trigger are explicit.", "No production decision or approval is fabricated."]
+    },
+    "software-craft-operational-runbooks-and-safe-diagnostic-handoffs": {
+        objective: "Rehearse a read-only Steward diagnostic runbook with explicit stop and escalation conditions.",
+        scenario: "A signed Service request starts failing after a training change. A new engineer needs to classify the status and inspect safe evidence without blindly resetting migrations, repeating a transfer or exposing bearer credentials.",
+        instructions: [
+            "Inspect the worked runbook and identify its trigger, audience, preconditions, safe checks and forbidden actions.",
+            "Against a disposable Steward environment only, run python manage.py check and showmigrations registry/token_blacklist; capture statuses and observed results.",
+            "Create a 401/403/404/409/5xx branch table with evidence, interpretation, safe next step and no-secret logging constraints.",
+            "Simulate a missing migration and a stale ownership conflict; demonstrate when the operator must stop rather than issue a corrective command.",
+            "Ask another person to follow the read-only steps and revise one ambiguous instruction or state clearly that independent rehearsal is pending."
+        ],
+        deliverables: ["Bounded Steward runbook", "Read-only observation evidence", "Failure-status diagnostic matrix", "Stop/escalation review"],
+        completionCriteria: ["No unapproved state-changing operations are prescribed.", "Each diagnostic step states expected versus abnormal observation.", "Secrets are not copied into diagnostics.", "The read-only training scope is explicit and independent rehearsal is not invented."]
+    },
     "software-craft-failure-boundaries-and-public-error-contracts": {
         objective: "Model six public failure outcomes, then prove that leaking a database exception fails an explicit negative control.",
         scenario: "A Steward endpoint currently returns raw database exception text to clients. Before introducing custom DRF handlers, agree which failures clients can act on and what information must remain private.",
