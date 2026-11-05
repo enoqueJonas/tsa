@@ -1322,6 +1322,18 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
     fs.rmSync(path.join(schemaRoot, "registry", "__pycache__"), {recursive: true, force: true});
   }
   console.log("Builder Identity Service create passed: signed maintainer 201 committed across processes, viewer/cross-Team/revoked 403 no writes, forged/duplicate 400, recovery 201, exact fixture cleanup and three policy mutants rejected.");
+  for (const [file, caption] of [
+    ["environment_membership_api.py", "registry/environment_membership_api.py — authorize the stored parent"],
+    ["environment_membership_urls.py", "registry/environment_membership_urls.py — private nested route"],
+    ["environment_membership_lab.py", "registry/environment_membership_lab.py — signed nested negatives"],
+  ]) fs.writeFileSync(path.join(schemaRoot, "registry", file), identityJsonSnippet(caption));
+  const nestedProof = schemaExec(["manage.py", "shell", "-c",
+    "exec(open('registry/environment_membership_lab.py').read())"]);
+  assert.match(nestedProof, /NESTED_ENVIRONMENT_SIGNED_PARENT_POLICY_AND_UNCHANGED_ROWS_OK/);
+  assert.match(nestedProof, /NESTED_ENVIRONMENT_FIXTURES_ROLLED_BACK/);
+  assert.doesNotMatch(fs.readFileSync(path.join(schemaRoot, "config", "urls.py"), "utf8"), /environment_membership/);
+  console.log("Builder signed nested Environment parent policy passed.");
+
 
 
 
