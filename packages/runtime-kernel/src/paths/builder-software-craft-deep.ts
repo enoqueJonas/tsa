@@ -845,6 +845,19 @@ export const softwareCraftDeepLessons: Lesson[] = [
                         "For the first independent case, compare the built-in `json` module with installing a third-party JSON helper merely to encode a tiny dictionary. If the standard library already meets the requirement, defer the new dependency. This example is a judgment exercise, not a claim that specialized JSON packages can never be justified."
                 ]
         }
+,
+        {
+        "title": "Execute an offline inventory and catch a hidden transitive import",
+        "paragraphs": [
+                "Do not make the learner infer the first command. Save the complete Python 3 program below and run it in a disposable directory. It introspects the actual active interpreter and installed distribution names using importlib.metadata, then checks a deliberately synthetic two-package graph. The fixture proves that a package present only because another package installed it is not an explicitly declared API your application can rely on.",
+                "Apply the same investigation to the real Steward code separately: read its actual pyproject.toml/requirements, inspect the imports in the app, and compare them against declared direct runtime dependencies. Use python3 -m pip check in the selected, already-configured environment to detect package-metadata conflicts. A clean pip check is neither an integration test nor a current vulnerability/license audit."
+        ],
+        "code": {
+                "language": "python",
+                "caption": "dependency_boundary_lab.py — executable offline direct/transitive dependency oracle",
+                "code": "# Save as dependency_boundary_lab.py; run: python3 dependency_boundary_lab.py\n# Offline standard-library lab. It does not install or update distributions.\nimport importlib.metadata as metadata\nimport importlib.util\nimport sys\n\nassert sys.version_info.major == 3\nassert importlib.util.find_spec(\"json\") is not None  # Standard library, no pip.\n# Actual interpreter inventory: package names depend on the environment.\ninstalled = {dist.metadata.get(\"Name\", \"\").lower()\n             for dist in metadata.distributions()}\nassert isinstance(installed, set)\nprint(\"INTERPRETER_AND_INSTALLED_METADATA_INSPECTED\")\n\n# Synthetic dependency graph for a repeatable direct/transitive boundary.\n# Do not mistake these names for actual Steward requirements.\ndeclared_direct = {\"web-framework\"}\ninstalled_fixture = {\"web-framework\", \"transport-helper\"}\napplication_imports = {\"web-framework\", \"transport-helper\"}\nundeclared_imports = application_imports - declared_direct\nassert undeclared_imports == {\"transport-helper\"}\nassert undeclared_imports.issubset(installed_fixture)\nprint(\"TRANSITIVE_IMPORT_REQUIRES_DECLARATION\")\n\n# Negative control: importing a transitive item by chance is not a contract.\ndeclared_only = {\"web-framework\"}\nassert \"transport-helper\" not in declared_only\nassert \"transport-helper\" in installed_fixture\nprint(\"DEPENDENCY_MANIFEST_NOT_INSTALLED_TREE_OK\")\n\n# No network, package installation, arbitrary pip freeze or license claim.\nprint(\"DEPENDENCY_OFFLINE_INVENTORY_BOUNDARY_OK\")"
+        }
+}
 ],
         "Justify one real project dependency and an upgrade or removal path, using declared requirements and reproducible evidence.",
         [
@@ -1444,6 +1457,19 @@ export const softwareCraftDeepLessons: Lesson[] = [
                         "The earlier README exercise intentionally tested its own claims with an isolated executable harness. The same principle extends to production documentation, but additional controls are necessary when commands can mutate a database, deploy a release or access private data."
                 ]
         }
+,
+        {
+        "title": "A concrete ADR and a safe operational runbook are not interchangeable",
+        "paragraphs": [
+                "The worked pair below deliberately captures different claims. The ADR explains why the learning system keeps the SQL fixture database separate from Django migration history; it marks the decision Proposed until actual owner approval. The runbook begins with a symptom and a scope constraint, gives non-destructive diagnostic checks, and stops when the target database or migration state cannot be identified.",
+                "Copy each into its own Markdown file if the corresponding facts are actually true for your project. These are examples, not verified statements about a deployed service. Reading a Markdown command list does not execute it; verification requires following approved steps in a controlled target and recording evidence. A reviewer must reject a runbook that invents credentials or recommends destructive database resets as the first response."
+        ],
+        "code": {
+                "language": "markdown",
+                "caption": "ADR versus runbook — complete proposed decision and non-destructive diagnostic examples",
+                "code": "# docs/adr/0001-separate-training-databases.md\n# ADR 0001: Keep raw-SQL and Django training databases separate\nStatus: Proposed — validate with the project owner before adoption\nContext: Raw SQL practice creates fixture-owned tables directly, while Django\n  migrations own schema history in the app lab. Sharing a database may\n  cause mismatched tables, migration drift, or destructive cleanup.\nDecision: Use separate disposable databases for the two exercises.\nAlternative: Shared schema with carefully partitioned ownership; rejected\n  for the teaching lab due to coupling and cleanup risk.\nConsequences: Two connection targets must be configured and verified.\nRevisit when: Real tests demonstrate compatible migration ownership and\n  an isolation strategy approved by maintainers.\n\n# docs/runbooks/diagnose-local-schema.md\n# Diagnose a local training schema mismatch\nTrigger: A lab command reports missing tables or unapplied migrations.\nScope: Disposable LOCAL PostgreSQL/Django only; do not execute in production.\nPrecondition: Verify active virtual environment and intended database.\nRead-only check 1: python3 --version\nRead-only check 2: python3 manage.py showmigrations registry\nExpected: Applied migration entries [X] for the expected lab release.\nStop/escalate: If database identity is uncertain or migration state diverges,\n  collect sanitized command output and ask the owner; do not fake migration\n  history, drop tables or run a destructive reset.\n"
+        }
+}
 ],
         "Create a usable Steward handoff with verified setup, reader-specific documentation and one evidence-backed decision record.",
         [
