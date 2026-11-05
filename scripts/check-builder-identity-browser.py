@@ -75,7 +75,7 @@ def seed_synthetic_prerequisites(page):
     curriculum = Path(
         "packages/runtime-kernel/src/paths/builder-identity-auth-deep.ts"
     ).read_text(encoding="utf-8")
-    lesson_ids = re.findall(r'richLesson\\(\\s*"([^"]+)"', curriculum)
+    lesson_ids = re.findall(r'richLesson\(\s*"([^"]+)"', curriculum)
     assert len(lesson_ids) == 25 and len(set(lesson_ids)) == len(lesson_ids), (
         f"Identity lesson count/order changed: {len(lesson_ids)}"
     )
