@@ -556,18 +556,155 @@ export const djangoAndApiRichLessons: Lesson[] = [
   richLesson("Persist a Steward Service Review History", "A Service can receive more than one review, and later reviews must not erase earlier conclusions. Your earlier PostgreSQL exercise used a session-limited service_review sketch; now build the durable Django version in the same migrated Steward registry. Treat reviewer labels as synthetic text until Identity teaches verified users.", ["Represent an independent historical review event with a real service foreign key and UTC timestamp.","Generate migration 0006 after the dependency migration, inspect SQL and preserve previously stored rows.","Store multiple reviews for one Service, including two with the same timestamp, with deterministic ID tie-break ordering.","Prove database rejection of invalid verdicts and unknown Services, and distinguish stored history from immutable audit enforcement."], [{"heading":"Current status and history are different kinds of data","body":"A single Service.current_verdict field would lose the previous state when overwritten. Instead a review is a separate record with a unique ID, service reference, reviewer label, verdict and timestamp. Repeating service_id is allowed: one Service may have multiple reviews. The earlier SQL sketch specified verdict pass/followup and reviewed_at timestamptz; the Django DateTimeField with USE_TZ=True represents that instant."},{"heading":"Be precise about what reviewer means","body":"This is a synthetic teaching label like synthetic-a, not an authenticated person or authorization claim. The later Identity school will replace or associate this representation with verified principal data, define role checks and retention rules. Hard-coded learner names and request-supplied 'reviewer' values must never become an authoritative audit actor in production."},{"heading":"Append a durable model with the right constraints","body":"Append ServiceReview to the SAME registry/models.py after ServiceDependency. It uses ForeignKey with PROTECT so an established review cannot be orphaned by deleting its Service; multiple review rows per Service are permitted. CheckConstraint enforces pass/followup in PostgreSQL even for direct ORM writes that do not call full_clean. Meta.ordering uses reviewed_at then PK so reviews with equal timestamps have an unambiguous order.","code":{"language":"python","caption":"registry/models.py — append historical ServiceReview with verdict CHECK","value":"# Append this class below ServiceDependency in registry/models.py.\n# This representation follows the earlier disposable PostgreSQL review sketch.\nclass ServiceReview(models.Model):\n    class Verdict(models.TextChoices):\n        PASS = \"pass\", \"Pass\"\n        FOLLOWUP = \"followup\", \"Follow-up\"\n\n    service = models.ForeignKey(\n        Service, on_delete=models.PROTECT, related_name=\"reviews\",\n    )\n    reviewer = models.TextField()  # Fictional label, NOT a verified identity.\n    verdict = models.CharField(max_length=8, choices=Verdict.choices)\n    reviewed_at = models.DateTimeField()\n\n    class Meta:\n        db_table = \"service_review\"\n        ordering = [\"reviewed_at\", \"pk\"]\n        constraints = [\n            models.CheckConstraint(\n                condition=models.Q(verdict__in=[\"pass\", \"followup\"]),\n                name=\"ck_service_review_verdict\",\n            ),\n        ]"}},{"heading":"Generate migration 0006 after the earlier 0005","body":"Run the commands from the project with manage.py. Ensure the dependency migration 0005 already exists and is applied. django makemigrations then generates 0006_service_review.py. Inspect sqlmigrate for a new service_review table, FK, CHECK and time-zone-aware field. Apply it and check that no model-state differences remain.","code":{"language":"bash","caption":"Terminal — migrate review events without altering existing Services","value":"# Same disposable Steward Django project; dependency migration 0005 applied.\n# Append ServiceReview to the existing registry/models.py; do not replace it.\npython manage.py check\npython manage.py makemigrations registry --name service_review\npython manage.py sqlmigrate registry 0006\npython manage.py migrate registry 0006\npython manage.py makemigrations registry --check --dry-run\npython manage.py shell -c \"exec(open('registry/review_history_lab.py').read())\"\n# Fresh process: all three persisted history rows remain.\npython manage.py shell -c \"from registry.models import ServiceReview; assert ServiceReview.objects.filter(service__name='Review Workshop API').count() == 3; print('REVIEW_HISTORY_REOPENED_OK')\""}},{"heading":"Prove historic rows and database constraints on real PostgreSQL","body":"Save registry/review_history_lab.py. It creates a new fictional UAT Service with required slug and three separate review events. The second and third share a timestamp yet have different IDs; both must survive. Invalid verdict and nonexistent Service ID writes throw real database IntegrityError with unchanged event count. Deleting the reviewed Service raises ProtectedError. This is a one-time lab: a second full run deliberately fails rather than silently manufacturing duplicate review facts.","code":{"language":"python","caption":"registry/review_history_lab.py — three events and real negative writes","value":"# Save as registry/review_history_lab.py. Run once after migration 0006.\nfrom datetime import datetime, timezone\nfrom django.db import IntegrityError, transaction\nfrom django.db.models.deletion import ProtectedError\nfrom registry.models import Team, Service, ServiceReview\n\nteam, _ = Team.objects.get_or_create(name=\"Review Workshop\")\nservice, fresh = Service.objects.get_or_create(\n    name=\"Review Workshop API\",\n    defaults={\n        \"slug\": \"review-workshop-api\",\n        \"owning_team\": team,\n        \"endpoint\": \"https://workshop.example.invalid/reviews\",\n        \"lifecycle\": Service.Lifecycle.UAT,\n    },\n)\nassert fresh, \"Run this one-time history experiment in a clean training DB.\"\n\njan = datetime(2026, 1, 10, 10, tzinfo=timezone.utc)\nfeb = datetime(2026, 2, 10, 10, tzinfo=timezone.utc)\nfirst = ServiceReview.objects.create(\n    service=service, reviewer=\"synthetic-a\",\n    verdict=ServiceReview.Verdict.FOLLOWUP, reviewed_at=jan,\n)\nsecond = ServiceReview.objects.create(\n    service=service, reviewer=\"synthetic-b\",\n    verdict=ServiceReview.Verdict.PASS, reviewed_at=feb,\n)\nthird = ServiceReview.objects.create(\n    service=service, reviewer=\"synthetic-c\",\n    verdict=ServiceReview.Verdict.FOLLOWUP, reviewed_at=feb,\n)\nhistory = list(service.reviews.values_list(\"pk\", \"verdict\"))\nassert history == [\n    (first.pk, \"followup\"), (second.pk, \"pass\"), (third.pk, \"followup\")\n]\nassert ServiceReview.objects.filter(service=service).count() == 3\nassert ServiceReview.objects.filter(service=service, reviewed_at=feb).count() == 2\nprint(\"THREE_HISTORICAL_REVIEWS_SAME_SERVICE_AND_TIMESTAMP_TIE\")\n\ndef review_database_rejects(label, **fields):\n    before = ServiceReview.objects.count()\n    try:\n        with transaction.atomic():\n            ServiceReview.objects.create(**fields)\n    except IntegrityError:\n        assert ServiceReview.objects.count() == before\n        print(label)\n    else:\n        raise AssertionError(label + \" was accepted\")\n\nreview_database_rejects(\n    \"INVALID_REVIEW_VERDICT_DB_REJECTED\",\n    service=service, reviewer=\"synthetic-invalid\",\n    verdict=\"unknown\", reviewed_at=feb,\n)\nreview_database_rejects(\n    \"UNKNOWN_REVIEW_SERVICE_FK_DB_REJECTED\",\n    service_id=987654321, reviewer=\"synthetic-invalid\",\n    verdict=\"pass\", reviewed_at=feb,\n)\ntry:\n    service.delete()\nexcept ProtectedError:\n    assert Service.objects.filter(pk=service.pk).exists()\n    print(\"REVIEWED_SERVICE_DELETE_PROTECTED\")\nelse:\n    raise AssertionError(\"Reviewed Service deletion succeeded\")\n\nassert ServiceReview.objects.get(pk=first.pk).verdict == \"followup\"\nassert ServiceReview.objects.get(pk=second.pk).verdict == \"pass\"\nprint(\"SERVICE_REVIEW_DATABASE_LAB_OK\")","output":"THREE_HISTORICAL_REVIEWS_SAME_SERVICE_AND_TIMESTAMP_TIE\nINVALID_REVIEW_VERDICT_DB_REJECTED\nUNKNOWN_REVIEW_SERVICE_FK_DB_REJECTED\nREVIEWED_SERVICE_DELETE_PROTECTED\nSERVICE_REVIEW_DATABASE_LAB_OK"}},{"heading":"Reopen the timeline in a new process","body":"The final command closes the first Python process and confirms all three events persist. Note that django model default ordering is helpful for presentation but an API should still declare its own explicit ordering and pagination contract. Avoid implying that a 200 response or serializer alone establishes historical integrity."},{"heading":"Do not misuse the phrase append-only","body":"This schema stores separate historical facts but does NOT prevent database UPDATE or DELETE by a sufficiently privileged process. Real append-only/audit guarantees need an explicit mutation policy and database permissions, possibly triggers/event ingestion or separate audit records. We will implement only create/list API operations as a later checkpoint, with real Identity/permissions to follow."}], ["Append the Review model without replacing existing service or dependency definitions; generate/review/apply migration 0006.","Execute the exact three-event source in the isolated PostgreSQL Django registry and capture all four positive/negative checks.","Restart Django shell and prove the historical event count, ordering and original Service identity are unchanged.","Explain why UNIQUE(service_id) would violate the domain's history requirement.","Describe which guarantees are still missing if a system administrator updates one recorded verdict."], ["Why is one review row per Service insufficient for a review history?","Why is an explicit PK tie-breaker required for simultaneous events?","Why does choices=... alone not establish a database CHECK?","Does this model prevent arbitrary SQL DELETE of a review?","What must change before reviewer can identify an actual authenticated person?"], [{"title":"Django 5.2 — Constraints","url":"https://docs.djangoproject.com/en/5.2/ref/models/constraints/","kind":"documentation","purpose":"Database CheckConstraint and UniqueConstraint semantics."},{"title":"Django 5.2 — ForeignKey","url":"https://docs.djangoproject.com/en/5.2/ref/models/fields/","kind":"documentation","purpose":"Relationship descriptors and protective deletes."},{"title":"Django 5.2 — Migrations","url":"https://docs.djangoproject.com/en/5.2/topics/migrations/","kind":"documentation","purpose":"Schema history and reviewable generated migrations."}]),
 
   {
-    id: "django-and-api-engineering-lab-steward-api-skeleton",
-    title: "Lab: Steward API Skeleton",
-    activities: [
-      { id: "django-and-api-engineering-lab-steward-api-skeleton-brief", title: "Steward API Skeleton Brief", estimatedMinutes: 20, content: { type: "reading", body: "Turn the API contract from Web and API Foundations and the PostgreSQL model from Relational Data and PostgreSQL into the first integrated Django/DRF implementation. This lab is an integration checkpoint, not the final Builder milestone.", blocks: [
-        { type: "heading", id: "objective", text: "Objective" },
-        { type: "paragraph", text: "Produce a coherent Steward API skeleton that deliberately maps the already-understood PostgreSQL domain into Django models, then exposes it through serializers, endpoints, validation, errors, configuration, logging and OpenAPI documentation." },
-        { type: "callout", tone: "warning", title: "Do not rush ahead", body: "PostgreSQL fundamentals and query engineering were established in the previous Builder module. Reuse that model rather than redesigning it through ORM convenience. JWT authorization belongs to the following identity module; do not rush into it here." },
-        { type: "heading", id: "review", text: "What this should prove" },
-        { type: "list", items: ["You can explain Django and DRF request flow.", "Your API contract matches the service-registry domain.", "Domain rules are not trapped in views.", "Failure responses are deliberate.", "Documentation and runtime behavior agree."] },
-      ] } },
-      { id: "django-and-api-engineering-lab-steward-api-skeleton-build", title: "Build Steward API Skeleton", estimatedMinutes: 240, content: { type: "practical", objective: "Integrate the previously designed HTTP contract and PostgreSQL data model into the first Django/DRF Steward API skeleton.", scenario: "Build the same continuing Steward engineering service registry. Do not start a new tutorial application.", instructions: ["Create the Django project/app structure and document the chosen boundaries.", "Map the existing PostgreSQL Team, Service, Environment, ServiceDependency and ServiceReview design into Django models without weakening its constraints.", "Create/apply reviewed migrations against representative existing data.", "Create serializers with deliberate writable/read-only fields.", "Implement `/services/` list/create and detail operations, plus the smallest ServiceReview create/list behavior needed to preserve the review history already modeled in PostgreSQL.", "Add lifecycle/criticality filtering and pagination.", "Inspect generated SQL for representative endpoints and demonstrate that relationship loading does not introduce an N+1 query pattern.", "Implement at least one service-dependency rule such as self-reference rejection.", "Define a stable error shape for at least one domain rejection.", "Generate OpenAPI documentation and compare it to real HTTP behavior.", "Move environment-specific settings into configuration.", "Add useful application logging without secrets.", "Use curl/Postman to capture successful and rejected request evidence."], deliverables: ["Runnable Django/DRF Steward API skeleton", "ServiceReview API evidence", "Boundary/design note", "HTTP evidence", "OpenAPI schema/docs", "Configuration notes", "Failure/logging evidence"], completionCriteria: ["The implementation uses the locked Steward domain.", "Django/DRF abstractions can be explained.", "At least one domain rule is reusable outside a single view.", "Errors are deliberate and documented.", "The API preserves the PostgreSQL invariants established previously and is ready for the following identity/authorization module."] } },
-      { id: "django-and-api-engineering-lab-steward-api-skeleton-review", title: "Django/API Module Review", estimatedMinutes: 20, content: { type: "reflection", prompt: "Which Django/DRF abstraction saved useful boilerplate? Which abstraction currently hides too much? Where does Steward domain logic live? What would become difficult to change if you continued without revisiting the current boundaries?" } },
-    ],
-  },
-];
+    "id": "django-and-api-engineering-lab-steward-api-skeleton",
+    "title": "Lab: Steward API Skeleton",
+    "activities": [
+      {
+        "id": "django-and-api-engineering-lab-steward-api-skeleton-brief",
+        "title": "Steward API Skeleton Brief",
+        "estimatedMinutes": 20,
+        "content": {
+          "type": "reading",
+          "body": "Build one consistent Steward Django registry incrementally. Before adding an HTTP endpoint, verify that the existing Team, Service, Environment, directed ServiceDependency and historical ServiceReview models all have executable database evidence. Reuse the separated PostgreSQL-backed Django schema project. Do not treat the unauthenticated training URLs from earlier lessons as public APIs; verified principal and membership authorization are taught next.",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "objective",
+              "text": "One domain, several independently verifiable checkpoints"
+            },
+            {
+              "type": "paragraph",
+              "text": "The canonical data design came from PostgreSQL. Django must represent it without changing its identities, relationships or constraints. The two immediately preceding lessons provide complete migrations and real negative tests for dependency edges and review history. Complete the data checkpoints below before attempting HTTP integration."
+            },
+            {
+              "type": "heading",
+              "id": "boundaries",
+              "text": "What already exists and what remains"
+            },
+            {
+              "type": "list",
+              "items": [
+                "Implemented and independently tested: Team/Service/Environment, staged Service.slug migrations, readiness commands, limited training queries, real generated OpenAPI in the separate Book catalogue, and Django settings/logging examples.",
+                "Newly taught in complete source: ServiceDependency directional constraints and ServiceReview historical rows, each with real PostgreSQL schema and negative tests.",
+                "Still to integrate: full Service list/create/detail and review create/list HTTP endpoints backed by these exact rows; schema/runtime evidence and operational behavior as one project.",
+                "Not yet implemented: authenticated user, Team Membership-derived authorization, secure public registration, and immutable audit guarantees."
+              ]
+            },
+            {
+              "type": "heading",
+              "id": "learning-order",
+              "text": "Do not skip the transition"
+            },
+            {
+              "type": "paragraph",
+              "text": "Use the existing PostgreSQL Django schema lab as the source of truth. The prior Django examples included an independent Book tutorial and multiple separate test-only Steward projects; their file paths are examples to transfer deliberately, not proof they were already assembled in the same application. The final assembly must be verified against one coherent project before calling this module complete."
+            }
+          ]
+        }
+      },
+      {
+        "id": "django-and-api-engineering-lab-steward-api-skeleton-dependency-checkpoint",
+        "title": "Checkpoint 1: Verify directed dependencies",
+        "estimatedMinutes": 55,
+        "content": {
+          "type": "practical",
+          "objective": "Prove the actual Steward Django registry can store directed Service dependency edges while the database rejects self-links, duplicate edges and missing targets.",
+          "scenario": "The PostgreSQL-backed Steward schema project has applied registry migrations 0001–0004. The earlier dependency lesson adds 0005 and publishes all source.",
+          "instructions": [
+            "Confirm that registry 0004 was applied and that original Service IDs/slugs are intact; do not reconstruct the database.",
+            "Execute the prior lesson's complete ServiceDependency model append, reviewed generated 0005 migration and dependency_integrity_lab.py.",
+            "Record actual sqlmigrate output with source_service_id, target_service_id, foreign keys, ordered-pair uniqueness and a self-edge check.",
+            "Capture both positive directions, the self/duplicate/unknown-target database rejection and PROTECT deletion outcome.",
+            "Run a new Django shell and confirm the stored A→B relation exists. Explain why a three-Service cycle is still possible."
+          ],
+          "deliverables": [
+            "Generated and applied 0005 migration",
+            "Original row/owner preservation evidence",
+            "Five real dependency outcomes",
+            "Fresh-shell edge verification",
+            "Unimplemented cycle/identity notes"
+          ],
+          "completionCriteria": [
+            "Directed relationships and constraints are executable against real PostgreSQL.",
+            "Invalid writes leave stored relations unchanged.",
+            "Migration state and Python models agree.",
+            "The result is not misrepresented as a secure Service dependency API."
+          ]
+        }
+      },
+      {
+        "id": "django-and-api-engineering-lab-steward-api-skeleton-review-history-checkpoint",
+        "title": "Checkpoint 2: Preserve multiple review events",
+        "estimatedMinutes": 55,
+        "content": {
+          "type": "practical",
+          "objective": "Record and independently verify more than one historical review for one Service, including equal-timestamp events and negative database writes.",
+          "scenario": "Continue the same schema project after 0005. Reviewer values are synthetic labels, not authenticated users.",
+          "instructions": [
+            "Append the published ServiceReview model and generate/review/apply registry 0006; use python manage.py sqlmigrate registry 0006 to identify FK and CHECK constraints.",
+            "Run the prior lesson's complete review_history_lab.py exactly once in the disposable training database.",
+            "Verify that three event IDs remain for the same Service, including two events with the same reviewed_at, ordered by timestamp then ID.",
+            "Record the database's rejection of invalid verdict and unknown Service, plus PROTECT deletion of a reviewed Service.",
+            "Close the Python process, re-open a Django shell and verify the same three rows exist. Explain why this schema is not an immutable audit trail."
+          ],
+          "deliverables": [
+            "Applied and reviewed 0006 migration",
+            "Three-event historical record with stable identity",
+            "CHECK/FK/PROTECT failure evidence",
+            "Fresh-shell durable history",
+            "Identity/immutability gap"
+          ],
+          "completionCriteria": [
+            "Multiple reviews for one Service survive across processes.",
+            "Actual database constraints reject invalid facts.",
+            "Original Service/Dependency data remain intact.",
+            "No unverifiable reviewer identity or append-only enforcement is claimed."
+          ]
+        }
+      },
+      {
+        "id": "django-and-api-engineering-lab-steward-api-skeleton-build",
+        "title": "Build Steward API Skeleton",
+        "estimatedMinutes": 150,
+        "content": {
+          "type": "practical",
+          "objective": "Integrate the proven Steward models into real DRF endpoints, then demonstrate contract and operational behavior in one coherent test-only application.",
+          "scenario": "Start only after the two schema checkpoints are green. Work in the same already migrated Steward Django project rather than silently combining unrelated scratch installations. The remaining endpoint assembly is not independently learner-validated yet; use the named earlier source examples as reference and record any missing support before claiming completion.",
+          "instructions": [
+            "Inventory the actual existing registry files and migrations 0001–0006. Explain where the previously taught service serializer, command, exception handler, query scope, OpenAPI generator, settings and logging lessons can be reused, and which files must be added deliberately.",
+            "Build a narrowly testable Service collection/detail API, including explicitly selected writable and read-only fields. Test one persisted creation, a second independent read, a missing record and a rejected invalid field without data changes.",
+            "Add ServiceReview create/list through the actual historical model, and demonstrate that an unauthorized cross-Team write cannot be claimed blocked until Identity-backed authorization exists. Keep all interim routes isolated from public config/urls.py.",
+            "Apply lifecycle and criticality filters plus deterministic pagination on a *server-selected teaching Team*, never a client-selected Team authority. Inspect executed PostgreSQL SQL and N+1 behavior rather than hand-writing a pretend query.",
+            "Reuse the real readiness command for an HTTP 409 conflict and demonstrate unchanged stored Service lifecycle after rejection. Do not treat serializer validation as a replacement for domain rules.",
+            "Generate the API's actual OpenAPI document and compare paths, parameters, response fields and success/failure statuses against real HTTP exchanges. Verify application logging is useful and excludes secrets.",
+            "Prepare a concrete missing-prerequisite list for the next Identity module: verified principals, Team membership, object-level authorization, cross-Team visibility/revocation, and reviewer attribution."
+          ],
+          "deliverables": [
+            "One migrated Steward Django project",
+            "Actual Service and ServiceReview HTTP request/state evidence",
+            "SQL count/relationship loading notes",
+            "Readiness and invalid input negatives",
+            "Actual schema/runtime comparison",
+            "Logs without credentials",
+            "Security work explicitly deferred to Identity"
+          ],
+          "completionCriteria": [
+            "The demonstrated HTTP operations use real stored rows and match their documented response contracts.",
+            "Domain constraint failures do not produce hidden writes.",
+            "All test-only routes remain unpublished until Identity/permissions are implemented.",
+            "Cross-project sample code is not presented as if it had already been assembled.",
+            "A novice can reproduce every step; until full source and uncoached verification exist, this checkpoint must remain unvalidated."
+          ]
+        }
+      },
+      {
+        "id": "django-and-api-engineering-lab-steward-api-skeleton-review",
+        "title": "Django/API Module Review",
+        "estimatedMinutes": 25,
+        "content": {
+          "type": "reflection",
+          "prompt": "Trace one Service dependency request and one ServiceReview request from URL → DRF view → serializer/command → ORM → database constraint → HTTP response. Which source files and command outputs actually prove every transition? What happens for a malformed request and a correct-looking but forbidden cross-Team request? Which guarantee is implemented now and which awaits the Identity module? Identify at least one missing executable prerequisite before declaring this integration ready."
+        }
+      }
+    ]
+  },];
