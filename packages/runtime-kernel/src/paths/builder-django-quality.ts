@@ -350,7 +350,7 @@ const practices: Record<string, PracticeSpec> = {
   },
   "django-and-api-engineering-pagination": {
     objective: "Paginate the real PostgreSQL-backed Service QuerySet AFTER trusted server-side Team scoping, with bounded size and changing-row evidence.",
-    scenario: "Continue the exact same tsa_steward_django_lab, eight synthetic scoped Service rows and training-only URLConf from the preceding filtering lesson. The authenticated Team membership mechanism has not been taught or built yet.",
+    scenario: "Continue the same tsa_steward_django_lab, eight synthetic scoped Services and training-only URLConf. Team context is the server-selected TSA_TRAINING_TEAM_ID test setting, NOT an authenticated user or membership system; do not publish these routes.",
     instructions: [
       "Re-read registry/training_scope.py and show where its Team filter executes before COUNT, ORDER BY, LIMIT and OFFSET. Use the existing TrainingServicePages implementation in registry/training_query_views.py; do not write another framework or replace the tutorial URLConf.",
       "Run registry/scoped_page_lab.py once through manage.py shell. Capture the first Team A page (Birch/Cedar) with count 5, and inspect actual SQL for the owner predicate, ORDER BY and OFFSET.",
