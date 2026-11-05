@@ -40,6 +40,7 @@ on:
       - curriculum/builder-identity-registry-continuity
       - curriculum/builder-identity-first-real-jwt
       - curriculum/builder-identity-current-membership-http
+      - curriculum/forward-identity-checkpoints
       - curriculum/system-thinker-pedagogical-audit
       - curriculum/platform-builder-pedagogical-audit
       - curriculum/delivery-engineer-pedagogical-audit

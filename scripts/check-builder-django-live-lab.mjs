@@ -1193,6 +1193,71 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
     "Never publish tutorial Membership mutation routes");
   console.log("Builder Identity current Membership HTTP passed: signed same-team 200, viewer/cross-team/revoked 403 with unchanged rows, forged 400, absent 404 and preserved Review history.");
 
+  // PED-029C: execute exact learner sources on the SAME migrated registry.
+  const membershipReadLesson = identitySource.indexOf(
+    '"identity-authentication-authorization-current-membership-reads"');
+  assert.ok(membershipReadLesson > objectAuthorizationLesson &&
+    membershipReadLesson < ownershipLesson,
+    "Signed collection visibility must follow actual Membership PATCH");
+  const readExamples = {
+    api: identityJsonSnippet(
+      "registry/membership_read_api.py — current principal collection and detail scope"),
+    urls: identityJsonSnippet(
+      "registry/membership_read_urls.py — isolated current Membership reads"),
+    lab: identityJsonSnippet(
+      "registry/membership_read_lab.py — real signed collection detail revocation and SQL checks"),
+  };
+  for (const [file, content] of [
+    ["membership_read_api.py", readExamples.api],
+    ["membership_read_urls.py", readExamples.urls],
+    ["membership_read_lab.py", readExamples.lab],
+  ]) fs.writeFileSync(path.join(schemaRoot, "registry", file), content);
+  const readProof = schemaExec(["manage.py", "shell", "-c",
+    "exec(open('registry/membership_read_lab.py').read())"]);
+  for (const expected of [
+    "MEMBERSHIP_READ_SQL_SCOPE_BEFORE_COUNT_AND_LIMIT",
+    "MEMBERSHIP_READ_REAL_JWT_VIEWER_PAGES_DETAIL_AND_CONCEALED_404",
+    "MEMBERSHIP_READ_SAME_JWT_MULTI_TEAM_UNKNOWN_ROLE_AND_REVOCATION",
+    "MEMBERSHIP_READ_ALL_SERVICE_ROWS_UNCHANGED",
+    "MEMBERSHIP_READ_REAL_POSTGRES_OK",
+  ]) assert.ok(readProof.includes(expected), expected + "\n" + readProof);
+  assert.doesNotMatch(fs.readFileSync(path.join(schemaRoot, "config", "urls.py"), "utf8"),
+    /membership_read_urls|membership_read_api|VisibleServiceList/,
+    "Never publish the training-only collection routes");
+
+  // Rollback in the learner script allows independent broken-policy runs.
+  // Each subprocess reloads the changed source; remove bytecode to avoid
+  // timestamp/size cache reuse. Restore correct source even on failure.
+  const readApiPath = path.join(schemaRoot, "registry", "membership_read_api.py");
+  try {
+    for (const [name, old, replacement] of [
+      ["unscoped-list",
+        "page.paginate_queryset(visible_services(request.user), request)",
+        'page.paginate_queryset(Service.objects.order_by("pk"), request)'],
+      ["unscoped-detail",
+        "get_object_or_404(visible_services(request.user), pk=service_id)",
+        "get_object_or_404(Service.objects.all(), pk=service_id)"],
+      ["unrecognized-role-grants-read",
+        'role__in=[Membership.Role.VIEWER,\n                            Membership.Role.MAINTAINER]',
+        'role__in=[Membership.Role.VIEWER, Membership.Role.MAINTAINER, "unknown"]'],
+    ]) {
+      assert.ok(readExamples.api.includes(old), "Missing policy mutation target: " + name);
+      fs.writeFileSync(readApiPath, readExamples.api.replace(old, replacement));
+      fs.rmSync(path.join(schemaRoot, "registry", "__pycache__"), {recursive: true, force: true});
+      const mutant = spawnSync("python3", ["manage.py", "shell", "-c",
+        "exec(open('registry/membership_read_lab.py').read())"],
+        {cwd: schemaRoot, env: schemaEnv, encoding: "utf8", timeout: 60000});
+      assert.ifError(mutant.error);
+      assert.notEqual(mutant.status, 0, "Broken policy escaped learner assertions: " + name);
+      assert.match(mutant.stderr, /AssertionError/, "Mutant must fail an evidence assertion: " + name);
+    }
+  } finally {
+    fs.writeFileSync(readApiPath, readExamples.api);
+    fs.rmSync(path.join(schemaRoot, "registry", "__pycache__"), {recursive: true, force: true});
+  }
+  console.log("Builder Identity collection reads passed: real JWT, scoped count/pages/detail, current multi-Team roles, revoked access, unchanged rows; three broken policies rejected.");
+
+
 
 
 
