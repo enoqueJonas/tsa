@@ -48,6 +48,22 @@ for (const caption of captions) {
   assert.equal(parse.status, 0,
     "Published Python has a syntax error: " + caption + "\n" + parse.stderr);
 }
+// A denied signed request must prove persisted state, not a stale Python instance;
+// log redaction evidence must also reject an empty log capture.
+const contractCaption = "registry/secure_contract_lab.py — generated JWT contract versus actual HTTP SQL and logs";
+const contractAt = source.indexOf('"caption":' + JSON.stringify(contractCaption));
+assert.ok(contractAt >= 0, "Missing real signed contract exercise");
+const contractCodeMatch = source.slice(contractAt, contractAt + 28000).match(
+  /"code":\\s*("(?:\\\\.|[^"\\\\])*")/);
+assert.ok(contractCodeMatch, "Missing published contract Python program");
+const contractCode = JSON.parse(contractCodeMatch[1]);
+for (const check of [
+  "Service.objects.filter(pk=target.pk, owning_team_id=team_a.pk).exists()",
+  "OwnershipTransfer.objects.count() == audit_count_before",
+  'assert "secure/services/" in log_text',
+]) assert.ok(contractCode.includes(check),
+  "Real signed contract lab is missing a non-vacuous denial/log assertion: " + check);
+
 const labId = "identity-authentication-authorization-lab-secure-steward-api";
 const capstoneAt = source.indexOf('    {\n        "id": "' + labId + '"');
 assert.ok(capstoneAt >= 0, "The final capstone must be present as a standalone lesson");
