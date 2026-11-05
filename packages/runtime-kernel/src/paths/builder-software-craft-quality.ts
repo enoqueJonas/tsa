@@ -148,6 +148,8 @@ const practices: Record<string, PracticeSpec> = {
         objective: "Make an evidence-backed keep, remove or upgrade decision for one declared Steward dependency.",
         scenario: "After learning how Python imports and distribution metadata work, inspect the project's actual declared dependencies. Do not invent installed versions or a speculative internal shared package merely to fulfil the curriculum.",
         instructions: [
+            "Run the source-exact Python 3.11+ AST/tomllib example offline and capture the undeclared rich detection, manifest repair, and rejected PyYAML removal labels; explain why import yaml and distribution PyYAML are different strings.",
+            "Change the toy manifest to remove the declared httpx dependency, rerun and prove the checker reports httpx as a missing direct declaration without actually importing or installing it.",
             "Identify direct runtime and development requirements from the current manifest, not just the output of pip list.",
             "Trace one actual transitive distribution and state whether application code imports it directly. If it does, propose declaring it explicitly.",
             "For one candidate library, compare the standard library/framework alternatives, supported versions, license, maintenance, advisories, transitive footprint and replacement costs.",
@@ -155,8 +157,8 @@ const practices: Record<string, PracticeSpec> = {
             "Check whether any proposed internal package has more than one real consumer and an agreed contract. If not, document a decision to keep that behavior local.",
             "Record your final keep/remove/upgrade decision with validation evidence, owner and a future revisit trigger."
         ],
-        deliverables: ["Direct versus transitive dependency table", "One candidate and alternatives evaluation", "Safe upgrade/removal validation", "Internal-package boundary assessment"],
-        completionCriteria: ["Decisions are grounded in actually declared project requirements and consumers.", "One fresh/resolved installation path and test outcome are distinguished from an arbitrary pip freeze.", "A green dependency check is not misrepresented as a security audit.", "No publication or package-sharing infrastructure is invented as a prerequisite."]
+        deliverables: ["Offline three-outcome source/manifest experiment and removal negative", "Direct versus transitive dependency table", "One candidate and alternatives evaluation", "Safe upgrade/removal validation", "Internal-package boundary assessment"],
+        completionCriteria: ["The source-derived manifest gap and intentional removal regression execute with the expected outcomes, without contacting a package registry.", "Decisions are grounded in actually declared project requirements and consumers.", "One fresh/resolved installation path and test outcome are distinguished from an arbitrary pip freeze.", "A green dependency check is not misrepresented as a security audit.", "No publication or package-sharing infrastructure is invented as a prerequisite."]
     },
     "software-craft-read-environment-variables-in-python": {
         objective: "Observe how a terminal supplies string environment values to Python, including missing, accepted and rejected settings.",
