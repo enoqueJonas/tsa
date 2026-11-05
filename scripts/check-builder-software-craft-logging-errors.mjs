@@ -6,6 +6,8 @@ import { spawnSync } from "node:child_process";
 
 const source = fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-deep.ts", "utf8");
 const quality = fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-quality.ts", "utf8");
+const assembly = fs.readFileSync("packages/runtime-kernel/src/paths/academy-journey.ts", "utf8");
+const internal = fs.readFileSync("packages/runtime-kernel/src/paths/internal-dependency-management.ts", "utf8");
 
 const checkpoints = [
   {
@@ -94,6 +96,27 @@ for (const id of [
   "software-craft-useful-logging",
   "software-craft-designing-errors",
 ]) assert.ok(quality.includes(JSON.stringify(id) + ":"), "Missing executable practice rubric: " + id);
+
+// The academy inserts TWO extra Software Craft lessons from a separate file.
+// Locking uses the actual assembled journey, not only the local source array.
+// Their concepts must precede the new capstone stages and their actual IDs
+// must be completed by any synthetic test profile.
+for (const id of [
+  "software-craft-internal-package-design-001",
+  "software-craft-extract-steward-common-001",
+]) assert.ok(internal.includes('id: "' + id + '"'),
+  "Missing internal dependency prerequisite: " + id);
+assert.ok(assembly.includes('lesson.id === "software-craft-lab-change-safety-review"'),
+  "Real academy must insert internal dependencies before the first staged lab");
+assert.ok(assembly.includes("...path.lessons.slice(0, insertionIndex),") &&
+          assembly.includes("reusableInternalPackageLesson,") &&
+          assembly.includes("extractStewardCommonLesson,"),
+  "Journey must preserve both injected lessons in the Builder path");
+const assembledLessonCount = 26 + 2 + 3 + 1;
+const assembledActivityCount = 26 * 3 + 2 + 3 * 3 + 3;
+assert.equal(assembledLessonCount, 32);
+assert.equal(assembledActivityCount, 92);
+console.log("PASS Software Craft assembly: 26 concepts + 2 injected prerequisites + 3 staged labs + original synthesis; 92 activities");
 
 // A capstone cannot compress these independent contracts into one unchecked
 // 180-minute exercise. Preserve the old final IDs for existing learners while
