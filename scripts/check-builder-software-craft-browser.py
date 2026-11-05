@@ -11,6 +11,7 @@ from playwright.sync_api import sync_playwright
 BASE = "http://127.0.0.1:4173"
 PATH_ID = "software-craft"
 SOURCE = Path("packages/runtime-kernel/src/paths/builder-software-craft-deep.ts")
+INTERNAL_SOURCE = Path("packages/runtime-kernel/src/paths/internal-dependency-management.ts")
 ARTIFACTS = Path("artifacts/software-craft-browser")
 ARTIFACTS.mkdir(parents=True, exist_ok=True)
 
@@ -64,6 +65,19 @@ def seed_disposable_progress(page):
         f"{lesson_id}-{kind}"
         for lesson_id in ids for kind in ("reading", "practice", "check")
     ]
+    # The real academy journey inserts two independently authored lessons.
+    # They are NOT in builder-software-craft-deep.ts; omitting them causes the
+    # original final review to remain correctly locked despite the three stages.
+    injected_ids = (
+        "software-craft-internal-package-design-001",
+        "software-craft-extract-steward-common-001",
+    )
+    separate_source = INTERNAL_SOURCE.read_text(encoding="utf-8")
+    for activity_id in injected_ids:
+        assert f'id: "{activity_id}"' in separate_source, (
+            f"Injected prerequisite moved or renamed: {activity_id}"
+        )
+    completed.extend(injected_ids)
     # Only this synthetic Playwright context is unlocked. The final learner
     # still needs to complete each independent evidence stage for real.
     staged_ids = (
