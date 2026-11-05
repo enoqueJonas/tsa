@@ -9,6 +9,7 @@ on:
       - packages/runtime-kernel/src/paths/builder-software-craft-quality.ts
       - scripts/check-builder-software-craft-logging-errors.mjs
       - scripts/check-builder-software-craft-browser.py
+      - scripts/check-builder-django-live-lab.mjs
       - docs/curriculum/software-craft-forward-depth-exit.md
       - .github/workflows/builder-software-craft-depth.yml
 
@@ -22,7 +23,21 @@ concurrency:
 jobs:
   software-craft-published-proofs:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: tsa_steward_lab
+          POSTGRES_USER: tsa_learner
+          POSTGRES_PASSWORD: tsa_local_ci_only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U tsa_learner -d tsa_steward_lab"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -39,14 +54,40 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Install published protocol primer dependencies
-        run: python -m pip install 'lxml>=5,<8' 'pyftpdlib>=2,<3' 'asyncssh>=2.20,<3' 'PyYAML>=6,<7'
+      - name: Install PostgreSQL client
+        run: |
+          if ! command -v psql >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y postgresql-client
+          fi
+      - name: Install published Python and Django/PostgreSQL lab dependencies
+        run: |
+          python3 -m pip install \
+            'Django>=5.2,<6' \
+            'djangorestframework>=3.16,<4' \
+            'psycopg[binary]>=3,<4' \
+            'drf-spectacular>=0.28,<1' \
+            'djangorestframework-simplejwt>=5.5,<6' \
+            'lxml>=5,<8' \
+            'pyftpdlib>=2,<3' \
+            'asyncssh>=2.20,<3' \
+            'PyYAML>=6,<7'
       - name: Install JS dependencies
         run: pnpm install --frozen-lockfile
       - name: Execute exact learner code plus rejected source mutants
         run: node scripts/check-builder-software-craft-logging-errors.mjs
       - name: Compile runtime-kernel
         run: pnpm --filter @tsa/runtime-kernel exec tsc -p tsconfig.build.json --noEmit
+      - name: Verify published Software Craft COUNT on real migrated Steward PostgreSQL
+        env:
+          PGHOST: 127.0.0.1
+          PGPORT: '5432'
+          PGDATABASE: tsa_steward_lab
+          PGUSER: tsa_learner
+          PGPASSWORD: tsa_local_ci_only
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -c 'SELECT current_database(), current_user;'
+          node scripts/check-builder-django-live-lab.mjs
       - name: Execute curriculum smoke suite
         run: pnpm test
       - name: Build learner applications
