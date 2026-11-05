@@ -13,6 +13,12 @@ The previously thin Authentication Flows and Ownership and Access Rules now trac
 
 The original final Lab: Secure Steward API activity IDs are preserved. Its 180-minute undifferentiated build is replaced by a **seven-boundary evidence matrix**, ordered executable checkpoints, an independent Team A/Team B case and an eight-question teach-back scored 0–2 with 14/16 pass threshold and no zero on key security concepts.
 
+## Module-wide order and baseline-policy correction
+
+The module has 26 lessons and 78 unique activity IDs (including the preserved capstone IDs). The formerly shallow **Authentication Flows** and **Ownership and Access Rules** now each have seven prerequisite-first sections and concrete policy/HTTP decision traces. The flow uses the actual signed rename route `/training/identity/services/<id>/rename/`, not a fictional generic PATCH endpoint.
+
+**Important staged execution constraint:** the first real JWT lab is intended to run with `ROTATE_REFRESH_TOKENS=False` and asserts no replacement refresh field. PED-029E later changes that setting to `True`, applies `token_blacklist` migrations, and asserts the opposite policy. The capstone has been corrected to preserve the first lab's actual baseline evidence and then verify rotation in the later environment; replaying the baseline script after the policy change is an invalid test, not a learning failure. The stage-specific instructions are in the final lab's code block.
+
 ## Safeguards
 
 - `scripts/check-builder-django-live-lab.mjs` extracts exact new learner source and attempts real HTTP/SQL work over the same migrated registry, not mock JWTs or a separate SQLite demo.
