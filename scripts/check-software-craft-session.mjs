@@ -49,6 +49,6 @@ const predicted = titleMatches.flatMap(title =>
     (stable[title] ?? ("software-craft-" + slug(title))) + "-" + kind));
 const missing = before.filter(id => !predicted.includes(id));
 const unexpected = predicted.filter(id => !before.includes(id));
-assert.deepEqual(missing, [], "Browser progress fixture omits actual activity IDs: " + missing.join(", "));
-assert.deepEqual(unexpected, [], "Browser fixture invented noncanonical IDs: " + unexpected.join(", "));
+assert.equal(missing.length, 0, "Browser progress fixture omits actual activity IDs: " + missing.join(", "));
+assert.equal(unexpected.length, 0, "Browser fixture invented noncanonical IDs: " + unexpected.join(", "));
 console.log("PASS Software Craft actual compiled source session: 75 prerequisite activities, final capstone unlock and stable IDs.");
