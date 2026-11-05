@@ -1257,6 +1257,73 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   }
   console.log("Builder Identity collection reads passed: real JWT, scoped count/pages/detail, current multi-Team roles, revoked access, unchanged rows; three broken policies rejected.");
 
+  // The POST boundary has no persisted Service for an object hook to check.
+  const membershipCreateLesson = identitySource.indexOf(
+    '"identity-authentication-authorization-current-membership-create"');
+  assert.ok(membershipCreateLesson > membershipReadLesson &&
+    membershipCreateLesson < ownershipLesson,
+    "Create authorization must follow signed reads and precede ownership commands");
+  const createExamples = {
+    api: identityJsonSnippet(
+      "registry/membership_create_api.py — authorize current maintainer before Service insert"),
+    urls: identityJsonSnippet(
+      "registry/membership_create_urls.py — private signed Service creation route"),
+    lab: identityJsonSnippet(
+      "registry/membership_create_lab.py — signed create denials committed row and cleanup"),
+  };
+  for (const [file, content] of [
+    ["membership_create_api.py", createExamples.api],
+    ["membership_create_urls.py", createExamples.urls],
+    ["membership_create_lab.py", createExamples.lab],
+  ]) fs.writeFileSync(path.join(schemaRoot, "registry", file), content);
+  const createProof = schemaExec(["manage.py", "shell", "-c",
+    "exec(open('registry/membership_create_lab.py').read())"]);
+  for (const expected of [
+    "MEMBERSHIP_CREATE_401_AND_VIEWER_CROSS_TEAM_403_NO_WRITES",
+    "MEMBERSHIP_CREATE_FORGED_FIELDS_AND_INVALID_INPUT_400_NO_WRITES",
+    "MEMBERSHIP_CREATE_REAL_201_DETAIL_200_AND_FRESH_PROCESS_COMMITTED",
+    "MEMBERSHIP_CREATE_DB_UNIQUENESS_400_AND_SUBSEQUENT_201",
+    "MEMBERSHIP_CREATE_SAME_JWT_DOWNGRADE_REVOCATION_AND_OTHER_TEAM_201",
+    "MEMBERSHIP_CREATE_ORIGINAL_ROWS_PRESERVED_FIXTURES_CLEANED",
+    "MEMBERSHIP_CREATE_REAL_POSTGRES_OK",
+  ]) assert.ok(createProof.includes(expected), expected + "\n" + createProof);
+  assert.doesNotMatch(fs.readFileSync(path.join(schemaRoot, "config", "urls.py"), "utf8"),
+    /membership_create_urls|membership_create_api|MembershipServiceCreate/,
+    "Never publish the training-only create route");
+  const createApiPath = path.join(schemaRoot, "registry", "membership_create_api.py");
+  try {
+    for (const [name, old, replacement] of [
+      ["viewer-can-create", "role=Membership.Role.MAINTAINER",
+        "role__in=[Membership.Role.VIEWER, Membership.Role.MAINTAINER]"],
+      ["destination-team-unchecked", "user=request.user, team_id=team_id,",
+        "user=request.user,"],
+      ["authority-field-input-accepted",
+        'not isinstance(request.data, dict)\n                    or set(request.data) - {"name", "slug", "endpoint", "criticality"}',
+        "not isinstance(request.data, dict)"],
+    ]) {
+      assert.ok(createExamples.api.includes(old), "Missing create mutation target: " + name);
+      fs.writeFileSync(createApiPath, createExamples.api.replace(old, replacement));
+      fs.rmSync(path.join(schemaRoot, "registry", "__pycache__"), {recursive: true, force: true});
+      const mutant = spawnSync("python3", ["manage.py", "shell", "-c",
+        "exec(open('registry/membership_create_lab.py').read())"],
+        {cwd: schemaRoot, env: schemaEnv, encoding: "utf8", timeout: 60000});
+      assert.ifError(mutant.error);
+      assert.notEqual(mutant.status, 0, "Broken creation policy escaped: " + name);
+      assert.match(mutant.stderr, /AssertionError/, "Must fail evidence, not imports: " + name);
+      // Cleanup also runs on failed assertions. Prove no mutant fixtures leaked.
+      assert.match(schemaExec(["manage.py", "shell", "-c",
+        "from registry.models import Team; from django.contrib.auth import get_user_model; " +
+        "assert not Team.objects.filter(name__startswith='Identity create lab ').exists(); " +
+        "assert not get_user_model().objects.filter(username__startswith='tsa_create_lab_').exists(); " +
+        "print('CREATE_MUTANT_FIXTURES_CLEAN')"]), /CREATE_MUTANT_FIXTURES_CLEAN/);
+    }
+  } finally {
+    fs.writeFileSync(createApiPath, createExamples.api);
+    fs.rmSync(path.join(schemaRoot, "registry", "__pycache__"), {recursive: true, force: true});
+  }
+  console.log("Builder Identity Service create passed: signed maintainer 201 committed across processes, viewer/cross-Team/revoked 403 no writes, forged/duplicate 400, recovery 201, exact fixture cleanup and three policy mutants rejected.");
+
+
 
 
 
