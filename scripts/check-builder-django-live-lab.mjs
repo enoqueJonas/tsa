@@ -100,10 +100,18 @@ const loggingExampleCli = loggingLessonSnippet("Terminal — execute the Django 
 assert.match(loggingExampleCli, /python manage\.py shell -c/, "Lesson must give runnable Django terminal instructions");
 
 function modelLessonSnippet(caption) {
-  const needle = 'caption: "' + caption + '"';
-  const at = source.indexOf(needle);
-  assert.ok(at >= 0, "Missing first-principles Django model code: " + caption);
-  const match = source.slice(at, at + 12000).match(/value: ("(?:\\.|[^"\\])*")/);
+  // The rich lesson source legitimately contains both authored TS object
+  // syntax (caption: "x", value: "...") and JSON-style literal entries
+  // ("caption":"x","value":"..."). Always extract the exact published
+  // snippet; do not substitute a CI-only reimplementation.
+  const tsAt = source.indexOf('caption: "' + caption + '"');
+  const jsonAt = source.indexOf('"caption":' + JSON.stringify(caption));
+  const at = tsAt >= 0 ? tsAt : jsonAt;
+  assert.ok(at >= 0, "Missing exact learner-visible Django code: " + caption);
+  const content = source.slice(at, at + 16000);
+  const match = tsAt >= 0
+    ? content.match(/value: ("(?:\\.|[^"\\])*")/)
+    : content.match(/"value":("(?:\\.|[^"\\])*")/);
   assert.ok(match, "Published model example has no value: " + caption);
   return JSON.parse(match[1]);
 }
