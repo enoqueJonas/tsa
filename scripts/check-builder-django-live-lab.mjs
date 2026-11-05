@@ -1152,6 +1152,48 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
     "Do not publish the tutorial-only identity token routes");
   console.log("Builder Identity JWT first request passed: same migrated PostgreSQL, actual signed 200 and denied 401/405 HTTP plus data invariant without Team authorization claims.");
 
+  // Continue with an actual principal + CURRENT database membership, not
+  // the earlier server-selected fake Team. The source files are taken exactly
+  // from the new learner activity; all HTTP and SQL operate on schemaRoot.
+  const objectAuthorizationLesson = identitySource.indexOf(
+    '"identity-authentication-authorization-current-membership-http"');
+  const ownershipLesson = identitySource.indexOf(
+    '"identity-authentication-authorization-ownership-and-access-rules"');
+  assert.ok(objectAuthorizationLesson > firstJwtLesson &&
+    objectAuthorizationLesson < ownershipLesson,
+    "Current Membership HTTP must follow real JWT and precede ownership transfer");
+  const membershipHttpExamples = {
+    api: identityJsonSnippet(
+      "registry/membership_rename_api.py — real JWT and current Team Membership PATCH"),
+    urls: identityJsonSnippet(
+      "registry/membership_training_urls.py — isolated signed-object authorization route"),
+    lab: identityJsonSnippet(
+      "registry/membership_http_lab.py — signed 200 400 401 403 404 and revoked-role invariants"),
+  };
+  for (const [name, body] of [
+    ["membership_rename_api.py", membershipHttpExamples.api],
+    ["membership_training_urls.py", membershipHttpExamples.urls],
+    ["membership_http_lab.py", membershipHttpExamples.lab],
+  ]) fs.writeFileSync(path.join(schemaRoot, "registry", name), body + "\n");
+  schemaExec(["manage.py", "check"]);
+  const membershipHttpEvidence = schemaExec(["manage.py", "shell", "-c",
+    "exec(open('registry/membership_http_lab.py').read())"]);
+  for (const expected of [
+    "MEMBERSHIP_REAL_JWT_SAME_TEAM_PATCH_200_SAVED",
+    "MEMBERSHIP_REAL_JWT_CROSS_TEAM_AND_VIEWER_403_NO_WRITES",
+    "MEMBERSHIP_FORGED_FIELDS_400_MISSING_OBJECT_404",
+    "MEMBERSHIP_REVOKED_SAME_VALID_JWT_NOW_403_NO_WRITE",
+    "MEMBERSHIP_REAL_OTHER_TEAM_MAINTAINER_200_REVIEW_HISTORY_UNCHANGED",
+    "MEMBERSHIP_POLICY_REAL_HTTP_POSTGRES_OK",
+  ]) assert.ok(membershipHttpEvidence.includes(expected),
+    "Source-published Membership-authorized HTTP lacked proof: " + expected +
+    "\n" + membershipHttpEvidence);
+  assert.doesNotMatch(fs.readFileSync(path.join(schemaRoot, "config", "urls.py"), "utf8"),
+    /membership_training_urls|membership_rename_api|TrainingRenameService/,
+    "Never publish tutorial Membership mutation routes");
+  console.log("Builder Identity current Membership HTTP passed: signed same-team 200, viewer/cross-team/revoked 403 with unchanged rows, forged 400, absent 404 and preserved Review history.");
+
+
 
 
 
