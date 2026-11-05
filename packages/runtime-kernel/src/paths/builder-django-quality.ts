@@ -362,12 +362,34 @@ const practices: Record<string, PracticeSpec> = {
     deliverables: ["Actual scoped DRF pagination evidence", "COUNT/ORDER BY/OFFSET SQL", "Moving-page failure with retained Team scoping", "Size cap and error responses", "Team A/B server-context comparison"],
     completionCriteria: ["Scope is applied before count and page selection.", "Observed page mutation is actual stored database behavior.", "Other Team rows and count are not exposed.", "The training setting is not described as deployable authentication."]
   },
+  "django-and-api-engineering-serve-two-versions-of-a-real-book-api": {
+    objective: "Serve two real Django REST Framework Book URI versions from one stored row while proving old-client contract compatibility and a deliberate regression failure.",
+    scenario: "The same tsa-django-intro catalogue already has a persisted Book model, a real DRF error handler and working stored-book, filter and pagination endpoints. Do not start a second project or introduce Identity, Docker or an unauthenticated Steward mutation route.",
+    instructions: [
+      "Save catalogue/versioned_book_api.py with the full URLPathVersioning subclass and the real GET view. Explain how DRF reads the named URL version and why request.version is normally None without a versioning scheme.",
+      "Append the versioned route pattern to existing catalogue/urls.py, keeping all earlier routes and preserving the /catalogue/ prefix from config/urls.py.",
+      "Save catalogue/version_bug_urls.py as a separate test-only URLConf; do not add the deliberately broken endpoint to public config/urls.py.",
+      "Run python manage.py check, then execute catalogue/version_request_lab.py through manage.py shell. Observe v1 200 with published_year and v2 200 with publication.year from the same persisted Book.",
+      "Verify that the exact old-client field contract still accepts a fresh v1 request after v2 exists but rejects v2's breaking shape. Reproduce unsupported v3 404, unknown book 404 and unsupported method 405.",
+      "Temporarily select the mutant URLConf inside the test and prove the old-client contract rejects v1 when published_year disappears. Restore the ordinary URLConf and confirm the database row count is unchanged.",
+      "Classify one compatible additive field and one breaking rename. Explain the version/deprecation cost rather than assuming every software release needs a new API version."
+    ],
+    deliverables: ["Complete source and appended route", "Real v1/v2 HTTP request transcript", "Actual v3/404 and method 405 failures", "Old-client mutant rejection", "Compatibility classification note"],
+    completionCriteria: ["Both versions are served over real DRF HTTP requests.", "v1 remains compatible with its declared old-client contract after v2 is added.", "The mutant v1 contract fails as intended.", "No test-only URLConf or fictional authorization is published."]
+  },
   "django-and-api-engineering-api-versioning": {
-    objective: "Classify API changes by compatibility impact before reaching for a new version.",
-    scenario: "Product asks for several changes and the immediate proposal is '/v2'. Review the changes first: some may be additive, some breaking, and some redesignable without parallel API versions.",
-    instructions: ["Classify at least ten hypothetical Steward changes as additive, compatible behavior change or breaking.", "For three breaking candidates, explore whether the contract can evolve without a new major version.", "Compare URI and header/media-type versioning for Steward.", "Choose a versioning strategy and define when it should actually be invoked.", "Write a deprecation notice for one unavoidable breaking change."],
-    deliverables: ["Compatibility classification table", "Alternative evolution analysis", "Versioning decision record", "Deprecation notice"],
-    completionCriteria: ["Versioning follows compatibility analysis rather than habit.", "At least one apparent breaking change is reconsidered.", "Support/deprecation obligations are acknowledged."]
+    objective: "Assess versioning as a compatibility commitment grounded in the real v1/v2 Book HTTP experiment, not a software-release naming convention.",
+    scenario: "A Steward client uses lifecycle=production, stable filters and a 409 readiness conflict. Product wants a v2 release. Authentication and Team membership belong to the later Identity module, so this exercise designs the external contract without deploying new unsecured Service routes.",
+    instructions: [
+      "List ten proposed external changes, including field renames, lifecycle semantics, ownership, sorting, pagination, error codes, optional fields and internally invisible schema changes.",
+      "For each, record the exact old request/response, proposed behavior, affected client assumptions, test oracle and whether a compatible alternative exists.",
+      "Use the actual Book version lab to show an unavoidable representation break, then show why adding an optional property often does not require a new version for tolerant clients.",
+      "Compare URLPathVersioning with NamespaceVersioning and Accept-header/media-type versioning based on concrete client constraints, not style.",
+      "Design tests for existing Steward success and error outcomes that will have to run after Identity authorization is implemented. Do not equate a URI prefix with Team permission.",
+      "Write a specific version/deprecation decision: dual-support expectations, old-client usage evidence, migration notes, sunset conditions and removal approval."
+    ],
+    deliverables: ["Ten-change compatibility matrix", "Old-client contract oracles", "Versioning scheme decision", "Deprecation and maintenance plan"],
+    completionCriteria: ["Versioning is recommended only for demonstrated client incompatibility.", "Old and new contract tests are defined.", "Security parity across versions is explicitly required.", "Retirement depends on evidence, not an arbitrary deployment date."]
   },
   "django-and-api-engineering-openapi-and-swagger-documentation": {
     objective: "Use OpenAPI as contract evidence and detect drift between generated documentation and real runtime behavior.",

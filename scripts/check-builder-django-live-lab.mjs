@@ -327,6 +327,32 @@ for (const id of ["filtering-searching-and-ordering", "pagination"]) {
     "Do not require untaught authentication/Membership in the Django module");
 }
 
+// Source-derived real HTTP versioning must follow the published Book
+// pagination and precede the applied Steward compatibility analysis.
+const versionedPrimerStart = source.indexOf('richLesson("Serve Two Versions of a Real Book API"');
+const appliedVersionStart = source.indexOf('richLesson("API Versioning"');
+const appliedPageStartForVersion = source.indexOf('richLesson("Pagination"');
+assert.ok(appliedPageStartForVersion < versionedPrimerStart &&
+  versionedPrimerStart < appliedVersionStart,
+  "Teach actual v1/v2 Book HTTP before applied Steward compatibility analysis");
+assert.match(publishedPractice("serve-two-versions-of-a-real-book-api"),
+  /tsa-django-intro|catalogue/,
+  "Versioning primer must reuse the existing Book API, not a new project");
+const versionExamples = {
+  view: modelLessonSnippet("catalogue/versioned_book_api.py — complete version-aware DRF view"),
+  urls: modelLessonSnippet("catalogue/urls.py — add v1/v2 Book routes without replacing old endpoints"),
+  badUrls: modelLessonSnippet("catalogue/version_bug_urls.py — isolated broken v1 for regression detection"),
+  lab: modelLessonSnippet("catalogue/version_request_lab.py — real v1/v2 HTTP compatibility and mutant"),
+};
+assert.match(versionExamples.view, /URLPathVersioning/,
+  "Versioning source must use real DRF request.version, not a dictionary mapper");
+assert.match(versionExamples.view, /request\.version == "v1"/,
+  "The version must influence actual response serialization");
+assert.match(versionExamples.lab, /Client\(\)\.get\(new_route\)/,
+  "Version behavior must execute over HTTP, not in-memory data");
+assert.match(versionExamples.lab, /override_settings\(ROOT_URLCONF="catalogue\.version_bug_urls"\)/,
+  "Mutant old version must remain a test-only route");
+
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-django-bridge-"));
 const exec=(command,args,env=process.env)=>{
   const p=spawnSync(command,args,{cwd:root,encoding:"utf8",timeout:60000,env});
@@ -345,7 +371,6 @@ try {
   const model=snippet("registry/models.py — canonical Steward ORM foundation");
   const serializer=snippet("Service serializer");
   const commands=snippet("registry/services.py — protect production transitions and last-deployment deletion");
-  const versioning=snippet("API versioning — executable old-client compatibility test");
   const validation=snippet("DRF validation — executable field and cross-field rejection");
   const config=snippet("Django configuration — executable environment contract");
   const openapi=snippet("OpenAPI — minimal health contract with deliberate path mismatch");
@@ -354,7 +379,6 @@ try {
   assert.equal(documented.openapi,"3.0.3");
   assert.ok(documented.paths["/health"] && !documented.paths["/health/"],"Published mismatch must be deliberate and observable");
 
-  assert.match(exec("python3",["-c",versioning]),/versioning contract rejects semantic drift/);
 
   exec("psql",["-X","-v","ON_ERROR_STOP=1","-c","CREATE DATABASE tsa_steward_django_lab;"]);
   exec("python3",["-m","django","startproject","config","."]);
@@ -1095,6 +1119,35 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   ]) assert.ok(pageEvidence.includes(expected),
     "Source-published pagination API did not demonstrate: " + expected + "\n" + pageEvidence);
   console.log("Builder DRF query/pagination passed: real SQL, six bad filters, unknown-record transfer, 5-to-6 moving pages, stable-key cursor, bound size and missing-page negatives.");
+
+  // Real request.version and two simultaneous Book response contracts.
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "versioned_book_api.py"),
+    versionExamples.view + "\n");
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "version_bug_urls.py"),
+    versionExamples.badUrls + "\n");
+  fs.appendFileSync(path.join(beginnerRoot, "catalogue", "urls.py"),
+    "\n" + versionExamples.urls + "\n");
+  beginnerExec(["manage.py", "check"]);
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "version_request_lab.py"),
+    versionExamples.lab + "\n");
+  const versionProof = beginnerExec(["manage.py", "shell", "-c",
+    "exec(open('catalogue/version_request_lab.py').read())"]);
+  for (const expected of [
+    "VERSIONED_V1_OLD_CLIENT_OK",
+    "VERSIONED_V2_BREAKING_SHAPE_IDENTIFIED",
+    "VERSIONED_V1_STILL_COMPATIBLE_AFTER_V2",
+    "VERSIONED_BAD_VERSION_404_MISSING_404_METHOD_405",
+    "VERSIONED_BROKEN_V1_CONTRACT_DETECTED",
+    "VERSIONED_HTTP_CONTRACT_OK"
+  ]) assert.ok(versionProof.includes(expected),
+    "Exact published v1/v2 HTTP example did not prove " + expected +
+    "\n" + versionProof);
+  const actualUrls = fs.readFileSync(path.join(beginnerRoot, "catalogue", "urls.py"), "utf8");
+  assert.doesNotMatch(actualUrls, /BrokenOldVersion|version_bug_urls/,
+    "The deliberately broken v1 route may not be included in normal catalogue URLs");
+  console.log("Builder DRF versioning passed: real URLPathVersioning request.version, old v1 remains stable, breaking v2, 404/405, test-only mutant is rejected.");
+
+
 
 
 
