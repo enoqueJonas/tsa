@@ -374,44 +374,141 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
         [{ title: "OWASP Authorization Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html" }, { title: "OWASP API Security Top 10", url: "https://owasp.org/API-Security/" }],
     ),
     {
-        id: "identity-authentication-authorization-lab-secure-steward-api",
-        title: "Lab: Secure Steward API",
-        activities: [
+        "id": "identity-authentication-authorization-lab-secure-steward-api",
+        "title": "Lab: Secure Steward API — Evidence and Independent Transfer",
+        "activities": [
             {
-                id: "identity-authentication-authorization-lab-secure-steward-api-reading",
-                title: "Secure Steward as a Domain-Aware API",
-                estimatedMinutes: 20,
-                content: {
-                    type: "reading",
-                    body: "This lab integrates the identity, credential, token and authorization model into the existing PostgreSQL-backed Steward API. The goal is not merely to make endpoints require a token; it is to prove that real team ownership boundaries survive hostile requests.",
-                    blocks: [
-                        { type: "paragraph", text: "This lab integrates the identity, credential, token and authorization model into the existing PostgreSQL-backed Steward API. The goal is not merely to make endpoints require a token; it is to prove that real team ownership boundaries survive hostile requests." },
-                        { type: "heading", id: "target", text: "Target security model", level: 2 },
-                        { type: "list", items: ["Django-managed password hashing", "JWT access and refresh tokens", "short-lived access credentials", "documented refresh/rotation/logout behavior", "Team Membership roles", "object-level Service authorization", "ownership-transfer protection", "negative cross-team tests", "no credential leakage in logs"] },
-                        { type: "callout", tone: "warning", title: "Do not fake authorization", body: "A test that only verifies unauthenticated requests return `401` is not enough. The important Builder evidence is authenticated-but-unauthorized behavior: valid user, valid token, wrong team or insufficient role, denied by the API." },
-                        { type: "resources", title: "Implementation references", resources: [{ title: "Simple JWT", url: "https://django-rest-framework-simplejwt.readthedocs.io/en/latest/" }, { title: "DRF permissions", url: DRF_PERMISSIONS }, { title: "OWASP Authorization Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html" }] },
+                "id": "identity-authentication-authorization-lab-secure-steward-api-reading",
+                "title": "Assemble the Security Evidence Map",
+                "estimatedMinutes": 25,
+                "content": {
+                    "type": "reading",
+                    "body": "You have already implemented identity migration 0007, Owner/audit migration 0008, signed requests, current Membership policy, nested writes, refresh logout and real secured OpenAPI in separate checkpoints. This final lab does not ask you to invent all those parts again. It asks whether you can trace their inputs, outputs and refusals independently, prove a coherent security boundary, and identify which production-grade claims are still unsupported.",
+                    "blocks": [
+                        {
+                            "type": "paragraph",
+                            "text": "Secure Steward is built on ONE existing PostgreSQL registry. Token signatures establish the authenticated principal; current Membership and stored Service relationships decide authorization. A schema describes behavior but cannot enforce it. Passing tests demonstrates implementation behavior in this disposable environment, not production concurrency or a novice's understanding."
+                        },
+                        {
+                            "type": "heading",
+                            "id": "prerequisites",
+                            "text": "Check the same project and database",
+                            "level": 2
+                        },
+                        {
+                            "type": "list",
+                            "items": [
+                                "Start in the Steward Django project used since the ORM and integrated API lessons, not a new project.",
+                                "Run python manage.py check; python manage.py showmigrations registry token_blacklist; python manage.py makemigrations --check --dry-run.",
+                                "Confirm registry 0001–0008 and token_blacklist migrations are applied before running the final checks. Do not reset, rebuild or migrate the schema into SQLite.",
+                                "Keep all tutorial authentication URLConfs isolated under override_settings; verify config/urls.py does not include them."
+                            ]
+                        },
+                        {
+                            "type": "heading",
+                            "id": "proof-order",
+                            "text": "Follow the dependency order instead of one 180-minute jump",
+                            "level": 2
+                        },
+                        {
+                            "type": "list",
+                            "items": [
+                                "Identity: real hashed tsa_ana user, verified access JWT, refresh separated from access and 401 for malformed/expired input.",
+                                "Current Membership: 200 same-Team PATCH, viewer/cross-Team/revoked 403 with unchanged Service rows.",
+                                "Collection/detail: scope before SQL COUNT/LIMIT and foreign-object 404; Service creation: current maintainer permits 201 and persisted read.",
+                                "Nested Environment and directed ServiceDependency creation: derive stored parent/source and target, refuse foreign targets and forged inputs without a write.",
+                                "Owner transfer: 0008 OWNER role, stored source/destination authority, both dependency directions, exactly one atomic audit event, rollback on injected audit failure.",
+                                "Refresh/logout: migrated BlacklistedToken state, 200 rotation, old refresh 401, logout 200 and reused refresh 401; explain why existing access JWT can still be accepted until expiry.",
+                                "Secured contract: generated OpenAPI advertises jwtAuth and observed 200/400/401/403/404/409 for the same real handlers; bounded Django log capture contains no test tokens."
+                            ]
+                        },
+                        {
+                            "type": "heading",
+                            "id": "exact-commands",
+                            "text": "Run the published labs without inventing test code",
+                            "level": 2
+                        },
+                        {
+                            "type": "code",
+                            "language": "bash",
+                            "code": "python manage.py check\npython manage.py showmigrations registry token_blacklist\npython manage.py makemigrations --check --dry-run\npython manage.py shell -c \"exec(open('registry/jwt_first_http_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/membership_http_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/membership_read_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/membership_create_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/environment_membership_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/dependency_membership_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/transfer_membership_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/session_lifecycle_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/secure_contract_lab.py').read())\"\n",
+                            "caption": "Run each source-complete lab only after saving its corresponding published API/URLConf and applying its required migrations; do not assume later checkpoints are already present."
+                        },
+                        {
+                            "type": "heading",
+                            "id": "matrix",
+                            "text": "Create a seven-row falsifiable evidence matrix",
+                            "level": 2
+                        },
+                        {
+                            "type": "paragraph",
+                            "text": "For each of the seven groups above, write (1) the specific request or SQL observation, (2) the predicted response/state, (3) actual response/state, (4) the exact source that owns the decision, and (5) the failure that would occur if its guard were removed. 'Tests pass' is not an evidence row. Include unchanged database snapshots for denials, not only status codes."
+                        },
+                        {
+                            "type": "heading",
+                            "id": "limits",
+                            "text": "Boundary of what this module has actually demonstrated",
+                            "level": 2
+                        },
+                        {
+                            "type": "list",
+                            "items": [
+                                "Completed executable examples teach specified reads, creates, PATCH and explicit transfer; they do not imply delete/update/reparenting routes for every nested resource exist.",
+                                "Simple JWT blacklist enforces sequential invalidation in this lab; concurrent single-use rotation, token-family compromise response and account-wide global logout are not proved.",
+                                "Transaction rollback under an injected audit INSERT exception does not establish universal cross-process serializability, durability after a machine crash, or immutable audit storage.",
+                                "The captured django.request logger cannot establish reverse-proxy, WAF or APM log redaction. The OpenAPI sample covers its explicitly documented signed routes, not an entire production deployment.",
+                                "Human rendered-page review, scroll/progress re-entry and an independently scored novice teach-back are separate VALIDATED gates. A green CI is not that gate."
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "id": "identity-authentication-authorization-lab-secure-steward-api-practice",
+                "title": "Secure Steward — Independent Transfer Assessment",
+                "estimatedMinutes": 75,
+                "content": {
+                    "type": "practical",
+                    "objective": "Independently explain and prove the seven security boundaries on the same stored Steward domain without copying expected results from a previous lab.",
+                    "scenario": "A new maintainer joins Team A. A Service belongs to Team A and has a directed dependency on another Service. A separate viewer belongs only to Team B. The maintainer's Membership is then revoked while the issued JWT remains within its lifetime. An Owner proposes moving the Service to Team B. Your job is to predict the boundary decisions before running any request.",
+                    "instructions": [
+                        "Complete the prerequisites and run the nine published HTTP/SQL labs in the exact order given in the reading. If a command fails, identify the first missing file, migration or prerequisite rather than skipping it.",
+                        "Before each request, prepare a seven-row evidence matrix with expected HTTP status and expected Service, Membership, edge and OwnershipTransfer row changes. Do not copy the earlier scripts' assertions as your predictions.",
+                        "Build your own small disposable Team A/Team B fixture with one Viewer, one Maintainer and one dual-Team Owner (roles and passwords set using Django's framework). Use the existing 0008 registry; never forge client-side owning_team or actor.",
+                        "Test unauthenticated access, same-Team reads and authorized maintainer write, foreign-Team detail, foreign-target dependency, source and destination owner checks, and stale transfer. Compare snapshots before and after denials.",
+                        "Remove the new maintainer's Membership AFTER issuing a valid JWT. Show whoami can still establish the principal but a protected Service write is refused. Explain why authentication and authorization give different results.",
+                        "Demonstrate that an incident dependency blocks ownership transfer and that removing it requires its own authorized reconciliation workflow; do not silently delete edges as part of the transfer command.",
+                        "Run refresh/logout and schema/HTTP evidence. Distinguish refresh replay invalidation from current access JWT validity. Compare actual generated jwtAuth/response metadata to real statuses.",
+                        "Capture a sanitized evidence sheet: commands, selected status/body fields (NO tokens or passwords), before/after SQL counts, error diagnosis, and exact files/functions responsible for each decision.",
+                        "Complete a teach-back without looking at source: explain the identity, stored Membership, resource ownership, nested edge, transfer audit, refresh blacklist and schema layers. Identify at least three unverified claims that would require production infrastructure or independent learner evidence."
                     ],
-                },
+                    "deliverables": [
+                        "Prerequisite/migration verification log",
+                        "Seven-row prediction and actual evidence matrix",
+                        "Independent Team A/Team B signed HTTP and SQL transcript",
+                        "Failure diagnosis and proof of unchanged rows on denial",
+                        "Token lifecycle and contract proof without credential leakage",
+                        "Three explicit residual risks and teach-back answers"
+                    ],
+                    "completionCriteria": [
+                        "All nine published labs execute against the same schema with their expected labels; any failure is diagnosed, not skipped.",
+                        "An authorized same-Team request changes only intended rows; authenticated cross-Team and revoked-member requests do not mutate protected state.",
+                        "A stale transfer is 409; a valid transfer produces exactly one matching actor/from/to audit row, with the source FK changing atomically.",
+                        "Refresh replay/logout invalidation is observed and pre-existing access-token limitations are explained.",
+                        "OpenAPI annotations are grounded in signed runtime routes and sanitized evidence; schema is not treated as enforcement.",
+                        "Seven evidence rows tie HTTP, database effects, specific source and a failure mechanism; no unsupported security claim is silently marked validated."
+                    ]
+                }
             },
             {
-                id: "identity-authentication-authorization-lab-secure-steward-api-practice",
-                title: "Secure Steward API",
-                estimatedMinutes: 180,
-                content: {
-                    type: "practical",
-                    objective: "Implement and prove authentication plus team-scoped object authorization in Steward.",
-                    scenario: "Steward already has Django/DRF endpoints and PostgreSQL persistence. Add a real identity/security boundary without redesigning the product into a generic authentication demo.",
-                    instructions: ["Use Django's password hashing and verify raw passwords are never persisted or logged.", "Implement JWT access and refresh endpoints with explicit lifetimes.", "Choose and document refresh rotation/revocation/logout behavior.", "Use Membership roles to represent team-scoped authority.", "Require authentication for protected write operations.", "Implement object-level rules so maintainers can modify services owned by their team but not another team.", "Protect ownership transfer as a distinct higher-risk operation.", "Apply equivalent rules to Environment and ServiceDependency mutations so nested routes cannot bypass Service authorization.", "Write tests for no-token, expired-token, insufficient-role, cross-team, revoked/invalid refresh and positive same-team cases.", "Inspect application logs and ensure credentials, `Authorization` headers and refresh tokens are not emitted.", "Update OpenAPI/authentication documentation so another engineer can exercise the flows."],
-                    deliverables: ["JWT authentication implementation", "Membership/role authorization policy", "Object-level permission code", "Authentication and authorization test suite", "Token lifecycle note", "Updated API documentation"],
-                    completionCriteria: ["Passwords use framework hashing.", "Expired or invalid access tokens are rejected.", "Authenticated users cannot modify another team's services without explicit authority.", "Same-team maintainers can perform allowed changes.", "Nested resource writes cannot bypass ownership checks.", "Refresh/logout behavior matches documentation.", "Negative tests prove the security boundary.", "Sensitive credentials are absent from logs."],
-                },
-            },
-            {
-                id: "identity-authentication-authorization-lab-secure-steward-api-check",
-                title: "Security Defence",
-                estimatedMinutes: 15,
-                content: { type: "reflection", prompt: "1. Which authorization decision in your implementation depends on current database state rather than token claims?\n2. What happens if a user's Team Membership is removed while an access token is still valid?\n3. Which negative test gives you the strongest evidence that object-level authorization works?\n4. What security trade-off did you make in refresh-token handling, and what would make you revisit it?" },
-            },
-        ],
-    },
+                "id": "identity-authentication-authorization-lab-secure-steward-api-check",
+                "title": "Security Defence — Independent Teach-Back",
+                "estimatedMinutes": 20,
+                "content": {
+                    "type": "reflection",
+                    "prompt": "Without referring to the code: (1) A valid access token can read whoami but a PATCH fails. Give two different current-database reasons. (2) Why does filtering a list after pagination leak data? (3) Why must a new Service be authorized before insertion? (4) A Service has only an incoming edge; predict its transfer and the correct reason. (5) Which write and audit fields must commit together? (6) Why can an access JWT still work after refresh logout? (7) What does jwtAuth in OpenAPI prove—and what does it NOT prove? (8) Name three genuine unverified production/learner-validation gates. Score each answer 0=incorrect, 1=partly correct, 2=correct with a concrete request/SQL example. Require at least 14/16 overall and no zero on questions 1, 4, 5 or 6 before claiming independent transfer."
+                }
+            }
+        ]
+    }
 ];
