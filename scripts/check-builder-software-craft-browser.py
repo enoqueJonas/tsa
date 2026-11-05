@@ -29,6 +29,12 @@ READINGS = [
      "Create and break a public response-policy oracle"),
     ("software-craft-designing-errors-reading",
      "Verify public failure behavior against the previously implemented signed DRF routes"),
+    ("software-craft-lab-change-safety-review-reading",
+     "Stage 1 — baseline before modification"),
+    ("software-craft-lab-configuration-observability-errors-reading",
+     "Stage 1 — make startup errors explicit"),
+    ("software-craft-lab-reproducible-handoff-performance-reading",
+     "Stage 1 — validate the handoff from a clean environment"),
 ]
 
 
@@ -58,6 +64,19 @@ def seed_disposable_progress(page):
         f"{lesson_id}-{kind}"
         for lesson_id in ids for kind in ("reading", "practice", "check")
     ]
+    # Only this synthetic Playwright context is unlocked. The final learner
+    # still needs to complete each independent evidence stage for real.
+    staged_ids = (
+        "software-craft-lab-change-safety-review",
+        "software-craft-lab-configuration-observability-errors",
+        "software-craft-lab-reproducible-handoff-performance",
+    )
+    completed.extend(
+        f"{stage}-{kind}"
+        for stage in staged_ids
+        for kind in ("reading", "practice", "check")
+    )
+    completed.append("software-craft-lab-refine-steward-api-for-review-brief")
     responses = {
         activity: "SYNTHETIC browser prerequisite; not a genuine reflection."
         for activity in completed if activity.endswith("-check")
@@ -117,7 +136,7 @@ def inspect_readings(page):
         assert main.locator("figure pre").count() >= 1, (
             f"No code or artefact text rendered on mobile: {activity}"
         )
-        if number in (1, 4, 5):
+        if number in (1, 4, 5, 8, 9, 10):
             page.screenshot(
                 path=str(ARTIFACTS / f"software-craft-{number}-390.png"),
                 full_page=True,
@@ -137,6 +156,36 @@ def inspect_readings(page):
     ) == "software-craft-python-logging-from-first-principles-practice", (
         "Next must navigate to the exact independent logging practical"
     )
+    # Final review retains its long-standing activity IDs while its new stages
+    # remain separately deep-linkable; direct links must not silently reset
+    # to the beginning of the module after restore.
+    final_id = "software-craft-lab-refine-steward-api-for-review-brief"
+    page.goto(deep_link(final_id), wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+    assert page.evaluate(
+        "new URLSearchParams(location.search).get('activity')"
+    ) == final_id, "Original final review activity was not restored"
+    main = page.locator("main").last
+    assert main.get_by_text("Seven-row evidence matrix with PASS, FAIL or NOT TESTED and explicit constraints", exact=True).count() >= 1, (
+        "Final learner-facing review no longer discloses seven-row evidence acceptance"
+    )
+    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+    page.wait_for_function("window.scrollY > 8", timeout=8000)
+    page.get_by_role("button", name=re.compile(r"^(Next|Next lesson|Complete path)$")).click()
+    page.wait_for_function("window.scrollY <= 8", timeout=8000)
+    assert page.evaluate(
+        "new URLSearchParams(location.search).get('activity')"
+    ) == "software-craft-lab-refine-steward-api-for-review-practice", (
+        "Original final review practice ID or Next transition has changed"
+    )
+    page.reload(wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+    assert page.evaluate(
+        "new URLSearchParams(location.search).get('activity')"
+    ) == "software-craft-lab-refine-steward-api-for-review-practice", (
+        "Final review navigation was not persisted across reload"
+    )
+    print("PASS Software Craft final evidence review: original ID, stage synthesis, scroll reset and reload", flush=True)
     assert not errors, "Browser runtime errors: " + repr(errors)
     print("PASS Software Craft advanced reading -> practice scroll reset", flush=True)
 
