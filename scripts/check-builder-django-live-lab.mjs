@@ -259,6 +259,40 @@ assert.match(errorExamples.domainHandler, /ReadinessConflict/);
 assert.match(errorExamples.domainLab, /service\.refresh_from_db\(\)/);
 assert.match(errorExamples.requestLab, /Book\.objects\.count\(\) == before/);
 
+// Learner must encounter the actual Book query/HTTP mechanics before the
+// applied Steward filtering and pagination material.
+const filteringPrimerStart = source.indexOf('richLesson("Filter, Search and Order a Real Book API"');
+const appliedFilteringStart = source.indexOf('richLesson("Filtering, Searching and Ordering"');
+const paginationPrimerStart = source.indexOf('richLesson("Paginate Real Book Records Across Requests"');
+const appliedPaginationStart = source.indexOf('richLesson("Pagination"');
+const errorAppliedStartForQueries = source.indexOf('richLesson("API Error Handling"');
+assert.ok(errorAppliedStartForQueries < filteringPrimerStart &&
+  filteringPrimerStart < appliedFilteringStart &&
+  appliedFilteringStart < paginationPrimerStart &&
+  paginationPrimerStart < appliedPaginationStart,
+  "Query filtering and paginating full HTTP requests must precede the Steward query modules");
+for (const id of ["filter-search-and-order-a-real-book-api",
+                  "paginate-real-book-records-across-requests"]) {
+  assert.match(publishedPractice(id), /tsa-django-intro|catalogue/,
+    "Real query/pagination teaching must reuse the learner's existing Book database: " + id);
+}
+const queryPaginationExamples = {
+  queryView: modelLessonSnippet("catalogue/query_books.py — validate and execute real Book queries"),
+  queryUrls: modelLessonSnippet("catalogue/urls.py — append the query-books endpoint"),
+  queryLab: modelLessonSnippet("catalogue/query_request_lab.py — search, sort, invalid requests and real SQL"),
+  pageView: modelLessonSnippet("catalogue/page_books.py — bounded page numbers and stable-key cursors"),
+  pageUrls: modelLessonSnippet("catalogue/urls.py — append page and cursor endpoints"),
+  pageLab: modelLessonSnippet("catalogue/pagination_request_lab.py — real offset duplicate and cursor continuation"),
+};
+assert.match(queryPaginationExamples.queryView, /getlist\(key\)/,
+  "Untrusted repeated query params must not be silently accepted");
+assert.match(queryPaginationExamples.queryLab, /CaptureQueriesContext\(connection\)/,
+  "A generated-SQL string alone is not actual SQL execution evidence");
+assert.match(queryPaginationExamples.pageView, /max_page_size = 3/,
+  "The teaching example must actually bound the requested page size");
+assert.match(queryPaginationExamples.pageView, /CursorPagination/,
+  "The cursor exercise must use real DRF pagination, not Python list slicing");
+
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-django-bridge-"));
 const exec=(command,args,env=process.env)=>{
   const p=spawnSync(command,args,{cwd:root,encoding:"utf8",timeout:60000,env});
@@ -941,6 +975,57 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   assert.doesNotMatch(publishedUrls, /DeliberatelyBroken|error_test_urls/,
     "A deliberately failing 500 test route may not be published in the normal URL tree");
   console.log("Builder DRF exception primer passed: 200/400/404/405/406/415 and genuine unexpected 500 with no leaked internals.");
+
+  // The actual GET query and pagination examples are added to the same
+  // already-migrated catalogue, after persistence and exception mapping.
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "query_books.py"),
+    queryPaginationExamples.queryView + "\n");
+  fs.appendFileSync(path.join(beginnerRoot, "catalogue", "urls.py"),
+    "\n" + queryPaginationExamples.queryUrls + "\n");
+  beginnerExec(["manage.py", "check"]);
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "query_request_lab.py"),
+    queryPaginationExamples.queryLab + "\n");
+  const queryEvidence = beginnerExec(["manage.py", "shell", "-c",
+    "exec(open('catalogue/query_request_lab.py').read())"]);
+  for (const expected of [
+    "QUERY_SEARCH_SIX_ORDERED", "QUERY_FILTER_THREE",
+    "QUERY_TIE_BREAK_ORDERED", "QUERY_SIX_BAD_PARAMS_400_NO_WRITES",
+    "QUERY_ACTUAL_SQL_WHERE_ORDER_BY", "BOOK_QUERY_API_OK"
+  ]) assert.ok(queryEvidence.includes(expected),
+    "Source-published query API did not demonstrate: " + expected + "\n" + queryEvidence);
+
+  // Transfer: a previously unseen seventh Book must change the actual query
+  // result without altering parser rules or hiding bad query params.
+  const transferEvidence = beginnerExec(["manage.py", "shell", "-c", [
+    "from django.test import Client",
+    "from catalogue.models import Book",
+    "Book.objects.create(title='Query Lab Fjord', published_year=2023, shelf_code='query-lab-fjord')",
+    "response = Client().get('/catalogue/query-books/', {'year':'2023','search':'Query Lab'})",
+    "assert response.status_code == 200",
+    "assert len(response.json()) == 4",
+    "assert [row['title'] for row in response.json()] == sorted(row['title'] for row in response.json())",
+    "print('NEW_QUERY_BOOK_TRANSFER_FOUR')",
+  ].join("\n")]);
+  assert.match(transferEvidence, /NEW_QUERY_BOOK_TRANSFER_FOUR/);
+
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "page_books.py"),
+    queryPaginationExamples.pageView + "\n");
+  fs.appendFileSync(path.join(beginnerRoot, "catalogue", "urls.py"),
+    "\n" + queryPaginationExamples.pageUrls + "\n");
+  beginnerExec(["manage.py", "check"]);
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "pagination_request_lab.py"),
+    queryPaginationExamples.pageLab + "\n");
+  const pageEvidence = beginnerExec(["manage.py", "shell", "-c",
+    "exec(open('catalogue/pagination_request_lab.py').read())"]);
+  for (const expected of [
+    "PAGE_ONE_TWO_OF_FIVE", "OFFSET_DUPLICATE_AFTER_INSERT",
+    "CURSOR_CONTINUES_NO_DUPLICATE", "PAGE_SIZE_CAPPED_THREE",
+    "PAGE_BAD_PARAMS_400_MISSING_PAGE_404", "PAGINATION_REAL_API_OK"
+  ]) assert.ok(pageEvidence.includes(expected),
+    "Source-published pagination API did not demonstrate: " + expected + "\n" + pageEvidence);
+  console.log("Builder DRF query/pagination passed: real SQL, six bad filters, unknown-record transfer, 5-to-6 moving pages, stable-key cursor, bound size and missing-page negatives.");
+
+
 
 
   console.log("Builder Django beginner lab passed: actual lesson snippets for projects, DRF, plain serializer, APIView and ViewSet plus negative HTTP/validation cases.");
