@@ -1635,39 +1635,158 @@ export const softwareCraftDeepLessons: Lesson[] = [
         ],
     ),
     {
-        id: "software-craft-lab-refine-steward-api-for-review",
-        title: "Lab: Refine Steward API for Review",
-        activities: [
-            {
-                id: "software-craft-lab-refine-steward-api-for-review-brief",
-                title: "From working API to reviewable engineering system",
-                estimatedMinutes: 30,
-                content: {
-                    type: "reading",
-                    body: "The Builder modules have accumulated a functioning Steward API. This lab is a deliberate maintenance pass: improve the repository so another engineer can clone it, understand its domain, review its boundaries, configure it safely, diagnose important behavior and make a change without relying on undocumented history.",
-                    blocks: [
-                        { type: "heading", id: "review-target", text: "The review target", level: 2 },
-                        { type: "paragraph", text: "Do not rewrite Steward. Preserve the product and prove targeted improvements. The strongest submission shows restraint: it identifies concrete friction, improves it with evidence and leaves architectural work that belongs to System Thinker for the next school." },
-                        { type: "heading", id: "quality-gates", text: "Quality gates", level: 2 },
-                        { type: "list", items: ["Coherent Git history and reviewable changes", "Readable domain language and clear responsibility boundaries", "Dependencies and configuration are explicit", "Important operations produce useful, secret-safe logs", "Setup and technical documentation work from a clean checkout", "Public errors are deliberate and consistent", "One performance-sensitive path has measured evidence rather than guesses"] },
-                        { type: "callout", tone: "warning", title: "Do not pre-build System Thinker", body: "This is a software-craft review, not permission to introduce speculative architecture layers. Record structural questions that need deeper system modeling and carry them forward." },
-                    ],
-                },
-            },
-            {
-                id: "software-craft-lab-refine-steward-api-for-review-practice",
-                title: "Engineering Review Pass",
-                estimatedMinutes: 180,
-                content: {
-                    type: "practical",
-                    objective: "Refine Steward API into a repository another engineer can review, run and safely change.",
-                    scenario: "You are handing Steward to a teammate who knows Django but has not followed the TSA lessons. They must be able to understand the service-registry domain and verify the system without asking for undocumented setup knowledge.",
-                    instructions: ["Start from a clean-review mindset: inspect repository status and intended tracked files without deleting local work.", "Identify three concrete maintainability or review problems and rank them by impact.", "Refactor at least one code boundary while preserving behavior with tests or request evidence.", "Audit direct dependencies and document why important ones exist; do not extract speculative shared packages.", "Make configuration requirements explicit and verify missing required configuration fails safely.", "Add or improve useful logging for an important domain operation and a denied/failure path, checking for secret leakage.", "Make README/setup documentation sufficient from clone to database migration, user/token creation and first useful Steward request.", "Review API errors for validation, authorization, conflict, missing resource and unexpected failure behavior.", "Measure one meaningful endpoint for query count, plan or latency and record whether optimization is justified.", "Prepare the final diff and review it as if it came from another engineer; remove only changes you intentionally own and never clean unknown local files destructively.", "Write a handoff note listing what Builder now guarantees and which architectural questions should move to System Thinker."],
-                    deliverables: ["Review-ready Steward API repository", "Working setup and technical documentation", "Maintainability/refactoring evidence", "Dependency and configuration notes", "Logging and error-contract evidence", "One measured performance investigation", "System Thinker handoff note"],
-                    completionCriteria: ["A new engineer can run Steward from documentation.", "The repository exposes domain intent without unnecessary abstraction.", "Important configuration and dependencies are explicit.", "Logs aid investigation without leaking credentials or tokens.", "Failure responses are deliberate.", "Performance claims are backed by evidence.", "The learner can defend both changes made and refactors deliberately deferred."],
-                },
-            },
-            { id: "software-craft-lab-refine-steward-api-for-review-check", title: "Review the review", estimatedMinutes: 20, content: { type: "reflection", prompt: "1. Which change most reduced the cost for the next engineer, and what evidence supports that?\n2. Which cleanup did you deliberately refuse because it lacked a concrete problem?\n3. What part of Steward now has the clearest ownership of behavior?\n4. Which structural concern belongs in System Thinker rather than Builder?\n5. Could another engineer reproduce your setup, failure cases and performance evidence without asking you for hidden context?" } },
-        ],
-    },
+    "id": "software-craft-lab-refine-steward-api-for-review",
+    "title": "Lab: Refine Steward API for Review",
+    "activities": [
+        {
+            "id": "software-craft-lab-refine-steward-api-for-review-brief",
+            "title": "From working API to reviewable engineering system",
+            "estimatedMinutes": 40,
+            "content": {
+                "type": "reading",
+                "body": "The Software Craft module ends with a constrained, independently reviewable Steward handoff. This is an integration assessment, not another omnibus lecture: the 25 earlier lessons teach individual mechanisms. The capstone asks you to assemble falsifiable evidence across those mechanisms without guessing an environment or introducing speculative architecture.",
+                "blocks": [
+                    {
+                        "type": "paragraph",
+                        "text": "A reviewer must be able to distinguish working code from a verified, changeable system. Do not rewrite Steward. Begin from the actual learner-owned repository and known disposable environment. If the earlier database, signed accounts or project setup are unavailable, report that prerequisite as a blocker; do not invent credentials, outputs or a working endpoint."
+                    },
+                    {
+                        "type": "heading",
+                        "id": "eight-evidence-rows",
+                        "text": "Build an eight-row evidence matrix, not a green checklist",
+                        "level": 2
+                    },
+                    {
+                        "type": "paragraph",
+                        "text": "For every row record: the claim, current artifact/command, expected positive result, a deliberate negative/mutant, observed output, reviewer reproduction steps and the boundary that remains unproven. Results from toy Python exercises cannot be passed off as real Steward JWT/PostgreSQL results."
+                    },
+                    {
+                        "type": "list",
+                        "items": [
+                            "1. Git history: present a clean, intentional diff; demonstrate which unrelated files were excluded, what each commit changes and how to reproduce the review on a fresh branch.",
+                            "2. Tests and refactor: show one characterized behavior before a focused refactor, a deliberate failing negative mutant and the same behavior after the change.",
+                            "3. Dependencies: show actual direct imports versus declared runtime/dev requirements and justify one keep/remove/upgrade decision; don't rely on transitive coincidence.",
+                            "4. Configuration: show the effective source/typing contract, one safe startup case and a missing/unsafe setting rejected before a listener or persistent write starts.",
+                            "5. Logging: show one allowed and one denied operation with correlation, nonempty log evidence and a secret-leak negative control that fails if weakened.",
+                            "6. Error contracts: show a real API status/code/body matrix across invalid, unauthenticated, unauthorized, hidden/missing, conflict and unexpected cases; redact internals.",
+                            "7. Documentation: give a newcomer a clean-start README/first signed request, canonical API reference, one ADR and a bounded non-destructive runbook; mark unverified steps.",
+                            "8. Performance: measure one actual workload and authorized/foreign-Team negative under the same conditions, then justify one bounded change or evidence-based no change."
+                        ]
+                    },
+                    {
+                        "type": "heading",
+                        "id": "staged-work",
+                        "text": "Execute four stages in order",
+                        "level": 2
+                    },
+                    {
+                        "type": "list",
+                        "items": [
+                            "STAGE 1 — Baseline and scope: record the actual Steward repository, its intended local training database, git status, version and previously verified commands. Stop if the target is unclear or has unowned changes.",
+                            "STAGE 2 — Code-change safety: select one narrow defect or maintenance friction, preserve the original response/test contract, run the negative mutant, then apply a minimal refactor and inspect the diff.",
+                            "STAGE 3 — Operational correctness: complete source-backed dependency and configuration checks; prove an allowed and denied request, safe bounded logs, error status/code semantics and a failure-before-side-effects case.",
+                            "STAGE 4 — Independent handoff: rerun setup from the README in an isolated environment, verify API docs and one diagnostic runbook, measure one real performance question and ask a reviewer to repeat one safe path."
+                        ]
+                    },
+                    {
+                        "type": "heading",
+                        "id": "start-safe",
+                        "text": "Start with safe repository inspection",
+                        "level": 2
+                    },
+                    {
+                        "type": "paragraph",
+                        "text": "The following are non-destructive inspection commands, not a substitute for the project's verified setup. Run them only inside the intended learner-owned Steward checkout and save an audit of the output. Never run git clean, reset --hard, DROP DATABASE, unaudited migrations or credential reset just to make the exercise green."
+                    },
+                    {
+                        "type": "code",
+                        "language": "bash",
+                        "caption": "Safe first inspection — no hidden Steward paths or credentials assumed",
+                        "code": "# Run only in the intended learner-owned Steward repository.\npwd\ngit status --short\ngit log -3 --oneline\ngit diff --stat\n# Next: use the project's already-verified setup and test commands.\n# If unavailable, record the missing prerequisite rather than inventing one."
+                    },
+                    {
+                        "type": "heading",
+                        "id": "negative-controls",
+                        "text": "Negative controls must fail for the expected reason",
+                        "level": 2
+                    },
+                    {
+                        "type": "paragraph",
+                        "text": "A meaningful negative changes one relevant property: it removes a user-specific authorization predicate, bypasses configuration validation, emits a synthetic secret in a local logger, returns the wrong 409 status for stale ownership, or regresses a characterized business result. Re-run the SAME oracle; don't change expected results or disable assertions. Record the failure mechanism and restore the correct implementation."
+                    },
+                    {
+                        "type": "heading",
+                        "id": "reviewer-rubric",
+                        "text": "Independent review rubric and pass threshold",
+                        "level": 2
+                    },
+                    {
+                        "type": "list",
+                        "items": [
+                            "Score each row 0 = missing, fabricated or fails an essential negative; 1 = executed but explanation, repeatability or limitations incomplete; 2 = reproducible observed evidence plus mechanism, negative outcome and an honest boundary.",
+                            "Pass the eight rows with at least 14/16 and NO zero on rows 2, 4, 5 or 6. A passing test suite cannot replace a missing independent explanation.",
+                            "Another engineer must be able to follow the safe reproduction steps without private prompts, undisclosed credentials or invented local paths. If access is unavailable, mark the row blocked rather than reporting an assumed pass.",
+                            "Two distinct reviewers should be able to tell what behavior intentionally stayed the same and what trade-offs were accepted; a broad rewrite or speculative abstraction is not automatically better."
+                        ]
+                    },
+                    {
+                        "type": "callout",
+                        "tone": "warning",
+                        "title": "Do not claim security or novice validation from CI",
+                        "body": "The source-derived checks prove selected executable examples and rendered navigation. Production access controls, secrets, centralized logs, real concurrency and learner competence require separate evidence. This module does not automatically graduate an unreviewed project to production readiness."
+                    }
+                ]
+            }
+        },
+        {
+            "id": "software-craft-lab-refine-steward-api-for-review-practice",
+            "title": "Engineering Review Pass",
+            "estimatedMinutes": 180,
+            "content": {
+                "type": "practical",
+                "objective": "Produce eight independently repeatable evidence rows for a constrained Steward software-craft handoff, with critical negative controls and a reviewer score of at least 14/16.",
+                "scenario": "A new Django engineer has never watched the TSA lessons and must be able to inspect the actual Steward repository, run its authorized learning environment and judge the reasoning behind the changes without asking for missing context.",
+                "instructions": [
+                    "Stage 1: identify the real Steward checkout and isolated training environment; record uncommitted files and leave unknown user changes untouched. Inventory prerequisites before editing.",
+                    "Create an eight-row matrix from the reading. For each row name the claim, exact command/source artifact, positive output, intended negative, actual result and what that result cannot prove.",
+                    "Stage 2: select one real maintainability problem, protect a behavior with a test, demonstrate a deliberate negative mutation, apply the smallest useful refactor and preserve the before/after diff.",
+                    "Stage 3: audit direct requirements versus imports, validate required configuration before a simulated or real startup side effect, and capture BOTH a success and denial log event without leaking tokens.",
+                    "Prove real error status and stable response-code behavior against the actual signed Steward endpoints when an isolated database is available. If only the standalone HTTP lab exists, label it as a bounded exercise rather than a database security proof.",
+                    "Stage 4: verify the real README steps in a clean environment; include a permitted and forbidden API request, canonical schema link, proposed/accepted ADR status and a non-destructive runbook stop condition.",
+                    "Investigate one actual endpoint workload using query count, payload size, timing or EXPLAIN; confirm authorized data scope before and after any optimization. A justified no-change decision is acceptable.",
+                    "Ask a different engineer or independent assessor to replay at least one setup path and one negative control. Record discrepancies and do not mark blocked evidence green.",
+                    "Score all eight rows 0–2 using the reading rubric. Require >=14/16 and zero 0s for tests/refactor, configuration, logging and HTTP error contracts. Preserve a list of unanswered architectural questions for System Thinker."
+                ],
+                "deliverables": [
+                    "A clean, intentionally reviewable diff and current setup description",
+                    "Eight-row falsifiable claim/positive/negative/output/limitation evidence matrix",
+                    "A deliberate failing mutation and behavior-preserving refactor proof",
+                    "Effective dependency and fail-closed configuration proof",
+                    "Safe success/denial event logs and HTTP error status/code evidence",
+                    "Reproducible README, ADR, diagnostic runbook and actual API/schema references",
+                    "One measured performance decision (including a correct no-change decision)",
+                    "Independent reviewer replay and scored 0–16 rubric with unresolved blockers"
+                ],
+                "completionCriteria": [
+                    "No unknown repository file, training database or credential was destructively changed.",
+                    "Every submitted passing claim contains a positive observation and a negative/failure oracle, or is explicitly marked blocked.",
+                    "The same independently executable commands preserve core behavior and fail the deliberate regression for the right reason.",
+                    "The actual signed Membership policy and database security are never inferred from a toy HTTP or Python example.",
+                    "A second engineer can reproduce one safe setup path and one negative without undisclosed context.",
+                    "Score >=14/16 with no zero on row 2, 4, 5 or 6; the student can explain unproven properties."
+                ]
+            }
+        },
+        {
+            "id": "software-craft-lab-refine-steward-api-for-review-check",
+            "title": "Review the review",
+            "estimatedMinutes": 25,
+            "content": {
+                "type": "reflection",
+                "prompt": "1. Which exact failure-mutant proves your refactor preserved the intended behavior, and how could a test still be falsely green?\n2. Which dependency was explicitly declared, what is its import consumer, and what could make the resolution drift?\n3. What configuration invalid case prevented initialization before any side effect, and what real deployment property is still untested?\n4. Show one allowed and one denied log event; explain the field allowlist and your independent secret-leak negative.\n5. Which signed Steward request gives a 403, concealed 404 or stale 409, and which client action follows? What cannot be proved by the toy HTTP server?\n6. Which README command did another engineer reproduce without prior knowledge, and which ADR or runbook assumption remains Proposed?\n7. What actual performance result justified your change or no-change decision, including workload and negative authorization test?\n8. What evidence is missing for production security and later System Thinker work? Score the eight matrix rows 0–2 (16 possible), require 14/16 and no zero on rows 2, 4, 5 or 6."
+            }
+        }
+    ]
+},
+
 ];
