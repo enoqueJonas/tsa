@@ -36,7 +36,6 @@ const djangoActivityNames: Record<string, [string, string, string]> = {
   "Steward SQL to Django ORM: One Canonical Domain": ["Map a relational domain to Django", "Map Steward tables to models", "Review the domain mapping"],
   "Models and Domain Data": ["Understand Django models and fields", "Map relationships and constraints", "Check model semantics"],
   "ORM Query Behavior and Performance": ["Understand when QuerySets execute", "Inspect ORM SQL and query counts", "Check QuerySet behavior"],
-  "Schema Evolution with Django Migrations": ["Understand Django database migrations", "Apply a safe schema change", "Check migration safety"],
   "Serializers and Representation": ["Validate input and produce API output", "Validate standalone book payloads", "Check serializer boundaries"],
   "Views, ViewSets and Routing": ["Route requests with APIView and ViewSets", "Compare explicit and router-generated routes", "Check API routing"],
   "Production Readiness Commands and Atomic Updates": ["Update records safely in transactions", "Apply a controlled state change", "Check atomic updates"],
