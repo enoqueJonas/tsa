@@ -441,6 +441,34 @@ const practices: Record<string, PracticeSpec> = {
     deliverables: ["Configuration inventory", "Environment-driven settings", "Fail-fast evidence", "Secret-handling check", "Configuration contract"],
     completionCriteria: ["Unsafe production behavior is not enabled silently by development defaults.", "Critical missing configuration fails visibly.", "Secrets are neither committed nor logged."]
   },
+  "django-and-api-engineering-map-a-directed-service-dependency-into-django": {
+    objective: "Append a real ServiceDependency model, migrate the existing PostgreSQL-backed Django registry, and prove direction, uniqueness, self-edge, FK and delete constraints in the database.",
+    scenario: "Continue the separate disposable Steward Django schema project with 0001–0004 registry migrations applied, a unique Service slug and preserved original Team/Service/Environment data. Do not begin Identity or create a new repository/project.",
+    instructions: [
+      "Identify the existing schema relationship: source_service_id and target_service_id are two different Service references. Explain how a two-column uniqueness constraint differs from prohibiting cycles.",
+      "Append the full ServiceDependency class to registry/models.py without replacing existing classes, then run python manage.py check.",
+      "Run python manage.py makemigrations registry --name service_dependency. Inspect generated registry/migrations/0005_service_dependency.py and python manage.py sqlmigrate registry 0005 before applying migrate registry 0005.",
+      "Check python manage.py makemigrations registry --check --dry-run reports no changes. Execute registry/dependency_integrity_lab.py from the published lesson via manage.py shell.",
+      "Capture the two independently stored directed edges, three real IntegrityError cases and PROTECT deletion result. Verify each rejected write left dependency count unchanged.",
+      "Open a new managed shell and re-read the original dependency by joined Service names. Describe why an A→B→C→A graph is still permitted by these constraints."
+    ],
+    deliverables: ["Reviewed 0005 migration and SQL", "PostgreSQL-backed dependency integrity transcript", "New shell persistence evidence", "Explicit cycle/authorization gap"],
+    completionCriteria: ["No original registry rows or migration IDs are overwritten.", "Both FK directions and all negative writes are observed against real database constraints.", "The learner can explain which graph invariants have not been implemented.", "No insecure API is exposed."]
+  },
+  "django-and-api-engineering-persist-a-steward-service-review-history": {
+    objective: "Create durable multiple review events per Service with a real PostgreSQL CHECK, FK integrity and deterministic time ordering.",
+    scenario: "Use the same already migrated Steward Django registry after the ServiceDependency 0005 exercise. Reviewer strings are fictional training values; verified identity and access control are not available until the next module.",
+    instructions: [
+      "Explain why a separate ServiceReview event is necessary when one Service has a follow-up and then a passing review.",
+      "Append the published ServiceReview class below ServiceDependency. Generate registry 0006 using python manage.py makemigrations registry --name service_review and inspect the migration/SQL before applying it.",
+      "Execute registry/review_history_lab.py once through manage.py shell. Capture all three historical events for the same Service, including the two recorded at an identical timestamp.",
+      "Demonstrate that PostgreSQL rejects an unknown verdict and an absent service FK, and that PROTECT blocks deletion of a Service still referenced by reviews.",
+      "Run makemigrations --check --dry-run and reopen a fresh Django shell to verify all three events persist and the original Service remains.",
+      "Explain why a reviewer text string is not authentication, and why separate review rows do not by themselves prevent UPDATE/DELETE or guarantee a tamper-proof audit trail."
+    ],
+    deliverables: ["Reviewed 0006 migration and generated SQL", "Persisted three-event historical transcript", "Negative CHECK/FK/PROTECT evidence", "New-shell read", "Identity/audit design limits"],
+    completionCriteria: ["The schema permits multiple reviews per Service but rejects invalid values/foreign keys.", "Events have stable identities with a timestamp/PK order.", "The learner distinguishes historical records from enforced immutability.", "No auth or audit guarantees are invented."]
+  },
   "django-and-api-engineering-application-logging": {
     objective: "Design application logs around diagnostic questions while keeping expected domain rejection distinct from unexpected failure.",
     scenario: "Current logs say 'request received' and 'something went wrong'. During an incident, neither line answers what operation failed, for which service, or whether the event was expected. Replace narration with useful operational evidence.",
