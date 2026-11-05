@@ -24,8 +24,11 @@ def seed_progress(page):
     titles = re.findall(r'\n\s+lesson\(\s*\n\s*"([^"]+)"', source)
     assert len(titles) == 25 and len(set(titles)) == 25, (
         f"Software Craft module lesson sequence changed: {len(titles)}")
+    # The review lesson has a legacy, intentionally preserved stable ID.
+    # Title-based slugs are not authoritative when a lesson supplies stableId.
+    stable = {"Review a Code Change": "software-craft-code-review-and-technical-debt"}
     ids = [
-        f"software-craft-{slug(title)}-{kind}"
+        f"{stable.get(title, 'software-craft-' + slug(title))}-{kind}"
         for title in titles for kind in ("reading", "practice", "check")
     ]
     responses = {id: "SYNTHETIC browser unlock only, not learner evidence."
