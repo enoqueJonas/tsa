@@ -8,6 +8,7 @@ on:
       - packages/runtime-kernel/src/paths/builder-software-craft-deep.ts
       - packages/runtime-kernel/src/paths/builder-software-craft-quality.ts
       - scripts/check-builder-software-craft-logging-errors.mjs
+      - scripts/check-builder-software-craft-browser.py
       - docs/curriculum/software-craft-forward-depth-exit.md
       - .github/workflows/builder-software-craft-depth.yml
 
@@ -50,5 +51,24 @@ jobs:
         run: pnpm test
       - name: Build learner applications
         run: pnpm build
+      - name: Install Chromium for Software Craft learner-facing rendering
+        run: |
+          python -m pip install playwright==1.58.0
+          python -m playwright install --with-deps chromium
+      - name: Prove Software Craft rendered depth and 390px navigation
+        run: |
+          python -m http.server 4173 --bind 127.0.0.1 --directory apps/web/out > /tmp/tsa-software-craft-server.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl --fail --silent http://127.0.0.1:4173/ >/dev/null && break
+            sleep 1
+          done
+          python scripts/check-builder-software-craft-browser.py
+      - name: Upload Software Craft browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: software-craft-mobile
+          path: artifacts/software-craft-browser/
+          if-no-files-found: warn
       - name: Strict curriculum structure audit
         run: node scripts/audit-learner-facing-curriculum.mjs --strict
