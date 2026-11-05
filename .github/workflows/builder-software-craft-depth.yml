@@ -7,6 +7,8 @@ on:
     paths:
       - packages/runtime-kernel/src/paths/builder-software-craft-deep.ts
       - packages/runtime-kernel/src/paths/builder-software-craft-quality.ts
+      - packages/runtime-kernel/src/paths/academy-journey.ts
+      - packages/runtime-kernel/src/paths/internal-dependency-management.ts
       - apps/web/components/learning-experience.tsx
       - scripts/check-builder-software-craft-logging-errors.mjs
       - scripts/check-builder-software-craft-browser.py
