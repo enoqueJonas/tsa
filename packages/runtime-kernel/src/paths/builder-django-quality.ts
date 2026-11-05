@@ -6,6 +6,22 @@ import { djangoDependentPostgresqlQualityLessons } from "./builder-postgresql-qu
 type PracticeSpec = Omit<PracticalContent, "type">;
 
 const practices: Record<string, PracticeSpec> = {
+  "django-and-api-engineering-persist-a-book-through-a-real-drf-api": {
+    objective: "Build and test a genuinely persistent DRF Book API before integrating the real Steward registry.",
+    scenario: "The previous APIView lesson intentionally returned a teaching 201 without saving rows. Reuse the migrated tsa-django-intro catalogue with its required unique shelf_code, and prove the difference between response serialization and actual persistence.",
+    instructions: [
+      "Confirm catalogue migration 0006 is applied, identify the database and inspect the Book model fields. Do not delete existing rows to make the exercise easier.",
+      "Save catalogue/stored_serializers.py and catalogue/stored_api.py exactly as taught, and append the two routes without replacing the earlier URLs.",
+      "Explain the POST operation in order: HTTP JSON parsing, serializer field validation, serializer.save(), database insertion, response rendering.",
+      "Run catalogue/stored_request_lab.py and prove create=201, stored row, fresh request=200, patch=200 and unchanged title, year and code.",
+      "Show two 400 cases and unchanged database count, a missing detail 404 and an unsupported method 405.",
+      "Open a second Python shell after the test run and retrieve the new row from the database to prove it outlived a particular request or Python object.",
+      "Remove serializer.save() in a disposable experiment, predict what fails, restore it, and justify why the original in-memory 201 lesson was not a real create endpoint.",
+      "List the actual ownership, permission, concurrency and domain invariants this deliberately open local API does not enforce."
+    ],
+    deliverables: ["Complete model serializer", "Real collection/detail APIView source", "Preserved URL wiring", "Source-published HTTP and database assertions", "Fresh-shell persistence proof", "Security/domain limitations note"],
+    completionCriteria: ["A valid POST commits exactly one new Book.", "PATCH persists only requested changes.", "Negative requests do not add rows.", "The learner explicitly distinguishes HTTP status, validated representation, persistence and authorization."]
+  },
   "django-and-api-engineering-production-readiness-commands-and-atomic-updates": {
     objective: "Prove the production-readiness rule through real transactional Django operations.",
     scenario: "The canonical Service model and Environment relationship are already established. A service must not become production-stage without a production deployment, and its last production deployment must not be removed while active in that stage.",
