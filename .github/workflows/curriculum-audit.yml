@@ -28,6 +28,7 @@ on:
       - curriculum/builder-drf-persisted-book-api
       - curriculum/builder-drf-real-error-contract
       - curriculum/builder-drf-query-pagination-real-api
+      - curriculum/builder-steward-scoped-query-paging
       - curriculum/system-thinker-pedagogical-audit
       - curriculum/platform-builder-pedagogical-audit
       - curriculum/delivery-engineer-pedagogical-audit
