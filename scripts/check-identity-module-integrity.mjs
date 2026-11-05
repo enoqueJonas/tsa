@@ -54,7 +54,7 @@ const contractCaption = "registry/secure_contract_lab.py — generated JWT contr
 const contractAt = source.indexOf('"caption":' + JSON.stringify(contractCaption));
 assert.ok(contractAt >= 0, "Missing real signed contract exercise");
 const contractCodeMatch = source.slice(contractAt, contractAt + 28000).match(
-  /"code":\\s*("(?:\\\\.|[^"\\\\])*")/);
+  /"code":("(?:\\.|[^"\\])*")/);
 assert.ok(contractCodeMatch, "Missing published contract Python program");
 const contractCode = JSON.parse(contractCodeMatch[1]);
 for (const check of [
