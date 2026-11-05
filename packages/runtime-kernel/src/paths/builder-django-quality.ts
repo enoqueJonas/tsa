@@ -434,6 +434,22 @@ const practices: Record<string, PracticeSpec> = {
     deliverables: ["Complete guard/settings and runnable subprocess script", "Effective Django configuration evidence", "Five fail-before-application-command cases", "Wrong-target and unchanged-data evidence", "Production limits"],
     completionCriteria: ["The test launches actual new Django processes, not just a Python dict parser.", "Unsafe configuration fails before the provided shell body executes.", "The learner does not print keys or use real credentials.", "Production security is not inferred from an opt-in lab setting."]
   },
+  "django-and-api-engineering-verify-steward-openapi-against-the-integrated-registry": {
+    objective: "Generate a validated OpenAPI contract from the real migrated Steward registry and prove its claims against HTTP requests, database state and two deliberate schema drifts.",
+    scenario: "Continue the same PostgreSQL Django registry after migrations 0001–0006 and the complete integrated Service/Review, readiness 409→200 and safe-logging checkpoints. This is an isolated training integration, not a public API with authenticated Team membership.",
+    instructions: [
+      "Confirm the previous integrated HTTP and readiness labs have passed against the SAME migrated PostgreSQL Steward project. Do not silently assemble unrelated Book and Steward scratch projects.",
+      "Save registry/integrated_contract_views.py, which annotates the existing TrainingServices, TrainingReviews and TrainingPromotion HTTP handlers. Explain how each method delegates to the real existing logic rather than replacing it.",
+      "Save registry/integrated_contract_urls.py and integrated_schema_urls.py. Both actual HTTP requests and schema export must use the same four integration route objects. Do NOT include either URLConf in config/urls.py.",
+      "Append the source-published drf-spectacular settings without replacing DATABASES or the existing stable API exception handler. Run manage.py check.",
+      "Run manage.py spectacular --urlconf registry.integrated_contract_urls --format openapi-json --file registry/integrated_openapi.json --validate --fail-on-warn.",
+      "Execute registry/integrated_schema_contract_lab.py through manage.py shell. Confirm four correct paths, request bodies and 200/201/400/403/404/409 declarations; prove real Service/Review persisted POST and GET, scoped counts, readiness rejected 409 and accepted 200 with stored-state assertions, and unsupported method 405.",
+      "Prove the source-published schema mutation tests reject one missing response field and one nonexistent documented route. Explain why actual 403 from a missing test Team setting does NOT mean authenticated membership has been implemented.",
+      "Record which files/permissions must change during Identity: authenticated principal, Membership-based Team selection, per-object authorization, reviewer attribution and nonpublic training route removal."
+    ],
+    deliverables: ["Validated OpenAPI export from live Steward DRF methods", "Runtime/schema route equality evidence", "Stored Service/Review and readiness HTTP/state transcript", "Two schema drift failures", "Explicit Identity and deployment gap"],
+    completionCriteria: ["The schema and runtime use identical real DRF URL patterns.", "All reported status codes and data-state effects come from actual PostgreSQL-backed HTTP calls.", "An invalid schema field/path cannot pass the focused conformance checks.", "No unauthenticated training URL is accidentally published or called production-ready."]
+  },
   "django-and-api-engineering-configuration-and-environments": {
     objective: "Turn environment-specific assumptions into an explicit configuration contract with safe defaults and fail-fast production behavior.",
     scenario: "The development setup works because DEBUG, hosts and service URLs are embedded in settings.py. A production deployment using the same defaults would be unsafe. Make environment ownership visible before Delivery school.",
