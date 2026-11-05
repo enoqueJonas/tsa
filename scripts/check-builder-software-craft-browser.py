@@ -189,10 +189,25 @@ def inspect_readings(page):
             };
           } finally { db.close(); }
         }""", PATH_ID)
+        # Compare a new page in the SAME isolated browser context to
+        # distinguish a stale mounted route from an inaccessible activity.
+        fresh = page.context.new_page()
+        fresh.goto(deep_link(final_id), wait_until="networkidle")
+        fresh.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+        fresh_actual = fresh.evaluate(
+            "new URLSearchParams(location.search).get('activity')"
+        )
+        fresh_headings = fresh.locator("main").last.locator("h1,h2").all_inner_texts()[:5]
+        fresh.close()
         page.screenshot(
             path=str(ARTIFACTS / "software-craft-final-deep-link-failure.png"),
             full_page=True,
         )
+        print("DEBUG fresh page after same-context reset:", {
+            "expected": final_id,
+            "actual": fresh_actual,
+            "headings": fresh_headings
+        }, flush=True)
         print("DEBUG final deep link:", {
             "expected": final_id,
             "actual": actual_final,
