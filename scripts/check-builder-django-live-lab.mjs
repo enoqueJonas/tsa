@@ -1403,11 +1403,11 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
       "registry/session_lifecycle_lab.py — signed refresh replay logout and database state"),
   };
   fs.appendFileSync(path.join(schemaRoot, "config", "settings.py"),
-    "\\n" + lifecycle.settings + "\\n");
+    "\n" + lifecycle.settings + "\n");
   for (const [filename, body] of [
     ["session_lifecycle_urls.py", lifecycle.urls],
     ["session_lifecycle_lab.py", lifecycle.lab],
-  ]) fs.writeFileSync(path.join(schemaRoot, "registry", filename), body + "\\n");
+  ]) fs.writeFileSync(path.join(schemaRoot, "registry", filename), body + "\n");
   schemaExec(["manage.py", "migrate", "token_blacklist", "--noinput"]);
   schemaExec(["manage.py", "check"]);
   const lifecycleProof = schemaExec(["manage.py", "shell", "-c",
@@ -1417,7 +1417,7 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
     "SESSION_LOGOUT_BLACKLIST_PERSISTED_REUSE_401",
     "SESSION_EXISTING_ACCESS_VALID_UNTIL_EXPIRY_REFRESH_NOT_ACCESS",
     "SESSION_BLACKLIST_STATE_AND_STEWARD_DOMAIN_INVARIANT_OK",
-  ]) assert.ok(lifecycleProof.includes(label), label + "\\n" + lifecycleProof);
+  ]) assert.ok(lifecycleProof.includes(label), label + "\n" + lifecycleProof);
   assert.doesNotMatch(
     fs.readFileSync(path.join(schemaRoot, "config", "urls.py"), "utf8"),
     /session_lifecycle_urls|TokenBlacklistView|token\/logout/,
