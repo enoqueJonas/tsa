@@ -242,6 +242,20 @@ const practices: Record<string, PracticeSpec> = {
         deliverables: ["Defect-versus-debt classification", "Evidence-based debt record", "Repay/defer rationale", "Named owner and observable revisit trigger", "Reclassification when current behavior fails"],
         completionCriteria: ["Technical debt is not used to excuse a current correctness or security failure.", "The record distinguishes observed evidence from speculation.", "The decision can be reviewed without oral context.", "A trigger determines when to revisit; 'later' alone is not enough.", "No unverified Steward backlog item is invented."]
     },
+    "software-craft-python-logging-from-first-principles": {
+        objective: "Trace the actual Python logger → handler → formatter pipeline and fail an incorrect threshold prediction.",
+        scenario: "Before logging a Steward state change, a new teammate sees logger.info calls produce no visible output and assumes logging is broken. Use a scratch Python process to determine which stage discards the record rather than changing application-wide logging settings.",
+        instructions: [
+            "Save and run the exact logger/handler/formatter program from the reading using python3; keep unrelated application loggers untouched.",
+            "Capture both expected evidence labels and the output record with its named logger.",
+            "Switch the handler threshold from INFO to DEBUG, predict the additional emitted record, and verify the change.",
+            "Move the handler threshold to ERROR, prove the INFO record disappears and identify exactly which gate caused that result.",
+            "In the isolated scratch script add a root handler, enable propagation and observe the duplicate; remove the root handler and restore propagation behavior.",
+            "Explain which parts are local Python behavior and which production log-management properties remain untested."
+        ],
+        deliverables: ["Runnable scratch Python logger source", "Three captured threshold cases and propagation observation", "Logger/handler/formatter reasoning note"],
+        completionCriteria: ["The learner can predict INFO/DEBUG/WARNING filtering without trial-and-error config edits.", "A deliberate handler-threshold negative is asserted.", "No global application handler is cleared or modified.", "Operational limitations are stated without claiming central logging."]
+    },
     "software-craft-useful-logging": {
         objective: "Design logs that let an engineer reconstruct one important Steward operation without exposing sensitive data.",
         scenario: "A service ownership or lifecycle change is disputed after the fact. Existing logs either say too little to investigate or dump noisy request data. Create a small logging contract that provides evidence another engineer could actually use.",
@@ -284,6 +298,19 @@ const practices: Record<string, PracticeSpec> = {
         ],
         deliverables: ["Verified Steward setup evidence", "Reader-specific documentation links", "Evidence-backed decision record", "Safe diagnostic runbook", "Unverified-gates list"],
         completionCriteria: ["At least one real setup claim is executed against the actual documented environment.", "The project documentation does not invent credentials or deployed endpoints.", "README, API reference, ADR and runbook serve distinct reader needs.", "Unverified setup claims remain explicitly open, not labelled ready."]
+    },
+    "software-craft-failure-boundaries-and-public-error-contracts": {
+        objective: "Model six public failure outcomes, then prove that leaking a database exception fails an explicit negative control.",
+        scenario: "A Steward endpoint currently returns raw database exception text to clients. Before introducing custom DRF handlers, agree which failures clients can act on and what information must remain private.",
+        instructions: [
+            "Execute the exact pure-Python public error program from the reading and capture the three evidence labels.",
+            "Write a decision table for 400, 401, 403, concealed 404, 409 and 500 with trigger, client action and server diagnostic evidence.",
+            "Deliberately mutate the mapper to echo a demo SQL password in the response and prove the no-secret assertion fails.",
+            "Restore the safe mapper and confirm absent and foreign-Team Service scenarios share a public 404 shape.",
+            "Name the exact next test to perform against actual DRF Client responses and identify why the pure function is insufficient HTTP proof."
+        ],
+        deliverables: ["Executed six-case public policy test", "Leak-mutant failure evidence", "Failure decision table and DRF follow-up tests"],
+        completionCriteria: ["All six response families are explicitly distinguished.", "The negative mutant really leaks and is detected.", "The public contract omits raw database details and has a stable shape.", "Pure-Python evidence is not misrepresented as real HTTP evidence."]
     },
     "software-craft-designing-errors": {
         objective: "Turn inconsistent Steward failures into an API error contract that tells clients what action is possible without leaking internals.",
