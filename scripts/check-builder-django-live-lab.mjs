@@ -398,14 +398,56 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
     "The domain model exercise must be safe to repeat without duplicate Services");
   console.log("Builder Models and Domain Data passed: actual safe UAT Service, FK JOIN, idempotent reuse and invalid lifecycle rejection.");
 
+  // A clean PostgreSQL Django registry is required here. The original
+  // integration project has already added a Membership 0002 from the later
+  // Identity module; that schema history must not contaminate this lesson.
+  exec("psql", ["-X", "-v", "ON_ERROR_STOP=1", "-c",
+    "CREATE DATABASE tsa_steward_schema_lab;"]);
+  const schemaRoot = path.join(root, "django-steward-schema");
+  fs.mkdirSync(schemaRoot);
+  const schemaEnv = {...env, PGDATABASE: "tsa_steward_schema_lab"};
+  const schemaExec = (args) => {
+    const p = spawnSync("python3", args,
+      {cwd: schemaRoot, encoding: "utf8", timeout: 60000, env: schemaEnv});
+    assert.ifError(p.error);
+    assert.equal(p.status, 0, "Schema lab failed: python3 " + args.join(" ") +
+      "\n" + p.stdout + "\n" + p.stderr);
+    return p.stdout.trim();
+  };
+  schemaExec(["-m", "django", "startproject", "config", "."]);
+  schemaExec(["manage.py", "startapp", "registry"]);
+  fs.writeFileSync(path.join(schemaRoot, "registry", "models.py"), model + "\n");
+  fs.appendFileSync(path.join(schemaRoot, "config", "settings.py"), [
+    "", "import os", "INSTALLED_APPS += ['registry']",
+    "DATABASES = {'default': {'ENGINE': 'django.db.backends.postgresql',",
+    "    'NAME': os.environ['PGDATABASE'], 'USER': os.environ['PGUSER'],",
+    "    'PASSWORD': os.environ['PGPASSWORD'], 'HOST': os.environ['PGHOST'],",
+    "    'PORT': os.environ['PGPORT']}}", ""
+  ].join("\n"));
+  schemaExec(["manage.py", "check"]);
+  schemaExec(["manage.py", "makemigrations", "registry", "--noinput"]);
+  schemaExec(["manage.py", "migrate", "--noinput"]);
+  assert.match(schemaExec(["manage.py", "showmigrations", "registry"]),
+    /\[X\] 0001_initial/);
+  const seedSchema = [
+    "from registry.models import Team, Service, Environment",
+    "team = Team.objects.create(name='Django Workshop')",
+    "service = Service.objects.create(name='Workshop Reports API', owning_team=team,",
+    "    endpoint='https://workshop.example.invalid/api', lifecycle=Service.Lifecycle.UAT)",
+    "Environment.objects.create(service=service, name='UAT', kind=Environment.Kind.UAT)",
+    "assert Service.objects.count() == 1 and Environment.objects.count() == 1",
+    "print('SCHEMA_BASELINE_READY')"
+  ].join("\n");
+  assert.match(schemaExec(["manage.py", "shell", "-c", seedSchema]), /SCHEMA_BASELINE_READY/);
+
   // Transfer the complete migration workflow to the actual PostgreSQL-backed
   // registry. All earlier Steward examples already ran before changing schema.
   const registryRun = (name, content) => {
-    fs.writeFileSync(path.join(root, "registry", name), content + "\n");
-    return exec("python3", ["manage.py", "shell", "-c",
-      "exec(open('registry/" + name + "').read())"], env);
+    fs.writeFileSync(path.join(schemaRoot, "registry", name), content + "\n");
+    return schemaExec(["manage.py", "shell", "-c",
+      "exec(open('registry/" + name + "').read())"]);
   };
-  const originalRegistry = fs.readFileSync(path.join(root, "registry", "models.py"), "utf8");
+  const originalRegistry = fs.readFileSync(path.join(schemaRoot, "registry", "models.py"), "utf8");
   const originalServicePosition = originalRegistry.indexOf("class Service(models.Model):");
   const serviceNameNeedle = "    name = models.TextField(unique=True)\n";
   const fieldPosition = originalRegistry.indexOf(serviceNameNeedle, originalServicePosition);
@@ -417,47 +459,47 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   const nullableRegistry = originalRegistry.slice(0, fieldPosition + serviceNameNeedle.length) +
     "    slug = models.SlugField(max_length=160, null=True, blank=True)\n" +
     originalRegistry.slice(fieldPosition + serviceNameNeedle.length);
-  fs.writeFileSync(path.join(root, "registry", "models.py"), nullableRegistry);
-  fs.writeFileSync(path.join(root, "registry", "migrations", "0002_service_slug_nullable.py"),
+  fs.writeFileSync(path.join(schemaRoot, "registry", "models.py"), nullableRegistry);
+  fs.writeFileSync(path.join(schemaRoot, "registry", "migrations", "0002_service_slug_nullable.py"),
     migrationExamples.registryExpand + "\n");
-  const registrySql = exec("python3", ["manage.py", "sqlmigrate", "registry", "0002"], env);
+  const registrySql = schemaExec(["manage.py", "sqlmigrate", "registry", "0002"]);
   assert.match(registrySql, /slug/);
-  exec("python3", ["manage.py", "migrate", "registry", "0002", "--noinput"], env);
+  schemaExec(["manage.py", "migrate", "registry", "0002", "--noinput"]);
 
   const conflictSetup = registryRun("create_slug_collision.py", migrationExamples.registryCollision);
   assert.match(conflictSetup, /collision_service_pk: \d+/);
   assert.match(conflictSetup, /all_slugs_still_empty: True/);
-  fs.writeFileSync(path.join(root, "registry", "migrations", "0003_backfill_service_slugs.py"),
+  fs.writeFileSync(path.join(schemaRoot, "registry", "migrations", "0003_backfill_service_slugs.py"),
     migrationExamples.registryBackfill + "\n");
   const failedRegistryBackfill = spawnSync("python3",
     ["manage.py", "migrate", "registry", "--noinput"],
-    {cwd: root, encoding: "utf8", timeout: 60000, env});
+    {cwd: schemaRoot, encoding: "utf8", timeout: 60000, env: schemaEnv});
   assert.notEqual(failedRegistryBackfill.status, 0, "Unresolved Service slug collision must fail");
   assert.match(failedRegistryBackfill.stdout + failedRegistryBackfill.stderr,
     /duplicate Service slug: 'workshop-reports-api'/,
     "Missing real slugify collision in registry migration");
-  assert.match(exec("python3", ["manage.py", "showmigrations", "registry"], env),
+  assert.match(schemaExec(["manage.py", "showmigrations", "registry"]),
     /\[ \] 0003_backfill_service_slugs/);
-  const undone = exec("python3", ["manage.py", "shell", "-c",
-    "from registry.models import Service; assert not Service.objects.exclude(slug__isnull=True).exists(); print('REGISTRY_BACKFILL_ROLLED_BACK')"], env);
+  const undone = schemaExec(["manage.py", "shell", "-c",
+    "from registry.models import Service; assert not Service.objects.exclude(slug__isnull=True).exists(); print('REGISTRY_BACKFILL_ROLLED_BACK')"]);
   assert.match(undone, /REGISTRY_BACKFILL_ROLLED_BACK/);
 
   assert.match(registryRun("repair_slug_collision.py", migrationExamples.registryRepair),
     /service_collision_repaired: \d+/);
-  exec("python3", ["manage.py", "migrate", "registry", "--noinput"], env);
-  assert.match(exec("python3", ["manage.py", "showmigrations", "registry"], env),
+  schemaExec(["manage.py", "migrate", "registry", "--noinput"]);
+  assert.match(schemaExec(["manage.py", "showmigrations", "registry"]),
     /\[X\] 0003_backfill_service_slugs/);
   const finalRegistry = nullableRegistry.replace(
     "    slug = models.SlugField(max_length=160, null=True, blank=True)",
     "    slug = models.SlugField(max_length=160, unique=True)");
   assert.notEqual(finalRegistry, nullableRegistry);
-  fs.writeFileSync(path.join(root, "registry", "models.py"), finalRegistry);
-  fs.writeFileSync(path.join(root, "registry", "migrations", "0004_require_unique_service_slug.py"),
+  fs.writeFileSync(path.join(schemaRoot, "registry", "models.py"), finalRegistry);
+  fs.writeFileSync(path.join(schemaRoot, "registry", "migrations", "0004_require_unique_service_slug.py"),
     migrationExamples.registryContract + "\n");
-  assert.match(exec("python3", ["manage.py", "sqlmigrate", "registry", "0004"], env),
+  assert.match(schemaExec(["manage.py", "sqlmigrate", "registry", "0004"]),
     /slug/);
-  exec("python3", ["manage.py", "migrate", "registry", "--noinput"], env);
-  assert.match(exec("python3", ["manage.py", "makemigrations", "registry", "--check", "--dry-run"], env),
+  schemaExec(["manage.py", "migrate", "registry", "--noinput"]);
+  assert.match(schemaExec(["manage.py", "makemigrations", "registry", "--check", "--dry-run"]),
     /No changes detected/);
   const verifySteward = registryRun("verify_service_slugs.py", migrationExamples.registryVerify);
   for (const expect of [
