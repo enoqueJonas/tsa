@@ -175,6 +175,39 @@ assert.match(modelDomainExample, /Service\.Lifecycle\.UAT/,
 assert.match(modelDomainExample, /invalid\.full_clean\(\)/,
   "Example must demonstrate the model choices validation boundary");
 
+// Source-published migration files and programs are the tests' only inputs.
+const migrationExamples = {
+  optionalBook: modelLessonSnippet("catalogue/models.py — Book with an optional field"),
+  optionalCheck: modelLessonSnippet("catalogue/optional_migration_check.py — verify rows survive"),
+  nullableShelfBook: modelLessonSnippet("catalogue/models.py — nullable shelf_code stage"),
+  shelfBaseline: modelLessonSnippet("catalogue/migration_baseline.py — create deliberate collision and capture IDs"),
+  shelfBackfill: modelLessonSnippet("catalogue/migrations/0005_backfill_shelf_code.py — historical backfill"),
+  shelfRepair: modelLessonSnippet("catalogue/repair_shelf_collision.py — preserve the row and change its title"),
+  finalShelfBook: modelLessonSnippet("catalogue/models.py — final required unique shelf_code"),
+  shelfContract: modelLessonSnippet("catalogue/migrations/0006_require_unique_shelf_code.py — enforce constraints"),
+  shelfVerify: modelLessonSnippet("catalogue/verify_shelf_migration.py — positive and negative database evidence"),
+  registryBaseline: modelLessonSnippet("registry/migration_identity_snapshot.py — preserve original IDs and foreign keys"),
+  registryExpand: modelLessonSnippet("registry/migrations/0002_service_slug_nullable.py — expand"),
+  registryCollision: modelLessonSnippet("registry/create_slug_collision.py — two UAT Services with matching slug"),
+  registryBackfill: modelLessonSnippet("registry/migrations/0003_backfill_service_slugs.py — detect and backfill"),
+  registryRepair: modelLessonSnippet("registry/repair_slug_collision.py — keep the Service identity"),
+  registryContract: modelLessonSnippet("registry/migrations/0004_require_unique_service_slug.py — enforce"),
+  registryVerify: modelLessonSnippet("registry/verify_service_slugs.py — applied-domain check"),
+};
+const optionalMigrationStart = source.indexOf('richLesson("Add a Field Without Losing Existing Django Rows"');
+const uniqueMigrationStart = source.indexOf('richLesson("Backfill a Unique Field Without Losing Data"');
+const stewardMigrationStart = source.indexOf('richLesson("Schema Evolution with Django Migrations"');
+const serializerAfterMigrations = source.indexOf('richLesson("Serializers and Representation"');
+assert.ok(optionalMigrationStart > querysetRelationsStart &&
+  optionalMigrationStart < uniqueMigrationStart &&
+  uniqueMigrationStart < stewardMigrationStart &&
+  stewardMigrationStart < serializerAfterMigrations,
+  "Populated-table changes must follow QuerySet basics and precede the serializer chapter");
+assert.match(migrationExamples.shelfBackfill, /apps\.get_model\("catalogue", "Book"\)/);
+assert.match(migrationExamples.registryBackfill, /apps\.get_model\("registry", "Service"\)/);
+assert.doesNotMatch(migrationExamples.shelfBackfill, /RunPython\.noop/, "No fake reverse for irreversible data migration");
+assert.doesNotMatch(migrationExamples.registryBackfill, /RunPython\.noop/, "No fake reverse for irreversible data migration");
+
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-django-bridge-"));
 const exec=(command,args,env=process.env)=>{
   const p=spawnSync(command,args,{cwd:root,encoding:"utf8",timeout:60000,env});
