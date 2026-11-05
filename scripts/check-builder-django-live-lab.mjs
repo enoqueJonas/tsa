@@ -353,6 +353,36 @@ assert.match(versionExamples.lab, /Client\(\)\.get\(new_route\)/,
 assert.match(versionExamples.lab, /override_settings\(ROOT_URLCONF="catalogue\.version_bug_urls"\)/,
   "Mutant old version must remain a test-only route");
 
+// OpenAPI teaching must export an actual annotated DRF API, not parse a
+// hard-coded JSON literal that never consults Django's real route tree.
+const openapiPrimerStart = source.indexOf('richLesson("Generate and Verify OpenAPI from a Real Book API"');
+const openapiAppliedStart = source.indexOf('richLesson("OpenAPI and Swagger Documentation"');
+const apiVersionAppliedStart = source.indexOf('richLesson("API Versioning"');
+assert.ok(apiVersionAppliedStart < openapiPrimerStart &&
+  openapiPrimerStart < openapiAppliedStart,
+  "Teach executable schema generation and real HTTP before applied Steward OpenAPI");
+assert.match(publishedPractice("generate-and-verify-openapi-from-a-real-book-api"),
+  /drf-spectacular|tsa-django-intro/,
+  "Schema teaching must name the generator and reuse the migrated Book app");
+const schemaExamples = {
+  settings: modelLessonSnippet("config/settings.py — enable drf-spectacular without erasing the error handler"),
+  api: modelLessonSnippet("catalogue/contract_api.py — annotated real DRF GET and POST"),
+  route: modelLessonSnippet("catalogue/contract_urls.py — one shared routing source"),
+  schemaUrls: modelLessonSnippet("catalogue/openapi_urls.py — generate the two declared training endpoints"),
+  urls: modelLessonSnippet("catalogue/urls.py — append live contract, schema and Swagger UI"),
+  lab: modelLessonSnippet("catalogue/openapi_contract_lab.py — validated schema plus real HTTP conformance"),
+};
+assert.match(schemaExamples.api, /@extend_schema\(/,
+  "Annotation must attach real OpenAPI metadata to executable Django views");
+assert.match(schemaExamples.api, /serializer\.save\(\)/,
+  "Documented 201 must result from durable database persistence");
+assert.match(schemaExamples.route, /ContractBookDetail\.as_view\(\)/,
+  "Schema and runtime must share actual DRF endpoint routing");
+assert.match(schemaExamples.lab, /OPENAPI_TWO_VALID_LOOKING_DRIFTS_DETECTED/,
+  "Schema teaching must deliberately fail on valid-looking path and field drift");
+assert.match(schemaExamples.lab, /Book\.objects\.count\(\) == before \+ 1/,
+  "Successful/failed API operations must check actual stored state");
+
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-django-bridge-"));
 const exec=(command,args,env=process.env)=>{
   const p=spawnSync(command,args,{cwd:root,encoding:"utf8",timeout:60000,env});
@@ -373,11 +403,7 @@ try {
   const commands=snippet("registry/services.py — protect production transitions and last-deployment deletion");
   const validation=snippet("DRF validation — executable field and cross-field rejection");
   const config=snippet("Django configuration — executable environment contract");
-  const openapi=snippet("OpenAPI — minimal health contract with deliberate path mismatch");
   assert.match(exec("python3",["-c",config]),/configuration: valid local and 3 rejected setups/);
-  const documented=JSON.parse(openapi);
-  assert.equal(documented.openapi,"3.0.3");
-  assert.ok(documented.paths["/health"] && !documented.paths["/health/"],"Published mismatch must be deliberate and observable");
 
 
   exec("psql",["-X","-v","ON_ERROR_STOP=1","-c","CREATE DATABASE tsa_steward_django_lab;"]);
@@ -1146,6 +1172,48 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   assert.doesNotMatch(actualUrls, /BrokenOldVersion|version_bug_urls/,
     "The deliberately broken v1 route may not be included in normal catalogue URLs");
   console.log("Builder DRF versioning passed: real URLPathVersioning request.version, old v1 remains stable, breaking v2, 404/405, test-only mutant is rejected.");
+
+  // The same working catalogue now generates a maintained OpenAPI document.
+  // It is generated from an annotated real endpoint, never copied from a
+  // test-only OpenAPI fixture. Both URLConfs include the same contract_urls.
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "contract_api.py"),
+    schemaExamples.api + "\n");
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "contract_urls.py"),
+    schemaExamples.route + "\n");
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "openapi_urls.py"),
+    schemaExamples.schemaUrls + "\n");
+  fs.appendFileSync(path.join(beginnerRoot, "config", "settings.py"),
+    "\n" + schemaExamples.settings + "\n");
+  fs.appendFileSync(path.join(beginnerRoot, "catalogue", "urls.py"),
+    "\n" + schemaExamples.urls + "\n");
+  beginnerExec(["manage.py", "check"]);
+  const schemaExport = beginnerExec([
+    "manage.py", "spectacular", "--urlconf", "catalogue.openapi_urls",
+    "--format", "openapi-json", "--file", "catalogue/openapi.json",
+    "--validate", "--fail-on-warn"
+  ]);
+  const schemaDocument = JSON.parse(fs.readFileSync(
+    path.join(beginnerRoot, "catalogue", "openapi.json"), "utf8"));
+  assert.match(schemaDocument.openapi, /^3\.0\./);
+  assert.ok(schemaDocument.paths["/catalogue/contract-books/"],
+    "Documented schema must include the actual Book collection endpoint");
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "openapi_contract_lab.py"),
+    schemaExamples.lab + "\n");
+  const openapiProof = beginnerExec(["manage.py", "shell", "-c",
+    "exec(open('catalogue/openapi_contract_lab.py').read())"]);
+  for(const expected of [
+    "OPENAPI_GENERATED_PATHS_METHODS_AND_FIELDS_OK",
+    "OPENAPI_SCHEMA_AND_SWAGGER_UI_HTTP_200",
+    "OPENAPI_REAL_POST_201_GET_200_AND_PERSISTENCE",
+    "OPENAPI_REAL_400_404_405_NO_EXTRA_WRITES",
+    "OPENAPI_TWO_VALID_LOOKING_DRIFTS_DETECTED",
+    "OPENAPI_REAL_CONTRACT_OK"
+  ]) assert.ok(openapiProof.includes(expected),
+    "Generated OpenAPI + HTTP conformance did not prove " + expected +
+    "\n" + schemaExport + "\n" + openapiProof);
+  console.log("Builder DRF OpenAPI passed: generated/validated schema, 200 schema/docs UI, real 201/200/400/404/405 and two schema-drift negatives.");
+
+
 
 
 
