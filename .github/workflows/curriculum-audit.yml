@@ -38,6 +38,7 @@ on:
       - curriculum/builder-steward-integrated-openapi-exit
       - curriculum/builder-steward-capstone-exit
       - curriculum/builder-identity-registry-continuity
+      - curriculum/builder-identity-first-real-jwt
       - curriculum/system-thinker-pedagogical-audit
       - curriculum/platform-builder-pedagogical-audit
       - curriculum/delivery-engineer-pedagogical-audit
@@ -363,7 +364,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install Django and Django REST Framework for real ORM bridge verification
-        run: python3 -m pip install 'Django>=5.2,<6' 'djangorestframework>=3.16,<4' 'psycopg[binary]>=3,<4' 'drf-spectacular>=0.28,<1'
+        run: python3 -m pip install 'Django>=5.2,<6' 'djangorestframework>=3.16,<4' 'psycopg[binary]>=3,<4' 'drf-spectacular>=0.28,<1' 'djangorestframework-simplejwt>=5.5,<6'
       - name: Execute published Builder SQL and Django examples in isolated PostgreSQL databases
         env:
           PGHOST: 127.0.0.1
