@@ -109,6 +109,34 @@ with sync_playwright() as playwright:
             page.set_viewport_size({"width": 1440, "height": 900})
             print("PASS Software Craft rendered desktop/mobile:", title, flush=True)
 
+        # A deep link must not silently reset the synthetic completed state.
+        # Inspect durable storage BEFORE the capstone so failures identify the
+        # actual missing prerequisite instead of assuming the app is at fault.
+        recorded = page.evaluate("""async ({pathId}) => {
+          const db = await new Promise((resolve, reject) => {
+            const request = indexedDB.open("tsa-academy", 5);
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+          });
+          try {
+            const tx = db.transaction("path-progress", "readonly");
+            return await new Promise((resolve, reject) => {
+              const request = tx.objectStore("path-progress").get(pathId);
+              request.onsuccess = () => resolve(request.result);
+              request.onerror = () => reject(request.error);
+            });
+          } finally { db.close(); }
+        }""", {"pathId": PATH_ID})
+        assert recorded, "Synthetic software-craft progress record disappeared"
+        assert len(recorded["completedActivityIds"]) == 75, (
+            "Navigation unexpectedly changed synthetic completion state: "
+            + str(len(recorded["completedActivityIds"])))
+        assert ("software-craft-performance-awareness-check"
+                in recorded["completedActivityIds"]), (
+            "Capstone predecessor check is not completed in the browser fixture")
+        print("PASS synthetic 75 prerequisite completions persisted across lesson routes",
+              flush=True)
+
         capstone, capstone_id = open_activity(
             page, "Lab: Refine Steward API for Review", "brief")
         assert len(capstone.inner_text().strip()) >= 3500, (
