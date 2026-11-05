@@ -178,6 +178,27 @@ def inspect_readings(page):
     ) == "software-craft-lab-refine-steward-api-for-review-practice", (
         "Original final review practice ID or Next transition has changed"
     )
+    # Wait for the asynchronous IndexedDB write, not merely the React route.
+    # Reloading too early would race the legitimate progress persistence.
+    page.wait_for_function("""async ({pathId, expected}) => {
+      const db = await new Promise((resolve, reject) => {
+        const request = indexedDB.open("tsa-academy", 5);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      try {
+        const tx = db.transaction("path-progress", "readonly");
+        const record = await new Promise((resolve, reject) => {
+          const request = tx.objectStore("path-progress").get(pathId);
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+        return record?.currentActivityId === expected;
+      } finally { db.close(); }
+    }""", arg={
+        "pathId": PATH_ID,
+        "expected": "software-craft-lab-refine-steward-api-for-review-practice",
+    }, timeout=12000)
     page.reload(wait_until="networkidle")
     page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
     assert page.evaluate(
