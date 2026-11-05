@@ -306,6 +306,34 @@ const practices: Record<string, PracticeSpec> = {
     deliverables: ["Working domain-to-HTTP handler", "Isolated test-only URLConf", "Reproducible 409/200/404/405 results", "Database nonmutation evidence", "Explicit unimplemented authorization contract"],
     completionCriteria: ["ReadinessConflict is translated to 409 by the configured DRF handler.", "A failed promotion leaves persisted state unchanged.", "The normal application URLConf has no training promotion route.", "No production authorization or concurrency guarantee is inferred from the local exercise."]
   },
+  "django-and-api-engineering-filter-search-and-order-a-real-book-api": {
+    objective: "Implement an actual bounded GET query contract over the already migrated Book model and prove its SQL and negative HTTP behavior.",
+    scenario: "Continue the existing tsa-django-intro catalogue and its persisted Book API. No Steward domain data, Docker, authenticated users or permission system is presumed.",
+    instructions: [
+      "Review the actual Book model and completed migration 0006, then create catalogue/query_books.py from the complete lesson code.",
+      "Append the query-books URL to existing catalogue/urls.py. Preserve every earlier working route. Explain the function of request.query_params and QueryDict.getlist.",
+      "Run python manage.py check and execute catalogue/query_request_lab.py via manage.py shell. Record exact search, year filtering and descending year+PK tie-break output from six known books.",
+      "Inspect the actual captured SQL and identify the WHERE and ORDER BY clauses. Do not report fabricated SQL strings as executed database statements.",
+      "Submit unlisted ordering paths, invalid year, blank or too-long search, unknown parameters and duplicate year. Record 400 with the existing error-handler envelope and unchanged Book count.",
+      "Add a seventh training Book and predict its effect on each positive query. Explain how an authorized Service base queryset differs from this open tutorial catalogue."
+    ],
+    deliverables: ["Source and appended route", "Actual GET and SQL trace", "Six rejected input cases", "Seventh-book transfer explanation"],
+    completionCriteria: ["Filtering, searching and ordering are independently explained.", "The tested endpoint executes real QuerySets, not a synthetic parser.", "Unsupported ORM paths cannot reach order_by.", "No fictional authorization guarantees are claimed."]
+  },
+  "django-and-api-engineering-paginate-real-book-records-across-requests": {
+    objective: "Observe real DRF page numbers and cursor continuation while the underlying ordered Book table changes between HTTP requests.",
+    scenario: "The same catalogue now supports validated query_books and persisted Book rows. Use only invented Page Lab titles and shelf codes in its disposable database.",
+    instructions: [
+      "Create catalogue/page_books.py and append page-books/ and cursor-books/ to the existing catalogue URLs exactly as shown.",
+      "Run python manage.py check, then execute catalogue/pagination_request_lab.py once from the managed Django shell. Preserve the expected one-time Aardvark insertion.",
+      "Capture the first page count 5 and two rows, then the second page count 6. Explain exactly why the new earlier-sorting Book produces a duplicate Cedar across the numbered pages.",
+      "Continue from the opaque cursor obtained BEFORE the insertion and verify it returns Delta and Elm without repeating the preceding rows, under the specific immutable shelf_code order.",
+      "Request page_size=100 and prove the response is capped at 3, not 100. Prove malformed, unsupported and duplicate parameters yield 400, while missing numbered page yields 404.",
+      "Explain why the cursor response has no total count or frozen snapshot, and why Team authorization must later precede all count/filter/page logic."
+    ],
+    deliverables: ["Two real DRF pagination routes", "Captured page counts and links", "Offset-shift and cursor-continue transcript", "Bounded/invalid page responses", "Consistency and access-control explanation"],
+    completionCriteria: ["Queryset order is explicit before any slicing.", "The moving-page duplicate is observed via two separate database-backed requests.", "Cursor evidence is not misrepresented as transactional snapshot isolation.", "The demo is not presented as multi-tenant secured."]
+  },
   "django-and-api-engineering-filtering-searching-and-ordering": {
     objective: "Expose query capabilities that answer real Steward questions without accidentally publishing an unbounded query language.",
     scenario: "A generic filter backend makes every field searchable and orderable. It is convenient, but nobody has decided whether those capabilities belong to the public contract or what they cost.",
