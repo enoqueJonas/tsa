@@ -19,18 +19,50 @@ const practices: Record<string, PracticeSpec> = {
     deliverables: ["Executable command implementation", "Three positive/negative database transcripts", "Domain error contract", "Authorization and concurrency limitations"],
     completionCriteria: ["Database state is checked after each outcome.", "The implementation coordinates both mutation paths.", "No untested concurrency claim is presented as validated."]
   },
-  "django-and-api-engineering-schema-evolution-with-django-migrations": {
-    objective: "Safely extend a populated Django-managed table rather than pretending a new model field changes existing data automatically.",
-    scenario: "Your tsa_steward_django_lab database already contains Services. Add a slug without collisions or loss of existing records.",
+  "django-and-api-engineering-add-a-field-without-losing-existing-django-rows": {
+    objective: "Add a nullable field to a populated Book table without replacing or losing existing records.",
+    scenario: "Your independent tsa-django-intro catalogue already has two applied migrations, four Books and related ReadingList entries. Use its own disposable database, never the Steward or manually seeded PostgreSQL databases.",
     instructions: [
-      "Capture the existing Service row count and immutable IDs, inspect showmigrations, and confirm that Django owns this isolated schema.",
-      "Add a nullable slug field and inspect makemigrations/sqlmigrate before applying it; explain why making it unique and required in one step would be unsafe.",
-      "Create the historical-model RunPython backfill from the reading, with an explicit dependency on the preceding nullable migration. Demonstrate a deliberate duplicate slug collision in disposable data.",
-      "Resolve collisions, verify backfilled rows and only then enforce the unique/required constraint with an appropriately staged migration.",
-      "Prove IDs, names and Team references survived, and document application compatibility, index locks and rollback/roll-forward risks."
+      "Confirm the current database and the applied 0001/0002 catalogue migrations. Capture Book IDs and reading-list membership pairs before making any change.",
+      "Replace only the original Book class with the complete edition_note version from the lesson; retain the existing related models.",
+      "Generate migration 0003, review the generated AddField and sqlmigrate SQL, and record the [ ] state in showmigrations before migrate.",
+      "Before applying migration 0003 in the disposable lab, attempt a query selecting edition_note and document the actual missing-column error. Do not fake migration history or drop the Book table.",
+      "Apply migration 0003, verify [X], run catalogue/optional_migration_check.py, and prove the old row IDs remain unchanged while one note is saved.",
+      "Explain which steps touched source files, the migration graph, the actual database schema and stored data."
     ],
-    deliverables: ["Versioned migration sequence", "Actual collision error and resolution", "Before/after SQL and row identity evidence", "Deployment compatibility explanation"],
-    completionCriteria: ["The database was populated before migration.", "The backfill uses historical Django models.", "Collision and recovery are observed rather than hypothetical."]
+    deliverables: ["Reviewed nullable AddField migration", "Before/after applied migration status", "Missing-column failure", "Stable Book identity evidence", "Optional field read/write proof"],
+    completionCriteria: ["The changes run from one real scratch Django project.", "No unexplained state loss or database switch occurs.", "The learner distinguishes generating, inspecting and applying migrations."]
+  },
+  "django-and-api-engineering-backfill-a-unique-field-without-losing-data": {
+    objective: "Execute a three-migration schema/data change with a genuine collision, repair and final UNIQUE/NOT NULL proof.",
+    scenario: "The Book catalogue is now populated and contains edition_note. A new shelf_code must become mandatory and unique without inventing a default or deleting existing books.",
+    instructions: [
+      "Add nullable shelf_code to Book, generate and inspect 0004, then migrate only that schema stage.",
+      "Run the collision/baseline script: capture Book IDs and ReadingListEntry references, insert the deliberate distinct title river-guide and record its primary key.",
+      "Create the empty 0005 migration, replace it with the exact historical-apps RunPython file, and confirm its dependency on 0004.",
+      "Run migrate and record a real ValueError. Verify 0005 remains unapplied and all prior slug writes rolled back; explain why a nonzero exit alone is insufficient evidence.",
+      "Repair only the intentionally conflicting training title while preserving its PK. Re-run migrate and inspect all generated slugs.",
+      "Replace Book with the final required unique definition, author complete 0006 AlterField, inspect sqlmigrate, apply and check makemigrations --check --dry-run.",
+      "Run catalogue/verify_shelf_migration.py and prove unchanged Book IDs, unchanged relation pairs, distinct slugs, and rejected duplicate/NULL SQL writes.",
+      "Write a rollback/forward plan for a successfully applied irreversible RunPython migration and a separate plan for a live writer inserting new rows during backfill."
+    ],
+    deliverables: ["Three complete migration files", "Actual failed and successful backfill runs", "Unique-slug collision resolution", "Before/after ID/FK snapshot", "IntegrityError negative evidence", "Deployment/reversal decision note"],
+    completionCriteria: ["The failed backfill is transactional and remains unapplied.", "The successful backfill preserves relationships and enforces constraints.", "Irreversibility and concurrent-writer risk are explicit."]
+  },
+  "django-and-api-engineering-schema-evolution-with-django-migrations": {
+    objective: "Transfer the verified populated-table method to the real PostgreSQL-backed Steward Service schema with explicit deployment constraints.",
+    scenario: "Use only the separate tsa_steward_django_lab with existing Team/Service/Environment data. The Book lab already taught first principles; this is a domain integration exercise, not an abbreviated second introduction.",
+    instructions: [
+      "Record Service IDs/owning_team_id and applied registry migration history before modifying a model.",
+      "Add nullable slug to the real Service model without changing lifecycle, ownership or existing foreign keys. Save the complete registry 0002 AddField source and inspect sqlmigrate before applying.",
+      "Create two UAT Services whose distinct names generate the same slug. Do not violate the production Environment prerequisite to manufacture fixture rows.",
+      "Save the complete historical-model 0003 backfill migration. Prove it fails on the deliberate duplicate, leaves every slug NULL and is not marked applied.",
+      "Rename only the fictional conflicting Service, keeping its PK and owner. Retry the backfill, inspect every slug and confirm IDs/ownership remain stable.",
+      "Change the model field to non-null unique, save the complete 0004 AlterField migration, inspect SQL and apply it. Verify database duplicate rejection, showmigrations and makemigrations --check --dry-run.",
+      "Explain why a real rolling deployment needs a plan for concurrent writers, lock budget, old/new application versions and public slug stability. Mark any unrun production or parallel-client scenario UNVERIFIED."
+    ],
+    deliverables: ["Source-published registry 0002/0003/0004 migration files", "Collision and repair transcript", "Before/after Service identity/ownership proof", "Real uniqueness constraint failure", "Deployment-compatibility and recovery decision"],
+    completionCriteria: ["No manually seeded PostgreSQL table is fake-migrated or overwritten.", "All source code examples are executable on the owned training database.", "A green local migration is not falsely labeled production-safe."]
   },
   "django-and-api-engineering-build-and-execute-your-first-queryset": {
     objective: "Construct an actual QuerySet, trace when database work happens and inspect its returned rows.",
