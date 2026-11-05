@@ -185,7 +185,11 @@ def inspect_readings(page):
               lastStageCheck: record?.completedActivityIds?.includes(
                 "software-craft-lab-reproducible-handoff-performance-check"),
               finalBriefCompleted: record?.completedActivityIds?.includes(
-                "software-craft-lab-refine-steward-api-for-review-brief")
+                "software-craft-lab-refine-steward-api-for-review-brief"),
+              lastStageReflection: record?.reflectionResponses?.[
+                "software-craft-lab-reproducible-handoff-performance-check"],
+              lastStagePracticeCompleted: record?.completedActivityIds?.includes(
+                "software-craft-lab-reproducible-handoff-performance-practice")
             };
           } finally { db.close(); }
         }""", PATH_ID)
@@ -208,12 +212,27 @@ def inspect_readings(page):
             "actual": fresh_actual,
             "headings": fresh_headings
         }, flush=True)
+        final_button = page.get_by_role(
+            "button", name="From working API to reviewable engineering system", exact=True
+        )
+        final_button_status = (
+            final_button.first.is_disabled() if final_button.count() else "MISSING"
+        )
+        stage3_section = page.locator("aside section").filter(
+            has=page.get_by_role(
+                "heading", name="Lab: Reproduce Steward Setup and Measure One Path",
+                exact=True
+            )
+        ).first
         print("DEBUG final deep link:", {
             "expected": final_id,
             "actual": actual_final,
             "url": page.url,
             "headings": page.locator("main").last.locator("h1,h2").all_inner_texts()[:6],
-            "saved": last_progress
+            "saved": last_progress,
+            "final_button_disabled": final_button_status,
+            "last_stage_sidebar": stage3_section.inner_text()[:650]
+                if stage3_section.count() else "MISSING"
         }, flush=True)
     assert actual_final == final_id, (
         f"Original final review activity was not restored: got {actual_final}"
