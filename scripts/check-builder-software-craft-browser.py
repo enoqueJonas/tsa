@@ -162,9 +162,47 @@ def inspect_readings(page):
     final_id = "software-craft-lab-refine-steward-api-for-review-brief"
     page.goto(deep_link(final_id), wait_until="networkidle")
     page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
-    assert page.evaluate(
+    actual_final = page.evaluate(
         "new URLSearchParams(location.search).get('activity')"
-    ) == final_id, "Original final review activity was not restored"
+    )
+    if actual_final != final_id:
+        last_progress = page.evaluate("""async (pathId) => {
+          const db = await new Promise((resolve, reject) => {
+            const request = indexedDB.open("tsa-academy", 5);
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+          });
+          try {
+            const tx = db.transaction("path-progress", "readonly");
+            const record = await new Promise((resolve, reject) => {
+              const request = tx.objectStore("path-progress").get(pathId);
+              request.onsuccess = () => resolve(request.result);
+              request.onerror = () => reject(request.error);
+            });
+            return {
+              current: record?.currentActivityId,
+              completedCount: record?.completedActivityIds?.length,
+              lastStageCheck: record?.completedActivityIds?.includes(
+                "software-craft-lab-reproducible-handoff-performance-check"),
+              finalBriefCompleted: record?.completedActivityIds?.includes(
+                "software-craft-lab-refine-steward-api-for-review-brief")
+            };
+          } finally { db.close(); }
+        }""", PATH_ID)
+        page.screenshot(
+            path=str(ARTIFACTS / "software-craft-final-deep-link-failure.png"),
+            full_page=True,
+        )
+        print("DEBUG final deep link:", {
+            "expected": final_id,
+            "actual": actual_final,
+            "url": page.url,
+            "headings": page.locator("main").last.locator("h1,h2").all_inner_texts()[:6],
+            "saved": last_progress
+        }, flush=True)
+    assert actual_final == final_id, (
+        f"Original final review activity was not restored: got {actual_final}"
+    )
     main = page.locator("main").last
     assert main.get_by_text("Seven-row evidence matrix with PASS, FAIL or NOT TESTED and explicit constraints", exact=True).count() >= 1, (
         "Final learner-facing review no longer discloses seven-row evidence acceptance"
