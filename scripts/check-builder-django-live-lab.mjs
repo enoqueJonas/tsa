@@ -1343,6 +1343,22 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   assert.match(edgeProof, /DEPENDENCY_FIXTURES_ROLLED_BACK/);
   assert.doesNotMatch(fs.readFileSync(path.join(schemaRoot,"config","urls.py"),"utf8"), /dependency_membership/);
   console.log("Builder signed dependency source and target policy passed.");
+  for (const [file, caption] of [
+    ["prepare_transfer_models.py", "registry/prepare_transfer_models.py — add Owner and transfer event"],
+    ["transfer_membership_api.py", "registry/transfer_membership_api.py — atomic owner and audit write"],
+    ["transfer_membership_urls.py", "registry/transfer_membership_urls.py — private ownership command"],
+    ["transfer_membership_lab.py", "registry/transfer_membership_lab.py — signed transfer and audit rollback"],
+  ]) fs.writeFileSync(path.join(schemaRoot,"registry",file),identityJsonSnippet(caption));
+  schemaExec(["registry/prepare_transfer_models.py"]);
+  assert.match(schemaExec(["manage.py","makemigrations","registry","--name","ownership_transfer"]), /0008_ownership_transfer/);
+  assert.match(schemaExec(["manage.py","sqlmigrate","registry","0008"]), /ownershiptransfer/i);
+  schemaExec(["manage.py","migrate","--noinput"]);
+  schemaExec(["manage.py","makemigrations","--check","--dry-run"]);
+  const transferProof=schemaExec(["manage.py","shell","-c","exec(open('registry/transfer_membership_lab.py').read())"]);
+  for (const label of ["TRANSFER_DENIALS_AND_AUDIT_FAILURE_ROLLBACK_OK","TRANSFER_OWNER_AND_AUDIT_SAME_TRANSACTION_ACCESS_CHANGED_OK","TRANSFER_FIXTURES_ROLLED_BACK"]) assert.ok(transferProof.includes(label),transferProof);
+  assert.doesNotMatch(fs.readFileSync(path.join(schemaRoot,"config","urls.py"),"utf8"),/transfer_membership/);
+  console.log("Builder atomic Owner transfer and audit rollback passed on migration 0008.");
+
 
 
 
