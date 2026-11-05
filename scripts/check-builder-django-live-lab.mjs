@@ -1007,6 +1007,110 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
     "Test-only Steward schema or mutation routes must never be published");
   console.log("Builder Steward final schema contract passed: real generated DRF schema, 201/400/403/404/405/409 over persisted PostgreSQL and two false-schema mutants.");
 
+  // Identity must continue the SAME fully migrated PostgreSQL registry, not
+  // silently jump back to the earlier 0001-only prototype. Execute the exact
+  // published Membership model/seed after the real 0006 HTTP/schema proofs.
+  const beforeIdentityRows = schemaExec(["manage.py", "shell", "-c", [
+    "from registry.models import Service, ServiceDependency, ServiceReview",
+    "assert ServiceDependency.objects.filter(source_service__name='Dependency Workshop API').exists()",
+    "assert ServiceReview.objects.filter(service__name='Review Workshop API').count() == 3",
+    "assert Service.objects.get(slug='integrated-http-ember').owning_team.name == 'Integrated HTTP Team A'",
+    "print('IDENTITY_0006_STEWARD_DATA_PRESERVED')",
+  ].join("\n")]);
+  assert.match(beforeIdentityRows, /IDENTITY_0006_STEWARD_DATA_PRESERVED/);
+  assert.match(schemaExec(["manage.py", "showmigrations", "registry"]),
+    /\[X\] 0006_service_review/, "Do not teach Identity against the 0001-only scratch registry");
+  const continuedMembership = identitySnippet(
+    "registry/models.py — add Membership without replacing existing models");
+  fs.appendFileSync(path.join(schemaRoot, "registry", "models.py"),
+    "\n" + continuedMembership + "\n");
+  const identityMigration = schemaExec(["manage.py", "makemigrations",
+    "registry", "--name", "membership"]);
+  assert.match(identityMigration, /0007_membership/,
+    "Next Identity migration must follow the existing 0006 Steward registry");
+  const identitySql = schemaExec(["manage.py", "sqlmigrate", "registry", "0007"]);
+  for (const fragment of ["registry_membership", "uq_membership_user_team"]) {
+    assert.match(identitySql, new RegExp(fragment, "i"),
+      "Published Membership SQL must create real FK/unique constraints: " + fragment);
+  }
+  schemaExec(["manage.py", "migrate", "registry", "0007", "--noinput"]);
+  assert.match(schemaExec(["manage.py", "showmigrations", "registry"]),
+    /\[X\] 0007_membership/);
+  assert.match(schemaExec(["manage.py", "makemigrations",
+    "registry", "--check", "--dry-run"]), /No changes detected/);
+  const continuedIdentity = identitySnippet(
+    "identity_membership_lab.py — real users and two Team memberships");
+  fs.writeFileSync(path.join(schemaRoot, "identity_membership_lab.py"),
+    continuedIdentity + "\n");
+  const continuedProof = schemaExec(["manage.py", "shell", "-c",
+    "exec(open('identity_membership_lab.py').read())"]);
+  assert.match(continuedProof,
+    /Identity lab: 2 accounts, 2 memberships; disabled account retained/);
+  const negativeMembership = schemaExec(["manage.py", "shell", "-c", [
+    "from django.contrib.auth import get_user_model",
+    "from django.db import IntegrityError",
+    "from registry.models import Team, Membership, Service, ServiceReview, ServiceDependency",
+    "ana=get_user_model().objects.get(username='tsa_ana')",
+    "platform=Team.objects.get(name='Platform')",
+    "original=Membership.objects.count()",
+    "try:",
+    "    Membership.objects.create(user=ana,team=platform,role='viewer')",
+    "except IntegrityError:",
+    "    pass",
+    "else:",
+    "    raise AssertionError('duplicate Membership unexpectedly created')",
+    "assert Membership.objects.count() == original",
+    "assert ServiceReview.objects.filter(service__name='Review Workshop API').count() == 3",
+    "assert ServiceDependency.objects.filter(source_service__name='Dependency Workshop API').exists()",
+    "assert Service.objects.get(slug='integrated-http-ember').owning_team.name == 'Integrated HTTP Team A'",
+    "assert not Membership.objects.filter(user__username='tsa_bo', user__is_active=True).exists()",
+    "print('IDENTITY_0007_DUPLICATE_REJECTED_0006_STATE_INTACT')",
+  ].join("\n")]);
+  assert.match(negativeMembership,
+    /IDENTITY_0007_DUPLICATE_REJECTED_0006_STATE_INTACT/);
+  console.log("Builder Identity integrated handoff passed: exact source Membership as 0007 on real 0006 Steward PostgreSQL, identity seed, duplicate denial and unchanged Service/Dependency/Review data.");
+
+  // Next Identity lesson must NOT jump back into the independent earlier 0001
+  // scratch project. Reuse the exact published credential verifier with the
+  // real built-in User/Membership from the 0007 migrated Steward registry.
+  const passwordSource = identitySnippet("Delegate password hashing to Django.");
+  fs.writeFileSync(path.join(schemaRoot, "credential_lab.py"),
+    passwordSource + "\n");
+  const passwordEvidence = schemaExec(["manage.py", "shell", "-c",
+    "exec(open('credential_lab.py').read())"]);
+  assert.match(passwordEvidence,
+    /Password lab: verifier, correct\/wrong login and inactive denial/);
+  assert.doesNotMatch(passwordEvidence, /tsa-only-disposable-learning-password/,
+    "Even the training-only plaintext password must not be printed");
+  const freshPasswordEvidence = schemaExec(["manage.py", "shell", "-c", [
+    "from django.contrib.auth import authenticate, get_user_model",
+    "from registry.models import ServiceReview, Membership",
+    "ana=get_user_model().objects.get(username='tsa_ana')",
+    "assert ana.has_usable_password() and ana.is_active",
+    "assert ana.password != 'tsa-only-disposable-learning-password'",
+    "assert ana.check_password('tsa-only-disposable-learning-password')",
+    "assert authenticate(username='tsa_ana',password='incorrect-password') is None",
+    "assert authenticate(username='tsa_ana',password='tsa-only-disposable-learning-password').pk == ana.pk",
+    "assert Membership.objects.filter(user=ana).exists()",
+    "assert ServiceReview.objects.filter(service__name='Review Workshop API').count() == 3",
+    "print('IDENTITY_0007_PASSWORD_FRESH_PROCESS_AND_0006_HISTORY_OK')",
+  ].join("\n")]);
+  assert.match(freshPasswordEvidence,
+    /IDENTITY_0007_PASSWORD_FRESH_PROCESS_AND_0006_HISTORY_OK/);
+  console.log("Builder Identity password continuity passed: same 0007 PostgreSQL registry, hashed verifier, valid/wrong/inactive login, fresh-process auth and unchanged Review history.");
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

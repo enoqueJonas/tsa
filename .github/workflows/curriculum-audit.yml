@@ -37,6 +37,7 @@ on:
       - curriculum/builder-steward-readiness-log-checkpoint
       - curriculum/builder-steward-integrated-openapi-exit
       - curriculum/builder-steward-capstone-exit
+      - curriculum/builder-identity-registry-continuity
       - curriculum/system-thinker-pedagogical-audit
       - curriculum/platform-builder-pedagogical-audit
       - curriculum/delivery-engineer-pedagogical-audit
