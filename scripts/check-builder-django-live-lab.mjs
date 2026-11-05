@@ -650,6 +650,93 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   assert.match(beginnerExec(["manage.py", "shell", "-c", transfer]), /N_PLUS_ONE_TRANSFER_OK plain=5 prefetch=2/);
   console.log("Builder Django QuerySet lessons passed: 0/1/cache SQL execution, get/count/exists contracts, forward/reverse N+1 and unseen-fourth-list transfer.");
 
+  // First prove a populated-table ALTER with a new nullable Book field.
+  const bookModelFile = path.join(beginnerRoot, "catalogue", "models.py");
+  const bookContents = fs.readFileSync(bookModelFile, "utf8");
+  assert.ok(bookContents.includes(firstBookModel), "The first Book model must still exist verbatim");
+  fs.writeFileSync(bookModelFile, bookContents.replace(
+    firstBookModel, migrationExamples.optionalBook));
+  const missingColumn = spawnSync("python3", [
+    "manage.py", "shell", "-c",
+    "from catalogue.models import Book; list(Book.objects.values_list('edition_note', flat=True))"
+  ], {cwd: beginnerRoot, encoding: "utf8", timeout: 60000, env});
+  assert.notEqual(missingColumn.status, 0, "Unmigrated optional field must really be missing");
+  assert.match(missingColumn.stderr, /no such column|does not exist/i);
+  beginnerExec(["manage.py", "check"]);
+  beginnerExec(["manage.py", "makemigrations", "catalogue", "--noinput"]);
+  assert.match(beginnerExec(["manage.py", "sqlmigrate", "catalogue", "0003"]), /edition_note/);
+  assert.match(beginnerExec(["manage.py", "showmigrations", "catalogue"]), /\[ \] 0003_/);
+  beginnerExec(["manage.py", "migrate", "catalogue", "--noinput"]);
+  assert.match(beginnerExec(["manage.py", "showmigrations", "catalogue"]), /\[X\] 0003_/);
+
+  const migrateRun = (file, content) => {
+    fs.writeFileSync(path.join(beginnerRoot, "catalogue", file), content + "\n");
+    return beginnerExec(["manage.py", "shell", "-c",
+      "exec(open('catalogue/" + file + "').read())"]);
+  };
+  const optionalProof = migrateRun("optional_migration_check.py", migrationExamples.optionalCheck);
+  for (const expected of ["old_rows_retained: 4", "optional_field_updated: True",
+    "ids_unchanged: True"]) assert.ok(optionalProof.includes(expected),
+      "Optional field lab failed: " + expected + "\n" + optionalProof);
+
+  // Expand, fail an atomic data migration, fix training data, backfill, then
+  // enforce a UNIQUE and NOT NULL constraint. No fake-initial or toy mock.
+  const bookOptionalContents = fs.readFileSync(bookModelFile, "utf8");
+  assert.ok(bookOptionalContents.includes(migrationExamples.optionalBook));
+  fs.writeFileSync(bookModelFile,
+    bookOptionalContents.replace(migrationExamples.optionalBook, migrationExamples.nullableShelfBook));
+  beginnerExec(["manage.py", "makemigrations", "catalogue", "--noinput"]);
+  assert.match(beginnerExec(["manage.py", "sqlmigrate", "catalogue", "0004"]), /shelf_code/);
+  beginnerExec(["manage.py", "migrate", "catalogue", "--noinput"]);
+  const beforeShelf = migrateRun("migration_baseline.py", migrationExamples.shelfBaseline);
+  assert.match(beforeShelf, /before_books: 5/);
+  assert.match(beforeShelf, /same_slug: river-guide/);
+
+  beginnerExec(["manage.py", "makemigrations", "--empty", "catalogue",
+    "--name", "backfill_shelf_code"]);
+  const dataMigrationFile = path.join(beginnerRoot, "catalogue",
+    "migrations", "0005_backfill_shelf_code.py");
+  assert.ok(fs.existsSync(dataMigrationFile), "Django must create migration 0005");
+  fs.writeFileSync(dataMigrationFile, migrationExamples.shelfBackfill + "\n");
+  const badBackfill = spawnSync("python3",
+    ["manage.py", "migrate", "catalogue", "--noinput"],
+    {cwd: beginnerRoot, encoding: "utf8", timeout: 60000, env});
+  assert.notEqual(badBackfill.status, 0, "A real duplicate slug must prevent backfill");
+  assert.match(badBackfill.stdout + badBackfill.stderr,
+    /duplicate shelf code: 'river-guide'/);
+  assert.match(beginnerExec(["manage.py", "showmigrations", "catalogue"]),
+    /\[ \] 0005_backfill_shelf_code/);
+  const rolledBack = beginnerExec(["manage.py", "shell", "-c",
+    "from catalogue.models import Book; assert not Book.objects.exclude(shelf_code__isnull=True).exists(); print('BOOK_BACKFILL_ROLLED_BACK')"]);
+  assert.match(rolledBack, /BOOK_BACKFILL_ROLLED_BACK/);
+
+  const repaired = migrateRun("repair_shelf_collision.py", migrationExamples.shelfRepair);
+  assert.match(repaired, /collision_repaired: \d+/);
+  assert.match(repaired, /code_still_empty: True/);
+  beginnerExec(["manage.py", "migrate", "catalogue", "--noinput"]);
+  assert.match(beginnerExec(["manage.py", "showmigrations", "catalogue"]),
+    /\[X\] 0005_backfill_shelf_code/);
+
+  const bookNullableContents = fs.readFileSync(bookModelFile, "utf8");
+  assert.ok(bookNullableContents.includes(migrationExamples.nullableShelfBook));
+  fs.writeFileSync(bookModelFile,
+    bookNullableContents.replace(migrationExamples.nullableShelfBook, migrationExamples.finalShelfBook));
+  fs.writeFileSync(path.join(beginnerRoot, "catalogue", "migrations",
+    "0006_require_unique_shelf_code.py"), migrationExamples.shelfContract + "\n");
+  assert.match(beginnerExec(["manage.py", "sqlmigrate", "catalogue", "0006"]), /shelf_code/);
+  beginnerExec(["manage.py", "migrate", "catalogue", "--noinput"]);
+  assert.match(beginnerExec(["manage.py", "showmigrations", "catalogue"]),
+    /\[X\] 0006_require_unique_shelf_code/);
+  assert.match(beginnerExec(["manage.py", "makemigrations", "catalogue",
+    "--check", "--dry-run"]), /No changes detected/);
+  const verifiedBooks = migrateRun("verify_shelf_migration.py", migrationExamples.shelfVerify);
+  for (const expected of [
+    "ids_and_links_preserved: True", "unique_shelf_codes: 5",
+    "DUPLICATE_CODE_REJECTED", "NULL_CODE_REJECTED"
+  ]) assert.ok(verifiedBooks.includes(expected),
+    "Published Book schema and data migration proof failed: " + expected + "\n" + verifiedBooks);
+  console.log("Builder Book schema evolution passed: applied 0003/0004/0005/0006, missing-column negative, atomic backfill collision rollback, identity/FK preservation and real UNIQUE/NOT NULL denials.");
+
   for (const name of ["serializer_lab.py", "serializer_negatives.py", "serializer_patch.py"]) {
     const captions = {
       "serializer_lab.py": "serializer_lab.py — run with python manage.py shell < serializer_lab.py",
