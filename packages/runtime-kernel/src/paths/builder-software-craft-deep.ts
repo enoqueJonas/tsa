@@ -12,6 +12,7 @@ function slug(value: string) {
 }
 
 const craftTeaching: Record<string, { outcomes: string[]; practical: string }> = {
+  "Configuration Precedence and Startup Gates": { outcomes: ["Trace a setting from source through precedence, parsing, validation and startup.","Reject unsafe cross-setting combinations before any listener starts.","Explain why a typed configuration object is safer than scattered environment reads."], practical: "Prove a fail-closed configuration startup boundary" },
   "Git as an Engineering Tool": { outcomes: ["Distinguish working-directory changes, staged content and committed history.", "Create and inspect two local commits without staging unrelated files.", "Safely restore a deliberate scratch edit without rewriting history."], practical: "Build and inspect two local commits" },
   "Investigate Bugs with Git History": { outcomes: ["Define a repeatable pass/fail condition for a regression.", "Find its first bad commit with a real Git bisect session.", "Restore the original branch and explain when bisect evidence is unreliable."], practical: "Find the first bad Git commit" },
   "Branching and Collaboration": { outcomes: ["Explain what a local branch points to and how commits diverge.", "Create, compare, merge and delete a small focused branch with evidence.", "Compare merge, squash and rebase without rewriting shared history."], practical: "Create and merge a focused branch" },
@@ -936,6 +937,73 @@ export const softwareCraftDeepLessons: Lesson[] = [
         ["What belongs in configuration?", "Why should domain policy not automatically become environment variables?", "What should happen when required configuration is missing?"],
         [twelveFactor, djangoSettings],
     ),
+    lesson(
+        "Configuration Precedence and Startup Gates",
+        "Reading environment variables is not yet a configuration policy. This checkpoint starts from the earlier environment-variable and Configuration lessons, then defines an effective precedence rule, turns strings into typed settings, checks relationships between settings and refuses to start before any application side effect. The result is a deterministic laboratory—not a production secret-management system.",
+        [
+        {
+                "title": "Define a configuration contract before writing a parser",
+                "paragraphs": [
+                        "A configuration contract states which values are required, which have safe defaults, which types they become, and which combinations are invalid. For Steward, the PostgreSQL connection target is required; a local/test/production environment label, debug switch and bounded worker count are deployment choices. Service lifecycle transitions and authorization membership rules are domain policy, so they do not become freely editable environment knobs.",
+                        "Separate three decisions: read a raw value, parse it into a type, and validate its meaning. A string 'false' is truthy in Python; bool('false') is therefore an unsafe debug parser. Reject unknown boolean spellings rather than guessing what a deployer meant."
+                ]
+        },
+        {
+                "title": "Make precedence explicit instead of inventing hidden .env behavior",
+                "paragraphs": [
+                        "For this exercise, local defaults are applied first and deployment-supplied environment values override them. DATABASE_URL has no fallback. A .env file is not automatically loaded by Python's os.environ; a deliberate, documented loader would have to supply it. Command-line overrides and secrets managers are not implemented here, so do not claim they participate in the effective value.",
+                        "The next short, executable demonstration proves the precedence rule without reading credentials or modifying machine environment. If two sources can override the same setting in a real application, make the ordering visible in one place."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "settings_precedence.py — deterministic source precedence, no secret IO",
+                        "code": "# This illustrates source precedence, not a production .env loader.\n# The deployed environment wins over explicit local defaults.\ndefaults = {\"DJANGO_DEBUG\": \"false\", \"WORKERS\": \"2\"}\ndeployment = {\"WORKERS\": \"4\"}\neffective = {**defaults, **deployment}\nassert effective == {\"DJANGO_DEBUG\": \"false\", \"WORKERS\": \"4\"}\n# No fallback supplies DATABASE_URL; it remains mandatory.\nassert \"DATABASE_URL\" not in effective\nprint(\"DECLARED_PRECEDENCE_DEPLOYMENT_OVER_DEFAULT_OK\")"
+                }
+        },
+        {
+                "title": "Parse once and expose a typed immutable result",
+                "paragraphs": [
+                        "Use a single startup boundary returning Settings, not scattered os.getenv() calls in each request handler. In an immutable dataclass, debug is a boolean and workers is an integer. A repr-hidden database URL reduces accidental leakage when the settings object is printed, but does not replace credential handling, access controls or safe exception reporting.",
+                        "A syntactically valid URL does not prove the database exists or that credentials work. The parser only verifies a PostgreSQL scheme, host and database path; connectivity belongs in a separate non-destructive readiness check after startup validation."
+                ]
+        },
+        {
+                "title": "Fail before side effects and prove negative paths",
+                "paragraphs": [
+                        "Run the complete program in a fresh scratch directory using python3 settings_gate.py. Expected positive evidence: VALID_LOCAL_SETTINGS_BEFORE_START_OK. Expected negative labels: missing database, production debug, invalid boolean, zero workers and wrong database scheme; each rejection must happen before the simulated listener is called.",
+                        "The negative oracle checks the listener-call count, not just whether an exception text appeared. Changing parse_settings so it starts the listener first should make the corresponding test fail. That distinction is the safety property the test protects."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "settings_gate.py — fully runnable typed parser and fail-before-start negative tests",
+                        "code": "# Save as settings_gate.py, then run: python3 settings_gate.py\n# Standard library only; never connects to a database or reads real secrets.\nfrom dataclasses import dataclass, field\nfrom urllib.parse import urlsplit\n\n@dataclass(frozen=True)\nclass Settings:\n    database_url: str = field(repr=False)  # Prevent accidental repr disclosure.\n    environment: str\n    debug: bool\n    workers: int\n\ndef parse_settings(source):\n    # Deployment provides a mapping of STRINGS. These are application defaults,\n    # not silent fallbacks for mandatory credentials.\n    environment = source.get(\"APP_ENV\", \"local\")\n    if environment not in {\"local\", \"test\", \"production\"}:\n        raise ValueError(\"APP_ENV must be local, test or production\")\n    raw_database = source.get(\"DATABASE_URL\", \"\")\n    parsed = urlsplit(raw_database)\n    if parsed.scheme != \"postgresql\" or not parsed.hostname or not parsed.path.strip(\"/\"):\n        raise ValueError(\"DATABASE_URL must identify a PostgreSQL host and database\")\n    raw_debug = source.get(\"DJANGO_DEBUG\", \"false\").lower()\n    if raw_debug not in {\"true\", \"false\"}:\n        raise ValueError(\"DJANGO_DEBUG must be exactly true or false\")\n    debug = raw_debug == \"true\"\n    raw_workers = source.get(\"WORKERS\", \"2\")\n    try:\n        workers = int(raw_workers)\n    except ValueError as exc:\n        raise ValueError(\"WORKERS must be an integer\") from exc\n    if not 1 <= workers <= 8:\n        raise ValueError(\"WORKERS must be between 1 and 8\")\n    if environment == \"production\" and debug:\n        raise ValueError(\"Production must not start with debug enabled\")\n    return Settings(raw_database, environment, debug, workers)\n\ndef start(source, start_listener):\n    config = parse_settings(source)  # Validate BEFORE any side effect.\n    start_listener(config)\n    return config\n\nlab = {\"DATABASE_URL\": \"postgresql://lab-host/steward_lab\"}\ncalls = []\nsettings = start({**lab, \"DJANGO_DEBUG\": \"false\"}, lambda cfg: calls.append(cfg))\nassert len(calls) == 1 and settings.debug is False and settings.workers == 2\nassert \"postgresql://\" not in repr(settings)\nprint(\"VALID_LOCAL_SETTINGS_BEFORE_START_OK\")\n\nfor label, overrides in [\n    (\"missing_db\", {\"DATABASE_URL\": \"\"}),\n    (\"unsafe_debug\", {\"APP_ENV\": \"production\", \"DJANGO_DEBUG\": \"true\"}),\n    (\"bad_boolean\", {\"DJANGO_DEBUG\": \"no\"}),\n    (\"bad_workers\", {\"WORKERS\": \"0\"}),\n    (\"invalid_database\", {\"DATABASE_URL\": \"sqlite:///steward\"}),\n]:\n    before = len(calls)\n    try:\n        start({**lab, **overrides}, lambda cfg: calls.append(cfg))\n    except ValueError:\n        assert len(calls) == before, label  # No listener started.\n        print(\"REJECTED_BEFORE_START_\" + label.upper())\n    else:\n        raise AssertionError(\"Unsafe startup unexpectedly allowed: \" + label)\n\n# Counterexample: bool(\"false\") is True. Never parse flags this way.\nassert bool(\"false\") is True\nprint(\"CONFIGURATION_STARTUP_GATE_AND_FALSE_BOOLEAN_COUNTEREXAMPLE_OK\")"
+                }
+        },
+        {
+                "title": "Transfer the boundary to Django without copying the demo",
+                "paragraphs": [
+                        "In the Steward Django settings module, identify where DATABASES, DEBUG and deployment-specific permitted hosts are currently assembled. Put equivalent parsing and validation before any management command or worker accepts requests. Keep the existing migration-owned database and authentication settings; never paste the demo's local hostname into a real deployment.",
+                        "Classify the proof precisely: this exercise establishes deterministic parsing, a precedence rule and a startup ordering within an isolated function. It does not demonstrate PostgreSQL connectivity, secrets distribution, migration safety, load-balancer readiness or concurrent process startup. Those require their own integration tests."
+                ]
+        }
+],
+        "Build a startup configuration gate that parses declared strings once, rejects unsafe combinations and proves no initialization side effect happens for invalid input.",
+        [
+        "Save settings_precedence.py and settings_gate.py from the lesson into an empty disposable directory and run each with python3; record exact positive labels.",
+        "Write a contract table for each setting: source, default or required, parsed type, allowed values, invalid cases and whether it is secret.",
+        "Demonstrate the five negative startup scenarios and prove the listener counter does not change after any refusal.",
+        "Deliberately replace the strict debug parser with bool(raw_debug) in a scratch copy; record the false-as-true counterexample and restore the correct implementation.",
+        "Explain which Django settings depend on the parser and which business rules must stay outside deployment configuration. Do not use production values."
+],
+        [
+        "Why does bool('false') not mean False, and how does the strict parser prevent that failure?",
+        "What is the configured precedence order in this exercise, and why is DATABASE_URL never defaulted?",
+        "What negative assertion proves that startup was blocked before side effects?",
+        "Which properties remain untested until a real Django/PostgreSQL startup integration test?"
+],
+        [twelveFactor, djangoSettings],
+    ),
+
     lesson(
         "Check Python Code Before Running It",
         "Before learning linters and type checkers, practise one basic distinction: Python can reject malformed source without executing your program, but that cannot tell you whether your program follows business rules. This lesson creates two disposable files and uses the same interpreter that is running the exercise. It needs only Python, no installed analyzer, database or Steward application.",
