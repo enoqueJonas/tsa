@@ -455,6 +455,22 @@ const practices: Record<string, PracticeSpec> = {
     deliverables: ["Reviewed 0005 migration and SQL", "PostgreSQL-backed dependency integrity transcript", "New shell persistence evidence", "Explicit cycle/authorization gap"],
     completionCriteria: ["No original registry rows or migration IDs are overwritten.", "Both FK directions and all negative writes are observed against real database constraints.", "The learner can explain which graph invariants have not been implemented.", "No insecure API is exposed."]
   },
+  "django-and-api-engineering-promote-a-steward-service-through-a-real-http-command": {
+    objective: "Prove one real readiness domain command produces HTTP 409 with unchanged state and HTTP 200 with persisted state, while logging only useful nonsecret events.",
+    scenario: "Use the same isolated PostgreSQL Django Steward registry after all six migrations and the integrated Service/Review HTTP exercise. The prior registry/services.py and registry/api_errors.py are complete; real JWT/Team membership is still not taught.",
+    instructions: [
+      "Inspect the existing promote_to_production transaction and describe where select_for_update, production Environment existence and lifecycle mutation occur.",
+      "Create registry/integrated_promotion.py and registry/integrated_final_urls.py from the complete lesson code. Keep integrated_final_urls.py test-only; never include it from normal config/urls.py.",
+      "Run python manage.py check and execute registry/integrated_readiness_lab.py. Verify real HTTP 409 and unchanged UAT state with no production Environment.",
+      "Prove a client-provided lifecycle field returns 400, then create a known fictional production Environment and observe a new HTTP 200 with lifecycle persisted as production.",
+      "Call remove_environment on the last production Environment and verify the previous transaction-backed domain rule refuses deletion and preserves the related row.",
+      "Verify other-Team and missing Service return 404, unsupported GET returns 405, and missing server-selected training Team produces 403 without executing promotion.",
+      "Capture precisely one WARNING readiness_conflict event and one INFO readiness_promoted event. Demonstrate that the supplied Authorization marker is not present in logger output.",
+      "Open a fresh manage.py shell and read the stored production lifecycle. Explain why synthetic scope and StreamHandler logs do not establish real actor authorization or durable audit retention."
+    ],
+    deliverables: ["Actual HTTP 409/200 and unchanged-data/persisted-data transcript", "Service/domain code boundary explanation", "Blocked final production Environment deletion", "403/404/405 negatives", "Safe logger output and redaction proof", "Fresh-process lifecycle evidence"],
+    completionCriteria: ["No production lifecycle is saved on failed readiness.", "Successful transition is derived from real stored Environment state.", "Client cannot bypass the command with JSON.", "Logs carry only nonsecret identifiers and outcomes.", "No premature authentication or audit guarantee is claimed."]
+  },
   "django-and-api-engineering-serve-real-steward-services-and-reviews-through-drf": {
     objective: "Make the same migrated PostgreSQL-backed Steward Services and historical Reviews observable through genuinely persisted test-only DRF HTTP requests, with scoped rows and bounded input.",
     scenario: "Reuse the isolated Steward Django schema project after registry migrations 0001–0006. Existing training_scope.py and api_errors.py/domain services.py are taught earlier and must be retained. There is no real Identity or verified reviewer; the URLConf must remain test-only.",
