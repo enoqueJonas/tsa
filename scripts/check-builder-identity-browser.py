@@ -66,9 +66,70 @@ def assert_phone_no_document_overflow(page, activity):
     page.set_viewport_size({"width": 1440, "height": 900})
 
 
+def seed_synthetic_prerequisites(page):
+    """Unlock advanced lessons in a disposable profile without changing app policy.
+
+    These fake completions are ONLY a browser fixture. They do not establish
+    learner understanding or real exercise completion. Never seed real profiles.
+    """
+    curriculum = Path(
+        "packages/runtime-kernel/src/paths/builder-identity-auth-deep.ts"
+    ).read_text(encoding="utf-8")
+    lesson_ids = re.findall(r'richLesson\\(\\s*"([^"]+)"', curriculum)
+    assert len(lesson_ids) == 25 and len(set(lesson_ids)) == len(lesson_ids), (
+        f"Identity lesson count/order changed: {len(lesson_ids)}"
+    )
+    all_previous = [
+        f"{lesson_id}-{activity}"
+        for lesson_id in lesson_ids
+        for activity in ("reading", "practice", "check")
+    ]
+    capstone_reading = PREFIX + "lab-secure-steward-api-reading"
+    completions = all_previous + [capstone_reading]
+    reflections = {
+        activity_id: "SYNTHETIC browser prerequisite, not a learner submission."
+        for activity_id in completions
+        if activity_id.endswith("-check")
+    }
+    page.goto(BASE + "/?view=curriculum&school=builder", wait_until="networkidle")
+    page.evaluate("""async ({pathId, completed, responses}) => {
+      const db = await new Promise((resolve, reject) => {
+        const request = indexedDB.open("tsa-academy", 5);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      try {
+        const tx = db.transaction("path-progress", "readwrite");
+        const now = new Date().toISOString();
+        tx.objectStore("path-progress").put({
+          pathId, schemaVersion: 5,
+          currentActivityId: completed[0],
+          completedActivityIds: completed,
+          reflectionResponses: responses,
+          startedAt: now,
+          updatedAt: now,
+        });
+        await new Promise((resolve, reject) => {
+          tx.oncomplete = resolve;
+          tx.onerror = () => reject(tx.error);
+          tx.onabort = () => reject(tx.error);
+        });
+      } finally {
+        db.close();
+      }
+    }""", {"pathId": PATH_ID, "completed": completions, "responses": reflections})
+    page.reload(wait_until="networkidle")
+    print(
+        f"SEEDED synthetic prerequisite unlocks for {len(completions)} activities; "
+        "not learner competence",
+        flush=True,
+    )
+
+
 def check_identity(page):
     errors = []
     page.on("pageerror", lambda error: errors.append(str(error)))
+    seed_synthetic_prerequisites(page)
     page.goto(BASE + "/?view=curriculum&school=builder", wait_until="networkidle")
     module = page.locator("article").filter(
         has=page.get_by_role("heading", name=MODULE_TITLE, exact=True)
