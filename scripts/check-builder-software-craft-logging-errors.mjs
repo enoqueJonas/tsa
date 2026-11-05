@@ -20,7 +20,7 @@ const checkpoints = [
   },
   {
     title: "Useful Logging",
-    caption: "Logging — allowlisted event schema with a deliberate secret-leaking mutant",
+    caption: "Logging — executable structured-context and secret absence test",
     expected: ["LOG_ALLOWLIST_PRESERVED_EVENT_AND_DROPPED_SECRET", "LOG_MUTANT_LEAK_DETECTED"],
     mutation: [
       "logger.info(event, extra={name: context[name] for name in allowed})",
