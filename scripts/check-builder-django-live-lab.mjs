@@ -1070,6 +1070,36 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
     /IDENTITY_0007_DUPLICATE_REJECTED_0006_STATE_INTACT/);
   console.log("Builder Identity integrated handoff passed: exact source Membership as 0007 on real 0006 Steward PostgreSQL, identity seed, duplicate denial and unchanged Service/Dependency/Review data.");
 
+  // Next Identity lesson must NOT jump back into the independent earlier 0001
+  // scratch project. Reuse the exact published credential verifier with the
+  // real built-in User/Membership from the 0007 migrated Steward registry.
+  const passwordSource = identitySnippet("Delegate password hashing to Django.");
+  fs.writeFileSync(path.join(schemaRoot, "credential_lab.py"),
+    passwordSource + "\n");
+  const passwordEvidence = schemaExec(["manage.py", "shell", "-c",
+    "exec(open('credential_lab.py').read())"]);
+  assert.match(passwordEvidence,
+    /Password lab: verifier, correct\/wrong login and inactive denial/);
+  assert.doesNotMatch(passwordEvidence, /tsa-only-disposable-learning-password/,
+    "Even the training-only plaintext password must not be printed");
+  const freshPasswordEvidence = schemaExec(["manage.py", "shell", "-c", [
+    "from django.contrib.auth import authenticate, get_user_model",
+    "from registry.models import ServiceReview, Membership",
+    "ana=get_user_model().objects.get(username='tsa_ana')",
+    "assert ana.has_usable_password() and ana.is_active",
+    "assert ana.password != 'tsa-only-disposable-learning-password'",
+    "assert ana.check_password('tsa-only-disposable-learning-password')",
+    "assert authenticate(username='tsa_ana',password='incorrect-password') is None",
+    "assert authenticate(username='tsa_ana',password='tsa-only-disposable-learning-password').pk == ana.pk",
+    "assert Membership.objects.filter(user=ana).exists()",
+    "assert ServiceReview.objects.filter(service__name='Review Workshop API').count() == 3",
+    "print('IDENTITY_0007_PASSWORD_FRESH_PROCESS_AND_0006_HISTORY_OK')",
+  ].join("\n")]);
+  assert.match(freshPasswordEvidence,
+    /IDENTITY_0007_PASSWORD_FRESH_PROCESS_AND_0006_HISTORY_OK/);
+  console.log("Builder Identity password continuity passed: same 0007 PostgreSQL registry, hashed verifier, valid/wrong/inactive login, fresh-process auth and unchanged Review history.");
+
+
 
 
 
