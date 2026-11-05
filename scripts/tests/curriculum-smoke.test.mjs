@@ -175,3 +175,8 @@ test("runtime curriculum compiles with TypeScript project settings", () => {
 test("ownership transfer policy executes published source and rejects independent mutations", () => {
   runAudit("scripts/check-transfer-policy-lesson.mjs", /Transfer policy lesson passed:/);
 });
+
+test("identity security module keeps full Python source and independent transfer", () => {
+  runAudit("scripts/check-identity-module-integrity.mjs",
+    /Identity module integrity passed:/);
+});
