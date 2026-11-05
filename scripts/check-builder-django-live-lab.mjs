@@ -231,12 +231,12 @@ assert.match(persistedLab, /Book\.objects\.filter\(pk=book_id\)/,
 // Both error-handling lessons must prove real HTTP semantics, not just a
 // pure mapping that returns Python dictionaries without framework dispatch.
 const errorPrimerStart = source.indexOf('richLesson("See How DRF Turns Exceptions into HTTP Responses"');
-const readinessStart = source.indexOf('richLesson("Production Readiness Commands and Atomic Updates"');
+const errorsReadinessStart = source.indexOf('richLesson("Production Readiness Commands and Atomic Updates"');
 const validationStart = source.indexOf('richLesson("Validation and Business Rules"');
 const errorAppliedStart = source.indexOf('richLesson("API Error Handling"');
 const filteringStart = source.indexOf('richLesson("Filtering, Searching and Ordering"');
 assert.ok(errorPrimerStart > validationStart && errorPrimerStart < errorAppliedStart &&
-  readinessStart < validationStart && errorAppliedStart < filteringStart,
+  errorsReadinessStart < validationStart && errorAppliedStart < filteringStart,
   "Real framework exception handling must precede the Steward error-contract application");
 for (const id of ["see-how-drf-turns-exceptions-into-http-responses","api-error-handling"]) {
   assert.match(publishedPractice(id), /instructions:/,
