@@ -29,6 +29,16 @@ const checkpoints = [
     ],
   },
   {
+    title: "Managing Dependencies",
+    caption: "Dependencies — offline AST imports versus PEP 621 direct declarations and removal mutant",
+    expected: ["DECLARATION_GAP_DETECTED: rich", "DECLARATION_GAP_REPAIRED_IN_MANIFEST", "DECLARATION_REMOVAL_MUTANT_CAUGHT"],
+    mutation: [
+      `fixed = manifest.replace('"PyYAML>=6"', '"PyYAML>=6", "rich>=13"')`,
+      "fixed = manifest",
+      "AssertionError",
+    ],
+  },
+  {
     title: "Failure Boundaries and Public Error Contracts",
     caption: "Public error contracts — six outcomes, concealed 404 and an exception-leak mutant",
     expected: ["PUBLIC_FAILURE_SIX_OUTCOMES_AND_STABLE_SHAPE", "PUBLIC_FAILURE_MUTANT_REJECTED_NO_DB_SECRET", "PUBLIC_FAILURE_CONCEALED_RESOURCE_UNIFORM"],
@@ -97,4 +107,4 @@ try {
 } finally {
   fs.rmSync(root, { recursive: true, force: true });
 }
-console.log("Software Craft logging/error teaching passed: 24 ordered lessons, 3 executable programs, 3 rejected negatives, stable rubrics.");
+console.log("Software Craft source teaching passed: 24 ordered lessons, 4 executable programs, 4 rejected negatives, stable rubrics.");
