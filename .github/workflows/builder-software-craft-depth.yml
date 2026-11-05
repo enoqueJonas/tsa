@@ -8,6 +8,7 @@ on:
       - packages/runtime-kernel/src/paths/builder-software-craft-deep.ts
       - packages/runtime-kernel/src/paths/builder-software-craft-quality.ts
       - scripts/check-builder-software-craft-logging-errors.mjs
+      - docs/curriculum/software-craft-forward-depth-exit.md
       - .github/workflows/builder-software-craft-depth.yml
 
 permissions:
