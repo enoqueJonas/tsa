@@ -573,12 +573,12 @@ export const djangoAndApiRichLessons: Lesson[] = [
         "estimatedMinutes": 20,
         "content": {
           "type": "reading",
-          "body": "Build one consistent Steward Django registry incrementally. Before adding an HTTP endpoint, verify that the existing Team, Service, Environment, directed ServiceDependency and historical ServiceReview models all have executable database evidence. Reuse the separated PostgreSQL-backed Django schema project. Do not treat the unauthenticated training URLs from earlier lessons as public APIs; verified principal and membership authorization are taught next.",
+          "body": "The Steward Django lab is a sequence of independently executed experiments over one disposable PostgreSQL registry, not a request to paste five projects together. Checkpoints 1–5 already provide the actual dependency/review migrations, Service and Review HTTP, readiness HTTP plus logs, and generated OpenAPI against the same routes. The final activities consolidate those observations and test whether you can trace a failure without a scripted answer. All routing remains training-only; identity and authorization come next.",
           "blocks": [
             {
               "type": "heading",
               "id": "objective",
-              "text": "One domain, several independently verifiable checkpoints"
+              "text": "One PostgreSQL registry, five proofs, then a transferable handoff"
             },
             {
               "type": "paragraph",
@@ -587,25 +587,26 @@ export const djangoAndApiRichLessons: Lesson[] = [
             {
               "type": "heading",
               "id": "boundaries",
-              "text": "What already exists and what remains"
+              "text": "What the checkpoints prove—and what they do not"
             },
             {
               "type": "list",
               "items": [
-                "Implemented and independently tested: Team/Service/Environment, staged Service.slug migrations, readiness commands, limited training queries, real generated OpenAPI in the separate Book catalogue, and Django settings/logging examples.",
-                "Newly taught in complete source: ServiceDependency directional constraints and ServiceReview historical rows, each with real PostgreSQL schema and negative tests.",
-                "The next lesson provides integrated test-only Service/Review HTTP endpoints; the final build still needs schema/runtime conformance, readiness and operational evidence assembled into one application.",
-                "Not yet implemented: authenticated user, Team Membership-derived authorization, secure public registration, and immutable audit guarantees."
+                "Checkpoints 1–2: real 0005/0006 migration-backed ServiceDependency constraints and durable ServiceReview history, with negative writes.",
+                "Checkpoint 3: actual Service/Review HTTP, scoped query results and database state; its server-selected Team and reviewer are synthetic fixtures, not authenticated subjects.",
+                "Checkpoint 4: a transactional promotion returns 409 without writes, then 200 when a production Environment exists; application logs contain no deliberately injected Authorization marker.",
+                "Checkpoint 5: real drf-spectacular schema export uses the same four private routes as HTTP and detects two false-schema mutations.",
+                "Not proved: login, verified principal, Team membership, per-object authorization, revocation, immutable audit, production route hardening or successful independent learner completion."
               ]
             },
             {
               "type": "heading",
               "id": "learning-order",
-              "text": "Do not skip the transition"
+              "text": "Why the final activity is no longer another build-from-zero"
             },
             {
               "type": "paragraph",
-              "text": "Use the existing PostgreSQL Django schema lab as the source of truth. The prior Django examples included an independent Book tutorial and multiple separate test-only Steward projects; their file paths are examples to transfer deliberately, not proof they were already assembled in the same application. The database, HTTP and readiness/logging checkpoints must run against the same coherent registry project; final OpenAPI schema/runtime conformance remains a distinct exit criterion."
+              "text": "The complete implementation already exists in the preceding source-published lessons. Rerunning their fixture-creating scripts indiscriminately can collide with existing data. In this final stage, use the same disposable PostgreSQL project and the output of the five completed checkpoints, compare evidence across layers, then run one independent negative test. Do not silently substitute the Book tutorial, SQLite, a mock API or an unregistered URLConf."
             }
           ]
         }
@@ -751,7 +752,12 @@ export const djangoAndApiRichLessons: Lesson[] = [
             "Deliberately falsify the generated field or path in memory and verify conformance detects both drift cases.",
             "Explain why the schema and private Swagger UI cannot establish production authentication or Team membership."
           ],
-          "deliverables": ["Validated exported OpenAPI", "Real HTTP/DB contract transcript", "Two schema mutation failures", "Nonpublic routing and Identity gap"],
+          "deliverables": [
+            "Validated exported OpenAPI",
+            "Real HTTP/DB contract transcript",
+            "Two schema mutation failures",
+            "Nonpublic routing and Identity gap"
+          ],
           "completionCriteria": [
             "The same URLConf drives runtime and schema.",
             "Actual PostgreSQL Service/Review/readiness statuses match declared contracts.",
@@ -762,36 +768,71 @@ export const djangoAndApiRichLessons: Lesson[] = [
       },
       {
         "id": "django-and-api-engineering-lab-steward-api-skeleton-build",
-        "title": "Build Steward API Skeleton",
-        "estimatedMinutes": 95,
+        "title": "Handoff: Prove the Steward API Works as One System",
+        "estimatedMinutes": 70,
         "content": {
           "type": "practical",
-          "objective": "Integrate the proven Steward models into real DRF endpoints, then demonstrate contract and operational behavior in one coherent test-only application.",
-          "scenario": "Start only after the two schema checkpoints are green. Work in the same already migrated Steward Django project rather than silently combining unrelated scratch installations. The remaining endpoint assembly is not independently learner-validated yet; use the named earlier source examples as reference and record any missing support before claiming completion.",
+          "objective": "Reconcile five independently verified checkpoints into one reproducible evidence dossier, distinguishing facts observed in PostgreSQL/HTTP/OpenAPI from authentication claims not yet implemented.",
+          "scenario": "You are handing a disposable Steward training registry to another engineer. They must be able to reproduce the exact result and know which routes must NOT be deployed. Start from the same migrated 0001–0006 PostgreSQL project used in checkpoints 1–5; do not build another fresh catalogue or rerun fixture scripts blindly.",
           "instructions": [
-            "Inventory the actual existing registry files and migrations 0001–0006. Explain where the previously taught service serializer, command, exception handler, query scope, OpenAPI generator, settings and logging lessons can be reused, and which files must be added deliberately.",
-            "Reuse the preceding complete integrated Service collection/detail API and its real HTTP proof; explain which write fields are excluded and how the test-selected Team scope limits list and detail views.",
-            "Reuse the preceding verified ServiceReview create/list implementation and demonstrate what it proves (scoped training context, database persistence) and what it does not (Identity-based authorization or reviewer identity).",
-            "Apply lifecycle and criticality filters plus deterministic pagination on a *server-selected teaching Team*, never a client-selected Team authority. Inspect executed PostgreSQL SQL and N+1 behavior rather than hand-writing a pretend query.",
-            "Carry forward the fourth checkpoint’s live 409 and 200 readiness contract, including unchanged-state and safe-log evidence. Do not recode the state transition inside the view.",
-            "Generate the API's actual OpenAPI document and compare paths, parameters, response fields and success/failure statuses against real HTTP exchanges. Verify application logging is useful and excludes secrets.",
-            "Prepare a concrete missing-prerequisite list for the next Identity module: verified principals, Team membership, object-level authorization, cross-Team visibility/revocation, and reviewer attribution."
+            "First verify location and state: from the Django project root, run `python manage.py showmigrations registry` (0001–0006 should show [X]) and `python manage.py check` (no system check issues). If migrations are missing, return to the named checkpoint; do not fake the rows or use SQLite.",
+            "Make a six-column evidence matrix: request/operation; actual URL and verb; source view/serializer/command; PostgreSQL table or invariant; expected status/response; test file and observation. Include Service POST 201 + fresh GET 200, Review POST 201 + list 200, forged field 400 with unchanged count, cross-Team detail 404, wrong verb 405, and readiness POST 409 then 200.",
+            "For Service POST, follow `registry/integrated_contract_urls.py` → annotated `integrated_contract_views.py` → original `integrated_api.py` and `integrated_serializers.py` → `Service` row. Identify where owning_team and lifecycle are selected by the server. Cite the prior HTTP script's actual persisted reread, not a printed dictionary.",
+            "For ServiceReview POST, trace the parent Service check, server-selected reviewer fixture and Review FK write. Explain why three history events survive and why this does NOT establish authenticated reviewer identity or immutable history. Attach the earlier query capture showing that related Service loading does not become one query per event.",
+            "For readiness, trace the POST through `integrated_promotion.py` to the existing `services.py` transactional command and `Environment`. Record the 409 state before any deployment and the 200 persistent state after adding a production Environment. Identify the rollback invariant and show the safe WARNING/INFO evidence; a status code without a database assertion is insufficient.",
+            "Run the exact generator taught in Checkpoint 5 from the project root: `python manage.py spectacular --urlconf registry.integrated_contract_urls --format openapi-json --file registry/integrated_openapi.json --validate --fail-on-warn`. Open the output and map each of the four route definitions to the corresponding actual request in the evidence matrix. Schema validation alone is not an HTTP assertion.",
+            "Inspect `config/urls.py` and confirm it does NOT include `integrated_training_urls`, `integrated_final_urls`, `integrated_contract_urls` or `integrated_schema_urls`. The latter are isolated for Django Client tests or the training schema command. Document this as an explicit deployment prohibition, not a claim that the backend has authorization.",
+            "Write a reproducibility note: Python/Django/DRF/drf-spectacular versions, PostgreSQL target (omit secrets), applied migration list, exactly which checkpoint scripts were executed once and on which disposable fixture, test outputs, exceptions, and how a colleague can safely reset that disposable database. Do not erase or recreate data in a non-disposable environment."
           ],
           "deliverables": [
-            "One migrated Steward Django project",
-            "Actual Service and ServiceReview HTTP request/state evidence",
-            "SQL count/relationship loading notes",
-            "Readiness and invalid input negatives",
-            "Actual schema/runtime comparison",
-            "Logs without credentials",
-            "Security work explicitly deferred to Identity"
+            "One exact 0001–0006 migrated PostgreSQL project inventory",
+            "Six-column request-to-database evidence matrix with actual results and source paths",
+            "Generated schema export plus four route-to-HTTP comparisons",
+            "409/200 transactional state and safe-log evidence",
+            "Non-public training route assertion and explicit authorization gap",
+            "Reproduction and safe fixture-reset note"
           ],
           "completionCriteria": [
-            "The demonstrated HTTP operations use real stored rows and match their documented response contracts.",
-            "Domain constraint failures do not produce hidden writes.",
-            "All test-only routes remain unpublished until Identity/permissions are implemented.",
-            "Cross-project sample code is not presented as if it had already been assembled.",
-            "A novice can reproduce every step; until full source and uncoached verification exist, this checkpoint must remain unvalidated."
+            "Every matrix row points to an actual executed checkpoint observation, not an invented sample HTTP transcript.",
+            "Real Service and Review records, relationship constraints, schema and readiness refer to the same database and code.",
+            "An observer can distinguish 400/403/404/405/409 and explain why 403 for missing test Team context is not a membership check.",
+            "No rerun blindly doubles fixture rows or changes real project data.",
+            "Training URLConfs remain private; no production security claims appear.",
+            "Technical integration can be marked REMEDIATED on evidence, but learner validation remains pending human reading and uncoached application."
+          ]
+        }
+      },
+      {
+        "id": "django-and-api-engineering-lab-steward-api-skeleton-boundary-transfer",
+        "title": "Transfer: Diagnose a Forged Ownership Request",
+        "estimatedMinutes": 45,
+        "content": {
+          "type": "practical",
+          "objective": "Independently derive a negative test from the implemented Steward boundary instead of copying a prior test's expected answers.",
+          "scenario": "A new client sends a valid-looking Service creation payload, but supplies an owning Team from outside the server-selected training context. A teammate says a 201 response would be acceptable because the client knows a Team ID. Challenge that assumption using the actual code and a new test against the disposable database.",
+          "instructions": [
+            "Before opening the earlier test assertions, write your hypothesis: which layer must reject client-controlled `owning_team`, what HTTP result should occur, and how would you detect a hidden row insertion? Record your prediction first.",
+            "Find the exact serializer accepted field list and the `trusted_training_team()` source. Explain separately: rejecting forged client input; choosing a synthetic server Team; proving an authenticated principal's permission. Only the first two exist in this lab.",
+            "In the same disposable Django project, construct a new Django Client POST to `/training/integrated/services/` with the same valid Service payload shape used in `integrated_http_lab.py`, but add `owning_team` for the other fictional Team. Run it under `override_settings(ROOT_URLCONF='registry.integrated_contract_urls', TSA_TRAINING_TEAM_ID=team_a.pk)` using a Team A fixture, and count Service rows for each Team before and after. Match JSON property names and required fields to the actual previously published serializer; do not invent fields.",
+            "Observe the real status and stored row counts. If the request succeeds or changes rows, record this as a defect and do NOT mark the exercise complete. If it fails, explain how serializer validation and server-owned scope differ from authentication.",
+            "Repeat with `TSA_TRAINING_TEAM_ID` absent (use `override_settings` plus settings deletion or the existing proven no-scope request): document why 403 is a training configuration failure and NOT verified denial of a member.",
+            "Create a one-page failure analysis with prediction, exact request, response, before/after SQL-backed row counts, enforcing source line, and one missing Identity test: a genuinely signed-in user whose Membership is removed must lose object access even if their access token is still valid.",
+            "Without copying prose from the earlier lesson, teach another learner the distinction among URL routing, serializer validation, business invariant, database constraint, authentication and object authorization. Invite them to identify which one is still absent."
+          ],
+          "deliverables": [
+            "Prediction made before test execution",
+            "New negative Django Client request and unchanged database row counts",
+            "Explanation of observed status and layer enforcing the result",
+            "Evidence for no-scope training failure",
+            "Explicit future Membership-revocation test design",
+            "Short teach-back rubric with each of the six boundaries correctly distinguished"
+          ],
+          "completionCriteria": [
+            "The transfer test runs against the existing PostgreSQL registry and private URLConf, not an invented mock.",
+            "Client-supplied owning_team cannot change the server-selected Team or cause a hidden write.",
+            "Status alone is insufficient: row counts and object scope are asserted.",
+            "No test is described as verifying actual user login or authorization.",
+            "An independent reader can name the next Identity prerequisite without assistance; until observed, label learner transfer UNVERIFIED."
           ]
         }
       },
@@ -801,7 +842,7 @@ export const djangoAndApiRichLessons: Lesson[] = [
         "estimatedMinutes": 25,
         "content": {
           "type": "reflection",
-          "prompt": "Trace one Service dependency request and one ServiceReview request from URL → DRF view → serializer/command → ORM → database constraint → HTTP response. Which source files and command outputs actually prove every transition? What happens for a malformed request and a correct-looking but forbidden cross-Team request? Which guarantee is implemented now and which awaits the Identity module? Identify at least one missing executable prerequisite before declaring this integration ready."
+          "prompt": "Without referring to the five checkpoint scripts, sketch the path for a real Service POST and a failed readiness promotion: URLConf → view → serializer or domain command → ORM → PostgreSQL → HTTP response. For each arrow name a real source file and one observable proof. Then explain why `owning_team` from the request is untrusted, why a server-selected Team fixture is not a logged-in principal, and what Membership lookup and revocation test the next module must implement. Score your own explanation: 1 point for each of routing, input validation, database write/constraint, transactional rollback, HTTP/schema match, and missing authorization; under 6/6 means revisit the appropriate checkpoint. Green CI alone is not a pass for the independent learner test."
         }
       }
     ]

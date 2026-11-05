@@ -417,8 +417,11 @@ for (const checkpoint of [
   assert.ok(source.includes('"id": "' + checkpoint + '"'),
     "The lab must expose independent activity checkpoints and preserve its original build ID: " + checkpoint);
 }
-assert.match(source, /the next Identity module/,
-  "The unfinished identity/authorization boundary must be visible to the learner");
+const integratedLabEvidence = source.slice(integratedLabStart);
+assert.match(integratedLabEvidence, /Not proved: login, verified principal/,
+  "The final lab must explicitly distinguish completed integration from missing Identity");
+assert.match(integratedLabEvidence, /django-and-api-engineering-lab-steward-api-skeleton-boundary-transfer/,
+  "Integrated Steward lab must include an independent, navigable trust-boundary transfer");
 for (const id of [
   "map-a-directed-service-dependency-into-django",
   "persist-a-steward-service-review-history",
@@ -1066,6 +1069,16 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   assert.match(negativeMembership,
     /IDENTITY_0007_DUPLICATE_REJECTED_0006_STATE_INTACT/);
   console.log("Builder Identity integrated handoff passed: exact source Membership as 0007 on real 0006 Steward PostgreSQL, identity seed, duplicate denial and unchanged Service/Dependency/Review data.");
+
+
+
+
+
+
+
+
+
+
 
 
 
