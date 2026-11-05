@@ -49,6 +49,31 @@ for (const caption of captions) {
     "Published Python has a syntax error: " + caption + "\n" + parse.stderr);
 }
 const labId = "identity-authentication-authorization-lab-secure-steward-api";
+const capstoneAt = source.indexOf('    {\n        "id": "' + labId + '"');
+assert.ok(capstoneAt >= 0, "The final capstone must be present as a standalone lesson");
+const capstone = JSON.parse(source.slice(capstoneAt, source.lastIndexOf("\n];")).trim());
+const reading = capstone.activities.find(
+  activity => activity.id === labId + "-reading");
+assert.ok(reading?.content?.blocks, "Capstone reading needs rendered content blocks");
+const blocks = reading.content.blocks;
+for (const block of blocks) {
+  if (block.type !== "heading") continue;
+  const keys = Object.keys(block).sort();
+  assert.deepEqual(keys, ["id", "level", "text", "type"],
+    "Malformed capstone heading block: use separate list/code blocks, not heading extras");
+}
+const stagedCommands = blocks.filter(block => block.type === "code");
+assert.equal(stagedCommands.length, 1,
+  "Publish a single staged command sequence, not contradictory duplicate shell blocks");
+const commandText = stagedCommands[0].code;
+for (const stage of ["STAGE 1", "STAGE 2", "STAGE 3"])
+  assert.ok(commandText.includes(stage), "Missing ordered capstone " + stage);
+assert.ok(commandText.indexOf("jwt_first_http_lab.py") <
+  commandText.indexOf("migrate token_blacklist"),
+  "The no-rotation JWT baseline must be captured BEFORE blacklist/rotation");
+assert.ok(commandText.indexOf("migrate token_blacklist") <
+  commandText.indexOf("session_lifecycle_lab.py"),
+  "Apply blacklist migrations BEFORE the real refresh lifecycle experiment");
 assert.match(source, /"id": "identity-authentication-authorization-lab-secure-steward-api-practice"/);
 assert.match(source, /"id": "identity-authentication-authorization-lab-secure-steward-api-check"/);
 assert.ok(source.includes("Seven evidence rows tie HTTP, database effects"),
