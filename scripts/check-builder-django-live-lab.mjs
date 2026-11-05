@@ -401,6 +401,45 @@ assert.match(realSettingsExamples.lab, /subprocess\.run\(/);
 assert.match(realSettingsExamples.lab, /UNSAFE_DJANGO_QUERY_EXECUTED/);
 assert.match(realSettingsExamples.lab, /secrets\.token_urlsafe/);
 
+const dependencyLessonStart = source.indexOf('richLesson("Map a Directed Service Dependency into Django"');
+const historyLessonStart = source.indexOf('richLesson("Persist a Steward Service Review History"');
+const integratedLabStart = source.indexOf('"id": "django-and-api-engineering-lab-steward-api-skeleton"');
+const configBeforeData = source.indexOf('richLesson("Configuration and Environments"');
+assert.ok(configBeforeData < dependencyLessonStart &&
+  dependencyLessonStart < historyLessonStart &&
+  historyLessonStart < integratedLabStart,
+  "The directed edge and review history prerequisites must precede integrated Steward lab");
+for (const checkpoint of [
+  "django-and-api-engineering-lab-steward-api-skeleton-dependency-checkpoint",
+  "django-and-api-engineering-lab-steward-api-skeleton-review-history-checkpoint",
+  "django-and-api-engineering-lab-steward-api-skeleton-build",
+]) {
+  assert.ok(source.includes('"id": "' + checkpoint + '"'),
+    "The lab must expose independent activity checkpoints and preserve its original build ID: " + checkpoint);
+}
+assert.match(source, /the next Identity module/,
+  "The unfinished identity/authorization boundary must be visible to the learner");
+for (const id of [
+  "map-a-directed-service-dependency-into-django",
+  "persist-a-steward-service-review-history",
+]) {
+  assert.match(publishedPractice(id), /registry\/models.py|registry\/dependency|registry\/review/,
+    "Applied model checkpoint must specify its actual Django source path: " + id);
+}
+const stewardDataExamples = {
+  dependencyModel: modelLessonSnippet("registry/models.py — append ServiceDependency with database constraints"),
+  dependencyLab: modelLessonSnippet("registry/dependency_integrity_lab.py — two directions and PostgreSQL rejections"),
+  dependencyCommands: modelLessonSnippet("Terminal — add and inspect the directed dependency migration"),
+  reviewModel: modelLessonSnippet("registry/models.py — append historical ServiceReview with verdict CHECK"),
+  reviewLab: modelLessonSnippet("registry/review_history_lab.py — three events and real negative writes"),
+  reviewCommands: modelLessonSnippet("Terminal — migrate review events without altering existing Services"),
+};
+assert.match(stewardDataExamples.dependencyModel, /models\.CheckConstraint/);
+assert.match(stewardDataExamples.dependencyModel, /models\.UniqueConstraint/);
+assert.match(stewardDataExamples.dependencyLab, /IntegrityError/);
+assert.match(stewardDataExamples.reviewModel, /models\.CheckConstraint/);
+assert.match(stewardDataExamples.reviewLab, /ProtectedError/);
+
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-django-bridge-"));
 const exec=(command,args,env=process.env)=>{
   const p=spawnSync(command,args,{cwd:root,encoding:"utf8",timeout:60000,env});
@@ -691,6 +730,76 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
   ]) assert.ok(verifySteward.includes(expect),
     "Published Steward migration evidence missing: " + expect + "\n" + verifySteward);
   console.log("Builder Steward schema evolution passed: actual 0002/0003/0004 migration chain, collision rollback, recovery, original FKs, full model-state alignment, unique DB rejection.");
+
+  // Build both published Steward relational concepts on the exact schemaRoot
+  // that already migrated real Service slugs through 0004 on PostgreSQL.
+  // Generated 0005/0006 migrations are reviewed via sqlmigrate and checked
+  // against the actual Python model definitions rather than fabricated SQL.
+  fs.appendFileSync(path.join(schemaRoot, "registry", "models.py"),
+    "\n" + stewardDataExamples.dependencyModel + "\n");
+  schemaExec(["manage.py", "check"]);
+  const depMigrations = schemaExec(["manage.py", "makemigrations",
+    "registry", "--name", "service_dependency"]);
+  assert.match(depMigrations, /0005_service_dependency/);
+  const depSql = schemaExec(["manage.py", "sqlmigrate", "registry", "0005"]);
+  for (const expected of ["service_dependency", "CHECK", "UNIQUE"]) {
+    assert.ok(depSql.includes(expected), "Directed edge SQL missing " + expected + "\n" + depSql);
+  }
+  schemaExec(["manage.py", "migrate", "registry", "0005", "--noinput"]);
+  assert.match(schemaExec(["manage.py", "makemigrations",
+    "registry", "--check", "--dry-run"]), /No changes detected/);
+  const dependencyProof = registryRun(
+    "dependency_integrity_lab.py", stewardDataExamples.dependencyLab);
+  for (const expected of [
+    "DIRECTED_DEPENDENCIES_BOTH_DIRECTIONS",
+    "SELF_DEPENDENCY_DB_REJECTED",
+    "DUPLICATE_DEPENDENCY_DB_REJECTED",
+    "UNKNOWN_DEPENDENCY_FK_DB_REJECTED",
+    "DEPENDENCY_TARGET_DELETE_PROTECTED",
+    "DEPENDENCY_DATABASE_LAB_OK",
+  ]) assert.ok(dependencyProof.includes(expected),
+    "Published dependency model did not prove " + expected + "\n" + dependencyProof);
+  assert.match(schemaExec(["manage.py", "shell", "-c", [
+    "from registry.models import ServiceDependency",
+    "assert ServiceDependency.objects.filter(source_service__name='Dependency Workshop API', target_service__name='Dependency Workshop Identity').exists()",
+    "print('DEPENDENCY_REOPENED_OK')",
+  ].join("\n")]), /DEPENDENCY_REOPENED_OK/);
+
+  // Separate second migration teaches historical events, not a mutable
+  // status column or a synthetic identity/access-control guarantee.
+  fs.appendFileSync(path.join(schemaRoot, "registry", "models.py"),
+    "\n" + stewardDataExamples.reviewModel + "\n");
+  schemaExec(["manage.py", "check"]);
+  const reviewMigrations = schemaExec(["manage.py", "makemigrations",
+    "registry", "--name", "service_review"]);
+  assert.match(reviewMigrations, /0006_service_review/);
+  const reviewSql = schemaExec(["manage.py", "sqlmigrate", "registry", "0006"]);
+  for (const expected of ["service_review", "CHECK", "reviewed_at"]) {
+    assert.ok(reviewSql.includes(expected), "Review history SQL missing " + expected + "\n" + reviewSql);
+  }
+  schemaExec(["manage.py", "migrate", "registry", "0006", "--noinput"]);
+  assert.match(schemaExec(["manage.py", "makemigrations",
+    "registry", "--check", "--dry-run"]), /No changes detected/);
+  const reviewProof = registryRun(
+    "review_history_lab.py", stewardDataExamples.reviewLab);
+  for (const expected of [
+    "THREE_HISTORICAL_REVIEWS_SAME_SERVICE_AND_TIMESTAMP_TIE",
+    "INVALID_REVIEW_VERDICT_DB_REJECTED",
+    "UNKNOWN_REVIEW_SERVICE_FK_DB_REJECTED",
+    "REVIEWED_SERVICE_DELETE_PROTECTED",
+    "SERVICE_REVIEW_DATABASE_LAB_OK",
+  ]) assert.ok(reviewProof.includes(expected),
+    "Published review history did not prove " + expected + "\n" + reviewProof);
+  assert.match(schemaExec(["manage.py", "shell", "-c", [
+    "from registry.models import Service, ServiceDependency, ServiceReview",
+    "assert ServiceReview.objects.filter(service__name='Review Workshop API').count() == 3",
+    "assert ServiceDependency.objects.filter(source_service__name='Dependency Workshop API').count() == 1",
+    "assert Service.objects.get(name='Workshop Reports API').slug == 'workshop-reports-api'",
+    "print('REVIEW_HISTORY_REOPENED_OK')",
+  ].join("\n")]), /REVIEW_HISTORY_REOPENED_OK/);
+  console.log("Builder Steward data checkpoints passed: generated 0005/0006, directed edge/self/duplicate/FK/PROTECT, three persistent historical reviews, invalid verdict, no original slug regression.");
+
+
 
   // Existing domain command and PostgreSQL migration lab completed above.
   // Exercise published HTTP exception code against its real stored state;
