@@ -12,6 +12,9 @@ function slug(value: string) {
 }
 
 const craftTeaching: Record<string, { outcomes: string[]; practical: string }> = {
+  "Configuration Precedence and Startup Gates": { outcomes: ["Trace a setting from source through precedence, parsing, validation and startup.","Reject unsafe cross-setting combinations before any listener starts.","Explain why a typed configuration object is safer than scattered environment reads."], practical: "Prove a fail-closed configuration startup boundary" },
+  "Logging Failure Paths and Correlation": { outcomes: ["Define bounded, queryable log events for real success and denial paths.","Use a safe field allowlist and distinguish sensitive input from correlation context.","Prove a negative secret-leak control while limiting the conclusions to the test logger."], practical: "Prove secret-safe success and denial log events" },
+  "HTTP Error Contracts and Client Oracles": { outcomes: ["Map status, stable code, message and client action into one testable error contract.","Execute real localhost 400/401/403/404/409/500/200 responses and verify JSON semantics.","Prove leakage and stale-conflict negatives without pretending to test production authorization."], practical: "Prove real HTTP error statuses and public-body safety" },
   "Git as an Engineering Tool": { outcomes: ["Distinguish working-directory changes, staged content and committed history.", "Create and inspect two local commits without staging unrelated files.", "Safely restore a deliberate scratch edit without rewriting history."], practical: "Build and inspect two local commits" },
   "Investigate Bugs with Git History": { outcomes: ["Define a repeatable pass/fail condition for a regression.", "Find its first bad commit with a real Git bisect session.", "Restore the original branch and explain when bisect evidence is unreliable."], practical: "Find the first bad Git commit" },
   "Branching and Collaboration": { outcomes: ["Explain what a local branch points to and how commits diverge.", "Create, compare, merge and delete a small focused branch with evidence.", "Compare merge, squash and rebase without rewriting shared history."], practical: "Create and merge a focused branch" },
@@ -842,6 +845,19 @@ export const softwareCraftDeepLessons: Lesson[] = [
                         "For the first independent case, compare the built-in `json` module with installing a third-party JSON helper merely to encode a tiny dictionary. If the standard library already meets the requirement, defer the new dependency. This example is a judgment exercise, not a claim that specialized JSON packages can never be justified."
                 ]
         }
+,
+        {
+        "title": "Execute an offline inventory and catch a hidden transitive import",
+        "paragraphs": [
+                "Do not make the learner infer the first command. Save the complete Python 3 program below and run it in a disposable directory. It introspects the actual active interpreter and installed distribution names using importlib.metadata, then checks a deliberately synthetic two-package graph. The fixture proves that a package present only because another package installed it is not an explicitly declared API your application can rely on.",
+                "Apply the same investigation to the real Steward code separately: read its actual pyproject.toml/requirements, inspect the imports in the app, and compare them against declared direct runtime dependencies. Use python3 -m pip check in the selected, already-configured environment to detect package-metadata conflicts. A clean pip check is neither an integration test nor a current vulnerability/license audit."
+        ],
+        "code": {
+                "language": "python",
+                "caption": "dependency_boundary_lab.py — executable offline direct/transitive dependency oracle",
+                "code": "# Save as dependency_boundary_lab.py; run: python3 dependency_boundary_lab.py\n# Offline standard-library lab. It does not install or update distributions.\nimport importlib.metadata as metadata\nimport importlib.util\nimport sys\n\nassert sys.version_info.major == 3\nassert importlib.util.find_spec(\"json\") is not None  # Standard library, no pip.\n# Actual interpreter inventory: package names depend on the environment.\ninstalled = {dist.metadata.get(\"Name\", \"\").lower()\n             for dist in metadata.distributions()}\nassert isinstance(installed, set)\nprint(\"INTERPRETER_AND_INSTALLED_METADATA_INSPECTED\")\n\n# Synthetic dependency graph for a repeatable direct/transitive boundary.\n# Do not mistake these names for actual Steward requirements.\ndeclared_direct = {\"web-framework\"}\ninstalled_fixture = {\"web-framework\", \"transport-helper\"}\napplication_imports = {\"web-framework\", \"transport-helper\"}\nundeclared_imports = application_imports - declared_direct\nassert undeclared_imports == {\"transport-helper\"}\nassert undeclared_imports.issubset(installed_fixture)\nprint(\"TRANSITIVE_IMPORT_REQUIRES_DECLARATION\")\n\n# Negative control: importing a transitive item by chance is not a contract.\ndeclared_only = {\"web-framework\"}\nassert \"transport-helper\" not in declared_only\nassert \"transport-helper\" in installed_fixture\nprint(\"DEPENDENCY_MANIFEST_NOT_INSTALLED_TREE_OK\")\n\n# No network, package installation, arbitrary pip freeze or license claim.\nprint(\"DEPENDENCY_OFFLINE_INVENTORY_BOUNDARY_OK\")"
+        }
+}
 ],
         "Justify one real project dependency and an upgrade or removal path, using declared requirements and reproducible evidence.",
         [
@@ -936,6 +952,73 @@ export const softwareCraftDeepLessons: Lesson[] = [
         ["What belongs in configuration?", "Why should domain policy not automatically become environment variables?", "What should happen when required configuration is missing?"],
         [twelveFactor, djangoSettings],
     ),
+    lesson(
+        "Configuration Precedence and Startup Gates",
+        "Reading environment variables is not yet a configuration policy. This checkpoint starts from the earlier environment-variable and Configuration lessons, then defines an effective precedence rule, turns strings into typed settings, checks relationships between settings and refuses to start before any application side effect. The result is a deterministic laboratory—not a production secret-management system.",
+        [
+        {
+                "title": "Define a configuration contract before writing a parser",
+                "paragraphs": [
+                        "A configuration contract states which values are required, which have safe defaults, which types they become, and which combinations are invalid. For Steward, the PostgreSQL connection target is required; a local/test/production environment label, debug switch and bounded worker count are deployment choices. Service lifecycle transitions and authorization membership rules are domain policy, so they do not become freely editable environment knobs.",
+                        "Separate three decisions: read a raw value, parse it into a type, and validate its meaning. A string 'false' is truthy in Python; bool('false') is therefore an unsafe debug parser. Reject unknown boolean spellings rather than guessing what a deployer meant."
+                ]
+        },
+        {
+                "title": "Make precedence explicit instead of inventing hidden .env behavior",
+                "paragraphs": [
+                        "For this exercise, local defaults are applied first and deployment-supplied environment values override them. DATABASE_URL has no fallback. A .env file is not automatically loaded by Python's os.environ; a deliberate, documented loader would have to supply it. Command-line overrides and secrets managers are not implemented here, so do not claim they participate in the effective value.",
+                        "The next short, executable demonstration proves the precedence rule without reading credentials or modifying machine environment. If two sources can override the same setting in a real application, make the ordering visible in one place."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "settings_precedence.py — deterministic source precedence, no secret IO",
+                        "code": "# This illustrates source precedence, not a production .env loader.\n# The deployed environment wins over explicit local defaults.\ndefaults = {\"DJANGO_DEBUG\": \"false\", \"WORKERS\": \"2\"}\ndeployment = {\"WORKERS\": \"4\"}\neffective = {**defaults, **deployment}\nassert effective == {\"DJANGO_DEBUG\": \"false\", \"WORKERS\": \"4\"}\n# No fallback supplies DATABASE_URL; it remains mandatory.\nassert \"DATABASE_URL\" not in effective\nprint(\"DECLARED_PRECEDENCE_DEPLOYMENT_OVER_DEFAULT_OK\")"
+                }
+        },
+        {
+                "title": "Parse once and expose a typed immutable result",
+                "paragraphs": [
+                        "Use a single startup boundary returning Settings, not scattered os.getenv() calls in each request handler. In an immutable dataclass, debug is a boolean and workers is an integer. A repr-hidden database URL reduces accidental leakage when the settings object is printed, but does not replace credential handling, access controls or safe exception reporting.",
+                        "A syntactically valid URL does not prove the database exists or that credentials work. The parser only verifies a PostgreSQL scheme, host and database path; connectivity belongs in a separate non-destructive readiness check after startup validation."
+                ]
+        },
+        {
+                "title": "Fail before side effects and prove negative paths",
+                "paragraphs": [
+                        "Run the complete program in a fresh scratch directory using python3 settings_gate.py. Expected positive evidence: VALID_LOCAL_SETTINGS_BEFORE_START_OK. Expected negative labels: missing database, production debug, invalid boolean, zero workers and wrong database scheme; each rejection must happen before the simulated listener is called.",
+                        "The negative oracle checks the listener-call count, not just whether an exception text appeared. Changing parse_settings so it starts the listener first should make the corresponding test fail. That distinction is the safety property the test protects."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "settings_gate.py — fully runnable typed parser and fail-before-start negative tests",
+                        "code": "# Save as settings_gate.py, then run: python3 settings_gate.py\n# Standard library only; never connects to a database or reads real secrets.\nfrom dataclasses import dataclass, field\nfrom urllib.parse import urlsplit\n\n@dataclass(frozen=True)\nclass Settings:\n    database_url: str = field(repr=False)  # Prevent accidental repr disclosure.\n    environment: str\n    debug: bool\n    workers: int\n\ndef parse_settings(source):\n    # Deployment provides a mapping of STRINGS. These are application defaults,\n    # not silent fallbacks for mandatory credentials.\n    environment = source.get(\"APP_ENV\", \"local\")\n    if environment not in {\"local\", \"test\", \"production\"}:\n        raise ValueError(\"APP_ENV must be local, test or production\")\n    raw_database = source.get(\"DATABASE_URL\", \"\")\n    parsed = urlsplit(raw_database)\n    if parsed.scheme != \"postgresql\" or not parsed.hostname or not parsed.path.strip(\"/\"):\n        raise ValueError(\"DATABASE_URL must identify a PostgreSQL host and database\")\n    raw_debug = source.get(\"DJANGO_DEBUG\", \"false\").lower()\n    if raw_debug not in {\"true\", \"false\"}:\n        raise ValueError(\"DJANGO_DEBUG must be exactly true or false\")\n    debug = raw_debug == \"true\"\n    raw_workers = source.get(\"WORKERS\", \"2\")\n    try:\n        workers = int(raw_workers)\n    except ValueError as exc:\n        raise ValueError(\"WORKERS must be an integer\") from exc\n    if not 1 <= workers <= 8:\n        raise ValueError(\"WORKERS must be between 1 and 8\")\n    if environment == \"production\" and debug:\n        raise ValueError(\"Production must not start with debug enabled\")\n    return Settings(raw_database, environment, debug, workers)\n\ndef start(source, start_listener):\n    config = parse_settings(source)  # Validate BEFORE any side effect.\n    start_listener(config)\n    return config\n\nlab = {\"DATABASE_URL\": \"postgresql://lab-host/steward_lab\"}\ncalls = []\nsettings = start({**lab, \"DJANGO_DEBUG\": \"false\"}, lambda cfg: calls.append(cfg))\nassert len(calls) == 1 and settings.debug is False and settings.workers == 2\nassert \"postgresql://\" not in repr(settings)\nprint(\"VALID_LOCAL_SETTINGS_BEFORE_START_OK\")\n\nfor label, overrides in [\n    (\"missing_db\", {\"DATABASE_URL\": \"\"}),\n    (\"unsafe_debug\", {\"APP_ENV\": \"production\", \"DJANGO_DEBUG\": \"true\"}),\n    (\"bad_boolean\", {\"DJANGO_DEBUG\": \"no\"}),\n    (\"bad_workers\", {\"WORKERS\": \"0\"}),\n    (\"invalid_database\", {\"DATABASE_URL\": \"sqlite:///steward\"}),\n]:\n    before = len(calls)\n    try:\n        start({**lab, **overrides}, lambda cfg: calls.append(cfg))\n    except ValueError:\n        assert len(calls) == before, label  # No listener started.\n        print(\"REJECTED_BEFORE_START_\" + label.upper())\n    else:\n        raise AssertionError(\"Unsafe startup unexpectedly allowed: \" + label)\n\n# Counterexample: bool(\"false\") is True. Never parse flags this way.\nassert bool(\"false\") is True\nprint(\"CONFIGURATION_STARTUP_GATE_AND_FALSE_BOOLEAN_COUNTEREXAMPLE_OK\")"
+                }
+        },
+        {
+                "title": "Transfer the boundary to Django without copying the demo",
+                "paragraphs": [
+                        "In the Steward Django settings module, identify where DATABASES, DEBUG and deployment-specific permitted hosts are currently assembled. Put equivalent parsing and validation before any management command or worker accepts requests. Keep the existing migration-owned database and authentication settings; never paste the demo's local hostname into a real deployment.",
+                        "Classify the proof precisely: this exercise establishes deterministic parsing, a precedence rule and a startup ordering within an isolated function. It does not demonstrate PostgreSQL connectivity, secrets distribution, migration safety, load-balancer readiness or concurrent process startup. Those require their own integration tests."
+                ]
+        }
+],
+        "Build a startup configuration gate that parses declared strings once, rejects unsafe combinations and proves no initialization side effect happens for invalid input.",
+        [
+        "Save settings_precedence.py and settings_gate.py from the lesson into an empty disposable directory and run each with python3; record exact positive labels.",
+        "Write a contract table for each setting: source, default or required, parsed type, allowed values, invalid cases and whether it is secret.",
+        "Demonstrate the five negative startup scenarios and prove the listener counter does not change after any refusal.",
+        "Deliberately replace the strict debug parser with bool(raw_debug) in a scratch copy; record the false-as-true counterexample and restore the correct implementation.",
+        "Explain which Django settings depend on the parser and which business rules must stay outside deployment configuration. Do not use production values."
+],
+        [
+        "Why does bool('false') not mean False, and how does the strict parser prevent that failure?",
+        "What is the configured precedence order in this exercise, and why is DATABASE_URL never defaulted?",
+        "What negative assertion proves that startup was blocked before side effects?",
+        "Which properties remain untested until a real Django/PostgreSQL startup integration test?"
+],
+        [twelveFactor, djangoSettings],
+    ),
+
     lesson(
         "Check Python Code Before Running It",
         "Before learning linters and type checkers, practise one basic distinction: Python can reject malformed source without executing your program, but that cannot tell you whether your program follows business rules. This lesson creates two disposable files and uses the same interpreter that is running the exercise. It needs only Python, no installed analyzer, database or Steward application.",
@@ -1214,6 +1297,73 @@ export const softwareCraftDeepLessons: Lesson[] = [
         [pythonLogging],
     ),
     lesson(
+        "Logging Failure Paths and Correlation",
+        "A single successful logging call is not enough to establish an operational contract. This checkpoint distinguishes the event worth recording, its severity, correlation context and deliberately excluded secrets. It then runs both a permitted and a denied operation through a bounded Python logger and proves that an intentionally unsafe mutant is detected. It follows Useful Logging and prepares for later observability work without assuming a centralized logging platform.",
+        [
+        {
+                "title": "Choose a log event by the question an investigator must answer",
+                "paragraphs": [
+                        "A log event represents an observed occurrence such as service.change_denied, not a prose dump of program variables. An investigator trying to explain a failed change needs the request correlation ID, the affected Service ID, the actor's stable ID and a bounded denial reason. A password, bearer token or entire request body does not answer that question and creates additional risk.",
+                        "Separate events from metrics and traces: this exercise writes two local log events; it does not calculate error rates, propagate a distributed trace or establish log ingestion. Correlation is useful only when all relevant code paths consistently carry the same request ID."
+                ]
+        },
+        {
+                "title": "Severity is a decision about expected behavior",
+                "paragraphs": [
+                        "An expected denial is not necessarily an ERROR: rejecting a forbidden Team mutation is the application behaving correctly. Use a documented WARNING for a security-relevant denial in this example, INFO for an allowed change and ERROR for an unexpected backend fault. Real volume and monitoring policies may warrant a different level, but the selection must be deliberate.",
+                        "The executable table below declares allowed fields per event; this is a policy checklist, not a live logger. Run it first and inspect why every event requires request_id and why no field list contains raw authentication material."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "event_level_contract.py — bounded event, level and field-policy table",
+                        "code": "# Compare levels and the minimum safe context before choosing events.\n# This table documents policy; log destinations and retention are not configured.\nevents = {\n    \"service.change_allowed\": (\"INFO\", {\"request_id\", \"service_id\", \"actor_id\"}),\n    \"service.change_denied\": (\"WARNING\", {\"request_id\", \"service_id\", \"actor_id\", \"reason\"}),\n    \"unexpected_backend_failure\": (\"ERROR\", {\"request_id\", \"service_id\"}),\n}\nfor name, (level, fields) in events.items():\n    assert level in {\"INFO\", \"WARNING\", \"ERROR\"}\n    assert \"request_id\" in fields\n    assert not fields.intersection({\"Authorization\", \"password\", \"access_token\"})\nprint(\"LOG_LEVEL_AND_CONTEXT_POLICY_OK\")"
+                }
+        },
+        {
+                "title": "Use an allowlist formatter rather than serializing everything",
+                "paragraphs": [
+                        "Python logging supports extra contextual attributes. It does not automatically ensure those attributes are safe to store: logging record.__dict__ or a request's headers can expose secrets. A custom formatter here emits only an event name, level and four explicitly allowed attributes, never the full request body. For a real service, the logger's lifecycle and handlers should be configured centrally, not rebuilt inside each request.",
+                        "This example owns one isolated logger and disables propagation so the test cannot accidentally duplicate its events via a parent handler. That containment is a test technique, not evidence that production application, reverse-proxy and APM logs have equivalent controls."
+                ]
+        },
+        {
+                "title": "Capture the success and denial paths with positive and negative oracles",
+                "paragraphs": [
+                        "Run python3 event_logging_lab.py with a local Python interpreter. The first half asserts two actual emitted JSON lines, their order and severity, the identity/correlation fields, and absence of a synthetic token and password key. A blank log cannot pass because the test asserts exactly two events.",
+                        "The negative control deliberately sends a fake token into a separate in-memory bad logger, then proves the same redaction oracle catches it. Nothing from that unsafe logger is printed. If the negative control stops being detected, the test is no longer proving protection against the intended error."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "event_logging_lab.py — real JSON log events, forbidden request and unsafe-leak mutant",
+                        "code": "# Save as event_logging_lab.py; run: python3 event_logging_lab.py\n# No Django, DB, remote logging service, credentials or network calls.\nimport io\nimport json\nimport logging\n\nclass SafeEventFormatter(logging.Formatter):\n    ALLOWED = (\"request_id\", \"service_id\", \"actor_id\", \"reason\")\n    def format(self, record):\n        # Never serialize record.__dict__, headers, request body or stack trace.\n        event = {\"level\": record.levelname, \"event\": record.getMessage()}\n        for name in self.ALLOWED:\n            value = getattr(record, name, None)\n            if value is not None:\n                event[name] = value\n        return json.dumps(event, sort_keys=True)\n\nstream = io.StringIO()\nlogger = logging.getLogger(\"tsa.craft.event_lab\")\nlogger.handlers.clear()  # This lab owns the isolated logger only.\nlogger.setLevel(logging.INFO)\nlogger.propagate = False\nhandler = logging.StreamHandler(stream)\nhandler.setFormatter(SafeEventFormatter())\nlogger.addHandler(handler)\n\ndef change_service(actor_team, owner_team, service_id, actor_id, request_id, body):\n    # body is deliberately untrusted and must never be passed to the logger.\n    if actor_team != owner_team:\n        logger.warning(\"service.change_denied\",\n                       extra={\"service_id\": service_id, \"actor_id\": actor_id,\n                              \"request_id\": request_id, \"reason\": \"wrong_team\"})\n        return False\n    logger.info(\"service.change_allowed\",\n                extra={\"service_id\": service_id, \"actor_id\": actor_id,\n                       \"request_id\": request_id})\n    return True\n\nfake_token = \"SYNTHETIC_TOKEN_NOT_FOR_LOGS\"\nmalicious_body = {\"Authorization\": \"Bearer \" + fake_token, \"password\": fake_token}\nassert change_service(2, 1, 41, 9, \"req-01\", malicious_body) is False\nassert change_service(1, 1, 41, 9, \"req-02\", malicious_body) is True\nevents = [json.loads(line) for line in stream.getvalue().splitlines()]\nassert len(events) == 2, \"No log evidence or wrong event cardinality\"\nassert [event[\"event\"] for event in events] == [\n    \"service.change_denied\", \"service.change_allowed\"]\nassert events[0][\"level\"] == \"WARNING\" and events[0][\"reason\"] == \"wrong_team\"\nassert events[0][\"request_id\"] == \"req-01\" and events[1][\"service_id\"] == 41\nassert fake_token not in stream.getvalue() and \"password\" not in stream.getvalue()\nprint(\"LOG_SUCCESS_AND_DENIAL_CONTEXT_NO_SECRET_OK\")\n\n# Wrong implementation: a developer interpolates the raw synthetic token.\n# Contain this ONLY in a second in-memory logger; never print the string.\nbad_stream = io.StringIO()\nbad = logging.getLogger(\"tsa.craft.unsafe_control\")\nbad.handlers.clear()\nbad.propagate = False\nbad.setLevel(logging.INFO)\nbad_handler = logging.StreamHandler(bad_stream)\nbad.addHandler(bad_handler)\nbad.warning(\"auth_denied token=%s\", fake_token)\ndef assert_no_secret(text):\n    assert fake_token not in text\ntry:\n    assert_no_secret(bad_stream.getvalue())\nexcept AssertionError:\n    print(\"LOG_UNSAFE_MUTANT_DETECTED\")\nelse:\n    raise AssertionError(\"The secret-leak negative oracle failed\")\nbad.removeHandler(bad_handler)\nlogger.removeHandler(handler)\nprint(\"LOG_EVENT_CONTRACT_AND_NEGATIVE_ORACLE_OK\")"
+                }
+        },
+        {
+                "title": "Make an evidence-limited claim about observability",
+                "paragraphs": [
+                        "This source-derived exercise proves local log shape and the selected absence properties for two calls. It does not prove that no other code path leaks credentials, that a distributed request identifier propagates through every service, that audit trails are immutable, or that access and retention are correctly configured.",
+                        "Transfer one event to the signed Steward endpoint only after locating its actual service and authorization boundary. Record before/after behavior and redact any diagnostic excerpts; never claim that a local in-memory sample represents proxy, WAF or hosted telemetry logs."
+                ]
+        }
+],
+        "Emit useful structured success and denial events, prove a real secret-exclusion oracle and detect an intentionally unsafe logger in isolation.",
+        [
+        "Write an event contract including event name, expected level, stable identifiers, correlation and fields explicitly excluded.",
+        "Run the published event_level_contract.py and event_logging_lab.py examples with Python 3 using only scratch files and standard library.",
+        "Verify the two positive/denied JSON log records and confirm a missing or duplicate event would fail the cardinality assertion.",
+        "Run the unsafe logging mutant; identify the exact oracle that detects it without printing the synthetic token.",
+        "Find one Steward operation to instrument in a disposable lab, explain the request-ID source and list the downstream logging layers not covered by this test."
+],
+        [
+        "Which details let an operator correlate an authorized and denied Service change without exposing credentials?",
+        "Why is an expected 403 not necessarily an ERROR-level application failure?",
+        "How does the lab prevent a vacuous 'no secrets in logs' claim?",
+        "Which logging and tracing boundaries remain untested by the local logger?"
+],
+        [pythonLogging],
+    ),
+
+    lesson(
         "Write a README Someone Can Follow",
         "A good README lets another engineer start from an unfamiliar repository and accomplish a real task without guessing. Before documenting a Django server, learn to write and verify instructions for a tiny Python program. This exercise creates all its own files in a temporary folder, including a README, and executes the commands it documents. No external service, database or Steward project is needed.",
         [
@@ -1307,6 +1457,19 @@ export const softwareCraftDeepLessons: Lesson[] = [
                         "The earlier README exercise intentionally tested its own claims with an isolated executable harness. The same principle extends to production documentation, but additional controls are necessary when commands can mutate a database, deploy a release or access private data."
                 ]
         }
+,
+        {
+        "title": "A concrete ADR and a safe operational runbook are not interchangeable",
+        "paragraphs": [
+                "The worked pair below deliberately captures different claims. The ADR explains why the learning system keeps the SQL fixture database separate from Django migration history; it marks the decision Proposed until actual owner approval. The runbook begins with a symptom and a scope constraint, gives non-destructive diagnostic checks, and stops when the target database or migration state cannot be identified.",
+                "Copy each into its own Markdown file if the corresponding facts are actually true for your project. These are examples, not verified statements about a deployed service. Reading a Markdown command list does not execute it; verification requires following approved steps in a controlled target and recording evidence. A reviewer must reject a runbook that invents credentials or recommends destructive database resets as the first response."
+        ],
+        "code": {
+                "language": "markdown",
+                "caption": "ADR versus runbook — complete proposed decision and non-destructive diagnostic examples",
+                "code": "# docs/adr/0001-separate-training-databases.md\n# ADR 0001: Keep raw-SQL and Django training databases separate\nStatus: Proposed — validate with the project owner before adoption\nContext: Raw SQL practice creates fixture-owned tables directly, while Django\n  migrations own schema history in the app lab. Sharing a database may\n  cause mismatched tables, migration drift, or destructive cleanup.\nDecision: Use separate disposable databases for the two exercises.\nAlternative: Shared schema with carefully partitioned ownership; rejected\n  for the teaching lab due to coupling and cleanup risk.\nConsequences: Two connection targets must be configured and verified.\nRevisit when: Real tests demonstrate compatible migration ownership and\n  an isolation strategy approved by maintainers.\n\n# docs/runbooks/diagnose-local-schema.md\n# Diagnose a local training schema mismatch\nTrigger: A lab command reports missing tables or unapplied migrations.\nScope: Disposable LOCAL PostgreSQL/Django only; do not execute in production.\nPrecondition: Verify active virtual environment and intended database.\nRead-only check 1: python3 --version\nRead-only check 2: python3 manage.py showmigrations registry\nExpected: Applied migration entries [X] for the expected lab release.\nStop/escalate: If database identity is uncertain or migration state diverges,\n  collect sanitized command output and ask the owner; do not fake migration\n  history, drop tables or run a destructive reset.\n"
+        }
+}
 ],
         "Create a usable Steward handoff with verified setup, reader-specific documentation and one evidence-backed decision record.",
         [
@@ -1339,6 +1502,73 @@ export const softwareCraftDeepLessons: Lesson[] = [
         ["Why are errors part of an API contract?", "What should differ between client responses and server logs?", "When is 409 more meaningful than a generic 400?"],
         [twelveFactor],
     ),
+    lesson(
+        "HTTP Error Contracts and Client Oracles",
+        "Pure status-code tables are not enough to teach API error design. After the earlier Designing Errors lesson, execute actual localhost HTTP exchanges, inspect JSON bodies, test invalid, unauthorized and conflicting cases, and prove that an unsafe internal-detail response would be caught. The demonstration uses synthetic credentials and never represents real Steward JWT or PostgreSQL authority.",
+        [
+        {
+                "title": "An HTTP error contract has several independent parts",
+                "paragraphs": [
+                        "The status tells the broad class of result; a stable public error code tells a client which condition occurred; the message helps a human without exposing internal implementation. Content-Type and the JSON structure are also part of the contract. A client should not parse Python exception names or a mutable English message to decide what to do.",
+                        "In Steward, validation failure (400), missing or invalid authentication (401), insufficient current Membership permission (403), hidden or absent resource (404), stale owner (409) and unexpected exception (500) lead to different client actions. Earlier Identity exercises established the real authorization policy; this exercise isolates error-contract behavior instead of faking that security."
+                ]
+        },
+        {
+                "title": "Decide what the caller may safely do next",
+                "paragraphs": [
+                        "A 400 asks the client to correct fields; 401 asks for authentication; 403 does not become successful simply by retrying the same request; 404 may conceal a foreign resource as well as a genuinely absent one; 409 asks the client to reread state; and a 500 should not disclose SQL, stack traces or token material. Those distinctions belong in a client decision table before they are embedded in framework handlers.",
+                        "The code below models six status-plus-code pairs. Run it first. A generic retry loop across all six would repeatedly hit deterministic denials and could create misleading load or side effects."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "http_error_client_matrix.py — executable status, code and client-action mapping",
+                        "code": "# A client uses public status AND code, not an exception class name.\nCLIENT_ACTION = {\n    (400, \"invalid_input\"): \"correct the submitted fields\",\n    (401, \"authentication_required\"): \"authenticate using a valid credential\",\n    (403, \"permission_denied\"): \"request permission; do not replay unchanged\",\n    (404, \"service_not_found\"): \"stop or treat resource as absent\",\n    (409, \"stale_owner\"): \"reload current state before a new attempt\",\n    (500, \"internal_error\"): \"report a correlation ID; do not print server internals\",\n}\nassert len(CLIENT_ACTION) == 6\nassert CLIENT_ACTION[(409, \"stale_owner\")].startswith(\"reload\")\nprint(\"HTTP_ERROR_CLIENT_DECISION_MATRIX_OK\")"
+                }
+        },
+        {
+                "title": "Build a real loopback HTTP error surface",
+                "paragraphs": [
+                        "Save the complete Python program below and run python3 public_errors_http_lab.py. It binds a threaded standard-library HTTP server only to 127.0.0.1 on an OS-selected ephemeral port, then issues real POST requests using http.client. It shuts the server down in finally even if an assertion fails. It uses synthetic lab role strings only to reach 401 and 403 paths; these values are NOT cryptographic credentials and cannot replace the previous signed JWT tests.",
+                        "The route simulates a Service ownership transfer without persisting anything. The allowed 200 response therefore only establishes the transport and public JSON shape—not the successful commit of a real ownership transfer. For that domain claim, reuse the separately verified PostgreSQL/JWT Steward lab."
+                ]
+        },
+        {
+                "title": "Make every denial independently observable",
+                "paragraphs": [
+                        "The program checks 401 for missing credentials, 403 for the synthetic viewer, 400 for malformed JSON and forged actor fields, 409 for stale ownership, 404 for an absent route, 500 for an unexpected-failure simulation, and 200 for a valid request. Each error includes an expected machine-readable code; the tests also assert application/json and check that the public body contains none of several prohibited internal patterns.",
+                        "The unsafe-response negative control contains synthetic SQL/password-like words in an in-memory object. The predicate must reject that object; nothing sensitive is sent over the network. Keep this negative test: without it, a vacuous safety check might pass even if the predicate had been weakened."
+                ],
+                "code": {
+                        "language": "python",
+                        "caption": "public_errors_http_lab.py — real loopback 400/401/403/404/409/500/200 and leak negative control",
+                        "code": "# Save as public_errors_http_lab.py; run: python3 public_errors_http_lab.py\n# Loopback-only synthetic API, no real JWT, Django project or database.\nimport http.client\nimport json\nimport threading\nfrom http.server import BaseHTTPRequestHandler, ThreadingHTTPServer\n\nclass LabHandler(BaseHTTPRequestHandler):\n    def log_message(self, *args):  # Keep test output deterministic.\n        pass\n\n    def send_json(self, status, obj):\n        encoded = json.dumps(obj).encode(\"utf-8\")\n        self.send_response(status)\n        self.send_header(\"Content-Type\", \"application/json\")\n        self.send_header(\"Content-Length\", str(len(encoded)))\n        self.end_headers()\n        self.wfile.write(encoded)\n\n    def fail(self, status, code, message):\n        self.send_json(status, {\"code\": code, \"message\": message})\n\n    def do_POST(self):\n        if self.path == \"/private-lab/unexpected\":\n            # Simulated internal failure. Never put SQL/stack/token text in body.\n            self.fail(500, \"internal_error\", \"The request could not be completed.\")\n            return\n        if self.path != \"/private-lab/services/1/transfer\":\n            self.fail(404, \"service_not_found\", \"Service not found.\")\n            return\n        # These lab credential strings are NOT authentication. Real Steward\n        # must use the signed JWTAuthentication + Membership policy already taught.\n        token = self.headers.get(\"Authorization\", \"\")\n        if token not in {\"Bearer lab-owner\", \"Bearer lab-viewer\"}:\n            self.fail(401, \"authentication_required\", \"Authentication required.\")\n            return\n        if token != \"Bearer lab-owner\":\n            self.fail(403, \"permission_denied\", \"This operation is not permitted.\")\n            return\n        raw_length = self.headers.get(\"Content-Length\", \"0\")\n        if not raw_length.isdecimal() or not 0 < int(raw_length) <= 1024:\n            self.fail(400, \"invalid_input\", \"A JSON object is required.\")\n            return\n        raw = self.rfile.read(int(raw_length))\n        try:\n            body = json.loads(raw)\n        except (ValueError, UnicodeDecodeError):\n            self.fail(400, \"invalid_input\", \"Invalid JSON.\")\n            return\n        if not isinstance(body, dict) or set(body) != {\"expected_owner\", \"destination\"}:\n            self.fail(400, \"invalid_input\", \"Use expected_owner and destination.\")\n            return\n        if any(type(body[name]) is not int or body[name] < 1 for name in body):\n            self.fail(400, \"invalid_input\", \"Owner identifiers must be positive integers.\")\n            return\n        if body[\"expected_owner\"] != 1:\n            self.fail(409, \"stale_owner\", \"The owner has changed. Refresh first.\")\n            return\n        if body[\"destination\"] == 1:\n            self.fail(409, \"owner_unchanged\", \"Destination is already the owner.\")\n            return\n        self.send_json(200, {\"service_id\": 1, \"destination\": body[\"destination\"]})\n\nserver = ThreadingHTTPServer((\"127.0.0.1\", 0), LabHandler)\nworker = threading.Thread(target=server.serve_forever, daemon=True)\nworker.start()\ndef exchange(path=\"/private-lab/services/1/transfer\", credential=None, payload=None):\n    connection = http.client.HTTPConnection(\"127.0.0.1\", server.server_port, timeout=3)\n    headers = {\"Content-Type\": \"application/json\"}\n    if credential is not None:\n        headers[\"Authorization\"] = credential\n    if payload is None:\n        payload = {\"expected_owner\": 1, \"destination\": 2}\n    body = payload if isinstance(payload, bytes) else json.dumps(payload).encode()\n    try:\n        connection.request(\"POST\", path, body=body, headers=headers)\n        result = connection.getresponse()\n        status, content_type = result.status, result.getheader(\"Content-Type\")\n        document = json.loads(result.read())\n        assert content_type == \"application/json\", content_type\n        return status, document\n    finally:\n        connection.close()\n\ndef public_safe(data):\n    text = json.dumps(data).lower()\n    return not any(word in text for word in\n                   (\"traceback\", \"psycopg\", \"select \", \"password=\", \"bearer \"))\n\ntry:\n    cases = [\n        (\"unauthenticated\", None, None, 401, \"authentication_required\"),\n        (\"forbidden\", \"Bearer lab-viewer\", None, 403, \"permission_denied\"),\n        (\"malformed\", \"Bearer lab-owner\", b\"{\", 400, \"invalid_input\"),\n        (\"forged_field\", \"Bearer lab-owner\",\n         {\"expected_owner\": 1, \"destination\": 2, \"actor\": 99}, 400, \"invalid_input\"),\n        (\"stale\", \"Bearer lab-owner\",\n         {\"expected_owner\": 99, \"destination\": 2}, 409, \"stale_owner\"),\n    ]\n    for label, credential, payload, expected_status, expected_code in cases:\n        status, document = exchange(credential=credential, payload=payload)\n        assert (status, document[\"code\"]) == (expected_status, expected_code), label\n        assert public_safe(document), label\n        print(\"HTTP_ERROR_CONTRACT_\" + label.upper() + \"_OK\")\n    status, document = exchange(path=\"/private-lab/services/999/transfer\",\n                                credential=\"Bearer lab-owner\")\n    assert status == 404 and document[\"code\"] == \"service_not_found\"\n    status, document = exchange(path=\"/private-lab/unexpected\",\n                                credential=\"Bearer lab-owner\")\n    assert status == 500 and document[\"code\"] == \"internal_error\"\n    assert public_safe(document)\n    status, document = exchange(credential=\"Bearer lab-owner\")\n    assert status == 200 and document == {\"service_id\": 1, \"destination\": 2}\n    print(\"HTTP_ERROR_CONTRACT_404_500_200_OK\")\n    # A negative mutant proves the leakage oracle rejects a dangerous response.\n    unsafe = {\"code\": \"internal_error\", \"message\": \"psycopg SELECT password=demo\"}\n    assert not public_safe(unsafe), \"Leakage oracle did not detect injected internals\"\n    print(\"HTTP_ERROR_CONTRACT_LEAK_NEGATIVE_CONTROL_OK\")\nfinally:\n    server.shutdown()\n    server.server_close()\n    worker.join(timeout=4)\nprint(\"HTTP_ERROR_CONTRACT_LOOPBACK_CLOSED_OK\")"
+                }
+        },
+        {
+                "title": "Translate the demonstration to DRF without undermining authorization",
+                "paragraphs": [
+                        "A real DRF exception handler must keep the original JWTAuthentication and IsAuthenticated policies, use current Membership for access decisions, and preserve intentional 404 concealment for inaccessible Service details. Do not replace those behaviors with the teaching server's lab strings. Document statuses and errors using the schema generator already configured in Identity, then compare the generated document with actual signed HTTP requests.",
+                        "This exercise proves a bounded HTTP public-response contract and a synthetic leak oracle. It does not prove server-side writes, safe infrastructure logging, network exposure, real credentials, rate limits, concurrency, or production information disclosure. A complete review must inspect deployed error middleware and logging separately."
+                ]
+        }
+],
+        "Define and prove an actionable HTTP/JSON error contract with real requests and a negative control for accidental internal-detail leakage.",
+        [
+        "Run http_error_client_matrix.py and explain the client action for 400, 401, 403, 404, 409 and 500.",
+        "Run public_errors_http_lab.py unchanged with Python 3; capture all seven status families plus the negative-control and clean shutdown labels.",
+        "Mutate the 409 mapping to return status 400 while keeping its public code; rerun and demonstrate that the status-code oracle fails.",
+        "Mutate the 500 JSON message to contain the synthetic SQL fragment and demonstrate that public_safe rejects it; restore the original handler.",
+        "Map one actual Steward DRF endpoint to the same public contract without substituting fake role strings for JWT and Membership."
+],
+        [
+        "Why must the client check both HTTP status and machine-readable error code?",
+        "What is the behavioral difference between 403 and 404 in an identity-scoped Service lookup?",
+        "How does the real HTTP lab distinguish a valid transport response from a committed database transfer?",
+        "What deliberate negative mutation proves that SQL details cannot silently enter a public 500 response?"
+],
+        [twelveFactor],
+    ),
+
     lesson(
         "Performance Awareness",
         "Performance awareness starts with a measurable request and an explicit definition of success. It joins the earlier SQL/ORM lessons to Software Craft by asking whether a change improves a user-visible outcome enough to justify its added complexity, without compromising the Steward authorization or production-readiness rules.",
@@ -1405,39 +1635,158 @@ export const softwareCraftDeepLessons: Lesson[] = [
         ],
     ),
     {
-        id: "software-craft-lab-refine-steward-api-for-review",
-        title: "Lab: Refine Steward API for Review",
-        activities: [
-            {
-                id: "software-craft-lab-refine-steward-api-for-review-brief",
-                title: "From working API to reviewable engineering system",
-                estimatedMinutes: 30,
-                content: {
-                    type: "reading",
-                    body: "The Builder modules have accumulated a functioning Steward API. This lab is a deliberate maintenance pass: improve the repository so another engineer can clone it, understand its domain, review its boundaries, configure it safely, diagnose important behavior and make a change without relying on undocumented history.",
-                    blocks: [
-                        { type: "heading", id: "review-target", text: "The review target", level: 2 },
-                        { type: "paragraph", text: "Do not rewrite Steward. Preserve the product and prove targeted improvements. The strongest submission shows restraint: it identifies concrete friction, improves it with evidence and leaves architectural work that belongs to System Thinker for the next school." },
-                        { type: "heading", id: "quality-gates", text: "Quality gates", level: 2 },
-                        { type: "list", items: ["Coherent Git history and reviewable changes", "Readable domain language and clear responsibility boundaries", "Dependencies and configuration are explicit", "Important operations produce useful, secret-safe logs", "Setup and technical documentation work from a clean checkout", "Public errors are deliberate and consistent", "One performance-sensitive path has measured evidence rather than guesses"] },
-                        { type: "callout", tone: "warning", title: "Do not pre-build System Thinker", body: "This is a software-craft review, not permission to introduce speculative architecture layers. Record structural questions that need deeper system modeling and carry them forward." },
-                    ],
-                },
-            },
-            {
-                id: "software-craft-lab-refine-steward-api-for-review-practice",
-                title: "Engineering Review Pass",
-                estimatedMinutes: 180,
-                content: {
-                    type: "practical",
-                    objective: "Refine Steward API into a repository another engineer can review, run and safely change.",
-                    scenario: "You are handing Steward to a teammate who knows Django but has not followed the TSA lessons. They must be able to understand the service-registry domain and verify the system without asking for undocumented setup knowledge.",
-                    instructions: ["Start from a clean-review mindset: inspect repository status and intended tracked files without deleting local work.", "Identify three concrete maintainability or review problems and rank them by impact.", "Refactor at least one code boundary while preserving behavior with tests or request evidence.", "Audit direct dependencies and document why important ones exist; do not extract speculative shared packages.", "Make configuration requirements explicit and verify missing required configuration fails safely.", "Add or improve useful logging for an important domain operation and a denied/failure path, checking for secret leakage.", "Make README/setup documentation sufficient from clone to database migration, user/token creation and first useful Steward request.", "Review API errors for validation, authorization, conflict, missing resource and unexpected failure behavior.", "Measure one meaningful endpoint for query count, plan or latency and record whether optimization is justified.", "Prepare the final diff and review it as if it came from another engineer; remove only changes you intentionally own and never clean unknown local files destructively.", "Write a handoff note listing what Builder now guarantees and which architectural questions should move to System Thinker."],
-                    deliverables: ["Review-ready Steward API repository", "Working setup and technical documentation", "Maintainability/refactoring evidence", "Dependency and configuration notes", "Logging and error-contract evidence", "One measured performance investigation", "System Thinker handoff note"],
-                    completionCriteria: ["A new engineer can run Steward from documentation.", "The repository exposes domain intent without unnecessary abstraction.", "Important configuration and dependencies are explicit.", "Logs aid investigation without leaking credentials or tokens.", "Failure responses are deliberate.", "Performance claims are backed by evidence.", "The learner can defend both changes made and refactors deliberately deferred."],
-                },
-            },
-            { id: "software-craft-lab-refine-steward-api-for-review-check", title: "Review the review", estimatedMinutes: 20, content: { type: "reflection", prompt: "1. Which change most reduced the cost for the next engineer, and what evidence supports that?\n2. Which cleanup did you deliberately refuse because it lacked a concrete problem?\n3. What part of Steward now has the clearest ownership of behavior?\n4. Which structural concern belongs in System Thinker rather than Builder?\n5. Could another engineer reproduce your setup, failure cases and performance evidence without asking you for hidden context?" } },
-        ],
-    },
+    "id": "software-craft-lab-refine-steward-api-for-review",
+    "title": "Lab: Refine Steward API for Review",
+    "activities": [
+        {
+            "id": "software-craft-lab-refine-steward-api-for-review-brief",
+            "title": "From working API to reviewable engineering system",
+            "estimatedMinutes": 40,
+            "content": {
+                "type": "reading",
+                "body": "The Software Craft module ends with a constrained, independently reviewable Steward handoff. This is an integration assessment, not another omnibus lecture: the 25 earlier lessons teach individual mechanisms. The capstone asks you to assemble falsifiable evidence across those mechanisms without guessing an environment or introducing speculative architecture.",
+                "blocks": [
+                    {
+                        "type": "paragraph",
+                        "text": "A reviewer must be able to distinguish working code from a verified, changeable system. Do not rewrite Steward. Begin from the actual learner-owned repository and known disposable environment. If the earlier database, signed accounts or project setup are unavailable, report that prerequisite as a blocker; do not invent credentials, outputs or a working endpoint."
+                    },
+                    {
+                        "type": "heading",
+                        "id": "eight-evidence-rows",
+                        "text": "Build an eight-row evidence matrix, not a green checklist",
+                        "level": 2
+                    },
+                    {
+                        "type": "paragraph",
+                        "text": "For every row record: the claim, current artifact/command, expected positive result, a deliberate negative/mutant, observed output, reviewer reproduction steps and the boundary that remains unproven. Results from toy Python exercises cannot be passed off as real Steward JWT/PostgreSQL results."
+                    },
+                    {
+                        "type": "list",
+                        "items": [
+                            "1. Git history: present a clean, intentional diff; demonstrate which unrelated files were excluded, what each commit changes and how to reproduce the review on a fresh branch.",
+                            "2. Tests and refactor: show one characterized behavior before a focused refactor, a deliberate failing negative mutant and the same behavior after the change.",
+                            "3. Dependencies: show actual direct imports versus declared runtime/dev requirements and justify one keep/remove/upgrade decision; don't rely on transitive coincidence.",
+                            "4. Configuration: show the effective source/typing contract, one safe startup case and a missing/unsafe setting rejected before a listener or persistent write starts.",
+                            "5. Logging: show one allowed and one denied operation with correlation, nonempty log evidence and a secret-leak negative control that fails if weakened.",
+                            "6. Error contracts: show a real API status/code/body matrix across invalid, unauthenticated, unauthorized, hidden/missing, conflict and unexpected cases; redact internals.",
+                            "7. Documentation: give a newcomer a clean-start README/first signed request, canonical API reference, one ADR and a bounded non-destructive runbook; mark unverified steps.",
+                            "8. Performance: measure one actual workload and authorized/foreign-Team negative under the same conditions, then justify one bounded change or evidence-based no change."
+                        ]
+                    },
+                    {
+                        "type": "heading",
+                        "id": "staged-work",
+                        "text": "Execute four stages in order",
+                        "level": 2
+                    },
+                    {
+                        "type": "list",
+                        "items": [
+                            "STAGE 1 — Baseline and scope: record the actual Steward repository, its intended local training database, git status, version and previously verified commands. Stop if the target is unclear or has unowned changes.",
+                            "STAGE 2 — Code-change safety: select one narrow defect or maintenance friction, preserve the original response/test contract, run the negative mutant, then apply a minimal refactor and inspect the diff.",
+                            "STAGE 3 — Operational correctness: complete source-backed dependency and configuration checks; prove an allowed and denied request, safe bounded logs, error status/code semantics and a failure-before-side-effects case.",
+                            "STAGE 4 — Independent handoff: rerun setup from the README in an isolated environment, verify API docs and one diagnostic runbook, measure one real performance question and ask a reviewer to repeat one safe path."
+                        ]
+                    },
+                    {
+                        "type": "heading",
+                        "id": "start-safe",
+                        "text": "Start with safe repository inspection",
+                        "level": 2
+                    },
+                    {
+                        "type": "paragraph",
+                        "text": "The following are non-destructive inspection commands, not a substitute for the project's verified setup. Run them only inside the intended learner-owned Steward checkout and save an audit of the output. Never run git clean, reset --hard, DROP DATABASE, unaudited migrations or credential reset just to make the exercise green."
+                    },
+                    {
+                        "type": "code",
+                        "language": "bash",
+                        "caption": "Safe first inspection — no hidden Steward paths or credentials assumed",
+                        "code": "# Run only in the intended learner-owned Steward repository.\npwd\ngit status --short\ngit log -3 --oneline\ngit diff --stat\n# Next: use the project's already-verified setup and test commands.\n# If unavailable, record the missing prerequisite rather than inventing one."
+                    },
+                    {
+                        "type": "heading",
+                        "id": "negative-controls",
+                        "text": "Negative controls must fail for the expected reason",
+                        "level": 2
+                    },
+                    {
+                        "type": "paragraph",
+                        "text": "A meaningful negative changes one relevant property: it removes a user-specific authorization predicate, bypasses configuration validation, emits a synthetic secret in a local logger, returns the wrong 409 status for stale ownership, or regresses a characterized business result. Re-run the SAME oracle; don't change expected results or disable assertions. Record the failure mechanism and restore the correct implementation."
+                    },
+                    {
+                        "type": "heading",
+                        "id": "reviewer-rubric",
+                        "text": "Independent review rubric and pass threshold",
+                        "level": 2
+                    },
+                    {
+                        "type": "list",
+                        "items": [
+                            "Score each row 0 = missing, fabricated or fails an essential negative; 1 = executed but explanation, repeatability or limitations incomplete; 2 = reproducible observed evidence plus mechanism, negative outcome and an honest boundary.",
+                            "Pass the eight rows with at least 14/16 and NO zero on rows 2, 4, 5 or 6. A passing test suite cannot replace a missing independent explanation.",
+                            "Another engineer must be able to follow the safe reproduction steps without private prompts, undisclosed credentials or invented local paths. If access is unavailable, mark the row blocked rather than reporting an assumed pass.",
+                            "Two distinct reviewers should be able to tell what behavior intentionally stayed the same and what trade-offs were accepted; a broad rewrite or speculative abstraction is not automatically better."
+                        ]
+                    },
+                    {
+                        "type": "callout",
+                        "tone": "warning",
+                        "title": "Do not claim security or novice validation from CI",
+                        "body": "The source-derived checks prove selected executable examples and rendered navigation. Production access controls, secrets, centralized logs, real concurrency and learner competence require separate evidence. This module does not automatically graduate an unreviewed project to production readiness."
+                    }
+                ]
+            }
+        },
+        {
+            "id": "software-craft-lab-refine-steward-api-for-review-practice",
+            "title": "Engineering Review Pass",
+            "estimatedMinutes": 180,
+            "content": {
+                "type": "practical",
+                "objective": "Produce eight independently repeatable evidence rows for a constrained Steward software-craft handoff, with critical negative controls and a reviewer score of at least 14/16.",
+                "scenario": "A new Django engineer has never watched the TSA lessons and must be able to inspect the actual Steward repository, run its authorized learning environment and judge the reasoning behind the changes without asking for missing context.",
+                "instructions": [
+                    "Stage 1: identify the real Steward checkout and isolated training environment; record uncommitted files and leave unknown user changes untouched. Inventory prerequisites before editing.",
+                    "Create an eight-row matrix from the reading. For each row name the claim, exact command/source artifact, positive output, intended negative, actual result and what that result cannot prove.",
+                    "Stage 2: select one real maintainability problem, protect a behavior with a test, demonstrate a deliberate negative mutation, apply the smallest useful refactor and preserve the before/after diff.",
+                    "Stage 3: audit direct requirements versus imports, validate required configuration before a simulated or real startup side effect, and capture BOTH a success and denial log event without leaking tokens.",
+                    "Prove real error status and stable response-code behavior against the actual signed Steward endpoints when an isolated database is available. If only the standalone HTTP lab exists, label it as a bounded exercise rather than a database security proof.",
+                    "Stage 4: verify the real README steps in a clean environment; include a permitted and forbidden API request, canonical schema link, proposed/accepted ADR status and a non-destructive runbook stop condition.",
+                    "Investigate one actual endpoint workload using query count, payload size, timing or EXPLAIN; confirm authorized data scope before and after any optimization. A justified no-change decision is acceptable.",
+                    "Ask a different engineer or independent assessor to replay at least one setup path and one negative control. Record discrepancies and do not mark blocked evidence green.",
+                    "Score all eight rows 0–2 using the reading rubric. Require >=14/16 and zero 0s for tests/refactor, configuration, logging and HTTP error contracts. Preserve a list of unanswered architectural questions for System Thinker."
+                ],
+                "deliverables": [
+                    "A clean, intentionally reviewable diff and current setup description",
+                    "Eight-row falsifiable claim/positive/negative/output/limitation evidence matrix",
+                    "A deliberate failing mutation and behavior-preserving refactor proof",
+                    "Effective dependency and fail-closed configuration proof",
+                    "Safe success/denial event logs and HTTP error status/code evidence",
+                    "Reproducible README, ADR, diagnostic runbook and actual API/schema references",
+                    "One measured performance decision (including a correct no-change decision)",
+                    "Independent reviewer replay and scored 0–16 rubric with unresolved blockers"
+                ],
+                "completionCriteria": [
+                    "No unknown repository file, training database or credential was destructively changed.",
+                    "Every submitted passing claim contains a positive observation and a negative/failure oracle, or is explicitly marked blocked.",
+                    "The same independently executable commands preserve core behavior and fail the deliberate regression for the right reason.",
+                    "The actual signed Membership policy and database security are never inferred from a toy HTTP or Python example.",
+                    "A second engineer can reproduce one safe setup path and one negative without undisclosed context.",
+                    "Score >=14/16 with no zero on row 2, 4, 5 or 6; the student can explain unproven properties."
+                ]
+            }
+        },
+        {
+            "id": "software-craft-lab-refine-steward-api-for-review-check",
+            "title": "Review the review",
+            "estimatedMinutes": 25,
+            "content": {
+                "type": "reflection",
+                "prompt": "1. Which exact failure-mutant proves your refactor preserved the intended behavior, and how could a test still be falsely green?\n2. Which dependency was explicitly declared, what is its import consumer, and what could make the resolution drift?\n3. What configuration invalid case prevented initialization before any side effect, and what real deployment property is still untested?\n4. Show one allowed and one denied log event; explain the field allowlist and your independent secret-leak negative.\n5. Which signed Steward request gives a 403, concealed 404 or stale 409, and which client action follows? What cannot be proved by the toy HTTP server?\n6. Which README command did another engineer reproduce without prior knowledge, and which ADR or runbook assumption remains Proposed?\n7. What actual performance result justified your change or no-change decision, including workload and negative authorization test?\n8. What evidence is missing for production security and later System Thinker work? Score the eight matrix rows 0–2 (16 possible), require 14/16 and no zero on rows 2, 4, 5 or 6."
+            }
+        }
+    ]
+},
+
 ];

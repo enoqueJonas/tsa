@@ -1,0 +1,74 @@
+name: Software Craft source and learner-surface PR gate
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - packages/runtime-kernel/src/paths/builder-software-craft-deep.ts
+      - packages/runtime-kernel/src/paths/builder-software-craft-quality.ts
+      - scripts/check-software-craft-source-labs.mjs
+      - scripts/check-software-craft-session.mjs
+      - scripts/check-software-craft-browser.py
+      - .github/workflows/software-craft-pr.yml
+      - docs/curriculum/software-craft-forward-exit.md
+
+permissions:
+  contents: read
+
+concurrency:
+  group: software-craft-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  published-labs-test-build-and-browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install runtime and smoke dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          python3 -m pip install 'lxml>=5,<8' 'pyftpdlib>=2,<3' 'asyncssh>=2.20,<3' 'PyYAML>=6,<7'
+      - name: Execute exact published configuration, logging, HTTP and dependency labs
+        run: node scripts/check-software-craft-source-labs.mjs
+      - name: Prove actual Software Craft source-derived session and capstone unlock
+        run: node scripts/check-software-craft-session.mjs
+      - name: Run all curriculum smoke tests
+        run: pnpm test
+      - name: Build web and runtime-kernel
+        run: pnpm build
+      - name: Strict curriculum structure audit
+        run: node scripts/audit-learner-facing-curriculum.mjs --strict
+      - name: Install Chromium
+        run: |
+          python3 -m pip install playwright==1.58.0
+          python3 -m playwright install --with-deps chromium
+      - name: Verify rendered Software Craft readings, mobile and persisted practice
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory apps/web/out > /tmp/tsa-software-craft.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl --fail --silent http://127.0.0.1:4173/ > /dev/null && break
+            sleep 1
+          done
+          python3 scripts/check-software-craft-browser.py
+      - name: Upload rendered learning screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: software-craft-browser-evidence
+          path: artifacts/software-craft-browser/
+          if-no-files-found: warn
