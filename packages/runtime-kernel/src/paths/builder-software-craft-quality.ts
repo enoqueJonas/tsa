@@ -5,6 +5,75 @@ import { softwareCraftDeepLessons } from "./builder-software-craft-deep";
 type PracticeSpec = Omit<PracticalContent, "type">;
 
 const practices: Record<string, PracticeSpec> = {
+    "software-craft-configuration-precedence-and-startup-gates": {
+        "objective": "Prove a typed, fail-closed configuration boundary, including source precedence and no startup side effects on invalid input.",
+        "scenario": "Django starts with a required PostgreSQL URL, deployment environment, debug flag and bounded worker count. A production debug switch or silently defaulted database is a serious misconfiguration. Begin with an isolated Python function and simulated listener before applying the principle to the actual Steward settings.",
+        "instructions": [
+                "Execute the complete source-published settings_precedence.py and settings_gate.py examples in a fresh scratch directory using python3. Capture the positive label and five specific rejection labels.",
+                "Write a four-row effective-settings contract: source precedence, required/default status, expected type and safe invalid outcomes.",
+                "Mutate strict debug conversion to bool(raw_debug); demonstrate that bool('false') incorrectly enables debug, then restore the validation.",
+                "Alter the order to call start_listener before parse_settings in a scratch copy; the no-side-effect assertion must catch that regression.",
+                "Identify the real Steward settings that need the same boundary, and name the database/readiness, secret-management and deployment controls this standalone test cannot verify."
+        ],
+        "deliverables": [
+                "Source-extracted settings gate transcript",
+                "Settings source/default/type decision table",
+                "Invalid-input and premature-listener negative evidence",
+                "Production versus local config boundary rationale"
+        ],
+        "completionCriteria": [
+                "The executable examples use only Python standard library and require no real credentials.",
+                "Every invalid startup case fails BEFORE the listener callback.",
+                "The bool('false') mutation is detected, not excused.",
+                "The learner distinguishes a local parser test from real database connection or deployment readiness."
+        ]
+},
+    "software-craft-logging-failure-paths-and-correlation": {
+        "objective": "Generate and inspect two operational JSON log events with bounded correlation context, then detect an unsafe synthetic token leak.",
+        "scenario": "An on-call engineer needs to investigate one allowed and one denied Steward operation. They should be able to correlate both using stable IDs without receiving raw bearer headers, credentials or request bodies in the event stream.",
+        "instructions": [
+                "Execute event_level_contract.py and event_logging_lab.py exactly as published; collect actual event counts, severity, request IDs and the positive evidence labels.",
+                "Explain why one real denied request is needed for a non-vacuous token absence claim; a blank stream must fail the oracle.",
+                "Trigger the separate unsafe_logger mutant and verify the secret-exclusion assertion rejects its output; never print or publish the synthetic token string.",
+                "Transfer the event policy to a real Steward handler in an isolated branch and record the behavior before and after without changing authorization.",
+                "Document the limits: this exercise does not audit proxy, APM, hosted logs or cross-service trace propagation."
+        ],
+        "deliverables": [
+                "Event-name/level/field policy",
+                "Two parsed JSON log events and explicit absence assertions",
+                "Unsafe logger mutant detection",
+                "Real endpoint instrumentation boundary note"
+        ],
+        "completionCriteria": [
+                "Two actual local log events exist with distinct levels and correlation IDs.",
+                "No sensitive body or auth header is written by the safe logger.",
+                "The negative mutant is rejected by an assertion.",
+                "Claims are bounded to the local logger, not production observability infrastructure."
+        ]
+},
+    "software-craft-http-error-contracts-and-client-oracles": {
+        "objective": "Demonstrate meaningful status/code JSON errors through real localhost HTTP requests, with an independent leakage negative control.",
+        "scenario": "A Steward client must distinguish input correction, authentication, authorization, concealed absence, stale ownership and unexpected server failure. A status/code lookup alone cannot prove actual request behavior.",
+        "instructions": [
+                "Run http_error_client_matrix.py and public_errors_http_lab.py with python3 in a clean scratch folder; record status codes, response shapes, client actions and deterministic labels.",
+                "Mutate the stale-owner response from 409 to 400. Re-run the same test and demonstrate that the expected-status oracle fails.",
+                "Mutate the synthetic 500 body to contain a SQL/password-like fragment; prove that the public_safe predicate detects it.",
+                "Trace one signed Steward DRF endpoint from the Identity module and explain why the lab's fake role values are NEVER an authentication implementation.",
+                "Write a short claims/limitations matrix distinguishing HTTP transport/status checks from real database transaction and credential security."
+        ],
+        "deliverables": [
+                "Real HTTP status+JSON evidence for 400/401/403/404/409/500 and 200",
+                "Stale-owner status mutant failure",
+                "Internal-detail leak mutant failure",
+                "Transfer-to-DRF constraints note"
+        ],
+        "completionCriteria": [
+                "The sample binds to an ephemeral loopback socket and stops cleanly.",
+                "Every status is confirmed against the actual HTTP response and stable error code.",
+                "Mutations fail for the specified reasons rather than unrelated syntax errors.",
+                "No production JWT, database or user account is touched by this standalone demonstration."
+        ]
+},
     "software-craft-git-as-an-engineering-tool": {
         objective: "Make two reviewable local Git commits and explain working-tree, staged and committed content.",
         scenario: "You have not yet rehearsed Git's three local states. Use a disposable two-file repository first, so no Steward change or remote GitHub account is needed. Only transfer the workflow to the real project after the mechanics are understood.",
