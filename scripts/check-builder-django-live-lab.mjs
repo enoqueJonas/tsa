@@ -1426,6 +1426,36 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
     "Private token lifecycle routes must not be added to ordinary config URLs");
   console.log("Builder Identity real refresh rotation/replay/logout passed on the SAME PostgreSQL registry.");
 
+  // PED-029F: generated API security contract uses the same signed handler
+  // objects for real HTTP responses, backed by the 0008 PostgreSQL project.
+  const securedContractLesson = identitySource.indexOf(
+    '"identity-authentication-authorization-secured-openapi-evidence"');
+  assert.ok(securedContractLesson > lifecycleLesson &&
+    securedContractLesson < mistakesLesson,
+    "Signed OpenAPI must follow token lifecycle and transfer authorization");
+  const secureContractFiles = [
+    ["secure_contract_views.py", "registry/secure_contract_views.py — document actual signed detail and transfer"],
+    ["secure_contract_api_urls.py", "registry/secure_contract_api_urls.py — signed route objects for runtime and schema"],
+    ["secure_contract_urls.py", "registry/secure_contract_urls.py — private generated OpenAPI endpoint"],
+    ["secure_contract_lab.py", "registry/secure_contract_lab.py — generated JWT contract versus actual HTTP SQL and logs"],
+  ];
+  for (const [filename, caption] of secureContractFiles)
+    fs.writeFileSync(path.join(schemaRoot,"registry",filename),
+      identityJsonSnippet(caption) + "\n");
+  schemaExec(["manage.py", "check"]);
+  const signedSchemaProof = schemaExec(["manage.py", "shell", "-c",
+    "exec(open('registry/secure_contract_lab.py').read())"]);
+  for (const label of [
+    "SECURE_CONTRACT_REAL_401_403_404_AND_FORGED_400",
+    "SECURE_CONTRACT_REAL_TRANSFER_AUDIT_200_STALE_409",
+    "SECURE_CONTRACT_GENERATED_OPENAPI_JWT_AND_STATUSES",
+    "SECURE_CONTRACT_LOCAL_LOG_SAMPLE_REDACTED_FIXTURES_ROLLED_BACK",
+  ]) assert.ok(signedSchemaProof.includes(label),label + "\n" + signedSchemaProof);
+  assert.doesNotMatch(fs.readFileSync(path.join(schemaRoot,"config","urls.py"),"utf8"),
+    /secure_contract_urls|secure_contract_api_urls|DocumentedSignedTransfer/,
+    "Secure documentation workshop remains private to test-only URLConfs");
+  console.log("Builder Identity secured OpenAPI: real JWT HTTP 401/403/404/409/200, audit, contract security and bounded log sample passed.");
+
   // Existing domain command and PostgreSQL migration lab completed above.
   // Exercise published HTTP exception code against its real stored state;
   // training URLs are ONLY passed through override_settings in the source.
