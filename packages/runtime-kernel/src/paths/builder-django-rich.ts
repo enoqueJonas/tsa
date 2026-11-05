@@ -603,7 +603,7 @@ export const djangoAndApiRichLessons: Lesson[] = [
             },
             {
               "type": "paragraph",
-              "text": "Use the existing PostgreSQL Django schema lab as the source of truth. The prior Django examples included an independent Book tutorial and multiple separate test-only Steward projects; their file paths are examples to transfer deliberately, not proof they were already assembled in the same application. The three database/HTTP checkpoints must be run and verified against the same coherent registry project; final readiness/OpenAPI/logging assembly remains a separate exit criterion."
+              "text": "Use the existing PostgreSQL Django schema lab as the source of truth. The prior Django examples included an independent Book tutorial and multiple separate test-only Steward projects; their file paths are examples to transfer deliberately, not proof they were already assembled in the same application. The database, HTTP and readiness/logging checkpoints must run against the same coherent registry project; final OpenAPI schema/runtime conformance remains a distinct exit criterion."
             }
           ]
         }
@@ -702,6 +702,38 @@ export const djangoAndApiRichLessons: Lesson[] = [
         }
       },
       {
+        "id": "django-and-api-engineering-lab-steward-api-skeleton-readiness-checkpoint",
+        "title": "Checkpoint 4: Test readiness 409 and safe logs",
+        "estimatedMinutes": 65,
+        "content": {
+          "type": "practical",
+          "objective": "Trace the real Steward production-readiness domain command through HTTP 409 and HTTP 200, proving database state and nonsecret log evidence in the same Django registry.",
+          "scenario": "All registry migrations through 0006 and the prior Service/Review HTTP checkpoint must already be complete. Only a server-selected Team fixture is available; real verified membership comes in Identity.",
+          "instructions": [
+            "Review the prior source-published registry/services.py command and identify the SELECT FOR UPDATE and production Environment existence check, rather than implementing business rules directly in a view.",
+            "Save registry/integrated_promotion.py and private integrated_final_urls.py from the complete readiness lesson. Do not register it in config/urls.py.",
+            "Execute registry/integrated_readiness_lab.py in the actual migrated PostgreSQL Steward schema: observe failed 409 with unchanged lifecycle and zero production environments.",
+            "Test the forbidden lifecycle request body (400), then add a fictional production deployment and observe HTTP 200 with a new-shell persisted production lifecycle.",
+            "Verify the original remove_environment() command refuses deletion of the final production deployment; other-Team and missing IDs return 404, wrong method 405, missing server-selected scope 403.",
+            "Capture the two logger records and prove an Authorization marker is absent; explain why diagnostic logging is not a durable, tamper-proof audit."
+          ],
+          "deliverables": [
+            "Real 409 rollback and 200 persisted-state evidence",
+            "Client-controlled lifecycle rejection",
+            "Final production deployment protection",
+            "HTTP denial checks",
+            "No-secret INFO/WARNING events",
+            "Independent process verification"
+          ],
+          "completionCriteria": [
+            "The view invokes the existing transaction-backed command rather than duplicating readiness policy.",
+            "Every denied outcome is checked against unchanged database state.",
+            "One INFO and one WARNING log event are captured without credentials.",
+            "No real user authentication or audit completeness is asserted."
+          ]
+        }
+      },
+      {
         "id": "django-and-api-engineering-lab-steward-api-skeleton-build",
         "title": "Build Steward API Skeleton",
         "estimatedMinutes": 95,
@@ -714,7 +746,7 @@ export const djangoAndApiRichLessons: Lesson[] = [
             "Reuse the preceding complete integrated Service collection/detail API and its real HTTP proof; explain which write fields are excluded and how the test-selected Team scope limits list and detail views.",
             "Reuse the preceding verified ServiceReview create/list implementation and demonstrate what it proves (scoped training context, database persistence) and what it does not (Identity-based authorization or reviewer identity).",
             "Apply lifecycle and criticality filters plus deterministic pagination on a *server-selected teaching Team*, never a client-selected Team authority. Inspect executed PostgreSQL SQL and N+1 behavior rather than hand-writing a pretend query.",
-            "Reuse the real readiness command for an HTTP 409 conflict and demonstrate unchanged stored Service lifecycle after rejection. Do not treat serializer validation as a replacement for domain rules.",
+            "Carry forward the fourth checkpoint’s live 409 and 200 readiness contract, including unchanged-state and safe-log evidence. Do not recode the state transition inside the view.",
             "Generate the API's actual OpenAPI document and compare paths, parameters, response fields and success/failure statuses against real HTTP exchanges. Verify application logging is useful and excludes secrets.",
             "Prepare a concrete missing-prerequisite list for the next Identity module: verified principals, Team membership, object-level authorization, cross-Team visibility/revocation, and reviewer attribution."
           ],
