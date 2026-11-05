@@ -29,7 +29,7 @@ The module has 26 lessons and 78 unique activity IDs (including the preserved ca
 ## Evidence status
 
 - **SOURCE WRITTEN:** yes, committed on PR #399. Manual source/ID inspection found 26 lessons and the expected new snippets.
-- **MATCHING-HEAD AUTOMATED CHECKS:** NOT YET VERIFIED. Existing earlier results attached to PR #399 apply to older SHA `8ebd32a`; do not reuse them for the new refresh/OpenAPI/capstone commits.
+- **AUTOMATED PR CODE VERIFICATION:** PASSED on PR merge candidate for head `38eae9844819aeceed0155794846049415c27845`, run [#42038667009](https://github.com/enoqueJonas/tsa/actions/runs/42038667009): Identity integrity, TypeScript, the complete real Django/PostgreSQL source-derived lab, 38/38 smoke tests, production build, and strict structural audit. This result is specific to that code head and its tested PR merge candidate; separate future commits require re-verification.
 - **RENDERED PAGE/PROGRESS AND INDEPENDENT NOVICE TRANSFER:** NOT VERIFIED. Never mark `VALIDATED` based on green TypeScript/test/build alone.
 - **PRODUCTION SECURITY:** not claimed.
 
@@ -91,3 +91,22 @@ Source comparison of the real PostgreSQL-backed Steward integration runner and t
 Correction: added an eighth complete, learner-visible Python snippet, `config/settings.py — register drf-spectacular for the existing signed API`, before the secured API view annotations. It registers `drf_spectacular` on the current `INSTALLED_APPS` and sets `REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "drf_spectacular.openapi.AutoSchema"` without replacing JWT authentication settings. The exact source is appended to the **same** migrated Steward project in `scripts/check-builder-django-live-lab.mjs` before its schema experiment. The integrity gate now requires the settings source, and the capstone tells learners when to apply it. Thus the secured stage contains **8 source-complete Python files** rather than 7.
 
 Static comparison confirms the source captions are extractable and the Node scripts parse as JavaScript. **No PostgreSQL HTTP integration, drf-spectacular schema export, matching-head TypeScript build or browser run has been executed against these latest changes.** Keep PR #399 in draft pending actual head-specific results.
+
+## Acceptance evidence — 2026-11-05 successful real CI run
+
+The new PR-specific gate `.github/workflows/identity-postgresql-pr.yml` executed on the **actual PR merge candidate** for source head `38eae9844819aeceed0155794846049415c27845` with PostgreSQL 17, Python 3.12, Node 22, Java 17, and the exercise's required libraries.
+
+**GitHub Actions run:** [Identity module PostgreSQL PR gate #42038667009](https://github.com/enoqueJonas/tsa/actions/runs/42038667009) — job `identity-real-http-and-build` completed **successfully**.
+
+The complete returned job log supports all of the following:
+
+- `node scripts/check-identity-module-integrity.mjs` **PASS**: lesson order, 8 exact AST-valid Python sources, final block schema, command staging, persistent-denial assertions and transfer rubric.
+- TypeScript runtime-kernel `tsc --noEmit` **PASS**.
+- `node scripts/check-builder-django-live-lab.mjs` **PASS**, including explicit output for migration 0008 atomic ownership/audit, signed real refresh rotation/replay/logout, and JWT-secured OpenAPI plus bounded logger on the same migrated PostgreSQL registry.
+- `pnpm test` **38 passed / 0 failed**.
+- `pnpm build` **PASS**, 2 successful Turbo build tasks, including application static export.
+- `node scripts/audit-learner-facing-curriculum.mjs --strict` **PASS**, zero structural findings.
+
+**Crucial distinction:** this verifies the behavior of the specific source-derived labs and the build; it is not a comprehensive security audit, concurrency proof, evidence of deployment readiness, or an independent novice successfully using the rendered website. Keep learner-browser/progress review and 14/16 novice teach-back explicitly pending. **Do not close the global instructional-depth or learner-validation issues on the basis of CI alone.**
+
+This evidence was recorded in the repository after the successful run; the documentation-only commit itself is not asserted to have been tested by the earlier run. The PR workflow re-runs when its configured paths change, and any later run should be checked independently.
