@@ -1,6 +1,6 @@
 # PED-028 — Identity must extend the integrated Steward registry, not restart at migration 0002
 
-**Date:** 2026-11-05. **Scope:** Builder → Identity & Authorization → Create User Accounts and Team Memberships in Django, immediately after the integrated Django/DRF lab.
+**Date:** 2026-11-05. **Scope:** Builder → Identity & Authorization → Create User Accounts and Team Memberships in Django and the following Password Storage and Hashing lesson, immediately after the integrated Django/DRF lab.
 
 ## Learner-order failure
 
@@ -11,11 +11,11 @@ The completed Steward API Skeleton lab has a real Django-managed, PostgreSQL-bac
 - Preserve every existing Identity lesson ID, content level and already-taught PostgreSQL lesson.
 - Replace the Membership lesson's startup/migration instructions: confirm the actual Django `DATABASES` name, inspect `showmigrations registry` for 0001–0006, append Membership to the existing models, generate migration **0007_membership**, inspect its SQL, migrate, and verify the old relations and data remain.
 - Reuse the complete existing source-published `Membership` model and `identity_membership_lab.py` rather than synthesize fake replacement code.
-- Extend `scripts/check-builder-django-live-lab.mjs` after the actual integrated 0006, HTTP and schema proofs: append the SAME published model to `schemaRoot`, generate/inspect/apply actual PostgreSQL migration 0007, seed users/memberships, reject duplicate membership, verify former Service/Dependency/Review data and inactive account state persist. The earlier independent `0002` primer may still run in its own scratch database, but it is **not** the learner's next application.
+- Extend `scripts/check-builder-django-live-lab.mjs` after the actual integrated 0006, HTTP and schema proofs: append the SAME published model to `schemaRoot`, generate/inspect/apply actual PostgreSQL migration 0007, seed users/memberships, reject duplicate membership, verify former Service/Dependency/Review data and inactive account state persist. The immediately following Password Storage lesson also stays in the 0007 project. Its exact `credential_lab.py` is executed against those same users, and a fresh Django interpreter verifies persisted hash-backed authentication (correct/wrong/inactive) without altering the prior ServiceReview history. The earlier independent `0002` primer may still run in its own scratch database, but it is **not** the learner's next application.
 
 ## Evidence / gates
 
-- [ ] Matching-head Builder PostgreSQL/Django real database workflow
+- [ ] Matching-head Builder PostgreSQL/Django real database workflow (including 0007 credential verification in a fresh process)
 - [ ] Matching-head 19-job full CI
 - [ ] Rendered reading and learner progress re-entry
 - [ ] Uncoached learner can explain why 0002 and 0007 are not interchangeable and execute migration in the right database
