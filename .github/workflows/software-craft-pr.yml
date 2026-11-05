@@ -7,6 +7,7 @@ on:
       - packages/runtime-kernel/src/paths/builder-software-craft-deep.ts
       - packages/runtime-kernel/src/paths/builder-software-craft-quality.ts
       - scripts/check-software-craft-source-labs.mjs
+      - scripts/check-software-craft-session.mjs
       - scripts/check-software-craft-browser.py
       - .github/workflows/software-craft-pr.yml
       - docs/curriculum/software-craft-forward-exit.md
@@ -44,6 +45,8 @@ jobs:
           python3 -m pip install 'lxml>=5,<8' 'pyftpdlib>=2,<3' 'asyncssh>=2.20,<3' 'PyYAML>=6,<7'
       - name: Execute exact published configuration, logging, HTTP and dependency labs
         run: node scripts/check-software-craft-source-labs.mjs
+      - name: Prove actual Software Craft source-derived session and capstone unlock
+        run: node scripts/check-software-craft-session.mjs
       - name: Run all curriculum smoke tests
         run: pnpm test
       - name: Build web and runtime-kernel
