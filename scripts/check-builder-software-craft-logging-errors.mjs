@@ -95,6 +95,45 @@ for (const id of [
   "software-craft-designing-errors",
 ]) assert.ok(quality.includes(JSON.stringify(id) + ":"), "Missing executable practice rubric: " + id);
 
+// A capstone cannot compress these independent contracts into one unchecked
+// 180-minute exercise. Preserve the old final IDs for existing learners while
+// requiring separately navigable and reviewable practical stages.
+const stagedLabs = [
+  "software-craft-lab-change-safety-review",
+  "software-craft-lab-configuration-observability-errors",
+  "software-craft-lab-reproducible-handoff-performance",
+];
+const capstoneId = "software-craft-lab-refine-steward-api-for-review";
+const atStage = id => source.indexOf('"id":' + JSON.stringify(id));
+for (const stage of stagedLabs) {
+  assert.ok(atStage(stage) > 0, "Missing authored Software Craft stage: " + stage);
+  for (const suffix of ["reading", "practice", "check"]) {
+    const activityId = stage + "-" + suffix;
+    const occurrences = source.split('"id":' + JSON.stringify(activityId)).length - 1;
+    assert.equal(occurrences, 1, "Missing or duplicated independent capstone stage activity: " + activityId);
+  }
+}
+assert.ok(atStage(stagedLabs[0]) < atStage(stagedLabs[1]));
+assert.ok(atStage(stagedLabs[1]) < atStage(stagedLabs[2]));
+assert.ok(atStage(stagedLabs[2]) < source.lastIndexOf('id: "' + capstoneId + '"'));
+for (const suffix of ["brief", "practice", "check"]) {
+  const id = capstoneId + "-" + suffix;
+  assert.ok(source.includes('id: "' + id + '"'),
+    "Do not retire or rename the original Software Craft final activity: " + id);
+}
+for (const caption of [
+  "Change-safety baseline — execute only in the existing disposable Steward Django checkout",
+  "Ops/error contract — known real signed Steward HTTP outcomes on disposable PostgreSQL",
+  "Handoff/performance — real Django query-count measurement, not synthetic p95",
+]) assert.ok(source.includes('"caption":' + JSON.stringify(caption)),
+  "Missing real-lab command or explicitly bounded performance source: " + caption);
+const finalPractice = source.slice(source.lastIndexOf('id: "' + capstoneId + '-practice"'));
+for (const fact of ["seven-row evidence matrix", "NOT TESTED", "independent reviewer", "System Thinker handoff"]) {
+  assert.ok(finalPractice.toLowerCase().includes(fact.toLowerCase()),
+    "Final review missing falsifiable synthesis or uncertainty boundary: " + fact);
+}
+console.log("PASS Software Craft staged capstone: 3 independent labs, 9 unique activities, original final IDs and seven-row evidence gate");
+
 const root = fs.mkdtempSync(path.join(os.tmpdir(), "tsa-software-craft-"));
 try {
   for (const [i, item] of checkpoints.entries()) {
