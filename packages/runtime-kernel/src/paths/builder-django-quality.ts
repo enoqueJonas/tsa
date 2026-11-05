@@ -455,6 +455,22 @@ const practices: Record<string, PracticeSpec> = {
     deliverables: ["Reviewed 0005 migration and SQL", "PostgreSQL-backed dependency integrity transcript", "New shell persistence evidence", "Explicit cycle/authorization gap"],
     completionCriteria: ["No original registry rows or migration IDs are overwritten.", "Both FK directions and all negative writes are observed against real database constraints.", "The learner can explain which graph invariants have not been implemented.", "No insecure API is exposed."]
   },
+  "django-and-api-engineering-serve-real-steward-services-and-reviews-through-drf": {
+    objective: "Make the same migrated PostgreSQL-backed Steward Services and historical Reviews observable through genuinely persisted test-only DRF HTTP requests, with scoped rows and bounded input.",
+    scenario: "Reuse the isolated Steward Django schema project after registry migrations 0001–0006. Existing training_scope.py and api_errors.py/domain services.py are taught earlier and must be retained. There is no real Identity or verified reviewer; the URLConf must remain test-only.",
+    instructions: [
+      "Confirm all six registry migrations are applied, that original Team/Service/Environment rows and new dependencies/reviews remain, and that PostgreSQL is the selected disposable database.",
+      "Save the full integrated_serializers.py, integrated_api.py, integrated_training_urls.py and integrated_http_lab.py files from the lesson without creating a second registry project.",
+      "Append rest_framework to INSTALLED_APPS and testserver to ALLOWED_HOSTS, preserving the current PostgreSQL DATABASES and previous code. Do not add the integration URLs to ordinary config/urls.py.",
+      "Run python manage.py check and execute the exact integrated_http_lab.py through manage.py shell. Verify Team A scope count 3, a newly persisted Service 201/GET in a fresh Client, and server-controlled owning_team and UAT lifecycle.",
+      "Reject client-forged owner, duplicate slug, malformed URL and criticality (400 with no extra row); reject other-Team/missing detail (404) and wrong detail method (405).",
+      "POST three historical ServiceReviews from HTTP. Verify server-owned synthetic reviewer attribution, two reviews for one Service and one other Service, and exclude Team B's review from both count and rows.",
+      "Reject client-forged reviewer, wrong verdict, missing parent and cross-Team review attempts without writes; inspect real PostgreSQL JOIN/query count for review service_name and prove no N+1 with select_related.",
+      "Reopen the newly stored Service and its two Reviews in a second manage.py shell, then explicitly list all real authentication, membership and audit immutability work not implemented."
+    ],
+    deliverables: ["Complete test-only integrated DRF source", "HTTP positive and 400/403/404/405 failure transcript", "Database state before/after", "Scoped count and N+1 SQL evidence", "Fresh-process persistence", "Identity and audit limits"],
+    completionCriteria: ["The source-executed integration uses the previous migrated PostgreSQL schema.", "No forged owner/reviewer or cross-Team access broadens test-selected scope.", "Expected failures make no unintended writes.", "The training routes are not described or registered as publicly authenticated API."]
+  },
   "django-and-api-engineering-persist-a-steward-service-review-history": {
     objective: "Create durable multiple review events per Service with a real PostgreSQL CHECK, FK integrity and deterministic time ordering.",
     scenario: "Use the same already migrated Steward Django registry after the ServiceDependency 0005 exercise. Reviewer strings are fictional training values; verified identity and access control are not available until the next module.",
