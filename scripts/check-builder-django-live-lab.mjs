@@ -468,6 +468,27 @@ assert.doesNotMatch(integratedHttpExamples.urls, /config\/urls.py.*urlpatterns \
   "Unprotected review write API cannot be appended to the project's normal URLs");
 assert.match(integratedHttpExamples.lab, /CaptureQueriesContext\(connection\)/);
 
+const readinessLessonStart = source.indexOf('richLesson("Promote a Steward Service Through a Real HTTP Command"');
+const priorIntegratedHttpStart = source.indexOf('richLesson("Serve Real Steward Services and Reviews Through DRF"');
+const readinessCheckpointIndex = source.indexOf('"id": "django-and-api-engineering-lab-steward-api-skeleton-readiness-checkpoint"');
+const finalBuildAfterReadiness = source.indexOf('"id": "django-and-api-engineering-lab-steward-api-skeleton-build"');
+assert.ok(priorIntegratedHttpStart < readinessLessonStart &&
+  readinessLessonStart < readinessCheckpointIndex &&
+  readinessCheckpointIndex < finalBuildAfterReadiness,
+  "Readiness HTTP and logging must be a complete prerequisite before Steward final build");
+assert.match(publishedPractice("promote-a-steward-service-through-a-real-http-command"),
+  /registry\/integrated_readiness_lab.py/,
+  "The learner must run the complete published readiness HTTP script");
+const integratedReadinessExamples = {
+  view: modelLessonSnippet("registry/integrated_promotion.py — real readiness command and safe log events"),
+  urls: modelLessonSnippet("registry/integrated_final_urls.py — private integration-only promotion route"),
+  lab: modelLessonSnippet("registry/integrated_readiness_lab.py — 409 rollback 200 persist and safe logs"),
+};
+assert.match(integratedReadinessExamples.view, /promote_to_production\(service\.pk\)/);
+assert.match(integratedReadinessExamples.view, /logger\.warning\(/);
+assert.match(integratedReadinessExamples.lab, /private-training-marker/);
+assert.match(integratedReadinessExamples.lab, /remove_environment\(production\.pk\)/);
+
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"tsa-django-bridge-"));
 const exec=(command,args,env=process.env)=>{
   const p=spawnSync(command,args,{cwd:root,encoding:"utf8",timeout:60000,env});
@@ -870,6 +891,43 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
     /integrated_training_urls|TrainingServices|TrainingReviews/,
     "Unprotected training HTTP write routes must not be published");
   console.log("Builder Steward HTTP checkpoint passed: actual Postgres Service create/reread, server-owned Team and synthetic reviewer, scoped Reviews, 400/403/404/405, JOIN query counts and no rejected writes.");
+
+  // Test real transactional readiness on the SAME PostgreSQL Steward registry
+  // with migrations 0001–0006 and the previous Service/Review HTTP writes.
+  for (const [name, body] of [
+    ["integrated_promotion.py", integratedReadinessExamples.view],
+    ["integrated_final_urls.py", integratedReadinessExamples.urls],
+    ["integrated_readiness_lab.py", integratedReadinessExamples.lab],
+  ]) fs.writeFileSync(path.join(schemaRoot, "registry", name), body + "\n");
+  schemaExec(["manage.py", "check"]);
+  const readinessEvidence = schemaExec(["manage.py", "shell", "-c",
+    "exec(open('registry/integrated_readiness_lab.py').read())"]);
+  for (const expected of [
+    "READINESS_REAL_HTTP_409_NO_STATE_CHANGE",
+    "READINESS_CLIENT_CONTROLLED_LIFECYCLE_400",
+    "READINESS_REAL_HTTP_200_PERSISTED",
+    "READINESS_LAST_PRODUCTION_DEPLOYMENT_PROTECTED",
+    "READINESS_CROSS_TEAM_404_UNKNOWN_404_UNSUPPORTED_405",
+    "READINESS_MISSING_SERVER_SCOPE_403",
+    "READINESS_SAFE_INFO_WARNING_LOGS_NO_SECRET",
+    "STEWARD_INTEGRATED_READINESS_OK",
+  ]) assert.ok(readinessEvidence.includes(expected),
+    "Published readiness HTTP/domain/logging test missing " + expected +
+    "\n" + readinessEvidence);
+  assert.match(schemaExec(["manage.py", "shell", "-c", [
+    "from registry.models import Service,Environment",
+    "service=Service.objects.get(slug='integrated-readiness-workshop')",
+    "assert service.lifecycle=='production'",
+    "assert Environment.objects.filter(service=service,kind='production').count()==1",
+    "print('READINESS_FRESH_SHELL_PERSISTED')",
+  ].join("\n")]), /READINESS_FRESH_SHELL_PERSISTED/);
+  const registryMainUrls = fs.readFileSync(
+    path.join(schemaRoot, "config", "urls.py"), "utf8");
+  assert.doesNotMatch(registryMainUrls, /integrated_final_urls|TrainingPromotion/,
+    "Unauthenticated transaction commands must never be public project routes");
+  console.log("Builder Steward readiness checkpoint passed: real PostgreSQL transaction 409 no-write, 200 persistent promotion, final deployment protected, scoped 403/404/405, and nonsecret INFO/WARNING.");
+
+
 
 
 
