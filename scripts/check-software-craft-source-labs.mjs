@@ -110,4 +110,34 @@ assert.ok(http.includes("ThreadingHTTPServer((\"127.0.0.1\", 0)") &&
   http.includes("assert not public_safe(unsafe)"), "Real loopback or negative leak oracle removed");
 assert.ok(source.includes("ADR versus runbook — complete proposed decision and non-destructive diagnostic examples"),
   "Worked two-document handoff removed");
+// Final capstone keeps all original ID identities but now has independent,
+// falsifiable, scored acceptance rather than a broad unchecked 180-minute task.
+const capstoneId = "software-craft-lab-refine-steward-api-for-review";
+const capstoneAt = source.indexOf('    {\n    "id": "' + capstoneId + '"');
+assert.ok(capstoneAt >= 0, "Software Craft capstone or preserved ID missing");
+const capstoneText = source.slice(capstoneAt, source.lastIndexOf("\n];"))
+  .trim().replace(/,\s*$/, "");
+const capstone = JSON.parse(capstoneText);
+assert.deepEqual(capstone.activities.map(item => item.id), [
+  capstoneId + "-brief", capstoneId + "-practice", capstoneId + "-check",
+], "Original capstone progress IDs changed");
+const capstoneBlocks = capstone.activities[0].content.blocks;
+assert.ok(capstoneBlocks.some(block => block.id === "eight-evidence-rows"),
+  "Capstone no longer teaches a falsifiable evidence matrix");
+assert.ok(capstoneBlocks.some(block => block.id === "reviewer-rubric"),
+  "Capstone lacks an independent 0-2 scoring rubric");
+for (const block of capstoneBlocks.filter(block => block.type === "heading")) {
+  assert.deepEqual(Object.keys(block).sort(), ["id","level","text","type"],
+    "Malformed rendered capstone heading block");
+}
+const rowBlock = capstoneBlocks.find(block => block.type === "list" &&
+  block.items.length === 8 && block.items[0].startsWith("1. Git history"));
+assert.ok(rowBlock && rowBlock.items[7].includes("Performance"),
+  "Eight independent capstone evidence rows must survive");
+assert.ok(capstone.activities[1].content.completionCriteria.some(value =>
+  value.includes("Score >=14/16")), "Capstone acceptance threshold removed");
+assert.ok(capstone.activities[2].content.prompt.includes("no zero on rows 2, 4, 5 or 6"),
+  "Safety-critical teach-back no-zero condition removed");
+console.log("PASS Software Craft capstone: original progress IDs, eight-row matrix and scored independent acceptance.");
+
 console.log("Software Craft source-derived executable labs passed: 7 exact published programs and negative controls.");
