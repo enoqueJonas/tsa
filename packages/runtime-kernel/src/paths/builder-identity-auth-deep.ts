@@ -385,7 +385,14 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
                             "type": "heading",
                             "id": "prerequisites",
                             "text": "Check the same project and database",
-                            "level": 2
+                            "level": 2,
+                            "items": [
+                                "Remain in the SAME Steward Django project and PostgreSQL database; never restart at 0001 or silently switch to SQLite.",
+                                "At the JWT baseline checkpoint, registry 0007 and the hashed tsa_ana account must exist; record the first no-rotation JWT lab outcome BEFORE appending the later token_blacklist rotation settings.",
+                                "After the ownership checkpoint, inspect the registry 0008 migration and Owner/audit models; after the refresh checkpoint, inspect applied token_blacklist migrations.",
+                                "Check python manage.py check and python manage.py makemigrations --check --dry-run on the final state; normal config/urls.py must not publish any tutorial URLConf.",
+                                "Retain time-stamped evidence from each prior stage rather than rerunning a now-incompatible baseline script under a different JWT policy."
+                            ]
                         },
                         {
                             "type": "list",
@@ -415,10 +422,17 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
                             ]
                         },
                         {
+                            "type": "paragraph",
+                            "text": "The 0007 JWT baseline deliberately asserts that a refresh response contains no replacement refresh token. Once rotation is enabled in Stage 3, that expectation is obsolete for the new policy. Re-running the original baseline under the final settings would fail for the wrong reason. Keep both pieces of evidence, with their actual effective SIMPLE_JWT settings."
+                        },
+                        {
                             "type": "heading",
                             "id": "exact-commands",
                             "text": "Run the published labs without inventing test code",
-                            "level": 2
+                            "level": 2,
+                            "title": "Record evidence at the correct configuration stage",
+                            "code": "# STAGE 1 — registry 0007, before enabling refresh rotation.\n# Retain the output from the FIRST JWT lesson; DO NOT rerun this after\n# switching ROTATE_REFRESH_TOKENS to True.\npython manage.py showmigrations registry\npython manage.py shell -c \"exec(open('registry/jwt_first_http_lab.py').read())\"\n\n# STAGE 2 — current Membership, nested writes and owner transfer checkpoints.\n# Run each after its corresponding source files are saved and its migrations applied.\npython manage.py shell -c \"exec(open('registry/membership_http_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/membership_read_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/membership_create_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/environment_membership_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/dependency_membership_lab.py').read())\"\npython manage.py showmigrations registry\npython manage.py shell -c \"exec(open('registry/transfer_membership_lab.py').read())\"\n\n# STAGE 3 — after appending ROTATE_REFRESH_TOKENS=True and blacklist settings.\npython manage.py migrate token_blacklist --noinput\npython manage.py showmigrations registry token_blacklist\npython manage.py check\npython manage.py makemigrations --check --dry-run\npython manage.py shell -c \"exec(open('registry/session_lifecycle_lab.py').read())\"\npython manage.py shell -c \"exec(open('registry/secure_contract_lab.py').read())\"\n",
+                            "caption": "Run Stage 1 with rotation OFF, Stage 2 after each lesson's setup, and Stage 3 with rotation ON. Preserve earlier proof rather than rerunning an old state-specific script under different settings."
                         },
                         {
                             "type": "code",
@@ -464,7 +478,7 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
                     "objective": "Independently explain and prove the seven security boundaries on the same stored Steward domain without copying expected results from a previous lab.",
                     "scenario": "A new maintainer joins Team A. A Service belongs to Team A and has a directed dependency on another Service. A separate viewer belongs only to Team B. The maintainer's Membership is then revoked while the issued JWT remains within its lifetime. An Owner proposes moving the Service to Team B. Your job is to predict the boundary decisions before running any request.",
                     "instructions": [
-                        "Complete the prerequisites and run the nine published HTTP/SQL labs in the exact order given in the reading. If a command fails, identify the first missing file, migration or prerequisite rather than skipping it.",
+                        "Gather the nine checkpoint results from their correct stages (0007 no-rotation JWT baseline; current Membership and 0008 transfer; then rotating/blacklisted refresh and secure OpenAPI). Rerun only a checkpoint whose required configuration and fixture state are currently satisfied; diagnose any new failure instead of skipping it.",
                         "Before each request, prepare a seven-row evidence matrix with expected HTTP status and expected Service, Membership, edge and OwnershipTransfer row changes. Do not copy the earlier scripts' assertions as your predictions.",
                         "Build your own small disposable Team A/Team B fixture with one Viewer, one Maintainer and one dual-Team Owner (roles and passwords set using Django's framework). Use the existing 0008 registry; never forge client-side owning_team or actor.",
                         "Test unauthenticated access, same-Team reads and authorized maintainer write, foreign-Team detail, foreign-target dependency, source and destination owner checks, and stale transfer. Compare snapshots before and after denials.",
@@ -483,7 +497,7 @@ export const identityAuthenticationAuthorizationDeepLessons: Lesson[] = [
                         "Three explicit residual risks and teach-back answers"
                     ],
                     "completionCriteria": [
-                        "All nine published labs execute against the same schema with their expected labels; any failure is diagnosed, not skipped.",
+                        "Nine checkpoint results have been collected at their appropriate stages, with the effective settings/migrations recorded; do not rerun the rotation-OFF JWT baseline under rotation-ON settings.",
                         "An authorized same-Team request changes only intended rows; authenticated cross-Team and revoked-member requests do not mutate protected state.",
                         "A stale transfer is 409; a valid transfer produces exactly one matching actor/from/to audit row, with the source FK changing atomically.",
                         "Refresh replay/logout invalidation is observed and pre-existing access-token limitations are explained.",
