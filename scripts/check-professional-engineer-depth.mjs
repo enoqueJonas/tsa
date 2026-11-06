@@ -274,3 +274,80 @@ for(const id of Object.keys(readinessPrograms)){
  assert.match(wrong.stderr,/AssertionError/,"Wrong failure reason for readiness "+id+": "+wrong.stderr);
  console.log("PASS exact Production Readiness "+id+" with unsafe mutation rejected");
 }
+
+
+// Module 6: actual Professional Portfolio & Reflection author source. The three
+// original stable lesson/activity IDs remain, while four necessary foundations
+// and two integration stages expose claims that previously lacked provenance.
+const portfolioSource=fs.readFileSync(root+"professional-engineer-portfolio-reflection-deep.ts","utf8");
+const portfolioLenses=authoredJson(fs.readFileSync(root+"professional-engineer-portfolio-teaching.ts","utf8"),"portfolioLenses");
+const portfolioPrograms=authoredJson(fs.readFileSync(root+"professional-engineer-portfolio-proofs.ts","utf8"),"portfolioPrograms");
+const expectedPortfolioOrder=[
+ "evidence-portfolio","portfolio-claim-calibration",
+ "reflective-practice","engineering-decision-postmortems",
+ "responsible-evidence-disclosure","independent-peer-review",
+ "professional-development"
+];
+const actualPortfolioOrder=[...portfolioSource.matchAll(/^lesson\("([^"]+)",/gm)].map(m=>m[1]);
+assert.deepEqual(actualPortfolioOrder,expectedPortfolioOrder,
+ "All 3 original portfolio lessons must retain their order and stable IDs; extra prerequisites must sit between them.");
+assert.deepEqual(Object.keys(portfolioLenses).sort(),expectedPortfolioOrder.slice().sort(),
+ "Every original and new portfolio lesson requires its own taught mechanism, not a generic wrapper.");
+for(const id of expectedPortfolioOrder){
+ const lens=portfolioLenses[id];
+ const prose=lens.sections.flatMap(section=>section.paragraphs).join("\n");
+ assert.ok(lens.sections.length>=3 && prose.length>=1700,
+  "Portfolio lesson is too thin to support a new independent engineer: "+id+" "+prose.length);
+ assert.ok(lens.sections.every(section=>section.heading && section.paragraphs.length>=2
+   && section.paragraphs.every(paragraph=>paragraph.length>=140)),
+   "Each actual portfolio teaching mechanism must explain the failure/alternative: "+id);
+ assert.ok(lens.practice.length>=2 && lens.criteria.length>=2,
+   "The portfolio must have a concrete independent counterexample and evaluation: "+id);
+ assert.match(lens.resource.url,/^https:\/\//,"Missing targeted reference: "+id);
+}
+for(const id of ["evidence-portfolio","reflective-practice","professional-development"]){
+ assert.ok(portfolioSource.includes('lesson("'+id+'"'),"Lost original reading/practical "+id);
+}
+assert.ok(portfolioSource.includes("professional-portfolio-"+'$'+"{id}-reading"));
+assert.ok(portfolioSource.includes("professional-portfolio-"+'$'+"{id}-practice"));
+for(const gate of ["stage-claim-evidence-authentication","stage-causal-review-and-responsible-publication"])
+ assert.ok(portfolioSource.includes('"'+gate+'"'),"Missing staged portfolio evidence gate "+gate);
+assert.ok(portfolioSource.includes("if(index===1)return [lesson,claimGate]"));
+assert.ok(portfolioSource.includes("if(index===5)return [lesson,reviewGate]"));
+assert.ok(portfolioSource.includes('"professional-portfolio-lab-independent-evidence-handoff-001"'),
+ "Missing independently navigable evidence/learning handoff");
+assert.ok(portfolioSource.includes('type:"code",language:"python",code:program.code,caption:program.caption'),
+ "Actual published source program must appear in original/new portfolio reading");
+console.log("PASS 3 original Portfolio IDs, four new first-principles lessons, two staged challenge labs and final evidence handoff");
+
+const portfolioMutants={
+ "evidence-portfolio":['if claim.evidence_mode != "INDEPENDENT":',"if False:"],
+ "portfolio-claim-calibration":['if item.observed_environment != item.claimed_environment:',"if False:"],
+ "engineering-decision-postmortems":['e.observed_at_minute <= decision_minute',"True"],
+ "responsible-evidence-disclosure":['if a.owner != "SELF" and not a.explicit_public_permission:',"if False:"],
+ "professional-development":['if not all((obj.source, obj.novel_task,','if False and not all((obj.source, obj.novel_task,']
+};
+const portfolioExpected={
+ "evidence-portfolio":["PORTFOLIO_SCOPED_CLAIM_MODES_DISTINGUISHED","PORTFOLIO_LINK_ONLY_FALSE_CONFIDENCE_EXPOSED"],
+ "portfolio-claim-calibration":["PORTFOLIO_ENVIRONMENT_SCOPE_AND_NEGATIVE_PASS","PORTFOLIO_SQLITE_TO_PRODUCTION_OVERCLAIM_EXPOSED"],
+ "engineering-decision-postmortems":["PORTFOLIO_DECISION_TIME_KNOWLEDGE_FILTER_PASS","PORTFOLIO_HINDSIGHT_RECONSTRUCTION_EXPOSED"],
+ "responsible-evidence-disclosure":["PORTFOLIO_DISCLOSURE_OWNERSHIP_PERMISSION_REDACTION_DISTINCT","PORTFOLIO_REDACTED_BUT_NOT_AUTHORIZED_EXPOSED"],
+ "professional-development":["PORTFOLIO_PLAN_FEASIBLE_AND_EVIDENCED_PASS","PORTFOLIO_COURSE_ATTENDANCE_NOT_COMPETENCE"]
+};
+assert.deepEqual(Object.keys(portfolioPrograms).sort(),Object.keys(portfolioMutants).sort(),
+ "Each published Portfolio executable example needs a targeted bad implementation.");
+for(const id of Object.keys(portfolioPrograms)){
+ const program=portfolioPrograms[id];
+ assert.ok(program.caption && program.code && program.expected,"No published learner source "+id);
+ const good=python(program.code);
+ assert.equal(good.status,0,id+" published source failed:\n"+good.stdout+"\n"+good.stderr);
+ for(const marker of portfolioExpected[id]){
+   assert.ok(good.stdout.includes(marker),"Missing original Portfolio example observation "+id+" "+marker);
+ }
+ const [before,after]=portfolioMutants[id];
+ assert.ok(program.code.includes(before),"Original Portfolio source mutation target missing: "+id);
+ const bad=python(program.code.replace(before,after));
+ assert.notEqual(bad.status,0,"Misleading Portfolio implementation passed its claims: "+id);
+ assert.match(bad.stderr,/AssertionError/,"Mutation failed for unrelated reason in "+id+": "+bad.stderr);
+ console.log("PASS exact Portfolio example "+id+" and rejected false-confidence mutation");
+}
