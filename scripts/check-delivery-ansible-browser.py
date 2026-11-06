@@ -222,7 +222,7 @@ with sync_playwright() as playwright:
     assert "continuous-delivery-deployment" in page.url,"CD reentry lost after reload"
     assert not errors,"Browser runtime errors in original CD lessons: "+str(errors)
     print("PASS ten original CD reading IDs, 6 copyable proof blocks, four original milestone IDs and reload",flush=True)
-    # Module 7: all SIX original Release Engineering readings, original
+    # Module 8: all SIX original Release Engineering readings, original
     # applied practices, the four-part final lab and final module review.
     # Source navigation and synthetic progress are NOT real Nexus/Steward
     # publication or independently evaluated human competence.
@@ -244,7 +244,8 @@ with sync_playwright() as playwright:
     release_review="release-engineering-module-review-001"
     page.goto(BASE+"/?view=curriculum&school=delivery-engineer",wait_until="networkidle")
     page.get_by_role("button",name=MODULE).first.wait_for(state="visible",timeout=30000)
-    page.get_by_role("button",name=MODULE).nth(6).click()
+    # Module 7 is Artifact & Dependency Supply Chain; Release Engineering is 8th.
+    page.get_by_role("button",name=MODULE).nth(7).click()
     page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
     release_sidebar=page.locator("aside").filter(has=page.get_by_text("Curriculum",exact=True)).first
     release_count=release_sidebar.locator("button").count()
