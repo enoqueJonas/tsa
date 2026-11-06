@@ -155,5 +155,72 @@ with sync_playwright() as playwright:
     assert "continuous-integration" in page.url, "CI module reentry lost across hard reload"
     assert not errors,"Browser runtime error during complete CI module review: "+str(errors)
     print("PASS all 13 original CI readings at 390px, exact YAML source and module reload",flush=True)
+    # Module 5 / all ten original CD readings, the exact local proof blocks,
+    # all original applied practices and the four-activity final lab.
+    # Chrome completion/navigation is synthetic UI evidence, not a deployed
+    # Steward system, external approval, real data migration or learner mastery.
+    cd_topics=(
+      "ci-cd-cd","environment-management","deployment-automation",
+      "release-approvals","database-migrations","rollback",
+      "rolling-deployments","blue-green","canary","feature-flags"
+    )
+    cd_headings={
+      "ci-cd-cd":"Three different promises, three different exit criteria",
+      "environment-management":"Environment means dependencies plus trust",
+      "deployment-automation":"Deployment is an ordered state transition",
+      "release-approvals":"GitLab deployment approvals are not automatically available on every self-managed tier",
+      "database-migrations":"A schema version is shared mutable state, not a private application implementation",
+      "rollback":"Define exactly which state can be restored",
+      "rolling-deployments":"An algorithm only works if capacity and compatibility exist",
+      "blue-green":"Two environments reduce switch-over risk, not shared-state risk",
+      "canary":"Partial traffic is an experiment with exposure and stopping rules",
+      "feature-flags":"Distinguish deployment, targeting and side-effect authorization"
+    }
+    cd_code={"release-approvals","database-migrations","rollback","blue-green","canary","feature-flags"}
+    page.goto(BASE+"/?view=curriculum&school=delivery-engineer",wait_until="networkidle")
+    page.get_by_role("button",name=MODULE).first.wait_for(state="visible",timeout=30000)
+    page.get_by_role("button",name=MODULE).nth(4).click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    cd_sidebar=page.locator("aside").filter(has=page.get_by_text("Curriculum",exact=True)).first
+    cd_count=cd_sidebar.locator("button").count()
+    assert cd_count>=24,f"CD original concept/practice/lab activity count unexpectedly small: {cd_count}"
+    cd_seen=set()
+    cd_final_labs=set()
+    cd_lab_ids={
+      f"continuous-delivery-deployment-lab-automate-steward-api-deployment-and-rollback-{n:03d}"
+      for n in range(1,5)
+    }
+    for i in range(cd_count):
+        activity=parse_qs(urlparse(page.url).query).get("activity",[None])[0]
+        if activity in {f"continuous-delivery-deployment-{topic}-001" for topic in cd_topics}:
+            topic=activity[len("continuous-delivery-deployment-"):-len("-001")]
+            main=page.locator("main").last
+            body=main.inner_text()
+            assert cd_headings[topic] in body,f"Original CD mechanism not rendered: {activity}: {cd_headings[topic]}"
+            assert len(body)>1800,f"Short learner-facing CD reading {activity}: {len(body)}"
+            if topic in cd_code:
+                assert main.get_by_role("button",name="Copy").count()>0,f"Exact CD example code not rendered: {activity}"
+            if topic=="blue-green":
+                assert "CD_BROKEN_CANDIDATE_LEFT_ACTIVE_A_UNCHANGED" in body
+                assert "-p 127.0.0.1::8080" in body
+            page.set_viewport_size({"width":390,"height":844})
+            assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),f"CD overflow at 390px: {activity}"
+            page.set_viewport_size({"width":1440,"height":900})
+            cd_seen.add(activity)
+            print("PASS original CD reading + exact proof + 390px:",activity,flush=True)
+        if activity in cd_lab_ids:
+            assert page.locator("main").last.is_visible(),f"Original final CD lab not navigable: {activity}"
+            cd_final_labs.add(activity)
+        if i<cd_count-1:
+            page.get_by_role("button",name=NEXT).click()
+            page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    expected_cd={f"continuous-delivery-deployment-{topic}-001" for topic in cd_topics}
+    assert cd_seen==expected_cd,"Lost CD original lesson IDs: "+str(expected_cd-cd_seen)
+    assert cd_final_labs==cd_lab_ids,"Lost or renamed original CD final practicals: "+str(cd_lab_ids-cd_final_labs)
+    page.reload(wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert "continuous-delivery-deployment" in page.url,"CD reentry lost after reload"
+    assert not errors,"Browser runtime errors in original CD lessons: "+str(errors)
+    print("PASS ten original CD reading IDs, 6 copyable proof blocks, four original milestone IDs and reload",flush=True)
     browser.close()
 print("PASS Configuration Management rendered evidence and reload (synthetic navigation only)")
