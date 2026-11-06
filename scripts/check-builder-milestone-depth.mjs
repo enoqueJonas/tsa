@@ -7,7 +7,7 @@ for(const name of ["contract-invariants","postgres-constraints","http-boundaries
  for(const suffix of ["reading","practice","check"])
   assert.ok(prep.includes('"id": "steward-api-v1-'+name+"-"+suffix+'"'),"Lost checkpoint "+name+"-"+suffix);
 for(const suffix of ["brief","design-review","build","data-evidence","security-evidence","handoff","review"])
- assert.ok(pathSource.includes('milestoneActivity("'+suffix+'")'),"Lost original milestone activity "+suffix);
+ assert.ok(pathSource.includes('id: "steward-api-v1-milestone-'+suffix+'"'),"Lost original milestone activity "+suffix);
 assert.ok(pathSource.includes("...fullBuilderRequirements.map"),"Lost legacy build requirements");
 assert.ok(pathSource.includes("NOT VALIDATED"),"Learner validation gate absent");
 function extract(caption){
