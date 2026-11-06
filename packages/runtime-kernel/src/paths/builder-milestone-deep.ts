@@ -161,6 +161,9 @@ const integrationBuild = {
 function gateWithBuild(): Lesson {
     return { id: "steward-api-v1-build-integration-gate", title: "Gate 2: Integrate the Complete Steward v1 Release", activities: [integrationBuild] };
 }
+const originalExit = milestoneActivity("review");
+if (originalExit.content.type !== "reflection") throw new Error("Milestone exit must remain a reflection.");
+const originalExitPrompt = originalExit.content.prompt;
 export const stewardApiV1Deep: LearningPath = {
     ...originalStewardMilestone,
     lessons: [
@@ -178,20 +181,18 @@ export const stewardApiV1Deep: LearningPath = {
             id: "steward-api-v1-gate-exit",
             title: "Milestone Review and Independent Exit",
             activities: [{
-                ...milestoneActivity("review"),
+                ...originalExit,
                 content: {
                     type: "reflection" as const,
                     prompt: [
-                        ...((milestoneActivity("review").content.type === "reflection")
-                            ? milestoneActivity("review").content.prompt.split("\\n")
-                            : []),
+                        ...originalExitPrompt.split("\n"),
                         "8. On a NEW Team C with a valid foreign token, show a nested ownership denial and an old refresh-token replay denial. Identify what would make either claim false.",
                         "",
                         "Independent scoring: Q1–Q8 each receive 0–2 points; 0=no mechanism/evidence, 1=partial or imitated demonstration, 2=correct independent explanation and reproducible evidence.",
                         "Pass threshold is 14/16, with mandatory full marks on Q1 (database invariant), Q2 (signed cross-Team denial) and Q8 (unseen nested authorization plus refresh replay).",
                         "A reviewer must present an unseen variation. If no independent novice demonstrates it, record LEARNER VALIDATION NOT VALIDATED regardless of build, browser or CI status.",
                         "Record source-remediated, technically-verified and learner-validated states separately, and mark untested real-app claims NOT TESTED."
-                    ].join("\\n"),
+                    ].join("\n"),
                 },
             }],
         },
