@@ -495,6 +495,87 @@ def run():
   }""")
   assert all(activity in stored_portfolio for activity in portfolio_completed),"Portfolio progress IDs lost on reload"
   print("PASS Professional Portfolio 7 concept readings / 5 copyable scripts / 2 stage gates / final handoff / 19 synthetic progress IDs",flush=True)
+  # Final Professional Engineer module: preserve all twelve original reading
+  # IDs, add independent practical/response activities and retain final lab.
+  # Progress is synthetic and NEVER constitutes a real oral defence.
+  defence_topics=(
+    "present-the-problem-and-outcomes","present-the-architecture",
+    "explain-trade-offs","present-engineering-evidence",
+    "defend-quality-decisions","defend-security-decisions",
+    "defend-reliability-decisions","defend-governance-decisions",
+    "respond-to-challenges","state-limitations","propose-future-evolution",
+    "reflect-on-the-tsa-journey",
+  )
+  defence_stage_ids=(
+    "capstone-defence-stage-problem-architecture-and-evidence",
+    "capstone-defence-stage-quality-security-reliability-and-governance",
+    "capstone-defence-stage-limitations-surprise-and-independent-transfer",
+  )
+  defence_final="capstone-defence-professional-engineering-capstone-and-defence-001"
+  defence_completed=[
+    f"capstone-defence-{topic}-{suffix}"
+    for topic in defence_topics for suffix in ("001","defence-practice")
+  ]
+  for stage in defence_stage_ids:
+   defence_completed.extend((stage+"-practice",stage+"-check"))
+  defence_completed.append(defence_final)
+  assert len(defence_completed)==31
+  seed_completed_path(page,"capstone-defence",defence_completed)
+  defence_code_topics={
+    "present-the-problem-and-outcomes","present-the-architecture",
+    "present-engineering-evidence","defend-quality-decisions",
+    "defend-governance-decisions","respond-to-challenges",
+  }
+  for index,topic in enumerate(defence_topics):
+   activity=f"capstone-defence-{topic}-001"
+   page.goto(BASE+"/?"+urlencode({
+    "view":"curriculum","school":"professional-engineer",
+    "path":"capstone-defence","activity":activity
+   }),wait_until="networkidle")
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   current=page.evaluate("new URLSearchParams(location.search).get('activity')")
+   assert current==activity,f"Original Defence reading ID lost: {activity} => {current}"
+   main=page.locator("main").last
+   text_content=main.inner_text()
+   assert len(text_content)>=1700,f"Shallow Defence reading: {activity} len={len(text_content)}"
+   assert "Define the claim and what would disprove it" in text_content,activity
+   assert "Unseen-domain and reviewer transfer" in text_content,activity
+   if topic in defence_code_topics:
+    assert main.get_by_role("button",name="Copy").count()>0,"Noncopyable published code: "+activity
+    assert main.locator("figure pre").count()>0,"Published code source not rendered: "+activity
+   page.set_viewport_size({"width":390,"height":844})
+   assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),"Defence mobile overflow: "+activity
+   if index in (0,1,3,4,7,8,11):
+    page.screenshot(path=str(ART/f"defence-{index+1}-390.png"),full_page=True)
+   page.set_viewport_size({"width":1440,"height":900})
+   print("PASS original Defence reading + mobile:",activity,flush=True)
+  for activity in [stage+"-practice" for stage in defence_stage_ids]+[stage+"-check" for stage in defence_stage_ids]+[defence_final]:
+   page.goto(BASE+"/?"+urlencode({
+     "view":"curriculum","school":"professional-engineer",
+     "path":"capstone-defence","activity":activity
+   }),wait_until="networkidle")
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   assert page.evaluate("new URLSearchParams(location.search).get('activity')")==activity,activity
+   assert page.locator("main").last.is_visible(),activity
+  page.reload(wait_until="networkidle")
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==defence_final
+  stored_defence=page.evaluate("""async () => {
+    const db=await new Promise((resolve,reject)=>{
+      const q=indexedDB.open("tsa-academy",5);
+      q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error);
+    });
+    try{
+      const req=db.transaction("path-progress","readonly")
+        .objectStore("path-progress").get("capstone-defence");
+      return await new Promise((resolve,reject)=>{
+        req.onsuccess=()=>resolve(req.result?.completedActivityIds ?? []);
+        req.onerror=()=>reject(req.error);
+      });
+    }finally{db.close();}
+  }""")
+  assert all(activity in stored_defence for activity in defence_completed),"Defence original/staged progress was lost on reload"
+  print("PASS all 12 original Defence readings, six source examples, 3 staged gates, final original milestone and 31 synthetic IDs",flush=True)
   assert not errors,"Browser console errors: "+str(errors)
   browser.close()
 if __name__=="__main__":run()
