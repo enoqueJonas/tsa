@@ -9,6 +9,7 @@ on:
       - packages/runtime-kernel/src/paths/professional-engineer-capstone-engineering-proposal-deep.ts
       - packages/runtime-kernel/src/paths/professional-engineer-proposal-teaching.ts
       - packages/runtime-kernel/src/paths/professional-engineer-proposal-proofs.ts
+      - apps/web/components/learning-experience.tsx
       - scripts/check-professional-engineer-depth.mjs
       - scripts/check-professional-engineer-browser.py
       - .github/workflows/professional-engineer-depth.yml
