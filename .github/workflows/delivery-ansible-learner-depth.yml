@@ -39,6 +39,10 @@ on:
       - 'packages/runtime-kernel/src/paths/delivery-schema-evolution-focused-teaching.ts'
       - 'packages/runtime-kernel/src/paths/delivery-schema-evolution-live-postgres.ts'
       - 'scripts/check-delivery-schema-evolution-postgres.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-migration-exercises-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-ci-migration-proof.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-ci-migration-teaching.ts'
+      - 'scripts/check-delivery-ci-migration-proof.mjs'
       - '.github/workflows/delivery-ansible-learner-depth.yml'
   push:
     branches:
@@ -95,6 +99,8 @@ jobs:
         run: |
           docker info --format 'Docker {{.ServerVersion}}'
           node scripts/check-delivery-schema-evolution-postgres.mjs
+      - name: Parse original CI migration GitLab YAML and run real unittest fail-closed cases with mutants
+        run: node scripts/check-delivery-ci-migration-proof.mjs
       - name: Build and check entire curriculum
         run: |
           pnpm install --frozen-lockfile
