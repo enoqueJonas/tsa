@@ -96,5 +96,64 @@ with sync_playwright() as playwright:
             page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
     assert seen_docker==set(docker_targets),"Missing Docker original activities: "+str(set(docker_targets)-seen_docker)
     assert not errors,"Browser errors during Docker source traversal: "+str(errors)
+    # Module 4, continuous integration: inspect the full learner-facing original
+    # lesson sequence, including the five newly deepened conceptual boundaries.
+    # This is real UI/390px evidence, not a real GitLab Runner or learner exam.
+    ci_topics=(
+      "architecture","jobs-stages","runners","github-gitlab","self-hosted",
+      "caching","artifacts","secrets","parallelism","automated-checks",
+      "test-stages","quality-gates","container-build"
+    )
+    ci_headings={
+      "architecture":"What integration actually means",
+      "jobs-stages":"A job graph is a contract for eligibility, not only ordering",
+      "runners":"Follow a job from scheduling to an isolated workspace",
+      "github-gitlab":"Map semantics rather than translate indentation",
+      "self-hosted":"Runner installation is an operational decision",
+      "caching":"Cache keys represent dependency assumptions; a cache is never an authority",
+      "artifacts":"An artifact is the produced state of one execution",
+      "secrets":"Reduce credential exposure to the exact job boundary",
+      "parallelism":"Parallelism must be matched to available capacity",
+      "automated-checks":"A green check is only as strong as its oracle",
+      "test-stages":"A cheap first check does not subsume a deeper test",
+      "quality-gates":"A gate ties a named risk to a blocking observation",
+      "container-build":"Commit, tag, local image ID, manifest digest and deployment are different records",
+    }
+    page.goto(BASE+"/?view=curriculum&school=delivery-engineer",wait_until="networkidle")
+    page.get_by_role("button",name=MODULE).first.wait_for(state="visible",timeout=30000)
+    page.get_by_role("button",name=MODULE).nth(3).click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    aside=page.locator("aside").filter(has=page.get_by_text("Curriculum",exact=True)).first
+    count=aside.locator("button").count()
+    assert count>25,f"CI module unexpectedly lost original lessons/practicals: {count}"
+    visited_ci=set()
+    for i in range(count):
+        activity=parse_qs(urlparse(page.url).query).get("activity",[None])[0]
+        if activity in {f"continuous-integration-{topic}-001" for topic in ci_topics}:
+            topic=activity[len("continuous-integration-"):-len("-001")]
+            main=page.locator("main").last
+            body=main.inner_text()
+            assert ci_headings[topic] in body,f"Original CI mechanism not published: {activity}: {ci_headings[topic]}"
+            assert len(body)>1550,f"Original CI reading too short after teaching: {activity} {len(body)}"
+            if topic in {"jobs-stages","container-build"}:
+                assert main.get_by_role("button",name="Copy").count()>0, "No copyable actual CI source on "+activity
+            if topic=="jobs-stages":
+                assert "Worked GitLab YAML: four jobs" in body
+                assert "candidate_manifest" in body and "candidate_audit" in body
+            page.set_viewport_size({"width":390,"height":844})
+            assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"), f"390px CI overflow {activity}"
+            page.set_viewport_size({"width":1440,"height":900})
+            visited_ci.add(activity)
+            print("PASS original CI source + mechanism + mobile:",activity,flush=True)
+        if i<count-1:
+            page.get_by_role("button",name=NEXT).click()
+            page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    expected_ci={f"continuous-integration-{topic}-001" for topic in ci_topics}
+    assert visited_ci==expected_ci, "Lost CI original IDs: "+str(expected_ci-visited_ci)
+    page.reload(wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert "continuous-integration" in page.url, "CI module reentry lost across hard reload"
+    assert not errors,"Browser runtime error during complete CI module review: "+str(errors)
+    print("PASS all 13 original CI readings at 390px, exact YAML source and module reload",flush=True)
     browser.close()
 print("PASS Configuration Management rendered evidence and reload (synthetic navigation only)")
