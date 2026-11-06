@@ -6,6 +6,9 @@ on:
     paths:
       - packages/runtime-kernel/src/paths/professional-engineer.ts
       - packages/runtime-kernel/src/paths/professional-engineer-foundations.ts
+      - packages/runtime-kernel/src/paths/professional-engineer-capstone-engineering-proposal-deep.ts
+      - packages/runtime-kernel/src/paths/professional-engineer-proposal-teaching.ts
+      - packages/runtime-kernel/src/paths/professional-engineer-proposal-proofs.ts
       - scripts/check-professional-engineer-depth.mjs
       - scripts/check-professional-engineer-browser.py
       - .github/workflows/professional-engineer-depth.yml
