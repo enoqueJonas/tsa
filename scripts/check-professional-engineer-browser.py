@@ -18,6 +18,33 @@ def run():
   page=browser.new_page(viewport={"width":1440,"height":900})
   errors=[]
   page.on("pageerror",lambda error:errors.append(str(error)))
+  # Simulate an older profile that completed only deleted synthetic preparation.
+  # Such IDs are not proof of completion of any authored Professional lesson.
+  page.goto(BASE+"/?view=curriculum&school=professional-engineer",wait_until="networkidle")
+  page.evaluate("""async () => {
+    const db=await new Promise((resolve,reject)=>{
+      const request=indexedDB.open('tsa-academy',5);
+      request.onsuccess=()=>resolve(request.result);
+      request.onerror=()=>reject(request.error);
+    });
+    try{
+      const tx=db.transaction('path-progress','readwrite');
+      const stale=[
+        'professional-practice-professional-model-reading',
+        'professional-practice-ethics-public-interest-practice-professional-preparation'
+      ];
+      const now=new Date().toISOString();
+      tx.objectStore('path-progress').put({
+        schemaVersion:5,pathId:'professional-practice',
+        currentActivityId:stale[1],completedActivityIds:stale,
+        reflectionResponses:{},startedAt:now,updatedAt:now
+      });
+      await new Promise((resolve,reject)=>{
+        tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);
+      });
+    }finally{db.close();}
+  }""")
+  print("SEEDED only obsolete synthetic-preparation IDs; no learner achievement inferred",flush=True)
   for index,(expected,headline) in enumerate(READINGS):
    page.goto(BASE+"/?view=curriculum&school=professional-engineer",wait_until="networkidle")
    page.get_by_role("button",name=re.compile(r"^(Start|Continue|Review) module$")).nth(index).click()
