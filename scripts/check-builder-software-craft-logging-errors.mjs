@@ -155,6 +155,21 @@ for (const fact of ["seven-row evidence matrix", "NOT TESTED", "independent revi
   assert.ok(finalPractice.toLowerCase().includes(fact.toLowerCase()),
     "Final review missing falsifiable synthesis or uncertainty boundary: " + fact);
 }
+const teachBack = source.slice(source.lastIndexOf('id: "' + capstoneId + '"'));
+for (const q of Array.from({ length: 8 }, (_, i) => "Q" + (i + 1) + ".")) {
+  assert.ok(teachBack.includes(q), "Missing independent Software Craft teach-back question: " + q);
+}
+for (const exact of [
+  "14/16", "Q2", "Q5", "Q6", "NOT VALIDATED",
+  "unseen variation", "0–2", "independent reviewer",
+]) {
+  assert.ok(teachBack.includes(exact), "Learner assessment cannot omit: " + exact);
+}
+const assessedPractice = source.slice(source.lastIndexOf('id: "' + capstoneId + '-practice"'));
+assert.ok(assessedPractice.includes("full marks on Q2, Q5, Q6"),
+  "Independent safety-minimum scoring must appear in the final practical acceptance");
+console.log("PASS Software Craft independent eight-question teach-back: 14/16 minimum, mandatory Q2/Q5/Q6, unseen transfer and honest NOT VALIDATED");
+
 console.log("PASS Software Craft staged capstone: 3 independent labs, 9 unique activities, original final IDs and seven-row evidence gate");
 
 const root = fs.mkdtempSync(path.join(os.tmpdir(), "tsa-software-craft-"));
