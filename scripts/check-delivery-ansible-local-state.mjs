@@ -61,7 +61,7 @@ assert.notEqual(badCheck.status,0,"Mutant unexpectedly passes despite check mode
 assert.match(badCheck.stdout + badCheck.stderr, /changed=1/,"Check-mode mutant never reached the mutation boundary");
 console.log("PASS unsafe omitted --check mutant rejected by published absence assertion");
 
-const unsafeMode=published.replace('mode: \\"0755\\"','mode: \\"0777\\"');
+const unsafeMode=published.replace('mode: "0755"','mode: "0777"');
 assert.notEqual(unsafeMode,published,"Could not mutate published desired permission");
 const badMode=execute(unsafeMode,"unsafe-mode");
 assert.equal(badMode.status,0,"Mode mutant should run, proving a green run is not enough");
