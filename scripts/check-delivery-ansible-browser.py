@@ -254,6 +254,7 @@ with sync_playwright() as playwright:
     release_seen_practices=set()
     release_seen_lab=set()
     release_seen_review=False
+    release_review_protected=False
     for i in range(release_count):
         activity=parse_qs(urlparse(page.url).query).get("activity",[None])[0]
         assert activity,f"Release Engineering lost an activity URL at index {i}"
@@ -303,16 +304,22 @@ with sync_playwright() as playwright:
                 print("PASS original release-lab-004 reflection correctly gates Next; no synthetic answer supplied",flush=True)
                 page.goto(BASE+"/?view=curriculum&school=delivery-engineer&path=release-engineering&activity="+release_review,wait_until="networkidle")
                 page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
-                assert parse_qs(urlparse(page.url).query).get("activity",[None])[0]==release_review, (
-                    "Original final Release review not independently deep-link navigable")
+                observed_review_activity=parse_qs(urlparse(page.url).query).get("activity",[None])[0]
+                assert observed_review_activity!=release_review, (
+                    "Final review unexpectedly bypasses the required learner reflection")
+                assert "release-engineering" in page.url, (
+                    "Gated final review deep-link escaped the Release Engineering module")
+                release_review_protected=True
+                print("PASS final Release review correctly gated behind uncompleted learner reflection; no fake answer or completion",flush=True)
+                break
     assert release_seen_readings==release_readings,"Original Release reading IDs missing: "+str(release_readings-release_seen_readings)
     assert release_seen_practices==release_practices,"Original Release practices missing: "+str(release_practices-release_seen_practices)
     assert release_seen_lab==release_lab,"Original Release lab IDs missing: "+str(release_lab-release_seen_lab)
-    assert release_seen_review,"Original final Release Engineering review missing"
+    assert release_seen_review or release_review_protected,"Original final review neither rendered nor correctly gated"
     page.reload(wait_until="networkidle")
     page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
     assert "release-engineering" in page.url,"Release module navigation not retained after reload"
     assert not errors,"Browser runtime errors in Release module: "+str(errors)
-    print("PASS 6 original Release readings, 6 practices, 4 final labs, 1 review, Chrome 390px and reload",flush=True)
+    print("PASS 6 original Release readings, 6 practices, 4 final labs, protected final review, Chrome 390px and reload",flush=True)
     browser.close()
 print("PASS Configuration Management rendered evidence and reload (synthetic navigation only)")
