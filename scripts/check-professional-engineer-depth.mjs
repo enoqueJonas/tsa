@@ -232,8 +232,8 @@ for(const stage of [
  "return [lesson,releaseGate]","return [lesson,recoveryGate]",
  "return [lesson,decisionGate]"
 ])assert.ok(readinessSource.includes(stage),"Incorrect prerequisite sequencing: "+stage);
-assert.ok(readinessSource.includes("lab-run-the-capstone-production-readiness-review-001"),
- "Original final lab activity ID must remain stable");
+assert.ok(readinessSource.includes('practical("lab-run-the-capstone-production-readiness-review"') && readinessSource.includes('id: `${pathId}-${id}-001`'),
+ "The original practical factory must still create its stable final lab activity ID");
 assert.ok(readinessSource.includes("], 95),"),
  "Original 480-minute lab remains overloaded; it should be stage synthesis");
 assert.ok(readinessSource.includes('type: "code", language: "python", code:program.code'),
