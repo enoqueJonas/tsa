@@ -8,10 +8,13 @@ const practices: Record<string, PracticalContent> = {
         objective: "Construct one Steward release candidate whose identity is strong enough that another engineer can prove exactly what is being evaluated without rebuilding anything.",
         scenario: "CI is green and Nexus contains multiple Steward packages/images. The team needs to nominate one candidate for release without confusing a branch, mutable tag or version label with immutable release evidence.",
         instructions: [
+            "Run the exact published `candidate_bytes.py` (Python 3 stdlib) and the `local_tag_swap.sh` Docker rehearsal from this original reading. Observe that a mutable tag can point to different image IDs and the approved bytes remain independently identifiable.",
+            "State precisely why a Docker local image ID is not proof of the signed registry manifest digest or trusted build provenance; prove the latter separately from an authorized Nexus/GitLab context or mark NOT_TESTED.",
+            "Distinguish actual multi-artifact candidate identity (API, workers, libraries if actually published) from a single semver label. Record which components have no real immutable publication yet.",
             "Choose one real Steward source revision and identify the GitLab CI/CD run that produced its releasable outputs.",
             "Record the application version, steward-common version/hash, OCI image tag and digest, migration set and relevant configuration assumptions.",
             "Attempt to describe the candidate using only mutable labels, then identify which claims remain ambiguous until resolved to immutable hashes/digests.",
-            "Prove that rebuilding the same source/version would create a different candidate identity even if behavior appears equivalent.",
+            "Demonstrate that a rebuild is a new build invocation requiring provenance and acceptance, even if reproducibility gives byte-identical output. If its bytes differ, its artifact digest also differs; never assume identical or different bytes without measuring.",
             "Define the minimum acceptance contract that must be satisfied before this exact candidate can enter promotion."
         ],
         deliverables: ["Steward candidate manifest", "Mutable-vs-immutable identity comparison", "Candidate acceptance contract"],
@@ -22,6 +25,8 @@ const practices: Record<string, PracticalContent> = {
         objective: "Design and exercise a Steward promotion flow where every gate answers a specific risk question and the approved artifact bytes never change between stages.",
         scenario: "The same Nexus-hosted candidate must move from technical verification toward UAT and production approval without turning the process into ceremonial clicks or environment-specific rebuilds.",
         instructions: [
+            "Run the original reading's `promotion_gate.py` fixture; deliberately fail the mandatory check and swap the candidate digest while keeping the approval label. Observe that neither can write a deployment event.",
+            "On the real authorized GitLab homelab check protected-environment/tier availability and approval policy. If no deployment approvals feature exists, document a separate actual authorized manual decision rather than claiming GitLab blocked a job.",
             "Define the candidate states Steward actually needs from built through approved and deployed; remove states that add no decision value.",
             "For each gate, write the exact question, required evidence, decision owner and failure outcome.",
             "Classify each gate as automatable or judgment-dependent and justify any human approval that remains.",
@@ -37,6 +42,8 @@ const practices: Record<string, PracticalContent> = {
         objective: "Produce a release record that proves the intended Steward artifact became the running, usable service rather than merely proving that a GitLab CI/CD deployment stage finished.",
         scenario: "A deployment job reports success, but that alone cannot establish which image is running, whether migrations completed, or whether a real client path works.",
         instructions: [
+            "Run the original published `observed_runtime.py` role-identity fixture and show why a green deployment exit with an old consumer yields MIXED_RELEASE; absence of one role produces NOT_VERIFIED.",
+            "For real Steward, independently inspect each API, outbox publisher and consumer identity with the correct registry and platform digest and exercise an authenticated positive AND forbidden-side-effect negative. If unavailable, mark the real runtime NOT_TESTED.",
             "Deploy one known Steward candidate through the existing delivery path by immutable image identity.",
             "Capture the intended release identity, target, deployment execution, migration result and running container/image identity.",
             "Verify the health endpoint and one representative authenticated Steward API behavior from a client perspective.",
@@ -52,6 +59,8 @@ const practices: Record<string, PracticalContent> = {
         objective: "Make a Steward release change visible enough to support a go/stop/rollback decision without prematurely building the later Reliability observability stack.",
         scenario: "Operators need to correlate a release with immediate system behavior, but Delivery Engineer should establish release evidence rather than jump ahead to full metrics, tracing and SLO infrastructure.",
         instructions: [
+            "Run `release_signals.py`; show that an improved aggregate error rate cannot override an observed integrity violation, and that a tiny post-release sample cannot justify unqualified promotion.",
+            "Record one actual pre/post timestamped signal with request denominators, relevant domain operation and a counterfactual explanation. Simulated metrics are a learning fixture, not a real measured SLO.",
             "Expose or retrieve the currently running Steward release/version and immutable image identity.",
             "Capture a pre-release baseline for health, one critical dependency path and one representative client/API action.",
             "Deploy the candidate and repeat the same checks immediately after the change.",
@@ -66,6 +75,8 @@ const practices: Record<string, PracticalContent> = {
         objective: "Exercise a pre-defined Steward release failure path and prove that recovery decisions depend on state compatibility and known artifacts rather than reflexively rolling back a container.",
         scenario: "A candidate may fail before mutation, after application startup, or after a database migration. The correct response differs depending on what state changed and what remains reversible.",
         instructions: [
+            "Run `failure_decision.py` and identify which outcome means stop before mutation, which can consider reversible application-only recovery and which requires contain/forward repair or missing evidence.",
+            "Inject a scoped non-destructive failure in the authorized test target only, and record actual first failing stage, exact digests, migration/event compatibility, stop event, operator and verified user behavior after recovery. Without a real target, classify recovery NOT_TESTED.",
             "Choose two safe failure scenarios from different stages, such as failed verification before mutation and failure after a compatible migration/configuration change.",
             "Before executing them, classify what can be rolled back, what may need forward repair and which persistent-state assumptions matter.",
             "Trigger one controlled failure and stop the release using the pre-defined criterion.",
@@ -80,6 +91,8 @@ const practices: Record<string, PracticalContent> = {
         objective: "Turn the current Steward release process into an exercised runbook that another competent engineer can follow without relying on tribal knowledge.",
         scenario: "The release system now spans GitLab CI/CD, Nexus, migrations, deployment automation and runtime verification. If the process only works while its author is present, it is not yet an operational capability.",
         instructions: [
+            "Run `preflight_runbook.py`; demonstrate that invalid target, mismatched candidate digest, missing authorization and incompatible schema all prevent *any* deployment event.",
+            "Present the versioned runbook to a genuinely different qualified operator for a previously unrehearsed, safe rehearsal; if an actual operator is not available, record SELF_REVIEW / NOT INDEPENDENTLY VALIDATED.",
             "Write or update a versioned Steward release runbook containing prerequisites, access boundaries, candidate checks, gates, deployment entry point, migration steps, verification and recovery criteria.",
             "For every consequential command or pipeline action, state the expected precondition, success evidence and stop condition.",
             "Execute the runbook from a clean context or have another engineer/clean-session simulation follow it without relying on unstated memory.",
