@@ -128,3 +128,48 @@ The source checker implements an intentionally **limited local DAG executor**. I
 ### Module-4 acceptance status
 
 Author-source reconstruction is complete for the five identified gaps; all thirteen readings remain in the expected learner sequence. Source-derived Python/YAML/unsafe-mutant CI and rendered Chrome/full build must pass on the exact **latest** PR head before TECHNICALLY VERIFIED can be claimed. Full GitLab runner, registry, protected variable, user-owned Steward homelab and uncoached novice gate are NOT TESTED; learner validation remains open.
+
+
+## Fourth Delivery module review — Continuous Delivery and Deployment (canonical module 5)
+
+**Review date:** 2026-11-06. The original `delivery-continuous-delivery-deep.ts` contains exactly **ten named concept readings** in preserved sequence, with corresponding practicals in `delivery-continuous-delivery-quality.ts` and original final four-part lab `continuous-delivery-deployment-lab-automate-steward-api-deployment-and-rollback-001` through `-004`. The previous `delivery-cd-operational-depth.ts` already taught CI/continuous-delivery/deployment distinctions, environment boundaries, ordered automation, approvals and rolling replacement with worked failures, so indiscriminate rewriting of those five would reduce clarity rather than enhance it. The remaining migration, rollback, blue-green, canary and flags concepts had some useful examples but lacked independently executable and falsifiable evidence.
+
+### Real source-first lesson repairs
+
+| Original lesson reading | Instructional gap and correction | Executable learner evidence |
+| --- | --- | --- |
+| `continuous-delivery-deployment-ci-cd-cd-001` | Existing robust distinction between integration, releasable candidate and automatic deployment, plus two contrasting learner scenarios; **preserved** | New final lab still requires real source-to-image and running-service comparison; no fictional deployment |
+| `continuous-delivery-deployment-environment-management-001` | Existing deployment environment as artifact/config/data/secrets/trust boundary; **preserved** | Actual learner environment contract remains unverified without owned homelab |
+| `continuous-delivery-deployment-deployment-automation-001` | Existing ordered stage/negative branch and fail-closed automation explanation; **preserved** | Actual image/roles deployment not inferred from a local simulator |
+| `continuous-delivery-deployment-release-approvals-001` | Strong prior digest-bound approval but tier assumptions not explicit; **added** current GitLab tier/approval caveat, exact digest+environment executable source gate | `promotion_identity.py` rejects digest drift, target drift and fake approval from an authorized actor alone |
+| `continuous-delivery-deployment-database-migrations-001` | Before: broad expand-and-contract narrative; now schema contract across API and workers, compatibility matrix, backfill failure/locking and point of no return | `migration_compatibility.py` runs real disposable SQLite expansion with both readers, then contracts `status` and observes old-read failure. **NOT real Django/Postgres migration** |
+| `continuous-delivery-deployment-rollback-001` | Before: correct high-level warnings; now identify code, migration/data, event and worker versions separately, choose STOP or forward repair instead of blind image revert | `rollback_decision.py` classifies schema failure, missing evidence and irreversible effects, rejecting the digest-only false green |
+| `continuous-delivery-deployment-rolling-deployments-001` | Existing deeper mechanism for readiness, multiple replaceable instances, mixed event versions and lack of single-node availability; **preserved** | Real multi-instance platform remains NOT_TESTED |
+| `continuous-delivery-deployment-blue-green-001` | Before: narrative traffic-switch/HTTP warnings, no real target. Now two-color Docker mechanism, actual loopback image+HTTP exercise, shared-state trap, capacity/compatibility limits | `blue_green_local.sh` builds two different BusyBox images, probes both, gets HTTP 200 from an intentionally broken B, refuses client route to B and leaves active A in a disposable local-only exercise |
+| `continuous-delivery-deployment-canary-001` | Before: warnings that 5% of scarce traffic is weak evidence; now sample bias, matching routes, critical invariants, finite window and off-ramp/side-effect limits | `canary_evidence.py` distinguishes tiny zero-error set, missing critical writes, observed violation and eligible **illustrative** sample; thresholds are NOT real statistical SLO |
+| `continuous-delivery-deployment-feature-flags-001` | Before: deployed-dark/flag removal concept; now mutable operational authority, provider failure/mixed code, unrolled side effects and server authorization distinction | `flagged_side_effects.py` proves already emitted events remain after turning off the flag; never treats flag-off as data rollback |
+
+Five remaining original readings receive **15 full new mechanism/failure/alternative sections** via `delivery-cd-learner-mechanisms.ts`, integrated into the exact original lesson source. The sixth executable example is added in the already deepened Release Approvals reading, and relevant original practical instructions explicitly distinguish executing fixtures from real system claims. Original IDs, workbooks, complete final exercise and level ordering remain unchanged.
+
+### Exact-source executed checks and unsafe mutants
+
+The actual reading factory renders the **unmodified** learner-source programs from `delivery-cd-proofs.ts`. `scripts/check-delivery-cd-proofs.mjs` parses those literal published source strings and executes them, not a separately rewritten model:
+
+1. **SQLite expand/contract:** old reader works during additive expansion; the old SELECT breaks after deliberate column removal. A mutant that omits the contract change must be rejected.
+2. **Rollback decision:** candidate only when image identified, owner authorized, prior schema compatible and effects reconciled. Mutant bypassing schema guard must be rejected.
+3. **Canary evidence:** 10 zero-error requests and insufficient write coverage are NOT_ENOUGH_EVIDENCE; observed integrity violation is STOP. Mutant bypassing sample floor must be rejected.
+4. **Flag lifecycle:** disabling the path stops new executions but does not retract recorded events. Mutant ignoring flag state must be rejected.
+5. **Approval:** recorded digest and target must match; changing approved bytes must block. Mutant bypassing identity check must be rejected.
+6. **Actual Docker local blue-green:** two separately built BusyBox images, host ports bound to `127.0.0.1` (not 0.0.0.0), direct HTTP 200 with different body markers, real separate Docker image IDs; active client route variable remains on A after rejecting broken B. Two unsafe source mutants (route erroneously selects broken B, or absent broken-B evidence) must fail. The shell owns/tears down its own containers, images and temporary workspace using an exit trap. No public port, production proxy, real registry, GitLab, persistent database, CI artifact digest or real Steward deployment is touched.
+
+**Risk of teaching by simulation:** A meaningful local proof establishes a narrow mechanism and can reject a bad candidate decision. It cannot establish a real published image digest, authorized production deployment, runbook/rollback, PostgreSQL concurrency/locking, true canary confidence, a flag-service rollout or a real independent learner's skill. Source publication is not learner validation.
+
+### Browser and independent assessment
+
+The existing real-Chrome Delivery browser test traverses **all 10 original CD reading IDs at 390px**, inspects the right mechanism heading and six copyable code blocks, then traverses **all four original final lab IDs** and verifies reentry after reload. Previous CI, Docker and Configuration Management browser/source tests must remain green. The full 38-test curriculum suite, production build, strict audit and matching-head workflows must all pass before calling this module technically verified.
+
+An independent reviewer (not the author) must privately choose a **different new-domain release** after study, not use the published example. The learner must defend immutable candidate identity, at least one safe/unsafe migration window, authorized promotion, a validated failed deployment, post-rollback behavior across all workers, and a justified decision between direct/rolling/blue-green/canary/flags under a new constraint. Score five dimensions 0–2 each, minimum 8/10 and no zero on destructive-data safety or real evidence. If actual Docker/GitLab/Postgres are absent, the learner should say NOT_TESTED and propose a safe experiment rather than manufacture evidence. The private unseen exercise and real human review are **NOT PERFORMED**.
+
+### Current status
+
+All source edits and regression/browser gates are staged on the Delivery draft branch; only exact-head CI can establish technical verification. Real GitLab protected-environment approvals are tier-gated and cannot be assumed on the learner's self-managed plan: consult [GitLab deployment approvals](https://docs.gitlab.com/ci/environments/deployment_approvals/) and [protected environments](https://docs.gitlab.com/ci/environments/protected_environments/). Docker localhost port publishing follows [Docker run reference](https://docs.docker.com/reference/cli/docker/container/run/). No live external deployment or human assessment has been performed. **Four targeted Delivery modules reviewed out of eleven; Reliability and Quality issues remain separate.**
