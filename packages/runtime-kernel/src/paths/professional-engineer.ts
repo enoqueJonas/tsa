@@ -1,4 +1,5 @@
 import type { LearningPath } from "./learning-path";
+import { professionalDecisionFoundations, capstoneDiscoveryFoundations } from "./professional-engineer-foundations";
 import { capstoneProblemDiscoveryDeepLessons } from "./professional-engineer-capstone-problem-discovery-deep";
 import { capstoneEngineeringProposalDeepLessons } from "./professional-engineer-capstone-engineering-proposal-deep";
 import { capstoneIndependentBuildDeepLessons } from "./professional-engineer-independent-build-deep";
@@ -10,8 +11,8 @@ import { professionalPortfolioReflectionDeepLessons } from "./professional-engin
 // The seven schools' original lesson content is the curriculum. Do not append
 // synthetic "preparation" readings that merely paraphrase a practical.
 // Source-depth teaching belongs in the actual authored lesson before the task.
-export const professionalPractice: LearningPath = ({ id: "professional-practice", title: "Professional Practice and Ethics", lessons: professionalPracticeDeepLessons });
-export const capstoneProblemDiscovery: LearningPath = ({ id: "capstone-problem-discovery", title: "Capstone Problem Discovery", lessons: capstoneProblemDiscoveryDeepLessons });
+export const professionalPractice: LearningPath = ({ id: "professional-practice", title: "Professional Practice and Ethics", lessons: [...professionalDecisionFoundations, ...professionalPracticeDeepLessons] });
+export const capstoneProblemDiscovery: LearningPath = ({ id: "capstone-problem-discovery", title: "Capstone Problem Discovery", lessons: [...capstoneDiscoveryFoundations, ...capstoneProblemDiscoveryDeepLessons] });
 export const capstoneEngineeringProposal: LearningPath = ({ id: "capstone-engineering-proposal", title: "Capstone Engineering Proposal", lessons: capstoneEngineeringProposalDeepLessons });
 export const capstoneIndependentBuild: LearningPath = ({ id: "capstone-independent-build", title: "Independent Build", lessons: capstoneIndependentBuildDeepLessons });
 export const capstoneProductionReadiness: LearningPath = ({ id: "capstone-production-readiness", title: "Production Readiness", lessons: capstoneProductionReadinessDeepLessons });
