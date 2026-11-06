@@ -35,6 +35,10 @@ on:
       - 'packages/runtime-kernel/src/paths/delivery-supply-chain-governance-teaching.ts'
       - 'packages/runtime-kernel/src/paths/delivery-supply-chain-trust-proofs.ts'
       - 'scripts/check-delivery-supply-chain-governance.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-production-schema-evolution-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-schema-evolution-focused-teaching.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-schema-evolution-live-postgres.ts'
+      - 'scripts/check-delivery-schema-evolution-postgres.mjs'
       - '.github/workflows/delivery-ansible-learner-depth.yml'
   push:
     branches:
@@ -87,6 +91,10 @@ jobs:
         run: node scripts/check-delivery-supply-chain-consumption.mjs
       - name: Execute exact proxy, retention, SBOM and signature teaching source with unsafe mutants
         run: node scripts/check-delivery-supply-chain-governance.mjs
+      - name: Run original schema evolution actual PostgreSQL 16 race and four unsafe mutants
+        run: |
+          docker info --format 'Docker {{.ServerVersion}}'
+          node scripts/check-delivery-schema-evolution-postgres.mjs
       - name: Build and check entire curriculum
         run: |
           pnpm install --frozen-lockfile
