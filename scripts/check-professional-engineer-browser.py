@@ -238,6 +238,95 @@ def run():
   }""")
   assert all(activity in persisted for activity in completed),"Legacy original/staged completion IDs lost"
   print("PASS full original 14 proposal readings, three staged gates, preserved final ID and synthetic reload",flush=True)
+  # Entire Module 4 — original 15 authored concepts, six published code
+  # examples, three staged labs and the original two long-lab IDs. Synthetic
+  # completion in isolated IndexedDB tests navigation only, never competence.
+  build_topics=(
+    "start-from-a-blank-repository","establish-engineering-conventions",
+    "model-the-domain","implement-the-system","design-and-evolve-the-data",
+    "build-infrastructure","automate-delivery","build-quality-evidence",
+    "secure-the-system","instrument-the-system",
+    "build-reliability-evidence","operate-internal-dependencies-deliberately",
+    "iterate-on-engineering-decisions","document-significant-decisions",
+    "manage-scope-and-technical-debt",
+  )
+  build_stage_ids=(
+    "capstone-independent-build-stage-first-vertical-slice",
+    "capstone-independent-build-stage-deployment-and-security-boundaries",
+    "capstone-independent-build-stage-operability-recovery-and-reuse",
+  )
+  build_original_labs=(
+    "capstone-independent-build-lab-evaluate-shared-test-capability-001",
+    "capstone-independent-build-lab-deliver-the-first-end-to-end-capstone-release-001",
+  )
+  build_completed=[
+    f"capstone-independent-build-{topic}-{suffix}"
+    for topic in build_topics for suffix in ("001","build")
+  ]
+  for stage in build_stage_ids:
+   build_completed.extend((stage+"-practice",stage+"-check"))
+  build_completed.extend(build_original_labs)
+  assert len(build_completed)==38
+  seed_completed_path(page,"capstone-independent-build",build_completed)
+  build_code_topics={
+    "model-the-domain","design-and-evolve-the-data",
+    "automate-delivery","secure-the-system",
+    "instrument-the-system","build-reliability-evidence"
+  }
+  for index,topic in enumerate(build_topics):
+   aid=f"capstone-independent-build-{topic}-001"
+   deep=BASE+"/?"+urlencode({
+      "view":"curriculum","school":"professional-engineer",
+      "path":"capstone-independent-build","activity":aid
+   })
+   page.goto(deep,wait_until="networkidle")
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   current=page.evaluate("new URLSearchParams(location.search).get('activity')")
+   assert current==aid,f"Independent Build authored deep link lost: {aid} => {current}"
+   content=page.locator("main").last
+   rendered=content.inner_text()
+   assert len(rendered)>=1600,f"Thin Independent Build reading: {aid}, {len(rendered)} chars"
+   assert "Understand the engineering claim before implementation" in rendered,aid
+   assert "Independent application" in rendered,aid
+   if topic in build_code_topics:
+    assert content.get_by_role("button",name="Copy").count()>0,f"Uncopyable actual source: {aid}"
+    assert content.locator("figure pre").count()>0,f"Missing executable source: {aid}"
+   page.set_viewport_size({"width":390,"height":844})
+   assert not page.evaluate("document.documentElement.scrollWidth > innerWidth + 2"),"390px Independent Build horizontal overflow: "+aid
+   if index in (0,2,4,6,8,9,10,14):
+    page.screenshot(path=str(ART/f"independent-build-{index+1}-390.png"),full_page=True)
+   page.set_viewport_size({"width":1440,"height":900})
+   print("PASS original Independent Build reading and mobile:",aid,flush=True)
+  for aid in [stage+"-practice" for stage in build_stage_ids]+[stage+"-check" for stage in build_stage_ids]+list(build_original_labs):
+   page.goto(BASE+"/?"+urlencode({
+     "view":"curriculum","school":"professional-engineer",
+     "path":"capstone-independent-build","activity":aid}),wait_until="networkidle")
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   assert page.evaluate("new URLSearchParams(location.search).get('activity')")==aid,aid
+   assert page.locator("main").last.is_visible(),aid
+  page.reload(wait_until="networkidle")
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==build_original_labs[-1]
+  print("PASS full Independent Build module: 15 source readings, 6 copyable examples, 3 gates and both original labs",flush=True)
+  # Ensure active historical IDs plus new IDs persist; older generated
+  # wrappers are not accepted as learner completion.
+  stored=page.evaluate("""async () => {
+    const db=await new Promise((resolve,reject)=>{
+      const q=indexedDB.open("tsa-academy",5);
+      q.onsuccess=()=>resolve(q.result);
+      q.onerror=()=>reject(q.error);
+    });
+    try {
+      const q=db.transaction("path-progress","readonly")
+        .objectStore("path-progress").get("capstone-independent-build");
+      return await new Promise((resolve,reject)=>{
+        q.onsuccess=()=>resolve(q.result?.completedActivityIds ?? []);
+        q.onerror=()=>reject(q.error);
+      });
+    }finally{db.close();}
+  }""")
+  assert all(aid in stored for aid in build_completed),"Original or stage Independent Build IDs lost on reload"
+  print("PASS Independent Build 38/38 synthetic author-ID persistence (not mastery)",flush=True)
   assert not errors,"Browser console errors: "+str(errors)
   browser.close()
 if __name__=="__main__":run()
