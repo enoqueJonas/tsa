@@ -1,7 +1,7 @@
 // PED-005 Delivery Engineer: concept-specific mechanisms inserted into the five original
 // CI lessons that remained under-explained after the earlier source pass.
 // Source-level instruction, not a claim of a real GitLab/Steward deployment.
-export interface CILearnerSection {heading:string;body:string;}
+export interface CILearnerSection {heading:string;body:string;items?:string[];code?:{language:string;code:string;output?:string}}
 export const ciLearnerMechanisms: Record<string,CILearnerSection[]> = {
   "jobs-stages": [
     {
