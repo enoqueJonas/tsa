@@ -321,5 +321,71 @@ with sync_playwright() as playwright:
     assert "release-engineering" in page.url,"Release module navigation not retained after reload"
     assert not errors,"Browser runtime errors in Release module: "+str(errors)
     print("PASS 6 original Release readings, 6 practices, 4 final labs, protected final review, Chrome 390px and reload",flush=True)
+    # Module 7: verify the ORIGINAL first-five Artifact Supply Chain readings and
+    # their topic-specific practicals. This is a limited source/rendering check,
+    # not a complete twenty-five-reading school certification or learner mastery.
+    supply_topics=(
+        "why-internal-repositories","registries-vs-repositories",
+        "public-private-dependencies","repository-manager-architecture",
+        "hosted-proxy-group","python-pypi-distribution"
+    )
+    # Repository Manager Architecture is already present and preserved; five
+    # reconstructed topics are selected independently of their sequential positions.
+    supply_rebuilt={supply_topics[i] for i in (0,1,2,4,5)}
+    supply_mechanisms={
+        "why-internal-repositories":"Follow an artifact across independent machines",
+        "registries-vs-repositories":"A registry is a protocol contract, not a directory nickname",
+        "public-private-dependencies":"Run real pip candidate selection against two disposable index endpoints",
+        "hosted-proxy-group":"Follow write authority separately from read resolution",
+        "python-pypi-distribution":"Walk from Python project to wheel and installation"
+    }
+    page.goto(BASE+"/?view=curriculum&school=delivery-engineer",wait_until="networkidle")
+    page.get_by_role("button",name=MODULE).first.wait_for(state="visible",timeout=30000)
+    assert page.get_by_role("button",name=MODULE).count()==11
+    page.get_by_role("button",name=MODULE).nth(6).click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    sidebar=page.locator("aside").filter(has=page.get_by_text("Curriculum",exact=True)).first
+    count=sidebar.locator("button").count()
+    assert count>=75,f"Artifact Supply Chain original 25*3 activities missing: {count}"
+    read_seen=set()
+    practice_seen=set()
+    for i in range(count):
+        activity=parse_qs(urlparse(page.url).query).get("activity",[None])[0]
+        if not activity:
+            raise AssertionError(f"Supply-chain page lost activity URL at {i}")
+        for topic in supply_rebuilt:
+            if activity==f"artifact-and-supply-chain-{topic}-001":
+                main=page.locator("main").last
+                content=main.inner_text()
+                assert supply_mechanisms[topic] in content, f"Missing original-topic mechanism: {activity}"
+                assert len(content)>1800, f"Supply-chain reading still too short: {activity}: {len(content)}"
+                if topic=="public-private-dependencies":
+                    assert main.get_by_role("button",name="Copy").count()>=1, "Actual pip fixture not copyable in original reading"
+                    assert "MIXED_INDEX_SELECTED_EXTERNAL_9_9_9" in content, "Expected pip negative control missing"
+                page.set_viewport_size({"width":390,"height":844})
+                assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),f"Supply chain mobile overflow: {activity}"
+                page.set_viewport_size({"width":1440,"height":900})
+                read_seen.add(topic)
+                print("PASS original Supply Chain reading + 390px:",activity,flush=True)
+            if activity==f"artifact-and-supply-chain-{topic}-002":
+                main=page.locator("main").last
+                assert main.is_visible(), "Original applied practical not visible: "+activity
+                assert len(main.inner_text())>450,"Original applied practical has no executable task: "+activity
+                practice_seen.add(topic)
+        if read_seen==supply_rebuilt and practice_seen==supply_rebuilt:
+            break
+        if i<count-1:
+            next_button=page.get_by_role("button",name=NEXT)
+            assert next_button.is_enabled(),f"Supply-chain early learner navigation blocked at {activity}"
+            next_button.click()
+            page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert read_seen==supply_rebuilt,"Missing original Supply Chain reading IDs: "+str(supply_rebuilt-read_seen)
+    assert practice_seen==supply_rebuilt,"Missing original Supply Chain practical IDs: "+str(supply_rebuilt-practice_seen)
+    page.reload(wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert "artifact-and-supply-chain" in page.url,"Supply-chain lesson reentry lost on reload"
+    assert not errors,"Browser runtime errors after Supply Chain traversal: "+str(errors)
+    print("PASS five source-rebuilt original Supply Chain topics, applied practices, 390px and reload",flush=True)
+
     browser.close()
 print("PASS Configuration Management rendered evidence and reload (synthetic navigation only)")
