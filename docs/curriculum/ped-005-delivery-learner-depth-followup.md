@@ -59,3 +59,19 @@ The reviewer presents the following previously unseen scenario *after* the learn
 - **Quality:** sampling `quality-test-analysis-design-deep.ts` shows the prior re-audit executed representative boundary, equivalence/partition, state, and oracle code with negative mutants; source `quality-experiential-depth-v6.ts` includes actual controlled browser defects. The remaining high-value unresolved claim is **uncoached requirement→novel test design and fault diagnosis** against a *different* contract, not another overlay on the same worked example. No candidate's real transfer has yet been assessed. School #328 remains open.
 
 **Disposition:** focus on Delivery one module at a time; do not retitle the other two schools as completed or count CI output as third-party learner competence. School-wide work must not be closed solely on this module's evidence.
+
+
+## Additional Delivery module reviewed — Containers and Docker (canonical path 3)
+
+The existing 15 original Docker concepts are registered in `delivery-containers-docker-deep.ts` and acquire module-specific practicals in `delivery-containers-docker-quality.ts`. Crucially, `delivery-docker-operational-depth.ts` already supplements actual original lessons with deeper worked container/runtime/registry reasoning: namespaces versus cgroups, Docker client/daemon trust and registry digests. These should **not be mechanically rewritten again** simply because their base paragraphs are short. However, the source-published BusyBox evidence originally remained unexecuted by the school audit, so the existing example did not prove that the exact command or the observation contract worked.
+
+**New runtime source check:** `node scripts/check-delivery-docker-runtime.mjs` parses the exact learner-shown Bash block under *Guided observable inspection with a disposable container*, then uses an actual Docker Engine on the CI runner. It observes the real container PID, separate host PID, Linux cgroup-v2 `memory.max` for `--memory=64m` (expected **67108864 bytes**), and cleanup of the temporary detached container. Three wrong implementations must be detected:
+- `--memory=128m` (green process, but **134217728 bytes**, not the required limit);
+- `--memory=0` (no specified finite 64 MiB limit);
+- inspecting `tsa-not-the-lab` (nonzero Docker failure, not proof of the intended container).
+
+The source expressly relies on published `busybox:1.36` and network access to pull it. CI must not silently replace a failed pull with claimed execution. Docker daemon version, host kernel, runtime permission and cross-platform cgroup v1 differences are real boundary constraints; the test deliberately restricts its executable cgroup oracle to a Linux cgroup-v2 runner. This evidence **does not** establish a Rocky Linux homelab, Proxmox, production security boundary, registry digest immutability, real Steward image or human understanding. The example uses a mutable teaching tag, not an approved supply-chain artifact.
+
+The targeted real-Chrome traversal now includes original Docker *Namespaces and cgroups*, *Architecture*, and *Registries* readings at 390px with relevant worked headings and copyable code, in addition to the completed Ansible module review. Earlier Delivery source audit covers the other original Docker topics, which remain outside new independent human validation.
+
+**Current CI status:** the Docker-specific matching-head job must pass before updating this to TECHNICALLY VERIFIED. This remains a bounded second Delivery module review, not confirmation that all 11 paths or the other two schools have reached real learner acceptance.
