@@ -187,3 +187,90 @@ for(const id of Object.keys(buildPrograms)){
  assert.match(mutated.stderr,/AssertionError/,"Unexpected unsafe-mutation failure "+id+": "+mutated.stderr);
  console.log("PASS exact Independent Build "+id+" with unsafe variant rejected");
 }
+
+
+// Full module 5: every original Production Readiness reading remains authored,
+// while a missing accessibility prerequisite and independently reviewed gates
+// are added in sequence. Run EXACT published Python, not a rewritten stand-in.
+const readinessSource=fs.readFileSync(root+"professional-engineer-production-readiness-deep.ts","utf8");
+const readinessLenses=authoredJson(fs.readFileSync(root+"professional-engineer-readiness-teaching.ts","utf8"),"readinessLenses");
+const readinessPrograms=authoredJson(fs.readFileSync(root+"professional-engineer-readiness-proofs.ts","utf8"),"readinessPrograms");
+const readinessOriginalTopics=[...readinessSource.matchAll(/^\s*reading\("([^"]+)",\s*"([^"]+)",/gm)].map(m=>m[1]);
+const readinessExpectedOriginal=[
+ "deployment-readiness","observability","security-assessment","performance-evidence",
+ "reliability-and-failure-testing","backup-and-recovery","runbooks","operational-ownership",
+ "risk-and-control-evidence","dependency-and-supply-chain-readiness",
+ "cost-and-capacity-review","release-decision"
+];
+assert.equal(readinessOriginalTopics.length,13,"Twelve original plus separate accessibility prerequisite expected");
+assert.deepEqual(
+ readinessOriginalTopics.filter(id=>id!=="accessibility-and-human-workflow-readiness"),
+ readinessExpectedOriginal,"Original authored topics must retain order and exact IDs"
+);
+assert.equal(readinessOriginalTopics[3],"accessibility-and-human-workflow-readiness",
+ "A missing accessibility prerequisite must appear before final user-workflow acceptance");
+assert.deepEqual(Object.keys(readinessLenses).sort(),readinessOriginalTopics.slice().sort(),
+ "Every original readiness reading must teach actual mechanisms and failure diagnosis");
+for(const id of readinessOriginalTopics){
+ const lens=readinessLenses[id];
+ const explanation=lens.sections.flatMap(section=>section.paragraphs).join("\n");
+ assert.ok(lens.sections.length>=3,"Shallow readiness mechanisms: "+id);
+ assert.ok(explanation.length>=1350,"Insufficient learner material "+id+": "+explanation.length);
+ assert.ok(lens.sections.every(section=>section.heading && section.paragraphs.length>=2
+    && section.paragraphs.every(p=>p.length>=135)),
+    "At least one readiness mechanism still assumes the learner knows the missing prerequisite: "+id);
+ assert.ok(lens.practice.length>=2 && lens.acceptance.length>=2,
+  "Missing actual system proof/counterexample and oracle: "+id);
+ assert.match(lens.resource.url,/^https:\/\//,"Missing targeted primary reference "+id);
+}
+for(const gate of [
+ "stage-release-observation-and-human-use",
+ "stage-fault-restore-and-operational-ownership",
+ "stage-risk-dependency-cost-and-release-authority"
+])assert.ok(readinessSource.includes('"'+gate+'"'),"Missing staged operational review "+gate);
+for(const stage of [
+ "return [lesson,releaseGate]","return [lesson,recoveryGate]",
+ "return [lesson,decisionGate]"
+])assert.ok(readinessSource.includes(stage),"Incorrect prerequisite sequencing: "+stage);
+assert.ok(readinessSource.includes("lab-run-the-capstone-production-readiness-review-001"),
+ "Original final lab activity ID must remain stable");
+assert.ok(readinessSource.includes("], 95),"),
+ "Original 480-minute lab remains overloaded; it should be stage synthesis");
+assert.ok(readinessSource.includes('type: "code", language: "python", code:program.code'),
+ "The actual reading must render copyable executable example");
+console.log("PASS original 12 Production Readiness topics, accessibility prerequisite, 3 gate checkpoints and preserved final ID");
+
+const readinessMutations={
+ "deployment-readiness":['if sha256(payload).hexdigest() != tested_digest:',"if False:"],
+ "observability":['return user_failure_rate(items) > 0.5',"return False"],
+ "performance-evidence":['return sorted_values[ceil(len(sorted_values) * 0.95) - 1]',"return int(sum(samples) / len(samples))"],
+ "backup-and-recovery":['before_fault.backup(restored)',"original.backup(restored)"],
+ "risk-and-control-evidence":['if any(value == "FAIL" for value in outcomes):',"if False:"],
+ "dependency-and-supply-chain-readiness":['record["license"] != "VERIFIED"','False'],
+ "cost-and-capacity-review":['return FIXED + PER_LOAN * Decimal(loans)',"return FIXED"],
+};
+const readinessExpectedMarkers={
+ "deployment-readiness":["READINESS_DEPLOY_ARTIFACT_AND_MIGRATION_PASS","READINESS_UNSAFE_TAG_GATE_REJECTED"],
+ "observability":["READINESS_HEALTH_GREEN_USER_FAILURE_DETECTED","READINESS_UNSAFE_HEALTH_ONLY_ALERT_EXPOSED"],
+ "performance-evidence":["READINESS_TAIL_AND_EMPTY_SAMPLE_VALIDATED","READINESS_AVERAGE_MASKED_TAIL_EXPOSED"],
+ "backup-and-recovery":["READINESS_PREFAULT_RESTORE_INTEGRITY_PASS","READINESS_LATE_SNAPSHOT_NOT_RECOVERY"],
+ "risk-and-control-evidence":["READINESS_CONTROL_PASS_FAIL_MISSING_DISTINCT","READINESS_ONE_GREEN_UNSAFE_AGGREGATION_EXPOSED"],
+ "dependency-and-supply-chain-readiness":["READINESS_LICENSE_PROVENANCE_VULN_DISTINCT","READINESS_HASH_NOT_LICENSE_EXPOSED"],
+ "cost-and-capacity-review":["READINESS_DECIMAL_COST_THRESHOLD_PASS","READINESS_NEGATIVE_VOLUME_REJECTED","READINESS_IGNORED_USAGE_COST_EXPOSED"],
+};
+assert.deepEqual(Object.keys(readinessPrograms).sort(),Object.keys(readinessMutations).sort(),
+ "Every runnable readiness program must have a targeted unsafe mutation");
+for(const id of Object.keys(readinessPrograms)){
+ const program=readinessPrograms[id];
+ assert.ok(program.caption && program.code && program.expected,"Missing learner-visible program "+id);
+ const verified=python(program.code);
+ assert.equal(verified.status,0,"Original published readiness Python failed "+id+":\n"+verified.stdout+"\n"+verified.stderr);
+ for(const marker of readinessExpectedMarkers[id])
+    assert.ok(verified.stdout.includes(marker),"Learner outcome marker missing "+id+" "+marker);
+ const [source,mutant]=readinessMutations[id];
+ assert.ok(program.code.includes(source),"Mutant source changed "+id);
+ const wrong=python(program.code.replace(source,mutant));
+ assert.notEqual(wrong.status,0,"Unsafe readiness source was not caught by oracle "+id);
+ assert.match(wrong.stderr,/AssertionError/,"Wrong failure reason for readiness "+id+": "+wrong.stderr);
+ console.log("PASS exact Production Readiness "+id+" with unsafe mutation rejected");
+}
