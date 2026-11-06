@@ -24,7 +24,7 @@ The Professional Engineer capstone **must be a second substantial system from a 
 | 3. Capstone Engineering Proposal | `professional-engineer-capstone-engineering-proposal-deep.ts` + `professional-engineer-proposal-teaching.ts` + `professional-engineer-proposal-proofs.ts` | **All 14 original readings and practicals directly remediated** using a consistent explicitly fictional non-Steward case; three executed-source negative models and three independent integration gates; original final ID preserved. Matching-head CI and human transfer distinct |
 | 4. Independent Build | `professional-engineer-independent-build-deep.ts` + `professional-engineer-build-teaching.ts` + `professional-engineer-build-proofs.ts` | **All 15 original readings and practicals source-remediated**; 45 subject-specific mechanism/failure sections; six published executable wrong-case oracles, three new integration gates; both original long-lab IDs preserved. Live system and independent learner evidence remain unverified |
 | 5. Production Readiness | `professional-engineer-production-readiness-deep.ts` + `professional-engineer-readiness-teaching.ts` + `professional-engineer-readiness-proofs.ts` | **All 12 original readings remediated in place**, each with a real verification practical; separate formerly missing accessibility prerequisite added; three integrated operational gates, seven runnable negative-model proofs, original final review ID preserved. Technical CI and human operational validation remain distinct |
-| 6. Engineering Portfolio and Reflective Practice | `professional-engineer-portfolio-reflection-deep.ts` | Authored reflection tasks retained; artifact traceability and independent reviewer authenticity checks **not yet reviewed in this pass** |
+| 6. Engineering Portfolio and Reflective Practice | `professional-engineer-portfolio-reflection-deep.ts` + `professional-engineer-portfolio-teaching.ts` + `professional-engineer-portfolio-proofs.ts` | **Three original lessons directly remediated with preserved reading/practical IDs**; four explicit prerequisite lessons added; 21 differentiated teaching sections; five exact source-run false-claim proofs; two integration gates plus final independent handoff. Actual capstone and human reviewer authenticity remain NOT VALIDATED |
 | 7. Engineering Defence | `professional-engineer-defence-deep.ts` | Authored technical defence retained; scored unseen case, failure diagnosis and uncoached engineer defence **NOT VALIDATED** |
 
 ## First two prerequisite lessons — actual source, negatives, and correct interpretation
@@ -207,3 +207,52 @@ Each has an independent practical and a four-question-style counterfactual refle
 - **Technical confirmation:** exact-head TypeScript, source-derived Python and wrong-answer mutations, full curriculum tests, production build, real Chrome navigation and 390px mobile/progress persistence, and strict audit all required before calling it technically verified. Prior module's passing run cannot validate this head.
 - **Real-world independent capstone, user accessibility review, actual server/IdP/DB, cloud restore, funded release authority, licensing legal review, SLO/cost workload and external assessor:** **NOT VALIDATED/NOT TESTED**. No synthetic CI activity can fill those gaps.
 - **Next authored source module:** Professional Portfolio and Reflection (module 6), followed by Capstone Defence (module 7). Keep PR #403 draft and unmerged until deliberate source review.
+
+## 2026-11-06 — Module 6: Professional Portfolio & Reflection, complete author-source remediation
+
+### Why the original module needed reconstruction
+
+The inherited portfolio had three authored lessons: `evidence-portfolio`, `reflective-practice` and `professional-development`. They contained important broad statements, but did not teach the difference between artifact existence, observed behavior and independent skill; how to establish provenance/authorship; how to reconstruct a cause without hindsight; how to disclose a real achievement safely; or how to conduct a falsifiable unseen peer challenge. Generic screenshots and certificates could satisfy the visible exercise while proving little.
+
+All **three original lesson IDs and six original reading/practical activity IDs** are preserved. Their authored reading and exercise content are deepened directly, **not** via automatically generated prep wrappers.
+
+### Original and added concepts in learner sequence
+
+| Lesson | Status | Core first-principles, wrong decision and transfer evidence |
+| --- | --- | --- |
+| Engineering Evidence Portfolio | Original, remediated | Narrow falsifiable claims; source revision, author's contribution, observed negative case, new-domain transfer vs guided gallery |
+| Claim Calibration, Provenance and Evidence Quality | NEW prerequisite | Artifact link vs behavior proof; test boundary, domain and environment scope; missing negative oracle; overclaimed SQLite-to-production evidence |
+| Reflective Engineering Practice | Original, remediated | Time-of-decision facts vs hindsight, good decisions with bad outcomes, bad decisions with lucky outcomes, measurable future habits |
+| Engineering Decision Reconstruction and Causal Reasoning | NEW prerequisite | Incident timeline, observation vs hypothesis, correlation vs causality, alternative diagnosis and bounded discriminating experiment |
+| Confidentiality, Consent and Responsible Portfolio Publishing | NEW prerequisite | Asset ownership, authorization, privacy/PII/credentials, sanitized vs permitted evidence, synthetic reconstruction without fictitious authorship |
+| Independent Review and Unseen Transfer Challenges | NEW prerequisite | Actual independent reviewer identity, previously unseen domain constraint, new test, 0–2 rubric, dissent, correct NOT VALIDATED classification |
+| Continuing Professional Development | Original, remediated | Role-relevant evidence gaps, guided vs truly independent competence, three achievable applied learning goals and re-testing rather than certification count |
+
+The source `professional-engineer-portfolio-teaching.ts` contains **21 topic-specific mechanism/counterexample/transfer teaching sections** (three per reading). Every practice now requires contribution/authorship, actual source/command/environment/result, negative oracle, disclosure permission and a way to falsify the claim. The fictional cooperative is just a teaching fixture and cannot be submitted as the learner's own independently constructed system.
+
+### Five exact learner-visible executable evidence exercises
+
+`professional-engineer-portfolio-proofs.ts` provides Python programs copied unchanged by the teaching runtime and executed directly by `scripts/check-professional-engineer-depth.mjs`. Each program includes correct observations and an explicit unsafe shortcut; test mutants independently change the actual learner source to make a previously rejected claim look trustworthy.
+
+1. **Evidence Portfolio:** guided/simulated vs independent, complete vs missing negative cases, and false confidence from a link alone.
+2. **Claim Calibration:** actual observed environment vs claimed environment; local SQLite result cannot substantiate production PostgreSQL.
+3. **Causal Reconstruction:** fictional timestamped postmortem, time-of-decision knowledge vs later facts; rejection of hindsight certainty.
+4. **Responsible Disclosure:** ownership, public permission, synthetic reconstruction and redaction; confidential but secret-free material remains WITHHOLD.
+5. **Development Plan:** source, novel applied task, negative oracle, reviewer feedback plan, bounded weekly hours; course-only or infeasible schedules rejected.
+
+**Evidence limits:** local executable classification only illustrates logic. No source program authenticates a real human contribution, establishes legal permission, verifies an actual incident or demonstrates a real outside reviewer.
+
+### Granularity and authentic evaluation
+
+- **Stage A — Authenticate and Calibrate Actual Engineering Evidence:** three traceable claims spanning Steward, the genuinely independently built capstone and one operational/ethical decision. A missing capstone remains NOT_TESTED; deliberately overbroad claims must be downgraded.
+- **Stage B — Reconstruct Decisions, Protect Evidence and Invite Challenge:** real decision chronology, alternative causal explanation, publish/withhold register, genuinely outside reviewer packet and dissent.
+- **Final portfolio handoff lab:** 4–6 strong evidence-backed claims, one dated decision reversal, lawful disclosure ledger, five-dimension real peer scoring (target at least 8/10 with mandatory authenticity/disclosure), three measured 12-month development objectives, handoff to subsequent Capstone Defence module. **No reviewer => NOT INDEPENDENTLY VALIDATED**. This is not a simulated completed defence.
+
+**Expected assembled module: 10 lessons / 19 activities** (7 reading+practice = 14, 2 staged practical+reflection pairs = 4, 1 final handoff practical). CI is configured to check the seven real rendered readings at 390px, five copyable source programs, original six IDs, new gates, final ID and all nineteen synthetic saved-progress IDs. Synthetic saved progress never proves an actual learner performed an activity.
+
+### Current status and next source target
+
+- **Source-remediated:** full module 6 author content including original IDs; independently testable contracts introduced.
+- **Technical verification:** matching-head source-Python and deliberately wrong mutant tests, TypeScript, full cross-school tests, production build, actual Chrome navigation/390px/reload and strict audit required. An earlier green head cannot validate the latest source.
+- **Actual capstone, real workplace evidence, genuine independent reviewer and consent to publish restricted employer artifacts:** NOT VALIDATED. No screenshots or synthetic fixture may be relabeled as independent proof.
+- **Next authored source module:** Professional Engineer `capstone-defence`, module 7/7, followed by school-wide source/CI and independent learner acceptance review. Draft PR #403 remains unmerged.
