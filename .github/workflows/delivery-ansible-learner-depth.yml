@@ -1,4 +1,4 @@
-name: Delivery Engineer source-verified Ansible Docker and CI
+name: Delivery Engineer source-verified Ansible Docker CI and CD
 on:
   pull_request:
     paths:
@@ -12,6 +12,12 @@ on:
       - 'packages/runtime-kernel/src/paths/delivery-ci-dependency-worked.ts'
       - 'scripts/check-delivery-ci-yaml.py'
       - 'scripts/check-delivery-ci-dependency.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-continuous-delivery-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-continuous-delivery-quality.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-cd-operational-depth.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-cd-learner-mechanisms.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-cd-proofs.ts'
+      - 'scripts/check-delivery-cd-proofs.mjs'
       - '.github/workflows/delivery-ansible-learner-depth.yml'
   push:
     branches:
@@ -52,6 +58,8 @@ jobs:
         run: |
           node scripts/check-delivery-ci-dependency.mjs
           python3 scripts/check-delivery-ci-yaml.py
+      - name: Execute exact CD Python and real isolated Docker two-image rehearsal with unsafe decisions
+        run: node scripts/check-delivery-cd-proofs.mjs
       - name: Build and check entire curriculum
         run: |
           pnpm install --frozen-lockfile
@@ -63,7 +71,7 @@ jobs:
         run: |
           python -m pip install playwright==1.58.0
           command -v google-chrome || command -v google-chrome-stable
-      - name: Inspect original Ansible Docker and all CI lessons in Chrome, 390px and reload
+      - name: Inspect original Ansible Docker CI and CD lessons in Chrome, 390px and reload
         run: |
           python -m http.server 4173 --bind 127.0.0.1 --directory apps/web/out > /tmp/tsa-delivery-local-web.log 2>&1 &
           for i in $(seq 1 30); do curl --fail --silent http://127.0.0.1:4173/ >/dev/null && break; sleep 1; done
