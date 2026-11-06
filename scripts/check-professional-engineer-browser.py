@@ -17,6 +17,11 @@ READINGS=(
 def seed_completed_path(page, path_id, completed):
  """Synthetic browser-only prerequisite completion. Never classify as learning."""
  page.goto(BASE+"/?view=curriculum&school=professional-engineer",wait_until="networkidle")
+ # Wait for the real app to create IndexedDB's stores. Opening db v5 from
+ # this test BEFORE the app initializes creates an empty v5 DB without
+ # path-progress (the fixture must never create/migrate the schema itself).
+ page.get_by_role("button",name=re.compile(r"^(Start|Continue|Review) module$")).first.wait_for(
+     state="visible",timeout=30000)
  page.evaluate("""async ({pathId, completed}) => {
    const db=await new Promise((resolve,reject)=>{
      const q=indexedDB.open('tsa-academy',5);
@@ -80,6 +85,8 @@ def run():
   # Simulate an older profile that completed only deleted synthetic preparation.
   # Such IDs are not proof of completion of any authored Professional lesson.
   page.goto(BASE+"/?view=curriculum&school=professional-engineer",wait_until="networkidle")
+  page.get_by_role("button",name=re.compile(r"^(Start|Continue|Review) module$")).first.wait_for(
+      state="visible",timeout=30000)
   page.evaluate("""async () => {
     const db=await new Promise((resolve,reject)=>{
       const request=indexedDB.open('tsa-academy',5);
@@ -164,6 +171,8 @@ def run():
   completed.append("capstone-engineering-proposal-lab-defend-the-capstone-engineering-proposal-001")
   assert len(completed)==35
   page.goto(BASE+"/?view=curriculum&school=professional-engineer",wait_until="networkidle")
+  page.get_by_role("button",name=re.compile(r"^(Start|Continue|Review) module$")).first.wait_for(
+      state="visible",timeout=30000)
   page.evaluate("""async ({completed}) => {
     const db=await new Promise((resolve,reject)=>{
       const q=indexedDB.open("tsa-academy",5);
