@@ -25,7 +25,7 @@ The Professional Engineer capstone **must be a second substantial system from a 
 | 4. Independent Build | `professional-engineer-independent-build-deep.ts` + `professional-engineer-build-teaching.ts` + `professional-engineer-build-proofs.ts` | **All 15 original readings and practicals source-remediated**; 45 subject-specific mechanism/failure sections; six published executable wrong-case oracles, three new integration gates; both original long-lab IDs preserved. Live system and independent learner evidence remain unverified |
 | 5. Production Readiness | `professional-engineer-production-readiness-deep.ts` + `professional-engineer-readiness-teaching.ts` + `professional-engineer-readiness-proofs.ts` | **All 12 original readings remediated in place**, each with a real verification practical; separate formerly missing accessibility prerequisite added; three integrated operational gates, seven runnable negative-model proofs, original final review ID preserved. Technical CI and human operational validation remain distinct |
 | 6. Engineering Portfolio and Reflective Practice | `professional-engineer-portfolio-reflection-deep.ts` + `professional-engineer-portfolio-teaching.ts` + `professional-engineer-portfolio-proofs.ts` | **Three original lessons directly remediated with preserved reading/practical IDs**; four explicit prerequisite lessons added; 21 differentiated teaching sections; five exact source-run false-claim proofs; two integration gates plus final independent handoff. Actual capstone and human reviewer authenticity remain NOT VALIDATED |
-| 7. Engineering Defence | `professional-engineer-defence-deep.ts` | Authored technical defence retained; scored unseen case, failure diagnosis and uncoached engineer defence **NOT VALIDATED** |
+| 7. Engineering Defence | `professional-engineer-defence-deep.ts` + `professional-engineer-defence-teaching.ts` + `professional-engineer-defence-proofs.ts` | **All 12 original Defence readings rewritten in place** with independent negative-case practicals, 36 mechanism/decision sections, six executed learner-oracle programs, three staged unseen-challenge gates and original final milestone ID preserved. Real second capstone and uncoached independent panel remain NOT VALIDATED |
 
 ## First two prerequisite lessons — actual source, negatives, and correct interpretation
 
@@ -256,3 +256,56 @@ The source `professional-engineer-portfolio-teaching.ts` contains **21 topic-spe
 - **Technical verification:** matching-head source-Python and deliberately wrong mutant tests, TypeScript, full cross-school tests, production build, actual Chrome navigation/390px/reload and strict audit required. An earlier green head cannot validate the latest source.
 - **Actual capstone, real workplace evidence, genuine independent reviewer and consent to publish restricted employer artifacts:** NOT VALIDATED. No screenshots or synthetic fixture may be relabeled as independent proof.
 - **Next authored source module:** Professional Engineer `capstone-defence`, module 7/7, followed by school-wide source/CI and independent learner acceptance review. Draft PR #403 remains unmerged.
+
+## 2026-11-06 — Module 7: Capstone Defence, complete original-source remediation
+
+### Original deficiency and author-source disposition
+
+The twelve original readings were brief abstractions followed by a **720-minute single capstone defence milestone**. That final required evidence for system definition, architecture, security, reliability, quality, governance, trade-offs, real operations, reviewer challenge and independent transfer, without teaching what constitutes a falsifiable oral answer, how to interpret failed or absent evidence, or how to act when previously unseen constraints overturn a design.
+
+**All twelve original reading lesson and activity IDs remain exactly as authored**, with their lesson order preserved, but each original reading is now a substantive explanation of mechanism, worked counterexample, trade-off/alternative, executable reference where relevant, and independent transfer exercise. Each now has its own practice requiring a claim, original capstone source/environment/command, real observed positive and negative result, alternate explanation, consequence/authority and reviewer status. A fictional community lending narrative is a **teaching fixture only**, not a completed second capstone, real stakeholders, production system or defense.
+
+The 12 original subject treatments span **36 differentiated technical and ethical sections**:
+- Present Problem and Outcomes — problem vs solution, original observation and validated user benefit vs a delivered feature.
+- Present Architecture — domain, deployment and trust boundaries; denied side effects, ambiguous commits and simpler options.
+- Explain Trade-offs — dated alternatives, cost/reversibility, constraints and an experimentally falsifiable reversal threshold.
+- Present Engineering Evidence — actual source/command/environment and negative-case oracle vs a CI screenshot or link.
+- Defend Quality Decisions — risk-driven test layers, observed database effects and mutation detection, accessibility limits.
+- Defend Security Decisions — signed object-level authorization, nested routes, deployment secrets, real attack paths.
+- Defend Reliability Decisions — user transaction SLI, ambiguous retry, observed restore vs configured backup.
+- Defend Governance Decisions — actual release/risk authority, external dependency license vs byte digest, failed controls remain FAIL.
+- Respond to Challenges — claim/scope/observation/limitation/change-or-test answer structure, contrary evidence and unknowns.
+- State Limitations — defect, unknown, excluded scope and authorized residual risk kept distinct with stop conditions.
+- Propose Future Evolution — evidence-based improvements, no-change and defer options, altered budget/compliance scenario.
+- Reflect on TSA Journey — principled transfer beyond Steward, one dated reversed judgment and bounded development plan.
+
+### Six directly published and mutated executable proofs
+
+`professional-engineer-defence-proofs.ts` supplies actual copyable Python source for:
+
+1. implementation-test evidence ≠ real stakeholder benefit;
+2. forbidden cross-organization action has zero loan/notification effects, unlike a misleading response code;
+3. a source link and local SQLite negative proof ≠ production PostgreSQL claim;
+4. 403/404 status cannot substitute for observing absence of unauthorized state;
+5. a green security test does not erase failed restore, missing license or other governance gates;
+6. a newly removed or failed critical control must change an otherwise positive technical recommendation.
+
+`scripts/check-professional-engineer-depth.mjs` extracts the **exact authored code**, executes it unmodified, confirms deterministic observations and changes one meaningful part of each program to an unsafe alternative. Its actual assertions must reject every mutant for the expected reason. The source scanner also verifies all twelve original IDs, substantial subject explanations, three prerequisite-positioned stages and original final milestone identity.
+
+### Learning and assessment granularity
+
+- **Stage A:** original problem/discovery, actual independent-domain architecture, trade-offs and reproducible positive/negative evidence, plus unseen additional actor/ownership model.
+- **Stage B:** quality/security failures, signed cross-owner negative, recovery evidence, dependency licenses and accountable release authority; a missing critical result must change readiness to DEFER or BLOCKED.
+- **Stage C:** explicit limitations, changed budget/data/identity constraints, actual novel-domain transfer and external assessment readiness.
+
+Each stage is a practical plus an unseen-challenge reflection, inserted after four corresponding original topics. **The original full milestone ID `capstone-defence-professional-engineering-capstone-and-defence-001` is unchanged**, and its original broad requirements remain but now form a **115-minute final synthesis** after staged evidence rather than a single 720-minute task. Real independent reviewers must score authenticity, architectural reasoning, safety diagnostics, new-domain transfer and governance/evolution (five dimensions, 0–2 each), with a target at least 8/10 and no zero for authenticity or safety. **No real panel = NOT INDEPENDENTLY VALIDATED.** An honest failure or defer can be a legitimate outcome; it is not necessary to manufacture successful release or graduation.
+
+**Expected published module: 16 lessons / 31 activities** (12 original readings and new practices = 24, three two-activity stages = 6, original final milestone = 1). Actual Chrome renders all 12 original reading IDs at 390px, verifies copyable source from six readings and all stages, preserves the original final ID and synthetic progress reload. Synthetic completion must never be confused with real learner oral examination.
+
+### Technical and human gates
+
+- **Source authoring:** all twelve original lesson IDs remediated and final split; source-level depth acceptance awaits matching-head CI.
+- **Technical verification:** exact-source executed Python and wrong-answer mutants, runtime-kernel TypeScript, full curriculum suite, production build, Chrome navigation/390px/progress and strict audit, all on the same current commit.
+- **Independent new-domain application, real second-system deployment, authorized security/restore evidence, original field interviews, live assessor identities and external unseen panel scoring:** **NOT VALIDATED / NOT TESTED**. No automatic lesson completion or synthetic reviewer is credible graduation evidence.
+
+**School-wide caution:** modules 3–7 have all original authored readings explicitly remediated, but modules **1 Professional Practice and 2 Capstone Problem Discovery received added foundational lessons and wrapper removal only** in the early PR pass. Their remaining original deep-source readings may still require the same complete per-topic mechanism, failure, novel-transfer and actual rendered validation; a green school build must **not** be called a full school author-depth sign-off until these original sources have been audited/reconstructed. Genuine independent learner/panel validation is a separate gate, always.
