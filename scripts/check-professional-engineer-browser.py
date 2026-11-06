@@ -70,6 +70,106 @@ def run():
    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
    assert page.evaluate("new URLSearchParams(location.search).get('activity')")==expected.removesuffix("-reading")+"-practice"
    print("PASS Professional rendered source, mobile, next-at-top and reload:",expected,flush=True)
+  # Exercise the entire newly remediated proposal module. Progress is seeded
+  # only in this isolated Chromium profile; it is NOT learner acceptance.
+  from urllib.parse import urlencode
+  topics=(
+    "system-context-and-boundaries","domain-and-data-model-proposal",
+    "architecture-proposal","infrastructure-and-hosting-proposal",
+    "delivery-plan","quality-strategy","security-strategy",
+    "reliability-strategy","operational-model","cost-model",
+    "governance-approach","dependency-and-internal-platform-decisions",
+    "implementation-milestones","architecture-and-risk-review"
+  )
+  stage_ids=(
+    "capstone-engineering-proposal-stage-domain-boundary-decision",
+    "capstone-engineering-proposal-stage-quality-security-operations",
+    "capstone-engineering-proposal-stage-cost-governance-review"
+  )
+  completed=[]
+  for topic in topics:
+   completed.extend((f"capstone-engineering-proposal-{topic}-001",
+                     f"capstone-engineering-proposal-{topic}-application"))
+  for stage in stage_ids:
+   completed.extend((stage+"-practice",stage+"-check"))
+  completed.append("capstone-engineering-proposal-lab-defend-the-capstone-engineering-proposal-001")
+  assert len(completed)==35
+  page.goto(BASE+"/?view=curriculum&school=professional-engineer",wait_until="networkidle")
+  page.evaluate("""async ({completed}) => {
+    const db=await new Promise((resolve,reject)=>{
+      const q=indexedDB.open("tsa-academy",5);
+      q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error);
+    });
+    try {
+      const tx=db.transaction("path-progress","readwrite");
+      const now=new Date().toISOString();
+      tx.objectStore("path-progress").put({
+        schemaVersion:5,pathId:"capstone-engineering-proposal",
+        currentActivityId:completed[0],completedActivityIds:completed,
+        reflectionResponses:Object.fromEntries(
+          completed.filter(id=>id.endsWith("-check"))
+                   .map(id=>[id,"SYNTHETIC browser fixture; no independent learner"])),
+        startedAt:now,updatedAt:now,
+      });
+      await new Promise((resolve,reject)=>{
+        tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);
+        tx.onabort=()=>reject(tx.error);
+      });
+    } finally {db.close();}
+  }""",{"completed":completed})
+  page.reload(wait_until="networkidle")
+  for index,topic in enumerate(topics):
+   activity=f"capstone-engineering-proposal-{topic}-001"
+   direct=BASE+"/?"+urlencode({
+     "view":"curriculum","school":"professional-engineer",
+     "path":"capstone-engineering-proposal","activity":activity})
+   page.goto(direct,wait_until="networkidle")
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   current=page.evaluate("new URLSearchParams(location.search).get('activity')")
+   assert current==activity,f"Original proposal ID not navigable: {activity} => {current}"
+   main=page.locator("main").last
+   body=main.inner_text()
+   assert len(body)>=1800,f"Original proposal reading still thin: {activity} = {len(body)} chars"
+   assert "Mechanism, a worked decision, failure and counterargument" in body,activity
+   assert "Transfer beyond this fictional scenario" in body,activity
+   expect_code=topic in ("domain-and-data-model-proposal","delivery-plan","cost-model")
+   if expect_code:
+    assert main.get_by_role("button",name="Copy").count()>0,"Source code missing: "+topic
+    assert main.locator("figure pre").count()>0,"Code text not rendered: "+topic
+   page.set_viewport_size({"width":390,"height":844})
+   assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),"Proposal 390px overflow: "+activity
+   if index in (0,1,4,9,13):
+    page.screenshot(path=str(ART/f"proposal-{index+1}-390.png"),full_page=True)
+   page.set_viewport_size({"width":1440,"height":900})
+   print("PASS original proposal reading + mobile:",activity,flush=True)
+  for activity in [stage+"-practice" for stage in stage_ids]+[
+    "capstone-engineering-proposal-lab-defend-the-capstone-engineering-proposal-001"]:
+   page.goto(BASE+"/?"+urlencode({
+     "view":"curriculum","school":"professional-engineer",
+     "path":"capstone-engineering-proposal","activity":activity}),wait_until="networkidle")
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   assert page.evaluate("new URLSearchParams(location.search).get('activity')")==activity,activity
+   assert page.locator("main").last.is_visible(),activity
+  page.reload(wait_until="networkidle")
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==(
+    "capstone-engineering-proposal-lab-defend-the-capstone-engineering-proposal-001")
+  persisted=page.evaluate("""async () => {
+    const db=await new Promise((resolve,reject)=>{
+      const q=indexedDB.open("tsa-academy",5);
+      q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error);
+    });
+    try {
+      const q=db.transaction("path-progress","readonly")
+                .objectStore("path-progress").get("capstone-engineering-proposal");
+      return await new Promise((resolve,reject)=>{
+        q.onsuccess=()=>resolve(q.result?.completedActivityIds ?? []);
+        q.onerror=()=>reject(q.error);
+      });
+    } finally {db.close();}
+  }""")
+  assert all(activity in persisted for activity in completed),"Legacy original/staged completion IDs lost"
+  print("PASS full original 14 proposal readings, three staged gates, preserved final ID and synthetic reload",flush=True)
   assert not errors,"Browser console errors: "+str(errors)
   browser.close()
 if __name__=="__main__":run()
