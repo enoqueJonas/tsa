@@ -1,17 +1,63 @@
 import type { Activity } from "../activities";
 import type { Lesson } from "./lesson";
+import type { LessonBlock } from "../activities/content";
+import { proposalLenses } from "./professional-engineer-proposal-teaching";
+import { proposalPrograms } from "./professional-engineer-proposal-proofs";
 
 const pathId = "capstone-engineering-proposal";
 const scenario = "Use the approved Capstone Discovery Brief as the source of truth. The proposal must turn understood outcomes, constraints, quality attributes, risks and evidence needs into a coherent engineering approach for a new system. Do not copy Steward architecture or select technologies because TSA previously used them.";
 const completion = ["The proposal traces important engineering choices to discovered needs, constraints, risks or evidence requirements.", "Alternatives, trade-offs, assumptions and unresolved risks are explicit rather than hidden behind diagrams or tool names.", "The proposal is sufficiently concrete to guide an independent build while remaining revisable when implementation evidence disproves assumptions."];
 
 function reading(id: string, title: string, body: string, practice: string[]): Lesson {
-    const readingActivity: Activity = { id: `${pathId}-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: `${body}\n\nReview standard: explain why the proposal is appropriate for this capstone, what evidence supports it, what alternatives were considered, and what would cause the decision to change.` } };
-    const applicationActivity: Activity = { id: `${pathId}-${id}-application`, title: `Proposal work: ${title}`, estimatedMinutes: 50, content: { type: "practical", objective: `Produce the ${title} portion of the evolving capstone proposal from discovery evidence.`, scenario, instructions: [...practice, "Link the result to discovery evidence and record at least one assumption, rejected alternative or reversal trigger where material.", "Update the proposal rather than creating a disconnected exercise artifact."], deliverables: [`${title} proposal artifact`, "Discovery/evidence trace", "Assumption, alternative or reversal record"], completionCriteria: completion } };
+    // Remediate the REAL authored reading. Do not inject generic preparation
+    // activities before the practical or replace its stable activity IDs.
+    const lens = proposalLenses[id];
+    if (!lens) throw new Error("Missing original proposal instructional evidence: " + id);
+    const blocks: LessonBlock[] = [
+        { type: "paragraph", text: body },
+        { type: "heading", id: "full-mechanism", text: "Mechanism, a worked decision, failure and counterargument", level: 2 },
+    ];
+    for (const [index, section] of lens.sections.entries()) {
+        blocks.push({ type: "heading", id: "worked-section-" + (index + 1), text: section.title, level: 2 });
+        for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
+    }
+    const program = proposalPrograms[id];
+    if (program) {
+        blocks.push({ type: "heading", id: "executable-proof", text: "Run and challenge an executable example", level: 2 });
+        blocks.push({ type: "code", language: "python", code: program.code, caption: program.caption });
+        blocks.push({ type: "paragraph", text: program.expected });
+    }
+    blocks.push({ type: "heading", id: "transfer-to-your-capstone", text: "Transfer beyond this fictional scenario", level: 2 });
+    blocks.push({ type: "paragraph", text: "The community tool-lending example is an explicitly fictional teaching fixture. Do not present its users, volumes, decisions, prices or constraints as observed research. Replace it with your NEW independent capstone domain, cite discovery evidence, and preserve uncertainty. A correct worked example is not a capstone deliverable." });
+    blocks.push({ type: "resources", title: "Targeted further reading", resources: [lens.resource] });
+    const readingActivity: Activity = {
+        id: `${pathId}-${id}-001`, title, estimatedMinutes: 55,
+        content: {
+            type: "reading",
+            body: blocks.filter((block) => block.type === "paragraph").map((block) => block.text).join("\n\n"),
+            blocks,
+        },
+    };
+    const applicationActivity: Activity = {
+        id: `${pathId}-${id}-application`, title: `Proposal work: ${title}`, estimatedMinutes: 70,
+        content: {
+            type: "practical",
+            objective: `Produce the ${title} portion of the evolving capstone proposal from discovery evidence.`,
+            scenario,
+            instructions: [
+                ...practice,
+                ...lens.practice,
+                "Link this section to a discoverable requirement and one actual source of evidence. If the evidence is missing, mark it NOT TESTED / ASSUMPTION; never fill the gap with the fictional worked fixture.",
+                "Revise the SINGLE evolving proposal artifact, not a disconnected exercise file. Preserve a rejected alternative and explicit revisit trigger.",
+            ],
+            deliverables: [`${title} proposal artifact`, "Discovery evidence and claim-to-decision trace", "Negative case with expected failure", "Rejected alternative and revisit condition"],
+            completionCriteria: [...completion, ...lens.acceptance],
+        },
+    };
     return { id: `${pathId}-${id}`, title, activities: [readingActivity, applicationActivity] };
 }
 
-export const capstoneEngineeringProposalDeepLessons: Lesson[] = [
+const originalProposalLessons: Lesson[] = [
     reading("system-context-and-boundaries", "System Context and Boundaries", "Define what the system is responsible for, what remains outside it, who or what interacts with it, and which external dependencies cross the boundary. Boundaries are responsibility decisions, not merely boxes on a diagram. A useful context view exposes actors, external systems, trust/dependency relationships and ownership boundaries without prematurely decomposing the internals.", ["Create a solution-neutral context diagram from the Discovery Brief.", "State system responsibilities and explicit exclusions.", "Mark external dependencies, owners and assumptions that could invalidate the boundary."]),
     reading("domain-and-data-model-proposal", "Domain and Data Model Proposal", "Translate the problem language into a proposed domain model and information model. Identify concepts, identities, relationships, invariants, lifecycle states, ownership and data sensitivity. Do not start with database tables. The proposal should explain where consistency matters, what data is authoritative, what can be derived and which unknowns require validation during implementation.", ["Build a domain glossary and conceptual model.", "Identify key invariants and lifecycle transitions.", "Classify important data, ownership, retention assumptions and consistency needs."]),
     reading("architecture-proposal", "Architecture Proposal", "Architecture is the set of consequential structural decisions needed to satisfy the capstone's quality attributes and constraints. Prefer the simplest structure that credibly meets current evidence. Compare realistic alternatives, including a deliberately simple option, and resist introducing services, queues, caches or distributed boundaries merely to demonstrate them.", ["Propose the smallest credible architecture and at least one alternative.", "Trace major structural choices to quality attributes and risks.", "Record rejected complexity and the evidence that would justify adding it later."]),
@@ -29,6 +75,88 @@ export const capstoneEngineeringProposalDeepLessons: Lesson[] = [
     {
         id: `${pathId}-lab-defend-the-capstone-engineering-proposal`,
         title: "Lab: Defend the Capstone Engineering Proposal",
-        activities: [{ id: `${pathId}-lab-defend-the-capstone-engineering-proposal-001`, title: "Lab: Defend the Capstone Engineering Proposal", estimatedMinutes: 420, content: { type: "practical", objective: "Produce and defend a coherent engineering proposal that turns the approved discovery evidence into an implementable, risk-aware plan without copying Steward.", scenario, instructions: ["Phase 1 — Build the proposal: context/boundaries, domain/data model, architecture, infrastructure, delivery, quality, security, reliability and operations.", "Phase 2 — Make economics and stewardship explicit: cost model, governance, dependency/internal-platform decisions, implementation milestones and risk ownership.", "Phase 3 — Conduct an adversarial architecture-and-risk review. Challenge assumptions, complexity, evidence gaps, failure/recovery claims, cost and operational feasibility.", "Revise the proposal from review evidence. Record at least one meaningful rejected alternative and at least one deliberate simplicity/retain-current-choice decision.", "Produce a final go, conditional-go or redesign decision for entering Independent Build, with unresolved assumptions and validation experiments visible."], deliverables: ["Capstone engineering proposal", "System context and domain/data model", "Architecture and infrastructure decision set", "Delivery, quality, security and reliability strategies", "Operational and cost model", "Governance and dependency decisions", "Implementation milestone plan", "Architecture/risk review record and final decision"], completionCriteria: completion } }],
+        activities: [{ id: `${pathId}-lab-defend-the-capstone-engineering-proposal-001`, title: "Lab: Defend the Capstone Engineering Proposal", estimatedMinutes: 85, content: { type: "practical", objective: "Produce and defend a coherent engineering proposal that turns the approved discovery evidence into an implementable, risk-aware plan without copying Steward.", scenario, instructions: ["Phase 1 — Build the proposal: context/boundaries, domain/data model, architecture, infrastructure, delivery, quality, security, reliability and operations.", "Phase 2 — Make economics and stewardship explicit: cost model, governance, dependency/internal-platform decisions, implementation milestones and risk ownership.", "Phase 3 — Conduct an adversarial architecture-and-risk review. Challenge assumptions, complexity, evidence gaps, failure/recovery claims, cost and operational feasibility.", "Revise the proposal from review evidence. Record at least one meaningful rejected alternative and at least one deliberate simplicity/retain-current-choice decision.", "Produce a final go, conditional-go or redesign decision for entering Independent Build, with unresolved assumptions and validation experiments visible."], deliverables: ["Capstone engineering proposal", "System context and domain/data model", "Architecture and infrastructure decision set", "Delivery, quality, security and reliability strategies", "Operational and cost model", "Governance and dependency decisions", "Implementation milestone plan", "Architecture/risk review record and final decision"], completionCriteria: completion } }],
     },
 ];
+
+function proposalGate(id: string, title: string, objective: string, instructions: string[], acceptance: string[], questions: string[]): Lesson {
+    const stableId = pathId + "-" + id;
+    return {
+        id: stableId,
+        title,
+        activities: [
+            {
+                id: stableId + "-practice",
+                title: "Integrated evidence: " + title,
+                estimatedMinutes: 105,
+                content: {
+                    type: "practical",
+                    objective,
+                    scenario: "Integrate the chapters already taught in the ONE independent, non-Steward capstone proposal. The community tool-lending narrative is an example only. Prefer source evidence from your own newly discovered domain.",
+                    instructions,
+                    deliverables: ["One updated capstone proposal, not duplicate files", "Traceable positive and rejected counterexample", "Evidence/unknown/owner matrix", "Decisions and explicit revisit triggers"],
+                    completionCriteria: [
+                        ...acceptance,
+                        "No claim is promoted from proposed or simulated to VERIFIED without a real matching execution or primary evidence.",
+                        "The reviewer can reconstruct both an accepted and rejected decision without oral explanation.",
+                    ],
+                },
+            },
+            {
+                id: stableId + "-check",
+                title: "Counterfactual check: " + title,
+                estimatedMinutes: 15,
+                content: { type: "reflection", prompt: questions.map((q, i) => (i + 1) + ". " + q).join("\n") },
+            },
+        ],
+    };
+}
+const boundaryGate = proposalGate(
+    "stage-domain-boundary-decision",
+    "Stage A: Domain, Architecture and Hosting Proof",
+    "Produce a single trace from stakeholder evidence to domain invariant, system boundary, hosting responsibility and a defensible architecture choice.",
+    [
+        "Choose one high-consequence action in your new domain; identify the authoritative data owner, actor permissions, state transition and consistency requirement.",
+        "Draw a system-context view and a separate deployment view; explain which details each one deliberately excludes.",
+        "Compare a simple modular deployment to an alternative and document what measured need could reverse your choice.",
+        "Model an external dependency timeout and a concurrent update. Show where invalid state could appear and which data/application boundary must stop it.",
+        "Attach an evidence table with one demonstrated fact, one stated assumption and one excluded capability.",
+    ],
+    ["Domain terms and deployment components are not conflated.", "One invalid-state scenario has an observable rejection condition, not merely a diagram."],
+    ["Which actual discovery evidence motivates this boundary?", "How would two concurrent clients expose an invalid shortcut?", "What result would cause you to abandon the simpler architecture?"]
+);
+const deliveryGate = proposalGate(
+    "stage-quality-security-operations",
+    "Stage B: Delivery, Quality, Security and Operations Proof",
+    "Integrate the implementation's delivery and operating safety claims into one falsifiable path.",
+    [
+        "Select a consequential change that affects persistence or permissions; trace source revision, artifact identity, migrations, deployment and post-deploy verification.",
+        "Name a normal authorized request and a signed unauthorized request, including expected database side effects and logs.",
+        "Identify one ambiguous network/commit failure and define how retries avoid duplicate domain effects.",
+        "Show a recovery objective and a restore drill whose current result is PASS, FAIL or NOT TESTED with an actual evidence source.",
+        "Show who owns diagnosis, who can authorize a stop/promotion decision and what is never permitted to be mislabeled as passing.",
+    ],
+    ["Every proposed gate has a producing verification action and a failure response.", "A failed or missing critical recovery result prevents a false technical go decision."],
+    ["Why does a green unit suite fail to establish safe deployment?", "Which signed request proves cross-ownership denial?", "What evidence distinguishes rollback from a recoverable forward migration?"]
+);
+const decisionGate = proposalGate(
+    "stage-cost-governance-review",
+    "Stage C: Cost, Dependencies, Governance and Counterfactual Review",
+    "Challenge the combined capstone proposal's economics, dependencies, accountability and milestone sequencing.",
+    [
+        "Present a bounded monthly cost model with units, labor omissions and two volume/cost sensitivities. Recalculate one adverse scenario.",
+        "Trace one external or internal package dependency to its actual consumer and interface. Reject an unearned tsa-test-core or steward-common dependency unless its real release/consumer evidence exists.",
+        "Replace a layers-only implementation plan with three demonstrable vertical increments, each with a negative oracle.",
+        "Have a reviewer challenge one authority/permission assumption, one outage/recovery promise and one hidden operational cost. Mark SELF-REVIEW if no independent reviewer participated.",
+        "Record GO for scoped build investigation, CONDITIONAL GO with an evidence owner, or REDESIGN. Never confuse permission to begin implementation with production approval.",
+    ],
+    ["A changed price, user load or dependency failure could realistically reverse at least one choice.", "The decision record retains an unsupported claim as FAIL or NOT TESTED, not PASS."],
+    ["What price or workload change would overturn the baseline?", "Which dependency exists only as a hypothetical future package?", "How would an unseen reviewer find and disprove a hidden premise?"]
+);
+
+export const capstoneEngineeringProposalDeepLessons: Lesson[] = originalProposalLessons.flatMap((lesson, index) => {
+    if (index === 3) return [lesson, boundaryGate];
+    if (index === 8) return [lesson, deliveryGate];
+    if (index === 13) return [lesson, decisionGate];
+    return [lesson];
+});
