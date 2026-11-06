@@ -35,7 +35,14 @@ for (const symbol of schoolAggregators) {
 
 // Jenkins is intentionally retained only in the bounded legacy-to-GitLab migration exercise.
 // Historical curriculum audit documents may also describe the migration and are not active runtime architecture.
-const jenkinsRuntimeAllowlist = new Set(["delivery-migration-exercises-deep.ts", "technical-stewardship-journey.ts"]);
+// The two additions below are imported ONLY into the existing bounded migration
+// exercise. They contain fictional legacy fixtures, not a supported CI runtime.
+const jenkinsRuntimeAllowlist = new Set([
+  "delivery-migration-exercises-deep.ts",
+  "delivery-ci-migration-proof.ts",
+  "delivery-ci-migration-teaching.ts",
+  "technical-stewardship-journey.ts",
+]);
 for (const [file, source] of sources) {
   if (/\bJenkins(?:file)?\b/i.test(source) && !jenkinsRuntimeAllowlist.has(file)) {
     failures.push(`non-canonical Jenkins runtime reference: ${file}`);
@@ -52,6 +59,12 @@ if (!deliveryConfigExamples.includes("ansible.builtin.dnf")) {
 }
 
 const migrationExercise = sources.get("delivery-migration-exercises-deep.ts") ?? "";
+for (const boundedFixture of ["delivery-ci-migration-proof", "delivery-ci-migration-teaching"]) {
+  if (!migrationExercise.includes(`from "./${boundedFixture}"`)) {
+    failures.push(`Legacy CI migration fixture not owned by canonical exercise: ${boundedFixture}`);
+  }
+}
+
 if (!/GitLab CI\/CD/.test(migrationExercise) || !/Jenkins/.test(migrationExercise)) {
   failures.push("legacy CI migration exercise must explicitly preserve Jenkins-to-GitLab migration semantics");
 }
