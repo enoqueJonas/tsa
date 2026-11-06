@@ -24,6 +24,7 @@ with sync_playwright() as playwright:
     page.on("pageerror",lambda err:errors.append(str(err)))
     page.goto(BASE+"/?view=curriculum&school=delivery-engineer",wait_until="networkidle")
     buttons=page.get_by_role("button",name=MODULE)
+    buttons.first.wait_for(state="visible",timeout=30000)
     assert buttons.count()==11,"Expected 11 Delivery Engineer modules"
     buttons.nth(5).click()  # sixth canonical module: Configuration Management
     page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
@@ -69,6 +70,7 @@ with sync_playwright() as playwright:
         ("A registry reference has multiple layers of identity",False),
     }
     page.goto(BASE+"/?view=curriculum&school=delivery-engineer",wait_until="networkidle")
+    page.get_by_role("button",name=MODULE).first.wait_for(state="visible",timeout=30000)
     page.get_by_role("button",name=MODULE).nth(2).click()
     page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
     aside=page.locator("aside").filter(has=page.get_by_text("Curriculum",exact=True)).first
