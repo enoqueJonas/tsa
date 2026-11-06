@@ -54,6 +54,10 @@ export const cdOperationalDepthById: Record<string, DeliveryDeepSection[]> = {
       "body": "A release candidate passes CI and API smoke tests, but the deployment would contract an old database column used by the current RabbitMQ consumer. The approver should reject promotion until compatibility evidence exists; selecting a green badge is not approval. In a genuine emergency, an explicit risk exception may be recorded with a bounded scope and empowered decision maker, but it must not silently disable the pipeline's future failure gate. Explain why an operator who can self-approve and publish unrestricted artifacts is a separation-of-duties risk even when all tooling is configured correctly."
     },
     {
+      "heading": "GitLab deployment approvals are not automatically available on every self-managed tier",
+      "body": "GitLab protected-environment deployment approvals are a tiered feature (Premium/Ultimate under current GitLab documentation), not a capability the learner can assume in an arbitrary self-managed Free installation. Even when configured, approval and the manual action that starts the deployment are distinct; permission to deploy to a protected environment must be checked on the actual target. If the homelab tier lacks this mechanism, record a genuine authorized, out-of-band approval with immutable release identity and an access-restricted manual deployment job, rather than falsely claiming GitLab enforced an approval rule. A self-clicked Continue button does not demonstrate separation of duties or authorized production approval."
+    },
+    {
       "heading": "Independent exercise",
       "body": "Write a two-paragraph approval decision for a fictional Steward release with a passing build, an unverified outbox consumer and an urgent security fix. Specify which evidence supports approval, which gaps block it, and what narrowly scoped alternative (for example a constrained forward fix with immediate verification) could be defensible if the risk owner explicitly accepts it."
     }
