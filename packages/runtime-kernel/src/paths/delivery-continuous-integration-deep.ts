@@ -2,22 +2,30 @@ import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { ciDependencyWorked } from "./delivery-ci-dependency-worked";
 import { ciOperationalDepthById } from "./delivery-ci-operational-depth";
+import { ciLearnerMechanisms } from "./delivery-ci-learner-mechanisms";
 
 const gha: LearningResource = { title: "GitHub Actions documentation (comparison only)", url: "https://docs.github.com/actions" };
 const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
 const docker: LearningResource = { title: "Docker documentation", url: "https://docs.docker.com/" };
+const sourceFocusedReferences: Record<string, LearningResource> = {
+    "jobs-stages": {title:"GitLab: needs dependency DAG and optional prerequisites",url:"https://docs.gitlab.com/ci/yaml/needs/"},
+    "caching": {title:"GitLab: cache keys, scope and cache versus artifacts",url:"https://docs.gitlab.com/ci/caching/"},
+    "artifacts": {title:"GitLab: job artifact transfer and retention",url:"https://docs.gitlab.com/ci/jobs/job_artifacts/"},
+    "quality-gates": {title:"GitLab: rules, failure and job eligibility",url:"https://docs.gitlab.com/ci/jobs/job_rules/"},
+};
 
-function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string; output?: string } }>, resources: LearningResource[] = [gha]): Lesson {
+
+function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string; output?: string } }>, resources: LearningResource[] = [gitlab, gha]): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
     const realReadingSections = id === "jobs-stages" ? [...sections, ...ciDependencyWorked] : sections;
-    for (const section of [...realReadingSections, ...(ciOperationalDepthById[id] ?? [])]) {
+    for (const section of [...realReadingSections, ...(ciOperationalDepthById[id] ?? []), ...(ciLearnerMechanisms[id] ?? [])]) {
         const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
         blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
         if (section.items) blocks.push({ type: "list", items: section.items });
         if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code, output: section.code.output });
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward CI checkpoint", body: "Apply this concept to Steward's current source-to-image path. Ask what evidence the pipeline should produce, what failure should stop promotion, and whether another engineer could understand the result without rerunning the job manually." });
-    blocks.push({ type: "resources", title: "Continue learning", resources });
+    blocks.push({ type: "resources", title: "Reference the mechanism, then apply it", resources: [...(sourceFocusedReferences[id] ? [sourceFocusedReferences[id]] : []), ...resources] });
     return { id: `continuous-integration-${id}`, title, activities: [{ id: `continuous-integration-${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body: blocks.filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || intro, blocks } }] };
 }
 

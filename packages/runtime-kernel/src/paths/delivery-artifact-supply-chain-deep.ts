@@ -1,6 +1,11 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { supplyChainDepthById } from "./delivery-supply-chain-depth";
+import { supplyChainResolutionTeaching, supplyChainResolutionPractices } from "./delivery-supply-chain-resolution-teaching";
+import { supplyChainOperationalSections, supplyChainOperationalPractices } from "./delivery-supply-chain-operational-teaching";
+import { supplyChainConsumptionTeaching, supplyChainConsumptionPractices } from "./delivery-supply-chain-consumption-teaching";
+import { supplyChainGovernanceTeaching, supplyChainGovernancePractices } from "./delivery-supply-chain-governance-teaching";
+import { supplyChainTrustExamples } from "./delivery-supply-chain-trust-proofs";
 
 const nexusDocs: LearningResource = { title: "Sonatype Nexus Repository documentation", url: "https://help.sonatype.com/en/sonatype-nexus-repository.html" };
 const packaging: LearningResource = { title: "Python Packaging User Guide", url: "https://packaging.python.org/" };
@@ -53,7 +58,13 @@ function richLesson(spec: LessonSpec): Lesson {
     const contract = practicalContracts[spec.id];
     if (!contract) throw new Error(`Missing Artifact Supply Chain practical contract: ${spec.id}`);
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    for (const section of [...spec.sections, ...(supplyChainDepthById[spec.id] ?? [])]) {
+    const governanceSections = (supplyChainGovernanceTeaching[spec.id] ?? []).map((section, index) => {
+        const example = supplyChainTrustExamples[spec.id];
+        return index === 1 && example
+            ? { ...section, code: { language: example.language, caption: example.caption, code: example.code } }
+            : section;
+    });
+    for (const section of [...spec.sections, ...(supplyChainResolutionTeaching[spec.id] ?? []), ...(supplyChainOperationalSections[spec.id] ?? []), ...(supplyChainConsumptionTeaching[spec.id] ?? []), ...governanceSections, ...(supplyChainDepthById[spec.id] ?? [])]) {
         blocks.push({ type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.code, caption: section.code.caption });
@@ -79,7 +90,7 @@ function richLesson(spec: LessonSpec): Lesson {
                     type: "practical",
                     objective: contract.objective,
                     scenario: "Use the existing Steward API, homelab, CI pipeline and internal-package work. Keep the exercise inside the Delivery Engineer boundary rather than prematurely solving later security or reliability work.",
-                    instructions: spec.practice,
+                    instructions: [...spec.practice, ...(supplyChainResolutionPractices[spec.id] ?? []), ...(supplyChainOperationalPractices[spec.id] ?? []), ...(supplyChainConsumptionPractices[spec.id] ?? []), ...(supplyChainGovernancePractices[spec.id] ?? [])],
                     deliverables: contract.deliverables,
                     completionCriteria: contract.completionCriteria,
                 },

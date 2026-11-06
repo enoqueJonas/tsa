@@ -1,6 +1,8 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { cdOperationalDepthById } from "./delivery-cd-operational-depth";
+import { cdLearnerMechanisms } from "./delivery-cd-learner-mechanisms";
+import { cdProofs } from "./delivery-cd-proofs";
 
 const gitlabEnvironments: LearningResource = { title: "GitLab deployment environments", url: "https://docs.gitlab.com/ci/environments/" };
 const djangoMigrations: LearningResource = { title: "Django migrations", url: "https://docs.djangoproject.com/en/stable/topics/migrations/" };
@@ -21,6 +23,25 @@ function richLesson(
         blocks.push({ type: "paragraph", text: section.body });
         if (section.items) blocks.push({ type: "list", items: section.items });
         if (section.code) blocks.push({ type: "code", language: section.code.language, code: section.code.value });
+    }
+    const lens = cdLearnerMechanisms[id];
+    if (lens) {
+        blocks.push({ type: "heading", id: "deployment-proof-boundary", text: "What this claim does and does not establish", level: 2 });
+        blocks.push({ type: "paragraph", text: "The following local examples are explicitly fictional learning fixtures, not a released Steward system, a GitLab Runner execution, a verified production migration, a real user experiment or authorized release approval. Each script must be executed on a safe disposable target. Apply the mechanism to the actual permitted environment separately and label missing observations NOT_TESTED." });
+        for (const [index, section] of lens.sections.entries()) {
+            blocks.push({type:"heading",id:"cd-mechanism-"+(index+1),text:section.heading,level:2});
+            for (const paragraph of section.paragraphs) blocks.push({type:"paragraph",text:paragraph});
+        }
+    }
+    const proof=cdProofs[id];
+    if (proof) {
+        blocks.push({type:"heading",id:"run-and-falsify-deployment-claim",text:"Run a concrete example and falsify its unsafe alternative",level:2});
+        blocks.push({type:"code",language:proof.language,code:proof.code,caption:proof.caption});
+        blocks.push({type:"paragraph",text:proof.expected});
+    }
+    if (lens) {
+        blocks.push({type:"resources",title:"Subject-specific primary reference",resources:[lens.resource]});
+        blocks.push({type:"paragraph",text:"Independent transfer: cite one actual candidate identity, target configuration and observed positive/negative result when available. Distinguish executable local fixtures, actual host deployment and genuine outside review; record exactly what would reverse the decision. An absent real control is NOT_TESTED, never an implied PASS."});
     }
     blocks.push({ type: "callout", tone: "steward", title: "Steward delivery checkpoint", body: "Apply the decision to Steward using the same immutable image produced by CI. Record the release identity, environment-specific inputs, verification evidence and the exact recovery path before calling the deployment successful." });
     blocks.push({ type: "resources", title: "Continue learning", resources });

@@ -1,4 +1,7 @@
+import type { LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { ciMigrationFocusedReadings, ciMigrationAdditionalPracticalSteps } from "./delivery-ci-migration-teaching";
+import { ciMigrationLocalProof } from "./delivery-ci-migration-proof";
 
 export const deliveryMigrationExerciseDeepLessons: Lesson[] = [
   {
@@ -26,6 +29,25 @@ export const deliveryMigrationExerciseDeepLessons: Lesson[] = [
           ],
         },
       },
+      ...ciMigrationFocusedReadings.map((reading) => ({
+        id: reading.id,
+        title: reading.title,
+        estimatedMinutes: reading.estimatedMinutes,
+        content: {
+          type: "reading" as const,
+          body: reading.body,
+          blocks: [
+            { type: "paragraph", text: reading.body },
+            ...reading.sections.flatMap((section) => [
+              { type: "heading", text: section.heading, id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), level: 2 },
+              ...section.paragraphs.map((text) => ({ type: "paragraph", text })),
+              ...(section.embedProof ? [{ type: "code", language: "python",
+                caption: "Local PyYAML + actual unittest evidence, not a live Jenkins/GitLab migration",
+                code: ciMigrationLocalProof }] : []),
+            ]),
+          ] as LessonBlock[],
+        },
+      })),
       {
         id: "delivery-platform-migration-exercise-practical",
         title: "Execute a Bounded CI Migration",
@@ -42,7 +64,8 @@ export const deliveryMigrationExerciseDeepLessons: Lesson[] = [
             "Run equivalent success and controlled-failure cases on both paths and compare evidence, artifact identity and fail-closed behavior.",
             "Define the coexistence window and a cutover criterion. During coexistence, identify which pipeline is authoritative for release decisions so two successful jobs cannot independently publish conflicting releases.",
             "Execute or simulate cutover to the target platform and prove the bounded rollback path to the legacy Jenkins workflow during the migration window.",
-            "Complete the migration to GitLab CI/CD when equivalence gates pass. Disable/decommission the Jenkins release path and document what was retired. If an equivalence gate cannot be met, record the blocker and keep the exercise non-releasable rather than redefining Jenkins as TSA's canonical target."
+            "Complete the migration to GitLab CI/CD when equivalence gates pass. Disable/decommission the Jenkins release path and document what was retired. If an equivalence gate cannot be met, record the blocker and keep the exercise non-releasable rather than redefining Jenkins as TSA's canonical target.",
+            ...ciMigrationAdditionalPracticalSteps
           ],
           deliverables: [
             "Source-platform capability inventory",

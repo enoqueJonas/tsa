@@ -1,5 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { schemaFocusedReadings, schemaFocusedExtraPractices } from "./delivery-schema-evolution-focused-teaching";
+import { schemaEvolutionPostgresProof } from "./delivery-schema-evolution-live-postgres";
 
 const postgresAlter: LearningResource = { title: "PostgreSQL ALTER TABLE", url: "https://www.postgresql.org/docs/current/sql-altertable.html" };
 const djangoMigrations: LearningResource = { title: "Django migrations", url: "https://docs.djangoproject.com/en/stable/topics/migrations/" };
@@ -40,6 +42,29 @@ export const productionSchemaEvolutionDeepLessons: Lesson[] = [
         title: "Production Database Schema Evolution",
         activities: [
             { id: "delivery-production-schema-evolution-001", title: "Schema Changes Are Distributed Releases", estimatedMinutes: 45, content: { type: "reading", body: "Treat application versions, schema versions and existing data as independently moving parts during release.", blocks } },
+
+            ...schemaFocusedReadings.map((reading) => ({
+                id: reading.id,
+                title: reading.title,
+                estimatedMinutes: reading.estimatedMinutes,
+                content: {
+                    type: "reading" as const,
+                    body: reading.body,
+                    blocks: [
+                        { type: "paragraph", text: reading.body },
+                        ...reading.sections.flatMap((section) => [
+                            { type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 },
+                            ...section.paragraphs.map((paragraph) => ({ type: "paragraph", text: paragraph })),
+                        ]),
+                        ...(reading.id === "delivery-production-schema-evolution-008" ? [{
+                            type: "code", language: "python", caption: "Actual two-session disposable PostgreSQL 16 race, restart and contract proof; requires local Docker",
+                            code: schemaEvolutionPostgresProof,
+                        }] : []),
+                        { type: "resources", title: "Continue learning", resources: [postgresAlter, djangoMigrations] },
+                    ] as LessonBlock[],
+                },
+            })),
+
             {
                 id: "delivery-production-schema-evolution-002",
                 title: "Design a Backward-Compatible Steward Change",
@@ -64,7 +89,8 @@ export const productionSchemaEvolutionDeepLessons: Lesson[] = [
                     "Execute the backfill in bounded batches or another restartable mechanism rather than one opaque application-startup mutation; prove the concurrent ownership-transfer interleaving does not overwrite newer state, and record how skipped/conflicting rows are reconciled.",
                     "Interrupt the backfill deliberately after partial progress, inspect state, restart it and prove already-migrated rows are not corrupted or duplicated.",
                     "Measure/observe database locks, query latency or resource pressure sufficiently to identify whether the migration threatens normal service.",
-                    "Run deterministic verification that identifies missing, inconsistent or invalid migrated rows before cutover."
+                    "Run deterministic verification that identifies missing, inconsistent or invalid migrated rows before cutover.",
+                    ...(schemaFocusedExtraPractices["delivery-production-schema-evolution-003"] ?? [])
                 ], deliverables: ["Populated migration fixture", "Old-version compatibility evidence", "Old/new coexistence evidence", "Interrupted/restarted backfill evidence", "Migration load observation", "Data verification results"], completionCriteria: ["The old application continues working after expand.", "Old and new application versions can overlap against the expanded schema.", "Backfill can resume safely after interruption.", "Migration correctness is verified from data, not inferred from command exit status.", "The learner observes operational impact on PostgreSQL." ] },
             },
             {
@@ -77,7 +103,8 @@ export const productionSchemaEvolutionDeepLessons: Lesson[] = [
                     "Attempt the recovery analysis before acting: determine whether the previous application remains compatible with the current schema/data, whether rollback is safe, or whether a forward fix is required.",
                     "Execute the justified recovery path and prove representative reads/writes remain correct.",
                     "Record which migration stages are reversible, which are intentionally forward-only and what backup/restore would and would not solve.",
-                    "Prove the release pipeline/runbook has a stop gate that prevents automatic destructive contract migration immediately after deployment."
+                    "Prove the release pipeline/runbook has a stop gate that prevents automatic destructive contract migration immediately after deployment.",
+                    ...(schemaFocusedExtraPractices["delivery-production-schema-evolution-004"] ?? [])
                 ], deliverables: ["Cutover evidence", "Controlled post-switch failure", "Recovery decision record", "Recovered client/data evidence", "Reversibility matrix", "Contract safety gate"], completionCriteria: ["Recovery is chosen from actual schema/data compatibility rather than reflexive application rollback.", "A post-mutation failure is reproduced and recovered.", "Application rollback and database rollback are explicitly distinguished.", "Destructive cleanup cannot run before its compatibility gate." ] },
             },
             {
@@ -89,7 +116,8 @@ export const productionSchemaEvolutionDeepLessons: Lesson[] = [
                     "Capture a final data-integrity check and appropriate backup/recovery point before destructive cleanup.",
                     "Run the contract migration to remove obsolete columns/constraints/compatibility code as appropriate.",
                     "Run application, migration and representative client tests against the contracted schema.",
-                    "Update the release record/runbook with the final schema state and explicitly close the migration coexistence window."
+                    "Update the release record/runbook with the final schema state and explicitly close the migration coexistence window.",
+                    ...(schemaFocusedExtraPractices["delivery-production-schema-evolution-005"] ?? [])
                 ], deliverables: ["Pre-contract gate evidence", "Contract migration", "Post-contract verification", "Final schema record", "Closed coexistence/rollback window"], completionCriteria: ["Contract occurs only after old-version dependency is proven absent.", "The final schema and data pass deterministic verification.", "Obsolete compatibility behavior is actually removed rather than left indefinitely.", "The release record explains when rollback ceased to be safe and what recovery path replaced it." ] },
             },
             { id: "delivery-production-schema-evolution-006", title: "Defend the Migration Strategy", estimatedMinutes: 20, content: { type: "reflection", prompt: "Explain why the Steward schema change could not safely be deployed as one migration. Defend the expand/backfill/switch/contract sequence, the old/new coexistence strategy, the backfill restart behavior, and the point at which application rollback stopped being a valid recovery strategy.", minimumCharacters: 350 } },

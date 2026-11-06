@@ -1,0 +1,119 @@
+name: Delivery Engineer original-source Ansible Docker CI CD and Release
+on:
+  pull_request:
+    paths:
+      - 'packages/runtime-kernel/src/paths/delivery-configuration-management-deep.ts'
+      - 'scripts/check-delivery-ansible-local-state.mjs'
+      - 'scripts/check-delivery-ansible-browser.py'
+      - 'packages/runtime-kernel/src/paths/delivery-docker-operational-depth.ts'
+      - 'scripts/check-delivery-docker-runtime.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-continuous-integration-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-ci-learner-mechanisms.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-ci-dependency-worked.ts'
+      - 'scripts/check-delivery-ci-yaml.py'
+      - 'scripts/check-delivery-ci-dependency.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-continuous-delivery-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-continuous-delivery-quality.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-cd-operational-depth.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-cd-learner-mechanisms.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-cd-proofs.ts'
+      - 'scripts/check-delivery-cd-proofs.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-release-engineering-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-release-engineering-quality.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-release-engineering-lab-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-release-engineering-review-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-release-learner-mechanisms.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-release-proofs.ts'
+      - 'scripts/check-delivery-release-proofs.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-artifact-supply-chain-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-supply-chain-resolution-teaching.ts'
+      - 'scripts/check-delivery-supply-chain-resolution.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-supply-chain-operational-teaching.ts'
+      - 'scripts/check-delivery-supply-chain-operational.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-supply-chain-consumption-teaching.ts'
+      - 'scripts/check-delivery-supply-chain-consumption.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-supply-chain-governance-teaching.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-supply-chain-trust-proofs.ts'
+      - 'scripts/check-delivery-supply-chain-governance.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-production-schema-evolution-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-schema-evolution-focused-teaching.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-schema-evolution-live-postgres.ts'
+      - 'scripts/check-delivery-schema-evolution-postgres.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-migration-exercises-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-ci-migration-proof.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-ci-migration-teaching.ts'
+      - 'scripts/check-delivery-ci-migration-proof.mjs'
+      - '.github/workflows/delivery-ansible-learner-depth.yml'
+  push:
+    branches:
+      - curriculum/delivery-learner-depth-verification-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: delivery-ansible-depth-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  authored-ansible-and-browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Pin and install supported Ansible control-node runtime
+        run: |
+          python -m pip install ansible-core==2.21.5 'lxml>=5,<8' 'pyftpdlib>=2,<3' 'asyncssh>=2.20,<3' 'PyYAML>=6,<7'
+          ansible-playbook --version
+      - name: Run exact learner-published Ansible with three deliberate unsafe mutants
+        run: node scripts/check-delivery-ansible-local-state.mjs
+      - name: Prove exact learner Docker namespace/memory and reject three unsafe variants
+        run: |
+          docker info --format 'Docker {{.ServerVersion}}'
+          node scripts/check-delivery-docker-runtime.mjs
+      - name: Execute exact published CI Python graph and four-job GitLab YAML local simulation with negative mutants
+        run: |
+          node scripts/check-delivery-ci-dependency.mjs
+          python3 scripts/check-delivery-ci-yaml.py
+      - name: Execute exact CD Python and real isolated Docker two-image rehearsal with unsafe decisions
+        run: node scripts/check-delivery-cd-proofs.mjs
+      - name: Execute exact published Release Engineering programs and real local Docker tag-swap with unsafe source mutants
+        run: node scripts/check-delivery-release-proofs.mjs
+      - name: Run original Supply Chain module real pip local-index resolution and unsafe mutants
+        run: node scripts/check-delivery-supply-chain-resolution.mjs
+      - name: Execute original Supply Chain npm pack, Docker local tag and Nexus state proofs with mutants
+        run: node scripts/check-delivery-supply-chain-operational.mjs
+      - name: Execute actual clean pip/npm package-consumer published source and unsafe mutants
+        run: node scripts/check-delivery-supply-chain-consumption.mjs
+      - name: Execute exact proxy, retention, SBOM and signature teaching source with unsafe mutants
+        run: node scripts/check-delivery-supply-chain-governance.mjs
+      - name: Run original schema evolution actual PostgreSQL 16 race and four unsafe mutants
+        run: |
+          docker info --format 'Docker {{.ServerVersion}}'
+          node scripts/check-delivery-schema-evolution-postgres.mjs
+      - name: Parse original CI migration GitLab YAML and run real unittest fail-closed cases with mutants
+        run: node scripts/check-delivery-ci-migration-proof.mjs
+      - name: Build and check entire curriculum
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm test
+          pnpm audit:curriculum
+          pnpm build
+          node scripts/audit-learner-facing-curriculum.mjs --strict
+      - name: Install Python browser bindings and verify runner Chrome
+        run: |
+          python -m pip install playwright==1.58.0
+          command -v google-chrome || command -v google-chrome-stable
+      - name: Inspect original Ansible Docker CI CD and Release lessons in Chrome, 390px and reload
+        run: |
+          python -m http.server 4173 --bind 127.0.0.1 --directory apps/web/out > /tmp/tsa-delivery-local-web.log 2>&1 &
+          for i in $(seq 1 30); do curl --fail --silent http://127.0.0.1:4173/ >/dev/null && break; sleep 1; done
+          python scripts/check-delivery-ansible-browser.py
