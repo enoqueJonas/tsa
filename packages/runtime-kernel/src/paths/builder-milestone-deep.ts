@@ -1,6 +1,8 @@
 import type { LearningPath } from "./learning-path";
+import type { Lesson } from "./lesson";
+import { stewardMilestonePreparations } from "./builder-milestone-preparations";
 
-export const stewardApiV1Deep: LearningPath = {
+const originalStewardMilestone: LearningPath = {
     id: "steward-api-v1",
     title: "Builder Milestone",
     lessons: [
@@ -105,5 +107,73 @@ export const stewardApiV1Deep: LearningPath = {
                 },
             ],
         },
+    ],
+};
+
+/**
+ * One gate per navigable lesson. The seven original activity IDs remain stable
+ * for saved progress; new instructional checkpoints occur BEFORE the gates
+ * rather than hiding mechanism explanations inside a 480-minute final practical.
+ */
+const originalActivities = originalStewardMilestone.lessons[0].activities;
+function originalActivity(id: string) {
+    const activity = originalActivities.find((entry) => entry.id === id);
+    if (!activity) throw new Error("Missing stable Steward milestone activity: " + id);
+    return activity;
+}
+const milestoneActivity = (suffix: string) => originalActivity("steward-api-v1-milestone-" + suffix);
+function singleGate(id: string, title: string, originalSuffix: string): Lesson {
+    return { id, title, activities: [milestoneActivity(originalSuffix)] };
+}
+
+const oldBuild = milestoneActivity("build");
+if (oldBuild.content.type !== "practical") {
+    throw new Error("Original Steward build must remain a practical.");
+}
+const fullBuilderRequirements = oldBuild.content.instructions;
+const integrationBuild = {
+    ...oldBuild,
+    estimatedMinutes: 120,
+    content: {
+        ...oldBuild.content,
+        objective: "Integrate the proven Steward domain, PostgreSQL, signed HTTP policy and operational acceptance into one coherent v1 release candidate.",
+        instructions: [
+            "Use the following retained complete Builder-v1 requirement checklist. Every item must have a source location and PASS / FAIL / NOT TESTED evidence; do not assume completion from earlier source-only lessons.",
+            ...fullBuilderRequirements.map((item, i) => "Requirement " + (i + 1) + ": " + item),
+            "For each missing behavior, implement the smallest necessary change in the existing Steward repository; do not create a second throwaway application.",
+            "Run exact real-app, database and HTTP negative cases from the preceding individual labs against the current single commit and PostgreSQL instance.",
+            "Attach a redacted evidence matrix to the release candidate; no green result may be inferred from a pure Python oracle, a synthetic server or a documented intention.",
+            "Have a second engineer challenge a fresh cross-Team nested write and an unfamiliar production-environment gap. Mark transfer NOT VALIDATED when no independent learner participated.",
+        ],
+        deliverables: [
+            ...oldBuild.content.deliverables,
+            "Traceable full Builder-v1 requirement-to-evidence matrix",
+            "Same-commit real PostgreSQL, signed HTTP and negative-test outputs",
+        ],
+        completionCriteria: [
+            ...oldBuild.content.completionCriteria,
+            "Every retained Builder-v1 requirement is PASS or explicitly FAIL/NOT TESTED with an owner; no false green.",
+            "Independent transfer is separately recorded as VALIDATED or NOT VALIDATED.",
+        ],
+    },
+} satisfies typeof oldBuild;
+
+function gateWithBuild(): Lesson {
+    return { id: "steward-api-v1-build-integration-gate", title: "Gate 2: Integrate the Complete Steward v1 Release", activities: [integrationBuild] };
+}
+export const stewardApiV1Deep: LearningPath = {
+    ...originalStewardMilestone,
+    lessons: [
+        { ...originalStewardMilestone.lessons[0], activities: [milestoneActivity("brief")] },
+        stewardMilestonePreparations[0],
+        singleGate("steward-api-v1-gate-domain-contract", "Gate 1: Domain and Contract Review", "design-review"),
+        stewardMilestonePreparations[1],
+        stewardMilestonePreparations[2],
+        gateWithBuild(),
+        singleGate("steward-api-v1-gate-data", "Gate 3: Prove the Real Data Layer", "data-evidence"),
+        singleGate("steward-api-v1-gate-security", "Gate 4: Prove Real Security Boundaries", "security-evidence"),
+        stewardMilestonePreparations[3],
+        singleGate("steward-api-v1-gate-handoff", "Gate 5: Reproducible Engineering Handoff", "handoff"),
+        singleGate("steward-api-v1-gate-exit", "Milestone Review and Independent Exit", "review"),
     ],
 };
