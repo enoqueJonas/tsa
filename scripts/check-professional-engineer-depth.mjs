@@ -56,3 +56,65 @@ for(const [before,after] of [
  assert.match(wrong.stderr,/AssertionError/,"Mutation failed for unrelated reason: "+wrong.stderr);
 }
 console.log("PASS published discovery provenance program and two rejected false-confidence mutants");
+
+
+// Complete original Capstone Engineering Proposal module: every original
+// reading must teach a distinct mechanism, failure and independent transfer.
+// Source-extracted programs are executed unchanged, then made deliberately wrong.
+const proposal=fs.readFileSync(root+"professional-engineer-capstone-engineering-proposal-deep.ts","utf8");
+const lensSource=fs.readFileSync(root+"professional-engineer-proposal-teaching.ts","utf8");
+const programSource=fs.readFileSync(root+"professional-engineer-proposal-proofs.ts","utf8");
+function authoredJson(source,variable){
+ const at=source.indexOf("export const "+variable+":");
+ assert.ok(at>0,"Missing published source "+variable);
+ const text=source.slice(at).match(/=\s*(\{[\s\S]*\});\s*$/);
+ assert.ok(text,"Could not extract literal authoring object "+variable);
+ return JSON.parse(text[1]);
+}
+const lenses=authoredJson(lensSource,"proposalLenses");
+const programs=authoredJson(programSource,"proposalPrograms");
+const originals=[...proposal.matchAll(/^\s*reading\("([^"]+)",\s*"([^"]+)",/gm)];
+const keys=originals.map((m)=>m[1]);
+assert.equal(keys.length,14,"Proposal must retain exactly 14 original topics");
+assert.equal(new Set(keys).size,14,"Proposal contains duplicated original lesson IDs");
+assert.deepEqual(Object.keys(lenses).sort(),keys.slice().sort(),"Every original reading needs its own authored explanation");
+for(const id of keys){
+ const lens=lenses[id];
+ assert.ok(lens.sections.length>=3,"Insufficient mechanism/failure/decision work: "+id);
+ const body=lens.sections.flatMap((section)=>section.paragraphs).join("\n");
+ assert.ok(body.length>=1300,"Still a thin original proposal reading: "+id+" chars "+body.length);
+ assert.ok(lens.sections.every((section)=>section.title && section.paragraphs.length>=2));
+ assert.ok(lens.practice.length>=2&&lens.acceptance.length>=2,"Missing independent countercase and scoring boundary: "+id);
+ assert.match(lens.resource.url,/^https:\/\//,"Learning resource must be a targeted HTTPS reference");
+}
+assert.ok(proposal.includes("return [lesson, boundaryGate]"));
+assert.ok(proposal.includes("return [lesson, deliveryGate]"));
+assert.ok(proposal.includes("return [lesson, decisionGate]"));
+assert.ok(proposal.includes('id: stableId + "-practice"'));
+assert.ok(proposal.includes('id: stableId + "-check"'));
+assert.ok(proposal.includes("estimatedMinutes: 85"),"Seven-hour final must be decomposed into three stages and synthesis");
+assert.ok(proposal.includes("lab-defend-the-capstone-engineering-proposal-001"),"Original final ID must remain stable");
+assert.ok(proposal.includes('type: "code", language: "python", code: program.code, caption: program.caption'));
+console.log("PASS fourteen distinct proposal readings, original IDs, three review stages and 85-minute synthesis");
+for(const [id,expected] of [
+ ["domain-and-data-model-proposal",["PROPOSAL_LOCAL_LOAN_INVARIANT_PASS","PROPOSAL_UNSAFE_LOAN_ISSUE_EXPOSED"]],
+ ["delivery-plan",["PROPOSAL_RELEASE_PASS_MISSING_FAIL_DISTINCT","PROPOSAL_FALSE_GREEN_PROMOTION_EXPOSED"]],
+ ["cost-model",["PROPOSAL_DECIMAL_BUDGET_AND_CROSSING_PASS","PROPOSAL_NEGATIVE_VOLUME_REJECTED","PROPOSAL_IGNORED_VARIABLE_COST_EXPOSED"]]
+]){
+ const item=programs[id];
+ assert.ok(item && item.caption && item.expected,"Missing source published proof "+id);
+ const good=python(item.code);
+ assert.equal(good.status,0,id+" source failed: "+good.stdout+"\n"+good.stderr);
+ for(const marker of expected) assert.ok(good.stdout.includes(marker),id+" expected "+marker);
+ const mutants={
+  "domain-and-data-model-proposal": ["return active_loan_count(item, loans) == 0","return active_loan_count(item, loans) >= 0"],
+  "delivery-plan": ['if any(result == "FAIL" for result in outcomes):',"if False:"],
+  "cost-model": ["return BASE + PER_LOAN * Decimal(loans)","return BASE"],
+ };
+ const [from,to]=mutants[id];
+ assert.ok(item.code.includes(from),"Cannot form unsafe source mutant "+id);
+ const wrong=python(item.code.replace(from,to));
+ assert.notEqual(wrong.status,0,"Unsafe proposal mutant unexpectedly passed "+id);
+ assert.match(wrong.stderr,/AssertionError/,"Wrong failure reason for "+id+": "+wrong.stderr);
+ console.log("PASS exact published proposal "+id+" and rejected wrong-implementation mutant");
+}
