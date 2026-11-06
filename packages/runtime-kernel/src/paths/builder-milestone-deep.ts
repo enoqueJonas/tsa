@@ -115,7 +115,12 @@ const originalStewardMilestone: LearningPath = {
  * for saved progress; new instructional checkpoints occur BEFORE the gates
  * rather than hiding mechanism explanations inside a 480-minute final practical.
  */
-const originalActivities = originalStewardMilestone.lessons[0].activities;
+const originalMilestoneLesson = originalStewardMilestone.lessons[0];
+if (!originalMilestoneLesson) throw new Error("Steward milestone brief was removed.");
+const originalActivities = originalMilestoneLesson.activities;
+const [contractLesson, postgresLesson, httpLesson, handoffLesson] = stewardMilestonePreparations;
+if (!contractLesson || !postgresLesson || !httpLesson || !handoffLesson)
+    throw new Error("Incomplete Steward milestone prerequisite sequence.");
 function originalActivity(id: string) {
     const activity = originalActivities.find((entry) => entry.id === id);
     if (!activity) throw new Error("Missing stable Steward milestone activity: " + id);
@@ -167,15 +172,15 @@ const originalExitPrompt = originalExit.content.prompt;
 export const stewardApiV1Deep: LearningPath = {
     ...originalStewardMilestone,
     lessons: [
-        { ...originalStewardMilestone.lessons[0], activities: [milestoneActivity("brief")] },
-        stewardMilestonePreparations[0],
+        { ...originalMilestoneLesson, activities: [milestoneActivity("brief")] },
+        contractLesson,
         singleGate("steward-api-v1-gate-domain-contract", "Gate 1: Domain and Contract Review", "design-review"),
-        stewardMilestonePreparations[1],
-        stewardMilestonePreparations[2],
+        postgresLesson,
+        httpLesson,
         gateWithBuild(),
         singleGate("steward-api-v1-gate-data", "Gate 3: Prove the Real Data Layer", "data-evidence"),
         singleGate("steward-api-v1-gate-security", "Gate 4: Prove Real Security Boundaries", "security-evidence"),
-        stewardMilestonePreparations[3],
+        handoffLesson,
         singleGate("steward-api-v1-gate-handoff", "Gate 5: Reproducible Engineering Handoff", "handoff"),
         {
             id: "steward-api-v1-gate-exit",
