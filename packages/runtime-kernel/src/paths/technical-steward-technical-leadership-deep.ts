@@ -10,13 +10,137 @@ const resourcesByLeadership:Record<string,LearningResource[]>={
  "technical-leadership-escalation-responsible-challenge":[googlePostmortem,googleLeading],
 };
 import type { Lesson } from "./lesson";
+// Each case is tied to its authored reading. Examples are deliberately illustrative,
+// not evidence from a deployed Steward environment or a substitute for novice assessment.
+const leadershipCases: Record<string, { title: string; worked: string; failure: string; transfer: string }> = {
+  "technical-leadership-technical-ownership": {
+    "title": "Trace ownership from detection to an accepted outcome",
+    "worked": "Illustrative incident: a scheduled Steward reconciliation produces no completion record. The QA engineer owns the missing-result assertion and failure evidence; operations owns restoring the job; the service owner owns the external user consequence; a designated risk authority decides whether an incomplete run may be accepted. First record the affected run ID and independently observable absence, then map who can inspect, change, approve and communicate. Give one named owner the end-to-end coordination responsibility, without pretending that owner personally performs every action. Define a recovery checkpoint and a next-run verification. A ticket labelled 'platform team' is an assignment pool, not an accountable individual.",
+    "failure": "Failure to catch: everyone lists the incident as 'owned' because a channel or team was tagged, but nobody has authority to approve the reconciliation exception. The technical owner must escalate the decision rather than silently treat a green rerun as business acceptance.",
+    "transfer": "A privileged access token expires during an incident. Produce a four-role ownership and decision-rights map that prevents the engineer who rotates the token from also silently accepting an authentication bypass. State the independent evidence required to close the issue."
+  },
+  "technical-leadership-influence-without-authority": {
+    "title": "Build alignment without giving away the release safety boundary",
+    "worked": "Illustrative release conflict: a product lead wants to ship on Friday; QA has a reproducible unauthorized ownership change after a denied request. Start by describing the shared goal (safe delivery) and the concrete failed invariant (403 response, but the owner record still changed). Hear product's deadline consequence and operations' rollback constraints. Offer three options: defer the affected change, ship an independently isolated unaffected slice, or repair the authorization defect and retest before release. State which risks cannot be accepted by the engineer alone. Ask the accountable release/risk owner for a time-boxed decision using the same evidence, not for a vote on whether the defect exists.",
+    "failure": "Failure to catch: 'influence' means persuasive rhetoric to secure consensus, while the unauthorized mutation is downgraded without explicit authority. A compromise about schedule is possible; a silent waiver of an ownership invariant is not.",
+    "transfer": "A third-party library enters end-of-support during a busy delivery quarter. Write separate concerns for QA, security, finance and product; propose a minimal agreement with owner, funded next action and an escalation trigger. Do not claim consensus where one party has not agreed."
+  },
+  "technical-leadership-decision-making": {
+    "title": "Use reversibility and evidence to choose how much process is justified",
+    "worked": "Take the original 3-of-20 intermittent test failures as a hypothesis, not proof of flakiness. Before allowing a quarantine, capture failed assertion, commit, runner and fixture state for three clean reruns; compare whether the product invariant ever fails. If the cause is an isolated test race, choose a named, expiring quarantine with a separate enforced product-safety check and an owner to remove the race. If the failures reflect a real product defect, quarantine is the wrong intervention even if it makes delivery faster. A decision record has a deadline, observation threshold, explicit owner and reversal trigger.",
+    "failure": "Failure to catch: disable the test because 85% of recent runs passed. That score is not a product safety oracle, and the absence of red CI output hides rather than eliminates the uncertainty.",
+    "transfer": "A team proposes buying a premium hosted test tool to replace an unreliable self-hosted one. Separate observed operating cost from vendor promises, include retaining the existing system as a real option, and identify the evidence that should reverse a six-month decision."
+  },
+  "technical-leadership-technical-communication": {
+    "title": "Keep one factual core while changing the audience",
+    "worked": "Illustrative evidence: a release candidate failed an owner-change denial check in 2 of 10 isolated runs. For engineers: 'POST /transfer returned 403, but a subsequent GET showed owner B; response trace and IDs are attached; cause unknown.' For service owners: 'An unauthorized ownership effect is possible in the release candidate; QA has blocked the affected change pending a verified fix and retest.' For leadership: 'Release risk: an access-control invariant is not reliably enforced. Proposed decision: hold the affected change; next evidence checkpoint at 15:00.' The three messages preserve the same observation and uncertainty; details vary with the recipient's decision.",
+    "failure": "Failure to catch: an executive slide says 'security breached in production' when only a synthetic candidate test failed. Another failure is 'green build' as reassurance when a higher-risk acceptance invariant is failing.",
+    "transfer": "Translate a timed database restore result that exceeded a proposed recovery objective into an engineer runbook note, a service-owner impact note and an executive decision request. Identify one material uncertainty that must remain in every version."
+  },
+  "technical-leadership-mentoring": {
+    "title": "Diagnose the misconception, then prove independent transfer",
+    "worked": "A junior engineer suggests that retrying every timed-out POST is safe because a timeout means the server did nothing. Ask them to draw two timelines: one where the server never commits, another where it commits but the response is lost. Show only the minimum hint—client timeout does not report transaction state—and ask for a unique request key plus server-side result lookup. Let them write the test plan: original request commits once; replay of the same key returns the same result; replay with a different payload is rejected. Review their evidence without rewriting their answer.",
+    "failure": "Failure to catch: the mentor supplies the exact code and then grades the learner for copying it. Another false positive is a retry test that only asserts HTTP 200 and never checks the durable business effect.",
+    "transfer": "Without access to the preceding example, ask the learner to reason about a queued notification whose consumer restarts after persisting work but before acknowledgement. Require an unseen failure case and the invariant that would detect duplicate effects."
+  },
+  "technical-leadership-knowledge-continuity": {
+    "title": "Test whether a second person can recover without oral context",
+    "worked": "Illustrative on-call tabletop: the only database recovery specialist is unavailable. The deputy is given an incident ID, a runbook and a test restore environment. They must locate the backup, validate its timestamp/checksum, restore to the isolated target, check authoritative record counts and document elapsed time against the approved recovery objective. The primary owner may not give hints. Record each missing permission, ambiguous instruction, undocumented dependency and failed assertion. Give the next owner a dated remediation item and rerun the exercise.",
+    "failure": "Failure to catch: two names appear on the rota but the deputy cannot access the backup key or identify which data snapshot is authoritative. Documentation coverage is not recovery capability.",
+    "transfer": "Design an uncoached handoff for GitLab scheduled pipeline ownership: schedules, protected variable access, failure notification and artifact provenance. Define the exact pass/fail evidence and how to prevent dangerous production writes during the tabletop."
+  },
+  "technical-leadership-engineering-reviews": {
+    "title": "Separate evidence-backed blockers from preferences in a review",
+    "worked": "Illustrative proposal: change authentication token validation in a gateway shared by Steward and another service. The pre-read contains old/new trust boundaries, sample denied and authorized requests, rollback path and the identity owner's constraints. The review chair records a required denial-with-unchanged-state test as a blocker; a request to rename a private helper is advisory. A security reviewer dissents on key-rotation failure mode, so the chair documents the unknown, owner, planned experiment and decision deadline rather than declaring unanimity. The decision record says what can proceed and what must wait.",
+    "failure": "Failure to catch: a review records only 'approved by everyone' without test artifacts, a dissent log or accountable release authority. A design preference must not be upgraded into an unchallengeable security requirement.",
+    "transfer": "Facilitate a hypothetical database schema migration review. Classify one backward-compatibility finding, one monitoring concern, and one naming preference. For each, state the evidence that would justify blocking or proceeding."
+  },
+  "technical-leadership-escalation-responsible-challenge": {
+    "title": "Escalate an unresolved decision rather than a colleague disagreement",
+    "worked": "Illustrative incident: a critical identity-provider integration is rejecting valid users; operators propose bypassing signature checks to meet a recovery target. The engineer first documents the error, test evidence, available safe rollback, expected customer harm and why the bypass would remove authentication assurance. If the normal incident lead cannot resolve the risk within their authority, escalation requests an explicit decision from the security/risk owner: use rollback or maintain degraded service while fixing the trust issue. Include urgency, the decision deadline, fallback and what event will reopen the escalation.",
+    "failure": "Failure to catch: bypass signature verification quietly as a temporary code change without time limit, approval or evidence. The opposite failure is escalating a harmless formatting disagreement as a critical risk to win an argument.",
+    "transfer": "A production emergency change has neither a verified rollback nor clear approver. Write the smallest escalation record that distinguishes the observed facts, unacceptable uncertainty, authorized choices, communication responsibility and closure proof."
+  }
+};
 
+
+// Concept-specific depth precedes the worked case; this is not a generic prep activity.
+const leadershipConcepts: Record<string, {definition:string;prerequisites:string;mechanism:string;alternatives:string}> = {
+  "technical-leadership-technical-ownership": {
+    "definition": "Technical ownership is the accountable continuity of an outcome across decisions, operation and change. Responsibility is a task or duty someone performs; authority is permission to decide; accountability is the obligation to answer for the outcome and ensure unresolved work is escalated. A system may have many responsible engineers but still lack an accountable service owner. Conversely, a single accountable owner is not expected to execute every operation. Ask: who decides, who operates, who verifies, who represents user impact, and who can accept residual risk?",
+    "prerequisites": "You should already be able to distinguish a component from the service outcome it supports, identify an Architect-approved system boundary, and locate a QA failure assertion, an operational incident and an ADR. If those records do not exist in your exercise environment, label the evidence UNKNOWN rather than invent a production incident.",
+    "mechanism": "Trace one concrete obligation from detection to closure. Step 1: define the externally observable invariant, such as a registration resulting in exactly one authoritative owner. Step 2: map the operation's dependencies and the people permitted to touch each control plane. Step 3: name a single accountable coordinator for business closure, distinct from the person repairing a database or verifying a negative test. Step 4: bind decisions to source IDs, timestamps, run IDs and read-after-write evidence. Step 5: require an explicit handoff, review trigger and risk acceptance path if the invariant cannot be restored.",
+    "alternatives": "A collective ownership model is useful for shared maintenance but dangerous when it becomes 'everyone is accountable' with no individual closure authority. A single all-powerful owner makes decisions fast but concentrates operational failure and weakens independent verification. Use distributed execution with visible accountability; escalate authority that does not genuinely belong to the implementer."
+  },
+  "technical-leadership-influence-without-authority": {
+    "definition": "Influence without positional authority is the ability to change the quality of a decision through credible information, stakeholder understanding and a shared objective. It is not manipulation to secure agreement. The engineer has technical expertise, but may not hold budget, release, data-purpose or business-risk authority; persuasion cannot create those decision rights.",
+    "prerequisites": "Before an influence attempt, identify the actual shared service objective, who owns its consequence, why each stakeholder evaluates risk differently, and what tests or records are presently available. Separate observations from assumptions and avoid describing a hypothetical Steward organization as though its policies are real.",
+    "mechanism": "Begin by listening for the business constraint and writing the disputed outcome in neutral language. Build an evidence map with observations, confidence, residual unknowns and options: keep current state, ship a bounded alternative, or repair and retest. Show the cost of each option in risk, schedule, recovery and operational burden. Secure a decision deadline and an accountable authority rather than an endless consensus meeting. Preserve dissent with the disconfirming evidence each participant requests. Close the loop by verifying the selected option changed the outcome.",
+    "alternatives": "Relying on hierarchy ('the senior engineer said so') produces compliance rather than conviction. Pure consensus fails when delays carry risk. A time-boxed evidence review with a legitimate decision owner is preferable; when the choice exceeds delegated authority, advocate escalation rather than a hidden compromise."
+  },
+  "technical-leadership-decision-making": {
+    "definition": "A technical decision is a choice among feasible alternatives under constraints and incomplete information. Engineering quality is judged not by whether every consequence was predicted, but by whether the decision used appropriate evidence, exposed uncertainty and made reconsideration possible. Reversible changes can be tested cheaply; irreversible data or trust-boundary changes demand a stronger precommitment proof.",
+    "prerequisites": "Be able to read an incident timeline, interpret a regression test result and distinguish a product defect from a test-harness artifact. A ratio such as 3 failures in 20 runs is an observation, not a statistical proof of root cause or risk tolerance.",
+    "mechanism": "Record: (1) outcome and exact decision needed; (2) options including no change, with preconditions; (3) known facts, unknowns, potential failure severity and reversibility; (4) small discriminating experiment; (5) authority, decision deadline and accepted exposure; and (6) the specific event that would reverse the choice. Prefer an experiment that could falsify your favored option. For an unstable test, reproduce against a fixed product state, isolate fixture concurrency, check after-state invariants and only then decide on repair, quarantine or block.",
+    "alternatives": "The heaviest review is not always safer: slow approvals can delay an urgent fix, while approving on intuition can release a real defect. Scale decision rigor to consequence, reversibility and observability. An expiring exception and monitored experiment can be appropriate for uncertain, limited damage, but never as a disguised way to waive a forbidden effect."
+  },
+  "technical-leadership-technical-communication": {
+    "definition": "Technical communication preserves one factual core while changing the detail and action for different audiences. A reliable message distinguishes observation, inferred cause, risk hypothesis, containment and decision. An engineer needs reproducibility; a service owner needs user impact and recovery; an executive needs exposure, options, accountable authority and decision time.",
+    "prerequisites": "Start with attributable evidence: version or artifact digest, affected environment, actor/resource identity when safe, time window, attempted operation, actual result and the expected invariant. If evidence only comes from a laboratory, label it a test or simulation rather than a production incident.",
+    "mechanism": "Construct a source-of-truth record first; publish three views from that record rather than rewriting facts independently. Each view should answer what changed, what is known, what remains uncertain, whose action is required and when an update is due. Use consequence-first language, then link to technical details. Every audience must receive the same materially relevant uncertainty. After release, check whether recipients took the intended action and whether decisions were made on the correct scope.",
+    "alternatives": "A wall of stack traces makes the operational decision obscure. An over-compressed 'all green' status may suppress a critical missing acceptance test. Prefer layered communication: a short decision summary with precise evidence links and explicit limitations, not vague reassurance."
+  },
+  "technical-leadership-mentoring": {
+    "definition": "Mentoring is deliberate transfer of problem-solving independence. Coaching may focus on immediate performance, while mentoring often develops longer-lived judgment. The mentor provides calibrated support: diagnose the student's existing model, demonstrate a discriminating example, ask for reasoning, remove hints and test an unfamiliar case. A copied answer proves reproduction, not competence.",
+    "prerequisites": "You should be able to articulate the business invariant and the causal mechanism of the example. For timed-out HTTP operations, distinguish request receipt, transaction commit, response delivery and client observation. A response timeout cannot tell the client which earlier events occurred.",
+    "mechanism": "Ask the learner to predict the outcome of two contrasting traces before showing code. Offer a minimal hint only when the prediction reveals a misconception. Have the learner design a falsifying check—such as two retries with the same identity but changed payload—then execute or explain the observation. Fade guidance by asking a new queue or transaction scenario without the original nouns. Score the reasoned invariant, not identical wording. Provide feedback that names the reasoning error and a next experiment, without taking the decision away from them.",
+    "alternatives": "Immediate solution-giving is efficient during an outage but poor evidence of long-term learning. Socratic questioning without a worked mechanism can frustrate novices; combine targeted explanation with increasing independence. Protect production safety by using isolated fixtures for learning."
+  },
+  "technical-leadership-knowledge-continuity": {
+    "definition": "Knowledge continuity means an authorized replacement can recover the decision context and operate a service safely when a primary expert is unavailable. Redundancy of names on an on-call rota is not redundancy of capability. The relevant assets include access approvals, trusted references, runbooks, artifact provenance, ownership and the reasoning behind important constraints.",
+    "prerequisites": "A deputy must know the service boundary, the purpose and limits of a runbook, where restore evidence resides, which operations are safe in a disposable environment, and why access credentials should not be copied into shared notes.",
+    "mechanism": "Select a critical responsibility and simulate the original owner's absence. Freeze the documentation before the drill. Give the deputy only the documented entry point and least-privilege test environment; do not supply verbal hints. Observe whether they can locate source-of-truth evidence, identify an applicable version, perform a read-only diagnosis or safe restore and escalate an authorization gap. Record elapsed time, failed operations and ambiguities as defects in the knowledge system. Assign remediation and repeat with a different deputy when appropriate.",
+    "alternatives": "Writing more pages rarely fixes discoverability. Rotating everyone through all systems can also create unnecessary privileged access. Prefer targeted backup capability with safe rehearsal, scoped rights and clear escalation, while accepting that specialized expertise may remain concentrated for noncritical tasks."
+  },
+  "technical-leadership-engineering-reviews": {
+    "definition": "An engineering review is a structured challenge to an important proposal or system state. It tests whether the recommendation follows from its drivers and evidence, rather than asking whether senior people agree. A review has explicit scope, participants selected for relevant expertise, a decision owner, criteria for blocking concerns and a durable outcome.",
+    "prerequisites": "Know how to interpret an ADR's context, decision and consequences; a QA report's exact tested artifact; a threat model's trust boundary; and a reliability observation's measured scope. Otherwise a cross-functional review can confuse confidence with the number of participating disciplines.",
+    "mechanism": "Before the meeting, issue a one-page pre-read naming the decision, options, evidence cutoff, unknowns and relevant risk authorities. During review, separate blocker (failed mandatory outcome), unresolved material risk, advisory improvement and personal preference. Invite participants to state what observation would change their recommendation. Record dissent and the chosen mitigation or escalation; a decision owner closes the issue within a defined horizon. After implementation, verify that the selected artifact met the original acceptance conditions and update any superseded ADR.",
+    "alternatives": "Universal review boards create delay without improved evidence. A purely local decision can miss cross-service consequences. Use lightweight local checks by default and a deeper review only when shared boundaries, high impact, irreversibility or risk authority justify it."
+  },
+  "technical-leadership-escalation-responsible-challenge": {
+    "definition": "Responsible challenge is raising an evidenced material concern before it becomes invisible inside delivery pressure. Escalation transfers an unresolved decision to an authority competent and permitted to own its consequence. It is neither a way to win ordinary disagreements nor a substitute for initial collaborative problem-solving.",
+    "prerequisites": "Identify the triggering observation, impacted invariant, accepted policy or objective when supplied, current containment, role authority and deadline. Distinguish a current confirmed incident from future residual risk, and never assume a technically capable engineer can approve a business/security exception.",
+    "mechanism": "Try resolution at the closest appropriate level and record what was attempted. Escalate with a concise decision request: exact finding and source, affected users/records, credible consequence, uncertainty, safe options, deadline, requested decider and fallback if no decision arrives. Continue to contain the risk within authorized boundaries while the decision is pending. Publish the acceptance or refusal and required monitoring; close only when the relevant proof or authorized disposition exists.",
+    "alternatives": "Under-escalation hides material risk; escalation for every coding preference destroys trust. Use explicit thresholds such as prohibited unauthorized effects, unapproved retention decisions, irreversible loss or missing critical rollback. Revisit thresholds when incident evidence shows they are too lenient or too costly."
+  }
+};
 function lesson(id: string, title: string, body: string, practice: string[]): Lesson {
     const reading: Activity = {
         id: `${id}-reading`,
         title,
         estimatedMinutes: 55,
-        content: { type: "reading", body, blocks:[...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),{type:"resources",title:"Continue learning",resources:resourcesByLeadership[id] ?? [adr]}] },
+        content: { type: "reading", body, blocks: [
+          ...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({ type: "paragraph" as const, text })),
+          ...(leadershipConcepts[id] ? [
+            {type:"heading" as const,id:`${id}-definition`,text:"Precise concept and boundaries",level:2 as const},
+            {type:"paragraph" as const,text:leadershipConcepts[id].definition},
+            {type:"heading" as const,id:`${id}-prerequisites`,text:"Prerequisites and existing evidence",level:2 as const},
+            {type:"paragraph" as const,text:leadershipConcepts[id].prerequisites},
+            {type:"heading" as const,id:`${id}-mechanism`,text:"How the decision or practice actually works",level:2 as const},
+            {type:"paragraph" as const,text:leadershipConcepts[id].mechanism},
+            {type:"heading" as const,id:`${id}-alternatives`,text:"Alternatives and boundaries of use",level:2 as const},
+            {type:"paragraph" as const,text:leadershipConcepts[id].alternatives},
+          ] : []),
+          ...(leadershipCases[id] ? [
+            { type: "heading" as const, id: `${id}-worked`, text: leadershipCases[id].title, level: 2 as const },
+            { type: "paragraph" as const, text: leadershipCases[id].worked },
+            { type: "callout" as const, tone: "warning" as const, title: "How a convincing-looking decision fails", body: leadershipCases[id].failure },
+            { type: "heading" as const, id: `${id}-transfer`, text: "Apply without the worked answer", level: 2 as const },
+            { type: "paragraph" as const, text: leadershipCases[id].transfer },
+          ] : []),
+          { type: "resources" as const, title: "Continue learning", resources: resourcesByLeadership[id] ?? [adr] },
+        ] },
     };
     const practical: Activity = {
         id: `${id}-practice`,
@@ -25,10 +149,10 @@ function lesson(id: string, title: string, body: string, practice: string[]): Le
         content: {
             type: "practical",
             objective: `Apply ${title} to a real Steward technical-leadership situation.`,
-            scenario: "Steward is now a mature internal technology service whose active responsibilities come from the final Architect actual-stack inventory: application and data responsibilities plus the platform, delivery, security and reliability capabilities actually retained. Earlier technologies that were simplified, replaced, retired or deferred remain decision history rather than active ownership targets. You are responsible for improving technical outcomes even when you do not have formal authority over every contributor or stakeholder.",
-            instructions: practice,
+            scenario: `Steward is a mature internal technology service, scoped to the final Architect actual-stack inventory and its demonstrably retained responsibilities. Retired, comparison-only and future packages are not active operating dependencies. This is a fictional assessment case, not a claim about an existing company.\n\nUNSEEN DECISION: ${leadershipCases[id]?.transfer ?? "Use the previous lesson's own evidence and justify an alternative."}` ,
+            instructions: [...practice, "Submit a decision artifact for the unfamiliar assessment case above, separately from your explanation of the worked example.", "Identify a plausible but incorrect outcome, the observation or evidence that would reveal it, and the authority required to resolve it."],
             deliverables: ["Decision or review artifact", "Evidence and rationale", "Follow-up or ownership record"],
-            completionCriteria: ["The recommendation is grounded in evidence and explicit trade-offs.", "Ownership and next actions are clear without relying on positional authority.", "Technical leadership improves decision quality rather than becoming ceremony or control for its own sake."],
+            completionCriteria: ["The new case is answered independently: the artifact names the decision, current evidence versus assumptions, accountable owner, alternatives, a justified decision and a dated revisit trigger.", "No unobserved result or hypothetical policy is represented as a fact from Steward production.", `Reject a superficially convincing answer if it repeats this failure: ${leadershipCases[id]?.failure ?? "A claim is made without evidence."}`, "A reviewer can determine whether the proposed action succeeds or fails using observable evidence; generic leadership phrases alone do not pass."],
         },
     };
     return { id, title, activities: [reading, practical] };

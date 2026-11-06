@@ -1,6 +1,6 @@
 import type { LearningResource } from "../activities/content";
 import type { Lesson } from "./lesson";
-const itil={title:"PeopleCert — ITIL",url:"https://www.peoplecert.org/browse-certifications/it-governance-and-service-management/ITIL-1",kind:"reference"} satisfies LearningResource;
+const itil={title:"PeopleCert — ITIL (Version 5 and ITIL 4 transition)",url:"https://www.peoplecert.org/itil-version-5-explained",kind:"reference"} satisfies LearningResource;
 const sreRelease={title:"Google SRE — Reliable Product Launches at Scale",url:"https://sre.google/sre-book/reliable-product-launches/",kind:"reference"} satisfies LearningResource;
 const sreIncident={title:"Google SRE — Managing Incidents",url:"https://sre.google/sre-book/managing-incidents/",kind:"reference"} satisfies LearningResource;
 const resourcesByChange:Record<string,LearningResource[]>={
@@ -12,10 +12,148 @@ const resourcesByChange:Record<string,LearningResource[]>={
 const scenario = "Treat Steward as a mature organization-owned service with production users, releases, incidents and the application, data, platform, delivery, security and reliability dependencies present in the final Architect actual-stack inventory. Components such as cloud/VPS infrastructure, Nexus or internal packages belong to the active service-governance scope only when retained; retired components remain historical change/migration evidence. Governance should make risky change accountable without slowing low-risk engineering work unnecessarily.";
 const deliverables = ["Governance artifact", "Evidence and rationale", "Owner, approval or follow-up record"];
 const completion = ["The governance mechanism is proportionate to change/service risk.", "Ownership and decision authority are explicit.", "Approval depends on evidence, not ceremony alone."];
+const changeGovernanceCases: Record<string, {question:string;worked:string;failure:string;transfer:string}> = {
+  "change-risk": {
+    "question": "What makes this change more dangerous than a routine merge?",
+    "worked": "Hypothetical Steward change A updates a typo in a dashboard; change B modifies owner authorization and the authoritative database schema. Evaluate blast radius, reversibility, data side effects, runtime dependency and the ability to detect a bad deployment. A receives normal review/CI; B needs denial-with-after-state tests, schema-compatibility proof, staged rollout, recovery evidence and a named release decision. Classify risk using evidence, not team seniority or the number of lines changed.",
+    "failure": "A five-line migration is called low-risk because it has a small diff, while it can irreversibly destroy records. Diff size is not the consequence of failure.",
+    "transfer": "Classify an identity-provider certificate rotation, a logging-label update and a batch-job retry-policy change; identify one missing observation that prevents confident low-risk classification."
+  },
+  "release-governance": {
+    "question": "Approval must attach to exact tested artifacts and remaining risk",
+    "worked": "Illustrative release candidate: CI tests commit C and produces artifact digest D. A deployment plan names D, contains an authorization-denial result, rollback strategy and the service owner who can authorize release after relevant QA/security review. A subsequent change to the image tag means the prior pass no longer covers the deployable artifact. The approval record binds exact revision and target environment. High-impact exceptions need approved risk authority; low-risk releases should not be held solely for ceremony.",
+    "failure": "A dashboard shows green tests from yesterday, but deployment pulls latest and silently runs a different image. The release was approved by reputation rather than evidence.",
+    "transfer": "Given two identical-looking build artifacts produced from different dependency lockfiles, specify which evidence must be renewed and how provenance affects an approval decision."
+  },
+  "incident-problem-change": {
+    "question": "Differentiate restoration, recurrence prevention and controlled modification",
+    "worked": "Hypothetical 09:10–10:05 registration failure: incident response restores a working route or safe degraded mode and communicates impact. A problem record later correlates failed scheduled tasks with exhausted DB connections and asks why monitoring missed them. A change record covers a bounded pool configuration fix and regression checks, staged rollout and rollback. Do not close the incident until affected work is reconciled; do not claim problem elimination merely because an emergency change stopped current symptoms.",
+    "failure": "A patch merged and all three tickets are closed, while failed registration effects remain pending in a queue. Implementation throughput was mistaken for service recovery.",
+    "transfer": "Model a failed supplier webhook during month-end processing: identify incident, problem and change outcomes; explain when reconciliation evidence belongs to incident closure."
+  },
+  "operational-readiness": {
+    "question": "Prove supportability before handing a service to operators",
+    "worked": "Illustrative new scheduled reconciliation: before launch, define service owner, alert route, success/failure signal, input/output contract, retry and idempotency behavior, data retention, dependency timeouts, rollback and a runbook tested by someone other than its author. An isolated execution demonstrates an observed success record, a forced failure alert, operator diagnosis and a safe replay producing no duplicate durable effect. If the alert never reaches the right on-call role, the feature is not operationally ready despite passing a unit test.",
+    "failure": "A handover document contains screenshots and component names, but no operator can identify whether last night's reconciliation produced business outcomes or which run can be replayed safely.",
+    "transfer": "Create a one-page readiness gate for a new document-processing worker. Include one non-happy-path drill, incident owner and evidence that a substitute operator can perform the recovery."
+  },
+  "emergency-change": {
+    "question": "Emergency is a risk-adjusted path, not a bypass of accountability",
+    "worked": "Illustrative critical authorization defect: leaving the vulnerable endpoint active exposes data; shipping an untested patch also carries risk. The incident/release authority compares disabling the affected capability, rolling back to known-good, and a bounded hotfix with essential negative test and rollback proof. Record why normal gates are shortened, who authorized deviation, which controls remain mandatory, immediate monitoring and the retrospective deadline. The action should still bind to an exact artifact and reproducible effect check.",
+    "failure": "Declare 'emergency' to skip all tests, turn off authorization or bypass required approval indefinitely. Urgency does not grant the implementer risk-acceptance authority.",
+    "transfer": "For a compromised service credential, set emergency change steps, communication, evidence and post-change verification without assuming all production access is available."
+  },
+  "evidence-release": {
+    "question": "Reject a plausible false-green release report",
+    "worked": "Illustrative gate: automated tests report 0 failed but the required authorization suite executed 0 tests due to tag selection. A robust release review requires minimum mandatory test cases, exact commit/artifact provenance, report freshness, denied-state invariant and clear treatment of missing evidence. It separately checks operational readiness and any approved exception. A green shell exit is not equivalent to safe release when tests did not run or ran against the wrong build.",
+    "failure": "Approval states 'all jobs green' though no protected-endpoint assertions executed, or the only evidence is a screenshot from another release candidate.",
+    "transfer": "Write a release decision for a failed scheduled security test with an otherwise green feature build. Distinguish block, authorized exception and what evidence could safely change the conclusion."
+  },
+  "change-controls": {
+    "question": "Map one change-control gate to its actual failure mode",
+    "worked": "Illustrative release path: source branch receives review, CI tests the exact commit, an immutable artifact is signed and a deployment gate verifies digest against the tested candidate. The control owner defines which environment and identity can override a gate; the auditor can trace any override to risk acceptance. A rollback runbook covers a database-compatible reversal and avoids assuming data writes are always reversible. Work backwards from the risk of untested code reaching users before prescribing the review mechanism.",
+    "failure": "Two humans approve a pull request but the deploy process uses a mutable latest tag. The approvals are real but do not control the artifact actually running.",
+    "transfer": "Design minimum controls for a production feature flag whose toggle may have permanent downstream data effects. Identify one false-green approval and one live-state verification."
+  },
+  "service-ownership": {
+    "question": "The service boundary must include consumers and operational responsibility",
+    "worked": "Illustrative Steward API service map: business consumers depend on registration outcomes, the service owner is accountable for availability and data contracts, on-call operations respond to alerts, the product owner decides change priority and security governs restricted privileges. Define expected event/outcome signals, customer-impact escalation, upstream/downstream dependencies and a substitute on-call who can use a tested runbook. A service catalog entry is only a pointer; test an owner absence scenario where a broken scheduled job has no successful outcome message.",
+    "failure": "Teams own servers but nobody is accountable when consumers receive accepted HTTP responses and no actual registration completion. A green infrastructure dashboard cannot prove the service outcome.",
+    "transfer": "Map ownership for a webhook-based payment notification service, including the person who reconciles missed callbacks, the authorization boundary and the evidence that closes an incident."
+  }
+};
+// Change governance must distinguish a green pipeline from an observed service
+// outcome and give the learner the prior evidence needed to judge either.
+const changeServiceConcepts:Record<string,{prerequisites:string;mechanism:string;alternatives:string;failure:string}> = {
+  "change-risk": {
+    "prerequisites": "Use Quality's regression gates, Delivery's immutable artifact and deployment evidence, Reliability's recovery runbooks and Architect's actual-stack inventory. Change risk is about possible adverse consequences from a modification, not the size of its code diff. A single configuration line may broaden privileges across all consumers. Distinguish a routine operational adjustment from schema migration, credential change or customer-facing behavior change.",
+    "mechanism": "For each proposed change identify service outcome, affected actors/records, trust boundary, dependent consumers, data reversibility, exact deployment artifact, monitoring and recovery path. Compare a harmless label change with a small permissions-map change. The label is likely reversible and local; the permissions update can allow cross-team mutation, so it needs denied-resource tests and evidence that after-state is unchanged. Ask whether a rollback reverses durable data changes or only software bits. Record uncertain blast radius as Unknown, not automatically Low. Assign a decision owner and pre-change failure/stop threshold, then update risk assessment if new evidence changes the consequence. An expedited change can still be high risk even if urgently needed.",
+    "alternatives": "Categorizing by 'number of changed files' or person seniority is an attractive shortcut but ignores cross-domain effects. A risk rubric may distinguish standard, normal and emergency paths, but must not turn every patch into a committee hearing. Prefer explicit consequence drivers and evidence-based review intensity.",
+    "failure": "A two-line environment variable change disables authorization checks for all tenants, but the team calls it low-risk because no application source changed. Reject the score and require actual policy boundary and negative-effect tests."
+  },
+  "change-controls": {
+    "prerequisites": "A control is a specific mechanism preventing, detecting or correcting an adverse change. A green pipeline proves little without selected mandatory tests, exact artifact matching and actual enforcement. Recall the difference among source commit, built digest, release tag, deployed revision and observed behavior. A review approval is not a substitute for a functioning test gate.",
+    "mechanism": "Start with the desired invariant: a deployed artifact must have passed the required authorization and recovery tests and be traceably approved for its risk tier. Map source → build → test selection → immutable digest → approval → deployment → post-deployment readback. Identify enforcement at each edge, including manual emergency paths and privileged bypass. Inject a safe negative: attempt to promote a different digest than the one tested, or select zero mandatory tests. The pipeline must stop or mark the required proof missing. Assign control owner and escalation for exceptions. Record evidence in the release record rather than duplicating screenshots. Couple preventive gates with detection of configuration drift and a rehearsed rollback for permitted failures.",
+    "alternatives": "A purely manual change-advisory board can catch contextual risk but cannot guarantee artifact identity. Automated gates scale better for objective checks, while human decisions remain appropriate for residual business risk. Some low-consequence changes can be fast-tracked if controls genuinely fail closed and monitoring is adequate.",
+    "failure": "A protected branch and a release approval exist, but the deployed tag is mutable and points to a different digest. The observed job is green while the claimed artifact was never tested; reject the change evidence."
+  },
+  "release-governance": {
+    "prerequisites": "Release governance is the decision whether a specific version may be exposed to a particular environment or population under current evidence, not simply permission to run deployment commands. Distinguish test execution success, user/business acceptance, security-risk acceptance and operational readiness. Each has separate expertise and potential authority. A ticket marked QA Done is not proof that its exact deployed version met every relevant invariant.",
+    "mechanism": "Assemble a release decision packet: features and changed interfaces, exact artifact digest, scope, tests with selected counts and outcomes, open critical findings, vulnerability context, operational and rollback readiness, downstream impacts, known gaps and delegated decision rights. Define blocking conditions before the deadline: for example denied cross-team write with changed after-state; missing selected mandatory test; impossible rollback of affected data; unapproved risk exception. Show the conditions for conditional deployment, such as limiting an experiment to test tenants with monitored reversal and owner approval when legitimate. Decide Go / No-Go / Conditional-Go with accountable rationale. After deployment, verify the observed digest and business invariants, not just the pipeline end state.",
+    "alternatives": "Gate every trivial low-risk edit with manual signatures and delivery stagnates; automatically release every passing CI build and customer effects can be missed. Risk-tiered evidence plus explicit nonwaivable invariants provides a more defensible boundary. Avoid inventing approval authority in an exercise.",
+    "failure": "A release candidate passed required QA tests, but production was deployed from a different tag. A director's message saying 'ship' does not establish artifact equivalence; record the missing evidence and hold the affected release."
+  },
+  "service-ownership": {
+    "prerequisites": "A service is an externally meaningful ongoing capability with users, agreements, operations and lifecycle, not just a deployed container. The product team may own business outcomes while distinct platform, data, security, delivery and support groups operate parts of it. Locate the actual Architect-supported estate; don't treat comparison-only Keycloak, Nexus or optional packages as active dependencies unless adopted and evidenced.",
+    "mechanism": "Create a service record with its purpose, consumers, entry points, authoritative data, dependencies, SLO indicators/measurement, support/response route, incident owner, deployment and recovery owners, risk authority and lifecycle state. Trace a failed owner lookup from user symptom to API, datastore and notification path: who communicates, who restores, who reconciles data and who confirms success? Maintain one accountable outcome owner and named delegates for operations. Verify continuity by giving a deputy the record and an isolated incident scenario with no hints, then observing whether they find correct runbook and exact artifact identity. Revision events include dependency change, ownership transfer, incident and retirement.",
+    "alternatives": "Assigning every component to one team creates a nominal owner who may lack access or expertise; assigning no single accountable service owner makes user-impact closure impossible. Use distributed execution with explicit escalation and an end-to-end outcome owner. A service catalogue may be lightweight if its entries are accurate and discoverable.",
+    "failure": "The incident is marked Resolved when the API pod restarts even though ownership updates remain unprocessed. Someone owns servers, but no one owns the consumer outcome; do not close without reconciliation evidence."
+  },
+  "incident-problem-change": {
+    "prerequisites": "An incident is an unplanned service degradation requiring restoration; a problem investigates causes of one or more incidents; a change governs planned modification of a service. These records have different objectives and may overlap in time. An incident can be stabilized before root cause is known. A corrective change can be deployed before every historical affected record is repaired.",
+    "mechanism": "Walk a concrete lost-acknowledgement case. The consumer reports duplicate ownership notifications and some incorrect records. Incident response bounds user harm, disables unsafe processing, inventories affected records and communicates recovery status. A problem investigation reconstructs timing: durable commit, acknowledgement loss, retry identity, side-effect duplication. A change adds transactional idempotency with positive/negative replay tests, exact build/digest, release approval and rollback. Post-change monitoring proves no new duplicate effect; a separate reconciliation proves historical impacted data is repaired. Link timeline and evidence across all three records. Close each only against its own criterion: service restored, systemic cause understood and addressed, change verified.",
+    "alternatives": "Forcing every one-time outage into a full root-cause project wastes capacity, but repeatedly closing incidents without pattern review leaves systemic problems. Some safe containment can proceed under emergency change control while a deeper investigation remains open. Keep evidence links rather than duplicating contradictory narratives.",
+    "failure": "The development ticket closes after the idempotency fix merges, while existing duplicate records remain uncorrected. A problem fix is not retrospective service restoration, and a merged patch is not an observed release."
+  },
+  "operational-readiness": {
+    "prerequisites": "Operational readiness concerns whether people, tooling and procedures can safely operate and recover a specific version under realistic failures. Passing functional tests alone does not prove monitored service behavior, backup recovery, rollback or available support expertise. Know the differences among RTO (target recovery duration), measured restore duration and demonstrated application/data integrity.",
+    "mechanism": "For a schema-and-queue release, list changed failure modes, owner/on-call handoff, alerts with verified recipients, dashboard population and lag, runbook commands with permission boundaries, data backup/restore compatibility, roll-forward/rollback conditions, supplier support and exact release identity. Run an isolated failure exercise: stop a dependency, observe alert receipt, apply documented safe recovery, measure time and verify the business invariant. Deliberately use a stale runbook step to see whether the procedure detects mismatched versions. Record what was actually executed, observed and not tested. If the planned cutover can make old clients write incompatible data, design a phased compatibility window rather than relying on a binary rollback that cannot reverse data.",
+    "alternatives": "A one-page checklist can focus attention but never substitutes for an exercised procedure. Perfect rehearsal of every catastrophic scenario is infeasible; prioritize highest consequence and fragile assumptions. If live testing is unsafe, isolate the exercise and label production behavior unverified.",
+    "failure": "Backups are green and an operator signs readiness, but a timed restore cannot read the migrated schema. The change is not operationally ready even if the deploy step finished without errors."
+  },
+  "emergency-change": {
+    "prerequisites": "Emergency change applies when delaying a repair creates greater demonstrated harm than accelerated implementation. It is not a shortcut for deadlines or neglected planning. Understand material blast radius, least privilege, independent test evidence and who is delegated authority to accept residual business risk under time pressure.",
+    "mechanism": "Define entry criteria using observed service effect, affected users, severity and safe delay alternatives. For a credential leak, the immediate minimum may be revoke/rotate access, preserve forensic evidence and verify old credentials fail; a later routine change can redesign secret distribution. An emergency record still needs the precise artifact/change, responsible implementer, responder and decision authority, negative test of the protected invariant, rollback or containment, timing and communication plan. Apply a time-boxed accelerated peer review if possible, monitor real post-change effects and schedule a post-event analysis that revisits exceptions, scope and follow-up. If the change would violate an unwaivable boundary, contain or hold instead of claiming urgency creates authority.",
+    "alternatives": "Routine change governance may have more testing breadth; emergency controls should preserve the *essential* protection and select narrowly relevant tests. Overusing the emergency label defeats oversight and increases operational surprise. Never manufacture a company-wide emergency policy from a hypothetical lesson.",
+    "failure": "A team bypasses the resource-level authorization test because the release is urgent, then treats the successful redeploy as evidence of recovery. An emergency does not erase the forbidden-side-effect criterion."
+  },
+  "evidence-release": {
+    "prerequisites": "A release verdict is an evidence-based, time-bounded decision for an exact artifact, risk scenario and deployment context. A test suite may be green because it tested a previous commit, selected no relevant cases, or used mocks that omit durable effects. The learner should follow the evidence from requirement through independent oracle to deployed state and know which owner may approve exceptions.",
+    "mechanism": "Compose a decision table: changed invariant; tested commit and immutable digest; mandatory test IDs and selected counts; denial positive/negative observations; security and reliability risks; deployment environment; rollback/data plan; approved exception status; decision/expiry. Evaluate a packet with a successful build, one missing cross-tenant authorization test and a provider change. The verdict is not automatically Go: identify which proof must be rerun, what scope can be safely limited and which decision authority must act. Require test results tied to the digest actually deployed and a post-deploy readback that verifies the business service effect. Publish explicit stop conditions, not a confidence adjective.",
+    "alternatives": "A blanket 'zero bugs' rule is impractical and hides severity differences; vague 'QA approved' stamps are too weak. Use consequence-based release criteria with bounded uncertainty and transparent owner decisions. A narrow pilot may be safer than general exposure if authorization and rollback boundaries truly hold.",
+    "failure": "A browser screenshot of a green dashboard is used to approve a release where mandatory security tests had zero selected cases. Reject the inference and obtain the exact selected-test and after-state evidence."
+  }
+};
+const releaseEvidenceLab:Record<string,{explanation:string;commands:string;expected:string}> = {
+  "release-governance":{
+    explanation:"Release approval asks whether the EXACT candidate artifact has mandatory selected tests and a denied-after-state proof. This local Node.js 22+ exercise gives you a fictional 14-release population; predict the verdict before running and distinguish a 12/14 coverage figure from organizational risk acceptance. See labs/technical-steward/README.md for the counterfactual steps.",
+    commands:"node labs/technical-steward/decision-evidence.mjs release\nnode labs/technical-steward/decision-evidence.mjs release --require-pass",
+    expected:"FICTIONAL-Q4-RELEASE-POPULATION: HOLD (12/14 complete)\nEMERG-13: MANDATORY_TESTS_NOT_SELECTED\nEMERG-14: ARTIFACT_PROVENANCE_MISSING_OR_MISMATCHED\nSecond command deliberately exits 1: mandatory gate rejected this packet."
+  },
+  "evidence-release":{
+    explanation:"An evidence packet needs more than a green job. This offline lab distinguishes missing selected tests from a deployed/tested digest mismatch and requires an independently checkable negative oracle. Use a scratch JSON copy to test a corrected input, then reinstate a false denied-after-state outcome. Never present the fictional fixtures as observed production evidence.",
+    commands:"node labs/technical-steward/decision-evidence.mjs release\ncp labs/technical-steward/release-population.json release-whatif.json\nnode labs/technical-steward/decision-evidence.mjs release --file release-whatif.json",
+    expected:"The unchanged fixture HOLDs with 12/14 complete. A corrected synthetic fixture PASSes only when exact digest, selected mandatory checks and denied after-state are all affirmed. No JSON edit can prove an actual production control operated."
+  }
+};
 function moduleLesson(id: string, title: string, body: string, instructions: string[]): Lesson {
   return { id: `change-service-governance-${id}`, title, activities: [
-    { id: `change-service-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 55, content: { type: "reading", body, blocks:[...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),{type:"resources",title:"Service/change reference",resources:resourcesByChange[id] ?? [itil]}] } },
-    { id: `change-service-governance-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward.`, scenario, instructions, deliverables, completionCriteria: completion } },
+    { id: `change-service-governance-${id}-reading`, title: `${title}: concepts`, estimatedMinutes: 55, content: { type: "reading", body, blocks: [
+  ...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),
+  ...(changeServiceConcepts[id] ? [
+    {type:"heading" as const,id:`change-${id}-prerequisites`,text:"Evidence prerequisites and concepts",level:2 as const},
+    {type:"paragraph" as const,text:changeServiceConcepts[id]!.prerequisites},
+    {type:"heading" as const,id:`change-${id}-mechanism`,text:"Follow the actual change, service and consequence",level:2 as const},
+    {type:"paragraph" as const,text:changeServiceConcepts[id]!.mechanism},
+    {type:"heading" as const,id:`change-${id}-alternatives`,text:"Decision alternatives and boundaries",level:2 as const},
+    {type:"paragraph" as const,text:changeServiceConcepts[id]!.alternatives},
+    {type:"callout" as const,tone:"warning" as const,title:"Reject this false-green decision",body:changeServiceConcepts[id]!.failure},
+  ] : []),
+  ...(changeGovernanceCases[id] ? [
+    {type:"heading" as const,id:`change-${id}-case`,text:changeGovernanceCases[id]!.question,level:2 as const},
+    {type:"paragraph" as const,text:changeGovernanceCases[id]!.worked},
+    {type:"callout" as const,tone:"warning" as const,title:"False evidence / unsafe exception",body:changeGovernanceCases[id]!.failure},
+    {type:"heading" as const,id:`change-${id}-transfer`,text:"Independent situation",level:2 as const},
+    {type:"paragraph" as const,text:changeGovernanceCases[id]!.transfer}
+  ] : []),
+  ...(releaseEvidenceLab[id] ? [
+    {type:"heading" as const,id:`change-${id}-executable`,text:"Run the release-evidence gate and its negative control",level:2 as const},
+    {type:"paragraph" as const,text:releaseEvidenceLab[id]!.explanation},
+    {type:"code" as const,language:"bash",caption:"From TSA repository root with Node.js 22+",code:releaseEvidenceLab[id]!.commands,output:releaseEvidenceLab[id]!.expected}
+  ] : []),
+  {type:"resources" as const,title:"Service/change reference",resources:resourcesByChange[id] ?? [itil]}
+] } },
+    { id: `change-service-governance-${id}-practice`, title: `${title}: Steward exercise`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${title} to Steward.`, scenario:`${scenario}\n\nINDEPENDENT CHANGE/SERVICE CASE: ${changeGovernanceCases[id]!.transfer}`,instructions:[...instructions,...(releaseEvidenceLab[id] ? ["Execute the offline Node.js release-assurance commands documented in labs/technical-steward/README.md, record the HOLD output and expected nonzero gate exit.","Make a scratch JSON copy and change exactly one evidence field; rerun --file and explain why simulated PASS does not verify real deployment or grant release authority."] : []),"Trace a specific source revision to the deployed artifact and observed user/service effect where relevant; include a negative control or failed release and who can authorize an exception."],deliverables:[...deliverables,"Exact-artifact/service-effect evidence with rollback or stop criterion"],completionCriteria:[...completion,...(releaseEvidenceLab[id] ? ["The released fictional evidence case has repeatable command output, a false-green counterexample and an explicit distinction between missing proof, observed failure and legitimate organizational authorization."] : []),`Reject the submission if it repeats this false success: ${changeGovernanceCases[id]!.failure}`,"The decision cannot pass from a green job alone: release effect, selected mandatory tests, accountability and safe failure handling are observable."] } },
   ]};
 }
 

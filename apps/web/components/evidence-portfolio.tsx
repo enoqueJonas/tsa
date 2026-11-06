@@ -65,7 +65,7 @@ export function EvidencePortfolio() {
       <div className="mb-8 grid gap-4 sm:grid-cols-3">
         <div className="rounded-2xl border border-zinc-200 bg-white p-5"><p className="text-3xl font-semibold">{records.length}</p><p className="mt-1 text-sm text-zinc-500">Evidence records</p></div>
         <div className="rounded-2xl border border-zinc-200 bg-white p-5"><p className="text-3xl font-semibold">{readyForReview}</p><p className="mt-1 text-sm text-zinc-500">Ready for review</p></div>
-        <div className="rounded-2xl border border-zinc-200 bg-white p-5"><p className="text-3xl font-semibold">{accepted}</p><p className="mt-1 text-sm text-zinc-500">Accepted</p></div>
+        <div className="rounded-2xl border border-zinc-200 bg-white p-5"><p className="text-3xl font-semibold">{accepted}</p><p className="mt-1 text-sm text-zinc-500">Self-reviewed (not independently assessed)</p></div>
       </div>
 
       <div className="mb-6 grid gap-3 md:grid-cols-[minmax(0,1fr)_220px]">
@@ -74,7 +74,7 @@ export function EvidencePortfolio() {
           <option value="all">All submission states</option>
           <option value="draft">Draft</option>
           <option value="ready">Ready</option>
-          <option value="accepted">Accepted</option>
+          <option value="accepted">Self-reviewed</option>
         </select>
       </div>
 
@@ -86,7 +86,7 @@ export function EvidencePortfolio() {
             const entry = lookup[record.activityId];
             const state = record.submissionStatus ?? "draft";
             return <article key={record.activityId} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-              <div className="flex items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-400">{entry?.school.title ?? "TSA"}</p><h2 className="mt-2 text-xl font-semibold">{entry?.activity.title ?? record.activityId}</h2><p className="mt-1 text-sm text-zinc-500">{entry?.path.title}</p></div><span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold capitalize text-zinc-700">{state}</span></div>
+              <div className="flex items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-400">{entry?.school.title ?? "TSA"}</p><h2 className="mt-2 text-xl font-semibold">{entry?.activity.title ?? record.activityId}</h2><p className="mt-1 text-sm text-zinc-500">{entry?.path.title}</p></div><span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold capitalize text-zinc-700">{state === "accepted" ? "Self-reviewed" : state}</span></div>
               {record.notes && <div className="mt-5"><p className="text-xs font-semibold uppercase tracking-[0.12em] text-zinc-400">Evidence notes</p><p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-zinc-700">{record.notes}</p></div>}
               {record.outcome && <div className="mt-5"><p className="text-xs font-semibold uppercase tracking-[0.12em] text-zinc-400">Outcome</p><p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-zinc-700">{record.outcome}</p></div>}
               {record.links.length > 0 && <div className="mt-5"><p className="text-xs font-semibold uppercase tracking-[0.12em] text-zinc-400">Artifacts</p><div className="mt-2 space-y-2">{record.links.map((link) => <a key={link} href={link} target="_blank" rel="noreferrer" className="block break-all text-sm font-medium text-blue-700 hover:text-blue-900">{link}</a>)}</div></div>}

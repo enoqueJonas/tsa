@@ -10,6 +10,44 @@ For each module inspect the **composed learner-facing module**, including lesson
 
 Status legend: **Not started** = full pedagogical review not performed; **In review** = active findings; **Blocked** = learner-facing defect or material verification gap; **Accepted** = five dimensions reviewed with linked evidence. Technical build/CI is a separate operational gate, not the score for learning quality.
 
+## Technical Steward PED-005 — 13-path learner-acceptance checkpoint (2026-11-03)
+
+This school has **101 original conceptual readings revised at source** across the 12 conceptual modules and a four-phase final capstone, but its state remains **SOURCE REVIEW IN PROGRESS / HUMAN LEARNER NOT VALIDATED**. [Draft PR #355](https://github.com/enoqueJonas/tsa/pull/355) removed generic generated governance/preparation wrappers, strengthened the source readings and 83 original topic practicals, and split the Technology Governance, Handbook and final stewardship labs into independently assessed phases. Each original conceptual reading now includes prerequisite knowledge, the precise causal mechanism, alternatives, a worked case and a diagnostic failure. The eight Handbook readings render copyable proposed markdown decision artifacts, not approved policies. [Canonical source ledger](./ped-005-technical-steward-school-audit.md) contains per-path findings; [blind independent-transfer protocol](./ped-005-technical-steward-independent-transfer-review.md) contains all thirteen novel assessor packets and an unadministered scoring sheet.
+
+**Prior verified baseline:** the full 19-job curriculum build/audit and scripted browser CI [#41671317459](https://github.com/enoqueJonas/tsa/actions/runs/41671317459) succeeded at source SHA `6040629`. That technical result predates the later practical/reading revisions; newer exact-head results must be checked separately. Scripted browser traversal and hard-reload regression are not human rendered-page critique or measured learning.
+
+| Technical Steward path | Concept teaching | Practical rubric | Cross-school continuity | Resources | Render/UX | Independent learner |
+| --- | --- | --- | --- | --- | --- | --- |
+| Technical Leadership | Revised 8 originals; qualitative reading open | 8 independent scenarios authored | Prior Architect/QA evidence not independently proven | Targeted links exist; slice audit open | Scripted baseline only | NOT TESTED |
+| Engineering Governance | Revised 7 originals | 7 decision/authority scenarios authored | Organizational approval authority unverified | Targeted links; precision review open | Scripted baseline only | NOT TESTED |
+| IT & Technology Governance | Revised 10 originals | 180-minute lab split 3 ways | Real decision roles not supplied | COBIT/ITIL/ISO/NIST boundaries need reviewer | Scripted baseline only | NOT TESTED |
+| Strategy & Capability | Revised 6 originals | 6 novel non-choice scenarios | Real planning inputs unknown | Reference selection unverified | Scripted baseline only | NOT TESTED |
+| Technology Risk | Revised 9 originals | 9 novel risk case packets | Risk acceptance/tolerance authority unknown | Reference scope unverified | Scripted baseline only | NOT TESTED |
+| Controls & Assurance | Revised 10 originals | 10 falsifiable controls cases | Actual operation not observed | NIST/assurance resources to inspect | Scripted baseline only | NOT TESTED |
+| Architecture Governance | Revised 8 originals | 8 independent ADR/exception/retirement cases | Architect actual estate must be verified | ADR/SEI/radar scopes to inspect | Scripted baseline only | NOT TESTED |
+| Security & Data Governance | Revised 8 originals | 8 denied-effect/authority case prompts | Privacy/retention policy unapproved | NIST reference scope unverified | Scripted baseline only | NOT TESTED |
+| Change & Service Governance | Revised 8 originals | 8 exact-artifact/recovery cases | Live incident and release authority absent | ITIL/SRE reference precision open | Scripted baseline only | NOT TESTED |
+| Third-party & Lifecycle | Revised 11 originals | 11 supplier/support/exit scenarios | Actual vendor contract/exit unknown | NIST/SBOM applicability to inspect | Scripted baseline only | NOT TESTED |
+| Technical Debt & Health | Revised 8 originals | 8 new-case priority/health prompts | Actual debt metrics absent | DORA/SRE resource precision open | Scripted baseline only | NOT TESTED |
+| Handbook & Standards | Revised 8 original structured readings | 390-minute lab split 3 ways | Independent deputy/real ops not observed | Handbook sources to inspect | Scripted baseline only | NOT TESTED |
+| Stewardship Review | Cross-school integrated milestone | 600-minute capstone split 4 ways | Approved actual-stack/biz context absent | Consumes prior school materials | Scripted baseline only | NOT TESTED |
+
+**Additional source/reference review:** a current ISO/IEC 38500:2024 official reference replaced the historical withdrawn 2015 link; PeopleCert's ITIL Version 5 transition resource replaced the legacy certification URL. The full resource catalogue and pedagogical applicability still require review. All 101 conceptual reading blocks and all 83 original new-case practicals are guarded by a compiled-source check, but that alone does not prove the material is understandable. A separate 13-module browser test now targets all 219 activities at 390px and retired-wrapper progress; record its exact-head result only after completion.\n\n**Do not mark Accepted:** The table records authored source features, not scores from a human learner. No reader has independently demonstrated unfamiliar-case competence in this session. Real external controls, participant handoff, desktop/390px manual review and authority-dependent actions remain unverified. Keep #329 and #318 open.
+
+### Technical Steward — exercise executability checkpoint (3 November 2026, same draft PR)
+
+The earlier school-wide automated pass remains **19/19 at `e10e47e`**, not a pass for any later source modifications. A focused offline decision-evidence lab now supplies actual reproducible input packets instead of asking for an assurance opinion without data: 14 simulated release artifacts (12 evidenced, two deliberately failing differently), and two recovery observations (one backup-only and one 360-minute isolated hypothetical restoration against an unapproved 240-minute target). This uses Node.js 22+, no credentials or network, with command/output expectations, deliberate exit-1 negative gate, learner-controlled `--file` replay and unit tests in `scripts/tests/technical-steward-decision-evidence.test.mjs`.
+
+The lab is embedded in **six original reading/practical pairs** (Technology Risk: inherent/residual, appetite/tolerance; Controls & Assurance: effectiveness, testing; Change & Service: release governance, evidence-release). The learner must show actual local output and distinguish synthetically asserted fields from observed real-system evidence; a passing fixture never grants release or risk approval. [Executable exercise and assessor protocol](../../labs/technical-steward/README.md).
+
+**Important open risk:** The other 77 original topic practicals have novel case prompts and rejecting rubrics, but they have **not all been independently executed or supplied with assessor-ready population data**. Some are inherently written decision reviews rather than runnable programs; still demand sufficient facts, a model decision, falsifying evidence and uncoached transfer. All human testing cells remain NOT TESTED.
+
+### PED-005 — no-evidence completion and false-acceptance regression
+
+A serious learner-integrity defect was confirmed: the generic session runtime permits all practical activities to complete without evidence; meanwhile the learner-controlled Evidence Workspace could describe a user-selected status as **Accepted**. For Technical Steward paths, new practical transitions now require a persisted evidence note, outcome and Ready/Self-reviewed status. Empty/Draft states must **not** unlock the next activity. Legacy completions remain intact; no evidence is retroactively fabricated. **Self-reviewed** explicitly means learner-reported, not assessed; the evidence portfolio mirrors that wording.
+
+This is a limited safeguard: the input may be wrong or fabricated; only an independent assessor reviewing the saved work against an unseen case can establish learner competence. Browser tests now submit overtly SYNTHETIC evidence to traverse all 219 activities at desktop and 390px, then separately try blank/Draft transitions to ensure the false-completion path is blocked. The new exact-head CI result remains to be recorded after completion.
+
 ## Cross-module journey gates
 
 - Engineering Apprentice: inspect the school entry point and its actual lessons (the 134-entry structural census starts with Builder; Apprentice must NOT be omitted from the learner journey).

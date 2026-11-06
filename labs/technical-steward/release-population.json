@@ -1,0 +1,161 @@
+{
+  "caseId": "FICTIONAL-Q4-RELEASE-POPULATION",
+  "disclaimer": "All IDs, run identifiers and observation timestamps are invented for a repeatable training fixture. Field presence is not proof of a real external control's operation.",
+  "question": "Do the mandatory selected authorization tests, exact deployed artifact and denied after-state evidence cover the entire 14-release population?",
+  "releases": [
+    {
+      "id": "REL-01",
+      "deployedDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000001",
+      "testedDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000001",
+      "selectedMandatoryTests": 3,
+      "failedMandatoryTests": 0,
+      "deniedAfterStateVerified": true,
+      "testRunId": "SYNTHETIC-CI-RUN-001",
+      "deniedStateEvidenceId": "SYNTHETIC-STATE-CHECK-001",
+      "observedAt": "2026-10-01T12:00:00.000Z"
+    },
+    {
+      "id": "REL-02",
+      "deployedDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000002",
+      "testedDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000002",
+      "selectedMandatoryTests": 3,
+      "failedMandatoryTests": 0,
+      "deniedAfterStateVerified": true,
+      "testRunId": "SYNTHETIC-CI-RUN-002",
+      "deniedStateEvidenceId": "SYNTHETIC-STATE-CHECK-002",
+      "observedAt": "2026-10-02T12:00:00.000Z"
+    },
+    {
+      "id": "REL-03",
+      "deployedDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000003",
+      "testedDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000003",
+      "selectedMandatoryTests": 3,
+      "failedMandatoryTests": 0,
+      "deniedAfterStateVerified": true,
+      "testRunId": "SYNTHETIC-CI-RUN-003",
+      "deniedStateEvidenceId": "SYNTHETIC-STATE-CHECK-003",
+      "observedAt": "2026-10-03T12:00:00.000Z"
+    },
+    {
+      "id": "REL-04",
+      "deployedDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000004",
+      "testedDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000004",
+      "selectedMandatoryTests": 3,
+      "failedMandatoryTests": 0,
+      "deniedAfterStateVerified": true,
+      "testRunId": "SYNTHETIC-CI-RUN-004",
+      "deniedStateEvidenceId": "SYNTHETIC-STATE-CHECK-004",
+      "observedAt": "2026-10-04T12:00:00.000Z"
+    },
+    {
+      "id": "REL-05",
+      "deployedDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000005",
+      "testedDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000005",
+      "selectedMandatoryTests": 3,
+      "failedMandatoryTests": 0,
+      "deniedAfterStateVerified": true,
+      "testRunId": "SYNTHETIC-CI-RUN-005",
+      "deniedStateEvidenceId": "SYNTHETIC-STATE-CHECK-005",
+      "observedAt": "2026-10-05T12:00:00.000Z"
+    },
+    {
+      "id": "REL-06",
+      "deployedDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000006",
+      "testedDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000006",
+      "selectedMandatoryTests": 3,
+      "failedMandatoryTests": 0,
+      "deniedAfterStateVerified": true,
+      "testRunId": "SYNTHETIC-CI-RUN-006",
+      "deniedStateEvidenceId": "SYNTHETIC-STATE-CHECK-006",
+      "observedAt": "2026-10-06T12:00:00.000Z"
+    },
+    {
+      "id": "REL-07",
+      "deployedDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000007",
+      "testedDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000007",
+      "selectedMandatoryTests": 3,
+      "failedMandatoryTests": 0,
+      "deniedAfterStateVerified": true,
+      "testRunId": "SYNTHETIC-CI-RUN-007",
+      "deniedStateEvidenceId": "SYNTHETIC-STATE-CHECK-007",
+      "observedAt": "2026-10-07T12:00:00.000Z"
+    },
+    {
+      "id": "REL-08",
+      "deployedDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000008",
+      "testedDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000008",
+      "selectedMandatoryTests": 3,
+      "failedMandatoryTests": 0,
+      "deniedAfterStateVerified": true,
+      "testRunId": "SYNTHETIC-CI-RUN-008",
+      "deniedStateEvidenceId": "SYNTHETIC-STATE-CHECK-008",
+      "observedAt": "2026-10-08T12:00:00.000Z"
+    },
+    {
+      "id": "REL-09",
+      "deployedDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000009",
+      "testedDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000009",
+      "selectedMandatoryTests": 3,
+      "failedMandatoryTests": 0,
+      "deniedAfterStateVerified": true,
+      "testRunId": "SYNTHETIC-CI-RUN-009",
+      "deniedStateEvidenceId": "SYNTHETIC-STATE-CHECK-009",
+      "observedAt": "2026-10-09T12:00:00.000Z"
+    },
+    {
+      "id": "REL-10",
+      "deployedDigest": "sha256:000000000000000000000000000000000000000000000000000000000000000a",
+      "testedDigest": "sha256:000000000000000000000000000000000000000000000000000000000000000a",
+      "selectedMandatoryTests": 3,
+      "failedMandatoryTests": 0,
+      "deniedAfterStateVerified": true,
+      "testRunId": "SYNTHETIC-CI-RUN-010",
+      "deniedStateEvidenceId": "SYNTHETIC-STATE-CHECK-010",
+      "observedAt": "2026-10-10T12:00:00.000Z"
+    },
+    {
+      "id": "REL-11",
+      "deployedDigest": "sha256:000000000000000000000000000000000000000000000000000000000000000b",
+      "testedDigest": "sha256:000000000000000000000000000000000000000000000000000000000000000b",
+      "selectedMandatoryTests": 3,
+      "failedMandatoryTests": 0,
+      "deniedAfterStateVerified": true,
+      "testRunId": "SYNTHETIC-CI-RUN-011",
+      "deniedStateEvidenceId": "SYNTHETIC-STATE-CHECK-011",
+      "observedAt": "2026-10-11T12:00:00.000Z"
+    },
+    {
+      "id": "REL-12",
+      "deployedDigest": "sha256:000000000000000000000000000000000000000000000000000000000000000c",
+      "testedDigest": "sha256:000000000000000000000000000000000000000000000000000000000000000c",
+      "selectedMandatoryTests": 3,
+      "failedMandatoryTests": 0,
+      "deniedAfterStateVerified": true,
+      "testRunId": "SYNTHETIC-CI-RUN-012",
+      "deniedStateEvidenceId": "SYNTHETIC-STATE-CHECK-012",
+      "observedAt": "2026-10-12T12:00:00.000Z"
+    },
+    {
+      "id": "EMERG-13",
+      "deployedDigest": "sha256:000000000000000000000000000000000000000000000000000000000000000d",
+      "testedDigest": "sha256:000000000000000000000000000000000000000000000000000000000000000d",
+      "selectedMandatoryTests": 0,
+      "failedMandatoryTests": 0,
+      "deniedAfterStateVerified": true,
+      "testRunId": "SYNTHETIC-CI-RUN-013",
+      "deniedStateEvidenceId": "SYNTHETIC-STATE-CHECK-013",
+      "observedAt": "2026-10-13T12:00:00.000Z"
+    },
+    {
+      "id": "EMERG-14",
+      "deployedDigest": "sha256:000000000000000000000000000000000000000000000000000000000000000e",
+      "testedDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "selectedMandatoryTests": 3,
+      "failedMandatoryTests": 0,
+      "deniedAfterStateVerified": true,
+      "testRunId": "SYNTHETIC-CI-RUN-014",
+      "deniedStateEvidenceId": "SYNTHETIC-STATE-CHECK-014",
+      "observedAt": "2026-10-14T12:00:00.000Z"
+    }
+  ]
+}

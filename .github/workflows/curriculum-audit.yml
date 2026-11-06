@@ -58,6 +58,7 @@ on:
       - curriculum/quality-steward-java-playwright-local-v9
       - curriculum/quality-steward-gitlab-evidence-v10
       - curriculum/quality-steward-java-concurrency-split-v11
+      - curriculum/technical-steward-ped005-source-v1
       - integration/tsa-audits-master-20261102
       - master
   workflow_dispatch:

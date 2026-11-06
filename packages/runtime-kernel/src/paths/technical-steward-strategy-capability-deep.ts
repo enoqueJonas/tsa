@@ -1,7 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 
-const isoGovernance: LearningResource = { title: "ISO/IEC 38500 — Governance of IT overview", url: "https://www.iso.org/standard/62816.html", kind: "reference" };
+const isoGovernance: LearningResource = { title: "ISO/IEC 38500:2024 — Governance of IT for the organization", url: "https://www.iso.org/standard/81684.html", kind: "reference" };
 const cobit: LearningResource = { title: "ISACA — COBIT", url: "https://www.isaca.org/resources/cobit", kind: "reference" };
 const techRadar: LearningResource = { title: "Thoughtworks Technology Radar", url: "https://www.thoughtworks.com/radar", kind: "reference" };
 const teamTopologies: LearningResource = { title: "Team Topologies — Key Concepts", url: "https://teamtopologies.com/key-concepts", kind: "reference" };
@@ -42,20 +42,105 @@ const workedCases: Record<string, { question: string; example: string; challenge
     challenge: "Identify entry criteria, dependency, observable success, abort trigger and a deliberately uncommitted later option."
   }
 };
+// Disconfirming cases and transfer probes belong to specific strategic decisions.
+const strategyChecks: Record<string,{failure:string;transfer:string;acceptance:string}> = {
+  "outcomes-horizons": {
+    "failure": "A slide promises an identity-directory migration in month six, while nobody has measured whether missing ownership or approval delay causes incidents. The roadmap cannot assert a solution before a baseline.",
+    "transfer": "A sponsor wants to improve supplier outage recovery over twelve months. Separate an immediate verified obligation, a near-term experiment, a later option and a condition that cancels that option.",
+    "acceptance": "The learner distinguishes observed baseline, committed result and speculative option, with a source and date for each decision gate."
+  },
+  "strategic-choices": {
+    "failure": "A portfolio calls every desirable initiative 'priority one'; no capacity is released, nothing is deferred and every risk is described as critical. This is not a choice.",
+    "transfer": "With capacity for one sprint, decide between a missing unauthorized-write regression check, a cloud migration and a feature enhancement. Write the rejected options and which evidence could change your choice.",
+    "acceptance": "The choice rejects a credible alternative, describes opportunity cost and names a falsifiable reconsideration signal."
+  },
+  "capability-map": {
+    "failure": "The capability map equates 'reliable incident routing' with installing a new alerting vendor, but team ownership data remains wrong and no one responds to alerts.",
+    "transfer": "Map 'restore customer service after supplier failure' into people, process, information and technology dependencies and identify the weakest point without recommending a tool first.",
+    "acceptance": "The map separates business ability from the product that might supply it and shows one nontechnology bottleneck."
+  },
+  "investment-prioritization": {
+    "failure": "A spreadsheet multiplies unsupported 1–5 optimism scores and calls the result financial ROI, then picks the fashionable infrastructure rewrite over a verified critical service gap.",
+    "transfer": "Use a proposed contract-testing initiative, a backup validation project and an identity platform rewrite. Compare time horizon, consequence, confidence, lifecycle cost, learning option and risk. Defend the top choice and an explicit deferment.",
+    "acceptance": "The ranking identifies which assumptions are uncertain and demonstrates how one change in evidence would alter priority."
+  },
+  "capability-building": {
+    "failure": "A team buys an access-management service and assumes the vendor now owns the organization's policy, role approval and incident recovery decisions.",
+    "transfer": "Choose build, buy, learn or retire for an internal certificate issuance process. Show the continuing organizational responsibility after an outsourced or automated solution.",
+    "acceptance": "The chosen operating model includes remaining owner, skills, failure recovery and exit, not procurement cost alone."
+  },
+  "roadmaps-options": {
+    "failure": "A roadmap promises exact calendar dates for unknown integrations four years out, keeping a costly cloud migration alive even after the original performance driver disappeared.",
+    "transfer": "An API latency improvement may eliminate the need for a new cache. Define the measurement and stop threshold that retires the cache option before implementation, and explain who signs off.",
+    "acceptance": "At least one later option has an abort trigger and an expiry/review point, and near-term commitments have attributable owners."
+  }
+};
+// Foundations for coherent strategy: outcomes, capability and portfolio
+// nonchoices must be learned before the worked roadmap exercises.
+const strategyConcepts:Record<string,{prerequisites:string;mechanism:string;alternatives:string;failure:string}> = {
+  "outcomes-horizons": {
+    "prerequisites": "Strategy is a coordinated set of choices about where and why to spend scarce capability, not a list of future products. An outcome is observable change for a stakeholder; a capability is the ability of people, process, information and technology to achieve it; an initiative is an intervention. Know the actual active estate, ownership and service gaps before projecting a future system.",
+    "mechanism": "Begin with an example outcome: incidents must reach the accountable service team reliably. Gather baseline evidence such as unowned-service count and incident rerouting delay; if unavailable, the first strategic action is measurement. Draw three horizons without pretending to predict dates precisely. Now: inventory ownership and define escalation. Next: pilot an approved correction workflow and measure rate of wrong assignments. Later: consider identity-directory integration **only if** manual correction remains an evidenced bottleneck. Mark people/capability dependencies and decision authority at each gate. Specify a cancellation condition—for example the pilot improves no measurable routing outcome—and explain what happens to invested capacity if a future option is deferred.",
+    "alternatives": "Fixed long-range deadlines are justified when contractual obligations exist, but speculative technology commitments should be options with explicit evidence gates. An outcome roadmap can include a nontechnology change such as clarifying owner escalation. Use current, next, later to communicate uncertainty without making every initiative 'optional forever'.",
+    "failure": "A three-year technology migration is labeled mandatory before anyone measures the original service problem. Reject the plan until its causal link to the organizational outcome and feasibility is demonstrated."
+  },
+  "strategic-choices": {
+    "prerequisites": "A strategy must identify nonchoices because budget, people, risk capacity and time are constrained. A priority list containing only favored investments is not a trade-off. Learn to distinguish an immutable objective (safe authorized change) from optional means (another broker, cache, cloud migration). Consider both sunk-cost bias and real switching cost.",
+    "mechanism": "Give a hypothetical team two sprint-equivalents of engineering capacity. Option A addresses a verified unauthorized write, B automates an untested restore, and C introduces a new message broker with no throughput evidence. State consequence and time horizon for each, their prerequisites, irreversible effects and shared staff dependencies. Decide A and a bounded experiment for B; explicitly defer C and explain the opportunity cost and risk of delaying it. Document one scenario where C should become a priority—measured queue lag that cannot be solved safely with current design. Include the option to stop a low-value feature or simplify an existing component to recover capacity. Record who can make investment and risk decisions.",
+    "alternatives": "Portfolio scoring can help if the evidence and weighting are disclosed, but an ordinal 1–5 product is not financial ROI. The seemingly cheapest immediate action can carry large lifecycle cost. Preserve the rejected option and reconsideration trigger so dissent becomes a testable hypothesis, not a political defeat.",
+    "failure": "Every option is called P1, resources are not subtracted anywhere and the plan promises immediate delivery of all of them. This is a wishlist without a resource-constrained choice."
+  },
+  "capability-map": {
+    "prerequisites": "A capability is an enduring ability to deliver a business outcome; a product is only one supporting asset. Capability mapping asks what people, process, information, technology and governance must work together, not which vendor owns the department. Know service boundaries, accountable roles and incident evidence from earlier schools.",
+    "mechanism": "For reliable incident routing, identify business capability and decomposed dependencies: usable owner data (information), a clear handoff and dispute rule (process), on-call responder skills (people), service API and monitoring (technology), and authorized changes to ownership (governance). Mark each dependency as evidenced, absent or unknown with a source. Construct a failure trace: a new alerting platform delivers events instantly, but every event still routes to an unowned team. The system has improved delivery speed, not the capability. Prioritize the weakest actual dependency, then define a cross-component experiment and observable impact. Draw edges that explain how a change can fail even if one tool succeeds.",
+    "alternatives": "Buy versus build only addresses one part of a capability. Teams can improve process ownership without software, and they can modernize software without changing a business invariant. Avoid falsely modeling a specific Kubernetes cluster or identity provider as necessary when the desired service could be achieved more simply.",
+    "failure": "A capability map contains one box called 'Keycloak' for identity governance but no owner, lifecycle, role approval or revocation path. A product label has been mistaken for the ability to govern access."
+  },
+  "investment-prioritization": {
+    "prerequisites": "Prioritization weighs impact, urgency, expected confidence, time to learn, execution capacity, reversibility and cost of inaction. An estimate is a hypothesis, not a measured return. Be able to distinguish observed incident cost from assumed future savings, and organizational obligations from optional optimizations.",
+    "mechanism": "Compare three candidate investments: two weeks of ownership data cleanup, six weeks of cross-service trace correlation, and a three-month platform rewrite. For each, identify the observed user pain, plausible causal improvement, one-time delivery effort, ongoing operating cost, skills, safety risk and measurable stop or success criterion. Where input is unknown, choose a cheap discriminating experiment rather than filling in optimistic scores. For example, isolate ten misrouted incident records and test whether data cleanup alone fixes routing, preserving a denominator and negative cases. Build a counterfactual: what if the same incidents occur next month without action? Make the preferred recommendation contingent on the experiment's result and explicitly state which effort is deferred.",
+    "alternatives": "Economic cases may use credible cost and probability intervals if actual data support them. A small verified intervention can outrank a large rewrite even if the latter is fashionable, while a legally required remediation cannot be displaced by an arbitrary point score. Consider dependency sequencing: some investments create evidence needed to judge others.",
+    "failure": "A ranking multiplies invented certainty scores and calls the result $300,000 ROI. Reject the monetary assertion until cost basis, affected population, horizon and uncertainty are documented."
+  },
+  "capability-building": {
+    "prerequisites": "Build, buy, partner, learn, retain and retire are distinct capability decisions. Buying a service does not transfer all accountability for privacy, availability or customer outcome. Internal platform expertise can become a hidden recurrent cost. Recognize vendor failure domains, internal knowledge concentration and actual consumer dependence.",
+    "mechanism": "Decompose the desired capability before choosing sourcing: reliable owner registration needs domain rules, a storage mechanism, trusted identities, operations and response. Keep the domain authorization invariant under explicit internal understanding because external tooling cannot define legitimate ownership; use established TLS/backup tooling instead of inventing cryptography; train operators to verify certificate renewal and restoration regardless of provider. Assess alternatives for support, contractual exit rights, exportability, migration, portability and owner succession. Include a tabletop provider outage where the export interface is unavailable; ask whether the organization can still access authoritative data. For each choice define what must remain internally owned, which skills must be retained and what proof makes the switch reversible.",
+    "alternatives": "A managed service can reduce daily maintenance but increase lock-in, cost variability and reliance on a supplier. Building everything creates needless operational and security burden. Retiring a duplicate tool can free resources but only after active consumers, data retention and artifact provenance are checked.",
+    "failure": "A team outsources identity operations and concludes it no longer needs access-governance owners, negative authorization tests or incident response. The contract transferred an implementation function, not the business obligation."
+  },
+  "roadmaps-options": {
+    "prerequisites": "A roadmap communicates sequence, dependencies and uncertainty, not just colored quarters. Options are future choices whose value depends on observed triggers. A meaningful milestone must change what can be known or done next. Be able to distinguish a reversible experiment from irreversible migration and specify safe rollback.",
+    "mechanism": "Construct Now/Next/Later with entry/exit conditions. Now: measure unowned services and audit owner corrections. Next: pilot notifications to one consenting team; require correct routing, no cross-team write and a bounded incident response. Later: evaluate directory synchronization if manual correction remains slow and identity authority is actually approved. Draw dependency edges: validated team identifiers → authorized update API → pilot → consumer adoption, and show which cannot safely overlap. At every stage define owner, expected artifact, measured success, abort trigger and reconsideration date. If the pilot increases false assignments, stop and analyze data semantics before expanding. Keep speculative options visible but do not report them as funded commitments.",
+    "alternatives": "A delivery contract may require calendar dates; even then maintain explicit risks and contingency rather than promising unknown upstream approvals. Too many vague 'later' cards conceal decisions, while overprecision hides uncertainty. An evidence-gated roadmap can be honest about both firm obligations and conditional possibilities.",
+    "failure": "The roadmap says 'Kubernetes, Kafka, AI in Q4' with no service driver, prerequisite, capacity trade-off or stop condition. Calendar placement is not evidence of coherent sequencing."
+  }
+};
 function make(s:Spec):Lesson {
   const worked = workedCases[s.id];
-  if (!worked) throw new Error(`Missing worked strategy case for ${s.id}`);
+  const checks = strategyChecks[s.id];
+  const concept = strategyConcepts[s.id];
+  if (!worked || !checks || !concept) throw new Error(`Missing strategy decision/concept evidence for ${s.id}`);
   const blocks:LessonBlock[]=[
     {type:"paragraph",text:s.body},
+    {type:"heading",id:`${s.id}-prerequisites`,text:"Prerequisites: outcome, capacity and decision rights",level:2},
+    {type:"paragraph",text:concept.prerequisites},
+    {type:"heading",id:`${s.id}-mechanism`,text:"Mechanism: build and test the strategy choice",level:2},
+    {type:"paragraph",text:concept.mechanism},
+    {type:"heading",id:`${s.id}-alternatives`,text:"Alternatives and opportunity cost",level:2},
+    {type:"paragraph",text:concept.alternatives},
+    {type:"callout",tone:"warning",title:"False strategic progress",body:concept.failure},
     {type:"heading",id:"worked-strategy-case",text:worked.question,level:2},
     {type:"paragraph",text:worked.example},
+    {type:"callout",tone:"warning",title:"Plausible but wrong strategic choice",body:checks.failure},
+    {type:"heading",id:"unseen-strategy-transfer",text:"Apply the strategy to a different decision",level:2},
+    {type:"paragraph",text:checks.transfer},
     {type:"callout",tone:"note",title:"Reason from the case",body:worked.challenge},
     {type:"callout",tone:"steward",title:"Strategy is a coherent set of choices",body:"A technology strategy is not a wishlist, tool catalogue or multi-year prediction. It connects organizational outcomes to a small set of technology choices, capability investments, deliberate non-investments, sequencing and evidence that would cause the strategy to change."},
     {type:"resources",title:"Continue learning",resources:s.resources},
   ];
   return {id:`technical-strategy-${s.id}`,title:s.title,activities:[
     {id:`technical-strategy-${s.id}-reading`,title:s.title,estimatedMinutes:55,content:{type:"reading",body:[s.body, worked.example].join("\n\n"),blocks}},
-    {id:`technical-strategy-${s.id}-practice`,title:`Practice: ${s.title}`,estimatedMinutes:75,content:{type:"practical",objective:`Apply ${s.title} to Steward's next planning horizon.`,scenario:"Use the accumulated Steward evidence and current organizational assumptions. Make explicit choices about what to strengthen, simplify, defer or stop. Do not invent growth or transformation merely to justify investment.",instructions:s.practice,deliverables:["Strategy/capability decision artifact","Evidence and trade-offs","Owner, horizon and review trigger"],completionCriteria:["Choices trace to organizational outcomes and evidence.","At least one credible non-investment or stop/defer choice is explicit.","Capability and operating consequences are considered, not only technology acquisition."]}},
+    {id:`technical-strategy-${s.id}-practice`,title:`Practice: ${s.title}`,estimatedMinutes:75,content:{type:"practical",objective:`Apply ${s.title} to Steward's next planning horizon.`,scenario:`Fictional Steward strategy case with organizational facts explicitly supplied or marked unknown. Do not invent business approval.\n\nINDEPENDENT CASE: ${checks.transfer}`,instructions:[...s.practice, "For the new case, produce a comparison of at least two feasible actions plus the maintain-current-state option, with explicit non-choice, owner, evidence and trigger for reversal.", "State what observation would make the recommended investment the wrong choice; show how the decision responds."],deliverables:["Strategy/capability decision artifact","Evidence and trade-offs","Owner, horizon and review trigger"],completionCriteria:[checks.acceptance,"The submitted new-case artifact distinguishes supplied facts, observed evidence, cost/risk assumptions and missing organizational approval.",`Reject a recommendation if it reproduces the failure: ${checks.failure}`,"At least one alternative is excluded with specific opportunity cost, and the decision is revisited on a measurable evidence threshold."]}},
   ]};
 }
 const specs:Spec[]=[

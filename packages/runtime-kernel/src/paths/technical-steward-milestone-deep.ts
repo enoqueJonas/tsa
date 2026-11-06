@@ -1,6 +1,6 @@
 import type { Lesson } from "./lesson";
 
-export const technicalStewardMilestoneDeepLessons: Lesson[] = [
+const originalTechnicalStewardMilestoneLessons: Lesson[] = [
   {
     id: "technical-stewardship-review-milestone-technical-stewardship-review",
     title: "Milestone: Technical Stewardship Review",
@@ -70,3 +70,100 @@ export const technicalStewardMilestoneDeepLessons: Lesson[] = [
     }],
   },
 ];
+
+/**
+ * The original 600-minute catch-all capstone hid four different deliverable
+ * types inside a single completion event. Preserve its authored activity ID
+ * as Phase 1, then require separate evidence to complete the remaining phases.
+ * A saved completion of the old all-in-one ID never counts as a pass for new
+ * operational assurance, investment choices or stakeholder defence.
+ */
+const sourceMilestone = originalTechnicalStewardMilestoneLessons[0]!;
+const sourceActivity = sourceMilestone.activities[0]!;
+if (sourceActivity.content.type !== "practical") {
+  throw new Error("Technical Steward milestone must remain an authored practical");
+}
+const sourcePractical = sourceActivity.content;
+function milestonePhase(
+  id: string,
+  title: string,
+  minutes: number,
+  objective: string,
+  from: number,
+  to: number,
+  deliverables: string[],
+  criteria: string[],
+) {
+  return {
+    ...sourceActivity,
+    id,
+    title,
+    estimatedMinutes: minutes,
+    content: {
+      ...sourcePractical,
+      objective,
+      instructions: sourcePractical.instructions.slice(from, to),
+      deliverables,
+      completionCriteria: criteria,
+    },
+  };
+}
+export const technicalStewardMilestoneDeepLessons: Lesson[] = [{
+  ...sourceMilestone,
+  activities: [
+    milestonePhase(
+      sourceActivity.id,
+      "Phase 1 — Establish the Actual Estate and Evidence Cutoff",
+      130,
+      "Show which Steward technologies, owners and obligations are real at the evidence cutoff before any risk or investment verdict.",
+      0, 3,
+      ["Scope, roles and supplied policy assumptions", "Artifact/evidence index with provenance and date", "Current/retired/deferred/migrating technology map"],
+      [
+        "Every active technology claim is linked to an actual observed deployment or retained Architect decision, not a prior classroom recommendation.",
+        "One intentionally absent or retired component is correctly excluded from the active estate; an unavailable artifact is explicitly UNKNOWN.",
+        "Evidence has a date/environment/owner; another engineer can locate the source without oral guidance.",
+      ],
+    ),
+    milestonePhase(
+      `${sourceActivity.id}-phase-2`,
+      "Phase 2 — Test Risks, Controls and Lifecycle Accountability",
+      160,
+      "Demonstrate an inspectable risk-control-ownership chain with a real negative or unavailable-evidence disposition.",
+      3, 7,
+      ["Current risk register with authority, expiry/review and uncertainty", "Controls design-vs-operation test evidence", "Governance decision and active component ownership map"],
+      [
+        "At least one risk links cause/event/consequence, a control claim, its actual test and an explicit residual-risk disposition.",
+        "The reviewer can distinguish a control that exists from one that passed operating-effectiveness testing.",
+        "An absent or failed critical control cannot be marked effective, and business risk is not silently accepted by the implementer.",
+      ],
+    ),
+    milestonePhase(
+      `${sourceActivity.id}-phase-3`,
+      "Phase 3 — Defend Retain, Simplify, Replace and Retire Choices",
+      220,
+      "Make a funded, evidence-gated next-horizon technology and engineering-health decision including an explicit non-choice.",
+      7, 15,
+      ["Capability/lifecycle comparison and migration/retirement dispositions", "Engineering-health evidence and counter-metrics", "Handbook/ownership handoff proof", "Ranked roadmap with alternatives and revisit triggers"],
+      [
+        "At least one plausible technology investment is rejected or deferred with opportunity cost, risk owner and reversal evidence.",
+        "A proposed retirement lists consumers and a rollback/decommission disposition; an unproven migration is not declared completed.",
+        "A substitute engineer can find and apply the required ownership/runbook context without private hints, or the outcome is recorded as failed.",
+        "Metrics have population, owner and a counter-signal so process improvements cannot be claimed by hiding risky work.",
+      ],
+    ),
+    milestonePhase(
+      `${sourceActivity.id}-phase-4`,
+      "Phase 4 — Adversarial Review, Decision and Authoritative Handoff",
+      90,
+      "Defend the actual review under stakeholder challenge and close actions in the original sources of truth.",
+      15, 17,
+      ["Recorded stakeholder questions, disagreements and decisions", "Final risk/exception approval boundary and action owners", "Updated source-of-truth artifacts with verification and revisit dates"],
+      [
+        "The learner responds to an unfamiliar counterexample without relying on a prewritten recommendation; assessor records gaps and corrective actions.",
+        "Every accepted material risk names the actually delegated authority; missing authority requires escalation instead of inventing a decision.",
+        "At least one governance requirement is simplified or removed where evidence shows it adds no control value.",
+        "The final stakeholder record links back to verified evidence and identifies the decision that changes if new facts emerge.",
+      ],
+    ),
+  ],
+}];

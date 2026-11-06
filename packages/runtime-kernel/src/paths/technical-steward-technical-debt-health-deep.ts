@@ -10,21 +10,145 @@ const resourcesByHealth:Record<string,LearningResource[]>={
  "technical-debt-health-debt-ownership-and-review-cadence":[fowlerDebt],"technical-debt-health-balancing-feature-delivery-and-engineering-health":[dora,sreToil],
 };
 
+const debtCases: Record<string, {title:string;worked:string;failure:string;transfer:string}> = {
+  "technical-debt-health-identifying-technical-debt": {
+    "title": "Distinguish debt from a bug, a constraint and an aesthetic preference",
+    "worked": "Illustrative Steward case: authentication tests rely on a single shared account and intermittently corrupt each other's setup. The immediate test failure is a defect; the repeated decision to avoid independent fixtures for release speed created a debt-like trade-off with measurable future testing cost. Record the historical choice if known, present consequences (retries, triage time, masked regressions), owner and candidate repayment. A plain old framework is not automatically debt simply because a newer one exists.",
+    "failure": "Label any unpopular code as 'technical debt' and estimate its priority from taste, or count a critical current authorization vulnerability as mere future debt to defer immediate treatment.",
+    "transfer": "Classify an unused feature flag, a stale dependency, a poorly named variable and an incomplete restore procedure. For each state the observed consequence, uncertainty and whether the right action is fix, debt management, risk treatment or no action."
+  },
+  "technical-debt-health-measuring-and-communicating-debt": {
+    "title": "Present the consequence and uncertainty, not a fabricated debt score",
+    "worked": "Illustrative baseline: three releases each required two hours of manual package compatibility repair, for six engineer-hours of observed rework. The candidate automation is estimated to require twelve hours to build plus maintenance, but that estimate is not observed savings. Present both quantities, expected frequency, operational constraints, alternatives and uncertainty. A decision owner can compare a short experiment with continuing manual work. Avoid inventing a financial ROI if engineer-hour cost or future frequency is unknown.",
+    "failure": "Declare debt reduced because the number of TODO comments fell, while release incompatibility incidents rise; or multiply guessed impact scores and present the result as precise monetary loss.",
+    "transfer": "From five CI failures and two incident reports, write a one-page debt impact statement distinguishing measured effort, opportunity cost, severe but rare consequences and the evidence needed for a reliable forecast."
+  },
+  "technical-debt-health-prioritization": {
+    "title": "Prioritize a repayment experiment against real alternative uses of capacity",
+    "worked": "Illustrative backlog: option A reduces repeated test fixture cleanup that cost six observed hours in three releases; option B patches an unsupported dependency with potential high security impact; option C upgrades a cosmetic dashboard. Evaluate impact/risk, confidence, cost, deadline, reversibility and opportunity cost. Prioritize B's time-sensitive exposure for authorized risk review, then run a bounded A experiment with a measurable before/after oracle; defer C unless another driver emerges. This is a decision model, not a universal weighted ranking.",
+    "failure": "Pick the highest developer annoyance score while ignoring support expiry and adverse business effects. Or declare that all debts must be repaid before features, creating an infinite backlog.",
+    "transfer": "Choose between a flaky integration suite, a slow migration and a rarely used feature with expensive maintenance. Record one rejected option, its cost and a revisit trigger."
+  },
+  "technical-debt-health-kpi-vs-kri": {
+    "title": "Do not conflate delivery performance with exposure to future loss",
+    "worked": "Illustrative KPI: time to validate a release measures operational performance. Illustrative KRI: number and age of critical dependencies outside support indicates increasing technology exposure. Both need source, owner, interval and interpretation. If lead time improves because security tests were disabled, the KPI trend is positive but the risk may be worse. Pair the metrics with mandatory regression evidence and an explicit threshold/response, rather than optimizing one number in isolation.",
+    "failure": "A manager concludes that shorter lead time proves engineering health while the unauthorized-transfer check stopped running. A metric is not an oracle unless it reflects the claimed outcome.",
+    "transfer": "Design one KPI and one KRI for recovery readiness. Identify a scenario where the KPI improves while the KRI deteriorates, and name a management response."
+  },
+  "technical-debt-health-balancing-feature-delivery-and-engineering-health": {
+    "title": "Make the next increment explicit and evidence gated",
+    "worked": "Hypothetical planning choice: a new report feature needs three days, while an unstable CI gate adds a day of failure diagnosis to each release. Options include shipping the feature with an owned test debt exception, repairing the gate first, or isolating a safe feature subset. Review actual critical defect escape and triage evidence, then choose a time-boxed repair with one measurable invariant (a true authorization failure still blocks release) and a review date. Product velocity and reliability are not competing abstract virtues; they are observable constraints on the same service.",
+    "failure": "Mandate an arbitrary '20% refactoring time' without an identified consequence, or permanently disable a critical regression check to show faster throughput.",
+    "transfer": "Write a two-sprint decision for a team facing a payment integration requirement and a risky untested migration. Include accountable risk owner, capacity choice, one explicit non-choice and the evidence that changes the allocation."
+  },
+  "technical-debt-health-engineering-health-metrics": {
+    "title": "Construct engineering-health measures that resist false improvement",
+    "worked": "Illustrative Steward release process: measure change failure rate alongside median recovery time, escaped authorization defects, test selection completeness and unplanned on-call interruption. Define exact denominators, rolling period, source, owner and incident severity. If release frequency falls to zero, defect escape rate can appear perfect while the team is stuck; pair throughput with quality and service outcomes. Investigate a change in workload mix before treating a single trend as improvement.",
+    "failure": "Publish a '100% green CI' KPI when mandatory test selection executes zero tests, or improve deployment lead time by abandoning critical rollback drills.",
+    "transfer": "Choose two leading and two lagging indicators for a slow CI pipeline. Explain how each could be gamed and what complementary invariant would disprove misleading success."
+  },
+  "technical-debt-health-sustainable-remediation": {
+    "title": "Pay debt without introducing a second hidden ownership problem",
+    "worked": "Illustrative 12-week improvement: replacing a fragile shared fixture will take one sprint, but a complete test-framework rewrite would take a quarter. Evaluate a minimal isolated fixture per worker, verify 20 deterministic replays, ensure no customer data is touched, and use failed-run diagnosis time as a second measure. Assign a maintainer and a removal plan for obsolete fixture code. A remediation is sustainable when it lowers repeated effort without creating unowned infrastructure or large dependency blast radius.",
+    "failure": "A massive platform rewrite is funded because it feels cleaner, but old and new frameworks run in parallel without owners and every test becomes slower to maintain.",
+    "transfer": "Plan a time-boxed remediation of an unreliable logging parser. Include baseline, small experiment, failure oracle, owner, rollback and a decision to stop if benefits fail to appear."
+  },
+  "technical-debt-health-debt-ownership-and-review-cadence": {
+    "title": "Assign one accountable owner and an event-driven review trigger",
+    "worked": "Illustrative tech debt register entry: CI relies on obsolete runner image; evidence is a failed security patch and fragile test setup; owner is pipeline maintainer; impacted consumers are all release teams; risk acceptance authority is distinct. The owner documents a migration option, estimated work, actual failure recurrence and dates tied to support expiry. Review whenever vulnerability, outage or major consumer change occurs, not just because an arbitrary monthly meeting was scheduled.",
+    "failure": "A backlog item says 'cleanup later' with no consequence, decision owner, deadline or event trigger; it can survive years without anyone making an accountable choice.",
+    "transfer": "Make an ownership record for a legacy SQL migration script used by two teams, with explicit customer-impact trigger, cross-team approver and observable evidence for closing the debt."
+  }
+};
+// Engineering debt is an observable trade-off; make each concept's causal
+// cost, measurement and alternative explicit before teaching the worked case.
+const engineeringHealthConcepts:Record<string,{prerequisites:string;mechanism:string;alternatives:string;failure:string}> = {
+  "technical-debt-health-identifying-technical-debt": {
+    "prerequisites": "Debt is a future change cost created by a present design or process trade-off; a bug is an observed violation; a risk is uncertain future consequence; maintenance is normal cost of keeping a service healthy. They can coexist. Know the current code boundary, repeated incident/triage evidence and why an old library is not automatically 'debt' simply because a new one exists.",
+    "mechanism": "Take a QA suite using shared mutable fixtures. A specific failing test is a defect; the deliberate shortcut to share fixtures may create technical debt when every parallel run needs more triage and workaround. Record the historical decision when known, present consequence (e.g. six observed engineer-hours over three releases), affected users, accumulating cost and the proposed change. Counter-check with an actual authorization bypass: that needs immediate defect/risk treatment and must not be deferred as mere aesthetic cleanup. Ask what behavior would remain difficult to change if the shortcut stays and whether fixing it yields measurable improvement. A debt register should link to the code/architecture decision and observed cost, not duplicate every TODO.",
+    "alternatives": "Some debt is rational when a temporary shortcut creates faster learning and has an owner and repayment trigger. Excessive preventive abstraction can be worse than accepting a bounded cost. Technical obsolescence is another concept—focus on effect and actual support exposure rather than code age.",
+    "failure": "A team labels an exploitable cross-team write 'future technical debt' to make it fit a low-priority backlog. A present forbidden effect is not a cosmetic refactor candidate."
+  },
+  "technical-debt-health-measuring-and-communicating-debt": {
+    "prerequisites": "Metrics have populations, time horizons and confidence. An observed engineer-hour is not automatically a financial cost, and estimated savings are not observed benefit. Technical-debt analysis translates developer friction into service or delivery consequence without fabricating conversion rates or future frequencies.",
+    "mechanism": "Build a baseline from actual source: in three releases, manual package repair consumed two hours each; observed total six hours, while the expected monthly frequency is unknown. A refactor is estimated to require twelve hours plus maintenance, which is a hypothesis. Show a bounded decision: trial a scripted compatibility check for one release, then compare actual triage time, selected coverage and escaped defects with prior runs. Separate direct rework from business delay and chance of a high-severity failure. Communicate the consequence in three layers: engineer sees reproduction and source; delivery lead sees capacity/uncertainty; outcome owner sees impact and options. Do not calculate exact ROI unless workload and cost assumptions can be defended.",
+    "alternatives": "Static-code complexity scores can signal areas for investigation, but are not precise economic debt values. An incident count can be dominated by unrelated workload changes. Combine a direct mechanism trace with a small set of observed operational metrics, and include any disconfirming observation.",
+    "failure": "The number of TODOs drops from 80 to 20 after a rewrite, but the release pipeline becomes less reliable. The debt dashboard improved while the actual friction worsened; reject the claim."
+  },
+  "technical-debt-health-prioritization": {
+    "prerequisites": "A prioritization decision is a competition for actual capacity. An important defect, unsupported dependency, debt repayment and desired feature must not all be ranked with unrelated scales. Understand deadlines, risk consequence, reversibility, confidence and opportunity cost; policy-mandated remediation may not be a discretionary backlog item.",
+    "mechanism": "Compare three hypothetical tasks with one sprint-equivalent budget: isolate a flaky fixture, patch an actively exploited unsupported library, and redesign an internal dashboard. First verify the actual library exposure and deadline; if reachable, select containment/patch as mandatory risk action rather than treating it as aesthetic debt. Spend remaining capacity on a small fixture experiment only if its measurable reduction in release delay is plausible; defer dashboard. Name the exact negative oracle: authorization failures must still block release after fixture replacement. Record estimates separately from observed repeat work, assign owner and reversal condition, and show how a later support notice or incident changes ordering. Include a do-nothing option with its accumulating cost.",
+    "alternatives": "A universal 'always reserve 20% for refactoring' policy hides real consequence, while 'only features ever' accumulates fragility. A rolling evidence-led portfolio can reserve capacity for systemic risk, reliability and opportunities without pretending every estimate is commensurable.",
+    "failure": "The team repays a high-annoyance formatting inconsistency while an unsupported exposed auth package reaches end of support. Preference scores have displaced actual customer risk."
+  },
+  "technical-debt-health-engineering-health-metrics": {
+    "prerequisites": "Engineering health includes ability to change, operate and recover software safely. Deployment frequency, lead time, failure recovery and escaped defects are not interchangeable. Every metric needs denominator, period, source, owner, trust boundary and interpretation. A positive trend can be gamed by shrinking the population of work or excluding failures.",
+    "mechanism": "Build a small scorecard with change failure rate (affected releases divided by eligible releases), actual time to restore user outcome after incidents, release lead time by comparable change type, selected mandatory test completeness, and on-call interruption burden. Measure a baseline and then one bounded intervention. Test a misleading case: no deployments this week yields zero deployment failures; '0%' must not mean perfect reliability when the denominator is zero. Inspect if low latency was achieved by dropping failed requests or if pipeline success came from skipping tests. Pair throughput with service invariants and security negative proof. Set a review action tied to each signal instead of optimizing the displayed number.",
+    "alternatives": "DORA research metrics can guide questions but cannot be transferred without matching definitions and population; a proprietary maturity rating is not a direct measure of customer outcome. Qualitative on-call evidence also matters when quantitative incident numbers are small.",
+    "failure": "A team halves release lead time by disabling the longest authorization test. A green throughput metric cannot override a failed safety invariant or incomplete test selection."
+  },
+  "technical-debt-health-kpi-vs-kri": {
+    "prerequisites": "A KPI measures performance toward an intended result or operation; a KRI signals likelihood or exposure to future undesirable consequences. Their interpretation depends on decision purpose. Backup job success may be a KPI, but backup recoverability remains at risk without a timed restore. The same raw observation may support multiple decisions only with explicit scope.",
+    "mechanism": "For recovery, choose KPI 'median time to complete isolated restore exercises' among actually completed successful drills, paired with total attempted and failed drills. KRI: 'days since last successful integrity-checked restore' compared with an approved or proposed cadence. Record the environment/data sample and service owner. Inject an anomaly: backup jobs remain 100% green, but last successful restore is 120 days old and a storage migration occurred yesterday. The KPI cannot prove current readiness; KRI should trigger an urgent rehearsal or risk escalation. Distinguish leading vendor support deadline from lagging outages and show the action each would change.",
+    "alternatives": "One composite health score is visually attractive but can hide critical exceptions. Use a few complementary indicators with exact denominator and 'Unknown' on absent data, not a dashboard averaging safety across unlike risks.",
+    "failure": "Green daily backup count is used to sign off the RTO without any application readback or timed restore. An output KPI was mistaken for operational recovery evidence."
+  },
+  "technical-debt-health-sustainable-remediation": {
+    "prerequisites": "Remediation should remove a recurring failure mechanism without introducing a larger unowned dependency. Understand incremental refactoring, compatibility constraints, regression oracles, migrations and rollback. A new test framework or platform is not automatically simpler or safer than repairing an existing seam.",
+    "mechanism": "Take a shared fixture that causes cross-test interference. Record before-state: failures by worker, reproduction steps, triage hours and safety tests selected. First isolate data per worker, then run twenty representative independent replays with both positive and forbidden authorization cases; deliberately re-enable shared state in an isolated negative to demonstrate the test can detect interference. Remove only the old fixture path after consumers migrate and add a regression guard. Compare maintenance of the new helper, support obligations, CI runtime and skills with a full framework rewrite. Assign owner, rollback/stop condition and a later check for recurrence. Make actual improvement falsifiable: lower triage time without losing critical defect detection.",
+    "alternatives": "A large rewrite may be justified when the old architecture cannot satisfy fundamental constraints, but demands a stronger migration and recovery plan. Incremental changes reduce blast radius but can leave duplicated patterns temporarily; manage those as explicit transition state rather than declaring instant cleanliness.",
+    "failure": "A complete rewrite eliminates flaky tests by silently deleting the failing negative cases. Faster CI is not remediation when the protective oracle disappeared."
+  },
+  "technical-debt-health-debt-ownership-and-review-cadence": {
+    "prerequisites": "Debt does not have an organizational meaning until someone owns its consequence and decides whether the short-term cost remains acceptable. Implementation owner, service outcome owner and risk acceptance authority may differ. A review must be triggered by evidence change or consequence, not just the arrival of a calendar date.",
+    "mechanism": "For each material debt item record current affected component, present friction, original shortcut if known, business consequence, measured baseline, cost estimate with confidence, alternatives, accountable owner, proposed repayment trigger and review deadline. Tie review to changes such as third consumer added, escaped defect, support EOL, higher on-call load or major release. If a maintainer leaves, test whether a substitute can find the decision record and run the minimum recovery. Separate deliberate accepted debt from missing authorization or privacy control: engineers may schedule code cleanup but may not unilaterally accept business/security consequences. Track historical decisions so reassessment is possible after the cost model changes.",
+    "alternatives": "Monthly review of every minor refactor wastes time. Review the most consequential and fast-changing items, automate signals where feasible and archive debt when its original decision no longer applies. A document without a named decision role is a list, not stewardship.",
+    "failure": "A critical shared fixture continues causing release delays because every team lists a different owner; none accepts the impact or decides on the experiment. Collective labels conceal the accountability gap."
+  },
+  "technical-debt-health-balancing-feature-delivery-and-engineering-health": {
+    "prerequisites": "Feature velocity and engineering health compete for the same limited team time, but both serve organizational outcomes. A shortcut may speed one release while raising repeated failure cost. Avoid universal ratios or claims that refactoring inherently improves business value. Identify mandatory risk boundaries that cannot be bargained away by sprint planning.",
+    "mechanism": "Imagine a report feature needs three days and an unstable CI gate adds one day of diagnosis to each release. Establish observed frequency: how many recent releases hit the gate, whether failures were genuine product defects or fixture artifacts, and how often users were impacted. Compare repair first, deliver a safe subset, or proceed with a time-bounded exception if permitted. Set a two-sprint plan with capacity, owner, blocked/deferred option and observable outcome. The repair must preserve mandatory security test selection and true-negative blocking. Review whether total safe throughput improved rather than merely fewer red CI runs. If the evidence shows the gate catches real regressions, improve diagnosis instead of silencing it.",
+    "alternatives": "Dedicated engineering-health capacity can be useful where repeated risks are measured, but a fixed arbitrary percentage hides project stages and deadlines. Business sponsor and engineering lead should share the evidence and decision, with legitimate risk authority for any exception crossing a required control.",
+    "failure": "The team accelerates features by changing mandatory tests to optional and calls reduced failures 'debt reduction'. It made the safety signal invisible, not the system healthier."
+  }
+};
 function reading(id: string, title: string, body: string): Lesson {
   return { id, title, activities: [
-    { id: `${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body, blocks:[...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),{type:"resources",title:"Engineering health reference",resources:resourcesByHealth[id] ?? [fowlerDebt]}] } },
+    { id: `${id}-001`, title, estimatedMinutes: 35, content: { type: "reading", body, blocks: [
+  ...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),
+  ...(engineeringHealthConcepts[id] ? [
+    {type:"heading" as const,id:`${id}-prerequisites`,text:"Prerequisites and decision vocabulary",level:2 as const},
+    {type:"paragraph" as const,text:engineeringHealthConcepts[id]!.prerequisites},
+    {type:"heading" as const,id:`${id}-mechanism`,text:"Measure the failure mechanism and test a decision",level:2 as const},
+    {type:"paragraph" as const,text:engineeringHealthConcepts[id]!.mechanism},
+    {type:"heading" as const,id:`${id}-alternatives`,text:"Opportunity cost and alternatives",level:2 as const},
+    {type:"paragraph" as const,text:engineeringHealthConcepts[id]!.alternatives},
+    {type:"callout" as const,tone:"warning" as const,title:"Reject this false improvement",body:engineeringHealthConcepts[id]!.failure},
+  ] : []),
+  ...(debtCases[id] ? [
+    {type:"heading" as const,id:`${id}-worked`,text:debtCases[id]!.title,level:2 as const},
+    {type:"paragraph" as const,text:debtCases[id]!.worked},
+    {type:"callout" as const,tone:"warning" as const,title:"False engineering-health signal",body:debtCases[id]!.failure},
+    {type:"heading" as const,id:`${id}-transfer`,text:"Independent decision",level:2 as const},
+    {type:"paragraph" as const,text:debtCases[id]!.transfer}
+  ] : []),
+  {type:"resources" as const,title:"Engineering health reference",resources:resourcesByHealth[id] ?? [fowlerDebt]}
+] } },
     { id: `${id}-practice`, title: `Practice: ${title}`, estimatedMinutes: 45, content: {
       type: "practical",
       objective: `Apply ${title} to current Steward engineering-health evidence.`,
-      scenario,
+      scenario:`${scenario}\n\nINDEPENDENT ENGINEERING-HEALTH DECISION: ${debtCases[id]!.transfer}`,
       instructions: [
         "Select one concrete Steward example supported by an existing artifact, metric, incident, dependency record, exception or delivery observation.",
         "Apply the lesson concept and separate observed evidence from interpretation or assumption.",
         "Make one explicit decision: remediate, contain, schedule, tolerate/monitor, reject the proposed debt label, or escalate where authority is insufficient.",
-        "Record the owner, decision consequence and evidence/review trigger that would cause the decision to change."
+        "Record the owner, decision consequence and evidence/review trigger that would cause the decision to change.",
+        "For the unseen case, state one alternative not chosen, a measurable baseline, a negative observation and how the next checkpoint could change the choice."
       ],
       deliverables: ["Focused engineering-health analysis", "Evidence reference", "Decision and rationale", "Owner and reconsideration trigger"],
       completionCriteria: [
+        `Reject the decision if it repeats this false improvement: ${debtCases[id]!.failure}`,
+        "The unfamiliar case has a current measurement, explicit uncertainty, decision owner, rejected alternative and observable outcome.",
         "The example is grounded in current Steward evidence rather than a hypothetical dislike of code.",
         "Debt, defect, risk, maintenance and feature work are not conflated.",
         "The decision has an engineering or organizational consequence rather than ending at classification.",

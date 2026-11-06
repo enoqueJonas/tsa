@@ -32,6 +32,21 @@ SYNTHETIC_REFLECTION = (
 )
 
 
+def save_synthetic_steward_evidence(page, activity_id):
+    """Record synthetic browser data; this is NOT substantive lab execution."""
+    page.get_by_text("Loading evidence workspace…").wait_for(state="hidden", timeout=30000)
+    page.get_by_placeholder(
+        "What did you build, inspect, break, diagnose, or change? Include commands, observations, and important decisions."
+    ).fill("SYNTHETIC browser smoke only for " + activity_id +
+           ". No live service, test evidence, risk decision or independent learner competence exists.")
+    page.get_by_placeholder(
+        "What was the result? What did the evidence prove, and what would you do differently next time?"
+    ).fill("SYNTHETIC: persistence/navigation only; no actual assurance, approval or learner result.")
+    page.get_by_label("Submission state").select_option("ready")
+    page.get_by_role("button", name="Save evidence").click()
+    page.get_by_text("Saved locally", exact=True).wait_for(timeout=10000)
+
+
 def inspect_school(page):
     page.goto(f"{BASE}/?view=curriculum&school={SCHOOL}", wait_until="networkidle")
     module_count = page.get_by_role("button", name=MODULE).count()
@@ -161,6 +176,41 @@ def inspect_school(page):
                     )
                 page.set_viewport_size({"width": 1440, "height": 900})
             code = content.locator("figure").filter(has=page.get_by_role("button", name="Copy"))
+            if SCHOOL == "technical-steward":
+                # This is a rendered-source guard; a long passage may still be
+                # pedagogically weak and needs human review.
+                risk_reading = activity_id.startswith("technology-risk-") and activity_id.endswith("-reading")
+                control_reading = activity_id.startswith("controls-assurance-") and activity_id.endswith("-reading")
+                arch_reading = activity_id.startswith("architecture-governance-") and activity_id.endswith("-reading")
+                if risk_reading:
+                    assert len(text) >= 2200, (
+                        f"Technology Risk original reading still thin: {activity_id} ({len(text)} chars)"
+                    )
+                    assert content.get_by_role("heading", name="Trace the mechanism and decision").count() >= 1, (
+                        f"Risk mechanism not rendered: {activity_id}"
+                    )
+                if control_reading:
+                    assert len(text) >= 2200, (
+                        f"Control/Assurance original reading still thin: {activity_id} ({len(text)} chars)"
+                    )
+                    assert content.get_by_role("heading", name="Trace the actual decision and evidence").count() >= 1, (
+                        f"Control-evidence trace not rendered: {activity_id}"
+                    )
+                if arch_reading:
+                    assert len(text) >= 2200, (
+                        f"Architecture Governance original reading still thin: {activity_id} ({len(text)} chars)"
+                    )
+                    assert content.get_by_role("heading", name="Trace the decision and its proof").count() >= 1, (
+                        f"Architecture decision trace not rendered: {activity_id}"
+                    )
+                if (activity_id.startswith("handbook-and-standards-") and activity_id.endswith("-001")
+                        and "-lab-" not in activity_id):
+                    assert content.get_by_role("heading", name="Copyable worked artifact").count() >= 1, (
+                        f"Handbook original lacks copyable governed artifact: {activity_id}"
+                    )
+                    assert content.get_by_role("button", name="Copy").count() >= 1, (
+                        f"Handbook source artifact is not copyable: {activity_id}"
+                    )
             if SCHOOL == "quality-steward":
                 assert not activity_id.endswith("-quality-preparation"), (
                     f"Generated Quality preparation returned to learner journey: {activity_id}"
@@ -320,6 +370,8 @@ def inspect_school(page):
                 assert content.get_by_text("Evidence to keep", exact=True).count() >= 1, (
                     f"Practical has no visible deliverables: {activity_id}"
                 )
+                if SCHOOL == "technical-steward":
+                    save_synthetic_steward_evidence(page, activity_id)
             else:
                 assert content.locator("p").count() >= 1, (
                     f"Reading lacks a rendered explanatory paragraph: {activity_id}"
@@ -351,6 +403,11 @@ def inspect_school(page):
                         f"Could not establish scroll regression precondition: {activity_id}"
                     )
             nxt.click()
+            if SCHOOL == "technical-steward" and len(visited) < count:
+                page.wait_for_function(
+                    "(previous) => new URLSearchParams(location.search).get('activity') !== previous",
+                    arg=activity_id, timeout=10000
+                )
             if SCHOOL in {"builder", "system-thinker"} and len(visited) < count and has_scroll:
                 page.wait_for_function("window.scrollY <= 8", timeout=8000)
         print(f"PASS {SCHOOL} module {module_index+1}/{module_count}: {count} activities", flush=True)
@@ -486,6 +543,105 @@ def check_system_thinker_mobile_all(page):
         )
     assert not errors, f"System Thinker mobile browser exceptions: {errors}"
     print(f"PASS system-thinker 390px mobile traversal: {total} activities", flush=True)
+
+
+def check_technical_steward_mobile_all(page):
+    """All thirteen Technical Steward modules on a 390px screen.
+
+    This proves synthetic rendering, case paragraphs, completion navigation and
+    horizontal/scroll behavior, not independent learner mastery.
+    """
+    page.goto(f"{BASE}/?view=curriculum&school=technical-steward", wait_until="networkidle")
+    module_count = page.get_by_role("button", name=MODULE).count()
+    assert module_count == 13, f"Technical Steward should expose 13 modules, got {module_count}"
+    errors = []
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    count_total = 0
+    novel_cases = 0
+    for module_index in range(module_count):
+        page.goto(f"{BASE}/?view=curriculum&school=technical-steward", wait_until="networkidle")
+        page.get_by_role("button", name=MODULE).nth(module_index).click()
+        page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+        sidebar = page.locator("aside").filter(has=page.get_by_text("Curriculum", exact=True)).first
+        activity_count = sidebar.locator("button").count()
+        assert activity_count > 0, f"Missing Steward activities in module {module_index + 1}"
+        seen = set()
+        for activity_index in range(activity_count):
+            activity_id = page.evaluate("new URLSearchParams(location.search).get('activity')")
+            assert activity_id and activity_id not in seen, (
+                f"Technical Steward mobile activity missing or repeated: {activity_id}"
+            )
+            seen.add(activity_id)
+            content = page.locator("main").last
+            if content.get_by_text("Engineering Practice", exact=True).count():
+                page.get_by_text("Loading evidence workspace…").wait_for(
+                    state="hidden", timeout=30000
+                )
+            assert content.is_visible() and len(content.inner_text().strip()) >= 90, (
+                f"Blank Technical Steward mobile activity: {activity_id}"
+            )
+            if activity_id.endswith("-practice"):
+                situation = content.locator("section").filter(
+                    has_text="The situation"
+                ).first
+                assert situation.count() == 1, (
+                    f"Novel-case practical missing situation panel: {activity_id}"
+                )
+                assert re.search(r"INDEPENDENT|UNSEEN|NOVEL", situation.inner_text(), re.I), (
+                    f"Novel case missing from rendered practical: {activity_id}"
+                )
+                assert situation.locator("div.space-y-5 > p").count() >= 2, (
+                    f"Source scenario and novel case collapsed into one paragraph: {activity_id}"
+                )
+                novel_cases += 1
+            assert not page.evaluate(
+                "document.documentElement.scrollWidth > innerWidth + 2"
+            ), f"Technical Steward horizontal mobile overflow: {activity_id}"
+            for figure in content.locator("figure").filter(
+                has=page.get_by_role("button", name="Copy")
+            ).all():
+                assert figure.locator("pre").count() >= 1, (
+                    f"Missing mobile code content: {activity_id}"
+                )
+            if content.get_by_text("Engineering Practice", exact=True).count():
+                save_synthetic_steward_evidence(page, activity_id)
+            if activity_index < activity_count - 1:
+                reflection = page.get_by_placeholder("Write your response here...")
+                if reflection.count():
+                    reflection.fill(SYNTHETIC_REFLECTION)
+                can_scroll = page.evaluate(
+                    "document.documentElement.scrollHeight > innerHeight + 120"
+                )
+                if can_scroll:
+                    page.evaluate("window.scrollTo(0, document.documentElement.scrollHeight)")
+                    assert page.evaluate("window.scrollY") > 30, (
+                        f"Unable to precondition long mobile scroll: {activity_id}"
+                    )
+                nxt = page.get_by_role("button", name=NEXT)
+                assert nxt.count() == 1 and nxt.is_enabled(), (
+                    f"Mobile navigation unavailable: {activity_id}"
+                )
+                nxt.click()
+                page.wait_for_function(
+                    "(previous) => new URLSearchParams(location.search).get('activity') !== previous",
+                    arg=activity_id, timeout=10000
+                )
+                page.wait_for_function("window.scrollY <= 8", timeout=8000)
+            count_total += 1
+        print(
+            f"PASS Technical Steward 390px module {module_index + 1}/{module_count}: "
+            f"{activity_count} activities",
+            flush=True,
+        )
+    assert not errors, f"Technical Steward mobile page exceptions: {errors}"
+    assert novel_cases >= 83, (
+        f"Expected at least 83 rendered original novel practicals, got {novel_cases}"
+    )
+    print(
+        f"PASS Technical Steward all-module 390px traversal: {count_total} activities, "
+        f"{novel_cases} separately rendered novel practical cases",
+        flush=True,
+    )
 
 
 def check_quality_mobile_all(page):
@@ -698,6 +854,111 @@ def check_quality_retired_activity_progress(page):
     print("PASS Quality legacy wrapper progress excluded and first author lesson restored",flush=True)
 
 
+def check_technical_steward_evidence_gate(page):
+    """An empty or draft practical must not earn new progress in a real browser.
+
+    Only recorded evidence and a learner-selected Ready state are checked;
+    passing this test is NOT evidence correctness or assessor acceptance.
+    """
+    page.goto(f"{BASE}/?view=curriculum&school=technical-steward", wait_until="networkidle")
+    page.get_by_role("button", name=MODULE).first.click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+    first = page.evaluate("new URLSearchParams(location.search).get('activity')")
+    assert first == "technical-leadership-technical-ownership-reading"
+    page.get_by_role("button", name=NEXT).click()
+    page.wait_for_function(
+        "() => new URLSearchParams(location.search).get('activity') === 'technical-leadership-technical-ownership-practice'",
+        timeout=10000,
+    )
+    current = "technical-leadership-technical-ownership-practice"
+    page.get_by_text("Loading evidence workspace…").wait_for(state="hidden", timeout=30000)
+    assert page.get_by_text("Self-reviewed — I believe my evidence meets the criteria (not independently verified)").count() >= 1
+    page.get_by_role("button", name=NEXT).click()
+    page.get_by_role("alert").get_by_text("Save evidence notes and an outcome", exact=False).wait_for()
+    assert page.evaluate("new URLSearchParams(location.search).get('activity')") == current, (
+        "Technical Steward practical advanced without evidence"
+    )
+
+    # Even saving plausible notes as DRAFT must not complete the exercise.
+    notes = page.get_by_placeholder(
+        "What did you build, inspect, break, diagnose, or change? Include commands, observations, and important decisions."
+    )
+    notes.fill("Synthetic browser persistence-only notes. The actual evidence and learner assessment remain untested.")
+    page.get_by_placeholder(
+        "What was the result? What did the evidence prove, and what would you do differently next time?"
+    ).fill("Synthetic result; no validated control, authorization or learner transfer.")
+    page.get_by_role("button", name="Save evidence").click()
+    page.get_by_text("Saved locally", exact=True).wait_for(timeout=10000)
+    page.get_by_role("button", name=NEXT).click()
+    page.get_by_role("alert").get_by_text("set the submission to Ready", exact=False).wait_for()
+    assert page.evaluate("new URLSearchParams(location.search).get('activity')") == current, (
+        "Draft evidence was incorrectly counted as completion"
+    )
+
+    # Only explicit self-reported readiness + saved record permits progression.
+    page.get_by_label("Submission state").select_option("ready")
+    page.get_by_role("button", name="Save evidence").click()
+    page.get_by_text("Saved locally", exact=True).wait_for(timeout=10000)
+    page.get_by_role("button", name=NEXT).click()
+    page.wait_for_function(
+        "(previous) => new URLSearchParams(location.search).get('activity') !== previous",
+        arg=current, timeout=10000
+    )
+    assert page.get_by_role("alert").count() == 0
+    print("PASS Technical Steward browser: empty/draft evidence refused, persisted self-reported Ready permits next; no assessor approval claimed", flush=True)
+
+
+def check_technical_steward_retired_activity_progress(page):
+    """Old model/preparation completions must not hijack current lesson reentry.
+
+    A real original reading completion must survive even when the saved
+    current activity was a removed generic preparation. Isolated synthetic DB.
+    """
+    page.goto(f"{BASE}/?view=curriculum&school=technical-steward", wait_until="networkidle")
+    page.get_by_role("button", name=MODULE).first.wait_for()
+    page.evaluate("""async () => {
+      const db = await new Promise((resolve, reject) => {
+        const req = indexedDB.open('tsa-academy', 5);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+      try {
+        const tx = db.transaction('path-progress', 'readwrite');
+        tx.objectStore('path-progress').put({
+          pathId:'technical-leadership',schemaVersion:1,
+          currentActivityId:'technical-leadership-technical-ownership-practice-stewardship-preparation',
+          completedActivityIds:[
+            'technical-leadership-stewardship-model-reading',
+            'technical-leadership-technical-ownership-reading',
+            'technical-leadership-technical-ownership-practice-stewardship-preparation',
+            ...Array.from({length:20},(_,i)=>'retired-stewardship-preparation-'+i)
+          ],
+          reflectionResponses:{},
+          startedAt:'2026-10-01T00:00:00.000Z',
+          updatedAt:'2026-10-01T00:00:00.000Z'
+        });
+        await new Promise((resolve,reject)=>{
+          tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error);
+        });
+      } finally { db.close(); }
+    }""")
+    page.reload(wait_until="networkidle")
+    module = page.locator("article").filter(
+        has=page.get_by_role("heading", name="Technical Leadership", exact=True)
+    ).first
+    assert module.count() == 1, "Technical Leadership module card not visible after legacy restore"
+    module.get_by_role("button", name="Continue module").click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden", timeout=30000)
+    actual = page.evaluate("new URLSearchParams(location.search).get('activity')")
+    assert actual == "technical-leadership-technical-ownership-practice", (
+        f"Valid original reading progress lost or retired wrapper resumed: {actual}"
+    )
+    assert page.get_by_text("Engineering Practice", exact=True).count() >= 1, (
+        "Reentry failed to render first original Technical Leadership practice"
+    )
+    print("PASS Technical Steward legacy generated IDs excluded; original reading completion and practice resume preserved", flush=True)
+
+
 def check_reliability_retired_activity_progress(page):
     """Retired generated wrapper IDs may persist in an older learner record.
 
@@ -815,6 +1076,8 @@ with sync_playwright() as playwright:
         check_builder_mobile_modules(mobile.new_page())
     elif SCHOOL == "quality-steward":
         check_quality_mobile_all(mobile.new_page())
+    elif SCHOOL == "technical-steward":
+        check_technical_steward_mobile_all(mobile.new_page())
     elif SCHOOL == "system-thinker":
         check_system_thinker_mobile_all(mobile.new_page())
         isolated = browser.new_context(viewport={"width": 1440, "height": 900})
@@ -827,6 +1090,13 @@ with sync_playwright() as playwright:
         isolated = browser.new_context(viewport={"width": 1440, "height": 900})
         check_quality_retired_activity_progress(isolated.new_page())
         isolated.close()
+    if SCHOOL == "technical-steward":
+        isolated = browser.new_context(viewport={"width": 1440, "height": 900})
+        check_technical_steward_retired_activity_progress(isolated.new_page())
+        isolated.close()
+        gating = browser.new_context(viewport={"width": 1440, "height": 900})
+        check_technical_steward_evidence_gate(gating.new_page())
+        gating.close()
     if SCHOOL == "reliability-engineer":
         isolated = browser.new_context(viewport={"width": 1440, "height": 900})
         check_reliability_retired_activity_progress(isolated.new_page())

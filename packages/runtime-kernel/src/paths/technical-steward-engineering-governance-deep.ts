@@ -1,6 +1,6 @@
 import type { LearningResource } from "../activities/content";
 import type { Lesson } from "./lesson";
-const iso38500={title:"ISO/IEC 38500 — Governance of IT overview",url:"https://www.iso.org/standard/62816.html",kind:"reference"} satisfies LearningResource;
+const iso38500={title:"ISO/IEC 38500:2024 — Governance of IT for the organization",url:"https://www.iso.org/standard/81684.html",kind:"reference"} satisfies LearningResource;
 const cobit={title:"ISACA — COBIT",url:"https://www.isaca.org/resources/cobit",kind:"reference"} satisfies LearningResource;
 const adr={title:"Architectural Decision Records",url:"https://adr.github.io/",kind:"reference"} satisfies LearningResource;
 const resourcesByGovernance:Record<string,LearningResource[]>={
@@ -10,6 +10,97 @@ const resourcesByGovernance:Record<string,LearningResource[]>={
  "engineering-governance-without-bureaucracy":[iso38500,adr],
 };
 
+// These topic-specific examples belong in original readings, not generated path wrappers.
+const governanceCases: Record<string, { question: string; example: string; counterexample: string; transfer: string }> = {
+  "engineering-governance-governance-vs-management": {
+    "question": "Who defines the boundary, and who executes within it?",
+    "example": "Illustrative Steward control: the organization requires that an ownership-transfer API never modify data for an unauthorized principal. Governance states the non-negotiable outcome, names the accountable risk authority and requires independently repeatable denial/read-after-denial evidence. The engineering manager chooses staffing and sequencing; engineers choose implementation and test doubles; QA produces evidence; a release decision owner determines whether the gate is satisfied. No committee should prescribe the HTTP handler's internal function layout.",
+    "counterexample": "A review board demands sign-off for every refactor but cannot identify a risk owner or acceptance invariant for an actual authorization change. It creates approvals without controlling the consequence.",
+    "transfer": "Classify the following as direction/oversight, work management or technical execution: defining restore tolerance, scheduling a restore rehearsal, selecting a Postgres command, approving an exception and measuring actual recovery time. Defend any overlaps."
+  },
+  "engineering-governance-decision-rights": {
+    "question": "What decision can each role make before the disagreement happens?",
+    "example": "Hypothetical release: a patched service contains a dependency with an unreviewed critical security advisory. A developer can propose and implement a patch; the QA lead can report failing acceptance evidence; security can assess exploitability and exercise a defined stop-the-line criterion; the designated release/risk authority decides on deferral or a documented exception within delegated limits; operations confirms rollback readiness. Write an explicit decision-rights table with decision, proposer, consulted expertise, accountable approver, escalation path and time limit. The table should not invent a universal security veto.",
+    "counterexample": "A group votes to 'accept the risk' without a delegated authority or specifies that only the most senior engineer can merge a harmless documentation edit. Both confuse participation with decision rights.",
+    "transfer": "Design decision rights for a routine minor dependency update and for a production PII retention exception. State why the authority paths differ and identify the observable trigger for escalation."
+  },
+  "engineering-governance-accountability": {
+    "question": "Can the accountable owner demonstrate follow-through?",
+    "example": "Illustrative reconciliation failure: QA raises a missing-result evidence ticket, an SRE repairs the worker, an application maintainer adds a commit, but users have still not received completion outcomes. Assign one accountable service owner for closure; define contributors for the repair, verification and communication. The closure record contains the exact failed run, fix evidence, independent replay result, stakeholder notification and an explicit remaining-risk decision. Personal accountability does not imply that one person performed all actions.",
+    "counterexample": "Three teams each mark their subtask Done, while the affected users still have no valid completion result. A dashboard with named teams but no closure owner has not solved the accountability problem.",
+    "transfer": "A retiring CI maintainer owns a scheduled security scan. Make a handover record sufficient for another person to find the schedule, protected variables, failure artifact and decision authority without asking the former maintainer."
+  },
+  "engineering-governance-policy-standard-procedure-guideline": {
+    "question": "Which artifact makes the correct obligation testable?",
+    "example": "Example hierarchy for illustrative Steward data export: Policy—only authorized actors may export protected records. Standard—every export must check resource-level authorization and record auditable actor, resource and outcome metadata without exposing secrets. Procedure—an operator's reproducible investigation steps for an export-related alert. Guideline—recommended naming and code-organization approaches for export handlers. Each layer has its own owner and change authority. The standard is testable with one authorized export and an unauthorized export that leaves no protected result.",
+    "counterexample": "A policy mandates a specific Java method name, or a guideline says 'it is recommended to authenticate' for a mandatory access control. The former over-constrains implementation; the latter makes an obligation optional.",
+    "transfer": "Classify and rewrite four candidate statements: 'Use short functions', 'Purge protected records according to an approved retention schedule', 'Rotate a leaked credential with these command steps', and 'Show a rollback drill before high-risk deployment'. Identify any missing organizational policy input."
+  },
+  "engineering-governance-exceptions": {
+    "question": "When does a temporary departure become controlled risk rather than a bypass?",
+    "example": "Illustrative exception: a low-risk internal report dependency reaches end-of-support during a supplier outage. The standard forbids unsupported dependencies. An exception record identifies affected package/version, reason, service exposure, evidence of compensating network/isolation controls, approver with risk authority, expiration in 30 days and replacement/rollback owner. A weekly CI check reports the exception's age and fails closed once the approved date passes unless renewed by authorized review.",
+    "counterexample": "A developer adds 'temporary ignore' to a scanner with no ticket, owner or expiry. Another false positive is creating an exception for a requirement that was merely nonbinding guidance.",
+    "transfer": "Draft an exception for a restore rehearsal deferred due to a migration freeze. Specify what can and cannot be waived, the compensating detection measure, expiry, required approver and the evidence that ends the exception."
+  },
+  "engineering-governance-evidence-review-cadence": {
+    "question": "How often should we demand fresh proof, and why?",
+    "example": "Hypothetical control inventory: every protected API change requires per-change denial/read-after-denial evidence; a backup restore needs periodic timed rehearsal; provider end-of-support triggers event-driven review; an ADR needs reconsideration when its documented assumptions change. For each record capture source, revision/time, owner, retention, review trigger and what a failed or missing artifact means. A green pipeline run against another commit is stale evidence, not a pass for this release.",
+    "counterexample": "A quarterly committee sees a screenshot of last month's tests and declares the current release compliant without checking commit or scope. Equally inefficient: forcing an hour-long meeting for every low-risk change already blocked by an automated policy.",
+    "transfer": "Given a new authentication key rotation, a documentation typo and a failed production restore, choose per-change/periodic/event-driven proof; specify the missing-evidence handling for each."
+  },
+  "engineering-governance-without-bureaucracy": {
+    "question": "What is the lightest mechanism that still changes risky behavior?",
+    "example": "Illustrative change classes: (1) a spelling correction merges on normal review, (2) a new endpoint needs automated negative authorization checks and service-owner sign-off on the contract, (3) a major schema migration requires backward-compatibility evidence, rollback rehearsal and accountable production approval. Start by declaring consequence and reversibility, then assign proportional checks. Track median time-to-decision and actual escaped-risk events to discover when oversight costs exceed protection. Exception handling remains available without making every safe path exceptional.",
+    "counterexample": "Introduce a weekly all-hands review for every pull request. Although the process generates signatures, it does not show which defects it prevents and may delay a critical security patch.",
+    "transfer": "Redesign a proposed five-stage manual approval flow for all releases into risk-tiered automated checks and targeted human decisions. For each removed gate state which evidence replaces it and where an explicit human authorization is still essential."
+  }
+};
+
+// Topic-specific prerequisites, causal mechanisms and real alternatives in the original authored readings.
+const governanceConcepts: Record<string, {definition:string;prerequisites:string;mechanism:string;alternatives:string}> = {
+  "engineering-governance-governance-vs-management": {
+    "definition": "Governance determines what outcomes and risk boundaries the organization requires, who is permitted to make material decisions, and how results are evaluated. Management allocates effort and runs processes to fulfill those decisions. Engineering execution implements and validates concrete changes. These domains interact, but treating them as synonyms hides accountability. Governance is not necessarily a committee: a clear policy delegated to a service owner may be more effective than recurring approvals.",
+    "prerequisites": "Recall the difference between a service outcome and a technical activity, and between an authorization control and a developer's chosen framework. A Quality test report or security finding establishes observations; it does not automatically assign policy authority. Identify the actual business/service owner before drafting a governance model.",
+    "mechanism": "For any disputed initiative, begin with the stakeholder outcome and an observable failure consequence. State a minimum outcome constraint and who is authorized to approve a deviation. Management then schedules implementation, training and follow-up; engineering chooses appropriate code, monitoring and tests. Assurance checks the exact implemented behavior and reports failures to the right decision owner. For example, 'unauthorized actor must not change owner' is governance intent, selecting an authorization middleware belongs to engineering, and scheduling the regression belongs to management.",
+    "alternatives": "Centralizing all implementation choices in governance seems controllable, but removes local judgment and delays low-risk fixes. Leaving every obligation to project discretion can create uneven protection. The useful boundary is proportional: guard important outcomes and delegated risk decisions, while preserving engineer autonomy over low-consequence methods."
+  },
+  "engineering-governance-decision-rights": {
+    "definition": "A decision right identifies who can choose, advise, challenge, stop or authorize an exception for a defined class of consequence. A person may have technical expertise without the legal, financial or business mandate to accept its residual risk. Consultation can be mandatory without granting every consulted role a veto. Decision rights should be documented before a disputed change creates pressure.",
+    "prerequisites": "Understand the difference between a proposed solution, review evidence, technical control owner and business risk owner. Use a realistic event—for example an authorization bypass, irreversible data change or protected service disruption—and identify the obligation that can actually be affected. Treat role titles in TSA cases as hypothetical unless a real organization supplies them.",
+    "mechanism": "Draw a decision table with columns: decision type, consequence, proposer, accountable decider, required expertise/consultation, delegated stop condition, escalation and review trigger. Work a low-risk patch and a retention waiver through the same model: the former may be delegated to engineering with automated tests; the latter needs explicit data-purpose/policy and risk authority. Verify that someone can demonstrate the decision was made at the correct level by reviewing an approval record linked to exact scope and evidence.",
+    "alternatives": "A universal RACI grid can be a useful communication aid, but it does not prove that anyone has been granted the authority it asserts. Consensus works when disagreement is low cost and preferences dominate; for high-consequence conflicts, set a deadline and authorized decider while preserving written dissent and measurable conditions for reversal."
+  },
+  "engineering-governance-accountability": {
+    "definition": "Accountability is answerability for an outcome and its correction, distinct from responsibility for a task. A task can be completed while its service outcome remains failed. Multiple teams may have legitimate shared work, but an unresolved incident, risk or standard must have a named accountable owner able to coordinate and escalate. Accountability also has a succession requirement: the organization must not rely on an absent individual's private memory.",
+    "prerequisites": "Be able to trace a business result from request or event through application, database, integrations, monitoring and support. An issue tracker status is not the business result. Separate evidence of a patch deployment from evidence that affected records were reconciled and users informed.",
+    "mechanism": "Start with a customer or control invariant. Identify all work needed to recover it, such as data repair, regression, user communication and risk disposition. Assign each work item to a capable operator while giving one service owner responsibility for verifying end-to-end closure. Require immutable links to the original incident, exact release, tested behavior and remaining exceptions. If the owner leaves, prove a deputy can retrieve evidence and exercise the escalation route. Closure means the outcome was verified or its remaining risk accepted by legitimate authority, not that all subtasks were marked Done.",
+    "alternatives": "A single hero who performs every task may close urgent incidents but creates fragile operational concentration. A committee with collective signatures may diffuse responsibility. Separate one accountable outcome owner from distributed implementation and independent verification, with an explicit safe handover."
+  },
+  "engineering-governance-policy-standard-procedure-guideline": {
+    "definition": "Policy states mandatory organizational intent; a standard expresses measurable mandatory conditions supporting that intent; a procedure tells someone how to perform a controlled operation; a guideline offers recommended methods with optional variation. An ADR documents the rationale for a contextual decision, while a runbook gives operational steps under known conditions. These are distinct artifacts because they have different owners, audiences, update frequency and exception semantics.",
+    "prerequisites": "Know what a testable acceptance criterion looks like: principal, protected resource, allowed action, denied action and expected effect. Identify which constraint comes from an authorized organizational policy and which is only a team preference. Avoid promoting implementation detail into enterprise law without justification.",
+    "mechanism": "For the protected export example, express policy as the obligation to restrict use to authorized purposes. Write a standard specifying resource-level authorization, auditable event properties and retention alignment with approved policy. Write a procedure for investigating a denied export, including safe reproduction and escalation; a guideline may recommend code structure without mandating a single package. Test the standard with allowed and denied paths plus after-state, and version its scope and effective date. If a legitimate exception is granted, record approval, compensating control, duration and exit.",
+    "alternatives": "Using policy for every coding convention causes exception bureaucracy. Treating mandatory access controls as optional guidelines permits silent violations. Use the least authoritative artifact that accurately communicates the constraint, but never weaken a true business or security obligation merely to reduce paperwork."
+  },
+  "engineering-governance-exceptions": {
+    "definition": "An exception is an authorized, scoped and reviewable departure from an otherwise applicable requirement. It is not a generic suppression of a tool warning. A deviation requires a valid underlying rule, a reason the normal path cannot be followed, a bounded exposure, compensating controls where effective, delegated acceptance authority, and an end condition. It can be temporary even when the underlying problem has no immediate fix.",
+    "prerequisites": "Separate a mandatory standard from an optional guideline and risk ownership from risk acceptance authority. Know which automated controls can prove an exception remains in scope and which evidence would reveal that it expired or failed. A hypothetical approval is not a real approval.",
+    "mechanism": "Write an exception as a small testable record: reference the exact rule/version; identify affected asset, consumer and timeframe; describe current evidence, event/consequence risk and rejected options; identify authorized approver and action owner; add compensating proof, expiry, a reversion plan and monitoring. Validate both cases: allowed use inside scope and denied use outside it. On expiry, fail closed or escalate. If exceptions recur often, determine whether the standard, its implementation path or team capability requires redesign rather than renewing automatically.",
+    "alternatives": "Absolute no-exception policies can force dangerous hidden workarounds; unlimited waivers normalize noncompliance. A limited exception with transparent risk authority preserves legitimate delivery while exposing the true cost and preventing unreviewed permanence."
+  },
+  "engineering-governance-evidence-review-cadence": {
+    "definition": "Operating evidence is attributable observation that a requirement holds for a defined population, time and environment. A written control specifies intended behavior, while execution results and independent checks support claims of operation. Review cadence is determined by how fast risk can change and the consequence of missing a failure, not by an arbitrary calendar that produces ceremonial meetings.",
+    "prerequisites": "Read test provenance (commit, artifact, environment, selected suite), operational measurements (population and interval), control scope, and a risk scenario. Understand why a green report from commit A does not authorize a different artifact B and why zero selected tests can produce a misleading successful job.",
+    "mechanism": "For each governance objective define: source system, test/metric, population, timestamp, owner, expected invariant, exception behavior, evidence retention and next decision. Use per-change proof for authorization boundaries and release artifacts; periodic proof for restore readiness or access recertification; event-driven review after an incident, migration or support deadline. Sample only when justified, document excluded cases and grade missing critical evidence as Unknown or failed rather than assuming it passes. Replace meetings with automated evidence where reproducible, while retaining human oversight for genuinely contextual risk acceptance.",
+    "alternatives": "Rechecking everything every day exhausts engineering capacity and encourages checklist behavior. Checking only quarterly misses fast-changing release risk. Mix automated per-event controls with proportionate periodic and trigger-driven reviews, and test whether each review changed any decision."
+  },
+  "engineering-governance-without-bureaucracy": {
+    "definition": "Proportionate governance makes safe engineering behavior cheaper and risky behavior harder to perform unnoticed. It uses defaults, protected paths, executable acceptance checks and clear authority instead of requiring central permission for every routine action. Bureaucracy is not the existence of a review; it is a review that costs attention without changing relevant risk or decision quality.",
+    "prerequisites": "Understand failure consequence, reversibility, detection delay, delegated permissions and the technical control that might automate a requirement. Distinguish an ordinary formatting update from a change affecting protected customer data or irreversible schema state.",
+    "mechanism": "Create risk tiers using explicit drivers—scope of affected users, ability to reverse data effects, access boundary, novelty and strength of monitoring. For each tier choose minimum evidence and approval: routine changes follow standard CI; higher-risk changes require targeted negative proof, rollback and correct business/security authority. Measure both decision latency and escaped control failures. Remove a human gate only if an alternative control actually produces equivalent evidence and a defined escalation path; test its fail-closed behavior. Review exceptions and monitoring outcomes to adjust tiers rather than accumulate approval layers forever.",
+    "alternatives": "An all-manual approval process feels cautious but can block security fixes while producing no provenance. Unrestricted deployment maximizes speed but can hide severe outcomes. Automated controls plus focused review offer a better balance when release evidence is reliable; where automated control has an untested bypass, human oversight may remain necessary."
+  }
+};
 function readingLesson(id: string, title: string, body: string, practice: string[]): Lesson {
   return {
     id,
@@ -19,7 +110,27 @@ function readingLesson(id: string, title: string, body: string, practice: string
         id: `${id}-reading`,
         title,
         estimatedMinutes: 55,
-        content: { type: "reading", body, blocks:[...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({type:"paragraph" as const,text})),{type:"resources",title:"Continue learning",resources:resourcesByGovernance[id] ?? [iso38500]}] },
+        content: { type: "reading", body, blocks: [
+          ...body.split(/\n\s*\n/).filter(Boolean).map((text) => ({ type: "paragraph" as const, text })),
+          ...(governanceConcepts[id] ? [
+            {type:"heading" as const,id:`${id}-definition`,text:"Definition and authority boundary",level:2 as const},
+            {type:"paragraph" as const,text:governanceConcepts[id].definition},
+            {type:"heading" as const,id:`${id}-prerequisites`,text:"What you must already distinguish",level:2 as const},
+            {type:"paragraph" as const,text:governanceConcepts[id].prerequisites},
+            {type:"heading" as const,id:`${id}-mechanism`,text:"Mechanism and evidence chain",level:2 as const},
+            {type:"paragraph" as const,text:governanceConcepts[id].mechanism},
+            {type:"heading" as const,id:`${id}-alternatives`,text:"Alternatives and failure of over-governance",level:2 as const},
+            {type:"paragraph" as const,text:governanceConcepts[id].alternatives},
+          ] : []),
+          ...(governanceCases[id] ? [
+            { type: "heading" as const, id: `${id}-worked`, text: governanceCases[id].question, level: 2 as const },
+            { type: "paragraph" as const, text: governanceCases[id].example },
+            { type: "callout" as const, tone: "warning" as const, title: "False assurance", body: governanceCases[id].counterexample },
+            { type: "heading" as const, id: `${id}-transfer`, text: "Unseen decision exercise", level: 2 as const },
+            { type: "paragraph" as const, text: governanceCases[id].transfer },
+          ] : []),
+          { type: "resources" as const, title: "Continue learning", resources: resourcesByGovernance[id] ?? [iso38500] },
+        ] },
       },
       {
         id: `${id}-practice`,
@@ -28,10 +139,10 @@ function readingLesson(id: string, title: string, body: string, practice: string
         content: {
           type: "practical",
           objective: `Apply ${title} to the Steward ecosystem.`,
-          scenario: "Use Steward's existing architecture, delivery, QA, security, reliability, dependency and operational evidence. Governance exists to make decision rights, accountability, evidence and exceptions explicit without turning ordinary engineering work into ceremony.",
-          instructions: practice,
+          scenario: `Use a hypothetical Steward governance environment; organizational roles and policy approvals must be identified as assumptions unless actually supplied.\n\nUNSEEN GOVERNANCE CASE: ${governanceCases[id]?.transfer ?? "Apply the prior principle to an unfamiliar governance situation."}`,
+          instructions: [...practice, "Show a worked decision table or concrete policy/control excerpt for the unseen case; include scope, existing evidence, delegated decision rights and actual verification steps.", "Identify at least one attractive but invalid governance conclusion and the evidence that would reject it."],
           deliverables: ["Governance decision or artifact", "Evidence and rationale", "Owner and review/follow-up record"],
-          completionCriteria: ["Decision rights and accountability are explicit.", "The mechanism is proportionate to the risk and decision being governed.", "The artifact can be used by another engineer without relying on oral context."],
+          completionCriteria: ["The independently prepared case names an accountable decider, supporting roles, authority limits, an explicit decision and evidence of its correct operation.", "A generic RACI chart or policy name without observable acceptance criteria does not pass.", `Reject the work if this failure persists: ${governanceCases[id]?.counterexample ?? "Unattributable approval."}`, "The learner distinguishes business authorization, technical implementation and independent review, and states how new evidence would reopen the choice."],
         },
       },
     ],
