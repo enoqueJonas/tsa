@@ -12,6 +12,64 @@ READINGS=(
  ("professional-practice-accountable-engineering-decisions-reading","Accountable Decisions"),
  ("capstone-problem-discovery-evidence-provenance-reading","Discovery Evidence"),
 )
+
+def seed_completed_path(page, path_id, completed):
+ """Synthetic browser-only prerequisite completion. Never classify as learning."""
+ page.goto(BASE+"/?view=curriculum&school=professional-engineer",wait_until="networkidle")
+ page.evaluate("""async ({pathId, completed}) => {
+   const db=await new Promise((resolve,reject)=>{
+     const q=indexedDB.open('tsa-academy',5);
+     q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error);
+   });
+   try {
+     const tx=db.transaction('path-progress','readwrite');
+     const now=new Date().toISOString();
+     tx.objectStore('path-progress').put({
+       schemaVersion:5,pathId,currentActivityId:completed[0],
+       completedActivityIds:completed,
+       reflectionResponses:Object.fromEntries(
+         completed.filter(id=>id.endsWith('-check'))
+                  .map(id=>[id,'SYNTHETIC progression only; no learner evidence'])),
+       startedAt:now,updatedAt:now
+     });
+     await new Promise((resolve,reject)=>{
+       tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);
+     });
+   }finally{db.close();}
+ }""",{"pathId":path_id,"completed":completed})
+ page.reload(wait_until="networkidle")
+ print(f"SEEDED synthetic prerequisites for {path_id}: {len(completed)} IDs, NOT learner evidence",flush=True)
+
+def synthetic_practice_complete(page):
+ fundamentals=["professional-practice-accountable-engineering-decisions-"+s
+               for s in ("reading","practice","check")]
+ originals=(
+  "ethics-public-interest","privacy-data-responsibility","accessibility-inclusion",
+  "competence-uncertainty","conflicts-pressure","traceability-accountability"
+ )
+ complete=fundamentals+[
+  "professional-practice-"+topic+"-"+suffix
+  for topic in originals for suffix in ("reading","practice")
+ ]
+ assert len(complete)==15
+ seed_completed_path(page,"professional-practice",complete)
+
+def synthetic_discovery_complete(page):
+ fundamentals=["capstone-problem-discovery-evidence-provenance-"+s
+               for s in ("reading","practice","check")]
+ original=(
+  "choosing-a-substantial-problem","stakeholder-discovery","problem-framing",
+  "requirements","constraints","working-with-ambiguity","quality-attributes",
+  "risk","success-measures-and-evidence","scope-and-non-goals"
+ )
+ complete=fundamentals+[
+  "capstone-problem-discovery-"+topic+"-"+suffix
+  for topic in original for suffix in ("001","practice")
+ ]
+ complete.append("capstone-problem-discovery-lab-produce-the-capstone-discovery-brief-001")
+ assert len(complete)==24
+ seed_completed_path(page,"capstone-problem-discovery",complete)
+
 def run():
  with sync_playwright() as p:
   browser=p.chromium.launch(headless=True)
@@ -46,6 +104,10 @@ def run():
   }""")
   print("SEEDED only obsolete synthetic-preparation IDs; no learner achievement inferred",flush=True)
   for index,(expected,headline) in enumerate(READINGS):
+   if index == 1:
+    # Later modules must not be considered unlocked merely because their
+    # cards exist or the previous module has a synthetic, deleted wrapper ID.
+    synthetic_practice_complete(page)
    page.goto(BASE+"/?view=curriculum&school=professional-engineer",wait_until="networkidle")
    page.get_by_role("button",name=re.compile(r"^(Start|Continue|Review) module$")).nth(index).click()
    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
@@ -70,6 +132,9 @@ def run():
    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
    assert page.evaluate("new URLSearchParams(location.search).get('activity')")==expected.removesuffix("-reading")+"-practice"
    print("PASS Professional rendered source, mobile, next-at-top and reload:",expected,flush=True)
+  # Gate the third module through completion of the second module's *actual*
+  # authored IDs. This synthetic fixture is not independent learner evidence.
+  synthetic_discovery_complete(page)
   # Exercise the entire newly remediated proposal module. Progress is seeded
   # only in this isolated Chromium profile; it is NOT learner acceptance.
   from urllib.parse import urlencode
