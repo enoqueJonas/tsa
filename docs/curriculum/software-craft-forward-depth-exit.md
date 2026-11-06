@@ -34,3 +34,13 @@ The original module already contained substantive local Git history, bisect, rea
 - **Production error safety:** not claimed. The source-derived example models public policy; separate HTTP probes verify known status families on the earlier Steward training registry. Unexpected 500 leakage needs a purposely failing private endpoint if it is to be claimed.
 
 **Merge rule:** new PR stays draft until a matching-head CI run proves source-derived positive/negative Python, actual PostgreSQL query-count integration, full smoke suite, TypeScript, application build, staged browser rendering/reentry and structural audit. Preserve the distinct learner-validation gate even after a technical merge.
+
+## Independent learner teach-back gate
+
+The original final brief/practice/check activity IDs remain unchanged. Its reading now publishes **eight falsifiable teach-back questions** covering Git states, change-safety mutations, direct dependency declarations, fail-closed config, logging thresholds and supplied token redaction, real HTTP/error boundaries, ADR/runbook reasoning, and actual SQL-vs-HTTP performance measurement.
+
+A genuine independent reviewer scores each question **0–2**, for **16 possible points**; a pass requires **14/16** *and* **2/2 on Q2 (behavior-preserving negative), Q5 (token-safe logging) and Q6 (signed HTTP/authorization versus concealed or unknown failures)**. At least one reviewer-supplied **unseen variation** is required. Review date, scores, unseen prompt, misconceptions and remediation evidence must be retained.
+
+**A CI or synthetic browser run cannot award a teach-back pass.** If no independent reviewer administered this, record **NOT VALIDATED**, even when all code and browser checks pass. The source guard checks that the rubric is published and mandatory safety minimums are retained; it does not impersonate a learner or reviewer.
+
+A green result for previous PR head `c08cd2f4a209e2fa89782c5c7f3c08a3365be1f3` is valid for that head only. This new teach-back source and guard require a fresh matching-head CI run.
