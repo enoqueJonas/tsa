@@ -52,6 +52,8 @@ const practices: Record<string, PracticalContent> = {
         objective: "Design one evidence-based promotion gate for Steward and prove that approval refers to a fixed release candidate rather than a moving target.",
         scenario: "The team wants an approval button before deployment, but an approval with no defined question or immutable candidate would be ceremony rather than control.",
         instructions: [
+            "Before configuring any GitLab gate, check the actual self-managed edition/tier: protected-environment deployment approvals are not universally available. If absent, document the alternative authorized manual gate without claiming an enforced GitLab approval.",
+            "Run the published `promotion_identity.py` fixture on disposable data. Replace an approved digest with different bytes and demonstrate that the prior approval does not bind the new artifact.",
             "Choose one real risk that merits human judgment in the current Steward release flow, such as a migration, accepted limitation or target-impact decision.",
             "Record the exact candidate identity the approval refers to: version, source commit and image digest/immutable identifier.",
             "Define the minimum evidence presented to the approver.",
@@ -68,6 +70,8 @@ const practices: Record<string, PracticalContent> = {
         objective: "Rehearse a Steward schema change as part of deployment and determine whether old and new application versions can safely coexist with the migration state.",
         scenario: "A new Steward release requires a Django migration. Container rollback is easy only if the previous application still understands the resulting schema.",
         instructions: [
+            "Run the exact published `migration_compatibility.py` SQLite program in a disposable process; explain why the additive column allows old/new readers and why dropping the old status column breaks the old reader.",
+            "On your ACTUAL authorized Django/PostgreSQL target, list all old and new API/consumer code paths, active schema versions, expected locks and data safety. If unavailable, mark PostgreSQL behavior NOT_TESTED rather than citing the SQLite model.",
             "Choose or create a safe representative Steward schema change in a non-production dataset.",
             "Record the pre-migration application and schema state.",
             "Apply the migration, including any outbox schema change, as an explicit deployment step before dependent publisher/consumer roles become authoritative and capture its result.",
@@ -85,6 +89,8 @@ const practices: Record<string, PracticalContent> = {
         objective: "Prove that Steward can return to a specifically identified known-good application release and document the state that rollback does not reverse.",
         scenario: "A deployment fails verification after the new container starts. Recovery must use known release identity and evidence rather than retagging or guessing which image was previously working.",
         instructions: [
+            "Run the exact published `rollback_decision.py` fixture. Distinguish compatible image-only reversal, incompatible schema/data and already emitted effects; a known image tag cannot justify an unsafe rollback.",
+            "Before real recovery, name the exact previous digest, all API/publisher/consumer versions, immutable data/effect ledger, person authorized to operate and a user-visible post-recovery test.",
             "Record the current known-good version, source commit and image digest/immutable image identifier.",
             "Deploy a safe candidate that fails a predefined verification condition.",
             "Execute the documented rollback path to the known-good image without rebuilding it.",
@@ -115,6 +121,8 @@ const practices: Record<string, PracticalContent> = {
         objective: "Evaluate blue-green deployment against Steward's homelab capacity, routing model and shared-state constraints, then prove the traffic-switch concept without pretending shared data is duplicated safely.",
         scenario: "A second application environment could make release switching safer, but duplicate runtime capacity consumes budget and both environments may still share PostgreSQL or other state.",
         instructions: [
+            "Execute the original reading's published `blue_green_local.sh` only on a disposable Docker host. Inspect both distinct local images and verify that candidate B's HTTP 200 still fails the business marker and leaves the client on A.",
+            "Explain why the shell's active_port is only a local client-selection variable, NOT a reverse proxy, a deployment permission, an immutable registry digest or proof that any shared database is compatible.",
             "Sketch blue and green Steward application environments behind one logical entry point.",
             "Mark which dependencies would actually be duplicated and which would remain shared.",
             "Estimate the additional CPU/RAM/storage required on the current homelab.",
@@ -130,6 +138,8 @@ const practices: Record<string, PracticalContent> = {
         objective: "Design a canary decision around measurable Steward signals and explain why implementation is deferred until traffic and observability can support the decision.",
         scenario: "The team proposes sending 5% of traffic to a new release, but Steward does not yet have production-like traffic volume or the reliability signals needed to judge the canary safely.",
         instructions: [
+            "Run the published `canary_evidence.py` teaching gate to reject zero failures from only ten requests. Identify why a small/imbalanced sample cannot prove safety, even if the heuristic accepts a larger synthetic fixture.",
+            "Define critical write and object-invariant stop conditions, traffic comparison baseline and review owner for an actual new-domain application; mark real production canary measurements NOT_TESTED when traffic/telemetry is unavailable.",
             "Define what population or traffic slice a Steward canary would expose.",
             "Choose three signals that could justify continue/stop decisions, including at least one service-health and one meaningful behavior signal.",
             "Define a promotion threshold and a stop condition conceptually.",
@@ -144,6 +154,8 @@ const practices: Record<string, PracticalContent> = {
         objective: "Model one Steward change whose deployment and activation could be separated with a temporary feature flag, including ownership and deletion criteria.",
         scenario: "A compatible Steward capability may be safer to deploy dark and activate later, but every flag creates another runtime branch that can become permanent debt.",
         instructions: [
+            "Run the published `flagged_side_effects.py` fixture before designing an activation plan; demonstrate that flag-off prevents new flagged behavior but never retracts an already emitted event.",
+            "Define tests for disabled/enabled, provider failure, unauthorized user, mixed versions and expiry/removal; record the owner of committed side-effect reconciliation.",
             "Choose one plausible backward-compatible Steward behavior that could be deployed disabled.",
             "Define the flag's default, activation scope and configuration owner.",
             "List tests needed for both flag states while it exists.",
