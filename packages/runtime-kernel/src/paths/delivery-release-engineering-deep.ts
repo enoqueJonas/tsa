@@ -30,6 +30,7 @@ function reading(id: string, title: string, intro: string, blocks: LessonBlock[]
     }
     if (id==="release-candidates") {
         const localDocker=releaseProofs["release-candidates-docker"];
+        if (!localDocker) throw new Error("Original Release Candidates real local Docker example missing");
         teaching.push({type:"heading",id:"local-tag-replacement-rehearsal",text:"A real local Docker example: the tag moves but approved image ID does not",level:2});
         teaching.push({type:"code",language:"bash",code:localDocker.code,caption:localDocker.caption});
         teaching.push({type:"paragraph",text:localDocker.expected});
