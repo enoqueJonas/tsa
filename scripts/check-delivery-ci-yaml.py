@@ -34,6 +34,7 @@ def dependencies(job):
             for item in needs]
 
 def validate_structure(config):
+    assert config["default"]["image"] == "python:3.12-slim", "Learner YAML must declare a Python-capable Docker executor image"
     assert config["stages"] == STAGES
     assert all(name in config for name in JOBS)
     assert config["fixture_check"]["stage"] == "verify"
