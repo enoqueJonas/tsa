@@ -397,5 +397,92 @@ with sync_playwright() as playwright:
     assert not errors,"Browser runtime errors after Supply Chain traversal: "+str(errors)
     print("PASS first original Supply Chain reading/practical, 390px, genuine reflection gate and reload; later source-rebuilt lessons NOT browser-tested",flush=True)
 
+    # Future Delivery Engineer modules 9 and 10. These add focused readings
+    # before the ORIGINAL practicals and last knowledge check; this synthetic
+    # browser traversal NEVER supplies answers or marks learner mastery.
+    future_original_modules = [
+        {
+            "module_index": 8,
+            "path": "production-schema-evolution",
+            "new_reading_markers": {
+                "delivery-production-schema-evolution-007": "Identify the independently changing systems",
+                "delivery-production-schema-evolution-008": "Execute two actual PostgreSQL connections, not an in-memory simulation",
+                "delivery-production-schema-evolution-009": "Define a non-automatic gate for the destructive contract",
+            },
+            "code_reading": "delivery-production-schema-evolution-008",
+            "practicals": {
+                "delivery-production-schema-evolution-002",
+                "delivery-production-schema-evolution-003",
+                "delivery-production-schema-evolution-004",
+                "delivery-production-schema-evolution-005",
+            },
+        },
+        {
+            "module_index": 9,
+            "path": "delivery-platform-migration",
+            "new_reading_markers": {
+                "delivery-platform-migration-exercise-contract": "Define a pipeline as a contract, not a sequence of YAML keywords",
+                "delivery-platform-migration-exercise-gates": "Run real local tests and observe failure propagation before publishing",
+                "delivery-platform-migration-exercise-cutover": "Use shadow mode to compare, not duplicate release authority",
+            },
+            "code_reading": "delivery-platform-migration-exercise-gates",
+            "practicals": {"delivery-platform-migration-exercise-practical"},
+        },
+    ]
+    for target in future_original_modules:
+        page.goto(BASE + "/?view=curriculum&school=delivery-engineer",wait_until="networkidle")
+        page.get_by_role("button",name=MODULE).first.wait_for(state="visible",timeout=30000)
+        assert page.get_by_role("button",name=MODULE).count()==11
+        page.get_by_role("button",name=MODULE).nth(target["module_index"]).click()
+        page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+        assert target["path"] in page.url, (
+            "Expected module inaccessible or wrong route: " + target["path"] + " " + page.url)
+        future_sidebar=page.locator("aside").filter(has=page.get_by_text("Curriculum",exact=True)).first
+        future_count=future_sidebar.locator("button").count()
+        assert future_count>=len(target["new_reading_markers"])+len(target["practicals"])+2, (
+            "New readings or original practicals missing from " + target["path"])
+        future_readings=set()
+        future_practices=set()
+        for index in range(future_count):
+            activity=parse_qs(urlparse(page.url).query).get("activity",[None])[0]
+            assert activity, "No activity URL in " + target["path"]
+            if activity in target["new_reading_markers"]:
+                main=page.locator("main").last
+                body=main.inner_text()
+                assert target["new_reading_markers"][activity] in body, (
+                    "Authored explanation not rendered: " + activity)
+                assert len(body)>1750, "New focused reading remains superficial: " + activity
+                if activity==target["code_reading"]:
+                    assert main.get_by_role("button",name="Copy").count()>=1, (
+                        "Executable source not copyable: " + activity)
+                page.set_viewport_size({"width":390,"height":844})
+                assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"), (
+                    "Mobile overflow in focused reading " + activity)
+                page.set_viewport_size({"width":1440,"height":900})
+                future_readings.add(activity)
+                print("PASS future original Delivery reading + copyable code/390px:",activity,flush=True)
+            if activity in target["practicals"]:
+                main=page.locator("main").last
+                assert main.is_visible() and len(main.inner_text())>450, (
+                    "Existing original practical not rendered: " + activity)
+                future_practices.add(activity)
+            if future_readings==set(target["new_reading_markers"]) and future_practices==target["practicals"]:
+                break
+            if index<future_count-1:
+                next_button=page.get_by_role("button",name=NEXT)
+                assert next_button.is_enabled(), (
+                    "Unexpected gating BEFORE all authoring source verified: " + activity)
+                next_button.click()
+                page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+        assert future_readings==set(target["new_reading_markers"]), (
+            "Missing rendered new readings in " + target["path"])
+        assert future_practices==target["practicals"], (
+            "Missing rendered original practicals in " + target["path"])
+        page.reload(wait_until="networkidle")
+        page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+        assert target["path"] in page.url, "Module context lost after reload: "+target["path"]
+        assert not errors, "Browser runtime errors while traversing " + target["path"] + ": " + str(errors)
+        print("PASS module 9/10 focused readings, original practices, mobile and reload:",target["path"],flush=True)
+
     browser.close()
 print("PASS Configuration Management rendered evidence and reload (synthetic navigation only)")
