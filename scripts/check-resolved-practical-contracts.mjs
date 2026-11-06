@@ -417,30 +417,43 @@ if (!steward || steward.paths.length !== 13) {
 }
 const professional = journey.schools.find((school) => school.id === "professional-engineer");
 if (!professional || professional.paths.length !== 7) {
-  problems.push("Professional Engineer must expose 7 paths");
+  problems.push("Professional Engineer must expose 7 authored paths");
 } else {
+  const orderedFirstLessons = new Map([
+    ["professional-practice", "professional-practice-accountable-engineering-decisions"],
+    ["capstone-problem-discovery", "capstone-problem-discovery-evidence-provenance"],
+  ]);
   for (const path of professional.paths) {
-    const overview = path.lessons[0];
-    const headings = overview?.activities?.[0]?.content?.blocks;
-    if (overview?.id !== `${path.id}-professional-model` ||
-        !Array.isArray(headings) ||
-        !headings.some((block) => block.type === "heading" && block.id === "worked-claim") ||
-        !headings.some((block) => block.type === "heading" && block.id === "counterclaim")) {
-      problems.push(`Professional Engineer worked model missing: ${path.id}`);
+    const originalReadingCount = path.lessons.flatMap((lesson) => lesson.activities)
+      .filter((activity) => activity.content.type === "reading").length;
+    if (!originalReadingCount) problems.push(`Professional path has no actual authored reading: ${path.id}`);
+    const expectedFirst = orderedFirstLessons.get(path.id);
+    if (expectedFirst) {
+      const lesson = path.lessons[0];
+      const reading = lesson?.activities?.[0];
+      const blocks = reading?.content?.blocks;
+      if (lesson?.id !== expectedFirst || reading?.id !== expectedFirst + "-reading" ||
+          !Array.isArray(blocks) ||
+          !blocks.some((b) => b.type === "code" && b.language === "python") ||
+          !lesson.activities.some((activity) => activity.id === expectedFirst + "-practice") ||
+          !lesson.activities.some((activity) => activity.id === expectedFirst + "-check")) {
+        problems.push(`Professional first-principles executable lesson is not wired: ${path.id}`);
+      }
     }
     for (const lesson of path.lessons) {
-      lesson.activities.forEach((activity, index) => {
-        if (activity.content.type !== "practical") return;
-        const before = lesson.activities[index - 1];
-        const blocks = before?.content?.blocks;
-        if (!before?.id?.endsWith("-professional-preparation") ||
-            before?.content?.type !== "reading" ||
-            !Array.isArray(blocks) ||
-            !blocks.some((block) => block.type === "heading" && block.id === "independent-acceptance") ||
-            !blocks.some((block) => block.type === "heading" && block.id === "challenge-and-limit")) {
-          problems.push(`Professional practical missing defensible evidence preparation: ${path.id}/${lesson.id}/${activity.id}`);
+      if (lesson.id.endsWith("-professional-model") ||
+          lesson.activities.some((activity) => activity.id.endsWith("-professional-preparation"))) {
+        problems.push(`Synthetic Professional Engineer prep returned: ${path.id}/${lesson.id}`);
+      }
+      for (const activity of lesson.activities) {
+        if (activity.content.type !== "practical") continue;
+        const task = activity.content;
+        if (!Array.isArray(task.instructions) || task.instructions.length < 2 ||
+            !Array.isArray(task.deliverables) || task.deliverables.length < 1 ||
+            !Array.isArray(task.completionCriteria) || task.completionCriteria.length < 2) {
+          problems.push(`Professional practical missing independent contract: ${path.id}/${lesson.id}/${activity.id}`);
         }
-      });
+      }
     }
   }
 }
