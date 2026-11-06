@@ -127,7 +127,10 @@ def run():
    page.wait_for_function("scrollY>8",timeout=10000)
    page.get_by_role("button",name=re.compile(r"^(Next|Next lesson|Complete path)$")).click()
    page.wait_for_function("scrollY<=8",timeout=10000)
-   assert page.evaluate("new URLSearchParams(location.search).get('activity')")==expected.removesuffix("-reading")+"-practice"
+   # URL transition is deliberately published only AFTER the IndexedDB write.
+   next_activity=expected.removesuffix("-reading")+"-practice"
+   page.wait_for_function("(id) => new URLSearchParams(location.search).get('activity') === id",
+                          arg=next_activity,timeout=12000)
    page.reload(wait_until="networkidle")
    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
    assert page.evaluate("new URLSearchParams(location.search).get('activity')")==expected.removesuffix("-reading")+"-practice"
