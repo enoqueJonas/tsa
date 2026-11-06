@@ -2,6 +2,7 @@
 Synthetic browser navigation is not independent learner or real workplace validation.
 """
 import re
+import os
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -72,7 +73,7 @@ def synthetic_discovery_complete(page):
 
 def run():
  with sync_playwright() as p:
-  browser=p.chromium.launch(headless=True)
+  browser=p.chromium.launch(headless=True, **({"channel":"chrome"} if os.getenv("TSA_BROWSER_CHANNEL")=="chrome" else {}))
   page=browser.new_page(viewport={"width":1440,"height":900})
   errors=[]
   page.on("pageerror",lambda error:errors.append(str(error)))
