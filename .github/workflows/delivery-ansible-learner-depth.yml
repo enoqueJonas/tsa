@@ -1,0 +1,55 @@
+name: Delivery Engineer genuine Ansible learner-depth gate
+on:
+  pull_request:
+    paths:
+      - 'packages/runtime-kernel/src/paths/delivery-configuration-management-deep.ts'
+      - 'scripts/check-delivery-ansible-local-state.mjs'
+      - 'scripts/check-delivery-ansible-browser.py'
+      - '.github/workflows/delivery-ansible-learner-depth.yml'
+  push:
+    branches:
+      - curriculum/delivery-learner-depth-verification-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: delivery-ansible-depth-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  authored-ansible-and-browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Pin and install supported Ansible control-node runtime
+        run: |
+          python -m pip install ansible-core==2.21.5
+          ansible-playbook --version
+      - name: Run exact learner-published Ansible with three deliberate unsafe mutants
+        run: node scripts/check-delivery-ansible-local-state.mjs
+      - name: Build and check entire curriculum
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm test
+          pnpm audit:curriculum
+          pnpm build
+          node scripts/audit-learner-facing-curriculum.mjs --strict
+      - name: Install Python browser bindings and verify runner Chrome
+        run: |
+          python -m pip install playwright==1.58.0
+          command -v google-chrome || command -v google-chrome-stable
+      - name: Inspect actual original Ansible lessons in Chrome, 390px and reload
+        run: |
+          python -m http.server 4173 --bind 127.0.0.1 --directory apps/web/out > /tmp/tsa-delivery-local-web.log 2>&1 &
+          for i in $(seq 1 30); do curl --fail --silent http://127.0.0.1:4173/ >/dev/null && break; sleep 1; done
+          python scripts/check-delivery-ansible-browser.py
