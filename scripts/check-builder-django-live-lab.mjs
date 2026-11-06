@@ -8,6 +8,17 @@ const source = fs.readFileSync("packages/runtime-kernel/src/paths/builder-django
 const identitySource = fs.readFileSync("packages/runtime-kernel/src/paths/builder-identity-auth-deep.ts","utf8");
 
 const craftSource = fs.readFileSync("packages/runtime-kernel/src/paths/builder-software-craft-deep.ts","utf8");
+function craftStageSnippet(caption) {
+  // Staged Software Craft lab blocks are JSON-authored, unlike the older
+  // lesson fragments. Always execute the exact code the learner sees.
+  const marker = '"caption":' + JSON.stringify(caption);
+  const at = craftSource.indexOf(marker);
+  assert.ok(at >= 0, "Missing staged Software Craft source: " + caption);
+  const matched = craftSource.slice(at, at + 12000).match(
+    /"code":("(?:\\.|[^"\\])*")/);
+  assert.ok(matched, "Missing executable staged Software Craft source: " + caption);
+  return JSON.parse(matched[1]);
+}
 function craftSnippet(caption) {
   const anchor = craftSource.indexOf('"caption": "' + caption + '"');
   assert.ok(anchor >= 0, 'Missing source-published Software Craft example: ' + caption);
@@ -1462,6 +1473,21 @@ print('DJANGO_BRIDGE_OK',item.name,item.owning_team.name,item.lifecycle,e.kind)
     /secure_contract_urls|secure_contract_api_urls|DocumentedSignedTransfer/,
     "Secure documentation workshop remains private to test-only URLConfs");
   console.log("Builder Identity secured OpenAPI: real JWT HTTP 401/403/404/409/200, audit, contract security and bounded log sample passed.");
+  // Execute the exact Software Craft final-stage query-count snippet in the
+  // same fully migrated Steward/PostgreSQL registry, not a mock or SQLite.
+  // This is read-only and explicitly NOT proof of HTTP latency or p95.
+  const craftCountSource = craftStageSnippet(
+    "Handoff/performance — real Django query-count measurement, not synthetic p95");
+  const firstCount = schemaExec(["manage.py","shell","-c",craftCountSource]);
+  for (const label of ["STEWARD_SERVICE_ROW_COUNT=",
+      "STEWARD_COUNT_SQL_STATEMENTS=1", "NOT_HTTP_LATENCY_NOT_P95"])
+    assert.ok(firstCount.includes(label),
+      "Published Software Craft query-count lab failed: " + label + "\n" + firstCount);
+  const secondCount = schemaExec(["manage.py","shell","-c",craftCountSource]);
+  assert.equal(secondCount, firstCount,
+    "The read-only query-count lesson must be repeatable without side effects");
+  console.log("Builder Software Craft PostgreSQL query count passed: exact published source, one actual COUNT statement, unchanged repeated observation; HTTP latency unclaimed.");
+
 
   // Existing domain command and PostgreSQL migration lab completed above.
   // Exercise published HTTP exception code against its real stored state;

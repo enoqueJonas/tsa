@@ -148,6 +148,8 @@ const practices: Record<string, PracticeSpec> = {
         objective: "Make an evidence-backed keep, remove or upgrade decision for one declared Steward dependency.",
         scenario: "After learning how Python imports and distribution metadata work, inspect the project's actual declared dependencies. Do not invent installed versions or a speculative internal shared package merely to fulfil the curriculum.",
         instructions: [
+            "Run the source-exact Python 3.11+ AST/tomllib example offline and capture the undeclared rich detection, manifest repair, and rejected PyYAML removal labels; explain why import yaml and distribution PyYAML are different strings.",
+            "Change the toy manifest to remove the declared httpx dependency, rerun and prove the checker reports httpx as a missing direct declaration without actually importing or installing it.",
             "Identify direct runtime and development requirements from the current manifest, not just the output of pip list.",
             "Trace one actual transitive distribution and state whether application code imports it directly. If it does, propose declaring it explicitly.",
             "For one candidate library, compare the standard library/framework alternatives, supported versions, license, maintenance, advisories, transitive footprint and replacement costs.",
@@ -155,8 +157,8 @@ const practices: Record<string, PracticeSpec> = {
             "Check whether any proposed internal package has more than one real consumer and an agreed contract. If not, document a decision to keep that behavior local.",
             "Record your final keep/remove/upgrade decision with validation evidence, owner and a future revisit trigger."
         ],
-        deliverables: ["Direct versus transitive dependency table", "One candidate and alternatives evaluation", "Safe upgrade/removal validation", "Internal-package boundary assessment"],
-        completionCriteria: ["Decisions are grounded in actually declared project requirements and consumers.", "One fresh/resolved installation path and test outcome are distinguished from an arbitrary pip freeze.", "A green dependency check is not misrepresented as a security audit.", "No publication or package-sharing infrastructure is invented as a prerequisite."]
+        deliverables: ["Offline three-outcome source/manifest experiment and removal negative", "Direct versus transitive dependency table", "One candidate and alternatives evaluation", "Safe upgrade/removal validation", "Internal-package boundary assessment"],
+        completionCriteria: ["The source-derived manifest gap and intentional removal regression execute with the expected outcomes, without contacting a package registry.", "Decisions are grounded in actually declared project requirements and consumers.", "One fresh/resolved installation path and test outcome are distinguished from an arbitrary pip freeze.", "A green dependency check is not misrepresented as a security audit.", "No publication or package-sharing infrastructure is invented as a prerequisite."]
     },
     "software-craft-read-environment-variables-in-python": {
         objective: "Observe how a terminal supplies string environment values to Python, including missing, accepted and rejected settings.",
@@ -242,6 +244,20 @@ const practices: Record<string, PracticeSpec> = {
         deliverables: ["Defect-versus-debt classification", "Evidence-based debt record", "Repay/defer rationale", "Named owner and observable revisit trigger", "Reclassification when current behavior fails"],
         completionCriteria: ["Technical debt is not used to excuse a current correctness or security failure.", "The record distinguishes observed evidence from speculation.", "The decision can be reviewed without oral context.", "A trigger determines when to revisit; 'later' alone is not enough.", "No unverified Steward backlog item is invented."]
     },
+    "software-craft-python-logging-from-first-principles": {
+        objective: "Trace the actual Python logger → handler → formatter pipeline and fail an incorrect threshold prediction.",
+        scenario: "Before logging a Steward state change, a new teammate sees logger.info calls produce no visible output and assumes logging is broken. Use a scratch Python process to determine which stage discards the record rather than changing application-wide logging settings.",
+        instructions: [
+            "Save and run the exact logger/handler/formatter program from the reading using python3; keep unrelated application loggers untouched.",
+            "Capture both expected evidence labels and the output record with its named logger.",
+            "Switch the handler threshold from INFO to DEBUG, predict the additional emitted record, and verify the change.",
+            "Move the handler threshold to ERROR, prove the INFO record disappears and identify exactly which gate caused that result.",
+            "In the isolated scratch script add a root handler, enable propagation and observe the duplicate; remove the root handler and restore propagation behavior.",
+            "Explain which parts are local Python behavior and which production log-management properties remain untested."
+        ],
+        deliverables: ["Runnable scratch Python logger source", "Three captured threshold cases and propagation observation", "Logger/handler/formatter reasoning note"],
+        completionCriteria: ["The learner can predict INFO/DEBUG/WARNING filtering without trial-and-error config edits.", "A deliberate handler-threshold negative is asserted.", "No global application handler is cleared or modified.", "Operational limitations are stated without claiming central logging."]
+    },
     "software-craft-useful-logging": {
         objective: "Design logs that let an engineer reconstruct one important Steward operation without exposing sensitive data.",
         scenario: "A service ownership or lifecycle change is disputed after the fact. Existing logs either say too little to investigate or dump noisy request data. Create a small logging contract that provides evidence another engineer could actually use.",
@@ -284,6 +300,45 @@ const practices: Record<string, PracticeSpec> = {
         ],
         deliverables: ["Verified Steward setup evidence", "Reader-specific documentation links", "Evidence-backed decision record", "Safe diagnostic runbook", "Unverified-gates list"],
         completionCriteria: ["At least one real setup claim is executed against the actual documented environment.", "The project documentation does not invent credentials or deployed endpoints.", "README, API reference, ADR and runbook serve distinct reader needs.", "Unverified setup claims remain explicitly open, not labelled ready."]
+    },
+    "software-craft-architecture-decision-records": {
+        objective: "Create, challenge and verify a consequential Steward decision record with a defensible alternative.",
+        scenario: "A future contributor finds two PostgreSQL training databases and cannot tell whether the separation is intentional or incidental. Write an ADR they can use to decide how to change the boundary safely.",
+        instructions: [
+            "Read the full worked SQL-versus-Django ADR and mark its status, scope, alternatives, trade-offs and revisit trigger.",
+            "Verify the current database identity and migration status only against disposable training environments; label unexecuted claims unverified.",
+            "Propose a second consequential decision for Steward with at least two plausible alternatives and independent reasons not to choose one.",
+            "Have a reviewer challenge one assumption and record an evidence-based response without inventing a past approval.",
+            "Specify how the decision could later be superseded while preserving its original rationale."
+        ],
+        deliverables: ["Completed or explicitly proposed ADR", "Read-only verification evidence or honest unverified labels", "Reviewer challenge and response"],
+        completionCriteria: ["The alternatives are credible and materially different.", "Claims requiring execution are distinguished from a written example.", "Scope, owner and revisit trigger are explicit.", "No production decision or approval is fabricated."]
+    },
+    "software-craft-operational-runbooks-and-safe-diagnostic-handoffs": {
+        objective: "Rehearse a read-only Steward diagnostic runbook with explicit stop and escalation conditions.",
+        scenario: "A signed Service request starts failing after a training change. A new engineer needs to classify the status and inspect safe evidence without blindly resetting migrations, repeating a transfer or exposing bearer credentials.",
+        instructions: [
+            "Inspect the worked runbook and identify its trigger, audience, preconditions, safe checks and forbidden actions.",
+            "Against a disposable Steward environment only, run python manage.py check and showmigrations registry/token_blacklist; capture statuses and observed results.",
+            "Create a 401/403/404/409/5xx branch table with evidence, interpretation, safe next step and no-secret logging constraints.",
+            "Simulate a missing migration and a stale ownership conflict; demonstrate when the operator must stop rather than issue a corrective command.",
+            "Ask another person to follow the read-only steps and revise one ambiguous instruction or state clearly that independent rehearsal is pending."
+        ],
+        deliverables: ["Bounded Steward runbook", "Read-only observation evidence", "Failure-status diagnostic matrix", "Stop/escalation review"],
+        completionCriteria: ["No unapproved state-changing operations are prescribed.", "Each diagnostic step states expected versus abnormal observation.", "Secrets are not copied into diagnostics.", "The read-only training scope is explicit and independent rehearsal is not invented."]
+    },
+    "software-craft-failure-boundaries-and-public-error-contracts": {
+        objective: "Model six public failure outcomes, then prove that leaking a database exception fails an explicit negative control.",
+        scenario: "A Steward endpoint currently returns raw database exception text to clients. Before introducing custom DRF handlers, agree which failures clients can act on and what information must remain private.",
+        instructions: [
+            "Execute the exact pure-Python public error program from the reading and capture the three evidence labels.",
+            "Write a decision table for 400, 401, 403, concealed 404, 409 and 500 with trigger, client action and server diagnostic evidence.",
+            "Deliberately mutate the mapper to echo a demo SQL password in the response and prove the no-secret assertion fails.",
+            "Restore the safe mapper and confirm absent and foreign-Team Service scenarios share a public 404 shape.",
+            "Name the exact next test to perform against actual DRF Client responses and identify why the pure function is insufficient HTTP proof."
+        ],
+        deliverables: ["Executed six-case public policy test", "Leak-mutant failure evidence", "Failure decision table and DRF follow-up tests"],
+        completionCriteria: ["All six response families are explicitly distinguished.", "The negative mutant really leaks and is detected.", "The public contract omits raw database details and has a stable shape.", "Pure-Python evidence is not misrepresented as real HTTP evidence."]
     },
     "software-craft-designing-errors": {
         objective: "Turn inconsistent Steward failures into an API error contract that tells clients what action is possible without leaking internals.",
