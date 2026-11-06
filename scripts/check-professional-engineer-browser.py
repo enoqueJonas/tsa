@@ -409,6 +409,83 @@ def run():
   }""")
   assert all(activity in found for activity in readiness_completed),"Readiness authored activity IDs not persisted"
   print("PASS Production Readiness 13 source readings / 7 original copyable code proofs / 3 integrated stages / 33 stable IDs",flush=True)
+  # Module 6: all 3 original IDs remain and four new prerequisite concepts
+  # are independently navigable. Isolated synthetic completion tests only URL,
+  # rendering and persistence, NEVER actual authorship or peer competence.
+  portfolio_topics=(
+    "evidence-portfolio","portfolio-claim-calibration","reflective-practice",
+    "engineering-decision-postmortems","responsible-evidence-disclosure",
+    "independent-peer-review","professional-development",
+  )
+  portfolio_stage_ids=(
+    "professional-portfolio-stage-claim-evidence-authentication",
+    "professional-portfolio-stage-causal-review-and-responsible-publication",
+  )
+  portfolio_final="professional-portfolio-lab-independent-evidence-handoff-001"
+  portfolio_completed=[
+    f"professional-portfolio-{topic}-{suffix}"
+    for topic in portfolio_topics for suffix in ("reading","practice")
+  ]
+  for stage in portfolio_stage_ids:
+   portfolio_completed.extend((stage+"-practice",stage+"-check"))
+  portfolio_completed.append(portfolio_final)
+  assert len(portfolio_completed)==19
+  seed_completed_path(page,"professional-portfolio-reflection",portfolio_completed)
+  portfolio_code_topics={
+    "evidence-portfolio","portfolio-claim-calibration",
+    "engineering-decision-postmortems",
+    "responsible-evidence-disclosure","professional-development"
+  }
+  for index,topic in enumerate(portfolio_topics):
+   aid=f"professional-portfolio-{topic}-reading"
+   page.goto(BASE+"/?"+urlencode({
+    "view":"curriculum","school":"professional-engineer",
+    "path":"professional-portfolio-reflection","activity":aid
+   }),wait_until="networkidle")
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   current=page.evaluate("new URLSearchParams(location.search).get('activity')")
+   assert current==aid,f"Portfolio ID not navigable: {aid} => {current}"
+   main=page.locator("main").last
+   content=main.inner_text()
+   assert len(content)>=1900,f"Thin original/new portfolio reading {aid}: {len(content)} chars"
+   assert "Mechanism, scope and a counterexample" in content,aid
+   assert "Transfer beyond the rehearsed solution" in content,aid
+   if topic in portfolio_code_topics:
+    assert main.get_by_role("button",name="Copy").count()>0,f"Original source not copyable: {aid}"
+    assert main.locator("figure pre").count()>0,f"Original source code not rendered: {aid}"
+   page.set_viewport_size({"width":390,"height":844})
+   assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),"390px Portfolio overflow: "+aid
+   if index in (0,1,3,4,5,6):
+    page.screenshot(path=str(ART/f"portfolio-{index+1}-390.png"),full_page=True)
+   page.set_viewport_size({"width":1440,"height":900})
+   print("PASS original/new portfolio reading + mobile:",aid,flush=True)
+  for aid in [stage+"-practice" for stage in portfolio_stage_ids]+[stage+"-check" for stage in portfolio_stage_ids]+[portfolio_final]:
+   page.goto(BASE+"/?"+urlencode({
+    "view":"curriculum","school":"professional-engineer",
+    "path":"professional-portfolio-reflection","activity":aid
+   }),wait_until="networkidle")
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   assert page.evaluate("new URLSearchParams(location.search).get('activity')")==aid,aid
+   assert page.locator("main").last.is_visible(),aid
+  page.reload(wait_until="networkidle")
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==portfolio_final
+  stored_portfolio=page.evaluate("""async () => {
+    const db=await new Promise((resolve,reject)=>{
+      const req=indexedDB.open("tsa-academy",5);
+      req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);
+    });
+    try {
+      const req=db.transaction("path-progress","readonly")
+        .objectStore("path-progress").get("professional-portfolio-reflection");
+      return await new Promise((resolve,reject)=>{
+        req.onsuccess=()=>resolve(req.result?.completedActivityIds ?? []);
+        req.onerror=()=>reject(req.error);
+      });
+    } finally {db.close();}
+  }""")
+  assert all(activity in stored_portfolio for activity in portfolio_completed),"Portfolio progress IDs lost on reload"
+  print("PASS Professional Portfolio 7 concept readings / 5 copyable scripts / 2 stage gates / final handoff / 19 synthetic progress IDs",flush=True)
   assert not errors,"Browser console errors: "+str(errors)
   browser.close()
 if __name__=="__main__":run()
