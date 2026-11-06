@@ -2,6 +2,7 @@ import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { ciDependencyWorked } from "./delivery-ci-dependency-worked";
 import { ciOperationalDepthById } from "./delivery-ci-operational-depth";
+import { ciLearnerMechanisms } from "./delivery-ci-learner-mechanisms";
 
 const gha: LearningResource = { title: "GitHub Actions documentation (comparison only)", url: "https://docs.github.com/actions" };
 const gitlab: LearningResource = { title: "GitLab CI/CD documentation", url: "https://docs.gitlab.com/ci/" };
@@ -10,7 +11,7 @@ const docker: LearningResource = { title: "Docker documentation", url: "https://
 function rich(id: string, title: string, intro: string, sections: Array<{ heading: string; body: string; items?: string[]; code?: { language: string; code: string; output?: string } }>, resources: LearningResource[] = [gha]): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: intro }];
     const realReadingSections = id === "jobs-stages" ? [...sections, ...ciDependencyWorked] : sections;
-    for (const section of [...realReadingSections, ...(ciOperationalDepthById[id] ?? [])]) {
+    for (const section of [...realReadingSections, ...(ciOperationalDepthById[id] ?? []), ...(ciLearnerMechanisms[id] ?? [])]) {
         const anchor = section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
         blocks.push({ type: "heading", id: anchor, text: section.heading, level: 2 }, { type: "paragraph", text: section.body });
         if (section.items) blocks.push({ type: "list", items: section.items });
