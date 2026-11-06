@@ -30,6 +30,8 @@ on:
       - 'scripts/check-delivery-supply-chain-resolution.mjs'
       - 'packages/runtime-kernel/src/paths/delivery-supply-chain-operational-teaching.ts'
       - 'scripts/check-delivery-supply-chain-operational.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-supply-chain-consumption-teaching.ts'
+      - 'scripts/check-delivery-supply-chain-consumption.mjs'
       - '.github/workflows/delivery-ansible-learner-depth.yml'
   push:
     branches:
@@ -78,6 +80,8 @@ jobs:
         run: node scripts/check-delivery-supply-chain-resolution.mjs
       - name: Execute original Supply Chain npm pack, Docker local tag and Nexus state proofs with mutants
         run: node scripts/check-delivery-supply-chain-operational.mjs
+      - name: Execute actual clean pip/npm package-consumer published source and unsafe mutants
+        run: node scripts/check-delivery-supply-chain-consumption.mjs
       - name: Build and check entire curriculum
         run: |
           pnpm install --frozen-lockfile
