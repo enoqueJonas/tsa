@@ -49,8 +49,10 @@ export function LearningExperience({
     return currentActivity;
   }
 
-  function persist() {
-    void savePathProgress(activePath, session.progress());
+  // Navigation must not publish a new URL before its progress is durable.
+  // An immediate refresh after Next/Sidebar otherwise races the IndexedDB put.
+  async function persist() {
+    await savePathProgress(activePath, session.progress());
   }
 
   useEffect(() => {
@@ -78,20 +80,20 @@ export function LearningExperience({
     window.scrollTo(0, 0);
   }, [activity.id, restored]);
 
-  function primary() {
+  async function primary() {
     const id = session.currentActivity().id;
     const done = session.completedActivityIds().includes(id);
     if (!done && !session.completeCurrentActivity()) return;
     if (session.hasNext()) session.next();
     const current = sync();
-    persist();
+    await persist();
     onActivityChange?.(current.id);
   }
 
-  function select(id: string) {
+  async function select(id: string) {
     if (!session.goToActivity(id)) return;
     const current = sync();
-    persist();
+    await persist();
     onActivityChange?.(current.id);
   }
 
@@ -99,7 +101,7 @@ export function LearningExperience({
     if (!session.setReflectionResponse(activity.id, value)) return;
     setReflectionResponse(value);
     setCanCompleteCurrentActivity(session.canCompleteCurrentActivity());
-    persist();
+    void persist();
   }
 
   if (!ready || !restored) {
