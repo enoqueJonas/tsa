@@ -503,7 +503,7 @@ export const buildLenses:Record<string,BuildLens> = {
         "heading": "Challenge the decision independently",
         "paragraphs": [
           "Introduce an unseen constraint, such as a new legal requirement or a tenfold volume increase. Explain which part of the architecture would change first, which invariants must remain, and what evidence you need before redesigning.",
-          "Preserve superseded decisions rather than deleting them so future engineers can see why earlier assumptions failed."
+          "Preserve superseded decisions, their dated assumptions, linked observations and previously rejected alternatives rather than deleting them. Future engineers must be able to determine why the old design was defensible then, exactly which new evidence changed the decision, and whether the reversal condition still holds."
         ]
       }
     ],
@@ -543,7 +543,7 @@ export const buildLenses:Record<string,BuildLens> = {
         "heading": "Distinguish record authenticity from polish",
         "paragraphs": [
           "A polished document cannot establish that commands ran, a restore succeeded or a reviewer participated. Provide access to inspectable source artifacts and mark simulated evidence clearly.",
-          "Ask a reviewer to present contradictory evidence; the ADR must identify who can revise it and the observable threshold for doing so."
+          "Ask a reviewer to present a plausible contradictory trace, incompatible deployment constraint or new stakeholder requirement. The ADR must name the actual person authorized to revise the record, the measurable threshold that would reverse the choice, and the regression evidence required before changing the implementation."
         ]
       }
     ],
