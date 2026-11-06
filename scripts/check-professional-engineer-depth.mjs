@@ -47,7 +47,7 @@ assert.equal(observed.status,0,observed.stdout+"\n"+observed.stderr);
 assert.match(observed.stdout,/DISCOVERY_OBSERVED_ASSUMED_REPORTED_SEPARATED/);
 assert.match(observed.stdout,/DISCOVERY_SOURCE_PRESENCE_FALSE_CONFIDENCE_EXPOSED/);
 for(const [before,after] of [
- ['claim.kind == "observation" and','bool(claim.kind) and'],
+ ['claim.kind == "observation" and\n            claim.independently_checked and','bool(claim.source) and\n            True and'],
  ['claim.independently_checked and','True and']
 ]){
  assert.ok(discovery.includes(before),"Mutation target changed: "+before);
