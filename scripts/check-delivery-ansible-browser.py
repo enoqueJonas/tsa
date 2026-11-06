@@ -484,5 +484,57 @@ with sync_playwright() as playwright:
         assert not errors, "Browser runtime errors while traversing " + target["path"] + ": " + str(errors)
         print("PASS module 9/10 focused readings, original practices, mobile and reload:",target["path"],flush=True)
 
+    # The final milestone is a REAL integration assessment, not a synthetic
+    # lab which can graduate merely by producing a green local demo. Render all
+    # original gate activities without inventing deployment or learner evidence.
+    milestone_markers={
+        "steward-delivery-platform-milestone-brief-001": "source revision",
+        "steward-delivery-platform-gate-1-ci-artifacts-001": "GitLab CI/CD pipeline",
+        "steward-delivery-platform-gate-2-infrastructure-001": "Ansible configuration",
+        "steward-delivery-platform-gate-3-promotion-001": "approved",
+        "steward-delivery-platform-gate-4-verification-001": "outbox publisher",
+        "steward-delivery-platform-gate-5-failure-001": "shared schema",
+        "steward-delivery-platform-gate-6-handoff-001": "Cloud Engineer",
+        "steward-delivery-platform-review-001": "development laptop disappears",
+    }
+    page.goto(BASE+"/?view=curriculum&school=delivery-engineer",wait_until="networkidle")
+    page.get_by_role("button",name=MODULE).first.wait_for(state="visible",timeout=30000)
+    assert page.get_by_role("button",name=MODULE).count()==11
+    page.get_by_role("button",name=MODULE).nth(10).click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert "steward-delivery-platform" in page.url,"Milestone module not accessible"
+    milestone_sidebar=page.locator("aside").filter(has=page.get_by_text("Curriculum",exact=True)).first
+    milestone_count=milestone_sidebar.locator("button").count()
+    assert milestone_count>=len(milestone_markers),"Delivery milestone lost original gates"
+    milestone_seen=set()
+    for i in range(milestone_count):
+        activity=parse_qs(urlparse(page.url).query).get("activity",[None])[0]
+        if activity in milestone_markers:
+            main=page.locator("main").last
+            body=main.inner_text()
+            assert milestone_markers[activity].lower() in body.lower(), (
+                "Milestone source contract not rendered: "+activity)
+            assert len(body)>380,"Milestone gate too thin/rendered empty: "+activity
+            page.set_viewport_size({"width":390,"height":844})
+            assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"), (
+                "Milestone overflow at 390px: "+activity)
+            page.set_viewport_size({"width":1440,"height":900})
+            milestone_seen.add(activity)
+            print("PASS original Delivery milestone gate + mobile:",activity,flush=True)
+        if milestone_seen==set(milestone_markers):
+            break
+        if i<milestone_count-1:
+            next_button=page.get_by_role("button",name=NEXT)
+            assert next_button.is_enabled(),"Unexpected milestone navigation block: "+str(activity)
+            next_button.click()
+            page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert milestone_seen==set(milestone_markers), (
+        "Missing original Delivery milestone gates: "+str(set(milestone_markers)-milestone_seen))
+    page.reload(wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert "steward-delivery-platform" in page.url,"Milestone context lost on hard reload"
+    assert not errors,"Runtime errors in Delivery milestone: "+str(errors)
+    print("PASS eight original Delivery milestone activities, 390px and reload; NO actual homelab/CI or learner acceptance claimed",flush=True)
+
     browser.close()
 print("PASS Configuration Management rendered evidence and reload (synthetic navigation only)")
