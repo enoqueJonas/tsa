@@ -20,6 +20,8 @@ on:
       - 'scripts/check-delivery-cd-proofs.mjs'
       - 'packages/runtime-kernel/src/paths/delivery-release-engineering-deep.ts'
       - 'packages/runtime-kernel/src/paths/delivery-release-engineering-quality.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-release-engineering-lab-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-release-engineering-review-deep.ts'
       - 'packages/runtime-kernel/src/paths/delivery-release-learner-mechanisms.ts'
       - 'packages/runtime-kernel/src/paths/delivery-release-proofs.ts'
       - 'scripts/check-delivery-release-proofs.mjs'
