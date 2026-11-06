@@ -1,10 +1,12 @@
-name: Delivery Engineer genuine Ansible learner-depth gate
+name: Delivery Engineer original-source Ansible and Docker evidence
 on:
   pull_request:
     paths:
       - 'packages/runtime-kernel/src/paths/delivery-configuration-management-deep.ts'
       - 'scripts/check-delivery-ansible-local-state.mjs'
       - 'scripts/check-delivery-ansible-browser.py'
+      - 'packages/runtime-kernel/src/paths/delivery-docker-operational-depth.ts'
+      - 'scripts/check-delivery-docker-runtime.mjs'
       - '.github/workflows/delivery-ansible-learner-depth.yml'
   push:
     branches:
@@ -37,6 +39,10 @@ jobs:
           ansible-playbook --version
       - name: Run exact learner-published Ansible with three deliberate unsafe mutants
         run: node scripts/check-delivery-ansible-local-state.mjs
+      - name: Prove exact learner Docker namespace/memory and reject three unsafe variants
+        run: |
+          docker info --format 'Docker {{.ServerVersion}}'
+          node scripts/check-delivery-docker-runtime.mjs
       - name: Build and check entire curriculum
         run: |
           pnpm install --frozen-lockfile
