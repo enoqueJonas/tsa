@@ -27,7 +27,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: professional-depth-${{ github.event.pull_request.number }}
+  group: professional-depth-source-v2-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
