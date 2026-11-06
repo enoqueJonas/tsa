@@ -25,6 +25,9 @@ on:
       - 'packages/runtime-kernel/src/paths/delivery-release-learner-mechanisms.ts'
       - 'packages/runtime-kernel/src/paths/delivery-release-proofs.ts'
       - 'scripts/check-delivery-release-proofs.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-artifact-supply-chain-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-supply-chain-resolution-teaching.ts'
+      - 'scripts/check-delivery-supply-chain-resolution.mjs'
       - '.github/workflows/delivery-ansible-learner-depth.yml'
   push:
     branches:
@@ -69,6 +72,8 @@ jobs:
         run: node scripts/check-delivery-cd-proofs.mjs
       - name: Execute exact published Release Engineering programs and real local Docker tag-swap with unsafe source mutants
         run: node scripts/check-delivery-release-proofs.mjs
+      - name: Run original Supply Chain module real pip local-index resolution and unsafe mutants
+        run: node scripts/check-delivery-supply-chain-resolution.mjs
       - name: Build and check entire curriculum
         run: |
           pnpm install --frozen-lockfile
