@@ -328,6 +328,87 @@ def run():
   }""")
   assert all(aid in stored for aid in build_completed),"Original or stage Independent Build IDs lost on reload"
   print("PASS Independent Build 38/38 synthetic author-ID persistence (not mastery)",flush=True)
+  # Module 5: the original twelve single-reading topics now teach and verify
+  # operational evidence; a distinct accessibility prerequisite is inserted.
+  # All 13 readings are rendered at 390px, and all staged IDs remain navigable.
+  readiness_topics=(
+    "deployment-readiness","observability","security-assessment",
+    "accessibility-and-human-workflow-readiness","performance-evidence",
+    "reliability-and-failure-testing","backup-and-recovery","runbooks",
+    "operational-ownership","risk-and-control-evidence",
+    "dependency-and-supply-chain-readiness","cost-and-capacity-review",
+    "release-decision"
+  )
+  readiness_stage_ids=(
+    "capstone-production-readiness-stage-release-observation-and-human-use",
+    "capstone-production-readiness-stage-fault-restore-and-operational-ownership",
+    "capstone-production-readiness-stage-risk-dependency-cost-and-release-authority"
+  )
+  readiness_final="capstone-production-readiness-lab-run-the-capstone-production-readiness-review-001"
+  readiness_completed=[
+    f"capstone-production-readiness-{topic}-{suffix}"
+    for topic in readiness_topics for suffix in ("001","practice")
+  ]
+  for stage in readiness_stage_ids:
+   readiness_completed.extend((stage+"-practice",stage+"-check"))
+  readiness_completed.append(readiness_final)
+  assert len(readiness_completed)==33
+  seed_completed_path(page,"capstone-production-readiness",readiness_completed)
+  readiness_code_topics={
+    "deployment-readiness","observability","performance-evidence",
+    "backup-and-recovery","risk-and-control-evidence",
+    "dependency-and-supply-chain-readiness","cost-and-capacity-review"
+  }
+  for index,topic in enumerate(readiness_topics):
+   aid=f"capstone-production-readiness-{topic}-001"
+   page.goto(BASE+"/?"+urlencode({
+     "view":"curriculum","school":"professional-engineer",
+     "path":"capstone-production-readiness","activity":aid
+   }),wait_until="networkidle")
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   current=page.evaluate("new URLSearchParams(location.search).get('activity')")
+   assert current==aid,f"Original readiness ID not navigable: {aid} => {current}"
+   main=page.locator("main").last
+   body=main.inner_text()
+   assert len(body)>=1750,f"Original readiness reading still thin: {aid}: {len(body)}"
+   assert "The actual readiness claim and its evidence boundary" in body,aid
+   assert "Independent transfer and negative-case review" in body,aid
+   if topic in readiness_code_topics:
+    assert main.get_by_role("button",name="Copy").count()>0,"Noncopyable exact source "+aid
+    assert main.locator("figure pre").count()>0,"No visible code block "+aid
+   page.set_viewport_size({"width":390,"height":844})
+   assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),"390px readiness overflow: "+aid
+   if index in (0,1,3,4,6,9,12):
+    page.screenshot(path=str(ART/f"readiness-{index+1}-390.png"),full_page=True)
+   page.set_viewport_size({"width":1440,"height":900})
+   print("PASS original readiness reading + mobile:",aid,flush=True)
+  for aid in [stage+"-practice" for stage in readiness_stage_ids]+[stage+"-check" for stage in readiness_stage_ids]+[readiness_final]:
+   page.goto(BASE+"/?"+urlencode({
+      "view":"curriculum","school":"professional-engineer",
+      "path":"capstone-production-readiness","activity":aid
+   }),wait_until="networkidle")
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   assert page.evaluate("new URLSearchParams(location.search).get('activity')")==aid,aid
+   assert page.locator("main").last.is_visible(),aid
+  page.reload(wait_until="networkidle")
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==readiness_final
+  found=page.evaluate("""async () => {
+    const db=await new Promise((resolve,reject)=>{
+      const q=indexedDB.open("tsa-academy",5);
+      q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error);
+    });
+    try{
+      const req=db.transaction("path-progress","readonly")
+            .objectStore("path-progress").get("capstone-production-readiness");
+      return await new Promise((resolve,reject)=>{
+        req.onsuccess=()=>resolve(req.result?.completedActivityIds ?? []);
+        req.onerror=()=>reject(req.error);
+      });
+    } finally {db.close();}
+  }""")
+  assert all(activity in found for activity in readiness_completed),"Readiness authored activity IDs not persisted"
+  print("PASS Production Readiness 13 source readings / 7 original copyable code proofs / 3 integrated stages / 33 stable IDs",flush=True)
   assert not errors,"Browser console errors: "+str(errors)
   browser.close()
 if __name__=="__main__":run()
