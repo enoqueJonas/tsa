@@ -23,7 +23,7 @@ The Professional Engineer capstone **must be a second substantial system from a 
 | 2. Capstone Problem Discovery | `professional-engineer-capstone-problem-discovery-deep.ts` | Original new-domain discovery preserved; **new prerequisite** differentiates independently observed traces, testimony, assumptions and inferences plus negative source-presence oracle; remaining evidence of actual non-leading interviews pending |
 | 3. Capstone Engineering Proposal | `professional-engineer-capstone-engineering-proposal-deep.ts` + `professional-engineer-proposal-teaching.ts` + `professional-engineer-proposal-proofs.ts` | **All 14 original readings and practicals directly remediated** using a consistent explicitly fictional non-Steward case; three executed-source negative models and three independent integration gates; original final ID preserved. Matching-head CI and human transfer distinct |
 | 4. Independent Build | `professional-engineer-independent-build-deep.ts` + `professional-engineer-build-teaching.ts` + `professional-engineer-build-proofs.ts` | **All 15 original readings and practicals source-remediated**; 45 subject-specific mechanism/failure sections; six published executable wrong-case oracles, three new integration gates; both original long-lab IDs preserved. Live system and independent learner evidence remain unverified |
-| 5. Production Readiness | `professional-engineer-production-readiness-deep.ts` | Authored readiness gates retained; deployed recovery, real observability/security and release-governance evidence **NOT TESTED** |
+| 5. Production Readiness | `professional-engineer-production-readiness-deep.ts` + `professional-engineer-readiness-teaching.ts` + `professional-engineer-readiness-proofs.ts` | **All 12 original readings remediated in place**, each with a real verification practical; separate formerly missing accessibility prerequisite added; three integrated operational gates, seven runnable negative-model proofs, original final review ID preserved. Technical CI and human operational validation remain distinct |
 | 6. Engineering Portfolio and Reflective Practice | `professional-engineer-portfolio-reflection-deep.ts` | Authored reflection tasks retained; artifact traceability and independent reviewer authenticity checks **not yet reviewed in this pass** |
 | 7. Engineering Defence | `professional-engineer-defence-deep.ts` | Authored technical defence retained; scored unseen case, failure diagnosis and uncoached engineer defence **NOT VALIDATED** |
 
@@ -148,3 +148,62 @@ Each stage is an independently navigable practical and reflection. The original 
 - **Source remediated:** authored 15/15 original Independent Build lessons with concrete mechanisms, examples, negative cases, real-practical contracts, and stage-scoped labs.
 - **Technical verification:** still depends on the **latest commit's** CI (source-executed Python and rejected mutants, TypeScript, 38 smoke tests, production build, Chromium mobile/progress, strict audit). A previous green head does not cover subsequent changes.
 - **NOT VALIDATED / NOT TESTED:** the real independent repository, signed API, owned SQL database, actual GitLab pipeline, Nexus packages, IdP, production-style recovery, real stakeholders, external assessment and novel learner transfer. Keep these as outstanding learner/environment gates. The next author-source module is **Production Readiness**, not an invitation to claim the capstone is operational.
+
+## 2026-11-06 — Module 5: Production Readiness, author-source reconstruction
+
+### Root cause and scope
+
+The original twelve readings offered high-level readiness descriptions and lists of desired evidence but almost no explanation of *how* a learner measures, falsifies, interprets, or safely acts on an operational claim. The 480-minute final lab then demanded the entire set of risk, accessibility, recovery, supply-chain and release authority evidence in one unit. This was instructional compression, not an independent demonstration.
+
+The new module retains **all 12 original lesson and activity IDs**, now with a distinct practice for each original reading, and inserts one separate **Accessibility and Human Workflow Readiness** lesson with its own practice. This addresses a critical teaching gap: the old final practical required accessibility evidence while no earlier original reading explained keyboard/assistive-technology acceptance and its limits.
+
+**Actual count:** 13 read+practice concepts = 26 activities, three integrated practical+reflection stage gates = 6, and one preserved original final practical = 1; **17 lessons, 33 activities**. The original lab `capstone-production-readiness-lab-run-the-capstone-production-readiness-review-001` now takes 95 minutes of *synthesis after prerequisites*, without deleting its original acceptance requirements.
+
+### Thirteen distinct first-principles treatments
+
+| Original/new topic | Taught mechanism, negative case, acceptance boundary |
+| --- | --- |
+| Deployment Readiness | Immutable digest vs deployment, populated-data migration compatibility, missing result prevents green |
+| Observability | User-facing failure while process remains healthy, correlated telemetry, alert ownership and token-safe logs |
+| Security Assessment | Deployed object-level authorization, valid cross-owner request, zero prohibited side effects, risk triage |
+| **NEW Accessibility and Human Workflow** | Keyboard/focus/error journey, assistive technology/human validation separate from automated scanner |
+| Performance Evidence | Workload and state correctness, tail latency vs average, sample limitations and saturation |
+| Reliability and Failure Testing | Fault scope, ambiguous commit, idempotent request identity, bounded and authorized injection |
+| Backup and Recovery | RPO/RTO vs actual measures, pre-fault snapshot, restored consistent state and unsafe late backup |
+| Runbooks | Actual operator steps, read-only diagnostics, explicit STOP/ESCALATE and independent rehearsal |
+| Operational Ownership | Real response coverage and reachable owners, no imaginary on-call team, ongoing maintenance cost |
+| Risk and Control Evidence | Current operating proof vs configured control, PASS/FAIL/NOT_TESTED fail-closed aggregation |
+| Dependency and Supply-chain | Artifact identity vs trust vs license permission, vulnerability/owner/supported version/exit |
+| Cost and Capacity Review | Fictional Decimal USD/month volume sensitivity, human effort and meaningful revisit trigger |
+| Release Decision | Technical recommendation vs policy authority vs actual deployment; RELEASE/CONDITIONAL/DEFER/REDESIGN |
+
+`professional-engineer-readiness-teaching.ts` contains **39 distinct subject-specific mechanism/decision/failure instructional sections**, all based on an explicitly fictional cooperative teaching fixture, not user research or a real capstone. Learners transfer mechanisms to the **genuinely independent new-domain product** and record source revision, target environment, executable command, observed negative and positive result, actual owner and reversal threshold. Unavailable infrastructure is NOT_TESTED, never simulated PASS.
+
+### Seven source-extracted executable models
+
+`professional-engineer-readiness-proofs.ts` provides actual copyable lesson source, not companion scripts:
+
+1. SHA-256 artifact identity plus migration/smoke PASS/FAIL/NOT_TESTED; deliberately unsafe matching-label shortcut.
+2. Synthetic checkout failure despite green health endpoint; high user-failure rate triggers diagnostic attention.
+3. Correct nearest-rank percentile on fictional 5-request latency fixture, contrasted with misleading average; explicitly insufficient for production p95.
+4. Executed disposable SQLite pre-fault backup and restore with row-level consistency; post-fault backup rejected; NOT production PostgreSQL RTO/RPO evidence.
+5. Fail-closed technical evidence state for authorization, restore and runbook rehearsal; deliberately unsafe one-green-gate approval.
+6. License permission, provenance and vulnerability treated independently; a digest does not establish legal distribution rights.
+7. Invented USD/month Decimal fixed+usage cost threshold, negative volume rejection and deliberately ignored variable cost.
+
+The source regression executes all published programs unchanged and replaces one critical implementation decision in each with an unsafe mutant that the lesson's assertions must reject. Explicitly **does not** claim actual user stakeholders, enterprise security audit, license clearance, live pricing, real restore, released production artifact, incident response or decision sign-off.
+
+### Three prerequisite-positioned operational gates
+
+- **Stage A:** deployed artifact identity, post-deploy verification, user-impacting telemetry, cross-owner authorization, accessibility and representative workload. Appended after the first five concepts.
+- **Stage B:** bounded fault, actual useful restored state, read-only operator runbook, maintenance owner and realistic escalation; after the next four concepts.
+- **Stage C:** operating controls, real dependency/licensing provenance, measured costs, risk authority and adversarial release decision; after the final four concepts.
+
+Each has an independent practical and a four-question-style counterfactual reflection. The original final review synthesizes them, has an independently scored 0–2 rubric across five dimensions, and requires an unseen adverse scenario to change or defend the decision. Self-review is explicitly NOT INDEPENDENTLY VALIDATED. An authorized **DEFER** is successful engineering judgment when material evidence is missing; module completion never requires a fabricated production GO.
+
+### Evidence classification and next steps
+
+- **Authored-source depth:** full module 5 revised, all original IDs preserved, missing accessibility prerequisite introduced.
+- **Technical confirmation:** exact-head TypeScript, source-derived Python and wrong-answer mutations, full curriculum tests, production build, real Chrome navigation and 390px mobile/progress persistence, and strict audit all required before calling it technically verified. Prior module's passing run cannot validate this head.
+- **Real-world independent capstone, user accessibility review, actual server/IdP/DB, cloud restore, funded release authority, licensing legal review, SLO/cost workload and external assessor:** **NOT VALIDATED/NOT TESTED**. No synthetic CI activity can fill those gaps.
+- **Next authored source module:** Professional Portfolio and Reflection (module 6), followed by Capstone Defence (module 7). Keep PR #403 draft and unmerged until deliberate source review.
