@@ -22,7 +22,7 @@ The Professional Engineer capstone **must be a second substantial system from a 
 | 1. Professional Practice and Ethics | `professional-engineer-professional-practice-deep.ts` | Original six ethical decision topics retained; **new prerequisite** distinguishes evidence state, organizational authority, harm and dissent with executable false-release test; remaining per-reading depth and reviewer transfer pending |
 | 2. Capstone Problem Discovery | `professional-engineer-capstone-problem-discovery-deep.ts` | Original new-domain discovery preserved; **new prerequisite** differentiates independently observed traces, testimony, assumptions and inferences plus negative source-presence oracle; remaining evidence of actual non-leading interviews pending |
 | 3. Capstone Engineering Proposal | `professional-engineer-capstone-engineering-proposal-deep.ts` + `professional-engineer-proposal-teaching.ts` + `professional-engineer-proposal-proofs.ts` | **All 14 original readings and practicals directly remediated** using a consistent explicitly fictional non-Steward case; three executed-source negative models and three independent integration gates; original final ID preserved. Matching-head CI and human transfer distinct |
-| 4. Independent Build | `professional-engineer-independent-build-deep.ts` | Existing explicit blank-repository / non-Steward requirement preserved; true authorship, failure-oriented CI and independently justified trade-offs **not yet reviewed in this pass** |
+| 4. Independent Build | `professional-engineer-independent-build-deep.ts` + `professional-engineer-build-teaching.ts` + `professional-engineer-build-proofs.ts` | **All 15 original readings and practicals source-remediated**; 45 subject-specific mechanism/failure sections; six published executable wrong-case oracles, three new integration gates; both original long-lab IDs preserved. Live system and independent learner evidence remain unverified |
 | 5. Production Readiness | `professional-engineer-production-readiness-deep.ts` | Authored readiness gates retained; deployed recovery, real observability/security and release-governance evidence **NOT TESTED** |
 | 6. Engineering Portfolio and Reflective Practice | `professional-engineer-portfolio-reflection-deep.ts` | Authored reflection tasks retained; artifact traceability and independent reviewer authenticity checks **not yet reviewed in this pass** |
 | 7. Engineering Defence | `professional-engineer-defence-deep.ts` | Authored technical defence retained; scored unseen case, failure diagnosis and uncoached engineer defence **NOT VALIDATED** |
@@ -89,3 +89,62 @@ Each original reading ID (and original practice ID) remains stable. All now rend
 - **Technical verification:** matching-head `pnpm test`, TypeScript, build, source-derived negatives, Chromium and strict curriculum audit required; never cite an earlier run as final after further commits.
 - **Actual learner's new capstone, real peer review, owner authorization, production restore and assessed transfer:** **NOT VALIDATED / NOT TESTED**. Do not infer these from a fictional tool-lending fixture or synthetic browser.
 - **Next module** after a green source gate: Independent Build. Do not expand this module's hypothetical case into the learner's actual capstone.
+
+## 2026-11-06 — Module 4: Independent Build, whole-module author-source remediation
+
+**Boundary:** this is only module 4 of seven. The actual Professional Engineer capstone **must be a second substantial application in an independently chosen domain**, started from a blank repository. The repeated community tool-lending example is explicitly a **fictional training fixture**, never actual stakeholder interviews, realized product, real loan data or deployment proof.
+
+### Original authored readings and practicals
+
+All fifteen original read/practice lesson IDs remain unchanged and in learner order. The old 1–2-sentence original readings were insufficient to support independently starting a new software product. All fifteen now teach mechanisms, a worked counterexample, alternatives/failure, explicit environment limitations and a genuine new-domain exercise:
+
+| Original authored lesson | Mechanism and observable failure |
+| --- | --- |
+| Start from a Blank Repository | Distinguish genuine independent authorship from copying/forking Steward; meaningful initial failing domain test |
+| Establish Engineering Conventions | Runtime pinning and clean bootstrap, deterministic static tools, missing-secret refusal |
+| Model the Domain | Lifecycle state transitions, forbidden reissue and unchanged state after rejection |
+| Implement the System | Thin vertical stakeholder outcome, signed resource scope, no unauthorized side effects, ambiguous commit |
+| Design and Evolve the Data | Active-loan constraints; SQLite partial unique index failure; Postgres concurrency not inferred |
+| Build Infrastructure | Runtime/secret/network/backup ownership, reproduction and fail-closed configuration |
+| Automate Delivery | Commit vs artifact digest, no rebuild-under-tag assumptions, missing evidence blocks promotion |
+| Build Quality Evidence | Risk/oracle/test boundary, mutation/negative testing, preserve pre-extraction baseline |
+| Secure the System | AuthN vs AuthZ vs domain, signed cross-owner nested write, persistence effects and secret hygiene |
+| Instrument the System | Correlated allowlisted structured logs, unsafe bearer-token example, high-cardinality risk |
+| Build Reliability Evidence | Ambiguous commit/retry, SQLite actual backup/restore integrity, recovery scope limits |
+| Operate Internal Dependencies Deliberately | Approved existence and contract, two real consumers before tsa-test-core, no dummy Maven consumer |
+| Iterate on Engineering Decisions | Falsifiable architecture hypothesis, observed implementation change and superseding decision |
+| Document Significant Decisions | ADR context, alternatives, evidence, owner and revisit threshold |
+| Manage Scope and Technical Debt | Safety defect vs deliberate debt, impact priority and defended non-goals |
+
+The source is `professional-engineer-build-teaching.ts`: **45 distinct subject-specific instruction sections** across 15 original topics. Practices now require a real command/commit, expected/observed positive and negative results, failure interpretation, rejected alternative and new-domain transfer. Targeted references use the actual concept rather than a general syllabus link.
+
+### Six exact source-published runnable proofs and mutations
+
+`professional-engineer-build-proofs.ts` contains the actual learner-visible Python programs, executed unchanged by `scripts/check-professional-engineer-depth.mjs`:
+
+1. Frozen dataclass state machine: issue → return; forbidden second return/reissue; original state unchanged.
+2. Real **disposable SQLite** partial unique index on active loan records: second active item loan rejected, historical returned row allowed. **Not a PostgreSQL two-client race or real migration proof.**
+3. SHA-256 same release label / different bytes, exact artifact identity vs unsafe tag-only promotion. **Not a supply-chain attestation.**
+4. Ownership-scoped denied mutation with zero local loan/notification side effects vs deliberately unsafe write-before-403. **Not a real JWT/HTTP claim.**
+5. Structured logging allowlist vs intentionally unsafe synthetic bearer-token inclusion. **Not an audit of all proxy or app middleware.**
+6. Executed local SQLite backup, corrupted original state and newly restored database with matching checksum/row-count; rejected late backup. **Not a real PostgreSQL RTO/RPO or production restore.**
+
+Each positive run has deterministic expected output markers, and each published program must fail a deliberately unsafe source-derived mutation. The source guard checks all fifteen actual lesson IDs, three substantial explanatory sections, real independent practices, reference links and original lab ID continuity.
+
+### Granularity, stages and original IDs
+
+The inherited 300-minute tsa-test-core extraction and 480-minute full-release lab were overloaded exercises. Requirements were **retained**, while independent proof work is now sequenced into:
+
+- **Stage A** (after first five concepts): independent repository, real vertical domain slice, constraints, migration negative.
+- **Stage B** (after next five): reproducible artifact/deployment, real signed same-owner and cross-owner denial, missing pipeline gate, clean pre-extraction test baseline.
+- **Stage C** (after final five): correlated failure, local restore, idempotent ambiguity, architecture revision and two-real-Java-consumer eligibility.
+
+Each stage is an independently navigable practical and reflection. The original tsa-test-core lab ID is preserved as a **105-minute integration/publish stage**, after the two-real-consumer proof, and the original end-to-end release lab ID as a **120-minute release evidence synthesis**. A real Java qualifying consumer must have an independent purpose and passing prior test baseline; a non-Java capstone must not be rewritten merely to generate a second Maven dependency. Nexus publication remains a real lab requiring authorized infrastructure, **NOT TESTED** in synthetic CI.
+
+**Expected assembled module: 20 lessons, 38 activities** (15 original read/practice pairs, three new practice/reflection gates, two original labs). The scripted browser audit traverses all fifteen source readings and six copyable code examples at 390px, visits all new gate IDs and original long lab IDs, and verifies synthetic progress restoration. Scripts demonstrate navigation only, not actual lab completion or learner independence.
+
+### Exit evidence and limits
+
+- **Source remediated:** authored 15/15 original Independent Build lessons with concrete mechanisms, examples, negative cases, real-practical contracts, and stage-scoped labs.
+- **Technical verification:** still depends on the **latest commit's** CI (source-executed Python and rejected mutants, TypeScript, 38 smoke tests, production build, Chromium mobile/progress, strict audit). A previous green head does not cover subsequent changes.
+- **NOT VALIDATED / NOT TESTED:** the real independent repository, signed API, owned SQL database, actual GitLab pipeline, Nexus packages, IdP, production-style recovery, real stakeholders, external assessment and novel learner transfer. Keep these as outstanding learner/environment gates. The next author-source module is **Production Readiness**, not an invitation to claim the capstone is operational.
