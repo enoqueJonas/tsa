@@ -118,3 +118,72 @@ for(const [id,expected] of [
  assert.match(wrong.stderr,/AssertionError/,"Wrong failure reason for "+id+": "+wrong.stderr);
  console.log("PASS exact published proposal "+id+" and rejected wrong-implementation mutant");
 }
+
+
+// Entire original Independent Build path (module 4), not generic wrappers.
+// Read every real original activity and execute the EXACT published runnable code.
+const independent = fs.readFileSync(root+"professional-engineer-independent-build-deep.ts","utf8");
+const buildLenses = authoredJson(fs.readFileSync(root+"professional-engineer-build-teaching.ts","utf8"),"buildLenses");
+const buildPrograms = authoredJson(fs.readFileSync(root+"professional-engineer-build-proofs.ts","utf8"),"buildPrograms");
+const originalBuildTopics = [...independent.matchAll(/^\s*reading\("([^"]+)",\s*"([^"]+)",/gm)].map(m=>m[1]);
+assert.equal(originalBuildTopics.length,15,"15 real Independent Build topics must remain");
+assert.equal(new Set(originalBuildTopics).size,15,"Duplicate original Independent Build topic");
+assert.deepEqual(Object.keys(buildLenses).sort(),originalBuildTopics.slice().sort(),
+ "Every original Independent Build reading needs subject-specific instructions");
+for(const id of originalBuildTopics){
+ const lesson=buildLenses[id];
+ const explanation=lesson.sections.flatMap(s=>s.paragraphs).join("\n");
+ assert.ok(lesson.sections.length>=3,"Thin mechanism/failure/transfer in "+id);
+ assert.ok(explanation.length>=1200,"Insufficient actual concept teaching in "+id+" ("+explanation.length+")");
+ assert.ok(lesson.sections.every(s=>s.heading && s.paragraphs.length>=1 && s.paragraphs.every(p=>p.length>=140)),
+ "Each worked segment needs a meaningful explanation for "+id);
+ assert.ok(lesson.practice.length>=2 && lesson.acceptance.length>=2,"Missing independent negative and acceptance: "+id);
+ assert.match(lesson.resource.url,/^https:\/\//,"Use targeted primary reference "+id);
+}
+for(const id of [
+ "stage-first-vertical-slice","stage-deployment-and-security-boundaries",
+ "stage-operability-recovery-and-reuse"
+]){
+ assert.ok(independent.includes('"'+id+'"'),"Missing independent evidence gate "+id);
+}
+for(const block of ["return [lesson, verticalGate]","return [lesson, deploymentGate]","return [lesson, recoveryGate]"])
+ assert.ok(independent.includes(block),"Missing prerequisite-positioned lab: "+block);
+assert.ok(independent.includes("lab-evaluate-shared-test-capability") &&
+          independent.includes("lab-deliver-the-first-end-to-end-capstone-release"),
+          "Both original large labs must retain their authored activity IDs");
+assert.ok(independent.includes('], 105),') && independent.includes('], 120),'),
+ "Original large lab integrators must follow stage gates rather than stay 5–8-hour single exercises");
+assert.ok(independent.includes('type: "code", language: "python", caption: program.caption, code: program.code'),
+ "Original learner reading must expose copyable runnable source");
+console.log("PASS 15 original Independent Build topics, 3 staged labs, and 2 preserved original lab IDs");
+
+const negativeBuildMutants={
+ "model-the-domain":["if loan.status == \"issued\" and command == \"return\":","if command == \"return\":"],
+ "design-and-evolve-the-data":["CREATE UNIQUE INDEX one_active_loan_per_item","CREATE INDEX one_active_loan_per_item"],
+ "automate-delivery":["return digest(candidate) == tested_digest","return True"],
+ "secure-the-system":["if actor.team != item.owning_team:","if False:"],
+ "instrument-the-system":["selected = {key: event[key] for key in SAFE_KEYS if key in event}","selected = dict(event)"],
+ "build-reliability-evidence":["backup.backup(restored)","original.backup(restored)"],
+};
+const expectedBuildOutput={
+ "model-the-domain":["BUILD_LIFECYCLE_VALID_AND_FORBIDDEN_PASS","BUILD_REISSUE_MUTANT_EXPOSED"],
+ "design-and-evolve-the-data":["BUILD_DUPLICATE_ACTIVE_LOAN_REJECTED","BUILD_ACTIVE_VS_HISTORICAL_LOAN_PASS"],
+ "automate-delivery":["BUILD_TAG_REUSED_BYTES_DIFFER","BUILD_SAME_DIGEST_REQUIRED_FOR_PROMOTION","BUILD_UNSAFE_TAG_ONLY_PROMOTION_EXPOSED"],
+ "secure-the-system":["BUILD_SCOPED_DENIAL_ZERO_SIDE_EFFECTS","BUILD_DENIED_RESPONSE_WITH_FORBIDDEN_WRITE_EXPOSED"],
+ "instrument-the-system":["BUILD_SAFE_DIAGNOSTIC_EVENT_PASS","BUILD_UNSAFE_LOGGING_LEAK_EXPOSED"],
+ "build-reliability-evidence":["BUILD_ORIGINAL_STATE_CHANGED","BUILD_DISPOSABLE_RESTORE_VERIFIED","BUILD_LATE_BACKUP_REJECTED"],
+};
+assert.deepEqual(Object.keys(buildPrograms).sort(),Object.keys(negativeBuildMutants).sort(),"Every published Independent Build runnable oracle needs its own negative mutation");
+for(const id of Object.keys(buildPrograms)){
+ const program=buildPrograms[id];
+ assert.ok(program.caption && program.expected && program.code,"Missing exact published original-source proof "+id);
+ const result=python(program.code);
+ assert.equal(result.status,0,id+" published source failed:\n"+result.stdout+"\n"+result.stderr);
+ for(const marker of expectedBuildOutput[id])assert.ok(result.stdout.includes(marker),"Missing published result "+id+" "+marker);
+ const [before,after]=negativeBuildMutants[id];
+ assert.ok(program.code.includes(before),"Unsafe source mutation no longer matches exact published code "+id);
+ const mutated=python(program.code.replace(before,after));
+ assert.notEqual(mutated.status,0,"Unsafe Independent Build variant unexpectedly passed "+id);
+ assert.match(mutated.stderr,/AssertionError/,"Unexpected unsafe-mutation failure "+id+": "+mutated.stderr);
+ console.log("PASS exact Independent Build "+id+" with unsafe variant rejected");
+}
