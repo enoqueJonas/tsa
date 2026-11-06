@@ -36,6 +36,21 @@ for (const id of originalIds) {
 }
 console.log("PASS all six original Release Engineering readings, 18 separate mechanism/failed-state sections, source continuity");
 
+const finalLabSource=readFileSync("packages/runtime-kernel/src/paths/delivery-release-engineering-lab-deep.ts","utf8");
+const finalReviewSource=readFileSync("packages/runtime-kernel/src/paths/delivery-release-engineering-review-deep.ts","utf8");
+for(let i=1;i<=4;i++){
+ assert.ok(finalLabSource.includes('id: "release-engineering-steward-release-lab-00'+i+'"'),
+   "Lost original final release lab "+i);
+}
+assert.ok(finalLabSource.includes("minimumCharacters: 250"),
+  "Original lab reflection must require a substantive genuine learner answer");
+assert.ok(finalReviewSource.includes('id: "release-engineering-module-review-001"'),
+  "Original Release Engineering final review source is missing");
+assert.ok(finalReviewSource.includes("minimumCharacters: 300"),
+  "Original final review is too trivial for an evidence-based reflection");
+console.log("PASS original final four-part release lab, 250-character learner gate, and source-authored final review");
+
+
 const wrong={
  "release-candidates":[
   'return (bool(label) and actual_digest==approved_digest)',
