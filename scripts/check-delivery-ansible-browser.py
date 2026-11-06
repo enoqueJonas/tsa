@@ -222,5 +222,79 @@ with sync_playwright() as playwright:
     assert "continuous-delivery-deployment" in page.url,"CD reentry lost after reload"
     assert not errors,"Browser runtime errors in original CD lessons: "+str(errors)
     print("PASS ten original CD reading IDs, 6 copyable proof blocks, four original milestone IDs and reload",flush=True)
+    # Module 7: all SIX original Release Engineering readings, original
+    # applied practices, the four-part final lab and final module review.
+    # Source navigation and synthetic progress are NOT real Nexus/Steward
+    # publication or independently evaluated human competence.
+    release_topics=(
+      "release-candidates","promotion-and-gates","deployment-evidence",
+      "release-observability","release-failure-handling","release-runbooks"
+    )
+    release_mechanisms={
+      "release-candidates":"A candidate is a nominated set of immutable bytes and execution assumptions",
+      "promotion-and-gates":"Draw a promotion state machine with guards rather than a slide",
+      "deployment-evidence":"Pipeline, runtime and client observations prove different claims",
+      "release-observability":"A release marker is not a service-level indicator",
+      "release-failure-handling":"Classify a failure by the first unsafe boundary reached",
+      "release-runbooks":"A runbook has a state-dependent branch at each dangerous command",
+    }
+    release_readings={f"release-engineering-{topic}-001" for topic in release_topics}
+    release_practices={f"release-engineering-{topic}-002" for topic in release_topics}
+    release_lab={f"release-engineering-steward-release-lab-{n:03d}" for n in range(1,5)}
+    release_review="release-engineering-module-review-001"
+    page.goto(BASE+"/?view=curriculum&school=delivery-engineer",wait_until="networkidle")
+    page.get_by_role("button",name=MODULE).first.wait_for(state="visible",timeout=30000)
+    page.get_by_role("button",name=MODULE).nth(6).click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    release_sidebar=page.locator("aside").filter(has=page.get_by_text("Curriculum",exact=True)).first
+    release_count=release_sidebar.locator("button").count()
+    assert release_count>=17,f"Release Engineering missing original practice/lab activities: {release_count}"
+    release_seen_readings=set()
+    release_seen_practices=set()
+    release_seen_lab=set()
+    release_seen_review=False
+    for i in range(release_count):
+        activity=parse_qs(urlparse(page.url).query).get("activity",[None])[0]
+        assert activity,f"Release Engineering lost an activity URL at index {i}"
+        if activity in release_readings:
+            topic=activity[len("release-engineering-"):-len("-001")]
+            main=page.locator("main").last
+            text_content=main.inner_text()
+            assert release_mechanisms[topic] in text_content, f"Original release mechanism not published: {activity}"
+            assert "Teach the decision and its limit" in text_content,activity
+            assert len(text_content)>2700,f"Shallow release reading after rewrite: {activity}: {len(text_content)}"
+            assert main.get_by_role("button",name="Copy").count()>=1,f"Published runnable release proof uncopyable: {activity}"
+            if topic=="release-candidates":
+                assert main.get_by_role("button",name="Copy").count()>=2,"Missing second original Docker mutable-tag example"
+                assert "RELEASE_MUTABLE_TAG_CHANGED_IMAGE_ID" in text_content
+            page.set_viewport_size({"width":390,"height":844})
+            assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),f"Release 390px overflow: {activity}"
+            page.set_viewport_size({"width":1440,"height":900})
+            release_seen_readings.add(activity)
+            print("PASS original Release Engineering reading + 390px + executable proof:",activity,flush=True)
+        elif activity in release_practices:
+            main=page.locator("main").last
+            assert main.is_visible(),f"Release original practice missing: {activity}"
+            body=main.inner_text()
+            assert "Run" in body and "evidence" in body.lower(), f"Unremediated release practice: {activity}"
+            release_seen_practices.add(activity)
+        elif activity in release_lab:
+            assert page.locator("main").last.is_visible(),f"Lost original release final lab {activity}"
+            release_seen_lab.add(activity)
+        elif activity==release_review:
+            assert page.locator("main").last.is_visible(),"Lost final module review"
+            release_seen_review=True
+        if i<release_count-1:
+            page.get_by_role("button",name=NEXT).click()
+            page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert release_seen_readings==release_readings,"Original Release reading IDs missing: "+str(release_readings-release_seen_readings)
+    assert release_seen_practices==release_practices,"Original Release practices missing: "+str(release_practices-release_seen_practices)
+    assert release_seen_lab==release_lab,"Original Release lab IDs missing: "+str(release_lab-release_seen_lab)
+    assert release_seen_review,"Original final Release Engineering review missing"
+    page.reload(wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert "release-engineering" in page.url,"Release module navigation not retained after reload"
+    assert not errors,"Browser runtime errors in Release module: "+str(errors)
+    print("PASS 6 original Release readings, 6 practices, 4 final labs, 1 review, Chrome 390px and reload",flush=True)
     browser.close()
 print("PASS Configuration Management rendered evidence and reload (synthetic navigation only)")
