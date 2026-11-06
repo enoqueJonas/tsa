@@ -12,6 +12,9 @@ on:
       - packages/runtime-kernel/src/paths/professional-engineer-independent-build-deep.ts
       - packages/runtime-kernel/src/paths/professional-engineer-build-teaching.ts
       - packages/runtime-kernel/src/paths/professional-engineer-build-proofs.ts
+      - packages/runtime-kernel/src/paths/professional-engineer-production-readiness-deep.ts
+      - packages/runtime-kernel/src/paths/professional-engineer-readiness-teaching.ts
+      - packages/runtime-kernel/src/paths/professional-engineer-readiness-proofs.ts
       - apps/web/components/learning-experience.tsx
       - scripts/check-professional-engineer-depth.mjs
       - scripts/check-professional-engineer-browser.py
