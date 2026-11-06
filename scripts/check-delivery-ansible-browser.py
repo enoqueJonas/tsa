@@ -286,8 +286,25 @@ with sync_playwright() as playwright:
             assert page.locator("main").last.is_visible(),"Lost final module review"
             release_seen_review=True
         if i<release_count-1:
-            page.get_by_role("button",name=NEXT).click()
-            page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+            next_button=page.get_by_role("button",name=NEXT)
+            if next_button.is_enabled():
+                next_button.click()
+                page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+            else:
+                # The fourth ORIGINAL lab activity requires a real 250-character
+                # learner reflection before the Next button unlocks. This is an
+                # intended learning gate, not a rendering failure. The browser
+                # cannot fake a learner response or claim mastery. Inspect the
+                # subsequent module review by its stable deep-link separately.
+                assert activity=="release-engineering-steward-release-lab-004", (
+                    "Unexpected Release progression block at "+str(activity))
+                assert "reflection" in page.locator("main").last.inner_text().lower() or (
+                    "Which release signal" in page.locator("main").last.inner_text())
+                print("PASS original release-lab-004 reflection correctly gates Next; no synthetic answer supplied",flush=True)
+                page.goto(BASE+"/?view=curriculum&school=delivery-engineer&path=release-engineering&activity="+release_review,wait_until="networkidle")
+                page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+                assert parse_qs(urlparse(page.url).query).get("activity",[None])[0]==release_review, (
+                    "Original final Release review not independently deep-link navigable")
     assert release_seen_readings==release_readings,"Original Release reading IDs missing: "+str(release_readings-release_seen_readings)
     assert release_seen_practices==release_practices,"Original Release practices missing: "+str(release_practices-release_seen_practices)
     assert release_seen_lab==release_lab,"Original Release lab IDs missing: "+str(release_lab-release_seen_lab)
