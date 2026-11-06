@@ -75,3 +75,56 @@ The source expressly relies on published `busybox:1.36` and network access to pu
 The targeted real-Chrome traversal now includes original Docker *Namespaces and cgroups*, *Architecture*, and *Registries* readings at 390px with relevant worked headings and copyable code, in addition to the completed Ansible module review. Earlier Delivery source audit covers the other original Docker topics, which remain outside new independent human validation.
 
 **Current CI status:** the Docker-specific matching-head job must pass before updating this to TECHNICALLY VERIFIED. This remains a bounded second Delivery module review, not confirmation that all 11 paths or the other two schools have reached real learner acceptance.
+
+
+## Third Delivery module review — Continuous Integration (canonical module 4)
+
+**Entry:** 2026-11-06. **Audit decision:** preserve eight original CI lessons with sufficiently specific earlier mechanism, threat-boundary and negative-case enrichments rather than mechanically rewrite them; repair five concrete original-lesson gaps that still lacked worked artifacts and real negative-contract evidence. All original lesson IDs, reading IDs, practicals and final three lab activities remain stable.
+
+The author-source inventory `packages/runtime-kernel/src/paths/delivery-continuous-integration-deep.ts` defines **13 original concept readings** in learner order, backed by `delivery-continuous-integration-quality.ts` for genuine independent practicals. Original `jobs-stages` already included a local Python dependency gate in `delivery-ci-dependency-worked.ts`, but it only reasoned about statuses—not actual GitLab YAML, separate workspaces or artifact transfer. The other source had short primers for caching, artifacts, quality gates and image identity. The prior `delivery-ci-operational-depth.ts` genuinely deepened the other eight original subjects (architecture, runners, GitHub-vs-GitLab, self-hosted runners, secrets, parallelism, automated checks and test stages); do not call those nonexistent or rewrite them merely to increase length.
+
+### Concrete original-reading fixes and failure mode
+
+| Original reading ID | Missing before | Teaching change in original lesson | Observable evidence |
+| --- | --- | --- | --- |
+| `continuous-integration-jobs-stages-001` | Python status-model only; vague `needs` versus stage ordering, no actual artifact boundary | Define stage/needs eligibility and missing-edge bypass, required vs optional jobs, transfer versus authority; publish a real *illustrative* GitLab YAML with **four short Python jobs** and exact manifest handoff, followed by negative exploration | Exact published YAML parsed and actual job scripts executed locally; missing mandatory edge, missing artifact and allow-failure negatives |
+| `continuous-integration-caching-001` | Cache treated as speed without demonstrated source-of-truth boundary | Cache key/trust scope, cold-cache and poisoned-cache failure cases, reproducibility and independent checksum transfer | Controlled independent future cache experiment; no simulated cache backend claimed |
+| `continuous-integration-artifacts-001` | Conceptual contrast but not exact consumed bytes and diagnostic retention | Producer output versus cache; manifest M tied to commit C and copied to independent consumer; `artifacts:when: always` retains diagnostics without allowing a failing gate through | Local manifest equality, missing-artifact negative and original lesson 390px rendering |
+| `continuous-integration-quality-gates-001` | Broad 'risk-based gates', unclear FAIL/BLOCKED/NOT_RUN authority | Actual nonzero outcome and stopped candidate, waiver versus technical truth; `allow_failure` and `when: always` dangers | Deliberate missing-needs and waived-gate mutations rejected by local proof |
+| `continuous-integration-container-build-001` | Image digest and tag conflation risk, original build YAML omits proof of pushing or running | Commit C vs tag, local image ID, registry manifest D, platform-specific image identity and promotion/runtime gate | Independent actual real-Steward registry digest evidence remains NOT_TESTED |
+
+**Instructional detail:** 15 new topic-specific mechanism / failure / transfer sections in `delivery-ci-learner-mechanisms.ts`, integrated directly into their original `rich()` reading factory, rather than prep wrappers. The GitLab-specific resource hierarchy now puts authoritative GitLab documentation first (prior default was GitHub Actions comparison docs), and each relevant topic has a targeted reference.
+
+### Actual source-derived local pipeline exercise
+
+`delivery-ci-dependency-worked.ts` now publishes `ciGitlabCandidateYaml` verbatim as a copyable lesson code block. It models four jobs, `fixture_check`, `unit_test`, `candidate_manifest`, and `candidate_audit`, in stages `verify`, `build`, and `inspect`. The jobs use ordinary shell-invoked Python scripts and one temporary `candidate.txt` bound to a synthetic SHA; **no Docker build, push, real GitLab Runner, protected secret, deployment, CI Lint endpoint or customer data is claimed**.
+
+`python3 scripts/check-delivery-ci-yaml.py` extracts the **literal actual published YAML string**, parses it with PyYAML, verifies the required job graph and executes the actual published job shell scripts in **separate disposable workspaces**, transferring only declared artifacts. The checker asserts:
+
+1. Green case: both checks pass; manifest is created and copied; consumer independently verifies the exact SHA.
+2. Negative required unit failure: the unit job exits nonzero; candidate production and downstream audit are **BLOCKED**.
+3. Wrong graph mutant removes the `unit_test` `needs` edge: the unit script still FAILS but candidate creation and audit incorrectly PASS. The required-edge oracle rejects the unsafe configuration.
+4. Wrong artifact mutant sets `artifacts: false` for the consumer: previous build passes but the candidate audit cannot read the artifact and **FAILS**.
+5. Wrong `allow_failure: true` mutant on the required unit job: the mandatory-gate contract rejects the waiver.
+6. The existing `ciDependencyPython` original example remains tested separately through `node scripts/check-delivery-ci-dependency.mjs`, including its failure status 17.
+
+The source checker implements an intentionally **limited local DAG executor**. It does NOT reproduce GitLab's entire stage, `rules`, manual-job, trigger, permission, artifact-retention or credential semantics; the learner must separately execute a safe negative pipeline in the real authorized homelab GitLab to validate those assumptions. Do not promote source-Python graph success to a verified pipeline deployment.
+
+### Browser evidence and independent assessment
+
+`scripts/check-delivery-ansible-browser.py` has been extended to traverse **all 13 original CI reading IDs** in the fourth Delivery module, assert distinct mechanism headings and genuine rendered content, inspect actual copyable code/YAML, check **390px** overflow on every original reading, and reload the current module. The Ansible module and Docker checks remain in the same browser script. This verifies UI operation, not a novice's explanation or independently built GitLab project.
+
+**Unseen transfer task (not performed):** an assessor changes the authorization rules: an additional security-check job is mandatory for *every* candidate, but one branch's `rules` omit the security job. Without seeing a model solution, the learner must (a) explain why a plain `needs` on that possibly missing job can prevent pipeline creation; (b) reject setting `optional: true` merely to hide a missing security gate; (c) redesign `rules` and `needs` so every permitted candidate has a real performed test; (d) run a failing check in a real authorized GitLab and show no image publication, no privileged secret exposure and the exact tested source SHA; (e) mark GitLab/Runner controls NOT_TESTED if unavailable. Reviewer scores conceptual prediction, fail-closed DAG, artifact identity, actual negative evidence and trust/authority boundary, 0–2 each; target at least 8/10 with no zero for fail-closed DAG or evidence. No outside reviewer has scored this yet.
+
+### Research and evidence provenance
+
+- **Official GitLab job graph:** [`needs` guide](https://docs.gitlab.com/ci/yaml/needs/) — verified current semantics including bypassing stage waits, optional dependency interaction, and failure on missing required jobs.
+- **Official artifact reference:** [GitLab job artifacts](https://docs.gitlab.com/ci/jobs/job_artifacts/) — exact job-output versus temporary cache versus versioned release boundary, including retention and `when` behavior.
+- **Official cache reference:** [GitLab caching](https://docs.gitlab.com/ci/caching/) — key scope and cache-versus-artifact semantics.
+- **Official job eligibility:** [GitLab `rules`](https://docs.gitlab.com/ci/jobs/job_rules/) — risks of duplicate pipelines and permission/eligibility interactions.
+- **Substantive article:** [GitLab's stage and DAG walkthrough](https://about.gitlab.com/blog/basics-of-gitlab-ci-updated/) — concrete example of `needs` relaxing implicit stage order and reasons to choose job independence deliberately.
+- **Optional video outline inspected, not watched:** [Moss GitLab CI/CD Pipeline Tutorial](https://www.youtube.com/watch?v=mnYbOrj-hLY) — public outline covers stages/jobs (~07:36), artifacts (~11:08), runner settings (~30:16) and caching (~31:59); its correctness and video contents were NOT independently verified from playback, and essential instruction is supplied in TSA itself.
+
+### Module-4 acceptance status
+
+Author-source reconstruction is complete for the five identified gaps; all thirteen readings remain in the expected learner sequence. Source-derived Python/YAML/unsafe-mutant CI and rendered Chrome/full build must pass on the exact **latest** PR head before TECHNICALLY VERIFIED can be claimed. Full GitLab runner, registry, protected variable, user-owned Steward homelab and uncoached novice gate are NOT TESTED; learner validation remains open.
