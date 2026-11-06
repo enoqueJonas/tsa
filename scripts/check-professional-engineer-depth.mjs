@@ -351,3 +351,67 @@ for(const id of Object.keys(portfolioPrograms)){
  assert.match(bad.stderr,/AssertionError/,"Mutation failed for unrelated reason in "+id+": "+bad.stderr);
  console.log("PASS exact Portfolio example "+id+" and rejected false-confidence mutation");
 }
+
+
+// Final module: the twelve ORIGINAL Defence readings are the curriculum, not
+// a synthetic prep wrapper. Execute exact authored learner examples and mutate
+// deliberately unsafe decisions so green output alone cannot pass.
+const defenceSource=fs.readFileSync(root+"professional-engineer-defence-deep.ts","utf8");
+const defenceLenses=authoredJson(fs.readFileSync(root+"professional-engineer-defence-teaching.ts","utf8"),"defenceLenses");
+const defencePrograms=authoredJson(fs.readFileSync(root+"professional-engineer-defence-proofs.ts","utf8"),"defencePrograms");
+const defenceOriginal=[
+ "present-the-problem-and-outcomes","present-the-architecture","explain-trade-offs",
+ "present-engineering-evidence","defend-quality-decisions","defend-security-decisions",
+ "defend-reliability-decisions","defend-governance-decisions","respond-to-challenges",
+ "state-limitations","propose-future-evolution","reflect-on-the-tsa-journey"
+];
+const observedOrder=[...defenceSource.matchAll(/^\s*reading\("([^"]+)",/gm)].map(m=>m[1]);
+assert.deepEqual(observedOrder,defenceOriginal,"Preserve all 12 actual original Defence IDs and learner order");
+assert.deepEqual(Object.keys(defenceLenses).sort(),defenceOriginal.slice().sort(),"Every Defence original concept needs distinct author-written reasoning");
+for(const id of defenceOriginal){
+ const lens=defenceLenses[id],parts=lens.sections.flatMap(s=>s.paragraphs);
+ assert.ok(lens.sections.length>=3 && parts.join("\n").length>=1400,"Thin original Defence explanation: "+id);
+ assert.ok(lens.sections.every(s=>s.heading && s.paragraphs.length>=2 && s.paragraphs.every(p=>p.length>=140)),"Missing concrete mechanism/failure/alternative: "+id);
+ assert.ok(lens.practice.length>=2 && lens.criteria.length>=2,"Missing independently falsifiable practice: "+id);
+ assert.match(lens.resource.url,/^https:\/\//,"No targeted reference: "+id);
+}
+assert.ok(defenceSource.includes('milestone("professional-engineering-capstone-and-defence"'),"Original full milestone identifier changed");
+assert.ok(defenceSource.includes('], 115),'),"Original 720-minute milestone not split after stages");
+for(const id of ["stage-problem-architecture-and-evidence",
+ "stage-quality-security-reliability-and-governance",
+ "stage-limitations-surprise-and-independent-transfer"])
+ assert.ok(defenceSource.includes('"'+id+'"'),"Missing staged Defence evidence challenge "+id);
+for(const x of ["return [lesson,contextGate]","return [lesson,assuranceGate]","return [lesson,evolutionGate]"])
+ assert.ok(defenceSource.includes(x),"Defence gate misplaced: "+x);
+assert.ok(defenceSource.includes('type:"code",language:"python",caption:program.caption,code:program.code'),"Actual reading does not expose runnable source");
+console.log("PASS 12 original Defence concepts, three staged gates and preserved final milestone");
+const defenceMutants={
+ "present-the-problem-and-outcomes":['if not item.stakeholder_validation:',"if False:"],
+ "present-the-architecture":['if actor.cooperative != item.cooperative:',"if False:"],
+ "present-engineering-evidence":['if c.observed_env != c.claimed_env:',"if False:"],
+ "defend-quality-decisions":['and result.unauthorized_row_delta == 0',"and True"],
+ "defend-governance-decisions":['if g.restore == "FAIL" or g.security == "FAIL" or g.license == "INCOMPATIBLE":',"if False:"],
+ "respond-to-challenges":['if any(value == "FAIL" for value in states):',"if False:"]
+};
+const defenceMarkers={
+ "present-the-problem-and-outcomes":["DEFENCE_IMPLEMENTATION_NOT_USER_BENEFIT_PROVEN","DEFENCE_FALSE_STAKEHOLDER_OUTCOME_EXPOSED"],
+ "present-the-architecture":["DEFENCE_AUTHORIZED_AND_FORBIDDEN_SIDE_EFFECT_BOUNDARY","DEFENCE_HTTP_DENIAL_WITH_BAD_WRITE_EXPOSED"],
+ "present-engineering-evidence":["DEFENCE_CLAIM_SOURCE_SCOPE_AND_NEGATIVE_VALIDATED","DEFENCE_SOURCE_LINK_AS_PRODUCTION_EVIDENCE_REJECTED"],
+ "defend-quality-decisions":["DEFENCE_NEGATIVE_ORACLE_CHECKS_STATE_AND_SEMANTICS","DEFENCE_STATUS_ONLY_FALSE_NEGATIVE_EXPOSED"],
+ "defend-governance-decisions":["DEFENCE_GOVERNANCE_FAIL_MISSING_PASS_DISTINCT","DEFENCE_FALSE_RISK_APPROVAL_EXPOSED"],
+ "respond-to-challenges":["DEFENCE_CHANGED_EVIDENCE_CHANGES_RECOMMENDATION","DEFENCE_UNSAFE_GREEN_WHEN_BLOCKED_EXPOSED"]
+};
+assert.deepEqual(Object.keys(defencePrograms).sort(),Object.keys(defenceMutants).sort(),"Every published Defence example must have a targeted wrong implementation");
+for(const id of Object.keys(defencePrograms)){
+ const program=defencePrograms[id];
+ assert.ok(program.caption && program.code && program.expected,"Missing exact published Defence code "+id);
+ const result=python(program.code);
+ assert.equal(result.status,0,"Actual learner Defence example fails "+id+":\n"+result.stdout+"\n"+result.stderr);
+ for(const marker of defenceMarkers[id])assert.ok(result.stdout.includes(marker),"Missing published learning result "+id+" "+marker);
+ const [before,after]=defenceMutants[id];
+ assert.ok(program.code.includes(before),"Cannot mutate exact Defence source "+id);
+ const bad=python(program.code.replace(before,after));
+ assert.notEqual(bad.status,0,"Unsafe Defence code passed its own oracle "+id);
+ assert.match(bad.stderr,/AssertionError/,"Wrong failure for source-derived Defence mutant "+id+": "+bad.stderr);
+ console.log("PASS exact Defence "+id+" and targeted unsafe mutant rejected");
+}
