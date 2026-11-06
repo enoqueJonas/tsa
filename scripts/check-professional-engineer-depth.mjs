@@ -83,7 +83,7 @@ for(const id of keys){
  assert.ok(lens.sections.length>=3,"Insufficient mechanism/failure/decision work: "+id);
  const body=lens.sections.flatMap((section)=>section.paragraphs).join("\n");
  assert.ok(body.length>=1300,"Still a thin original proposal reading: "+id+" chars "+body.length);
- assert.ok(lens.sections.every((section)=>section.title && section.paragraphs.length>=2));
+ assert.ok(lens.sections.every((section)=>section.title && section.paragraphs.length>=1 && section.paragraphs.every(text=>text.length>=140)), "Every proposal section needs a substantial explanation, even when one paragraph is sufficient: "+id);
  assert.ok(lens.practice.length>=2&&lens.acceptance.length>=2,"Missing independent countercase and scoring boundary: "+id);
  assert.match(lens.resource.url,/^https:\/\//,"Learning resource must be a targeted HTTPS reference");
 }
