@@ -21,11 +21,17 @@ interface LessonSpec {
 
 function richLesson(spec: LessonSpec): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    const extra = (cloudHostingDepth[spec.id] ?? []).map((section) => {
-        if (!section.code) return section;
-        const program = section.code.codeKey === "cost" ? cloudHostingCostProof : cloudHostingResponsibilityProof;
-        return { ...section, code: { language: section.code.language, caption: section.code.caption, code: program } };
-    });
+    const extra: LessonSpec["sections"] = (cloudHostingDepth[spec.id] ?? []).map((section) => ({
+        heading: section.heading,
+        paragraphs: section.paragraphs,
+        ...(section.code ? {
+            code: {
+                language: section.code.language,
+                caption: section.code.caption,
+                code: section.code.codeKey === "cost" ? cloudHostingCostProof : cloudHostingResponsibilityProof,
+            },
+        } : {}),
+    }));
     for (const section of [...spec.sections, ...extra]) {
         blocks.push({ type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
