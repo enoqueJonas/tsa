@@ -114,9 +114,13 @@ try {
   started=true;
   console.log("REAL_S3_CONTAINER_IMAGE_DIGEST "+docker("image","inspect",image,
     "--format","{{index .RepoDigests 0}}"));
-  const port = docker("port",name,"9000/tcp").split("\n")[0].match(/^127\.0\.0\.1:(\d+)$/)?.[1];
-  assert.ok(port,"MinIO published an unexpected/non-loopback endpoint");
-  const endpoint="http://127.0.0.1:"+port;
+  function currentEndpoint(){
+    const hostPort=docker("port",name,"9000/tcp").split("\n")[0]
+      .match(/^127\.0\.0\.1:(\d+)$/)?.[1];
+    assert.ok(hostPort,"MinIO published an unexpected/non-loopback endpoint");
+    return "http://127.0.0.1:"+hostPort;
+  }
+  let endpoint=currentEndpoint();
   health(endpoint);
 
   const bucket="tsa-lab-"+token;
@@ -159,6 +163,9 @@ try {
   // Same Docker container and host volume; a real daemon process restart, not
   // in-memory replay or new empty server.
   docker("restart",name);
+  // Docker may reallocate an ephemeral 127.0.0.1::9000 host port on restart.
+  // It is the SAME server/container/volume, but potentially a new client URL.
+  endpoint=currentEndpoint();
   health(endpoint);
   const after=execute(python,"verify",bucket,true,
     "real S3 object persisted across MinIO container restart",endpoint);
