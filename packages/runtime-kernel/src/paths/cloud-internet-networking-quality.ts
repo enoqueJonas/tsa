@@ -176,18 +176,17 @@ function enrichLesson(lesson: Lesson): Lesson {
     const aligned = alignEnterpriseEdge(lesson);
     const practice = practices[aligned.title];
     if (!practice) return aligned;
-    const activities = aligned.activities.filter((activity) => !(activity.content.type === "practical" && activity.title.startsWith("Apply:")));
+    // Keep original -001 reading → -002 practical → -003 reflection order.
+    // Appending a new "-practice" after a gated reflection breaks learner
+    // progress, bypasses the original activity ID and strands the investigation.
     return {
         ...aligned,
-        activities: [
-            ...activities,
-            {
-                id: `${aligned.id}-practice`,
-                title: `${aligned.title}: Steward Network Investigation`,
-                estimatedMinutes: 60,
-                content: practice,
-            },
-        ],
+        activities: aligned.activities.map((activity) =>
+            activity.content.type === "practical" && activity.title.startsWith("Apply:")
+                ? { ...activity, title: `${aligned.title}: Steward Network Investigation`,
+                    estimatedMinutes: 60, content: practice }
+                : activity,
+        ),
     };
 }
 

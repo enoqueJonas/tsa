@@ -1,5 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { cloudHostingDepth, cloudHostingPracticeDepth } from "./cloud-hosting-learner-reconstruction";
+import { cloudHostingCostProof, cloudHostingResponsibilityProof } from "./cloud-hosting-evidence-programs";
 
 const awsSharedResponsibility: LearningResource = { title: "AWS Shared Responsibility Model", url: "https://aws.amazon.com/compliance/shared-responsibility-model/" };
 const azureRegions: LearningResource = { title: "Microsoft Azure geographies and regions", url: "https://learn.microsoft.com/en-us/azure/reliability/regions-overview" };
@@ -19,7 +21,18 @@ interface LessonSpec {
 
 function richLesson(spec: LessonSpec): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    for (const section of spec.sections) {
+    const extra: LessonSpec["sections"] = (cloudHostingDepth[spec.id] ?? []).map((section) => ({
+        heading: section.heading,
+        paragraphs: section.paragraphs,
+        ...(section.code ? {
+            code: {
+                language: section.code.language,
+                caption: section.code.caption,
+                code: section.code.codeKey === "cost" ? cloudHostingCostProof : cloudHostingResponsibilityProof,
+            },
+        } : {}),
+    }));
+    for (const section of [...spec.sections, ...extra]) {
         blocks.push({ type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.list) blocks.push({ type: "list", items: section.list });
@@ -41,7 +54,7 @@ function richLesson(spec: LessonSpec): Lesson {
                     type: "practical",
                     objective: `Apply ${spec.title} to the Steward platform.`,
                     scenario: "Steward already runs through a disciplined homelab delivery path. Evaluate remote hosting without discarding the engineering evidence, artifact identity, networking and recovery practices already established.",
-                    instructions: spec.practice,
+                    instructions: [...spec.practice, ...(cloudHostingPracticeDepth[spec.id] ?? [])],
                     deliverables: ["Hosting-model comparison evidence", "Short engineering decision note", "Explicit cost and responsibility assumptions"],
                     completionCriteria: ["The comparison uses concrete Steward requirements.", "Responsibilities are assigned rather than assumed.", "Cost and operational trade-offs are visible."],
                 },

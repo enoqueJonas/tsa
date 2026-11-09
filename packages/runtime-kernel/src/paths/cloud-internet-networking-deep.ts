@@ -1,5 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { cloudNetworkDepth, cloudNetworkPractices } from "./cloud-network-learner-reconstruction";
+import { cloudNetworkDnsProof } from "./cloud-network-dns-proof";
 
 const cloudflareDns: LearningResource = { title: "Cloudflare Learning Center — DNS", url: "https://www.cloudflare.com/learning/dns/what-is-dns/" };
 const letsEncrypt: LearningResource = { title: "Let's Encrypt — How it works", url: "https://letsencrypt.org/how-it-works/" };
@@ -19,7 +21,16 @@ interface LessonSpec {
 
 function richLesson(spec: LessonSpec): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    for (const section of spec.sections) {
+    const extra: LessonSpec["sections"] = (cloudNetworkDepth[spec.id] ?? []).map((section) => ({
+        heading: section.heading,
+        paragraphs: section.paragraphs,
+        ...(section.codeKey === "dns" ? {
+            code: { language: "python",
+                caption: "Actual local UDP DNS A and NXDOMAIN response with reserved .test/192.0.2.10 values",
+                code: cloudNetworkDnsProof },
+        } : {}),
+    }));
+    for (const section of [...spec.sections, ...extra]) {
         blocks.push({ type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.list) blocks.push({ type: "list", items: section.list });
@@ -41,7 +52,7 @@ function richLesson(spec: LessonSpec): Lesson {
                     type: "practical",
                     objective: `Apply ${spec.title} to the Steward internet environment.`,
                     scenario: "The Steward VPS already exists and can be administered safely. Build internet reachability deliberately without weakening the administrative boundary or hiding failures behind a single 'site unavailable' symptom.",
-                    instructions: spec.practice,
+                    instructions: [...spec.practice, ...(cloudNetworkPractices[spec.id] ?? [])],
                     deliverables: ["Network-path evidence", "Versioned configuration or decision note", "Successful and failed-path proof"],
                     completionCriteria: ["The request path is explainable hop by hop.", "Application exposure is narrower than administrative access.", "Failure evidence identifies the broken layer rather than guessing."],
                 },
