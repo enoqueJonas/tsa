@@ -1,5 +1,6 @@
 import type { Lesson } from "./lesson";
 import { cloudBuildingBlocksDeepLessons } from "./cloud-building-blocks-deep";
+import { cloudBuildingAccessPractices } from "./cloud-building-access-depth";
 
 const practiceTitles: Record<string, string> = {
     "Compute": "Capacity Decision: Keep, Resize, or Change Compute",
@@ -29,6 +30,7 @@ function enrichLesson(lesson: Lesson): Lesson {
                 content: {
                     ...activity.content,
                     objective: `${practiceTitle}. Produce evidence that the chosen boundary is justified for Steward rather than adopting a cloud service because it exists.`,
+                    instructions: [...activity.content.instructions, ...(cloudBuildingAccessPractices[lesson.id.slice("cloud-building-blocks-".length)] ?? [])],
                     scenario: "Steward already has a working Rocky Linux VPS, Kong public edge, private backend responsibilities and an established delivery chain. Treat that baseline as something to improve only when this cloud building block solves a concrete capacity, recovery, security, operability or cost problem.",
                     deliverables: [
                         ...activity.content.deliverables,
