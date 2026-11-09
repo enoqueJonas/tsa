@@ -301,6 +301,11 @@ def inspect_school(page):
                         "logging-centralized-logging-001",
                         "reliability-observability-stack-integration-000",
                         "steward-reliability-program-milestone-000",
+                        # These two follow-on readings explicitly reuse the
+                        # independently tested program published in SLIs.
+                        # Do not require duplicate source code in each page.
+                        "service-level-engineering-error-budgets-001",
+                        "service-level-engineering-windowing-001",
                     }:
                         assert code.count() >= 1, (
                             f"Source-authored executable or SQL fixture missing from rendered reading: {activity_id}"
@@ -325,6 +330,14 @@ def inspect_school(page):
                 if activity_id == "service-level-engineering-slis-002":
                     assert "Change b's consumer completion" in text and "t=95" in text, (
                         "Original paired SLI practical no longer requires negative transfer"
+                    )
+                if activity_id == "service-level-engineering-error-budgets-001":
+                    assert "0.4 event-equivalents" in text and "5.00" in text, (
+                        "Budget follow-on reading lost explicit source-derived units"
+                    )
+                if activity_id == "service-level-engineering-windowing-001":
+                    assert "as_of=120" in text and "as_of=75" in text, (
+                        "Windowing follow-on lost source-derived maturity counterexample"
                     )
                 page.set_viewport_size({"width": 390, "height": 844})
                 assert not page.evaluate(
