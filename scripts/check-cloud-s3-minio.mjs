@@ -54,7 +54,10 @@ console.log("PASS original five activity IDs, six new focused readings, 18 secti
 const token=randomBytes(6).toString("hex");
 const name="tsa-minio-"+token;
 const dataDir=mkdtempSync(join(tmpdir(),"tsa-s3-data-"));
-const image="quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z";
+// Upstream MinIO removed public Docker Hub/Quay images in 2026.
+// Use the publicly documented, maintained Chainguard starter image instead.
+// Its latest tag is mutable: print the exact pulled digest with CI evidence.
+const image="cgr.dev/chainguard/minio:latest";
 const accessKey="tsa_local_admin_"+token;
 const secretKey="tsa_local_admin_training_secret_"+token+"_never_reuse";
 let started=false;
@@ -104,9 +107,13 @@ try {
     "--publish","127.0.0.1::9000",
     "--env","MINIO_ROOT_USER="+accessKey,
     "--env","MINIO_ROOT_PASSWORD="+secretKey,
+    "--user", String(process.getuid())+":"+String(process.getgid()),
+    "--env","HOME=/data",
     "--volume",dataDir+":/data",
     image,"server","/data","--console-address",":9001");
   started=true;
+  console.log("REAL_S3_CONTAINER_IMAGE_DIGEST "+docker("image","inspect",image,
+    "--format","{{index .RepoDigests 0}}"));
   const port = docker("port",name,"9000/tcp").split("\n")[0].match(/^127\.0\.0\.1:(\d+)$/)?.[1];
   assert.ok(port,"MinIO published an unexpected/non-loopback endpoint");
   const endpoint="http://127.0.0.1:"+port;
