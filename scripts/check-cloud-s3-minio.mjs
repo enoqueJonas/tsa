@@ -54,10 +54,11 @@ console.log("PASS original five activity IDs, six new focused readings, 18 secti
 const token=randomBytes(6).toString("hex");
 const name="tsa-minio-"+token;
 const dataDir=mkdtempSync(join(tmpdir(),"tsa-s3-data-"));
-// Upstream MinIO removed public Docker Hub/Quay images in 2026.
-// Use the publicly documented, maintained Chainguard starter image instead.
-// Its latest tag is mutable: print the exact pulled digest with CI evidence.
-const image="cgr.dev/chainguard/minio:latest";
+// Use an immutable image digest observed from the real green S3 integration
+// run #42592340379. Never allow a later mutable latest tag to silently replace
+// the tested MinIO behavior or the threat model of this learner proof.
+const image="cgr.dev/chainguard/minio@sha256:a1ac4589a5f8136b616e667b48a0bea9719bb10bd45799ea946f24bbedfafde4";
+assert.match(image,/^cgr[.]dev\/chainguard\/minio@sha256:[a-f0-9]{64}$/);
 const accessKey="tsa_local_admin_"+token;
 const secretKey="tsa_local_admin_training_secret_"+token+"_never_reuse";
 let started=false;
