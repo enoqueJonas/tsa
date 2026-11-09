@@ -275,6 +275,10 @@ def inspect_school(page):
             if SCHOOL == "reliability-engineer":
                 reliability_source_readings = {
                     "logging-structured-logs-001": "Run a real parsing and correlation failure",
+                    "observability-correlation-context-001": "Trace identity is not request identity, and neither proves completion",
+                    "observability-instrumentation-001": "Put measurement at a real outcome boundary, not at an arbitrary helper",
+                    "logging-correlation-ids-001": "Run the prior Observability HTTP-to-outbox proof, then query emitted events",
+                    "logging-privacy-security-001": "Execute an allowlist against a real synthetic Authorization header",
                     "logging-centralized-logging-001": "Follow a log from code to Graylog search",
                     "logging-graylog-event-lifecycle-001": "Run the smallest observable event before operating Graylog",
                     "logging-graylog-event-lifecycle-indexed-search-reading": "Prove searchable evidence separately from HTTP 202",
@@ -301,6 +305,11 @@ def inspect_school(page):
                     )
                     if activity_id not in {
                         "logging-centralized-logging-001",
+                        # These lessons explicitly reuse executable source published
+                        # in the preceding original Observability correlation lesson.
+                        "observability-instrumentation-001",
+                        "logging-correlation-ids-001",
+                        "logging-privacy-security-001",
                         "reliability-observability-stack-integration-000",
                         "steward-reliability-program-milestone-000",
                         # These two follow-on readings explicitly reuse the
@@ -383,6 +392,54 @@ def inspect_school(page):
                 assert not page.evaluate(
                     "document.documentElement.scrollWidth > innerWidth + 2"
                 ), f"Original Graylog activity overflows 390px: {activity_id}"
+                page.set_viewport_size({"width": 1440, "height": 900})
+            if SCHOOL == "reliability-engineer" and activity_id in {
+                "observability-correlation-context-001",
+                "observability-correlation-context-002",
+                "observability-instrumentation-001",
+                "logging-correlation-ids-001",
+                "logging-privacy-security-001",
+                "logging-correlation-ids-002",
+                "logging-privacy-security-002",
+            }:
+                if activity_id == "observability-correlation-context-001":
+                    assert content.get_by_role("button", name="Copy").count() >= 1, (
+                        "Original correlation lesson lost actual Python/SQLite source"
+                    )
+                    assert "ThreadingHTTPServer" in text and "CREATE TABLE outbox" in text, (
+                        "Source-published HTTP/outbox mechanism not visible"
+                    )
+                    assert "NOT actual Steward" in text and "missing_worker_trace" in text, (
+                        "Local-only and negative-context claims lost"
+                    )
+                elif activity_id == "observability-correlation-context-002":
+                    assert "Intentionally replace the good worker trace ID" in text, (
+                        "Paired practice no longer requires a real negative mutation"
+                    )
+                elif activity_id == "observability-instrumentation-001":
+                    assert "independent SQLite query" in text, (
+                        "Instrumentation source does not distinguish logs from effects"
+                    )
+                elif activity_id == "logging-correlation-ids-001":
+                    assert "both workers have completed effects" in text.lower(), (
+                        "Production logging source confuses missing trace and business failure"
+                    )
+                elif activity_id == "logging-privacy-security-001":
+                    assert "DO_NOT_LOG_CLASSROOM_TOKEN" in text, (
+                        "Logging privacy source lost bounded synthetic sentinel"
+                    )
+                elif activity_id == "logging-correlation-ids-002":
+                    assert "remove the worker request_id" in text, (
+                        "Original logging practice missing executable ID-loss transfer"
+                    )
+                elif activity_id == "logging-privacy-security-002":
+                    assert "Intentionally inject the incoming Authorization header" in text, (
+                        "Original privacy practical missing source-emission failure"
+                    )
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert not page.evaluate(
+                    "document.documentElement.scrollWidth > innerWidth + 2"
+                ), f"Correlation/Logging activity overflows at 390px: {activity_id}"
                 page.set_viewport_size({"width": 1440, "height": 900})
             for k in range(code.count()):
                 assert code.nth(k).locator("pre").count() > 0, (
