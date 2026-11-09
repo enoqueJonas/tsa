@@ -85,6 +85,13 @@ on:
       - 'packages/runtime-kernel/src/paths/cloud-architecture-cost-mechanisms.ts'
       - 'packages/runtime-kernel/src/paths/cloud-architecture-capacity-real-proof.ts'
       - 'scripts/check-cloud-architecture-cost-proofs.mjs'
+      - 'packages/runtime-kernel/src/paths/cloud-engineer-milestone-deep.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-milestone-evidence-depth.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-milestone-evidence-audit.ts'
+      - 'apps/web/components/activity-evidence-panel.tsx'
+      - 'apps/web/components/learning-experience.tsx'
+      - 'apps/web/lib/cloud-milestone-evidence-gate.ts'
+      - 'scripts/check-cloud-final-milestone-evidence.mjs'
       - '.github/workflows/delivery-ansible-learner-depth.yml'
   push:
     branches:
@@ -185,6 +192,8 @@ jobs:
         run: node scripts/check-cloud-canary-real-http.mjs
       - name: Verify original Cloud Architecture and Cost synthetic capacity, burst-hours, budget, unit economics and nine unsafe variants
         run: node scripts/check-cloud-architecture-cost-proofs.mjs
+      - name: Verify original final Cloud milestone gate IDs and audit UNVERIFIED manifest with ten rejected unsafe acceptance variants
+        run: node scripts/check-cloud-final-milestone-evidence.mjs
       - name: Build and check entire curriculum
         run: |
           pnpm install --frozen-lockfile
