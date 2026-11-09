@@ -336,7 +336,7 @@ def inspect_school(page):
                         "Budget follow-on reading lost explicit source-derived units"
                     )
                 if activity_id == "service-level-engineering-windowing-001":
-                    assert "as_of=120" in text and "as_of=75" in text, (
+                    assert "as_of=120" in text and "Change as_of to 75" in text, (
                         "Windowing follow-on lost source-derived maturity counterexample"
                     )
                 page.set_viewport_size({"width": 390, "height": 844})
