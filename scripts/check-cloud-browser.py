@@ -213,7 +213,7 @@ with sync_playwright() as playwright:
         ("cloud-object-storage-implementation-002","Deploy and Secure the Object Store"),
         ("cloud-object-storage-implementation-003","Integrate Steward Export Evidence"),
         ("cloud-object-storage-implementation-004","Operate Lifecycle, Failure and Recovery"),
-        ("cloud-object-storage-implementation-005","Defend the Storage Architecture"),
+        ("cloud-object-storage-implementation-005","Defend the Steward data placement across PostgreSQL"),
     ]
     context=browser.new_context(viewport={"width":1440,"height":900})
     page=context.new_page()
