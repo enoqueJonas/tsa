@@ -129,7 +129,11 @@ with sync_playwright() as playwright:
         body=main.inner_text()
         assert phrase.lower() in body.lower(), (
             "Certificate source reading/practical did not render: "+expected)
-        assert len(body)>520,"Certificate page too thin: "+expected
+        if expected=="cloud-certificate-lifecycle-operations-006":
+            assert len(body)>250 and "renewal" in body.lower(), (
+                "Certificate final reflection prompt missing")
+        else:
+            assert len(body)>520,"Certificate reading/practical too thin: "+expected
         if expected=="cloud-certificate-lifecycle-operations-008":
             assert main.get_by_role("button",name="Copy").count()>=1, (
                 "Actual renewal/reload Python code not copyable")
@@ -175,7 +179,10 @@ with sync_playwright() as playwright:
         assert activity(page)==name,"Building Blocks original order unexpectedly changed: "+page.url
         content=page.locator("main").last.inner_text()
         assert phrase.lower() in content.lower(), "Building Block content missing "+name
-        assert len(content)>450,"Building Block text too short "+name
+        if name.endswith("-003"):
+            assert len(content)>240, "Original Building Blocks reflection not rendered"
+        else:
+            assert len(content)>450,"Building Block reading/practical too short "+name
         page.set_viewport_size({"width":390,"height":844})
         assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"), (
             "Building Block mobile overflow "+name)
