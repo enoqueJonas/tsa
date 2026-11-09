@@ -76,6 +76,10 @@ on:
       - 'packages/runtime-kernel/src/paths/cloud-iac-real-cli-proof.ts'
       - 'packages/runtime-kernel/src/paths/cloud-iac-mechanism-depth.ts'
       - 'scripts/check-cloud-iac-real-cli.mjs'
+      - 'packages/runtime-kernel/src/paths/cloud-progressive-delivery-canary-deep.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-canary-focused-depth.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-canary-real-http-proof.ts'
+      - 'scripts/check-cloud-canary-real-http.mjs'
       - '.github/workflows/delivery-ansible-learner-depth.yml'
   push:
     branches:
@@ -172,6 +176,8 @@ jobs:
         run: |
           command -v tofu
           node scripts/check-cloud-iac-real-cli.mjs
+      - name: Execute original-source real TCP canary distribution, abort, metrics failure and six unsafe variants
+        run: node scripts/check-cloud-canary-real-http.mjs
       - name: Build and check entire curriculum
         run: |
           pnpm install --frozen-lockfile
