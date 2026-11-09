@@ -177,18 +177,22 @@ function enrichLesson(lesson: Lesson): Lesson {
     const aligned = alignEnterpriseEdge(lesson);
     const practice = practices[aligned.title];
     if (!practice) return aligned;
-    const activities = aligned.activities.filter((activity) => !(activity.content.type === "practical" && activity.title.startsWith("Apply:")));
+    // Preserve the existing runtime *-practice activity ID and place the
+    // investigation before the original *-003 reflection. Previously it was
+    // appended after the reflection, blocking the exercise behind its exam.
     return {
         ...aligned,
-        activities: [
-            ...activities,
-            {
-                id: `${aligned.id}-practice`,
-                title: `${aligned.title}: Steward Network Investigation`,
-                estimatedMinutes: 60,
-                content: {...practice, instructions: [...practice.instructions, ...(cloudNetworkAppliedPractices[aligned.id.slice("internet-networking-".length)] ?? [])]},
-            },
-        ],
+        activities: aligned.activities.map((activity) =>
+            activity.content.type === "practical" && activity.title.startsWith("Apply:")
+                ? {
+                    ...activity,
+                    id: `${aligned.id}-practice`,
+                    title: `${aligned.title}: Steward Network Investigation`,
+                    estimatedMinutes: 60,
+                    content: {...practice, instructions: [...practice.instructions, ...(cloudNetworkAppliedPractices[aligned.id.slice("internet-networking-".length)] ?? [])]},
+                }
+                : activity,
+        ),
     };
 }
 
