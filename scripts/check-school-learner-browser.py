@@ -37,6 +37,7 @@ def inspect_school(page):
     module_count = page.get_by_role("button", name=MODULE).count()
     assert module_count > 0, f"No modules shown for {SCHOOL}"
     evidence = []
+    evidence_gates = []
     errors = []
     page.on("pageerror", lambda error: errors.append(str(error)))
     for module_index in range(module_count):
@@ -329,6 +330,43 @@ def inspect_school(page):
                     f"Missing activity heading: {activity_id}"
                 )
             nxt = page.get_by_role("button", name=NEXT)
+            # The Cloud final milestone is deliberately NOT a click-through path.
+            # Test the authentic first operational gate without fabricating an
+            # accepted evidence record or misreporting the later gates as visited.
+            if SCHOOL == "cloud-engineer" and activity_id == (
+                "steward-internet-environment-gate-1-hosting-architecture-001"
+            ):
+                assert module_index == module_count - 1, "Cloud exit gate moved outside final module"
+                assert count == 10, "Original Cloud milestone activity inventory changed"
+                assert nxt.count() == 1 and not nxt.is_enabled(), (
+                    "Cloud exit gate accepted an empty evidence record"
+                )
+                assert (
+                    "Save a substantial accepted evidence record before proceeding." in text
+                    and "self-attested navigation gate" in text
+                ), "Cloud exit evidence warning is not visible"
+                evidence.append({
+                    "module": module_index + 1,
+                    "activity_id": activity_id,
+                    "activity_type": activity_type,
+                    "visible_characters": len(text),
+                    "code_blocks": code.count(),
+                    "progression": "BLOCKED_UNVERIFIED_EVIDENCE",
+                })
+                evidence_gates.append({
+                    "module": module_index + 1,
+                    "blocked_activity": activity_id,
+                    "browser_inspected": len(visited),
+                    "not_traversed": count - len(visited),
+                    "reason": "independent operational evidence required; no synthetic acceptance",
+                })
+                print(
+                    "EXPECTED Cloud final milestone evidence gate: first two original "
+                    "activities inspected; eight downstream operational activities "
+                    "NOT_BROWSER_VERIFIED; no synthetic acceptance",
+                    flush=True,
+                )
+                break
             assert nxt.count() == 1 and nxt.is_enabled(), (
                 f"Progression unavailable: {activity_id}"
             )
@@ -353,7 +391,20 @@ def inspect_school(page):
             nxt.click()
             if SCHOOL in {"builder", "system-thinker"} and len(visited) < count and has_scroll:
                 page.wait_for_function("window.scrollY <= 8", timeout=8000)
-        print(f"PASS {SCHOOL} module {module_index+1}/{module_count}: {count} activities", flush=True)
+        if SCHOOL == "cloud-engineer" and module_index == module_count - 1:
+            assert len(visited) == 2 and len(evidence_gates) == 1, (
+                "Cloud exit evidence gate not checked at the original first practice"
+            )
+            print(
+                f"PASS {SCHOOL} module {module_index+1}/{module_count}: "
+                f"{len(visited)}/{count} inspected, {count-len(visited)} "
+                "authentically gated; NOT a complete milestone traversal", flush=True,
+            )
+        else:
+            assert len(visited) == count, (
+                f"Unexpected early stop in {SCHOOL} module {module_index+1}"
+            )
+            print(f"PASS {SCHOOL} module {module_index+1}/{module_count}: {count} activities", flush=True)
     assert not errors, f"Browser exceptions in {SCHOOL}: {errors}"
     # A readable page is not automatically a sufficiently developed explanation.
     # Report the shortest conceptual readings for qualitative review; these are
@@ -366,6 +417,7 @@ def inspect_school(page):
         "school": SCHOOL,
         "modules": module_count,
         "activities": evidence,
+        "authentically_blocked_evidence_gates": evidence_gates,
         "shortest_readings_for_manual_review": short_readings,
     }
     print(f"REVIEW {SCHOOL} shortest rendered readings (not CI failures):", flush=True)
@@ -373,7 +425,15 @@ def inspect_school(page):
         print(f"  {item['visible_characters']:5} chars {item['activity_id']}", flush=True)
     path = ARTIFACTS / f"{SCHOOL}.json"
     path.write_text(json.dumps(output, indent=2), encoding="utf-8")
-    print(f"PASS {SCHOOL}: traversed {len(evidence)} real rendered activities", flush=True)
+    if evidence_gates:
+        print(
+            f"PASS {SCHOOL}: inspected {len(evidence)} real rendered activities; "
+            f"{sum(g['not_traversed'] for g in evidence_gates)} later milestone "
+            "activities remain NOT_BROWSER_VERIFIED behind authentic evidence gate",
+            flush=True,
+        )
+    else:
+        print(f"PASS {SCHOOL}: traversed {len(evidence)} real rendered activities", flush=True)
 
 
 def check_mobile_first_module(page):
