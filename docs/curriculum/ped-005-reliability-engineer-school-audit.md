@@ -152,7 +152,7 @@ The previous exact-head [curriculum workflow #42637465134](https://github.com/en
 
 ## Graylog indexed-search teaching — 9 November 2026, incremental Reliability module 4
 
-**Source:** `packages/runtime-kernel/src/paths/reliability-graylog-indexed-search-contract.ts`, rendered **within the unchanged original** `logging-graylog-event-lifecycle-001`; accompanying original practical `logging-graylog-event-lifecycle-002` now requires real-vs-fake evidence separation and five negative cases. The existing introductory local UDP producer test remains separate and unchanged.
+**Source:** `packages/runtime-kernel/src/paths/reliability-graylog-indexed-search-contract.ts`, rendered in one **new focused reading** `logging-graylog-event-lifecycle-indexed-search-reading`, inserted after the original `logging-graylog-event-lifecycle-001` and before the unchanged original practical `logging-graylog-event-lifecycle-002`. The original intro remains responsible for GELF schema/UDP only; the new reading teaches schema-to-row matching and live search verification before the practical. All three previously existing progress IDs are preserved.
 
 ### Problem, mechanism and actual acceptance boundary
 
