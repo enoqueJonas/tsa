@@ -1,6 +1,8 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { certificateLocalProofBlocks } from "./cloud-observable-local-proofs";
+import { certificateLifecycleFocusedReadings, certificateLifecycleExtraPractices } from "./cloud-certificate-lifecycle-focused";
+import { cloudCertificateRenewalPython } from "./cloud-certificate-renewal-live-proof";
 
 const letsEncrypt: LearningResource = { title: "Let's Encrypt documentation", url: "https://letsencrypt.org/docs/" };
 const certbot: LearningResource = { title: "Certbot documentation", url: "https://eff-certbot.readthedocs.io/" };
@@ -34,6 +36,31 @@ export const certificateLifecycleOperationsDeepLessons: Lesson[] = [
         title: "Certificate Lifecycle Operations",
         activities: [
             { id: "cloud-certificate-lifecycle-operations-001", title: "Certificates Are Expiring Operational State", estimatedMinutes: 45, content: { type: "reading", body: "Treat TLS identity as renewable operational state rather than a one-time HTTPS setup task.", blocks } },
+
+            ...certificateLifecycleFocusedReadings.map((reading) => ({
+                id: reading.id,
+                title: reading.title,
+                estimatedMinutes: reading.estimatedMinutes,
+                content: {
+                    type: "reading" as const,
+                    body: reading.body,
+                    blocks: [
+                        { type: "paragraph", text: reading.body },
+                        ...reading.sections.flatMap((section) => [
+                            { type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 },
+                            ...section.paragraphs.map((text) => ({ type: "paragraph", text })),
+                            ...(reading.id === "cloud-certificate-lifecycle-operations-008" &&
+                                section.heading === "Execute old → staged but stale → reloaded through actual handshakes" ? [{
+                                type: "code", language: "python",
+                                caption: "Real local TLS certificate issuance, still-old served identity, reload, and endpoint expiry checks; no ACME/Kong",
+                                code: cloudCertificateRenewalPython,
+                            }] : []),
+                        ]),
+                        { type: "resources", title: "Continue learning", resources: [letsEncrypt, openssl] },
+                    ] as LessonBlock[],
+                },
+            })),
+
             {
                 id: "cloud-certificate-lifecycle-operations-002",
                 title: "Inspect Steward's TLS Identity and Trust Chain",
@@ -45,7 +72,8 @@ export const certificateLifecycleOperationsDeepLessons: Lesson[] = [
                     "Test hostname validation using the correct Steward name and one deliberately wrong hostname or equivalent negative validation.",
                     "Document where Kong obtains the certificate/private key and which OS/platform identities can read the private key; remove overly broad access if discovered.",
                     "Confirm no private key, ACME account secret or live sensitive material is committed to Git or copied into ordinary evidence."
-                ], deliverables: ["External TLS inspection", "Certificate-chain explanation", "Hostname positive/negative evidence", "Private-key ownership/access model", "Secret-material hygiene check"], completionCriteria: ["The learner can identify the exact leaf certificate served publicly.", "SAN/hostname and trust-chain validation are understood separately.", "A hostname/trust negative case is demonstrated.", "Private-key access is intentionally narrower than general application access."] },
+                ,
+                    ...(certificateLifecycleExtraPractices["cloud-certificate-lifecycle-operations-002"] ?? [])], deliverables: ["External TLS inspection", "Certificate-chain explanation", "Hostname positive/negative evidence", "Private-key ownership/access model", "Secret-material hygiene check"], completionCriteria: ["The learner can identify the exact leaf certificate served publicly.", "SAN/hostname and trust-chain validation are understood separately.", "A hostname/trust negative case is demonstrated.", "Private-key access is intentionally narrower than general application access."] },
             },
             {
                 id: "cloud-certificate-lifecycle-operations-003",
@@ -58,7 +86,8 @@ export const certificateLifecycleOperationsDeepLessons: Lesson[] = [
                     "Implement the post-renewal deployment/reload step needed for Kong to consume renewed certificate material without an unnecessary full-platform restart.",
                     "Capture the certificate fingerprint/serial before the controlled renewal/reissue test and prove the public endpoint later serves the intended replacement certificate.",
                     "Verify representative HTTPS traffic remains valid after reload and document the expected interruption behavior, if any."
-                ], deliverables: ["Versioned non-secret renewal automation", "ACME challenge decision", "Dry-run/staging evidence", "Kong reload/deployment mechanism", "Before/after served-certificate evidence", "Post-renewal HTTPS verification"], completionCriteria: ["Renewal is scheduled automatically.", "The renewal path is tested rather than assumed.", "The gateway actually serves replacement certificate material after deployment/reload.", "Renewal does not depend on committing CA/API/private-key secrets to source."] },
+                ,
+                    ...(certificateLifecycleExtraPractices["cloud-certificate-lifecycle-operations-003"] ?? [])], deliverables: ["Versioned non-secret renewal automation", "ACME challenge decision", "Dry-run/staging evidence", "Kong reload/deployment mechanism", "Before/after served-certificate evidence", "Post-renewal HTTPS verification"], completionCriteria: ["Renewal is scheduled automatically.", "The renewal path is tested rather than assumed.", "The gateway actually serves replacement certificate material after deployment/reload.", "Renewal does not depend on committing CA/API/private-key secrets to source."] },
             },
             {
                 id: "cloud-certificate-lifecycle-operations-004",
@@ -71,7 +100,8 @@ export const certificateLifecycleOperationsDeepLessons: Lesson[] = [
                     "Create an alert through the existing alerting/notification path for near-expiry or renewal failure; do not create a duplicate notification stack.",
                     "Record renewal scheduler/job success/failure evidence separately from endpoint expiry so a successful job cannot hide a stale certificate still served by Kong.",
                     "Prove the monitoring path can distinguish a healthy long-lived certificate from a controlled near-expiry/test condition or simulated threshold."
-                ], deliverables: ["Served-certificate expiry metric/probe", "Grafana expiry evidence", "Warning/critical policy", "Alert evidence", "Renewal-job health signal", "Endpoint-vs-job distinction"], completionCriteria: ["The certificate served to clients is monitored independently of certificate files on disk.", "Operators receive warning before expiry.", "Renewal execution and served-certificate freshness are treated as separate evidence.", "Existing Prometheus/Grafana/alerting responsibilities are reused rather than duplicated."] },
+                ,
+                    ...(certificateLifecycleExtraPractices["cloud-certificate-lifecycle-operations-004"] ?? [])], deliverables: ["Served-certificate expiry metric/probe", "Grafana expiry evidence", "Warning/critical policy", "Alert evidence", "Renewal-job health signal", "Endpoint-vs-job distinction"], completionCriteria: ["The certificate served to clients is monitored independently of certificate files on disk.", "Operators receive warning before expiry.", "Renewal execution and served-certificate freshness are treated as separate evidence.", "Existing Prometheus/Grafana/alerting responsibilities are reused rather than duplicated."] },
             },
             {
                 id: "cloud-certificate-lifecycle-operations-005",
@@ -85,7 +115,8 @@ export const certificateLifecycleOperationsDeepLessons: Lesson[] = [
                     "Restore the broken dependency, rerun the renewal validation and prove healthy lifecycle behavior.",
                     "Exercise the alert/notification path or controlled threshold so the failure would be actionable before expiry.",
                     "Write a concise certificate-renewal runbook containing diagnosis order, safe retry, escalation, manual emergency replacement boundaries and post-recovery public-endpoint verification."
-                ], deliverables: ["Controlled renewal failure", "Layered diagnosis", "Existing-service evidence", "Recovered renewal proof", "Alert/notification evidence", "Certificate renewal runbook"], completionCriteria: ["A real renewal-path failure is reproduced without causing an avoidable public outage.", "The failed layer is identified before configuration is changed blindly.", "Recovery restores automated renewal health.", "Monitoring/alerting would surface the risk before certificate expiry.", "The runbook ends with verification of the certificate actually served publicly." ] },
+                ,
+                    ...(certificateLifecycleExtraPractices["cloud-certificate-lifecycle-operations-005"] ?? [])], deliverables: ["Controlled renewal failure", "Layered diagnosis", "Existing-service evidence", "Recovered renewal proof", "Alert/notification evidence", "Certificate renewal runbook"], completionCriteria: ["A real renewal-path failure is reproduced without causing an avoidable public outage.", "The failed layer is identified before configuration is changed blindly.", "Recovery restores automated renewal health.", "Monitoring/alerting would surface the risk before certificate expiry.", "The runbook ends with verification of the certificate actually served publicly." ] },
             },
             { id: "cloud-certificate-lifecycle-operations-006", title: "Defend the Certificate Lifecycle", estimatedMinutes: 20, content: { type: "reflection", prompt: "Explain Steward's complete certificate lifecycle from ACME identity proof to Kong serving the certificate. Distinguish certificate issuance, trust, renewal, reload and expiry monitoring; explain why a successful renewal command does not prove the public endpoint is safe; and identify the recovery evidence you would require before closing a certificate incident.", minimumCharacters: 350 } },
         ],
