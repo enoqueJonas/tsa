@@ -3,11 +3,14 @@ The learner must solve the actual knowledge check to reach later topics. We do
 not invent responses, bypass the gate or claim learner mastery/live VPS.
 """
 import os
+import re
 from urllib.parse import parse_qs, urlparse
 from playwright.sync_api import sync_playwright
 
 BASE=os.getenv("TSA_BASE_URL","http://127.0.0.1:4173")
 school="cloud-engineer"
+NEXT=re.compile(r"^(Next|Next lesson|Complete path)$")
+MODULE=re.compile(r"^(Start|Continue|Review) module$")
 modules=[
     {
         "index":0,
@@ -48,7 +51,7 @@ with sync_playwright() as playwright:
         errors=[]
         page.on("pageerror",lambda err:errors.append(str(err)))
         page.goto(BASE+"/?view=curriculum&school="+school,wait_until="networkidle")
-        module_buttons=page.get_by_role("button",name="Start module")
+        module_buttons=page.get_by_role("button",name=MODULE)
         # Progress is local to this fresh browser context, so expected start.
         module_buttons.first.wait_for(state="visible",timeout=30000)
         assert module_buttons.count()==11,"Cloud Engineer lost one of 11 canonical modules"
@@ -66,7 +69,7 @@ with sync_playwright() as playwright:
             "Reading mobile overflow: "+target["reading"])
         page.set_viewport_size({"width":1440,"height":900})
         print("PASS Cloud original first reading and 390px:",target["reading"],flush=True)
-        page.get_by_role("button",name="Next").click()
+        page.get_by_role("button",name=NEXT).click()
         page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
         assert activity(page)==target["practice"], (
             "Learner practical not placed before reflection: "+target["practice"]+" "+page.url)
@@ -78,16 +81,16 @@ with sync_playwright() as playwright:
             "Practical mobile overflow: "+target["practice"])
         page.set_viewport_size({"width":1440,"height":900})
         print("PASS Cloud original applied practice before reflection:",target["practice"],flush=True)
-        page.get_by_role("button",name="Next").click()
+        page.get_by_role("button",name=NEXT).click()
         page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
         assert activity(page)==target["reflection"], (
             "First original reflection no longer follows practice")
-        gate=page.get_by_role("button",name="Next")
+        gate=page.get_by_role("button",name=NEXT)
         assert not gate.is_enabled(), "Knowledge check incorrectly permits blank learner answer"
         page.reload(wait_until="networkidle")
         page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
         assert activity(page)==target["reflection"],"Learner progress/reload was lost"
-        assert not page.get_by_role("button",name="Next").is_enabled(), (
+        assert not page.get_by_role("button",name=NEXT).is_enabled(), (
             "Reload bypasses genuine learner knowledge check")
         assert not errors,"Browser runtime exception "+str(errors)
         print("PASS Cloud 180-character reflection requires real response, no bypass, reload:",
