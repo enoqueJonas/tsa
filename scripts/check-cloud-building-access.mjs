@@ -21,7 +21,7 @@ const sections=object(depth,"cloudBuildingAccessSections","cloudBuildingAccessPr
 const practices=object(depth,"cloudBuildingAccessPractices");
 assert.deepEqual(Object.keys(sections),["iam","secrets-management"]);
 assert.deepEqual(Object.keys(practices),["iam","secrets-management"]);
-const originalIds=[...original.split("const specs: LessonSpec[] = [")[1].split("\n];")[0].matchAll(/^\s*id: "([^"]+)"/gm)].map(x=>x[1]);
+const originalIds=[...original.split("const specs: LessonSpec[] = [")[1].split("\n];")[0].matchAll(/^\s*\{\s*id: "([^"]+)"/gm)].map(x=>x[1]);
 assert.equal(originalIds.length,12,"Cloud Building Blocks original 12 topics must remain");
 assert.equal(new Set(originalIds).size,12);
 assert.ok(originalIds.includes("iam")&&originalIds.includes("secrets-management"));
