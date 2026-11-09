@@ -21,7 +21,7 @@ interface LessonSpec {
 
 function richLesson(spec: LessonSpec): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    const extendedSections = [...spec.sections, ...(cloudHostingMechanismSections[spec.id] ?? [])].map((section) =>
+    const extendedSections: LessonSpec["sections"] = [...spec.sections, ...(cloudHostingMechanismSections[spec.id] ?? [])].map((section) =>
         spec.id === "cloud-cost-awareness" && section.heading === "Run a reproducible quiet-month versus traffic-spike estimate"
             ? { ...section, code: {
                 language: "python",
