@@ -43,6 +43,21 @@ on:
       - 'packages/runtime-kernel/src/paths/delivery-ci-migration-proof.ts'
       - 'packages/runtime-kernel/src/paths/delivery-ci-migration-teaching.ts'
       - 'scripts/check-delivery-ci-migration-proof.mjs'
+      - 'packages/runtime-kernel/src/paths/cloud-hosting-models-deep.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-hosting-models-quality.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-hosting-mechanism-depth.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-hosting-live-cost.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-vps-operations-deep.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-vps-operations-quality.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-vps-mechanism-depth.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-vps-ssh-client-proof.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-internet-networking-deep.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-internet-networking-quality.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-network-mechanism-depth.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-network-tls-proof.ts'
+      - 'scripts/check-cloud-hosting-cost-and-mechanisms.mjs'
+      - 'scripts/check-cloud-vps-network-proofs.mjs'
+      - 'scripts/check-cloud-browser.py'
       - '.github/workflows/delivery-ansible-learner-depth.yml'
   push:
     branches:
@@ -101,6 +116,14 @@ jobs:
           node scripts/check-delivery-schema-evolution-postgres.mjs
       - name: Parse original CI migration GitLab YAML and run real unittest fail-closed cases with mutants
         run: node scripts/check-delivery-ci-migration-proof.mjs
+      - name: Execute original Cloud hosting metered-price source with five unsafe mutations
+        run: node scripts/check-cloud-hosting-cost-and-mechanisms.mjs
+      - name: Execute original VPS SSH and networking TLS proofs with seven unsafe mutations
+        run: |
+          command -v ssh-keygen
+          command -v ssh
+          command -v openssl
+          node scripts/check-cloud-vps-network-proofs.mjs
       - name: Build and check entire curriculum
         run: |
           pnpm install --frozen-lockfile
@@ -117,3 +140,4 @@ jobs:
           python -m http.server 4173 --bind 127.0.0.1 --directory apps/web/out > /tmp/tsa-delivery-local-web.log 2>&1 &
           for i in $(seq 1 30); do curl --fail --silent http://127.0.0.1:4173/ >/dev/null && break; sleep 1; done
           python scripts/check-delivery-ansible-browser.py
+          python scripts/check-cloud-browser.py
