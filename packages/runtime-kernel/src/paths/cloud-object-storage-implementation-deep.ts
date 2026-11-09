@@ -1,6 +1,8 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { objectStoreLocalProofBlocks } from "./cloud-observable-local-proofs";
+import { objectStorageFocusedReadings, objectStorageExtraPractices } from "./cloud-object-storage-focused";
+import { cloudS3RealProtocolProofPython } from "./cloud-object-storage-live-s3-proof";
 
 const awsS3: LearningResource = { title: "Amazon S3 User Guide", url: "https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html" };
 const minio: LearningResource = { title: "MinIO documentation", url: "https://min.io/docs/minio/linux/index.html" };
@@ -36,6 +38,31 @@ export const objectStorageImplementationDeepLessons: Lesson[] = [
         title: "S3-Compatible Object Storage for Steward",
         activities: [
             { id: "cloud-object-storage-implementation-001", title: "From Object-storage Design to Operation", estimatedMinutes: 45, content: { type: "reading", body: "Implement object storage only after identifying a Steward workload whose semantics justify it.", blocks } },
+
+            ...objectStorageFocusedReadings.map((reading) => ({
+                id: reading.id,
+                title: reading.title,
+                estimatedMinutes: reading.estimatedMinutes,
+                content: {
+                    type: "reading" as const,
+                    body: reading.body,
+                    blocks: [
+                        { type: "paragraph", text: reading.body },
+                        ...reading.sections.flatMap((section) => [
+                            { type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 },
+                            ...section.paragraphs.map((text) => ({ type: "paragraph", text })),
+                            ...(reading.id === "cloud-object-storage-implementation-011" &&
+                                section.heading === "Run real versioning, authorization-boundary and integrity checks" ? [{
+                                type: "code", language: "python",
+                                caption: "Actual boto3 real S3 API against a strictly disposable loopback MinIO; run exercise then verify after container restart",
+                                code: cloudS3RealProtocolProofPython,
+                            }] : []),
+                        ]),
+                        { type: "resources", title: "Continue learning", resources: [awsS3, minio] },
+                    ] as LessonBlock[],
+                },
+            })),
+
             {
                 id: "cloud-object-storage-implementation-002",
                 title: "Deploy and Secure the Object Store",
@@ -48,7 +75,8 @@ export const objectStorageImplementationDeepLessons: Lesson[] = [
                     "Prove allowed put/get/list behavior and at least one denied operation caused by policy rather than a broken client.",
                     "Enable transport protection appropriate to the homelab and ensure credentials are not committed, logged or embedded in object names/metadata.",
                     "Record capacity/persistence assumptions and how the service itself would be backed up or reconstructed."
-                ], deliverables: ["Object-store topology", "Persistence configuration", "Bucket/key contract", "Least-privilege policy", "Allowed/denied access evidence", "Recovery responsibility note"], completionCriteria: ["A real S3-compatible service is running and reachable by a non-admin Steward identity.", "Object data survives a normal service/container restart.", "Least privilege is demonstrated with both success and denial evidence.", "The learner can explain why this data belongs in object storage instead of PostgreSQL, NFS or Nexus."] },
+                ,
+                    ...(objectStorageExtraPractices["cloud-object-storage-implementation-002"] ?? [])], deliverables: ["Object-store topology", "Persistence configuration", "Bucket/key contract", "Least-privilege policy", "Allowed/denied access evidence", "Recovery responsibility note"], completionCriteria: ["A real S3-compatible service is running and reachable by a non-admin Steward identity.", "Object data survives a normal service/container restart.", "Least privilege is demonstrated with both success and denial evidence.", "The learner can explain why this data belongs in object storage instead of PostgreSQL, NFS or Nexus."] },
             },
             {
                 id: "cloud-object-storage-implementation-003",
@@ -62,7 +90,8 @@ export const objectStorageImplementationDeepLessons: Lesson[] = [
                     "Upload two objects with intentionally similar human names and prove stable keys/identities avoid accidental overwrite.",
                     "Define integrity verification using checksums/ETag semantics appropriate to the client and implementation rather than assuming an ETag is always a simple MD5.", "Document the consistency guarantees of the chosen S3-compatible implementation and test the application behavior that depends on them rather than assuming every object store behaves identically.",
                     "Capture end-to-end evidence from request/generation through object persistence and retrieval."
-                ], deliverables: ["Steward object-storage integration", "Object-reference model", "Authorization evidence", "Overwrite/integrity evidence", "End-to-end workflow record"], completionCriteria: ["Steward actually writes and retrieves a real object through the S3-compatible API.", "The blob is not stored in the application container filesystem as the authoritative copy.", "Application authorization remains explicit rather than being delegated accidentally to knowledge of an object key.", "The object reference remains stable and collision behavior is understood."] },
+                ,
+                    ...(objectStorageExtraPractices["cloud-object-storage-implementation-003"] ?? [])], deliverables: ["Steward object-storage integration", "Object-reference model", "Authorization evidence", "Overwrite/integrity evidence", "End-to-end workflow record"], completionCriteria: ["Steward actually writes and retrieves a real object through the S3-compatible API.", "The blob is not stored in the application container filesystem as the authoritative copy.", "Application authorization remains explicit rather than being delegated accidentally to knowledge of an object key.", "The object reference remains stable and collision behavior is understood."] },
             },
             {
                 id: "cloud-object-storage-implementation-004",
@@ -76,7 +105,8 @@ export const objectStorageImplementationDeepLessons: Lesson[] = [
                     "Recover service and verify previously committed objects remain readable.",
                     "Compare this failure with an NFS outage and explain how API/object semantics change application handling.",
                     "Add the object store to the appropriate backup/recovery and observability inventory for later Reliability work."
-                ], deliverables: ["Lifecycle/retention evidence", "Deletion/overwrite recovery evidence or explicit boundary", "Outage investigation", "Credential-failure evidence", "Recovery verification", "Object-vs-file failure comparison"], completionCriteria: ["Retention/lifecycle behavior is implemented rather than only diagrammed.", "Steward distinguishes failed object persistence from successful business completion.", "At least two failure classes are reproduced and diagnosed.", "Previously committed data is verified after service recovery.", "The learner can distinguish object-store outage behavior from mounted-file-service failure." ] },
+                ,
+                    ...(objectStorageExtraPractices["cloud-object-storage-implementation-004"] ?? [])], deliverables: ["Lifecycle/retention evidence", "Deletion/overwrite recovery evidence or explicit boundary", "Outage investigation", "Credential-failure evidence", "Recovery verification", "Object-vs-file failure comparison"], completionCriteria: ["Retention/lifecycle behavior is implemented rather than only diagrammed.", "Steward distinguishes failed object persistence from successful business completion.", "At least two failure classes are reproduced and diagnosed.", "Previously committed data is verified after service recovery.", "The learner can distinguish object-store outage behavior from mounted-file-service failure." ] },
             },
             { id: "cloud-object-storage-implementation-005", title: "Defend the Storage Architecture", estimatedMinutes: 20, content: { type: "reflection", prompt: "Defend the Steward data placement across PostgreSQL, NFS/SMB, Nexus and S3-compatible object storage. Explain the object key and access-policy design, lifecycle/recovery boundary, one failure you reproduced, and what evidence would justify migrating the homelab implementation to a managed cloud object store later.", minimumCharacters: 350 } },
         ],
