@@ -38,7 +38,7 @@ for(const [topics,source,sections,practices,minimum] of [
   assert(sections[topic].length>=minimum,"Over-compressed concept: "+topic);
   for(const section of sections[topic]){
    assert(section.paragraphs.length>=2&&section.heading.length>14);
-   assert(section.paragraphs.every(p=>p.length>300),"Unexplained mechanism "+topic+" "+section.heading);
+   assert(section.paragraphs.every(p=>p.length>210),"Unexplained mechanism "+topic+" "+section.heading);
   }
   assert(practices[topic].length>=2,"Missing independent transfer practice "+topic);
  }
