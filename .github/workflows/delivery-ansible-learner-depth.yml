@@ -80,6 +80,11 @@ on:
       - 'packages/runtime-kernel/src/paths/cloud-canary-focused-depth.ts'
       - 'packages/runtime-kernel/src/paths/cloud-canary-real-http-proof.ts'
       - 'scripts/check-cloud-canary-real-http.mjs'
+      - 'packages/runtime-kernel/src/paths/cloud-architecture-cost-deep.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-architecture-cost-quality.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-architecture-cost-mechanisms.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-architecture-capacity-real-proof.ts'
+      - 'scripts/check-cloud-architecture-cost-proofs.mjs'
       - '.github/workflows/delivery-ansible-learner-depth.yml'
   push:
     branches:
@@ -178,6 +183,8 @@ jobs:
           node scripts/check-cloud-iac-real-cli.mjs
       - name: Execute original-source real TCP canary distribution, abort, metrics failure and six unsafe variants
         run: node scripts/check-cloud-canary-real-http.mjs
+      - name: Verify original Cloud Architecture and Cost synthetic capacity, burst-hours, budget, unit economics and nine unsafe variants
+        run: node scripts/check-cloud-architecture-cost-proofs.mjs
       - name: Build and check entire curriculum
         run: |
           pnpm install --frozen-lockfile
