@@ -1,6 +1,8 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { buildingBlockDepthById } from "./cloud-building-blocks-source-depth";
+import { cloudBuildingAccessSections } from "./cloud-building-access-depth";
+import { cloudIamPolicyPython, cloudSecretRotationPython } from "./cloud-building-trust-proof";
 
 const awsWellArchitected: LearningResource = { title: "AWS — Well-Architected Framework", url: "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html" };
 const azureArchitecture: LearningResource = { title: "Microsoft Azure — Architecture Center", url: "https://learn.microsoft.com/azure/architecture/" };
@@ -18,7 +20,30 @@ interface LessonSpec {
 
 function richLesson(spec: LessonSpec): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    for (const section of [...spec.sections, ...(buildingBlockDepthById[spec.id] ?? [])]) {
+    const fullSections: LessonSpec["sections"] = [
+        ...spec.sections,
+        ...(buildingBlockDepthById[spec.id] ?? []),
+        ...(cloudBuildingAccessSections[spec.id] ?? []),
+    ].map((section) => {
+        if (spec.id === "iam" &&
+            section.heading === "Execute a local explicit-deny and prefix-boundary decision model") {
+            return {...section, code: {
+                language: "python",
+                caption: "Local fictional IAM evaluator: prefix, explicit deny, scoped allow, default deny; NOT provider IAM",
+                code: cloudIamPolicyPython,
+            }};
+        }
+        if (spec.id === "secrets-management" &&
+            section.heading === "Execute a client-generation rotation state machine with a denied premature revoke") {
+            return {...section, code: {
+                language: "python",
+                caption: "Local fictional credential-generation overlap, premature-revoke failure and final revocation; NO real secrets",
+                code: cloudSecretRotationPython,
+            }};
+        }
+        return section;
+    });
+    for (const section of fullSections) {
         blocks.push({ type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.list) blocks.push({ type: "list", items: section.list });
