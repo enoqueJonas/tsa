@@ -1,6 +1,10 @@
 import type { Lesson } from "./lesson";
+import { cloudMilestoneGateAugmentations } from "./cloud-milestone-evidence-depth";
+import { cloudMilestoneEvidenceAuditPython } from "./cloud-milestone-evidence-audit";
 
 function practicalLesson(id: string, title: string, objective: string, instructions: string[], deliverables: string[], criteria: string[]): Lesson {
+    const gateEvidence = cloudMilestoneGateAugmentations[id];
+    if (!gateEvidence) throw new Error("Missing Cloud exit evidence contract for " + id);
     return {
         id: `steward-internet-environment-${id}`,
         title,
@@ -13,9 +17,10 @@ function practicalLesson(id: string, title: string, objective: string, instructi
                     type: "practical",
                     objective,
                     scenario: "You are completing the Cloud Engineer school by proving one coherent Steward internet environment. Reuse the existing immutable application artifact, delivery pipeline and homelab lessons. Do not build a parallel demo stack or add platform layers without a stated requirement.",
-                    instructions,
-                    deliverables,
-                    completionCriteria: criteria,
+                    instructions: [...instructions, ...gateEvidence.instructions],
+                    deliverables: [...deliverables, ...gateEvidence.deliverables],
+                    completionCriteria: [...criteria, ...gateEvidence.criteria,
+                        "The saved evidence workspace must include actual environment-specific observations and independently reviewed artifact references. A local Accepted status is self-attestation only; external operational validity remains unverified without independent review."],
                 },
             },
         ],
@@ -39,6 +44,13 @@ const brief: Lesson = {
                     { type: "list", items: ["One real Steward release candidate is reused; no environment rebuilds source by hand.", "Internet exposure is explicit: DNS, TLS, Kong ingress and administrative access are separate concerns.", "Infrastructure is reproducible through OpenTofu while Terraform concepts remain transferable.", "Kubernetes/OpenShift runtime state is versioned and GitOps reconciliation has one authoritative owner.", "GitLab CI/CD remains the build/test/package/publish system; Argo CD reconciles environment state rather than replacing CI.", "Managed services or enterprise platform layers remain only where a driver justifies their cost and responsibility shift.", "Backup and recovery are demonstrated, not assumed.", "The final architecture includes an explicit monthly cost model and accepted risks."] },
                     { type: "heading", id: "evidence-chain", text: "The evidence chain", level: 2 },
                     { type: "code", language: "text", caption: "Milestone evidence flow", code: "Steward source revision\n        ↓\nGitLab CI/CD build/test/package\n        ↓\nimmutable artifact in Nexus\n        ↓\nOpenTofu-defined infrastructure\n        ↓\nOpenShift/Kubernetes + environment Git\n        ↓\nArgo CD reconciliation\n        ↓\nKong + DNS + TLS public edge\n        ↓\nrunning Steward image digest\n        ↓\nexternal verification + recovery evidence\n        ↓\narchitecture + cost handoff" },
+                    { type: "heading", id: "laboratory-vs-operational", text: "A proven laboratory component is not an accepted Steward environment", level: 2 },
+                    { type: "paragraph", text: "The completed Cloud lessons contain real local OpenTofu, MinIO S3, Kubernetes controller, HTTP canary and synthetic costing exercises. Each proves a sharply limited behavior in its original lab. None proves that a real externally hosted Steward release ran behind DNS/TLS/Kong, was reconciled by live Argo CD, met actual OpenShift admissions, crossed a real network-policy boundary or recovered real application state. These final platform gates require separately observed evidence from the SAME named remote environment and release identity. A successful test in CI is not a substitute for the operational acceptance record." },
+                    { type: "heading", id: "evidence-chain-gates", text: "Eight review gates and an unverified manifest by default", level: 2 },
+                    { type: "paragraph", text: "For each of the eight operational practices retain the source commit, observed environment, approved image digest, evidence URL, timestamps and reviewer decision. Use the program below to create a deliberately UNVERIFIED manifest and check whether each mandatory evidence type has a complete record. The checker is an offline metadata completeness audit only: it does not fetch or authenticate links, call the cluster, measure real traffic, verify a reviewer identity or confer the Cloud Engineer milestone. Even a metadata-complete file requires an independent human to replay and challenge the actual observations." },
+                    { type: "code", language: "python", caption: "Create UNVERIFIED evidence template; offline audit explicitly reports PENDING INDEPENDENT EXTERNAL REVIEW", code: cloudMilestoneEvidenceAuditPython },
+                    { type: "heading", id: "acceptance-is-not-an-interface-label", text: "Accepting an evidence form is not proof of infrastructure", level: 2 },
+                    { type: "paragraph", text: "The browser's evidence workspace records the learner's self-assessment. A complete, saved record with an external link can stop accidental blank-click completion, but the author could still invent a URL or misinterpret a controller. Distinguish these stages: (1) learner record saved, (2) source and metadata checks pass, (3) a different reviewer independently verifies actual environment commands and user-facing outcomes, and (4) the learner can reproduce/defend the process without prompting. Do not label the milestone operationally or learner-validated until the last two stages have genuinely occurred." },
                     { type: "callout", tone: "steward", title: "Cloud boundary", body: "Cloud Engineer establishes the infrastructure, orchestration, gateway and GitOps platform. It does not yet replace Quality, Security or Reliability with shallow checklists. Preserve clear handoffs into those schools." },
                 ],
             },
@@ -189,7 +201,7 @@ const review: Lesson = {
             estimatedMinutes: 45,
             content: {
                 type: "reflection",
-                prompt: "Can another engineer recreate the Steward environment from versioned infrastructure, artifact and environment-state sources without relying on your laptop, cloud-console memory or undocumented manual steps? Explain the full path from source revision to GitLab CI/CD/Nexus artifact, OpenTofu infrastructure, Kubernetes/OpenShift workload, environment Git and Argo CD reconciliation, Kong/DNS/TLS exposure and external verification. Identify the current single points of failure, the accepted monthly cost, the recovery evidence you actually proved, one reason a simpler VPS architecture could still be preferable, and which remaining concerns now belong specifically to Quality Steward, Security Steward and Reliability Engineer rather than Cloud Engineer.",
+                prompt: "Can another engineer recreate the Steward environment from versioned infrastructure, artifact and environment-state sources without relying on your laptop, cloud-console memory or undocumented manual steps? Explain the full path from source revision to GitLab CI/CD/Nexus artifact, OpenTofu infrastructure, Kubernetes/OpenShift workload, environment Git and Argo CD reconciliation, Kong/DNS/TLS exposure and external verification. Identify the current single points of failure, the accepted monthly cost, the recovery evidence you actually proved, one reason a simpler VPS architecture could still be preferable, and which remaining concerns now belong specifically to Quality Steward, Security Steward and Reliability Engineer rather than Cloud Engineer. Identify the eight final acceptance gates and state precisely which have independently reviewed real remote evidence and which are untested. A green local fixture/CI test, populated form, static OpenShift/Argo YAML or synthetic cost model must never be presented as acceptance. Explain one disproving check that a second engineer should run against the actual environment.",
                 minimumCharacters: 450,
             },
         },
