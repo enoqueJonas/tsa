@@ -528,5 +528,66 @@ with sync_playwright() as playwright:
     print("PASS original Architecture intro→applied practice→gated reflection and IndexedDB reload; later original topics remain genuinely gated",flush=True)
     context.close()
 
+
+    # Final Cloud milestone: never invent real provider, Kong, OpenShift, Argo
+    # or Argo Rollouts evidence. Verify source is visible and the first
+    # operational gate is NOT completable through a blank Next click.
+    context=browser.new_context(viewport={"width":1440,"height":900})
+    page=context.new_page()
+    runtime_errors=[]
+    page.on("pageerror",lambda err:runtime_errors.append(str(err)))
+    page.goto(BASE+"/?view=curriculum&school="+school,wait_until="networkidle")
+    module_buttons=page.get_by_role("button",name=MODULE)
+    module_buttons.first.wait_for(state="visible",timeout=30000)
+    assert module_buttons.count()==11
+    module_buttons.nth(10).click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert activity(page)=="steward-internet-environment-brief-001",(
+        "Original Cloud final brief ID changed: "+page.url)
+    content=page.locator("main").last
+    brief_body=content.inner_text()
+    for expected in (
+        "A proven laboratory component is not an accepted Steward environment",
+        "Eight review gates and an unverified manifest by default",
+        "CLOUD_EXIT_METADATA_COMPLETE_PENDING_INDEPENDENT_EXTERNAL_REVIEW",
+        "independent human",
+    ):
+        assert expected.lower() in brief_body.lower(),(
+            "Cloud operational acceptance boundary absent: "+expected)
+    assert content.get_by_role("button",name="Copy").count()>=1,(
+        "Offline evidence checker not copyable")
+    page.set_viewport_size({"width":390,"height":844})
+    assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),(
+        "Cloud final brief overflow at 390px")
+    page.set_viewport_size({"width":1440,"height":900})
+    print("PASS final Cloud original brief, UNVERIFIED source program and mobile",flush=True)
+    nxt=page.get_by_role("button",name=NEXT)
+    assert nxt.is_enabled(),"Original final Cloud brief unexpectedly locked"
+    nxt.click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert activity(page)=="steward-internet-environment-gate-1-hosting-architecture-001",(
+        "Original Gate 1 progress ID/order changed: "+page.url)
+    main=page.locator("main").last
+    text_body=main.inner_text()
+    assert "Accepted-risk and alternative-decision evidence" in text_body
+    assert "self-attested" in text_body.lower()
+    assert not page.get_by_role("button",name=NEXT).is_enabled(),(
+        "Critical: final Cloud operational gate completed with no evidence")
+    assert main.get_by_role("button",name="Save evidence").count()==1,(
+        "Cloud final practical missing persistent evidence workspace")
+    page.set_viewport_size({"width":390,"height":844})
+    assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),(
+        "Cloud final operational practical overflow at 390px")
+    page.set_viewport_size({"width":1440,"height":900})
+    wait_current_progress_saved(page)
+    page.reload(wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert activity(page)=="steward-internet-environment-gate-1-hosting-architecture-001"
+    assert not page.get_by_role("button",name=NEXT).is_enabled(),(
+        "Cloud operational gate bypassed after reload without evidence")
+    assert not runtime_errors,"Cloud final milestone Chrome runtime error "+str(runtime_errors)
+    print("PASS final original Cloud Gate1: substantive evidence prerequisite, 390px, persisted progress and blank Next blocked after reload; later eight real gates not falsely completed",flush=True)
+    context.close()
+
     browser.close()
-print("PASS Cloud modules 1–10 bounded browser checks; exact cost-model execution is independent of human and provider acceptance")
+print("PASS Cloud modules 1–11 bounded browser evidence; final external operational acceptance remains not tested")
