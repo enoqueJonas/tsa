@@ -1,6 +1,8 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { canaryLocalProofBlocks } from "./cloud-observable-local-proofs";
+import { cloudCanaryFocusedReadings, cloudCanaryOriginalPractices } from "./cloud-canary-focused-depth";
+import { cloudCanaryRealHttpPython } from "./cloud-canary-real-http-proof";
 
 const k8sDeployment: LearningResource = { title: "Kubernetes Deployments", url: "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/" };
 const argoRollouts: LearningResource = { title: "Argo Rollouts documentation", url: "https://argo-rollouts.readthedocs.io/" };
@@ -35,6 +37,31 @@ export const progressiveDeliveryCanaryDeepLessons: Lesson[] = [
         title: "Progressive Delivery with Canary Releases",
         activities: [
             { id: "cloud-progressive-delivery-canary-001", title: "From Rolling Updates to Progressive Delivery", estimatedMinutes: 45, content: { type: "reading", body: "Progressive delivery changes the release question from 'did the new pods start?' to 'does limited real traffic provide enough evidence to expand exposure?'.", blocks } },
+
+            ...cloudCanaryFocusedReadings.map((reading) => ({
+                id: reading.id,
+                title: reading.title,
+                estimatedMinutes: reading.estimatedMinutes,
+                content: {
+                    type: "reading" as const,
+                    body: reading.body,
+                    blocks: [
+                        { type: "paragraph", text: reading.body },
+                        ...reading.sections.flatMap((section) => [
+                            { type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 },
+                            ...section.paragraphs.map((text) => ({ type: "paragraph", text })),
+                            ...(reading.id === "cloud-progressive-delivery-canary-007" &&
+                                section.heading === "Run actual HTTP upstreams and observe route share" ? [{
+                                type: "code", language: "python",
+                                caption: "Real loopback HTTP stable/candidate/weighted proxy/metrics; NOT Argo Rollouts or Prometheus",
+                                code: cloudCanaryRealHttpPython,
+                            }] : []),
+                        ]),
+                        { type: "resources", title: "Continue learning", resources: [k8sDeployment, argoRollouts, prometheus] },
+                    ] as LessonBlock[],
+                },
+            })),
+
             {
                 id: "cloud-progressive-delivery-canary-002",
                 title: "Design Steward's Canary Contract",
@@ -48,6 +75,8 @@ export const progressiveDeliveryCanaryDeepLessons: Lesson[] = [
                     "Define a stable baseline for the same indicators so the decision compares candidate behavior with contemporaneous stable behavior where possible rather than relying only on static absolute thresholds.",
                     "Define a minimum evidence rule: observation duration plus enough requests/events for the metric to be meaningful. State what happens when traffic is too low to satisfy that rule.",
                     "Define what happens to the candidate on abort, what stable version remains authoritative, and which database/data changes cannot be undone by traffic rollback."
+                
+                    , ...(cloudCanaryOriginalPractices["cloud-progressive-delivery-canary-002"] ?? [])
                 ], deliverables: ["Progressive-delivery justification", "Stable/candidate compatibility proof", "Canary-vs-blue-green comparison", "Exposure plan", "Stable baseline and promotion/abort criteria", "Minimum-evidence/low-traffic rule", "State-aware rollback contract"], completionCriteria: ["Canary is justified by a concrete release risk.", "Stable and candidate coexistence is proven safe before traffic splitting.", "Promotion criteria are measurable rather than 'looks healthy'.", "Abort behavior distinguishes traffic/application rollback from persistent-state rollback." ] },
             },
             {
@@ -62,6 +91,8 @@ export const progressiveDeliveryCanaryDeepLessons: Lesson[] = [
                     "Configure multiple canary steps with bounded pauses/analysis rather than an immediate 0-to-100 replacement.",
                     "Expose release identity in evidence so requests/results can be attributed to stable versus candidate versions.",
                     "Run a healthy candidate through the complete progression and prove the approved immutable image becomes the stable version without rebuilding it."
+                
+                    , ...(cloudCanaryOriginalPractices["cloud-progressive-delivery-canary-003"] ?? [])
                 ], deliverables: ["Versioned Rollout configuration", "Argo CD reconciliation evidence", "Stable/canary routing model", "Progression evidence", "Release identity evidence", "Successful promotion record"], completionCriteria: ["Argo Rollouts is actually operating the selected Steward rollout.", "Argo CD remains the desired-state/GitOps authority rather than being replaced by imperative rollout edits.", "Traffic/exposure increases through multiple bounded stages.", "The exact approved image identity is promoted without rebuild.", "The routing method and its limitations are understood." ] },
             },
             {
@@ -78,6 +109,8 @@ export const progressiveDeliveryCanaryDeepLessons: Lesson[] = [
                     "Repeat or tabletop the decision under very low traffic and prove that insufficient evidence pauses or requires an explicit alternative validation path rather than silently promoting.",
                     "Fix the defect, publish a new immutable candidate through the normal GitLab CI/CD/Nexus release chain, and prove the new candidate can progress successfully.",
                     "Document alert/notification handoff for an aborted progressive rollout without creating a duplicate alerting stack."
+                
+                    , ...(cloudCanaryOriginalPractices["cloud-progressive-delivery-canary-004"] ?? [])
                 ], deliverables: ["Automated analysis configuration", "Defective candidate", "Prometheus failure evidence", "Automatic pause/abort evidence", "Stable-service evidence", "Fixed-candidate promotion", "Notification handoff"], completionCriteria: ["A candidate that passes readiness can still be rejected by release analysis.", "At least one promotion/abort decision is driven automatically by real telemetry.", "The decision records observation window and evidence volume rather than treating a percentage alone as statistically meaningful.", "Insufficient traffic cannot silently satisfy the promotion gate.", "The bad candidate does not reach full exposure.", "Stable service remains available during abort.", "The recovery uses a newly built fixed candidate or known-good immutable artifact, not an ad-hoc in-cluster patch." ] },
             },
             {
@@ -90,6 +123,8 @@ export const progressiveDeliveryCanaryDeepLessons: Lesson[] = [
                     "Restore the dependency and demonstrate controlled continuation or restart of the rollout.",
                     "Record emergency/manual promotion permissions and the evidence/approval required to use them; routine releases must not depend on bypassing analysis.",
                     "Define monitoring for the progressive-delivery controller and analysis path themselves."
+                
+                    , ...(cloudCanaryOriginalPractices["cloud-progressive-delivery-canary-005"] ?? [])
                 ], deliverables: ["Analysis/control-plane failure experiment", "Fail-safe behavior evidence", "Recovery evidence", "Manual override policy", "Control-plane monitoring requirements"], completionCriteria: ["Loss of analysis evidence does not silently promote the candidate.", "The rollout recovers predictably after analysis/control-plane restoration.", "Manual override is bounded and auditable.", "The learner identifies operational signals for the rollout machinery itself." ] },
             },
             { id: "cloud-progressive-delivery-canary-006", title: "Reassess Progressive Delivery", estimatedMinutes: 20, content: { type: "reflection", prompt: "Defend Steward's canary implementation. Explain what risk it controls beyond Kubernetes rolling updates, why Argo Rollouts does not replace Argo CD, how Prometheus influences promotion, what happens when analysis is unavailable, how database compatibility constrains rollback, and what evidence would justify simplifying back to ordinary rolling releases or adopting blue/green later.", minimumCharacters: 350 } },
