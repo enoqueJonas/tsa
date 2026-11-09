@@ -5,6 +5,7 @@ const root="packages/runtime-kernel/src/paths/";
 function read(path){return readFileSync(root+path,"utf8")}
 const vps=read("cloud-vps-operations-deep.ts"), net=read("cloud-internet-networking-deep.ts");
 const depthVps=read("cloud-vps-learner-reconstruction.ts"),depthNet=read("cloud-network-learner-reconstruction.ts");
+const qualityNet=read("cloud-internet-networking-quality.ts");
 const srcVps=read("cloud-vps-local-proofs.ts"),srcNet=read("cloud-network-dns-proof.ts");
 function literal(src,name){
   const match=src.match(new RegExp("export const "+name+" = (\"(?:\\\\.|[^\"\\\\])*\");"));
@@ -44,6 +45,13 @@ for(const [topics,source,sections,practices,minimum] of [
  }
 }
 assert(vps.includes("...spec.sections, ...extra")&&vps.includes("cloudVpsPractices[spec.id]"));
+assert(qualityNet.includes('activities: aligned.activities.map((activity) =>'),
+ "Quality overlay must preserve original Network practical IDs and order");
+assert(!qualityNet.includes('aligned.activities.filter((activity)'),
+ "Quality overlay must not drop original -002 applied activities");
+assert(!qualityNet.includes('id: `${aligned.id}-practice`'),
+ "Quality overlay must not append unreachable practical after gated reflection");
+
 assert(net.includes("...spec.sections, ...extra")&&net.includes("cloudNetworkPractices[spec.id]"));
 assert(vps.includes("cloudVpsLoopbackProof"));
 assert(net.includes("cloudNetworkDnsProof"));
