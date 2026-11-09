@@ -1,5 +1,6 @@
 import type { Lesson } from "./lesson";
 import { cloudArchitectureAndCostDeepLessons } from "./cloud-architecture-cost-deep";
+import { cloudArchitecturePracticeEvidence } from "./cloud-architecture-cost-mechanisms";
 
 const practiceTitles: Record<string, string> = {
     "Availability in Cloud Environments": "Availability Review: Remove the Highest-Impact Single Failure",
@@ -30,6 +31,7 @@ function enrichLesson(lesson: Lesson): Lesson {
                 content: {
                     ...activity.content,
                     objective: `${practiceTitle}. Make a proportionate Steward architecture decision supported by failure, capacity, recovery and cost evidence.`,
+                    instructions: [...activity.content.instructions, ...(cloudArchitecturePracticeEvidence[lesson.id.slice("cloud-architecture-and-cost-".length)] ?? [])],
                     scenario: "Steward now has a reproducible OpenTofu-defined remote environment, Kong ingress, private backend services and an established delivery platform. Review that real system rather than designing an imaginary hyperscale replacement. Add complexity only when a measurable requirement or failure consequence earns it.",
                     deliverables: [
                         ...activity.content.deliverables,
