@@ -67,6 +67,10 @@ on:
       - 'packages/runtime-kernel/src/paths/cloud-building-trust-proof.ts'
       - 'scripts/check-cloud-certificate-renewal-proof.mjs'
       - 'scripts/check-cloud-building-access.mjs'
+      - 'packages/runtime-kernel/src/paths/cloud-object-storage-implementation-deep.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-object-storage-focused.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-object-storage-live-s3-proof.ts'
+      - 'scripts/check-cloud-s3-minio.mjs'
       - '.github/workflows/delivery-ansible-learner-depth.yml'
   push:
     branches:
@@ -139,6 +143,11 @@ jobs:
           node scripts/check-cloud-certificate-renewal-proof.mjs
       - name: Exercise exact Building Blocks IAM and credential-rotation sources with six unsafe variants
         run: node scripts/check-cloud-building-access.mjs
+      - name: Execute real disposable MinIO S3 API, versioning, denial, restart and six unsafe mutants
+        run: |
+          docker info --format 'Docker {{.ServerVersion}}'
+          python -m pip install 'boto3==1.40.58'
+          node scripts/check-cloud-s3-minio.mjs
       - name: Build and check entire curriculum
         run: |
           pnpm install --frozen-lockfile
