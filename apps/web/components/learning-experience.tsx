@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createRuntime, type LearningPath } from "@tsa/runtime-kernel";
 import { ActivityEvidencePanel } from "./activity-evidence-panel";
 import { CurriculumSidebar } from "./curriculum-sidebar";
@@ -35,6 +35,14 @@ export function LearningExperience({
   const [unlockedActivityIds, setUnlockedActivityIds] = useState(session.unlockedActivityIds());
   const [reflectionResponse, setReflectionResponse] = useState(session.reflectionResponse(session.currentActivity().id));
   const [canCompleteCurrentActivity, setCanCompleteCurrentActivity] = useState(session.canCompleteCurrentActivity());
+  // The final Cloud milestone's practicals require saved, substantial
+  // self-attested evidence before this UI can call the runtime completion API.
+  // A local accepted record still does NOT verify any remote system.
+  const [acceptedMilestoneEvidence, setAcceptedMilestoneEvidence] =
+    useState<{ activityId: string; accepted: boolean } | null>(null);
+  const onMilestoneAcceptanceChange = useCallback((activityId: string, accepted: boolean) => {
+    setAcceptedMilestoneEvidence({ activityId, accepted });
+  }, []);
 
   function sync() {
     const currentActivity = session.currentActivity();
@@ -80,6 +88,11 @@ export function LearningExperience({
 
   function primary() {
     const id = session.currentActivity().id;
+    if (activePath.id === "steward-internet-environment" &&
+        session.currentActivity().content.type === "practical" &&
+        !(acceptedMilestoneEvidence?.activityId === id && acceptedMilestoneEvidence.accepted)) {
+      return; // Keep runtime progress unchanged until evidence is persisted.
+    }
     const done = session.completedActivityIds().includes(id);
     if (!done && !session.completeCurrentActivity()) return;
     if (session.hasNext()) session.next();
@@ -109,7 +122,14 @@ export function LearningExperience({
   const done = completedActivityIds.includes(activity.id);
   const finished = !hasNext && done;
   const last = lesson.activities[lesson.activities.length - 1]?.id === activity.id;
-  const disabled = finished || (!done && !canCompleteCurrentActivity);
+  const needsCloudMilestoneEvidence =
+    activePath.id === "steward-internet-environment" &&
+    activity.content.type === "practical";
+  const milestoneEvidenceAccepted =
+    acceptedMilestoneEvidence?.activityId === activity.id &&
+    acceptedMilestoneEvidence.accepted;
+  const disabled = finished || (!done && !canCompleteCurrentActivity) ||
+    (needsCloudMilestoneEvidence && !milestoneEvidenceAccepted);
 
   let label = "Next";
   if (finished) label = "Path complete";
@@ -173,6 +193,8 @@ export function LearningExperience({
                 activityId={activity.id}
                 pathId={activePath.id}
                 deliverables={activity.content.deliverables}
+                requireAcceptedEvidence={needsCloudMilestoneEvidence}
+                onMilestoneAcceptanceChange={onMilestoneAcceptanceChange}
               />
             </>
           ) : (
@@ -187,6 +209,13 @@ export function LearningExperience({
             </div>
           )}
 
+          {needsCloudMilestoneEvidence && !milestoneEvidenceAccepted && (
+            <p className="mt-6 text-sm font-medium text-amber-900">
+              Save a substantial accepted evidence record before proceeding. This is
+              a self-attested navigation gate, not independent validation of the
+              actual remote Steward environment.
+            </p>
+          )}
           <div className="mt-12 flex items-center justify-between border-t border-zinc-200 pt-6">
             <span className="text-sm text-zinc-500">{done ? "Completed" : `${activity.estimatedMinutes} min`}</span>
             <button

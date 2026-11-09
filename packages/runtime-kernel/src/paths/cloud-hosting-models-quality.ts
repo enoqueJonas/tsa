@@ -1,6 +1,7 @@
 import type { PracticalContent } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { cloudAndHostingModelsDeepLessons } from "./cloud-hosting-models-deep";
+import { cloudHostingAppliedPractices } from "./cloud-hosting-mechanism-depth";
 
 const practices: Record<string, PracticalContent> = {
     "On-premises, Colocation, VPS and Cloud": {
@@ -102,7 +103,7 @@ function enrichLesson(lesson: Lesson): Lesson {
                 ...activity,
                 title: `${lesson.title}: Steward Investigation`,
                 estimatedMinutes: 60,
-                content: practice,
+                content: { ...practice, instructions: [...practice.instructions, ...(cloudHostingAppliedPractices[lesson.id.slice("cloud-and-hosting-models-".length)] ?? [])] },
             };
         }),
     };

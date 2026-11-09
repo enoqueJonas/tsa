@@ -1,0 +1,55 @@
+name: PED-005 Cloud real Kubernetes controller and isolation proof
+on:
+  pull_request:
+    paths:
+      - 'packages/runtime-kernel/src/paths/cloud-orchestration-gitops-deep.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-kubernetes-foundations-worked.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-k8s-real-cluster-proof.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-k8s-controller-depth.ts'
+      - 'scripts/check-cloud-k8s-kind.mjs'
+      - '.github/workflows/cloud-k8s-real-cluster.yml'
+jobs:
+  real-kind-api:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout exact PR revision
+        uses: actions/checkout@v4
+      - name: Configure Node runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Inspect local prerequisites and Docker Engine
+        run: |
+          command -v docker
+          command -v go
+          go version
+          docker info --format 'Docker {{.ServerVersion}}'
+      - name: Install official kind v0.33.0 and Kubernetes kubectl v1.37.0 with SHA-256 checks
+        run: |
+          set -euo pipefail
+          folder="$RUNNER_TEMP/tsa-k8s-tools"
+          mkdir -p "$folder"
+          curl --fail --location --retry 3 --silent --show-error \
+            "https://github.com/kubernetes-sigs/kind/releases/download/v0.33.0/kind-linux-amd64" \
+            --output "$folder/kind"
+          curl --fail --location --retry 3 --silent --show-error \
+            "https://github.com/kubernetes-sigs/kind/releases/download/v0.33.0/kind-linux-amd64.sha256sum" \
+            --output "$folder/kind.sha256sum"
+          echo "$(awk '{print $1}' "$folder/kind.sha256sum")  $folder/kind" | sha256sum --check
+          curl --fail --location --retry 3 --silent --show-error \
+            "https://dl.k8s.io/release/v1.37.0/bin/linux/amd64/kubectl" \
+            --output "$folder/kubectl"
+          curl --fail --location --retry 3 --silent --show-error \
+            "https://dl.k8s.io/release/v1.37.0/bin/linux/amd64/kubectl.sha256" \
+            --output "$folder/kubectl.sha256"
+          echo "$(cat "$folder/kubectl.sha256")  $folder/kubectl" | sha256sum --check
+          chmod 0755 "$folder/kind" "$folder/kubectl"
+          "$folder/kind" version
+          "$folder/kubectl" version --client
+          echo "$folder" >> "$GITHUB_PATH"
+      - name: Execute actual kind cluster API/Pod/Service/readiness/RBAC and four unsafe source mutants
+        run: |
+          node scripts/check-cloud-k8s-kind.mjs

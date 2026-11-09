@@ -2,6 +2,8 @@ import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { releaseEngineeringLab } from "./delivery-release-engineering-lab-deep";
 import { releaseEngineeringReviewLesson } from "./delivery-release-engineering-review-deep";
+import { releaseLearnerMechanisms } from "./delivery-release-learner-mechanisms";
+import { releaseProofs } from "./delivery-release-proofs";
 
 const semver: LearningResource = { title: "Semantic Versioning", url: "https://semver.org/" };
 const twelveFactor: LearningResource = { title: "The Twelve-Factor App — Build, release, run", url: "https://12factor.net/build-release-run" };
@@ -10,12 +12,37 @@ const dora: LearningResource = { title: "DORA — Software delivery performance"
 const sre: LearningResource = { title: "Google SRE Book — Release Engineering", url: "https://sre.google/sre-book/release-engineering/" };
 
 function reading(id: string, title: string, intro: string, blocks: LessonBlock[], resources: LearningResource[]): Lesson {
+    const lens=releaseLearnerMechanisms[id];
+    if (!lens) throw new Error("Missing original Release Engineering topic-specific teaching: "+id);
+    const teaching: LessonBlock[]=[
+        {type:"heading",id:"release-evidence-boundary",text:"Teach the decision and its limit",level:2},
+        {type:"paragraph",text:"All example commits, digests, approvers, service health observations, build events and image names in this lesson are fictional unless the learner separately verifies them against a real authorized system. The source-run examples below demonstrate mechanisms and wrong interpretations, not an actual Nexus publication, GitLab authorization, real Steward release or independent learner competency."}
+    ];
+    for (const [i, section] of lens.sections.entries()) {
+        teaching.push({type:"heading",id:"release-mechanism-"+(i+1),text:section.heading,level:2});
+        for (const p of section.paragraphs) teaching.push({type:"paragraph",text:p});
+    }
+    const executable=releaseProofs[id];
+    if (executable) {
+        teaching.push({type:"heading",id:"execute-and-reject-a-false-release-claim",text:"Execute a scoped proof and reject its unsafe shortcut",level:2});
+        teaching.push({type:"code",language:executable.language,code:executable.code,caption:executable.caption});
+        teaching.push({type:"paragraph",text:executable.expected});
+    }
+    if (id==="release-candidates") {
+        const localDocker=releaseProofs["release-candidates-docker"];
+        if (!localDocker) throw new Error("Original Release Candidates real local Docker example missing");
+        teaching.push({type:"heading",id:"local-tag-replacement-rehearsal",text:"A real local Docker example: the tag moves but approved image ID does not",level:2});
+        teaching.push({type:"code",language:"bash",code:localDocker.code,caption:localDocker.caption});
+        teaching.push({type:"paragraph",text:localDocker.expected});
+    }
+    teaching.push({type:"resources",title:"Reference for this specific engineering mechanism",resources:[lens.resource]});
+    teaching.push({type:"paragraph",text:"Now transfer the mechanism to an ACTUAL authorized release candidate: include source revision, exact observed artifact identity, command, output, negative case, operator or approval authority, affected deployment roles and data compatibility. If registry publication, deployment, reviewer input or real runtime evidence is absent, mark the claim NOT_TESTED. A copied source fixture cannot establish professional mastery."});
     return { id: `release-engineering-${id}`, title, activities: [
-        { id: `release-engineering-${id}-001`, title, estimatedMinutes: 45, content: { type: "reading", body: [intro, ...blocks.filter((part) => part.type === "paragraph").map((part) => part.text)].join("\n\n"), blocks: [{ type: "paragraph", text: intro },
+        { id: `release-engineering-${id}-001`, title, estimatedMinutes: 45, content: { type: "reading", body: [intro, ...blocks.filter((part) => part.type === "paragraph").map((part) => part.text), ...teaching.filter(part=>part.type==="paragraph").map(part=>part.text)].join("\n\n"), blocks: [{ type: "paragraph", text: intro },
             { type: "heading", id: "worked-release-audit", text: "Worked release audit: version, digest, deployment and rollback", level: 2 },
-            { type: "paragraph", text: "Consider Steward release 1.4.0: the human version identifies a supported compatibility contract; the image SHA-256 digest identifies exact container bytes. Capture source commit, CI run, locked dependency versions, image digest, database migration state, approved promotion and deployed digest in a release record. Before promoting, compare the digest in the registry with the candidate observed in staging. After promotion, verify both deployed digest and an end-user health request." },
+            { type: "paragraph", text: "Consider Steward release 1.4.0: the human version identifies a supported compatibility contract; an OCI registry digest identifies the exact manifest bytes that reference image config and layers (and may identify a multi-platform index rather than the selected platform image). Capture source commit, CI run, locked dependency versions, image digest, database migration state, approved promotion and deployed digest in a release record. Before promoting, compare the digest in the registry with the candidate observed in staging. After promotion, verify both deployed digest and an end-user health request." },
             { type: "paragraph", text: "Inject an unhealthy response into an isolated deployment, stop the rollout and redeploy the preceding approved digest. If a schema change already removed a field that the old application needs, image rollback alone may not work; the release must have an explicit compatibility and recovery plan. A Git tag or changelog alone cannot prove the deployed release is correct." },
-            ...blocks, { type: "callout", tone: "steward", title: "Steward release checkpoint", body: "Use Steward's actual CI, Nexus artifact identities, homelab deployment and release evidence. A release claim is valid only when another engineer can trace it to immutable artifacts and observed runtime evidence." }, { type: "resources", title: "Continue learning", resources }] } },
+            ...blocks, ...teaching, { type: "callout", tone: "steward", title: "Steward release checkpoint", body: "Use Steward's actual CI, Nexus artifact identities, homelab deployment and release evidence. A release claim is valid only when another engineer can trace it to immutable artifacts and observed runtime evidence." }, { type: "resources", title: "Continue learning", resources }] } },
         { id: `release-engineering-${id}-002`, title: `Apply: ${title}`, estimatedMinutes: 45, content: { type: "practical", objective: `Apply ${title} to Steward's delivery platform.`, scenario: "Steward already has CI, containerized delivery, Nexus-managed artifacts and a reproducible deployment path. Turn those capabilities into a controlled release process rather than adding another isolated tool.", instructions: ["Start from one real Steward source revision and identify the exact package and image artifacts produced from it.", "Define the release decision, evidence and owner relevant to this lesson.", "Exercise both the expected path and one failure, rejection or recovery path.", "Record evidence in a form another engineer could use without relying on your memory."], deliverables: ["Release-process evidence", "Immutable artifact identities", "Short engineering decision record"], completionCriteria: ["The source-to-release chain is traceable.", "A failed or rejected path is visible rather than silently bypassed.", "The learner can distinguish release state from deployment state."] } },
     ] };
 }

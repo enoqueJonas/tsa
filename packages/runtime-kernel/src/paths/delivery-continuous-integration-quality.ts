@@ -23,6 +23,9 @@ const practices: Record<string, PracticalContent> = {
         objective: "Turn Steward's validation work into a dependency graph that fails close to the fault and parallelizes only independent work.",
         scenario: "The first pipeline draft runs every check sequentially, making feedback slow and hiding which checks are genuinely dependent.",
         instructions: [
+            "Before attempting a real GitLab Runner, execute `node scripts/check-delivery-ci-dependency.mjs` and `python3 scripts/check-delivery-ci-yaml.py` (Python 3.12 with PyYAML). Predict the positive and negative results from the documented dependencies before running either command.",
+            "Read the original lesson's four-job .gitlab-ci.yml and explain why candidate_manifest requires BOTH fixture_check and unit_test, why candidate_audit downloads candidate.txt, and why an absent needs edge bypasses normal stage-order gate behavior.",
+            "Use the local negative output to distinguish a failing test, BLOCKED candidate, and a missing artifact; explain why these fixtures are not proof of a real GitLab pipeline, registry or Runner.",
             "Inventory lint/static checks, unit tests, integration tests and image build steps.",
             "Classify each step as independent, prerequisite or consumer of an earlier artifact.",
             "Create the GitLab CI/CD stage/job dependency graph.",
@@ -81,6 +84,8 @@ const practices: Record<string, PracticalContent> = {
         objective: "Add one GitLab CI/CD build cache only after proving that the uncached Steward pipeline is correct.",
         scenario: "Build time is increasing, but a cache that becomes an undeclared dependency would make the pipeline faster and less trustworthy at the same time.",
         instructions: [
+            "Record a clean/cold-cache job run before introducing a GitLab cache; identify the exact lockfile/immutable key, job identity and environment, then compare warmed execution while checking the same output digest.",
+            "Prove cache loss is safe by deleting only the disposable cache and repeating the operation. A warm-only success is evidence of an undeclared build dependency, not a cache improvement.",
             "Measure one clean GitLab CI/CD build without cache.",
             "Choose one safe cache candidate such as downloaded package dependencies.",
             "Define a cache key tied to lockfile/dependency state.",
@@ -96,6 +101,8 @@ const practices: Record<string, PracticalContent> = {
         objective: "Preserve GitLab CI/CD run evidence without confusing temporary CI artifacts with the durable release repository Nexus will provide later.",
         scenario: "A failed or successful build produces reports and image metadata that reviewers need, while deployable release artifacts will eventually need a shared durable repository.",
         instructions: [
+            "Run the original Jobs/Stages source-derived local YAML fixture to inspect which exact candidate.txt was produced and transferred; show the independent consumer rejects the case where artifacts: false.",
+            "In the actual authorized GitLab Runner, capture a successful test report and a failure report with artifacts:when: always while keeping the failed test job nonzero; check neither artifact contains a secret or serves as a durable release.",
             "Classify current outputs as cache, CI evidence artifact or future release artifact.",
             "Archive one useful test/build report in GitLab CI/CD.",
             "Attach commit SHA, build number and image identity to the run record.",
@@ -167,6 +174,8 @@ const practices: Record<string, PracticalContent> = {
         objective: "Define a small set of defensible GitLab CI/CD gates and prove that a failed gate blocks artifact production.",
         scenario: "A pipeline that always reaches the image stage creates artifacts even when required engineering evidence failed.",
         instructions: [
+            "Run the original published CI YAML's missing-needs mutant and explicitly show that the unit test FAILED while a candidate was still produced; write the corrected set of mandatory dependency edges before proceeding to actual GitLab.",
+            "Prove on the real Runner that a deliberately failing required control remains a failure and blocks candidate publication; inspect job status and absence of artifact, not a dashboard badge alone.",
             "Choose the minimum current gates for Steward.",
             "For each gate, document the risk and pass/fail rule.",
             "Configure the GitLab CI/CD pipeline so the image stage depends on those gates.",
@@ -181,6 +190,8 @@ const practices: Record<string, PracticalContent> = {
         objective: "Use GitLab CI/CD to turn one validated Steward commit into one traceable container artifact without rebuilding different bytes for each environment.",
         scenario: "Container images are currently built manually on a developer machine, breaking the source-to-artifact chain established by Software Delivery Foundations.",
         instructions: [
+            "Contrast the teaching fixture's synthetic candidate.txt manifest with the actual Docker image that the Steward CI pipeline must create; do not claim the Python fixture published an image.",
+            "When permitted, record the exact checked-out commit, final registry manifest digest and target platform after one actual build/push, then verify the deployment (which belongs to the following module) consumes that digest instead of a movable tag.",
             "Build the image only after required GitLab CI/CD checks pass.",
             "Tag the image with a commit-derived or release-candidate identity.",
             "Record the exact commit, GitLab CI/CD build number and resulting image ID/digest.",

@@ -1,6 +1,8 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { architectureDepthById } from "./cloud-architecture-worked-proof";
+import { cloudArchitectureMechanisms } from "./cloud-architecture-cost-mechanisms";
+import { cloudArchitectureCostCapacityPython } from "./cloud-architecture-capacity-real-proof";
 
 const awsWellArchitected: LearningResource = { title: "AWS — Well-Architected Framework", url: "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html" };
 const googleCloudFramework: LearningResource = { title: "Google Cloud — Architecture Framework", url: "https://cloud.google.com/architecture/framework" };
@@ -18,7 +20,22 @@ interface LessonSpec {
 
 function richLesson(spec: LessonSpec): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    for (const section of [...spec.sections, ...(architectureDepthById[spec.id] ?? [])]) {
+    const enhancedSections: LessonSpec["sections"] = [
+        ...spec.sections,
+        ...(architectureDepthById[spec.id] ?? []),
+        ...(cloudArchitectureMechanisms[spec.id] ?? []),
+    ].map((section) => {
+        if (spec.id === "cost-estimation" &&
+            section.heading === "Use scenarios to expose hidden budget and capacity risks") {
+            return {...section, code: {
+                language: "python",
+                caption: "Exact synthetic USD cost, 48-hour vs monthly capacity, risk and unit-economics program — NOT provider pricing",
+                code: cloudArchitectureCostCapacityPython,
+            }};
+        }
+        return section;
+    });
+    for (const section of enhancedSections) {
         blocks.push({ type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.list) blocks.push({ type: "list", items: section.list });

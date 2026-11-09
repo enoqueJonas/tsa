@@ -1,5 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { cloudVpsMechanismSections } from "./cloud-vps-mechanism-depth";
+import { cloudVpsSshLocalProof } from "./cloud-vps-ssh-client-proof";
 
 const digitalOceanDroplets: LearningResource = { title: "DigitalOcean Droplet documentation", url: "https://docs.digitalocean.com/products/droplets/" };
 const linodeCompute: LearningResource = { title: "Akamai Cloud Computing documentation", url: "https://techdocs.akamai.com/cloud-computing/docs" };
@@ -19,7 +21,12 @@ interface LessonSpec {
 
 function richLesson(spec: LessonSpec): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    for (const section of spec.sections) {
+    const extendedSections: LessonSpec["sections"] = [...spec.sections, ...(cloudVpsMechanismSections[spec.id] ?? [])].map((section) =>
+        spec.id === "securing-ssh-access" && section.heading === "Run a real local OpenSSH client/key experiment without any remote login"
+            ? { ...section, code: {language: "python", caption: "Actual local ssh-keygen/ssh -G client trust demonstration; NO server login", code: cloudVpsSshLocalProof} }
+            : section,
+    );
+    for (const section of extendedSections) {
         blocks.push({ type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.list) blocks.push({ type: "list", items: section.list });

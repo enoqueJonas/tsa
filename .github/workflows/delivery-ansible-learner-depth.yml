@@ -1,0 +1,213 @@
+name: PED-005 Delivery and Cloud original-source learner-depth checks
+on:
+  pull_request:
+    paths:
+      - 'packages/runtime-kernel/src/paths/delivery-configuration-management-deep.ts'
+      - 'scripts/check-delivery-ansible-local-state.mjs'
+      - 'scripts/check-delivery-ansible-browser.py'
+      - 'packages/runtime-kernel/src/paths/delivery-docker-operational-depth.ts'
+      - 'scripts/check-delivery-docker-runtime.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-continuous-integration-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-ci-learner-mechanisms.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-ci-dependency-worked.ts'
+      - 'scripts/check-delivery-ci-yaml.py'
+      - 'scripts/check-delivery-ci-dependency.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-continuous-delivery-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-continuous-delivery-quality.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-cd-operational-depth.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-cd-learner-mechanisms.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-cd-proofs.ts'
+      - 'scripts/check-delivery-cd-proofs.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-release-engineering-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-release-engineering-quality.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-release-engineering-lab-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-release-engineering-review-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-release-learner-mechanisms.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-release-proofs.ts'
+      - 'scripts/check-delivery-release-proofs.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-artifact-supply-chain-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-supply-chain-resolution-teaching.ts'
+      - 'scripts/check-delivery-supply-chain-resolution.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-supply-chain-operational-teaching.ts'
+      - 'scripts/check-delivery-supply-chain-operational.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-supply-chain-consumption-teaching.ts'
+      - 'scripts/check-delivery-supply-chain-consumption.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-supply-chain-governance-teaching.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-supply-chain-trust-proofs.ts'
+      - 'scripts/check-delivery-supply-chain-governance.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-production-schema-evolution-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-schema-evolution-focused-teaching.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-schema-evolution-live-postgres.ts'
+      - 'scripts/check-delivery-schema-evolution-postgres.mjs'
+      - 'packages/runtime-kernel/src/paths/delivery-migration-exercises-deep.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-ci-migration-proof.ts'
+      - 'packages/runtime-kernel/src/paths/delivery-ci-migration-teaching.ts'
+      - 'scripts/check-delivery-ci-migration-proof.mjs'
+      - 'packages/runtime-kernel/src/paths/cloud-hosting-models-deep.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-hosting-models-quality.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-hosting-mechanism-depth.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-hosting-live-cost.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-vps-operations-deep.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-vps-operations-quality.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-vps-mechanism-depth.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-vps-ssh-client-proof.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-internet-networking-deep.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-internet-networking-quality.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-network-mechanism-depth.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-network-tls-proof.ts'
+      - 'scripts/check-cloud-hosting-cost-and-mechanisms.mjs'
+      - 'scripts/check-cloud-vps-network-proofs.mjs'
+      - 'scripts/check-cloud-browser.py'
+      - 'packages/runtime-kernel/src/paths/cloud-certificate-lifecycle-operations-deep.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-certificate-lifecycle-focused.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-certificate-renewal-live-proof.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-building-blocks-deep.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-building-blocks-quality.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-building-access-depth.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-building-trust-proof.ts'
+      - 'scripts/check-cloud-certificate-renewal-proof.mjs'
+      - 'scripts/check-cloud-building-access.mjs'
+      - 'packages/runtime-kernel/src/paths/cloud-object-storage-implementation-deep.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-object-storage-focused.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-object-storage-live-s3-proof.ts'
+      - 'scripts/check-cloud-s3-minio.mjs'
+      - 'packages/runtime-kernel/src/paths/cloud-infrastructure-as-code-deep.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-infrastructure-as-code-quality.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-iac-real-cli-proof.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-iac-mechanism-depth.ts'
+      - 'scripts/check-cloud-iac-real-cli.mjs'
+      - 'packages/runtime-kernel/src/paths/cloud-progressive-delivery-canary-deep.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-canary-focused-depth.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-canary-real-http-proof.ts'
+      - 'scripts/check-cloud-canary-real-http.mjs'
+      - 'packages/runtime-kernel/src/paths/cloud-architecture-cost-deep.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-architecture-cost-quality.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-architecture-cost-mechanisms.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-architecture-capacity-real-proof.ts'
+      - 'scripts/check-cloud-architecture-cost-proofs.mjs'
+      - 'packages/runtime-kernel/src/paths/cloud-engineer-milestone-deep.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-milestone-evidence-depth.ts'
+      - 'packages/runtime-kernel/src/paths/cloud-milestone-evidence-audit.ts'
+      - 'apps/web/components/activity-evidence-panel.tsx'
+      - 'apps/web/components/learning-experience.tsx'
+      - 'apps/web/lib/cloud-milestone-evidence-gate.ts'
+      - 'scripts/check-cloud-final-milestone-evidence.mjs'
+      - '.github/workflows/delivery-ansible-learner-depth.yml'
+  push:
+    branches:
+      - curriculum/delivery-learner-depth-verification-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: delivery-ansible-depth-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  authored-ansible-and-browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Pin and install supported Ansible control-node runtime
+        run: |
+          python -m pip install ansible-core==2.21.5 'lxml>=5,<8' 'pyftpdlib>=2,<3' 'asyncssh>=2.20,<3' 'PyYAML>=6,<7'
+          ansible-playbook --version
+      - name: Run exact learner-published Ansible with three deliberate unsafe mutants
+        run: node scripts/check-delivery-ansible-local-state.mjs
+      - name: Prove exact learner Docker namespace/memory and reject three unsafe variants
+        run: |
+          docker info --format 'Docker {{.ServerVersion}}'
+          node scripts/check-delivery-docker-runtime.mjs
+      - name: Execute exact published CI Python graph and four-job GitLab YAML local simulation with negative mutants
+        run: |
+          node scripts/check-delivery-ci-dependency.mjs
+          python3 scripts/check-delivery-ci-yaml.py
+      - name: Execute exact CD Python and real isolated Docker two-image rehearsal with unsafe decisions
+        run: node scripts/check-delivery-cd-proofs.mjs
+      - name: Execute exact published Release Engineering programs and real local Docker tag-swap with unsafe source mutants
+        run: node scripts/check-delivery-release-proofs.mjs
+      - name: Run original Supply Chain module real pip local-index resolution and unsafe mutants
+        run: node scripts/check-delivery-supply-chain-resolution.mjs
+      - name: Execute original Supply Chain npm pack, Docker local tag and Nexus state proofs with mutants
+        run: node scripts/check-delivery-supply-chain-operational.mjs
+      - name: Execute actual clean pip/npm package-consumer published source and unsafe mutants
+        run: node scripts/check-delivery-supply-chain-consumption.mjs
+      - name: Execute exact proxy, retention, SBOM and signature teaching source with unsafe mutants
+        run: node scripts/check-delivery-supply-chain-governance.mjs
+      - name: Run original schema evolution actual PostgreSQL 16 race and four unsafe mutants
+        run: |
+          docker info --format 'Docker {{.ServerVersion}}'
+          node scripts/check-delivery-schema-evolution-postgres.mjs
+      - name: Parse original CI migration GitLab YAML and run real unittest fail-closed cases with mutants
+        run: node scripts/check-delivery-ci-migration-proof.mjs
+      - name: Execute original Cloud hosting metered-price source with five unsafe mutations
+        run: node scripts/check-cloud-hosting-cost-and-mechanisms.mjs
+      - name: Execute original VPS SSH and networking TLS proofs with seven unsafe mutations
+        run: |
+          command -v ssh-keygen
+          command -v ssh
+          command -v openssl
+          node scripts/check-cloud-vps-network-proofs.mjs
+      - name: Exercise exact certificate TLS renewal/reload and four unsafe variants
+        run: |
+          command -v openssl
+          node scripts/check-cloud-certificate-renewal-proof.mjs
+      - name: Exercise exact Building Blocks IAM and credential-rotation sources with six unsafe variants
+        run: node scripts/check-cloud-building-access.mjs
+      - name: Execute real disposable MinIO S3 API, versioning, denial, restart and six unsafe mutants
+        run: |
+          docker info --format 'Docker {{.ServerVersion}}'
+          python -m pip install 'boto3==1.40.58'
+          node scripts/check-cloud-s3-minio.mjs
+      - name: Install pinned OpenTofu CLI with verified release archive digest
+        run: |
+          set -euo pipefail
+          version=1.13.9
+          filename="tofu_"$version"_linux_amd64.zip"
+          folder="$RUNNER_TEMP/tsa-opentofu"
+          mkdir -p "$folder"
+          curl --fail --location --silent --show-error --retry 3 \
+            "https://github.com/opentofu/opentofu/releases/download/v$version/$filename" \
+            --output "$folder/$filename"
+          echo "bc44eb6b06446ba83bd4072114891987f590f66cca712737a7f1147c50c539ce  $folder/$filename" | sha256sum --check
+          unzip -q "$folder/$filename" -d "$folder"
+          chmod +x "$folder/tofu"
+          "$folder/tofu" version
+          echo "$folder" >> "$GITHUB_PATH"
+      - name: Execute real providerless OpenTofu saved plans and reject four unsafe mutants
+        run: |
+          command -v tofu
+          node scripts/check-cloud-iac-real-cli.mjs
+      - name: Execute original-source real TCP canary distribution, abort, metrics failure and six unsafe variants
+        run: node scripts/check-cloud-canary-real-http.mjs
+      - name: Verify original Cloud Architecture and Cost synthetic capacity, burst-hours, budget, unit economics and nine unsafe variants
+        run: node scripts/check-cloud-architecture-cost-proofs.mjs
+      - name: Verify original final Cloud milestone gate IDs and audit UNVERIFIED manifest with ten rejected unsafe acceptance variants
+        run: node scripts/check-cloud-final-milestone-evidence.mjs
+      - name: Build and check entire curriculum
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm test
+          pnpm audit:curriculum
+          pnpm build
+          node scripts/audit-learner-facing-curriculum.mjs --strict
+      - name: Install Python browser bindings and verify runner Chrome
+        run: |
+          python -m pip install playwright==1.58.0
+          command -v google-chrome || command -v google-chrome-stable
+      - name: Inspect Delivery and Cloud original lessons in Chrome, 390px and reload
+        run: |
+          python -m http.server 4173 --bind 127.0.0.1 --directory apps/web/out > /tmp/tsa-delivery-local-web.log 2>&1 &
+          for i in $(seq 1 30); do curl --fail --silent http://127.0.0.1:4173/ >/dev/null && break; sleep 1; done
+          python scripts/check-delivery-ansible-browser.py
+          python scripts/check-cloud-browser.py

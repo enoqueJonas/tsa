@@ -1,6 +1,8 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { kubernetesFoundationsById } from "./cloud-kubernetes-foundations-worked";
+import { cloudK8sControllerSections, cloudK8sEvidencePractices } from "./cloud-k8s-controller-depth";
+import { cloudK8sRealClusterPython } from "./cloud-k8s-real-cluster-proof";
 
 const kubernetesDocs: LearningResource = { title: "Kubernetes Documentation", url: "https://kubernetes.io/docs/" };
 const openshiftDocs: LearningResource = { title: "Red Hat OpenShift Documentation", url: "https://docs.redhat.com/en/documentation/openshift_container_platform" };
@@ -21,7 +23,22 @@ interface LessonSpec {
 
 function richLesson(spec: LessonSpec): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    for (const section of [...spec.sections, ...(kubernetesFoundationsById[spec.id] ?? [])]) {
+    const extendedSections: LessonSpec["sections"] = [
+        ...spec.sections,
+        ...(kubernetesFoundationsById[spec.id] ?? []),
+        ...(cloudK8sControllerSections[spec.id] ?? []),
+    ].map((section) => {
+        if (spec.id === "pods-deployments" &&
+            section.heading === "Execute the real local Kubernetes API experiment and interpret its limits") {
+            return {...section, code: {
+                language: "python",
+                caption: "Actual disposable kind/Kubernetes Deployment + Service + EndpointSlice + failing readiness + RBAC; NO OpenShift/Argo",
+                code: cloudK8sRealClusterPython,
+            }};
+        }
+        return section;
+    });
+    for (const section of extendedSections) {
         blocks.push({ type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.list) blocks.push({ type: "list", items: section.list });
@@ -43,7 +60,7 @@ function richLesson(spec: LessonSpec): Lesson {
                     type: "practical",
                     objective: spec.practiceTitle,
                     scenario: "Steward already runs as an immutable containerized release. Preserve its actual public-edge and dependency model. Move only runtime responsibility that orchestration can justify; do not add Kong, Redis, RabbitMQ or other components merely to make the diagram look cloud-native.",
-                    instructions: spec.practice,
+                    instructions: [...spec.practice, ...(cloudK8sEvidencePractices[spec.id] ?? [])],
                     deliverables: spec.deliverables,
                     completionCriteria: spec.criteria,
                 },
