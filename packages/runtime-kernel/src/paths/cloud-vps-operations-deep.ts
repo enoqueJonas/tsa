@@ -1,5 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { cloudVpsDepth, cloudVpsPractices } from "./cloud-vps-learner-reconstruction";
+import { cloudVpsLoopbackProof } from "./cloud-vps-local-proofs";
 
 const digitalOceanDroplets: LearningResource = { title: "DigitalOcean Droplet documentation", url: "https://docs.digitalocean.com/products/droplets/" };
 const linodeCompute: LearningResource = { title: "Akamai Cloud Computing documentation", url: "https://techdocs.akamai.com/cloud-computing/docs" };
@@ -19,7 +21,15 @@ interface LessonSpec {
 
 function richLesson(spec: LessonSpec): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    for (const section of spec.sections) {
+    const extra: LessonSpec["sections"] = (cloudVpsDepth[spec.id] ?? []).map((section) => ({
+        heading: section.heading,
+        paragraphs: section.paragraphs,
+        ...(section.codeKey === "loopback" ? {
+            code: { language: "python", caption: "Real disposable localhost TCP bind/denied alias, not VPS firewall evidence",
+                code: cloudVpsLoopbackProof },
+        } : {}),
+    }));
+    for (const section of [...spec.sections, ...extra]) {
         blocks.push({ type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.list) blocks.push({ type: "list", items: section.list });
@@ -41,7 +51,7 @@ function richLesson(spec: LessonSpec): Lesson {
                     type: "practical",
                     objective: `Apply ${spec.title} to the Steward VPS design.`,
                     scenario: "Steward has a working homelab delivery platform and a chosen remote-hosting direction. Build the remote host without bypassing the engineering controls already established.",
-                    instructions: spec.practice,
+                    instructions: [...spec.practice, ...(cloudVpsPractices[spec.id] ?? [])],
                     deliverables: ["VPS engineering evidence", "Short operating decision note", "Successful and failure-path verification"],
                     completionCriteria: ["The decision is tied to concrete Steward requirements.", "Administrative access and exposure are explicit.", "The learner can explain the provider-versus-host responsibility boundary."],
                 },
