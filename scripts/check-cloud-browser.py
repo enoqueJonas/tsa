@@ -365,5 +365,76 @@ with sync_playwright() as playwright:
     print("PASS original Kubernetes intro→practice→gated reflection desktop/390px and reload; later original topic browser pages NOT_TESTED",flush=True)
     context.close()
 
+
+    # Cloud module 9 is intentionally one original reading, four focused
+    # mechanism readings, four unchanged original practicals and the original
+    # final human reflection. This path has no earlier knowledge gate.
+    canary_sequence=[
+        ("cloud-progressive-delivery-canary-001",
+         "Canary is the primary learning strategy"),
+        ("cloud-progressive-delivery-canary-007",
+         "Start with the actual HTTP path and preserve version identity"),
+        ("cloud-progressive-delivery-canary-008",
+         "Build the observation contract before accepting any sample count"),
+        ("cloud-progressive-delivery-canary-009",
+         "Represent the release state machine instead of manually toggling pods"),
+        ("cloud-progressive-delivery-canary-010",
+         "Distinguish delivery authority from progressive rollout machinery"),
+        ("cloud-progressive-delivery-canary-002",
+         "Design Steward's Canary Contract"),
+        ("cloud-progressive-delivery-canary-003",
+         "Implement Argo Rollouts Canary Delivery"),
+        ("cloud-progressive-delivery-canary-004",
+         "Automate Analysis and Abort a Bad Canary"),
+        ("cloud-progressive-delivery-canary-005",
+         "Break the Progressive Delivery Control Plane"),
+        ("cloud-progressive-delivery-canary-006",
+         "Defend Steward's canary implementation"),
+    ]
+    context=browser.new_context(viewport={"width":1440,"height":900})
+    page=context.new_page()
+    runtime_errors=[]
+    page.on("pageerror",lambda err:runtime_errors.append(str(err)))
+    page.goto(BASE+"/?view=curriculum&school="+school,wait_until="networkidle")
+    buttons=page.get_by_role("button",name=MODULE)
+    buttons.first.wait_for(state="visible",timeout=30000)
+    assert buttons.count()==11
+    buttons.nth(8).click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert "progressive-delivery-canary" in page.url
+    for idx,(expected,phrase) in enumerate(canary_sequence):
+        assert activity(page)==expected,"Canary activity/progress ID changed: "+page.url
+        main=page.locator("main").last
+        body=main.inner_text()
+        assert phrase.lower() in body.lower(),(
+            "Canonical canary source not rendered: "+expected)
+        if idx==len(canary_sequence)-1:
+            assert len(body)>200,"Original final canary reflection missing"
+        else:
+            assert len(body)>540,"Shallow canary reading/practical "+expected
+        if expected=="cloud-progressive-delivery-canary-007":
+            assert main.get_by_role("button",name="Copy").count()>=1,\
+                "Real HTTP proof not copyable from focused reading"
+            assert "CANARY_REAL_METRICS_OUTAGE_FAILS_CLOSED" in body
+        page.set_viewport_size({"width":390,"height":844})
+        assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),(
+            "Canary 390px horizontal overflow "+expected)
+        page.set_viewport_size({"width":1440,"height":900})
+        print("PASS original/focused canary activity 390px:",expected,flush=True)
+        if idx<len(canary_sequence)-1:
+            next_button=page.get_by_role("button",name=NEXT)
+            assert next_button.is_enabled(),"Unexpected earlier canary gate "+expected
+            next_button.click()
+            page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert not page.get_by_role("button",name=NEXT).is_enabled(),(
+        "Original 350-character canary reflection accepted without response")
+    page.reload(wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert activity(page)=="cloud-progressive-delivery-canary-006"
+    assert not page.get_by_role("button",name=NEXT).is_enabled()
+    assert not runtime_errors,"Canary Chrome runtime exceptions "+str(runtime_errors)
+    print("PASS entire module 9: original + four focused readings + four original practicals + genuine gated final reflection/reload; no fake learner answer",flush=True)
+    context.close()
+
     browser.close()
-print("PASS Cloud modules 1–8 bounded browser evidence; module-8 later real Kubernetes source tests independent")
+print("PASS Cloud modules 1–9 bounded browser evidence; human learner transfer and real Argo Rollouts remain unverified")
