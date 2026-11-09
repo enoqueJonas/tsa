@@ -263,5 +263,56 @@ with sync_playwright() as playwright:
     print("PASS complete S3 original reading→6 deep readings→3 real practicals→gated reflection, 390px/reload; no invented answer",flush=True)
     context.close()
 
+
+    # Cloud Engineer module 7: keep the first original reading→practical→
+    # reflection and saved learner gate intact. Later original topics have
+    # genuine 180-character gates and are not advanced using fake answers.
+    context=browser.new_context(viewport={"width":1440,"height":900})
+    page=context.new_page()
+    runtime_errors=[]
+    page.on("pageerror",lambda err: runtime_errors.append(str(err)))
+    page.goto(BASE+"/?view=curriculum&school="+school,wait_until="networkidle")
+    buttons=page.get_by_role("button",name=MODULE)
+    buttons.first.wait_for(state="visible",timeout=30000)
+    assert buttons.count()==11,"Cloud 11 canonical modules must remain"
+    buttons.nth(6).click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert "infrastructure-as-code" in page.url
+    expected_iac=[
+        ("infrastructure-as-code-why-infrastructure-as-code-001",
+         "Manual infrastructure accumulates hidden knowledge"),
+        ("infrastructure-as-code-why-infrastructure-as-code-002",
+         "Console-to-Code Audit"),
+        ("infrastructure-as-code-why-infrastructure-as-code-003",
+         "Infrastructure as Code more than faster provisioning"),
+    ]
+    for index,(expected,phrase) in enumerate(expected_iac):
+        assert activity(page)==expected,"IaC original progress ID/order changed: "+page.url
+        body=page.locator("main").last.inner_text()
+        assert phrase.lower() in body.lower(),"IaC learner content absent "+expected
+        if index<2:
+            assert len(body)>520,"IaC original reading/practical too shallow "+expected
+        else:
+            assert len(body)>140,"IaC reflection question not shown "+expected
+        page.set_viewport_size({"width":390,"height":844})
+        assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"), (
+            "IaC 390px layout overflow "+expected)
+        page.set_viewport_size({"width":1440,"height":900})
+        print("PASS original IaC learning activity and mobile:",expected,flush=True)
+        if index<2:
+            next_button=page.get_by_role("button",name=NEXT)
+            assert next_button.is_enabled(),"IaC activity navigation unexpectedly blocked "+expected
+            next_button.click()
+            page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert not page.get_by_role("button",name=NEXT).is_enabled(),(
+        "IaC original 180-character reflection permitted blank answer")
+    page.reload(wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert activity(page)=="infrastructure-as-code-why-infrastructure-as-code-003"
+    assert not page.get_by_role("button",name=NEXT).is_enabled()
+    assert not runtime_errors,"IaC browser runtime errors "+str(runtime_errors)
+    print("PASS IaC original first-topic desktop/390px and genuine reflection/reload gate; later source and real CLI tests distinct",flush=True)
+    context.close()
+
     browser.close()
-print("PASS Cloud modules 1–6 original/focused browser evidence; later gated topics and actual homelab/learner validation remain unverified")
+print("PASS Cloud modules 1–7 bounded original and focused browser evidence; IaC later gated topics source/CLI-only verified")
