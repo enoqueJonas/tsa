@@ -276,6 +276,7 @@ def inspect_school(page):
                 reliability_source_readings = {
                     "logging-structured-logs-001": "Run a real parsing and correlation failure",
                     "logging-centralized-logging-001": "Follow a log from code to Graylog search",
+                    "logging-graylog-event-lifecycle-001": "Prove searchable evidence separately from HTTP 202",
                     "service-level-engineering-slis-001": "Execute a small positive and negative SLI model",
                     "service-level-engineering-error-budgets-001": "Derive budget and burn from the same committed event population",
                     "service-level-engineering-windowing-001": "Cohort maturity, event-time windows, and missing measurements",
@@ -343,6 +344,32 @@ def inspect_school(page):
                 assert not page.evaluate(
                     "document.documentElement.scrollWidth > innerWidth + 2"
                 ), f"Original Service Level activity overflows 390px: {activity_id}"
+                page.set_viewport_size({"width": 1440, "height": 900})
+            if SCHOOL == "reliability-engineer" and activity_id in {
+                "logging-graylog-event-lifecycle-001",
+                "logging-graylog-event-lifecycle-002",
+            }:
+                if activity_id == "logging-graylog-event-lifecycle-001":
+                    assert content.get_by_text(
+                        "Reproduce failures without weakening the search oracle",
+                        exact=True,
+                    ).count() == 1, (
+                        "Original Graylog lesson lost explicit HTTP 202/search negative"
+                    )
+                    assert content.get_by_role("button", name="Copy").count() >= 2, (
+                        "Published GELF and Search API Python snippets not copyable"
+                    )
+                    assert "DEMO_CONTRACT_PASS" in text and "NOT Graylog indexing" in text, (
+                        "Fake index contract is being confused with real Graylog"
+                    )
+                else:
+                    assert "TSA_DEMO_SCENARIO=ack_only" in text and "wrong_id" in text, (
+                        "Original Graylog practical lacks indexed-search negative cases"
+                    )
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert not page.evaluate(
+                    "document.documentElement.scrollWidth > innerWidth + 2"
+                ), f"Original Graylog activity overflows 390px: {activity_id}"
                 page.set_viewport_size({"width": 1440, "height": 900})
             for k in range(code.count()):
                 assert code.nth(k).locator("pre").count() > 0, (
