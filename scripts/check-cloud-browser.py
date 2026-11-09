@@ -43,6 +43,37 @@ modules=[
 def activity(page):
     return parse_qs(urlparse(page.url).query).get("activity",[None])[0]
 
+
+def wait_current_progress_saved(page):
+    """Observe the committed IndexedDB path-progress record, not a UI URL race.
+
+    The app persists asynchronously after navigation. A reload before the IDB
+    transaction commits can cancel the write and create a false regression.
+    This helper does not invent progress or modify the learner's records.
+    """
+    params=parse_qs(urlparse(page.url).query)
+    path=params.get("path",[None])[0]
+    expected=params.get("activity",[None])[0]
+    assert path and expected,"Cannot verify progress for route: "+page.url
+    page.wait_for_function(
+        """async ({pathId, activityId}) => {
+          const db = await new Promise((resolve, reject) => {
+            const req = indexedDB.open('tsa-academy', 5);
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => reject(req.error);
+          });
+          try {
+            const record = await new Promise((resolve, reject) => {
+              const request = db.transaction('path-progress', 'readonly')
+                                .objectStore('path-progress').get(pathId);
+              request.onsuccess = () => resolve(request.result);
+              request.onerror = () => reject(request.error);
+            });
+            return record?.currentActivityId === activityId;
+          } finally { db.close(); }
+        }""",
+        arg={"pathId":path,"activityId":expected},timeout=20000)
+
 with sync_playwright() as playwright:
     browser=playwright.chromium.launch(headless=True,channel="chrome")
     for target in modules:
@@ -87,6 +118,7 @@ with sync_playwright() as playwright:
             "First original reflection no longer follows practice")
         gate=page.get_by_role("button",name=NEXT)
         assert not gate.is_enabled(), "Knowledge check incorrectly permits blank learner answer"
+        wait_current_progress_saved(page)
         page.reload(wait_until="networkidle")
         page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
         assert activity(page)==target["reflection"],"Learner progress/reload was lost"
@@ -150,6 +182,7 @@ with sync_playwright() as playwright:
             page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
     assert not page.get_by_role("button",name=NEXT).is_enabled(), (
         "Original 350-character certificate reflection bypassed without learner response")
+    wait_current_progress_saved(page)
     page.reload(wait_until="networkidle")
     page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
     assert activity(page)=="cloud-certificate-lifecycle-operations-006"
@@ -193,6 +226,7 @@ with sync_playwright() as playwright:
             page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
     assert not page.get_by_role("button",name=NEXT).is_enabled(), (
         "Building Blocks original 180-char learner check unexpectedly bypassed")
+    wait_current_progress_saved(page)
     page.reload(wait_until="networkidle")
     page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
     assert activity(page)=="cloud-building-blocks-compute-003"
@@ -254,6 +288,7 @@ with sync_playwright() as playwright:
             page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
     assert not page.get_by_role("button",name=NEXT).is_enabled(), (
         "S3 original 350-character reflection allows empty learner answer")
+    wait_current_progress_saved(page)
     page.reload(wait_until="networkidle")
     page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
     assert activity(page)=="cloud-object-storage-implementation-005"
@@ -306,6 +341,7 @@ with sync_playwright() as playwright:
             page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
     assert not page.get_by_role("button",name=NEXT).is_enabled(),(
         "IaC original 180-character reflection permitted blank answer")
+    wait_current_progress_saved(page)
     page.reload(wait_until="networkidle")
     page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
     assert activity(page)=="infrastructure-as-code-why-infrastructure-as-code-003"
@@ -357,6 +393,7 @@ with sync_playwright() as playwright:
             page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
     assert not page.get_by_role("button",name=NEXT).is_enabled(),(
         "Original 180-character K8s reflection bypassable without response")
+    wait_current_progress_saved(page)
     page.reload(wait_until="networkidle")
     page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
     assert activity(page)=="cloud-orchestration-gitops-why-orchestration-003"
@@ -428,6 +465,7 @@ with sync_playwright() as playwright:
             page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
     assert not page.get_by_role("button",name=NEXT).is_enabled(),(
         "Original 350-character canary reflection accepted without response")
+    wait_current_progress_saved(page)
     page.reload(wait_until="networkidle")
     page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
     assert activity(page)=="cloud-progressive-delivery-canary-006"
