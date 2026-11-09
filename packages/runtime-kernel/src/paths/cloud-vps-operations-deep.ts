@@ -21,7 +21,7 @@ interface LessonSpec {
 
 function richLesson(spec: LessonSpec): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    const extendedSections = [...spec.sections, ...(cloudVpsMechanismSections[spec.id] ?? [])].map((section) =>
+    const extendedSections: LessonSpec["sections"] = [...spec.sections, ...(cloudVpsMechanismSections[spec.id] ?? [])].map((section) =>
         spec.id === "securing-ssh-access" && section.heading === "Run a real local OpenSSH client/key experiment without any remote login"
             ? { ...section, code: {language: "python", caption: "Actual local ssh-keygen/ssh -G client trust demonstration; NO server login", code: cloudVpsSshLocalProof} }
             : section,
