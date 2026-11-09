@@ -148,3 +148,26 @@ The previous exact-head [curriculum workflow #42637465134](https://github.com/en
 - [ ] Run production-appropriate Steward/PostgreSQL/RabbitMQ/Graylog/Prometheus/Tempo investigations and independently verify live business side effects; local SQLite is **not** that evidence.
 - [ ] Continue in learner order to burn-rate alerts and policy decisions, then remaining Reliability original modules.
 - [ ] Keep #327 OPEN and both #404/#408 draft/unmerged until their separate acceptance conditions are met.
+
+
+## Graylog indexed-search teaching — 9 November 2026, incremental Reliability module 4
+
+**Source:** `packages/runtime-kernel/src/paths/reliability-graylog-indexed-search-contract.ts`, rendered **within the unchanged original** `logging-graylog-event-lifecycle-001`; accompanying original practical `logging-graylog-event-lifecycle-002` now requires real-vs-fake evidence separation and five negative cases. The existing introductory local UDP producer test remains separate and unchanged.
+
+### Problem, mechanism and actual acceptance boundary
+
+The original lesson explained GELF schema, transport, processing, indexing and querying, but the executable sample observed **only loopback UDP**. It could not independently prove even the search-response *verification contract*. A reader might wrongly treat GELF HTTP `202 Accepted` as proof of indexed, queryable evidence.
+
+The new **exact source-published Python 3** contract is built around documented Graylog 7.2 GELF HTTP `POST /gelf` and Search Scripting API `POST /api/search/messages`. The latter returns columnar `schema` plus `datarows`; a valid search proof must match the **specific unique `request_id`, `event` and `outcome` in the actual returned row**, not merely HTTP 200 or any row.
+
+- **Default mode is explicitly fake**: a disposable localhost Python HTTP handler synthesizes accepted GELF transport + scripted search response shape. `DEMO_CONTRACT_PASS` is a verifier behavior test, emphatically **not Graylog ingest/index/search**.
+- Local negative scenarios: `TSA_DEMO_SCENARIO=ack_only` (202 but no rows); `wrong_id` (unrelated ID); `missing_field` (request ID absent); `search_denied` (403); `input_down` (503). All must exit nonzero. Source mutations reveal why skipping HTTP status, exact indexed ID or the search result can falsely accept a negative.
+- **Live mode is opt-in and NOT EXECUTED in this source pass:** `python3 graylog_search.py --live` requires `TSA_GRAYLOG_VERIFY_LIVE=1`, explicit learner-owned GELF input and search API URLs plus credentials from the environment; external URLs require HTTPS, with loopback-only HTTP permitted. It makes one sanitized event with a unique ID and polls an actual search API for a bounded time; no credentials are embedded in source. A real passing hit could show **one queryable event at that time**, not retention, actual Steward emission, all-users access, high-volume durability or operator competence.
+- Exact-source Node gate `scripts/check-reliability-graylog-event-trace.mjs` executes the local script and negative variants, with explicit no-live-environment isolation; rendered-browser gate in `scripts/check-school-learner-browser.py` checks the real original reading/practical, copyable code, provenance warning and 390px layout.
+- **Technical status:** newest matching-head workflow result still required before calling this particular change technically verified; prior green #42639689108 refers only to the preceding HTTP/SQLite and SLO batch.
+
+### Vendor provenance
+
+Graylog's versioned documentation: [GELF HTTP Input](https://go2docs.graylog.org/current/getting_in_log_data/gelf.html) documents `/gelf` and 202 acceptance-for-processing; [Search Scripting API](https://go2docs.graylog.org/current/making_sense_of_your_log_data/simple_search_scripting_api.htm) documents POST message search, query, `schema`, `datarows` and search ranges. Actual deployment/version compatibility must be checked by the learner.
+
+**Open:** Real Graylog input → journal → processing/stream → index/data node → exact search, with input outage and recovery, time skew, privacy/role/retention checks. Existing global Reliability issue #327 and independent learner validation stay OPEN; PR #408 remains DRAFT/UNMERGED stacked on Cloud #404. No real Graylog instance or actual indexed hit was claimed from CI.
