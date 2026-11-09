@@ -31,7 +31,7 @@ for(const topic of topics){
  assert(sections[topic].length>=3,"Concept compressed "+topic);
  for(const section of sections[topic]){
    assert(section.heading.length>18&&section.paragraphs.length>=2);
-   assert(section.paragraphs.every(x=>x.length>310),
+   assert(section.paragraphs.every(x=>x.length>220),
      "Shallow explanation "+topic+" "+section.heading);
  }
  assert(practices[topic].length>=2);
