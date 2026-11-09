@@ -33,6 +33,8 @@ jobs:
           python-version: '3.12'
       - name: Execute exact original Hosting Models source and seven unsafe mutants
         run: node scripts/check-cloud-hosting-evidence.mjs
+      - name: Verify original VPS and Networking lesson sources with real TCP/DNS and six bad variants
+        run: node scripts/check-cloud-vps-network-evidence.mjs
       - name: Run curriculum tests, integrity audit, build and learner-facing audit
         run: |
           pnpm install --frozen-lockfile
