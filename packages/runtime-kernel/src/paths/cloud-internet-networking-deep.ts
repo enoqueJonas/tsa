@@ -21,7 +21,7 @@ interface LessonSpec {
 
 function richLesson(spec: LessonSpec): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    const extendedSections = [...spec.sections, ...(cloudNetworkMechanismSections[spec.id] ?? [])].map((section) =>
+    const extendedSections: LessonSpec["sections"] = [...spec.sections, ...(cloudNetworkMechanismSections[spec.id] ?? [])].map((section) =>
         spec.id === "tls-certificates" && section.heading === "Run real TLS handshakes with both correct and unsafe trust paths"
             ? {...section, code: {language: "python", caption: "Real local OpenSSL/Python TLS handshake; trust-anchor and hostname denial, NO public DNS", code: cloudNetworkTlsLocalProof}}
             : section,
