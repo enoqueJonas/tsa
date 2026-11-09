@@ -1,5 +1,6 @@
 import type { Lesson } from "./lesson";
 import { infrastructureAsCodeDeepLessons } from "./cloud-infrastructure-as-code-deep";
+import { cloudIacEvidencePractices } from "./cloud-iac-mechanism-depth";
 
 const practiceTitles: Record<string, string> = {
     "Why Infrastructure as Code": "Console-to-Code Audit: Remove Hidden Infrastructure Knowledge",
@@ -35,6 +36,7 @@ function enrichLesson(lesson: Lesson): Lesson {
                 content: {
                     ...activity.content,
                     objective: `${practiceTitle}. Use OpenTofu as the implementation tool while keeping Terraform concepts transferable.`,
+                    instructions: [...activity.content.instructions, ...(cloudIacEvidencePractices[lesson.id.slice("infrastructure-as-code-".length)] ?? [])],
                     scenario: "Steward already has a reasoned remote architecture, a Kong public edge, Rocky Linux hosts, private backend boundaries, GitLab CI/CD/Nexus delivery and Ansible-managed host state. Infrastructure as Code must encode that approved infrastructure without swallowing application deployment, host configuration or secret-management responsibilities that belong elsewhere.",
                     deliverables: [
                         ...activity.content.deliverables,
