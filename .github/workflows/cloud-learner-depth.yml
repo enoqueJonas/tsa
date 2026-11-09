@@ -31,6 +31,8 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      - name: Install runtime dependencies required by existing whole-curriculum Python examples
+        run: python -m pip install 'lxml>=5,<8' 'pyftpdlib>=2,<3' 'asyncssh>=2.20,<3' 'PyYAML>=6,<7'
       - name: Execute exact original Hosting Models source and seven unsafe mutants
         run: node scripts/check-cloud-hosting-evidence.mjs
       - name: Verify original VPS and Networking lesson sources with real TCP/DNS and six bad variants
