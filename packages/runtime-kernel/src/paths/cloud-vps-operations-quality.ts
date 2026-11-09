@@ -1,6 +1,7 @@
 import type { PracticalContent } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { vpsOperationsDeepLessons } from "./cloud-vps-operations-deep";
+import { cloudVpsEvidencePractices } from "./cloud-vps-mechanism-depth";
 
 const practices: Record<string, PracticalContent> = {
     "Choosing a Budget VPS": {
@@ -124,7 +125,7 @@ function enrichLesson(lesson: Lesson): Lesson {
         ...lesson,
         activities: lesson.activities.map((activity) =>
             activity.content.type === "practical" && activity.title.startsWith("Apply:")
-                ? { ...activity, title: `${lesson.title}: Steward VPS Investigation`, estimatedMinutes: 60, content: practice }
+                ? { ...activity, title: `${lesson.title}: Steward VPS Investigation`, estimatedMinutes: 60, content: { ...practice, instructions: [...practice.instructions, ...(cloudVpsEvidencePractices[lesson.id.slice("vps-operations-".length)] ?? [])] } }
                 : activity,
         ),
     };
