@@ -4,6 +4,9 @@ import {spawnSync} from "node:child_process";
 const lesson=readFileSync("packages/runtime-kernel/src/paths/reliability-sre-foundations-deep.ts","utf8");
 const text=readFileSync("packages/runtime-kernel/src/paths/reliability-sre-source-depth.ts","utf8");
 assert.ok(lesson.includes("...extraSreBlocks(spec.id)"),"SRE source depth must render in original lessons");
+for (const required of ["Copy the complete local Python program", "false_ack=200", "skip persist_record()", "Status-versus-committed-record evidence table"]) {
+  assert.ok(lesson.includes(required), "Original first SRE practical missing executable acceptance: " + required);
+}
 const start=text.indexOf(" = {");
 const end=text.indexOf(";\nexport function",start);
 assert.ok(start>=0&&end>start,"SRE source map malformed");
