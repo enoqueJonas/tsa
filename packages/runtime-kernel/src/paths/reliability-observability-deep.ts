@@ -1,6 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { originalObservabilitySignalProof } from "./reliability-observability-source-proof";
+import { correlationEvidenceBlocks } from "./reliability-observability-correlation-evidence";
 
 const otelDocs: LearningResource = { title: "OpenTelemetry Documentation", url: "https://opentelemetry.io/docs/" };
 const sreBook: LearningResource = { title: "Google Site Reliability Engineering", url: "https://sre.google/sre-book/table-of-contents/" };
@@ -44,6 +45,7 @@ function blocksFor(spec: Spec): LessonBlock[] {
     ...spec.steward.map((text): LessonBlock => ({ type: "paragraph", text })),
     { type: "callout", tone: "steward", title: "Question before signal", body: "Do not add telemetry because a tool can collect it. Start with a concrete question about Steward behavior, then choose the smallest set of signals and context that can answer it reliably." },
     ...(originalObservabilitySignalProof[spec.id] ?? []),
+    ...correlationEvidenceBlocks(spec.id),
     { type: "resources", title: "Continue learning", resources: resourcesByObservabilityTopic[spec.id] ?? [otelDocs, sreBook] },
   ];
 }
@@ -51,7 +53,16 @@ function blocksFor(spec: Spec): LessonBlock[] {
 function lessonFrom(spec: Spec): Lesson {
   return { id: `observability-${spec.id}`, title: spec.title, activities: [
     { id: `observability-${spec.id}-001`, title: spec.title, estimatedMinutes: 50, content: { type: "reading", body: blocksFor(spec).filter((part) => part.type === "paragraph").map((part) => part.text).join("\n\n") || spec.intro, blocks: blocksFor(spec) } },
-    { id: `observability-${spec.id}-002`, title: `Observe: ${spec.title}`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${spec.title} to Steward.`, scenario: "Use the current Steward architecture and the Reliability Risk Map. Start from a user-visible or operational question, instrument only what is necessary, then verify that the resulting telemetry actually answers the question.", instructions: spec.practice, deliverables: ["Operational question", "Telemetry evidence", "Interpretation and gap note"], completionCriteria: ["The signal is tied to a concrete question.", "Context is sufficient to distinguish relevant causes or requests.", "The learner records what the telemetry still cannot prove."] } },
+    { id: `observability-${spec.id}-002`, title: `Observe: ${spec.title}`, estimatedMinutes: 60, content: { type: "practical", objective: `Apply ${spec.title} to Steward.`, scenario: "Use the current Steward architecture and the Reliability Risk Map. Start from a user-visible or operational question, instrument only what is necessary, then verify that the resulting telemetry actually answers the question.", instructions: [...spec.practice, ...(spec.id === "correlation-context" ? [
+    "Copy and execute the complete Python 3 source from the preceding reading as correlation_lab.py. Capture real loopback HTTP 202 responses, independently committed SQLite outbox/effect rows, and both good and lost worker trace-context lines.",
+    "Intentionally replace the good worker trace ID with None and explain the resulting assertion failure. Restore it; remove only the worker request ID and prove why timestamp similarity is not reliable operation correlation.",
+    "Send only the synthetic DO_NOT_LOG_CLASSROOM_TOKEN header supplied by the source. Verify the original log allowlist excludes it; never use actual credentials for this test.",
+    "Label SQLite, HTTP, and in-memory emitted events as local evidence. Actual RabbitMQ, OpenTelemetry, Graylog, Tempo and real Steward effects remain UNVERIFIED.",
+] : spec.id === "instrumentation" ? [
+    "Re-run the same original correlation_lab.py source: compare actual independent SQLite effect rows with emitted API and consumer events.",
+    "Remove the consumer telemetry while keeping the effect commit, then restore it and remove the durable effect write. Explain why neither missing logs nor successful logs alone establish the business outcome.",
+    "Specify the real Steward instrumentation boundaries API accepted, outbox committed, RabbitMQ published, consumer delivery and durable effect; keep unknown collection coverage explicit.",
+] : [])], deliverables: ["Operational question", "Telemetry evidence", "Interpretation and gap note", ...(["correlation-context","instrumentation"].includes(spec.id)?["Executable real HTTP + SQLite correlation and changed-case evidence"] : [])], completionCriteria: ["The signal is tied to a concrete question.", "Context is sufficient to distinguish relevant causes or requests.", "The learner records what the telemetry still cannot prove.", ...(["correlation-context","instrumentation"].includes(spec.id) ? ["Durable effect, log correlation and trace propagation are distinguished with observed positive and negative evidence."] : [])] } },
     { id: `observability-${spec.id}-003`, title: `Knowledge Check: ${spec.title}`, estimatedMinutes: 10, content: { type: "reflection", prompt: spec.reflection, minimumCharacters: 200 } },
   ] };
 }
