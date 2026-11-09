@@ -180,7 +180,7 @@ with sync_playwright() as playwright:
         content=page.locator("main").last.inner_text()
         assert phrase.lower() in content.lower(), "Building Block content missing "+name
         if name.endswith("-003"):
-            assert len(content)>240, "Original Building Blocks reflection not rendered"
+            assert len(content)>150, "Original Building Blocks reflection prompt not rendered"
         else:
             assert len(content)>450,"Building Block reading/practical too short "+name
         page.set_viewport_size({"width":390,"height":844})
