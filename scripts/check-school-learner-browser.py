@@ -276,7 +276,8 @@ def inspect_school(page):
                 reliability_source_readings = {
                     "logging-structured-logs-001": "Run a real parsing and correlation failure",
                     "logging-centralized-logging-001": "Follow a log from code to Graylog search",
-                    "logging-graylog-event-lifecycle-001": "Prove searchable evidence separately from HTTP 202",
+                    "logging-graylog-event-lifecycle-001": "Run the smallest observable event before operating Graylog",
+                    "logging-graylog-event-lifecycle-indexed-search-reading": "Prove searchable evidence separately from HTTP 202",
                     "service-level-engineering-slis-001": "Execute a small positive and negative SLI model",
                     "service-level-engineering-error-budgets-001": "Derive budget and burn from the same committed event population",
                     "service-level-engineering-windowing-001": "Cohort maturity, event-time windows, and missing measurements",
@@ -347,17 +348,29 @@ def inspect_school(page):
                 page.set_viewport_size({"width": 1440, "height": 900})
             if SCHOOL == "reliability-engineer" and activity_id in {
                 "logging-graylog-event-lifecycle-001",
+                "logging-graylog-event-lifecycle-indexed-search-reading",
                 "logging-graylog-event-lifecycle-002",
             }:
                 if activity_id == "logging-graylog-event-lifecycle-001":
+                    assert content.get_by_role("button", name="Copy").count() >= 1, (
+                        "Original GELF UDP source is no longer copyable"
+                    )
+                    assert "local datagram contract" in text and "NOT a running Graylog input" in text, (
+                        "Original GELF lesson lost its distinct local-only boundary"
+                    )
+                elif activity_id == "logging-graylog-event-lifecycle-indexed-search-reading":
                     assert content.get_by_text(
                         "Reproduce failures without weakening the search oracle",
                         exact=True,
                     ).count() == 1, (
-                        "Original Graylog lesson lost explicit HTTP 202/search negative"
+                        "Focused Graylog indexed-search reading missing original mechanism"
                     )
-                    assert content.get_by_role("button", name="Copy").count() >= 2, (
-                        "Published GELF and Search API Python snippets not copyable"
+                    assert content.get_by_text(
+                        "Decode a columnar search result before trusting it",
+                        exact=True,
+                    ).count() == 1, "Schema/datarows mechanics not taught"
+                    assert content.get_by_role("button", name="Copy").count() >= 1, (
+                        "Source-published Search API Python is not copyable"
                     )
                     assert "DEMO_CONTRACT_PASS" in text and "NOT Graylog indexing" in text, (
                         "Fake index contract is being confused with real Graylog"
