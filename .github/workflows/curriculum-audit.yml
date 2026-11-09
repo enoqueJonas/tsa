@@ -45,6 +45,7 @@ on:
       - curriculum/platform-builder-pedagogical-audit
       - curriculum/delivery-engineer-pedagogical-audit
       - curriculum/delivery-engineer-source-depth-v2
+      - curriculum/reliability-learner-http-evidence-v1
       - curriculum/cloud-engineer-source-depth-v1
       - curriculum/reliability-engineer-source-depth-v1
       - curriculum/quality-steward-source-depth-v1
