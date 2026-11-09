@@ -1,5 +1,7 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
+import { cloudHostingMechanismSections } from "./cloud-hosting-mechanism-depth";
+import { cloudHostingCostDecisionPython } from "./cloud-hosting-live-cost";
 
 const awsSharedResponsibility: LearningResource = { title: "AWS Shared Responsibility Model", url: "https://aws.amazon.com/compliance/shared-responsibility-model/" };
 const azureRegions: LearningResource = { title: "Microsoft Azure geographies and regions", url: "https://learn.microsoft.com/en-us/azure/reliability/regions-overview" };
@@ -19,7 +21,16 @@ interface LessonSpec {
 
 function richLesson(spec: LessonSpec): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    for (const section of spec.sections) {
+    const extendedSections = [...spec.sections, ...(cloudHostingMechanismSections[spec.id] ?? [])].map((section) =>
+        spec.id === "cloud-cost-awareness" && section.heading === "Run a reproducible quiet-month versus traffic-spike estimate"
+            ? { ...section, code: {
+                language: "python",
+                caption: "Real stdlib Decimal calculation using fictional provider rates; no network, accounts or paid resources",
+                code: cloudHostingCostDecisionPython,
+            } }
+            : section,
+    );
+    for (const section of extendedSections) {
         blocks.push({ type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.list) blocks.push({ type: "list", items: section.list });
