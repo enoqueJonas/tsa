@@ -314,5 +314,56 @@ with sync_playwright() as playwright:
     print("PASS IaC original first-topic desktop/390px and genuine reflection/reload gate; later source and real CLI tests distinct",flush=True)
     context.close()
 
+    # Module 8 first original topic: do not bypass any human reflection.
+    # Later Pods/Deployment original readings have exact Python source checked
+    # by source tests + real kind CLI, not fake browser progress.
+    context=browser.new_context(viewport={"width":1440,"height":900})
+    page=context.new_page()
+    runtime_errors=[]
+    page.on("pageerror",lambda err:runtime_errors.append(str(err)))
+    page.goto(BASE+"/?view=curriculum&school="+school,wait_until="networkidle")
+    module_buttons=page.get_by_role("button",name=MODULE)
+    module_buttons.first.wait_for(state="visible",timeout=30000)
+    assert module_buttons.count()==11,"Cloud canonical 11 modules changed"
+    module_buttons.nth(7).click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert "cloud-orchestration-gitops" in page.url, "Wrong Kubernetes module URL"
+    first=[
+        ("cloud-orchestration-gitops-why-orchestration-001",
+         "Build the mental model from a failure, not a product diagram"),
+        ("cloud-orchestration-gitops-why-orchestration-002",
+         "Orchestration Requirement Gate"),
+        ("cloud-orchestration-gitops-why-orchestration-003",
+         "Kubernetes control loop solve"),
+    ]
+    for index,(expected,phrase) in enumerate(first):
+        assert activity(page)==expected,"Original K8s activity order/progress lost "+page.url
+        main=page.locator("main").last
+        body=main.inner_text()
+        assert phrase.lower() in body.lower(), "K8s original content absent "+expected
+        if index<2:
+            assert len(body)>620,"Original K8s reading/practice too shallow "+expected
+        else:
+            assert len(body)>140,"Original K8s reflection question missing"
+        page.set_viewport_size({"width":390,"height":844})
+        assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"), (
+            "K8s original activity mobile overflow "+expected)
+        page.set_viewport_size({"width":1440,"height":900})
+        print("PASS original K8s activity and mobile:",expected,flush=True)
+        if index<2:
+            nxt=page.get_by_role("button",name=NEXT)
+            assert nxt.is_enabled(),"K8s activity incorrectly locked: "+expected
+            nxt.click()
+            page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert not page.get_by_role("button",name=NEXT).is_enabled(),(
+        "Original 180-character K8s reflection bypassable without response")
+    page.reload(wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert activity(page)=="cloud-orchestration-gitops-why-orchestration-003"
+    assert not page.get_by_role("button",name=NEXT).is_enabled()
+    assert not runtime_errors,"K8s runtime browser exceptions "+str(runtime_errors)
+    print("PASS original Kubernetes intro→practice→gated reflection desktop/390px and reload; later original topic browser pages NOT_TESTED",flush=True)
+    context.close()
+
     browser.close()
-print("PASS Cloud modules 1–7 bounded original and focused browser evidence; IaC later gated topics source/CLI-only verified")
+print("PASS Cloud modules 1–8 bounded browser evidence; module-8 later real Kubernetes source tests independent")
