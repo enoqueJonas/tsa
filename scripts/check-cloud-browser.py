@@ -474,5 +474,59 @@ with sync_playwright() as playwright:
     print("PASS entire module 9: original + four focused readings + four original practicals + genuine gated final reflection/reload; no fake learner answer",flush=True)
     context.close()
 
+
+    # Cloud Engineer module 10 original first-topic reading/practical/reflection
+    # must stay navigable without inventing 180-character learner answers.
+    # Later cost-estimation original topic is source-reviewed and its EXACT
+    # copyable Python code is executed separately in CI; browser cannot bypass
+    # earlier reflective gates just to claim an unearned whole-module visit.
+    context=browser.new_context(viewport={"width":1440,"height":900})
+    page=context.new_page()
+    runtime_errors=[]
+    page.on("pageerror",lambda err:runtime_errors.append(str(err)))
+    page.goto(BASE+"/?view=curriculum&school="+school,wait_until="networkidle")
+    buttons=page.get_by_role("button",name=MODULE)
+    buttons.first.wait_for(state="visible",timeout=30000)
+    assert buttons.count()==11,"Original Cloud 11 paths/order changed"
+    buttons.nth(9).click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert "cloud-architecture-and-cost" in page.url
+    first=[
+        ("cloud-architecture-and-cost-availability-001",
+         "Service availability depends on the entire customer operation"),
+        ("cloud-architecture-and-cost-availability-002",
+         "Availability Review: Remove the Highest-Impact Single Failure"),
+        ("cloud-architecture-and-cost-availability-003",
+         "multi-zone compute insufficient"),
+    ]
+    for index,(expected,phrase) in enumerate(first):
+        assert activity(page)==expected,"Original Architecture progress ID/order changed: "+page.url
+        body=page.locator("main").last.inner_text()
+        assert phrase.lower() in body.lower(),"Architecture mechanism/practical/question absent: "+expected
+        if index<2:
+            assert len(body)>1200,"Original architecture reading/practice too thin: "+expected
+        else:
+            assert len(body)>170,"Architecture original final reflection missing"
+        page.set_viewport_size({"width":390,"height":844})
+        assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),(
+            "Cloud Architecture mobile overflow "+expected)
+        page.set_viewport_size({"width":1440,"height":900})
+        print("PASS original Cloud Architecture topic desktop/390px:",expected,flush=True)
+        if index<2:
+            nxt=page.get_by_role("button",name=NEXT)
+            assert nxt.is_enabled(),"Unexpected previous Architecture gate "+expected
+            nxt.click()
+            page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert not page.get_by_role("button",name=NEXT).is_enabled(),(
+        "Original 180-character Cloud Architecture reflection accepted with blank answer")
+    wait_current_progress_saved(page)
+    page.reload(wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert activity(page)=="cloud-architecture-and-cost-availability-003"
+    assert not page.get_by_role("button",name=NEXT).is_enabled()
+    assert not runtime_errors,"Architecture Chrome runtime error "+str(runtime_errors)
+    print("PASS original Architecture intro→applied practice→gated reflection and IndexedDB reload; later original topics remain genuinely gated",flush=True)
+    context.close()
+
     browser.close()
-print("PASS Cloud modules 1–9 bounded browser evidence; human learner transfer and real Argo Rollouts remain unverified")
+print("PASS Cloud modules 1–10 bounded browser checks; exact cost-model execution is independent of human and provider acceptance")
