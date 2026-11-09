@@ -22,7 +22,12 @@ assert.ok(source.includes("GELF UDP is easy to send but does not acknowledge del
 assert.ok(source.includes("a successful log-sender call does not yet prove durable and searchable incident evidence"),
   "Live Graylog should be a separate evidence gate");
 const contract=readFileSync("packages/runtime-kernel/src/paths/reliability-graylog-indexed-search-contract.ts","utf8");
-assert.ok(source.includes("...graylogSearchBoundaryBlocks"),"Published indexed-search mechanism not wired to original Graylog reading");
+assert.ok(source.includes('id:"logging-graylog-event-lifecycle-indexed-search-reading"') && source.includes("blocks:graylogSearchBoundaryBlocks"),
+  "Focused Search API lesson must precede the unchanged original Graylog practical");
+assert.ok(source.includes('id:"logging-graylog-event-lifecycle-001"') &&
+          source.includes('id:"logging-graylog-event-lifecycle-002"') &&
+          source.includes('id:"logging-graylog-event-lifecycle-003"'),
+  "Original Graylog progress IDs must be preserved");
 for (const required of [
   "DEMO_CONTRACT_PASS comes from a fake local HTTP handler",
   "TSA_DEMO_SCENARIO=ack_only",
