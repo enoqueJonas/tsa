@@ -1,6 +1,8 @@
 import type { LearningResource, LessonBlock } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { iacDepthById } from "./cloud-iac-local-proof";
+import { cloudIacMechanismSections } from "./cloud-iac-mechanism-depth";
+import { cloudIacRealCliPython } from "./cloud-iac-real-cli-proof";
 
 const terraformDocs: LearningResource = { title: "HashiCorp Terraform Documentation", url: "https://developer.hashicorp.com/terraform/docs" };
 const openTofuDocs: LearningResource = { title: "OpenTofu Documentation", url: "https://opentofu.org/docs/" };
@@ -19,7 +21,22 @@ interface LessonSpec {
 
 function richLesson(spec: LessonSpec): Lesson {
     const blocks: LessonBlock[] = [{ type: "paragraph", text: spec.intro }];
-    for (const section of [...spec.sections, ...(iacDepthById[spec.id] ?? [])]) {
+    const enhancedSections: LessonSpec["sections"] = [
+        ...spec.sections,
+        ...(iacDepthById[spec.id] ?? []),
+        ...(cloudIacMechanismSections[spec.id] ?? []),
+    ].map((section) => {
+        if (spec.id === "plan-apply-lifecycle" &&
+            section.heading === "Run exact local CLI operations without touching provider resources") {
+            return {...section, code: {
+                language: "python",
+                caption: "Actual local OpenTofu CLI with only builtin terraform_data: plan, state, replacement, stale plan, loss and recovery; NO cloud",
+                code: cloudIacRealCliPython,
+            }};
+        }
+        return section;
+    });
+    for (const section of enhancedSections) {
         blocks.push({ type: "heading", id: section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-"), text: section.heading, level: 2 });
         for (const paragraph of section.paragraphs) blocks.push({ type: "paragraph", text: paragraph });
         if (section.list) blocks.push({ type: "list", items: section.list });
