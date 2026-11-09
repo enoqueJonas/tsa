@@ -173,7 +173,7 @@ with sync_playwright() as playwright:
     expected=[
         ("cloud-building-blocks-compute-001","Worked capacity decision: requests, service time and queueing"),
         ("cloud-building-blocks-compute-002","capacity"),
-        ("cloud-building-blocks-compute-003","compute"),
+        ("cloud-building-blocks-compute-003","larger VM not the same as higher availability"),
     ]
     for i,(name,phrase) in enumerate(expected):
         assert activity(page)==name,"Building Blocks original order unexpectedly changed: "+page.url
