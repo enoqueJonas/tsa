@@ -1,6 +1,7 @@
 import type { PracticalContent } from "../activities/content";
 import type { Lesson } from "./lesson";
 import { internetNetworkingDeepLessons } from "./cloud-internet-networking-deep";
+import { cloudNetworkAppliedPractices } from "./cloud-network-mechanism-depth";
 
 const practices: Record<string, PracticalContent> = {
     "Public and Private Addressing": {
@@ -185,7 +186,7 @@ function enrichLesson(lesson: Lesson): Lesson {
                 id: `${aligned.id}-practice`,
                 title: `${aligned.title}: Steward Network Investigation`,
                 estimatedMinutes: 60,
-                content: practice,
+                content: {...practice, instructions: [...practice.instructions, ...(cloudNetworkAppliedPractices[aligned.id.slice("internet-networking-".length)] ?? [])]},
             },
         ],
     };
