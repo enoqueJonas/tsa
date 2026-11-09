@@ -33,6 +33,10 @@ assert.ok(readings.includes("READ COMMITTED")&&readings.includes("lock_timeout")
   "Concurrency / DDL lock mechanism must be taught, not just tested");
 assert.ok(program.includes("BEGIN ISOLATION LEVEL READ COMMITTED"));
 assert.ok(program.includes("postgres:16-alpine"));
+assert.ok(program.includes("PostgreSQL init process complete") &&
+          program.includes('probe.stdout.strip() == "1"'),
+  "PostgreSQL initdb's temporary server must not satisfy final-server readiness");
+
 assert.ok(!program.includes("POSTGRES_HOST")&&!program.includes("DATABASE_URL"),
   "Proof must not read external database connection parameters");
 console.log("PASS original six IDs, three new focused readings and real PostgreSQL practice/code wiring");
