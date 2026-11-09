@@ -171,3 +171,23 @@ The new **exact source-published Python 3** contract is built around documented 
 Graylog's versioned documentation: [GELF HTTP Input](https://go2docs.graylog.org/current/getting_in_log_data/gelf.html) documents `/gelf` and 202 acceptance-for-processing; [Search Scripting API](https://go2docs.graylog.org/current/making_sense_of_your_log_data/simple_search_scripting_api.htm) documents POST message search, query, `schema`, `datarows` and search ranges. Actual deployment/version compatibility must be checked by the learner.
 
 **Open:** Real Graylog input → journal → processing/stream → index/data node → exact search, with input outage and recovery, time skew, privacy/role/retention checks. Existing global Reliability issue #327 and independent learner validation stay OPEN; PR #408 remains DRAFT/UNMERGED stacked on Cloud #404. No real Graylog instance or actual indexed hit was claimed from CI.
+
+
+## Original Observability + Production Logging correlation boundary — 9 November 2026
+
+**Context:** Continues draft [PR #408](https://github.com/enoqueJonas/tsa/pull/408), whose immediately prior indexed-search reading had an exact-head 19/19 green workflow at `c10414b3`. The following changes are *new* and require their own matching-head verification.
+
+### Existing lessons strengthened, no original ID changes
+
+- Observability `observability-correlation-context-001/002`: new source-linked executable Python 3 standard-library **actual loopback HTTP** `POST /register`, SQLite authoritative operation + outbox commits, separate consumer connection, and independent auditor query. Two requests return HTTP 202; **both have actual durable outbox records and final effect rows**. The first worker retains the original 32-hex W3C-style trace ID; the second deliberately drops worker trace context while preserving the request ID and completing the effect. The reader must distinguish broken observability from broken business outcomes.
+- Observability `observability-instrumentation-001/002`: explicitly shows why an `operation_committed` event and an `effect_committed` log are not interchangeable with actual database facts. A producer's HTTP acknowledgement is not proof of final processing. The learner must mutate logging independently from persistence and verify the consequences.
+- Production Logging `logging-correlation-ids-001/002`: requires interpreting the **same preceding real local experiment**, investigating request_id, trace_id and operation_id separately, showing why timestamps alone cannot establish a cross-worker relationship, and why a correlation ID never authorizes a request.
+- Production Logging `logging-privacy-security-001/002`: the same actual local POST includes an explicitly **fake** `Bearer DO_NOT_LOG_CLASSROOM_TOKEN` header, while event emission uses a strict allowlist. A deliberate source mutation inserting the Authorization field must fail instead of silently publishing a token. Only synthetic values are safe test fixtures.
+
+The new source map `reliability-observability-correlation-evidence.ts` renders into the **original** Correlation and Instrumentation readings. `scripts/check-reliability-observability-source-proof.mjs` executes **exact learner-published** Python and four negative source mutations: dropped healthy worker trace context, dropped consumer request ID, missing actual consumer effect commit and leaking synthetic Authorization into the emitter. Browser regression verifies source headings, code Copy, applied original practicals and 390px rendering; no new wrapper lessons or changed activity IDs.
+
+### Evidence boundary
+
+This runs real localhost HTTP and real disposable SQLite commits and an independently queried durable effect. The worker is an in-process simulated separate consumer connection: **no RabbitMQ deliveries, publisher retries, real Steward services, live Graylog indexing, Tempo exporter or OpenTelemetry SDK**. The example's W3C-shaped `traceparent` demonstrates a context-carrying mechanism, not a verified real distributed trace or compliant real producer integration. In-memory logs demonstrate a source allowlist; **real centralized indexing and retention remain a separate unverified acceptance gate**.
+
+At this audit entry the latest matching-head workflow is still in progress; passing the old 19/19 run from the previous module does not certify this new code. Human uncoached learner-transfer and live integration continue as OPEN in issue #327.
