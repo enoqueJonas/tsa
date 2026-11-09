@@ -26,6 +26,8 @@ const live = map["reliability-quality-attribute"].find((s) => /real local servic
 assert.ok(live, "The original first reading must publish copyable real loopback HTTP source");
 assert.match(live, /127\.0\.0\.1/);
 assert.match(live, /server\.shutdown\(\)/);
+assert.match(live, /db\.commit\(\)/);
+assert.match(live, /sqlite3\.connect\(db_file\)/);
 function execute(source) {
   const result = spawnSync("python3", ["-c", source], {encoding:"utf8", timeout:12000});
   assert.ifError(result.error);
@@ -37,7 +39,7 @@ assert.match(good.stdout, /health=200 outage_write=503 false_ack=200 false_ack_d
 assert.match(good.stdout, /unauthorized_write=403 recovered_write=201 recovered_durable=True/);
 const mutations = [
   ["status-only oracle", 'return 200 <= status < 300 and exists', 'return 200 <= status < 300'],
-  ["false durable acknowledgment", 'state["records"].add("r-17")', 'pass  # skipped durable write'],
+  ["false durable acknowledgment", '            persist_record()', '            pass  # skipped committed SQLite write'],
   ["authorization bypass", 'self.headers.get("Authorization") != "Bearer demo-allowed"', "False"],
 ];
 for (const [name, before, after] of mutations) {
