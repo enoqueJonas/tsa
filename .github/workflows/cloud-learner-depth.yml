@@ -1,0 +1,42 @@
+name: Cloud Engineer learner-depth source and render gates
+on:
+  pull_request:
+    paths:
+      - 'packages/runtime-kernel/src/paths/cloud-*.ts'
+      - 'scripts/check-cloud-*.mjs'
+      - 'scripts/check-cloud-*.py'
+      - '.github/workflows/cloud-learner-depth.yml'
+  push:
+    branches:
+      - curriculum/cloud-learner-depth-first-three-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: cloud-learner-depth-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  learner-depth:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Execute exact original Hosting Models source and seven unsafe mutants
+        run: node scripts/check-cloud-hosting-evidence.mjs
+      - name: Run curriculum tests, integrity audit, build and learner-facing audit
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm test
+          pnpm audit:curriculum
+          pnpm build
+          node scripts/audit-learner-facing-curriculum.mjs --strict
