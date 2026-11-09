@@ -199,5 +199,69 @@ with sync_playwright() as playwright:
     assert not errors,"Building Blocks runtime errors "+str(errors)
     print("PASS Cloud Building Blocks first original reading, practice, gated reflection and reload; IAM/Secrets later pages NOT browser-tested",flush=True)
     context.close()
+    # Cloud module 6 is one canonical topic, so unlike the twelve individual
+    # Building Blocks topics, every focused S3 reading and original practical
+    # can be navigated before the original 350-character gated reflection.
+    s3_sequence=[
+        ("cloud-object-storage-implementation-001","Choose the storage model deliberately"),
+        ("cloud-object-storage-implementation-006","Explain why a bucket/key is not a POSIX path"),
+        ("cloud-object-storage-implementation-007","Follow PUT, GET, HEAD and LIST as separate API operations"),
+        ("cloud-object-storage-implementation-008","Trace who is allowed to sign which API request"),
+        ("cloud-object-storage-implementation-009","Define one content digest that Steward owns end to end"),
+        ("cloud-object-storage-implementation-010","A persisted volume is not a durable recovery plan"),
+        ("cloud-object-storage-implementation-011","Run real versioning, authorization-boundary and integrity checks"),
+        ("cloud-object-storage-implementation-002","Deploy and Secure the Object Store"),
+        ("cloud-object-storage-implementation-003","Integrate Steward Export Evidence"),
+        ("cloud-object-storage-implementation-004","Operate Lifecycle, Failure and Recovery"),
+        ("cloud-object-storage-implementation-005","Defend the Storage Architecture"),
+    ]
+    context=browser.new_context(viewport={"width":1440,"height":900})
+    page=context.new_page()
+    errors=[]
+    page.on("pageerror",lambda err:errors.append(str(err)))
+    page.goto(BASE+"/?view=curriculum&school="+school,wait_until="networkidle")
+    module_buttons=page.get_by_role("button",name=MODULE)
+    module_buttons.first.wait_for(state="visible",timeout=30000)
+    assert module_buttons.count()==11
+    module_buttons.nth(5).click()
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert "object-storage-implementation" in page.url
+    for index,(expected,phrase) in enumerate(s3_sequence):
+        observed=activity(page)
+        assert observed==expected, (
+            "S3 canonical activity order lost at "+str(index)+": "+str(observed))
+        main=page.locator("main").last
+        actual=main.inner_text()
+        assert phrase.lower() in actual.lower(), (
+            "S3 source not rendered: "+expected)
+        if expected.endswith("-005"):
+            assert len(actual)>200,"Original S3 reflection prompt not rendered"
+        else:
+            assert len(actual)>550,"S3 reading/practical underdeveloped: "+expected
+        if expected=="cloud-object-storage-implementation-011":
+            assert main.get_by_role("button",name="Copy").count()>=1, (
+                "Real boto3/MinIO S3 code is not copyable")
+            assert "S3_REAL_RESTART_PERSISTED_BYTES_AND_SHA256_VERIFIED" in actual
+        page.set_viewport_size({"width":390,"height":844})
+        assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"), (
+            "S3 390px layout overflow: "+expected)
+        page.set_viewport_size({"width":1440,"height":900})
+        print("PASS Cloud S3 original/focused activity and mobile:",expected,flush=True)
+        if index<len(s3_sequence)-1:
+            nxt=page.get_by_role("button",name=NEXT)
+            assert nxt.is_enabled(),"Unexpected S3 prerequisite gate: "+expected
+            nxt.click()
+            page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert not page.get_by_role("button",name=NEXT).is_enabled(), (
+        "S3 original 350-character reflection allows empty learner answer")
+    page.reload(wait_until="networkidle")
+    page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+    assert activity(page)=="cloud-object-storage-implementation-005"
+    assert not page.get_by_role("button",name=NEXT).is_enabled(), (
+        "S3 reflection gate bypassed on hard reload")
+    assert not errors,"S3 Chrome runtime errors: "+str(errors)
+    print("PASS complete S3 original reading→6 deep readings→3 real practicals→gated reflection, 390px/reload; no invented answer",flush=True)
+    context.close()
+
     browser.close()
-print("PASS Cloud 1–5 original/focused source and honest browser evidence; later gated topics and live infrastructure remain unverified")
+print("PASS Cloud modules 1–6 original/focused browser evidence; later gated topics and actual homelab/learner validation remain unverified")
