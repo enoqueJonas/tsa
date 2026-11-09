@@ -277,6 +277,8 @@ def inspect_school(page):
                     "logging-structured-logs-001": "Run a real parsing and correlation failure",
                     "logging-centralized-logging-001": "Follow a log from code to Graylog search",
                     "service-level-engineering-slis-001": "Execute a small positive and negative SLI model",
+                    "service-level-engineering-error-budgets-001": "Derive budget and burn from the same committed event population",
+                    "service-level-engineering-windowing-001": "Cohort maturity, event-time windows, and missing measurements",
                     "metrics-prometheus-grafana-metric-types-001": "Why counters need reset-aware queries",
                     "reliability-distributed-tracing-implementation-001": "Execute two real local HTTP hops",
                     "reliability-alertmanager-implementation-001": "Exercise the HTTP notification boundary and its failure",
@@ -303,6 +305,32 @@ def inspect_school(page):
                         assert code.count() >= 1, (
                             f"Source-authored executable or SQL fixture missing from rendered reading: {activity_id}"
                         )
+            if SCHOOL == "reliability-engineer" and activity_id in {
+                "service-level-engineering-slis-001",
+                "service-level-engineering-error-budgets-001",
+                "service-level-engineering-windowing-001",
+                "service-level-engineering-slis-002",
+            }:
+                if activity_id == "service-level-engineering-slis-001":
+                    assert content.get_by_text(
+                        "Reconstruct lifecycle success from committed operations, not HTTP acknowledgments",
+                        exact=True,
+                    ).count() == 1, "Original SLIs lifecycle source was not rendered"
+                    assert content.get_by_role("button", name="Copy").count() >= 1, (
+                        "Original SLIs committed SQLite proof is not copyable"
+                    )
+                    assert "LEFT JOIN effects AS e" in text, (
+                        "Original SLIs page lost source-published missing-effect denominator"
+                    )
+                if activity_id == "service-level-engineering-slis-002":
+                    assert "Change b's consumer completion" in text and "t=95" in text, (
+                        "Original paired SLI practical no longer requires negative transfer"
+                    )
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert not page.evaluate(
+                    "document.documentElement.scrollWidth > innerWidth + 2"
+                ), f"Original Service Level activity overflows 390px: {activity_id}"
+                page.set_viewport_size({"width": 1440, "height": 900})
             for k in range(code.count()):
                 assert code.nth(k).locator("pre").count() > 0, (
                     f"Code block not rendered: {activity_id}"
