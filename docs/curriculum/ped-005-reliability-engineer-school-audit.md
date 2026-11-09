@@ -113,3 +113,38 @@ The former Observability Stack Integration practical began with the unexplained 
 Source contracts require these details, and the Reliability browser traversal checks the page's rendered teaching heading and copyable commands. The Reliability browser now also performs a synthetic practical-evidence plus reflection **IndexedDB reload/re-entry** test on the first original path after wrapper removal. This establishes storage/re-entry behavior only when its final matching-head browser job passes; it is not a novice comprehension assessment or a migration test for previously stored synthetic wrapper IDs.
 
 Official authoritative references: [Graylog containerized deployment](https://go2docs.graylog.org/current/downloading_and_installing_graylog/graylog_and_docker.htm), [Graylog Docker first run](https://go2docs.graylog.org/current/downloading_and_installing_graylog/docker_installation.htm), [Inputs](https://go2docs.graylog.org/current/getting_in_log_data/setup_an_input.htm), [GELF HTTP input](https://go2docs.graylog.org/current/getting_in_log_data/gelf.html), and [official demo Compose repository](https://github.com/Graylog2/docker-compose).
+
+
+## Forward learner-depth continuation — 9 November 2026, stacked on Cloud draft #404
+
+**Draft:** [PR #408](https://github.com/enoqueJonas/tsa/pull/408). Based on `06673bdf`, Cloud final milestone draft #404. All previous original learning-progress IDs are unchanged.
+
+### Reliability module 1 — first original SRE lesson, actual service boundary
+
+- `reliability-sre-source-depth.ts` now embeds the **complete learner-copyable Python 3 localhost HTTP and temporary SQLite** example in the original `reliability-and-sre-reliability-quality-attribute-001` reading. The first paired original practical requires the learner to execute it and falsify two wrong implementations.
+- It contrasts GET `/health` 200 with POST `/register` 503; rejects a false HTTP 200 without a committed SQLite record; denies unauthorized POST 403; then verifies a recovered 201 through a **separate SQLite read connection**. The SQLite file is disposable; this is neither actual Steward nor real distributed durability.
+- `scripts/check-reliability-sre-source-depth.mjs` executes the exact source and rejects (1) HTTP-status-only success, (2) skipped committed write, and (3) bypassed authorization. Full matching-head workflow acceptance remains required.
+
+### Reliability module 2 — actual event population, deadline and incomplete instrumentation
+
+**Original IDs unchanged.** `reliability-service-level-engineering-deep.ts` now wires `reliability-service-level-lifecycle-evidence.ts` into the original `slis`, `error-budgets` and `windowing` readings and adds explicit source-running/negative-transfer tasks to their original applied practicals.
+
+- The exact published Python 3 script creates and commits four synthetic operations in a disposable SQLite file, matches three consumer effects through a `LEFT JOIN` from a **separate connection**, and treats an effect as timely only if completed within 60 seconds of commit. At `as_of=120`, the entire cohort is mature. Two of four qualify; one is late and one absent, so the *classroom lifecycle SLI* is 50.00%, not the misleading synthetic 5/5 HTTP acknowledgments.
+- With a **hypothetical** 90% success SLO, the event-based budget is 0.4 event-equivalents; two failures consume it 5.00 times. This fraction is an accounting construct, not 0.4 actual failed requests. Four events do not establish long-term service performance.
+- The synthetic event export omits one of four committed operations, producing coverage 3/4. Metric-only conclusions cannot treat omitted events as green; the example reports `MANUAL_REVIEW_OBSERVABILITY_GAP`.
+- The synthetic short event-time window [20,50) has one timely effect in three committed operations. Its stated minimum 20 samples is an illustrative local decision rule only—not a universal paging standard. The exercise also forces a false early evaluation at `as_of=75` to fail rather than misclassify unfinished operations.
+- `scripts/check-reliability-sli-metrics-worked.mjs` executes the exact source and rejects five deliberate mistakes: dropped missing effect via inner join, all-commits-success assumption, late-effect acceptance, hidden missing telemetry and immature cohort evaluation.
+
+### CI gate correction from actual failing evidence
+
+The previous exact-head [curriculum workflow #42637465134](https://github.com/enoqueJonas/tsa/actions/runs/42637465134) failed **only** in the cross-school Cloud browser traversal: `steward-internet-environment-gate-1-hosting-architecture-001` rightly disabled blank Next. The test had assumed all activities were click-through. This is a **test-contract defect**, not a reason to bypass Cloud's operational evidence requirements.
+
+`scripts/check-school-learner-browser.py` now verifies the original final Cloud first gate remains disabled with its visible self-attestation warning; records two inspected original activities and eight **NOT_BROWSER_VERIFIED** operational activities. It does NOT fabricate evidence, mark the gate passed or claim whole-milestone traversal. Any other unexpectedly disabled next action remains a test failure.
+
+### Current acceptance boundary
+
+- [ ] Confirm latest matching-head 19-job CI, source-extraction tests, full `pnpm test`, `pnpm audit:curriculum`, `pnpm build` and real rendered reading/practical evidence. Superseded workflows and source-only checks do not count.
+- [ ] Independently examine the learner's comprehension and unaided transfer, using fresh variants not copied from public practice.
+- [ ] Run production-appropriate Steward/PostgreSQL/RabbitMQ/Graylog/Prometheus/Tempo investigations and independently verify live business side effects; local SQLite is **not** that evidence.
+- [ ] Continue in learner order to burn-rate alerts and policy decisions, then remaining Reliability original modules.
+- [ ] Keep #327 OPEN and both #404/#408 draft/unmerged until their separate acceptance conditions are met.
