@@ -3,6 +3,7 @@ import type { LessonBlock } from "../activities/content";
 import type { Activity } from "../activities";
 import { stakeholderMappingBlocks, stakeholderInterviewBlocks, stakeholderTriangulationBlocks } from "./professional-engineer-discovery-stakeholders";
 import { problemChoiceBlocks } from "./professional-engineer-discovery-problem-choice";
+import { problemFramingWorkflowBlocks, problemFramingMeasurementBlocks, problemFramingBoundaryBlocks } from "./professional-engineer-discovery-framing";
 
 function reading(id: string, title: string, body: string, minutes = 22): Lesson {
   // Remediate specific ORIGINAL topics only; preserve every existing ID.
@@ -10,9 +11,11 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
   // and triangulation are separately navigable before the original practice.
   const isProblemSelection = id === "capstone-problem-discovery-choosing-a-substantial-problem";
   const isStakeholder = id === "capstone-problem-discovery-stakeholder-discovery";
+  const isFraming = id === "capstone-problem-discovery-problem-framing";
   const authoredBlocks: LessonBlock[] | undefined = isProblemSelection
     ? [{type:"paragraph",text:body}, ...problemChoiceBlocks]
-    : isStakeholder ? [{type:"paragraph",text:body}, ...stakeholderMappingBlocks] : undefined;
+    : isStakeholder ? [{type:"paragraph",text:body}, ...stakeholderMappingBlocks]
+    : isFraming ? [{type:"paragraph",text:body}, ...problemFramingWorkflowBlocks] : undefined;
   const stakeholderReadings: Activity[] = isStakeholder ? [
     {
       id: `${id}-interview-method-reading`,
@@ -27,12 +30,27 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
       content: {type:"reading",body:"Challenge conflicting reports and turn uncertainty into an authorized research plan.",blocks:stakeholderTriangulationBlocks},
     },
   ] : [];
+  const framingReadings: Activity[] = isFraming ? [
+    {
+      id: `${id}-measurement-reading`,
+      title: "Measuring Workflow Stages Without Fabricating Completion",
+      estimatedMinutes: 65,
+      content: {type:"reading",body:"Measure a lifecycle cohort and separate incomplete status from genuine outcome evidence.",blocks:problemFramingMeasurementBlocks},
+    },
+    {
+      id: `${id}-causality-boundary-reading`,
+      title: "Causal Hypotheses, Problem Statements and Scope Boundaries",
+      estimatedMinutes: 60,
+      content: {type:"reading",body:"Challenge causal assumptions and define a falsifiable, solution-neutral problem boundary.",blocks:problemFramingBoundaryBlocks},
+    },
+  ] : [];
   return { id, title, activities: [
-    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : minutes,
+    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : isFraming ? 60 : minutes,
       content: { type: "reading", body, ...(authoredBlocks ? {blocks:authoredBlocks} : {}) } },
     ...stakeholderReadings,
+    ...framingReadings,
     { id: `${id}-practice`, title: `Discovery work: ${title}`,
-      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : 45, content: {
+      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : isFraming ? 100 : 45, content: {
       type: "practical",
       objective: `Apply ${title} to the evolving capstone discovery evidence before architecture is proposed.`,
       scenario,
@@ -53,6 +71,14 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "Draft a neutral interview guide: open recent-event questions, one positive counterexample, two role-specific prompts, a deliberately leading question rewritten neutrally, and voluntary participation/recording consent instructions. Use only authorized records.",
           "Build a claim and contradiction table for two opposing stakeholder accounts, with evidence type, source dependency, possible measurement bias, permitted validation action and an explicit UNKNOWN/NOT_TESTED for absent data.",
           "Produce one falsifiable revised discovery claim and record how an omitted or non-consenting voice limits it. Do not invent interview quotes, obtained permission, numerical incidence rates or an approved product.",
+        ] : []),
+        ...(isFraming ? [
+          "Draw a current-state workflow for one unit of work, including at least one branch/failure and an accountable actor, event artifact and permission boundary for each handoff; do not replace it with a future software architecture.",
+          "Write two competing causal hypotheses for a concrete observed or explicitly hypothetical symptom and one discriminating observation that could refute each explanation.",
+          "Run the exact learner-published Python nine-case timeline experiment; preserve expected 6/9 complete and 3/9 unverified, W03 stage attribution, W09 missing close and X01 invalid chronology. Explain every cohort denominator.",
+          "In separate disposable code copies, show four correct assertion failures: missing-to-zero fake completion, supplier wait measured from intake, reversed chronology accepted and total time mistaken for document preparation time.",
+          "Write a six-field solution-neutral problem frame, in/out-of-scope boundary and a missing-data/authorized-evidence plan. Change the case so average completed time improves while unresolved cases grow; explain why that is not success.",
+          "Specify the next real validation decision, its permission/owner, alternate nontechnical interventions and the exact evidence that would reverse the preferred frame; mark actual fieldwork NOT_TESTED unless performed.",
         ] : [])
       ],
       deliverables: ["Updated discovery artifact", "Evidence/assumption distinction", "Change-or-retain rationale", "Next validation question"],
@@ -71,6 +97,12 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "Stakeholder map includes a harmed non-user and separates decision power from firsthand workflow knowledge.",
           "A reviewer can reconstruct exactly why the source program rejects unauthorized data collection, a leading interview, manager-only coverage and testimony-only causal overclaim.",
           "Conflicting accounts and unknowns remain explicitly open until a discriminating permitted observation or document can resolve them.",
+        ] : []),
+        ...(isFraming ? [
+          "The documented source and runnable output have the same cohort/event definitions; missing/invalid lifecycle events are never silently converted into completed cases.",
+          "Each hypothesis has a plausible competing explanation, disconfirming test and authorized data source rather than an unqualified causal statement.",
+          "The problem statement names the affected role, workflow, population, outcome, evidence/unknowns, alternatives and scope without prescribing a technology or unsupported numerical improvement.",
+          "A reviewer can explain why lower completed-case average or a green status label may conceal worsening unresolved customer outcomes.",
         ] : [])
       ]
     } }
