@@ -192,6 +192,63 @@ def run():
   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
   assert page.evaluate("new URLSearchParams(location.search).get('activity')")==choice_practice
   print("PASS original discovery problem-choice reading/practice, copyable code, 390px and reload",flush=True)
+  # Stakeholder Discovery: original reading, two focused prerequisites and
+  # original practical all travel through the REAL Next action. Synthetic seed
+  # only allows navigation to this not-yet-studied topic; not learner evidence.
+  seed_completed_path(page,"capstone-problem-discovery",[
+    "capstone-problem-discovery-evidence-provenance-reading",
+    "capstone-problem-discovery-evidence-provenance-practice",
+    "capstone-problem-discovery-evidence-provenance-check",
+    "capstone-problem-discovery-choosing-a-substantial-problem-001",
+    "capstone-problem-discovery-choosing-a-substantial-problem-practice",
+  ])
+  stakeholder_steps=(
+    ("capstone-problem-discovery-stakeholder-discovery-001",
+     ("Who counts as a stakeholder", "Sampling, access and ethical authority", "STAKEHOLDER_COVERAGE_BIAS_GATE_PASS")),
+    ("capstone-problem-discovery-stakeholder-discovery-interview-method-reading",
+     ("Separate a research question", "Compare a leading exchange", "Make notes auditable")),
+    ("capstone-problem-discovery-stakeholder-discovery-triangulation-reading",
+     ("What triangulation does", "Trace a disagreement", "Move from stakeholder claims")),
+  )
+  page.goto(BASE+"/?"+urlencode({
+    "view":"curriculum","school":"professional-engineer",
+    "path":"capstone-problem-discovery","activity":stakeholder_steps[0][0]
+  }),wait_until="networkidle")
+  for index,(activity,requirements) in enumerate(stakeholder_steps):
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   actual=page.evaluate("new URLSearchParams(location.search).get('activity')")
+   assert actual==activity,f"Wrong stakeholder order: {actual} != {activity}"
+   section=page.locator("main").last
+   displayed=section.inner_text()
+   assert len(displayed)>=2500,f"Stakeholder reading remains thin: {activity}, {len(displayed)}"
+   for requirement in requirements:
+    assert requirement in displayed,f"Missing stakeholder teaching {activity}: {requirement}"
+   if index==0:
+    assert section.get_by_role("button",name="Copy").count()>0,"Stakeholder Python not copyable"
+    assert section.locator("figure pre").count()>0,"Stakeholder Python source not rendered"
+   page.set_viewport_size({"width":390,"height":844})
+   assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),(
+    "Stakeholder mobile overflow: "+activity
+   )
+   page.screenshot(path=str(ART/f"discovery-stakeholder-{index+1}-390.png"),full_page=True)
+   page.set_viewport_size({"width":1440,"height":900})
+   page.get_by_role("button",name=re.compile(r"^(Next|Next lesson|Complete path)$")).click()
+  final_stakeholder_practice="capstone-problem-discovery-stakeholder-discovery-practice"
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  actual=page.evaluate("new URLSearchParams(location.search).get('activity')")
+  assert actual==final_stakeholder_practice,(
+   f"Original Stakeholder practice did not follow focused readings: {actual}"
+  )
+  practice_text=page.locator("main").last.inner_text()
+  for requirement in ("stakeholder-by-workflow handoff matrix",
+                      "deliberately leading question rewritten neutrally",
+                      "opposing stakeholder accounts",
+                      "UNKNOWN/NOT_TESTED"):
+   assert requirement in practice_text,"Original stakeholder practice missing "+requirement
+  page.reload(wait_until="networkidle")
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==final_stakeholder_practice
+  print("PASS original stakeholder reading -> separate interview and triangulation -> original practice; 390px, code, reload",flush=True)
   # Gate the third module through completion of the second module's *actual*
   # authored IDs. This synthetic fixture is not independent learner evidence.
   synthetic_discovery_complete(page)
