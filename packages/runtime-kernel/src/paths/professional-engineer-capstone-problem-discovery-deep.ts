@@ -6,6 +6,7 @@ import { problemChoiceBlocks } from "./professional-engineer-discovery-problem-c
 import { problemFramingWorkflowBlocks, problemFramingMeasurementBlocks, problemFramingBoundaryBlocks } from "./professional-engineer-discovery-framing";
 import { requirementsDerivationBlocks, requirementsAcceptanceBlocks, requirementsTraceabilityBlocks } from "./professional-engineer-discovery-requirements";
 import { constraintsInventoryBlocks, constraintsFeasibilityBlocks, constraintsNegotiationBlocks } from "./professional-engineer-discovery-constraints";
+import { ambiguityInventoryBlocks, ambiguitySensitivityBlocks, ambiguityExperimentBlocks } from "./professional-engineer-discovery-ambiguity";
 
 function reading(id: string, title: string, body: string, minutes = 22): Lesson {
   // Remediate specific ORIGINAL topics only; preserve every existing ID.
@@ -16,12 +17,14 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
   const isFraming = id === "capstone-problem-discovery-problem-framing";
   const isRequirements = id === "capstone-problem-discovery-requirements";
   const isConstraints = id === "capstone-problem-discovery-constraints";
+  const isAmbiguity = id === "capstone-problem-discovery-working-with-ambiguity";
   const authoredBlocks: LessonBlock[] | undefined = isProblemSelection
     ? [{type:"paragraph",text:body}, ...problemChoiceBlocks]
     : isStakeholder ? [{type:"paragraph",text:body}, ...stakeholderMappingBlocks]
     : isFraming ? [{type:"paragraph",text:body}, ...problemFramingWorkflowBlocks]
     : isRequirements ? [{type:"paragraph",text:body}, ...requirementsDerivationBlocks]
-    : isConstraints ? [{type:"paragraph",text:body}, ...constraintsInventoryBlocks] : undefined;
+    : isConstraints ? [{type:"paragraph",text:body}, ...constraintsInventoryBlocks]
+    : isAmbiguity ? [{type:"paragraph",text:body}, ...ambiguityInventoryBlocks] : undefined;
   const stakeholderReadings: Activity[] = isStakeholder ? [
     {
       id: `${id}-interview-method-reading`,
@@ -78,15 +81,30 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
       content: {type:"reading",body:"Recognize impossible constraint combinations, identify decision owners and re-evaluate when evidence or capacity changes.",blocks:constraintsNegotiationBlocks},
     },
   ] : [];
+  const ambiguityReadings: Activity[] = isAmbiguity ? [
+    {
+      id: `${id}-sensitivity-reading`,
+      title: "Decision Sensitivity and the Value of Information",
+      estimatedMinutes: 75,
+      content: {type:"reading",body:"Evaluate hypothetical payoffs, probability uncertainty and the ceiling on information value without inventing evidence.",blocks:ambiguitySensitivityBlocks},
+    },
+    {
+      id: `${id}-experiment-design-reading`,
+      title: "Authorized Experiments, Reversibility and Decision Records",
+      estimatedMinutes: 75,
+      content: {type:"reading",body:"Choose discriminating, safe investigations; define stop rules and preserve reversibility.",blocks:ambiguityExperimentBlocks},
+    },
+  ] : [];
   return { id, title, activities: [
-    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : isFraming ? 60 : isRequirements ? 65 : isConstraints ? 70 : minutes,
+    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : isFraming ? 60 : isRequirements ? 65 : isConstraints ? 70 : isAmbiguity ? 70 : minutes,
       content: { type: "reading", body, ...(authoredBlocks ? {blocks:authoredBlocks} : {}) } },
     ...stakeholderReadings,
     ...framingReadings,
     ...requirementReadings,
     ...constraintReadings,
+    ...ambiguityReadings,
     { id: `${id}-practice`, title: `Discovery work: ${title}`,
-      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : isFraming ? 100 : isRequirements ? 110 : isConstraints ? 110 : 45, content: {
+      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : isFraming ? 100 : isRequirements ? 110 : isConstraints ? 110 : isAmbiguity ? 110 : 45, content: {
       type: "practical",
       objective: `Apply ${title} to the evolving capstone discovery evidence before architecture is proposed.`,
       scenario,
@@ -131,6 +149,14 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "Evaluate three different candidate architectures against binding constraints with a reason for every rejection or provisional acceptance. Include all violated gates, uncertainty ranges, operational costs and a choice to defer or narrow scope rather than invent approval.",
           "Analyze a conflict between two genuinely binding constraints (e.g. a data-export prohibition and an external supplier exchange): propose authorized ways to change the agreement, reduce scope or find a permitted interface; never suppress the privacy gate for a feature score.",
           "Inject two change events: revoke a previously claimed data-use permission and halve available operations capacity. Re-evaluate the feasibility matrix, affected requirement/test IDs, risk and architecture decision, with decision owner and a reversible audit log; mark real-source verification NOT_TESTED if absent.",
+        ] : []),
+        ...(isAmbiguity ? [
+          "Produce a six-entry uncertainty register in a genuinely new capstone domain. Distinguish unclear terminology, missing knowledge, conflicting evidence and a risk consequence; include provenance, authority to verify, alternative hypotheses, consequence and real reversibility.",
+          "Run the exact learner-visible Python sensitivity and perfect-information-ceiling example. Preserve baseline intake 38 versus supplier automation 36, the decision flip at 0.70, EVPI 48, and uncalibrated/authorization cautions. Explain why these invented numbers are not real forecasts.",
+          "In separate throwaway copies reject eight incorrect implementations: inverted probability weighting, missing automation downside, fixed recommendation, false stability, wrong perfect-information ceiling, ignored research authorization, ignored safety and ignored research-cost ceiling.",
+          "Design a permission-aware experiment charter, selecting a real discriminating method (authorized observation, targeted interview, bounded technical spike or controlled test) rather than building a demo for its own sake; include alternative explanation, sampling/source limits, stop condition, rollback and what the result cannot prove.",
+          "Document one irreversible or costly-to-reverse architecture decision, one safely reversible choice, an owner and a date/condition triggering review. Show a changed recommendation when a data-use permission is revoked or the experimental result contradicts the initial belief.",
+          "Deliver an explicit PROCEED_WITH_GUARDRAILS, DEFER, RESEARCH_REQUESTED or NO_AUTHORIZATION_TO_ACT decision. Mark field evidence NOT_TESTED unless actually obtained; never promote simulated beliefs or a script PASS into stakeholder approval.",
         ] : [])
       ],
       deliverables: ["Updated discovery artifact", "Evidence/assumption distinction", "Change-or-retain rationale", "Next validation question"],
@@ -167,6 +193,12 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "No score, savings or architecture fashion can override a noncompensatory consent, data or safety restriction; an infeasible set produces a defer/narrow/renegotiate recommendation.",
           "The source-exact Python output and eight failed unsafe mutants demonstrate source/authority/applicability/negotiability and export/budget/staffing/protocol controls without falsely claiming real contract validity.",
           "A reviewer can trace every changed constraint to reopened design, requirements, quality, test and operational decisions, with actual legal/contractual or stakeholder review explicitly NOT_VALIDATED unless performed.",
+        ] : []),
+        ...(isAmbiguity ? [
+          "The learner records where numbers come from and refuses unjustified confidence scores, interpretations of CLOSED and claims about actual supplier bottlenecks.",
+          "Each high-consequence unknown has competing explanations, a discriminating permitted study, decision dependency, safety gate and re-evaluation trigger.",
+          "The exact Python and eight deliberately wrong variants demonstrate uncertainty-sensitive decisions, EVPI as a theoretical ceiling and noncompensatory research authorization/safety.",
+          "A defensible recommendation may be DEFER/NO_AUTHORIZATION_TO_ACT, not an invented optimal architecture; real user research and uncoached independent transfer remain NOT_VALIDATED.",
         ] : [])
       ]
     } }
