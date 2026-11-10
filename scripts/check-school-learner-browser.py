@@ -296,6 +296,7 @@ def inspect_school(page):
                     "reliability-alertmanager-implementation-route-mechanics-reading": "Alertmanager receives alert state, then chooses a receiver",
                     "reliability-alertmanager-implementation-live-delivery-reading": "Operate the real Alertmanager binary and inspect what a receiver actually gets",
                     "reliability-alertmanager-implementation-prometheus-forwarding-reading": "Close the missing transport link with a real Prometheus rule",
+                    "reliability-alertmanager-implementation-outage-recovery-reading": "A firing Prometheus rule does not imply a delivered page",
                     "data-protection-dr-backup-integrity-001": "Execute a disposable restore and deliberate corruption",
                     "resilience-distributed-failure-idempotency-001": "Run an ambiguous commit and retry it safely",
                     "fault-injection-controlled-failure-001": "Inject one bounded response failure after a synthetic commit",
@@ -586,6 +587,12 @@ def inspect_school(page):
                     assert "actual HTTP 503 attempts" in text and (
                         "fresh group" in text
                     ), "Original failure/recovery practical conflates rejected and delivered"
+                    assert "TSA_FORWARD_SCENARIO=alertmanager-outage" in text and (
+                        "prometheus_notifications_errors_total" in text
+                    ), "Original recovery practical does not require genuine lost Alertmanager transport"
+                    assert "TSA_FORWARD_SCENARIO=outage-without-disconnect" in text, (
+                        "Original recovery practical lacks false-outage negative transfer"
+                    )
                 page.set_viewport_size({"width": 390, "height": 844})
                 assert not page.evaluate(
                     "document.documentElement.scrollWidth > innerWidth + 2"
@@ -593,9 +600,20 @@ def inspect_school(page):
                 page.set_viewport_size({"width": 1440, "height": 900})
             if SCHOOL == "reliability-engineer" and activity_id in {
                 "reliability-alertmanager-implementation-prometheus-forwarding-reading",
+                "reliability-alertmanager-implementation-outage-recovery-reading",
                 "reliability-alertmanager-implementation-002",
             }:
-                if activity_id == "reliability-alertmanager-implementation-prometheus-forwarding-reading":
+                if activity_id == "reliability-alertmanager-implementation-outage-recovery-reading":
+                    assert content.get_by_role("button", name="Copy").count() >= 2, (
+                        "Focused Alertmanager outage/recovery commands not copyable"
+                    )
+                    assert "prometheus_notifications_errors_total" in text and (
+                        "outage-without-disconnect" in text
+                    ), "Focused outage reading lost source errors and false-outage mutation"
+                    assert "firing" in text and "resolved" in text, (
+                        "Delayed recovery source does not distinguish alert state transitions"
+                    )
+                elif activity_id == "reliability-alertmanager-implementation-prometheus-forwarding-reading":
                     assert content.get_by_role("button", name="Copy").count() >= 1, (
                         "Prometheus forwarded exact Python is not copyable"
                     )
