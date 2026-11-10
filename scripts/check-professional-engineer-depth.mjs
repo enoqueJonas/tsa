@@ -875,3 +875,86 @@ for(const [before,after,why] of [
  assert.match(wrong.stderr,/AssertionError/,"Quality mutant failed for unrelated reason "+why+": "+wrong.stderr);
 }
 console.log("PASS original Quality Attributes scenario teaching, exact p95/privacy/recovery Python, two focused readings and eight rejected unsafe mutants");
+
+
+// Eighth ORIGINAL discovery topic: source-exact Risk. Distinguish already
+// active incidents, prospective failure paths, mitigation proof and residual
+// decision authority. Nine deliberate mistakes must be caught by assertions.
+const riskFile=fs.readFileSync(root+"professional-engineer-discovery-risk.ts","utf8");
+const riskPrefix="export const riskControlPython = ";
+const riskLine=riskFile.split("\n").find(x=>x.startsWith(riskPrefix));
+assert.ok(riskLine?.endsWith(";"),"Missing source-published original Risk Python");
+const riskPython=JSON.parse(riskLine.slice(riskPrefix.length,-1));
+function riskSection(name,nextName){
+ const anchor="export const "+name+": LessonBlock[] = ";
+ const at=riskFile.indexOf(anchor);
+ assert.ok(at>=0,"Original Risk lacks subject-authored section "+name);
+ const start=at+anchor.length;
+ const end=nextName?riskFile.indexOf("export const "+nextName+":",start):riskFile.length;
+ assert.ok(end>start,"Malformed original Risk source section "+name);
+ return JSON.parse(riskFile.slice(start,end).trim().replace(/;\s*$/,""));
+}
+const riskFoundation=riskSection("riskFoundationsBlocks","riskControlsBlocks");
+const riskControls=riskSection("riskControlsBlocks","riskResidualBlocks");
+const riskResidual=riskSection("riskResidualBlocks",null);
+for(const [label,blocks,minimum] of [
+ ["failure-paths",riskFoundation,4500],
+ ["control-proof",riskControls,4500],
+ ["residual-decisions",riskResidual,5200]
+]){
+ assert.ok(blocks.filter(x=>x.type==="heading").length>=4,"Original Risk lacks mechanisms: "+label);
+ assert.ok(blocks.filter(x=>x.type==="paragraph").length>=8,"Original Risk has too little teaching: "+label);
+ assert.ok(blocks.filter(x=>x.type==="paragraph").map(x=>x.text).join("\n").length>=minimum,
+  "Original Risk needs worked counterexamples: "+label);
+ assert.equal(blocks.filter(x=>x.type==="resources").length,1,"Missing bounded risk references: "+label);
+}
+assert.equal(riskFoundation.filter(x=>x.type==="code").length,0);
+assert.equal(riskControls.filter(x=>x.type==="code").length,1);
+assert.equal(riskResidual.filter(x=>x.type==="code").length,0);
+assert.equal(riskControls.find(x=>x.type==="code").code,riskPython,
+ "Executed Risk proof differs from literal learner-visible source");
+const riskOriginal=fs.readFileSync(root+"professional-engineer-capstone-problem-discovery-deep.ts","utf8");
+for(const exact of [
+ 'id === "capstone-problem-discovery-risk"',
+ "...riskFoundationsBlocks","...riskReadings","-controls-reading","-residual-decisions-reading",
+ "Execute the exact learner-visible Python risk-control program",
+ "NINE genuine AssertionError failures",
+ 'reading("capstone-problem-discovery-risk"'
+]) assert.ok(riskOriginal.includes(exact),"Risk lesson/practice not actually wired: "+exact);
+const riskPracticeAnchor="id: "+String.fromCharCode(96)+String.fromCharCode(36)+"{id}-practice";
+assert.ok(riskOriginal.indexOf("...riskReadings")<riskOriginal.indexOf(riskPracticeAnchor),
+ "Risk control and residual readings must precede original practice");
+const goodRisk=python(riskPython);
+assert.equal(goodRisk.status,0,goodRisk.stdout+"\n"+goodRisk.stderr);
+for(const marker of [
+ "existing_damage: ESCALATE_EXISTING_INCIDENT",
+ "vague_concern: FAILURE_PATH_UNDEFINED",
+ "rumored_dependency: SOURCE_NOT_VERIFIED",
+ "owner_unknown: RISK_OWNER_MISSING",
+ "forbidden_export: STOP_PROHIBITED_DATA_EXPOSURE",
+ "proposed_only: CONTROL_NOT_IMPLEMENTED",
+ "untested_control: CONTROL_EFFECT_UNVERIFIED",
+ "residual_unsigned: RESIDUAL_RISK_NOT_ACCEPTED",
+ "synthetic_review: REVIEWABLE_NOT_PRODUCTION_APPROVED",
+ "RETRY deliveries=3 recorded_closures=1",
+ "NINE_UNSAFE_SOURCE_MUTANTS_MUST_FAIL_ASSERTIONS",
+ "SYNTHETIC_RISK_GATE_NOT_ACTUAL_ACCEPTANCE",
+ "RISK_FAILURE_CONTROL_RESIDUAL_PROOF_PASS"
+]) assert.ok(goodRisk.stdout.includes(marker),"Original Risk result missing: "+marker);
+for(const [before,after,why] of [
+ ["if r.active_incident:","if False:","active harm treated as prospective risk"],
+ ["if not r.failure_path_explicit:","if False:","undefined causal event accepted"],
+ ["if not r.evidence_verified:","if False:","unverified risk source promoted"],
+ ["if not r.owner_named:","if False:","ownerless risk declared acceptable"],
+ ["if r.prohibited_exposure:","if False:","forbidden data use overridden"],
+ ["if not r.control_implemented:","if False:","planned mitigation called implemented"],
+ ["if not r.control_tested:","if False:","untested control called effective"],
+ ["if not r.residual_decision_signed:","if False:","residual accepted without owner"],
+ ["if event_id in seen:","if False:","duplicate transition causes multiple state effects"]
+]){
+ assert.ok(riskPython.includes(before),"Missing Risk source mutation target: "+why);
+ const wrong=python(riskPython.replace(before,after));
+ assert.notEqual(wrong.status,0,"Unsafe Risk source passed: "+why);
+ assert.match(wrong.stderr,/AssertionError/,"Unrelated wrong-risk failure "+why+": "+wrong.stderr);
+}
+console.log("PASS original Risk failure paths, exact source control/side-effect Python, two focus readings and nine rejected unsafe mutants");
