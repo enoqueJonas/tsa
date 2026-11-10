@@ -73,13 +73,14 @@ for(const [name,before,after] of negative) {
   assert.match(bad.stderr,/AssertionError/,"Changed case did not trip an explicit assertion: "+name+"\n"+bad.stderr);
   assert.doesNotMatch(bad.stderr,/SyntaxError|IndentationError/,"Invalid negative test setup: "+name);
 }
+const authoredProse=Object.values(map).flat().flatMap(section=>section.paragraphs).join("\n");
 for(const phrase of [
   "absent_over_time(up{job=\"steward-api\"}[10m])",
   "a missing series is not equivalent to",
   "NOT the Prometheus binary",
   "No data, Error or alerting NoData"
 ]) {
-  assert.ok(source.toLowerCase().includes(phrase.toLowerCase()),
+  assert.ok(authoredProse.toLowerCase().includes(phrase.toLowerCase()),
     "Learner must distinguish target disappearance, scrape outage and dashboard NoData: "+phrase);
 }
 console.log("PASS actual published localhost metrics exposition, 201/503 request counters, missed scrape, false-green stale exporter, six changed-source negatives; real Prometheus/Grafana UNVERIFIED.");
