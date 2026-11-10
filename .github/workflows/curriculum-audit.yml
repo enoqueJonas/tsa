@@ -445,6 +445,17 @@ jobs:
           fi
           grep -F 'Premature alert before synthetic impact condition' "$RUNNER_TEMP/tsa-prometheus-forward-wrong.log" || { cat "$RUNNER_TEMP/tsa-prometheus-forward-wrong.log"; exit 1; }
           echo "PASS: real Prometheus to Alertmanager pipeline rejected inverted alert rule"
+      - name: Prove actual Prometheus firing with Alertmanager unreachable and successful later delivery
+        run: |
+          TSA_FORWARD_SCENARIO=alertmanager-outage python3 scripts/check-reliability-prometheus-to-alertmanager.py
+      - name: Fail closed when the claimed Alertmanager outage was never induced
+        run: |
+          if TSA_FORWARD_SCENARIO=outage-without-disconnect python3 scripts/check-reliability-prometheus-to-alertmanager.py > "$RUNNER_TEMP/am-outage-false-positive.log" 2>&1; then
+            echo "FAIL: healthy Alertmanager wrongly satisfied outage evidence oracle"
+            exit 1
+          fi
+          grep -Eq 'Receiver accepted an alert during an asserted Alertmanager outage|Expected real Prometheus notification errors during unavailable Alertmanager' "$RUNNER_TEMP/am-outage-false-positive.log" || { cat "$RUNNER_TEMP/am-outage-false-positive.log"; exit 1; }
+          echo "PASS: real Prometheus resilience lab rejected a missing outage condition"
       - name: Require four incorrect Alertmanager configurations to fail actual delivery expectations
         run: |
           root="$RUNNER_TEMP/tsa-alertmanager-mutants"
