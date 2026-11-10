@@ -12,6 +12,7 @@ on:
       - packages/runtime-kernel/src/paths/professional-engineer-discovery-framing.ts
       - packages/runtime-kernel/src/paths/professional-engineer-discovery-requirements.ts
       - packages/runtime-kernel/src/paths/professional-engineer-discovery-constraints.ts
+      - packages/runtime-kernel/src/paths/professional-engineer-discovery-ambiguity.ts
       - packages/runtime-kernel/src/paths/professional-engineer-capstone-engineering-proposal-deep.ts
       - packages/runtime-kernel/src/paths/professional-engineer-proposal-teaching.ts
       - packages/runtime-kernel/src/paths/professional-engineer-proposal-proofs.ts
