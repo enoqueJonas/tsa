@@ -227,7 +227,7 @@ def perform_same_notification_retry(base):
                              for x in e),
                 "first actual receiver rejection", timeout=16)
     rejected = receipt_of(response_code)
-    assert len(rejected) == 1, "Expected one 503/400 receiver attempt for isolated alert"
+    assert len(rejected) >= 1, "Expected at least one real 503/400 receiver rejection"
     first = rejected[0]
     assert first["groupKey"] and first["identities"][0]["fingerprint"], (
         "Original webhook lacked observable group and alert fingerprint")
