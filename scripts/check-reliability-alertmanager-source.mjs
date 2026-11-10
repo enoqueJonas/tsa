@@ -100,11 +100,46 @@ for(const required of ["same-retry-actual-503","same-retry-4xx-case","same-retry
  if(required==="fresh") continue;
  assert.ok(retryLesson.includes(required),"Focused retry lesson is not testable: "+required);
 }
+
+const ambiguousLesson = readFileSync(
+ "packages/runtime-kernel/src/paths/reliability-alertmanager-ambiguous-effect.ts","utf8");
+for(const required of [
+ "ambiguous-503","ambiguous-no-idempotency",
+ "import sqlite3", "CREATE UNIQUE INDEX unique_notification_effect",
+ "INSERT OR IGNORE INTO delivery_effects",
+ "REAL_AMBIGUOUS_503_COMMIT_PASS",
+ "REAL_AMBIGUOUS_RETRY_IDEMPOTENT_EFFECT_PASS",
+ "DUPLICATE_NOTIFICATION_EFFECT_DETECTED",
+ "committed_effects()"
+]){
+ assert.ok(python.includes(required),
+  "Exact published Alertmanager Python missing ambiguous delivery effect guard: "+required);
+}
+for(const required of [
+ "blocks: alertmanagerAmbiguousEffectBlocks",
+ "TSA_AM_RETRY_MODE=ambiguous-503",
+ "TSA_AM_RETRY_MODE=ambiguous-no-idempotency",
+ "DUPLICATE_NOTIFICATION_EFFECT_DETECTED"
+]){
+ assert.ok(lesson.includes(required),
+  "Existing Alertmanager activity path does not demand ambiguous effect proof: "+required);
+}
+for(const required of [
+ "A failed webhook acknowledgment does not mean the receiver did nothing",
+ "CREATE UNIQUE INDEX", "INSERT OR IGNORE",
+ "TSA_AM_RETRY_MODE=ambiguous-503",
+ "TSA_AM_RETRY_MODE=ambiguous-no-idempotency",
+ "external action"
+]){
+ assert.ok(ambiguousLesson.includes(required),
+  "Focused ambiguous failure lesson is missing a durable mechanism: "+required);
+}
 const ids=[
  "reliability-alertmanager-implementation-001",
  "reliability-alertmanager-implementation-route-mechanics-reading",
  "reliability-alertmanager-implementation-live-delivery-reading",
  "reliability-alertmanager-implementation-same-notification-retry-reading",
+ "reliability-alertmanager-implementation-ambiguous-side-effect-reading",
  "reliability-alertmanager-implementation-prometheus-forwarding-reading",
  "reliability-alertmanager-implementation-outage-recovery-reading",
  "reliability-alertmanager-implementation-002",
