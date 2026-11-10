@@ -95,7 +95,6 @@ def main():
     assert os.name=="posix", "Requires a disposable Linux Docker runner"
     metrics_port, am_port, prom_port, webhook_port = port(), port(), port(), port()
     am_container_name = "tsa-forward-am-" + str(am_port)
-    paused = False
     assert len({metrics_port,am_port,prom_port,webhook_port})==4
     metrics = ThreadingHTTPServer(("127.0.0.1", metrics_port), MetricSource)
     receiver = ThreadingHTTPServer(("127.0.0.1", webhook_port), Receiver)
@@ -132,7 +131,7 @@ def main():
                 "    static_configs:\n"
                 f"      - targets: ['127.0.0.1:{metrics_port}']\n"
             )
-            children.append(start_container([
+            am_command = [
                 "docker","run","--rm","--network","host",
                 "--name",am_container_name,
                 "-v",str(am_config)+":/etc/alertmanager.yml:ro",
@@ -140,7 +139,8 @@ def main():
                 "--config.file=/etc/alertmanager.yml",
                 "--web.listen-address=127.0.0.1:"+str(am_port),
                 "--cluster.listen-address="
-            ]))
+            ]
+            children.append(start_container(am_command))
             children.append(start_container([
                 "docker","run","--rm","--network","host",
                 "-v",str(root)+":/etc/tsa:ro","--entrypoint","/bin/prometheus",
@@ -193,9 +193,11 @@ def main():
                 # This branch runs real Prometheus+AM after readiness, but
                 # intentionally makes Alertmanager unreachable as the alert fires.
                 if SCENARIO == "alertmanager-outage":
-                    subprocess.run(["docker","pause",am_container_name],
-                                   check=True,timeout=12,stdout=subprocess.DEVNULL)
-                    paused = True
+                    # Hard loss of Alertmanager availability rather than a
+                    # suspended TCP socket whose timeout may exceed the test.
+                    # Disposable --rm container; restart a new instance below.
+                    subprocess.run(["docker","stop","--time","1",am_container_name],
+                                   check=True,timeout=16,stdout=subprocess.DEVNULL)
                 with Source.lock:
                     Source.active = True
                 alert_api = "http://127.0.0.1:"+str(prom_port)+"/api/v1/alerts"
@@ -229,14 +231,36 @@ def main():
                         break
                     time.sleep(.35)
                 else:
+                    report = query("http://127.0.0.1:"+str(prom_port)+"/metrics")[1]
+                    observed = [line for line in report.splitlines()
+                                if line.startswith("prometheus_notifications_")
+                                and not line.startswith("#")]
                     raise AssertionError(
-                        "Expected real Prometheus notification errors during unavailable Alertmanager")
+                        "Expected real Prometheus notification errors during unavailable Alertmanager; "
+                        + "observed=" + json.dumps(observed[:30]))
                 print("REAL_PROMETHEUS_NOTIFICATION_ERRORS_PASS: firing rule but failed forwarding",
                       flush=True)
-                if paused:
-                    subprocess.run(["docker","unpause",am_container_name],
-                                   check=True,timeout=12,stdout=subprocess.DEVNULL)
-                    paused = False
+                if SCENARIO == "alertmanager-outage":
+                    # A new disposable container restores the same config
+                    # and localhost receiver. This is a hard restart, not
+                    # proof of restoring persisted notification state.
+                    am_recovery = [x for x in am_command]
+                    am_recovery[am_recovery.index(am_container_name)] = (
+                        am_container_name + "-restarted")
+                    children.append(start_container(am_recovery))
+                    deadline = time.monotonic() + 35
+                    while time.monotonic() < deadline:
+                        if children[-1].poll() is not None:
+                            raise AssertionError("Restarted Alertmanager exited before ready: "
+                                                 + children[-1].stderr.read()[-1700:])
+                        try:
+                            if query("http://127.0.0.1:"+str(am_port)+"/-/ready")[0] == 200:
+                                break
+                        except (URLError, TimeoutError, ConnectionError):
+                            pass
+                        time.sleep(.3)
+                    else:
+                        raise AssertionError("Restarted Alertmanager did not become ready")
                 # Do not assume the rejected alert was buffered or retry
                 # exactly once: prove a fresh actual HTTP delivery after recovery.
                 wait_for("recovered Alertmanager firing webhook",lambda xs:any(
@@ -260,10 +284,6 @@ def main():
             print("PROMETHEUS_TO_ALERTMANAGER_TO_WEBHOOK_RESOLVED_PASS: real resolved delivery",flush=True)
             print("LOCAL_ONLY: real Prometheus/Alertmanager transport, synthetic signal, no Steward/PagerDuty/human acknowledgment",flush=True)
     finally:
-        if paused:
-            subprocess.run(["docker","unpause",am_container_name],
-                           check=False,timeout=12,stdout=subprocess.DEVNULL,
-                           stderr=subprocess.DEVNULL)
         for p in children:
             if p.poll() is None:
                 p.terminate()
