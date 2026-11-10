@@ -635,3 +635,91 @@ for(const [before,after,why] of [
  assert.match(wrong.stderr,/AssertionError/,"Wrong failure reason for "+why+": "+wrong.stderr);
 }
 console.log("PASS original Requirements derivation, acceptance and traceability, exact Python and five rejected unsafe mutations");
+
+
+// Original Capstone Problem Discovery Constraints: source evidence, authority,
+// feasibility, conflict and reversal remain different questions. Run exact
+// learner Python and reject eight unsafe shortcuts. Fictional data only.
+const constraintsSource=fs.readFileSync(root+"professional-engineer-discovery-constraints.ts","utf8");
+const constraintsPrefix="export const constraintsFeasibilityPython = ";
+const constraintsLine=constraintsSource.split("\n").find(x=>x.startsWith(constraintsPrefix));
+assert.ok(constraintsLine?.endsWith(";"),"Original Constraints source-published Python missing");
+const constraintsPython=JSON.parse(constraintsLine.slice(constraintsPrefix.length,-1));
+function constraintsBlocks(name,nextName){
+ const anchor="export const "+name+": LessonBlock[] = ";
+ const at=constraintsSource.indexOf(anchor);
+ assert.ok(at>=0,"Missing teaching blocks "+name);
+ const start=at+anchor.length;
+ const end=nextName?constraintsSource.indexOf("export const "+nextName+":",start):constraintsSource.length;
+ assert.ok(end>start,"Malformed Constraints teaching section "+name);
+ return JSON.parse(constraintsSource.slice(start,end).trim().replace(/;\s*$/,""));
+}
+const constraintInventory=constraintsBlocks("constraintsInventoryBlocks","constraintsFeasibilityBlocks");
+const constraintFeasible=constraintsBlocks("constraintsFeasibilityBlocks","constraintsNegotiationBlocks");
+const constraintNegotiation=constraintsBlocks("constraintsNegotiationBlocks",null);
+for(const [label,blocks,min] of [
+ ["source-inventory",constraintInventory,4500],
+ ["feasibility",constraintFeasible,3500],
+ ["negotiation",constraintNegotiation,4900],
+]){
+ assert.ok(blocks.filter(x=>x.type==="heading").length>=4,"Too few distinct constraint mechanisms "+label);
+ assert.ok(blocks.filter(x=>x.type==="paragraph").length>=8,"Constraint source is thin "+label);
+ assert.ok(blocks.filter(x=>x.type==="paragraph").map(x=>x.text).join("\n").length>=min,
+ "Missing substantial constraint examples/counterexamples "+label);
+ assert.equal(blocks.filter(x=>x.type==="resources").length,1,"Missing targeted reference "+label);
+}
+assert.equal(constraintInventory.filter(x=>x.type==="code").length,0);
+assert.equal(constraintFeasible.filter(x=>x.type==="code").length,1);
+assert.equal(constraintNegotiation.filter(x=>x.type==="code").length,0);
+assert.equal(constraintFeasible.find(x=>x.type==="code").code,constraintsPython,
+ "Learner-published Constraints code differs from source-executed Python");
+const originalConstraints=fs.readFileSync(root+"professional-engineer-capstone-problem-discovery-deep.ts","utf8");
+for(const phrase of [
+ 'id === "capstone-problem-discovery-constraints"',
+ "...constraintsInventoryBlocks",
+ "...constraintReadings",
+ "-feasibility-reading",
+ "-conflict-revision-reading",
+ "Run the exact published Python 3 constraints-classification and feasibility fixture",
+ "in separate copies break eight distinct evidence or feasibility gates",
+ 'reading("capstone-problem-discovery-constraints"'
+]){
+ assert.ok(originalConstraints.includes(phrase),"Original Constraints reading/practical not linked: "+phrase);
+}
+const originalPracticeMarker="id: "+String.fromCharCode(96)+String.fromCharCode(36)+"{id}-practice";
+assert.ok(originalConstraints.indexOf("...constraintReadings")<originalConstraints.indexOf(originalPracticeMarker),
+ "Constraints source mechanism readings must precede original practical");
+const constraintsGood=python(constraintsPython);
+assert.equal(constraintsGood.status,0,constraintsGood.stdout+"\n"+constraintsGood.stderr);
+for(const marker of [
+ "rumored_regulation: UNVERIFIED_SOURCE",
+ "unknown_owner: AUTHORITY_UNCONFIRMED",
+ "other_service: NOT_APPLICABLE",
+ "preferred_database: NEGOTIABLE_PREFERENCE",
+ "verified_contract: BINDING_FOR_THIS_SCENARIO",
+ "cloud_copy: BLOCKED_DATA_EXPORT",
+ "over_budget: BLOCKED_BUDGET",
+ "operator_heavy: BLOCKED_OPERATOR_CAPACITY",
+ "wrong_protocol: BLOCKED_CONTRACT_PROTOCOL",
+ "bounded_local: FEASIBLE_NOT_APPROVED",
+ "FEASIBLE_IS_NOT_DEPLOYMENT_APPROVAL",
+ "CONSTRAINT_SOURCE_AND_FEASIBILITY_PASS"
+]){
+ assert.ok(constraintsGood.stdout.includes(marker),"Missing actual learner constraint result "+marker);
+}
+for(const [before,after,why] of [
+ ["if not item.source_verified:","if False:","rumored regulation falsely mandatory"],
+ ["if not item.authority_confirmed:","if False:","unknown decision owner trusted"],
+ ["if not item.applies_to_scope:","if False:","other service's rule applied here"],
+ ["if not item.binding:","if False:","negotiable preference promoted"],
+ ["if option.exports_private_data:","if False:","data export boundary bypassed"],
+ ["if option.monthly_cost > 250:","if False:","budget exceeded"],
+ ["if option.operator_hours > 6:","if False:","staffing assumption exceeded"],
+ ["if not option.supports_contract_protocol:","if False:","protocol incompatibility ignored"]
+]){
+ assert.ok(constraintsPython.includes(before),"Missing wrong implementation target: "+why);
+ const wrong=python(constraintsPython.replace(before,after));
+ assert.notEqual(wrong.status,0,"False feasibility green was accepted: "+why);
+ assert.match(wrong.stderr,/AssertionError/,"Wrong mutant failure "+why+": "+wrong.stderr);
+}
+console.log("PASS original Constraints inventory, source-exact Python, two additional readings and eight rejected false-green mutants");
