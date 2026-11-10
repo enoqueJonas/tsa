@@ -1,9 +1,16 @@
 import type { Lesson } from "./lesson";
+import type { LessonBlock } from "../activities/content";
+import { problemChoiceBlocks } from "./professional-engineer-discovery-problem-choice";
 
 function reading(id: string, title: string, body: string, minutes = 22): Lesson {
+  // The first ORIGINAL reading is the present remediation target; do not attach
+  // a generic teaching appendix to the other distinct discovery concepts.
+  const isProblemSelection = id === "capstone-problem-discovery-choosing-a-substantial-problem";
+  const problemBlocks: LessonBlock[] | undefined = isProblemSelection
+    ? [{type:"paragraph",text:body}, ...problemChoiceBlocks] : undefined;
   return { id, title, activities: [
-    { id: `${id}-001`, title, estimatedMinutes: minutes, content: { type: "reading", body } },
-    { id: `${id}-practice`, title: `Discovery work: ${title}`, estimatedMinutes: 45, content: {
+    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : minutes, content: { type: "reading", body, ...(problemBlocks ? {blocks:problemBlocks} : {}) } },
+    { id: `${id}-practice`, title: `Discovery work: ${title}`, estimatedMinutes: isProblemSelection ? 70 : 45, content: {
       type: "practical",
       objective: `Apply ${title} to the evolving capstone discovery evidence before architecture is proposed.`,
       scenario,
@@ -11,14 +18,25 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
         "Apply this concept to the current discovery brief or candidate problem using evidence available now; label stakeholder statements, observations, assumptions and inferences separately.",
         "Record what changed in your understanding, including evidence that weakens or contradicts the current framing rather than only evidence that confirms it.",
         "Update the relevant discovery artifact and identify any downstream requirement, constraint, quality attribute, risk, success measure or scope decision that must now be reconsidered.",
-        "State the next highest-value question or validation action. If current evidence is sufficient and nothing changes, record why retaining the current framing is justified."
+        "State the next highest-value question or validation action. If current evidence is sufficient and nothing changes, record why retaining the current framing is justified.",
+        ...(isProblemSelection ? [
+          "Write two solution-neutral candidate problem statements, each with an affected actor, observed or sourced harm, alternative causal explanation and explicit evidence quality.",
+          "For each candidate, distinguish promised stakeholder access from actually verified permission to collect safe minimal evidence. Record UNKNOWN rather than claiming interviews that have not occurred.",
+          "Run the exact published Python discovery-selection gate; preserve output, then break the access-verified and consent conditions separately and show which assertions reject false readiness.",
+          "Compare the candidates using non-compensatory access/safety/scope gates before preferences; write one falsification observation and the condition for choosing neither candidate.",
+        ] : [])
       ],
       deliverables: ["Updated discovery artifact", "Evidence/assumption distinction", "Change-or-retain rationale", "Next validation question"],
       completionCriteria: [
         "The work is solution-neutral and does not select architecture or technology prematurely.",
         "Contradictory or missing evidence is visible rather than normalized away.",
         "New evidence is allowed to change the problem boundary or invalidate an earlier assumption.",
-        "The next discovery action is prioritized by uncertainty and consequence."
+        "The next discovery action is prioritized by uncertainty and consequence.",
+        ...(isProblemSelection ? [
+          "No candidate is declared research-ready from a stakeholder promise, a fictional example, or fabricated empirical evidence.",
+          "The negative program mutations are detected for the expected inference error, and any unverified candidate remains explicitly blocked.",
+          "Technology selection is deferred until a bounded workflow, evidence provenance, ethical access and a falsifiable outcome have been defended.",
+        ] : [])
       ]
     } }
   ] };
