@@ -3,6 +3,7 @@ import type { Lesson } from "./lesson";
 import { alertDeliveryBlocks } from "./reliability-alert-delivery-proof";
 import { alertmanagerRouteFocusedBlocks, alertmanagerRuntimeFocusedBlocks } from "./reliability-alertmanager-real-runtime";
 import { prometheusToAlertmanagerBlocks } from "./reliability-prometheus-to-alertmanager-proof";
+import { alertmanagerOutageRecoveryBlocks } from "./reliability-alertmanager-outage-recovery";
 
 const alertmanager: LearningResource = { title: "Prometheus Alertmanager", url: "https://prometheus.io/docs/alerting/latest/alertmanager/" };
 const notificationExamples: LearningResource = { title: "Alertmanager notification examples", url: "https://prometheus.io/docs/alerting/latest/notification_examples/" };
@@ -50,6 +51,16 @@ export const alertmanagerImplementationDeepLessons: Lesson[] = [
                 },
             },
             {
+                id: "reliability-alertmanager-implementation-outage-recovery-reading",
+                title: "Keep Alert Evaluation Visible During Alertmanager Outages",
+                estimatedMinutes: 60,
+                content: {
+                    type: "reading",
+                    body: "Diagnose a real Alertmanager outage without confusing Prometheus firing state, notification errors and an independently received webhook.",
+                    blocks: alertmanagerOutageRecoveryBlocks,
+                },
+            },
+            {
                 id: "reliability-alertmanager-implementation-002",
                 title: "Deploy and Route with Alertmanager",
                 estimatedMinutes: 150,
@@ -79,8 +90,11 @@ export const alertmanagerImplementationDeepLessons: Lesson[] = [
                     "Record actual HTTP 503 attempts separately from 200 accepted notifications in the real Alertmanager loopback lab; never call a rejected request delivered.",
                     "Prove recovery with a fresh group after restoring the test receiver; independently verify the resolved notification for a previously delivered security alert. Do not infer retry of the original rejected delivery from fresh-group success.",
                     "Explain the negative-source tests for incorrect grouping, routing and inhibition, and why all still require additional evidence for Prometheus alert forwarding and a real external responder.",
+                    "Run the exact source from the focused Prometheus-forwarding reading in TSA_FORWARD_SCENARIO=alertmanager-outage; require real /api/v1/alerts firing state, real prometheus_notifications_errors_total increase and no successful receiver receipt before unpausing Alertmanager.",
+                    "After unpausing the disposable Alertmanager, observe an actual firing HTTP webhook and a separately resolved notification. Keep errors, delayed transport and accepted delivery as distinct evidence; do not promise retry of arbitrary messages.",
+                    "Prove the outage oracle rejects an intentionally healthy listener with TSA_FORWARD_SCENARIO=outage-without-disconnect, without modifying expected results or treating startup errors as a negative-test pass.",
                     "Define monitoring for Alertmanager availability, Prometheus notification errors and receiver-delivery failures, plus the runbook first checks for each layer."
-                ], deliverables: ["Healthy delivery baseline", "Alertmanager outage experiment", "Receiver failure experiment", "Recovery evidence", "Alert-delivery monitoring requirements", "Failure-layer runbook"], completionCriteria: ["Alertmanager unavailability is reproduced safely.", "The learner distinguishes a firing Prometheus rule from successful notification delivery.", "Receiver failure is distinguished from Alertmanager failure.", "Delivery recovers predictably.", "The alerting pipeline has explicit self-monitoring requirements." ] },
+                ], deliverables: ["Healthy delivery baseline", "Alertmanager outage experiment", "Receiver failure experiment", "Recovery evidence", "Alert-delivery monitoring requirements", "Failure-layer runbook", "Actual Prometheus firing + notification error + recovered receiver evidence with no-outage mutant"], completionCriteria: ["Alertmanager unavailability is reproduced safely.", "The learner distinguishes a firing Prometheus rule from successful notification delivery.", "Receiver failure is distinguished from Alertmanager failure.", "Delivery recovers predictably.", "The alerting pipeline has explicit self-monitoring requirements." ] },
             },
             { id: "reliability-alertmanager-implementation-004", title: "Defend the Alerting Pipeline", estimatedMinutes: 20, content: { type: "reflection", prompt: "Explain the Steward alert path from Prometheus rule evaluation through Alertmanager grouping/routing/inhibition to the receiver. Describe one delivery failure you reproduced, why a firing rule is not proof that a human was notified, how duplicate noise is controlled, and what evidence would justify changing the routing design later.", minimumCharacters: 300 } },
         ],
