@@ -454,7 +454,7 @@ jobs:
             echo "FAIL: healthy Alertmanager wrongly satisfied outage evidence oracle"
             exit 1
           fi
-          grep -Eq 'Receiver accepted an alert during an asserted Alertmanager outage|Expected real Prometheus notification errors during unavailable Alertmanager' "$RUNNER_TEMP/am-outage-false-positive.log" || { cat "$RUNNER_TEMP/am-outage-false-positive.log"; exit 1; }
+          grep -Eq 'Receiver accepted an alert during an asserted Alertmanager outage|Expected real Prometheus notification errors/drops during unavailable Alertmanager' "$RUNNER_TEMP/am-outage-false-positive.log" || { cat "$RUNNER_TEMP/am-outage-false-positive.log"; exit 1; }
           echo "PASS: real Prometheus resilience lab rejected a missing outage condition"
       - name: Require four incorrect Alertmanager configurations to fail actual delivery expectations
         run: |
