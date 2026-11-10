@@ -639,6 +639,93 @@ def run():
   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
   assert page.evaluate("new URLSearchParams(location.search).get('activity')")==original_quality_practice
   print("PASS original Quality Attributes -> p95/privacy/recovery -> tradeoffs -> original practice; 390px, source copy, actual Next, reload",flush=True)
+  # Risk: ORIGINAL reading -> controls and source-exact retry experiment ->
+  # residual/decision reading -> preserved original practice via real Next.
+  # Synthetic prerequisite progress proves navigation only, not learner skill.
+  seed_completed_path(page,"capstone-problem-discovery",[
+    "capstone-problem-discovery-evidence-provenance-reading",
+    "capstone-problem-discovery-evidence-provenance-practice",
+    "capstone-problem-discovery-evidence-provenance-check",
+    "capstone-problem-discovery-choosing-a-substantial-problem-001",
+    "capstone-problem-discovery-choosing-a-substantial-problem-practice",
+    "capstone-problem-discovery-stakeholder-discovery-001",
+    "capstone-problem-discovery-stakeholder-discovery-interview-method-reading",
+    "capstone-problem-discovery-stakeholder-discovery-triangulation-reading",
+    "capstone-problem-discovery-stakeholder-discovery-practice",
+    "capstone-problem-discovery-problem-framing-001",
+    "capstone-problem-discovery-problem-framing-measurement-reading",
+    "capstone-problem-discovery-problem-framing-causality-boundary-reading",
+    "capstone-problem-discovery-problem-framing-practice",
+    "capstone-problem-discovery-requirements-001",
+    "capstone-problem-discovery-requirements-acceptance-reading",
+    "capstone-problem-discovery-requirements-traceability-reading",
+    "capstone-problem-discovery-requirements-practice",
+    "capstone-problem-discovery-constraints-001",
+    "capstone-problem-discovery-constraints-feasibility-reading",
+    "capstone-problem-discovery-constraints-conflict-revision-reading",
+    "capstone-problem-discovery-constraints-practice",
+    "capstone-problem-discovery-working-with-ambiguity-001",
+    "capstone-problem-discovery-working-with-ambiguity-sensitivity-reading",
+    "capstone-problem-discovery-working-with-ambiguity-experiment-design-reading",
+    "capstone-problem-discovery-working-with-ambiguity-practice",
+    "capstone-problem-discovery-quality-attributes-001",
+    "capstone-problem-discovery-quality-attributes-measurement-reading",
+    "capstone-problem-discovery-quality-attributes-tradeoffs-reading",
+    "capstone-problem-discovery-quality-attributes-practice",
+  ])
+  risk_steps=(
+    ("capstone-problem-discovery-risk-001",
+     ("Separate a risk, an issue, a threat, a vulnerability and a hazard",
+      "Derive a credible failure path from the CURRENT workflow",
+      "Use probability responsibly, including UNKNOWN")),
+    ("capstone-problem-discovery-risk-controls-reading",
+     ("Prevent, detect, recover and test independently",
+      "Define the observable failure and the source-exact experiment",
+      "RISK_FAILURE_CONTROL_RESIDUAL_PROOF_PASS")),
+    ("capstone-problem-discovery-risk-residual-decisions-reading",
+     ("Residual risk is a decision record, not a 'low' color",
+      "Model shared causes and risky mitigations",
+      "Define escalation, stop conditions and a reversible decision")),
+  )
+  page.goto(BASE+"/?"+urlencode({
+    "view":"curriculum","school":"professional-engineer",
+    "path":"capstone-problem-discovery","activity":risk_steps[0][0]
+  }),wait_until="networkidle")
+  for index,(activity,requirements) in enumerate(risk_steps):
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   actual=page.evaluate("new URLSearchParams(location.search).get('activity')")
+   assert actual==activity,f"Original Risk sequence wrong: {actual} != {activity}"
+   main=page.locator("main").last
+   rendered=main.inner_text()
+   assert len(rendered)>=3500,f"Risk learner content shallow: {activity} ({len(rendered)})"
+   for phrase in requirements:
+    assert phrase in rendered,f"Risk teaching missing {activity}: {phrase}"
+   if index==1:
+    assert main.get_by_role("button",name="Copy").count()>0,"Published Risk Python not copyable"
+    assert main.locator("figure pre").count()>0,"Published Risk Python not rendered"
+   page.set_viewport_size({"width":390,"height":844})
+   assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),(
+     "Risk original reading has horizontal overflow 390px: "+activity
+   )
+   page.screenshot(path=str(ART/f"discovery-risk-{index+1}-390.png"),full_page=True)
+   page.set_viewport_size({"width":1440,"height":900})
+   page.get_by_role("button",name=re.compile(r"^(Next|Next lesson|Complete path)$")).click()
+   next_activity=(risk_steps[index+1][0] if index+1<len(risk_steps)
+                  else "capstone-problem-discovery-risk-practice")
+   page.wait_for_function("""expected => (
+     new URLSearchParams(location.search).get("activity") === expected
+   )""",arg=next_activity,timeout=15000)
+  risk_original_practice="capstone-problem-discovery-risk-practice"
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==risk_original_practice
+  risk_practice=page.locator("main").last.inner_text()
+  for phrase in ("six causal risk/issue entries","NINE genuine AssertionError failures",
+                 "one credible shared cause","supplier begins reusing event identifiers"):
+   assert phrase in risk_practice,"Risk original practical missing "+phrase
+  page.reload(wait_until="networkidle")
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==risk_original_practice
+  print("PASS original Risk -> controls/duplicate-event evidence -> residual decisions -> original practice; 390px, copyable code, Next, reload",flush=True)
   # Gate the third module through completion of the second module's *actual*
   # authored IDs. This synthetic fixture is not independent learner evidence.
   synthetic_discovery_complete(page)
