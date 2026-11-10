@@ -579,9 +579,9 @@ def inspect_school(page):
                     assert "two distinct alerts no longer reach" not in text or (
                         "group_by" in text
                     ), "Practical lost wrong-grouping transfer"
-                    assert "real Prometheus-to-Alertmanager transport" in text, (
-                        "Original deployment practical overclaims Prometheus forwarding"
-                    )
+                    assert "separate real Prometheus-to-Alertmanager source" in text and (
+                        "neither proves real Steward rules" in text
+                    ), "Original practical must distinguish tested local forwarding from unverified production alerting"
                 elif activity_id == "reliability-alertmanager-implementation-003":
                     assert "actual HTTP 503 attempts" in text and (
                         "fresh group" in text
