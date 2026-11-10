@@ -4,6 +4,7 @@ import type { Activity } from "../activities";
 import { stakeholderMappingBlocks, stakeholderInterviewBlocks, stakeholderTriangulationBlocks } from "./professional-engineer-discovery-stakeholders";
 import { problemChoiceBlocks } from "./professional-engineer-discovery-problem-choice";
 import { problemFramingWorkflowBlocks, problemFramingMeasurementBlocks, problemFramingBoundaryBlocks } from "./professional-engineer-discovery-framing";
+import { requirementsDerivationBlocks, requirementsAcceptanceBlocks, requirementsTraceabilityBlocks } from "./professional-engineer-discovery-requirements";
 
 function reading(id: string, title: string, body: string, minutes = 22): Lesson {
   // Remediate specific ORIGINAL topics only; preserve every existing ID.
@@ -12,10 +13,12 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
   const isProblemSelection = id === "capstone-problem-discovery-choosing-a-substantial-problem";
   const isStakeholder = id === "capstone-problem-discovery-stakeholder-discovery";
   const isFraming = id === "capstone-problem-discovery-problem-framing";
+  const isRequirements = id === "capstone-problem-discovery-requirements";
   const authoredBlocks: LessonBlock[] | undefined = isProblemSelection
     ? [{type:"paragraph",text:body}, ...problemChoiceBlocks]
     : isStakeholder ? [{type:"paragraph",text:body}, ...stakeholderMappingBlocks]
-    : isFraming ? [{type:"paragraph",text:body}, ...problemFramingWorkflowBlocks] : undefined;
+    : isFraming ? [{type:"paragraph",text:body}, ...problemFramingWorkflowBlocks]
+    : isRequirements ? [{type:"paragraph",text:body}, ...requirementsDerivationBlocks] : undefined;
   const stakeholderReadings: Activity[] = isStakeholder ? [
     {
       id: `${id}-interview-method-reading`,
@@ -44,13 +47,28 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
       content: {type:"reading",body:"Challenge causal assumptions and define a falsifiable, solution-neutral problem boundary.",blocks:problemFramingBoundaryBlocks},
     },
   ] : [];
+  const requirementReadings: Activity[] = isRequirements ? [
+    {
+      id: `${id}-acceptance-reading`,
+      title: "Acceptance Criteria, Domain Rules and Negative-Path Oracles",
+      estimatedMinutes: 70,
+      content: {type:"reading",body:"Turn candidate obligations into observable success and rejection conditions without making up approval.",blocks:requirementsAcceptanceBlocks},
+    },
+    {
+      id: `${id}-traceability-reading`,
+      title: "Requirements Traceability, Conflicts and Change Impact",
+      estimatedMinutes: 65,
+      content: {type:"reading",body:"Trace each requirement to evidence, authority, acceptance and reversible decisions.",blocks:requirementsTraceabilityBlocks},
+    },
+  ] : [];
   return { id, title, activities: [
-    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : isFraming ? 60 : minutes,
+    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : isFraming ? 60 : isRequirements ? 65 : minutes,
       content: { type: "reading", body, ...(authoredBlocks ? {blocks:authoredBlocks} : {}) } },
     ...stakeholderReadings,
     ...framingReadings,
+    ...requirementReadings,
     { id: `${id}-practice`, title: `Discovery work: ${title}`,
-      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : isFraming ? 100 : 45, content: {
+      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : isFraming ? 100 : isRequirements ? 110 : 45, content: {
       type: "practical",
       objective: `Apply ${title} to the evolving capstone discovery evidence before architecture is proposed.`,
       scenario,
@@ -79,6 +97,14 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "In separate disposable code copies, show four correct assertion failures: missing-to-zero fake completion, supplier wait measured from intake, reversed chronology accepted and total time mistaken for document preparation time.",
           "Write a six-field solution-neutral problem frame, in/out-of-scope boundary and a missing-data/authorized-evidence plan. Change the case so average completed time improves while unresolved cases grow; explain why that is not success.",
           "Specify the next real validation decision, its permission/owner, alternate nontechnical interventions and the exact evidence that would reverse the preferred frame; mark actual fieldwork NOT_TESTED unless performed.",
+        ] : []),
+        ...(isRequirements ? [
+          "Create an original six-row requirements ledger for a NEW capstone workflow: business outcome, user capabilities, domain/data rule, measurable quality constraint and explicit forbidden action. Keep evidence provenance, owner, approval status and verification reference per row; UNKNOWN is a valid state.",
+          "For at least three candidate requirements, trace an independently supported problem to role/outcome, exact source/permission, verifiable wording and Given–When–Then acceptance examples. Include an authorized allowed case and a forbidden record-access or state-change case.",
+          "Run the exact learner-visible Python requirements-review gate and preserve all five statuses and allowed/denied outputs. In separate copies reject five unsafe mutations: claimed evidence accepted, missing owner accepted, missing measurable oracle accepted, no denial oracle accepted, and unconditional access permitted.",
+          "Resolve a fictional or permitted real conflict between data visibility and unauthorized disclosure, documenting decision authority, dissent, alternative options, risk and a reversible decision log. Do not claim fictional interviews or simulated policy documents are real organizational approval.",
+          "Change one upstream source or permission and show which requirement IDs, test IDs, decision status and quality/risk assumptions must be suspended or revised; record a meaningful rejection or DEFER outcome rather than making every candidate APPROVED.",
+          "Explain which proposed behaviors are still unproven requirements and why source completeness, authorization, a passing test and actual stakeholder approval are different acceptance gates.",
         ] : [])
       ],
       deliverables: ["Updated discovery artifact", "Evidence/assumption distinction", "Change-or-retain rationale", "Next validation question"],
@@ -103,6 +129,12 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "Each hypothesis has a plausible competing explanation, disconfirming test and authorized data source rather than an unqualified causal statement.",
           "The problem statement names the affected role, workflow, population, outcome, evidence/unknowns, alternatives and scope without prescribing a technology or unsupported numerical improvement.",
           "A reviewer can explain why lower completed-case average or a green status label may conceal worsening unresolved customer outcomes.",
+        ] : []),
+        ...(isRequirements ? [
+          "Requirements link to a bounded need, source provenance, authority and a verifiable outcome, not merely to a stakeholder preference or named technology.",
+          "Every sensitive capability has positive and forbidden-action acceptance tests, and cannot be declared complete solely from an HTTP status or a Boolean fixture.",
+          "The executed negative Python mutations demonstrate independent detection of missing evidence, approval, oracle and authorization; REVIEWABLE is never misreported as business approval.",
+          "A source/policy change causes a visible versioned trace and correct DEFER/re-review behavior, with actual research and approvals explicitly marked NOT_TESTED unless established.",
         ] : [])
       ]
     } }
