@@ -43,7 +43,7 @@ for(const marker of [
  "REAL_PROMETHEUS_ALERTMANAGER_RECOVERY_PASS",
  "outage-without-disconnect",
  "prometheus_notifications_errors_total",
- "docker","pause","unpause"
+ "docker","stop","-restarted"
 ]) assert.ok(forwardingText.includes(marker),"Exact source missing real outage or recovery mechanism: "+marker);
 assert.ok(lesson.includes("blocks: alertmanagerOutageRecoveryBlocks"),"Focused original-path outage lesson missing");
 assert.ok(lesson.includes("TSA_FORWARD_SCENARIO=alertmanager-outage")
