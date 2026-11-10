@@ -467,7 +467,7 @@ def run():
   practice_text=page.locator("main").last.inner_text()
   for phrase in ("eight-row constraints register",
                  "break eight distinct evidence or feasibility gates",
-                 "revok","halve available operations capacity"):
+                 "revoke a previously claimed data-use permission","halve available operations capacity"):
    assert phrase in practice_text,"Original Constraints practical missing "+phrase
   page.reload(wait_until="networkidle")
   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
