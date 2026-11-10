@@ -295,6 +295,7 @@ def inspect_school(page):
                     "reliability-alertmanager-implementation-001": "Exercise the HTTP notification boundary and its failure",
                     "reliability-alertmanager-implementation-route-mechanics-reading": "Alertmanager receives alert state, then chooses a receiver",
                     "reliability-alertmanager-implementation-live-delivery-reading": "Operate the real Alertmanager binary and inspect what a receiver actually gets",
+                    "reliability-alertmanager-implementation-prometheus-forwarding-reading": "Close the missing transport link with a real Prometheus rule",
                     "data-protection-dr-backup-integrity-001": "Execute a disposable restore and deliberate corruption",
                     "resilience-distributed-failure-idempotency-001": "Run an ambiguous commit and retry it safely",
                     "fault-injection-controlled-failure-001": "Inject one bounded response failure after a synthetic commit",
@@ -589,6 +590,32 @@ def inspect_school(page):
                 assert not page.evaluate(
                     "document.documentElement.scrollWidth > innerWidth + 2"
                 ), f"Alertmanager real-source activity overflows 390px: {activity_id}"
+                page.set_viewport_size({"width": 1440, "height": 900})
+            if SCHOOL == "reliability-engineer" and activity_id in {
+                "reliability-alertmanager-implementation-prometheus-forwarding-reading",
+                "reliability-alertmanager-implementation-002",
+            }:
+                if activity_id == "reliability-alertmanager-implementation-prometheus-forwarding-reading":
+                    assert content.get_by_role("button", name="Copy").count() >= 1, (
+                        "Prometheus forwarded exact Python is not copyable"
+                    )
+                    assert "PROMETHEUS_TO_ALERTMANAGER_TO_WEBHOOK_FIRING_PASS" in text, (
+                        "Real source forwarding event assertion absent"
+                    )
+                    assert "PROMETHEUS_TO_ALERTMANAGER_TO_WEBHOOK_RESOLVED_PASS" in text, (
+                        "Resolved notification contract is not published"
+                    )
+                    assert "TSA_FORWARD_RULE_VARIANT" in text and "wrong-condition" in text, (
+                        "Negative-control source missing"
+                    )
+                else:
+                    assert "Prometheus-forwarding source" in text, (
+                        "Original Alertmanager practical lost real forwarding transfer"
+                    )
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert not page.evaluate(
+                    "document.documentElement.scrollWidth > innerWidth + 2"
+                ), f"Prometheus Alertmanager source overflows 390px: {activity_id}"
                 page.set_viewport_size({"width": 1440, "height": 900})
             for k in range(code.count()):
                 assert code.nth(k).locator("pre").count() > 0, (
