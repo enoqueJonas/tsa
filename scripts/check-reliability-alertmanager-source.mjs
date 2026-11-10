@@ -26,7 +26,7 @@ assert.equal(published("alertmanagerLocalConfigTemplate"),config,
 assert.equal(published("alertmanagerLocalRuntimePython"),python,
  "Learner-displayed Python runner differs from executed actual Alertmanager program");
 const prefix="export const prometheusToAlertmanagerPython = ";
-const publishedLine=forwardingSource.split("\\n").find(line=>line.startsWith(prefix));
+const publishedLine=forwardingSource.split("\n").find(line=>line.startsWith(prefix));
 assert.ok(publishedLine && publishedLine.endsWith(";"),"Real Prometheus forwarded source missing from learner reading");
 assert.equal(JSON.parse(publishedLine.slice(prefix.length,-1)),forwardingText,
   "Actual Prometheus-to-Alertmanager runtime differs from copyable learner source");
