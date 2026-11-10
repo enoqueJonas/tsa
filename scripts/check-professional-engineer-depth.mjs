@@ -415,3 +415,37 @@ for(const id of Object.keys(defencePrograms)){
  assert.match(bad.stderr,/AssertionError/,"Wrong failure for source-derived Defence mutant "+id+": "+bad.stderr);
  console.log("PASS exact Defence "+id+" and targeted unsafe mutant rejected");
 }
+
+
+// Original Capstone Problem Discovery module 2: teach source-verified
+// problem choice before proposing an architecture; keep historic IDs.
+const choiceFile = fs.readFileSync(root+"professional-engineer-discovery-problem-choice.ts","utf8");
+const choiceSourceLine = choiceFile.split("\n").find(x=>x.startsWith("export const problemSelectionProofPython = "));
+assert.ok(choiceSourceLine?.endsWith(";"),"Missing exact published discovery selection gate");
+const choiceCode = JSON.parse(choiceSourceLine.slice("export const problemSelectionProofPython = ".length,-1));
+const choiceBlocksAnchor="export const problemChoiceBlocks: LessonBlock[] = ";
+assert.ok(choiceFile.includes(choiceBlocksAnchor),"Missing instructional choice blocks");
+const choiceBlocks = JSON.parse(choiceFile.slice(choiceFile.indexOf(choiceBlocksAnchor)+choiceBlocksAnchor.length).trim().replace(/;\s*$/,""));
+assert.ok(choiceBlocks.filter(x=>x.type==="heading").length>=5,"Original reading needs distinct source reasoning, not generic boilerplate");
+assert.ok(choiceBlocks.filter(x=>x.type==="paragraph").length>=9,"Insufficient worked problem selection depth");
+assert.equal(choiceBlocks.filter(x=>x.type==="code").length,1,"A single source-published executable gate is required");
+assert.equal(choiceBlocks.find(x=>x.type==="code").code,choiceCode,"Displayed selection proof must be the exact executed source");
+const originalChoice = fs.readFileSync(root+"professional-engineer-capstone-problem-discovery-deep.ts","utf8");
+assert.ok(originalChoice.includes('id === "capstone-problem-discovery-choosing-a-substantial-problem"'),"Only the first original lesson must be expanded");
+assert.ok(originalChoice.includes("...problemChoiceBlocks"),"Original discovery reading not connected to focused source");
+assert.ok(originalChoice.includes("Run the exact published Python discovery-selection gate"),"Original paired practical has no executable task");
+assert.ok(originalChoice.includes('reading("capstone-problem-discovery-choosing-a-substantial-problem"'),"Original lesson/progress identity missing");
+const choiceGood=python(choiceCode);
+assert.equal(choiceGood.status,0,choiceGood.stdout+"\n"+choiceGood.stderr);
+assert.match(choiceGood.stdout,/DISCOVERY_SELECTION_GATES_PASS/);
+for(const [before,after,why] of [
+ ["if not candidate.stakeholder_access_verified:","if not candidate.stakeholder_access_claimed:","unverified stakeholder access"],
+ ["if not candidate.evidence_collection_authorized:","if False:","missing data-use permission"],
+ ["if not candidate.scope_bounded:","if False:","unbounded capstone scope"]
+]){
+ assert.ok(choiceCode.includes(before),"Changed selection gate for "+why);
+ const wrong=python(choiceCode.replace(before,after));
+ assert.notEqual(wrong.status,0,"Unsafe selection mutant was accepted: "+why);
+ assert.match(wrong.stderr,/AssertionError/,"Selection mutant failed for unrelated reason: "+why+" "+wrong.stderr);
+}
+console.log("PASS original module-2 problem-choice reading/practical, exact Python source and three rejected evidence-gate mutants");
