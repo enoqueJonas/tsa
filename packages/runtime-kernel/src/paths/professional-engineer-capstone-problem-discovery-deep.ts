@@ -7,6 +7,7 @@ import { problemFramingWorkflowBlocks, problemFramingMeasurementBlocks, problemF
 import { requirementsDerivationBlocks, requirementsAcceptanceBlocks, requirementsTraceabilityBlocks } from "./professional-engineer-discovery-requirements";
 import { constraintsInventoryBlocks, constraintsFeasibilityBlocks, constraintsNegotiationBlocks } from "./professional-engineer-discovery-constraints";
 import { ambiguityInventoryBlocks, ambiguitySensitivityBlocks, ambiguityExperimentBlocks } from "./professional-engineer-discovery-ambiguity";
+import { qualityScenarioBlocks, qualityMeasurementBlocks, qualityTradeoffBlocks } from "./professional-engineer-discovery-quality-attributes";
 
 function reading(id: string, title: string, body: string, minutes = 22): Lesson {
   // Remediate specific ORIGINAL topics only; preserve every existing ID.
@@ -18,13 +19,15 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
   const isRequirements = id === "capstone-problem-discovery-requirements";
   const isConstraints = id === "capstone-problem-discovery-constraints";
   const isAmbiguity = id === "capstone-problem-discovery-working-with-ambiguity";
+  const isQuality = id === "capstone-problem-discovery-quality-attributes";
   const authoredBlocks: LessonBlock[] | undefined = isProblemSelection
     ? [{type:"paragraph",text:body}, ...problemChoiceBlocks]
     : isStakeholder ? [{type:"paragraph",text:body}, ...stakeholderMappingBlocks]
     : isFraming ? [{type:"paragraph",text:body}, ...problemFramingWorkflowBlocks]
     : isRequirements ? [{type:"paragraph",text:body}, ...requirementsDerivationBlocks]
     : isConstraints ? [{type:"paragraph",text:body}, ...constraintsInventoryBlocks]
-    : isAmbiguity ? [{type:"paragraph",text:body}, ...ambiguityInventoryBlocks] : undefined;
+    : isAmbiguity ? [{type:"paragraph",text:body}, ...ambiguityInventoryBlocks]
+    : isQuality ? [{type:"paragraph",text:body}, ...qualityScenarioBlocks] : undefined;
   const stakeholderReadings: Activity[] = isStakeholder ? [
     {
       id: `${id}-interview-method-reading`,
@@ -95,16 +98,31 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
       content: {type:"reading",body:"Choose discriminating, safe investigations; define stop rules and preserve reversibility.",blocks:ambiguityExperimentBlocks},
     },
   ] : [];
+  const qualityReadings: Activity[] = isQuality ? [
+    {
+      id: `${id}-measurement-reading`,
+      title: "Measuring Latency, Access Safety and Verified Recovery",
+      estimatedMinutes: 80,
+      content: {type:"reading",body:"Define exact eligible observations and negative quality oracles, rather than inferring safe production behavior from a green number.",blocks:qualityMeasurementBlocks},
+    },
+    {
+      id: `${id}-tradeoffs-reading`,
+      title: "Quality Trade-offs, Priorities and Operational Decisions",
+      estimatedMinutes: 75,
+      content: {type:"reading",body:"Compare correctness, useful availability, privacy, accessibility and operating cost using scenario-specific decisions.",blocks:qualityTradeoffBlocks},
+    },
+  ] : [];
   return { id, title, activities: [
-    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : isFraming ? 60 : isRequirements ? 65 : isConstraints ? 70 : isAmbiguity ? 70 : minutes,
+    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : isFraming ? 60 : isRequirements ? 65 : isConstraints ? 70 : isAmbiguity ? 70 : isQuality ? 70 : minutes,
       content: { type: "reading", body, ...(authoredBlocks ? {blocks:authoredBlocks} : {}) } },
     ...stakeholderReadings,
     ...framingReadings,
     ...requirementReadings,
     ...constraintReadings,
     ...ambiguityReadings,
+    ...qualityReadings,
     { id: `${id}-practice`, title: `Discovery work: ${title}`,
-      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : isFraming ? 100 : isRequirements ? 110 : isConstraints ? 110 : isAmbiguity ? 110 : 45, content: {
+      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : isFraming ? 100 : isRequirements ? 110 : isConstraints ? 110 : isAmbiguity ? 110 : isQuality ? 120 : 45, content: {
       type: "practical",
       objective: `Apply ${title} to the evolving capstone discovery evidence before architecture is proposed.`,
       scenario,
@@ -157,6 +175,14 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "Design a permission-aware experiment charter, selecting a real discriminating method (authorized observation, targeted interview, bounded technical spike or controlled test) rather than building a demo for its own sake; include alternative explanation, sampling/source limits, stop condition, rollback and what the result cannot prove.",
           "Document one irreversible or costly-to-reverse architecture decision, one safely reversible choice, an owner and a date/condition triggering review. Show a changed recommendation when a data-use permission is revoked or the experimental result contradicts the initial belief.",
           "Deliver an explicit PROCEED_WITH_GUARDRAILS, DEFER, RESEARCH_REQUESTED or NO_AUTHORIZATION_TO_ACT decision. Mark field evidence NOT_TESTED unless actually obtained; never promote simulated beliefs or a script PASS into stakeholder approval.",
+        ] : []),
+        ...(isQuality ? [
+          "Build a six-scenario quality attribute catalogue for a NEW capstone workflow: access/privacy, p95 and workload, degraded dependency, restoration/data loss, accessible task completion and real operator-maintenance capacity. For each, identify the stakeholder, stimulus, environment, useful response, eligible denominator, source/owner and unknown or verified target.",
+          "Run the exact learner-visible Python quality evidence fixture: preserve 20 eligible successful observations, nearest-rank p95=250ms, maximum=780ms, fictional RTO=30min and RPO=8min; explain why this is not a real SLO, privacy assurance or restore result.",
+          "In separate disposable source copies, reject EIGHT misleading shortcuts: median substituted for p95, tiny samples accepted, incomplete observation ignored, unauthorized disclosure ignored, unverified restore accepted, RTO or RPO breach ignored and p95 tail breach accepted; preserve all observed AssertionError evidence.",
+          "Describe two invalid conclusions that a green p95 or HTTP 200 can hide (incomplete cases and incorrect/out-of-date protected results). Write both allowed and forbidden access/transition oracles and specify their independent persisted-state checks.",
+          "Compare two technical alternatives with a causal quality trade-off record: lower lookup latency versus stale authorization or status, privacy versus traceable audit, and real operating effort. Show the authoritative status, unknowns, noncompensatory hard gates and a reversible decision trigger.",
+          "Inject a change: the data owner prohibits an audit field or the operator capacity is halved. Update impacted quality scenarios, requirements, tests, source authority and architecture options; do not invent real targets or call the classroom fixture deployment approval.",
         ] : [])
       ],
       deliverables: ["Updated discovery artifact", "Evidence/assumption distinction", "Change-or-retain rationale", "Next validation question"],
@@ -199,6 +225,12 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "Each high-consequence unknown has competing explanations, a discriminating permitted study, decision dependency, safety gate and re-evaluation trigger.",
           "The exact Python and eight deliberately wrong variants demonstrate uncertainty-sensitive decisions, EVPI as a theoretical ceiling and noncompensatory research authorization/safety.",
           "A defensible recommendation may be DEFER/NO_AUTHORIZATION_TO_ACT, not an invented optimal architecture; real user research and uncoached independent transfer remain NOT_VALIDATED.",
+        ] : []),
+        ...(isQuality ? [
+          "Each quality claim has a named stakeholder, stimulus, workload and operating environment, response and independent observable success/failure oracle; unknown thresholds remain explicitly pending.",
+          "An incomplete cohort, unauthorized data access, unverified data restore, insufficient sample or missed recovery and latency limit cannot be declared healthy by averaging or because the endpoint returns HTTP 200.",
+          "The exact source program and eight unsafe mutations expose false p95, data-loss, access and recovery conclusions without falsely claiming production security, permitted data or a real SLO.",
+          "A scenario-specific decision discusses at least two conflicts and includes viable DEFER/NARROW_SCOPE when noncompensatory safety/operational constraints cannot be met; actual learner transfer remains NOT_VALIDATED.",
         ] : [])
       ]
     } }
