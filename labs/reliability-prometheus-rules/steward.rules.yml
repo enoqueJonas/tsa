@@ -1,0 +1,36 @@
+# Synthetic Steward registration metric contract. Lab-only; not deployed.
+# Prometheus classic counters, initialized for each bounded status class.
+groups:
+  - name: steward-registration
+    interval: 1m
+    rules:
+      - record: steward:registration_requests:rate5m
+        expr: sum by (route) (rate(http_requests_total{job="steward-api",route="/register"}[5m]))
+      - record: steward:registration_errors:rate5m
+        expr: sum by (route) (rate(http_requests_total{job="steward-api",route="/register",status_class="5xx"}[5m]))
+      - record: steward:registration_error_ratio:rate5m
+        expr: steward:registration_errors:rate5m / steward:registration_requests:rate5m
+      - alert: StewardRegistrationElevatedErrors
+        expr: (steward:registration_error_ratio:rate5m > 0.20) and on(route) (steward:registration_requests:rate5m > 0.10)
+        for: 2m
+        labels:
+          severity: ticket
+          team: reliability
+        annotations:
+          summary: "Elevated registration failures"
+      - alert: StewardMetricsScrapeFailed
+        expr: up{job="steward-api"} == 0
+        for: 2m
+        labels:
+          severity: ticket
+          team: reliability
+        annotations:
+          summary: "Prometheus cannot scrape a configured Steward target"
+      - alert: StewardMetricsTargetMissing
+        expr: absent_over_time(up{job="steward-api"}[5m])
+        for: 2m
+        labels:
+          severity: ticket
+          team: reliability
+        annotations:
+          summary: "Expected Steward scrape series disappeared"
