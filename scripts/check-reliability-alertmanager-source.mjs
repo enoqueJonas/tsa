@@ -36,6 +36,19 @@ for(const required of ["PROMETHEUS_TO_ALERTMANAGER_TO_WEBHOOK_FIRING_PASS",
  'TSA_FORWARD_RULE_VARIANT', "REAL_PROMETHEUS_SCRAPE_PASS"]){
  assert.ok(forwardingText.includes(required),"Real forwarding coverage missing: "+required);
 }
+for(const marker of [
+ "SCENARIO = os.getenv",
+ "PROMETHEUS_RULE_STILL_FIRING_WHILE_ALERTMANAGER_UNREACHABLE_PASS",
+ "REAL_PROMETHEUS_NOTIFICATION_ERRORS_PASS",
+ "REAL_PROMETHEUS_ALERTMANAGER_RECOVERY_PASS",
+ "outage-without-disconnect",
+ "prometheus_notifications_errors_total",
+ "docker","pause","unpause"
+]) assert.ok(forwardingText.includes(marker),"Exact source missing real outage or recovery mechanism: "+marker);
+assert.ok(lesson.includes("blocks: alertmanagerOutageRecoveryBlocks"),"Focused original-path outage lesson missing");
+assert.ok(lesson.includes("TSA_FORWARD_SCENARIO=alertmanager-outage")
+       && lesson.includes("TSA_FORWARD_SCENARIO=outage-without-disconnect"),
+       "Original recovery practice must require real outage and false-outage negative");
 assert.ok(lesson.includes("blocks: prometheusToAlertmanagerBlocks"),
  "New source is not wired to original Alertmanager learning path");
 
@@ -66,6 +79,7 @@ const ids=[
  "reliability-alertmanager-implementation-route-mechanics-reading",
  "reliability-alertmanager-implementation-live-delivery-reading",
  "reliability-alertmanager-implementation-prometheus-forwarding-reading",
+ "reliability-alertmanager-implementation-outage-recovery-reading",
  "reliability-alertmanager-implementation-002",
  "reliability-alertmanager-implementation-003",
  "reliability-alertmanager-implementation-004"
