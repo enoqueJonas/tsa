@@ -337,3 +337,32 @@ Original `reliability-alertmanager-implementation-001/-002/-003/-004` IDs and al
 ### Remaining limitations
 
 One durable SQLite unique key prevents duplicate committed rows for a given **local canonical webhook identity**. It does **not** guarantee exactly-once execution of external email, ticketing, Slack, PagerDuty or payment APIs; downstream idempotency/outbox/acknowledgment and recovery from process/DB crash must be separately demonstrated. Grouping key and fingerprint changes across alert/route configuration can change the identity scope. Do not infer that an HTTP 200 means a human read a page or that synthetic `runbook-dispatch` is real operational action. Keep Reliability issue #327 OPEN, PR #408 DRAFT/UNMERGED, stacked on draft #404.
+
+
+## Source-exact 1h/5m burn-rate alert policy — 10 November 2026
+
+**Completed predecessor:** [CI #42823883072](https://github.com/enoqueJonas/tsa/actions/runs/42823883072) was exact-head **21/21 green** for the bounded real Alertmanager retry + committed SQLite side-effect ID. This new batch moves forward to the original Service Level Engineering curriculum instead of extending the same notifier microtopic. Its own exact-head CI must pass separately.
+
+### Lesson placement and quantitative meaning
+
+Added 75-minute `service-level-engineering-windowing-promtool-burn-rate-reading` immediately after original `service-level-engineering-windowing-001` and before the existing `-002` practical. All original `-001/-002/-003` ID patterns for every Service-Level topic are preserved. The original `service-level-engineering-windowing-002` practical now requires actual official Prometheus rule-engine tests, a derived 14.4x threshold, exact 1h/5m pair, and deliberate changed-source failures. This complements — rather than replaces — prior source-extracted SQLite lifecycle SLI cohort work.
+
+Hypothetical **99.9% request success SLO** gives a 0.1% allowed bad-event fraction. The Google SRE Workbook 30-day (720h) **2% budget in 1h** heuristic leads to `0.02 × 720 / 1 = 14.4x`; corresponding request error ratio is `14.4 × 0.001 = 0.0144 = 1.44%`. One-hour ratio must exceed threshold AND the current five-minute ratio must exceed threshold. An explicit **>0.1 requests/s in 5m** gate and **for:2m** delay are classroom low-volume safeguards, not a universal response policy. Severity remains **ticket**, never a production page.
+
+**Critical caveat:** a time-based 2%-of-month budget projection assumes reasonably stationary request volume for an event-based request SLO. During variable traffic the actual monthly request-count budget must use measured event totals, not extrapolate a clock fraction. This synthetic request-5xx population does not establish Steward asynchronous committed-to-consumer-completion success, real workload impact, or valid on-call urgency.
+
+### Genuine Prometheus engine and counterexamples
+
+Committed exact source:
+- `labs/reliability-slo-burn/steward-burn.rules.yml` (1h/5m bounded aggregate classic-counter recording rules + alert).
+- `labs/reliability-slo-burn/steward-burn.test.yml` (seven official promtool unit-test scenarios over initialized 1m counters).
+- `packages/runtime-kernel/src/paths/reliability-slo-burn-engine-depth.ts` (copyable exact source YAML and first-principles derivation).
+- `scripts/check-reliability-slo-burn-engine.mjs` (display byte identity, original progress ID checks and generation of wrong-source mutants).
+
+Official pinned `prom/prometheus:v3.13.3` **promtool check rules** and **promtool test rules** are required in the original `prometheus-rule-engine` CI job. Positive: steady 2% errors produces 0.02 in both ratios and a synthetic ticket alert. Negative: 0.5% healthy traffic, recovered current five-minute window with a stale bad 1h average, new brief short spike with clean 1h average, low-volume 100% errors below the traffic floor, initialized no-traffic counters, and entirely missing telemetry. No missing vector is converted into a fake zero/green result.
+
+Three real wrong-source cases must fail with *unchanged* official unit-test expectations: swapping AND for OR (false alarms after recovery or short spikes), mistakenly treating 2xx successes as bad events in the numerator, and deleting the low-volume condition. The real Prometheus rule engine, not a separate Python reimplementation, decides their correctness. Browser traversal must render the new 75-minute reading with three copyable blocks, unchanged paired practical and 390px viewport without overflow.
+
+### Pending acceptance boundaries
+
+This batch **has no matching-head green claim until CI finishes**. Even when green, proof is synthetic official rule evaluation and rendered instruction, not live Steward telemetry, Prometheus scheduler/TSDB retention, Grafana panel NoData policy, approved notification route, human on-call ACK, or independent novice transfer. Keep issue #327 OPEN, draft PR #408 DRAFT/UNMERGED, stacked on upstream draft #404.
