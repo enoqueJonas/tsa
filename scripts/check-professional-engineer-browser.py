@@ -473,6 +473,87 @@ def run():
   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
   assert page.evaluate("new URLSearchParams(location.search).get('activity')")==original_constraints_practice
   print("PASS original Constraints -> feasibility -> conflict/revision -> original practical; 390px, copyable code, Next and reload",flush=True)
+  # Working with Ambiguity: original evidence-classification reading, separate
+  # exact-source sensitivity/EVPI reading, authorized experiment/reversal, then
+  # the original paired practice. Synthetic prerequisites are navigation-only.
+  seed_completed_path(page,"capstone-problem-discovery",[
+    "capstone-problem-discovery-evidence-provenance-reading",
+    "capstone-problem-discovery-evidence-provenance-practice",
+    "capstone-problem-discovery-evidence-provenance-check",
+    "capstone-problem-discovery-choosing-a-substantial-problem-001",
+    "capstone-problem-discovery-choosing-a-substantial-problem-practice",
+    "capstone-problem-discovery-stakeholder-discovery-001",
+    "capstone-problem-discovery-stakeholder-discovery-interview-method-reading",
+    "capstone-problem-discovery-stakeholder-discovery-triangulation-reading",
+    "capstone-problem-discovery-stakeholder-discovery-practice",
+    "capstone-problem-discovery-problem-framing-001",
+    "capstone-problem-discovery-problem-framing-measurement-reading",
+    "capstone-problem-discovery-problem-framing-causality-boundary-reading",
+    "capstone-problem-discovery-problem-framing-practice",
+    "capstone-problem-discovery-requirements-001",
+    "capstone-problem-discovery-requirements-acceptance-reading",
+    "capstone-problem-discovery-requirements-traceability-reading",
+    "capstone-problem-discovery-requirements-practice",
+    "capstone-problem-discovery-constraints-001",
+    "capstone-problem-discovery-constraints-feasibility-reading",
+    "capstone-problem-discovery-constraints-conflict-revision-reading",
+    "capstone-problem-discovery-constraints-practice",
+  ])
+  ambiguity_steps=(
+    ("capstone-problem-discovery-working-with-ambiguity-001",
+     ("Uncertainty, ambiguity and disagreement are not interchangeable",
+      "Build a register that supports decisions, not a list of vague concerns",
+      "Recognize five ways teams fake clarity")),
+    ("capstone-problem-discovery-working-with-ambiguity-sensitivity-reading",
+     ("Keep actions, outcomes and belief assumptions separate",
+      "Perfect-information value is a ceiling, not a forecast",
+      "AMBIGUITY_REVERSIBLE_DECISION_PROOF_PASS")),
+    ("capstone-problem-discovery-working-with-ambiguity-experiment-design-reading",
+     ("Choose one discriminating question, not a demonstration",
+      "Design a bounded experiment with a stop rule",
+      "Preserve options while protecting irreversible boundaries")),
+  )
+  page.goto(BASE+"/?"+urlencode({
+    "view":"curriculum","school":"professional-engineer",
+    "path":"capstone-problem-discovery","activity":ambiguity_steps[0][0]
+  }),wait_until="networkidle")
+  for index,(activity,requirements) in enumerate(ambiguity_steps):
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   actual=page.evaluate("new URLSearchParams(location.search).get('activity')")
+   assert actual==activity,f"Original ambiguity order/gating mismatch: {actual} != {activity}"
+   main=page.locator("main").last
+   rendered=main.inner_text()
+   assert len(rendered)>=3500,f"Working with Ambiguity reading remains thin: {activity}, {len(rendered)}"
+   for phrase in requirements:
+    assert phrase in rendered,f"Missing specific ambiguity teaching {activity}: {phrase}"
+   if index==1:
+    assert main.get_by_role("button",name="Copy").count()>0,"Exact ambiguity Python not copyable"
+    assert main.locator("figure pre").count()>0,"Ambiguity Python source not rendered"
+   page.set_viewport_size({"width":390,"height":844})
+   assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),(
+     "Ambiguity 390px horizontal overflow "+activity
+   )
+   page.screenshot(path=str(ART/f"discovery-ambiguity-{index+1}-390.png"),full_page=True)
+   page.set_viewport_size({"width":1440,"height":900})
+   page.get_by_role("button",name=re.compile(r"^(Next|Next lesson|Complete path)$")).click()
+   expected=(ambiguity_steps[index+1][0] if index+1<len(ambiguity_steps)
+             else "capstone-problem-discovery-working-with-ambiguity-practice")
+   page.wait_for_function("""expected => (
+     new URLSearchParams(location.search).get("activity") === expected
+   )""",arg=expected,timeout=15000)
+  original_ambiguity_practice="capstone-problem-discovery-working-with-ambiguity-practice"
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==original_ambiguity_practice
+  practice_text=page.locator("main").last.inner_text()
+  for phrase in ("six-entry uncertainty register",
+                 "reject eight incorrect implementations",
+                 "permission-aware experiment charter",
+                 "probability","NO_AUTHORIZATION_TO_ACT"):
+   assert phrase in practice_text,"Original Ambiguity practical missing "+phrase
+  page.reload(wait_until="networkidle")
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==original_ambiguity_practice
+  print("PASS original Ambiguity -> sensitivity/EVPI -> ethical experiment -> original practice; 390px, source copy, Next and reload",flush=True)
   # Gate the third module through completion of the second module's *actual*
   # authored IDs. This synthetic fixture is not independent learner evidence.
   synthetic_discovery_complete(page)
