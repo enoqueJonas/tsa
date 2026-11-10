@@ -259,6 +259,73 @@ def run():
   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
   assert page.evaluate("new URLSearchParams(location.search).get('activity')")==final_stakeholder_practice
   print("PASS original stakeholder reading -> separate interview and triangulation -> original practice; 390px, code, reload",flush=True)
+  # Problem Framing: original authored reading -> measured cohort -> causal
+  # boundary -> preserved practice, through the actual Next action. This
+  # synthetic prerequisite seeding is navigation, NOT learner competence.
+  seed_completed_path(page,"capstone-problem-discovery",[
+    "capstone-problem-discovery-evidence-provenance-reading",
+    "capstone-problem-discovery-evidence-provenance-practice",
+    "capstone-problem-discovery-evidence-provenance-check",
+    "capstone-problem-discovery-choosing-a-substantial-problem-001",
+    "capstone-problem-discovery-choosing-a-substantial-problem-practice",
+    "capstone-problem-discovery-stakeholder-discovery-001",
+    "capstone-problem-discovery-stakeholder-discovery-interview-method-reading",
+    "capstone-problem-discovery-stakeholder-discovery-triangulation-reading",
+    "capstone-problem-discovery-stakeholder-discovery-practice",
+  ])
+  framing_steps=(
+    ("capstone-problem-discovery-problem-framing-001",
+     ("Define the unit of work and its observable states",
+      "Distinguish symptoms, mechanisms and hypotheses",
+      "Map evidence, permissions and unknown states")),
+    ("capstone-problem-discovery-problem-framing-measurement-reading",
+     ("Count a lifecycle cohort before summarizing durations",
+      "COHORT complete=6/9 unverified=3/9",
+      "Break the measurement without changing the expected answer")),
+    ("capstone-problem-discovery-problem-framing-causality-boundary-reading",
+     ("Use competing causes, not a vote among stakeholders",
+      "Translate symptoms into a bounded, solution-neutral statement",
+      "Identify who can actually change the system")),
+  )
+  page.goto(BASE+"/?"+urlencode({
+    "view":"curriculum","school":"professional-engineer",
+    "path":"capstone-problem-discovery","activity":framing_steps[0][0]
+  }),wait_until="networkidle")
+  for index,(activity,requirements) in enumerate(framing_steps):
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   actual=page.evaluate("new URLSearchParams(location.search).get('activity')")
+   assert actual==activity,f"Original framing order changed: {actual} != {activity}"
+   main=page.locator("main").last
+   visible=main.inner_text()
+   assert len(visible)>=2750,f"Shallow Problem Framing reading {activity}: {len(visible)}"
+   for phrase in requirements:
+    assert phrase in visible,f"Problem Framing teaching missing {activity}: {phrase}"
+   if index==1:
+    assert main.get_by_role("button",name="Copy").count()>0,"Timeline Python not copyable"
+    assert main.locator("figure pre").count()>0,"Timeline Python not visible in code block"
+   page.set_viewport_size({"width":390,"height":844})
+   assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),(
+     "Problem Framing mobile overflow: "+activity
+   )
+   page.screenshot(path=str(ART/f"discovery-framing-{index+1}-390.png"),full_page=True)
+   page.set_viewport_size({"width":1440,"height":900})
+   page.get_by_role("button",name=re.compile(r"^(Next|Next lesson|Complete path)$")).click()
+   expected_next=(framing_steps[index+1][0] if index+1<len(framing_steps)
+                  else "capstone-problem-discovery-problem-framing-practice")
+   page.wait_for_function("""expected => (
+      new URLSearchParams(location.search).get("activity") === expected
+   )""",arg=expected_next,timeout=15000)
+  framing_practice="capstone-problem-discovery-problem-framing-practice"
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==framing_practice
+  practice_text=page.locator("main").last.inner_text()
+  for phrase in ("nine-case timeline experiment","four correct assertion failures",
+                 "missing-data/authorized-evidence plan","two competing causal hypotheses"):
+   assert phrase in practice_text,"Original Problem Framing practical missing "+phrase
+  page.reload(wait_until="networkidle")
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==framing_practice
+  print("PASS original Problem Framing reading -> measurement -> causal boundary -> original practice; 390px, Python copy and reentry",flush=True)
   # Gate the third module through completion of the second module's *actual*
   # authored IDs. This synthetic fixture is not independent learner evidence.
   synthetic_discovery_complete(page)
