@@ -17,6 +17,8 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 IMAGE = "prom/alertmanager:v0.28.1"
+RETRY_MODE = os.getenv("TSA_AM_RETRY_MODE", "baseline")
+assert RETRY_MODE in {"baseline", "transient-503", "permanent-503", "nonretryable-400"}, RETRY_MODE
 TEMPLATE = Path(os.environ.get("TSA_ALERTMANAGER_CONFIG",
                                "labs/reliability-alertmanager/alertmanager.yml.template"))
 assert "__RECEIVER_PORT__" in TEMPLATE.read_text(encoding="utf8")
@@ -29,6 +31,7 @@ def free_port():
 class State:
     attempts = []
     fail_receiver = False
+    retry_http_status = 503
     lock = threading.Lock()
 
 class Receiver(BaseHTTPRequestHandler):
@@ -43,15 +46,25 @@ class Receiver(BaseHTTPRequestHandler):
         payload = json.loads(self.rfile.read(size))
         names = sorted(alert["labels"]["alertname"] for alert in payload["alerts"])
         services = sorted(set(alert["labels"].get("service") for alert in payload["alerts"]))
+        # Webhook transport receipt identity, not a mere alertname match.
+        identities = [{
+            "labels": dict(alert["labels"]),
+            "startsAt": alert.get("startsAt"),
+            "fingerprint": alert.get("fingerprint"),
+        } for alert in payload["alerts"]]
         with State.lock:
             should_fail = (State.fail_receiver and self.path == "/reliability"
                            and "SyntheticDeliveryFailure" in names)
+            response_code = State.retry_http_status if should_fail else 200
             State.attempts.append({
                 "route": self.path, "status": payload["status"],
                 "names": names, "services": services,
-                "response": 503 if should_fail else 200,
+                "response": response_code,
+                "identities": identities,
+                "groupKey": payload.get("groupKey"),
+                "observed_monotonic": time.monotonic(),
             })
-        self.send_response(503 if should_fail else 200)
+        self.send_response(response_code)
         self.send_header("Content-Length", "0")
         self.end_headers()
 
@@ -179,6 +192,100 @@ def perform(base):
     print("REAL_ALERTMANAGER_API_BOUNDARY_ONLY: no Prometheus-to-Alertmanager transport, "
           "production receiver, external pager or human acknowledgment")
 
+def perform_same_notification_retry(base):
+    """One alert submission; observe same webhook notification across 503->200.
+
+    An unrelated new alert is NOT a retry. 400 is deliberately non-retryable
+    for the bounded initial notification context; no permanent guarantee.
+    """
+    response_code = 400 if RETRY_MODE == "nonretryable-400" else 503
+    with State.lock:
+        State.fail_receiver = True
+        State.retry_http_status = response_code
+
+    alert = event("SyntheticDeliveryFailure", "steward-retry", "reliability",
+                  iso(-5), iso(300), extra={"proof_case": "same-rejected-alert"})
+    code, body = request_json(base + "/api/v2/alerts", [alert])
+    assert code == 200, ("One synthetic Alertmanager API submission rejected",
+                         code, body[:300])
+    api_submissions = 1
+
+    def receipt_of(status):
+        return [x for x in all_attempts()
+                if x["response"] == status
+                and x["route"] == "/reliability"
+                and x["names"] == ["SyntheticDeliveryFailure"]
+                and x["services"] == ["steward-retry"]
+                and x["status"] == "firing"
+                and len(x["identities"]) == 1
+                and x["identities"][0]["labels"].get("proof_case")
+                == "same-rejected-alert"]
+
+    await_event(lambda e: any(x["response"] == response_code
+                             and x["services"] == ["steward-retry"]
+                             and x["names"] == ["SyntheticDeliveryFailure"]
+                             for x in e),
+                "first actual receiver rejection", timeout=16)
+    rejected = receipt_of(response_code)
+    assert len(rejected) == 1, "Expected one 503/400 receiver attempt for isolated alert"
+    first = rejected[0]
+    assert first["groupKey"] and first["identities"][0]["fingerprint"], (
+        "Original webhook lacked observable group and alert fingerprint")
+    assert first["identities"][0]["startsAt"], "Original webhook lacked startsAt"
+    assert not receipt_of(200), "Cannot count a rejected request as delivered"
+    print("REAL_ALERTMANAGER_SAME_ALERT_REJECTED_PASS: first HTTP "
+          + str(response_code) + ", one API submission, no accepted webhook",
+          flush=True)
+
+    with State.lock:
+        # In permanent 503 mutant do NOT recover: the unchanged positive
+        # retry oracle must refuse to call a new unrelated alert successful.
+        if RETRY_MODE != "permanent-503":
+            State.fail_receiver = False
+
+    if RETRY_MODE == "nonretryable-400":
+        # Alertmanager's notifier marks 4xx unrecoverable. This verifies
+        # no immediate retry within the first 8s, not "never retried".
+        time.sleep(8)
+        assert len(receipt_of(200)) == 0, (
+            "HTTP 400 generated an unexpected immediate successful retry")
+        assert len(receipt_of(400)) == 1, (
+            "Unexpected duplicate 400 notification within the tested window")
+        print("REAL_ALERTMANAGER_400_UNRECOVERABLE_PASS: no immediate "
+              "same-alert retry within 8s; later group intervals UNTESTED",
+              flush=True)
+        return
+
+    # Do not submit the same alert again; RetryStage must retry this exact
+    # notification within the 20s group_interval, before a 1m repeat interval.
+    deadline = time.monotonic() + 19
+    while time.monotonic() < deadline and not receipt_of(200):
+        time.sleep(.2)
+    delivered = receipt_of(200)
+    if not delivered:
+        raise AssertionError("SAME_ALERT_RETRY_NOT_PROVEN: "
+                             "receiver never accepted the original rejected "
+                             "alert without another API submission; attempts="
+                             + json.dumps(all_attempts(), default=str))
+    success = delivered[0]
+    assert api_submissions == 1, "Another API submission invalidates retry proof"
+    assert success["groupKey"] == first["groupKey"], (
+        "Unrelated grouped notification was misclassified as retry")
+    assert success["identities"] == first["identities"], (
+        "Different fingerprint/labels/startsAt was misclassified as same alert")
+    assert success["status"] == first["status"] == "firing"
+    assert success["observed_monotonic"] > first["observed_monotonic"]
+    assert success["observed_monotonic"] - first["observed_monotonic"] < 20, (
+        "Same alert arrived after notification context/repeat window")
+    assert all(x["route"] == "/reliability" for x in rejected + delivered)
+    print("REAL_ALERTMANAGER_SAME_ALERT_503_RETRY_PASS: "
+          "one API submit, first webhook 503, then 200 with matching "
+          "fingerprint, labels, startsAt, groupKey, firing state",
+          flush=True)
+    print("SAME_ALERT_RETRY_LOCAL_ONLY: no durable queue guarantee, "
+          "external pager, Prometheus source or human ACK", flush=True)
+
+
 def main():
     assert os.name == "posix", "Docker host networking lab requires Linux"
     receiver_port = free_port()
@@ -191,8 +298,19 @@ def main():
     try:
         with tempfile.TemporaryDirectory(prefix="tsa-am-real-") as scratch:
             config = Path(scratch) / "alertmanager.yml"
-            config.write_text(TEMPLATE.read_text(encoding="utf8").replace(
-                "__RECEIVER_PORT__", str(receiver_port)), encoding="utf8")
+            config_text = TEMPLATE.read_text(encoding="utf8").replace(
+                "__RECEIVER_PORT__", str(receiver_port))
+            if RETRY_MODE != "baseline":
+                # Disposable retry-specific context: 20s for notification
+                # RetryStage; 1m repeat interval so a <20s success proves
+                # actual retry rather than a scheduled repeat notification.
+                config_text = config_text.replace("group_wait: 2s",
+                                                  "group_wait: 1s")
+                config_text = config_text.replace("group_interval: 5s",
+                                                  "group_interval: 20s")
+                config_text = config_text.replace("repeat_interval: 30s",
+                                                  "repeat_interval: 1m")
+            config.write_text(config_text, encoding="utf8")
             # GitHub Linux runners are isolated; no external receiver,
             # production credentials or remote webhooks. localhost only.
             cmd = ["docker", "run", "--rm", "--network", "host",
@@ -218,7 +336,10 @@ def main():
                 time.sleep(0.25)
             else:
                 raise AssertionError("Official Alertmanager never became ready")
-            perform(base)
+            if RETRY_MODE == "baseline":
+                perform(base)
+            else:
+                perform_same_notification_retry(base)
     finally:
         if container is not None and container.poll() is None:
             container.terminate()
