@@ -449,3 +449,63 @@ for(const [before,after,why] of [
  assert.match(wrong.stderr,/AssertionError/,"Selection mutant failed for unrelated reason: "+why+" "+wrong.stderr);
 }
 console.log("PASS original module-2 problem-choice reading/practical, exact Python source and three rejected evidence-gate mutants");
+
+
+// Original Capstone Problem Discovery Stakeholder Discovery is deliberately
+// split into map -> neutral interview -> contradictory evidence, before the
+// preserved practical. The published classroom coverage gate must run exactly,
+// and wrong ethics/sampling/confirmation variants must fail the real oracle.
+const stakeholderFile=fs.readFileSync(root+"professional-engineer-discovery-stakeholders.ts","utf8");
+const stakeholderPrefix="export const stakeholderCoveragePython = ";
+const stakeholderLine=stakeholderFile.split("\n").find(line=>line.startsWith(stakeholderPrefix));
+assert.ok(stakeholderLine?.endsWith(";"),"Missing exact source-published stakeholder Python");
+const stakeholderCode=JSON.parse(stakeholderLine.slice(stakeholderPrefix.length,-1));
+function stakeholderSection(name,nextName){
+ const prefix="export const "+name+": LessonBlock[] = ";
+ const begin=stakeholderFile.indexOf(prefix);
+ assert.ok(begin>=0,"Missing authored stakeholder reading "+name);
+ const offset=begin+prefix.length;
+ const next=nextName ? stakeholderFile.indexOf(";\nexport const "+nextName+":",offset)
+   : stakeholderFile.lastIndexOf(";\n");
+ assert.ok(next>offset,"Cannot read exact authored stakeholder section "+name);
+ return JSON.parse(stakeholderFile.slice(offset,next));
+}
+const mapping=stakeholderSection("stakeholderMappingBlocks","stakeholderInterviewBlocks");
+const interviews=stakeholderSection("stakeholderInterviewBlocks","stakeholderTriangulationBlocks");
+const triangulation=stakeholderSection("stakeholderTriangulationBlocks",null);
+for(const [label,blocks,limit] of [["mapping",mapping,4500],["interview",interviews,3500],["triangulation",triangulation,2900]]){
+ assert.ok(blocks.filter(x=>x.type==="heading").length>=3,"Overloaded or unstructured stakeholder "+label);
+ assert.ok(blocks.filter(x=>x.type==="paragraph").length>=6,"Thin stakeholder "+label);
+ assert.ok(blocks.filter(x=>x.type==="resources").length===1,"Missing targeted source for stakeholder "+label);
+ const prose=blocks.filter(x=>x.type==="paragraph").map(x=>x.text).join("\n");
+ assert.ok(prose.length>=limit,"Stakeholder "+label+" lacks subject-specific mechanism and counterexamples");
+}
+assert.equal(mapping.filter(x=>x.type==="code").length,1,"Mapping should expose one exact coverage program");
+assert.equal(mapping.find(x=>x.type==="code").code,stakeholderCode,"Learner mapping Python differs from source executed in CI");
+assert.equal(interviews.filter(x=>x.type==="code").length,0);
+assert.equal(triangulation.filter(x=>x.type==="code").length,0);
+const stakeholderOriginal=fs.readFileSync(root+"professional-engineer-capstone-problem-discovery-deep.ts","utf8");
+assert.ok(stakeholderOriginal.includes('id === "capstone-problem-discovery-stakeholder-discovery"'));
+assert.ok(stakeholderOriginal.includes("...stakeholderMappingBlocks"),"Original Stakeholder reading not connected");
+assert.ok(stakeholderOriginal.includes('id: `${id}-interview-method-reading`'),"Interview step not independently navigable");
+assert.ok(stakeholderOriginal.includes('id: `${id}-triangulation-reading`'),"Triangulation step not independently navigable");
+assert.ok(stakeholderOriginal.indexOf("...stakeholderReadings")<stakeholderOriginal.indexOf('id: `${id}-practice`'),"Stakeholder learning must precede original practical");
+assert.ok(stakeholderOriginal.includes("Run the original reading's exact Python stakeholder-coverage fixture"),"Original practical missing source execution");
+assert.ok(stakeholderOriginal.includes('reading("capstone-problem-discovery-stakeholder-discovery"'),"Lost original stakeholder lesson ID");
+const stakeholderGood=python(stakeholderCode);
+assert.equal(stakeholderGood.status,0,stakeholderGood.stdout+"\n"+stakeholderGood.stderr);
+for(const marker of ["manager_only: MISSING_STAKEHOLDER_VOICE","unconsented: UNAUTHORIZED_RECORD","leading_prompt: LEADING_QUESTION_BIAS","only_testimony: TESTIMONY_ONLY_CAUSE_UNVERIFIED","broader_sample: READY_TO_CHALLENGE_CAUSAL_HYPOTHESIS","STAKEHOLDER_COVERAGE_BIAS_GATE_PASS"]){
+ assert.ok(stakeholderGood.stdout.includes(marker),"Missing exact stakeholder evidence trace: "+marker);
+}
+for(const [before,why] of [
+ ['if any(r.collected and not r.consent for r in records):',"authorization bypass"],
+ ['if any(r.collected and r.prompt == "leading" for r in records):',"leading-question acceptance"],
+ ['if not REQUIRED.issubset(represented):',"missing affected voice"],
+ ['if not any(r.collected and r.kind == "observation" for r in records):',"unsupported causal inference"]
+]){
+ assert.ok(stakeholderCode.includes(before),"Changed learner mutation target: "+why);
+ const bad=python(stakeholderCode.replace(before,"if False:"));
+ assert.notEqual(bad.status,0,"Wrong stakeholder implementation was accepted: "+why);
+ assert.match(bad.stderr,/AssertionError/,"Wrong failure reason for stakeholder "+why+": "+bad.stderr);
+}
+console.log("PASS original stakeholder source, three navigable readings, exact Python and four unsafe mutants rejected");
