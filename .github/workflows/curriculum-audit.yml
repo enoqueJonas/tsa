@@ -153,6 +153,8 @@ jobs:
         run: node scripts/check-reliability-metrics-scrape-evidence.mjs
       - name: Check exact original recording-rule YAML and alerting lesson boundaries
         run: node scripts/check-reliability-prometheus-rule-engine.mjs
+      - name: Verify exact authored Alertmanager routing and real HTTP driver source
+        run: node scripts/check-reliability-alertmanager-source.mjs
       - name: Execute source-published traceparent handoff and missing-propagation evidence
         run: node scripts/check-reliability-tracing-propagation.mjs
       - name: Guard original logging teaching depth and failure transfer across eight topics
@@ -412,6 +414,37 @@ jobs:
             fi
             echo "PASS: official promtool rejected mutated rule '$scenario'"
             tail -n 15 "$RUNNER_TEMP/promtool-$scenario.log"
+          done
+
+  real-alertmanager-delivery:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Verify learner-visible Alertmanager config and test script are byte-identical
+        run: node scripts/check-reliability-alertmanager-source.mjs
+      - name: Run actual Alertmanager grouping, routing, inhibition, receiver 503 and recovery
+        run: |
+          docker pull prom/alertmanager:v0.28.1
+          python3 scripts/check-reliability-alertmanager-runtime.py
+      - name: Require four incorrect Alertmanager configurations to fail actual delivery expectations
+        run: |
+          root="$RUNNER_TEMP/tsa-alertmanager-mutants"
+          node scripts/check-reliability-alertmanager-source.mjs --emit-mutants "$root"
+          for scenario in broken-grouping wrong-security-route missing-parent-inhibition wrong-reliability-route; do
+            if TSA_ALERTMANAGER_CONFIG="$root/$scenario/alertmanager.yml.template" python3 scripts/check-reliability-alertmanager-runtime.py > "$RUNNER_TEMP/am-$scenario.log" 2>&1; then
+              echo "FAIL: wrong Alertmanager '$scenario' unexpectedly passed real receiver contract"
+              exit 1
+            fi
+            grep -Eq 'AssertionError|assert ' "$RUNNER_TEMP/am-$scenario.log" || { cat "$RUNNER_TEMP/am-$scenario.log"; exit 1; }
+            echo "PASS: actual Alertmanager rejected '$scenario' via observed receiver mismatch"
+            tail -n 6 "$RUNNER_TEMP/am-$scenario.log"
           done
 
   learner-browser:
