@@ -1,16 +1,38 @@
 import type { Lesson } from "./lesson";
 import type { LessonBlock } from "../activities/content";
+import type { Activity } from "../activities";
+import { stakeholderMappingBlocks, stakeholderInterviewBlocks, stakeholderTriangulationBlocks } from "./professional-engineer-discovery-stakeholders";
 import { problemChoiceBlocks } from "./professional-engineer-discovery-problem-choice";
 
 function reading(id: string, title: string, body: string, minutes = 22): Lesson {
-  // The first ORIGINAL reading is the present remediation target; do not attach
-  // a generic teaching appendix to the other distinct discovery concepts.
+  // Remediate specific ORIGINAL topics only; preserve every existing ID.
+  // Stakeholder Discovery has distinct prerequisite mechanisms, so interview
+  // and triangulation are separately navigable before the original practice.
   const isProblemSelection = id === "capstone-problem-discovery-choosing-a-substantial-problem";
-  const problemBlocks: LessonBlock[] | undefined = isProblemSelection
-    ? [{type:"paragraph",text:body}, ...problemChoiceBlocks] : undefined;
+  const isStakeholder = id === "capstone-problem-discovery-stakeholder-discovery";
+  const authoredBlocks: LessonBlock[] | undefined = isProblemSelection
+    ? [{type:"paragraph",text:body}, ...problemChoiceBlocks]
+    : isStakeholder ? [{type:"paragraph",text:body}, ...stakeholderMappingBlocks] : undefined;
+  const stakeholderReadings: Activity[] = isStakeholder ? [
+    {
+      id: `${id}-interview-method-reading`,
+      title: "Interviewing Without Leading and Recording Consent",
+      estimatedMinutes: 55,
+      content: {type:"reading",body:"Conduct ethical, neutral interviews and distinguish testimony from actual observation.",blocks:stakeholderInterviewBlocks},
+    },
+    {
+      id: `${id}-triangulation-reading`,
+      title: "Triangulating Conflicting Stakeholder Evidence",
+      estimatedMinutes: 55,
+      content: {type:"reading",body:"Challenge conflicting reports and turn uncertainty into an authorized research plan.",blocks:stakeholderTriangulationBlocks},
+    },
+  ] : [];
   return { id, title, activities: [
-    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : minutes, content: { type: "reading", body, ...(problemBlocks ? {blocks:problemBlocks} : {}) } },
-    { id: `${id}-practice`, title: `Discovery work: ${title}`, estimatedMinutes: isProblemSelection ? 70 : 45, content: {
+    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : minutes,
+      content: { type: "reading", body, ...(authoredBlocks ? {blocks:authoredBlocks} : {}) } },
+    ...stakeholderReadings,
+    { id: `${id}-practice`, title: `Discovery work: ${title}`,
+      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : 45, content: {
       type: "practical",
       objective: `Apply ${title} to the evolving capstone discovery evidence before architecture is proposed.`,
       scenario,
@@ -24,6 +46,13 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "For each candidate, distinguish promised stakeholder access from actually verified permission to collect safe minimal evidence. Record UNKNOWN rather than claiming interviews that have not occurred.",
           "Run the exact published Python discovery-selection gate; preserve output, then break the access-verified and consent conditions separately and show which assertions reject false readiness.",
           "Compare the candidates using non-compensatory access/safety/scope gates before preferences; write one falsification observation and the condition for choosing neither candidate.",
+        ] : []),
+        ...(isStakeholder ? [
+          "Construct a stakeholder-by-workflow handoff matrix: frontline user, operator, affected non-user, decision owner and any other domain-specific role. Distinguish authority, direct experience, access and participation permissions.",
+          "Run the original reading's exact Python stakeholder-coverage fixture. Preserve the five actual outputs, then independently corrupt consent rejection, missing-role coverage and leading-question rejection; show the intended assertions reject each altered source.",
+          "Draft a neutral interview guide: open recent-event questions, one positive counterexample, two role-specific prompts, a deliberately leading question rewritten neutrally, and voluntary participation/recording consent instructions. Use only authorized records.",
+          "Build a claim and contradiction table for two opposing stakeholder accounts, with evidence type, source dependency, possible measurement bias, permitted validation action and an explicit UNKNOWN/NOT_TESTED for absent data.",
+          "Produce one falsifiable revised discovery claim and record how an omitted or non-consenting voice limits it. Do not invent interview quotes, obtained permission, numerical incidence rates or an approved product.",
         ] : [])
       ],
       deliverables: ["Updated discovery artifact", "Evidence/assumption distinction", "Change-or-retain rationale", "Next validation question"],
@@ -36,6 +65,12 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "No candidate is declared research-ready from a stakeholder promise, a fictional example, or fabricated empirical evidence.",
           "The negative program mutations are detected for the expected inference error, and any unverified candidate remains explicitly blocked.",
           "Technology selection is deferred until a bounded workflow, evidence provenance, ethical access and a falsifiable outcome have been defended.",
+        ] : []),
+        ...(isStakeholder ? [
+          "Actual participants, organizational permissions and demographic/role gaps are documented without fabricating consultations; fictional teaching transcripts are not submitted as field evidence.",
+          "Stakeholder map includes a harmed non-user and separates decision power from firsthand workflow knowledge.",
+          "A reviewer can reconstruct exactly why the source program rejects unauthorized data collection, a leading interview, manager-only coverage and testimony-only causal overclaim.",
+          "Conflicting accounts and unknowns remain explicitly open until a discriminating permitted observation or document can resolve them.",
         ] : [])
       ]
     } }
