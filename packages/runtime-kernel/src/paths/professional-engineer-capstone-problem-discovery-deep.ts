@@ -9,6 +9,7 @@ import { constraintsInventoryBlocks, constraintsFeasibilityBlocks, constraintsNe
 import { ambiguityInventoryBlocks, ambiguitySensitivityBlocks, ambiguityExperimentBlocks } from "./professional-engineer-discovery-ambiguity";
 import { qualityScenarioBlocks, qualityMeasurementBlocks, qualityTradeoffBlocks } from "./professional-engineer-discovery-quality-attributes";
 import { riskFoundationsBlocks, riskControlsBlocks, riskResidualBlocks } from "./professional-engineer-discovery-risk";
+import { successOutcomesBlocks, successCohortsBlocks, successClaimsBlocks } from "./professional-engineer-discovery-success-measures";
 
 function reading(id: string, title: string, body: string, minutes = 22): Lesson {
   // Remediate specific ORIGINAL topics only; preserve every existing ID.
@@ -22,6 +23,7 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
   const isAmbiguity = id === "capstone-problem-discovery-working-with-ambiguity";
   const isQuality = id === "capstone-problem-discovery-quality-attributes";
   const isRisk = id === "capstone-problem-discovery-risk";
+  const isSuccess = id === "capstone-problem-discovery-success-measures-and-evidence";
   const authoredBlocks: LessonBlock[] | undefined = isProblemSelection
     ? [{type:"paragraph",text:body}, ...problemChoiceBlocks]
     : isStakeholder ? [{type:"paragraph",text:body}, ...stakeholderMappingBlocks]
@@ -30,7 +32,8 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
     : isConstraints ? [{type:"paragraph",text:body}, ...constraintsInventoryBlocks]
     : isAmbiguity ? [{type:"paragraph",text:body}, ...ambiguityInventoryBlocks]
     : isQuality ? [{type:"paragraph",text:body}, ...qualityScenarioBlocks]
-    : isRisk ? [{type:"paragraph",text:body}, ...riskFoundationsBlocks] : undefined;
+    : isRisk ? [{type:"paragraph",text:body}, ...riskFoundationsBlocks]
+    : isSuccess ? [{type:"paragraph",text:body}, ...successOutcomesBlocks] : undefined;
   const stakeholderReadings: Activity[] = isStakeholder ? [
     {
       id: `${id}-interview-method-reading`,
@@ -129,8 +132,22 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
       content: {type:"reading",body:"Evaluate residual exposure, shared failures, authorization limits and decisions that must be blocked or revisited.",blocks:riskResidualBlocks},
     },
   ] : [];
+  const successReadings: Activity[] = isSuccess ? [
+    {
+      id: `${id}-cohort-bias-reading`,
+      title: "Cohorts, Denominator Bias and Verified Outcomes",
+      estimatedMinutes: 80,
+      content: {type:"reading",body:"Measure eligible outcomes, missing evidence and biased completed-only reports with an exact source example.",blocks:successCohortsBlocks},
+    },
+    {
+      id: `${id}-claims-evaluation-reading`,
+      title: "Evidence Quality, Causal Claims and Honest Evaluation",
+      estimatedMinutes: 75,
+      content: {type:"reading",body:"Trace claims to permissible evidence, predeclare outcomes and distinguish observed differences from causally demonstrated effects.",blocks:successClaimsBlocks},
+    },
+  ] : [];
   return { id, title, activities: [
-    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : isFraming ? 60 : isRequirements ? 65 : isConstraints ? 70 : isAmbiguity ? 70 : isQuality ? 70 : isRisk ? 65 : minutes,
+    { id: `${id}-001`, title, estimatedMinutes: isProblemSelection ? 65 : isStakeholder ? 65 : isFraming ? 60 : isRequirements ? 65 : isConstraints ? 70 : isAmbiguity ? 70 : isQuality ? 70 : isRisk ? 65 : isSuccess ? 70 : minutes,
       content: { type: "reading", body, ...(authoredBlocks ? {blocks:authoredBlocks} : {}) } },
     ...stakeholderReadings,
     ...framingReadings,
@@ -139,8 +156,9 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
     ...ambiguityReadings,
     ...qualityReadings,
     ...riskReadings,
+    ...successReadings,
     { id: `${id}-practice`, title: `Discovery work: ${title}`,
-      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : isFraming ? 100 : isRequirements ? 110 : isConstraints ? 110 : isAmbiguity ? 110 : isQuality ? 120 : isRisk ? 120 : 45, content: {
+      estimatedMinutes: isProblemSelection ? 70 : isStakeholder ? 95 : isFraming ? 100 : isRequirements ? 110 : isConstraints ? 110 : isAmbiguity ? 110 : isQuality ? 120 : isRisk ? 120 : isSuccess ? 125 : 45, content: {
       type: "practical",
       objective: `Apply ${title} to the evolving capstone discovery evidence before architecture is proposed.`,
       scenario,
@@ -209,6 +227,14 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "Execute the exact learner-visible Python risk-control program, preserve all nine source classification outputs, three deliveries with exactly one closure, and final marker. In separate disposable copies demonstrate NINE genuine AssertionError failures: skip each of eight classification gates or skip duplicate-event detection.",
           "Build a risk-control/residual ledger linking source and failure path to mitigation, test evidence, residual owner decision, monitoring trigger, affected requirement and quality scenario IDs. Include one credible shared cause and one proposed mitigation that creates another risk.",
           "Inject two changes: a mitigation introduces prohibited customer-data exports and a supplier begins reusing event identifiers. Reopen affected tests, risk assessments, permissions and design choices; document a lawful BLOCK, DEFER, ESCALATE_ISSUE or RESEARCH_REQUESTED outcome, not an automatically approved release.",
+        ] : []),
+        ...(isSuccess ? [
+          "Define a new-domain primary user outcome, an explicit eligible cohort, its fixed observation/follow-up window, baseline source and validity, numerator/denominator, treatment of missing/unknown cases and who can authorize collection. Contrast this with an implementation-activity metric that does not demonstrate benefit.",
+          "Run the exact learner-visible Python success-evidence cohort program. Preserve baseline verified 3/8 and completed-only 3/6 versus pilot verified 4/8 and completed-only 4/5, plus the increasing unknown counts 3 to 4. Explain how the seemingly impressive 80% omits unresolved or unverified work.",
+          "In separate disposable copies, reject TEN wrong-source variants with real AssertionError: eight bypassed reporting gates, a numerator that trusts CLOSED without decision/notification and a denominator that silently excludes open eligible cases.",
+          "Write a metric measurement contract with eligibility version, owner, permitted source, authoritative event, inclusion/exclusion rule, missing-data treatment, baseline and target approval status, two balancing measures for unintended harm, and explicit criteria for a STOP or INCONCLUSIVE result.",
+          "Build a claim-to-evidence ledger showing what unit, integration, browser and quality tests can and cannot establish; propose a comparability/causal evaluation plan without calling a before-after pilot a causal effect.",
+          "Change two assumptions: discover an omitted intake channel and a more difficult case mix in the pilot. Recompute or suspend the outcome claim, update dependent requirements/risk and quality IDs and write a decision record that can truthfully say IMPACT_NOT_VERIFIED or DATA_COLLECTION_NOT_AUTHORIZED.",
         ] : [])
       ],
       deliverables: ["Updated discovery artifact", "Evidence/assumption distinction", "Change-or-retain rationale", "Next validation question"],
@@ -263,6 +289,12 @@ function reading(id: string, title: string, body: string, minutes = 22): Lesson 
           "Risk prioritization distinguishes catastrophic/noncompensatory restrictions from negotiable delay or cost, with no invented numerical probability, authority or genuine acceptance signature.",
           "Actual Python source and all nine unsafe variants reject false confidence about incidents, unverified origins, forbidden data export, nonimplemented or untested controls, residual approval and duplicate side effects.",
           "The learner can defend residual and shared-cause decisions, update linked tests and scope, and block unsafe deployment; true independent learner mastery and real professional signoff remain NOT_VALIDATED.",
+        ] : []),
+        ...(isSuccess ? [
+          "A reviewer can reproduce numerator, denominator and missing/outstanding states over the fixed eligible cohort and identify why a completed-only green number can conceal worsening unresolved customers.",
+          "The exact learner-visible Python and all ten unsafe mutations catch unverified sources, denied collection, missing baseline, denominator selection, unreported unknowns, unsupported causal attribution, missing harm guards, unapproved decisions and false numerator logic.",
+          "The claim-evidence mapping distinguishes verified code behavior, reported observations, comparisons and unproven causal impact, with predeclared success, failure, inconclusive and stop-for-harm conditions.",
+          "Actual customer outcomes, approved baselines, lawful permission and uncoached independent learner competence remain NOT_VALIDATED; classroom green output is not evidence of product impact.",
         ] : [])
       ]
     } }
