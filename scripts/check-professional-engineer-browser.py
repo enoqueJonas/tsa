@@ -326,6 +326,77 @@ def run():
   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
   assert page.evaluate("new URLSearchParams(location.search).get('activity')")==framing_practice
   print("PASS original Problem Framing reading -> measurement -> causal boundary -> original practice; 390px, Python copy and reentry",flush=True)
+  # Requirements: original authored reading -> exact acceptance/oracles ->
+  # traceability/change control -> original practice. Synthetic prerequisites
+  # only test navigation, never real approval or learner performance.
+  seed_completed_path(page,"capstone-problem-discovery",[
+    "capstone-problem-discovery-evidence-provenance-reading",
+    "capstone-problem-discovery-evidence-provenance-practice",
+    "capstone-problem-discovery-evidence-provenance-check",
+    "capstone-problem-discovery-choosing-a-substantial-problem-001",
+    "capstone-problem-discovery-choosing-a-substantial-problem-practice",
+    "capstone-problem-discovery-stakeholder-discovery-001",
+    "capstone-problem-discovery-stakeholder-discovery-interview-method-reading",
+    "capstone-problem-discovery-stakeholder-discovery-triangulation-reading",
+    "capstone-problem-discovery-stakeholder-discovery-practice",
+    "capstone-problem-discovery-problem-framing-001",
+    "capstone-problem-discovery-problem-framing-measurement-reading",
+    "capstone-problem-discovery-problem-framing-causality-boundary-reading",
+    "capstone-problem-discovery-problem-framing-practice",
+  ])
+  requirements_steps=(
+    ("capstone-problem-discovery-requirements-001",
+     ("What a requirement is, and why a stakeholder request is not one",
+      "Separate business goals, capabilities, domain rules and quality constraints",
+      "Make provenance, consent and decision authority explicit")),
+    ("capstone-problem-discovery-requirements-acceptance-reading",
+     ("Give an acceptance test a situation, action and independently checked result",
+      "Execute the learner-visible requirement review and denial oracle",
+      "REQUIREMENTS_EVIDENCE_ORACLE_PASS")),
+    ("capstone-problem-discovery-requirements-traceability-reading",
+     ("Trace upstream harm to downstream observable evidence",
+      "Resolve conflicts without silently choosing the loudest sponsor",
+      "When evidence changes, re-evaluate the chain")),
+  )
+  page.goto(BASE+"/?"+urlencode({
+    "view":"curriculum","school":"professional-engineer",
+    "path":"capstone-problem-discovery","activity":requirements_steps[0][0]
+  }),wait_until="networkidle")
+  for index,(activity,requirements) in enumerate(requirements_steps):
+   page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+   actual=page.evaluate("new URLSearchParams(location.search).get('activity')")
+   assert actual==activity,f"Wrong Requirements reading order: {actual} != {activity}"
+   main=page.locator("main").last
+   visible=main.inner_text()
+   assert len(visible)>=3500,f"Requirements reading lacks actual depth {activity}: {len(visible)}"
+   for phrase in requirements:
+    assert phrase in visible,f"Requirements teaching missing {activity}: {phrase}"
+   if index==1:
+    assert main.get_by_role("button",name="Copy").count()>0,"Requirements Python is not copyable"
+    assert main.locator("figure pre").count()>0,"Requirements published Python not rendered"
+   page.set_viewport_size({"width":390,"height":844})
+   assert not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),(
+    "Requirements 390px overflow "+activity
+   )
+   page.screenshot(path=str(ART/f"discovery-requirements-{index+1}-390.png"),full_page=True)
+   page.set_viewport_size({"width":1440,"height":900})
+   page.get_by_role("button",name=re.compile(r"^(Next|Next lesson|Complete path)$")).click()
+   expected_next=(requirements_steps[index+1][0] if index+1<len(requirements_steps)
+                  else "capstone-problem-discovery-requirements-practice")
+   page.wait_for_function("""expected => (
+     new URLSearchParams(location.search).get("activity") === expected
+   )""",arg=expected_next,timeout=15000)
+  original_requirements_practice="capstone-problem-discovery-requirements-practice"
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==original_requirements_practice
+  practice_text=page.locator("main").last.inner_text()
+  for phrase in ("six-row requirements ledger","five unsafe mutations",
+                 "Given–When–Then acceptance","unproven requirements"):
+   assert phrase in practice_text,"Original Requirements practice missing "+phrase
+  page.reload(wait_until="networkidle")
+  page.get_by_text("Loading your progress…").wait_for(state="hidden",timeout=30000)
+  assert page.evaluate("new URLSearchParams(location.search).get('activity')")==original_requirements_practice
+  print("PASS original Requirements -> acceptance -> traceability -> original practice; 390px, copyable source, actual Next and reload",flush=True)
   # Gate the third module through completion of the second module's *actual*
   # authored IDs. This synthetic fixture is not independent learner evidence.
   synthetic_discovery_complete(page)
