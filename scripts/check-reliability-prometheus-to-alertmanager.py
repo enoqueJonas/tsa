@@ -213,33 +213,46 @@ def main():
                     raise AssertionError("Prometheus itself never evaluated synthetic alert firing")
                 print("PROMETHEUS_RULE_STILL_FIRING_WHILE_ALERTMANAGER_UNREACHABLE_PASS",
                       flush=True)
-                # This metric is observed from the real Prometheus process.
-                # An inaccessible receiver is NOT a successful notification.
-                errors_query = ("http://127.0.0.1:"+str(prom_port)
-                                +"/api/v1/query?query=prometheus_notifications_errors_total")
+                # Prometheus exports its OWN internal notifier counters at
+                # /metrics. This lab intentionally does not scrape Prometheus
+                # itself, so those counters are NOT in /api/v1/query (TSDB).
+                # Do not mistake an empty query result for zero errors.
+                metrics_url = "http://127.0.0.1:"+str(prom_port)+"/metrics"
+                def samples_for(name, exposition):
+                    prefix = name + "{"
+                    samples = []
+                    for line in exposition.splitlines():
+                        if line.startswith(prefix):
+                            samples.append(float(line.split()[-1]))
+                    return samples
                 stop = time.monotonic() + 32
+                error_counts = []
+                dropped_counts = []
                 while time.monotonic() < stop:
                     with Source.lock:
                         early_receipts = [x.copy() for x in Source.receipts]
                     assert not any("TSAForwardingProbe" in x["alert_names"]
                                    and x["status"]=="firing" for x in early_receipts), (
                         "Receiver accepted an alert during an asserted Alertmanager outage: "
-                        +json.dumps(early_receipts))
-                    result = json.loads(query(errors_query)[1])
-                    values=result.get("data",{}).get("result",[])
-                    if any(float(x.get("value",[0,"0"])[1])>0 for x in values):
+                        + json.dumps(early_receipts))
+                    code, exposition = query(metrics_url)
+                    assert code == 200, "Prometheus self-metrics endpoint unavailable"
+                    error_counts = samples_for("prometheus_notifications_errors_total",exposition)
+                    dropped_counts = samples_for("prometheus_notifications_dropped_total",exposition)
+                    if sum(error_counts) > 0 and sum(dropped_counts) > 0:
                         break
                     time.sleep(.35)
                 else:
-                    report = query("http://127.0.0.1:"+str(prom_port)+"/metrics")[1]
-                    observed = [line for line in report.splitlines()
+                    observed = [line for line in exposition.splitlines()
                                 if line.startswith("prometheus_notifications_")
                                 and not line.startswith("#")]
                     raise AssertionError(
-                        "Expected real Prometheus notification errors during unavailable Alertmanager; "
+                        "Expected real Prometheus notification errors/drops during unavailable Alertmanager; "
                         + "observed=" + json.dumps(observed[:30]))
-                print("REAL_PROMETHEUS_NOTIFICATION_ERRORS_PASS: firing rule but failed forwarding",
-                      flush=True)
+                print("REAL_PROMETHEUS_NOTIFICATION_ERRORS_PASS: "
+                      + "firing rule but failed forwarding, "
+                      + "errors=" + str(sum(error_counts))
+                      + " dropped=" + str(sum(dropped_counts)),flush=True)
                 if SCENARIO == "alertmanager-outage":
                     # A new disposable container restores the same config
                     # and localhost receiver. This is a hard restart, not
