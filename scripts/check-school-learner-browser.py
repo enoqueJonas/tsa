@@ -286,6 +286,8 @@ def inspect_school(page):
                     "service-level-engineering-error-budgets-001": "Derive budget and burn from the same committed event population",
                     "service-level-engineering-windowing-001": "Cohort maturity, event-time windows, and missing measurements",
                     "metrics-prometheus-grafana-metric-types-001": "Why counters need reset-aware queries",
+                    "metrics-prometheus-grafana-recording-rules-promtool-reading": "A recording rule is a stored time series, not proof of user health",
+                    "alerting-and-on-call-actionable-alerts-001": "An alert is a decision pipeline, not a Boolean dashboard color",
                     "metrics-prometheus-grafana-prometheus-architecture-scrape-failures-reading": "Exercise a genuine metrics endpoint before choosing Prometheus",
                     "metrics-prometheus-grafana-promql-001": "A green or empty query is a hypothesis until you compare its source data",
                     "metrics-prometheus-grafana-grafana-001": "Use an explicit no-data state instead of decorating telemetry gaps green",
@@ -314,6 +316,9 @@ def inspect_school(page):
                         # PromQL reuses source from Architecture; Grafana is
                         # concept/incident reasoning without duplicate Python.
                         "metrics-prometheus-grafana-grafana-001",
+                        # Actionable Alerts explains the preceding real promtool lab,
+                        # and does not duplicate both YAML files or an executable.
+                        "alerting-and-on-call-actionable-alerts-001",
                         "logging-correlation-ids-001",
                         "logging-privacy-security-001",
                         "reliability-observability-stack-integration-000",
@@ -497,6 +502,50 @@ def inspect_school(page):
                 assert not page.evaluate(
                     "document.documentElement.scrollWidth > innerWidth + 2"
                 ), f"Metrics source/practical overflows mobile viewport: {activity_id}"
+                page.set_viewport_size({"width": 1440, "height": 900})
+            if SCHOOL == "reliability-engineer" and activity_id in {
+                "metrics-prometheus-grafana-recording-rules-001",
+                "metrics-prometheus-grafana-recording-rules-promtool-reading",
+                "metrics-prometheus-grafana-recording-rules-002",
+                "alerting-and-on-call-actionable-alerts-001",
+                "alerting-and-on-call-actionable-alerts-002",
+            }:
+                if activity_id == "metrics-prometheus-grafana-recording-rules-001":
+                    assert "Recording rules precompute frequently used" in text, (
+                        "Original recording-rules fundamentals were displaced"
+                    )
+                elif activity_id == "metrics-prometheus-grafana-recording-rules-promtool-reading":
+                    assert content.get_by_role("button", name="Copy").count() >= 3, (
+                        "Focused real rule/test/commands sources are not copyable"
+                    )
+                    assert "promtool test rules steward.test.yml" in text, (
+                        "Original-path rule engine demonstration lacks executable command"
+                    )
+                    assert "initialized_zero_counters_no_traffic" in text and (
+                        "configured_target_scrape_fails" in text
+                    ), "Promtool test fixture coverage not displayed"
+                    assert content.get_by_text(
+                        "Falsify the rule, not the expected result", exact=True
+                    ).count() == 1, "Mutated-source learning is missing"
+                elif activity_id == "metrics-prometheus-grafana-recording-rules-002":
+                    assert "wrong-rule" in text.lower() and "promtool test rules" in text, (
+                        "Original recording-rules practical lacks actual mutated rule gate"
+                    )
+                elif activity_id == "alerting-and-on-call-actionable-alerts-001":
+                    assert "LIVE_ALERT_DELIVERY_UNVERIFIED" in text, (
+                        "Teaching claims notification from a synthetic PromQL test"
+                    )
+                    assert "pending" in text and "absent_over_time" in text, (
+                        "Alert states and absent target are not distinguished"
+                    )
+                elif activity_id == "alerting-and-on-call-actionable-alerts-002":
+                    assert "RULE_ENGINE_VERIFIED" in text and (
+                        "LIVE_ALERT_DELIVERY_UNVERIFIED" in text
+                    ), "Original practical does not require explicit live delivery evidence"
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert not page.evaluate(
+                    "document.documentElement.scrollWidth > innerWidth + 2"
+                ), f"Recording/alerting source overflow at 390px: {activity_id}"
                 page.set_viewport_size({"width": 1440, "height": 900})
             for k in range(code.count()):
                 assert code.nth(k).locator("pre").count() > 0, (
